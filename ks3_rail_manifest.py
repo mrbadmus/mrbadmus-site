@@ -35,6 +35,11 @@ import sys
 MANIFEST = os.path.join("docs", "ks3", "rail-manifest.md")
 HEADING = "## 1. Drawn rails"
 
+# The design-page cell for a lesson Design never drew. See the note in
+# `drawn_rails` — this marker is the whole difference between "there is
+# no drawn rail" and "there is one and we could not read it".
+UNDRAWN = "—"
+
 
 # ⊕ MRB-272 / C6 — WHERE THE SKELETON AND THE DELIVERY DISAGREE ON A SLUG.
 #
@@ -102,6 +107,28 @@ def drawn_rails(repo_root="."):
     out = {}
     for path in sources:
         stem = os.path.basename(path)[:-len(".dc.html")]
+
+        # ── ⊕ MRB-223 · A SHARED COMPONENT IS NOT A PAGE ─────────────────
+        #
+        # From the 23 Aug 2026 physics repackaging, a unit folder can carry
+        # a shared child Design Component beside its lessons: `Cfifa.dc.html`
+        # in P1–P7, P11 and P12, and `Bench.dc.html` in P11 and P12. They are
+        # mounted by a lesson with `<dc-import>`; they are not lessons, they
+        # have no rail, and they have no slug in `structure.py`.
+        #
+        # Left unfiltered, each one takes a manifest row of its own —
+        # `| `Cfifa` | `Cfifa` | — | — |` — which reads exactly like the row
+        # for a delivered lesson whose rail could not be read. That is the
+        # one confusion the undrawn-marker note below is at pains to avoid,
+        # so it is worth a rule rather than a special case.
+        #
+        # Design's own naming carries the distinction: a lesson stem is
+        # lowercase and numbered (`p1-01-…`, `c10-03-…`, `b1-02-…`), and the
+        # non-lesson stems she ships that DO earn a row are lowercase too
+        # (`00-index`, `fig-11-b4-guard-cells`). A component is the only
+        # thing she names with a leading capital. Skip on that.
+        if stem[:1].isupper():
+            continue
         with open(path, encoding="utf-8") as fh:
             page = fh.read()
         rail = re.search(r"const RAIL\s*=\s*(\[.*?\]);", page, re.S)
@@ -145,6 +172,59 @@ def drawn_rails(repo_root="."):
                 % (slug, prev[0], prev[1], prev[2], stem, ids, mirrors))
         if prev is None or prev[1] is None:
             out[slug] = (stem, ids, mirrors)
+
+    # ── ⊕ MRB-223, 24 Aug 2026 · A LESSON DESIGN GENUINELY NEVER DREW ────
+    #
+    # ⚠️ THE ORIGINAL VERSION OF THIS NOTE WAS FALSE, AND IT IS WORTH SAYING
+    # SO HERE RATHER THAN QUIETLY DELETING IT. It read: "P1 is the first
+    # authored unit in the key stage with NO Design delivery. There is no
+    # `physics/` folder under `docs/ks3/design-reference/` and there never
+    # was." The first sentence was wrong and the second was true only of the
+    # one folder it names. Design had drawn all SEVENTY physics lessons,
+    # P1–P12; they were sitting untracked in the main worktree, in twelve
+    # folders named `KS3 P<n> lessons/`, and a glob of
+    # `docs/ks3/design-reference/*/*.dc.html` could not see them — both
+    # because they were somewhere else, and because a worktree shares a
+    # `.git` but NOT a working directory, so nothing untracked in the main
+    # checkout is reachable from a lane by relative path.
+    #
+    # Absence found in one location is not absence. P1's delivery now sits
+    # at `docs/ks3/design-reference/p1/` like every other unit's, the loop
+    # above reads its `RAIL` const, and the fallback below no longer fires
+    # for a single physics lesson.
+    #
+    # ⚖️ THE MECHANISM STAYS, because the case it was built for is real: a
+    # unit authored ahead of its drawing needs a row, or
+    # `check_rail_matches_design`'s third assertion fails a rail-bearing page
+    # for having no row at all — which is correct, and is exactly what it did.
+    # Recording "Design drew nothing here" answers that assertion honestly:
+    # the lesson IS written down, and what is written down is that there is
+    # nothing to compare against. Assertions 1 and 2 keep their full force on
+    # every delivered unit, skipped here by the SAME `ids is None` branch the
+    # manifest has always used for a delivered page with no `RAIL` const.
+    #
+    # ⚠️ IT MUST NEVER BE WRITTEN FOR A DRAWN LESSON. A bare-dash row on a
+    # unit Design HAS drawn is not a record, it is a claim that she did not —
+    # and it silences the two assertions that would otherwise compare the
+    # built rail against her stops. Before this fallback is allowed to stand
+    # for any unit, search the tree by ABSOLUTE path, including untracked
+    # files and every sibling worktree, and satisfy yourself the delivery is
+    # genuinely absent.
+    #
+    # ⚠️ THE MARKER IS THE DESIGN-PAGE COLUMN, and it must stay unmistakable.
+    # A row reading `| `energy-stores` | — | — | — |` says Design drew
+    # nothing. It must never be confused with a delivered page whose rail we
+    # failed to read — a real stem with `—` stops, a different and much worse
+    # thing, and what B1's `00-index` row legitimately is.
+    try:
+        import ks3_data
+    except ImportError:                                   # pragma: no cover
+        return out
+    for unit in ks3_data.build_units():
+        for lesson in unit.get("lessons", []):
+            if not lesson.get("authored"):
+                continue
+            out.setdefault(lesson["slug"], (UNDRAWN, None, {}))
     return out
 
 
@@ -176,10 +256,18 @@ def manifest_rails(repo_root="."):
 
 def _rows(rails):
     lines = []
-    for slug, (stem, ids, mirrors) in sorted(rails.items(), key=lambda kv: kv[1][0]):
+    # Undrawn rows sort last, together, so a reader sees the delivered record
+    # first and the "Design drew nothing here" block as one group rather than
+    # scattered through it.
+    def key(kv):
+        stem = kv[1][0]
+        return (1, kv[0]) if stem == UNDRAWN else (0, stem)
+    for slug, (stem, ids, mirrors) in sorted(rails.items(), key=key):
         shown = " ".join(ids) if ids else "—"
         mir = " ".join("%s=%s" % kv for kv in sorted(mirrors.items())) or "—"
-        lines.append("| `%s` | `%s` | %s | %s |" % (slug, stem, shown, mir))
+        # A bare dash, never `` `—` ``: the backticks say "this is a filename".
+        cell = UNDRAWN if stem == UNDRAWN else "`%s`" % stem
+        lines.append("| `%s` | %s | %s | %s |" % (slug, cell, shown, mir))
     return "\n".join(lines) + "\n"
 
 

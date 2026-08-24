@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Energy stores · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-ba] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 720px) { [data-ba] { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy transfers</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Energy stores</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy transfers · Classify</p>
+        <h1>Energy stores</h1>
+        <p class="ks3-bigq">Roll a ball across a carpet and it stops. The energy it had is gone. Except that nothing in physics is ever gone — so where is it?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The ball stops. The energy does not.</h2>
+        <p class="ks3-hook-prompt">A ball rolls across a carpet, slows, and stops. Before, it was moving and had energy. After, it is still. Nothing hit it and nothing took it away.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit to where the energy went.</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Into the carpet and the ball, as a very small rise in temperature — a few thousandths of a degree, spread across a wide area, far too little to feel but exactly enough to account for every joule. A sensitive enough thermometer would find it. "Used up" is what it looks like; "moved somewhere hard to notice" is what happened.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Energy is not a substance and it is not a fuel. It is a number — a quantity you can calculate for a situation, which comes out the same before and after no matter what happened in between. To keep track of that number you need somewhere to write it down, and the places you write it down are called <em>stores</em>. This lesson is about learning the list, and about one distinction that trips up almost everyone.</p>
+      </section>
+
+      <section id="s-audit" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The store audit · fill in the ledger</p>
+            <h2 style="margin: 6px 0 0;">Which stores are filled, before and after?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ auditProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Pick a scenario. Tick the stores that hold energy at the start and the stores that hold it at the end. Then check.</p>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px;">
+          <sc-for list="{{ scenarios }}" as="sc" hint-placeholder-count="4">
+            <button type="button" onClick="{{ sc.onClick }}" aria-pressed="{{ sc.on }}" style="{{ sc.style }}">{{ sc.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 18px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-size: 19px; line-height: 1.55; font-weight: 600;">{{ scenarioText }}</p>
+
+          <div data-ba="1" style="margin-top: 20px;">
+            <div>
+              <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Filled at the start</p>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ beforeChips }}" as="c" hint-placeholder-count="8">
+                  <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.on }}" style="{{ c.style }}">
+                    <span style="flex: 1; text-align: left;">{{ c.label }}</span>
+                    <span style="{{ c.markStyle }}">{{ c.mark }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+            <div>
+              <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Filled at the end</p>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ afterChips }}" as="c" hint-placeholder-count="8">
+                  <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.on }}" style="{{ c.style }}">
+                    <span style="flex: 1; text-align: left;">{{ c.label }}</span>
+                    <span style="{{ c.markStyle }}">{{ c.mark }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px;">
+            <button type="button" onClick="{{ onCheckAudit }}" style="{{ checkStyle }}">Check the ledger</button>
+            <button type="button" onClick="{{ onClearAudit }}" style="{{ clearStyle }}">Clear it</button>
+          </div>
+
+          <sc-if value="{{ auditChecked }}">
+            <div data-arrive="1" style="margin-top: 18px; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border-left: 6px solid var(--ks3-accent);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-accent-text);">{{ auditVerdictLabel }}</p>
+              <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55;">{{ auditVerdict }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Energy is never used up or created. It moves between stores, and the total is always the same before and after.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“A torch turns electrical energy into light energy and sound energy.”</p>
+        <p style="max-width: 54ch;">Every word of that is in common use and two of them are not stores at all. Sort each one before you read on.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 18px;">
+          <sc-for list="{{ sortCards }}" as="card" hint-placeholder-count="6">
+            <div style="{{ card.wrapStyle }}">
+              <p style="margin: 0 0 12px; font-size: 18px; line-height: 1.4; font-weight: 700;">{{ card.name }}</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ card.onStore }}" aria-pressed="{{ card.storeOn }}" style="{{ card.storeStyle }}">A store</button>
+                <button type="button" onClick="{{ card.onPath }}" aria-pressed="{{ card.pathOn }}" style="{{ card.pathStyle }}">A pathway</button>
+              </div>
+              <sc-if value="{{ card.answered }}">
+                <p style="{{ card.noteStyle }}">{{ card.note }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ sortDone }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">A <strong>store</strong> is somewhere energy sits and can be counted while nothing is happening. Pause the world and a stretched spring still has its energy; a hot cup still has its energy. A <strong>pathway</strong> is a way energy travels from one store to another. Pause the world and there is no light in transit to count — light is a journey, not a destination.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">So the torch does not turn electrical energy into light energy. It empties a chemical store in the battery and fills a thermal store in the room, and the light and the electric current are the two routes by which it happens. Saying it properly takes longer, and it is the difference between describing what happened and just naming things.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Energy gets used up when you use it.&rdquo;</p>
+          <p>Nothing is used up. Every joule that goes into a torch is still there afterwards — it has simply ended in the thermal store of the bulb, the air and the room, spread so thinly across so many particles that no useful transfer can be got out of it again. That is what people mean by wasted energy: not destroyed, dissipated. The distinction matters because it is the difference between a quantity that is conserved and one that is not, and only one of those lets you predict anything.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Energy does not come in types and is never a substance. It sits in stores — kinetic, gravitational, chemical, thermal, elastic — and a transfer moves it between them. Light and sound are pathways along which energy travels, not stores it can sit in.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Eight stores: kinetic, gravitational, elastic, thermal, chemical, magnetic, electrostatic, nuclear. Light, sound, electricity and heating are pathways — routes between stores, not places energy sits.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Nobody has ever seen energy. There is no instrument that detects it, no bottle you could keep some in, and no experiment that shows it directly — you only ever measure masses, speeds, temperatures and heights, and then calculate. What makes it worth having is a single strange fact: whatever situation you pick, however complicated, if you add up that calculated number before and after, you get the same answer. Nobody knows why the universe should have a quantity like that, and the physicist Richard Feynman was blunt about it — energy is not a mechanism or a substance, it is a number that happens not to change. That is all it is, and it is one of the most useful things ever discovered.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="../index.html">Nothing — this is where the course starts<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p1-02-energy-transfers-before-and-after.html">Energy transfers: before and after<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-03-conservation-of-energy.html">Conservation of energy<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-01-energy-in-food.html">Energy in food<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Energy stores and transfers as calculated quantities — kinetic and potential energy equations, and efficiency.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure why light is not a store?</p>
+          <a class="ks3-tutor-cta" href="#s-think">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The store audit is a teaching model. The eight stores listed are the set used at KS3; a fuller treatment describes magnetic and electrostatic energy as belonging to fields rather than to objects, and nuclear energy as a difference in mass. Each scenario names the store an object’s energy is chiefly in and ignores the small amounts held in every other store at the same moment — a raised ball has a thermal store too, and it is not what the question is about. Light and sound are treated throughout as pathways rather than stores, which is the convention this course follows.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The rolling ball', short: 'HOOK' },
+  { id: 's-audit', label: 'Store audit', short: 'AUDIT' },
+  { id: 's-think', label: 'Store or pathway', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const STORES = [
+  { id: 'kin', label: 'Kinetic — something moving' },
+  { id: 'grav', label: 'Gravitational — something raised up' },
+  { id: 'el', label: 'Elastic — something stretched or squashed' },
+  { id: 'therm', label: 'Thermal — something warm' },
+  { id: 'chem', label: 'Chemical — fuel, food, a battery' },
+  { id: 'mag', label: 'Magnetic — magnets held apart or together' },
+  { id: 'est', label: 'Electrostatic — separated charges' },
+  { id: 'nuc', label: 'Nuclear — inside the nucleus' }
+];
+
+const SCENARIOS = [
+  { id: 'sc1', label: 'Catapult', text: 'A stone is loaded into a stretched catapult and released. It flies off horizontally.',
+    before: ['el'], after: ['kin'],
+    verdict: 'Elastic before, kinetic after. Notice the count does not go up: the energy in the stretch is the energy in the flight. Whoever pulled the catapult back put it there, out of their own chemical store.' },
+  { id: 'sc2', label: 'Diver on a board', text: 'A diver stands still on a high board, then steps off and falls. Judge the moment just before they hit the water.',
+    before: ['grav'], after: ['kin'],
+    verdict: 'Gravitational before, kinetic after. Height is emptied and speed is filled. The diver was not moving at the start and is not raised up at the end \u2014 the ledger swaps sides completely.' },
+  { id: 'sc3', label: 'Braking car', text: 'A car travelling at 30 mph brakes hard and comes to a complete stop.',
+    before: ['kin'], after: ['therm'],
+    verdict: 'Kinetic before, thermal after. This is the hook, with a bigger ball: the energy is in the brake discs, the tyres and the road, and after a hard stop the discs are genuinely too hot to touch. Nothing was used up.' },
+  { id: 'sc4', label: 'Kettle', text: 'A kettle is switched on at the wall and boils a litre of water.',
+    before: ['chem'], after: ['therm'],
+    verdict: 'Chemical before, thermal after \u2014 with the chemical store sitting in a fuel somewhere in a power station, not in the kettle. The electric current is how it got here; it is a pathway, not a store, which is the next section of this lesson.' },
+  { id: 'sc5', label: 'Bouncing ball', text: 'A ball is dropped, squashes flat against the floor for an instant, and bounces back up. Judge the drop, and the moment of maximum squash.',
+    before: ['grav'], after: ['el', 'therm'],
+    verdict: 'Gravitational before; elastic and thermal at full squash. The thermal one is the interesting tick \u2014 it is why the ball never returns to the height it was dropped from, and why a ball squashed and released over and over gets warm.' }
+];
+
+const PATHWAY_SORT = [
+  { id: 'q1', name: 'Kinetic', store: true, right: 'A store. Pause the film and a moving object still has it.', wrong: 'This one is a store \u2014 pause the film and the object is still moving, and you can still calculate the number.' },
+  { id: 'q2', name: 'Light', store: false, right: 'A pathway. Light carries energy from one store to another; it is not a place energy sits.', wrong: 'Not a store. Light is energy on its way somewhere \u2014 there is no object holding "light energy" once you pause.' },
+  { id: 'q3', name: 'Chemical', store: true, right: 'A store. Food, fuel and batteries hold it whether or not anything is happening.', wrong: 'This one is a store. A battery in a drawer still has it a year later.' },
+  { id: 'q4', name: 'Sound', store: false, right: 'A pathway. Sound is energy travelling through a material as a wave.', wrong: 'Not a store. Nothing sits holding "sound energy" \u2014 the sound is the transfer itself.' },
+  { id: 'q5', name: 'Elastic', store: true, right: 'A store. A stretched band holds it indefinitely, doing nothing.', wrong: 'This one is a store. Leave a bow drawn overnight and the energy is still in it.' },
+  { id: 'q6', name: 'Electrical', store: false, right: 'A pathway. A current is a way of moving energy along a wire, not somewhere it rests.', wrong: 'Not a store \u2014 this is the one almost everyone gets wrong. The battery has a chemical store; the current is the route out of it.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'A stretched elastic band holds energy in which store?',
+    options: [
+      { text: 'Elastic', correct: true },
+      { text: 'Kinetic', correction: 'Kinetic means moving. A stretched band held still is not moving and still has the energy.' },
+      { text: 'Chemical', correction: 'Chemical means fuel, food or a battery \u2014 energy released by rearranging particles.' },
+      { text: 'Elastic energy is not a store, it is a pathway', correction: 'It is a store: pause everything and the stretched band still holds it.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A cyclist freewheels down a hill and then brakes to a stop at the bottom. Which describes the energy correctly?',
+    options: [
+      { text: 'Gravitational store empties, kinetic fills, then thermal fills as the brakes warm', correct: true },
+      { text: 'The energy is used up by the brakes', correction: 'Nothing uses energy up. The brake discs are measurably hotter afterwards, and that is where it is.' },
+      { text: 'Gravitational becomes kinetic, then the kinetic energy disappears', correction: 'It goes into a thermal store in the brakes, the tyres and the air. Disappearing is not something energy does.' },
+      { text: 'The cyclist creates kinetic energy by pedalling downhill', correction: 'They are freewheeling. And even if they pedalled, they would be emptying a chemical store, not creating anything.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A wind-up torch is cranked for thirty seconds and then shines for two minutes. Describe the energy stores at the start, in the middle and at the end \u2014 and say which parts of the description are pathways rather than stores.',
+    fieldLabel: 'Your description',
+    placeholder: 'The person cranking has a chemical store…',
+    criteria: [
+      'Starts with a chemical store in the person turning the handle.',
+      'Names the store filled by cranking \u2014 elastic in the spring, or kinetic in a flywheel.',
+      'Ends with a thermal store in the room and the torch.',
+      'Identifies light as a pathway, not a store.',
+      'Identifies the electric current as a pathway, not a store.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student says: "A phone battery holds electrical energy, and when it goes flat that energy has been used up." Two things in that sentence are wrong. Correct both.',
+    fieldLabel: 'Your correction',
+    placeholder: 'A battery does not hold electrical energy because…',
+    criteria: [
+      'Says the battery holds a chemical store, not an electrical one.',
+      'Says electricity is a pathway \u2014 a way energy travels out of the battery.',
+      'Says the energy is not used up when the battery goes flat.',
+      'Says where it has gone \u2014 thermal stores in the phone and the room, and out as light and sound.',
+      'Says the total energy is the same before and after.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    scenario: 0,
+    before: {}, after: {},
+    auditChecked: false,
+    solved: {},
+    sorts: {},
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  chip(on, state) {
+    const border = state === 'right' ? 'var(--ks3-accent)' : state === 'wrong' ? 'var(--ks3-ink)' : on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)';
+    const bg = state === 'right' ? 'var(--ks3-accent-tint)' : state === 'missed' ? 'var(--ks3-band)' : on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)';
+    return 'display:flex;align-items:center;gap:10px;width:100%;font:inherit;font-size:16px;font-weight:600;padding:10px 14px;min-height:44px;text-align:left;cursor:pointer;border-radius:var(--ks3-r-control);border:2px solid ' +
+      border + ';background:' + bg + ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sc = SCENARIOS[s.scenario];
+    const solvedCount = Object.keys(s.solved).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const mkChips = (which) => STORES.map((st) => {
+      const on = !!s[which][st.id];
+      const should = sc[which].indexOf(st.id) >= 0;
+      let state = null, mark = '';
+      if (s.auditChecked) {
+        if (on && should) { state = 'right'; mark = 'correct'; }
+        else if (on && !should) { state = 'wrong'; mark = 'not this one'; }
+        else if (!on && should) { state = 'missed'; mark = 'you missed this'; }
+      }
+      return {
+        label: st.label, on: on,
+        style: this.chip(on, state),
+        mark: mark,
+        markStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:' +
+          (state === 'right' ? 'var(--ks3-accent-text)' : 'var(--ks3-ink-muted)') + ';',
+        onClick: () => this.setState((p) => ({
+          auditChecked: false,
+          [which]: Object.assign({}, p[which], { [st.id]: !p[which][st.id] })
+        }))
+      };
+    });
+
+    const exact = (which) => {
+      const picked = STORES.filter((st) => s[which][st.id]).map((st) => st.id).sort().join(',');
+      return picked === sc[which].slice().sort().join(',');
+    };
+    const perfect = exact('before') && exact('after');
+
+    const sortsAnswered = Object.keys(s.sorts).length;
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-audit') return solvedCount >= 3;
+          if (id === 's-think') return sortsAnswered >= PATHWAY_SORT.length;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'It was used up by the friction' },
+        { letter: 'B', text: 'Into the carpet and the ball, as a tiny rise in temperature' },
+        { letter: 'C', text: 'It was absorbed by the ground and destroyed' },
+        { letter: 'D', text: 'The ball never really had any energy' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      auditProgress: solvedCount + ' of ' + SCENARIOS.length + ' ledgers balanced',
+      scenarios: SCENARIOS.map((x, i) => ({
+        label: x.label, on: s.scenario === i, style: this.seg(s.scenario === i),
+        onClick: () => this.setState({ scenario: i, before: {}, after: {}, auditChecked: false })
+      })),
+      scenarioText: sc.text,
+      beforeChips: mkChips('before'),
+      afterChips: mkChips('after'),
+      checkStyle: this.seg(false),
+      clearStyle: this.seg(false),
+      onCheckAudit: () => this.setState((p) => {
+        const pickedB = STORES.filter((st) => p.before[st.id]).map((st) => st.id).sort().join(',');
+        const pickedA = STORES.filter((st) => p.after[st.id]).map((st) => st.id).sort().join(',');
+        const ok = pickedB === sc.before.slice().sort().join(',') && pickedA === sc.after.slice().sort().join(',');
+        return { auditChecked: true, solved: ok ? Object.assign({}, p.solved, { [sc.id]: true }) : p.solved };
+      }),
+      onClearAudit: () => this.setState({ before: {}, after: {}, auditChecked: false }),
+      auditChecked: s.auditChecked,
+      auditVerdictLabel: perfect ? 'Ledger balanced' : 'Not balanced yet',
+      auditVerdict: sc.verdict,
+
+      sortCards: PATHWAY_SORT.map((c) => {
+        const pick = s.sorts[c.id];
+        const answered = pick !== undefined;
+        const right = pick === c.store;
+        return {
+          name: c.name,
+          answered: answered,
+          storeOn: pick === true, pathOn: pick === false,
+          storeStyle: this.seg(pick === true),
+          pathStyle: this.seg(pick === false),
+          wrapStyle: 'padding:18px;border-radius:var(--ks3-r-panel);background:var(--ks3-card);border:2px solid ' +
+            (answered ? (right ? 'var(--ks3-accent)' : 'var(--ks3-ink)') : 'var(--ks3-option-border)') + ';',
+          note: right ? c.right : c.wrong,
+          noteStyle: 'margin:12px 0 0;font-size:16px;line-height:1.5;color:' + (right ? 'var(--ks3-ink)' : 'var(--ks3-accent-text)') + ';',
+          onStore: () => this.setState((p) => ({ sorts: Object.assign({}, p.sorts, { [c.id]: true }) })),
+          onPath: () => this.setState((p) => ({ sorts: Object.assign({}, p.sorts, { [c.id]: false }) }))
+        };
+      }),
+      sortDone: sortsAnswered >= PATHWAY_SORT.length,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

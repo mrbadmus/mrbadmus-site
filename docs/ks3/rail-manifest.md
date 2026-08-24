@@ -172,3 +172,11 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `fig-11-b4-guard-cells` | `fig-11-b4-guard-cells` | — | — |
 | `fig-13-b5-pollen-tube` | `fig-13-b5-pollen-tube` | — | — |
 | `fig-14-b5-dispersal-specimens` | `fig-14-b5-dispersal-specimens` | — | — |
+| `energy-stores` | `p1-01-energy-stores` | s-hook s-audit s-think s-ladder | — |
+| `energy-transfers-before-and-after` | `p1-02-energy-transfers-before-and-after` | s-hook s-tally s-waste s-ladder | — |
+| `conservation-of-energy` | `p1-03-conservation-of-energy` | s-hook s-bench s-balance s-ladder | — |
+| `heating-and-thermal-equilibrium` | `p1-04-heating-and-thermal-equilibrium` | s-hook s-two s-flow s-ladder | — |
+| `conduction` | `p1-05-conduction` | s-hook s-bar s-touch s-ladder | — |
+| `radiation` | `p1-06-radiation` | s-hook s-routes s-word s-ladder | — |
+| `insulation` | `p1-07-insulation` | s-hook s-plan s-trial s-ladder | — |
+| `simple-machines` | `p1-08-simple-machines` | s-hook s-bench s-worked s-ladder | — |

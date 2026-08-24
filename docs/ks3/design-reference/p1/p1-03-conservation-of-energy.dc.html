@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conservation of energy · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-readout] { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 760px) { [data-readout] { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy transfers</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Conservation of energy</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy transfers · Model</p>
+        <h1>Conservation of energy</h1>
+        <p class="ks3-bigq">A pendulum swings lower every time until it hangs still. Nothing was added and nothing obvious was taken. If energy is conserved, why does it stop?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The swing that gives up.</h2>
+        <p class="ks3-hook-prompt">Pull a pendulum to one side and let go. It comes back almost as high — but only almost. Every swing is a little lower than the last, and after a few hundred swings it is hanging straight down, motionless.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit. Energy is supposed to be conserved. What happened?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nothing happened to the total. Every joule that left the swinging is now in the air of the room and the pivot of the pendulum, as a rise in temperature far too small to feel. The pendulum stopped; the energy did not. This lesson gives you an instrument that keeps score, so you can watch that being true instead of taking it on trust.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Conservation of energy is the most tested claim in physics and it has never once failed. It is not a rule about how machines behave, or an ideal that real systems fall short of — it is exact, every time, with no exceptions found in two hundred years of looking. What makes it feel false is that the stores energy ends up in are usually invisible. So the instrument below shows them all.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The running total · keep score through the whole swing</p>
+            <h2 style="margin: 6px 0 0;">Four stores. One total that never moves.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ benchProgress }}</p>
+        </div>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. At the exact lowest point of a pendulum's swing, which store holds the most energy?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <canvas width="1800" height="700" ref="{{ benchRef }}" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <div data-readout="1">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Gravitational</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ks3-ink);">{{ gravLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Kinetic</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ks3-ink);">{{ kinLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Thermal, surroundings</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ks3-accent-text);">{{ thermLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Total</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ks3-ink);">{{ totalLabel }}</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px;">
+                <button type="button" onClick="{{ onRun }}" aria-pressed="{{ running }}" style="{{ runStyle }}">{{ runLabel }}</button>
+                <button type="button" onClick="{{ onReset }}" style="{{ resetStyle }}">Pull it back and release</button>
+                <button type="button" onClick="{{ onFriction }}" aria-pressed="{{ frictionOn }}" style="{{ frictionStyle }}">{{ frictionLabel }}</button>
+                <button type="button" onClick="{{ onHideThermal }}" aria-pressed="{{ hideThermal }}" style="{{ hideStyle }}">{{ hideLabel }}</button>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ benchNote }}</p>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Energy cannot be created or destroyed. It can only be transferred between stores, and the total across every store is always the same.</p>
+      </div>
+
+      <section id="s-balance" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Writing it down · the shape of the relationship matters</p>
+        <h2 style="margin: 6px 0 14px;">Conservation is a balance, not a triangle</h2>
+        <p style="margin: 0 0 18px; max-width: 56ch;">You will meet formula triangles in this course and they are genuinely useful — but only for a relationship built from multiplying and dividing. Conservation of energy is not one of those. It is a sum on each side of an equals sign, and a triangle drawn over it would teach you a relationship that does not exist.</p>
+
+        <div style="border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+          <canvas width="1800" height="520" ref="{{ balanceRef }}" role="img" aria-label="{{ balanceAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+          <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+            <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Move energy between the stores on the right — the beam stays level</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <sc-for list="{{ balanceButtons }}" as="b" hint-placeholder-count="4">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.6;">{{ balanceNote }}</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The car has stopped, so it has run out of energy.”</p>
+        <p style="max-width: 54ch;">This sentence is doing two wrong things at once, and one of them is the same wrong thing you met when a sealed bag of ice melted and the balance did not move. Commit.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">First: a stopped car has not run out of anything. Its kinetic store is empty, which is a different statement — its fuel tank may be full, and the brake discs are now hot enough to boil water. Second, and this is the deeper one: "ran out" treats energy as a supply that gets consumed. It is not. It is a number that moved.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">You have met this exact belief before wearing different clothes. When a sealed bag of ice melted, the mass did not change — and the temptation was to say some of it had gone. Same instinct, same error: a quantity stops being <em>visible</em> and we conclude it has stopped <em>existing</em>. A balance answered it for mass. A thermometer on the brake discs answers it for energy.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Efficient machines conserve energy and wasteful ones do not.&rdquo;</p>
+          <p>Both conserve it exactly. A 20% efficient petrol engine and a 90% efficient electric motor obey the same law to the same precision — the difference is where the energy ends up, not how much of it survives. Efficiency is the fraction that arrives in the store you wanted; the rest still exists, warming the engine, the road and the air. Conservation is not something a machine can be good or bad at.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Energy is never created and never destroyed. In a closed system the total before a change equals the total after; all that alters is which stores are holding it. A machine that seems to lose energy has dissipated it into thermal stores.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>The total is fixed. A store emptying is never a store disappearing — find where it went. "Stopped" and "out of energy" are different statements, and only the first one is ever true.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Twice in history the sum has looked broken, and both times the gap turned out to be a discovery rather than a mistake. In the 1920s energy appeared to go missing during a particular kind of radioactive decay — always a bit short, always by a varying amount. Rather than abandon the sum, Wolfgang Pauli proposed in 1930 that an undetected particle was carrying the difference away, an idea so hard to test he apologised for it. The neutrino was finally detected in 1956, twenty-six years later, and the sum balanced exactly. Conservation of energy has been trusted enough to predict a new particle from nothing but a shortfall in the arithmetic — that is how strong the evidence for it is.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p1-02-energy-transfers-before-and-after.html">Energy transfers: before and after<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p1-04-heating-and-thermal-equilibrium.html">Heating and thermal equilibrium<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-01-energy-in-food.html">Energy in food<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Closed systems, dissipation, and the calculation of energy changes using the kinetic and potential energy equations.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still feels like the pendulum's energy went somewhere unaccountable?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The running total is a teaching model. The swing is given 120 J at the top and the splits at each stage are chosen to add back to 120 exactly, so that the beam stays level. A real swing loses energy to air resistance and to friction at the pivot continuously rather than in the steps shown, and would not return to the same height. The thermal figures are illustrative: in a real swing the energy dissipated is shared between the air, the rope and the pivot, and no instrument in a school lab could separate them.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startFriction&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Running total&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The swing that stops', short: 'HOOK' },
+  { id: 's-bench', label: 'Running total', short: 'TOTAL' },
+  { id: 's-balance', label: 'Balance, not triangle', short: 'BALANCE' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const TOTAL = 120;
+
+const BALANCE_SPLITS = [
+  { id: 'b1', label: 'Just released', grav: 120, kin: 0, therm: 0,
+    note: 'All of it in the gravitational store, at the top of the swing. The beam is level because 120 = 120 + 0 + 0.' },
+  { id: 'b2', label: 'Halfway down', grav: 62, kin: 55, therm: 3,
+    note: 'Split between two stores, with a few joules already in the air. Still level: 62 + 55 + 3 is still 120. Notice the beam does not care how many stores you use.' },
+  { id: 'b3', label: 'At the bottom', grav: 0, kin: 114, therm: 6,
+    note: 'Gravitational empty, kinetic nearly full. This is the moment most people get wrong \u2014 the pendulum is lowest and fastest at the same instant.' },
+  { id: 'b4', label: 'Long after it stops', grav: 0, kin: 0, therm: 120,
+    note: 'Everything in the thermal store of the room. The pendulum is motionless and the sum is still exactly 120. Nothing about the beam has changed \u2014 which is the whole point of drawing it as a balance rather than a triangle.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Complete the law: energy cannot be created or destroyed, only…',
+    options: [
+      { text: 'transferred between stores', correct: true },
+      { text: 'used up by machines', correction: 'Machines transfer energy. Nothing uses it up \u2014 that is exactly what the law forbids.' },
+      { text: 'turned into heat and lost', correction: 'The first half is often true and the word "lost" ruins it. It goes into a thermal store you can point at.' },
+      { text: 'made more efficient', correction: 'Efficiency describes how the energy is shared out afterwards, not what happens to the total.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A pendulum swings until it hangs still. What is true of the total energy at the end compared with the start?',
+    options: [
+      { text: 'It is exactly the same — it is just all in the thermal store now', correct: true },
+      { text: 'It is less, because friction destroyed some', correction: 'Friction moves energy into thermal stores. It has no mechanism for destroying it.' },
+      { text: 'It is zero, because nothing is moving', correction: 'Nothing moving means the kinetic store is empty. The total is not the kinetic store.' },
+      { text: 'It is less, but only by a tiny amount', correction: 'Not by any amount. The sum is exact, not approximately right.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A skateboarder drops into a half-pipe from the top of one side and rises up the other. They never quite reach the height they started from. Explain what has happened to the energy, and why the law of conservation is not broken.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'At the start all the energy is in…',
+    criteria: [
+      'Says the energy starts in the gravitational store, at the highest point.',
+      'Says it fills the kinetic store on the way down, and the gravitational store again on the way up.',
+      'Says friction and air resistance move some of it into thermal stores.',
+      'Names where the thermal stores are \u2014 the wheels, the ramp, the air.',
+      'Says the total is unchanged, so a lower finish means energy relocated, not energy destroyed.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Someone advertises a machine with magnets that, once started, turns forever and powers a light with no fuel. Using conservation of energy, explain why it cannot work \u2014 and say what you would measure to test it.',
+    fieldLabel: 'Your answer',
+    placeholder: 'For the light to stay on, energy must be…',
+    criteria: [
+      'Says the light requires energy to be supplied continuously.',
+      'Says that energy must come from some store, because none can be created.',
+      'Says friction and air resistance always move energy into thermal stores, so the machine must run down.',
+      'Identifies that the claim requires a store nobody can name \u2014 the giveaway.',
+      'Names a measurement: run it in a sealed insulated box and check whether anything gets warmer, or simply time how long it runs.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    running: false,
+    friction: this.props.startFriction !== false,
+    hideThermal: false,
+    everRan: false,
+    stopped: false,
+    balance: 0,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.resetSwing();
+    this.loop();
+  }
+
+  componentDidUpdate() { this.drawBalance(); }
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  resetSwing() {
+    this.ang = 0.85;
+    this.vel = 0;
+    this.therm = 0;
+    this.frames = 0;
+  }
+
+  loop() {
+    this.raf = requestAnimationFrame(() => this.loop());
+    if (this.state.running) this.step();
+    this.drawSwing();
+  }
+
+  step() {
+    const dt = this.reduced ? 0.018 : 0.035;
+    const g = 9.0;
+    const damp = this.state.friction ? 0.0022 : 0;
+    const before = this.energyTotal();
+    this.vel += -g * Math.sin(this.ang) * dt;
+    this.vel *= (1 - damp);
+    this.ang += this.vel * dt;
+    const after = this.gravJ() + this.kinJ();
+    this.therm += Math.max(0, before - this.therm - after);
+    this.frames += 1;
+    if (this.frames % 15 === 0) {
+      const still = Math.abs(this.ang) < 0.02 && Math.abs(this.vel) < 0.06;
+      if (still !== this.state.stopped) this.setState({ stopped: still });
+      else this.forceUpdate();
+    }
+  }
+
+  gravJ() {
+    const h = 1 - Math.cos(this.ang);
+    const hMax = 1 - Math.cos(0.85);
+    return TOTAL * (h / hMax) * 0.995;
+  }
+
+  kinJ() {
+    return Math.max(0, TOTAL * (this.vel * this.vel) / (2 * 9.0 * (1 - Math.cos(0.85))) * 0.995);
+  }
+
+  energyTotal() { return TOTAL; }
+
+  drawSwing() {
+    const c = this.benchCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 350;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const px = 250, py = 46, L = 190;
+    const bx = px + Math.sin(this.ang) * L;
+    const by = py + Math.cos(this.ang) * L;
+
+    // release height reference
+    const rby = py + Math.cos(0.85) * L;
+    ctx.strokeStyle = '#E4DACA';
+    ctx.setLineDash([6, 5]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(40, rby);
+    ctx.lineTo(460, rby);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#A79A88';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('HEIGHT IT WAS RELEASED FROM', 40, rby - 8);
+
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(px - 40, py);
+    ctx.lineTo(px + 40, py);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(bx, by, 21, 0, Math.PI * 2);
+    ctx.fillStyle = '#D98A4A';
+    ctx.fill();
+    ctx.strokeStyle = '#5A3212';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // stacked bar of the four quantities
+    const grav = this.gravJ(), kin = this.kinJ(), th = this.therm;
+    const barX = 560, barW = 260, barY = 60, barH = 210;
+    const scale = barH / TOTAL;
+
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('WHERE THE 120 J IS, RIGHT NOW', barX, barY - 14);
+
+    let y = barY + barH;
+    const seg = (v, col, lab) => {
+      const h = Math.max(0, v * scale);
+      ctx.fillStyle = col;
+      ctx.fillRect(barX, y - h, barW, h);
+      if (h > 20) {
+        ctx.fillStyle = col === '#B9AE9C' ? '#1A1714' : '#FFFDF8';
+        ctx.font = '700 15px "Bricolage Grotesque", system-ui, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(lab + '  ' + Math.round(v) + ' J', barX + 12, y - h / 2 + 5);
+      }
+      y -= h;
+    };
+    seg(grav, '#8E6C3F', 'GRAV');
+    seg(kin, '#D98A4A', 'KIN');
+    if (!this.state.hideThermal) seg(th, '#E4572E', 'THERMAL');
+
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(barX, barY, barW, barH);
+
+    // the total line, fixed
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(barX - 12, barY);
+    ctx.lineTo(barX + barW + 12, barY);
+    ctx.stroke();
+    ctx.fillStyle = '#1A1714';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('120 J \u2014 THE TOTAL, NEVER MOVES', barX + barW + 18, barY + 4);
+
+    if (this.state.hideThermal) {
+      ctx.fillStyle = '#A93411';
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('THERMAL STORE HIDDEN \u2014 THE SUM NOW LOOKS BROKEN', barX, barY + barH + 26);
+    }
+
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(this.state.friction ? 'AIR RESISTANCE AND PIVOT FRICTION: ON' : 'FRICTION: OFF \u2014 IDEALISED', 40, H - 22);
+  }
+
+  drawBalance() {
+    const c = this.balanceCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 260;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const sp = BALANCE_SPLITS[this.state.balance];
+    const cx = W / 2, beamY = 96;
+
+    // fulcrum
+    ctx.fillStyle = '#1A1714';
+    ctx.beginPath();
+    ctx.moveTo(cx, beamY + 10);
+    ctx.lineTo(cx - 26, beamY + 74);
+    ctx.lineTo(cx + 26, beamY + 74);
+    ctx.closePath();
+    ctx.fill();
+
+    // beam — always level, which is the teaching point
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 7;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx - 320, beamY);
+    ctx.lineTo(cx + 320, beamY);
+    ctx.stroke();
+
+    const pan = (x, label) => {
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, beamY);
+      ctx.lineTo(x, beamY - 26);
+      ctx.stroke();
+      ctx.fillStyle = '#6B6055';
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, beamY + 26);
+    };
+    pan(cx - 210, 'BEFORE');
+    pan(cx + 210, 'AFTER');
+
+    const blockW = 132;
+    // left pan: one block of 120
+    const lh = 96;
+    ctx.fillStyle = '#8E6C3F';
+    ctx.fillRect(cx - 210 - blockW / 2, beamY - 26 - lh, blockW, lh);
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(cx - 210 - blockW / 2, beamY - 26 - lh, blockW, lh);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.font = '700 22px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('120 J', cx - 210, beamY - 26 - lh / 2 + 8);
+
+    // right pan: stacked blocks summing to 120
+    let y = beamY - 26;
+    const stack = [
+      { v: sp.grav, c: '#8E6C3F', n: 'GRAV' },
+      { v: sp.kin, c: '#D98A4A', n: 'KIN' },
+      { v: sp.therm, c: '#E4572E', n: 'THERM' }
+    ];
+    stack.forEach((b) => {
+      if (b.v <= 0) return;
+      const h = (b.v / 120) * 96;
+      ctx.fillStyle = b.c;
+      ctx.fillRect(cx + 210 - blockW / 2, y - h, blockW, h);
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(cx + 210 - blockW / 2, y - h, blockW, h);
+      if (h > 18) {
+        ctx.fillStyle = '#FFFDF8';
+        ctx.font = '700 13px "Bricolage Grotesque", system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(b.n + ' ' + Math.round(b.v), cx + 210, y - h / 2 + 5);
+      }
+      y -= h;
+    });
+
+    // the equals, drawn
+    ctx.strokeStyle = '#A93411';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(cx - 22, beamY - 96);
+    ctx.lineTo(cx + 22, beamY - 96);
+    ctx.moveTo(cx - 22, beamY - 82);
+    ctx.lineTo(cx + 22, beamY - 82);
+    ctx.stroke();
+
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(sp.grav + ' + ' + sp.kin + ' + ' + sp.therm + '  =  120', cx, H - 46);
+    ctx.fillStyle = '#A93411';
+    ctx.fillText('A SUM ON EACH SIDE \u2014 NOT A PRODUCT, SO NOT A TRIANGLE', cx, H - 22);
+  }
+
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const grav = this.gravJ ? this.gravJ() : 0;
+    const kin = this.kinJ ? this.kinJ() : 0;
+    const th = this.therm || 0;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let benchNote;
+    if (s.hideThermal) {
+      benchNote = 'With the thermal store hidden, the bar no longer reaches the total line and the law looks false. This is exactly the mistake behind "the energy was lost" \u2014 the store is real, it is just not one you would have thought to look at.';
+    } else if (!s.friction) {
+      benchNote = 'Friction off. The swing never dies down and nothing enters the thermal store, so gravitational and kinetic simply trade back and forth forever. No real pendulum does this \u2014 but it makes the trade visible without the complication.';
+    } else if (s.stopped) {
+      benchNote = 'Stopped \u2014 and the bar still reaches the top line. Every joule that was in the swinging is now in the thermal store of the air and the pivot. The pendulum ran down; the total did not.';
+    } else if (s.everRan) {
+      benchNote = 'Watch the two lower blocks trade places twice a swing while the orange one creeps up and never falls. Nothing takes the total past the line, and nothing lets it drop below.';
+    } else {
+      benchNote = 'Held at 120 J, all of it gravitational. Press start and keep your eye on the top of the bar rather than the pendulum.';
+    }
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.stopped || s.hideThermal;
+          if (id === 's-balance') return s.balance !== 0;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The energy was gradually destroyed by friction' },
+        { letter: 'B', text: 'It moved into the air and the pivot as a tiny temperature rise' },
+        { letter: 'C', text: 'The pendulum used up its energy swinging' },
+        { letter: 'D', text: 'Conservation of energy only works for perfect systems' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: s.stopped ? 'run down' : s.everRan ? 'swinging' : 'held at release',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Gravitational — it is closest to the Earth' },
+        { letter: 'B', text: 'Kinetic — it is moving fastest there' },
+        { letter: 'C', text: 'They are equal at the bottom' },
+        { letter: 'D', text: 'Elastic — the string is under most tension' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      benchRef: (el) => { this.benchCanvas = el; },
+      benchAlt: 'A pendulum with a stacked bar chart beside it showing gravitational, kinetic and thermal stores. The bar always reaches the same total line of 120 joules.',
+      gravLabel: Math.round(grav) + ' J',
+      kinLabel: Math.round(kin) + ' J',
+      thermLabel: Math.round(th) + ' J',
+      totalLabel: Math.round(grav + kin + th) + ' J',
+      running: s.running,
+      runLabel: s.running ? 'Pause' : (s.everRan ? 'Continue' : 'Release it'),
+      runStyle: this.seg(s.running),
+      onRun: () => this.setState((p) => ({ running: !p.running, everRan: true })),
+      resetStyle: this.seg(false),
+      onReset: () => { this.resetSwing(); this.setState({ running: false, stopped: false }); },
+      frictionOn: s.friction,
+      frictionLabel: s.friction ? 'Switch friction off' : 'Switch friction on',
+      frictionStyle: this.seg(!s.friction),
+      onFriction: () => { this.resetSwing(); this.setState((p) => ({ friction: !p.friction, stopped: false })); },
+      hideThermal: s.hideThermal,
+      hideLabel: s.hideThermal ? 'Show the thermal store' : 'Hide the thermal store',
+      hideStyle: this.seg(s.hideThermal),
+      onHideThermal: () => this.setState((p) => ({ hideThermal: !p.hideThermal })),
+      benchNote: benchNote,
+
+      balanceRef: (el) => { this.balanceCanvas = el; if (el) this.drawBalance(); },
+      balanceAlt: 'A level balance beam. Left pan: one 120 joule block. Right pan: the same 120 joules split between gravitational, kinetic and thermal stores. The beam stays level in every configuration.',
+      balanceButtons: BALANCE_SPLITS.map((b, i) => ({
+        label: b.label, on: s.balance === i, style: this.seg(s.balance === i),
+        onClick: () => this.setState({ balance: i })
+      })),
+      balanceNote: BALANCE_SPLITS[s.balance].note,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Nothing — a stopped car has no energy left' },
+        { letter: 'B', text: 'Only its kinetic store is empty, and nothing has run out' },
+        { letter: 'C', text: 'The energy is in the fuel tank, so the sentence is nearly right' },
+        { letter: 'D', text: 'The brakes destroyed the energy, so it did run out' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -23612,3 +23612,27 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   .ks3-cev .ks3-cev-ptext { font-size: 18px; }
 }
 /* ═══ END C10 ═══ */
+
+/* ── ⊕ MRB-223 · A C2 DEFECT, LIVE SINCE MRB-220 ──────────────────────── */
+/*
+   `r_cover_bar` (`build_ks3.py`) emits its three part-whole cover plates as
+   `<g class="ks3-bar-cover" hidden>`. `hidden` is a UA rule at (0,1,0), and
+   `<g>` computes `display: inline` from that same UA stylesheet — so the
+   attribute never closes the plates. `wireCoverBar`'s inline `display:none`
+   is the ONLY thing that does, which means that before JS runs, and forever
+   with JS off, all three plates are painted over the bar at once and the
+   model is unreadable.
+
+   A screenshot cannot see this and neither can computed style: it is a
+   question for the CASCADE, which is what MRB-242's gate asks.
+
+   ⚑ IT WAS NEVER SEEN BECAUSE NOTHING WAS LOOKING. `c2-06` is the only page
+   in the key stage that draws a cover bar, and it carries no row in
+   `ks3_parity.COMPONENTS` — and the MRB-242 sweep runs over the pages
+   COMPONENTS and CONTRAST name. The defect surfaced only when a physics page
+   registered a parity row on a page drawing this component.
+
+   Kept from the MRB-223 run-1 authoring that has otherwise been stood down:
+   this line is independent of that authoring, and it fixes a live page.
+*/
+.ks3-bar .ks3-bar-cover[hidden] { display: none; }
