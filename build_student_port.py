@@ -2493,7 +2493,7 @@ def fixture_js(spec, page, data_literals, bind_values):
 # and NOTHING THE CLIENT CAN READ KNOWS THAT.
 #
 # The chain a student can follow is `assignment_questions.source_ref` →
-# `ks3_bank_questions` / `ks3_ladder_questions` → `(unit_code, lesson_slug)`.
+# `ks3_assignment_bank` / `ks3_ladder_questions` → `(unit_code, lesson_slug)`.
 # All three are readable under RLS (`aq_student_read`, and both question tables
 # are `SELECT true` to any authenticated user), so a student can learn that a
 # piece of work draws on `the-gas-exchange-system` in unit `B4`.

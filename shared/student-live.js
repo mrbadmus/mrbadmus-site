@@ -1649,7 +1649,7 @@
              second, exactly as it was, so if that ever stopped being true the
              precedence is the precedence it has always had. */
           var pair = await Promise.all([
-            withDbDeadline(WARM_MS, sb.from("ks3_bank_questions")
+            withDbDeadline(WARM_MS, sb.from("ks3_assignment_bank")
               .select("id, lesson_slug").in("id", refs)),
             withDbDeadline(WARM_MS, sb.from("ks3_ladder_questions")
               .select("question_ref, lesson_slug").in("question_ref", refs))
@@ -1938,7 +1938,7 @@
        different directions:
 
          a  every `assignment_questions.source_ref` behind every assignment the
-            class has ever been set, resolved through `ks3_bank_questions` /
+            class has ever been set, resolved through `ks3_assignment_bank` /
             `ks3_ladder_questions` to a lesson slug. That is `coveredSlugs`
             above — the SAME walk the work rows' "Open the lesson" button uses,
             read a second time rather than repeated.

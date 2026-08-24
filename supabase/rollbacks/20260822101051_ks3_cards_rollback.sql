@@ -40,7 +40,7 @@ begin
   end if;
 
   if pool = 'bank' then
-    insert into public.ks3_bank_questions
+    insert into public.ks3_assignment_bank
       (id, unit_code, lesson_slug, band, bank_position, text, figure, options)
     select r.id, r.unit_code, r.lesson_slug, r.band, r.bank_position, r.text,
            r.figure, r.options

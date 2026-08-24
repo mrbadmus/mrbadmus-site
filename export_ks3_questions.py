@@ -582,7 +582,7 @@ def main():
     # enforced rather than hoped for.
     #
     # Python keys the bank by (unit_code, lesson_slug). The producer in the Node
-    # backend cannot: it reads `ks3_bank_questions` filtered by `lesson_slug`
+    # backend cannot: it reads `ks3_assignment_bank` filtered by `lesson_slug`
     # alone, because the scheme of work stores a subtopic SLUG and no unit code.
     # The two agree only while no slug appears in two units. If one ever does,
     # the producer silently merges both lessons' questions into one pool and
@@ -643,7 +643,7 @@ def main():
               "migration for the guard.\n")
         return
 
-    stmts = (upsert_statements("ks3_bank_questions", BANK_COLUMNS, bank, "id")
+    stmts = (upsert_statements("ks3_assignment_bank", BANK_COLUMNS, bank, "id")
              + upsert_statements("ks3_ladder_questions", LADDER_COLUMNS,
                                  ladder, "question_ref")
              + upsert_statements("ks3_cards", CARD_COLUMNS, cards, "id"))
@@ -763,7 +763,7 @@ def verify(bank, ladder, cards):
     print("\n     comparing the live tables against Python\n")
     compare("bank",
             bank,
-            fetch("ks3_bank_questions",
+            fetch("ks3_assignment_bank",
                   "id,unit_code,lesson_slug,band,bank_position,text,figure,options"),
             "id",
             ["unit_code", "lesson_slug", "band", "bank_position", "text",
