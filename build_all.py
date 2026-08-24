@@ -78,7 +78,7 @@ STEPS = [
     # teacher actually reaches, and they are generated output as of tonight.
     # Left out, editing teacher_rulings.py and running build_all.py would
     # print a successful build and change nothing.
-    ("teacher pages — teacher/*.html (7 screens, one URL each)",
+    ("teacher pages — teacher/*.html (6 screens, one URL each;\n    import.html is NOT ported and stays hand-written — see teacher_rulings)",
      "build_teacher_port.py"),
 ]
 
