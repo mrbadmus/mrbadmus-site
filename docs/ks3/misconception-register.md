@@ -1317,6 +1317,7 @@ turn the MRB-244 gate red rather than quietly breaking the pointer.
 | `ENER-08` | Results that agree closely with each other must be correct. | `rig-build` | `rig-close` | `measuring-a-temperature-change` |
 | `ENER-09` | Energy gets used up. When something stops, the energy it had has been spent and is gone. | `s-hook` | `store-audit-ledger` | `energy-stores` |
 | `ENER-10` | Light, sound and electricity are kinds of energy that things store. | `store-pathway-sort` | `store-pathway-sort` | `energy-stores` |
+| `ENER-11` | There is energy inside the battery, and using the phone lets it leak out until there is none left. | `s-hook` | `before-after-tally` | `energy-transfers-before-and-after` |
 
 ⊕ **`ENER-09` ONWARD ARE PHYSICS, IN THE SAME FAMILY.** The prefix table's ruling is
 explicit — *"A physics lane meeting an energy misconception adds to `ENER`; it does not
@@ -1324,6 +1325,13 @@ open `ENERGY`"* — and P1 is the first lane to act on it. Design's `NOTES-P1.md
 these `ENERGY-01` and `ENERGY-02` and says they were added to this register on 15 Aug 2026;
 no such id was ever added, and the ruling above forbids the prefix. They are minted here as
 `ENER-09` and `ENER-10`, continuing C7's numbering.
+
+⊕ **`ENER-11` ADDED 24 Aug 2026 BY `p1-02`.** Design's `NOTES-P1.md` §2 calls it
+`ENERGY-03`. Same ruling, same reason: the prefix is `ENER` and the numbering
+continues. Her §1 announces fourteen ids, `ENERGY-01`..`ENERGY-14`, but her §2
+coverage table names only ELEVEN distinct beliefs across the eight lessons — so
+the block was never fourteen entries wide, and P1 mints eleven, `ENER-09`
+through `ENER-19`, one per belief her table actually confronts.
 
 ⚠️ **`ENER-12` (`p1-03`) AND `PART-05` WILL BE THE SAME UNDERLYING BELIEF** — that a
 quantity stops existing when it stops being visible. Design's notes lock them together and

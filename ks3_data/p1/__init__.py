@@ -104,6 +104,11 @@ _INSTRUMENT_SEGMENTS = {
     # p1-01 · Energy stores
     "store-audit":         "check",
     "store-pathway-sort":  "misconception",
+    # p1-02 · Energy transfers: before and after
+    #   `#s-tally` is bare `ks3-block`                       → check
+    #   `#s-waste` is `ks3-block ks3-dark ks3-practical`     → practical
+    "before-after-tally":  "check",
+    "waste-sort":          "practical",
 }
 
 # Keys that stay on the BLOCK when an instrument is lifted, because they

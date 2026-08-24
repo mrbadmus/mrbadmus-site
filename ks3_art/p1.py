@@ -421,12 +421,257 @@ def r_store_pathway_sort(a, act_id):
             % (len(items), cards, settle))
 
 
+# ═══ p1-02 · before-after-tally ══════════════════════════════════════════
+
+def r_before_after_tally(a, act_id):
+    """⊕ p1-02 `#s-tally` — two columns, one total, four devices.
+
+    Design's bench. A student commits to where a filament bulb's missing 57 J
+    went, which opens the bench; then picks a device and drags a slider that
+    splits its input between the job and the surroundings. The teaching point
+    is that the TOTAL never moves however the slider is set — the two columns
+    are the same energy counted twice.
+
+    ⚖️ **THE SLIDER IS ALLOWED TO BE PHYSICALLY WRONG, AND THAT IS DESIGN'S
+    POINT** (her science flag 5). A student can set a filament bulb to 95%
+    useful. The sum still balances, because conservation does not care what
+    is efficient. The real figure is named only when they land within
+    `near` percent of it, so the bench rewards finding it without ever
+    refusing a setting.
+
+    ⚖️ **THE BARS ARE DOM, NOT CANVAS.** Design draws hers on a 1800x620
+    canvas. Seventeen built KS3 pages carry a `<canvas>` and the bar
+    instruments in every other unit are spans, so the bars are spans here:
+    the numbers are then real text a screen reader reaches and a phone can
+    scale, which a canvas bar is not. The shape, the three readouts, the
+    ordering and every string are hers.
+
+    ⚠️ **`total`, `real` AND THE SUM ARE CHECKED AGAINST EACH OTHER.** A
+    device whose note quotes a joule figure the slider can never produce
+    teaches arithmetic that does not close, and that is exactly the defect
+    this unit exists to confront.
+
+    HOOKS: `data-btally` (wrapper, `data-total`) ·
+    `data-btally-gate` (the commit panel) · `data-btally-gopt` (its options,
+    valued with the index) · `data-btally-bench` (the panel it opens) ·
+    `data-btally-dev` (device button, valued with the device id) ·
+    `data-btally-slider` · `data-btally-bar` (valued `useful` / `waste`) ·
+    `data-btally-out` (valued `in` / `useful` / `waste`) ·
+    `data-btally-sum` · `data-btally-note` · `data-btally-progress`.
+    """
+    devices = a.get("devices") or []
+    gate = a.get("gate") or {}
+    slider = a.get("slider") or {}
+
+    if len(devices) < 3:
+        raise ValueError(
+            "before-after-tally %r offers %d device(s). The claim is that the "
+            "total holds for ANY transfer, and one or two cases cannot make "
+            "it." % (act_id, len(devices)))
+
+    _unique_ids(devices, act_id, "before-after-tally", "device")
+    _no_correct_flags(devices, act_id, "before-after-tally")
+
+    for d in devices:
+        for key in ("label", "total", "real", "job", "note"):
+            if d.get(key) in (None, "", []):
+                raise ValueError(
+                    "before-after-tally %r device %r has no %r. The label "
+                    "names the button, `total` and `real` are the arithmetic, "
+                    "`job` is the store being filled, and the note is the "
+                    "only place the physics is explained."
+                    % (act_id, d.get("id"), key))
+        total, real = int(d["total"]), int(d["real"])
+        if total <= 0:
+            raise ValueError(
+                "before-after-tally %r device %r takes in %d J. A transfer "
+                "with nothing going in has no columns to balance."
+                % (act_id, d["id"], total))
+        if not 0 <= real <= 100:
+            raise ValueError(
+                "before-after-tally %r device %r declares its real figure as "
+                "%r. It is a percentage of the input, so it lives in 0-100."
+                % (act_id, d["id"], real))
+
+    if not gate.get("prompt") or len(gate.get("options") or []) < 3:
+        raise ValueError(
+            "before-after-tally %r has no commit gate, or fewer than three "
+            "options in it. Design opens the bench only after the student has "
+            "committed, because a bench read before a commitment confirms "
+            "whatever the student already believed." % act_id)
+    if gate.get("marks") and gate["marks"] not in {d["id"] for d in devices}:
+        raise ValueError(
+            "before-after-tally %r gate marks %r as seen and no device "
+            "carries that id." % (act_id, gate.get("marks")))
+
+    near = int(slider.get("near") or 0)
+    if not 1 <= near <= 20:
+        raise ValueError(
+            "before-after-tally %r calls the real figure found within %r "
+            "percent. Too tight and it can never be hit on a phone; too loose "
+            "and every setting is congratulated." % (act_id, near))
+
+    opts = "".join(
+        '<button type="button" class="ks3-option" data-btally-gopt="%d" '
+        'aria-pressed="false"><span class="ks3-opt-mark" aria-hidden="true">'
+        '%s</span><span class="ks3-opt-label">%s</span></button>'
+        % (i, chr(65 + i), t(o)) for i, o in enumerate(gate["options"]))
+
+    devs = "".join(
+        _p1_seg("ks3-btally-dev", d["label"], i == 0, data_btally_dev=d["id"])
+        for i, d in enumerate(devices))
+
+    # Every device's note is mounted from load and `shared/ks3.js` swaps which
+    # is shown, for the same reason the store audit mounts all five verdicts:
+    # a student with JS off reads the physics rather than an empty panel.
+    notes = "".join(
+        '<p class="ks3-btally-note" data-btally-note="%s"%s>%s</p>'
+        % (e(d["id"]), "" if i == 0 else " hidden", rich(d["note"]))
+        for i, d in enumerate(devices))
+
+    data = "".join(
+        ' data-btally-total-%s="%d" data-btally-real-%s="%d" '
+        'data-btally-job-%s="%s"'
+        % (e(d["id"]), int(d["total"]), e(d["id"]), int(d["real"]),
+           e(d["id"]), e(d["job"]))
+        for d in devices)
+
+    def readout(key, label, accent=False):
+        return ('<div class="ks3-btally-out%s">'
+                '<p class="ks3-btally-outlabel">%s</p>'
+                '<p class="ks3-btally-outval" data-btally-out="%s"></p></div>'
+                % (" is-accent" if accent else "", t(label), e(key)))
+
+    return ('<div class="ks3-btally" data-btally data-total="%d" '
+            'data-near="%d"%s>'
+            '<div class="ks3-btally-gate" data-btally-gate>'
+            '<p class="ks3-commit">%s</p>'
+            '<ul class="ks3-options">%s</ul></div>'
+            '<div class="ks3-btally-bench" data-btally-bench hidden>'
+            '<div class="ks3-btally-devs">%s</div>'
+            '<div class="ks3-btally-cols">'
+            '<div class="ks3-btally-col"><p class="ks3-btally-coltitle">%s</p>'
+            '<span class="ks3-btally-bar is-in" data-btally-bar="in"></span>'
+            '</div>'
+            '<div class="ks3-btally-col"><p class="ks3-btally-coltitle">%s</p>'
+            '<span class="ks3-btally-bar is-useful" data-btally-bar="useful">'
+            '</span>'
+            '<span class="ks3-btally-bar is-waste" data-btally-bar="waste">'
+            '</span></div></div>'
+            '<label class="ks3-btally-sliderlabel" for="%s-useful" '
+            'data-btally-sliderlabel></label>'
+            '<input class="ks3-btally-slider" id="%s-useful" type="range" '
+            'min="%d" max="%d" step="%d" value="%d" data-btally-slider>'
+            '<div class="ks3-btally-outs">%s%s%s</div>'
+            '<p class="ks3-btally-sum" data-btally-sum></p>%s</div></div>'
+            % (len(devices), near, data,
+               t(gate["prompt"]), opts, devs,
+               t(a.get("before_title") or "Before"),
+               t(a.get("after_title") or "After"),
+               e(act_id), e(act_id),
+               int(slider.get("min", 0)), int(slider.get("max", 100)),
+               int(slider.get("step", 1)), int(slider.get("start", 50)),
+               readout("in", "In, from the store"),
+               readout("useful", "Doing the job", True),
+               readout("waste", "Into the surroundings"),
+               notes))
+
+
+# ═══ p1-02 · waste-sort ══════════════════════════════════════════════════
+
+def r_waste_sort(a, act_id):
+    """⊕ p1-02 `#s-waste` — four situations, two verdicts, identical physics.
+
+    Design's block. Each card names a device warming its surroundings and the
+    student says whether that is a problem or the entire point. The bulb and
+    the heater are the pair the section turns on: the same joules in the same
+    store, opposite verdicts, because the verdict is about intent.
+
+    ⚖️ **THE CLOSING PANEL IS WITHHELD UNTIL EVERY CARD IS ANSWERED**, the
+    same rule the store/pathway sort uses. It names what all four cards have
+    just shown, so it has nothing to say until they have shown it.
+
+    ⚠️ **THE PAYLOAD KEY IS `sort_items`, NEVER `cards`.** `cards` is claimed
+    by `r_activity`, which renders it itself with no opt-out, so a payload
+    carrying that name gets a second blank flip-card renderer stacked on this
+    one and the block ships doubled.
+
+    HOOKS: `data-wsort` (wrapper, `data-total`) · `data-wsort-card` (valued
+    with the item id) · `data-wsort-pick` (valued `<id>:<choice index>`) ·
+    `data-wsort-note` · `data-wsort-settle`.
+    """
+    items = a.get("sort_items") or []
+    choices = a.get("choices") or []
+
+    if len(items) < 3:
+        raise ValueError(
+            "waste-sort %r offers %d card(s). The point is made by a PAIR "
+            "with identical physics and opposite verdicts, so three is the "
+            "fewest that can carry one and still generalise."
+            % (act_id, len(items)))
+    if len(choices) != 2:
+        raise ValueError(
+            "waste-sort %r declares %d verdict(s). The sort is binary — "
+            "wasted or the point — and a third button is a different "
+            "instrument." % (act_id, len(choices)))
+
+    _unique_ids(items, act_id, "waste-sort", "card")
+    _no_correct_flags(items, act_id, "waste-sort")
+
+    for it in items:
+        for key in ("text", "answer", "right", "wrong"):
+            if not it.get(key):
+                raise ValueError(
+                    "waste-sort %r card %r has no %r. Both notes are needed: "
+                    "a card that explains itself only when the student was "
+                    "already right teaches nobody who was wrong."
+                    % (act_id, it.get("id"), key))
+        if it["answer"] not in choices:
+            raise ValueError(
+                "waste-sort %r card %r answers %r, which is not one of the "
+                "two verdicts %r." % (act_id, it["id"], it["answer"], choices))
+
+    if len({it["answer"] for it in items}) < 2:
+        raise ValueError(
+            "waste-sort %r sorts every card into the same verdict. The whole "
+            "lesson is that identical physics gets opposite verdicts, and a "
+            "one-sided set teaches the reverse." % act_id)
+
+    cards = "".join(
+        '<div class="ks3-wsort-card" data-wsort-card="%s">'
+        '<p class="ks3-wsort-text">%s</p>'
+        '<div class="ks3-wsort-picks">%s</div>'
+        '<p class="ks3-wsort-note" data-wsort-note hidden></p>'
+        '<template data-wsort-right>%s</template>'
+        '<template data-wsort-wrong>%s</template></div>'
+        % (e(it["id"]), t(it["text"]),
+           "".join(
+               '<button type="button" class="ks3-seg-btn ks3-wsort-pick" '
+               'data-wsort-pick="%s:%d" aria-pressed="false">%s</button>'
+               % (e(it["id"]), i, t(c)) for i, c in enumerate(choices)),
+           rich(it["right"]), rich(it["wrong"]))
+        for it in items)
+
+    want = "".join(
+        ' data-wsort-want-%s="%d"' % (e(it["id"]), choices.index(it["answer"]))
+        for it in items)
+
+    settle = ""
+    if a.get("close"):
+        settle = ('<div class="ks3-wsort-settle" data-wsort-settle hidden>'
+                  '<p>%s</p></div>' % rich(a["close"]))
+
+    return ('<div class="ks3-wsort" data-wsort data-total="%d"%s>'
+            '<div class="ks3-wsort-grid">%s</div>%s</div>'
+            % (len(items), want, cards, settle))
+
+
 # ═══ registration ════════════════════════════════════════════════════════
 #
-# TWO ROWS, because two renderers exist. `ks3_art.check_placements` gate 2
-# fails a family registered and never placed and gate 3 fails one placed and
-# never registered, so this list and the lessons agreeing is checkable rather
-# than promised. Every family is P1's own — `ks3_art/core.py` is untouched.
+# ONE ROW PER RENDERER. `ks3_art.check_placements` gate 2 fails a family
+# registered and never placed and gate 3 fails one placed and never
+# registered, so this list and the lessons agreeing is checkable rather than
+# promised. Every family is P1's own — `ks3_art/core.py` is untouched.
 
 KIND_SHELL = {
     'store-audit': ("ks3-saudit-block",
@@ -434,9 +679,17 @@ KIND_SHELL = {
     'store-pathway-sort': ("ks3-spath-block",
                            ' data-instrument data-spathblock '
                            'data-stage-done="0"'),
+    'before-after-tally': ("ks3-btally-block",
+                           ' data-instrument data-btallyblock '
+                           'data-stage-done="0"'),
+    'waste-sort':        ("ks3-wsort-block",
+                          ' data-instrument data-wsortblock '
+                          'data-stage-done="0"'),
 }
 
 KIND_FN = {
     'store-audit': r_store_audit,
     'store-pathway-sort': r_store_pathway_sort,
+    'before-after-tally': r_before_after_tally,
+    'waste-sort': r_waste_sort,
 }

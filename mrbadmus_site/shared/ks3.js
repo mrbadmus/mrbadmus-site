@@ -5905,6 +5905,155 @@
     setCount(sec, 0);
   }
 
+  /* p1-02 `#s-tally` — two columns, one total, four devices.
+
+     ⚖️ THE SLIDER IS ALLOWED TO BE PHYSICALLY WRONG. Design's science flag 5:
+     a student may set a filament bulb to 95% useful and the sum still
+     balances, because conservation does not care what is efficient. The real
+     figure is named only when they land within `data-near` percent of it.
+
+     ⚠️ THE TOTAL IS RECOMPUTED, NEVER STORED. `useful + waste` is derived
+     from the device total and the slider on every paint, so the sum line
+     cannot drift from the bars it is describing. */
+  function wireBeforeAfterTally(sec) {
+    var wrap = sec.querySelector("[data-btally]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-btally-gate]");
+    var bench = wrap.querySelector("[data-btally-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-btally-gopt]"));
+    var devs = toArray(wrap.querySelectorAll("[data-btally-dev]"));
+    var slider = wrap.querySelector("[data-btally-slider]");
+    var sliderLabel = wrap.querySelector("[data-btally-sliderlabel]");
+    var sum = wrap.querySelector("[data-btally-sum]");
+    var notes = toArray(wrap.querySelectorAll("[data-btally-note]"));
+    if (!devs.length || !slider) { return; }
+
+    var near = parseInt(wrap.getAttribute("data-near"), 10) || 6;
+    var current = devs[0].getAttribute("data-btally-dev");
+    var seen = {};
+
+    function num(id, key) {
+      return parseInt(wrap.getAttribute("data-btally-" + key + "-" + id), 10) || 0;
+    }
+    function bar(which) { return wrap.querySelector('[data-btally-bar="' + which + '"]'); }
+    function out(which) { return wrap.querySelector('[data-btally-out="' + which + '"]'); }
+
+    function paint() {
+      var total = num(current, "total");
+      var pct = parseInt(slider.value, 10) || 0;
+      var usefulJ = Math.round(total * (pct / 100));
+      var wasteJ = total - usefulJ;
+      var real = num(current, "real");
+      var b;
+
+      b = bar("in"); if (b) { b.style.height = "100%"; }
+      b = bar("useful"); if (b) { b.style.height = (total ? (usefulJ / total) * 100 : 0) + "%"; }
+      b = bar("waste"); if (b) { b.style.height = (total ? (wasteJ / total) * 100 : 0) + "%"; }
+
+      b = out("in"); if (b) { b.textContent = total + " J"; }
+      b = out("useful"); if (b) { b.textContent = usefulJ + " J"; }
+      b = out("waste"); if (b) { b.textContent = wasteJ + " J"; }
+
+      if (sliderLabel) {
+        sliderLabel.textContent =
+          "How much of the " + total + " J ends up doing the job · drag to set";
+      }
+      slider.setAttribute("aria-valuetext",
+        usefulJ + " of " + total + " joules doing the job");
+      if (sum) {
+        sum.textContent = usefulJ + " J + " + wasteJ + " J = " + total +
+          " J · the columns match, whatever you set";
+      }
+      each(notes, function (n) {
+        var mine = n.getAttribute("data-btally-note") === current;
+        setHidden(n, !(mine && Math.abs(pct - real) <= near));
+      });
+      each(devs, function (d) {
+        var on = d.getAttribute("data-btally-dev") === current;
+        d.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      setCount(sec, Object.keys(seen).length);
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        /* Design marks the bulb seen by the act of committing about it. */
+        seen[current] = true;
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    each(devs, function (btn) {
+      btn.addEventListener("click", function () {
+        current = btn.getAttribute("data-btally-dev");
+        seen[current] = true;
+        paint();
+      });
+    });
+
+    slider.addEventListener("input", paint);
+    slider.addEventListener("change", paint);
+
+    paint();
+    setCount(sec, 0);
+  }
+
+  /* p1-02 `#s-waste` — four situations, two verdicts, identical physics.
+
+     ⚠️ THE CLOSING PANEL WAITS FOR EVERY CARD. It names what all four have
+     shown, so it has nothing to say until they have shown it. */
+  function wireWasteSort(sec) {
+    var wrap = sec.querySelector("[data-wsort]");
+    if (!wrap) { return; }
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var picks = toArray(wrap.querySelectorAll("[data-wsort-pick]"));
+    var settle = wrap.querySelector("[data-wsort-settle]");
+    if (!picks.length) { return; }
+
+    var answered = {};
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        var parts = (btn.getAttribute("data-wsort-pick") || "").split(":");
+        var id = parts[0];
+        var choice = parseInt(parts[1], 10);
+        var card = wrap.querySelector('[data-wsort-card="' + id + '"]');
+        if (!card) { return; }
+        var want = parseInt(wrap.getAttribute("data-wsort-want-" + id), 10);
+        var right = choice === want;
+
+        each(toArray(card.querySelectorAll("[data-wsort-pick]")), function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+
+        var note = card.querySelector("[data-wsort-note]");
+        var tpl = card.querySelector(right ? "[data-wsort-right]" : "[data-wsort-wrong]");
+        if (note && tpl) {
+          note.innerHTML = tpl.innerHTML;
+          note.className = "ks3-wsort-note" + (right ? " is-right" : " is-wrong");
+          setHidden(note, false);
+          note.setAttribute("role", "status");
+        }
+        card.className = "ks3-wsort-card" + (right ? " is-right" : " is-wrong");
+
+        answered[id] = true;
+        var n = Object.keys(answered).length;
+        setCount(sec, n);
+        if (settle && n >= total) {
+          setHidden(settle, false);
+          settle.setAttribute("role", "status");
+        }
+      });
+    });
+
+    setCount(sec, 0);
+  }
+
 /* ═══ END P1 wiring ═══ */
 
   function setCount(sec, n, extra) {
@@ -23743,6 +23892,8 @@
     // ═══ BEGIN P1 wiring ═══
     each(root.querySelectorAll("[data-sauditblock]"), wireStoreAudit);
     each(root.querySelectorAll("[data-spathblock]"), wireStorePathwaySort);
+    each(root.querySelectorAll("[data-btallyblock]"), wireBeforeAfterTally);
+    each(root.querySelectorAll("[data-wsortblock]"), wireWasteSort);
     // ═══ END P1 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);

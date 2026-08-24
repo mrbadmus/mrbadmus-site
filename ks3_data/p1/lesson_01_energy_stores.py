@@ -414,12 +414,14 @@ LESSON = {
             "q": "A cyclist freewheels down a hill and then brakes to a stop "
                  "at the bottom. Which describes the energy correctly?",
             "options": [
-                "The energy is used up by the brakes",
-                "Gravitational becomes kinetic, then the kinetic energy "
-                "disappears",
+                "The energy is gradually used up by the brakes until "
+                "none remains",
+                "Gravitational becomes kinetic on the way down, then the "
+                "kinetic energy disappears",
                 "Gravitational store empties, kinetic fills, then thermal "
                 "fills as the brakes warm",
-                "The cyclist creates kinetic energy by pedalling downhill",
+                "The cyclist creates new kinetic energy by pedalling on "
+                "the way down",
             ],
             "answer": 2,
             "feedback": {
