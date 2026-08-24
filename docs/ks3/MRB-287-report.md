@@ -435,3 +435,109 @@ with whatever you decide.
 - **`seed` was kept** where the brief said delete it, because `hueFor` — which
   the brief also said keep verbatim — calls it. Split: `rnd` deleted, `seed`
   kept under a one-caller assertion.
+
+---
+
+# Addendum — Mide's ruling of 24 Aug 2026, and the second pass
+
+The three features this port held for were ruled on. What follows is what
+changed, what was established before changing it, and what a deliberate
+second pass caught afterwards.
+
+## 1. The Stars leaderboard — removed from the teacher surface
+
+⚠️ **The facts were established BEFORE anything was deleted**, because the
+ruling named the *dashboard* and MRB-38 is titled *"class detail page with
+Stars leaderboard"* — and class detail is not the dashboard.
+
+| question | answer |
+|---|---|
+| where did it render? | `teacher/class-detail.html`, via `renderStarsLeaderboard()` (MRB-38 Phase 4d) — **a teacher surface** |
+| was it still rendering? | **No.** `shared/teacher-live.js` has no renderer. `<section id="leaderboard-section">` survived only as an empty element inside the `hidden` live-regions reservoir |
+| what data? | `calcLeaderboard()` in `shared/teacher-data.js`, from `assignment_submissions` |
+| does anything else read it? | **No.** Nothing consumed the `leaderboard` payload key |
+| the student one? | a SEPARATE implementation — the `class_stars_leaderboard_for_member` RPC — **untouched** |
+
+So the port had already stopped rendering it by accident; this finishes the
+removal rather than deleting a control a teacher could reach. Removed: the
+`LIVE_REGIONS` entry, and `calcLeaderboard` with its call and payload key.
+That leaves the Stars rule with **one** implementation instead of two.
+
+⛔ **MRB-38 SPECIFIES THIS FEATURE ON THIS PAGE**, in detail — locked tiebreak
+order, per-pathway eligibility, hide-don't-placeholder empty states — and is
+In Progress. Four satellite tickets assume a teacher-side podium: MRB-71
+(teacher-adjustable Stars threshold), MRB-70 (podium polish), MRB-50 (profile
+pictures on podium), MRB-45 (Star of the Term). **Reported to Mide, not folded
+in and not closed.** One revert restores it.
+
+## 2. The shoutout delete — built as an AMENDED ADDITION
+
+New register `teacher_rulings.AMENDED_ADDITIONS`; `build_teacher_port` asserts
+each marker into the emitted bytes and out of the other five pages, and
+`teacher_behaviour` presses each by name.
+
+**SOFT IN THE DATABASE, REAL TO EVERY READER** — stated because Mide asked.
+`class_shoutouts` has no DELETE policy, so a hard delete is denied by default
+and removal sets `deleted_at`. The read RPC filters `deleted_at IS NULL`, so
+the row leaves the feed for everyone including its author.
+
+Author-only, because the RLS UPDATE policy is author-only and a control that
+fails RLS is a control that lied. The viewer's id travels through the seam
+(`ctx.user.id` → `ME`) because Design's `renderVals` is synchronous and cannot
+await `getUser()`. ⚠️ It is **not** a permission — RLS decides.
+
+⚠️ **The happy path is NOT proven against a real database.** No signed-in
+teacher credential in this session, so the fixture path and every failure
+branch are driven, and the actual write is not. This is the same gap §"Known
+remaining gaps" #1 records for the composer's insert; the delete inherits it.
+
+## 3. Pagination — decided on function
+
+The shoutout feed paginates and already did. The roster (~30) and class list
+(~12) do not. The one list that silently lied was the student search: Design
+capped it at 12 **and drew a caption for it** (node 553, bound to
+`searchFoot`) reading `"12 of 60 students"` — the post-cap number against the
+whole pool, so neither integer was the one a teacher needed. Her caption is
+CORRECTED rather than joined by a second one; `· showing N` appears only where
+the cap actually bit.
+
+## 4. What the second pass caught
+
+- ⛔ **`teacher_behaviour` could not see inserted markup AT ALL.** `clickable()`
+  collected `[data-dc-tpl]`, which comes from a node's `i`, and `INSERT_AT`
+  deliberately never gives an inserted node one. **Every addition this port has
+  ever made was invisible to the drive gate.** Fixed, then falsified.
+- **The ordinal sweep never reached the confirm button** — it pressed Remove,
+  then the sheet's close X, and never came back.
+- **The search check pins the caption's integer MULTISET, not its set.** An
+  "emit the clause unconditionally" regression yields `3 MATCHES · SHOWING 3`,
+  whose integer *set* is indistinguishable from a correct caption's.
+- **`teacher/import.html` taught the wrong class-name format** — `e.g. 10R/Sc1`
+  where MRB-263 locks the band letter lowercase. `roster-import` find-or-creates
+  by EXACT name match, so the placeholder created a second class instead of
+  finding the teacher's own. Fixed.
+
+### Found and NOT fixed, deliberately
+
+- **`is_past_year` is computed and consumed nowhere.** Set at
+  `shared/teacher-data.js:886`; no reader in `teacher-live.js`,
+  `teacher-data.js`, `teacher_rulings.py`, `build_teacher_port.py`,
+  `teacher_behaviour.py`, or the built page. So MRB-261's "a past year is
+  read-only and must SAY so" is not applied on class detail: the shoutout
+  **composer** already writes on a past-year class unguarded, and the delete
+  inherits that. Pre-existing; suppressing a working control is a scope call.
+- **`digest.html` and `insights.html` ship Design's "Find a student" button
+  while `searchOpen` is pruned.** It moves the render counter, so the
+  dead-control check passes it, but nothing opens. Pre-existing.
+- **The `_ds` font faces are declared twice** — `../fonts/` (404s from
+  `/shared/`) and `/shared/fonts/` (resolves). The working one wins on
+  cascade order, and `student-ds.css` has the identical doubling and has been
+  live since 22 Aug. Cosmetic.
+
+### Swept clean
+
+Design's sample names/numbers/dates: none on any rendered page (`teacher_tells`
+green, plus an independent sweep). Draft/review language **by concept** across
+the whole published tree: the only hits are availability statements — *"This
+lesson has not been written yet"* — not claims that content is provisional.
+Staff brand ruling holds: no chevron of either drawing on any teacher page.
