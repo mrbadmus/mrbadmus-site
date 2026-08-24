@@ -11694,6 +11694,30 @@
       }
     }
 
+    /* ⊕ MRB-223 · THE ONE SELF-CHECK NOBODY WIRED.
+       `wireSort` and `wireSettles` both end by making their self-check's
+       options pressable; this one only ever unhid the block. Nothing
+       generic wires `.ks3-option` inside `[data-selfcheck]`, so on
+       `b3-04 when-diet-goes-wrong` — the only page that places this
+       instrument — the five buttons a student is asked to answer with have
+       been completely inert, taking not even `aria-pressed`.
+
+       ⚖️ IT MARKS NOTHING, and that is the whole design. `_self_check`
+       refuses a payload carrying an `answer` key: only the student knows
+       how many of their own judgements matched, and a right answer here
+       would put a mark on an activity option, which R3 forbids. So this
+       records the choice and does no more — same three lines as the other
+       two, deliberately. */
+    if (selfcheck) {
+      var scOpts = toArray(selfcheck.querySelectorAll(".ks3-option"));
+      each(scOpts, function (o) {
+        o.addEventListener("click", function () {
+          each(scOpts, function (b) { b.setAttribute("aria-pressed", "false"); });
+          o.setAttribute("aria-pressed", "true");
+        });
+      });
+    }
+
     each(panels, function (panel) {
       var picks = toArray(panel.querySelectorAll(".ks3-clinic-pick"));
       var btn = panel.querySelector("[data-clinic-reveal]");
