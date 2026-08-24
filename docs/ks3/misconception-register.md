@@ -1326,6 +1326,14 @@ turn the MRB-244 gate red rather than quietly breaking the pointer.
 | `ENER-17` | Radiation means the dangerous kind — anything called radiation can harm you. | `radiation-word-sort` | `radiation-word-sort` | `radiation` |
 | `ENER-18` | A blanket, a woolly hat or a coat is a source of warmth — insulation adds heat to what it wraps. | `s-hook` | `ice-trial` | `insulation` |
 | `ENER-19` | A machine that multiplies force gives you energy for free. | `s-hook` | `lever-bench` | `simple-machines` |
+| `ENER-20` | A calorie on a food label is the same calorie a physicist uses. | `s-think` | `s-think` | `energy-in-food` |
+| `ENER-21` | A higher-wattage appliance uses more electricity, so switching to a lower-wattage one always saves energy. | `s-hook` | `power-bench` | `power-ratings-in-watts` |
+| `ENER-22` | An appliance on standby is off, so it costs nothing. | `s-think` | `s-think` | `power-ratings-in-watts` |
+| `ENER-23` | The time in E = P × t goes in as it was given, so a 2000 W kettle for 3 minutes transfers 2000 × 3 = 6000 J. | `s-think` | `s-think` | `calculating-energy-transferred` |
+| `ENER-24` | A joule is a decent amount of energy, so a few thousand joules sounds about right for boiling a kettle. | `s-think` | `s-think` | `calculating-energy-transferred` |
+| `ENER-25` | A kilowatt-hour is a measure of power — it has kilowatt in the name. | `s-hook` | `kwh-rectangles` | `reading-a-fuel-bill` |
+| `ENER-26` | Switch everything off and the bill goes to zero. | `s-think` | `s-think` | `reading-a-fuel-bill` |
+| `ENER-27` | Renewable means clean, and non-renewable means polluting. | `s-hook` | `two-axis-grid` | `fuels-and-energy-resources` |
 
 ⊕ **`ENER-09` ONWARD ARE PHYSICS, IN THE SAME FAMILY.** The prefix table's ruling is
 explicit — *"A physics lane meeting an energy misconception adds to `ENER`; it does not
@@ -1342,6 +1350,43 @@ the block was never fourteen entries wide, and P1 mints eleven, `ENER-09`
 through `ENER-19`, one per belief her table actually confronts.
 
 ⊕ **`ENER-12`..`ENER-19` ADDED 24 Aug 2026 BY `p1-03`..`p1-08`.** Design's `NOTES-P1.md` §2 calls them `ENERGY-04`..`ENERGY-11`; the prefix is `ENER` and the numbering continues, for the reason above.
+
+⊕ **`ENER-20`..`ENER-27` ADDED 24 Aug 2026 BY P2 `p2-01`..`p2-05`.** Same
+ruling, same prefix, numbering continues. Design's `NOTES-P2.md` §1 predicts
+FOUR ids for the unit — her `ENERGY-01` re-confronted plus `ENERGY-12`,
+`ENERGY-13` and `ENERGY-14` — and the unit mints EIGHT. The difference is
+not a disagreement about the science; it is a date. Her notes are 15 Aug and
+her own 23 Aug audit (§2) then added "a second misconception quote" to all
+sixteen P1–P3 lessons. Those second quotes are what the extra four rows are,
+and each was checked for being a genuinely different belief rather than the
+first one re-dressed:
+
+  · `ENER-20` is a UNITS error (label kcal vs physicist's calorie), not an
+    energy-conservation one — a student can hold it while being perfectly
+    sound on stores.
+  · `ENER-22` is a factual claim about the appliance (standby draws nothing),
+    not the rate/total confusion of `ENER-21`.
+  · `ENER-24` is a belief about the SIZE of a joule, and it is what lets
+    `ENER-23` survive: a student who knew a joule was tiny would reject
+    6000 J for a kettle on sight.
+  · `ENER-26` is about the BILL (a fixed standing charge), not about the
+    unit misread of `ENER-25`.
+
+⊖ **TWO OF P2'S SECOND QUOTES MINT NOTHING, DELIBERATELY.** `p2-01`'s first
+quote ("you burn off the calories at the gym") is `ENER-09` re-confronted —
+its `reappears_in` list predicted exactly this arrival — and `p2-05`'s second
+quote ("electricity is a clean energy resource") is `ENER-10` doing work in a
+new situation: electricity is a PATHWAY, not a store and not a resource. Both
+follow P1's own precedent, where `p1-08`'s second quote ("a longer lever gets
+the job done with less energy") took no row because it was `ENER-19` wearing
+different clothes.
+
+⚠️ **`ENER-21` IS RE-CONFRONTED BY `p2-03` ON REAL APPLIANCES AND MINTS
+NOTHING THERE.** The fridge at 90 W outranking the oven at 2200 W is the same
+belief meeting arithmetic instead of a bench, and `r_appliance_bench` asserts
+that the inversion stays reachable — if a later edit to a wattage made
+every appliance rank in the same order as its rating, the bench would quietly
+agree with the belief `p2-02` spent a lesson killing.
 
 ⚠️ **`ENER-12` WAS ANTICIPATED BY THIS REGISTER BEFORE IT EXISTED.** The `PART-05` lock below names `ENER-12` as `p1-03`'s id while no such row was in the table — it was reserved in prose by the run that minted `ENER-09`/`ENER-10`, and `p1-03` has now filled it. The lock stands unchanged: `c1-03` and `p1-03` confront one underlying belief by two different instruments, a balance for mass and a thermometer for energy, and NEITHER may drop its confrontation on the grounds that the other covers it.
 

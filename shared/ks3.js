@@ -6937,6 +6937,1378 @@
 
 /* ═══ END P1 wiring ═══ */
 
+/* ═══ BEGIN P2 wiring ═══════════════════════════════════════════════════
+   P2's instrument families — *Energy at home*, the unit where energy
+   becomes a bill. Behaviour measured off Claude Design's delivered pages in
+   `docs/ks3/design-reference/p2/` — and for `p2-02`, off the DECODED
+   page, because the delivered one is a `__bundler` container whose markup
+   is a JSON string literal and reads back as zero of everything.
+
+   One marked block per unit, so a future lane can sequence behind this one.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  /* p2-01 `#s-burn` — burn a weighed sample under 20 g of water.
+
+     ⚖️ THE MEASURED VALUE IS DERIVED, NEVER READ FROM A TABLE.
+     `measured = (rise x water x shc / 1000) / consumed`, which reduces to
+     `kJ/g x capture x scatter`. That is what makes it come out at 30-46% of
+     the label every time without any row of the payload saying so.
+
+     ⚖️ SCATTER IS PER SAMPLE, NOT PER FRAME. It is re-rolled when the food
+     changes, when the mass changes and on "Fresh sample" — the three
+     moments a real experimenter starts a new sample — and NOT while a
+     sample burns, because a scatter that moved during a burn would make the
+     temperature go down as well as up.
+
+     ⚠️ THE BURN IS STEPPED, NOT ANIMATED. Design's page runs it off a
+     requestAnimationFrame loop; this steps it on a timer so that a student
+     on `prefers-reduced-motion` gets the same result with nothing moving.
+     Pressing again pauses. */
+  function wireCalorimeter(sec) {
+    var wrap = sec.querySelector("[data-calor]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-calor-gate]");
+    var bench = wrap.querySelector("[data-calor-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-calor-gopt]"));
+    var picks = toArray(wrap.querySelectorAll("[data-calor-food]"));
+    var slider = wrap.querySelector("[data-calor-mass]");
+    var massLabel = wrap.querySelector("[data-calor-masslabel]");
+    var burnBtn = wrap.querySelector("[data-calor-burn]");
+    var freshBtn = wrap.querySelector("[data-calor-fresh]");
+    var recBtn = wrap.querySelector("[data-calor-record]");
+    var body = wrap.querySelector("[data-calor-rows]");
+    var note = wrap.querySelector("[data-calor-note]");
+    var close = wrap.querySelector("[data-calor-close]");
+    var waterEl = wrap.querySelector("[data-calor-water]");
+    var flameEl = wrap.querySelector("[data-calor-flame]");
+    if (!slider || !picks.length) { return; }
+
+    var WATER = parseFloat(wrap.getAttribute("data-water")) || 20;
+    var SHC = parseFloat(wrap.getAttribute("data-shc")) || 4.18;
+    var START = parseFloat(wrap.getAttribute("data-start")) || 20;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
+
+    var food = 0;
+    var consumed = 0;
+    var burning = false;
+    var timer = null;
+    var runs = 0;
+    var scatter = 1;
+
+    each(picks, function (b, i) {
+      if (b.getAttribute("aria-pressed") === "true") { food = i; }
+    });
+
+    /* Deterministic per (food, mass) rather than Math.random, so a reload
+       does not silently rewrite a table the student has already recorded
+       rows into. Still varies run to run, which is the point of scatter. */
+    function roll() {
+      var m = Math.round(parseFloat(slider.value) * 100);
+      var n = (food * 977 + m * 6151) % 199;
+      scatter = 0.9 + (n / 199) * 0.2;
+    }
+
+    function kjPerG() {
+      var b = picks[food];
+      return parseFloat(b.getAttribute("data-kjg")) || 0;
+    }
+    function capture() {
+      var b = picks[food];
+      return parseFloat(b.getAttribute("data-capture")) || 0;
+    }
+
+    function riseNow() {
+      var kJ = consumed * kjPerG() * capture() * scatter;
+      return (kJ * 1000) / (WATER * SHC);
+    }
+
+    function measured() {
+      if (consumed <= 0) { return 0; }
+      return (riseNow() * WATER * SHC / 1000) / consumed;
+    }
+
+    function out(id) {
+      return wrap.querySelector('[data-calor-out="' + id + '"]');
+    }
+
+    function paint() {
+      var mass = parseFloat(slider.value) || 0;
+      var rise = riseNow();
+      var left = Math.max(0, mass - consumed);
+      var el;
+      if (massLabel) { massLabel.textContent = mass.toFixed(2) + " g"; }
+      el = out("temp");
+      if (el) { el.textContent = (START + rise).toFixed(1) + " °C"; }
+      el = out("rise");
+      if (el) { el.textContent = rise.toFixed(1) + " °C"; }
+      el = out("left");
+      if (el) { el.textContent = left.toFixed(2) + " g"; }
+      /* The water's colour tracks the rise on Design's own ramp. */
+      if (waterEl) {
+        waterEl.style.setProperty("--warm",
+          String(Math.min(1, rise / 60)));
+      }
+      if (flameEl) {
+        flameEl.setAttribute("data-lit", burning ? "1" : "0");
+      }
+      if (burnBtn) {
+        burnBtn.textContent = burning
+          ? "Pause the burn"
+          : (consumed > 0
+              ? (left <= 0 ? "Sample spent" : "Keep burning")
+              : "Light the sample");
+        burnBtn.disabled = left <= 0 && !burning;
+        burnBtn.setAttribute("aria-pressed", burning ? "true" : "false");
+      }
+      if (recBtn) { recBtn.disabled = consumed <= 0; }
+      if (note) {
+        note.textContent = consumed > 0
+          ? (picks[food].getAttribute("data-note") || "")
+          : "";
+      }
+      if (close) { setHidden(close, runs < TARGET); }
+      setCount(sec, runs);
+      markStage(sec, runs >= TARGET);   /* three_runs_recorded */
+    }
+
+    function stop() {
+      burning = false;
+      if (timer) { clearInterval(timer); timer = null; }
+      paint();
+    }
+
+    function step() {
+      var mass = parseFloat(slider.value) || 0;
+      var inc = mass / 12;
+      consumed = Math.min(mass, consumed + inc);
+      if (consumed >= mass) { stop(); return; }
+      paint();
+    }
+
+    function fresh() {
+      consumed = 0;
+      stop();
+      roll();
+      paint();
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        roll();
+        paint();
+      });
+    });
+
+    each(picks, function (btn, i) {
+      btn.addEventListener("click", function () {
+        food = i;
+        each(picks, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        fresh();
+      });
+    });
+
+    /* Both events. A range input fires `input` while dragging and `change`
+       on release, and a keyboard user gets only one of the two depending on
+       the browser. */
+    slider.addEventListener("input", fresh);
+    slider.addEventListener("change", fresh);
+
+    if (burnBtn) {
+      burnBtn.addEventListener("click", function () {
+        var mass = parseFloat(slider.value) || 0;
+        if (consumed >= mass) { return; }
+        if (burning) { stop(); return; }
+        burning = true;
+        paint();
+        /* Reduced motion still burns, in one step, so the readouts and the
+           table are reachable with nothing animating. */
+        if (REDUCED) {
+          consumed = mass;
+          stop();
+          return;
+        }
+        timer = setInterval(step, 220);
+      });
+    }
+
+    if (freshBtn) { freshBtn.addEventListener("click", fresh); }
+
+    if (recBtn) {
+      recBtn.addEventListener("click", function () {
+        if (consumed <= 0) { return; }
+        var tr = document.createElement("tr");
+        tr.innerHTML =
+          "<th scope=\"row\">" + (runs + 1) + "</th>" +
+          "<td>" + picks[food].textContent + "</td>" +
+          "<td>" + consumed.toFixed(2) + " g</td>" +
+          "<td>" + riseNow().toFixed(1) + " °C</td>" +
+          "<td>" + measured().toFixed(1) + " kJ/g</td>";
+        if (body) { body.appendChild(tr); }
+        runs += 1;
+        paint();
+      });
+    }
+
+    roll();
+    paint();
+  }
+
+  /* p2-02 `#s-bench` — the power bench, and the crossover.
+
+     ⚖️ THE CROSSOVER IS READ OFF THE MARKUP, WHICH DERIVED IT. The renderer
+     computes it from the two wattages and running times; nothing here
+     re-derives it and nothing authored it. So a later edit to a wattage
+     moves the marker and the readout together, or fails the build.
+
+     ⚠️ AN APPLIANCE STOPS WHEN ITS RUNNING TIME IS UP. The kettle's total
+     freezes at 3 minutes; the charger's keeps climbing. That freeze IS the
+     lesson — a bar that went on growing would make the race a tie. */
+  function wirePowerBench(sec) {
+    var wrap = sec.querySelector("[data-pbench]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-pbench-gate]");
+    var bench = wrap.querySelector("[data-pbench-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-pbench-gopt]"));
+    var runBtn = wrap.querySelector("[data-pbench-run]");
+    var resetBtn = wrap.querySelector("[data-pbench-reset]");
+    var jumps = toArray(wrap.querySelectorAll("[data-pbench-jump]"));
+    var nrgs = toArray(wrap.querySelectorAll("[data-pbench-nrg]"));
+    var pows = toArray(wrap.querySelectorAll("[data-pbench-pow]"));
+    var note = wrap.querySelector("[data-pbench-note]");
+    var close = wrap.querySelector("[data-pbench-close]");
+    if (!runBtn || !nrgs.length) { return; }
+
+    var CROSS = parseFloat(wrap.getAttribute("data-cross")) || 0;
+    var MAXT = parseFloat(wrap.getAttribute("data-maxt")) || 1;
+
+    /* Each appliance's wattage and running time come off its own power bar,
+       which the renderer labelled with them. */
+    var APPS = [];
+    var RUNS = {};
+    each(pows, function (el) {
+      var id = el.getAttribute("data-pbench-pow");
+      APPS.push({ id: id,
+                  w: parseFloat(el.getAttribute("data-w")) || 0 });
+      RUNS[id] = parseFloat(el.getAttribute("data-runs")) || 0;
+    });
+
+    var t = 0;
+    var running = false;
+    var timer = null;
+    var seen = false;
+
+    function energy(ap) { return ap.w * Math.min(t, RUNS[ap.id]); }
+
+    function clock(v) {
+      var h = Math.floor(v / 3600), m = Math.floor((v % 3600) / 60);
+      var sec2 = Math.floor(v % 60);
+      if (h) { return h + " h " + (m < 10 ? "0" : "") + m + " min"; }
+      if (m) { return m + " min " + (sec2 < 10 ? "0" : "") + sec2 + " s"; }
+      return sec2 + " s";
+    }
+
+    function fmt(j) {
+      if (j >= 1000) { return Math.round(j / 1000) + " kJ"; }
+      return Math.round(j) + " J";
+    }
+
+    function out(id) {
+      return wrap.querySelector('[data-pbench-out="' + id + '"]');
+    }
+
+    function paint() {
+      var top = 0;
+      each(APPS, function (ap) { top = Math.max(top, energy(ap)); });
+      each(nrgs, function (el) {
+        var id = el.getAttribute("data-pbench-nrg");
+        var ap = null;
+        each(APPS, function (x) { if (x.id === id) { ap = x; } });
+        var v = ap ? energy(ap) : 0;
+        el.style.setProperty("--h", String(top ? v / top : 0));
+      });
+      var el = out("clock");
+      if (el) { el.textContent = t > 0 ? clock(t) : "not started"; }
+      each(APPS, function (ap) {
+        var o = out(ap.id);
+        if (o) { o.textContent = fmt(energy(ap)); }
+      });
+      if (t >= CROSS && CROSS > 0) { seen = true; }
+      if (note) {
+        note.textContent = !t
+          ? ""
+          : (seen
+              ? "Past the crossover. The 15 W charger has now transferred "
+                + "more energy than the 2000 W kettle did all day."
+              : "The kettle's bar is over a hundred times taller and it has "
+                + "already stopped. Keep going.");
+      }
+      if (runBtn) {
+        runBtn.textContent = running ? "Pause" : (t > 0 ? "Keep running"
+                                                        : "Run the day");
+        runBtn.setAttribute("aria-pressed", running ? "true" : "false");
+      }
+      if (close) { setHidden(close, !seen); }
+      setCount(sec, seen ? 1 : 0);
+      markStage(sec, seen);          /* crossover_seen */
+    }
+
+    function stop() {
+      running = false;
+      if (timer) { clearInterval(timer); timer = null; }
+      paint();
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    runBtn.addEventListener("click", function () {
+      if (running) { stop(); return; }
+      if (t >= MAXT) { return; }
+      running = true;
+      paint();
+      /* Reduced motion still reaches the crossover, in one step, so the
+         rail stop is attainable with nothing animating. */
+      if (REDUCED) { t = MAXT; stop(); return; }
+      timer = setInterval(function () {
+        t = Math.min(MAXT, t + MAXT / 60);
+        if (t >= MAXT) { stop(); return; }
+        paint();
+      }, 180);
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        t = 0; seen = false; stop();
+      });
+    }
+
+    each(jumps, function (btn) {
+      btn.addEventListener("click", function () {
+        t = Math.min(MAXT, parseFloat(btn.getAttribute("data-pbench-jump")) || 0);
+        stop();
+      });
+    });
+
+    paint();
+  }
+
+  /* p2-02 `#s-sort` — power or energy, six times.
+
+     ⚖️ NEITHER BUTTON IS A MARK. R3: a control shows it was CHOSEN and
+     never whether it was right, and both stay enabled so a student can
+     change their mind. The note underneath is a statement about the ITEM
+     — Design writes one for each choice — and carries no colour. */
+  function wirePowerEnergySort(sec) {
+    var wrap = sec.querySelector("[data-pwsort]");
+    if (!wrap) { return; }
+    var items = toArray(wrap.querySelectorAll("[data-pwsort-item]"));
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || items.length;
+    if (!items.length) { return; }
+    var answered = {};
+
+    function paint() {
+      var n = 0, k;
+      for (k in answered) { if (answered[k]) { n += 1; } }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* all_six_sorted */
+    }
+
+    each(items, function (li) {
+      var id = li.getAttribute("data-pwsort-item");
+      var isPower = li.getAttribute("data-ispower") === "1";
+      var note = li.querySelector("[data-pwsort-note]");
+      var btns = toArray(li.querySelectorAll("[data-pwsort-btn]"));
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          var pick = b.getAttribute("data-pwsort-btn");
+          each(btns, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          var right = (pick === "power") === isPower;
+          if (note) {
+            note.textContent = right
+              ? li.getAttribute("data-right")
+              : li.getAttribute("data-wrong");
+            setHidden(note, false);
+          }
+          answered[id] = true;
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+
+
+  /* p2-03 `#s-bench` — one energy, both legal unit pairings.
+
+     ⚖️ ONE CALCULATION, PRINTED TWICE. The joules come from P x t in watts
+     and seconds; the kilowatt-hours are those joules divided by 3 600 000.
+     Computing them independently would let the two readouts disagree, and
+     a bench that disagrees with itself teaches that the pairings are two
+     different quantities rather than two ways of writing one. */
+  function wireApplianceBench(sec) {
+    var wrap = sec.querySelector("[data-abench]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-abench-gate]");
+    var bench = wrap.querySelector("[data-abench-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-abench-gopt]"));
+    var picks = toArray(wrap.querySelectorAll("[data-abench-app]"));
+    var slider = wrap.querySelector("[data-abench-mins]");
+    var tlabel = wrap.querySelector("[data-abench-timelabel]");
+    var presets = toArray(wrap.querySelectorAll("[data-abench-preset]"));
+    var note = wrap.querySelector("[data-abench-note]");
+    var close = wrap.querySelector("[data-abench-close]");
+    if (!slider || !picks.length) { return; }
+
+    var PRICE = parseFloat(wrap.getAttribute("data-price")) || 0.27;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
+    var app = 0;
+    var priced = {};
+
+    function watts() {
+      return parseFloat(picks[app].getAttribute("data-w")) || 0;
+    }
+
+    function out(id) {
+      return wrap.querySelector('[data-abench-out="' + id + '"]');
+    }
+
+    function timeLabel(mins) {
+      if (mins < 60) { return mins + " min"; }
+      var h = Math.floor(mins / 60), m = mins % 60;
+      return h + " h" + (m ? " " + m + " min" : "");
+    }
+
+    function paint() {
+      var mins = parseFloat(slider.value) || 1;
+      var joules = watts() * mins * 60;          /* W x s */
+      var kwh = joules / 3600000;                /* the SAME joules */
+      var el;
+      if (tlabel) { tlabel.textContent = timeLabel(mins); }
+      el = out("joules");
+      if (el) {
+        el.textContent = Math.round(joules).toLocaleString("en-GB") + " J";
+      }
+      el = out("kwh");
+      if (el) { el.textContent = kwh.toFixed(2) + " kWh"; }
+      el = out("cost");
+      if (el) { el.textContent = "£" + (kwh * PRICE).toFixed(2); }
+      var n = 0, k;
+      for (k in priced) { if (priced[k]) { n += 1; } }
+      if (note) {
+        note.textContent = n === 0
+          ? "Pick an appliance and set a realistic time. The two readouts "
+            + "are the same energy in both legal unit pairings."
+          : "Move the time and watch the answer reorder. Which appliance is "
+            + "\"worst\" depends entirely on the time setting, which is "
+            + "exactly why a rating on its own is not an answer.";
+      }
+      if (close) { setHidden(close, n < TARGET); }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);   /* three_appliances_priced */
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    each(picks, function (btn, i) {
+      btn.addEventListener("click", function () {
+        app = i;
+        each(picks, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        paint();
+      });
+    });
+
+    slider.addEventListener("input", paint);
+    slider.addEventListener("change", paint);
+
+    /* A preset is what MARKS an appliance as priced — it sets both the
+       appliance and a realistic time together, which is the pair the rail
+       stop is counting. */
+    each(presets, function (btn) {
+      btn.addEventListener("click", function () {
+        var i = parseInt(btn.getAttribute("data-app"), 10) || 0;
+        app = i;
+        each(picks, function (o, j) {
+          o.setAttribute("aria-pressed", j === i ? "true" : "false");
+        });
+        slider.value = btn.getAttribute("data-mins");
+        priced[String(i)] = true;
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+
+  /* p2-04 `#s-kwh` — four rectangles, one area.
+
+     The rectangles are drawn by the renderer, which derived their widths
+     and heights from the power and the time and asserted the area. All
+     this does is reveal the note for whichever one is chosen. */
+  function wireKwhRectangles(sec) {
+    var wrap = sec.querySelector("[data-kwh]");
+    if (!wrap) { return; }
+    var ways = toArray(wrap.querySelectorAll("[data-kwh-way]"));
+    var note = wrap.querySelector("[data-kwh-note]");
+    var close = wrap.querySelector("[data-kwh-close]");
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || ways.length;
+    if (!ways.length) { return; }
+    var seen = {};
+
+    function paint() {
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      if (close) { setHidden(close, n < TARGET); }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* all_four_seen */
+    }
+
+    each(ways, function (btn) {
+      btn.addEventListener("click", function () {
+        each(ways, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        if (note) {
+          var w = parseFloat(btn.getAttribute("data-w")) || 0;
+          var h = parseFloat(btn.getAttribute("data-h")) || 0;
+          /* The product is recomputed here rather than printed from a
+             string, so the number a student reads is the one the picture
+             was built from. */
+          note.textContent = (btn.getAttribute("data-note") || "")
+            + "  " + w + " W × " + h + " h = "
+            + ((w * h) / 1000).toFixed(2) + " kWh.";
+        }
+        seen[btn.getAttribute("data-kwh-way")] = true;
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p2-04 `#s-bill` — five products and a sum.
+
+     ⚖️ EVERY FIGURE IS COMPUTED. A row is kW x hours/day x days; the
+     amount due is those rows added plus the standing charge. Nothing here
+     is printed from an authored string, so a bill that did not add up
+     could not ship looking finished.
+
+     ⚖️ THE STANDING CHARGE IS REACHED BY NO SLIDER. Drag all five to zero
+     and the total stops at the standing charge, which is what kills
+     ENER-26. */
+  function wireBillBuilder(sec) {
+    var wrap = sec.querySelector("[data-bill]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-bill-gate]");
+    var panel = wrap.querySelector("[data-bill-panel]");
+    var gopts = toArray(wrap.querySelectorAll("[data-bill-gopt]"));
+    var sliders = toArray(wrap.querySelectorAll("[data-bill-slider]"));
+    var close = wrap.querySelector("[data-bill-close]");
+    if (!sliders.length) { return; }
+
+    var PRICE = parseFloat(wrap.getAttribute("data-price")) || 0.27;
+    var STANDING = parseFloat(wrap.getAttribute("data-standing")) || 0;
+    var DAYS = parseInt(wrap.getAttribute("data-days"), 10) || 30;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || sliders.length;
+    var moved = {};
+
+    function cell(id, col) {
+      return wrap.querySelector('[data-bill-cell="' + id + ':' + col + '"]');
+    }
+
+    function paint() {
+      var totalUnits = 0, el;
+      each(sliders, function (sl) {
+        var id = sl.getAttribute("data-bill-slider");
+        var w = parseFloat(sl.getAttribute("data-w")) || 0;
+        var per = parseFloat(sl.getAttribute("data-perhour")) || 1;
+        var unit = sl.getAttribute("data-unit") || "";
+        var raw = parseFloat(sl.value) || 0;
+        var hours = raw / per;                     /* hours per day */
+        var units = (w / 1000) * hours * DAYS;     /* kW x h x days  */
+        totalUnits += units;
+        var lab = wrap.querySelector('[data-bill-hours="' + id + '"]');
+        if (lab) { lab.textContent = raw + " " + unit; }
+        el = cell(id, "hours");
+        if (el) { el.textContent = hours.toFixed(2) + " h"; }
+        el = cell(id, "units");
+        if (el) { el.textContent = units.toFixed(1); }
+        el = cell(id, "cost");
+        if (el) { el.textContent = "£" + (units * PRICE).toFixed(2); }
+      });
+      var standingTotal = STANDING * DAYS;
+      el = wrap.querySelector("[data-bill-standing]");
+      if (el) { el.textContent = "£" + standingTotal.toFixed(2); }
+      el = wrap.querySelector("[data-bill-units]");
+      if (el) { el.textContent = totalUnits.toFixed(1); }
+      el = wrap.querySelector("[data-bill-cost]");
+      if (el) {
+        el.textContent = "£" + (totalUnits * PRICE + standingTotal).toFixed(2);
+      }
+      var n = 0, k;
+      for (k in moved) { if (moved[k]) { n += 1; } }
+      if (close) { setHidden(close, n < TARGET); }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* bill_built */
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(panel, false);
+        paint();
+      });
+    });
+
+    each(sliders, function (sl) {
+      function touch() {
+        moved[sl.getAttribute("data-bill-slider")] = true;
+        paint();
+      }
+      sl.addEventListener("input", touch);
+      sl.addEventListener("change", touch);
+    });
+
+    paint();
+  }
+
+
+  /* p2-05 `#s-sort` — eight resources, one question.
+
+     ⚖️ NEITHER BUTTON IS A MARK (R3). The note that appears is a statement
+     about the RESOURCE, and Design writes one note per resource rather
+     than one per verdict — it is the same sentence whichever way the
+     student sorted, because the sentence is information, not a mark. */
+  function wireRenewableSort(sec) {
+    var wrap = sec.querySelector("[data-rsort]");
+    if (!wrap) { return; }
+    var items = toArray(wrap.querySelectorAll("[data-rsort-item]"));
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || items.length;
+    if (!items.length) { return; }
+    var done = {};
+
+    function paint() {
+      var n = 0, k;
+      for (k in done) { if (done[k]) { n += 1; } }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* all_eight_sorted */
+    }
+
+    each(items, function (li) {
+      var id = li.getAttribute("data-rsort-item");
+      var note = li.querySelector("[data-rsort-note]");
+      var btns = toArray(li.querySelectorAll("[data-rsort-btn]"));
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          each(btns, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          if (note) {
+            note.textContent = li.getAttribute("data-note") || "";
+            setHidden(note, false);
+          }
+          done[id] = true;
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+
+  /* p2-05 `#s-grid` — renewability against one other axis at a time.
+
+     ⚖️ THE X POSITION NEVER MOVES. Renewable or finite is fixed for each
+     resource; only the axis up the SIDE changes. That is the lesson: one
+     question stays put while the other reshuffles underneath it, and if
+     both moved the student could not see which was which.
+
+     The rail stop needs all three axes looked at, because the claim is
+     that every axis gives a different ranking and one axis cannot show
+     that. */
+  function wireTwoAxisGrid(sec) {
+    var wrap = sec.querySelector("[data-grid2]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-grid2-axis]"));
+    var dots = toArray(wrap.querySelectorAll("[data-grid2-dot]"));
+    var alabel = wrap.querySelector("[data-grid2-axislabel]");
+    var hi = wrap.querySelector("[data-grid2-hi]");
+    var lo = wrap.querySelector("[data-grid2-lo]");
+    var note = wrap.querySelector("[data-grid2-note]");
+    var close = wrap.querySelector("[data-grid2-close]");
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || tabs.length;
+    if (!tabs.length || !dots.length) { return; }
+    var seen = {};
+
+    function show(btn) {
+      var id = btn.getAttribute("data-grid2-axis");
+      each(tabs, function (o) {
+        o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+      });
+      each(dots, function (d) {
+        var v = parseFloat(d.getAttribute("data-v-" + id));
+        d.style.setProperty("--y", String(isNaN(v) ? 0 : v));
+      });
+      if (alabel) { alabel.textContent = btn.textContent; }
+      if (hi) { hi.textContent = btn.getAttribute("data-hi") || ""; }
+      if (lo) { lo.textContent = btn.getAttribute("data-lo") || ""; }
+      if (note) { note.textContent = btn.getAttribute("data-note") || ""; }
+      seen[id] = true;
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      if (close) { setHidden(close, n < TARGET); }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* all_three_axes_seen */
+    }
+
+    each(tabs, function (btn) {
+      btn.addEventListener("click", function () { show(btn); });
+    });
+
+    show(tabs[0]);
+  }
+
+/* ═══ END P2 wiring ═══ */
+
+/* ═══ BEGIN P3 wiring ═══════════════════════════════════════════════════
+   P3's instrument families — *Describing motion*. Behaviour measured off
+   Claude Design's delivered pages in `docs/ks3/design-reference/p3/`.
+
+   One marked block per unit, so a future lane can sequence behind this one.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  /* p3-01 `#s-track` — two light gates. The timer runs BETWEEN the beams.
+
+     ⚖️ THE INSTRUMENT NEVER DIVIDES. The speed tile keeps the words the
+     renderer put in it and is never written to. That is the QUANTITATIVE
+     family pattern (NOTES-P3 §1 step 2): an instrument that hands over the
+     answer has removed the lesson.
+
+     ⚖️ THE SCATTER IS SYMMETRIC and is re-rolled per RELEASE, so three
+     runs at one setting genuinely differ — which is what rung 3's mean
+     is for. It is derived from the run count rather than Math.random so a
+     reload does not rewrite a table the student has already filled. */
+  function wireLightGates(sec) {
+    var wrap = sec.querySelector("[data-lgate]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-lgate-gate]");
+    var bench = wrap.querySelector("[data-lgate-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-lgate-gopt]"));
+    var ramps = toArray(wrap.querySelectorAll("[data-lgate-ramp]"));
+    var slider = wrap.querySelector("[data-lgate-gap]");
+    var gapLabel = wrap.querySelector("[data-lgate-gaplabel]");
+    var releaseBtn = wrap.querySelector("[data-lgate-release]");
+    var recordBtn = wrap.querySelector("[data-lgate-record]");
+    var body = wrap.querySelector("[data-lgate-rows]");
+    var close = wrap.querySelector("[data-lgate-close]");
+    var trolley = wrap.querySelector("[data-lgate-trolley]");
+    var beamB = wrap.querySelector("[data-lgate-beamb]");
+    if (!slider || !ramps.length) { return; }
+
+    var SCAT = parseFloat(wrap.getAttribute("data-scatter")) || 3;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
+    var ramp = 0, runs = 0, released = 0, lastT = null, timer = null;
+
+    each(ramps, function (b, i) {
+      if (b.getAttribute("aria-pressed") === "true") { ramp = i; }
+    });
+
+    function gap() { return parseFloat(slider.value) || 1.2; }
+    function v() {
+      return parseFloat(ramps[ramp].getAttribute("data-v")) || 1;
+    }
+
+    /* Symmetric, deterministic per release. */
+    function scatter() {
+      var n = (released * 733 + ramp * 191 + Math.round(gap() * 10) * 37) % 201;
+      return 1 + ((n / 200) * 2 - 1) * (SCAT / 100);
+    }
+
+    function out(id) {
+      return wrap.querySelector('[data-lgate-out="' + id + '"]');
+    }
+
+    function paint() {
+      var el = out("gap");
+      if (el) { el.textContent = gap().toFixed(2) + " m"; }
+      el = out("time");
+      if (el) {
+        el.textContent = lastT === null ? "—" : lastT.toFixed(2) + " s";
+      }
+      /* ⚠️ out("speed") is NEVER written to. See the note above. */
+      if (gapLabel) { gapLabel.textContent = gap().toFixed(2) + " m"; }
+      if (beamB) { beamB.style.left = (18 + gap() * 34) + "%"; }
+      if (recordBtn) { recordBtn.disabled = lastT === null; }
+      if (close) { setHidden(close, runs < TARGET); }
+      setCount(sec, runs);
+      markStage(sec, runs >= TARGET);      /* three_runs_recorded */
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    each(ramps, function (btn, i) {
+      btn.addEventListener("click", function () {
+        ramp = i;
+        each(ramps, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        lastT = null;
+        paint();
+      });
+    });
+
+    slider.addEventListener("input", function () { lastT = null; paint(); });
+    slider.addEventListener("change", function () { lastT = null; paint(); });
+
+    if (releaseBtn) {
+      releaseBtn.addEventListener("click", function () {
+        if (timer) { clearTimeout(timer); timer = null; }
+        released += 1;
+        lastT = gap() / (v() * scatter());
+        if (trolley) {
+          trolley.setAttribute("data-rolling", "1");
+          /* Reduced motion resolves instantly; the timer and the table
+             carry the whole result, so nothing is lost. */
+          var ms = REDUCED ? 0 : Math.min(1400, lastT * 700);
+          timer = setTimeout(function () {
+            trolley.setAttribute("data-rolling", "0");
+            timer = null;
+          }, ms);
+        }
+        paint();
+      });
+    }
+
+    if (recordBtn) {
+      recordBtn.addEventListener("click", function () {
+        if (lastT === null) { return; }
+        var tr = document.createElement("tr");
+        tr.innerHTML =
+          "<th scope=\"row\">" + (runs + 1) + "</th>" +
+          "<td>" + ramps[ramp].textContent + "</td>" +
+          "<td>" + gap().toFixed(2) + " m</td>" +
+          "<td>" + lastT.toFixed(2) + " s</td>";
+        if (body) { body.appendChild(tr); }
+        runs += 1;
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p3-01 `#s-compare` — three pairs, one dead heat.
+
+     ⚖️ THE ARITHMETIC APPEARS BEFORE THE REASON, so a student reads two
+     numbers rather than a verdict. Both panels stay once revealed and the
+     buttons stay enabled (R3). */
+  function wireComparePairs(sec) {
+    var wrap = sec.querySelector("[data-spair]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll("[data-spair-row]"));
+    var close = wrap.querySelector("[data-spair-close]");
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || rows.length;
+    if (!rows.length) { return; }
+    var done = {};
+
+    function paint() {
+      var n = 0, k;
+      for (k in done) { if (done[k]) { n += 1; } }
+      if (close) { setHidden(close, n < TARGET); }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* all_three_pairs_run */
+    }
+
+    each(rows, function (li) {
+      var id = li.getAttribute("data-spair-row");
+      var sums = li.querySelector("[data-spair-sums]");
+      var why = li.querySelector("[data-spair-why]");
+      var btns = toArray(li.querySelectorAll("[data-spair-pick]"));
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          each(btns, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          if (sums) {
+            sums.textContent = li.getAttribute("data-sums");
+            setHidden(sums, false);
+          }
+          if (why) {
+            why.textContent = li.getAttribute("data-why");
+            setHidden(why, false);
+          }
+          done[id] = true;
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+
+  /* p3-02 `#s-plot` — a grid of REAL BUTTONS.
+
+     ⚖️ A WRONG TAP GETS A LOCATION, NOT A MARK (R3). The message names
+     the coordinates the student actually chose, in the graph's own units,
+     and leaves the verdict to them.
+
+     ⚠️ Nothing here hit-tests a canvas. Every intersection is a button
+     with its own accessible name, which is what keeps the task reachable
+     by keyboard — a failure that would never show up in a screenshot. */
+  function wireGraphPlot(sec) {
+    var wrap = sec.querySelector("[data-gplot]");
+    if (!wrap) { return; }
+    var cells = toArray(wrap.querySelectorAll("[data-gplot-cell]"));
+    var seek = wrap.querySelector("[data-gplot-seek]");
+    var joinBtn = wrap.querySelector("[data-gplot-join]");
+    var line = wrap.querySelector("[data-gplot-line]");
+    var reads = toArray(wrap.querySelectorAll("[data-gplot-read]"));
+    var close = wrap.querySelector("[data-gplot-close]");
+    if (!cells.length) { return; }
+
+    var ORDER = (wrap.getAttribute("data-order") || "").split("|");
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || ORDER.length;
+    var next = 0, joined = false, answered = {};
+
+    function paint() {
+      if (seek) {
+        seek.textContent = next < ORDER.length
+          ? (ORDER[next].split(",")[0] + " s, "
+             + ORDER[next].split(",")[1] + " m")
+          : "all seven plotted";
+      }
+      if (joinBtn) { joinBtn.disabled = next < ORDER.length || joined; }
+      var n = 0, k;
+      for (k in answered) { if (answered[k]) { n += 1; } }
+      var ok = next >= TARGET;
+      if (close) { setHidden(close, !ok); }
+      setCount(sec, next);
+      markStage(sec, ok);              /* all_seven_plotted */
+    }
+
+    each(cells, function (btn) {
+      btn.addEventListener("click", function () {
+        var here = btn.getAttribute("data-gplot-cell");
+        if (next >= ORDER.length) { return; }
+        if (here === ORDER[next]) {
+          btn.setAttribute("data-plotted", "1");
+          next += 1;
+        } else if (seek) {
+          /* A location statement, not a mark. */
+          var p = here.split(",");
+          seek.textContent = "you chose " + p[0] + " s, " + p[1]
+            + " m · still looking for "
+            + ORDER[next].split(",")[0] + " s, "
+            + ORDER[next].split(",")[1] + " m";
+          return;
+        }
+        paint();
+      });
+    });
+
+    if (joinBtn) {
+      joinBtn.addEventListener("click", function () {
+        if (next < ORDER.length) { return; }
+        joined = true;
+        if (line) {
+          var tmax = 0, dmax = 0;
+          each(ORDER, function (o) {
+            tmax = Math.max(tmax, parseFloat(o.split(",")[0]));
+            dmax = Math.max(dmax, parseFloat(o.split(",")[1]));
+          });
+          var pts = [];
+          each(ORDER, function (o) {
+            var p = o.split(",");
+            pts.push((parseFloat(p[0]) / (tmax || 1) * 100).toFixed(2) + ","
+                     + (100 - parseFloat(p[1]) / (dmax || 1) * 100).toFixed(2));
+          });
+          line.innerHTML = '<polyline points="' + pts.join(" ")
+            + '" fill="none" stroke="currentColor" stroke-width="2"'
+            + ' vector-effect="non-scaling-stroke"></polyline>';
+        }
+        paint();
+      });
+    }
+
+    each(reads, function (li) {
+      var id = li.getAttribute("data-gplot-read");
+      var why = li.querySelector("[data-gplot-why]");
+      var opts = toArray(li.querySelectorAll("[data-gplot-opt]"));
+      each(opts, function (b) {
+        b.addEventListener("click", function () {
+          each(opts, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          if (why) {
+            why.textContent = li.getAttribute("data-why");
+            setHidden(why, false);
+          }
+          answered[id] = true;
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+
+  /* p3-02 `#s-match` — build the journey, watch the line draw itself.
+
+     ⚖️ THE LINE IS DRAWN AS THE WALKER MOVES (Law 9), never swapped in at
+     the end. Reduced motion draws the finished line at once and puts the
+     walker at its final position — a complete experience, not a lesser
+     one.
+
+     ⚖️ THE COMPARISON IS FACTUAL (R3): two end points as two numbers, and
+     no verdict attached to either. */
+  function wireJourneyWalk(sec) {
+    var wrap = sec.querySelector("[data-jwalk]");
+    if (!wrap) { return; }
+    var segs = toArray(wrap.querySelectorAll("[data-jwalk-seg]"));
+    var sendBtn = wrap.querySelector("[data-jwalk-send]");
+    var clearBtn = wrap.querySelector("[data-jwalk-clear]");
+    var walker = wrap.querySelector("[data-jwalk-walker]");
+    var read = wrap.querySelector("[data-jwalk-read]");
+    var line = wrap.querySelector("[data-jwalk-line]");
+    var tline = wrap.querySelector("[data-jwalk-targetline]");
+    var verdict = wrap.querySelector("[data-jwalk-verdict]");
+    var close = wrap.querySelector("[data-jwalk-close]");
+    if (!segs.length || !sendBtn) { return; }
+
+    var SECS = parseInt(wrap.getAttribute("data-secs"), 10) || 3;
+    var TARGET = (wrap.getAttribute("data-target") || "").split("|");
+    var N = parseInt(wrap.getAttribute("data-n"), 10) || TARGET.length;
+    var chosen = [];
+    var speeds = {};
+    var timer = null, sent = false;
+
+    each(segs, function (seg) {
+      each(toArray(seg.querySelectorAll("[data-jwalk-mode]")), function (b) {
+        speeds[b.getAttribute("data-jwalk-mode")] =
+          parseFloat(b.getAttribute("data-v")) || 0;
+      });
+    });
+
+    function points(list) {
+      var d = 0, pts = [[0, 0]];
+      each(list, function (id, i) {
+        d = Math.max(0, d + (speeds[id] || 0) * SECS);
+        pts.push([(i + 1) * SECS, d]);
+      });
+      return pts;
+    }
+
+    function draw(el, pts, upto) {
+      if (!el) { return; }
+      var tmax = N * SECS, dmax = 1;
+      each(points(TARGET), function (p) { dmax = Math.max(dmax, p[1]); });
+      each(pts, function (p) { dmax = Math.max(dmax, p[1]); });
+      var out = [];
+      each(pts, function (p, i) {
+        if (upto !== undefined && i > upto) { return; }
+        out.push((p[0] / tmax * 300).toFixed(1) + ","
+                 + (160 - p[1] / dmax * 150).toFixed(1));
+      });
+      el.setAttribute("points", out.join(" "));
+    }
+
+    function paint() {
+      draw(tline, points(TARGET));
+      if (close) { setHidden(close, !sent); }
+      setCount(sec, sent ? 1 : 0);
+      markStage(sec, sent);            /* target_matched */
+    }
+
+    each(segs, function (seg, i) {
+      var btns = toArray(seg.querySelectorAll("[data-jwalk-mode]"));
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          each(btns, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          chosen[i] = b.getAttribute("data-jwalk-mode");
+        });
+      });
+    });
+
+    sendBtn.addEventListener("click", function () {
+      var list = [];
+      var ok = true;
+      for (var i = 0; i < N; i++) {
+        if (!chosen[i]) { ok = false; break; }
+        list.push(chosen[i]);
+      }
+      if (!ok) {
+        if (read) { read.textContent = "Choose one mode for every block."; }
+        return;
+      }
+      if (timer) { clearInterval(timer); timer = null; }
+      var pts = points(list);
+      var step = 0;
+      function frame() {
+        draw(line, pts, step);
+        if (walker) {
+          var dmax = 1;
+          each(pts, function (p) { dmax = Math.max(dmax, p[1]); });
+          walker.style.left = (pts[step][1] / dmax * 88) + "%";
+        }
+        if (read) {
+          read.textContent = pts[step][1].toFixed(1) + " m from the start";
+        }
+        if (step >= pts.length - 1) {
+          if (timer) { clearInterval(timer); timer = null; }
+          sent = true;
+          if (verdict) {
+            var mine = pts[pts.length - 1][1];
+            var theirs = points(TARGET)[N][1];
+            verdict.textContent = "Your line ends at " + mine.toFixed(1)
+              + " m. The target ends at " + theirs.toFixed(1) + " m.";
+            setHidden(verdict, false);
+          }
+          paint();
+          return;
+        }
+        step += 1;
+      }
+      if (REDUCED) {
+        step = pts.length - 1;
+        frame();
+        return;
+      }
+      frame();
+      timer = setInterval(frame, 320);
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        if (timer) { clearInterval(timer); timer = null; }
+        if (line) { line.setAttribute("points", ""); }
+        if (verdict) { setHidden(verdict, true); }
+        if (read) { read.textContent = ""; }
+        if (walker) { walker.style.left = "0%"; }
+      });
+    }
+
+    paint();
+  }
+
+  /* p3-03 `#s-frames` — two cars, three viewpoints.
+
+     ⚖️ EVERY READING IS COMPUTED, as v − v_observer. One of the four is
+     always zero: the one belonging to the seat you are sitting in.
+
+     ⚠️ A CAR DOES NOT TURN ROUND WHEN THE VIEWPOINT CHANGES. Its drawn
+     ORIENTATION follows its GROUND velocity; its MOTION follows its
+     relative velocity. From car B's seat, car A can face right and drift
+     left. That is correct and deliberate (Design's flag 11) — do not
+     "fix" it. */
+  function wireRelativeFrames(sec) {
+    var wrap = sec.querySelector("[data-rframe]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-rframe-gate]");
+    var bench = wrap.querySelector("[data-rframe-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-rframe-gopt]"));
+    var picks = toArray(wrap.querySelectorAll("[data-rframe-obs]"));
+    var va = wrap.querySelector("[data-rframe-va]");
+    var vb = wrap.querySelector("[data-rframe-vb]");
+    var dirBtn = wrap.querySelector("[data-rframe-dir]");
+    var road = wrap.querySelector("[data-rframe-road]");
+    var still = wrap.querySelector("[data-rframe-still]");
+    var sent = wrap.querySelector("[data-rframe-sent]");
+    var close = wrap.querySelector("[data-rframe-close]");
+    var carA = wrap.querySelector('[data-rframe-car="a"]');
+    var carB = wrap.querySelector('[data-rframe-car="b"]');
+    if (!va || !vb) { return; }
+
+    var obs = "ground", same = dirBtn
+      && dirBtn.getAttribute("aria-pressed") === "true";
+    var seen = {};
+
+    function out(id) {
+      return wrap.querySelector('[data-rframe-out="' + id + '"]');
+    }
+
+    function paint() {
+      var a = parseFloat(va.value) || 0;
+      var b = (parseFloat(vb.value) || 0) * (same ? 1 : -1);
+      var vo = obs === "a" ? a : (obs === "b" ? b : 0);
+      var el;
+      function put(id, val) {
+        el = out(id);
+        if (el) { el.textContent = Math.abs(val).toFixed(1) + " m/s"; }
+        var w = wrap.querySelector('[data-rframe-outwrap="' + id + '"]');
+        if (w) {
+          w.setAttribute("data-live",
+            (obs === "ground" && (id === "a_ground" || id === "b_ground"))
+            || (obs === "a" && id === "b_from_a")
+            || (obs === "b" && id === "a_from_b") ? "1" : "0");
+        }
+      }
+      put("a_ground", a - 0);
+      put("b_ground", b - 0);
+      put("b_from_a", b - a);
+      put("a_from_b", a - b);
+
+      var lab = wrap.querySelector("[data-rframe-valabel]");
+      if (lab) { lab.textContent = a.toFixed(0) + " m/s"; }
+      lab = wrap.querySelector("[data-rframe-vblabel]");
+      if (lab) { lab.textContent = Math.abs(b).toFixed(0) + " m/s"; }
+      if (dirBtn) {
+        dirBtn.setAttribute("aria-pressed", same ? "true" : "false");
+        dirBtn.textContent = same ? "Same way" : "Opposite ways";
+      }
+      /* The road belongs to the GROUND, so it slides in a car's frame. */
+      if (road) { road.setAttribute("data-slide", vo ? "1" : "0"); }
+      /* Orientation follows the GROUND velocity. Motion follows the
+         relative one. See the note above — this is deliberate. */
+      if (carA) { carA.setAttribute("data-facing", a >= 0 ? "r" : "l"); }
+      if (carB) { carB.setAttribute("data-facing", b >= 0 ? "r" : "l"); }
+      if (still) {
+        still.textContent = obs === "ground"
+          ? "stationary here: the road"
+          : "stationary here: car " + obs.toUpperCase();
+      }
+      if (sent) {
+        sent.textContent = obs === "ground"
+          ? "From the roadside both cars are moving."
+          : ("From car " + obs.toUpperCase() + ", car "
+             + (obs === "a" ? "A" : "B") + " is parked and the road is "
+             + "sliding underneath it.");
+      }
+      seen[obs] = true;
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      if (close) { setHidden(close, n < picks.length); }
+      setCount(sec, n);
+      markStage(sec, n >= picks.length);   /* all_three_observers */
+    }
+
+    each(gopts, function (btn) {
+      btn.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+
+    each(picks, function (btn) {
+      btn.addEventListener("click", function () {
+        obs = btn.getAttribute("data-rframe-obs");
+        each(picks, function (o) {
+          o.setAttribute("aria-pressed", o === btn ? "true" : "false");
+        });
+        paint();
+      });
+    });
+
+    va.addEventListener("input", paint);
+    va.addEventListener("change", paint);
+    vb.addEventListener("input", paint);
+    vb.addEventListener("change", paint);
+    if (dirBtn) {
+      dirBtn.addEventListener("click", function () { same = !same; paint(); });
+    }
+
+    paint();
+  }
+
+  /* p3-03 `#s-pass` — four passes, add or subtract.
+
+     ⚖️ THE SUM COMES BEFORE THE REASON, so the student reads arithmetic
+     rather than a verdict. */
+  function wirePassingSpeeds(sec) {
+    var wrap = sec.querySelector("[data-pass]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll("[data-pass-row]"));
+    var close = wrap.querySelector("[data-pass-close]");
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || rows.length;
+    if (!rows.length) { return; }
+    var done = {};
+
+    function paint() {
+      var n = 0, k;
+      for (k in done) { if (done[k]) { n += 1; } }
+      if (close) { setHidden(close, n < TARGET); }
+      setCount(sec, n);
+      markStage(sec, n >= TARGET);      /* all_four_answered */
+    }
+
+    each(rows, function (li) {
+      var id = li.getAttribute("data-pass-row");
+      var sumEl = li.querySelector("[data-pass-sum]");
+      var whyEl = li.querySelector("[data-pass-why]");
+      var opts = toArray(li.querySelectorAll("[data-pass-opt]"));
+      each(opts, function (b) {
+        b.addEventListener("click", function () {
+          each(opts, function (o) {
+            o.setAttribute("aria-pressed", o === b ? "true" : "false");
+          });
+          if (sumEl) {
+            sumEl.textContent = li.getAttribute("data-sum");
+            setHidden(sumEl, false);
+          }
+          if (whyEl) {
+            whyEl.textContent = li.getAttribute("data-why");
+            setHidden(whyEl, false);
+          }
+          done[id] = true;
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+/* ═══ END P3 wiring ═══ */
+
+
+
+
+
   function setCount(sec, n, extra) {
     var el = sec && sec.querySelector("[data-count]");
     if (!el) { return; }
@@ -24788,6 +26160,24 @@
     each(root.querySelectorAll("[data-rwordblock]"), wireWasteSort);
     each(root.querySelectorAll("[data-planblock]"), wireWasteSort);
     // ═══ END P1 wiring ═══
+    // ═══ BEGIN P2 wiring ═══
+    each(root.querySelectorAll("[data-calorblock]"), wireCalorimeter);
+    each(root.querySelectorAll("[data-pbenchblock]"), wirePowerBench);
+    each(root.querySelectorAll("[data-pwsortblock]"), wirePowerEnergySort);
+    each(root.querySelectorAll("[data-abenchblock]"), wireApplianceBench);
+    each(root.querySelectorAll("[data-kwhblock]"), wireKwhRectangles);
+    each(root.querySelectorAll("[data-billblock]"), wireBillBuilder);
+    each(root.querySelectorAll("[data-rsortblock]"), wireRenewableSort);
+    each(root.querySelectorAll("[data-grid2block]"), wireTwoAxisGrid);
+    // ═══ END P2 wiring ═══
+    // ═══ BEGIN P3 wiring ═══
+    each(root.querySelectorAll("[data-lgateblock]"), wireLightGates);
+    each(root.querySelectorAll("[data-spairblock]"), wireComparePairs);
+    each(root.querySelectorAll("[data-gplotblock]"), wireGraphPlot);
+    each(root.querySelectorAll("[data-jwalkblock]"), wireJourneyWalk);
+    each(root.querySelectorAll("[data-rframeblock]"), wireRelativeFrames);
+    each(root.querySelectorAll("[data-passblock]"), wirePassingSpeeds);
+    // ═══ END P3 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
