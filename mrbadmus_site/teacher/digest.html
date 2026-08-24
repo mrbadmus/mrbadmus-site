@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly digest · MrBadmusAI</title>
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  GENERATED — do not edit. `python3 build_teacher_port.py`
+  ══════════════════════════════════════════════════════════════════════════
+
+  Digest, PORTED: Claude Design's own template and Design's own logic class,
+  rendered by shared/student-runtime.js. No React and none of Design's
+  `support.js` ships here — that was ruled on 20 Aug 2026 for the student
+  pages and this port follows it.
+
+  The markup is not retyped and neither is the behaviour. Both are extracted
+  from docs/ks3/design-reference/teacher/ by student_template.py, so the only
+  way this can differ from Design's file is if Design's file changed.
+
+  ⊕ THIS IS THE LIVE PAGE, as of 24 Aug 2026 (MRB-287). It follows that this
+  file is NOT hand-editable, and the warning above is not a formality: a fix
+  typed in here survives exactly until the next build. Changes to Design's
+  logic belong in teacher_rulings.py, changes to what the page renders belong
+  in shared/teacher-live.js, and changes to the markup belong to Design.
+
+  THERE IS NO DATA IN THIS FILE. Design's delivery is a SAMPLE — twelve
+  invented classes, fifty-four invented children and every mark on every
+  screen derived from an FNV hash of a class id. All of it has been lifted out
+  into `window.__MRB_DATA__`, and every read of it goes through `MRB_DATA(k)`
+  or `MRB_PICK(map, id)`, both of which THROW when what they ask for is
+  absent. So this page cannot show a teacher a class they do not teach: with
+  no data source loaded it renders nothing at all and says why. The data
+  arrives from teacher-live.js, and from nowhere else.
+
+  Its twin, digest-fixture.html, is this same file with two differences and no others — this
+  comment, and the script tags at the end, where it loads Design's own
+  extracted example values and mounts. That twin is what the gates drive,
+  which is how Design's sample can still be exercised in full without being
+  reachable from here.
+  ══════════════════════════════════════════════════════════════════════════
+-->
+<link rel="stylesheet" href="/shared/teacher-ds.css?v=fba5f719">
+<style>body{margin:0;background:var(--st-ground,#FBF3E6)}a{color:var(--ks3-accent-text);text-decoration:none}a:hover{color:var(--ks3-accent-hover)}button{font-family:inherit}#mrb-teacher-live-regions[hidden]{display:none}@media print{.noprint{display:none!important}}</style>
+</head>
+<body>
+<div id="mrb-teacher" style="background:var(--st-ground);min-height:100vh"></div>
+<script src="/shared/student-runtime.js?v=2ec8f6a8"></script>
+<script>window.__MRB_TPL__={"roots":[{"c":[{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css","rel":"stylesheet"},"i":1,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css","rel":"stylesheet"},"i":2,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css","rel":"stylesheet"},"i":3,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css","rel":"stylesheet"},"i":4,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css","rel":"stylesheet"},"i":5,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css","rel":"stylesheet"},"i":6,"t":"link"},{"a":{"src":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"},"i":7,"t":"script"},{"c":[{"t":"#","v":"\n    body { margin: 0; background: #FBF3E6; -webkit-font-smoothing: antialiased; }\n    * { box-sizing: border-box; }\n    a { color: #A93411; text-decoration: none; }\n    a:hover { color: #7F2408; text-decoration: underline; }\n    button { font-family: inherit; white-space: nowrap; }\n    input, textarea, select { font-family: inherit; }\n    @keyframes tin { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }\n    @keyframes shin { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }\n    @media print { .noprint { display: none !important; } }\n  "}],"i":8,"t":"style"}],"i":0,"t":"helmet"},{"a":{"class":"rd","data-mode":"ks3","style":{"parts":["--rowpad:",{"e":"rowPad"},";min-height:100vh;background:var(--st-ground);font-family:var(--st-ui);color:var(--st-ink);font-size:16.5px;line-height:1.5"]}},"c":[{"a":{"class":"noprint","style":"position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;height:62px;padding:0 26px;background:var(--st-paper);border-bottom:1px solid var(--st-rule)","data-port-region":"topbar"},"c":[{"a":{"style":"display:flex;align-items:center;gap:9px;cursor:pointer;flex:none"},"c":[{"a":{"style":"font:600 21px/1 var(--st-display);letter-spacing:-0.025em;color:var(--st-ink);white-space:nowrap"},"c":[{"t":"#","v":"MrBadmusAI"}],"i":12,"t":"span"}],"i":11,"on":"goClasses","t":"div"},{"a":{"style":"display:flex;align-items:center;gap:8px;padding-left:14px;border-left:1px solid var(--st-rule-soft);white-space:nowrap;overflow:hidden"},"c":[{"a":{"style":"font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":"Teacher"}],"i":14,"t":"span"},{"a":{"style":"font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-ink)"},"c":[{"t":"#","v":{"parts":[{"e":"crumb"}]}}],"i":15,"t":"span"}],"i":13,"t":"div"},{"a":{"style":"margin-left:auto;flex:none;display:flex;align-items:center;gap:9px;height:34px;padding:0 11px;background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer","type":"button"},"c":[{"a":{"aria-hidden":"true","fill":"none","height":"13","viewBox":"0 0 14 14","width":"13"},"c":[{"a":{"cx":"6","cy":"6","r":"4.2","stroke":"currentColor","stroke-width":"1.5"},"i":18,"t":"circle"},{"a":{"d":"M9.3 9.3L12 12","stroke":"currentColor","stroke-linecap":"round","stroke-width":"1.5"},"i":19,"t":"path"}],"i":17,"t":"svg"},{"a":{"style":"font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":"Find a student"}],"i":20,"t":"span"},{"a":{"style":"padding:3px 5px;font:500 11.5px/1.2 var(--st-mono);color:var(--st-caption);background:var(--st-num-well);border:1px solid var(--st-rule-soft);border-radius:5px"},"c":[{"t":"#","v":"/"}],"i":21,"t":"span"}],"hov":"border-color:var(--st-edge)","i":16,"on":"openSearch","t":"button"},{"a":{"aria-label":"Charts","style":"flex:none;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer;color:var(--st-ink)","type":"button"},"c":[{"a":{"aria-hidden":"true","fill":"none","height":"15","viewBox":"0 0 16 16","width":"15"},"c":[{"a":{"fill":"currentColor","height":"6","rx":"1","width":"3","x":"2","y":"8"},"i":24,"t":"rect"},{"a":{"fill":"currentColor","height":"10","rx":"1","width":"3","x":"6.5","y":"4"},"i":25,"t":"rect"},{"a":{"fill":"currentColor","height":"8","rx":"1","width":"3","x":"11","y":"6"},"i":26,"t":"rect"}],"i":23,"t":"svg"}],"hov":"border-color:var(--st-edge);color:var(--st-accent-text)","i":22,"on":"openInsights","t":"button"},{"a":{"style":"flex:none;padding:5px 8px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.16em;color:var(--st-caption);background:var(--st-num-well);border-radius:6px"},"c":[{"t":"#","v":""}],"i":27,"t":"span"},{"a":{"style":"flex:none;font:600 14.5px/1.2 var(--st-ui);color:var(--st-ink)"},"c":[{"t":"#","v":{"parts":[{"e":"teacher"}]}}],"i":28,"t":"span"},{"a":{"style":"flex:none;height:32px;padding:0 12px;font:600 14px/1.2 var(--st-ui);color:var(--st-muted);background:transparent;border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer","type":"button"},"c":[{"t":"#","v":"Sign out"}],"hov":"color:var(--st-ink);border-color:var(--st-edge)","i":29,"t":"button","on":"signOut"}],"i":10,"t":"div"},{"c":[{"a":{"style":"max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out","data-port-region":"digest"},"c":[{"a":{"class":"noprint","style":"display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer","type":"button"},"c":[{"a":{"aria-hidden":"true","fill":"none","height":"13","viewBox":"0 0 14 14","width":"13"},"c":[{"a":{"d":"M9 3L5 7l4 4","stroke":"currentColor","stroke-linecap":"round","stroke-linejoin":"round","stroke-width":"1.6"},"i":316,"t":"path"}],"i":315,"t":"svg"},{"t":"#","v":"\n      Back\n    "}],"hov":"color:var(--st-ink)","i":314,"on":"goBackFromDigest","t":"button"},{"a":{"style":"display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)"},"c":[{"c":[{"a":{"style":"font:500 12px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":""}],"i":319,"t":"div"},{"a":{"style":"margin:12px 0 0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)"},"c":[{"t":"#","v":{"parts":[{"e":"digestTitle"}]}}],"i":320,"t":"h1"},{"a":{"style":"margin-top:10px;font:400 16.5px/1.5 var(--st-ui);color:var(--st-muted)"},"c":[{"t":"#","v":{"parts":[{"e":"digestSub"}]}}],"i":321,"t":"div"}],"i":318,"t":"div"},{"a":{"class":"noprint","style":"height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer","type":"button"},"c":[{"t":"#","v":"Print"}],"hov":"background:var(--st-accent-hover)","i":322,"on":"doPrint","t":"button"}],"i":317,"t":"div"},{"a":{"style":"display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:18px"},"c":[{"as":"t","c":[{"a":{"style":"padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px"},"c":[{"a":{"style":"font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":{"parts":[{"e":"t.label"}]}}],"i":326,"t":"div"},{"a":{"style":"margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)"},"c":[{"t":"#","v":{"parts":[{"e":"t.value"}]}}],"i":327,"t":"div"},{"a":{"style":"margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)"},"c":[{"t":"#","v":{"parts":[{"e":"t.sub"}]}}],"i":328,"t":"div"}],"i":325,"t":"div"}],"e":"digestTiles","i":324,"t":"for"}],"i":323,"t":"div"},{"a":{"style":"margin:26px 0 12px;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)"},"c":[{"t":"#","v":{"parts":[{"e":"digestTableTitle"}]}}],"i":329,"t":"h2"},{"a":{"style":"background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden"},"c":[{"a":{"style":"display:grid;grid-template-columns:1.7fr 1fr 105px 105px 1.4fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)"},"c":[{"a":{"style":"padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":{"parts":[{"e":"digestColTitle"}]}}],"i":332,"t":"div"},{"a":{"style":"padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":"Submitted"}],"i":333,"t":"div"},{"a":{"style":"padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":"Mean"}],"i":334,"t":"div"},{"a":{"style":"padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":"On time"}],"i":335,"t":"div"},{"a":{"style":"padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)"},"c":[{"t":"#","v":"Needs a look"}],"i":336,"t":"div"}],"i":331,"t":"div"},{"as":"d","c":[{"a":{"style":"display:grid;grid-template-columns:1.7fr 1fr 105px 105px 1.4fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer"},"c":[{"a":{"style":"padding:var(--rowpad,14px 16px);display:flex;align-items:center;gap:9px;min-width:0"},"c":[{"a":{"style":"font:600 16.5px/1.25 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);white-space:normal;text-wrap:pretty"},"c":[{"t":"#","v":{"parts":[{"e":"d.code"}]}}],"i":340,"t":"span"},{"a":{"style":"flex:none;font:400 11.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-ghost)"},"c":[{"t":"#","v":{"parts":[{"e":"d.ks"}]}}],"i":341,"t":"span"}],"i":339,"t":"div"},{"a":{"style":"padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)"},"c":[{"t":"#","v":{"parts":[{"e":"d.sub"}]}}],"i":342,"t":"div"},{"a":{"style":"padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)"},"c":[{"t":"#","v":{"parts":[{"e":"d.mean"}]}}],"i":343,"t":"div"},{"a":{"style":"padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)"},"c":[{"t":"#","v":{"parts":[{"e":"d.ontime"}]}}],"i":344,"t":"div"},{"a":{"style":"padding:var(--rowpad,14px 16px);font:400 14.5px/1.3 var(--st-ui);color:var(--st-body)"},"c":[{"t":"#","v":{"parts":[{"e":"d.needs"}]}}],"i":345,"t":"div"}],"hov":"background:var(--st-note-bg)","i":338,"on":"d.open","t":"div"}],"e":"digestRows","i":337,"t":"for"}],"i":330,"t":"div"}],"i":313,"t":"div"}],"e":"isDigest","i":312,"t":"if"},{"c":[{"a":{"style":"position:fixed;left:50%;bottom:28px;z-index:80;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:13px 18px;background:var(--st-ink);border-radius:11px;box-shadow:var(--st-shadow-pop);animation:tin .2s ease-out","data-port-region":"toast"},"c":[{"a":{"style":"flex:none;width:7px;height:7px;border-radius:50%;background:var(--ks3-ok)"},"i":556,"t":"span"},{"a":{"style":"font:500 14.5px/1.3 var(--st-ui);color:var(--st-cream)"},"c":[{"t":"#","v":{"parts":[{"e":"toast"}]}}],"i":557,"t":"span"}],"i":555,"t":"div"}],"e":"hasToast","i":554,"t":"if"}],"i":9,"t":"div"}],"imports":{}};</script>
+<script>window.__MRB_BIND__=[{"k":"envBadge","p":[1,0,4,0]},{"k":"weekRangeLabel","p":[1,1,0,1,0,0,0]}];</script>
+<script>
+/* No data reaches this page except through here, and there is no
+   fallback. A missing key is a THROWN ERROR and a blank page, deliberately:
+   Design's delivery is a SAMPLE — twelve invented classes and fifty-four
+   invented children — and the alternative to a blank page is a teacher shown
+   a class they do not teach, with names that look real. */
+function MRB_DATA(k){var d=window.__MRB_DATA__;
+  if(!d||!(k in d))throw new Error('teacher page: no data for "'+k+'"');
+  return d[k];}
+/* Several of Design's methods look a value up PER CLASS — the score matrix,
+   the roster, the assignment list, one paper's question grid, one class's
+   weeks. The id is part of the question, so it is part of the error. */
+function MRB_PICK(mapKey, id){var m=MRB_DATA(mapKey);
+  if(!m||!(id in m))throw new Error('teacher page: no '+mapKey+' for "'+id+'"');
+  return m[id];}
+/* One query parameter, read once. `teacher-live.js` reads the same three
+   (`class`, `student`, `paper`) and derives the screen from the PATH, so
+   these two must not disagree about what a URL means. */
+function MRB_Q(name){
+  return new URLSearchParams(window.location.search).get(name) || '';}
+/* The sandbox thread. `teacher/classes.html` has always done this on every
+   card click; dropping it would send a teacher testing against the test
+   project back into production data one navigation later. */
+function MRB_ENV(){var c=window.MrBadmusConfig;
+  return (c&&c.environment==='test')?'test':'';}
+/* ⚠️ THE FILENAMES ARE THE CONTRACT. `teacher-live.js` maps the PATH back to a
+   screen (`SCREEN_BY_PAGE`) and prefetches only the grids that screen draws,
+   so a link to the wrong file is a page that stays pending for ever with
+   nothing in the console. The two maps are inverses and must stay so. */
+var MRB_PAGE = {classes:'classes.html', 'class':'class-detail.html',
+  student:'student-detail.html', marking:'assignment.html',
+  digest:'digest.html', 'import':'import.html', insights:'insights.html'};
+function MRB_GO(screen, params){
+  var f = MRB_PAGE[screen];
+  if(!f)throw new Error('teacher page: no page for screen "'+screen+'"');
+  var q = [], env = MRB_ENV(), k;
+  for(k in params){ if(params[k]!=null&&params[k]!=='')
+    q.push(encodeURIComponent(k)+'='+encodeURIComponent(params[k])); }
+  if(env)q.push('env='+env);
+  window.location.href = '/teacher/'+f+(q.length?('?'+q.join('&')):'');}
+/* Design's Back buttons chose between two screens from state. Six URLs later
+   the browser knows the real answer — and a page opened from a bookmark has no
+   state to consult. Falls through to the class list rather than being a dead
+   press. */
+function MRB_BACK(){if(window.history.length>1){window.history.back();return;}
+  MRB_GO('classes',{});}
+/* The composer opens on a template, and Design opens it on `3`. The six
+   templates are the DB enum now and their ids are strings, so `3` selects
+   nothing and looks like a rendering bug rather than a data one. */
+function MRB_FIRST_TEMPLATE(){var t=MRB_DATA('TEMPLATES');
+  return (t&&t[0])?t[0].id:'';}
+/* Which paper is "the newest marked one". Taken from teacher-live.js rather
+   than reimplemented: Design reaches for index 1 and assumes it exists and is
+   closed, which is true only when there is exactly one open paper. Two answers
+   to this question is how the page and the prefetch disagree about which grid
+   was fetched. */
+function MRB_NEWEST_MARKED(papers){
+  var L=window.MrBadmusTeacherLive;
+  if(L&&L.newestMarkedIdx)return L.newestMarkedIdx(papers||[]);
+  for(var i=0;i<(papers||[]).length;i++){
+    if(papers[i].when==='marked')return i;}
+  return -1;}
+/* "N late of M marked". ⚠️ AND THE UNKNOWNS ARE SHOWN, NOT HIDDEN. `is_late`
+   is NULL on every submission written before 22 Aug 2026 and on any with no
+   deadline, so "unknown" is a real population and not a rounding error. Folded
+   into "late" it overstates; folded into "on time" it understates; left out
+   entirely it is a number a teacher reads as a zero. */
+/* A matrix for NO CLASS. `renderVals` reads `matrixFor(k)` unconditionally on
+   every screen, and a teacher with no classes at all is a real first day
+   rather than an error — so the shape exists and every figure in it is empty.
+   Zero is NOT the same as empty here: `classMean: 0` would be a claim about
+   how a class did, and there is no class. */
+/* A class for NO CLASS. `renderVals` reads `k.code` in seven places, so a
+   null cannot travel: `crumb`, `backToClass`, `student.meta`, `insSub`,
+   `insScopeTabs`, `digestSub` and `chart.scopeLabel` all dereference it
+   unconditionally. An em dash and zeros, so the page draws itself with
+   nothing in it rather than throwing. */
+function MRB_NO_CLASS(){return {id:'',code:'—',subject:'',year:'',
+  ks:'',n:0,week:[0,0],last:'No activity yet',state:'empty'};}
+function MRB_EMPTY_MATRIX(){return {rows:[],cols:0,colSub:[],colMean:[],
+  colOnTime:[],colAsked:[],colLate:[],colLateUnknown:[],markedIdx:[],
+  studentAvg:{},markedSub:0,markedOnTime:0,markedLate:0,markedLateUnknown:0,
+  markedPct:null,classMean:null,byId:{}};}
+function MRB_LATE_LINE(late, unknown, total, noun){
+  var s = (late||0) + ' late of ' + (total||0) + ' ' + noun;
+  return unknown ? (s + ' · ' + unknown + ' timing unknown') : s;}
+/* "N on time", where UNKNOWN is neither. The companion to MRB_LATE_LINE and
+   the same ruling seen from the other side: `is_late` is NULL on every
+   submission written before 22 Aug 2026, so a paper can have thirteen
+   submissions and nothing known about the timing of any of them. Counting
+   those as on time flatters; counting them as late accuses; printing the raw
+   `colOnTime` prints 0 and tells a teacher that nobody was on time. When
+   nothing is known there is no answer, and an em dash is what "no answer"
+   looks like everywhere else on this dashboard. */
+function MRB_ONTIME_VALUE(onTime, late){
+  var known = (onTime||0) + (late||0);
+  return known ? String(onTime||0) : '—';}
+function MRB_ONTIME_SUB(onTime, late, unknown, noun){
+  var known = (onTime||0) + (late||0);
+  if(!known){ return (unknown||0)
+    ? ((unknown||0) + ' submission' + ((unknown||0) === 1 ? '' : 's') +
+       ', timing not recorded')
+    : 'Nothing submitted yet'; }
+  return MRB_LATE_LINE(late, unknown, known, noun || 'submitted');}
+
+/* == THE SHOUTOUT COMPOSER, WIRED =======================================
+
+   Design's composer and its bulk sheet both ended in `this.ping(...)`: a
+   confirmation of a write that never happened. The write path exists and
+   always did - `MrBadmusTeacherData.insertClassShoutout` - and these six
+   helpers are the whole of what the ported page needed to reach it.
+
+   WARNING: NOTHING HERE REJECTS. Every one of them resolves, with a count and
+   the first error, because the callers are Design's SYNCHRONOUS `renderVals`
+   closures: an unhandled rejection out of one is a console error a teacher
+   never sees, in front of a composer that still looks like it sent. */
+
+/* The signed-in teacher. `MrBadmusTeacherGuard` validates the JWT at boot and
+   hands `ctx.user` to `teacher-live.js`, which keeps only `ctx.profile` -
+   `first_name`, `role`, `school_id`, and no id. So the id is asked for again
+   here, once, and held. RLS enforces `author_id = auth.uid()`, so a wrong one
+   is refused by the database rather than written. */
+function MRB_AUTHOR_ID(){
+  if(MRB_AUTHOR_ID._id){return Promise.resolve(MRB_AUTHOR_ID._id);}
+  var g=window.MrBadmusTeacherGuard;
+  var sb=(g&&g.getClient)?g.getClient():null;
+  if(!sb){return Promise.reject(new Error('teacher page: no data layer'));}
+  return sb.auth.getUser().then(function(r){
+    var u=r&&r.data&&r.data.user;
+    if(!u||!u.id){throw new Error('teacher page: not signed in');}
+    MRB_AUTHOR_ID._id=u.id;
+    return u.id;});}
+
+/* What went wrong, in a sentence a teacher can act on. The two named branches
+   are the ones the hand-written composer already surfaced, kept word for word
+   in meaning: an RLS refusal is about access, a CHECK refusal is about the
+   message or the template. Anything else is "try again", because guessing
+   further would be putting words in the database's mouth. */
+function MRB_SHOUTOUT_WHY(e){
+  var m=(e&&e.message)||'';
+  if(/row-level security/i.test(m))
+    return "Couldn't send — you may have lost access to this class.";
+  if(/check constraint/i.test(m))
+    return "Couldn't send — the message is too long, or the template is " +
+           "not one this school uses.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't send — this page is not signed in. Reload and try " +
+           "again.";
+  return "Couldn't send the shoutout. Try again.";}
+
+/* `#compose-error` is the hand-written page's own validation line, carried
+   into this page as a live region - inside `#mrb-teacher-live-regions`, which
+   is `hidden`, and WITHOUT the stylesheet that used to lay it out. So it is
+   written here for the region to hold and it is NOT the visible surface; the
+   TOAST is, because the toast is the one notice surface Design drew. Stated
+   rather than implied: if Design ever draws an inline error in the composer,
+   this is the line to move onto it. */
+function MRB_COMPOSE_ERROR(msg){
+  var el=document.getElementById('compose-error');
+  if(!el){return;}
+  if(msg){el.hidden=false;el.textContent=msg;}
+  else{el.hidden=true;el.textContent='';}}
+
+/* Design's select and textarea are UNCONTROLLED, and `student-runtime` now
+   carries field values ACROSS a redraw on purpose - it had to, because every
+   keystroke schedules one. So clearing `s.note` clears the STATE and leaves
+   the typed text on screen. The DOM is cleared first, then the state. */
+function MRB_COMPOSE_RESET(){
+  var els=document.querySelectorAll('[data-compose-field]'), i;
+  for(i=0;i<els.length;i++){els[i].value='';}}
+
+/* N inserts, one per recipient, and an honest count back. Resolves
+   `{ok, fail, error}` - never rejects, and never reports a bare success. */
+function MRB_SEND_SHOUTOUTS(classId, ids, templateKey, message){
+  ids=ids||[];
+  var no=function(e){return Promise.resolve({ok:0,fail:ids.length||1,error:e});};
+  if(!classId){return no(new Error('teacher page: no class'));}
+  if(!ids.length){return no(new Error('teacher page: no recipient'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.insertClassShoutout){
+    return no(new Error('teacher page: no data layer'));}
+  return MRB_AUTHOR_ID().then(function(authorId){
+    return Promise.all(ids.map(function(rid){
+      return TD.insertClassShoutout({classId:classId, authorId:authorId,
+        recipientId:rid, templateKey:templateKey||null,
+        message:message||null})
+        .then(function(){return null;}, function(e){return e;});
+    })).then(function(res){
+      var errs=res.filter(function(e){return e;});
+      return {ok:ids.length-errs.length, fail:errs.length,
+              error:errs[0]||null};});
+  }, no);}
+
+/* The feed a teacher has just written to, re-read. `teacher-live.js` does not
+   memoise `FEED` - it is the one thing `base()` deliberately leaves out of
+   the cache, for exactly this - so `load()` returns the new row and the rest
+   of the page costs nothing. Resolves false where there is no live data
+   source, which is every fixture. */
+function MRB_REFRESH_FEED(classId){
+  var L=window.MrBadmusTeacherLive, D=window.__MRB_DATA__;
+  if(!L||!L.load||!classId||!D){return Promise.resolve(false);}
+  return L.load('class', {classId:classId}).then(function(d){
+    D.FEED = d.FEED; return true;}, function(){return false;});}
+var DCLogic = window.MrBadmusStudentRuntime.MrbLogic;
+var StreamableLogic = DCLogic;
+class Component extends DCLogic {
+  state = {
+    screen: 'digest',
+    classId: MRB_DATA('classId'), studentId: MRB_DATA('studentId'),
+    paperIdx: MRB_DATA('paperIdx'), weekIdx: 0,
+    ks: 'All', sort: 'code', modal: null, toast: '',
+    boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', search: '',
+    importStep: 1, digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
+    chartKind: 'submissions', chartScope: MRB_Q('class') || 'all'
+  };
+
+  HUE = ['#2F5CE0', '#A93411', '#0A6B36', '#5A31C0', '#7A5F00', '#2545A8'];
+
+  CLASSES = MRB_DATA('CLASSES');
+
+  TEMPLATES = MRB_DATA('TEMPLATES');
+
+  seed(str) {
+    let h = 2166136261;
+    const s = String(str);
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    return h >>> 0;
+  }
+  initials(name) {
+    const p = String(name).trim().split(/\s+/);
+    return ((p[0] || '')[0] || '') + ((p[1] || '')[0] || '');
+  }
+  hueFor(name) { return this.HUE[this.seed(name) % this.HUE.length]; }
+  dotsFor(sub) {
+    if (sub === 'Physics') return [{ w: 8, c: 'var(--ks3-physics)' }];
+    if (sub === 'Chemistry') return [{ w: 8, c: 'var(--ks3-chemistry)' }];
+    if (sub === 'Biology') return [{ w: 8, c: 'var(--ks3-biology)' }];
+    return [{ w: 3, c: 'var(--ks3-physics)' }, { w: 3, c: 'var(--ks3-chemistry)' }, { w: 3, c: 'var(--ks3-biology)' }];
+  }
+  ping(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: '' }), 2800);
+  }
+  klassById(id) { return this.CLASSES.filter(c => c.id === id)[0]; }
+  klass() {
+    const found = this.klassById(this.state.classId);
+    if (found) return found;
+    if (this.state.classId) {
+      throw new Error('teacher page: class "' + this.state.classId + '" is not one of this teacher\'s classes');
+    }
+    return this.CLASSES[0] || MRB_NO_CLASS();
+  }
+
+  /* ── ONE seeded score matrix per class (student x paper, marks out of 8).
+     Every average on every screen is derived from this: a student's avg is
+     the mean of their row, a paper's mean is the mean of its column, the
+     class mean is the mean of the marked columns, the digest mean is the
+     mean of the class means. No second source of truth. ── */
+  matrixFor(k) {
+    if (!k || !k.id) return MRB_EMPTY_MATRIX();
+    return MRB_PICK('MATRIX', k.id);
+  }
+
+  rosterFor(k) {
+    if (!k || !k.id) return [];
+    return MRB_PICK('ROSTER', k.id);
+  }
+
+  papersFor(k) {
+    if (!k || !k.id) return [];
+    return MRB_PICK('PAPERS', k.id);
+  }
+
+  /* The term, newest week first: index 0 is the open week, 11 is as far back
+     as the class history goes. Every week owns one assignment column. */
+  weeks() {
+    const k = this.klass();
+    return (k && k.id) ? MRB_PICK('WEEKS', k.id) : [];
+  }
+  rail() { return document.querySelector('[data-rail="weeks"]'); }
+  /* The strip runs oldest to newest, so it opens parked on this week. */
+  snapWeekRail() {
+    const snap = () => {
+      const el = this.rail();
+      if (!el) return;
+      if (!this.state.weekIdx) { el.scrollLeft = el.scrollWidth; return; }
+      const chip = el.querySelector('[data-week="' + this.state.weekIdx + '"]');
+      if (chip) el.scrollLeft = Math.max(0, chip.offsetLeft - (el.clientWidth - chip.offsetWidth) / 2);
+    };
+    requestAnimationFrame(snap);
+    setTimeout(snap, 90);
+  }
+  /* ⊕ MRB-287 — THE COLD LOAD. Seven URLs mean the class page is
+     reached without `openClass` ever running. See teacher_rulings. */
+  componentDidMount() { this.snapWeekRail(); }
+  componentDidUpdate() {
+    const el = this.rail();
+    if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) {
+      this.snapWeekRail();
+    }
+  }
+  openClass(patch) { this.setState({ screen: 'class', weekIdx: 0, ...patch }, () => this.snapWeekRail()); }
+  pickWeek(i) {
+    this.setState({ weekIdx: i }, () => {
+      const el = this.rail();
+      if (!el) return;
+      const chip = el.querySelector('[data-week="' + i + '"]');
+      if (!chip) return;
+      const left = chip.offsetLeft, right = left + chip.offsetWidth;
+      if (left < el.scrollLeft + 8) el.scrollTo({ left: Math.max(0, left - 14), behavior: 'smooth' });
+      else if (right > el.scrollLeft + el.clientWidth - 8) el.scrollTo({ left: right - el.clientWidth + 14, behavior: 'smooth' });
+    });
+  }
+  weekIdxFor(k) {
+    const n = this.papersFor(k).length;
+    if (!n) return 0;
+    return Math.min(Math.max(0, this.state.weekIdx || 0), n - 1);
+  }
+
+  /* Per-paper question grid, also derived from the matrix: a student's marks
+     decide how many cells are correct, question difficulty decides which. So
+     the row marks, the question percentages and the paper mean all agree. */
+  gridFor(k, pIdx) {
+    if (!k || !k.id) return null;
+    var g = MRB_PICK('GRID', k.id + ':' + pIdx);
+    return g || null;
+  }
+
+  BANDS = [
+    { label: '0–39', lo: 0, hi: 39 },
+    { label: '40–54', lo: 40, hi: 54 },
+    { label: '55–69', lo: 55, hi: 69 },
+    { label: '70–84', lo: 70, hi: 84 },
+    { label: '85–100', lo: 85, hi: 100 }
+  ];
+  CHART_KINDS = [
+    { id: 'submissions', label: 'Submissions' },
+    { id: 'means', label: 'Class means' },
+    { id: 'spread', label: 'Score spread' },
+    { id: 'ontime', label: 'On time' },
+    { id: 'questions', label: 'Question difficulty' },
+    { id: 'engagement', label: 'Engagement' }
+  ];
+
+  colsFrom(items, cap) {
+    const max = cap || Math.max.apply(null, items.map(i => i.raw).concat([1]));
+    return items.map(i => ({
+      label: i.label,
+      value: i.value,
+      note: i.note || '',
+      pct: Math.round((i.raw / (max || 1)) * 100),
+      fill: i.flag ? 'var(--st-accent)' : (i.fill || 'var(--st-hatch-b)'),
+      labelFg: i.flag ? 'var(--st-accent-text)' : 'var(--st-caption)'
+    }));
+  }
+  bucketsOf(rows) {
+    return {
+      today: rows.filter(r => r.hours < 24).length,
+      week: rows.filter(r => r.hours >= 24 && r.hours < 168).length,
+      stale: rows.filter(r => r.hours >= 168).length
+    };
+  }
+
+  /* Every chart reads the same class matrix the tables read, so a chart can
+     never disagree with the screen a teacher clicked through from. */
+  chartFor(kind, scope) {
+    const all = scope === 'all';
+    const live = this.CLASSES.filter(c => c.state === 'live');
+    const k = all ? null : (this.klassById(scope) || this.CLASSES[3]);
+    const mx = (c) => this.matrixFor(c);
+    const tile = (label, value, sub) => ({ label, value: String(value), sub: sub || '' });
+    const base = { type: 'bars', title: '', note: '', tiles: [], rows: [], cols: [], stacks: [], legend: [] };
+
+    if (kind === 'means') {
+      if (all) {
+        const raw = live.map(c => ({ code: c.code, ks: c.ks, mean: mx(c).classMean || 0 }));
+        if (!raw.length) { return { ...base, title: 'Class means, marked work', note: 'No class has marked work yet' }; }
+        const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));
+        const below = raw.filter(r => r.mean < cohort).length;
+        const sorted = raw.slice().sort((a, b) => b.mean - a.mean);
+        return { ...base, title: 'Class means, marked work', tiles: [
+          tile('Cohort mean', cohort + '%', 'Mean of ' + raw.length + ' class means'),
+          tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
+          tile('Lowest', sorted[sorted.length - 1].code + ' · ' + sorted[sorted.length - 1].mean + '%', '')
+        ], note: below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',
+          rows: sorted.map(r => ({ label: r.code, sub: r.ks + (r.mean < cohort ? ' · below cohort' : ''), value: r.mean + '%', pct: r.mean, fill: r.mean < cohort ? 'var(--st-accent)' : 'var(--st-hatch-b)', })) };
+      }
+      const m = mx(k);
+      const ps = this.papersFor(k).slice().sort((a, b) => b.idx - a.idx).filter(p => p.when === 'marked' && m.colMean[p.idx] != null);
+      const means = ps.map(p => m.colMean[p.idx]);
+      if (!ps.length) { return { ...base, title: k.code + ' — mean by assignment', note: 'Nothing marked yet' }; }
+      const best = ps[means.indexOf(Math.max.apply(null, means))];
+      const worst = ps[means.indexOf(Math.min.apply(null, means))];
+      return { ...base, type: 'cols', title: k.code + ' — mean by assignment',
+        cols: this.colsFrom(ps.map(p => ({ label: p.due.replace('Due ', ''), value: m.colMean[p.idx] + '%', raw: m.colMean[p.idx], flag: p.idx === worst.idx })), 100),
+        tiles: [tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Excluded', 'Not marked yet')],
+        note: 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };
+    }
+
+    if (kind === 'spread') {
+      const src = all ? live : [k];
+      const avgs = src.reduce((a, c) => a.concat(this.rosterFor(c).map(r => r.avg).filter(v => v != null)), []);
+      const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));
+      const low = bands.filter(b => b.lo < 55).reduce((a, b) => a + b.n, 0);
+      const high = bands.filter(b => b.lo >= 70).reduce((a, b) => a + b.n, 0);
+      const ranked = bands.slice().sort((a, b) => b.n - a.n);
+      const modeTie = ranked.length > 1 && ranked[1].n === ranked[0].n;
+      return { ...base, type: 'cols', title: (all ? 'Score spread, all classes' : k.code + ' — score spread'),
+        cols: this.colsFrom(bands.map(b => ({ label: b.label, value: String(b.n), raw: b.n, flag: b.lo < 55 }))),
+        tiles: [tile('Students', avgs.length, 'With marked work'), tile('Below 55%', low, 'Bottom two bands'), tile('70% or above', high, 'Top two bands')],
+        note: modeTie
+          ? low + ' of ' + avgs.length + ' students sit below 55%, ' + high + ' at 70% or above'
+          : 'Most students sit in the ' + ranked[0].label + ' band (' + ranked[0].n + ' of ' + avgs.length + ')' };
+    }
+
+    if (kind === 'ontime') {
+      const src = all
+        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedOnTime + mx(c).markedLate }))
+        : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colOnTime[p.idx] + mx(k).colLate[p.idx] }));
+      const on = src.reduce((a, x) => a + x.on, 0);
+      const tot = src.reduce((a, x) => a + x.tot, 0);
+      const worst = src.slice().sort((a, b) => (a.tot ? a.on / a.tot : 1) - (b.tot ? b.on / b.tot : 1))[0];
+      return { ...base, type: 'stack', title: (all ? 'On time vs late, marked work' : k.code + ' — on time by assignment'),
+        stacks: src.map(x => {
+          /* No known deadline anywhere in this row is not 0% on time.
+             Left as Design drew it the bar renders 100% accent, which
+             is the bar for a class where everybody was late. */
+          if (!x.tot) {
+            return { label: x.label, sub: x.sub,
+              right: '— · timing not recorded',
+              segs: [{ pct: 100, fill: 'var(--st-rule-soft)' }] };
+          }
+          const pct = Math.round((x.on / x.tot) * 100);
+          return { label: x.label, sub: x.sub, right: pct + '% · ' + (x.tot - x.on) + ' late',
+            segs: [{ pct, fill: 'var(--ks3-ok)' }, { pct: 100 - pct, fill: 'var(--st-accent)' }] };
+        }),
+        legend: [{ label: 'On time', fill: 'var(--ks3-ok)' }, { label: 'Late', fill: 'var(--st-accent)' }],
+        tiles: [tile('On time', tot ? Math.round((on / tot) * 100) + '%' : '—',
+                     tot ? 'Of ' + tot + ' with a recorded deadline'
+                         : 'No marked submission has a recorded deadline'),
+                tile('Late', tot ? tot - on : '—', 'Still marked'),
+                tile('Open work', 'Excluded', 'Not due yet')],
+        note: (worst && worst.tot) ? 'Weakest: ' + worst.label + ' at ' + Math.round((worst.on / worst.tot) * 100) + '% on time' : '' };
+    }
+
+    if (kind === 'questions') {
+      if (all) {
+        const rows = live.map(c => {
+          const gi = MRB_NEWEST_MARKED(this.papersFor(c));
+          const g = gi < 0 ? null : this.gridFor(c, gi);
+          const scored = g ? g.qpct.filter(v => v != null) : [];
+          if (!scored.length) { return null; }
+          const min = Math.min.apply(null, scored);
+          const qi = g.qpct.indexOf(min);
+          const st = g.stems[qi] || { id: '—', text: '' };
+          return { label: c.code, sub: st.id + ' · ' + st.text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi };
+        }).filter(r => r);
+        if (!rows.length) { return { ...base, title: 'Weakest question per class, last marked set', note: 'No class has a marked paper yet' }; }
+        const tally = {};
+        rows.forEach(r => { tally[r.qi] = (tally[r.qi] || 0) + 1; });
+        const keys = Object.keys(tally).sort((a, b) => tally[b] - tally[a]);
+        const uniqueTop = keys.length === 1 || tally[keys[0]] > tally[keys[1]];
+        const worst = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+        const under50 = rows.filter(r => r.pct < 50).length;
+        return { ...base, title: 'Weakest question per class, last marked set', rows,
+          tiles: [tile('Classes', rows.length, 'With marked work'), tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
+            uniqueTop
+              ? tile('Most common', this.STEMS[keys[0]].id, this.STEMS[keys[0]].text)
+              : tile('Weak points', keys.length + ' questions', 'No single common gap')],
+          note: uniqueTop
+            ? this.STEMS[keys[0]].text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
+            : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + ' classes fall below 50% on theirs' };
+      }
+      const gi = MRB_NEWEST_MARKED(this.papersFor(k));
+      const g = gi < 0 ? null : this.gridFor(k, gi);
+      const p = gi < 0 ? null : this.papersFor(k)[gi];
+      const scored = g ? g.qpct.filter(v => v != null) : [];
+      if (!g || !p || !scored.length) {
+        return { ...base, type: 'cols', title: k.code + ' — question difficulty', note: g ? 'Nothing on this paper was machine-marked' : 'No marked paper yet' };
+      }
+      const min = Math.min.apply(null, scored);
+      const max = Math.max.apply(null, scored);
+      const qi = g.qpct.indexOf(min);
+      const lowest = g.stems[qi] || { id: '—', text: '' };
+      return { ...base, type: 'cols', title: k.code + ' — ' + p.title,
+        cols: this.colsFrom(g.stems.map((q, i) => ({ label: q.id, value: g.qpct[i] == null ? 'Not marked' : g.qpct[i] + '%', raw: g.qpct[i] == null ? 0 : g.qpct[i], flag: g.qpct[i] != null && g.qpct[i] === min })), 100),
+        tiles: [tile('Paper mean', mx(k).colMean[gi] == null ? '—' : mx(k).colMean[gi] + '%', g.submitted + ' of ' + (mx(k).colAsked[gi] || 0) + ' submitted'),
+          tile('Lowest', lowest.id + ' · ' + min + '%', lowest.text), tile('Highest', max + '%', 'Best answered question')],
+        note: lowest.text ? 'Reteach ' + lowest.text.toLowerCase() + ' — ' + min + '% of the class got it' : '' };
+    }
+
+    if (kind === 'engagement') {
+      if (all) {
+        const totals = { today: 0, week: 0, stale: 0 };
+        const stacks = live.map(c => {
+          const b = this.bucketsOf(this.rosterFor(c));
+          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;
+          const t = c.n || 1;
+          return { label: c.code, sub: c.ks, right: b.today + ' today · ' + b.stale + ' cold',
+            segs: [{ pct: Math.round((b.today / t) * 100), fill: 'var(--ks3-ok)' }, { pct: Math.round((b.week / t) * 100), fill: 'var(--st-hatch-b)' }, { pct: Math.round((b.stale / t) * 100), fill: 'var(--st-rule-strong)' }] };
+        });
+        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,
+          legend: [{ label: 'Today', fill: 'var(--ks3-ok)' }, { label: 'This week', fill: 'var(--st-hatch-b)' }, { label: '2+ weeks', fill: 'var(--st-rule-strong)' }],
+          tiles: [tile('Active today', totals.today, 'Across ' + live.length + ' classes'), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],
+          note: totals.stale + ' students have not opened anything for two weeks or more' };
+      }
+      const rows = this.rosterFor(k);
+      const b = this.bucketsOf(rows);
+      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);
+      return { ...base, type: 'cols', title: k.code + ' — last seen',
+        cols: this.colsFrom([{ label: 'Today', value: String(b.today), raw: b.today }, { label: 'This week', value: String(b.week), raw: b.week }, { label: '2+ weeks', value: String(b.stale), raw: b.stale, flag: b.stale > 0 }]),
+        tiles: [tile('Students', k.n, 'On the roster'), tile('Active today', b.today, ''), tile('2+ weeks', b.stale, cold.length ? 'Worth chasing' : 'None')],
+        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Everyone has opened something this week' };
+    }
+
+    if (all) {
+      const rows = live.map(c => {
+        const m = mx(c);
+        const asked = m.colAsked[0] || 0;
+        const pct = asked ? Math.round((m.colSub[0] / asked) * 100) : 0;
+        return { label: c.code, sub: c.ks, value: m.colSub[0] + '/' + asked, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+      });
+      const subs = live.reduce((a, c) => a + mx(c).colSub[0], 0);
+      const seats = live.reduce((a, c) => a + c.n, 0);
+      const done = live.filter(c => mx(c).colSub[0] === c.n).length;
+      const low = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+      return { ...base, title: 'Submissions this week', rows,
+        tiles: [tile('Submitted', subs + '/' + seats, 'Across ' + live.length + ' classes'), tile('Outstanding', seats - subs, 'Students yet to submit'), tile('Everyone in', done + '/' + live.length, 'Classes complete')],
+        note: low ? 'Lowest return: ' + low.label + ' at ' + low.pct + '% (' + low.value + ')' : '' };
+    }
+    const m = mx(k);
+    const rows = this.papersFor(k).map(p => {
+      const asked = m.colAsked[p.idx] || 0;
+      const pct = asked ? Math.round((m.colSub[p.idx] / asked) * 100) : 0;
+      return { label: p.title, sub: (p.when === 'upcoming' ? 'Open · due ' + p.due.replace('Due ', '') : 'Marked · due ' + p.due), value: p.sub, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+    });
+    const lowP = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+    return { ...base, title: k.code + ' — submissions by assignment', rows,
+      tiles: [tile('This week', m.colSub[0] + '/' + k.n, 'Open assignment'), tile('Outstanding', k.n - m.colSub[0], 'Students yet to submit'), tile('Assignments', rows.length, 'Set this term')],
+      note: lowP ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };
+  }
+
+  paper() {
+    const list = this.papersFor(this.klass());
+    const i = this.state.paperIdx;
+    if (i == null || i === '') {
+      const n = window.MrBadmusTeacherLive
+        ? window.MrBadmusTeacherLive.newestMarkedIdx(list) : -1;
+      return n >= 0 ? list[n] : (list[0] || null);
+    }
+    if (!list[Number(i)]) {
+      throw new Error('teacher page: assignment ' + i + ' is not in this class');
+    }
+    return list[Number(i)];
+  }
+  student() {
+    const rows = this.rosterFor(this.klass());
+    const found = rows.filter(r => r.id === this.state.studentId)[0];
+    if (found) return found;
+    if (this.state.studentId) {
+      throw new Error('teacher page: student "' + this.state.studentId + '" is not on this class\'s roster');
+    }
+    return null;
+  }
+  meanOf(k) { return this.matrixFor(k).classMean; }
+  cellStyle(v) {
+    if (v === 1) return { w: 9, h: 9, r: '50%', bg: 'var(--ks3-ok)', bd: 'none' };
+    if (v === 0) return { w: 9, h: 9, r: '50%', bg: 'transparent', bd: '1.5px solid var(--st-rule-strong)' };
+    if (v === 3) return { w: 9, h: 9, r: '2px', bg: 'var(--st-hatch-b)', bd: '1.5px solid var(--st-hatch-b)' };
+    return { w: 9, h: 2, r: '1px', bg: 'var(--st-rule-strong)', bd: 'none' };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const meter = (this.props.cardMeter ?? 'bar') === 'bar';
+    const hideEmpty = this.props.hideEmptyClasses ?? false;
+    const compact = (this.props.density ?? 'comfortable') === 'compact';
+    const teacher = MRB_DATA('teacherName');
+
+    const k = this.klass();
+    const kRoster = this.rosterFor(k);
+    const kPapers = this.papersFor(k);
+    const kMx = this.matrixFor(k);
+    const st = this.student();
+    const pp = this.paper();
+    const totalStudents = this.CLASSES.reduce((a, c) => a + c.n, 0);
+    const totalSubs = this.CLASSES.reduce((a, c) => a + c.week[0], 0);
+    const liveClasses = this.CLASSES.filter(c => c.state === 'live');
+
+    const pill = (on) => on
+      ? { bg: 'var(--st-paper)', fg: 'var(--st-ink)', bc: 'var(--st-btn-border)' }
+      : { bg: 'transparent', fg: 'var(--st-caption)', bc: 'transparent' };
+
+    let list = this.CLASSES.filter(c => s.ks === 'All' || c.ks === s.ks);
+    if (hideEmpty) list = list.filter(c => c.n > 0);
+    if (s.sort === 'activity') {
+      const rank = { live: 1, nowork: 0, empty: 0 };
+      list = list.slice().sort((a, b) => {
+        const ga = a.state === 'live' ? (a.week[1] - a.week[0]) : 999;
+        const gb = b.state === 'live' ? (b.week[1] - b.week[0]) : 999;
+        return gb - ga;
+      });
+    }
+
+    const cards = list.map(c => ({
+      code: c.code,
+      subject: c.subject,
+      dots: this.dotsFor(c.subject),
+      meta: 'Year ' + c.year + ' · ' + c.ks + ' · ' + MRB_DATA('yearLabel'),
+      live: c.state === 'live',
+      noWork: c.state === 'nowork',
+      empty: c.state === 'empty',
+      weekLabel: c.week[0] + '/' + c.week[1],
+      weekSub: c.week[0] === c.week[1]
+        ? 'Everyone in · ' + c.n + ' students'
+        : (c.week[1] - c.week[0]) + ' still to submit · ' + c.n + ' students',
+      pct: c.week[1] ? Math.round((c.week[0] / c.week[1]) * 100) : 0,
+      emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',
+      activity: c.state === 'empty' ? c.last : 'Last activity ' + c.last,
+      open: () => MRB_GO(c.n > 0 ? 'class' : 'import', { 'class': c.id }),
+      act: (e) => { e.stopPropagation(); MRB_GO('import', { 'class': c.id }); }
+    }));
+
+    /* Which week the class screen is scoped to: 0 is the open assignment,
+       1+ are the weeks behind it. Every figure below reads the same matrix
+       column, so a past week can't disagree with the term view. */
+    const wi = this.weekIdxFor(k);
+    const wPast = wi > 0;
+    const weekTabs = kPapers.slice().reverse().map((p, n) => {
+      const i = p.idx;
+      const on = i === wi;
+      return {
+        idx: String(i),
+        range: p.range,
+        on,
+        now: i === 0,
+        pick: () => this.pickWeek(i),
+        bg: on ? 'var(--st-num-well)' : 'transparent',
+        ring: on ? 'inset 0 0 0 1.5px var(--st-accent)' : 'none',
+        divider: n === 0 || on ? 'transparent' : 'var(--st-rule-soft)',
+        dateColor: on ? 'var(--st-ink)' : 'var(--st-muted)'
+      };
+    });
+    const backOff = wi >= kPapers.length - 1;
+    const fwdOff = wi <= 0;
+    const wPaper = kPapers[wi];
+    const wMean = kMx.colMean[wi];
+    const wLate = Math.max(0, kMx.colSub[wi] - kMx.colOnTime[wi]);
+    const kTermMean = this.meanOf(k);
+    const wGap = wMean != null && kTermMean != null ? wMean - kTermMean : null;
+    const weekNote = !kPapers.length ? ''
+      : (wPast
+        ? 'Week of ' + wPaper.range + ' · ' + wPaper.title + ' · marked, due ' + wPaper.due
+        : 'Week of ' + wPaper.range + ' · ' + wPaper.title + ' · open, due ' + wPaper.due.replace(/^Due /, ''));
+
+    const roster = kRoster.map(r => {
+      const mrow = kMx.byId[r.id];
+      const sc = mrow ? mrow.scores[wi] : null;
+      const late = !!(mrow && mrow.late[wi]);
+      const scPct = mrow && mrow.pct[wi] != null ? mrow.pct[wi] : null;
+      const lateState = mrow ? mrow.late[wi] : null;
+      return {
+        id: r.id,
+        name: r.name,
+        initials: this.initials(r.name),
+        hue: this.hueFor(r.name),
+        hasWork: kPapers.length > 0,
+        pct: wPast ? (scPct == null ? 0 : scPct) : (r.inWeek ? 100 : 0),
+        weekLabel: kPapers.length === 0 ? 'No work set'
+          : (wPast
+            ? (scPct == null ? 'Not submitted'
+              : scPct + '% · ' + (lateState === true ? 'late'
+                : (lateState === false ? 'on time' : 'timing unknown')))
+            : (r.inWeek ? 'Submitted' : 'Not in')),
+        avg: r.avg == null ? '—' : r.avg + '%',
+        last: r.last,
+        flag: r.flag,
+        open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })
+      };
+    });
+
+    const paperRow = (p) => ({
+      title: p.title, due: p.due, sub: p.sub, mean: p.mean, sel: p.idx === wi,
+      open: () => MRB_GO('marking', { 'class': k && k.id, paper: p.idx })
+    });
+
+    const kAsked = (i) => kMx.colSub[i] + '/' + (kMx.colAsked[i] || 0);
+    const kOnTimePct = (i) => {
+      const known = kMx.colOnTime[i] + kMx.colLate[i];
+      return known ? Math.round((kMx.colOnTime[i] / known) * 100) + '%' : '—';
+    };
+    const flagged = kRoster.filter(r => r.flag).length;
+    const kMean = this.meanOf(k);
+    const upcomingPaper = kPapers.filter(p => p.when === 'upcoming')[0];
+
+    const pGrid = pp ? this.gridFor(k, pp.idx) : null;
+    const questions = pGrid ? pGrid.stems.map((q, qi) => ({ id: q.id, text: q.text, pct: pGrid.qpct[qi] })) : [];
+    const scored = questions.filter(q => q.pct != null);
+    const worst = scored.length ? scored.reduce((a, q) => (q.pct < a.pct ? q : a), scored[0]) : null;
+
+    const grid = pGrid ? pGrid.rows.map(r => ({
+      name: r.name, initials: r.initials, hue: r.hue,
+      cells: r.raw.map(v => this.cellStyle(v)),
+      score: r.score,
+      open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })
+    })) : [];
+
+    const digestRows = this.CLASSES.map(c => {
+      const live = c.state === 'live';
+      const m = live ? this.meanOf(c) : null;
+      const fl = live ? this.rosterFor(c).filter(r => r.flag).length : 0;
+      return {
+        code: c.code, ks: c.ks,
+        sub: live ? c.week[0] + '/' + c.week[1] : '—',
+        mean: m == null ? '—' : m + '%',
+        ontime: live && this.matrixFor(c).markedPct != null ? this.matrixFor(c).markedPct + '%' : '—',
+        needs: c.state === 'empty'
+          ? 'Roster not imported'
+          : (c.state === 'nowork' ? 'No work set' : (fl ? (fl === 1 ? '1 student to chase' : fl + ' students to chase') : 'Nothing outstanding')),
+        open: () => c.n > 0 ? MRB_GO('class', { 'class': c.id }) : this.ping('No students in ' + c.code + ' yet')
+      };
+    });
+
+    const chartKind = s.chartKind || 'submissions';
+    const chartScope = s.chartScope || 'all';
+    const chart = this.chartFor(chartKind, chartScope);
+
+    const isClassReport = s.digestScope === 'class';
+    const kFlagged = kRoster.filter(r => r.flag).length;
+    const classReportRows = kPapers.map(p => {
+      const missing = Math.max(0, (kMx.colAsked[p.idx] || 0) - kMx.colSub[p.idx]);
+      return {
+        code: p.title,
+        ks: p.when === 'upcoming' ? 'Open' : 'Marked',
+        sub: p.sub,
+        mean: p.mean,
+        ontime: p.when === 'upcoming' ? '—' : String(kMx.colOnTime[p.idx]),
+        needs: missing === 0
+          ? 'Everyone submitted'
+          : (p.when === 'upcoming'
+            ? (missing === 1 ? '1 still to submit' : missing + ' still to submit')
+            : (missing === 1 ? '1 never submitted' : missing + ' never submitted')),
+        open: () => this.setState({ screen: 'marking', paperId: p.id })
+      };
+    });
+
+    const pool = MRB_DATA('searchPool');
+    const q = String(s.search || '').toLowerCase();
+    const results = pool.filter(p => !q || p.name.toLowerCase().indexOf(q) > -1).slice(0, 12).map(p => ({
+      name: p.name, klass: p.klass, avg: p.avg,
+      initials: this.initials(p.name), hue: this.hueFor(p.name),
+      open: () => MRB_GO('student', { student: p.id, 'class': p.classId })
+    }));
+
+    const stRow = st ? kMx.byId[st.id] : null;
+    const stHistory = st && kPapers.length ? kPapers.map((p, i) => {
+      const open = i === 0;
+      const sc = stRow ? stRow.scores[i] : null;
+      const lateState = (!open && sc != null) ? stRow.late[i] : null;
+      const late = lateState === true;
+      const pct = stRow ? stRow.pct[i] : null;
+      const stampS = stRow ? stRow.stampShort[i] : null;
+      const tone = open ? 'neutral'
+        : (sc == null || late ? 'warn'
+          : (lateState === false ? 'ok' : 'neutral'));
+      return {
+        marked: !open && sc != null,
+        missing: !open && sc == null,
+        late: late,
+        pct: open ? null : pct,
+        title: p.title,
+        due: p.due.replace('Due ', ''),
+        submitted: open ? (sc != null ? st.last : 'Not yet') : (stampS || '—'),
+        score: open || sc == null || stRow.max[i] == null ? '—'
+          : sc + '/' + stRow.max[i] + (pct == null ? '' : ' · ' + pct + '%'),
+        status: open ? (sc != null ? 'In progress' : 'Nothing in')
+          : (sc == null ? 'Nothing in'
+            : (lateState === true ? 'Late'
+              : (lateState === false ? 'On time' : 'Submitted'))),
+        stFg: tone === 'neutral' ? 'var(--st-caption)' : (tone === 'warn' ? 'var(--st-accent-text)' : 'var(--ks3-ok-text)'),
+        stBg: tone === 'neutral' ? 'var(--st-num-well)' : (tone === 'warn' ? 'var(--st-chip-tint)' : 'var(--ks3-ok-tint)'),
+        stBc: tone === 'neutral' ? 'var(--st-rule-soft)' : (tone === 'warn' ? 'var(--st-chip-tint-border)' : 'var(--ks3-ok-tint)'),
+        stDot: tone === 'neutral' ? 'var(--st-rule-strong)' : (tone === 'warn' ? 'var(--st-accent)' : 'var(--ks3-ok)'),
+        stDotR: tone === 'warn' ? '1px' : '50%',
+        open: () => MRB_GO('marking', { 'class': k && k.id, paper: p.idx })
+      };
+    }) : [];
+
+    const stMarked = stHistory.filter(h => h.marked);
+    const stOnTime = stMarked.filter(h => h.lateState === false).length;
+    const stLate = stMarked.filter(h => h.lateState === true).length;
+    const stUnknown = stMarked.length - stOnTime - stLate;
+    const stMissing = stHistory.filter(h => h.missing).length;
+    const stTimeSub = (function () {
+      const bits = [];
+      if (stLate) { bits.push(stLate === 1 ? '1 late'
+        : stLate + ' late'); }
+      if (stUnknown) { bits.push(stUnknown + ' timing unknown'); }
+      if (stMissing) { bits.push(stMissing + ' not submitted'); }
+      if (bits.length) { return bits.join(' · '); }
+      return stOnTime ? 'Every deadline met' : 'Nothing submitted yet';
+    })();
+    const stAvg = stMarked.length ? Math.round(stMarked.reduce((a, h) => a + h.pct, 0) / stMarked.length) : null;
+    const dgMarkedSub = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedSub, 0);
+    const dgOnTime = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedOnTime, 0);
+    const dgLate = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedLate, 0);
+    const dgUnknown = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedLateUnknown, 0);
+    const dgKnown = dgOnTime + dgLate;
+    const dgOnPct = dgKnown ? Math.round((dgOnTime / dgKnown) * 100) : null;
+
+    return {
+      teacher,
+      rowPad: compact ? '10px 18px' : '13px 18px',
+      showMeter: meter,
+      crumb: s.screen === 'classes' ? 'My classes' : (s.screen === 'import' ? 'Import' : (s.screen === 'digest' ? 'Digest' : (s.screen === 'insights' ? 'Insights' : k.code))),
+      isClasses: s.screen === 'classes',
+      isClass: s.screen === 'class',
+      isStudent: s.screen === 'student',
+      isMarking: s.screen === 'marking',
+      isDigest: s.screen === 'digest',
+      isImport: s.screen === 'import',
+      classLine: teacher + ' · ' + this.CLASSES.length + ' classes · ' + totalStudents + ' students',
+      shownLine: cards.length + ' shown',
+      noneShown: !cards.length,
+      noneShownLine: s.ks === 'All' ? 'No classes'
+        : 'No ' + s.ks + ' classes',
+      ksTabs: ['All', 'KS3', 'KS4'].map(t => ({ label: t, ...pill(s.ks === t), pick: () => this.setState({ ks: t }) })),
+      sortTabs: [{ k: 'code', l: 'Class code' }, { k: 'activity', l: 'Most missing' }].map(o => ({
+        label: o.l,
+        fg: s.sort === o.k ? 'var(--st-ink)' : 'var(--st-caption)',
+        bc: s.sort === o.k ? 'var(--st-btn-border)' : 'transparent',
+        pick: () => this.setState({ sort: o.k })
+      })),
+      cards,
+      klass: {
+        code: k.code,
+        subject: k.subject,
+        dots: this.dotsFor(k.subject),
+        longMeta: 'Year ' + k.year + ' · ' + k.ks + ' · ' + MRB_DATA('yearLabel') + ' · ' + k.n + ' students · ' + (kPapers.length ? kPapers.length + (kPapers.length === 1 ? ' assignment' : ' assignments') : 'no assignments'),
+        rosterLine: k.n + ' active members',
+        paperLine: kPapers.length ? kPapers.length + ' assignments' : 'None set',
+        hasWork: kPapers.length > 0,
+        noWork: kPapers.length === 0,
+        noWorkLine: k.n + ' students are enrolled and waiting. Last activity ' + k.last + '.',
+        tiles: kPapers.length ? (wPast ? [
+          { label: 'Submitted', value: kAsked(wi), sub: wPaper.title },
+          { label: 'Week mean', value: wMean == null ? '—' : wMean + '%', sub: wGap == null ? 'Nothing marked' : (wGap === 0 ? 'Level with the term average' : Math.abs(wGap) + (Math.abs(wGap) === 1 ? ' point ' : ' points ') + (wGap > 0 ? 'above' : 'below') + ' the term average') },
+          { label: 'On time', value: kOnTimePct(wi), sub: MRB_LATE_LINE(kMx.colLate[wi], kMx.colLateUnknown[wi], kMx.colSub[wi], 'submitted') },
+          { label: 'Not submitted', value: String(Math.max(0, (kMx.colAsked[wi] || 0) - kMx.colSub[wi])), sub: 'Of ' + (kMx.colAsked[wi] || 0) + ' asked' }
+        ] : [
+          { label: 'This week', value: kAsked(0), sub: upcomingPaper ? upcomingPaper.title : '' },
+          { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' marked assignment' : ' marked assignments') },
+          { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_LATE_LINE(kMx.markedLate, kMx.markedLateUnknown, kMx.markedSub, 'marked') },
+          { label: 'Needs a look', value: String(flagged), sub: flagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
+        ]) : [
+          { label: 'This week', value: '—', sub: 'No work set' },
+          { label: 'Class mean', value: '—', sub: 'Nothing marked yet' },
+          { label: 'Students', value: String(k.n), sub: 'On the roster' },
+          { label: 'Last activity', value: k.last, sub: 'Newest submission' }
+        ]
+      },
+      roster,
+      weekTabs,
+      weekNote,
+      weekBack: () => { if (!backOff) this.pickWeek(wi + 1); },
+      weekFwd: () => { if (!fwdOff) this.pickWeek(wi - 1); },
+      weekBackColor: backOff ? 'var(--st-rule-strong)' : 'var(--st-ink)',
+      weekFwdColor: fwdOff ? 'var(--st-rule-strong)' : 'var(--st-ink)',
+      weekBackCursor: backOff ? 'default' : 'pointer',
+      weekFwdCursor: fwdOff ? 'default' : 'pointer',
+      rosterWeekCol: !kPapers.length ? 'This week' : (wPast ? wPaper.range : 'This week'),
+      upcomingLabel: 'Upcoming ' + kPapers.filter(p => p.when === 'upcoming').length,
+      markedLabel: 'Marked ' + kPapers.filter(p => p.when === 'marked').length,
+      upcoming: kPapers.filter(p => p.when === 'upcoming').map(paperRow),
+      marked: kPapers.filter(p => p.when === 'marked').map(paperRow),
+      templates: this.TEMPLATES.map(t => ({
+        label: t.label,
+        fg: s.boTpl === t.id ? 'var(--st-accent-text)' : 'var(--st-ink)',
+        bg: s.boTpl === t.id ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+        bc: s.boTpl === t.id ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+        pick: () => this.setState({ boTpl: t.id })
+      })),
+      feed: (MRB_DATA('FEED')[k && k.id] || []),
+      noteCount: (s.note || '').length + ' / 500',
+      backToClass: 'Back to ' + k.code,
+      student: {
+        name: st ? st.name : '—',
+        initials: st ? this.initials(st.name) : '',
+        hue: st ? this.hueFor(st.name) : 'var(--st-rule-strong)',
+        meta: k.code + ' · ' + k.subject + ' · Year ' + k.year + ' · ' + k.ks,
+        subLine: stHistory.length + ' assignments',
+        tiles: [
+          { label: 'Submissions', value: String(stMarked.length), sub: 'Of ' + kPapers.length + ' set this term' },
+          { label: 'On time', value: MRB_ONTIME_VALUE(stOnTime, stLate),
+            sub: stTimeSub },
+          { label: 'Avg score', value: stAvg == null ? '—' : stAvg + '%', sub: 'Class mean ' + (kMean == null ? '—' : kMean + '%') },
+          { label: 'Last active', value: st ? st.last : '—', sub: stHistory[0] && stHistory[0].status === 'In progress' ? stHistory[0].title : k.code + ' · ' + k.subject }
+        ],
+        history: stHistory
+      },
+      paper: pp ? {
+        title: pp.title,
+        eyebrow: k.code + ' · Set ' + pp.set + ' · Due ' + pp.due.replace('Due ', ''),
+        tiles: [
+          { label: 'Submitted', value: pp.sub, sub: pp.when === 'upcoming' ? 'Still open' : 'Marked automatically' },
+          { label: 'Class mean', value: pp.mean, sub: pGrid ? pGrid.qLine : '' },
+          { label: 'On time',
+            value: pp.when === 'upcoming' ? '—'
+              : MRB_ONTIME_VALUE(kMx.colOnTime[pp.idx], kMx.colLate[pp.idx]),
+            sub: pp.when === 'upcoming' ? 'Not due yet'
+              : MRB_ONTIME_SUB(kMx.colOnTime[pp.idx], kMx.colLate[pp.idx],
+                               kMx.colLateUnknown[pp.idx], 'submitted') },
+          { label: 'Lowest', value: worst ? worst.id + ' · ' + worst.pct + '%' : '—', sub: worst ? worst.text : '' }
+        ],
+        questions: questions.map(qq => ({
+          id: qq.id, text: qq.text, pct: qq.pct == null ? 0 : qq.pct,
+          label: qq.pct == null ? 'Not marked' : qq.pct + '%',
+          worst: !!(worst && qq.pct != null && qq.id === worst.id),
+          fill: qq.pct == null ? 'var(--st-rule-soft)'
+            : (qq.pct < 50 ? 'var(--st-accent)' : (qq.pct < 70 ? 'var(--st-hatch-b)' : 'var(--ks3-ok)'))
+        })),
+        qids: questions.map(qq => ({ id: qq.id })),
+        grid
+      } : { title: '—', eyebrow: k.code, tiles: [], questions: [], qids: [], grid: [] },
+      isInsights: s.screen === 'insights',
+      insSub: chartScope === 'all'
+        ? liveClasses.length + ' active classes · ' + totalStudents + ' students on roll'
+        : k.code + ' · ' + k.n + ' students · ' + kPapers.length + ' assignments',
+      insScopeTabs: [{ id: 'all', label: 'All classes' }, { id: k.id, label: k.code }].map(o => ({
+        label: o.label,
+        ...(chartScope === o.id
+          ? { bg: 'var(--st-paper)', fg: 'var(--st-ink)', bc: 'var(--st-btn-border)' }
+          : { bg: 'transparent', fg: 'var(--st-caption)', bc: 'transparent' }),
+        pick: () => this.setState({ chartScope: o.id })
+      })),
+      insChips: this.CHART_KINDS.map(o => ({
+        label: o.label,
+        fg: chartKind === o.id ? 'var(--st-paper)' : 'var(--st-ink)',
+        bg: chartKind === o.id ? 'var(--st-accent-text)' : 'var(--st-paper)',
+        bc: chartKind === o.id ? 'var(--st-accent-text)' : 'var(--st-btn-border)',
+        pick: () => this.setState({ chartKind: o.id })
+      })),
+      chart: {
+        ...chart,
+        isBars: chart.type === 'bars',
+        isCols: chart.type === 'cols',
+        isStack: chart.type === 'stack',
+        hasLegend: chart.legend.length > 0,
+        scopeLabel: chartScope === 'all' ? 'All classes' : k.code
+      },
+      openInsights: () => MRB_GO('insights', s.screen === 'class' ? { 'class': k && k.id } : {}),
+      goBackFromInsights: () => MRB_BACK(),
+      digestTitle: isClassReport ? k.code + ' report' : 'Weekly digest',
+      digestTableTitle: isClassReport ? 'By assignment' : 'By class',
+      digestColTitle: isClassReport ? 'Assignment' : 'Class',
+      digestSub: isClassReport
+        ? k.n + ' students · ' + kPapers.length + ' assignments this term'
+        : this.CLASSES.length + ' classes · ' + totalStudents + ' students · ' + totalSubs + ' submissions',
+      digestTiles: isClassReport ? [
+        { label: 'Submissions', value: kAsked(0), sub: 'This week' },
+        { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' marked assignment' : ' marked assignments') },
+        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_LATE_LINE(kMx.markedLate, kMx.markedLateUnknown, kMx.markedSub, 'marked') },
+        { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
+      ] : [
+        { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
+        { label: 'Mean score', value: liveClasses.length ? Math.round(liveClasses.reduce((a, c) => a + (this.meanOf(c) || 0), 0) / liveClasses.length) + '%' : '—', sub: 'Mean of ' + liveClasses.length + (liveClasses.length === 1 ? ' class mean' : ' class means') },
+        { label: 'On time',
+          value: dgOnPct == null ? '—' : dgOnPct + '%',
+          sub: MRB_ONTIME_SUB(dgOnTime, dgLate, dgUnknown,
+                              'marked submissions') },
+        { label: 'Needs a look', value: String(liveClasses.reduce((a, c) => a + this.rosterFor(c).filter(r => r.flag).length, 0)), sub: 'Students with nothing in' }
+      ],
+      digestRows: isClassReport ? classReportRows : digestRows,
+      importSteps: [1, 2, 3].map(n => {
+        const on = s.importStep === n;
+        const done = s.importStep > n;
+        return {
+          n: String(n), label: ['Upload', 'Map columns', 'Confirm'][n - 1],
+          bg: on ? 'var(--st-paper)' : 'transparent',
+          bc: on ? 'var(--st-edge)' : 'var(--st-rule-soft)',
+          fg: on || done ? 'var(--st-ink)' : 'var(--st-caption)',
+          numBg: on ? 'var(--st-accent-text)' : 'var(--st-num-well)',
+          numFg: on ? 'var(--st-paper)' : 'var(--st-caption)'
+        };
+      }),
+      imp1: s.importStep === 1,
+      imp2: s.importStep === 2,
+      imp3: s.importStep === 3,
+      mapRows: MRB_DATA('IMPORT_MAP_ROWS'),
+      previewRows: MRB_DATA('IMPORT_PREVIEW_ROWS'),
+      bulkOpen: s.modal === 'bulk',
+      searchOpen: s.modal === 'search',
+      bulkStudents: kRoster.map(r => {
+        const on = s.boSel.indexOf(r.id) > -1;
+        return {
+          name: r.name,
+          fg: on ? 'var(--st-accent-text)' : 'var(--st-ink)',
+          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+          dot: on ? 'var(--st-accent)' : this.hueFor(r.name),
+          toggle: () => this.setState({ boSel: on ? s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })
+        };
+      }),
+      bulkSummary: s.boSel.length + ' selected · ' + (this.TEMPLATES.filter(t => t.id === s.boTpl)[0] || { label: 'no template' }).label,
+      bulkTop: () => this.setState({ boSel: kRoster.filter(r => r.inWeek).map(r => r.id) }),
+      sendBulk: () => {
+        const ids = (s.boSel || []).slice();
+        if (!ids.length) {
+          return this.ping('Pick at least one student'); }
+        this.ping('Sending to ' + ids.length + '…');
+        const cid = k && k.id;
+        MRB_SEND_SHOUTOUTS(cid, ids, s.boTpl, null).then((r) => {
+          if (!r.ok) {
+            return this.ping(MRB_SHOUTOUT_WHY(r.error)); }
+          if (r.fail) {
+            /* The sheet stays open and the selection stays put: some of
+               these children were told and some were not, and the teacher
+               is the only one who can decide what to do about it. */
+            return this.ping('Sent to ' + r.ok + ' of ' + ids.length +
+              ' — ' + MRB_SHOUTOUT_WHY(r.error)); }
+          MRB_REFRESH_FEED(cid).then(() => {
+            this.setState({ modal: null, boSel: [],
+              toast: 'Shoutout sent to ' + r.ok +
+                (r.ok === 1 ? ' student' : ' students') });
+          });
+        });
+      },
+      searchPlaceholder: MRB_DATA('searchPlaceholder'),
+      searchResults: results,
+      searchFoot: results.length + ' of ' + pool.length + ' students · type to narrow',
+      setSearch: (e) => this.setState({ search: e.target.value }),
+      pickRecipient: (e) => this.setState({ recipient: e.target.value }),
+      setNote: (e) => this.setState({ note: e.target.value }),
+      sendShoutout: () => {
+        const rid = s.recipient;
+        const body = String(s.note || '').trim();
+        if (!rid) { return this.ping('Pick a student first'); }
+        if (!s.boTpl && !body) {
+          return this.ping('Pick a template, or write a message'); }
+        if (body.length > 500) {
+          MRB_COMPOSE_ERROR('Message too long — 500 characters at most.');
+          return this.ping('Message too long — 500 characters at most'); }
+        MRB_COMPOSE_ERROR('');
+        this.ping('Sending…');
+        const cid = k && k.id;
+        MRB_SEND_SHOUTOUTS(cid, [rid], s.boTpl, body || null)
+          .then((r) => {
+            if (!r.ok) {
+              const why = MRB_SHOUTOUT_WHY(r.error);
+              MRB_COMPOSE_ERROR(why);
+              return this.ping(why);
+            }
+            /* Design's fields are uncontrolled and the runtime carries
+               their values over a redraw, so the DOM is cleared before
+               the state is. */
+            MRB_COMPOSE_RESET();
+            MRB_REFRESH_FEED(cid).then(() => {
+              this.setState({ recipient: '', note: '', toast: '' });
+            });
+          });
+      },
+      hasToast: !!s.toast,
+      toast: s.toast,
+      signOut: () => window.MrBadmusTeacherGuard.signOut(),
+      goClasses: () => MRB_GO('classes', {}),
+      goClass: () => MRB_GO('class', { 'class': k && k.id }),
+      goDigest: () => MRB_GO('digest', {}),
+      goReport: () => MRB_GO('digest', { 'class': k && k.id }),
+      goImport: () => MRB_GO('import', {}),
+      goBackFromDigest: () => MRB_BACK(),
+      doPrint: () => window.print(),
+      openSearch: () => this.setState({ modal: 'search', search: '' }),
+      openBulk: () => this.setState({ modal: 'bulk' }),
+      closeModal: () => this.setState({ modal: null }),
+      stop: (e) => e.stopPropagation(),
+      impNext: () => this.setState({ importStep: Math.min(3, s.importStep + 1) }),
+      impBack: () => this.setState({ importStep: Math.max(1, s.importStep - 1) }),
+      impDone: () => {
+        /* The REAL import is the live wizard's `#confirm-import`, which is carried
+           into this page as a live region. Design's button is its PRESENTATION;
+           this is the only seam a generated page can offer it. */
+        window.dispatchEvent(new CustomEvent('mrb-import-confirm'));
+        const line = MRB_DATA('importCountLabel');
+        if (line) { this.ping(line); }
+      },
+      pastYears: () => { const ys = MRB_DATA('pastYears');
+        return this.ping(ys.length
+          ? ys.map(y => y.name).join(', ') + (ys.length === 1 ? ' is read-only' : ' are read-only')
+          : 'No earlier years to open'); }
+    };
+  }
+}
+</script>
+<script>
+window.__MRB_MOUNT__ = function () {
+  var R = window.MrBadmusStudentRuntime;
+  var tpl = window.__MRB_TPL__;
+  return R.mount({
+    into: '#mrb-teacher',
+    template: {roots: R.applyBindings(tpl.roots, window.__MRB_BIND__, MRB_DATA), imports: tpl.imports},
+    imports: tpl.imports,
+    Component: Component,
+    props: {}
+  });
+};
+</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","config.js":"06f24811","shoutouts.js":"23393220","teacher-data.js":"a9398f6d","teacher-guard.js":"bbc08e89","teacher-live.js":"5fb3ea3a"};</script>
+<script src="/shared/teacher-live.js?v=5fb3ea3a"></script>
+</body>
+</html>

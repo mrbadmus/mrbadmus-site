@@ -1,4 +1,4 @@
-"""build_all.py — build the whole site, both generators, correct order.
+"""build_all.py — build the whole site, every generator, correct order.
 
 Run it:
 
@@ -65,6 +65,21 @@ STEPS = [
     # not on its skip list, so anything written before it is deleted by it.
     ("student pages — student/class.html, student/assignment.html",
      "build_student_port.py"),
+    # ⊕ MRB-287, 24 Aug 2026 — the teacher dashboard's seven pages.
+    #
+    # AFTER generate_site_v5.py, for exactly the reason the two student steps
+    # are: the KS4 generator rmtree's mrbadmus_site/ on the way in, `teacher/`
+    # is not on its FOREIGN_OUTPUT_DIRS skip list, and anything written before
+    # it is deleted by it.
+    #
+    # And IN this list rather than left to be remembered, for the reason the
+    # student port's own note gives: four of these seven — classes,
+    # class-detail, student-detail and import — are the pages a signed-in
+    # teacher actually reaches, and they are generated output as of tonight.
+    # Left out, editing teacher_rulings.py and running build_all.py would
+    # print a successful build and change nothing.
+    ("teacher pages — teacher/*.html (7 screens, one URL each)",
+     "build_teacher_port.py"),
 ]
 
 

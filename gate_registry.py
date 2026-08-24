@@ -143,8 +143,13 @@ GATES = [
              "PLAUSIBLE, which is what makes it dangerous: a teacher cannot "
              "tell by looking. Checks the built LIVE pages (never the "
              "fixtures, which are supposed to carry Design's values) for any "
-             "sample identity, any surviving literal count, and for `seed(` / "
-             "`rnd(` — the hash that manufactures the numbers. Its corpus is "
+             "sample identity, any surviving literal count, and for `rnd(` "
+             "— the wrapper whose only use is to make a value up. `seed(` is "
+             "allowed for hueFor's avatar colour and nothing else, because "
+             "the live product already hashes a name to a colour the same "
+             "way (shoutouts.js getStudentColour); banning it outright would "
+             "have forced the port to re-implement the identical hash under "
+             "another name to pass a gate. Its corpus is "
              "DERIVED from the delivery on every run rather than typed, "
              "because the hand-written ancestor of that list in "
              "student_page_drive.py records what a typed one costs: 'THIS "
@@ -152,6 +157,27 @@ GATES = [
              "⚠️ `needs` names insights.html — a page that exists only once "
              "the port has run — so this SKIPS BY NAME until then rather "
              "than failing on three pages nobody has built yet."),
+
+    dict(name="teacher_behaviour",
+         cmd=["python3", "teacher_behaviour.py"],
+         speed="slow",
+         needs="teacher/classes-fixture.html",
+         why="the ported teacher pages, DRIVEN — the teacher-side twin of "
+             "ks3_instrument_liveness, and the only teacher gate that presses "
+             "the buttons. teacher_tells reads the built bytes and would pass "
+             "on a page that is blank; this one asserts every screen mounts, "
+             "every binding resolves, every control moves something, no "
+             "computed value (null%, NaN, -Infinity) reaches the copy, and "
+             "the console stays quiet — on load AND after a reload. Fourteen "
+             "fixtures: seven screens x {populated, EMPTY}, because empty "
+             "states are the half of the product that ships broken and the "
+             "empty half found two crashes on its first run. ⚠️ It drives the "
+             "FIXTURES, not the live pages: a live teacher page starts with "
+             "requireTeacherRole, so driving one needs a credential and a "
+             "waking Render — the same reason student_page_drive and "
+             "student_controls_drive are EXCLUDED. It therefore proves "
+             "everything between the data arriving and the pixels, and "
+             "nothing about whether the seam returned the right rows."),
 
     # ── ⊕ MRB-282 · THE FOUR THAT WERE OUTSIDE THE REGISTRY ────────────
 
@@ -267,6 +293,8 @@ EXCLUDED = {
         "the student PREVIEW generator, gated by student_parity.",
     "build_student_port.py":
         "the LIVE student page generator, gated by student_behaviour.",
+    "build_teacher_port.py":
+        "the LIVE teacher page generator, gated by teacher_behaviour.",
     "generate_site_v5.py":
         "the KS4 generator.",
     "ks3_seed_sow.py":
@@ -327,6 +355,9 @@ EXCLUDED = {
     "student_rulings.py":
         "Mide's MRB-275 rulings as source. Data, consumed by "
         "build_student_port.",
+    "teacher_rulings.py":
+        "Mide's MRB-287 rulings as source. Data, consumed by "
+        "build_teacher_port.",
     "student_template.py":
         "Design's template, compiled. A library consumed by "
         "build_student_port.",

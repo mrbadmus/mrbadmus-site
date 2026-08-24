@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>My classes — Mr Badmus AI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=21ae3356"/>
+  <script src="/shared/search-index.js?v=c016cb14" defer></script>
+  <script src="/shared/search.js?v=d011978d" defer></script>
+  <style>
+    html { background: var(--bg); }
+    :root {
+      --darker:    var(--bg);
+      --dark:      var(--sunken);
+      --card2:     var(--sunken);
+      --science:   #A78BD0;
+      --shadow:    var(--shadow-card);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 80px 20px 60px;
+      /* Hidden until requireTeacherRole's onAllowed callback fires.
+         Fail-closed: if the guard bounces or JS fails, the page never
+         reveals teacher content. */
+      display: none;
+    }
+
+    /* ── NAV (reused from MRB-19 placeholder) ── */
+    nav.top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
+    .pill.env-prod { background: var(--sunken); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── PAGE HEADER ── */
+    .container { max-width: 1100px; margin: 0 auto; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 2rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .page-header .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* ── CARDS GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 600px)  { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 900px)  { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* ── CLASS CARD (button — keyboard focusable, screen-reader friendly) ── */
+    .class-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 20px;
+      text-align: left;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .class-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+      border-color: var(--accent-border);
+    }
+    .class-card:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-name {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 1.4rem;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .card-pill {
+      flex-shrink: 0;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--darker);
+      white-space: nowrap;
+    }
+    .card-meta {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .card-students {
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+    .card-completion { display: flex; flex-direction: column; gap: 6px; }
+    .card-completion-empty {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-style: italic;
+    }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--card2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--biology);
+      border-radius: 999px;
+      transition: width 0.4s;
+    }
+    .progress-pct {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 38px;
+      text-align: right;
+    }
+    .progress-sub {
+      color: var(--text);
+      opacity: 0.85;
+      font-size: 0.78rem;
+    }
+    .card-activity {
+      color: var(--text);
+      opacity: 0.85;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: auto;
+      padding-top: 4px;
+      border-top: 1px dashed var(--border);
+    }
+
+    /* ── PAST-YEAR BAND + YEAR SWITCH (MRB-261) ──────────────────────────
+       Two halves of one rule: the dashboard ALWAYS lands on the working
+       academic year, and a past year is unmistakable for as long as it is
+       on screen.
+
+       The band is sticky so it stays with the grid rather than scrolling
+       away, and it says the year and NOTHING else — no sentence explaining
+       what a past year is, no warning copy. This is a screen a teacher uses
+       daily; the year alone does the job and anything more is clutter.
+
+       The switch is deliberately quiet and sits BELOW the cards: a teacher
+       opening this page in September is not thinking about last year and
+       must not be prompted to. Discoverable when looked for, invisible when
+       not. */
+    .year-band {
+      display: none;
+      position: sticky;
+      top: 60px;
+      z-index: 9;
+      margin-bottom: 20px;
+      padding: 11px 18px;
+      border-radius: 10px;
+      background: var(--sunken);
+      border: 1px solid var(--border-strong);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-weight: 800;
+      font-size: 0.9rem;
+      letter-spacing: 0.16em;
+      text-align: center;
+    }
+    .year-band.show { display: block; }
+
+    .year-switch {
+      margin-top: 36px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      opacity: 0.75;
+      transition: opacity 0.15s;
+    }
+    .year-switch:hover, .year-switch:focus-within { opacity: 1; }
+    .year-switch-toggle {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      color: var(--muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+    }
+    .year-switch-toggle:hover { color: var(--text); }
+    .year-switch-list {
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .year-switch-list.show { display: flex; }
+    .year-option {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font: inherit;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .year-option:hover { border-color: var(--accent-border); }
+    .year-option[aria-current="true"] {
+      border-color: var(--accent);
+      color: var(--accent);
+      cursor: default;
+    }
+
+    /* ── STATES (loading / empty / error) ── */
+    .state-block { display: none; padding: 60px 20px; text-align: center; }
+    .state-block.show { display: block; }
+    .state-block h2 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 1.4rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .state-block p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin: 0 auto 20px;
+      line-height: 1.55;
+    }
+    .state-btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 22px;
+      background: var(--accent);
+      color: var(--on-accent);
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .state-btn:hover { opacity: 0.85; }
+    /* Secondary variant — outlined, sits in the page header as a lighter-weight action than the filled .state-btn. */
+    .state-btn.secondary {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .state-btn.secondary:hover { opacity: 1; background: var(--accent-soft); }
+    .state-loading .dots { display: inline-flex; gap: 6px; margin-top: 10px; }
+    .state-loading .dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: bounce 1.2s infinite;
+    }
+    .state-loading .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .state-loading .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 1000;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/index.html" style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:-0.01em;">MrBadmusAI</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="env-pill" class="pill env-prod" title=""></span>
+    <span id="nav-user-area" style="color:var(--muted);font-weight:700;font-size:0.85rem;"></span>
+    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<main class="container">
+  <header class="page-header">
+    <h1>My classes</h1>
+    <p class="subtitle" id="subtitle">Loading…</p>
+    <a class="state-btn secondary" id="import-link" href="/teacher/import.html" style="margin-top:14px;">Import students (CSV)</a>
+  </header>
+
+  <!-- The year, and nothing else. Present only while a past year is open. -->
+  <div id="year-band" class="year-band" role="status"></div>
+
+  <div id="state-loading" class="state-block state-loading show">
+    <p>Loading your classes</p>
+    <div class="dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <div id="state-cards" class="cards-grid" style="display:none;"></div>
+
+  <div id="state-empty" class="state-block">
+    <h2>No classes yet</h2>
+    <p>When your school admin adds you to classes, they'll appear here. In the meantime, want to explore Mr Badmus AI?</p>
+    <a class="state-btn" href="/index.html">Back to homepage</a>
+  </div>
+
+  <div id="state-error" class="state-block">
+    <h2>Couldn't load your classes</h2>
+    <p>Something went wrong. Please refresh the page.</p>
+    <button class="state-btn" onclick="window.location.reload()">Refresh</button>
+  </div>
+
+  <!-- Quiet, at the foot, below the cards. Hidden entirely when the school
+       has no earlier year to reach. -->
+  <div id="year-switch" class="year-switch" hidden>
+    <span id="year-switch-current"></span>
+    <span aria-hidden="true"> &middot; </span>
+    <button type="button" class="year-switch-toggle" id="year-switch-toggle"
+            aria-expanded="false" aria-controls="year-switch-list">previous years</button>
+    <div class="year-switch-list" id="year-switch-list"></div>
+  </div>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- ── Bootstrap: SDK → config → guard → data → render ─────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js?v=06f24811"></script>
+<script src="/shared/class-entry.js?v=8be18391" defer></script>
+<script src="/shared/teacher-guard.js?v=bbc08e89"></script>
+<script src="/shared/teacher-data.js?v=a9398f6d"></script>
+<script>
+(function () {
+  const STATES = {
+    loading: document.getElementById('state-loading'),
+    cards:   document.getElementById('state-cards'),
+    empty:   document.getElementById('state-empty'),
+    error:   document.getElementById('state-error'),
+  };
+  // Reveal exactly one state at a time. Cards block uses display:grid;
+  // the others use the .show class on .state-block.
+  function showState(name) {
+    Object.keys(STATES).forEach(function (k) {
+      const el = STATES[k];
+      if (k === 'cards') {
+        el.style.display = name === 'cards' ? 'grid' : 'none';
+      } else {
+        el.classList.toggle('show', k === name);
+      }
+    });
+  }
+
+  // Floor everything (so "59 minutes ago", not "1 hour ago"). The result
+  // is computed once at render time — page won't tick its labels live.
+  function formatRelativeTime(iso) {
+    if (!iso) return 'No activity yet';
+    const then = new Date(iso).getTime();
+    if (isNaN(then)) return 'No activity yet';
+    const sec = Math.floor((Date.now() - then) / 1000);
+    if (sec < 60) return 'just now';
+    const min = Math.floor(sec / 60);
+    if (min < 60) return min + ' minute' + (min === 1 ? '' : 's') + ' ago';
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return hr + ' hour' + (hr === 1 ? '' : 's') + ' ago';
+    const day = Math.floor(hr / 24);
+    if (day < 7) return day + ' day' + (day === 1 ? '' : 's') + ' ago';
+    if (day < 30) {
+      const wk = Math.floor(day / 7);
+      return wk + ' week' + (wk === 1 ? '' : 's') + ' ago';
+    }
+    if (day < 365) {
+      const mo = Math.floor(day / 30);
+      return mo + ' month' + (mo === 1 ? '' : 's') + ' ago';
+    }
+    const yr = Math.floor(day / 365);
+    return yr + ' year' + (yr === 1 ? '' : 's') + ' ago';
+  }
+
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function showToast(message) {
+    toastEl.textContent = message;
+    toastEl.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toastEl.classList.remove('show');
+    }, 2000);
+  }
+
+  // Class names come from school admins, not validated student input, but
+  // anything reaching innerHTML gets escaped — defence in depth.
+  function escapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  // MRB-263 — every card carries the same fields. Tier and pathway are gone:
+  // they are populated on the two classes MRB-237 rolled forward and null on
+  // the twelve that came from the timetable import, so the grid read
+  // "Year 10 · KS4 · Higher · Triple" on some cards and "Year 10 · KS4" on
+  // others for no reason a teacher could see. The columns are NOT dropped —
+  // they are candidates for driving KS4 content targeting later, and hiding
+  // costs nothing where a migration would have to be reversed.
+  //
+  // The academic year is on EVERY card regardless of which year is selected,
+  // so 10H/Ph1 and 11h/Ph1 — the same 17 students a year apart — can never
+  // read as a duplicate again.
+  function buildMetaLine(klass) {
+    const parts = [];
+    if (klass.year_group != null)   parts.push('Year ' + klass.year_group);
+    if (klass.key_stage)            parts.push(klass.key_stage);
+    if (klass.academic_year_name)   parts.push(klass.academic_year_name);
+    return parts.join(' · ');
+  }
+
+  function buildStudentLine(n) {
+    if (!n)      return 'No students yet';
+    if (n === 1) return '1 student';
+    return n + ' students';
+  }
+
+  function buildCompletionBlock(klass) {
+    // Stats query failed — don't imply the class is empty. Say so honestly.
+    if (klass.metrics_failed) {
+      return '<div class="card-completion-empty">Couldn\'t load stats</div>';
+    }
+    if (klass.assignment_count === 0) {
+      return '<div class="card-completion-empty">No assignments yet</div>';
+    }
+    const denom = klass.student_count * klass.assignment_count;
+    const sub = '<div class="progress-sub">' +
+      escapeHtml(klass.submission_count) + ' of ' + escapeHtml(denom) + ' submissions' +
+      '</div>';
+
+    // Zero-students-with-assignments case: dash, not a misleading 0%.
+    if (klass.completion_pct == null) {
+      return '<div class="card-completion">' +
+        '<div class="progress-row"><span class="progress-pct">—</span></div>' +
+        sub +
+        '</div>';
+    }
+
+    const pct = klass.completion_pct;
+    return '<div class="card-completion">' +
+      '<div class="progress-row">' +
+        '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<span class="progress-pct">' + pct + '%</span>' +
+      '</div>' +
+      sub +
+      '</div>';
+  }
+
+  function renderCard(klass) {
+    const btn = document.createElement('button');
+    btn.className = 'class-card';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Open class ' + klass.name);
+
+    let pillHtml = '';
+    if (klass.pill_label) {
+      pillHtml = '<span class="card-pill" style="background:' +
+        escapeHtml(klass.pill_colour_var) + ';">' +
+        escapeHtml(klass.pill_label) + '</span>';
+    }
+
+    const meta = buildMetaLine(klass);
+    const metaHtml = meta
+      ? '<div class="card-meta">' + escapeHtml(meta) + '</div>'
+      : '';
+
+    const activity = klass.last_activity_at
+      ? 'Last activity: ' + formatRelativeTime(klass.last_activity_at)
+      : 'No activity yet';
+
+    btn.innerHTML =
+      '<div class="card-top">' +
+        '<div class="card-name">' + escapeHtml(klass.name) + '</div>' +
+        pillHtml +
+      '</div>' +
+      metaHtml +
+      '<div class="card-students">' + escapeHtml(klass.metrics_failed ? '—' : buildStudentLine(klass.student_count)) + '</div>' +
+      buildCompletionBlock(klass) +
+      '<div class="card-activity">' + escapeHtml(activity) + '</div>';
+
+    btn.addEventListener('click', function () {
+      const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test'
+        ? '&env=test' : '';
+      window.location.href = '/teacher/class-detail.html?class=' + encodeURIComponent(klass.id) + env;
+    });
+
+    return btn;
+  }
+
+  function renderCards(classes) {
+    const grid = STATES.cards;
+    grid.innerHTML = '';
+    classes.forEach(function (k) { grid.appendChild(renderCard(k)); });
+  }
+
+  MrBadmusTeacherGuard.requireTeacherRole({
+    onAllowed: async function (ctx) {
+      const firstName = ctx.profile.first_name || 'teacher';
+      const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
+
+      document.getElementById('nav-user-area').textContent = '👤 ' + firstName;
+
+      const envEl = document.getElementById('env-pill');
+      envEl.textContent = env.toUpperCase();
+      envEl.className = 'pill env-' + env;
+      envEl.title = env === 'test'
+        ? 'Test sandbox — fake data only'
+        : 'Production — live student data';
+
+      // Thread ?env=test through the import link, matching the card-click convention below.
+      if (env === 'test') {
+        document.getElementById('import-link').href = '/teacher/import.html?env=test';
+      }
+
+      const subtitleEl = document.getElementById('subtitle');
+      subtitleEl.textContent = firstName + ', loading your classes…';
+
+      // Reveal the page now — guard approved, profile populated. The
+      // loading state is already visible inside the body wrapper.
+      document.body.style.display = 'block';
+
+      /* ── Academic year, MRB-261 ─────────────────────────────────────────
+         The dashboard lands on the working year on EVERY load, no exceptions.
+         `selectedYearId` is a plain local — deliberately not sessionStorage,
+         not localStorage, not a URL param. The selection lasts for this visit
+         and no longer: a teacher who looked at 2025-26 on Friday lands on
+         2026-27 on Monday. Persisting it would silently hand someone a
+         historical dashboard they believed was current, which is the exact
+         confusion this whole change exists to remove.
+         ───────────────────────────────────────────────────────────────── */
+      const bandEl     = document.getElementById('year-band');
+      const switchEl   = document.getElementById('year-switch');
+      const currentEl  = document.getElementById('year-switch-current');
+      const toggleEl   = document.getElementById('year-switch-toggle');
+      const listEl     = document.getElementById('year-switch-list');
+      const importEl   = document.getElementById('import-link');
+
+      let yearIndex = { years: [], working: null };
+      let selectedYearId = null;
+
+      function selectedYear() {
+        return yearIndex.years.filter(function (y) {
+          return y.id === selectedYearId;
+        })[0] || null;
+      }
+
+      function isViewingPast() {
+        const y = selectedYear();
+        return !!(y && y.is_past);
+      }
+
+      // A past year is READ-ONLY (Mide's ruling, 19 Aug 2026). The controls
+      // are ABSENT, not present-and-disabled — setting homework against a
+      // class that no longer runs is not a mistake worth leaving available.
+      // The only write control on this screen is the CSV import; the shoutout
+      // composer on class-detail.html is suppressed the same way, from
+      // detail.class.is_past_year.
+      function applyWriteControls() {
+        if (!importEl) return;
+        importEl.hidden = isViewingPast();
+      }
+
+      function renderYearChrome() {
+        const y = selectedYear();
+        const past = isViewingPast();
+
+        // The band: the year, and nothing else.
+        bandEl.textContent = past && y ? y.name : '';
+        bandEl.classList.toggle('show', past);
+
+        // The foot control. Nothing to reach → no control at all.
+        const others = yearIndex.years.filter(function (o) {
+          return o.id !== selectedYearId && !o.is_future;
+        });
+        if (!others.length) { switchEl.hidden = true; return; }
+        switchEl.hidden = false;
+        currentEl.textContent = 'Viewing ' + (y ? y.name : '—');
+        toggleEl.textContent = past ? 'other years' : 'previous years';
+
+        listEl.innerHTML = '';
+        yearIndex.years.filter(function (o) { return !o.is_future; })
+          .forEach(function (o) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'year-option';
+            b.textContent = o.name;
+            if (o.id === selectedYearId) {
+              b.setAttribute('aria-current', 'true');
+              b.disabled = true;
+            } else {
+              b.addEventListener('click', function () { selectYear(o.id); });
+            }
+            listEl.appendChild(b);
+          });
+      }
+
+      async function loadAndRender() {
+        showState('loading');
+        renderYearChrome();
+        applyWriteControls();
+        try {
+          const classes = await MrBadmusTeacherData.loadTeacherClasses(selectedYearId);
+          if (!classes || classes.length === 0) {
+            subtitleEl.style.display = 'none';
+            showState('empty');
+            return;
+          }
+          subtitleEl.style.display = '';
+          const n = classes.length;
+          subtitleEl.textContent =
+            firstName + ', you teach ' + n + ' class' + (n === 1 ? '' : 'es');
+          renderCards(classes);
+          showState('cards');
+        } catch (e) {
+          console.error('[classes.html] loadTeacherClasses failed', e);
+          subtitleEl.style.display = 'none';
+          showState('error');
+        }
+      }
+
+      function selectYear(id) {
+        selectedYearId = id;
+        listEl.classList.remove('show');
+        toggleEl.setAttribute('aria-expanded', 'false');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        loadAndRender();
+      }
+
+      toggleEl.addEventListener('click', function () {
+        const open = listEl.classList.toggle('show');
+        toggleEl.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+
+      try {
+        yearIndex = await MrBadmusTeacherData.loadAcademicYears();
+      } catch (e) {
+        // A failed years read must not cost the teacher their classes — fall
+        // through with no year selected, which lists every class the old way
+        // and simply offers no switch.
+        console.error('[classes.html] loadAcademicYears failed', e);
+      }
+      selectedYearId = yearIndex.working ? yearIndex.working.id : null;
+
+      await loadAndRender();
+    },
+  });
+})();
+</script>
+
+</body>
+</html>

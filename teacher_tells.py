@@ -106,9 +106,16 @@ PAGE_DIR = "teacher"
 # The pages this gate polices. A fixture beside each of these is exempt, by
 # name rather than by pattern, so that a page added later cannot be quietly
 # exempted by being called something ending in "-fixture".
+# ⛔ NO `import.html`: it is not ported. `teacher/import.html` is the
+# hand-written CSV/Excel wizard, restored on 24 Aug 2026 and taken out of
+# build_teacher_port.PAGES — see IMPORT_NOT_PORTED in teacher_rulings.py. It
+# carries no line of Design's delivery, so there is no sample constant in it
+# for this gate to find; what it does carry is a 2,000-line wizard whose own
+# vocabulary (`surname`, `Year group`, `Email`) this gate's docstring already
+# records as the reason a harvest of LABELS was unusable.
 LIVE_PAGES = [
     "classes.html", "class-detail.html", "student-detail.html",
-    "assignment.html", "digest.html", "import.html", "insights.html",
+    "assignment.html", "digest.html", "insights.html",
 ]
 
 # ── the corpus, derived ──────────────────────────────────────────────────
@@ -391,12 +398,62 @@ def corpus(templates_path=TEMPLATES):
 # Anchored on the CALL, not the name. `seed` and `rnd` are three and four
 # characters; unanchored they match `seeds`, `rnd_` and any minified
 # identifier that happens to contain them.
-GENERATOR_RE = re.compile(r"\b(?:this\.)?(seed|rnd)\s*\(")
+#
+# ⚠️ `rnd(` AND `seed(` ARE NOT THE SAME OFFENCE, and the first version of
+# this check banned both. It was wrong about `seed`.
+#
+#   `rnd(key, lo, hi)` returns a number in a range. Its ONLY possible use is
+#   to make a value up, so any call at all is a leak.
+#
+#   `seed(str)` is FNV-1a. It is what `rnd` is built on — but it is also what
+#   `hueFor(name)` is built on, and `hueFor` picks an avatar COLOUR from a
+#   name. That is presentation, it is deterministic on purpose, and the live
+#   product already does exactly the same thing: `shared/shoutouts.js` carries
+#   `getStudentColour()`, described in its own source as a "deterministic
+#   hash-based avatar colour". Banning it outright would have forced the port
+#   to either drop Design's avatars or re-implement the identical hash under a
+#   different name to get past the gate — which is the shape of a gate being
+#   worked around rather than satisfied.
+#
+# So the rule is precise: `rnd` may not appear, and `seed` may appear only if
+# `hueFor` is its sole caller. That keeps the structural proof — nothing on
+# the page can manufacture a NUMBER — while allowing the one use that
+# manufactures a COLOUR.
+RND_RE = re.compile(r"\b(?:this\.)?rnd\s*\(")
+# ⚠️ `this.seed(` AND NOT `seed(`. A bare `seed(` also matches the METHOD
+# DEFINITION — `seed(str) {` — so counting it reported two callers on a page
+# that has one, and the gate failed itself. Inside a class body every real
+# call is `this.seed(...)`; a bare one would have to be a free function, which
+# the delivery does not have and which would show up as an undefined-name
+# error long before this gate ran.
+SEED_CALL_RE = re.compile(r"\bthis\.seed\s*\(")
+SEED_OK_RE = re.compile(r"hueFor\s*\([^)]*\)\s*\{[^}]*\bthis\.seed\s*\(")
+
+
+# ── comments are not the page ────────────────────────────────────────────
+#
+# The port's rulings explain themselves in the emitted source, and a good
+# explanation QUOTES the value it removed — `teacher_rulings.py` documents the
+# read-only toast by naming it. Scanning raw bytes therefore reported the
+# ruling's own prose as the defect the ruling had fixed.
+#
+# Stripped rather than allowlisted: an allowlist would need a row per comment
+# and would drift. What a teacher can read is what is left after the comments
+# come out.
+_HTML_COMMENT = re.compile(r"<!--.*?-->", re.S)
+_BLOCK_COMMENT = re.compile(r"/\*.*?\*/", re.S)
+_LINE_COMMENT = re.compile(r"^[ \t]*//.*$", re.M)
+
+
+def strip_comments(body):
+    body = _HTML_COMMENT.sub(" ", body)
+    body = _BLOCK_COMMENT.sub(" ", body)
+    return _LINE_COMMENT.sub(" ", body)
 
 
 def check_page(path, c):
     """Problems, as strings, for one built page."""
-    body = open(path, encoding="utf-8").read()
+    body = strip_comments(open(path, encoding="utf-8").read())
     problems = []
 
     for s in c["strings"]:
@@ -415,11 +472,24 @@ def check_page(path, c):
                 "— this one will be wrong for every school. It needs a "
                 "binding, not a constant." % s)
 
-    for m in GENERATOR_RE.finditer(body):
+    if RND_RE.search(body):
         problems.append(
-            "still calls %s( — the FNV hash that manufactures every invented "
-            "number in the delivery. Whatever else was replaced, a page "
-            "carrying this can still invent." % m.group(1))
+            "still calls rnd( — the wrapper that returns a number in a range. "
+            "Its only possible use is to make a value up, so any call at all "
+            "is a leak. Whatever else was replaced, a page carrying this can "
+            "still invent.")
+
+    # `seed` is allowed for `hueFor` and for nothing else. Counted rather than
+    # merely detected: one call is the avatar colour, two is something new.
+    n_seed = len(SEED_CALL_RE.findall(body))
+    n_ok = 1 if SEED_OK_RE.search(body) else 0
+    if n_seed - n_ok > 0:
+        problems.append(
+            "calls seed( %d time(s) and only %d of them is hueFor's avatar "
+            "colour. seed is FNV-1a — the hash rnd is built on — and any "
+            "caller other than hueFor is manufacturing something. Name what "
+            "the extra caller is for, or route it through real data."
+            % (n_seed, n_ok))
 
     return problems
 
