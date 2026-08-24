@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How far is a light year? · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Space</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">How far is a light year?</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Space · Quantitative</p>
+        <h1>How far is a light year?</h1>
+        <p class="ks3-bigq">It sounds like a length of time and it is a distance. Getting that one word straight is the difference between understanding the scale of the universe and having no idea at all.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Proxima Centauri is 4.24 light years away.</h2>
+        <p class="ks3-hook-prompt">That is the nearest star to the Sun, and the sentence is the standard way of saying how far off it is.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What kind of quantity is a light year?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Light travels at <strong>300 000 000 metres every second</strong> in a vacuum — fast enough to go round the Earth seven and a half times while you say the word. Nothing carries information faster, and the speed does not vary.</p>
+        <p>Because the speed is fixed, a time of travel and a distance are two ways of saying the same thing. A <strong>light year</strong> is the distance light covers in one year: about 9 460 000 000 000 kilometres, or 9.46 × 10^15 m. A light second, a light minute and a light hour work the same way, and are useful closer to home.</p>
+        <p>The unit does two jobs at once. It gives a distance in a number you can hold in your head, and it tells you how old the light is. Andromeda is 2.5 million light years away, so the light arriving tonight left before there were people. Looking out into space is looking back in time, and there is no way to do one without the other.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <dc-import name="Bench" eyebrow="{{ bEyebrow }}" heading="{{ bHeading }}" lead="{{ bLead }}" progress="{{ bProgress }}" gate-prompt="{{ bGatePrompt }}" gate-options="{{ bGateOptions }}" open="{{ bOpen }}" tabs-label="{{ bTabsLabel }}" tabs="{{ bTabs }}" slider-id="{{ bSliderId }}" slider-label="{{ bSliderLabel }}" slider-value-label="{{ bSliderValueLabel }}" slider-min="{{ bSliderMin }}" slider-max="{{ bSliderMax }}" slider-value="{{ bSliderValue }}" on-slider="{{ bOnSlider }}" bars-caption="{{ bBarsCaption }}" bars-alt="{{ bBarsAlt }}" bars="{{ bBars }}" readouts="{{ bReadouts }}" note="{{ bNote }}" hint-size="100%,760px"></dc-import>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Distance = speed of light × time</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. The distance d sits above a dividing line; the speed of light c and the time t sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 62px; fill: var(--ks3-ink);">d</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">c</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">t</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">d</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">c</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">t</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">m/s with s gives m · km/s with s gives km</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">d</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">distance the light has travelled</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">c</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">speed of light in a vacuum, 3.0 × 10^8</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m/s</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">t</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">time the light has been travelling</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 22px;">
+          <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+        </div>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A light year is a distance: how far light travels in one year, about 9.46 × 10^15 m. Distance = speed of light × time, so a travel time and a distance are the same statement. Light takes time to arrive, so everything you see in space is seen as it was.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;A light year is a very long time.&rdquo;</p>
+        <p>It is a distance, and the giveaway is the sentence it appears in. "The star is four light years away" is a statement about how far, in exactly the same grammar as "the shop is two miles away". The year in the name is describing the light’s journey, not yours. The confusion is common enough that science fiction gets it wrong regularly, and once you notice it you will not be able to stop noticing it.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Because light is so fast, we see distant things as they are now.&rdquo;</p>
+          <p>Light is fast compared with everything on Earth and slow compared with the size of space. The Sun you see is eight minutes and nineteen seconds old; if it stopped shining you would carry on seeing it for that long. Proxima Centauri is seen as it was four years ago and Andromeda as it was before the first humans. For a galaxy at the edge of what telescopes can reach, the light is older than the Earth.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Light travels at 300 000 000 m/s in a vacuum, and a light year is the distance it covers in one year — about 9.46 × 10^15 m, or 9.5 million million kilometres. It is a unit of distance, not of time, and it is used because distances in space are unmanageable in kilometres. Because light takes time to arrive, every observation is of the past: the Sun is seen as it was 8 minutes ago, Proxima Centauri as it was 4.24 years ago, and Andromeda as it was 2.5 million years ago.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The delay is a working engineering problem, not a curiosity. A signal to a Mars rover takes between 4 and 24 minutes each way, so nothing there can be driven live; the rover is sent a plan and left to carry it out, with onboard software to stop it falling into anything. The Voyager 1 probe is over 22 light hours out, and a round trip of instructions and confirmation takes nearly two days.</p>
+          <p>The speed of light is not a speed limit that happens to be very high; it is built into the structure of space and time. Nothing carrying information can exceed it, which is why the nearest star is genuinely out of reach — the fastest object humans have ever launched would take about 70 000 years to cover those 4.24 light years. Every serious proposal for interstellar travel is really a proposal about getting closer to that limit.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p12-05-seasons-and-the-tilt.html">Seasons and the tilt<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next unit</h2>
+          <ul>
+            <li><a href="../index.html">Nothing — this is the last physics lesson<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p12-04-the-sun-stars-and-galaxies.html">The Sun, stars and galaxies<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p7-01-light-travels.html">Light travels<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p3-01-speed.html">Speed<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The scale of the universe in astronomical units, light years and parsecs, red shift and the recession of distant galaxies, and the finite age of the observable universe.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a light travel time and want the distance in metres?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The speed of light is taken as 3.0 × 10^8 m/s; the exact value is 299 792 458 m/s by definition. Light travel times are current accepted figures: the Moon 1.28 s, the Sun 499 s, Neptune about 15 000 s at mean distance, Proxima Centauri 4.24 years and Andromeda about 2.5 million years. The Moon, Neptune and Mars distances vary substantially over their orbits, so the figures are means rather than fixed values. One light year is taken as 9.461 × 10^15 m.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A year that is a distance', short: 'HOOK' },
+  { id: 's-bench', label: 'Five light journeys', short: 'BENCH' },
+  { id: 's-formula', label: 'Triangle and five steps', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];;
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && s.touched;
+  if (id === 's-formula') return !!s.cfifaOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const TABS = [
+  { label: 'The Moon', name: 'the Moon', t: 1.28, unit: 's' },
+  { label: 'The Sun', name: 'the Sun', t: 499, unit: 's' },
+  { label: 'Neptune', name: 'Neptune', t: 15000, unit: 's' },
+  { label: 'Proxima Centauri', name: 'Proxima Centauri', t: 1.338e8, unit: 's' },
+  { label: 'Andromeda', name: 'the Andromeda galaxy', t: 7.889e13, unit: 's' }
+];
+const SLIDER = [];
+const COVERS = { d: 'd = c × t', c: 'c = d ÷ t', t: 't = d ÷ c' };
+const HOOK_OPTIONS = ["A long time — about twelve months","A distance — how far light gets in a year","A speed — how fast light travels","A brightness — how much light a star gives out"];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'Light takes 500 s to reach the Earth from the Sun, and travels at 3.0 × 10^8 m/s. How far away is the Sun?',
+    options: [
+      { text: '1.5 × 10^11 m', correct: true },
+      { text: '6.0 × 10^5 m — divide the speed by the time', correction: 'Cover d on the triangle and c sits beside t, so you multiply. Dividing gives you a speed or a time, not a distance.' },
+      { text: '1.5 × 10^11 s — the answer is in seconds', correction: 'The number is right and the unit is wrong. Metres per second times seconds leaves metres.' },
+      { text: '500 light seconds, which cannot be converted to metres', correction: '500 light seconds is right, and it converts perfectly well — multiply by the speed of light and you get 1.5 × 10^11 m.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A spacecraft is described as being able to reach a star "in four light years". What is wrong with that?',
+    options: [
+      { text: 'A light year is a distance, not a time. The sentence says the craft can travel four light years, without saying how long it would take — which at current speeds is about 70 000 years.', correct: true },
+      { text: 'Nothing is wrong — a light year is a unit of time.', correction: 'A light year is how far light travels in a year. The year in the name describes the light, not the journey.' },
+      { text: 'It is wrong because no star is four light years away.', correction: 'Proxima Centauri is 4.24 light years away. The problem is with the unit, not the number.' },
+      { text: 'It is wrong because nothing can travel a whole light year.', correction: 'Light travels one every year, and starlight crosses far more than that. The error is treating a distance as a duration.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain what a light year is and why astronomers use it instead of kilometres.',
+    fieldLabel: 'Your explanation', placeholder: 'A light year is the distance…',
+    criteria: [
+      'Says a light year is a distance, not a time.',
+      'Says it is how far light travels in one year, at 300 000 000 m/s.',
+      'Gives the figure — about 9.5 million million kilometres.',
+      'Says distances in kilometres run to unmanageable numbers of digits.',
+      'Says the light year also tells you how long ago the light set out, which the kilometre figure does not.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A rover on Mars is between 4 and 24 light minutes from Earth depending on where the two planets are. Explain why it cannot be driven with a joystick, and what engineers do instead.',
+    fieldLabel: 'Your answer', placeholder: 'A command sent from Earth takes…',
+    criteria: [
+      'Says a command takes between 4 and 24 minutes to arrive.',
+      'Says the picture confirming what happened takes the same again to come back.',
+      'Says the round trip is therefore up to about 48 minutes.',
+      'Says the rover could have driven into a hazard long before any correction arrived.',
+      'Says engineers send a plan for the rover to carry out on its own, with onboard hazard detection, rather than steering it live.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    active: 0, hookChoice: null, gate: null, tab: 1, sv: 0,
+    cover: 'd', cfifaOpen: false, touched: false,
+    answers: { r1: null, r2: null }, text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] }
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const ci = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === ci, isWrong: done && chosen !== ci,
+          feedbackClass: 'ks3-feedback ' + (chosen === ci ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === ci ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === ci ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isC = done && i === ci;
+            const isW = done && i === chosen && i !== ci;
+            let cls = 'ks3-option';
+            if (done) cls += isC ? ' is-correct' : (isW ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isC, isWrong: isW, showLetter: !isC && !isW, disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+
+  hookVals() {
+    const s = this.state;
+    return {
+      hookOptions: HOOK_OPTIONS.map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: "A distance. It is how far light travels in one year, and light is fast enough that the answer is about 9.5 million million kilometres. The word \"year\" in the name is doing the same job as the word \"hour\" in \"a two-hour drive\" — it is a way of saying how far, by saying how long it takes something to get there at a known speed. Anyone who says a spacecraft will arrive in four light years has turned a distance back into a time by mistake."
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const T = TABS[s.tab];
+    const V = SLIDER.length ? SLIDER[s.sv] : null;
+    const C = 3.0e8;
+    const sliderLabel = '';
+    const d = (t) => t * C;
+    const fmtT = (t) => t < 60 ? t.toFixed(2) + ' s' : (t < 3600 ? (t / 60).toFixed(1) + ' minutes' : (t < 86400 ? (t / 3600).toFixed(1) + ' hours' : (t < 3.156e7 ? (t / 86400).toFixed(0) + ' days' : (t / 3.156e7 >= 1e6 ? ((t / 3.156e7) / 1e6).toFixed(2) + ' million years' : (t / 3.156e7).toFixed(2) + ' years'))));
+    const fmtD = (m) => m >= 9.461e15 ? (m / 9.461e15).toFixed(2) + ' light years' : (m / 1000 >= 1e9 ? (m / 1e12).toFixed(2) + ' million km' : (m / 1000).toLocaleString('en-GB', { maximumFractionDigits: 0 }) + ' km');
+    const bars = TABS.map((x) => ({
+      label: x.label, value: fmtT(x.t),
+      pct: Math.max(4, Math.min(100, ((Math.log10(x.t) + 1) / 15) * 100)),
+      tone: x === T ? 'var(--ks3-alert)' : 'var(--ks3-blue-light)',
+      sub: fmtD(d(x.t))
+    }));
+    const readouts = [
+      { label: 'Light takes', value: fmtT(T.t), sub: 'to reach you from ' + T.name },
+      { label: 'So the distance is', value: fmtD(d(T.t)), sub: '300 000 000 m/s × the time' },
+      { label: 'In metres', value: d(T.t).toExponential(2).replace('e+', ' × 10^') + ' m', sub: 'the same number, written out' },
+      { label: 'You are seeing it', value: 'as it was ' + fmtT(T.t) + ' ago', sub: 'there is no other way to see anything' }
+    ];
+    const barsAlt = 'Five bars on a ten-times scale showing light travel time from the Moon, the Sun, Neptune, Proxima Centauri and Andromeda.';
+    const note = 'Light from ' + T.name + ' takes ' + fmtT(T.t) + ' to arrive, and because it travels at a fixed 300 000 000 m/s that time converts straight into a distance of ' +
+      fmtD(d(T.t)) + '. This is why astronomers measure space in light years rather than kilometres: the kilometre figures run to fifteen digits and tell you nothing you can picture, while "4.24 light years" tells you both how far and how long ago at once. ' +
+      'Every bar is also a delay. Nothing you see anywhere is current — you are simply close enough to most things for the delay not to matter.';
+  
+    return {
+      bEyebrow: "At the bench · five journeys, one speed",
+      bHeading: "Everything here is measured by how long light takes.",
+      bLead: "Pick something and see how long its light has been travelling to reach you. Because light has one fixed speed, that time is also a distance — and it is also a look into the past.",
+      bProgress: s.touched ? 'Controls live' : 'Change a control to begin',
+      bGatePrompt: "Commit first. A star is 30 light years away. What are you seeing when you look at it?",
+      bGateOptions: ["The star as it is right now","The star as it was 30 years ago","The star as it will be in 30 years","Nothing — 30 light years is too far to see"].map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      bOpen: s.gate !== null,
+      bTabsLabel: "What you are looking at",
+      bTabs: TABS.map((t, i) => ({
+        label: t.label, pressed: s.tab === i, style: this.seg(s.tab === i, true),
+        onClick: () => this.setState({ tab: i, touched: true })
+      })),
+      bSliderId: "bench-slider",
+      bSliderLabel: "",
+      bSliderValueLabel: sliderLabel,
+      bSliderMin: 0, bSliderMax: Math.max(0, SLIDER.length - 1), bSliderValue: s.sv,
+      bOnSlider: (e) => this.setState({ sv: Number(e.target.value), touched: true }),
+      bBarsCaption: "How long light has been travelling — each bar step is ten times the one before",
+      bBarsAlt: barsAlt, bBars: bars, bReadouts: readouts, bNote: note
+    };
+  }
+
+  coverVals() {
+    const s = this.state;
+    return {
+      coverResult: COVERS[s.cover],
+      coverTop: s.cover === 'd',
+      coverLeft: s.cover === 'c',
+      coverRight: s.cover === 't',
+      coverTabs: ["d","c","t"].map((c) => ({
+        label: 'Cover ' + c, pressed: s.cover === c,
+        style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (s.cover === c ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+        onClick: () => this.setState({ cover: c })
+      })),
+      onCfifaOpen: () => this.setState({ cfifaOpen: true }),
+      cfifaExamples: [
+        { tab: 'Nothing to convert', head: 'Light takes 1.28 s to reach us from the Moon. How far away is it?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '300 000 000 m/s stays as it is · 1.28 s stays 1.28 s',
+              note: 'The speed is in metres per second and the time is in seconds, so there is nothing to convert.' },
+            { letter: 'F', label: 'Formula', line: 'd = c × t', note: 'Cover d on the triangle: c sits beside t, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'd = 300 000 000 m/s × 1.28 s', note: 'The speed of light in a vacuum, which space very nearly is.' },
+            { letter: 'F', label: 'Fine-tune', line: '300 000 000 × 1.28 = 384 000 000', note: 'Metres per second times seconds leaves metres.' },
+            { letter: 'A', label: 'Answer', line: 'd = 384 000 000 m', note: 'Which is 384 000 km — the familiar figure for the Moon.' }
+          ] },
+        { tab: 'Convert first', head: 'Light takes 8.3 minutes to reach us from the Sun. How far away is it?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '8.3 min × 60 = 498 s',
+              note: 'The speed is metres per second, so the time has to be in seconds before it can multiply.' },
+            { letter: 'F', label: 'Formula', line: 'd = c × t', note: 'Cover d on the triangle: c sits beside t, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'd = 300 000 000 m/s × 498 s', note: 'The converted time goes in. The 8.3 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '300 000 000 × 498 = 149 400 000 000', note: 'Metres per second times seconds leaves metres.' },
+            { letter: 'A', label: 'Answer', line: 'd = 1.494 × 10^11 m', note: 'Insert 8.3 instead of 498 and the Sun comes out sixty times too close — nearer than Venus.' }
+          ] }
+      ],
+      cfifaQuestions: (function (s, T, V) {
+        const C = 3.0e8;
+        const d = T.t * C;
+        const fmtT = (t) => t < 60 ? t.toFixed(2) + ' s' : (t < 3600 ? (t / 60).toFixed(1) + ' minutes' : (t / 3.156e7).toFixed(2) + ' years');
+        return [
+          { tab: 'Question 1', id: 'p1206q1',
+            head: 'Your object: ' + T.name + ', whose light takes ' + T.t.toExponential(2).replace('e+', ' × 10^') + ' s to arrive.',
+            steps: [
+              { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+                line: 'the speed is in m/s · the time is already in seconds',
+                note: 'Metres per second multiplied by seconds gives metres, so there is nothing to convert.' },
+              { letter: 'F', label: 'Formula', line: 'd = c × t', note: 'Cover d on the triangle: c sits beside t, so you multiply.' },
+              { letter: 'I', label: 'Insert', line: 'd = 3.0 × 10^8 m/s × ' + T.t.toExponential(2).replace('e+', ' × 10^') + ' s', note: 'The speed of light in a vacuum.' },
+              { letter: 'F', label: 'Fine-tune', line: '3.0 × ' + (T.t / Math.pow(10, Math.floor(Math.log10(T.t)))).toFixed(2) + ' = ' + (3.0 * (T.t / Math.pow(10, Math.floor(Math.log10(T.t))))).toFixed(2) + ', and the powers add', note: 'Metres per second times seconds leaves metres.' },
+              { letter: 'A', label: 'Answer', line: 'd = ' + d.toExponential(2).replace('e+', ' × 10^') + ' m', note: 'Which is ' + (d / 9.461e15 >= 0.01 ? (d / 9.461e15).toFixed(2) + ' light years.' : (d / 1000).toLocaleString('en-GB', { maximumFractionDigits: 0 }) + ' km.') }
+            ],
+            close: 'The five lines give the distance to ' + T.name + '. Pick another object and only the time changes — the speed never does.' },
+          { tab: 'Question 2', id: 'p1206q2',
+            head: 'A radio signal takes 22 minutes to reach a probe near Mars. How far away is the probe?',
+            steps: [
+              { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+                line: '22 min × 60 = 1320 s',
+                note: 'The speed is in metres per second, so the time has to be in seconds first. Radio travels at the speed of light.' },
+              { letter: 'F', label: 'Formula', line: 'd = c × t', note: 'Cover d on the triangle: c sits beside t, so you multiply.' },
+              { letter: 'I', label: 'Insert', line: 'd = 300 000 000 m/s × 1320 s', note: 'The converted time goes in. The 22 never does.' },
+              { letter: 'F', label: 'Fine-tune', line: '300 000 000 × 1320 = 396 000 000 000', note: 'Metres per second times seconds leaves metres.' },
+              { letter: 'A', label: 'Answer', line: 'd = 3.96 × 10^11 m', note: 'Insert 22 instead of 1320 and the probe comes out closer than the Moon.' }
+            ],
+            close: 'The five lines give 3.96 × 10^11 m — about 396 million km, and the reason a rover cannot be driven with a joystick.' }
+        ];
+      })(this.state, TABS[this.state.tab], SLIDER.length ? SLIDER[this.state.sv] : null)
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(), this.ladderVals(), this.hookVals(), this.benchVals(), this.coverVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+/* 3D Studio tokens — values lifted verbatim from the frozen reference.
+   Font-face rules live in fonts.css (split for MRB-186 design-sync: the
+   converter ships tokens; the app ships its own font URLs). */
+
+:root {
+  /* type */
+  --st-display: 'Bricolage Grotesque', sans-serif;
+  --st-ui: 'Instrument Sans', system-ui, sans-serif;
+  --st-mono: 'DM Mono', ui-monospace, monospace;
+
+  /* cream world (explore) */
+  --st-ground: #FBF3E6;      /* page ground */
+  --st-paper: #FFFDF8;       /* cards, panel, buttons on cream */
+  --st-ink: #1A1714;         /* near-black ink — canonical --ink */
+  --st-body: #3D352C;        /* long-form body on paper */
+  --st-muted: #6E655D;       /* secondary text — canonical --ks3-ink-faint */
+  --st-caption: #7A6E5F;     /* captions, eyebrows, mono labels — 4.51:1 on ground */
+  --st-faint: #7B6E5C;       /* library captions — 4.51:1 on ground */
+  --st-ghost: #7D6D55;       /* counts, dimmest legible — 4.55:1 on ground */
+  --st-rule: #E0D2B9;        /* hairlines on cream — canonical --ks3-rule */
+  --st-rule-soft: #EBE0CC;   /* hairlines on paper */
+  --st-rule-fact: #F0E6D3;   /* key-fact row rules */
+  --st-rule-strong: #D6C6A8; /* section rules, kbd chips */
+  --st-edge: #D9C9AC;        /* frame borders */
+  --st-btn-border: #DECCAE;  /* outline buttons on paper */
+  --st-crumb-bg: #F7EDDC;    /* breadcrumb strip */
+  --st-crumb-sep: #CBBA9E;
+  --st-seg-bg: #EBDDC5;      /* segmented control trough */
+  --st-note-bg: #F5EAD6;     /* did-you-know / dashed notes */
+  --st-note-border: #D8C7A9;
+  --st-chip-tint: #FCEFE9;   /* accent-tinted chip fill */
+  --st-chip-tint-border: #F0C9B8;
+  --st-num-well: #F2E8D6;    /* numbered square wells */
+
+  /* accent */
+  --st-accent: #E4572E;      /* the orange — large/graphic use */
+  --st-accent-text: #A93411; /* the only orange for small text — canonical --ks3-accent-text */
+  --st-hatch-b: #B33E1C;     /* hatch strip second stripe */
+
+  /* dark room (retrieval + stage viewport) */
+  --st-room: #15110C;        /* retrieval page ground */
+  --st-room-panel: #1E1913;  /* question panel */
+  --st-room-well: #120F0B;   /* input trough */
+  --st-room-raise: #2A2119;  /* selected row in dark panel */
+  --st-room-border: #2E271F;
+  --st-room-line: #3E362C;   /* borders on dark */
+  --st-room-line-soft: #332C24;
+  --st-room-line-mid: #3A322A;
+  --st-room-line-strong: #4A4036;
+  --st-room-text: #B7AA98;   /* readable text on dark */
+  --st-room-muted: #8E8272;  /* captions on dark */
+  --st-room-faint: #7E7263;
+  --st-room-hint: #8A7E6E;   /* stage hint line */
+  --st-room-body: #A99B89;   /* callout detail text */
+  --st-room-note: #C9BDAC;   /* why-it-matters body */
+  --st-ember: #F2946E;       /* accent text on dark */
+  --st-ember-strong: #F0885F;
+  --st-cream: #FBF3E6;       /* cream as used ON dark surfaces */
+
+  /* stage dressing */
+  --st-viewport-edge: #C9B896;
+  --st-paper-grid: #F2E8D6;
+  --st-plate-line: #B6AC9C;
+
+  /* placeholder thumbs */
+  --st-thumb-a: #E3D7C1;
+  --st-thumb-b: #F2E8D6;
+  --st-thumb-active-a: #DFD1B7;
+  --st-thumb-active-b: #EFE3CC;
+  --st-thumb-border: #DCCDB2;
+
+  /* shape + shadow */
+  --st-r-frame: 14px;
+  --st-r-stage: 12px;
+  --st-r-card: 11px;
+  --st-r-control: 10px;
+  --st-r-chip: 9px;
+  --st-r-btn: 9px;
+  --st-shadow-frame: 0 26px 64px -32px rgba(40, 26, 10, 0.5);
+  --st-shadow-pop: 0 10px 24px -10px rgba(0, 0, 0, 0.8);
+  --st-shadow-callout: 0 22px 44px -18px rgba(0, 0, 0, 0.95);
+}

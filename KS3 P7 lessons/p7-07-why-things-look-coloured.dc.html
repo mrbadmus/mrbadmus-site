@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why things look coloured · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Light</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Why things look coloured</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Light · Contrast</p>
+        <h1>Why things look coloured</h1>
+        <p class="ks3-bigq">A red jumper under a green lamp is still a red jumper and looks almost black. Colour turns out not to be something an object has, but something it does to the light that lands on it.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Take a red jumper into a room lit only in green.</h2>
+        <p class="ks3-hook-prompt">A disco lamp fitted with a deep green filter is the only light in the room. A white shirt looks green. A green bag looks green. A red jumper looks almost black, and so does a blue one.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Nothing has been done to the jumper. Why has it stopped being red?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>An object that is not itself a source of light has no colour of its own to give off. What it does is take the light that lands on it and split it three ways: some is <strong>reflected</strong> back — scattered in all directions, if the surface is rough — some is <strong>absorbed</strong>, its energy taken up by the material, and some may be transmitted through. What reaches your eye is only the reflected part, and the colour you see is the colour of <em>that</em>.</p>
+        <p>A red jumper is red in white light because it absorbs most of the other frequencies and reflects mostly the red ones. Notice what that means: the red has to be in the light in the first place. Put the same jumper under a green lamp and there is no red arriving to reflect, and the green that is arriving is exactly what the dye is good at absorbing. Almost nothing leaves the surface, so it looks nearly black.</p>
+        <p>A white object reflects all frequencies about equally, so it takes on the colour of whatever is lighting it. A black object absorbs nearly all of them, whatever they are, which is why it stays black under any lamp — and why it warms up in sunlight, since the absorbed energy has to go somewhere.</p>
+      </section>
+
+      <section id="s-lamp" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · one dark room, one lamp, five objects</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Change the object. Change the light. Two different questions.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A single lamp with a filter in a room with no other light, and one object under it. Set what the object is, and set what colour the lamp is putting out.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A red jumper is put under a lamp giving out only green light. What does it look like?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The object</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ objTabs }}" as="t" hint-placeholder-count="5">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The light falling on it</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ lampTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 380" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M120 40 h150 l-40 70 h-70 Z" style="fill: #C6B9A7; stroke: #8C8177; stroke-width: 4; stroke-linejoin: round;"></path>
+                  <text x="120" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">LAMP</text>
+                  <path d="M205 114 L440 216" style="{{ inStyle }}"></path>
+                  <rect x="440" y="150" width="200" height="140" rx="10" style="{{ objStyle }}"></rect>
+                  <path d="M640 216 L880 130" style="{{ outStyle }}"></path>
+                  <circle cx="920" cy="118" r="26" style="fill: none; stroke: #C6B9A7; stroke-width: 5;"></circle>
+                  <circle cx="920" cy="118" r="9" style="fill: #C6B9A7;"></circle>
+                  <text x="880" y="80" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">EYE</text>
+                </svg>
+                <span style="position: absolute; left: 12%; right: 3%; top: 91.5%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); letter-spacing: .08em; color: #C6B9A7; white-space: normal; pointer-events: none;">{{ absorbCaption }}</span>
+                <span style="position: absolute; left: 4%; right: 4%; top: 84%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); letter-spacing: .08em; color: #C6B9A7; text-align: right; white-space: normal; pointer-events: none;">{{ objCaption }}</span>
+                <span style="position: absolute; left: 24%; top: 24%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ inLabel }}</span>
+                <span style="position: absolute; left: 68%; top: 24%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ outLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Falling on the object</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ inLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Reflected back</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ outLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Absorbed</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ absLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">its energy warms the object slightly</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What you see</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ seenWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-grid" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Every object under every lamp</h2>
+        <div style="margin-top: 18px; overflow-x: auto; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 4px;">
+          <table style="border-collapse: collapse; width: 100%; min-width: 640px; font-size: 18px;">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">The object</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">In white light</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Under a red lamp</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Under a green lamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">White shirt — reflects almost everything</th><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">White</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Red</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Green</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Red jumper — reflects red, absorbs the rest</th><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Red</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Red</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Almost black</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Green bag — reflects green, absorbs the rest</th><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Green</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Almost black</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Green</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Blue book — reflects blue, absorbs the rest</th><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Blue</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Almost black</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Almost black</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; font-weight: 700;">Black card — absorbs almost everything</th><td style="padding: 14px 16px;">Black</td><td style="padding: 14px 16px;">Black</td><td style="padding: 14px 16px;">Black</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">Read across a row and you are changing the light. Read down a column and you are changing the object. Every cell is the same one-line rule: what you see is what is both <em>present in the light</em> and <em>not absorbed by the surface</em>. Where those two do not overlap, the answer is black.</p>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">The colour of an object is what it does to the light landing on it: the frequencies it reflects reach your eye and the rest are absorbed, their energy warming it slightly. What you see is only what is both present in the light and reflected by the surface. A red object under a green lamp looks almost black because there is no red arriving to reflect, and a white object takes the colour of whatever is lighting it.</p>
+        </div>
+
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;An object has a colour, and the light just lets you see it.&rdquo;</p>
+        <p>Colour is a relationship between three things \u2014 the light arriving, the surface, and your eye \u2014 and not a property sitting in the object waiting to be revealed. What a red jumper actually has is a dye that absorbs most frequencies and reflects the red ones, and that is a fact about what it does rather than about what it is. Change the light and the answer changes with it. This is not a trick of the disco lamp: the same jumper looks slightly different under a supermarket strip light, a candle and midday sunlight, because those three are not putting out the same mixture.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A red filter turns white light red.&rdquo;</p>
+          <p>It removes everything else. A filter is a subtracter: it lets its own colour through and absorbs the rest, which is why the light coming out of one is always dimmer than the light going in, and why stacking a red filter and a green one gives you almost nothing rather than yellow. The energy that does not come out has not been converted into red \u2014 it has been absorbed by the filter, which is why stage lighting gels get warm.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>An object that is not a source of light reflects some of the frequencies landing on it and absorbs the rest, and the energy it absorbs warms it slightly. What you see is only the reflected part, so the colour of an object depends on the light as well as on the surface: it is whatever is both present in the light and not absorbed. A red object under a green lamp looks almost black, a white object takes the colour of the lamp, and a black object absorbs nearly everything and stays black.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Once colour is understood as absorption, a lot of biology reads differently. A leaf is green because chlorophyll absorbs red and blue strongly and reflects green — in other words, green is the part of sunlight the plant is worst at using, and it is thrown away. Flowers advertise with frequencies their pollinators can see, and many of them carry ultraviolet patterns that guide bees to the nectar and are completely invisible to us. And a polar bear is not white: its hairs are hollow and colourless, and scatter every frequency that lands on them.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p7-06-colour-and-the-spectrum.html">Colour and the spectrum<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next unit</h2>
+          <ul>
+            <li><a href="p8-01-current-and-circuits.html">Current and circuits<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p7-02-reflection-mirrors-and-scattering.html">Reflection: mirrors and scattering<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b7-02-leaves-built-for-the-job.html">Leaves built for the job<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Absorption, transmission and reflection at a surface for different frequencies, colour filters, and why objects appear black under some illuminations.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got an object and a coloured lamp, and want to work out what it will look like?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model and deliberately simplified. Real light and real dyes involve the whole continuous spectrum rather than three separate colours: a red jumper reflects a band of frequencies around red and some of its neighbours rather than red alone, and a red lamp puts out a band rather than a single frequency, so a real red object under a real green lamp looks very dark rather than perfectly black. Almost black is therefore the honest answer and is used throughout. The colours on screen can only approximate the light being described. The room is treated as having no other light in it, which is what makes the effect this strong; in a room with any white light left, every object shows some of its usual colour.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Red jumper, green room', short: 'JUMPER' },
+  { id: 's-lamp', label: 'One lamp, five objects', short: 'BENCH' },
+  { id: 's-grid', label: 'Every combination', short: 'GRID' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-lamp') return s.gate !== null && (s.touched.obj || s.touched.lamp);
+  if (id === 's-grid') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const OBJS = [
+  { label: 'White shirt', refl: ['red', 'green', 'blue'], hex: '#F2ECDD', desc: 'reflects all the visible frequencies about equally' },
+  { label: 'Red jumper', refl: ['red'], hex: '#C0452B', desc: 'reflects the red frequencies and absorbs the rest' },
+  { label: 'Green bag', refl: ['green'], hex: '#3F7F42', desc: 'reflects the green frequencies and absorbs the rest' },
+  { label: 'Blue book', refl: ['blue'], hex: '#39599B', desc: 'reflects the blue frequencies and absorbs the rest' },
+  { label: 'Black card', refl: [], hex: '#1C1A18', desc: 'absorbs almost every frequency that lands on it' }
+];
+
+const LAMPS = [
+  { label: 'White', has: ['red', 'green', 'blue'], hex: '#F2ECDD', word: 'White light' },
+  { label: 'Red', has: ['red'], hex: '#D9563A', word: 'Red light only' },
+  { label: 'Green', has: ['green'], hex: '#5BA45C', word: 'Green light only' },
+  { label: 'Blue', has: ['blue'], hex: '#4F7DC4', word: 'Blue light only' }
+];
+
+const SEEN = { red: { word: 'Red', hex: '#C0452B' }, green: { word: 'Green', hex: '#3F7F42' }, blue: { word: 'Blue', hex: '#39599B' } };
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Apply the rule',
+    question: 'A blue book is put under a lamp giving out only red light, in a room with no other light. What does it look like?',
+    options: [
+      { text: 'Almost black, because the only light arriving is red and the book absorbs red.', correct: true },
+      { text: 'Purple, because red light mixed with a blue book gives purple.', correction: 'Nothing is being mixed. The book can only send back light that arrives, and the only light arriving is red, which this cover absorbs.' },
+      { text: 'Blue, because the book is blue whatever light is on it.', correction: 'Blue is what the cover does in white light, where blue is available to reflect. Under a red lamp there is no blue arriving for it to send back.' },
+      { text: 'Red, because objects take on the colour of the light that shines on them.', correction: 'That is true of a white object, which reflects everything. A blue book absorbs red rather than reflecting it, so almost nothing leaves the surface.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A white shirt looks green under a green lamp. Which statement is right?',
+    options: [
+      { text: 'A white surface reflects all frequencies about equally, so it sends back whatever arrives \u2014 and only green is arriving.', correct: true },
+      { text: 'The green light has dyed the shirt green for as long as the lamp is on.', correction: 'Nothing has changed about the shirt. Switch the lamp to white and it looks white again immediately, because what changed was the light and not the fabric.' },
+      { text: 'White light contains green, so the shirt was already partly green.', correction: 'That confuses the light with the surface. The shirt reflects all frequencies; which ones it can reflect depends entirely on which ones are sent to it.' },
+      { text: 'The shirt looks green because green is the only colour the human eye can see in dim light.', correction: 'The verdict is right and the reason is invented. The shirt would look red under a red lamp and blue under a blue one, at the same brightness.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Explain why a red jumper looks red in white light and almost black under a green lamp, using the words reflect and absorb.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'In white light, every frequency lands on the jumper, and\u2026',
+    criteria: [
+      'Says white light contains all the visible frequencies.',
+      'Says the jumper reflects the red frequencies and absorbs the others.',
+      'Says the reflected red light is what reaches the eye, so it looks red.',
+      'Says a green lamp sends only green light, and there is no red arriving to reflect.',
+      'Says the jumper absorbs the green that does arrive, so almost nothing leaves it and it looks black.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A supermarket lights its meat counter with lamps that put out extra red, and clothes shops are careful to light changing rooms with something close to daylight. Explain the physics behind both choices, and say why a shopper might reasonably object to the first one.',
+    fieldLabel: 'Your answer',
+    placeholder: 'What you see depends on what is in the light as well as on the surface\u2026',
+    criteria: [
+      'Says what you see depends on which frequencies are in the light as well as on what the surface reflects.',
+      'Says extra red in the lamp means more red is available for the meat to reflect, so it looks redder and fresher.',
+      'Says daylight contains all frequencies fairly evenly, so a garment reflects the same mixture it would outdoors.',
+      'Says that is why a colour chosen under shop lighting can look different in the street.',
+      'Gives a reasoned objection: the lighting changes how the meat appears without changing the meat, so the shopper is being shown something the daylight would not show.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, obj: 1, lamp: 0, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const o = OBJS[s.obj];
+    const L = LAMPS[s.lamp];
+    const out = L.has.filter((c) => o.refl.indexOf(c) >= 0);
+    const abs = L.has.filter((c) => o.refl.indexOf(c) < 0);
+    const white = out.length === 3;
+    const seenHex = out.length === 0 ? '#151312' : (white ? '#F2ECDD' : SEEN[out[0]].hex);
+    const seenWord = out.length === 0 ? 'Almost black' : (white ? 'White' : SEEN[out[0]].word);
+    const outWord = out.length === 0 ? 'nothing' : (white ? 'all of it' : out.map((c) => SEEN[c].word.toLowerCase()).join(' and '));
+    const absWord = abs.length === 0 ? 'nothing' : abs.map((c) => SEEN[c].word.toLowerCase()).join(' and ');
+    let note;
+    if (out.length === 0) {
+      note = 'Nothing that arrives can leave. ' + L.word + ' is falling on a surface that ' + o.desc +
+        ', so the ' + absWord + ' is absorbed and its energy warms the object very slightly. With no light coming back to your eye it looks almost black \u2014 not because it is black, but because the light it needs is not in the room. Switch the lamp to white and it looks ' +
+        (o.refl.length === 0 ? 'black still, because it absorbs everything.' : SEEN[o.refl[0]].word.toLowerCase() + ' again.');
+    } else if (white) {
+      note = 'This surface ' + o.desc + ', and white light contains all of them, so all of it comes back and it looks white. That is why a white object is the one that always shows you the colour of the lamp: put a green lamp on it and it looks green, because green is now all there is to send back.';
+    } else {
+      note = L.word + ' is falling on a surface that ' + o.desc + '. The ' + outWord + ' is reflected and reaches your eye' +
+        (abs.length ? ', the ' + absWord + ' is absorbed' : '') + ', so it looks ' + seenWord.toLowerCase() +
+        '. Nothing about the object changed to make that happen \u2014 what you see is whatever is both present in the light and not absorbed by the surface.';
+    }
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The green light has changed the dye in the jumper' },
+        { letter: 'B', text: 'There is no red light in the room for the jumper to reflect, and it absorbs the green' },
+        { letter: 'C', text: 'Red and green mix on the jumper to give something close to black' },
+        { letter: 'D', text: 'Your eyes cannot see red under a green light' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'A red jumper is not carrying redness around with it. It has a dye that reflects the red frequencies and absorbs the others, and it can only reflect what arrives. Under a green lamp no red arrives, and the green that does is exactly what the dye absorbs \u2014 so almost no light leaves the surface at all.',
+
+      benchProgress: (s.touched.obj || s.touched.lamp) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Red, because it is a red jumper' },
+        { letter: 'B', text: 'Almost black, because no red is arriving and it absorbs the green that is' },
+        { letter: 'C', text: 'Green, because objects take the colour of the lamp on them' },
+        { letter: 'D', text: 'Yellow, because red and green together make yellow' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      objTabs: OBJS.map((x, i) => ({
+        label: x.label, pressed: s.obj === i, style: this.seg(s.obj === i, true, false),
+        onClick: () => this.setState((st) => ({ obj: i, touched: Object.assign({}, st.touched, { obj: true }) }))
+      })),
+      lampTabs: LAMPS.map((x, i) => ({
+        label: x.label, pressed: s.lamp === i, style: this.seg(s.lamp === i, true, false),
+        onClick: () => this.setState((st) => ({ lamp: i, touched: Object.assign({}, st.touched, { lamp: true }) }))
+      })),
+      inStyle: 'fill: none; stroke: ' + L.hex + '; stroke-width: 11; stroke-linecap: round;',
+      objStyle: 'fill: ' + seenHex + '; stroke: #C6B9A7; stroke-width: 4;',
+      outStyle: out.length === 0
+        ? 'fill: none; stroke: #5C554D; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 12 12;'
+        : 'fill: none; stroke: ' + seenHex + '; stroke-width: 11; stroke-linecap: round;',
+      inLabel: L.word,
+      outLabel: out.length === 0 ? 'nothing comes back' : (white ? 'all of it comes back' : outWord + ' comes back'),
+      absLabel: absWord,
+      seenWord: seenWord,
+      objCaption: o.label.toUpperCase() + ' \u2014 ' + o.desc.toUpperCase(),
+      absorbCaption: abs.length ? 'ABSORBED HERE: ' + absWord.toUpperCase() : 'NOTHING ABSORBED AT THIS SETTING',
+      benchAlt: L.word.toLowerCase() + ' from a lamp falling on a ' + o.label.toLowerCase() + ', with ' +
+        (out.length === 0 ? 'no ray drawn leaving it towards the eye, only a dashed line.' : 'a ' + outWord + ' ray leaving it towards an eye.'),
+      benchNote: note
+    };
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

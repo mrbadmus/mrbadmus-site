@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Electromagnets · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Magnetism and electromagnetism</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Electromagnets</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Magnetism and electromagnetism · Model</p>
+        <h1>Electromagnets</h1>
+        <p class="ks3-bigq">A current makes a magnetic field. Wind the wire into a coil, drop a piece of iron down the middle, and you have a magnet with a switch.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The crane lifts a car. Then it lets go.</h2>
+        <p class="ks3-hook-prompt">A scrapyard crane swings a flat disc over a wrecked car, lowers it until it touches, and lifts the whole car clear of the ground. It swings across to a skip — and the car falls off. Nobody unhooked anything and nothing moved on the disc.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">How does it let go?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Any wire with a current in it has a magnetic field around it. Around a single straight wire that field is a set of rings, and it is weak — you need a sensitive compass right against the wire to see it at all.</p>
+        <p>Winding the wire into a <strong>coil</strong> changes that. Every turn adds its field to the turns beside it, and inside the coil they all point the same way, so the fields stack up. A coil like this is called a <strong>solenoid</strong>, and the field it makes outside itself is the same shape as a bar magnet's: it has a north end, a south end and lines that loop from one to the other.</p>
+        <p>Putting an <strong>iron core</strong> down the middle makes it dramatically stronger. The iron is magnetised by the coil's field and adds its own, many times over. Soft iron is chosen because it lets go again the moment the current stops, which steel does not.</p>
+        <p>Three things make an electromagnet stronger: <strong>more turns on the coil</strong>, <strong>more current through it</strong>, and <strong>an iron core</strong>. And one thing makes it different from every permanent magnet: <strong>switch the current off and the magnetism goes</strong>. Reverse the current and the north and south ends swap over.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a coil, a supply and a pile of paper clips</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Build one and see what it lifts.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Wind as many turns as you like, set the supply, choose what goes down the middle of the coil, and use the switch.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. An electromagnet is holding a chain of paper clips. The switch is opened. What happens to the clips?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 240px;">
+                <label for="p104t" style="display: block; margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Turns on the coil</label>
+                <input class="ks3-slider" type="range" id="p104t" min="0" max="4" step="1" value="{{ turnsValue }}" onChange="{{ onTurns }}" onInput="{{ onTurns }}">
+                <p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; font-weight: 500; color: var(--ks3-on-dark);">{{ turnsLabel }}</p>
+              </div>
+              <div style="flex: 1 1 240px;">
+                <label for="p104i" style="display: block; margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Current through it</label>
+                <input class="ks3-slider" type="range" id="p104i" min="0" max="4" step="1" value="{{ curValue }}" onChange="{{ onCur }}" onInput="{{ onCur }}">
+                <p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; font-weight: 500; color: var(--ks3-on-dark);">{{ curLabel }}</p>
+              </div>
+              <div style="flex: 1 1 300px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Down the middle</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ coreTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 200px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The switch</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ switchTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M120 120 H260 M120 120 V260 H260" style="fill: none; stroke: #C6B9A7; stroke-width: 6; stroke-linecap: round;"></path>
+                  <path d="M96 168 H144 M110 181 H130 M96 194 H144 M110 207 H130" style="fill: none; stroke: #E9DCC8; stroke-width: 6; stroke-linecap: round;"></path>
+                  <path d="{{ switchPath }}" style="fill: none; stroke: #C6B9A7; stroke-width: 6; stroke-linecap: round;"></path>
+                  <path d="{{ corePath }}" style="{{ coreStyle }}"></path>
+                  <path d="{{ coilPath }}" style="{{ coilStyle }}"></path>
+                  <path d="{{ fieldPath }}" style="{{ fieldStyle }}"></path>
+                  <path d="{{ clipPath }}" style="{{ clipStyle }}"></path>
+                  <text x="120" y="300" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: #8C8177;">SUPPLY</text>
+                  <text x="620" y="376" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: #8C8177;">PAPER CLIPS HANGING FROM THE END</text>
+                </svg>
+                <span style="{{ westStyle }}">{{ westLabel }}</span>
+                <span style="{{ eastStyle }}">{{ eastLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Paper clips held</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ clipLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ clipSub }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Field strength</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ strengthWord }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ strengthNum }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The right-hand end is</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ poleWord }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What the core is doing</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ coreWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-uses" class="ks3-block" style="background: var(--ks3-band); scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Four jobs only a switchable magnet can do</h2>
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 14px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Scrapyard crane</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">Lifts a car, then drops it on command. A permanent magnet would never let go.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Door lock</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">Holds a fire door shut while current flows. Cut the power and every door in the building is free — which is the point.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Relay</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">A small current pulls an iron arm across and closes a second, much bigger circuit. That is how a car starter is worked by a key.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Loudspeaker</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">A coil in a permanent magnet's field, driven by a current that changes thousands of times a second, pushing a cone in and out.</p>
+          </div>
+        </div>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px;">
+          <div style="flex: 1 1 300px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Stronger</p>
+            <p style="margin: 6px 0 0; font-size: 19px; font-weight: 700; line-height: 1.4;">more turns · more current · an iron core</p>
+          </div>
+          <div style="flex: 1 1 300px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Different</p>
+            <p style="margin: 6px 0 0; font-size: 19px; font-weight: 700; line-height: 1.4;">switch it off and it stops · reverse the current and the poles swap</p>
+          </div>
+        </div>
+      </section>
+
+      <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A current in a wire makes a magnetic field. Wound into a coil the fields of the turns add together, and the coil's field is the same shape as a bar magnet's. More turns, more current and an iron core each make it stronger; switching the current off removes the magnetism entirely, and reversing the current swaps the north and south ends.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;The iron core is what makes the magnetism. The coil just holds it.&rdquo;</p>
+        <p>The other way round. Take the core out and the coil still works — weakly, but it works, and a compass held at either end shows a definite north and a definite south. Leave the core in and switch off, and a soft iron core does essentially nothing. The current makes the field; the iron responds to it and multiplies it. You can prove which is which on the bench in one move: set an air core and turn the current up, and clips lift. Set an iron core and open the switch, and they fall.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Adding more turns makes it stronger because there is more wire, so more current.&rdquo;</p>
+          <p>More wire is more resistance, not more current — if anything a longer coil on the same supply carries slightly less. What extra turns give you is more contributions of field in the same place. Each turn produces its own field, all the turns are wrapped round the same middle, and inside the coil they all point the same way, so twenty turns produce roughly twenty times what one does at the same current. That is why the bench keeps turns and current as separate controls: they are two different reasons for the same result.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A current in a wire produces a magnetic field around it. Winding the wire into a coil puts many turns round the same space so their fields add, and the result has the same shape as a bar magnet's field, with a north end and a south end. A soft iron core is magnetised by that field and multiplies it many times over, and lets go again the instant the current stops. More turns, more current and an iron core each make the magnet stronger. Switching off removes the magnetism completely, and reversing the current swaps the ends over — neither of which a permanent magnet can do.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Soft iron and hard steel are the same element doing two different jobs. Soft iron takes on magnetism easily and loses it just as easily, which is exactly what a crane or a relay needs. Steel is harder to magnetise and hangs on to it, which is what a permanent magnet needs. Wrap a coil round a steel bar, run a current, switch off, and you have made a permanent magnet — one of the standard ways of making one.</p>
+          <p>Electromagnets are why an MRI scanner exists. Its main magnet is a coil of superconducting wire kept at a few degrees above absolute zero, where the wire has no resistance at all, so an enormous current runs round it for years without a supply and without heating up. The field it makes is tens of thousands of times the Earth's, which is why nothing steel goes into the room: an oxygen cylinder brought too close is pulled in hard enough to kill.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p10-03-the-earth-is-a-magnet.html">The Earth is a magnet<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p10-05-how-a-motor-works.html">How a motor works<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p10-02-magnetic-fields.html">Magnetic fields<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p10-01-magnets-and-poles.html">Magnets and poles<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p9-02-forces-between-charges.html">Forces between charges<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The field pattern round a solenoid worked out from the right-hand grip rule, and the transformer, where one coil's changing field induces a voltage in another.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check which end of a coil is north?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The number of paper clips is worked out from a simple rule in which the field goes up in proportion to the turns and to the current, and an iron core multiplies it by a fixed factor of twenty-five; a real core's multiplication depends on the iron and falls away sharply once the iron saturates, so the largest numbers here are optimistic. The plastic former is treated as having exactly the same effect as no core at all, which is right to well within anything a school bench could measure. The supply is treated as delivering whatever current is set whatever the coil, and the coil is treated as not heating up — a real coil at the top settings would get hot enough to matter within a minute. Field strength is a relative figure with the strongest setting on this bench set to 100, and no value in tesla is given because the unit is beyond this stage.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The crane lets go', short: 'CRANE' },
+  { id: 's-bench', label: 'Build one', short: 'BENCH' },
+  { id: 's-uses', label: 'Four jobs', short: 'USES' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && (s.touched.turns || s.touched.cur || s.touched.core || s.touched.sw);
+  if (id === 's-uses') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const TURNS = [10, 20, 40, 80, 160];
+const CURRENTS = [0.2, 0.5, 1.0, 2.0, 4.0];
+const CORES = [
+  { label: 'Nothing (air)', key: 'air', factor: 1, word: 'nothing at all \u2014 the coil is empty' },
+  { label: 'A plastic former', key: 'plastic', factor: 1, word: 'a plastic former' },
+  { label: 'A soft iron core', key: 'iron', factor: 25, word: 'a soft iron core' }
+];
+const SWITCHES = [
+  { label: 'Open', key: 'off' },
+  { label: 'Closed', key: 'on' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Choose the change',
+    question: 'An electromagnet holds four paper clips. You want it to hold more, and you may change one thing. Which of these will not help at all?',
+    options: [
+      { text: 'Swapping the soft iron core for a plastic one of the same size', correct: true },
+      { text: 'Winding twice as many turns onto the coil', correction: 'That does help. Every extra turn adds its own field in the same place, so doubling the turns roughly doubles the field.' },
+      { text: 'Turning the supply up so twice as much current flows', correction: 'That does help. The field a coil makes goes up with the current through it.' },
+      { text: 'Putting a soft iron core in where there was only air', correction: 'That helps enormously \u2014 it is the single biggest change available on the bench.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 Predict the switch',
+    question: 'An electromagnet with a soft iron core is holding a chain of clips. The switch is opened. What happens?',
+    options: [
+      { text: 'The clips fall, because the field goes when the current does', correct: true },
+      { text: 'The clips stay, because the iron core has become a permanent magnet', correction: 'Soft iron is chosen precisely because it does not stay magnetised. Wrap the coil round hardened steel instead and you would have a point.' },
+      { text: 'The clips stay for a while and then fall as the field slowly drains away', correction: 'There is nothing stored to drain. The field is made by the current, and when the current stops there is no field to run down.' },
+      { text: 'The clips fall, because the iron core has become a south pole', correction: 'The clips do fall, but not for that reason. There are no poles at all once the current stops \u2014 and in any case a south pole would attract them just as well as a north one.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Explain why a scrapyard crane uses an electromagnet rather than a very strong permanent magnet, and say what the iron core in it is for.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'A permanent magnet would be able to lift the car, but\u2026',
+    criteria: [
+      'Says a permanent magnet is always on and could not release the car.',
+      'Says the electromagnet is magnetic only while a current flows through its coil.',
+      'Says opening the switch stops the current, so the field goes and the car drops.',
+      'Says the iron core is magnetised by the coil and makes the field many times stronger.',
+      'Says soft iron is used because it loses its magnetism as soon as the current stops.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A fire door in a school is held open by an electromagnet on the wall, and closes by itself when the fire alarm sounds. Explain how the alarm makes the door close, and explain why this design is safer than a catch that has to be released by someone.',
+    fieldLabel: 'Your answer',
+    placeholder: 'While there is no fire, a current\u2026',
+    criteria: [
+      'Says a current flows through the electromagnet all the time the building is normal.',
+      'Says that current makes the field that holds the steel plate on the door.',
+      'Says the alarm cuts the current, so the field goes and the door is released.',
+      'Says the door then closes on its own, with no person needed.',
+      'Says a power cut or a broken wire also releases it, so the failure leaves the door safe rather than stuck open.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, turns: 2, cur: 2, core: 2, sw: 1, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  lab(xPct, topPct, colour) {
+    return 'position:absolute;left:' + xPct.toFixed(2) + '%;top:' + topPct.toFixed(2) + '%;transform:translate(-50%,-50%);' +
+      'font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(11px,1.9vw,24px);color:' + colour + ';white-space:nowrap;pointer-events:none;';
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const N = TURNS[s.turns];
+    const I = CURRENTS[s.cur];
+    const C = CORES[s.core];
+    const on = SWITCHES[s.sw].key === 'on';
+
+    const MAXF = TURNS[4] * CURRENTS[4] * 25;
+    const field = on ? N * I * C.factor : 0;
+    const rel = 100 * field / MAXF;
+    const clips = on ? Math.floor(0.004 * field) : 0;
+
+    // coil: 8 drawn loops whatever the turn count, so the drawing is a symbol
+    let coilPath = '';
+    for (let i = 0; i < 8; i++) {
+      const x = 400 + i * 34;
+      coilPath += 'M' + x + ' 232 C' + (x + 6) + ' 262 ' + (x + 28) + ' 262 ' + (x + 34) + ' 232 ' +
+        'M' + x + ' 232 C' + (x + 6) + ' 202 ' + (x + 28) + ' 202 ' + (x + 34) + ' 232 ';
+    }
+    const coilStyle = 'fill: none; stroke: ' + (on ? '#8FB7FF' : '#6E6357') + '; stroke-width: ' +
+      (on ? (3.5 + Math.min(4, I)).toFixed(1) : '4') + '; stroke-linecap: round;';
+
+    const corePath = C.key === 'air' ? 'M0 0' : 'M370 214 H710 V250 H370 Z';
+    const coreStyle = C.key === 'iron'
+      ? 'fill: #4A4139; stroke: #C6B9A7; stroke-width: 4;'
+      : C.key === 'plastic'
+        ? 'fill: #2A241E; stroke: #8C8177; stroke-width: 4; stroke-dasharray: 12 9;'
+        : 'fill: none; stroke: none;';
+
+    const switchPath = on
+      ? 'M260 120 H360 M360 120 V186'
+      : 'M260 120 H320 M340 120 V186 M320 120 L364 92';
+
+    const fieldStyle = on
+      ? 'fill: none; stroke: #6E6357; stroke-width: ' + (2 + Math.min(4, rel / 22)).toFixed(1) + ';'
+      : 'fill: none; stroke: transparent; stroke-width: 0;';
+    const fieldPath = on
+      ? 'M710 232 C800 232 810 130 540 130 C270 130 280 232 370 232 M710 232 C790 232 796 160 540 160 C284 160 290 232 370 232'
+      : 'M0 0';
+
+    let clipPath = 'M0 0';
+    if (clips > 0) {
+      const shown = Math.min(10, clips);
+      clipPath = '';
+      for (let i = 0; i < shown; i++) {
+        const y = 262 + i * 9.5;
+        clipPath += 'M' + (700 - i * 1.5) + ' ' + y + ' h34 ';
+      }
+    }
+    const clipStyle = 'fill: none; stroke: #C6B9A7; stroke-width: 5; stroke-linecap: round;';
+
+    let strengthWord;
+    if (!on) strengthWord = 'no field at all';
+    else if (rel >= 40) strengthWord = 'very strong';
+    else if (rel >= 10) strengthWord = 'strong';
+    else if (rel >= 1) strengthWord = 'moderate';
+    else if (rel >= 0.05) strengthWord = 'weak';
+    else strengthWord = 'very weak';
+
+    const poleWord = on ? 'a north pole' : 'not a pole \u2014 there is no field';
+    const coreWord = !on ? 'nothing \u2014 no current to respond to'
+      : C.key === 'iron' ? 'multiplying the coil\u2019s field'
+      : C.key === 'plastic' ? 'nothing \u2014 plastic is not magnetic'
+      : 'there is no core';
+
+    let note;
+    if (!on) {
+      note = 'The switch is open, so no current flows, and there is no magnetic field at all \u2014 not a weak one, none. Every clip has fallen off, and it makes no difference that the coil still has ' + N +
+        ' turns on it or that there is ' + C.word + ' down the middle. This is the whole difference between an electromagnet and a permanent magnet, and it is why a scrapyard crane can put a car down.';
+    } else if (C.key === 'iron') {
+      note = N + ' turns carrying ' + I.toFixed(1) + ' A, with a soft iron core, holds ' + clips + (clips === 1 ? ' paper clip' : ' paper clips') +
+        ' and reads ' + rel.toFixed(1) + ' on this scale. Take the core out and leave everything else alone and it drops to ' + (rel / 25).toFixed(1) +
+        ' \u2014 the iron is worth about twenty-five times the coil on its own here. The right-hand end is a north pole; reverse the leads at the supply and it becomes a south pole with the same strength.';
+    } else {
+      const withIron = rel * 25;
+      note = N + ' turns carrying ' + I.toFixed(1) + ' A with ' + C.word + ' holds ' + (clips === 0 ? 'no clips at all' : clips + (clips === 1 ? ' paper clip' : ' paper clips')) +
+        ' and reads ' + rel.toFixed(1) + ' on this scale. There is a real field here \u2014 a compass at either end finds a definite pole \u2014 it is simply small. ' +
+        (C.key === 'plastic'
+          ? 'The plastic former does nothing magnetic whatever; it is there to wind the wire on, and the reading is the same as it is with the coil left empty. '
+          : 'The coil is empty, and this is the field the current makes on its own. ') +
+        'Drop a soft iron core in and the same coil at the same current would read about ' + withIron.toFixed(1) + '.';
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The disc is an electromagnet, and the operator switches the current off' },
+        { letter: 'B', text: 'The disc is turned over so its south pole faces the car instead' },
+        { letter: 'C', text: 'The car is shaken loose, because a magnet cannot be switched' },
+        { letter: 'D', text: 'The magnet is worn out by the lift and has to recover between cars' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'The disc is a coil of wire with an iron core, and it is only magnetic while a current runs through it. The operator closes a switch to pick the car up and opens it to drop the car. A permanent magnet strong enough to lift a car would be a serious problem, because nothing would ever get it off again.',
+
+      benchProgress: (s.touched.turns || s.touched.cur || s.touched.core || s.touched.sw) ? 'Four controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'They all fall at once, because the field goes when the current does' },
+        { letter: 'B', text: 'They stay put, because the iron core is now a permanent magnet' },
+        { letter: 'C', text: 'They hold on for a few seconds while the field drains out of the core' },
+        { letter: 'D', text: 'The bottom ones fall and the top ones stay, because the top ones are touching the iron' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+
+      turnsValue: s.turns, turnsLabel: N + ' turns',
+      onTurns: (e) => this.setState((st) => ({ turns: Number(e.target.value), touched: Object.assign({}, st.touched, { turns: true }) })),
+      curValue: s.cur, curLabel: I.toFixed(1) + ' A',
+      onCur: (e) => this.setState((st) => ({ cur: Number(e.target.value), touched: Object.assign({}, st.touched, { cur: true }) })),
+      coreTabs: CORES.map((o, i) => ({
+        label: o.label, pressed: s.core === i, style: this.seg(s.core === i, true, false),
+        onClick: () => this.setState((st) => ({ core: i, touched: Object.assign({}, st.touched, { core: true }) }))
+      })),
+      switchTabs: SWITCHES.map((o, i) => ({
+        label: o.label, pressed: s.sw === i, style: this.seg(s.sw === i, true, false),
+        onClick: () => this.setState((st) => ({ sw: i, touched: Object.assign({}, st.touched, { sw: true }) }))
+      })),
+
+      coilPath: coilPath.trim(), coilStyle: coilStyle,
+      corePath: corePath, coreStyle: coreStyle,
+      switchPath: switchPath,
+      fieldPath: fieldPath, fieldStyle: fieldStyle,
+      clipPath: clipPath || 'M0 0', clipStyle: clipStyle,
+      westStyle: this.lab(36, 58, on ? '#8FB7FF' : '#6E6357'),
+      westLabel: on ? 'S' : '',
+      eastStyle: this.lab(72, 58, on ? '#8FB7FF' : '#6E6357'),
+      eastLabel: on ? 'N' : '',
+
+      clipLabel: on ? String(clips) : '0',
+      clipSub: on ? (clips === 0 ? 'not enough to lift even one' : 'hanging in a chain') : 'the switch is open',
+      strengthWord: strengthWord,
+      strengthNum: on ? rel.toFixed(1) + ' where 100 is the strongest setting here' : 'zero, not merely small',
+      poleWord: poleWord,
+      coreWord: coreWord,
+      benchAlt: 'A coil of ' + N + ' turns on a supply set to ' + I.toFixed(1) + ' A with ' + C.word + ', switch ' +
+        (on ? 'closed' : 'open') + ', holding ' + (on ? clips : 0) + ' paper clips.',
+      benchNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+
+</script>
+</body>
+</html>

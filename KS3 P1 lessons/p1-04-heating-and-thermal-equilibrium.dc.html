@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Heating and thermal equilibrium · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-readout] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 620px) { [data-readout] { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy transfers</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Heating and thermal equilibrium</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy transfers · Model</p>
+        <h1>Heating and thermal equilibrium</h1>
+        <p class="ks3-bigq">A spark from a firework is at 1500 °C. A bath is at 40 °C. The spark lands on your hand and barely stings; the bath would scald a baby. Which one holds more energy?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>1500 degrees, and it does not hurt.</h2>
+        <p class="ks3-hook-prompt">A sparkler throws out sparks at around 1500 °C — hot enough to melt iron. They land on your hand and you feel a pinprick. Meanwhile a bath at 40 °C, barely more than body temperature, will make you flinch and can genuinely injure a small child.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit. Which holds more energy, and why does the cooler one do more damage?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The bath, by an enormous margin — tens of millions of joules against a fraction of one. Temperature tells you how fast the particles are moving on average. Energy depends on that <em>and</em> on how many particles there are. A spark is a handful of very fast particles; a bath is a hundred kilograms of moderately fast ones. Two different quantities, and this lesson is about never confusing them again.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>You already know from the particle unit that heating a substance makes its particles move faster and does not change the particles themselves. That claim comes back here, and it comes back harder — because this time you have to use it to separate two things that everyday language treats as one word.</p>
+      </section>
+
+      <section id="s-two" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The two-quantities bench · change one, watch the other</p>
+            <h2 style="margin: 6px 0 0;">Temperature is an average. Energy is a total.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ twoProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Set how much substance there is and how fast its particles move. Two readouts respond, and they do not move together.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. A mug of tea and a swimming pool are both at 30 °C. What is the same about them?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ twoOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <canvas width="1800" height="620" ref="{{ twoRef }}" role="img" aria-label="{{ twoAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+                <div>
+                  <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">How much substance</p>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <sc-for list="{{ amountButtons }}" as="b" hint-placeholder-count="3">
+                      <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+                <div>
+                  <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">How fast the particles move</p>
+                  <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <sc-for list="{{ speedButtons }}" as="b" hint-placeholder-count="3">
+                      <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+              <div data-readout="1" style="margin-top: 18px;">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Temperature — the average</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-ink);">{{ tempLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Thermal store — the total</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-accent-text);">{{ energyLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Particle size</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-ink);">Unchanged</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ twoNote }}</p>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Temperature is the average speed of the particles. Energy in the thermal store depends on that and on how much substance there is. Energy always flows from hotter to colder, never the other way.</p>
+      </div>
+
+      <section id="s-flow" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">The one-way flow · put two objects in contact</p>
+        <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Nothing cold ever moves anywhere</h2>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Two blocks touch and are left alone. Watch which way the arrow points, and how many arrows there are.</p>
+
+        <sc-if value="{{ flowOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+            <canvas width="1800" height="520" ref="{{ flowRef }}" role="img" aria-label="{{ flowAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 16px 18px 18px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel);">
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ onFlowRun }}" aria-pressed="{{ flowRunning }}" style="{{ flowRunStyle }}">{{ flowRunLabel }}</button>
+                <button type="button" onClick="{{ onFlowReset }}" style="{{ flowResetStyle }}">Start again</button>
+                <sc-for list="{{ pairButtons }}" as="b" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ flowNote }}</p>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Put ice in your drink and the cold moves out of the ice into the drink.”</p>
+        <p style="max-width: 54ch;">Almost everyone says this, and the wrong idea inside it is the same one you met when the particle model said heating does not change the particles. Commit.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">There is no such thing as cold. Cold is not a substance, not a store, and not a thing that can travel — it is just a smaller amount of the same thing. Energy moves out of the drink and into the ice, in one direction only, and the drink is left with less. Nothing entered it.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">This matters more than it sounds. If cold were a substance you would expect a fridge to make cold and pump it in; instead a fridge takes energy out of the food and dumps it into your kitchen, which is why the back of a fridge is warm and why leaving the door open warms the room rather than cooling it. Watch the flow bench again: there is only ever one arrow, and it always points the same way.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">And note what has <em>not</em> changed in either object: the particles are the same size and the same particles throughout. Heating and cooling change how fast they move and nothing else — exactly as the particle model said, now doing work in a new situation.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A bath is hotter than a cup of tea, because there is far more heat in it.&rdquo;</p>
+          <p>Two different quantities are being run together. Temperature says how vigorously the particles are moving; the energy in the thermal store also depends on how many particles there are. A bath at 40 °C holds far more energy than a cup at 80 °C, and yet the tea is hotter — and it is the temperature, not the total energy, that decides which way the heating goes when you put one in the other.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Heating is energy moving from a hotter object to a colder one, and it only ever goes that way. It stops when the two reach the same temperature — thermal equilibrium — not when one has run out of heat.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Temperature is an average, energy is a total, and they are not the same. Energy flows one way — hotter to colder — until both are at the same temperature. Cold does not exist as a thing that moves.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>For about a hundred years the best scientists in Europe believed heat was a substance. They called it caloric, an invisible weightless fluid that flowed out of hot things into cold ones, and it explained a great deal — expansion, conduction, why mixing hot and cold water gives you the average. What killed it was a cannon. Count Rumford, boring cannon barrels in Munich in 1798, noticed that the drilling produced apparently unlimited heat as long as he kept turning, and that a blunt drill produced more of it than a sharp one. No substance could be pouring out endlessly from a fixed lump of metal. The heat was coming from the <em>motion</em>. Everything in this lesson dates from that observation — and notice that the caloric theory was not stupid, it was a good model with an edge, found the same way C1's particle model was found to have edges.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p1-03-conservation-of-energy.html">Conservation of energy<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p1-05-conduction.html">Conduction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="c1-02-solids-liquids-and-gases.html">Solids, liquids and gases<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-01-energy-in-food.html">Energy in food<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Specific heat capacity, internal energy, and the kelvin scale — where "average particle speed" becomes a number you calculate.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still saying "the cold gets in"?</p>
+          <a class="ks3-tutor-cta" href="#s-flow">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Temperatures for each pair are typical round values rather than measurements, and the two objects are shown reaching a common temperature without the time that would really take. The particle animation shows average speed only: in any real sample the particles have a wide spread of speeds at every temperature, and individual particles are constantly exchanging energy with their neighbours. Energy lost to the surroundings during the contact is ignored.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startAmount&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;A spark&quot;,&quot;A mug&quot;,&quot;A bath&quot;],&quot;default&quot;:&quot;A mug&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Two-quantities bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Spark and bath', short: 'HOOK' },
+  { id: 's-two', label: 'Two quantities', short: 'TWO' },
+  { id: 's-flow', label: 'One-way flow', short: 'FLOW' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const AMOUNTS = [
+  { label: 'A spark', n: 3, mass: 0.00002, tag: 'a few particles' },
+  { label: 'A mug', n: 22, mass: 0.3, tag: '300 g' },
+  { label: 'A bath', n: 60, mass: 100, tag: '100 kg' }
+];
+
+const SPEEDS = [
+  { label: 'Slow', t: 20, v: 0.5 },
+  { label: 'Medium', t: 40, v: 1.0 },
+  { label: 'Very fast', t: 1500, v: 2.4 }
+];
+
+const PAIRS = [
+  { id: 'p1', label: 'Ice in a drink', hot: 22, cold: -4, hotName: 'Drink', coldName: 'Ice',
+    note: 'Energy leaves the drink and enters the ice. One arrow, pointing from the drink to the ice. Nothing at all travels the other way \u2014 the drink gets colder because it is losing, not because it is receiving.' },
+  { id: 'p2', label: 'Hot spoon in cold water', hot: 90, cold: 12, hotName: 'Spoon', coldName: 'Water',
+    note: 'The spoon is much hotter but tiny, so it loses temperature fast while the water barely warms. Same one-way flow \u2014 and it stops when they match, not when the spoon "runs out".' },
+  { id: 'p3', label: 'Two blocks the same', hot: 30, cold: 30, hotName: 'Block A', coldName: 'Block B',
+    note: 'Already at the same temperature, so there is no net flow at all and nothing happens \u2014 this is thermal equilibrium. Particles are still colliding and still exchanging energy in both directions; the two flows are simply equal. That is exactly the diffusion result from C1, in a new setting.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Energy in a thermal store always flows from…',
+    options: [
+      { text: 'hotter to colder', correct: true },
+      { text: 'colder to hotter', correction: 'This never happens on its own. A fridge appears to do it, but only by using energy to force it.' },
+      { text: 'bigger to smaller', correction: 'Size does not set the direction. A tiny hot spark heats a big cold room, not the reverse.' },
+      { text: 'whichever has more energy to whichever has less', correction: 'Careful \u2014 a bath at 40 \u00B0C has more energy than a spark at 1500 \u00B0C, and the spark still heats the bath.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A mug of tea and a swimming pool are both at 30 \u00B0C. Which statement is correct?',
+    options: [
+      { text: 'The average particle speed is the same; the pool has far more energy', correct: true },
+      { text: 'They have the same amount of energy, because temperature is the same', correction: 'Temperature is an average. The pool has vastly more particles, so vastly more total energy.' },
+      { text: 'The pool is hotter, because it holds more energy', correction: 'Hotter means higher temperature, and they are equal. More energy is not the same as hotter.' },
+      { text: 'The mug\u2019s particles move faster because it is smaller', correction: 'Size does not affect particle speed. Temperature does, and it is the same.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain why a spark at 1500 \u00B0C landing on your hand does far less damage than water at 60 \u00B0C. Use both temperature and energy in your answer.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The spark has a high temperature because…',
+    criteria: [
+      'Says temperature measures the average speed of the particles.',
+      'Says the spark contains very few particles.',
+      'Says the total energy in the spark\u2019s thermal store is therefore tiny.',
+      'Says the water has far more particles, so far more total energy to transfer to your skin.',
+      'Concludes that damage depends on the energy transferred, not the temperature alone.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student leaves the fridge door open on a hot day to cool the kitchen down. Explain what will actually happen, and why. Use the idea that cold is not a substance.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A fridge does not make cold…',
+    criteria: [
+      'Says a fridge does not create or release cold \u2014 cold is not a substance.',
+      'Says a fridge moves energy out of its inside and releases it at the back.',
+      'Says with the door open that energy is being taken from the kitchen and returned to the kitchen.',
+      'Says the motor also transfers energy into a thermal store, adding more.',
+      'Concludes the kitchen will get warmer, not cooler.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    amount: AMOUNTS.findIndex((a) => a.label === this.props.startAmount) >= 0
+      ? AMOUNTS.findIndex((a) => a.label === this.props.startAmount) : 1,
+    speed: 1,
+    touched: {},
+    pair: 0,
+    flowRunning: false,
+    flowT: 0,
+    reachedEq: false,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.seed();
+    this.tick = 0;
+    this.loop();
+  }
+
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  seed() {
+    this.parts = [];
+    for (let i = 0; i < 60; i++) {
+      const a = Math.random() * Math.PI * 2;
+      this.parts.push({ x: Math.random(), y: Math.random(), dx: Math.cos(a), dy: Math.sin(a), ph: Math.random() * 6.3 });
+    }
+  }
+
+  loop() {
+    this.raf = requestAnimationFrame(() => this.loop());
+    this.tick += 1;
+    if (this.state.flowRunning) {
+      const next = Math.min(1, this.state.flowT + (this.reduced ? 0.002 : 0.0045));
+      if (next >= 1 && !this.state.reachedEq) this.setState({ flowT: next, reachedEq: true, flowRunning: false });
+      else if (this.tick % 3 === 0) this.setState({ flowT: next });
+    }
+    this.drawTwo();
+    this.drawFlow();
+  }
+
+  drawTwo() {
+    const c = this.twoCanvas;
+    if (!c || !this.parts) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 310;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const am = AMOUNTS[this.state.amount];
+    const sp = SPEEDS[this.state.speed];
+    const t = this.tick * 0.05 * sp.v;
+
+    const bx = 60, by = 52, bw = 430, bh = H - 130;
+    ctx.fillStyle = '#F6EEE0';
+    ctx.fillRect(bx, by, bw, bh);
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(bx, by, bw, bh);
+
+    const r = 11;
+    const cols = Math.ceil(Math.sqrt(am.n * 1.9));
+    for (let i = 0; i < am.n; i++) {
+      const p = this.parts[i];
+      const col = i % cols, row = Math.floor(i / cols);
+      const gx = bw / (cols + 1);
+      const gy = Math.min(38, (bh - 30) / (Math.ceil(am.n / cols) + 1));
+      const cxp = bx + gx * (col + 1) + Math.sin(t * 2.2 + p.ph) * (4 + sp.v * 5);
+      const cyp = by + bh - 26 - row * gy + Math.cos(t * 1.9 + p.ph * 1.4) * (4 + sp.v * 5);
+      ctx.beginPath();
+      ctx.arc(cxp, cyp, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#D98A4A';
+      ctx.fill();
+      ctx.strokeStyle = '#5A3212';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      // motion whiskers scale with speed, size does not
+      ctx.strokeStyle = 'rgba(228,87,46,0.6)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cxp + r + 2, cyp);
+      ctx.lineTo(cxp + r + 2 + sp.v * 9, cyp);
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(am.label.toUpperCase() + ' \u00b7 ' + am.tag.toUpperCase(), bx, by - 14);
+
+    // reference particle, unchanged at every setting
+    ctx.beginPath();
+    ctx.arc(bx + 14, H - 34, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#D98A4A';
+    ctx.fill();
+    ctx.strokeStyle = '#5A3212';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('ONE PARTICLE \u2014 SAME SIZE AT EVERY SETTING', bx + 32, H - 30);
+
+    // the two dials
+    const px = 560;
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('TEMPERATURE \u2014 AVERAGE SPEED', px, 70);
+    const tw = 250, tbh = 20;
+    ctx.fillStyle = '#E4DACA';
+    ctx.fillRect(px, 80, tw, tbh);
+    ctx.fillStyle = '#8E6C3F';
+    ctx.fillRect(px, 80, tw * Math.min(1, sp.t / 1500 * 0.35 + (sp.t > 100 ? 0.62 : 0)), tbh);
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(px, 80, tw, tbh);
+    ctx.fillStyle = '#1A1714';
+    ctx.font = '700 30px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.fillText(sp.t + ' \u00B0C', px, 138);
+
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('THERMAL STORE \u2014 TOTAL', px, 176);
+    const eJ = am.mass * 4180 * sp.t;
+    const frac = Math.min(1, Math.log10(Math.max(1, eJ)) / 8.5);
+    ctx.fillStyle = '#E4DACA';
+    ctx.fillRect(px, 186, tw, tbh);
+    ctx.fillStyle = '#E4572E';
+    ctx.fillRect(px, 186, tw * frac, tbh);
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(px, 186, tw, tbh);
+    ctx.fillStyle = '#A93411';
+    ctx.font = '700 30px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.fillText(this.fmtJ(eJ), px, 244);
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('BAR IS LOGARITHMIC \u2014 THE RANGE IS ENORMOUS', px, 264);
+  }
+
+  fmtJ(v) {
+    if (v >= 1e6) return (v / 1e6).toFixed(1) + ' MJ';
+    if (v >= 1000) return (v / 1000).toFixed(1) + ' kJ';
+    if (v >= 1) return v.toFixed(0) + ' J';
+    return v.toFixed(2) + ' J';
+  }
+
+  drawFlow() {
+    const c = this.flowCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 260;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const pr = PAIRS[this.state.pair];
+    const f = this.state.flowT;
+    const eq = (pr.hot + pr.cold) / 2;
+    const tHot = pr.hot + (eq - pr.hot) * f;
+    const tCold = pr.cold + (eq - pr.cold) * f;
+
+    const bw = 200, bh = 130, by = 62;
+    const lx = 150, rx = 550;
+
+    const block = (x, temp, name, base) => {
+      const warm = Math.max(0, Math.min(1, (temp + 10) / 110));
+      ctx.fillStyle = 'rgb(' + Math.round(70 + warm * 165) + ',' + Math.round(58 + warm * 60) + ',' + Math.round(52 - warm * 20) + ')';
+      ctx.fillRect(x, by, bw, bh);
+      ctx.strokeStyle = '#5C5249';
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(x, by, bw, bh);
+      ctx.fillStyle = '#FFC53D';
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(name.toUpperCase(), x + bw / 2, by - 14);
+      ctx.fillStyle = '#FFFDF8';
+      ctx.font = '700 34px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.fillText((temp >= 0 ? '' : '\u2212') + Math.abs(temp).toFixed(0) + ' \u00B0C', x + bw / 2, by + bh / 2 + 12);
+    };
+
+    block(lx, tHot, pr.hotName);
+    block(rx, tCold, pr.coldName);
+
+    // contact
+    ctx.fillStyle = '#3A332C';
+    ctx.fillRect(lx + bw, by + 24, rx - (lx + bw), bh - 48);
+
+    const same = Math.abs(tHot - tCold) < 0.6;
+    if (!same) {
+      // one arrow, hot to cold, drawn
+      const ay = by + bh / 2;
+      const x0 = lx + bw + 18, x1 = rx - 26;
+      ctx.strokeStyle = '#FF8A5B';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(x0, ay);
+      ctx.lineTo(x1, ay);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x1 + 12, ay);
+      ctx.lineTo(x1 - 6, ay - 13);
+      ctx.lineTo(x1 - 6, ay + 13);
+      ctx.closePath();
+      ctx.fillStyle = '#FF8A5B';
+      ctx.fill();
+      ctx.fillStyle = '#FF8A5B';
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('ENERGY \u00b7 ONE DIRECTION ONLY', (x0 + x1) / 2, ay - 26);
+      // and the arrow that does not exist
+      ctx.strokeStyle = 'rgba(120,110,98,0.5)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(x1, ay + 34);
+      ctx.lineTo(x0, ay + 34);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(198,185,167,0.75)';
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.fillText('NO "COLD" TRAVELS THIS WAY', (x0 + x1) / 2, ay + 52);
+    } else {
+      ctx.fillStyle = '#FFC53D';
+      ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('THERMAL EQUILIBRIUM \u2014 EQUAL FLOW BOTH WAYS, NO NET CHANGE', W / 2, by + bh / 2 + 4);
+    }
+
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('PARTICLES: SAME SIZE, SAME NUMBER, THROUGHOUT', 40, H - 20);
+  }
+
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  segDark(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+      ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const am = AMOUNTS[s.amount];
+    const sp = SPEEDS[s.speed];
+    const eJ = am.mass * 4180 * sp.t;
+    const touchedCount = Object.keys(s.touched).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let twoNote;
+    if (s.amount === 0 && s.speed === 2) {
+      twoNote = 'The spark. Temperature is off the scale and the thermal store is a fraction of a joule \u2014 the two readouts have gone in opposite directions, which is only possible because they are measuring different things.';
+    } else if (s.amount === 2 && s.speed === 1) {
+      twoNote = 'The bath. A modest 40 \u00B0C, and tens of megajoules \u2014 more energy than the spark by a factor of a billion. This is why the cooler thing is the dangerous one.';
+    } else if (touchedCount >= 2) {
+      twoNote = 'Change the amount and the temperature does not move at all; change the speed and both readouts move. Temperature does not know how much substance there is, and energy does.';
+    } else {
+      twoNote = 'Try the spark at "very fast", then the bath at "medium", and watch the two numbers disagree about which is more impressive.';
+    }
+
+    const pr = PAIRS[s.pair];
+    const flowNote = s.pair === 2
+      ? pr.note
+      : (s.reachedEq
+        ? 'They have met in the middle \u2014 thermal equilibrium. The flow did not stop because anything ran out; it stopped because there is no longer a difference to drive it.'
+        : (s.flowRunning ? 'One solid arrow, one dashed arrow that is labelled as not existing. Only the solid one is real.' : pr.note));
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-two') return touchedCount >= 2;
+          if (id === 's-flow') return s.reachedEq;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The spark — it is far hotter, so it has more energy' },
+        { letter: 'B', text: 'The bath — temperature is an average, and it has vastly more particles' },
+        { letter: 'C', text: 'They hold the same energy, just spread differently' },
+        { letter: 'D', text: 'The spark, but it cools too fast to hurt you' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      twoProgress: touchedCount >= 2 ? 'both controls tried' : touchedCount + ' of 2 controls tried',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'The total energy in their thermal stores' },
+        { letter: 'B', text: 'The average speed of their particles' },
+        { letter: 'C', text: 'The number of particles' },
+        { letter: 'D', text: 'Nothing — they cannot be at the same temperature' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      twoOpen: s.gate !== null,
+      twoRef: (el) => { this.twoCanvas = el; },
+      twoAlt: 'A box of particles representing ' + am.label.toLowerCase() + ' at ' + sp.t +
+        ' degrees, with a temperature bar and a thermal-store bar reading ' + this.fmtJ(eJ) + '.',
+      amountButtons: AMOUNTS.map((a, i) => ({
+        label: a.label, on: s.amount === i, style: this.seg(s.amount === i),
+        onClick: () => this.setState((p) => ({ amount: i, touched: Object.assign({}, p.touched, { amount: true }) }))
+      })),
+      speedButtons: SPEEDS.map((x, i) => ({
+        label: x.label, on: s.speed === i, style: this.seg(s.speed === i),
+        onClick: () => this.setState((p) => ({ speed: i, touched: Object.assign({}, p.touched, { speed: true }) }))
+      })),
+      tempLabel: sp.t + ' \u00B0C',
+      energyLabel: this.fmtJ(eJ),
+      twoNote: twoNote,
+
+      flowOpen: s.gate !== null,
+      flowRef: (el) => { this.flowCanvas = el; },
+      flowAlt: pr.hotName + ' and ' + pr.coldName + ' in contact, with a single arrow showing energy flowing from the hotter to the colder, and a dashed arrow labelled as not existing.',
+      flowRunning: s.flowRunning,
+      flowRunLabel: s.flowRunning ? 'Pause' : (s.flowT > 0 ? 'Continue' : 'Leave them in contact'),
+      flowRunStyle: this.segDark(s.flowRunning),
+      onFlowRun: () => this.setState((p) => ({ flowRunning: !p.flowRunning })),
+      flowResetStyle: this.segDark(false),
+      onFlowReset: () => this.setState({ flowT: 0, flowRunning: false, reachedEq: false }),
+      pairButtons: PAIRS.map((x, i) => ({
+        label: x.label, on: s.pair === i, style: this.segDark(s.pair === i),
+        onClick: () => this.setState({ pair: i, flowT: 0, flowRunning: false, reachedEq: i === 2 })
+      })),
+      flowNote: flowNote,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Nothing — that is how ice works' },
+        { letter: 'B', text: 'Cold is not a substance; energy leaves the drink and enters the ice' },
+        { letter: 'C', text: 'The cold and the heat swap places' },
+        { letter: 'D', text: 'The ice particles get bigger as they warm' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

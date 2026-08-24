@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculating energy transferred · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p2-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p2-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-readout] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 620px) { [data-readout] { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy at home</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Calculating energy transferred</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy at home · Quantitative</p>
+        <h1>Calculating energy transferred</h1>
+        <p class="ks3-bigq">Every appliance in your house obeys one line of arithmetic. Get the units right and you can price anything you own.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Ten minutes in the shower.</h2>
+        <p class="ks3-hook-prompt">An electric shower is rated 8500 W. You are in it for ten minutes. Someone else in the house leaves a 60 W lamp on all day — twenty-four hours.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit. Which transferred more energy?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The shower — 5.1 MJ against the lamp's 5.2 MJ. They are almost identical, which nobody guesses. Ten minutes of shower and a full day of forgotten lamp cost the same, and the only way to know that is to do the multiplication.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>One relationship, one line of working, and one trap. The relationship is energy = power × time. The trap is units: watts want seconds, kilowatts want hours, and mixing them is the single most common way to be wrong by a factor of 3600.</p>
+      </section>
+
+      <section id="s-tri" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Energy = power × time</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. Energy E sits above a dividing line; power P and time t sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 62px; fill: var(--ks3-ink);">E</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">P</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">t</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">E</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">P</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">t</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverButtons }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.on }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">W with s gives J · kW with h gives kWh</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">E</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">energy transferred</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">J</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">P</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">power</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">W</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">t</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">time</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">s</span>
+              </div>
+            </div>
+            <p style="margin: 18px 0 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; line-height: 1.7; color: var(--ks3-ink-body);">watts × seconds gives joules<br>kilowatts × hours gives kilowatt-hours</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The appliance bench · set it up and price it</p>
+            <h2 style="margin: 6px 0 0;">Two units, one answer.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ benchProgress }}</p>
+        </div>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. A 2000 W kettle runs for 3 minutes. Which calculation gives the energy in joules?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <div style="padding: 16px 18px; border-bottom: 2px solid var(--ks3-ink); display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ applianceButtons }}" as="b" hint-placeholder-count="5">
+                <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+            <canvas width="1800" height="480" ref="{{ benchRef }}" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <label for="mins" style="display: block; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">How long it runs · {{ timeLabel }}</label>
+              <input id="mins" type="range" min="1" max="1440" step="1" value="{{ mins }}" onChange="{{ onMins }}" aria-valuetext="{{ timeLabel }}" style="width: 100%; height: 44px; accent-color: var(--ks3-accent); cursor: pointer;">
+              <div data-readout="1" style="margin-top: 6px;">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">In joules</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 28px; line-height: 1.1; color: var(--ks3-ink);">{{ joulesLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">In kilowatt-hours</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 28px; line-height: 1.1; color: var(--ks3-accent-text);">{{ kwhLabel }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ priceLabel }}</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 28px; line-height: 1.1; color: var(--ks3-ink);">{{ costLabel }}</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
+                <sc-for list="{{ presetButtons }}" as="b" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ benchNote }}</p>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Energy = power × time. Watts with seconds gives joules; kilowatts with hours gives kilowatt-hours. Never mix the two.</p>
+      </div>
+
+      <section id="s-worked" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Five lines, every time · CFIFA</p>
+        <h2 style="margin: 6px 0 14px;">Your own setting, set out properly</h2>
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“A 2000 W kettle for 3 minutes: 2000 × 3 = 6000 J.”</p>
+        <p style="max-width: 54ch;">Find the error. It is worth a factor of sixty, and it is the most common slip in this entire unit.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">The time is in minutes and the watt is defined per <em>second</em>. Three minutes is 180 seconds, so the answer is 360,000 J — sixty times what was written.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">There is a check that catches this every time, and it costs you five seconds: ask whether the answer is a sensible size. 6000 J is roughly the energy in a mouthful of bread. It could not possibly boil a litre of water. When your answer is absurd, suspect the units before you suspect the physics.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The safest habit is to convert on the Insert line, never later — write "180 s" into the working rather than converting the answer afterwards. Two consistent pairs exist and no others: watts with seconds gives joules; kilowatts with hours gives kilowatt-hours.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A joule is a decent amount of energy, so 6000 J for a kettle sounds about right.&rdquo;</p>
+          <p>A joule is tiny. Lifting an apple from the floor to a table takes about one; a single AA cell holds around 10 000. A kettle boiling a mugful needs about 360 000 J, which is why the answers in this lesson run into hundreds of thousands and why kilojoules and megajoules exist at all. If a kettle calculation comes out in the thousands, the time was almost certainly left in minutes.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">E = P × t, with the power in watts and the time in seconds. Converting the time is part of the calculation, not an afterthought — minutes and hours never go into the formula as they stand.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>E = P × t. Convert the time on the Insert line, not afterwards. Watts with seconds, or kilowatts with hours — and always ask whether the answer is a sensible size.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Unit slips of exactly this kind are not confined to homework. In 1999 NASA lost the Mars Climate Orbiter — a spacecraft that took nine months to arrive — because one team supplied thrust figures in pound-force seconds and the receiving software expected newton seconds. Nobody made an arithmetic mistake. Every number was correct in its own units, and the craft entered the atmosphere about 170 km lower than intended and was destroyed. The discipline you are being asked for here, of writing the unit next to every number in the working, is the same discipline that would have saved a $327 million mission.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p2-02-power-ratings-in-watts.html">Power ratings in watts<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p2-04-reading-a-fuel-bill.html">Reading a fuel bill<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-05-fuels-and-energy-resources.html">Fuels and energy resources<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Energy transferred by an appliance, efficiency calculations, and the cost of electricity.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Keep landing a factor of 60 out?</p>
+          <a class="ks3-tutor-cta" href="#s-think">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Appliance power ratings are typical plate values and each appliance is treated as drawing its full rating for the whole time selected; in practice ovens, fridges and showers cycle on and off. Energies are calculated as power × time with no losses subtracted, kilowatt-hours are joules divided by 3 600 000, and the unit price shown is a round figure that changes with the tariff and the year.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startAppliance&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Kettle&quot;,&quot;Electric shower&quot;,&quot;LED lamp&quot;,&quot;Oven&quot;,&quot;Fridge&quot;],&quot;default&quot;:&quot;Kettle&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appliance bench&quot;},&quot;unitPrice&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;min&quot;:0.05,&quot;max&quot;:1,&quot;step&quot;:0.01,&quot;default&quot;:0.27,&quot;unit&quot;:&quot;£/kWh&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Appliance bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Shower vs lamp', short: 'HOOK' },
+  { id: 's-bench', label: 'Appliance bench', short: 'BENCH' },
+  { id: 's-worked', label: 'CFIFA', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const DEFAULT_PRICE = 0.27;   // pounds per kWh
+
+const APPLIANCES = [
+  { id: 'kettle', label: 'Kettle', w: 2000, typical: 3, tnote: 'about three minutes to boil' },
+  { id: 'shower', label: 'Electric shower', w: 8500, typical: 10, tnote: 'a ten-minute shower' },
+  { id: 'lamp', label: 'LED lamp', w: 9, typical: 300, tnote: 'five hours in an evening' },
+  { id: 'oven', label: 'Oven', w: 2200, typical: 45, tnote: 'a 45-minute roast' },
+  { id: 'fridge', label: 'Fridge', w: 90, typical: 1440, tnote: 'all day, every day' }
+];
+
+const COVERS = {
+  e: { result: 'E = P \u00d7 t', sentence: 'Energy is alone at the top. Cover it and the other two sit side by side \u2014 multiply.' },
+  p: { result: 'P = E \u00f7 t', sentence: 'Power sits underneath with energy above it. Cover it and you are left with E over t \u2014 divide.' },
+  t: { result: 't = E \u00f7 P', sentence: 'Time sits underneath with energy above it. Cover it and you are left with E over P \u2014 divide.' }
+};
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A 1200 W microwave runs for 90 seconds. How much energy does it transfer?',
+    options: [
+      { text: '108 000 J', correct: true },
+      { text: '1290 J', correction: 'That is 1200 + 90. The two quantities are multiplied.' },
+      { text: '13.3 J', correction: 'That is 1200 \u00f7 90. Cover E on the triangle \u2014 it comes out as a multiplication.' },
+      { text: '1800 J', correction: 'That looks like 1200 \u00d7 1.5 minutes. Watts need the time in seconds, so use 90.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A 2000 W kettle runs for 3 minutes. A student writes 2000 \u00d7 3 = 6000 J. What is wrong?',
+    options: [
+      { text: 'The time must be in seconds — 180 s, giving 360 000 J', correct: true },
+      { text: 'Nothing — that is correct', correction: 'Check the size of the answer: 6000 J could not warm a cup of water, let alone boil a litre.' },
+      { text: 'The power should have been in kilowatts', correction: 'You could work in kilowatts, but then the time must be in hours. Mixing kW with minutes is a different error.' },
+      { text: 'They should have divided instead', correction: 'The operation is right. The unit of time is not.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'An 8500 W shower runs for 10 minutes and a 60 W lamp is left on for 24 hours. Show that they transfer almost the same energy, and explain what this tells you about judging appliances by their rating.',
+    fieldLabel: 'Your working and explanation',
+    placeholder: 'Shower: 8500 W × 600 s = …',
+    criteria: [
+      'Converts 10 minutes to 600 s and calculates 5 100 000 J for the shower.',
+      'Converts 24 hours to 86 400 s and calculates 5 184 000 J for the lamp.',
+      'States that the two totals are within a few per cent of each other.',
+      'Says the rating alone cannot tell you the energy, because the times differ by a factor of 144.',
+      'Draws the conclusion that a low-power appliance left on for a long time can cost as much as a high-power one used briefly.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A household wants to cut its electricity bill and has a 2200 W oven used 45 minutes a day, a 90 W fridge running constantly, and eight 9 W LED lamps on about 5 hours a day. Work out which costs most per day and advise them, using numbers.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Oven: 2.2 kW × 0.75 h = …',
+    criteria: [
+      'Calculates the oven at about 1.65 kWh per day.',
+      'Calculates the fridge at about 2.16 kWh per day.',
+      'Calculates the lamps at about 0.36 kWh per day in total.',
+      'Identifies the fridge as the largest, despite having the lowest power rating.',
+      'Gives advice that follows from the numbers \u2014 and notes that the fridge cannot simply be switched off, so the realistic saving is elsewhere.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    appliance: APPLIANCES.findIndex((x) => x.label === this.props.startAppliance) >= 0
+      ? APPLIANCES.findIndex((x) => x.label === this.props.startAppliance) : 0,
+    mins: 3,
+    cover: 'e',
+    touched: {},
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.drawTri();
+    this.drawBench();
+  }
+
+  componentDidUpdate() { this.drawTri(); this.drawBench(); }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  fmtJ(j) {
+    if (j >= 1e6) return (j / 1e6).toFixed(2) + ' MJ';
+    if (j >= 1000) return (j / 1000).toFixed(0) + ' kJ';
+    return j.toFixed(0) + ' J';
+  }
+
+  clock(mins) {
+    if (mins >= 60) {
+      const h = Math.floor(mins / 60), m = mins % 60;
+      return h + ' h' + (m ? ' ' + m + ' min' : '');
+    }
+    return mins + ' min';
+  }
+
+  drawTri() {
+    const c = this.triCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 210;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const cx = W / 2, tw = 250, th = 150, ty = 26;
+    ctx.beginPath();
+    ctx.moveTo(cx, ty);
+    ctx.lineTo(cx - tw / 2, ty + th);
+    ctx.lineTo(cx + tw / 2, ty + th);
+    ctx.closePath();
+    ctx.fillStyle = '#F6EEE0';
+    ctx.fill();
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx - tw / 2 + 24, ty + th * 0.52);
+    ctx.lineTo(cx + tw / 2 - 24, ty + th * 0.52);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx, ty + th * 0.52);
+    ctx.lineTo(cx, ty + th);
+    ctx.stroke();
+
+    const cover = this.state.cover;
+    const cell = (cxp, cyp, txt, sub, lit) => {
+      if (lit) {
+        ctx.fillStyle = '#E4572E';
+        ctx.beginPath();
+        ctx.arc(cxp, cyp - 7, 27, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = lit ? '#FFFDF8' : '#1A1714';
+      ctx.font = '700 30px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(txt, cxp, cyp);
+      ctx.fillStyle = lit ? '#FFFDF8' : '#6B6055';
+      ctx.font = '500 10px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(sub, cxp, cyp + 16);
+    };
+    cell(cx, ty + th * 0.34, 'E', 'J', cover === 'e');
+    cell(cx - tw / 4, ty + th * 0.84, 'P', 'W', cover === 'p');
+    cell(cx + tw / 4, ty + th * 0.84, 't', 's', cover === 't');
+
+    ctx.fillStyle = '#A93411';
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(COVERS[cover].result, cx, ty + th + 34);
+
+    // the two legal unit pairs
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('TWO LEGAL PAIRINGS, NO OTHERS:', 96, 56);
+    ctx.fillStyle = '#1A1714';
+    ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('W  \u00d7  s   \u2192  J', 96, 82);
+    ctx.fillText('kW \u00d7  h   \u2192  kWh', 96, 106);
+    ctx.fillStyle = '#A93411';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('W \u00d7 min IS ALWAYS WRONG', 96, 134);
+  }
+
+  drawBench() {
+    const c = this.benchCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 240;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const ap = APPLIANCES[this.state.appliance];
+    const mins = this.state.mins;
+
+    // every appliance's daily energy, for comparison
+    const maxKwh = 3.5;
+    const bx = 70, by = 44, bw = 340;
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('AT YOUR CURRENT TIME SETTING, kWh', bx, by - 12);
+    APPLIANCES.forEach((x, i) => {
+      const y = by + i * 32;
+      const kwh = (x.w / 1000) * (mins / 60);
+      ctx.fillStyle = '#E4DACA';
+      ctx.fillRect(bx, y, bw, 20);
+      ctx.fillStyle = i === this.state.appliance ? '#E4572E' : '#B9AE9C';
+      ctx.fillRect(bx, y, bw * Math.min(1, kwh / maxKwh), 20);
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 1.8;
+      ctx.strokeRect(bx, y, bw, 20);
+      ctx.fillStyle = i === this.state.appliance ? '#A93411' : '#6B6055';
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(x.label.toUpperCase() + '  ' + x.w + ' W  \u00b7  ' + kwh.toFixed(2), bx + bw + 12, y + 15);
+    });
+
+    // the working, live
+    const wx = 70, wy = 214;
+    const secs = mins * 60;
+    const j = ap.w * secs;
+    const kwh = (ap.w / 1000) * (mins / 60);
+    ctx.fillStyle = '#1A1714';
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.fillText(ap.w + ' W \u00d7 ' + secs + ' s = ' + j.toLocaleString('en-GB') + ' J', wx, wy);
+    ctx.fillStyle = '#A93411';
+    ctx.fillText((ap.w / 1000).toFixed(3) + ' kW \u00d7 ' + (mins / 60).toFixed(3) + ' h = ' + kwh.toFixed(3) + ' kWh', wx + 400, wy);
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.fillText('SAME ENERGY, BOTH LEGAL PAIRINGS', wx, wy + 20);
+  }
+
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const ap = APPLIANCES[s.appliance];
+    const secs = s.mins * 60;
+    const j = ap.w * secs;
+    const kwh = (ap.w / 1000) * (s.mins / 60);
+    const price = Number.isFinite(Number(this.props.unitPrice)) && Number(this.props.unitPrice) > 0
+      ? Number(this.props.unitPrice) : DEFAULT_PRICE;
+    const cost = kwh * price;
+    const touchedCount = Object.keys(s.touched).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let benchNote;
+    if (s.appliance === 4 && s.mins >= 1400) {
+      benchNote = 'The fridge \u2014 90 W, the second-lowest rating on the bench \u2014 is now the biggest consumer of the five, because it never switches off. Nothing about its rating hints at that.';
+    } else if (touchedCount >= 2) {
+      benchNote = 'Move the time and watch the bars reorder themselves. Which appliance is "worst" depends entirely on the time setting, which is exactly why a rating on its own is not an answer.';
+    } else {
+      benchNote = 'Pick an appliance and set a realistic time. The two lines of working underneath show the same energy in both legal unit pairings.';
+    }
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return touchedCount >= 2;
+          if (id === 's-worked') return touchedCount >= 1;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The shower, by a wide margin' },
+        { letter: 'B', text: 'They are almost exactly equal' },
+        { letter: 'C', text: 'The lamp, by a wide margin' },
+        { letter: 'D', text: 'The shower, but only by about a tenth' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      triRef: (el) => { this.triCanvas = el; if (el) this.drawTri(); },
+      triAlt: 'A formula triangle with energy E on top and power P beside time t underneath, showing ' + COVERS[s.cover].result +
+        ', alongside the two legal unit pairings.',
+      coverButtons: [
+        { id: 'e', label: 'Cover E' },
+        { id: 'p', label: 'Cover P' },
+        { id: 't', label: 'Cover t' }
+      ].map((b) => ({
+        label: b.label, on: s.cover === b.id, style: this.seg(s.cover === b.id),
+        onClick: () => this.setState({ cover: b.id })
+      })),
+      coverResult: COVERS[s.cover].result,
+      coverTop: s.cover === 'e',
+      coverLeft: s.cover === 'p',
+      coverRight: s.cover === 't',
+
+      benchProgress: touchedCount >= 2 ? 'both controls used' : touchedCount + ' of 2 controls used',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: '2000 × 3' },
+        { letter: 'B', text: '2000 × 180' },
+        { letter: 'C', text: '2 × 3' },
+        { letter: 'D', text: '2000 ÷ 180' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      benchRef: (el) => { this.benchCanvas = el; if (el) this.drawBench(); },
+      benchAlt: 'Five appliances compared in kilowatt-hours at a time setting of ' + this.clock(s.mins) +
+        ', with the ' + ap.label.toLowerCase() + ' highlighted, and the working shown in both unit pairings.',
+      applianceButtons: APPLIANCES.map((x, i) => ({
+        label: x.label, on: s.appliance === i, style: this.seg(s.appliance === i),
+        onClick: () => this.setState((p) => ({
+          appliance: i, mins: x.typical, touched: Object.assign({}, p.touched, { appliance: true })
+        }))
+      })),
+      mins: s.mins,
+      timeLabel: this.clock(s.mins) + ' (' + (s.mins * 60).toLocaleString('en-GB') + ' s)',
+      onMins: (e) => this.setState((p) => ({
+        mins: Number(e.target.value), touched: Object.assign({}, p.touched, { time: true })
+      })),
+      joulesLabel: this.fmtJ(j),
+      kwhLabel: kwh.toFixed(3) + ' kWh',
+      costLabel: '\u00a3' + cost.toFixed(2),
+      priceLabel: 'At ' + Math.round(price * 100) + 'p a unit',
+      presetButtons: APPLIANCES.slice(0, 3).map((x) => ({
+        label: x.label + ': ' + x.tnote, style: this.seg(false),
+        onClick: () => this.setState((p) => ({
+          appliance: APPLIANCES.indexOf(x), mins: x.typical, touched: Object.assign({}, p.touched, { time: true, appliance: true })
+        }))
+      })),
+      benchNote: benchNote,
+
+      cfifaExamples: [
+        { tab: 'Nothing to convert', head: 'A 60 W lamp is left on for 300 s. How much energy does it transfer?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '60 W stays 60 W · 300 s stays 300 s',
+              note: 'A watt is a joule each second, and the time is already in seconds, so there is nothing to convert.' },
+            { letter: 'F', label: 'Formula', line: 'E = P × t',
+              note: 'Cover E on the triangle: P sits beside t, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 60 W × 300 s',
+              note: 'The seconds on the bottom of the watt cancel the seconds of the time.' },
+            { letter: 'F', label: 'Fine-tune', line: '60 × 300 = 18 000',
+              note: 'Watts times seconds gives joules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 18 000 J',
+              note: 'Eighteen thousand joules, which is 18 kJ.' }
+          ] },
+        { tab: 'Convert first', head: 'A 2000 W kettle runs for 3 minutes. How much energy does it transfer?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '3 min × 60 = 180 s',
+              note: 'A watt is a joule each second, so the minutes have to become seconds before anything multiplies.' },
+            { letter: 'F', label: 'Formula', line: 'E = P × t',
+              note: 'Cover E on the triangle: P sits beside t, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 2000 W × 180 s',
+              note: 'The converted time goes in. The 3 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '2000 × 180 = 360 000',
+              note: 'Watts times seconds gives joules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 360 000 J',
+              note: 'Insert 3 instead of 180 and the answer comes out 6000 J — sixty times too small. That is the mistake at the top of the next section.' }
+          ] }
+      ],
+      onCfifaOpen: () => this.setState({ cfifaOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p203q1',
+          head: 'Your bench: a ' + ap.label.toLowerCase() + ' rated ' + ap.w + ' W, running for ' + this.clock(s.mins) + '.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: this.clock(s.mins) + ' × 60 = ' + (s.mins * 60).toLocaleString('en-GB') + ' s',
+              note: 'A watt is a joule each second, so the clock reading has to become seconds first.' },
+            { letter: 'F', label: 'Formula', line: 'E = P × t',
+              note: 'Cover E on the triangle. What is left is P beside t — multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = ' + ap.w + ' W × ' + (s.mins * 60).toLocaleString('en-GB') + ' s',
+              note: 'The converted time goes in. The minutes never do.' },
+            { letter: 'F', label: 'Fine-tune', line: ap.w + ' × ' + (s.mins * 60) + ' = ' + j.toLocaleString('en-GB'),
+              note: 'Watts times seconds gives joules.' },
+            { letter: 'A', label: 'Answer', line: 'E = ' + this.fmtJ(j) + '  (' + kwh.toFixed(3) + ' kWh)',
+              note: 'With the unit. Divide joules by 3 600 000 for kilowatt-hours — the unit the bill uses.' }
+          ],
+          close: 'The five lines give ' + this.fmtJ(j) + ' for that setting.'
+        },
+        {
+          tab: 'Question 2', id: 'p203q2',
+          head: 'A 1500 W fan heater runs for 8 minutes. How much energy does it transfer?',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '8 min × 60 = 480 s',
+              note: 'A watt is a joule each second, so the minutes have to become seconds first.' },
+            { letter: 'F', label: 'Formula', line: 'E = P × t',
+              note: 'Cover E on the triangle: P sits beside t, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'E = 1500 W × 480 s',
+              note: 'The converted time goes in. The 8 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '1500 × 480 = 720 000',
+              note: 'Watts times seconds gives joules.' },
+            { letter: 'A', label: 'Answer', line: 'E = 720 000 J',
+              note: 'Insert 8 instead of 480 and the answer comes out 12 000 J.' }
+          ],
+          close: 'The five lines give 720 000 J — 0.200 kWh, which is what a bill would charge for.'
+        }
+      ]
+
+      thinkOptions: [
+        { letter: 'A', text: 'Nothing — the calculation is right' },
+        { letter: 'B', text: 'The time must be in seconds, so 180 s and 360 000 J' },
+        { letter: 'C', text: 'They should have divided rather than multiplied' },
+        { letter: 'D', text: 'The power should have been halved first' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

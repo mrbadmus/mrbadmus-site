@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Light travels · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Light</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Light travels</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Light · Model</p>
+        <h1>Light travels</h1>
+        <p class="ks3-bigq">A flash and a bang leave the same hillside at the same instant and arrive six seconds apart. One of them needed air to get to you. The other did not need anything.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>You see the strike. You wait for the bang.</h2>
+        <p class="ks3-hook-prompt">Lightning hits a hillside two kilometres away. The flash is instant. The thunder takes about six seconds. It was one event: the flash and the bang left the same place at the same moment.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Why does one of them get to you six seconds before the other?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Light is a wave, and much of what you know about waves on water and about sound carries straight over. It has a wavelength and an amplitude, it carries energy from one place to another without carrying material with it, it reflects off surfaces and it can be absorbed. Like a water wave and unlike sound, it is <strong>transverse</strong>.</p>
+        <p>Two things about it are genuinely different, and both matter. First, <strong>light needs no medium</strong>. Sound is particles shoving their neighbours, so it stops dead in a vacuum; light crosses empty space perfectly well, which is why the Sun warms a planet 150 million kilometres away across nothing at all. Second, light is very much faster. In a vacuum it travels at <strong>300 000 000 metres every second</strong> — close to a million times the speed of sound in air — and it is the fastest anything can go.</p>
+        <p>Light does travel in straight lines through anything even and unchanging, which is why shadows have sharp edges and why a ray drawn with a ruler is a good enough model for most of what light does.</p>
+      </section>
+
+      <section id="s-race" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a flash and a bang, set off together</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Same start. Two arrivals.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A lamp and a starting pistol fire at the same instant, and two detectors at the far end record when each arrives. Set how far away they are, and set what is in between.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. The same flash and bang are set off on the Moon, where there is no air. What do the two detectors record?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What is in between</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ medTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p71d" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How far away the detectors are</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ distLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p71d" min="0" max="100" step="1" value="{{ distValue }}" onChange="{{ onDist }}" onInput="{{ onDist }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 322" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M60 236 H940" style="fill: none; stroke: #8C8177; stroke-width: 4;"></path>
+                  <path d="M60 236 v14 M236 236 v14 M412 236 v14 M588 236 v14 M764 236 v14 M940 236 v14" style="fill: none; stroke: #8C8177; stroke-width: 3;"></path>
+                  <text x="60" y="276" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #C6B9A7;">1 m</text>
+                  <text x="236" y="276" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #C6B9A7;">10 m</text>
+                  <text x="412" y="276" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #C6B9A7;">100 m</text>
+                  <text x="588" y="276" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #C6B9A7;">1 km</text>
+                  <text x="764" y="276" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #C6B9A7;">10 km</text>
+                  <text x="940" y="276" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #C6B9A7;">100 km</text>
+                  <path d="{{ markLine }}" style="fill: none; stroke: #E9DCC8; stroke-width: 5; stroke-linecap: round;"></path>
+                  <text x="60" y="34" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">LIGHT</text>
+                  <text x="60" y="132" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">SOUND</text>
+                  <path d="M160 46 H900 M900 46 L882 36 M900 46 L882 56" style="fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ soundArrow }}" style="{{ soundStyle }}"></path>
+                  <text x="940" y="316" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .08em; fill: #8C8177;">EACH MARK IS TEN TIMES THE ONE BEFORE IT</text>
+                </svg>
+                <span style="position: absolute; left: 17%; top: 22%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ lightTime }}</span>
+                <span style="position: absolute; left: 17%; top: 55%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ soundTime }}</span>
+                <span style="{{ markLabelStyle }}">{{ distLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The gap</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ distLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ medCaption }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The light arrives after</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ lightTime }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">at 300 000 000 m/s</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The bang arrives after</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ soundTime }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ soundSub }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Which wins, and by how much</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Light beside the waves you can see</h2>
+        <div style="margin-top: 18px; overflow-x: auto; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 4px;">
+          <table style="border-collapse: collapse; width: 100%; min-width: 640px; font-size: 18px;">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">&nbsp;</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Waves on water</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Sound</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Light</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Carries energy without carrying material</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Has a wavelength and an amplitude</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Reflects, and can be absorbed</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Transverse or longitudinal</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Transverse</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);"><strong>Longitudinal</strong></td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Transverse</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Needs a material to travel through</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes — water</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Yes — any solid, liquid or gas</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);"><strong>No — crosses a vacuum</strong></td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; font-weight: 700;">How fast</th>
+                <td style="padding: 14px 16px;">A few m/s</td>
+                <td style="padding: 14px 16px;">About 340 m/s in air</td>
+                <td style="padding: 14px 16px;"><strong>300 000 000 m/s in a vacuum</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">Three rows the same, three rows different. The row that does the most work is the fifth: needing a material is what makes sound a wave in matter and light a wave that does not care.</p>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Distance = speed of light × time</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. The distance d sits above a dividing line; the speed of light c and the time t sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 62px; fill: var(--ks3-ink);">d</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">c</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">t</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">d</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">c</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">t</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">d</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">distance the light travels</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">c</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">speed of light in a vacuum</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m/s</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">t</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">time it takes</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Light is a transverse wave that needs no material to travel through, and in a vacuum it moves at 300 000 000 m/s — close to a million times the speed of sound in air. Like every wave it carries energy without carrying material, and it reflects and can be absorbed. Distance = speed of light × time.</p>
+        </div>
+
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Light is instant — it takes no time at all.&rdquo;</p>
+        <p>It is fast, not instant, and over a room the difference is undetectable. Over a distance it matters a great deal: the Moon is 1.3 seconds away, the Sun 8 minutes and 20 seconds, and a radio command to a spacecraft at Mars takes several minutes to arrive, which is why they cannot be flown by joystick. Because nothing beats the speed of light, looking at anything far away is looking into the past \u2014 the Sun you can see is the Sun of eight minutes ago, and if it went out you would have no way of knowing for eight minutes.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Space is empty, so light has nothing to travel in and must be slowed down by it.&rdquo;</p>
+          <p>Empty is exactly the condition light likes. Sound needs particles because it is particles shoving their neighbours; light is not made of pushed material at all, and a material is something for it to be slowed and absorbed by rather than something it needs. Light is fastest in a vacuum and slower in glass or water, which is the opposite of the pattern for sound.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Light is a transverse wave. Like waves on water and like sound it carries energy without carrying material, has a wavelength and an amplitude, reflects and can be absorbed. Unlike sound, it needs no material at all and crosses a vacuum, which is how sunlight reaches the Earth. In a vacuum it travels at 300 000 000 m/s, close to a million times the speed of sound in air, and distance = speed of light × time.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Because light takes time, every telescope is a time machine. Looking at the Moon is looking 1.3 seconds into the past, at the Sun about eight minutes, and at the nearest star beyond the Sun about four years. Some of the galaxies photographed by the largest telescopes are seen as they were before the Earth existed, and a few of the stars visible tonight may already have died — the news is still in transit.</p>
+          <p>The number 300 000 000 m/s is a rounded one, and the exact figure is stranger than it looks. Since 1983 the metre has been <em>defined</em> as the distance light travels in 1/299 792 458 of a second, which makes the speed of light exactly 299 792 458 m/s by definition rather than by measurement. It cannot be measured more accurately, because measuring it more accurately would only make the metre more accurate.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p6-09-ultrasound-at-work.html">Ultrasound at work<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p7-02-reflection-mirrors-and-scattering.html">Reflection: mirrors and scattering<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p6-06-sound-needs-a-medium.html">Sound needs a medium<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-04-sound-is-longitudinal.html">Sound is longitudinal<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p7-03-refraction.html">Refraction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The electromagnetic spectrum, the wave equation applied to light, and light-years as a unit of astronomical distance.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a distance and want to know how long light takes to cross it?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The speed of light is taken as 300 000 000 m/s, a rounded value; the exact figure in a vacuum is 299 792 458 m/s, and light in air is very slightly slower than that. The speed of sound is taken as about 340 m/s, its value in air at around 20 degrees Celsius. The distance axis multiplies by ten at every mark because the two travel times are about a million times apart and a ruler scale could not show both. Neither wave is drawn losing any strength with distance, which real light and real sound both do.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Flash, then thunder', short: 'STORM' },
+  { id: 's-race', label: 'A flash and a bang', short: 'RACE' },
+  { id: 's-formula', label: 'Triangle and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-race') return s.gate !== null && (s.touched.med || s.touched.d);
+  if (id === 's-formula') return s.buildOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const C = 300000000;
+const COVERS = { d: 'd = c \u00d7 t', c: 'c = d \u00f7 t', t: 't = d \u00f7 c' };
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'Light from the Sun takes 500 s to reach the Earth. Light travels at 300 000 000 m/s. How far away is the Sun?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '300 000 000 m/s stays as it is · 500 s stays 500 s',
+        note: 'The speed is in metres per second and the time is in seconds, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'distance = speed of light × time',
+        note: 'Cover d on the triangle: c and t sit side by side, so you multiply.' },
+      { letter: 'I', label: 'Insert', line: 'distance = 300 000 000 m/s × 500 s',
+        note: 'The speed is the one for a vacuum, and space is very close to one.' },
+      { letter: 'F', label: 'Fine-tune', line: '300 000 000 × 500 = 150 000 000 000',
+        note: 'Metres per second multiplied by seconds leaves metres.' },
+      { letter: 'A', label: 'Answer', line: 'distance = 150 000 000 000 m',
+        note: 'A hundred and fifty billion metres, which is 150 million kilometres.' }
+    ] },
+  { tab: 'Convert first', head: 'Light takes 8.0 minutes to reach us from the Sun. How far away is it?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '8.0 min × 60 = 480 s',
+        note: 'The speed is metres per second, so the time has to be in seconds before it can multiply.' },
+      { letter: 'F', label: 'Formula', line: 'distance = speed of light × time',
+        note: 'Cover d on the triangle: c and t sit side by side, so you multiply.' },
+      { letter: 'I', label: 'Insert', line: 'distance = 300 000 000 m/s × 480 s',
+        note: 'The converted time goes in. The 8.0 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '300 000 000 × 480 = 144 000 000 000',
+        note: 'Metres per second multiplied by seconds leaves metres.' },
+      { letter: 'A', label: 'Answer', line: 'distance = 144 000 000 000 m',
+        note: 'Insert 8.0 instead of 480 and the Sun comes out 2.4 billion metres away — sixty times too close.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Calculate',
+    question: 'The Moon is about 384 000 000 m away. Light travels at 300 000 000 m/s. How long does light from the Moon take to reach us?',
+    options: [
+      { text: 'About 1.3 s', correct: true },
+      { text: 'About 0.8 s \u2014 divide the speed by the distance', correction: 'That is the calculation upside down. Cover t on the triangle and d sits over c, so the distance is the one being divided.' },
+      { text: 'About 115 000 000 000 000 000 s \u2014 multiply the distance by the speed', correction: 'Multiplying gives a distance back when you already have one. To find a time you share the distance out at so many metres per second, so you divide.' },
+      { text: 'About 1.3 m/s', correction: 'The number is right and the unit is wrong. Metres divided by metres per second leaves seconds, and the question asked how long.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A student says light must be slower in space than in air, because space is empty and there is nothing to carry it. Which statement is right?',
+    options: [
+      { text: 'Light is fastest in a vacuum and slower in air, water or glass \u2014 it needs no material, and a material only gets in its way.', correct: true },
+      { text: 'The student is right: a wave needs something to travel in, so light struggles in a vacuum and speeds up in air.', correction: 'That is true of sound, which is particles shoving their neighbours. Light is not, and it crosses empty space at its full speed.' },
+      { text: 'The speed of light is the same everywhere, because it is a constant of nature.', correction: 'The speed of light in a vacuum is a constant, and light genuinely does travel more slowly through glass and water. That slowing is what makes refraction happen.' },
+      { text: 'Light is faster in space, because there is no gravity there to hold it back.', correction: 'The verdict is right and the reason is not. What slows light is passing through a material, and space has almost none of it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Lightning strikes two kilometres away. Explain why you see the flash almost at once but wait about six seconds for the thunder, naming the speed of each.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The flash and the bang start together, but\u2026',
+    criteria: [
+      'Says the flash and the bang leave at the same moment.',
+      'Gives the speed of light as 300 000 000 m/s, or says it is enormously faster.',
+      'Gives the speed of sound in air as about 340 m/s.',
+      'Says light covers the 2000 m in a tiny fraction of a second.',
+      'Works out or states that sound takes about six seconds to cover the same 2000 m.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A rover on Mars is being driven from Earth. At its closest, Mars is about 55 000 000 000 m away. Work out how long a command takes to reach it, then explain why the rover has to be able to stop itself rather than being steered live.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Time = distance \u00f7 speed of light\u2026',
+    criteria: [
+      'Uses time = distance \u00f7 speed of light.',
+      'Gets about 183 s, or about 3 minutes, with the unit.',
+      'Says the reply from the rover takes the same time again, so a round trip is about six minutes.',
+      'Says a driver on Earth is always seeing where the rover was several minutes ago.',
+      'Concludes that the rover must detect an obstacle and stop on its own, because a command sent on seeing one would arrive far too late.'
+    ] }
+];
+
+function fmtT(t) {
+  if (t >= 1) return t.toFixed(2) + ' s';
+  if (t >= 0.001) return (t * 1000).toFixed(2) + ' ms';
+  if (t >= 0.000001) return (t * 1000000).toFixed(2) + ' millionths of a second';
+  return (t * 1000000000).toFixed(1) + ' billionths of a second';
+}
+function grp(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0'); }
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, med: 0, d: 60, touched: {}, cover: 'd', workedStep: 0, formPick: null, insertPick: null, ansText: '', ansUnit: '', buildOpen: false });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  cfifaVals(q1, q2) {
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: q2 ? [q1, q2] : [q1]
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const d = Math.round(Math.pow(10, (s.d / 100) * 5));    // 1 m to 100 000 m
+    const vac = s.med === 1;
+    const tL = d / C;
+    const tS = d / 340;
+    const x = 60 + (Math.log10(Math.max(1, d)) / 5) * 880;
+    const dLabel = d >= 1000 ? (d / 1000).toFixed(d >= 10000 ? 0 : 1) + ' km' : d + ' m';
+    return Object.assign({
+      hookOptions: [
+        { letter: 'A', text: 'The light is much faster than the sound, so it covers the same two kilometres far sooner' },
+        { letter: 'B', text: 'The thunder is made a few seconds after the flash, further down the strike' },
+        { letter: 'C', text: 'The sound has to travel round obstacles, so it takes a longer route' },
+        { letter: 'D', text: 'The light goes straight to you and the sound spreads out in every direction first' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'One event, two messengers, wildly different speeds. Light covers two kilometres in about seven millionths of a second; sound in air needs about six seconds for the same trip. Counting the gap is a real method: every three seconds between flash and bang is roughly one kilometre.',
+
+      benchProgress: (s.touched.med || s.touched.d) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Both arrive, with the light first, exactly as on Earth' },
+        { letter: 'B', text: 'The light arrives and the bang never does, because there is no air to carry it' },
+        { letter: 'C', text: 'Neither arrives, because a vacuum stops all waves' },
+        { letter: 'D', text: 'They arrive together, because with no air there is nothing to slow the sound down' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      medTabs: [{ label: 'Air' }, { label: 'Vacuum' }].map((t, i) => ({
+        label: t.label, pressed: s.med === i, style: this.seg(s.med === i, true, false),
+        onClick: () => this.setState((st) => ({ med: i, touched: Object.assign({}, st.touched, { med: true }) }))
+      })),
+      distValue: s.d, distLabel: dLabel,
+      onDist: (e) => this.setState((st) => ({ d: Number(e.target.value), touched: Object.assign({}, st.touched, { d: true }) })),
+      markLine: 'M' + x.toFixed(1) + ' 156 V248',
+      markLabelStyle: 'position:absolute;left:' + ((x / 1000) * 100).toFixed(2) +
+        '%;top:50%;transform:translate(-50%,0);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,18px);color:#E9DCC8;white-space:nowrap;pointer-events:none;',
+      soundArrow: vac ? 'M160 144 H420' : 'M160 144 H900 M900 144 L882 134 M900 144 L882 154',
+      soundStyle: 'fill: none; stroke: #8FB7FF; stroke-width: ' + (vac ? '5' : '8') + '; stroke-linecap: round; stroke-linejoin: round;' + (vac ? ' stroke-dasharray: 14 12;' : ''),
+      lightTime: fmtT(tL),
+      soundTime: vac ? 'it never arrives' : fmtT(tS),
+      soundSub: vac ? 'no particles to pass it on' : 'at about 340 m/s in air',
+      medCaption: vac ? 'nothing at all in between' : 'ordinary air at about 20 \u00b0C',
+      verdictWord: vac ? 'Light only' : 'Light, by ' + fmtT(tS - tL),
+      benchAlt: 'A flash and a bang set off together across ' + dLabel + ' of ' + (vac ? 'vacuum' : 'air') +
+        '. The light arrow reaches the far end; the sound arrow ' + (vac ? 'stops short and is drawn dashed.' : 'reaches the far end as well.'),
+      benchNote: vac
+        ? 'With nothing in the gap the light crosses ' + dLabel + ' in ' + fmtT(tL) + ' and the bang never arrives at all \u2014 not faintly, not late. Put air in the same gap and the bang lands after ' + fmtT(tS) + '. That single difference is what separates light from every wave in matter.'
+        : 'Over ' + dLabel + ' of air the light takes ' + fmtT(tL) + ' and the bang takes ' + fmtT(tS) + ', a gap of ' + fmtT(tS - tL) +
+          '. Light is close to a million times faster, so the light time barely changes on this scale while the sound time climbs with every step. Take the air away and the light reading is unchanged and the bang stops arriving.',
+
+      coverResult: COVERS[s.cover],
+      coverTop: s.cover === 'd', coverLeft: s.cover === 'c', coverRight: s.cover === 't',
+      coverTabs: this.coverBtns([{ id: 'd', label: 'Cover d' }, { id: 'c', label: 'Cover c' }, { id: 't', label: 'Cover t' }])
+    }, this.cfifaVals({
+      tab: 'Question 1', id: 'p701q1',
+      head: 'Your gap: ' + dLabel + ', which is ' + grp(d) + ' m.',
+      formOptions: ['time = distance \u00f7 speed of light', 'time = distance \u00d7 speed of light', 'time = speed of light \u00f7 distance'],
+      insertOptions: ['t = ' + grp(d) + ' m \u00f7 300 000 000 m/s', 't = ' + grp(d) + ' m \u00d7 300 000 000 m/s', 't = 300 000 000 m/s \u00f7 ' + grp(d) + ' m'],
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+        line: 'the speed is in m/s · the time is already in seconds',
+        note: 'Metres per second multiplied by seconds gives metres, so there is nothing to convert.' },
+        { letter: 'F', label: 'Formula', line: 't = d \u00f7 c',
+          note: 'Cover t on the triangle: d sits over c, so you divide.' },
+        { letter: 'I', label: 'Insert', line: 't = ' + grp(d) + ' m \u00f7 300 000 000 m/s',
+          note: 'The gap comes from your slider; the speed is light in a vacuum, and air is close enough to make no difference here.' },
+        { letter: 'F', label: 'Fine-tune', line: grp(d) + ' \u00f7 300 000 000 = ' + tL.toExponential(2),
+          note: 'Metres divided by metres per second leaves seconds.' },
+        { letter: 'A', label: 'Answer', line: 't = ' + fmtT(tL),
+          note: 'Over the same gap the bang would take ' + fmtT(tS) + ' through air.' }
+      ],
+      close: 'The five lines above give ' + fmtT(tL) +
+        ' for the light across ' + dLabel + '.'
+    }, {
+      tab: 'Question 2', id: 'p701q2',
+      head: 'Light from the Moon reaches the Earth in 1300 ms. How far away is the Moon?',
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+          line: '1300 ms ÷ 1000 = 1.3 s',
+          note: 'The speed is metres per second, and a millisecond is a thousandth of a second.' },
+        { letter: 'F', label: 'Formula', line: 'distance = speed of light × time',
+          note: 'Cover d on the triangle: c and t sit side by side, so you multiply.' },
+        { letter: 'I', label: 'Insert', line: 'distance = 300 000 000 m/s × 1.3 s',
+          note: 'The converted time goes in. The 1300 never does.' },
+        { letter: 'F', label: 'Fine-tune', line: '300 000 000 × 1.3 = 390 000 000',
+          note: 'Metres per second multiplied by seconds leaves metres.' },
+        { letter: 'A', label: 'Answer', line: 'distance = 390 000 000 m',
+          note: 'Insert 1300 instead of 1.3 and the Moon comes out a thousand times further away than the Sun.' }
+      ],
+      close: 'The five lines give 390 000 000 m — 390 000 km, which is close to the real figure.'
+    }));
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

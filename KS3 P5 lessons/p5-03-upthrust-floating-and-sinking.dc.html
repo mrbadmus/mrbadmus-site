@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upthrust, floating and sinking · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p5-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p5-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Pressure</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Upthrust, floating and sinking</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Pressure · Model</p>
+        <h1>Upthrust, floating and sinking</h1>
+        <p class="ks3-bigq">Drop a steel bolt in a bucket and it goes straight to the bottom. A steel ship the length of a street floats. Same steel.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Push a beach ball under and it fights you.</h2>
+        <p class="ks3-hook-prompt">Hold one under the surface of a pool. You can feel the water shoving it back up the whole time, and the further under you push it the harder the shove gets. Let go and it leaves the water.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Where does that upward shove come from?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">It comes from the pressure being different at different depths. The bottom of the ball is deeper than the top, so the water pushes <em>up</em> on the bottom harder than it pushes <em>down</em> on the top. Those two pushes do not cancel, and what is left over is a force upwards. It has a name: <strong>upthrust</strong>.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Upthrust</strong> is the upward force a liquid or gas exerts on anything in it, and it exists because pressure increases with depth. It is equal to the weight of the liquid the object pushes out of the way. An object <strong>floats</strong> when it can push aside a weight of liquid equal to its own weight, so that upthrust and weight balance; it <strong>sinks</strong> when even fully under it cannot push aside that much, so the weight wins.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · five blocks, one tank</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Every block is one litre. Only the weight changes.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">One litre of water weighs {{ litreLabel }}, so a block pushed fully under can never get more than that much upthrust. Pick a block. Then try holding it right under.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. Two one-litre blocks, one of pine and one of steel, are both held completely under the water. Which gets the bigger upthrust?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-end;">
+              <div style="flex: 1 1 420px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The block</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ blockTabs }}" as="t" hint-placeholder-count="5">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 0 1 260px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Your hand</p>
+                <button type="button" onClick="{{ onHold }}" aria-pressed="{{ holding }}" style="{{ holdStyle }}">{{ holdLabel }}</button>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+              <svg viewBox="0 0 1000 620" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                <rect x="250" y="200" width="500" height="360" style="fill: #24405C;"></rect>
+                <path d="M250 150 V560 H750 V150" style="fill: none; stroke: #C6B9A7; stroke-width: 6;"></path>
+                <path d="M250 200 H750" style="fill: none; stroke: #E9DCC8; stroke-width: 4;"></path>
+                <text x="764" y="206" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .08em; fill: #E9DCC8;">SURFACE</text>
+
+                <rect x="440" y="{{ blockY }}" width="120" height="120" rx="6" style="fill: #C6B9A7; stroke: #15110C; stroke-width: 4;"></rect>
+
+                <path d="{{ upShaft }}" style="fill: none; stroke: #8FB7FF; stroke-width: 9; stroke-linecap: round;"></path>
+                <path d="{{ upHead }}" style="fill: #8FB7FF;"></path>
+                <path d="{{ wShaft }}" style="fill: none; stroke: #E9DCC8; stroke-width: 9; stroke-linecap: round;"></path>
+                <path d="{{ wHead }}" style="fill: #E9DCC8;"></path>
+              </svg>
+                <span style="{{ upLabelStyle }}">{{ upLabel }}</span>
+                <span style="{{ wLabelStyle }}">{{ wLabel }}</span>
+                <span style="position: absolute; left: 4%; top: 12%; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(13px, 2.1vw, 26px); color: #FBF3E6; white-space: nowrap; pointer-events: none;">{{ verdictWord }}</span>
+                <span style="position: absolute; left: 4%; top: 21%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px, 1.4vw, 17px); letter-spacing: .08em; text-transform: uppercase; color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ leftoverWord }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Weight in air</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ wLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ massLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Upthrust now</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ upLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ displacedLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">On a spring balance in the water</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ readingLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What it does</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">It floats when the upthrust equals the weight</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The beam</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Two arrows, one leftover</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 700 600" role="img" aria-label="Two force diagrams to one scale. On the left a floating pine block: upthrust 5 newtons up, weight 5 newtons down, equal arrows, nothing left over. On the right a sinking aluminium block: upthrust 10 newtons up, weight 27 newtons down, leaving 17 newtons downwards." style="width: 360px; height: auto; flex: 0 0 auto;">
+            <rect x="20" y="150" width="320" height="430" style="fill: var(--ks3-blue-tint);"></rect>
+            <rect x="360" y="150" width="320" height="430" style="fill: var(--ks3-blue-tint);"></rect>
+            <path d="M20 150 H340 M360 150 H680" style="fill: none; stroke: var(--ks3-ink); stroke-width: 4;"></path>
+
+            <rect x="130" y="118" width="100" height="64" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <path d="M180 118 V96" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7;"></path>
+            <path d="M180 78 L166 100 L194 100 Z" style="fill: var(--ks3-ink);"></path>
+            <path d="M180 182 V204" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7;"></path>
+            <path d="M180 222 L166 200 L194 200 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="180" y="62" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .06em; fill: var(--ks3-ink);">UPTHRUST 5 N</text>
+            <text x="180" y="252" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .06em; fill: var(--ks3-ink);">WEIGHT 5 N</text>
+            <text x="180" y="330" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink);">EQUAL</text>
+            <text x="180" y="360" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .06em; fill: var(--ks3-ink-muted);">IT FLOATS</text>
+
+            <rect x="470" y="250" width="100" height="64" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <path d="M520 250 V190" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7;"></path>
+            <path d="M520 170 L506 194 L534 194 Z" style="fill: var(--ks3-ink);"></path>
+            <path d="M520 314 V512" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7;"></path>
+            <path d="M520 530 L506 508 L534 508 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="520" y="140" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .06em; fill: var(--ks3-ink);">UPTHRUST 10 N</text>
+            <text x="520" y="560" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .06em; fill: var(--ks3-ink);">WEIGHT 27 N</text>
+            <path d="M604 314 V512" style="fill: none; stroke: var(--ks3-alert-border); stroke-width: 6; stroke-dasharray: 9 8;"></path>
+            <text x="616" y="410" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .06em; fill: var(--ks3-ink);">17 N</text>
+            <text x="616" y="434" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .06em; fill: var(--ks3-ink);">OVER</text>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">R = W − U</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two arrows the same length balance. The longer one wins, and the leftover is what moves it.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">W</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">weight, pulling down</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">N</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">U</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">upthrust, pushing up — the weight of liquid pushed aside</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">N</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">R</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">what is left over — zero when it floats</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">N</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Upthrust is the upward force from a liquid or gas, and it equals the weight of what the object pushes out of the way. It floats when the upthrust can match its weight, and sinks when even fully under it cannot.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Heavy things sink and light things float.”</p>
+        <p>A cargo ship weighs two hundred million newtons and floats; a steel bolt weighs half a newton and sinks. Weight alone decides nothing. What decides it is the weight of the object compared with the weight of water it can push out of the way — and a hull shaped like a hull pushes aside thousands of tonnes of sea, while a bolt can only push aside a bolt's worth. Squash that same ship into a solid cube and it goes straight down, because now it pushes aside almost nothing.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“Only things that float get upthrust.”</p>
+          <p>Everything in a liquid gets upthrust, sinkers included. Hang a stone from a spring balance and lower it into water: the reading drops, and the amount it drops by <em>is</em> the upthrust. The stone still sinks, because the upthrust is not enough to match its weight — but it is definitely there, which is why a heavy rock is easier to lift while it is still under the water and suddenly feels heavier as it breaks the surface.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Because pressure grows with depth, a liquid pushes up on the bottom of an object harder than it pushes down on the top, and the difference is upthrust. Upthrust equals the weight of the liquid pushed out of the way. Floating is the balanced case: upthrust equals weight, nothing is left over. Sinking is the unbalanced one: even fully submerged the upthrust is smaller than the weight, and the leftover force takes it down.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>A submarine uses the one thing the blocks on the bench could not: it changes its own weight without changing its shape. Flood the ballast tanks and the weight goes up while the upthrust stays exactly the same, so it dives; blow the water out with compressed air and the weight drops below the upthrust, so it rises. Hovering at a set depth means matching the two to within a few newtons, which is why submarines trim constantly and why a change in the saltiness of the water is something a crew has to notice.</p>
+          <p>The same balance is written on the side of every merchant ship as the Plimsoll line — a set of marks showing how deep the hull may legally sit in fresh water, in salt water, in summer and in winter, because each of those changes the weight of water the hull pushes aside. Gases do it too: a hot-air balloon floats in air for exactly the reason a cork floats in water, since hot air inside the envelope weighs less than the cold air it pushes out of the way. And the whole idea is old. Archimedes worked out the rule about the weight of the fluid displaced more than two thousand years ago, and shipbuilders still use it unchanged.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p5-02-pressure-in-liquids.html">Pressure in liquids<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p5-04-atmospheric-pressure.html">Atmospheric pressure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p4-03-balanced-and-unbalanced.html">Balanced and unbalanced<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-04-gas-pressure.html">Gas pressure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Upthrust from the pressure difference across a submerged object, density as the test for floating, and Archimedes' principle written as an equation.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got something you cannot decide will float or sink?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The tank is a teaching model. Every block is exactly one litre and water is taken as 1000 kg per cubic metre, so one litre of water weighs 10 N with weight as mass × 10 N/kg; the block densities are typical values and cork in particular varies a great deal. The weight arrow is drawn at a fixed length and the upthrust arrow in proportion to it, so the two can be compared with each other but not measured off the page; ratios beyond about two and a half are clipped to fit. How much of a floating block sits below the surface is calculated from the weights alone, ignoring the shape of the block and the skin of the water.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The beach ball', short: 'BALL' },
+  { id: 's-bench', label: 'Five blocks, one tank', short: 'TANK' },
+  { id: 's-formula', label: 'The beam and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const LITRE_N = 10;   // weight of one litre of water, N
+const SURFACE = 200;  // y of the water surface
+const FLOOR = 560;    // y of the tank floor
+const BOX = 120;      // px, the drawn block
+const W_ARROW = 120;  // px, fixed length of the weight arrow
+
+const BLOCKS = [
+  { key: 'cork', label: 'Cork', name: 'cork', mass: 0.24 },
+  { key: 'pine', label: 'Pine', name: 'pine', mass: 0.5 },
+  { key: 'ice', label: 'Ice', name: 'ice', mass: 0.92 },
+  { key: 'alu', label: 'Aluminium', name: 'aluminium', mass: 2.7 },
+  { key: 'steel', label: 'Steel', name: 'steel', mass: 7.9 }
+];
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A stone weighs 12 N in air. Hanging fully under water, the spring balance reads 9 N. What is the upthrust?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '12 N stays 12 N · 9 N stays 9 N',
+        note: 'Both readings come off the same spring balance in newtons, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'upthrust = weight in air − reading in water',
+        note: 'The balance loses exactly what the water is supporting.' },
+      { letter: 'I', label: 'Insert', line: 'upthrust = 12 N − 9 N',
+        note: 'Both readings come off the same spring balance.' },
+      { letter: 'F', label: 'Fine-tune', line: '12 − 9 = 3',
+        note: 'Newtons take away newtons, so the answer is in newtons.' },
+      { letter: 'A', label: 'Answer', line: 'upthrust = 3 N upwards',
+        note: 'Three newtons up — and the stone still sinks, because 9 N is left over pulling down.' }
+    ] },
+  { tab: 'Convert first', head: 'A metal cube of mass 1.2 kg hangs from a balance. Fully under water the balance reads 8.0 N. What is the upthrust?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '1.2 kg × 10 N/kg = 12 N',
+        note: 'The subtraction needs two forces, and a mass is not a force — weight in newtons is mass in kilograms × 10 N/kg.' },
+      { letter: 'F', label: 'Formula', line: 'upthrust = weight in air − reading in water',
+        note: 'The balance loses exactly what the water is supporting.' },
+      { letter: 'I', label: 'Insert', line: 'upthrust = 12 N − 8.0 N',
+        note: 'The converted weight goes in. The 1.2 kg never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '12 − 8.0 = 4',
+        note: 'Newtons take away newtons, so the answer is in newtons.' },
+      { letter: 'A', label: 'Answer', line: 'upthrust = 4 N upwards',
+        note: 'Subtract 8.0 from 1.2 and the upthrust comes out negative, which no upthrust ever is.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A metal cube weighs 45 N in air. Hanging completely under water, the spring balance reads 37 N. What is the upthrust on it?',
+    options: [
+      { text: '8 N', correct: true },
+      { text: '82 N — add the two readings', correction: 'Adding them makes a force bigger than the cube\u2019s own weight. The water takes some of the weight off the balance, so the two are subtracted.' },
+      { text: '8 Pa — the water is pressing on it, so the answer is a pressure', correction: 'The arithmetic is right and the unit is wrong. Upthrust is a force, measured in newtons; it is caused by a pressure difference but it is not a pressure.' },
+      { text: '1.2 — divide 45 by 37', correction: 'That is a ratio, not a force, and it has no unit. The upthrust is the difference between the two readings.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A steel bolt sinks. A steel ship floats. Which statement explains it?',
+    options: [
+      { text: 'The hull pushes aside a weight of water equal to the whole ship\u2019s weight; the bolt can only push aside its own small volume, which weighs far less than it does.', correct: true },
+      { text: 'The ship is lighter than the bolt.', correction: 'The ship outweighs the bolt hundreds of millions of times over. Weight alone is not what decides it.' },
+      { text: 'Steel floats when there is enough of it.', correction: 'A solid block of the same steel sinks however large it is. It is the shape, and the water it pushes aside, that changes the answer.' },
+      { text: 'The ship floats because it is hollow, and hollow things always float.', correction: 'The verdict is right and the rule is wrong. A hollow object full of water sinks — being hollow only helps because it lets the hull push aside more water than it weighs.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'The steel from a ship is melted down and cast into one solid block, which sinks. Explain why the ship floated and the block does not, using upthrust and the water pushed out of the way.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The weight of the steel has not\u2026',
+    criteria: [
+      'Says the weight of steel is the same in both cases.',
+      'Says the upthrust equals the weight of water pushed out of the way.',
+      'Says the hull shape pushes aside a large volume, and so a large weight, of water.',
+      'Says the solid block pushes aside only a small volume of water.',
+      'Concludes that the hull\u2019s upthrust could match its weight and the block\u2019s cannot, so the block has a leftover force downwards.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A submarine dives by letting sea water into its ballast tanks and surfaces by blowing it out with compressed air. Explain both, and say what stays the same throughout.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Letting water in makes the submarine\u2026',
+    criteria: [
+      'Says flooding the tanks increases the submarine\u2019s weight.',
+      'Says the upthrust stays the same, because the shape and volume have not changed.',
+      'Says the weight then exceeds the upthrust, leaving a force downwards, so it dives.',
+      'Says blowing the water out lowers the weight below the upthrust, so it rises.',
+      'Says hovering at one depth means weight and upthrust are balanced, with nothing left over.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    block: 1,
+    holding: false,
+    touched: {},
+    workedStep: 0,
+    formPick: null,
+    insertPick: null,
+    ansText: '',
+    ansUnit: '',
+    ansDir: '',
+    buildOpen: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  block() { return BLOCKS[this.state.block]; }
+  weight() { return Math.round(this.block().mass * 10 * 10) / 10; }
+  floats() { return this.weight() < LITRE_N; }
+  under() { return this.state.holding || !this.floats(); }
+  upthrust() { return this.under() ? LITRE_N : this.weight(); }
+  leftover() { return Math.round((this.upthrust() - this.weight()) * 10) / 10; }
+  fraction() { return this.under() ? 1 : this.weight() / LITRE_N; }
+
+  benchNote() {
+    const b = this.block();
+    const W = this.weight();
+    const U = this.upthrust();
+    const R = this.leftover();
+    const pct = Math.round(this.fraction() * 100);
+    if (this.floats() && !this.state.holding) {
+      return 'Left alone, the ' + b.name + ' settles with ' + pct + '% of it under the surface. That is exactly far enough down to push aside ' +
+        W + ' N of water, which matches its own ' + W + ' N — upthrust and weight are equal and nothing is left over. It is not that the water stopped pushing; it is that it pushes exactly enough.';
+    }
+    if (this.floats()) {
+      return 'Held right under, the ' + b.name + ' pushes aside a full litre, so the upthrust jumps to ' + U + ' N against a weight of only ' + W +
+        ' N. That leaves ' + R + ' N pushing upwards, and it is the force you can feel in your hand. Let go and it rises until only ' +
+        Math.round((W / LITRE_N) * 100) + '% of it is under again.';
+    }
+    return 'Fully under, the ' + b.name + ' pushes aside one litre of water, so it gets the same ' + U + ' N of upthrust as everything else here — and against a weight of ' + W +
+      ' N that is nowhere near enough. ' + Math.abs(R) + ' N is left over, downwards, so it sinks. The upthrust has not vanished, though: on a spring balance it would read ' +
+      Math.round((W - U) * 10) / 10 + ' N instead of ' + W + ' N.';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.gate !== null && Object.keys(s.touched).length >= 1;
+          if (id === 's-formula') return s.buildOpen;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const W = this.weight();
+    const U = this.upthrust();
+    const R = this.leftover();
+    const f = this.fraction();
+    // A sinker is drawn part-way down rather than on the floor, so both arrows fit.
+    const top = this.under() ? SURFACE + 100 : SURFACE - BOX * (1 - f);
+    const bottom = top + BOX;
+    const cx = 500;
+    const upLen = Math.max(40, Math.min(260, Math.round(W_ARROW * (U / W))));
+    return {
+      litreLabel: LITRE_N + ' N',
+      benchProgress: Object.keys(s.touched).length ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'The steel, because it is heavier and presses into the water harder' },
+        { letter: 'B', text: 'The same on both — each pushes aside one litre of water' },
+        { letter: 'C', text: 'The pine, because it is trying to float' },
+        { letter: 'D', text: 'The steel, because it sinks deeper and pressure grows with depth' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      blockTabs: BLOCKS.map((b, i) => ({
+        label: b.label, pressed: s.block === i,
+        style: this.seg(s.block === i, true, false),
+        onClick: () => this.setState((st) => ({ block: i, touched: Object.assign({}, st.touched, { block: true }) }))
+      })),
+      holding: s.holding,
+      holdLabel: s.holding ? 'Let it go' : 'Hold it right under',
+      holdStyle: this.seg(s.holding, true, false) + 'width:100%;',
+      onHold: () => this.setState((st) => ({ holding: !st.holding, touched: Object.assign({}, st.touched, { hold: true }) })),
+      blockY: top,
+      upShaft: 'M' + cx + ' ' + top + ' V' + (top - Math.max(6, upLen - 22)),
+      upHead: 'M' + cx + ' ' + (top - upLen) + ' L' + (cx - 17) + ' ' + (top - upLen + 24) + ' L' + (cx + 17) + ' ' + (top - upLen + 24) + ' Z',
+      wShaft: 'M' + cx + ' ' + bottom + ' V' + (bottom + W_ARROW - 22),
+      wHead: 'M' + cx + ' ' + (bottom + W_ARROW) + ' L' + (cx - 17) + ' ' + (bottom + W_ARROW - 24) + ' L' + (cx + 17) + ' ' + (bottom + W_ARROW - 24) + ' Z',
+      upLabelStyle: 'position:absolute;left:52%;top:' + (((top - upLen / 2) / 620) * 100).toFixed(2) +
+        '%;transform:translate(0,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,19px);color:#8FB7FF;white-space:nowrap;pointer-events:none;',
+      wLabelStyle: 'position:absolute;left:52%;top:' + (((bottom + W_ARROW / 2) / 620) * 100).toFixed(2) +
+        '%;transform:translate(0,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,19px);color:#E9DCC8;white-space:nowrap;pointer-events:none;',
+      wLabel: W + ' N',
+      upLabel: U + ' N',
+      massLabel: this.block().mass + ' kg × 10 N/kg',
+      displacedLabel: this.under() ? 'a full litre pushed aside' : Math.round(f * 100) + '% of a litre pushed aside',
+      readingLabel: this.floats() && !s.holding ? '0 N — it holds itself up' : Math.round((W - U) * 10) / 10 + ' N',
+      verdictWord: this.floats() ? (s.holding ? 'Pushes back up' : 'Floats') : 'Sinks',
+      leftoverWord: R === 0 ? 'NOTHING LEFT OVER' : (R > 0 ? R + ' N LEFT OVER, UPWARDS' : Math.abs(R) + ' N LEFT OVER, DOWNWARDS'),
+      benchAlt: 'A one-litre block of ' + this.block().name + ' in a tank of water, ' +
+        (this.under() ? 'held completely below the surface' : Math.round(f * 100) + ' per cent below the surface') +
+        ', with a weight arrow of ' + W + ' newtons down and an upthrust arrow of ' + U + ' newtons up.',
+      benchNote: this.benchNote()
+    };
+  }
+
+  buildVals() {
+    const s = this.state;
+    const W = this.weight();
+    const U = this.upthrust();
+    const R = this.leftover();
+    const committed = (s.formPick !== null ? 1 : 0) + (s.insertPick !== null ? 1 : 0) + (s.ansText.trim() && s.ansUnit && s.ansDir ? 1 : 0);
+    const locked = s.buildOpen || committed < 3;
+    const dirWord = R === 0 ? 'nothing left over' : (R > 0 ? 'upwards' : 'downwards');
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p503q1',
+          
+          head: 'Your block: ' + this.block().label.toLowerCase() + ', ' + W + ' N, with ' + U + ' N of upthrust on it.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: W + ' N stays ' + W + ' N · ' + U + ' N stays ' + U + ' N',
+              note: 'Both are already forces in newtons, so there is nothing to convert.' }
+          ].concat([
+        { letter: 'F', label: 'Formula', line: 'left over = weight − upthrust',
+          note: 'A difference between two opposite forces, so a beam rather than a triangle.' },
+        { letter: 'I', label: 'Insert', line: 'left over = ' + W + ' N − ' + U + ' N',
+          note: 'Both figures come off the bench above.' },
+        { letter: 'F', label: 'Fine-tune', line: W + ' − ' + U + ' = ' + Math.abs(R),
+          note: R === 0 ? 'They cancel exactly, which is what floating is.' : 'The bigger arrow decides which way it goes.' },
+        { letter: 'A', label: 'Answer', line: R === 0 ? 'nothing left over — it floats' : Math.abs(R) + ' N ' + dirWord,
+          note: R === 0 ? 'Balanced forces, so it stays where it is.' : (R > 0 ? 'Unbalanced upwards, so it rises until only part of it is under.' : 'Unbalanced downwards, so it sinks.') }
+      ]),
+          close: 'The five lines give ' + Math.abs(R) + ' N ' + dirWord + ', which is what the arrows on the bench are showing.'
+        },
+        {
+          tab: 'Question 2', id: 'p503q2',
+          head: 'A sinker of mass 0.60 kg hangs from a balance. Fully under water the balance reads 4.5 N. What is the upthrust?',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '0.60 kg × 10 N/kg = 6.0 N',
+              note: 'A mass is not a force. Weight in newtons is mass in kilograms × 10 N/kg.' },
+            { letter: 'F', label: 'Formula', line: 'upthrust = weight in air − reading in water',
+              note: 'The balance loses exactly what the water is supporting.' },
+            { letter: 'I', label: 'Insert', line: 'upthrust = 6.0 N − 4.5 N',
+              note: 'The converted weight goes in. The 0.60 kg never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '6.0 − 4.5 = 1.5',
+              note: 'Newtons take away newtons, so the answer is in newtons.' },
+            { letter: 'A', label: 'Answer', line: 'upthrust = 1.5 N upwards',
+              note: 'Subtract 4.5 from 0.60 and the upthrust comes out negative.' }
+          ],
+          close: 'The five lines give 1.5 N upwards. The whole question turned on the first one.'
+        }
+      ]
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: 'The water is trying to get out of the way' },
+        { letter: 'B', text: 'The water presses harder on the bottom of the ball than on the top, and the difference pushes up' },
+        { letter: 'C', text: 'The air inside makes it rise on its own' },
+        { letter: 'D', text: 'A floating object has no weight, so nothing holds it down' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null
+    }, this.railVals(), this.benchVals(), this.buildVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>

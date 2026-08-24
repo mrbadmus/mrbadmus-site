@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fuels and energy resources · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p2-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p2-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Energy at home</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Fuels and energy resources</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Energy at home · Classify</p>
+        <h1>Fuels and energy resources</h1>
+        <p class="ks3-bigq">Wood is renewable. Nuclear is not. Which one puts more carbon into the air?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Renewable and dirty. Non-renewable and clean.</h2>
+        <p class="ks3-hook-prompt">Burning wood releases carbon dioxide, soot and particulates every time. A nuclear power station releases no carbon dioxide at all while generating. Wood grows back; uranium does not.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit. What does that tell you about the word "renewable"?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">It answers one question and one only: will it run out? It says nothing about carbon, nothing about pollution, nothing about safety, and nothing about cost. Two independent questions get collapsed into one word, and that is the mistake this whole lesson is built to take apart.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Almost every resource below traces back to the Sun, and almost every one is a chemical or nuclear store being emptied into a pathway. What differs is whether the store refills on a human timescale, and what else comes out while you use it. Those are two axes, not one.</p>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">First pass · one question at a time</p>
+            <h2 style="margin: 6px 0 0;">Will it run out?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ sortProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Sort each resource on that question alone. Do not think about pollution yet — that is deliberately a separate step.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 20px;">
+          <sc-for list="{{ sortCards }}" as="c" hint-placeholder-count="8">
+            <div style="{{ c.wrapStyle }}">
+              <p style="margin: 0 0 4px; font-size: 18px; line-height: 1.35; font-weight: 700;">{{ c.name }}</p>
+              <p style="margin: 0 0 12px; font-size: 16px; line-height: 1.4; color: var(--ks3-ink-muted);">{{ c.store }}</p>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button type="button" onClick="{{ c.onRenew }}" aria-pressed="{{ c.renewOn }}" style="{{ c.renewStyle }}">Renewable</button>
+                <button type="button" onClick="{{ c.onFinite }}" aria-pressed="{{ c.finiteOn }}" style="{{ c.finiteStyle }}">Will run out</button>
+              </div>
+              <sc-if value="{{ c.answered }}">
+                <p style="{{ c.noteStyle }}">{{ c.note }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-grid" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Second pass · the two-axis grid</p>
+            <h2 style="margin: 6px 0 0;">Now add the second question.</h2>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <sc-for list="{{ axisButtons }}" as="b" hint-placeholder-count="3">
+              <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 56ch;">Renewable across the bottom, the second question up the side. If the two words meant the same thing, everything would sit on a diagonal. Nothing does.</p>
+
+        <div style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+          <canvas width="1800" height="760" ref="{{ gridRef }}" role="img" aria-label="{{ gridAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+        </div>
+        <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ gridNote }}</p>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Renewable means the store refills on a human timescale. It is a separate question from how much carbon, how much pollution, or how reliable — and the answers do not line up.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Renewable means clean, and non-renewable means polluting.”</p>
+        <p style="max-width: 54ch;">Commit. Your own grid is the evidence.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Look at where the corners are occupied. Nuclear is non-renewable and emits almost no carbon. Wood is renewable and emits a great deal, along with particulates that damage lungs. Both of those cells would have to be empty if the two words meant the same thing.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">There are more axes than two, and honest comparison needs all of them: carbon while generating, other pollution, land taken, waste produced and for how long, reliability, cost, and where the fuel comes from. Hydroelectric floods valleys. Solar panels need mining and manufacturing. Nuclear produces waste that stays dangerous for millennia. Gas is reliable and emits carbon. None of these is a clean win, and anyone telling you one of them is has stopped counting axes early.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">Being able to hold two independent questions apart is not a debating trick. It is the difference between an opinion and an argument.</p>
+          </div>
+        </sc-if>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Electricity is a clean energy resource.&rdquo;</p>
+          <p>Electricity is not a resource at all. It is a pathway — a way of moving energy from wherever it was generated to wherever it is wanted — and it is exactly as clean as whatever filled the store at the far end. The same electric car is close to zero-carbon on Norwegian hydro and considerably worse than a small diesel on Polish coal. Asking whether electricity is clean is asking about the wrong end of the wire.</p>
+        </div>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Renewable means the resource is replaced as fast as it is used. It is a claim about supply, not about cleanliness — and every resource, renewable or not, carries a cost somewhere.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Renewable answers one question: does the store refill? Carbon, pollution, reliability, land and waste are separate questions with different answers. Nuclear is non-renewable and low-carbon; wood is renewable and smoky. Both corners are occupied.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Almost everything on the grid is the Sun, wearing a disguise. Coal is a Carboniferous forest that photosynthesised three hundred million years ago and never fully rotted. Oil is ancient plankton. Wind exists because sunlight heats some parts of the atmosphere more than others. Hydroelectric power runs on water the Sun lifted into the sky as vapour. Even the food in your own chemical store traces back to a plant catching light. Only three things on the list break the pattern: geothermal, which is heat left over from the Earth's formation plus radioactive decay in the mantle; tidal, which is the Moon's gravity; and nuclear, which is energy locked into heavy atoms by exploding stars long before the Sun existed. Everything else is sunlight with a delay — and the length of that delay is exactly what "renewable" is measuring.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p2-04-reading-a-fuel-bill.html">Reading a fuel bill<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next unit</h2>
+          <ul>
+            <li><a href="p3-01-speed.html">Speed<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-01-energy-stores.html">Energy stores<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p2-03-calculating-energy-transferred.html">Calculating energy transferred<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Energy resources, the National Grid, and the evaluation of competing generation methods.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to argue about which resource is best?</p>
+          <a class="ks3-tutor-cta" href="#s-grid">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The grid is a teaching model. Each resource is scored on carbon, availability on demand and land use on a simple scale so that the three axes can be compared at a glance; the scores are relative rankings rather than measured figures, and every one of them varies with the technology, the site and the country. Carbon is counted while generating, so the emissions of building a wind turbine or mining uranium are not in the column. The point of the grid is that renewable and clean are different questions, not that any cell is a precise number.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startAxis&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Carbon while generating&quot;,&quot;Available on demand&quot;,&quot;Land and habitat taken&quot;],&quot;default&quot;:&quot;Carbon while generating&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Two-axis grid&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Wood and uranium', short: 'HOOK' },
+  { id: 's-sort', label: 'Will it run out', short: 'SORT' },
+  { id: 's-grid', label: 'Two-axis grid', short: 'GRID' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+// carbon: 0 = almost none while generating, 1 = high
+// reliable: 0 = intermittent, 1 = on demand
+const RESOURCES = [
+  { id: 'coal', name: 'Coal', store: 'Chemical store, 300 million years old', renew: false, carbon: 1.0, reliable: 1.0, land: 0.5,
+    note: 'Will run out, and it is the highest-carbon option on the grid. The easy case \u2014 both answers point the same way, which is why people generalise from it.' },
+  { id: 'gas', name: 'Natural gas', store: 'Chemical store, fossil', renew: false, carbon: 0.6, reliable: 1.0, land: 0.3,
+    note: 'Finite and carbon-emitting, but around half the carbon of coal per unit and easy to switch on and off. This is why it is used to cover the gaps left by wind and solar.' },
+  { id: 'nuclear', name: 'Nuclear', store: 'Nuclear store in uranium', renew: false, carbon: 0.05, reliable: 1.0, land: 0.2,
+    note: 'Non-renewable and almost carbon-free while generating. It sits in the corner that "renewable means clean" says cannot exist \u2014 and its real cost is waste that stays dangerous for thousands of years.' },
+  { id: 'wood', name: 'Wood and biomass', store: 'Chemical store, grown this decade', renew: true, carbon: 0.75, reliable: 0.9, land: 0.9,
+    note: 'Renewable \u2014 you can plant more \u2014 and it releases carbon dioxide, soot and particulates every time it burns. The other corner that the misconception says is impossible.' },
+  { id: 'wind', name: 'Wind', store: 'Kinetic store in moving air', renew: true, carbon: 0.06, reliable: 0.25, land: 0.6,
+    note: 'Renewable and very low carbon, and it cannot be switched on when the air is still. Reliability is its real cost, not pollution.' },
+  { id: 'solar', name: 'Solar', store: 'Radiation from the Sun', renew: true, carbon: 0.08, reliable: 0.3, land: 0.7,
+    note: 'Renewable and low carbon in use \u2014 though the panels themselves take mining and manufacturing, which is where its carbon figure comes from.' },
+  { id: 'hydro', name: 'Hydroelectric', store: 'Gravitational store of raised water', renew: true, carbon: 0.07, reliable: 0.85, land: 1.0,
+    note: 'Renewable, low carbon and reliable \u2014 and it takes more land than anything else on the grid, because it means flooding a valley.' },
+  { id: 'tidal', name: 'Tidal', store: 'Gravitational store, the Moon', renew: true, carbon: 0.06, reliable: 0.6, land: 0.8,
+    note: 'Renewable and predictable to the minute, unlike wind \u2014 but only at certain times of day, and it disrupts estuaries where a great deal lives.' }
+];
+
+const AXES = [
+  { id: 'carbon', label: 'Carbon while generating', key: 'carbon', low: 'Almost none', high: 'A lot',
+    note: 'The two words come apart immediately. Nuclear is non-renewable and sits at the bottom; wood is renewable and sits near the top. If renewable meant clean, both of those cells would be empty.' },
+  { id: 'reliable', label: 'Available on demand', key: 'reliable', low: 'Intermittent', high: 'Whenever needed', invert: true,
+    note: 'A different picture again. Coal, gas and nuclear are available whenever you want them; wind and solar are not, and no amount of wanting changes it. This is the axis that decides what a country can actually run on.' },
+  { id: 'land', label: 'Land and habitat taken', key: 'land', low: 'Little', high: 'A great deal',
+    note: 'And a third ordering. Hydroelectric is renewable, low-carbon, reliable \u2014 and floods a valley. Nuclear takes the least land of anything here. Every axis reshuffles the ranking.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What does it mean to call an energy resource renewable?',
+    options: [
+      { text: 'The store refills on a human timescale, so it will not run out', correct: true },
+      { text: 'It comes from nature rather than from a fuel, so nothing is being consumed', correction: 'Wood is renewable and produces a great deal. The two questions are separate.' },
+      { text: 'It produces no carbon dioxide, so it does not add to the greenhouse effect', correction: 'Burning biomass is renewable and releases carbon dioxide.' },
+      { text: 'It is available whenever it is needed, so it never has to be stored', correction: 'Wind and solar are renewable and both are intermittent.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Which of these is non-renewable but releases almost no carbon dioxide while generating?',
+    options: [
+      { text: 'Nuclear', correct: true },
+      { text: 'Natural gas', correction: 'Non-renewable, yes \u2014 but it releases substantial carbon dioxide.' },
+      { text: 'Wood', correction: 'Wood is renewable, and it is one of the higher-carbon options.' },
+      { text: 'There is no such resource', correction: 'Nuclear is exactly this, which is why the two words cannot mean the same thing.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain why "renewable" and "clean" are not the same thing, using one renewable resource and one non-renewable resource as evidence.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Renewable describes whether the store refills…',
+    criteria: [
+      'Defines renewable as the store refilling on a human timescale.',
+      'Gives a renewable resource that pollutes \u2014 wood or biomass \u2014 and says what it releases.',
+      'Gives a non-renewable resource that is low-carbon \u2014 nuclear.',
+      'States clearly that the two questions are independent of each other.',
+      'Names at least one further axis that also matters, such as reliability, land or waste.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A country wants to close all its gas power stations and run entirely on wind and solar. Using the grid, give the strongest argument in favour and the strongest practical problem — then say what evidence would help decide.',
+    fieldLabel: 'Your answer',
+    placeholder: 'In favour: wind and solar are renewable and low-carbon…',
+    criteria: [
+      'Argues in favour using both renewability and low carbon.',
+      'Identifies intermittency as the practical problem, with reference to the reliability axis.',
+      'Explains that demand does not fall when the wind drops, so something must cover the gap.',
+      'Suggests a specific solution and its cost \u2014 storage, nuclear backup, or overbuilding capacity.',
+      'Names evidence that would help decide, such as demand data against wind and sunshine records over a full year.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    sorts: {},
+    axis: AXES.findIndex((a) => a.label === this.props.startAxis) >= 0
+      ? AXES.findIndex((a) => a.label === this.props.startAxis) : 0,
+    axesSeen: {},
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.drawGrid();
+  }
+
+  componentDidUpdate() { this.drawGrid(); }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  drawGrid() {
+    const c = this.gridCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 380;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const ax = AXES[this.state.axis];
+    const gx = 150, gy = 40, gw = W - 250, gh = H - 120;
+
+    // quadrant shading
+    ctx.fillStyle = '#F6EEE0';
+    ctx.fillRect(gx, gy, gw / 2, gh);
+    ctx.fillStyle = '#FBF3E6';
+    ctx.fillRect(gx + gw / 2, gy, gw / 2, gh);
+
+    ctx.strokeStyle = '#D9CDBA';
+    ctx.lineWidth = 1.5;
+    for (let i = 1; i < 4; i++) {
+      ctx.beginPath();
+      ctx.moveTo(gx, gy + (gh * i) / 4);
+      ctx.lineTo(gx + gw, gy + (gh * i) / 4);
+      ctx.stroke();
+    }
+
+    // the dividing line: renewable or not
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(gx + gw / 2, gy);
+    ctx.lineTo(gx + gw / 2, gy + gh);
+    ctx.stroke();
+    ctx.strokeRect(gx, gy, gw, gh);
+
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('WILL RUN OUT', gx + gw / 4, gy + gh + 24);
+    ctx.fillText('RENEWABLE', gx + (gw * 3) / 4, gy + gh + 24);
+
+    // y axis label
+    ctx.save();
+    ctx.translate(28, gy + gh / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillStyle = '#A93411';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(ax.label.toUpperCase(), 0, 0);
+    ctx.restore();
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.fillText(ax.high.toUpperCase(), 52, gy + 12);
+    ctx.fillText(ax.low.toUpperCase(), 52, gy + gh - 4);
+
+    // plot, with simple vertical de-overlap within each column
+    const placed = [];
+    RESOURCES.forEach((r) => {
+      const v = r[ax.key];
+      const yv = ax.invert ? v : v;
+      let x = r.renew ? gx + gw * 0.5 + gw * 0.25 : gx + gw * 0.25;
+      let y = gy + gh - yv * gh;
+      // nudge apart from any already-placed point in the same column
+      let guard = 0;
+      while (guard < 24 && placed.some((p) => Math.abs(p.x - x) < 90 && Math.abs(p.y - y) < 26)) {
+        y += 26;
+        if (y > gy + gh - 12) { y = gy + 16; x += 60; }
+        guard += 1;
+      }
+      placed.push({ x: x, y: y });
+
+      ctx.beginPath();
+      ctx.arc(x, y, 9, 0, Math.PI * 2);
+      ctx.fillStyle = r.renew ? '#8E6C3F' : '#E4572E';
+      ctx.fill();
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#1A1714';
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(r.name.toUpperCase(), x + 15, y + 4);
+    });
+
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('IF THE TWO QUESTIONS WERE THE SAME QUESTION, ONE SIDE WOULD BE EMPTY', gx, H - 16);
+  }
+
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const sortsAnswered = Object.keys(s.sorts).length;
+    const axesSeen = Object.keys(s.axesSeen).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-sort') return sortsAnswered >= RESOURCES.length;
+          if (id === 's-grid') return axesSeen >= 2;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Nothing — wood must be cleaner than it looks' },
+        { letter: 'B', text: 'Renewable answers whether it runs out, and nothing else' },
+        { letter: 'C', text: 'Nuclear must secretly be renewable' },
+        { letter: 'D', text: 'The word renewable is meaningless' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      sortProgress: sortsAnswered + ' of ' + RESOURCES.length + ' sorted',
+      sortCards: RESOURCES.map((r) => {
+        const pick = s.sorts[r.id];
+        const answered = pick !== undefined;
+        const right = pick === r.renew;
+        return {
+          name: r.name, store: r.store, answered: answered,
+          renewOn: pick === true, finiteOn: pick === false,
+          renewStyle: this.seg(pick === true),
+          finiteStyle: this.seg(pick === false),
+          wrapStyle: 'padding:18px;border-radius:var(--ks3-r-panel);background:var(--ks3-card);border:2px solid ' +
+            (answered ? (right ? 'var(--ks3-accent)' : 'var(--ks3-ink)') : 'var(--ks3-option-border)') + ';',
+          note: r.note,
+          noteStyle: 'margin:12px 0 0;font-size:16px;line-height:1.5;color:' + (right ? 'var(--ks3-ink)' : 'var(--ks3-accent-text)') + ';',
+          onRenew: () => this.setState((p) => ({ sorts: Object.assign({}, p.sorts, { [r.id]: true }) })),
+          onFinite: () => this.setState((p) => ({ sorts: Object.assign({}, p.sorts, { [r.id]: false }) }))
+        };
+      }),
+
+      axisButtons: AXES.map((a, i) => ({
+        label: a.label, on: s.axis === i, style: this.seg(s.axis === i),
+        onClick: () => this.setState((p) => ({ axis: i, axesSeen: Object.assign({}, p.axesSeen, { [a.id]: true }) }))
+      })),
+      gridRef: (el) => { this.gridCanvas = el; if (el) this.drawGrid(); },
+      gridAlt: 'A grid with will-run-out on the left and renewable on the right, plotted against ' +
+        AXES[s.axis].label.toLowerCase() + '. Both sides of the divide are occupied at both high and low values.',
+      gridNote: AXES[s.axis].note,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Nothing — renewable does mean clean' },
+        { letter: 'B', text: 'They are separate questions with different answers' },
+        { letter: 'C', text: 'Renewable means clean except for wood' },
+        { letter: 'D', text: 'Neither word means anything useful' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

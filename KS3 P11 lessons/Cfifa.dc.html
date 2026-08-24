@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="display: flex; flex-direction: column; gap: 22px; font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+
+  <div class="ks3-block ks3-worked" style="margin: 0;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+      <div>
+        <p class="ks3-eyebrow">Worked example · one step at a time</p>
+        <h2 style="margin: 6px 0 0;">{{ workedHead }}</h2>
+      </div>
+      <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ workedProgress }}</p>
+    </div>
+    <sc-if value="{{ showWorkedTabs }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 16px; display: flex; gap: 9px; flex-wrap: wrap;">
+        <sc-for list="{{ workedTabs }}" as="t" hint-placeholder-count="2">
+          <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 12px;">
+      <sc-for list="{{ workedSteps }}" as="st" hint-placeholder-count="1">
+        <div style="display: flex; gap: 16px; align-items: flex-start; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+          <span aria-hidden="true" style="flex: 0 0 38px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">{{ st.letter }}</span>
+          <div style="flex: 1 1 auto; min-width: 0;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ st.label }}</p>
+            <p style="margin: 5px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px; line-height: 1.25; letter-spacing: -.02em; color: var(--ks3-ink);">{{ st.line }}</p>
+            <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ st.note }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <button type="button" class="ks3-reveal-btn" onClick="{{ onWorked }}" disabled="{{ workedDone }}" style="{{ workedBtnStyle }}">{{ workedBtnLabel }}</button>
+      <sc-if value="{{ workedDone }}"><span style="font-size: 18px; font-weight: 700; color: var(--ks3-ink-body);">{{ workedNext }}</span></sc-if>
+    </div>
+  </div>
+
+  <div style="padding: 26px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+    <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Your turn · the same five steps</p>
+    <sc-if value="{{ showQTabs }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; gap: 9px; flex-wrap: wrap; margin: 6px 0 14px;">
+        <sc-for list="{{ qTabs }}" as="t" hint-placeholder-count="2">
+          <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <h2 style="margin: 8px 0 8px; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px; line-height: 1.15; letter-spacing: -.02em;">{{ buildHead }}</h2>
+    <p style="margin: 0 0 18px; font-size: 19px; line-height: 1.6; color: var(--ks3-ink-body); max-width: 56ch;">{{ buildLead }}</p>
+
+    <sc-if value="{{ writeMode }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <sc-for list="{{ writeRows }}" as="r" hint-placeholder-count="5">
+          <div style="display: flex; gap: 16px; align-items: flex-start; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <span aria-hidden="true" style="flex: 0 0 38px; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;">{{ r.letter }}</span>
+            <div style="flex: 1 1 auto; min-width: 0;">
+              <label for="{{ r.id }}" style="display: block; margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ r.label }}</label>
+              <input type="text" id="{{ r.id }}" value="{{ r.value }}" onInput="{{ r.onChange }}" onChange="{{ r.onChange }}" disabled="{{ r.disabled }}" placeholder="{{ r.placeholder }}" style="{{ r.inputStyle }}">
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ pickMode }}">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+          <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Step 1 · Convert</p>
+          <p style="margin: 0 0 12px; font-size: 19px; font-weight: 600;">Before anything else: are the quantities in the units the formula wants?</p>
+          <div style="display: flex; flex-direction: column; gap: 9px;">
+            <sc-for list="{{ convPicks }}" as="p" hint-placeholder-count="3">
+              <button type="button" onClick="{{ p.onClick }}" aria-pressed="{{ p.pressed }}" disabled="{{ p.disabled }}" style="{{ p.style }}">{{ p.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+          <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Step 2 · Formula</p>
+          <p style="margin: 0 0 12px; font-size: 19px; font-weight: 600;">{{ formPrompt }}</p>
+          <div style="display: flex; flex-direction: column; gap: 9px;">
+            <sc-for list="{{ formPicks }}" as="p" hint-placeholder-count="3">
+              <button type="button" onClick="{{ p.onClick }}" aria-pressed="{{ p.pressed }}" disabled="{{ p.disabled }}" style="{{ p.style }}">{{ p.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+          <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Step 3 · Insert</p>
+          <div style="display: flex; flex-direction: column; gap: 9px;">
+            <sc-for list="{{ insertPicks }}" as="p" hint-placeholder-count="3">
+              <button type="button" onClick="{{ p.onClick }}" aria-pressed="{{ p.pressed }}" disabled="{{ p.disabled }}" style="{{ p.style }}">{{ p.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+          <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Steps 4 and 5 · Fine-tune, then answer</p>
+          <p style="margin: 0 0 12px; font-size: 19px; font-weight: 600;">{{ ansPrompt }}</p>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+            <label for="{{ ansId }}" style="position: absolute; left: -9999px;">Your answer as a number</label>
+            <input type="text" inputMode="decimal" id="{{ ansId }}" value="{{ ansValue }}" onChange="{{ onAns }}" onInput="{{ onAns }}" disabled="{{ buildLocked }}" placeholder="0" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; width: 8rem; padding: 12px 14px; min-height: 44px; border-radius: var(--ks3-r-option); border: 2px solid var(--ks3-option-border); background: var(--ks3-ground); color: var(--ks3-ink);">
+            <label for="{{ unitId }}" style="position: absolute; left: -9999px;">Unit</label>
+            <select id="{{ unitId }}" class="ks3-sim-units" value="{{ unitValue }}" onChange="{{ onUnit }}" disabled="{{ buildLocked }}" style="font-size: 18px;">
+              <option value="">choose a unit</option>
+              <sc-for list="{{ unitOptions }}" as="u" hint-placeholder-count="4">
+                <option value="{{ u.value }}">{{ u.label }}</option>
+              </sc-for>
+            </select>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+      <button type="button" class="ks3-reveal-btn" onClick="{{ onBuild }}" disabled="{{ buildBtnLocked }}" style="{{ buildBtnStyle }}">{{ buildBtnLabel }}</button>
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ buildProgress }}</span>
+    </div>
+
+    <sc-if value="{{ buildOpen }}">
+      <div data-arrive="1" style="margin-top: 18px; padding: 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+        <p style="margin: 0 0 16px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-alert);">{{ buildRevealLabel }}</p>
+        <sc-for list="{{ buildSteps }}" as="st" hint-placeholder-count="5">
+          <div style="{{ st.style }}">
+            <span aria-hidden="true" style="flex: 0 0 34px; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-alert); color: var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 18px;">{{ st.letter }}</span>
+            <div style="flex: 1 1 auto; min-width: 0;">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ st.label }}</p>
+              <p style="margin: 5px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1.25; letter-spacing: -.02em; color: var(--ks3-on-dark);">{{ st.line }}</p>
+              <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ st.note }}</p>
+              <sc-if value="{{ st.hasYours }}">
+                <div style="margin: 12px 0 0; padding: 11px 14px; border-radius: var(--ks3-r-option); background: rgba(255, 255, 255, .07); display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+                  <p style="margin: 0; flex: 1 1 12rem; min-width: 0; font-family: var(--ks3-font-mono); font-size: 16px; font-weight: 500; color: var(--ks3-on-dark-body);">{{ st.yours }}</p>
+                  <button type="button" onClick="{{ st.onTick }}" aria-pressed="{{ st.ticked }}" style="{{ st.tickStyle }}">{{ st.tickLabel }}</button>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ writeMode }}">
+          <p style="margin: 18px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-alert);">{{ buildTally }}</p>
+        </sc-if>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ buildClose }}</p>
+      </div>
+    </sc-if>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900},&quot;examples&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{tab:string,head:string,next?:string,steps:Array&lt;{letter:string,label:string,line:string,note:string}&gt;}&gt;&quot;},&quot;questions&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{tab:string,id:string,head:string,close:string,mode?:'pick',blocked?:boolean,lead?:string,blockedProgress?:string,units?:string[],convOptions?:string[],formOptions?:string[],insertOptions?:string[],steps:Array&lt;{letter:string,label:string,placeholder?:string,line:string,note:string}&gt;}&gt;&quot;}}">
+const FALLBACK_EX = [{ tab: 'Nothing to convert', head: 'Worked example', steps: [] }];
+const FALLBACK_Q = [{ tab: 'Question 1', id: 'q1', head: 'Your turn', close: '', steps: [] }];
+
+class Component extends DCLogic {
+  state = { workedEx: 0, workedStep: 0, qEx: 0, q: {} };
+
+  qState(i) {
+    return this.state.q[i] || { lines: [], ticks: [], conv: null, form: null, insert: null, text: '', unit: '', open: false };
+  }
+
+  setQ(i, patch) {
+    this.setState((st) => ({ q: Object.assign({}, st.q, { [i]: Object.assign({}, this.qState(i), patch) }) }));
+  }
+
+  seg(on, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  workedVals() {
+    const list = (this.props.examples && this.props.examples.length) ? this.props.examples : FALLBACK_EX;
+    const s = this.state;
+    const idx = Math.min(s.workedEx, list.length - 1);
+    const ex = list[idx];
+    const steps = ex.steps || [];
+    const n = steps.length || 5;
+    const last = idx === list.length - 1;
+    return {
+      showWorkedTabs: list.length > 1,
+      workedTabs: list.map((e, i) => ({
+        label: e.tab, pressed: idx === i,
+        style: this.seg(idx === i, false),
+        onClick: () => this.setState({ workedEx: i, workedStep: 0 })
+      })),
+      workedHead: ex.head || '',
+      workedProgress: 'Step ' + s.workedStep + ' of ' + n,
+      workedSteps: steps.slice(0, s.workedStep),
+      workedDone: s.workedStep >= n,
+      workedBtnLabel: s.workedStep === 0 ? 'Show the first step' : (s.workedStep >= n ? 'All five shown' : 'Show the next step'),
+      workedBtnStyle: s.workedStep >= n ? 'opacity:.45;cursor:default;' : '',
+      workedNext: ex.next || (last
+        ? 'Convert first, then the same four lines. Your turn below.'
+        : 'Nothing needed converting there. Now the one that does.'),
+      onWorked: () => this.setState((st) => ({ workedStep: Math.min(n, st.workedStep + 1) }))
+    };
+  }
+
+  buildVals() {
+    const defs = (this.props.questions && this.props.questions.length) ? this.props.questions : FALLBACK_Q;
+    const i = Math.min(this.state.qEx, defs.length - 1);
+    const o = defs[i];
+    const q = this.qState(i);
+    const blocked = !!o.blocked;
+    const write = o.mode !== 'pick';
+    const steps = o.steps || [];
+    const n5 = steps.length || 5;
+    const lines = q.lines || [];
+    const ticks = q.ticks || [];
+    const filled = steps.filter((st, n) => (lines[n] || '').trim()).length;
+    const ticked = steps.filter((st, n) => ticks[n]).length;
+    const committed = (q.conv !== null ? 1 : 0) + (q.form !== null ? 1 : 0) +
+                      (q.insert !== null ? 1 : 0) + (q.text.trim() && q.unit ? 1 : 0);
+    const locked = blocked || q.open || (write ? filled < n5 : committed < 4);
+    const dis = blocked || q.open;
+    const picks = (list, key) => (list || []).map((lab, k) => ({
+      label: lab, pressed: q[key] === k, disabled: dis,
+      style: this.seg(q[key] === k, dis) + 'font-family:var(--ks3-font-mono);font-weight:500;text-align:left;',
+      onClick: () => { if (!dis) this.setQ(i, { [key]: k }); }
+    }));
+    return {
+      showQTabs: defs.length > 1,
+      qTabs: defs.map((d, k) => ({
+        label: d.tab, pressed: i === k,
+        style: this.seg(i === k, false),
+        onClick: () => this.setState({ qEx: k })
+      })),
+      buildHead: o.head || '',
+      buildLead: blocked ? (o.lead || '')
+        : (write
+          ? 'Write each line out yourself \u2014 starting by deciding whether anything needs converting. Then check your working and tick the lines you had.'
+          : 'Pick the line that belongs at each step, starting with the conversion. Then check your working.'),
+      writeMode: write && !blocked,
+      pickMode: !write && !blocked,
+      writeRows: (write ? steps : []).map((st, k) => ({
+        id: (o.id || 'q') + '-line' + k,
+        letter: st.letter, label: st.label, placeholder: st.placeholder || '',
+        value: lines[k] || '', disabled: dis,
+        inputStyle: 'font:inherit;font-family:var(--ks3-font-mono);font-size:19px;font-weight:500;width:100%;padding:12px 14px;min-height:48px;border-radius:var(--ks3-r-option);border:2px solid var(--ks3-option-border);background:var(--ks3-ground);color:var(--ks3-ink);' + (dis ? 'opacity:.62;' : ''),
+        onChange: (e) => {
+          const nx = (this.qState(i).lines || []).slice();
+          nx[k] = e.target.value;
+          this.setQ(i, { lines: nx });
+        }
+      })),
+      convPicks: picks(o.convOptions, 'conv'),
+      formPicks: picks(o.formOptions, 'form'),
+      insertPicks: picks(o.insertOptions, 'insert'),
+      formPrompt: o.formPrompt || 'Which line will give you what the question asks for?',
+      ansPrompt: o.ansPrompt || 'Give the answer, with its unit.',
+      ansId: (o.id || 'q') + '-ans',
+      unitId: (o.id || 'q') + '-unit',
+      unitOptions: (o.units || []).map((u) => ({ value: u, label: u })),
+      ansValue: q.text,
+      onAns: (e) => this.setQ(i, { text: e.target.value }),
+      unitValue: q.unit,
+      onUnit: (e) => this.setQ(i, { unit: e.target.value }),
+      buildLocked: dis,
+      buildBtnLocked: locked,
+      buildBtnLabel: write ? 'Check your working' : 'Show the five steps',
+      buildBtnStyle: locked ? 'opacity:.45;cursor:default;' : '',
+      buildProgress: blocked ? (o.blockedProgress || '')
+        : (q.open ? (write ? 'Checked' : 'Opened')
+          : (write ? filled + ' of ' + n5 + ' lines written' : committed + ' of 4 lines committed')),
+      onBuild: () => {
+        if (blocked) return;
+        this.setQ(i, { open: true });
+        if (typeof this.props.onOpen === 'function') this.props.onOpen();
+      },
+      buildOpen: q.open && !blocked,
+      buildRevealLabel: write ? 'The five lines \u00b7 tick what you had' : 'Your working, five lines',
+      buildSteps: steps.map((st, k) => ({
+        letter: st.letter, label: st.label, line: st.line, note: st.note,
+        hasYours: write,
+        yours: 'You wrote: ' + ((lines[k] || '').trim() || '\u2014'),
+        ticked: !!ticks[k],
+        tickLabel: ticks[k] ? 'Ticked' : 'I had this',
+        tickStyle: 'cursor:pointer;font:inherit;font-size:15px;font-weight:700;padding:9px 15px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+          (ticks[k] ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' +
+          (ticks[k] ? 'var(--ks3-alert)' : 'transparent') + ';color:' + (ticks[k] ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';',
+        onTick: () => {
+          const nx = (this.qState(i).ticks || []).slice();
+          nx[k] = !nx[k];
+          this.setQ(i, { ticks: nx });
+        },
+        style: 'display:flex;gap:14px;align-items:flex-start;' + (k ? 'margin-top:16px;padding-top:16px;border-top:2px solid var(--ks3-dark-rule);' : '')
+      })),
+      buildTally: ticked === n5 ? 'All ' + n5 + ' lines ticked.' : ticked + ' of ' + n5 + ' lines ticked.',
+      buildClose: write ? (o.close || '') : ('You wrote ' + (q.text.trim() || '\u2014') + ' ' + (q.unit || '') + '. ' + (o.close || ''))
+    };
+  }
+
+  renderVals() {
+    return Object.assign({}, this.workedVals(), this.buildVals());
+  }
+}
+
+</script>
+</body>
+</html>
