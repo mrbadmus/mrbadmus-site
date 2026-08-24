@@ -1544,6 +1544,481 @@ window.MrBadmusTeacherData = (function () {
     }
   }
 
+  /* ══════════════════════════════════════════════════════════════════════
+     MRB-287 — THE READS THE REDESIGNED TEACHER DASHBOARD NEEDS
+     ══════════════════════════════════════════════════════════════════════
+
+     Two functions, appended rather than folded into the ones above, because
+     everything above answers ONE class at a time and the redesign's first
+     screen is TWELVE classes at once. `loadClassDetail` × 12 is 48 round
+     trips; `loadClassMatrices` over the same twelve is four (plus chunking).
+     Nothing above changes — the class-detail page still calls what it always
+     called, and if these two disagree with it that is a bug in these two.
+
+     Neither of them aggregates. They hand back rows, first-attempt-filtered
+     and authorisation-checked, and `shared/teacher-live.js` does the deriving.
+     That split is deliberate: the redesign derives things this file has no
+     opinion about (a mean of column means, a question grid, a teaching-week
+     range), and burying those here would make this file the second place a
+     number can be computed.                                                */
+
+  /* PostgREST puts `.in()` lists in the QUERY STRING, and a query string has a
+     length limit that is not ours to set — Supabase's edge sits behind a proxy
+     that rejects long request lines with a 414 and no useful body. A uuid is
+     37 characters with its comma, so 144 assignment ids is already ~5.3 KB of
+     URL. This chunks the list, runs the chunks in parallel, and concatenates.
+
+     100 is not a tuned number: it is ~3.7 KB of ids, comfortably under every
+     limit in the chain, and small enough that a class list twice the size of
+     anything real still only costs one extra round trip. */
+  const IN_CHUNK = 100;
+
+  async function inChunks(ids, run) {
+    const list = (ids || []).filter(Boolean);
+    if (list.length === 0) return [];
+    const chunks = [];
+    for (let i = 0; i < list.length; i += IN_CHUNK) {
+      chunks.push(list.slice(i, i + IN_CHUNK));
+    }
+    const results = await Promise.all(chunks.map(run));
+    let out = [];
+    results.forEach(function (r) { out = out.concat(r); });
+    return out;
+  }
+
+  /**
+   * loadClassMatrices(classIds) — MRB-287.
+   *
+   * The raw material for the redesigned dashboard's student × assignment
+   * grid, for MANY classes in one go. Every screen in the redesign derives
+   * from this one read: the class cards' "submitted this week", the class
+   * detail's week bar and roster, the digest's by-class table, and every
+   * chart. One read means no two screens can disagree.
+   *
+   * Single arg: an array of class uuids. Returns an object keyed by class id:
+   *
+   *   {
+   *     [classId]: {
+   *       class: { id, name, key_stage, year_group, tier, science_pathway,
+   *                assignment_day_of_week, academic_year_id,
+   *                pill_label, pill_colour_var },   // MRB-20 rule, via derivePill
+   *       week:  { start_at, end_at, anchor_day, anchor_source },
+   *       members: [ { student_id, first_name, last_name, avatar_url,
+   *                    joined_at } ],               // ACTIVE members only
+   *       departed_count,                           // members with left_at set
+   *       assignments: [ { id, title, due_at, created_at, academic_week,
+   *                        subject_id, subject_name } ],
+   *       submissions: [ { id, assignment_id, student_id, score, max_score,
+   *                        submitted_at, completed_at, status, is_late,
+   *                        attempts, attempt_no, total_time_seconds } ]
+   *     }
+   *   }
+   *
+   * `submissions` is ALREADY first-attempt-filtered through pickFirstAttempts,
+   * so callers cannot forget the rule. It carries at most one row per
+   * (assignment, student).
+   *
+   * ⚠️ THE ROSTER IS ACTIVE MEMBERS; THE SUBMISSIONS ARE EVERYONE'S. Same
+   * split loadClassDetail makes, and for the same reason (Mide, 9 May 2026):
+   * an assignment's historical mean must not move because a student left the
+   * class in February. A caller building a per-student row should walk
+   * `members`; a caller building a per-assignment column should walk
+   * `submissions`. A submission whose student_id is not in `members` is a
+   * departed student's and is not a bug.
+   *
+   * ⚠️ pickFirstAttempts TIEBREAKS ON `attempts`, NOT `attempt_no`. Both
+   * columns are selected and both are returned. The per-answer writer added
+   * on 22 Aug 2026 sets `attempt_no` and leaves `attempts` at its default, so
+   * for rows written by that path every candidate ties on `attempts` and the
+   * pick falls through to submitted_at — where an in-progress row's NULL is
+   * treated as worst, so a COMPLETED first attempt still wins over an
+   * in-progress retake. That is the right answer, but it is the right answer
+   * by accident of the tiebreak rather than by design, and it is written down
+   * here so the next person to touch the picker knows both columns are live.
+   *
+   * Authorisation: the class_teachers driver query is RLS-scoped to the
+   * caller. A class id that comes back with no row is one the caller does not
+   * teach, and the whole call fails rather than quietly omitting it — a
+   * dashboard that silently drops a class looks identical to a teacher who
+   * has been taken off it.
+   *
+   * Error codes (thrown via Error.code):
+   *   - invalid_class_id             — an id failed the UUID shape check
+   *   - not_authorised               — a requested class returned no driver row
+   *   - query_failed_class_teachers  — driver query errored
+   *   - query_failed_class_members   — members query errored
+   *   - query_failed_assignments     — assignments query errored
+   *   - query_failed_submissions     — submissions query errored
+   */
+  async function loadClassMatrices(classIds) {
+    const ids = Array.from(new Set((classIds || []).filter(Boolean)));
+    ids.forEach(function (id) {
+      if (!isUuid(id)) {
+        const e = new Error('[teacher-data] invalid class id: ' + id);
+        e.code = 'invalid_class_id';
+        throw e;
+      }
+    });
+    if (ids.length === 0) return {};
+
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    // ── Stage A — three parallel reads, each chunked over the id list ──
+    let links, memberRows, assignmentRows;
+    try {
+      const [a, b, c] = await Promise.all([
+        inChunks(ids, async function (chunk) {
+          const r = await sb.from('class_teachers')
+            .select(
+              'class_id, subject_id, ' +
+              'subject:subject_id ( id, name ), ' +
+              'class:class_id ( id, name, key_stage, year_group, tier, science_pathway, ' +
+                              'assignment_day_of_week, deleted_at, academic_year_id )'
+            )
+            .in('class_id', chunk)
+            .is('deleted_at', null)
+            .is('ended_at', null);
+          if (r.error) { r.error.__stage = 'class_teachers'; throw r.error; }
+          return r.data || [];
+        }),
+        inChunks(ids, async function (chunk) {
+          const r = await sb.from('class_members')
+            .select(
+              'class_id, student_id, joined_at, left_at, ' +
+              'student:student_id ( id, first_name, last_name, avatar_url, deleted_at )'
+            )
+            .in('class_id', chunk)
+            .is('deleted_at', null);
+          if (r.error) { r.error.__stage = 'class_members'; throw r.error; }
+          return r.data || [];
+        }),
+        inChunks(ids, async function (chunk) {
+          const r = await sb.from('assignments')
+            .select(
+              'id, class_id, title, due_at, created_at, academic_week, subject_id, ' +
+              'subject:subject_id ( id, name )'
+            )
+            .in('class_id', chunk)
+            .is('deleted_at', null);
+          if (r.error) { r.error.__stage = 'assignments'; throw r.error; }
+          return r.data || [];
+        }),
+      ]);
+      links = a; memberRows = b; assignmentRows = c;
+    } catch (err) {
+      const stage = err && err.__stage ? err.__stage : 'class_teachers';
+      const e = new Error('[teacher-data] ' + stage + ' query failed: ' + (err && err.message));
+      e.code = 'query_failed_' + stage;
+      e.cause = err;
+      throw e;
+    }
+
+    // Group the driver rows, dropping soft-deleted classes (PostgREST cannot
+    // filter an embedded resource, so it is done here — same as everywhere
+    // else in this file).
+    const byClassId = new Map();
+    links.forEach(function (row) {
+      if (!row.class || row.class.deleted_at) return;
+      const id = row.class.id;
+      if (!byClassId.has(id)) byClassId.set(id, { klass: row.class, rows: [] });
+      byClassId.get(id).rows.push(row);
+    });
+
+    const missing = ids.filter(function (id) { return !byClassId.has(id); });
+    if (missing.length) {
+      const e = new Error('[teacher-data] not authorised for class(es): ' + missing.join(', '));
+      e.code = 'not_authorised';
+      e.classIds = missing;
+      throw e;
+    }
+
+    // ── Stage B — submissions for every assignment across every class ──
+    const assignmentIds = assignmentRows.map(function (a) { return a.id; });
+    let submissionRows = [];
+    if (assignmentIds.length > 0) {
+      try {
+        submissionRows = await inChunks(assignmentIds, async function (chunk) {
+          const r = await sb.from('assignment_submissions')
+            .select('id, assignment_id, student_id, score, max_score, total_time_seconds, ' +
+                    'submitted_at, completed_at, status, is_late, attempts, attempt_no')
+            .in('assignment_id', chunk)
+            .is('deleted_at', null);
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+      } catch (err) {
+        const e = new Error('[teacher-data] assignment_submissions query failed: ' + (err && err.message));
+        e.code = 'query_failed_submissions';
+        e.cause = err;
+        throw e;
+      }
+    }
+
+    // ── Assemble, per class ────────────────────────────────────────────
+    const membersByClass = new Map();
+    const departedByClass = new Map();
+    memberRows.forEach(function (m) {
+      // Defensive: skip rows whose embedded profile is null or soft-deleted.
+      // Covers the soft-deleted-profile race PostgREST embed filtering can't.
+      if (!m.student || m.student.deleted_at) return;
+      if (m.left_at != null) {
+        departedByClass.set(m.class_id, (departedByClass.get(m.class_id) || 0) + 1);
+        return;
+      }
+      if (!membersByClass.has(m.class_id)) membersByClass.set(m.class_id, []);
+      membersByClass.get(m.class_id).push({
+        student_id: m.student.id,
+        first_name: m.student.first_name,
+        last_name: m.student.last_name,
+        avatar_url: m.student.avatar_url,
+        joined_at: m.joined_at,
+      });
+    });
+
+    const assignmentsByClass = new Map();
+    const classOfAssignment = new Map();
+    assignmentRows.forEach(function (a) {
+      classOfAssignment.set(a.id, a.class_id);
+      if (!assignmentsByClass.has(a.class_id)) assignmentsByClass.set(a.class_id, []);
+      assignmentsByClass.get(a.class_id).push({
+        id: a.id,
+        title: a.title,
+        due_at: a.due_at,
+        created_at: a.created_at,
+        academic_week: a.academic_week,
+        subject_id: a.subject_id,
+        subject_name: a.subject ? a.subject.name : null,
+      });
+    });
+
+    // ONE first-attempt pass over every class's submissions at once. The key
+    // is (assignment, student) and an assignment belongs to exactly one class,
+    // so classes cannot collide in the map.
+    const firstAttemptByKey = pickFirstAttempts(submissionRows);
+    const submissionsByClass = new Map();
+    firstAttemptByKey.forEach(function (sub) {
+      const cid = classOfAssignment.get(sub.assignment_id);
+      if (!cid) return;
+      if (!submissionsByClass.has(cid)) submissionsByClass.set(cid, []);
+      submissionsByClass.get(cid).push(sub);
+    });
+
+    const out = {};
+    byClassId.forEach(function (entry, id) {
+      const klass = entry.klass;
+      const pill = derivePill(klass, entry.rows);
+      out[id] = {
+        class: {
+          id: klass.id,
+          name: klass.name,
+          key_stage: klass.key_stage,
+          year_group: klass.year_group,
+          tier: klass.tier,
+          science_pathway: klass.science_pathway,
+          assignment_day_of_week: klass.assignment_day_of_week,
+          academic_year_id: klass.academic_year_id,
+          pill_label: pill.pill_label,
+          pill_colour_var: pill.pill_colour_var,
+        },
+        week: computeWeekWindow(klass.assignment_day_of_week),
+        members: membersByClass.get(id) || [],
+        departed_count: departedByClass.get(id) || 0,
+        assignments: assignmentsByClass.get(id) || [],
+        submissions: submissionsByClass.get(id) || [],
+      };
+    });
+    return out;
+  }
+
+  /**
+   * loadPaperQuestions(assignmentIds) — MRB-287.
+   *
+   * What each student answered, question by question, for a set of
+   * assignments. This is the read behind the marking screen's class ×
+   * question grid and its question breakdown, and there was no path to it
+   * before: everything above this line stops at the submission's total.
+   *
+   * Single arg: an array of assignment uuids. Returns an object keyed by
+   * assignment id:
+   *
+   *   {
+   *     [assignmentId]: {
+   *       questions: [ { position, source_ref, rung } ],   // position ASC
+   *       submissions: [ { id, student_id, score, max_score, status,
+   *                        submitted_at, completed_at, is_late } ],
+   *       attempts: [ { submission_id, question_index, question_ref,
+   *                     question_text, rung, selected_answer, correct_answer,
+   *                     selected_option_letter, correct_option_letter,
+   *                     is_correct } ]
+   *     }
+   *   }
+   *
+   * `submissions` is first-attempt-filtered, and `attempts` is filtered to
+   * those submissions — an abandoned retake's answers must not appear in a
+   * grid whose marks come from the first attempt.
+   *
+   * ⚖️ `is_correct` IS NULLABLE AND NULL IS NOT FALSE. Self-marked and
+   * written responses record no correctness claim: the platform cannot know,
+   * because a student can tick every criterion on gibberish. The column's own
+   * comment says so, and the NOT NULL was dropped on 20 Aug 2026 precisely so
+   * an honest row could be written. A caller that renders NULL as a cross, or
+   * counts it as a zero, is asserting something the database deliberately
+   * refuses to assert. Returned as-is; the caller must give it its own state.
+   *
+   * ⚠️ THERE IS NO CLEAN JOIN FROM AN ATTEMPT TO ITS `assignment_questions`
+   * ROW, and pretending otherwise is the trap here. `assignment_questions`
+   * carries `source_ref` — a LESSON path plus a rung — while an attempt
+   * carries `question_ref`, the bank's per-question id. They are different
+   * namespaces on purpose (see 20260820140008's comment: "a rung name is a
+   * difficulty, not a question"). The only thing that lines the two up is
+   * ORDER: `question_index` is the 0-based index into the questions as the
+   * student was served them, and the server serves them `position` ASC. So
+   * `questions` comes back sorted and the caller joins by ordinal. It is
+   * returned unjoined rather than joined-here because the fallback when the
+   * ordinals do not line up is a display decision, not a data one.
+   *
+   * ⚠️ `rung` IS RETURNED AND MUST NOT BE AGGREGATED ON. It is here because
+   * it is the only descriptor a question row carries, and a caller may want
+   * to label one question with it. Grouping by it — a recall-versus-apply
+   * split, a per-rung mean, a breakdown of any kind — is out, ruled: the
+   * recall round records nothing yet, so any such split would be drawn from
+   * one corpus and read as if it covered both.
+   *
+   * Authorisation is RLS's, through `attempts_teacher_read`, which follows
+   * the submission to its assignment to `auth_user_teaches_class`. Unlike
+   * loadClassMatrices there is no separate driver check: an assignment the
+   * caller does not teach simply returns nothing at every stage, and the
+   * caller reached this function through a class it had already been
+   * authorised for.
+   *
+   * Error codes:
+   *   - invalid_assignment_id          — an id failed the UUID shape check
+   *   - query_failed_assignment_questions
+   *   - query_failed_submissions
+   *   - query_failed_question_attempts
+   */
+  async function loadPaperQuestions(assignmentIds) {
+    const ids = Array.from(new Set((assignmentIds || []).filter(Boolean)));
+    ids.forEach(function (id) {
+      if (!isUuid(id)) {
+        const e = new Error('[teacher-data] invalid assignment id: ' + id);
+        e.code = 'invalid_assignment_id';
+        throw e;
+      }
+    });
+    if (ids.length === 0) return {};
+
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    let questionRows, submissionRows;
+    try {
+      const [a, b] = await Promise.all([
+        inChunks(ids, async function (chunk) {
+          const r = await sb.from('assignment_questions')
+            .select('assignment_id, position, source_ref, rung')
+            .in('assignment_id', chunk)
+            .order('position', { ascending: true });
+          if (r.error) { r.error.__stage = 'assignment_questions'; throw r.error; }
+          return r.data || [];
+        }),
+        inChunks(ids, async function (chunk) {
+          const r = await sb.from('assignment_submissions')
+            .select('id, assignment_id, student_id, score, max_score, ' +
+                    'submitted_at, completed_at, status, is_late, attempts, attempt_no')
+            .in('assignment_id', chunk)
+            .is('deleted_at', null);
+          if (r.error) { r.error.__stage = 'submissions'; throw r.error; }
+          return r.data || [];
+        }),
+      ]);
+      questionRows = a; submissionRows = b;
+    } catch (err) {
+      const stage = err && err.__stage ? err.__stage : 'assignment_questions';
+      const e = new Error('[teacher-data] ' + stage + ' query failed: ' + (err && err.message));
+      e.code = 'query_failed_' + stage;
+      e.cause = err;
+      throw e;
+    }
+
+    // First attempts only, and the attempt rows are fetched for THOSE
+    // submission ids alone. Fetching all of them and filtering afterwards
+    // would pull an abandoned retake's answers over the wire to throw away.
+    const firstAttemptByKey = pickFirstAttempts(submissionRows);
+    const keptSubs = [];
+    firstAttemptByKey.forEach(function (s) { keptSubs.push(s); });
+    const keptIds = keptSubs.map(function (s) { return s.id; });
+
+    let attemptRows = [];
+    if (keptIds.length > 0) {
+      try {
+        attemptRows = await inChunks(keptIds, async function (chunk) {
+          const r = await sb.from('assignment_question_attempts')
+            .select('submission_id, question_index, question_ref, question_text, rung, ' +
+                    'selected_answer, correct_answer, selected_option_letter, ' +
+                    'correct_option_letter, is_correct')
+            .in('submission_id', chunk)
+            .order('question_index', { ascending: true });
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+      } catch (err) {
+        const e = new Error('[teacher-data] assignment_question_attempts query failed: ' + (err && err.message));
+        e.code = 'query_failed_question_attempts';
+        e.cause = err;
+        throw e;
+      }
+    }
+
+    const subById = new Map();
+    keptSubs.forEach(function (s) { subById.set(s.id, s); });
+
+    const out = {};
+    ids.forEach(function (id) { out[id] = { questions: [], submissions: [], attempts: [] }; });
+
+    questionRows.forEach(function (q) {
+      if (!out[q.assignment_id]) return;
+      out[q.assignment_id].questions.push({
+        position: q.position,
+        source_ref: q.source_ref,
+        rung: q.rung,
+      });
+    });
+    // `.order()` is applied per chunk, so re-sort once the chunks are merged.
+    ids.forEach(function (id) {
+      out[id].questions.sort(function (a, b) { return a.position - b.position; });
+    });
+
+    keptSubs.forEach(function (s) {
+      if (!out[s.assignment_id]) return;
+      out[s.assignment_id].submissions.push({
+        id: s.id,
+        student_id: s.student_id,
+        score: s.score,
+        max_score: s.max_score,
+        status: s.status,
+        submitted_at: s.submitted_at,
+        completed_at: s.completed_at,
+        is_late: s.is_late,
+      });
+    });
+
+    attemptRows.forEach(function (a) {
+      const sub = subById.get(a.submission_id);
+      if (!sub || !out[sub.assignment_id]) return;
+      out[sub.assignment_id].attempts.push(a);
+    });
+
+    return out;
+  }
+
   return {
     loadAcademicYears,
     loadTeacherClasses,
@@ -1553,5 +2028,9 @@ window.MrBadmusTeacherData = (function () {
     loadClassShoutouts,
     insertClassShoutout,
     softDeleteClassShoutout,
+    // MRB-287 — the redesigned dashboard's two reads. Additive: nothing
+    // above changed, and no existing caller sees a difference.
+    loadClassMatrices,
+    loadPaperQuestions,
   };
 })();
