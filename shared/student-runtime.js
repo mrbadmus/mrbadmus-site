@@ -207,6 +207,25 @@
       }
     }
 
+    /* ⊕ MRB-287 — `onChange`. The two student pages carry no form control at
+       all, so this is new with the teacher dashboard's three.
+
+       ⚠️ THE EVENT IS NOT THE SAME ONE FOR EVERY ELEMENT. React normalises
+       `onChange` to fire per keystroke, which for a real `<input>` or
+       `<textarea>` is `input` and NOT `change` — `change` on a text field
+       fires on blur, so Design's search box would have filtered nothing until
+       the teacher clicked away, and the box would have looked broken rather
+       than slow. A `<select>` has no `input` semantics worth using and takes
+       `change`. Listening for both would double-fire the select's handler. */
+    if (node.onch) {
+      var chFn = lookup(node.onch, scope, ctx.miss);
+      if (typeof chFn === "function") {
+        el.addEventListener(node.t === "select" ? "change" : "input", chFn);
+      } else if (ctx.miss) {
+        ctx.miss.push("onChange:" + node.onch);
+      }
+    }
+
     /* `style-hover` — Design's own attribute, 20 uses on the class view.
        Applied with listeners rather than a generated stylesheet rule: the
        declarations are inline and per-element, so there is no selector to hang
@@ -330,27 +349,93 @@
     return out;
   }
 
-  /* ── focus and scroll across a rebuild ─────────────────────────────── */
-  function focusPath(root) {
-    var el = document.activeElement, path = [];
-    if (!el || el === document.body || !root.contains(el)) { return null; }
+  /* ── focus, field values and scroll across a rebuild ───────────────── */
+  function pathOf(root, el) {
+    var path = [];
     while (el && el !== root) {
       var p = el.parentElement;
       if (!p) { return null; }
       path.unshift(Array.prototype.indexOf.call(p.children, el));
       el = p;
     }
-    return path;
+    return el === root ? path : null;
+  }
+
+  function atPath(root, path) {
+    var el = root, i;
+    for (i = 0; i < path.length; i++) {
+      if (!el.children || !el.children[path[i]]) { return null; }
+      el = el.children[path[i]];
+    }
+    return el;
+  }
+
+  function focusPath(root) {
+    var el = document.activeElement;
+    if (!el || el === document.body || !root.contains(el)) { return null; }
+    return pathOf(root, el);
   }
 
   function refocus(root, path) {
     if (!path) { return; }
-    var el = root, i;
-    for (i = 0; i < path.length; i++) {
-      if (!el.children || !el.children[path[i]]) { return; }
-      el = el.children[path[i]];
-    }
+    var el = atPath(root, path);
     if (el && el.focus) { el.focus({preventScroll: true}); }
+  }
+
+  /* ⊕ MRB-287 — CARRY THE FIELD VALUES OVER THE REBUILD.
+     `draw` empties the host and builds a fresh tree, and Design's three form
+     controls are UNCONTROLLED — none of them carries a `value="{{ }}"`, so
+     nothing in the template puts the typed text back. Their handlers all call
+     `setState`, so every keystroke scheduled the redraw that erased it: the
+     search box would accept exactly one character, the shoutout note would
+     clear itself the moment the recipient select changed, and both would look
+     like the page had "reset" rather than like a state bug.
+
+     Preserved for EVERY field, not just the focused one, because the field
+     that loses its text is usually not the one being typed into. Restored by
+     the same child-index path `refocus` uses; a path that no longer resolves
+     to a like-named field is simply dropped, which is the correct answer when
+     a rebuild has genuinely replaced the control. */
+  var FIELDS = "input,textarea,select";
+
+  function fieldState(root) {
+    var out = [], els = root.querySelectorAll(FIELDS), i;
+    for (i = 0; i < els.length; i++) {
+      var el = els[i], path = pathOf(root, el);
+      if (!path) { continue; }
+      out.push({
+        path: path,
+        tag: el.tagName,
+        type: el.getAttribute("type") || "",
+        value: el.value,
+        checked: el.checked,
+        start: el.selectionStart,
+        end: el.selectionEnd
+      });
+    }
+    return out;
+  }
+
+  function restoreFields(root, saved) {
+    if (!saved || !saved.length) { return; }
+    for (var i = 0; i < saved.length; i++) {
+      var s = saved[i], el = atPath(root, s.path);
+      if (!el || el.tagName !== s.tag) { continue; }
+      if ((el.getAttribute("type") || "") !== s.type) { continue; }
+      if (s.checked !== undefined && (s.type === "checkbox" ||
+                                      s.type === "radio")) {
+        el.checked = s.checked;
+        continue;
+      }
+      if (s.value === undefined || el.value === s.value) { continue; }
+      el.value = s.value;
+      /* Only a text field has a selection, and only then when the browser
+         gives one — `selectionStart` throws on some input types and is null
+         on the rest. */
+      if (s.start !== null && s.start !== undefined && el.setSelectionRange) {
+        try { el.setSelectionRange(s.start, s.end); } catch (e) {}
+      }
+    }
   }
 
   function shallow(o) {
@@ -407,9 +492,11 @@
           build(opts.template.roots[i], scope, ctx, frag, false);
         }
         var keepFocus = focusPath(host);
+        var keepFields = fieldState(host);
         var keepScroll = window.scrollY;
         host.textContent = "";
         host.appendChild(frag);
+        restoreFields(host, keepFields);
         refocus(host, keepFocus);
         if (window.scrollY !== keepScroll) { window.scrollTo(0, keepScroll); }
         api.misses = ctx.miss;

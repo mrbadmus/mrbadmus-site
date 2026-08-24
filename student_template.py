@@ -64,6 +64,7 @@ REF = os.path.join("docs", "ks3", "design-reference", "student")
 OUT = "student_templates.json"
 
 AMEND = os.path.join("docs", "ks3", "design-reference", "class-view-amendments")
+TEACHER = os.path.join("docs", "ks3", "design-reference", "teacher")
 
 # ⊕ 22 Aug 2026 — THE DONOR. Design's class-view amendments compile as a THIRD
 # page that is never emitted. Nothing renders it; `build_student_port.py` reads
@@ -78,6 +79,11 @@ PAGES = [
     dict(page="assignment", src="source/Assignment.dc.html"),
     dict(page="class view amendments", src="source/KS3 Class View.dc.html",
          ref=AMEND, standalone="standalone/ks3-class-view-bench-open.html"),
+    # ⊕ MRB-287 — the teacher dashboard. Seven screens behind `sc-if` in
+    # ONE delivered file; `build_teacher_port.py` emits one live page per
+    # screen. No `standalone` key: this delivery ships none, and it needs
+    # none, because `strip_brand_mark` removes its only `x-import`.
+    dict(page="teacher", src="source/Teacher Dashboard.dc.html", ref=TEACHER),
 ]
 
 # The three constructs, plus interpolation, plus the one imported component.
@@ -143,6 +149,13 @@ _COMPILE_JS = r"""
       if (name === 'hint-placeholder-count' || name === 'hint-placeholder-val' ||
           name === 'hint-size' || name === 'sc-name') { continue; }
       if (name === 'onclick') { out.on = val.replace(/^\{\{\s*|\s*\}\}$/g, ''); continue; }
+      // ⊕ MRB-287 — `onChange`, which the two student pages never needed.
+      // They carry no form control at all; the teacher dashboard carries
+      // three (the student search, the shoutout recipient select and the
+      // note textarea) and every one of them is Design's only way of getting
+      // a keystroke into state. Parsed to its own key rather than folded into
+      // `on`, because the EVENT differs by element — see the runtime.
+      if (name === 'onchange') { out.onch = val.replace(/^\{\{\s*|\s*\}\}$/g, ''); continue; }
       if (name === 'ref') { out.ref = val.replace(/^\{\{\s*|\s*\}\}$/g, ''); continue; }
       if (name === 'style-hover') { out.hov = val; continue; }
       out.a[name] = interp(val);
@@ -220,7 +233,7 @@ CAMEL_KEEP = {"viewBox", "preserveAspectRatio", "gradientUnits",
               "gradientTransform", "patternUnits", "clipPathUnits",
               "markerWidth", "markerHeight", "refX", "refY", "spreadMethod",
               "startOffset", "textLength", "lengthAdjust", "baseFrequency",
-              "numOctaves", "stdDeviation", "onClick"}
+              "numOctaves", "stdDeviation", "onClick", "onChange"}
 
 
 # ── the one ruled correction to the delivery ──────────────────────────────
@@ -274,6 +287,52 @@ def split_feedback_edge(tpl, logic, where):
             "safely if the shape has changed." % tpl.count(FB_TPL_FROM))
     return (tpl.replace(FB_TPL_FROM, FB_TPL_TO, 1),
             logic.replace(FB_LOGIC_FROM, FB_LOGIC_TO, 1), True)
+
+
+# ── the second ruled correction: the staff surface takes no logo ─────────
+#
+# ⚖️ RULED (MRB-287, and settled long before it): CLAUDE.md names FOUR brand
+# presentations, and `/teacher/*` is a STAFF surface. Staff surfaces carry the
+# plain text wordmark "MrBadmusAI" and NO logo asset — no chevron, no mark.
+# The four live teacher pages already comply; Design's delivery does not,
+# because Design built the teacher dashboard on the same studio system as the
+# student pages and reached for the same `MrBadmusDS.BrandMark`.
+#
+# Design is wrong here and the mark comes off. This is the ONLY brand edit in
+# the port, and it is deliberately the narrowest one that satisfies the rule:
+# the `x-import` node is removed and Design's own adjacent wordmark `<span>`
+# — which is already plain text in the page's ink — is left exactly as drawn.
+# Nothing is retyped and no replacement markup is invented.
+#
+# ⚠️ IT IS ALSO WHAT MAKES THE PORT COMPILE AT ALL. `capture_imports` reads an
+# `x-import`'s rendered markup out of Design's STANDALONE, and this delivery
+# ships no standalone. Stripping the one import leaves nothing to capture, so
+# the two facts cancel — but they are independent, and if a future delivery
+# adds a second import this must NOT be the thing that quietly hides it.
+# Hence the count guard below: exactly one, or the build stops.
+BRAND_IMPORT_RE = re.compile(
+    r'[ \t]*<x-import component-from-global-scope="MrBadmusDS\.BrandMark"'
+    r'[^>]*></x-import>\n?')
+
+
+def strip_brand_mark(tpl, where):
+    """Take Design's chevron off the staff surface. Refuse if it moved."""
+    if where != "teacher":
+        return tpl, 0
+    n_any = tpl.count("<x-import")
+    hits = BRAND_IMPORT_RE.findall(tpl)
+    if len(hits) != 1 or n_any != 1:
+        raise SystemExit(
+            "student_template.py: the teacher delivery carries %d `<x-import>` "
+            "and %d of them match the BrandMark pattern; this rewrite expects "
+            "exactly one of each.\n"
+            "  The staff-surface brand rule (CLAUDE.md) forbids a logo asset "
+            "on /teacher/*, so the mark is stripped here. If Design has added "
+            "a SECOND import, it needs its own decision — and it needs a "
+            "standalone to capture its markup from, which this delivery does "
+            "not ship. Do not widen the pattern to make this pass."
+            % (n_any, len(hits)))
+    return BRAND_IMPORT_RE.sub("", tpl, count=1), 1
 
 
 def kebab_svg_attrs(tpl, where):
@@ -440,6 +499,10 @@ def compile_page(cdp, spec):
     tpl, logic = template_and_logic(path)
     tpl, kebabbed = kebab_svg_attrs(tpl, spec["src"])
     tpl, logic, fb_split = split_feedback_edge(tpl, logic, spec["page"])
+    # ⚠️ BEFORE the browser compile, not after. Removing a node renumbers
+    # every node that follows it, and the numbering is the whole contract
+    # between this file and the rulings that index into it.
+    tpl, brand_stripped = strip_brand_mark(tpl, spec["page"])
 
     server, port = cdp.serve(ref)
     try:
@@ -474,6 +537,7 @@ def compile_page(cdp, spec):
 
     return dict(nodes=got["n"], roots=got["roots"], logic=logic,
                 imports=imports, sheets=sheets, fbSplit=fb_split,
+                brandStripped=brand_stripped,
                 refs=n_ref, tplChars=len(tpl), logicChars=len(logic),
                 kebabbed=kebabbed)
 
@@ -498,6 +562,10 @@ def main():
         print("                 x-import(s) captured from Design's render: %s"
               % (", ".join(sorted(got["imports"])) or "none"))
         print("                 stylesheet(s) Design links: %d" % len(got["sheets"]))
+        if got["brandStripped"]:
+            print("                 \u2295 RULED: Design's BrandMark stripped "
+                  "\u2014 /teacher/* is a STAFF surface and takes the plain "
+                  "text wordmark, no logo asset")
         if got["fbSplit"]:
             print("                 ⊕ RULED: the recall CORRECT label split off "
                   "`fbEdge` onto --ks3-ok-dark (graphic-only ruling)")

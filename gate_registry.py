@@ -131,6 +131,28 @@ GATES = [
              "palette: parity drives the PREVIEW pair and behaviour compares "
              "text, so a colour change ships unwatched without this."),
 
+    # ── ⊕ MRB-287 · the teacher dashboard port ─────────────────────────
+
+    dict(name="teacher_tells",
+         cmd=["python3", "teacher_tells.py"],
+         speed="fast",
+         needs="teacher/insights.html",
+         why="Design's invented school must not reach a teacher. The teacher "
+             "delivery is a SAMPLE — twelve classes, fifty-four students and "
+             "a score for every one of them, all FNV-seeded and all "
+             "PLAUSIBLE, which is what makes it dangerous: a teacher cannot "
+             "tell by looking. Checks the built LIVE pages (never the "
+             "fixtures, which are supposed to carry Design's values) for any "
+             "sample identity, any surviving literal count, and for `seed(` / "
+             "`rnd(` — the hash that manufactures the numbers. Its corpus is "
+             "DERIVED from the delivery on every run rather than typed, "
+             "because the hand-written ancestor of that list in "
+             "student_page_drive.py records what a typed one costs: 'THIS "
+             "LIST WAS TOO SHORT AND THE DRIVE PASSED BECAUSE OF IT.' "
+             "⚠️ `needs` names insights.html — a page that exists only once "
+             "the port has run — so this SKIPS BY NAME until then rather "
+             "than failing on three pages nobody has built yet."),
+
     # ── ⊕ MRB-282 · THE FOUR THAT WERE OUTSIDE THE REGISTRY ────────────
 
     dict(name="gate_coverage",
