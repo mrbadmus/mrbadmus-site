@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+  <link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+  <script src="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+  <style>
+    body { margin: 0; background: #FBF3E6; -webkit-font-smoothing: antialiased; }
+    * { box-sizing: border-box; }
+    a { color: #A93411; text-decoration: none; }
+    a:hover { color: #7F2408; text-decoration: underline; }
+    button { font-family: inherit; white-space: nowrap; }
+    input, textarea, select { font-family: inherit; }
+    @keyframes tin { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+    @keyframes shin { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @media print { .noprint { display: none !important; } }
+  </style>
+</helmet>
+<div class="rd" data-mode="ks3" style="--rowpad:{{ rowPad }};min-height:100vh;background:var(--st-ground);font-family:var(--st-ui);color:var(--st-ink);font-size:16.5px;line-height:1.5">
+
+  <div class="noprint" style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;height:62px;padding:0 26px;background:var(--st-paper);border-bottom:1px solid var(--st-rule)">
+    <div style="display:flex;align-items:center;gap:9px;cursor:pointer;flex:none" onClick="{{ goClasses }}">
+      <x-import component-from-global-scope="MrBadmusDS.BrandMark" size="19" hint-size="19px,19px"></x-import>
+      <span style="font:600 21px/1 var(--st-display);letter-spacing:-0.025em;color:var(--st-ink);white-space:nowrap">MrBadmusAI</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding-left:14px;border-left:1px solid var(--st-rule-soft);white-space:nowrap;overflow:hidden">
+      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Teacher</span>
+      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-ink)">{{ crumb }}</span>
+    </div>
+    <button type="button" onClick="{{ openSearch }}" style="margin-left:auto;flex:none;display:flex;align-items:center;gap:9px;height:34px;padding:0 11px;background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4.2" stroke="currentColor" stroke-width="1.5"></circle><path d="M9.3 9.3L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Find a student</span>
+      <span style="padding:3px 5px;font:500 11.5px/1.2 var(--st-mono);color:var(--st-caption);background:var(--st-num-well);border:1px solid var(--st-rule-soft);border-radius:5px">/</span>
+    </button>
+    <button type="button" onClick="{{ openInsights }}" aria-label="Charts" style="flex:none;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer;color:var(--st-ink)" style-hover="border-color:var(--st-edge);color:var(--st-accent-text)">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="8" width="3" height="6" rx="1" fill="currentColor"></rect><rect x="6.5" y="4" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="11" y="6" width="3" height="8" rx="1" fill="currentColor"></rect></svg>
+    </button>
+    <span style="flex:none;padding:5px 8px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.16em;color:var(--st-caption);background:var(--st-num-well);border-radius:6px">PROD</span>
+    <span style="flex:none;font:600 14.5px/1.2 var(--st-ui);color:var(--st-ink)">{{ teacher }}</span>
+    <button type="button" style="flex:none;height:32px;padding:0 12px;font:600 14px/1.2 var(--st-ui);color:var(--st-muted);background:transparent;border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="color:var(--st-ink);border-color:var(--st-edge)">Sign out</button>
+  </div>
+
+  <sc-if value="{{ isClasses }}" hint-placeholder-val="{{ true }}">
+  <div style="max-width:1340px;margin:0 auto;padding:26px 32px 48px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+      <div>
+        <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Autumn term · 2026–27</div>
+        <h1 style="margin:12px 0 0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">My classes</h1>
+        <div style="margin-top:10px;font:400 16.5px/1.5 var(--st-ui);color:var(--st-muted)">{{ classLine }}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+        <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
+        <button type="button" onClick="{{ goDigest }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Weekly digest</button>
+        <button type="button" onClick="{{ goImport }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Import students</button>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;margin:22px 0 14px;padding-bottom:16px;border-bottom:1px solid var(--st-rule);flex-wrap:wrap">
+      <div style="display:flex;gap:3px;padding:3px;background:var(--st-seg-bg);border-radius:10px">
+        <sc-for list="{{ ksTabs }}" as="t" hint-placeholder-count="3">
+          <button type="button" onClick="{{ t.pick }}" style="padding:7px 14px;font:500 12.5px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent;border-radius:8px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border-color:{{ t.bc }}">{{ t.label }}</button>
+        </sc-for>
+      </div>
+      <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ shownLine }}</div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+        <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Sort</span>
+        <sc-for list="{{ sortTabs }}" as="s" hint-placeholder-count="2">
+          <button type="button" onClick="{{ s.pick }}" style="padding:6px 10px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;background:transparent;border:1px solid transparent;border-radius:7px;cursor:pointer;color:{{ s.fg }};border-color:{{ s.bc }}">{{ s.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px">
+      <sc-for list="{{ cards }}" as="c" hint-placeholder-count="9">
+        <div onClick="{{ c.open }}" style="display:flex;flex-direction:column;gap:14px;padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s" style-hover="border-color:var(--st-edge);transform:translateY(-2px);box-shadow:0 14px 30px -22px rgba(40,26,10,.6)">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+            <div style="min-width:0">
+              <div style="font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ c.code }}</div>
+              <div style="margin-top:8px;font:400 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ c.meta }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;flex:none;padding:5px 8px;border:1px solid var(--st-rule);border-radius:9px">
+              <div style="display:flex;gap:2px;align-items:center">
+                <sc-for list="{{ c.dots }}" as="d" hint-placeholder-count="3">
+                  <div style="height:8px;border-radius:2px;width:{{ d.w }}px;background:{{ d.c }}"></div>
+                </sc-for>
+              </div>
+              <span style="font:500 11.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-ink);white-space:nowrap">{{ c.subject }}</span>
+            </div>
+          </div>
+
+          <sc-if value="{{ c.live }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+                <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">This week</span>
+                <span style="font:500 14.5px/1.2 var(--st-mono);color:var(--st-ink);white-space:nowrap">{{ c.weekLabel }}</span>
+              </div>
+              <sc-if value="{{ showMeter }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:10px;height:5px;background:var(--st-num-well);border-radius:999px;overflow:hidden">
+                  <div style="height:100%;border-radius:999px;background:var(--st-accent);width:{{ c.pct }}%"></div>
+                </div>
+              </sc-if>
+              <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ c.weekSub }}</div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ c.noWork }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px dashed var(--st-rule-strong);border-radius:10px;background:var(--st-note-bg)">
+              <span style="font:400 14.5px/1.3 var(--st-ui);color:var(--st-body)">{{ c.emptyLine }}</span>
+              <button type="button" onClick="{{ c.act }}" style="font:600 14px/1.2 var(--st-ui);color:var(--st-accent-text);background:transparent;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Set work</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px dashed var(--st-rule-strong);border-radius:10px">
+              <span style="font:400 14.5px/1.3 var(--st-ui);color:var(--st-muted)">{{ c.emptyLine }}</span>
+              <button type="button" onClick="{{ c.act }}" style="font:600 14px/1.2 var(--st-ui);color:var(--st-accent-text);background:transparent;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Import</button>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:12px;border-top:1px solid var(--st-rule-fact)">
+            <span style="font:400 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.activity }}</span>
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="flex:none;color:var(--st-rule-strong)"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--st-rule);display:flex;align-items:center;gap:8px">
+      <span style="font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-ghost)">Viewing 2026–27</span>
+      <span style="color:var(--st-rule-strong)">·</span>
+      <button type="button" onClick="{{ pastYears }}" style="font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);background:none;border:none;padding:2px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Previous years</button>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isClass }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goClasses }}" class="noprint" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      Back to my classes
+    </button>
+
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <h1 style="margin:0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ klass.code }}</h1>
+          <div style="display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--st-rule);border-radius:9px">
+            <div style="display:flex;gap:2px;align-items:center">
+              <sc-for list="{{ klass.dots }}" as="d" hint-placeholder-count="3">
+                <div style="height:8px;border-radius:2px;width:{{ d.w }}px;background:{{ d.c }}"></div>
+              </sc-for>
+            </div>
+            <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-ink);white-space:nowrap">{{ klass.subject }}</span>
+          </div>
+        </div>
+        <div style="margin-top:12px;font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ klass.longMeta }}</div>
+      </div>
+      <div class="noprint" style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+        <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
+        <button type="button" onClick="{{ openBulk }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Shoutouts</button>
+        <button type="button" onClick="{{ openInsights }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Charts</button>
+        <button type="button" onClick="{{ goReport }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Print report</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ klass.hasWork }}" hint-placeholder-val="{{ true }}">
+      <div class="noprint" style="display:flex;align-items:center;gap:12px;margin-top:22px;padding:12px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:12px">
+        <span style="flex:none;padding-left:4px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Week</span>
+        <button type="button" onClick="{{ weekBack }}" aria-label="Previous week" style="flex:none;display:flex;align-items:center;justify-content:center;width:36px;height:52px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:9px;color:{{ weekBackColor }};cursor:{{ weekBackCursor }}" style-hover="border-color:var(--st-edge)">
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+        <div data-rail="weeks" style="display:flex;align-items:stretch;overflow-x:auto;padding:1px;scrollbar-width:none">
+          <sc-for list="{{ weekTabs }}" as="w" hint-placeholder-count="8">
+            <button type="button" data-week="{{ w.idx }}" onClick="{{ w.pick }}" aria-pressed="{{ w.on }}" style="flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:52px;padding:8px 17px;background:{{ w.bg }};border:none;border-left:1px solid {{ w.divider }};box-shadow:{{ w.ring }};border-radius:9px;cursor:pointer" style-hover="background:var(--st-note-bg)">
+              <span style="font:500 16.5px/1.15 var(--st-mono);color:{{ w.dateColor }};white-space:nowrap">{{ w.range }}</span>
+              <sc-if value="{{ w.now }}" hint-placeholder-val="{{ false }}">
+                <span style="font:500 11px/1 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-accent-text);white-space:nowrap">This week</span>
+              </sc-if>
+            </button>
+          </sc-for>
+        </div>
+        <button type="button" onClick="{{ weekFwd }}" aria-label="Next week" style="flex:none;display:flex;align-items:center;justify-content:center;width:36px;height:52px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:9px;color:{{ weekFwdColor }};cursor:{{ weekFwdCursor }}" style-hover="border-color:var(--st-edge)">
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+      </div>
+      <div style="margin-top:14px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ weekNote }}</div>
+    </sc-if>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:14px">
+      <sc-for list="{{ klass.tiles }}" as="t" hint-placeholder-count="4">
+        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+          <div style="margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+          <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px">
+      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Students</h2>
+      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ klass.rosterLine }}</span>
+    </div>
+    <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:1.6fr 1.4fr 120px 150px 145px;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Student</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ rosterWeekCol }}</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Avg</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Last active</div>
+        <div style="padding:12px 16px"></div>
+      </div>
+      <sc-for list="{{ roster }}" as="s" hint-placeholder-count="8">
+        <div onClick="{{ s.open }}" style="display:grid;grid-template-columns:1.6fr 1.4fr 120px 150px 145px;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+          <div style="display:flex;align-items:center;gap:11px;padding:var(--rowpad,14px 16px);min-width:0">
+            <div style="flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 12.5px/1 var(--st-mono);color:var(--st-paper);background:{{ s.hue }}">{{ s.initials }}</div>
+            <span style="font:600 16px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.name }}</span>
+          </div>
+          <div style="padding:var(--rowpad,14px 16px)">
+            <sc-if value="{{ s.hasWork }}" hint-placeholder-val="{{ true }}">
+              <div style="height:5px;background:var(--st-num-well);border-radius:999px;overflow:hidden;max-width:130px">
+                <div style="height:100%;border-radius:999px;background:var(--st-accent);width:{{ s.pct }}%"></div>
+              </div>
+            </sc-if>
+            <div style="margin-top:7px;font:400 12.5px/1.2 var(--st-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">{{ s.weekLabel }}</div>
+          </div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 16.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ s.avg }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:400 14px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ s.last }}</div>
+          <div style="padding:var(--rowpad,14px 16px)">
+            <sc-if value="{{ s.flag }}" hint-placeholder-val="{{ false }}">
+              <span style="display:inline-block;padding:5px 8px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:7px;white-space:nowrap">Needs a look</span>
+            </sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px">
+      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Assignments</h2>
+      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ klass.paperLine }}</span>
+    </div>
+
+    <sc-if value="{{ klass.hasWork }}" hint-placeholder-val="{{ true }}">
+      <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption);margin-bottom:10px">{{ upcomingLabel }}</div>
+      <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden;margin-bottom:16px">
+        <div style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
+          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
+          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
+          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Class mean</div>
+        </div>
+        <sc-for list="{{ upcoming }}" as="a" hint-placeholder-count="1">
+          <div onClick="{{ a.open }}" style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+            <div style="display:flex;align-items:center;gap:9px;padding:var(--rowpad,14px 16px);font:600 16px/1.3 var(--st-ui);color:var(--st-ink)">
+              {{ a.title }}
+              <sc-if value="{{ a.sel }}" hint-placeholder-val="{{ false }}">
+                <span style="flex:none;padding:4px 7px;font:500 11px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:6px;white-space:nowrap">Viewing</span>
+              </sc-if>
+            </div>
+            <div style="padding:var(--rowpad,14px 16px);font:400 14.5px/1.2 var(--st-ui);color:var(--st-accent-text);white-space:nowrap">{{ a.due }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.sub }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.mean }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption);margin-bottom:10px">{{ markedLabel }}</div>
+      <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
+          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
+          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
+          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Class mean</div>
+        </div>
+        <sc-for list="{{ marked }}" as="a" hint-placeholder-count="3">
+          <div onClick="{{ a.open }}" style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+            <div style="display:flex;align-items:center;gap:9px;padding:var(--rowpad,14px 16px);font:600 16px/1.3 var(--st-ui);color:var(--st-ink)">
+              {{ a.title }}
+              <sc-if value="{{ a.sel }}" hint-placeholder-val="{{ false }}">
+                <span style="flex:none;padding:4px 7px;font:500 11px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:6px;white-space:nowrap">Viewing</span>
+              </sc-if>
+            </div>
+            <div style="padding:var(--rowpad,14px 16px);font:400 14.5px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ a.due }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.sub }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.mean }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ klass.noWork }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:26px;background:var(--st-note-bg);border:1px dashed var(--st-rule-strong);border-radius:11px">
+        <div>
+          <div style="font:600 20px/1.3 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">No work set for this class</div>
+          <div style="margin-top:8px;font:400 15.5px/1.5 var(--st-ui);color:var(--st-body)">{{ klass.noWorkLine }}</div>
+        </div>
+        <button type="button" onClick="{{ openSetWork }}" style="flex:none;height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
+      </div>
+    </sc-if>
+
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px">
+      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Shoutouts</h2>
+      <button type="button" onClick="{{ openBulk }}" class="noprint" style="font:600 14px/1.2 var(--st-ui);color:var(--st-accent-text);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Send to several students</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(390px,1fr));gap:16px;align-items:start">
+      <div style="padding:20px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+        <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Send a shoutout to</div>
+        <select onChange="{{ pickRecipient }}" style="width:100%;margin-top:10px;height:42px;padding:0 12px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:10px">
+          <option value="">Select a student</option>
+          <sc-for list="{{ roster }}" as="s" hint-placeholder-count="4">
+            <option value="{{ s.name }}">{{ s.name }}</option>
+          </sc-for>
+        </select>
+        <div style="margin-top:18px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Pick a template</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+          <sc-for list="{{ templates }}" as="t" hint-placeholder-count="6">
+            <button type="button" onClick="{{ t.pick }}" style="text-align:left;white-space:normal;padding:11px 12px;font:600 14.5px/1.25 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ t.fg }};background:{{ t.bg }};border:1px solid {{ t.bc }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+        <div style="margin-top:18px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Or write a message</div>
+        <textarea onChange="{{ setNote }}" placeholder="Something specific you want to recognise" style="width:100%;margin-top:10px;min-height:78px;padding:12px;font:400 15.5px/1.5 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:10px;resize:vertical"></textarea>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px">
+          <span style="font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost)">{{ noteCount }}</span>
+          <button type="button" onClick="{{ sendShoutout }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Send shoutout</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ feed }}" as="f" hint-placeholder-count="2">
+          <div style="padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11.5px/1 var(--st-mono);color:var(--st-paper);background:{{ f.hue }}">{{ f.initials }}</div>
+              <span style="font:600 16px/1.2 var(--st-ui);color:var(--st-ink)">{{ f.name }}</span>
+              <span style="margin-left:auto;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">{{ f.when }}</span>
+            </div>
+            <div style="margin-top:11px;font:500 15px/1.45 var(--st-ui);color:var(--st-accent-text)">{{ f.template }}</div>
+            <div style="margin-top:6px;font:400 15.5px/1.55 var(--st-ui);color:var(--st-body)">{{ f.body }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isStudent }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goClass }}" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      {{ backToClass }}
+    </button>
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
+      <div style="flex:none;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 24px/1 var(--st-mono);color:var(--st-paper);background:{{ student.hue }}">{{ student.initials }}</div>
+      <div>
+        <h1 style="margin:0;font:600 42px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ student.name }}</h1>
+        <div style="margin-top:10px;font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ student.meta }}</div>
+      </div>
+      <button type="button" onClick="{{ openBulk }}" style="margin-left:auto;height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Send shoutout</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:18px">
+      <sc-for list="{{ student.tiles }}" as="t" hint-placeholder-count="4">
+        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+          <div style="margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+          <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px">
+      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Submission history</h2>
+      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ student.subLine }}</span>
+    </div>
+    <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:2.2fr 1fr 1.1fr 1fr 1fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Score</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Status</div>
+      </div>
+      <sc-for list="{{ student.history }}" as="h" hint-placeholder-count="4">
+        <div onClick="{{ h.open }}" style="display:grid;grid-template-columns:2.2fr 1fr 1.1fr 1fr 1fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+          <div style="padding:var(--rowpad,14px 16px);font:600 15.5px/1.3 var(--st-ui);color:var(--st-ink)">{{ h.title }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:400 14px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ h.due }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:400 14px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ h.submitted }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ h.score }}</div>
+          <div style="padding:var(--rowpad,14px 16px)">
+            <span style="display:inline-flex;align-items:center;gap:5px;padding:5px 8px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;border-radius:7px;white-space:nowrap;color:{{ h.stFg }};background:{{ h.stBg }};border:1px solid {{ h.stBc }}">
+              <span style="width:6px;height:6px;border-radius:{{ h.stDotR }};background:{{ h.stDot }}"></span>{{ h.status }}
+            </span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isMarking }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goClass }}" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      {{ backToClass }}
+    </button>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
+      <div>
+        <div style="font:500 12px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ paper.eyebrow }}</div>
+        <h1 style="margin:12px 0 0;font:600 42px/1.05 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink);max-width:22ch">{{ paper.title }}</h1>
+      </div>
+      <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Reteach and reset</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:18px">
+      <sc-for list="{{ paper.tiles }}" as="t" hint-placeholder-count="4">
+        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+          <div style="margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+          <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <h2 style="margin:26px 0 12px;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Question breakdown</h2>
+    <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
+      <sc-for list="{{ paper.questions }}" as="q" hint-placeholder-count="8">
+        <div style="display:grid;grid-template-columns:52px 1fr 170px 82px;align-items:center;gap:14px;padding:13px 18px;border-top:1px solid var(--st-rule-fact)">
+          <div style="font:500 13.5px/1.2 var(--st-mono);letter-spacing:.1em;color:var(--st-caption)">{{ q.id }}</div>
+          <div style="min-width:0">
+            <div style="font:600 15.5px/1.35 var(--st-ui);color:var(--st-ink)">{{ q.text }}</div>
+            <sc-if value="{{ q.worst }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:6px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-accent-text)">Lowest scoring — worth reteaching</div>
+            </sc-if>
+          </div>
+          <div style="height:6px;background:var(--st-num-well);border-radius:999px;overflow:hidden">
+            <div style="height:100%;border-radius:999px;width:{{ q.pct }}%;background:{{ q.fill }}"></div>
+          </div>
+          <div style="text-align:right;font:500 16.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ q.label }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:26px 0 12px">
+      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Class by question</h2>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:6px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:9px;border-radius:50%;background:var(--ks3-ok)"></span>Correct</span>
+        <span style="display:flex;align-items:center;gap:6px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:9px;border-radius:50%;border:1.5px solid var(--st-rule-strong)"></span>Incorrect</span>
+        <span style="display:flex;align-items:center;gap:6px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:2px;background:var(--st-rule-strong)"></span>Not attempted</span>
+      </div>
+    </div>
+    <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
+      <div style="overflow-x:auto">
+        <div style="min-width:720px">
+          <div style="display:grid;grid-template-columns:205px repeat(8,1fr) 84px;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+            <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Student</div>
+            <sc-for list="{{ paper.qids }}" as="q" hint-placeholder-count="8">
+              <div style="padding:12px 0;text-align:center;font:500 12px/1.2 var(--st-mono);letter-spacing:.08em;color:var(--st-caption)">{{ q.id }}</div>
+            </sc-for>
+            <div style="padding:12px 12px 12px 0;text-align:right;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Mark</div>
+          </div>
+          <sc-for list="{{ paper.grid }}" as="r" hint-placeholder-count="8">
+            <div onClick="{{ r.open }}" style="display:grid;grid-template-columns:205px repeat(8,1fr) 84px;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+              <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;min-width:0">
+                <div style="flex:none;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11px/1 var(--st-mono);color:var(--st-paper);background:{{ r.hue }}">{{ r.initials }}</div>
+                <span style="font:600 15px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
+              </div>
+              <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="8">
+                <div style="display:flex;align-items:center;justify-content:center;padding:11px 0">
+                  <span style="display:block;width:{{ c.w }}px;height:{{ c.h }}px;border-radius:{{ c.r }};background:{{ c.bg }};border:{{ c.bd }}"></span>
+                </div>
+              </sc-for>
+              <div style="padding:11px 12px 11px 0;text-align:right;font:500 15px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.score }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isDigest }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goBackFromDigest }}" class="noprint" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      Back
+    </button>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
+      <div>
+        <div style="font:500 12px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Mon 17 – Fri 21 Aug 2026</div>
+        <h1 style="margin:12px 0 0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ digestTitle }}</h1>
+        <div style="margin-top:10px;font:400 16.5px/1.5 var(--st-ui);color:var(--st-muted)">{{ digestSub }}</div>
+      </div>
+      <button type="button" onClick="{{ doPrint }}" class="noprint" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Print</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:18px">
+      <sc-for list="{{ digestTiles }}" as="t" hint-placeholder-count="4">
+        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+          <div style="margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+          <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <h2 style="margin:26px 0 12px;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ digestTableTitle }}</h2>
+    <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:1.7fr 1fr 105px 105px 1.4fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ digestColTitle }}</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Mean</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">On time</div>
+        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Needs a look</div>
+      </div>
+      <sc-for list="{{ digestRows }}" as="d" hint-placeholder-count="9">
+        <div onClick="{{ d.open }}" style="display:grid;grid-template-columns:1.7fr 1fr 105px 105px 1.4fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+          <div style="padding:var(--rowpad,14px 16px);display:flex;align-items:center;gap:9px;min-width:0">
+            <span style="font:600 16.5px/1.25 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);white-space:normal;text-wrap:pretty">{{ d.code }}</span>
+            <span style="flex:none;font:400 11.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-ghost)">{{ d.ks }}</span>
+          </div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.sub }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.mean }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.ontime }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:400 14.5px/1.3 var(--st-ui);color:var(--st-body)">{{ d.needs }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isImport }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1040px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goClasses }}" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      Back to my classes
+    </button>
+    <h1 style="margin:0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">Import students</h1>
+    <div style="display:flex;gap:8px;margin:20px 0 16px;flex-wrap:wrap">
+      <sc-for list="{{ importSteps }}" as="s" hint-placeholder-count="3">
+        <div style="flex:1;min-width:180px;padding:13px 15px;border-radius:10px;background:{{ s.bg }};border:1px solid {{ s.bc }}">
+          <div style="display:flex;align-items:center;gap:9px">
+            <span style="flex:none;width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font:500 11.5px/1 var(--st-mono);color:{{ s.numFg }};background:{{ s.numBg }}">{{ s.n }}</span>
+            <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:{{ s.fg }}">{{ s.label }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ imp1 }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:34px 26px;text-align:center;background:var(--st-paper);border:1px dashed var(--st-rule-strong);border-radius:11px">
+        <div style="font:600 22px/1.3 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">Drop a CSV of your class list</div>
+        <div style="margin:10px auto 0;max-width:44ch;font:400 15.5px/1.55 var(--st-ui);color:var(--st-muted)">One row per student. First name, last name and email are required; year group and class code are matched if present.</div>
+        <div style="display:flex;justify-content:center;gap:9px;margin-top:20px;flex-wrap:wrap">
+          <button type="button" onClick="{{ impNext }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Choose file</button>
+          <button type="button" onClick="{{ sampleCsv }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Download template</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ imp2 }}" hint-placeholder-val="{{ false }}">
+      <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--st-rule-soft)">
+          <span style="font:600 16.5px/1.2 var(--st-ui);color:var(--st-ink)">year8-autumn.csv</span>
+          <span style="font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">27 rows · 5 columns</span>
+        </div>
+        <sc-for list="{{ mapRows }}" as="m" hint-placeholder-count="5">
+          <div style="display:grid;grid-template-columns:1fr 24px 1fr 1.2fr;align-items:center;gap:14px;padding:13px 18px;border-top:1px solid var(--st-rule-fact)">
+            <div style="font:500 14.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ m.col }}</div>
+            <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true" style="color:var(--st-rule-strong)"><path d="M1 6h12M9.5 2.5L13 6l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <div style="font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink)">{{ m.field }}</div>
+            <div style="font:400 14px/1.4 var(--st-ui);color:{{ m.noteFg }}">{{ m.note }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <button type="button" onClick="{{ impBack }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">Back</button>
+        <button type="button" onClick="{{ impNext }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Check rows</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ imp3 }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px">
+        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">New students</div>
+          <div style="margin-top:12px;font:600 33px/1 var(--st-display);color:var(--st-ink)">24</div>
+        </div>
+        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Matched existing</div>
+          <div style="margin-top:12px;font:600 33px/1 var(--st-display);color:var(--st-ink)">2</div>
+        </div>
+        <div style="padding:18px;background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:11px">
+          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-accent-text)">Needs attention</div>
+          <div style="margin-top:12px;font:600 33px/1 var(--st-display);color:var(--st-ink)">1</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
+        <sc-for list="{{ previewRows }}" as="p" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:1.2fr 1.6fr 90px 1.4fr;align-items:center;gap:12px;padding:13px 18px;border-top:1px solid var(--st-rule-fact)">
+            <div style="font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink)">{{ p.name }}</div>
+            <div style="font:400 14.5px/1.2 var(--st-ui);color:var(--st-muted);overflow:hidden;text-overflow:ellipsis">{{ p.email }}</div>
+            <div style="font:500 13.5px/1.2 var(--st-mono);color:var(--st-caption)">{{ p.klass }}</div>
+            <div style="font:500 13.5px/1.3 var(--st-mono);letter-spacing:.08em;text-transform:uppercase;color:{{ p.stFg }}">{{ p.status }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
+        <button type="button" onClick="{{ impBack }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">Back</button>
+        <button type="button" onClick="{{ impDone }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Import 26 students</button>
+      </div>
+    </sc-if>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isInsights }}" hint-placeholder-val="{{ false }}">
+  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goBackFromInsights }}" class="noprint" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      Back
+    </button>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
+      <div>
+        <div style="font:500 12px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Week of Mon 17 Aug 2026</div>
+        <h1 style="margin:12px 0 0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">Charts</h1>
+        <div style="margin-top:10px;font:400 16.5px/1.5 var(--st-ui);color:var(--st-muted)">{{ insSub }}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="noprint" style="display:flex;gap:3px;padding:3px;background:var(--st-seg-bg);border-radius:10px">
+          <sc-for list="{{ insScopeTabs }}" as="t" hint-placeholder-count="2">
+            <button type="button" onClick="{{ t.pick }}" style="padding:7px 14px;font:500 12.5px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent;border-radius:8px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border-color:{{ t.bc }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+        <button type="button" onClick="{{ doPrint }}" class="noprint" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Print</button>
+      </div>
+    </div>
+
+    <div class="noprint" style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 18px">
+      <sc-for list="{{ insChips }}" as="c" hint-placeholder-count="6">
+        <button type="button" onClick="{{ c.pick }}" style="padding:9px 14px;font:600 14.5px/1.2 var(--st-ui);border-radius:999px;cursor:pointer;color:{{ c.fg }};background:{{ c.bg }};border:1px solid {{ c.bc }}">{{ c.label }}</button>
+      </sc-for>
+    </div>
+
+    <div style="padding:24px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap">
+        <h2 style="margin:0;font:600 29px/1.15 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ chart.title }}</h2>
+        <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ chart.scopeLabel }}</span>
+      </div>
+      <div style="margin-top:10px;font:400 16px/1.5 var(--st-ui);color:var(--st-body)">{{ chart.note }}</div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin-top:20px">
+        <sc-for list="{{ chart.tiles }}" as="t" hint-placeholder-count="3">
+          <div style="padding:14px 16px;background:var(--st-num-well);border-radius:10px">
+            <div style="font:500 11.5px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+            <div style="margin-top:9px;font:600 24px/1.1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+            <div style="margin-top:6px;font:400 13.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ chart.isBars }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:26px">
+          <sc-for list="{{ chart.rows }}" as="r" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:220px 1fr 96px;align-items:center;gap:14px">
+              <div style="min-width:0">
+                <div style="font:600 15.5px/1.25 var(--st-ui);color:var(--st-ink)">{{ r.label }}</div>
+                <div style="margin-top:5px;font:400 11.5px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ r.sub }}</div>
+              </div>
+              <div style="height:12px;background:var(--st-num-well);border-radius:999px;overflow:hidden">
+                <div style="height:100%;border-radius:999px;width:{{ r.pct }}%;background:{{ r.fill }}"></div>
+              </div>
+              <div style="text-align:right;font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ chart.isCols }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:flex-end;gap:14px;height:210px;margin-top:26px;padding-bottom:10px;border-bottom:1px solid var(--st-rule)">
+          <sc-for list="{{ chart.cols }}" as="c" hint-placeholder-count="8">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%">
+              <span style="font:500 14px/1.2 var(--st-mono);color:var(--st-ink)">{{ c.value }}</span>
+              <div style="flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center">
+                <div style="width:100%;max-width:54px;min-height:3px;border-radius:6px 6px 0 0;height:{{ c.pct }}%;background:{{ c.fill }}"></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:14px;margin-top:10px">
+          <sc-for list="{{ chart.cols }}" as="c" hint-placeholder-count="8">
+            <div style="flex:1;text-align:center;font:400 12px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:{{ c.labelFg }}">{{ c.label }}</div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ chart.isStack }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:26px">
+          <sc-for list="{{ chart.stacks }}" as="k" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:220px 1fr 165px;align-items:center;gap:14px">
+              <div style="min-width:0">
+                <div style="font:600 15.5px/1.25 var(--st-ui);color:var(--st-ink)">{{ k.label }}</div>
+                <div style="margin-top:5px;font:400 11.5px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ k.sub }}</div>
+              </div>
+              <div style="display:flex;height:14px;background:var(--st-num-well);border-radius:999px;overflow:hidden">
+                <sc-for list="{{ k.segs }}" as="g" hint-placeholder-count="2">
+                  <div style="height:100%;width:{{ g.pct }}%;background:{{ g.fill }}"></div>
+                </sc-for>
+              </div>
+              <div style="text-align:right;font:500 13.5px/1.3 var(--st-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink)">{{ k.right }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ chart.hasLegend }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:16px;margin-top:20px;flex-wrap:wrap">
+          <sc-for list="{{ chart.legend }}" as="l" hint-placeholder-count="3">
+            <span style="display:flex;align-items:center;gap:7px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:10px;height:10px;border-radius:3px;background:{{ l.fill }}"></span>{{ l.label }}</span>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ setWorkOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(26,23,20,.45);display:flex;align-items:center;justify-content:center;padding:40px 20px">
+      <div onClick="{{ stop }}" style="width:720px;max-width:100%;max-height:86vh;overflow:auto;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:14px;box-shadow:var(--st-shadow-frame)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px;border-bottom:1px solid var(--st-rule-soft)">
+          <div>
+            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ swEyebrow }}</div>
+            <div style="margin-top:9px;font:600 27px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Set work</div>
+          </div>
+          <button type="button" onClick="{{ closeModal }}" style="flex:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer;color:var(--st-muted)">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+          </button>
+        </div>
+
+        <div style="padding:22px 24px">
+          <sc-if value="{{ sw1 }}" hint-placeholder-val="{{ true }}">
+            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Pick a topic</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+              <sc-for list="{{ topics }}" as="t" hint-placeholder-count="5">
+                <button type="button" onClick="{{ t.pick }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:14px 16px;border-radius:10px;cursor:pointer;background:{{ t.bg }};border:1px solid {{ t.bc }}">
+                  <span>
+                    <span style="display:block;font:600 16.5px/1.25 var(--st-ui);color:var(--st-ink);white-space:normal">{{ t.name }}</span>
+                    <span style="display:block;margin-top:5px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)">{{ t.unit }}</span>
+                  </span>
+                  <span style="font:500 12.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:{{ t.tagFg }}">{{ t.tag }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ sw2 }}" hint-placeholder-val="{{ false }}">
+            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Questions</div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <sc-for list="{{ swCounts }}" as="q" hint-placeholder-count="3">
+                <button type="button" onClick="{{ q.pick }}" style="flex:1;padding:14px;font:500 16.5px/1.2 var(--st-mono);border-radius:10px;cursor:pointer;color:{{ q.fg }};background:{{ q.bg }};border:1px solid {{ q.bc }}">{{ q.label }}</button>
+              </sc-for>
+            </div>
+            <div style="margin-top:22px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Due</div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <sc-for list="{{ swDays }}" as="d" hint-placeholder-count="5">
+                <button type="button" onClick="{{ d.pick }}" style="flex:1;padding:13px 0;font:500 13.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;border-radius:10px;cursor:pointer;color:{{ d.fg }};background:{{ d.bg }};border:1px solid {{ d.bc }}">{{ d.label }}</button>
+              </sc-for>
+            </div>
+            <div style="margin-top:22px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Release</div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <sc-for list="{{ swRelease }}" as="r" hint-placeholder-count="2">
+                <button type="button" onClick="{{ r.pick }}" style="flex:1;padding:14px;font:600 15.5px/1.2 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ r.fg }};background:{{ r.bg }};border:1px solid {{ r.bc }}">{{ r.label }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ sw3 }}" hint-placeholder-val="{{ false }}">
+            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Set this to</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:12px">
+              <sc-for list="{{ swClassList }}" as="c" hint-placeholder-count="8">
+                <button type="button" onClick="{{ c.toggle }}" style="display:flex;align-items:center;gap:11px;text-align:left;padding:12px 14px;border-radius:10px;cursor:pointer;background:{{ c.bg }};border:1px solid {{ c.bc }}">
+                  <span style="flex:none;width:16px;height:16px;border-radius:5px;background:{{ c.boxBg }};border:1.5px solid {{ c.boxBc }}"></span>
+                  <span>
+                    <span style="display:block;font:600 16px/1.2 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">{{ c.code }}</span>
+                    <span style="display:block;margin-top:5px;font:400 11.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ c.sub }}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 24px;border-top:1px solid var(--st-rule-soft);background:var(--st-crumb-bg)">
+          <div style="font:400 12.5px/1.4 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ swSummary }}</div>
+          <div style="display:flex;gap:9px;flex:none">
+            <button type="button" onClick="{{ swBack }}" style="height:38px;padding:0 15px;font:600 15px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">{{ swBackLabel }}</button>
+            <button type="button" onClick="{{ swNext }}" style="height:38px;padding:0 18px;font:600 15px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">{{ swNextLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ bulkOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:60;background:rgba(26,23,20,.45);display:flex;align-items:center;justify-content:center;padding:40px 20px">
+      <div onClick="{{ stop }}" style="width:720px;max-width:100%;max-height:86vh;overflow:auto;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:14px;box-shadow:var(--st-shadow-frame)">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px;border-bottom:1px solid var(--st-rule-soft)">
+          <div>
+            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ klass.code }} · Shoutouts</div>
+            <div style="margin-top:9px;font:600 27px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Send to several students</div>
+          </div>
+          <button type="button" onClick="{{ closeModal }}" style="flex:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer;color:var(--st-muted)">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path></svg>
+          </button>
+        </div>
+        <div style="padding:22px 24px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Students</span>
+            <button type="button" onClick="{{ bulkTop }}" style="font:600 14px/1.2 var(--st-ui);color:var(--st-accent-text);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Select all on time this week</button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px">
+            <sc-for list="{{ bulkStudents }}" as="s" hint-placeholder-count="12">
+              <button type="button" onClick="{{ s.toggle }}" style="display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;cursor:pointer;font:600 14.5px/1.2 var(--st-ui);color:{{ s.fg }};background:{{ s.bg }};border:1px solid {{ s.bc }}">
+                <span style="width:7px;height:7px;border-radius:50%;background:{{ s.dot }}"></span>{{ s.name }}
+              </button>
+            </sc-for>
+          </div>
+          <div style="margin-top:22px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Template</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin-top:12px">
+            <sc-for list="{{ templates }}" as="t" hint-placeholder-count="6">
+              <button type="button" onClick="{{ t.pick }}" style="text-align:left;white-space:normal;padding:12px 13px;font:600 15px/1.25 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ t.fg }};background:{{ t.bg }};border:1px solid {{ t.bc }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 24px;border-top:1px solid var(--st-rule-soft);background:var(--st-crumb-bg)">
+          <div style="font:400 12.5px/1.4 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ bulkSummary }}</div>
+          <button type="button" onClick="{{ sendBulk }}" style="flex:none;height:38px;padding:0 18px;font:600 15px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Send shoutouts</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ searchOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:70;background:rgba(26,23,20,.4);display:flex;align-items:flex-start;justify-content:center;padding:90px 20px">
+      <div onClick="{{ stop }}" style="width:620px;max-width:100%;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:14px;box-shadow:var(--st-shadow-frame);overflow:hidden">
+        <div style="display:flex;align-items:center;gap:11px;padding:16px 18px;border-bottom:1px solid var(--st-rule-soft)">
+          <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="flex:none;color:var(--st-caption)"><circle cx="6" cy="6" r="4.2" stroke="currentColor" stroke-width="1.5"></circle><path d="M9.3 9.3L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+          <input onChange="{{ setSearch }}" placeholder="Search students across all 12 classes" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font:400 17.5px/1.2 var(--st-ui);color:var(--st-ink)">
+        </div>
+        <div style="max-height:340px;overflow:auto">
+          <sc-for list="{{ searchResults }}" as="r" hint-placeholder-count="5">
+            <div onClick="{{ r.open }}" style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+              <div style="flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11.5px/1 var(--st-mono);color:var(--st-paper);background:{{ r.hue }}">{{ r.initials }}</div>
+              <span style="font:600 16px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
+              <span style="flex:none;font:500 12px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ r.klass }}</span>
+              <span style="margin-left:auto;flex:none;font:500 14.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.avg }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:11px 18px;border-top:1px solid var(--st-rule-soft);background:var(--st-crumb-bg);font:400 12px/1.4 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)">{{ searchFoot }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:28px;z-index:80;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:13px 18px;background:var(--st-ink);border-radius:11px;box-shadow:var(--st-shadow-pop);animation:tin .2s ease-out">
+      <span style="flex:none;width:7px;height:7px;border-radius:50%;background:var(--ks3-ok)"></span>
+      <span style="font:500 14.5px/1.3 var(--st-ui);color:var(--st-cream)">{{ toast }}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;teacherName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Ayomide&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;cardMeter&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;bar&quot;,&quot;numbers&quot;],&quot;default&quot;:&quot;bar&quot;,&quot;tsType&quot;:&quot;'bar' | 'numbers'&quot;,&quot;section&quot;:&quot;Class cards&quot;},&quot;hideEmptyClasses&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Class cards&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;comfortable&quot;,&quot;tsType&quot;:&quot;'comfortable' | 'compact'&quot;,&quot;section&quot;:&quot;Tables&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'classes', classId: '8rsc1', studentId: '8rsc1-3', paperId: '8rsc1:p1', weekIdx: 0,
+    ks: 'All', sort: 'code', modal: null, toast: '',
+    swStep: 1, swTopic: 't1', swQ: 10, swDay: 'Wed', swRel: 'now', swClasses: ['8rsc1'],
+    boSel: [], boTpl: 3, note: '', search: '', importStep: 1, digestScope: 'all', recipient: '',
+    chartKind: 'submissions', chartScope: 'all', insFrom: 'classes'
+  };
+
+  HUE = ['#2F5CE0', '#A93411', '#0A6B36', '#5A31C0', '#7A5F00', '#2545A8'];
+
+  LASTS = ['9 min ago', '25 min ago', '48 min ago', '1 hour ago', '2 hours ago', '3 hours ago', 'yesterday', '2 days ago', '4 days ago', '6 days ago', '9 days ago'];
+
+  NAMES = ['Amara Okonkwo', 'Ben Whitcombe', 'Chidi Eze', 'Daisy Fairhurst', 'Ellis Nwachukwu', 'Farida Yusuf', 'George Ademola', 'Hana Pretorius', 'Idris Balogun', 'Jasmine Okafor', 'Kaleb Anderson', 'Leila Hassan', 'Marcus Tembo', 'Nia Adeyemi', 'Oscar Lindqvist', 'Priya Raman', 'Rufus Ogundele', 'Sana Iqbal', 'Tobi Adeyinka', 'Uma Krishnan', 'Vera Nowak', 'Wesley Chukwu', 'Xanthe Marsh', 'Yusuf Danjuma', 'Zara Mensah', 'Aaron Whitfield', 'Bisi Oyelaran', 'Cara Donnelly', 'Dele Ogunsanya', 'Esme Fitzgerald', 'Femi Alabi', 'Grace Mbeki', 'Hugo Castellan', 'Isla Mackenzie', 'Jide Sanusi', 'Kwame Boateng', 'Lena Vasilev', 'Musa Sulaiman', 'Noor Rahimi', 'Otis Bramley', 'Paulina Nowicka', 'Quinn Halloran', 'Rania Zaid', 'Simi Adegoke', 'Theo Papadakis', 'Ugo Nwosu', 'Vikram Shah', 'Wren Callaghan', 'Yara El-Amin', 'Zac Furlong', 'Adaeze Nwankwo', 'Bruno Salgado', 'Clara Hendriks', 'Dami Ogunleye'];
+
+  CLASSES = [
+    { id: '7hsc5', code: '7h/Sc5', year: 7, ks: 'KS3', subject: 'Science', n: 28, week: [24, 28], last: '18 min ago', state: 'live' },
+    { id: '7rsc3', code: '7r/Sc3', year: 7, ks: 'KS3', subject: 'Science', n: 30, week: [27, 30], last: '42 min ago', state: 'live' },
+    { id: '8hsc2', code: '8h/Sc2', year: 8, ks: 'KS3', subject: 'Science', n: 29, week: [11, 29], last: '3 hours ago', state: 'live' },
+    { id: '8rsc1', code: '8r/Sc1', year: 8, ks: 'KS3', subject: 'Science', n: 16, week: [11, 16], last: '9 min ago', state: 'live' },
+    { id: '8rsc4', code: '8r/Sc4', year: 8, ks: 'KS3', subject: 'Science', n: 0, week: [0, 0], last: 'No activity yet', state: 'empty' },
+    { id: '9hsc5', code: '9h/Sc5', year: 9, ks: 'KS3', subject: 'Science', n: 31, week: [19, 31], last: '1 hour ago', state: 'live' },
+    { id: '9rsc5', code: '9r/Sc5', year: 9, ks: 'KS3', subject: 'Science', n: 0, week: [0, 0], last: 'No activity yet', state: 'empty' },
+    { id: '10hph1', code: '10h/Ph1', year: 10, ks: 'KS4', subject: 'Physics', n: 24, week: [22, 24], last: '26 min ago', state: 'live' },
+    { id: '10hsc2', code: '10h/Sc2', year: 10, ks: 'KS4', subject: 'Combined Science', n: 27, week: [9, 27], last: '5 hours ago', state: 'live' },
+    { id: '11hph1', code: '11h/Ph1', year: 11, ks: 'KS4', subject: 'Physics', n: 17, week: [17, 17], last: '34 min ago', state: 'live' },
+    { id: '11hsc5', code: '11h/Sc5', year: 11, ks: 'KS4', subject: 'Combined Science', n: 25, week: [0, 25], last: '2 days ago', state: 'nowork' },
+    { id: '11rsc1', code: '11r/Sc1', year: 11, ks: 'KS4', subject: 'Combined Science', n: 0, week: [0, 0], last: 'No activity yet', state: 'empty' }
+  ];
+
+  TITLES = {
+    'Science': ['Particle model — recall and apply', 'Energy stores and transfers', 'Separating mixtures', 'Acids and alkalis — the pH scale', 'Cells and the microscope', 'Forces and speed', 'Sound and hearing', 'The reactivity series', 'Photosynthesis — the basics', 'Light and reflection', 'Word equations', 'Digestion and enzymes'],
+    'Combined Science': ['Rates of reaction — recall and apply', 'Bonding and structure', 'Electric circuits — current and voltage', 'Homeostasis — control systems', 'Cell transport and osmosis', 'Energy resources and efficiency', 'The periodic table — trends', 'Inheritance and genetics', 'Waves — the EM spectrum', 'Ecosystems and cycles', 'Quantitative chemistry — moles', 'Motion graphs'],
+    'Physics': ['Forces and motion — resultants', 'Electric circuits — current and voltage', 'Waves — reflection and refraction', 'Energy transfers and efficiency', 'Radioactivity — half-life', 'Momentum and collisions', 'Magnetism and the motor effect', 'Pressure in fluids', 'Gas laws and particle theory', 'Static electricity', 'Specific heat capacity', 'Terminal velocity']
+  };
+
+  STEMS = [
+    { id: 'Q1', text: 'Recall — key definition' },
+    { id: 'Q2', text: 'Recall — units and symbols' },
+    { id: 'Q3', text: 'Identify — read the diagram' },
+    { id: 'Q4', text: 'Apply — one-step calculation' },
+    { id: 'Q5', text: 'Apply — two-step calculation' },
+    { id: 'Q6', text: 'Explain — why it happens' },
+    { id: 'Q7', text: 'Compare — two cases' },
+    { id: 'Q8', text: 'Evaluate — apply to a new context' }
+  ];
+
+  TOPICS = [
+    { id: 't1', name: 'Particle model of matter', unit: 'KS3 · Chemistry · Unit 4', tag: 'Set 3 weeks ago' },
+    { id: 't2', name: 'Energy stores and transfers', unit: 'KS3 · Physics · Unit 2', tag: 'Just marked' },
+    { id: 't3', name: 'Cells and organisation', unit: 'KS3 · Biology · Unit 1', tag: 'Not set yet' },
+    { id: 't4', name: 'Acids, alkalis and neutralisation', unit: 'KS3 · Chemistry · Unit 5', tag: 'Set 6 weeks ago' },
+    { id: 't5', name: 'Forces and motion', unit: 'KS3 · Physics · Unit 3', tag: 'Not set yet' }
+  ];
+
+  TEMPLATES = [
+    { id: 1, label: 'Top of the class this week' },
+    { id: 2, label: 'Brilliant improvement' },
+    { id: 3, label: 'Every assignment on time' },
+    { id: 4, label: 'Smashed a tough topic' },
+    { id: 5, label: 'Bounced back strong' },
+    { id: 6, label: 'Helped a classmate' }
+  ];
+
+  POOL_CLASSES = ['7hsc5', '8rsc1', '9hsc5', '10hph1', '10hsc2'];
+
+  seed(str) {
+    let h = 2166136261;
+    const s = String(str);
+    for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+    return h >>> 0;
+  }
+  rnd(key, lo, hi) { return lo + (this.seed(key) % (hi - lo + 1)); }
+  initials(name) {
+    const p = String(name).trim().split(/\s+/);
+    return ((p[0] || '')[0] || '') + ((p[1] || '')[0] || '');
+  }
+  hueFor(name) { return this.HUE[this.seed(name) % this.HUE.length]; }
+  dotsFor(sub) {
+    if (sub === 'Physics') return [{ w: 8, c: 'var(--ks3-physics)' }];
+    if (sub === 'Chemistry') return [{ w: 8, c: 'var(--ks3-chemistry)' }];
+    if (sub === 'Biology') return [{ w: 8, c: 'var(--ks3-biology)' }];
+    return [{ w: 3, c: 'var(--ks3-physics)' }, { w: 3, c: 'var(--ks3-chemistry)' }, { w: 3, c: 'var(--ks3-biology)' }];
+  }
+  ping(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: '' }), 2800);
+  }
+  klassById(id) { return this.CLASSES.filter(c => c.id === id)[0]; }
+  klass() { return this.klassById(this.state.classId) || this.CLASSES[3]; }
+
+  /* ── ONE seeded score matrix per class (student x paper, marks out of 8).
+     Every average on every screen is derived from this: a student's avg is
+     the mean of their row, a paper's mean is the mean of its column, the
+     class mean is the mean of the marked columns, the digest mean is the
+     mean of the class means. No second source of truth. ── */
+  matrixFor(k) {
+    this._mx = this._mx || {};
+    if (this._mx[k.id]) return this._mx[k.id];
+    const live = k.state === 'live';
+    const cols = live ? this.weeks().length : 0;
+    const rows = [];
+    for (let i = 0; i < k.n; i++) {
+      const sid = k.id + '-' + i;
+      const inWeek = live && i < k.week[0];
+      const scores = [];
+      const late = [];
+      for (let p = 0; p < cols; p++) {
+        let sc = null, lt = false;
+        if (p === 0) {
+          if (inWeek) { sc = this.rnd(sid + ':c0', 2, 8); }
+        } else if (this.rnd(sid + ':c' + p + 'm', 0, 11) !== 0) {
+          sc = this.rnd(sid + ':c' + p, 2, 8);
+          lt = this.rnd(sid + ':c' + p + 'l', 0, 5) === 0;
+        }
+        scores.push(sc);
+        late.push(lt);
+      }
+      rows.push({ sid, scores, late, inWeek });
+    }
+    const colMean = [], colSub = [], colOnTime = [];
+    for (let p = 0; p < cols; p++) {
+      const vals = rows.map(r => r.scores[p]).filter(v => v != null);
+      colSub.push(vals.length);
+      colMean.push(vals.length ? Math.round((vals.reduce((a, v) => a + v, 0) / vals.length / 8) * 100) : null);
+      colOnTime.push(rows.filter(r => r.scores[p] != null && !r.late[p]).length);
+    }
+    const studentAvg = {};
+    rows.forEach(r => {
+      const vals = r.scores.slice(1).filter(v => v != null).map(v => Math.round((v / 8) * 100));
+      studentAvg[r.sid] = vals.length ? Math.round(vals.reduce((a, v) => a + v, 0) / vals.length) : null;
+    });
+    const marked = colMean.slice(1).filter(v => v != null);
+    const markedSub = colSub.slice(1).reduce((a, v) => a + v, 0);
+    const markedOnTime = colOnTime.slice(1).reduce((a, v) => a + v, 0);
+    const out = {
+      rows, colMean, colSub, colOnTime, studentAvg,
+      markedSub, markedOnTime,
+      markedPct: markedSub ? Math.round((markedOnTime / markedSub) * 100) : null,
+      classMean: marked.length ? Math.round(marked.reduce((a, v) => a + v, 0) / marked.length) : null,
+      byId: {}
+    };
+    rows.forEach(r => { out.byId[r.sid] = r; });
+    this._mx[k.id] = out;
+    return out;
+  }
+
+  rosterFor(k) {
+    this._rc = this._rc || {};
+    if (this._rc[k.id]) return this._rc[k.id];
+    const off = this.seed(k.id) % this.NAMES.length;
+    const live = k.state === 'live';
+    const mx = this.matrixFor(k);
+    const rows = [];
+    for (let i = 0; i < k.n; i++) {
+      const sid = k.id + '-' + i;
+      const row = mx.byId[sid];
+      const avg = live ? mx.studentAvg[sid] : null;
+      const inWeek = !!(row && row.inWeek);
+      const missing = !!(row && row.scores.slice(1).indexOf(null) > -1);
+      const li = this.rnd(sid + 'l', inWeek ? 0 : 6, inWeek ? 5 : 10);
+      rows.push({
+        id: sid,
+        name: this.NAMES[(off + i) % this.NAMES.length],
+        avg,
+        inWeek,
+        last: this.LASTS[li],
+        hours: this.HOURS[li],
+        flag: live && !inWeek && (missing || (avg != null && avg < 50))
+      });
+    }
+    this._rc[k.id] = rows;
+    return rows;
+  }
+
+  papersFor(k) {
+    if (k.state !== 'live') return [];
+    this._pc = this._pc || {};
+    if (this._pc[k.id]) return this._pc[k.id];
+    const t = this.TITLES[k.subject] || this.TITLES['Science'];
+    const wks = this.weeks();
+    const mx = this.matrixFor(k);
+    const out = wks.map((w, i) => ({
+      id: k.id + ':p' + i,
+      idx: i,
+      title: t[i % t.length],
+      due: i === 0 ? 'Due ' + w.due : w.due,
+      set: w.set,
+      range: w.range,
+      dueShort: w.dueShort,
+      lateShort: w.lateShort,
+      sub: mx.colSub[i] + '/' + k.n,
+      mean: mx.colMean[i] == null ? '—' : mx.colMean[i] + '%',
+      when: i === 0 ? 'upcoming' : 'marked'
+    }));
+    this._pc[k.id] = out;
+    return out;
+  }
+
+  /* The term, newest week first: index 0 is the open week, 11 is as far back
+     as the class history goes. Every week owns one assignment column. */
+  weeks() {
+    if (this._weeks) return this._weeks;
+    const M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const lab = (dt) => dt.getDate() + ' ' + M[dt.getMonth()];
+    const first = new Date(2026, 7, 26);
+    const out = [];
+    for (let i = 0; i < 12; i++) {
+      const due = new Date(first); due.setDate(first.getDate() - i * 7);
+      /* Work is set on a Wednesday and due the next: a week's range is the
+         teaching week it was set in, not the week its deadline falls in. */
+      const mon = new Date(due); mon.setDate(due.getDate() - 9);
+      const fri = new Date(due); fri.setDate(due.getDate() - 5);
+      const setOn = new Date(due); setOn.setDate(due.getDate() - 7);
+      out.push({
+        range: mon.getMonth() === fri.getMonth() ? mon.getDate() + '–' + lab(fri) : lab(mon) + '–' + lab(fri),
+        due: 'Wed ' + lab(due),
+        set: 'Wed ' + lab(setOn),
+        dueShort: lab(due),
+        lateShort: lab(fri)
+      });
+    }
+    this._weeks = out;
+    return out;
+  }
+  rail() { return document.querySelector('[data-rail="weeks"]'); }
+  /* The strip runs oldest to newest, so it opens parked on this week. */
+  snapWeekRail() {
+    const snap = () => {
+      const el = this.rail();
+      if (!el) return;
+      if (!this.state.weekIdx) { el.scrollLeft = el.scrollWidth; return; }
+      const chip = el.querySelector('[data-week="' + this.state.weekIdx + '"]');
+      if (chip) el.scrollLeft = Math.max(0, chip.offsetLeft - (el.clientWidth - chip.offsetWidth) / 2);
+    };
+    requestAnimationFrame(snap);
+    setTimeout(snap, 90);
+  }
+  openClass(patch) { this.setState({ screen: 'class', weekIdx: 0, ...patch }, () => this.snapWeekRail()); }
+  pickWeek(i) {
+    this.setState({ weekIdx: i }, () => {
+      const el = this.rail();
+      if (!el) return;
+      const chip = el.querySelector('[data-week="' + i + '"]');
+      if (!chip) return;
+      const left = chip.offsetLeft, right = left + chip.offsetWidth;
+      if (left < el.scrollLeft + 8) el.scrollTo({ left: Math.max(0, left - 14), behavior: 'smooth' });
+      else if (right > el.scrollLeft + el.clientWidth - 8) el.scrollTo({ left: right - el.clientWidth + 14, behavior: 'smooth' });
+    });
+  }
+  weekIdxFor(k) {
+    const n = this.papersFor(k).length;
+    if (!n) return 0;
+    return Math.min(Math.max(0, this.state.weekIdx || 0), n - 1);
+  }
+
+  /* Per-paper question grid, also derived from the matrix: a student's marks
+     decide how many cells are correct, question difficulty decides which. So
+     the row marks, the question percentages and the paper mean all agree. */
+  gridFor(k, pIdx) {
+    this._gc = this._gc || {};
+    const key = k.id + ':' + pIdx;
+    if (this._gc[key]) return this._gc[key];
+    const mx = this.matrixFor(k);
+    const roster = this.rosterFor(k);
+    const diff = this.STEMS.map(q => this.rnd(k.id + ':p' + pIdx + ':' + q.id, 20, 95));
+    let submitted = 0;
+    const correctCount = this.STEMS.map(() => 0);
+    const rows = roster.map(r => {
+      const row = mx.byId[r.id];
+      const marks = row ? row.scores[pIdx] : null;
+      const base = { name: r.name, initials: this.initials(r.name), hue: this.hueFor(r.name), id: r.id };
+      if (marks == null) {
+        return { ...base, raw: this.STEMS.map(() => 2), score: '—' };
+      }
+      submitted++;
+      const order = this.STEMS
+        .map((q, qi) => ({ qi, w: diff[qi] + this.rnd(r.id + q.id, -18, 18) }))
+        .sort((a, b) => b.w - a.w)
+        .slice(0, marks)
+        .map(o => o.qi);
+      const hit = {};
+      order.forEach(qi => { hit[qi] = true; });
+      const raw = this.STEMS.map((q, qi) => {
+        if (hit[qi]) { correctCount[qi]++; return 1; }
+        return this.rnd(r.id + q.id + 'x', 0, 30) === 0 ? 2 : 0;
+      });
+      return { ...base, raw, score: marks + '/8' };
+    });
+    const qpct = correctCount.map(c => (submitted ? Math.round((c / submitted) * 100) : 0));
+    const out = { rows, qpct, submitted };
+    this._gc[key] = out;
+    return out;
+  }
+
+  BANDS = [
+    { label: '0–39', lo: 0, hi: 39 },
+    { label: '40–54', lo: 40, hi: 54 },
+    { label: '55–69', lo: 55, hi: 69 },
+    { label: '70–84', lo: 70, hi: 84 },
+    { label: '85–100', lo: 85, hi: 100 }
+  ];
+  HOURS = [0.2, 0.5, 0.8, 1, 2, 3, 20, 48, 96, 144, 216];
+  CHART_KINDS = [
+    { id: 'submissions', label: 'Submissions' },
+    { id: 'means', label: 'Class means' },
+    { id: 'spread', label: 'Score spread' },
+    { id: 'ontime', label: 'On time' },
+    { id: 'questions', label: 'Question difficulty' },
+    { id: 'engagement', label: 'Engagement' }
+  ];
+
+  colsFrom(items, cap) {
+    const max = cap || Math.max.apply(null, items.map(i => i.raw).concat([1]));
+    return items.map(i => ({
+      label: i.label,
+      value: i.value,
+      note: i.note || '',
+      pct: Math.round((i.raw / (max || 1)) * 100),
+      fill: i.flag ? 'var(--st-accent)' : (i.fill || 'var(--st-hatch-b)'),
+      labelFg: i.flag ? 'var(--st-accent-text)' : 'var(--st-caption)'
+    }));
+  }
+  bucketsOf(rows) {
+    return {
+      today: rows.filter(r => r.hours < 24).length,
+      week: rows.filter(r => r.hours >= 24 && r.hours < 168).length,
+      stale: rows.filter(r => r.hours >= 168).length
+    };
+  }
+
+  /* Every chart reads the same class matrix the tables read, so a chart can
+     never disagree with the screen a teacher clicked through from. */
+  chartFor(kind, scope) {
+    const all = scope === 'all';
+    const live = this.CLASSES.filter(c => c.state === 'live');
+    const k = all ? null : (this.klassById(scope) || this.CLASSES[3]);
+    const mx = (c) => this.matrixFor(c);
+    const tile = (label, value, sub) => ({ label, value: String(value), sub: sub || '' });
+    const base = { type: 'bars', title: '', note: '', tiles: [], rows: [], cols: [], stacks: [], legend: [] };
+
+    if (kind === 'means') {
+      if (all) {
+        const raw = live.map(c => ({ code: c.code, ks: c.ks, mean: mx(c).classMean || 0 }));
+        const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));
+        const below = raw.filter(r => r.mean < cohort).length;
+        const sorted = raw.slice().sort((a, b) => b.mean - a.mean);
+        return { ...base, title: 'Class means, marked work', tiles: [
+          tile('Cohort mean', cohort + '%', 'Mean of ' + raw.length + ' class means'),
+          tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
+          tile('Lowest', sorted[sorted.length - 1].code + ' · ' + sorted[sorted.length - 1].mean + '%', '')
+        ], note: below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',
+          rows: sorted.map(r => ({ label: r.code, sub: r.ks + (r.mean < cohort ? ' · below cohort' : ''), value: r.mean + '%', pct: r.mean, fill: r.mean < cohort ? 'var(--st-accent)' : 'var(--st-hatch-b)', })) };
+      }
+      const m = mx(k);
+      const ps = this.papersFor(k).slice().sort((a, b) => b.idx - a.idx).filter(p => p.when === 'marked' && m.colMean[p.idx] != null);
+      const means = ps.map(p => m.colMean[p.idx]);
+      const best = ps[means.indexOf(Math.max.apply(null, means))];
+      const worst = ps[means.indexOf(Math.min.apply(null, means))];
+      return { ...base, type: 'cols', title: k.code + ' — mean by assignment',
+        cols: this.colsFrom(ps.map(p => ({ label: p.due.replace('Due ', ''), value: m.colMean[p.idx] + '%', raw: m.colMean[p.idx], flag: p.idx === worst.idx })), 100),
+        tiles: [tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Excluded', 'Not marked yet')],
+        note: 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };
+    }
+
+    if (kind === 'spread') {
+      const src = all ? live : [k];
+      const avgs = src.reduce((a, c) => a.concat(this.rosterFor(c).map(r => r.avg).filter(v => v != null)), []);
+      const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));
+      const low = bands.filter(b => b.lo < 55).reduce((a, b) => a + b.n, 0);
+      const high = bands.filter(b => b.lo >= 70).reduce((a, b) => a + b.n, 0);
+      const ranked = bands.slice().sort((a, b) => b.n - a.n);
+      const modeTie = ranked.length > 1 && ranked[1].n === ranked[0].n;
+      return { ...base, type: 'cols', title: (all ? 'Score spread, all classes' : k.code + ' — score spread'),
+        cols: this.colsFrom(bands.map(b => ({ label: b.label, value: String(b.n), raw: b.n, flag: b.lo < 55 }))),
+        tiles: [tile('Students', avgs.length, 'With marked work'), tile('Below 55%', low, 'Bottom two bands'), tile('70% or above', high, 'Top two bands')],
+        note: modeTie
+          ? low + ' of ' + avgs.length + ' students sit below 55%, ' + high + ' at 70% or above'
+          : 'Most students sit in the ' + ranked[0].label + ' band (' + ranked[0].n + ' of ' + avgs.length + ')' };
+    }
+
+    if (kind === 'ontime') {
+      const src = all
+        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedSub }))
+        : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colSub[p.idx] }));
+      const on = src.reduce((a, x) => a + x.on, 0);
+      const tot = src.reduce((a, x) => a + x.tot, 0);
+      const worst = src.slice().sort((a, b) => (a.tot ? a.on / a.tot : 1) - (b.tot ? b.on / b.tot : 1))[0];
+      return { ...base, type: 'stack', title: (all ? 'On time vs late, marked work' : k.code + ' — on time by assignment'),
+        stacks: src.map(x => {
+          const pct = x.tot ? Math.round((x.on / x.tot) * 100) : 0;
+          return { label: x.label, sub: x.sub, right: pct + '% · ' + (x.tot - x.on) + ' late',
+            segs: [{ pct, fill: 'var(--ks3-ok)' }, { pct: 100 - pct, fill: 'var(--st-accent)' }] };
+        }),
+        legend: [{ label: 'On time', fill: 'var(--ks3-ok)' }, { label: 'Late', fill: 'var(--st-accent)' }],
+        tiles: [tile('On time', (tot ? Math.round((on / tot) * 100) : 0) + '%', 'Of ' + tot + ' marked submissions'), tile('Late', tot - on, 'Still marked'), tile('Open work', 'Excluded', 'Not due yet')],
+        note: worst ? 'Weakest: ' + worst.label + ' at ' + (worst.tot ? Math.round((worst.on / worst.tot) * 100) : 0) + '% on time' : '' };
+    }
+
+    if (kind === 'questions') {
+      if (all) {
+        const rows = live.map(c => {
+          const g = this.gridFor(c, 1);
+          const min = Math.min.apply(null, g.qpct);
+          const qi = g.qpct.indexOf(min);
+          return { label: c.code, sub: this.STEMS[qi].id + ' · ' + this.STEMS[qi].text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi };
+        });
+        const tally = {};
+        rows.forEach(r => { tally[r.qi] = (tally[r.qi] || 0) + 1; });
+        const keys = Object.keys(tally).sort((a, b) => tally[b] - tally[a]);
+        const uniqueTop = keys.length === 1 || tally[keys[0]] > tally[keys[1]];
+        const worst = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+        const under50 = rows.filter(r => r.pct < 50).length;
+        return { ...base, title: 'Weakest question per class, last marked set', rows,
+          tiles: [tile('Classes', rows.length, 'With marked work'), tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
+            uniqueTop
+              ? tile('Most common', this.STEMS[keys[0]].id, this.STEMS[keys[0]].text)
+              : tile('Weak points', keys.length + ' questions', 'No single common gap')],
+          note: uniqueTop
+            ? this.STEMS[keys[0]].text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
+            : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + ' classes fall below 50% on theirs' };
+      }
+      const g = this.gridFor(k, 1);
+      const p = this.papersFor(k)[1];
+      const min = Math.min.apply(null, g.qpct);
+      const max = Math.max.apply(null, g.qpct);
+      const qi = g.qpct.indexOf(min);
+      return { ...base, type: 'cols', title: k.code + ' — ' + p.title,
+        cols: this.colsFrom(this.STEMS.map((q, i) => ({ label: q.id, value: g.qpct[i] + '%', raw: g.qpct[i], flag: g.qpct[i] === min })), 100),
+        tiles: [tile('Paper mean', mx(k).colMean[1] + '%', g.submitted + ' of ' + k.n + ' submitted'),
+          tile('Lowest', this.STEMS[qi].id + ' · ' + min + '%', this.STEMS[qi].text), tile('Highest', max + '%', 'Best answered question')],
+        note: 'Reteach ' + this.STEMS[qi].text.toLowerCase() + ' — ' + min + '% of the class got it' };
+    }
+
+    if (kind === 'engagement') {
+      if (all) {
+        const totals = { today: 0, week: 0, stale: 0 };
+        const stacks = live.map(c => {
+          const b = this.bucketsOf(this.rosterFor(c));
+          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;
+          const t = c.n || 1;
+          return { label: c.code, sub: c.ks, right: b.today + ' today · ' + b.stale + ' cold',
+            segs: [{ pct: Math.round((b.today / t) * 100), fill: 'var(--ks3-ok)' }, { pct: Math.round((b.week / t) * 100), fill: 'var(--st-hatch-b)' }, { pct: Math.round((b.stale / t) * 100), fill: 'var(--st-rule-strong)' }] };
+        });
+        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,
+          legend: [{ label: 'Today', fill: 'var(--ks3-ok)' }, { label: 'This week', fill: 'var(--st-hatch-b)' }, { label: '2+ weeks', fill: 'var(--st-rule-strong)' }],
+          tiles: [tile('Active today', totals.today, 'Across ' + live.length + ' classes'), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],
+          note: totals.stale + ' students have not opened anything for two weeks or more' };
+      }
+      const rows = this.rosterFor(k);
+      const b = this.bucketsOf(rows);
+      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);
+      return { ...base, type: 'cols', title: k.code + ' — last seen',
+        cols: this.colsFrom([{ label: 'Today', value: String(b.today), raw: b.today }, { label: 'This week', value: String(b.week), raw: b.week }, { label: '2+ weeks', value: String(b.stale), raw: b.stale, flag: b.stale > 0 }]),
+        tiles: [tile('Students', k.n, 'On the roster'), tile('Active today', b.today, ''), tile('2+ weeks', b.stale, cold.length ? 'Worth chasing' : 'None')],
+        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Everyone has opened something this week' };
+    }
+
+    if (all) {
+      const rows = live.map(c => {
+        const m = mx(c);
+        const pct = c.n ? Math.round((m.colSub[0] / c.n) * 100) : 0;
+        return { label: c.code, sub: c.ks, value: m.colSub[0] + '/' + c.n, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+      });
+      const subs = live.reduce((a, c) => a + mx(c).colSub[0], 0);
+      const seats = live.reduce((a, c) => a + c.n, 0);
+      const done = live.filter(c => mx(c).colSub[0] === c.n).length;
+      const low = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+      return { ...base, title: 'Submissions this week', rows,
+        tiles: [tile('Submitted', subs + '/' + seats, 'Across ' + live.length + ' classes'), tile('Outstanding', seats - subs, 'Students yet to submit'), tile('Everyone in', done + '/' + live.length, 'Classes complete')],
+        note: low ? 'Lowest return: ' + low.label + ' at ' + low.pct + '% (' + low.value + ')' : '' };
+    }
+    const m = mx(k);
+    const rows = this.papersFor(k).map(p => {
+      const pct = k.n ? Math.round((m.colSub[p.idx] / k.n) * 100) : 0;
+      return { label: p.title, sub: (p.when === 'upcoming' ? 'Open · due ' + p.due.replace('Due ', '') : 'Marked · due ' + p.due), value: m.colSub[p.idx] + '/' + k.n, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+    });
+    const lowP = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+    return { ...base, title: k.code + ' — submissions by assignment', rows,
+      tiles: [tile('This week', m.colSub[0] + '/' + k.n, 'Open assignment'), tile('Outstanding', k.n - m.colSub[0], 'Students yet to submit'), tile('Assignments', rows.length, 'Set this term')],
+      note: lowP ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };
+  }
+
+  paper() {
+    const list = this.papersFor(this.klass());
+    return list.filter(p => p.id === this.state.paperId)[0] || list[1] || list[0] || null;
+  }
+  student() {
+    const rows = this.rosterFor(this.klass());
+    return rows.filter(r => r.id === this.state.studentId)[0] || rows[0] || null;
+  }
+  meanOf(k) { return this.matrixFor(k).classMean; }
+  cellStyle(v) {
+    if (v === 1) return { w: 9, h: 9, r: '50%', bg: 'var(--ks3-ok)', bd: 'none' };
+    if (v === 0) return { w: 9, h: 9, r: '50%', bg: 'transparent', bd: '1.5px solid var(--st-rule-strong)' };
+    return { w: 9, h: 2, r: '1px', bg: 'var(--st-rule-strong)', bd: 'none' };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const meter = (this.props.cardMeter ?? 'bar') === 'bar';
+    const hideEmpty = this.props.hideEmptyClasses ?? false;
+    const compact = (this.props.density ?? 'comfortable') === 'compact';
+    const teacher = this.props.teacherName ?? 'Ayomide';
+
+    const k = this.klass();
+    const kRoster = this.rosterFor(k);
+    const kPapers = this.papersFor(k);
+    const kMx = this.matrixFor(k);
+    const st = this.student();
+    const pp = this.paper();
+    const totalStudents = this.CLASSES.reduce((a, c) => a + c.n, 0);
+    const totalSubs = this.CLASSES.reduce((a, c) => a + c.week[0], 0);
+    const liveClasses = this.CLASSES.filter(c => c.state === 'live');
+
+    const pill = (on) => on
+      ? { bg: 'var(--st-paper)', fg: 'var(--st-ink)', bc: 'var(--st-btn-border)' }
+      : { bg: 'transparent', fg: 'var(--st-caption)', bc: 'transparent' };
+
+    let list = this.CLASSES.filter(c => s.ks === 'All' || c.ks === s.ks);
+    if (hideEmpty) list = list.filter(c => c.n > 0);
+    if (s.sort === 'activity') {
+      const rank = { live: 1, nowork: 0, empty: 0 };
+      list = list.slice().sort((a, b) => {
+        const ga = a.state === 'live' ? (a.week[1] - a.week[0]) : 999;
+        const gb = b.state === 'live' ? (b.week[1] - b.week[0]) : 999;
+        return gb - ga;
+      });
+    }
+
+    const cards = list.map(c => ({
+      code: c.code,
+      subject: c.subject,
+      dots: this.dotsFor(c.subject),
+      meta: 'Year ' + c.year + ' · ' + c.ks + ' · 2026–27',
+      live: c.state === 'live',
+      noWork: c.state === 'nowork',
+      empty: c.state === 'empty',
+      weekLabel: c.week[0] + '/' + c.week[1],
+      weekSub: c.week[0] === c.week[1]
+        ? 'Everyone in · ' + c.n + ' students'
+        : (c.week[1] - c.week[0]) + ' still to submit · ' + c.n + ' students',
+      pct: c.week[1] ? Math.round((c.week[0] / c.week[1]) * 100) : 0,
+      emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',
+      activity: c.state === 'empty' ? c.last : 'Last activity ' + c.last,
+      open: () => c.n > 0
+        ? this.openClass({ classId: c.id })
+        : this.setState({ screen: 'import', importStep: 1 }),
+      act: (e) => {
+        e.stopPropagation();
+        if (c.state === 'empty') this.setState({ screen: 'import', importStep: 1 });
+        else this.setState({ modal: 'setwork', swStep: 1, swClasses: [c.id] });
+      }
+    }));
+
+    /* Which week the class screen is scoped to: 0 is the open assignment,
+       1+ are the weeks behind it. Every figure below reads the same matrix
+       column, so a past week can't disagree with the term view. */
+    const wi = this.weekIdxFor(k);
+    const wPast = wi > 0;
+    const weekTabs = kPapers.slice().reverse().map((p, n) => {
+      const i = p.idx;
+      const on = i === wi;
+      return {
+        idx: String(i),
+        range: p.range,
+        on,
+        now: i === 0,
+        pick: () => this.pickWeek(i),
+        bg: on ? 'var(--st-num-well)' : 'transparent',
+        ring: on ? 'inset 0 0 0 1.5px var(--st-accent)' : 'none',
+        divider: n === 0 || on ? 'transparent' : 'var(--st-rule-soft)',
+        dateColor: on ? 'var(--st-ink)' : 'var(--st-muted)'
+      };
+    });
+    const backOff = wi >= kPapers.length - 1;
+    const fwdOff = wi <= 0;
+    const wPaper = kPapers[wi];
+    const wMean = kMx.colMean[wi];
+    const wLate = Math.max(0, kMx.colSub[wi] - kMx.colOnTime[wi]);
+    const kTermMean = this.meanOf(k);
+    const wGap = wMean != null && kTermMean != null ? wMean - kTermMean : null;
+    const weekNote = !kPapers.length ? ''
+      : (wPast
+        ? 'Week of ' + wPaper.range + ' · ' + wPaper.title + ' · marked, due ' + wPaper.due
+        : 'Week of ' + wPaper.range + ' · ' + wPaper.title + ' · open, due ' + wPaper.due.replace(/^Due /, ''));
+
+    const roster = kRoster.map(r => {
+      const mrow = kMx.byId[r.id];
+      const sc = mrow ? mrow.scores[wi] : null;
+      const late = !!(mrow && mrow.late[wi]);
+      const scPct = sc == null ? 0 : Math.round((sc / 8) * 100);
+      return {
+        name: r.name,
+        initials: this.initials(r.name),
+        hue: this.hueFor(r.name),
+        hasWork: kPapers.length > 0,
+        pct: wPast ? scPct : (r.inWeek ? 100 : 0),
+        weekLabel: kPapers.length === 0 ? 'No work set'
+          : (wPast
+            ? (sc == null ? 'Not submitted' : scPct + '% · ' + (late ? 'late' : 'on time'))
+            : (r.inWeek ? '1/1 on time' : '0/1 in')),
+        avg: r.avg == null ? '—' : r.avg + '%',
+        last: r.last,
+        flag: r.flag,
+        open: () => this.setState({ screen: 'student', studentId: r.id })
+      };
+    });
+
+    const paperRow = (p) => ({
+      title: p.title, due: p.due, sub: p.sub, mean: p.mean, sel: p.idx === wi,
+      open: () => this.setState({ screen: 'marking', paperId: p.id })
+    });
+
+    const flagged = kRoster.filter(r => r.flag).length;
+    const kMean = this.meanOf(k);
+    const upcomingPaper = kPapers.filter(p => p.when === 'upcoming')[0];
+
+    const pGrid = pp ? this.gridFor(k, pp.idx) : null;
+    const questions = pGrid ? this.STEMS.map((q, qi) => ({ id: q.id, text: q.text, pct: pGrid.qpct[qi] })) : [];
+    const worst = questions.length ? questions.reduce((a, q) => (q.pct < a.pct ? q : a), questions[0]) : null;
+
+    const grid = pGrid ? pGrid.rows.slice(0, 10).map(r => ({
+      name: r.name, initials: r.initials, hue: r.hue,
+      cells: r.raw.map(v => this.cellStyle(v)),
+      score: r.score,
+      open: () => this.setState({ screen: 'student', studentId: r.id })
+    })) : [];
+
+    const digestRows = this.CLASSES.map(c => {
+      const live = c.state === 'live';
+      const m = live ? this.meanOf(c) : null;
+      const fl = live ? this.rosterFor(c).filter(r => r.flag).length : 0;
+      return {
+        code: c.code, ks: c.ks,
+        sub: live ? c.week[0] + '/' + c.week[1] : '—',
+        mean: m == null ? '—' : m + '%',
+        ontime: live && this.matrixFor(c).markedPct != null ? this.matrixFor(c).markedPct + '%' : '—',
+        needs: c.state === 'empty'
+          ? 'Roster not imported'
+          : (c.state === 'nowork' ? 'No work set for two weeks' : (fl ? (fl === 1 ? '1 student to chase' : fl + ' students to chase') : 'Nothing outstanding')),
+        open: () => c.n > 0 ? this.openClass({ classId: c.id, digestScope: 'all' }) : this.ping('No students in ' + c.code + ' yet')
+      };
+    });
+
+    const chartKind = s.chartKind || 'submissions';
+    const chartScope = s.chartScope || 'all';
+    const chart = this.chartFor(chartKind, chartScope);
+
+    const isClassReport = s.digestScope === 'class';
+    const kFlagged = kRoster.filter(r => r.flag).length;
+    const classReportRows = kPapers.map(p => {
+      const missing = k.n - kMx.colSub[p.idx];
+      return {
+        code: p.title,
+        ks: p.when === 'upcoming' ? 'Open' : 'Marked',
+        sub: p.sub,
+        mean: p.mean,
+        ontime: p.when === 'upcoming' ? '—' : String(kMx.colOnTime[p.idx]),
+        needs: missing === 0
+          ? 'Everyone submitted'
+          : (p.when === 'upcoming'
+            ? (missing === 1 ? '1 still to submit' : missing + ' still to submit')
+            : (missing === 1 ? '1 never submitted' : missing + ' never submitted')),
+        open: () => this.setState({ screen: 'marking', paperId: p.id })
+      };
+    });
+
+    const pool = [];
+    this.POOL_CLASSES.forEach(id => {
+      const kk = this.klassById(id);
+      this.rosterFor(kk).slice(0, 3).forEach(r => {
+        pool.push({ name: r.name, klass: kk.code, classId: kk.id, id: r.id, avg: r.avg == null ? '—' : r.avg + '%' });
+      });
+    });
+    const q = String(s.search || '').toLowerCase();
+    const results = pool.filter(p => !q || p.name.toLowerCase().indexOf(q) > -1).slice(0, 12).map(p => ({
+      name: p.name, klass: p.klass, avg: p.avg,
+      initials: this.initials(p.name), hue: this.hueFor(p.name),
+      open: () => this.setState({ screen: 'student', classId: p.classId, studentId: p.id, modal: null })
+    }));
+
+    const swSel = s.swClasses;
+    const swStudents = this.CLASSES.filter(c => swSel.indexOf(c.id) > -1).reduce((a, c) => a + c.n, 0);
+    const topic = this.TOPICS.filter(t => t.id === s.swTopic)[0] || this.TOPICS[0];
+
+    const stRow = st ? kMx.byId[st.id] : null;
+    const stHistory = st && kPapers.length ? kPapers.map((p, i) => {
+      const open = i === 0;
+      const sc = stRow ? stRow.scores[i] : null;
+      const late = !open && sc != null && stRow.late[i];
+      const pct = sc == null ? null : Math.round((sc / 8) * 100);
+      const tone = open ? 'neutral' : (sc == null || late ? 'warn' : 'ok');
+      return {
+        marked: !open && sc != null,
+        missing: !open && sc == null,
+        late: late,
+        pct: open ? null : pct,
+        title: p.title,
+        due: p.due.replace('Due ', ''),
+        submitted: open ? (sc != null ? st.last : 'Not yet') : (sc == null ? '—' : (late ? p.lateShort : p.dueShort)),
+        score: open || sc == null ? '—' : sc + '/8 · ' + pct + '%',
+        status: open ? (sc != null ? 'In progress' : 'Nothing in') : (sc == null ? 'Nothing in' : (late ? 'Late' : 'On time')),
+        stFg: tone === 'neutral' ? 'var(--st-caption)' : (tone === 'warn' ? 'var(--st-accent-text)' : 'var(--ks3-ok-text)'),
+        stBg: tone === 'neutral' ? 'var(--st-num-well)' : (tone === 'warn' ? 'var(--st-chip-tint)' : 'var(--ks3-ok-tint)'),
+        stBc: tone === 'neutral' ? 'var(--st-rule-soft)' : (tone === 'warn' ? 'var(--st-chip-tint-border)' : 'var(--ks3-ok-tint)'),
+        stDot: tone === 'neutral' ? 'var(--st-rule-strong)' : (tone === 'warn' ? 'var(--st-accent)' : 'var(--ks3-ok)'),
+        stDotR: tone === 'warn' ? '1px' : '50%',
+        open: () => this.setState({ screen: 'marking', paperId: p.id })
+      };
+    }) : [];
+
+    const stMarked = stHistory.filter(h => h.marked);
+    const stOnTime = stMarked.filter(h => !h.late).length;
+    const stLate = stMarked.filter(h => h.late).length;
+    const stMissing = stHistory.filter(h => h.missing).length;
+    const stTimeSub = (stLate === 0 && stMissing === 0)
+      ? 'Every deadline met'
+      : [stLate ? (stLate === 1 ? '1 late' : stLate + ' late') : null, stMissing ? stMissing + ' not submitted' : null].filter(x => x).join(' · ');
+    const stAvg = stMarked.length ? Math.round(stMarked.reduce((a, h) => a + h.pct, 0) / stMarked.length) : null;
+    const dgMarkedSub = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedSub, 0);
+    const dgOnTime = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedOnTime, 0);
+    const dgLate = Math.max(0, dgMarkedSub - dgOnTime);
+    const dgOnPct = dgMarkedSub ? Math.round((dgOnTime / dgMarkedSub) * 100) : 0;
+
+    return {
+      teacher,
+      rowPad: compact ? '10px 18px' : '13px 18px',
+      showMeter: meter,
+      crumb: s.screen === 'classes' ? 'My classes' : (s.screen === 'import' ? 'Import' : (s.screen === 'digest' ? 'Digest' : (s.screen === 'insights' ? 'Insights' : k.code))),
+      isClasses: s.screen === 'classes',
+      isClass: s.screen === 'class',
+      isStudent: s.screen === 'student',
+      isMarking: s.screen === 'marking',
+      isDigest: s.screen === 'digest',
+      isImport: s.screen === 'import',
+      classLine: teacher + ' · ' + this.CLASSES.length + ' classes · ' + totalStudents + ' students',
+      shownLine: cards.length + ' shown',
+      ksTabs: ['All', 'KS3', 'KS4'].map(t => ({ label: t, ...pill(s.ks === t), pick: () => this.setState({ ks: t }) })),
+      sortTabs: [{ k: 'code', l: 'Class code' }, { k: 'activity', l: 'Most missing' }].map(o => ({
+        label: o.l,
+        fg: s.sort === o.k ? 'var(--st-ink)' : 'var(--st-caption)',
+        bc: s.sort === o.k ? 'var(--st-btn-border)' : 'transparent',
+        pick: () => this.setState({ sort: o.k })
+      })),
+      cards,
+      klass: {
+        code: k.code,
+        subject: k.subject,
+        dots: this.dotsFor(k.subject),
+        longMeta: 'Year ' + k.year + ' · ' + k.ks + ' · 2026–27 · ' + k.n + ' students · ' + (kPapers.length ? kPapers.length + ' assignments' : 'no assignments'),
+        rosterLine: k.n + ' active members',
+        paperLine: kPapers.length ? kPapers.length + ' assignments' : 'None set',
+        hasWork: kPapers.length > 0,
+        noWork: kPapers.length === 0,
+        noWorkLine: k.n + ' students are enrolled and waiting. Last activity ' + k.last + '.',
+        tiles: kPapers.length ? (wPast ? [
+          { label: 'Submitted', value: kMx.colSub[wi] + '/' + k.n, sub: wPaper.title },
+          { label: 'Week mean', value: wMean == null ? '—' : wMean + '%', sub: wGap == null ? 'Nothing marked' : (wGap === 0 ? 'Level with the term average' : Math.abs(wGap) + (Math.abs(wGap) === 1 ? ' point ' : ' points ') + (wGap > 0 ? 'above' : 'below') + ' the term average') },
+          { label: 'On time', value: kMx.colSub[wi] ? Math.round((kMx.colOnTime[wi] / kMx.colSub[wi]) * 100) + '%' : '—', sub: wLate + ' late of ' + kMx.colSub[wi] + ' submitted' },
+          { label: 'Not submitted', value: String(k.n - kMx.colSub[wi]), sub: 'Of ' + k.n + ' students' }
+        ] : [
+          { label: 'This week', value: kMx.colSub[0] + '/' + k.n, sub: upcomingPaper ? upcomingPaper.title : '' },
+          { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + (kPapers.length - 1) + ' marked assignments' },
+          { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: Math.max(0, kMx.markedSub - kMx.markedOnTime) + ' late of ' + kMx.markedSub + ' marked' },
+          { label: 'Needs a look', value: String(flagged), sub: flagged ? 'Nothing in for two weeks' : 'Everyone accounted for' }
+        ]) : [
+          { label: 'This week', value: '—', sub: 'No work set' },
+          { label: 'Class mean', value: '—', sub: 'Nothing marked yet' },
+          { label: 'Students', value: String(k.n), sub: 'Roster imported' },
+          { label: 'Last activity', value: k.last, sub: 'Revision, not homework' }
+        ]
+      },
+      roster,
+      weekTabs,
+      weekNote,
+      weekBack: () => { if (!backOff) this.pickWeek(wi + 1); },
+      weekFwd: () => { if (!fwdOff) this.pickWeek(wi - 1); },
+      weekBackColor: backOff ? 'var(--st-rule-strong)' : 'var(--st-ink)',
+      weekFwdColor: fwdOff ? 'var(--st-rule-strong)' : 'var(--st-ink)',
+      weekBackCursor: backOff ? 'default' : 'pointer',
+      weekFwdCursor: fwdOff ? 'default' : 'pointer',
+      rosterWeekCol: !kPapers.length ? 'This week' : (wPast ? wPaper.range : 'This week'),
+      upcomingLabel: 'Upcoming ' + kPapers.filter(p => p.when === 'upcoming').length,
+      markedLabel: 'Marked ' + kPapers.filter(p => p.when === 'marked').length,
+      upcoming: kPapers.filter(p => p.when === 'upcoming').map(paperRow),
+      marked: kPapers.filter(p => p.when === 'marked').map(paperRow),
+      templates: this.TEMPLATES.map(t => ({
+        label: t.label,
+        fg: s.boTpl === t.id ? 'var(--st-accent-text)' : 'var(--st-ink)',
+        bg: s.boTpl === t.id ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+        bc: s.boTpl === t.id ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+        pick: () => this.setState({ boTpl: t.id })
+      })),
+      feed: [
+        {
+          name: kRoster.length ? kRoster[Math.min(9, kRoster.length - 1)].name : '—',
+          when: '2 days ago',
+          template: 'Top of the class this week',
+          body: 'Highest mean in ' + k.code + ' on the last set — and showed working on every question.'
+        },
+        {
+          name: kRoster.length ? kRoster[Math.min(12, kRoster.length - 1)].name : '—',
+          when: '1 week ago',
+          template: 'Bounced back strong',
+          body: 'Went from 38% to 74% after one reteach of the lowest-scoring question.'
+        }
+      ].map(f => ({ ...f, initials: this.initials(f.name), hue: this.hueFor(f.name) })),
+      noteCount: (s.note || '').length + ' / 500',
+      backToClass: 'Back to ' + k.code,
+      student: {
+        name: st ? st.name : '—',
+        initials: st ? this.initials(st.name) : '',
+        hue: st ? this.hueFor(st.name) : 'var(--st-rule-strong)',
+        meta: k.code + ' · ' + k.subject + ' · Year ' + k.year + ' · ' + k.ks,
+        subLine: stHistory.length + ' assignments',
+        tiles: [
+          { label: 'Submissions', value: String(stMarked.length), sub: 'Of ' + kPapers.length + ' set this term' },
+          { label: 'On time', value: String(stOnTime), sub: stTimeSub },
+          { label: 'Avg score', value: stAvg == null ? '—' : stAvg + '%', sub: 'Class mean ' + (kMean == null ? '—' : kMean + '%') },
+          { label: 'Last active', value: st ? st.last : '—', sub: stHistory[0] && stHistory[0].status === 'In progress' ? stHistory[0].title : k.code + ' · ' + k.subject }
+        ],
+        history: stHistory
+      },
+      paper: pp ? {
+        title: pp.title,
+        eyebrow: k.code + ' · Set ' + pp.set + ' · Due ' + pp.due.replace('Due ', ''),
+        tiles: [
+          { label: 'Submitted', value: pp.sub, sub: pp.when === 'upcoming' ? 'Still open' : 'Marked automatically' },
+          { label: 'Class mean', value: pp.mean, sub: '8 questions, 1 mark each' },
+          { label: 'On time', value: pp.when === 'upcoming' ? '—' : String(kMx.colOnTime[pp.idx]), sub: pp.when === 'upcoming' ? 'Not due yet' : 'Late submissions still marked' },
+          { label: 'Lowest', value: worst ? worst.id + ' · ' + worst.pct + '%' : '—', sub: worst ? worst.text : '' }
+        ],
+        questions: questions.map(qq => ({
+          id: qq.id, text: qq.text, pct: qq.pct, label: qq.pct + '%',
+          worst: worst && qq.id === worst.id,
+          fill: qq.pct < 50 ? 'var(--st-accent)' : (qq.pct < 70 ? 'var(--st-hatch-b)' : 'var(--ks3-ok)')
+        })),
+        qids: questions.map(qq => ({ id: qq.id })),
+        grid
+      } : { title: '—', eyebrow: k.code, tiles: [], questions: [], qids: [], grid: [] },
+      isInsights: s.screen === 'insights',
+      insSub: chartScope === 'all'
+        ? liveClasses.length + ' active classes · ' + totalStudents + ' students on roll'
+        : k.code + ' · ' + k.n + ' students · ' + kPapers.length + ' assignments',
+      insScopeTabs: [{ id: 'all', label: 'All classes' }, { id: k.id, label: k.code }].map(o => ({
+        label: o.label,
+        ...(chartScope === o.id
+          ? { bg: 'var(--st-paper)', fg: 'var(--st-ink)', bc: 'var(--st-btn-border)' }
+          : { bg: 'transparent', fg: 'var(--st-caption)', bc: 'transparent' }),
+        pick: () => this.setState({ chartScope: o.id })
+      })),
+      insChips: this.CHART_KINDS.map(o => ({
+        label: o.label,
+        fg: chartKind === o.id ? 'var(--st-paper)' : 'var(--st-ink)',
+        bg: chartKind === o.id ? 'var(--st-accent-text)' : 'var(--st-paper)',
+        bc: chartKind === o.id ? 'var(--st-accent-text)' : 'var(--st-btn-border)',
+        pick: () => this.setState({ chartKind: o.id })
+      })),
+      chart: {
+        ...chart,
+        isBars: chart.type === 'bars',
+        isCols: chart.type === 'cols',
+        isStack: chart.type === 'stack',
+        hasLegend: chart.legend.length > 0,
+        scopeLabel: chartScope === 'all' ? 'All classes' : k.code
+      },
+      openInsights: () => this.setState({
+        screen: 'insights',
+        insFrom: s.screen === 'class' ? 'class' : 'classes',
+        chartScope: s.screen === 'class' ? k.id : chartScope
+      }),
+      goBackFromInsights: () => this.setState({ screen: s.insFrom || 'classes' }, () => { if ((s.insFrom || 'classes') === 'class') this.snapWeekRail(); }),
+      digestTitle: isClassReport ? k.code + ' report' : 'Weekly digest',
+      digestTableTitle: isClassReport ? 'By assignment' : 'By class',
+      digestColTitle: isClassReport ? 'Assignment' : 'Class',
+      digestSub: isClassReport
+        ? k.n + ' students · ' + kPapers.length + ' assignments this term'
+        : this.CLASSES.length + ' classes · ' + totalStudents + ' students · ' + totalSubs + ' submissions',
+      digestTiles: isClassReport ? [
+        { label: 'Submissions', value: kMx.colSub[0] + '/' + k.n, sub: 'This week' },
+        { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + Math.max(0, kPapers.length - 1) + ' marked assignments' },
+        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: Math.max(0, kMx.markedSub - kMx.markedOnTime) + ' late of ' + kMx.markedSub + ' marked' },
+        { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in for two weeks' : 'Everyone accounted for' }
+      ] : [
+        { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + ' active classes' },
+        { label: 'Mean score', value: Math.round(liveClasses.reduce((a, c) => a + (this.meanOf(c) || 0), 0) / liveClasses.length) + '%', sub: 'Mean of ' + liveClasses.length + ' class means' },
+        { label: 'On time', value: dgOnPct + '%', sub: dgLate + ' late of ' + dgMarkedSub + ' marked submissions' },
+        { label: 'Needs a look', value: String(liveClasses.reduce((a, c) => a + this.rosterFor(c).filter(r => r.flag).length, 0)), sub: 'Students with nothing in' }
+      ],
+      digestRows: isClassReport ? classReportRows : digestRows,
+      importSteps: [1, 2, 3].map(n => {
+        const on = s.importStep === n;
+        const done = s.importStep > n;
+        return {
+          n: String(n), label: ['Upload', 'Map columns', 'Confirm'][n - 1],
+          bg: on ? 'var(--st-paper)' : 'transparent',
+          bc: on ? 'var(--st-edge)' : 'var(--st-rule-soft)',
+          fg: on || done ? 'var(--st-ink)' : 'var(--st-caption)',
+          numBg: on ? 'var(--st-accent-text)' : 'var(--st-num-well)',
+          numFg: on ? 'var(--st-paper)' : 'var(--st-caption)'
+        };
+      }),
+      imp1: s.importStep === 1,
+      imp2: s.importStep === 2,
+      imp3: s.importStep === 3,
+      mapRows: [
+        { col: 'first_name', field: 'First name', note: 'Matched', noteFg: 'var(--ks3-ok-text)' },
+        { col: 'surname', field: 'Last name', note: 'Matched', noteFg: 'var(--ks3-ok-text)' },
+        { col: 'school_email', field: 'Email', note: 'Matched', noteFg: 'var(--ks3-ok-text)' },
+        { col: 'yr', field: 'Year group', note: 'Guessed from header', noteFg: 'var(--st-muted)' },
+        { col: 'form', field: 'Ignored', note: 'Not used by Mr Badmus AI', noteFg: 'var(--st-ghost)' }
+      ],
+      previewRows: [
+        { name: 'Aisha Bello', email: 'a.bello@school.uk', klass: '8r/Sc4', status: 'New', stFg: 'var(--ks3-ok-text)' },
+        { name: 'Tom Okri', email: 't.okri@school.uk', klass: '8r/Sc4', status: 'New', stFg: 'var(--ks3-ok-text)' },
+        { name: 'Daisy Fairhurst', email: 'd.fairhurst@school.uk', klass: '8r/Sc1', status: 'Already enrolled', stFg: 'var(--st-muted)' },
+        { name: 'J. Smith', email: 'missing', klass: '8r/Sc4', status: 'Email missing', stFg: 'var(--st-accent-text)' }
+      ],
+      setWorkOpen: s.modal === 'setwork',
+      bulkOpen: s.modal === 'bulk',
+      searchOpen: s.modal === 'search',
+      sw1: s.swStep === 1, sw2: s.swStep === 2, sw3: s.swStep === 3,
+      swEyebrow: 'Step ' + s.swStep + ' of 3 · ' + ['Topic', 'Detail', 'Classes'][s.swStep - 1],
+      topics: this.TOPICS.map(t => ({
+        name: t.name, unit: t.unit, tag: t.tag,
+        bg: s.swTopic === t.id ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+        bc: s.swTopic === t.id ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+        tagFg: s.swTopic === t.id ? 'var(--st-accent-text)' : 'var(--st-ghost)',
+        pick: () => this.setState({ swTopic: t.id })
+      })),
+      swCounts: [6, 10, 15].map(n => ({
+        label: n + ' Q',
+        fg: s.swQ === n ? 'var(--st-accent-text)' : 'var(--st-ink)',
+        bg: s.swQ === n ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+        bc: s.swQ === n ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+        pick: () => this.setState({ swQ: n })
+      })),
+      swDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map(d => ({
+        label: d,
+        fg: s.swDay === d ? 'var(--st-accent-text)' : 'var(--st-ink)',
+        bg: s.swDay === d ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+        bc: s.swDay === d ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+        pick: () => this.setState({ swDay: d })
+      })),
+      swRelease: [{ k: 'now', l: 'Release now' }, { k: 'lesson', l: 'Release next lesson' }].map(o => ({
+        label: o.l,
+        fg: s.swRel === o.k ? 'var(--st-accent-text)' : 'var(--st-ink)',
+        bg: s.swRel === o.k ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+        bc: s.swRel === o.k ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+        pick: () => this.setState({ swRel: o.k })
+      })),
+      swClassList: this.CLASSES.filter(c => c.n > 0).map(c => {
+        const on = swSel.indexOf(c.id) > -1;
+        return {
+          code: c.code, sub: c.subject + ' · ' + c.n + ' students',
+          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+          boxBg: on ? 'var(--st-accent-text)' : 'transparent',
+          boxBc: on ? 'var(--st-accent-text)' : 'var(--st-rule-strong)',
+          toggle: () => this.setState({ swClasses: on ? swSel.filter(x => x !== c.id) : swSel.concat([c.id]) })
+        };
+      }),
+      swSummary: s.swStep === 3
+        ? swSel.length + ' classes · ' + swStudents + ' students'
+        : topic.name + ' · ' + s.swQ + ' questions · due ' + s.swDay,
+      swBackLabel: s.swStep === 1 ? 'Cancel' : 'Back',
+      swNextLabel: s.swStep === 3 ? 'Set work' : 'Next',
+      swBack: () => s.swStep === 1 ? this.setState({ modal: null }) : this.setState({ swStep: s.swStep - 1 }),
+      swNext: () => {
+        if (s.swStep < 3) return this.setState({ swStep: s.swStep + 1 });
+        this.setState({ modal: null, swStep: 1 });
+        this.ping(topic.name + ' set for ' + swSel.length + ' classes · ' + swStudents + ' students');
+      },
+      bulkStudents: kRoster.map(r => {
+        const on = s.boSel.indexOf(r.id) > -1;
+        return {
+          name: r.name,
+          fg: on ? 'var(--st-accent-text)' : 'var(--st-ink)',
+          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+          dot: on ? 'var(--st-accent)' : this.hueFor(r.name),
+          toggle: () => this.setState({ boSel: on ? s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })
+        };
+      }),
+      bulkSummary: s.boSel.length + ' selected · ' + (this.TEMPLATES.filter(t => t.id === s.boTpl)[0] || { label: 'no template' }).label,
+      bulkTop: () => this.setState({ boSel: kRoster.filter(r => r.inWeek).map(r => r.id) }),
+      sendBulk: () => {
+        const n = s.boSel.length;
+        this.setState({ modal: null, boSel: [] });
+        this.ping(n ? 'Shoutout sent to ' + n + ' students' : 'Pick at least one student');
+      },
+      searchResults: results,
+      searchFoot: results.length + ' of ' + pool.length + ' students · type to narrow',
+      setSearch: (e) => this.setState({ search: e.target.value }),
+      pickRecipient: (e) => this.setState({ recipient: e.target.value }),
+      setNote: (e) => this.setState({ note: e.target.value }),
+      sendShoutout: () => this.ping(s.recipient ? 'Shoutout sent to ' + s.recipient : 'Pick a student first'),
+      hasToast: !!s.toast,
+      toast: s.toast,
+      goClasses: () => this.setState({ screen: 'classes', modal: null }),
+      goClass: () => this.setState({ screen: 'class', modal: null }, () => this.snapWeekRail()),
+      goDigest: () => this.setState({ screen: 'digest', digestScope: 'all' }),
+      goReport: () => this.setState({ screen: 'digest', digestScope: 'class' }),
+      goImport: () => this.setState({ screen: 'import', importStep: 1 }),
+      goBackFromDigest: () => this.setState({ screen: s.digestScope === 'class' ? 'class' : 'classes' }, () => { if (s.digestScope === 'class') this.snapWeekRail(); }),
+      doPrint: () => window.print(),
+      openSearch: () => this.setState({ modal: 'search', search: '' }),
+      openSetWork: () => this.setState({ modal: 'setwork', swStep: 1, swClasses: [k.id] }),
+      openBulk: () => this.setState({ modal: 'bulk' }),
+      closeModal: () => this.setState({ modal: null }),
+      stop: (e) => e.stopPropagation(),
+      impNext: () => this.setState({ importStep: Math.min(3, s.importStep + 1) }),
+      impBack: () => this.setState({ importStep: Math.max(1, s.importStep - 1) }),
+      impDone: () => { this.setState({ screen: 'classes', importStep: 1 }); this.ping('26 students imported into 8r/Sc4'); },
+      sampleCsv: () => this.ping('Template CSV downloaded'),
+      pastYears: () => this.ping('2025–26 is read-only')
+    };
+  }
+}
+</script>
+</body>
+</html>
