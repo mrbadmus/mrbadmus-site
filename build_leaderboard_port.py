@@ -348,6 +348,63 @@ rule("R22", "`density`, `topCount`, `showPodium` and `showWeekTops` are "
       "four dead switches; shipping them as props with no control is what "
       "Design's own `?? ` defaults already do."),
 
+rule("R31", "The body container's `max-width: 1180px` is removed. The "
+            "gutters Design drew (`padding: 30px 28px 96px`) and her "
+            "`margin: 0 auto` both stay.",
+      "MIDE'S OVERRIDE OF DESIGN, RULED 25 AUG 2026 after using the live "
+      "page signed in as WolfBeam — the same class of ruling as the nav "
+      "(R1), and recorded the same way. His words: \"fill the whole page, "
+      "or at least leave very little space by the two sides.\" On a wide "
+      "monitor Design's cap left the board floating in the middle of the "
+      "screen with the table columns squeezed. Everything inside is grid or "
+      "flex — the podium is a three-column grid, the stats a four-column "
+      "grid, the rail a flex row that scrolls, the table rows a grid keyed "
+      "off `grid` — so all four stretch on their own once the cap is gone. "
+      "⚠️ THE CAP IS REMOVED AND NOTHING IS ADDED: no new max-width, no new "
+      "breakpoint, no re-tuned column list. `margin: 0 auto` is kept "
+      "deliberately, so if anyone ever reinstates a cap the block still "
+      "centres rather than sticking to the left edge."),
+
+rule("R32", "When a podium student is the viewer, Design's OWN `YOU` chip "
+            "is cloned out of her table row and inserted after the podium "
+            "name, guarded by that place's `isYou`. Three insertions, one "
+            "per podium slot.",
+      "MIDE'S RULING, 25 AUG 2026, FROM USING THE PAGE: he was rank 2 and "
+      "nothing on the board said so. Design's chip exists only on table "
+      "rows and the pinned row — and the pinned row only renders when the "
+      "viewer is OUTSIDE the top ten — so a viewer who reaches the podium "
+      "loses their marker at exactly the moment it is most worth having. "
+      "⚠️ THE CHIP IS CLONED FROM HER TREE, NOT RETYPED. It is a deep copy "
+      "of the `sc-if r.isYou` subtree with the expression rewritten to "
+      "`p1/p2/p3.isYou`, so the mono face, the letter-spacing, the accent "
+      "ground and the 4px radius are literally the same bytes. Retyping a "
+      "style string is how two things that must match stop matching, "
+      "quietly, six months later. `deco` already computes `isYou` for every "
+      "row it decorates and the podium is `board.slice(0,3).map(deco)`, so "
+      "no new logic is needed at all — only the markup Design already drew, "
+      "in one more place."),
+
+rule("R33", "The week rail follows the SELECTION: when the selected week "
+            "changes, the rail scrolls the selected chip into view; when it "
+            "has not changed, R28's preserve-the-scroll behaviour stands.",
+      "MIDE'S RULING, 25 AUG 2026: clicking a past week loaded that week's "
+      "board but left the rail scrolled to the oldest end, so he had to "
+      "hunt back for where he was. "
+      "⚠️ R28 WAS AIMING AT THE WRONG TARGET AND THIS SUPERSEDES ITS "
+      "BEHAVIOUR WITHOUT DELETING IT. Preserving the previous `scrollLeft` "
+      "is right for a redraw that does not move the selection — a countdown "
+      "tick, a filter press that keeps the week, a student browsing the "
+      "strip who must not be yanked back. It is wrong for a redraw that "
+      "DOES move it, where the honest answer is to show what was just "
+      "chosen. The two cases are now distinguished by tracking the "
+      "last-snapped `week_start`, so both behaviours coexist instead of one "
+      "overwriting the other. "
+      "⊕ The initial load is the same code path and needs no special case: "
+      "the selected week IS the current week, its chip is the rightmost, "
+      "and scrolling it into view lands exactly where Design's mount snap "
+      "put it. And it scrolls only when the chip is actually out of view, "
+      "so a selection change that is already visible moves nothing."),
+
 rule("R30", "While the payload is not `ok`, the board footer's left label "
             "drops its '· N SAT THIS WEEK' clause entirely, and the "
             "countdown pill renders an em dash instead of LOCKED or "
@@ -751,7 +808,7 @@ def seam_logic(logic):
         "const blank = { name: '\\u2014', initials: '--', "
         "pctLabel: '\\u2014', score: '\\u2014' };",
         "const blank = { name: '\\u2014', initials: '--', avImg: 'none', "
-        "pctLabel: '\\u2014', score: '\\u2014' };", "R25")
+        "isYou: false, pctLabel: '\\u2014', score: '\\u2014' };", "R25")
 
     # ⚠️ R26 BEFORE the consts go, for exactly the reason R3's three swaps
     # are: this is a CLASS FIELD INITIALISER and it reads `LIVE`. Dropped
@@ -852,14 +909,42 @@ def seam_logic(logic):
         "     into a fresh host. Without this the week rail returns to scroll\n"
         "     0 on every tier, subject or week press, throwing away the\n"
         "     right-hand snap componentDidMount performs and jumping the\n"
-        "     student back to the oldest week on the rail. */\n"
+        "     student back to the oldest week on the rail.\n"
+        "\n"
+        "     ⊕ MRB-290 R33 SUPERSEDES ITS BEHAVIOUR WHEN THE SELECTION\n"
+        "     MOVES. Preserving the old scrollLeft is right for a redraw\n"
+        "     that does NOT move the week — a countdown tick, a filter press\n"
+        "     that keeps the week, a student browsing the strip who must not\n"
+        "     be yanked back. It is wrong for one that DOES: Mide clicked a\n"
+        "     past week and the rail stayed parked at the oldest end, so he\n"
+        "     had to hunt back for what he had just chosen. The two cases\n"
+        "     are told apart by the last-snapped week_start. */\n"
         "  componentDidUpdate() {\n"
         "    const el = this.rail();\n"
-        "    if (el && this._railWant != null\n"
-        "        && el.scrollWidth > el.clientWidth) {\n"
+        "    if (!el) { return; }\n"
+        "    const idx = MRB_STATE(this).wk;\n"
+        "    const wks = MRB_WEEKS();\n"
+        "    const sel = wks[idx] ? wks[idx].week_start : null;\n"
+        "    if (sel !== this._railWeek) {\n"
+        "      this._railWeek = sel;\n"
+        "      const chip = el.children[idx];\n"
+        "      /* Only when it is actually out of view: a selection change\n"
+        "         to a chip already on screen moves nothing. */\n"
+        "      if (chip) {\n"
+        "        const l = chip.offsetLeft, r = l + chip.offsetWidth;\n"
+        "        if (l < el.scrollLeft) {\n"
+        "          el.scrollLeft = Math.max(0, l - 16);\n"
+        "        } else if (r > el.scrollLeft + el.clientWidth) {\n"
+        "          el.scrollLeft = r - el.clientWidth + 16;\n"
+        "        }\n"
+        "      }\n"
+        "      this._railWant = el.scrollLeft;\n"
+        "      return;\n"
+        "    }\n"
+        "    if (this._railWant != null && el.scrollWidth > el.clientWidth) {\n"
         "      el.scrollLeft = this._railWant;\n"
         "    }\n"
-        "  }", "R28")
+        "  }", "R28/R33")
 
     # ── R24 — the week the payload may not have yet ──────────────────────
     logic = swap(
@@ -1132,6 +1217,137 @@ def bind_avatars(roots):
 # Three podium places, the row avatar, and the viewer's own disc twice — the
 # standing card and the sticky pinned row.
 AVATAR_DISCS_EXPECTED = 6
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  R31 — the page fills the screen
+# ══════════════════════════════════════════════════════════════════════════
+
+WIDTH_CAP = "max-width: 1180px; "
+
+
+def unwidth(roots):
+    """Drop the body container's width cap, keeping Design's gutters.
+
+    ⚠️ EXACTLY ONE ELEMENT, ASSERTED. Design's delivery had two 1180px
+    containers — the nav's and the body's — and R1 removed the nav with the
+    first. If a second ever reappears here it is a new container Design has
+    drawn and it needs its own decision, not a silent widening.
+    """
+    out = json.loads(json.dumps(roots))
+    hits = [0]
+
+    def walk(n):
+        if not isinstance(n, dict):
+            return
+        a = n.get("a") or {}
+        st = a.get("style")
+        if isinstance(st, str) and WIDTH_CAP in st:
+            a["style"] = st.replace(WIDTH_CAP, "", 1)
+            hits[0] += 1
+        for c in (n.get("c") or []):
+            walk(c)
+
+    for r in out:
+        walk(r)
+    return out, hits[0]
+
+
+WIDTH_CAPS_EXPECTED = 1
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  R32 — the YOU chip reaches the podium
+# ══════════════════════════════════════════════════════════════════════════
+
+PODIUM_PLACES = ("p1", "p2", "p3")
+
+
+def _find_you_chip(roots):
+    """Design's own `sc-if r.isYou` chip subtree, found not retyped."""
+    found = []
+
+    def walk(n):
+        if not isinstance(n, dict):
+            return
+        if n.get("t") == "if" and n.get("e") == "r.isYou":
+            found.append(n)
+        for c in (n.get("c") or []):
+            walk(c)
+
+    for r in roots:
+        walk(r)
+    if len(found) != 1:
+        raise SystemExit(
+            "build_leaderboard_port.py: R32 clones Design's own YOU chip out "
+            "of her table row, and the tree holds %d `sc-if r.isYou` node(s) "
+            "rather than one.\n"
+            "  It is cloned rather than retyped so the two chips cannot "
+            "drift apart. If Design has moved or duplicated it, re-anchor "
+            "here — do not hand-write a replacement span." % len(found))
+    return found[0]
+
+
+def bind_podium_you(roots):
+    """Put Design's YOU chip on a podium place when it is the viewer's.
+
+    ⚑ MIDE'S R32. Inserted as a SIBLING immediately after the podium name,
+    inside Design's own column flex — so it sits under the name, centred,
+    with no new styling language and no change to any element she drew.
+    """
+    out = json.loads(json.dumps(roots))
+    chip = _find_you_chip(out)
+    hits = [0]
+
+    def place_of(kid):
+        """The podium place this element names, or None."""
+        if not isinstance(kid, dict):
+            return None
+        only = kid.get("c") or []
+        if len(only) != 1 or not isinstance(only[0], dict) \
+                or only[0].get("t") != "#":
+            return None
+        v = only[0].get("v")
+        parts = v.get("parts") if isinstance(v, dict) else None
+        if not parts or len(parts) != 1 or not isinstance(parts[0], dict):
+            return None
+        expr = parts[0].get("e") or ""
+        if not expr.endswith(".name"):
+            return None
+        p = expr[:-len(".name")]
+        return p if p in PODIUM_PLACES else None
+
+    # ⚠️ REBUILT IN ONE PASS, NOT MUTATED IN PLACE. The first version
+    # inserted the chip and then re-walked the same parent to pick up the
+    # shifted indices — which found the very same podium name again and
+    # recursed until the stack gave out (984 frames). Building a fresh
+    # children list means each child is considered exactly once and the
+    # inserted node is never a candidate.
+    def walk(n):
+        if not isinstance(n, dict):
+            return
+        kids = n.get("c")
+        if not kids:
+            return
+        rebuilt = []
+        for kid in kids:
+            rebuilt.append(kid)
+            place = place_of(kid)
+            if place:
+                node = json.loads(json.dumps(chip))
+                node["e"] = place + ".isYou"
+                rebuilt.append(node)
+                hits[0] += 1
+            else:
+                walk(kid)
+        n["c"] = rebuilt
+
+    for r in out:
+        walk(r)
+    return out, hits[0]
+
+
+PODIUM_YOU_EXPECTED = 3
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -1812,6 +2028,23 @@ def _shape_avatars(p):
     return p
 
 
+def _shape_podium(p):
+    """The viewer is ON the podium — R32, and the state Mide was in.
+
+    ⚠️ NO OTHER FIXTURE COULD REACH IT. Design's sample viewer sits around
+    rank 9, the outside fixture puts them at 27, and the rest have no `me`
+    at all — so a viewer in the top three, which is precisely where her chip
+    stopped rendering, was never once drawn by a gate. The viewer here is
+    the rank-2 student, which is where Mide was when he reported it.
+    """
+    p["me"] = _clone(p["board"][1])
+    return p
+
+
+def _viewer_rank2(p):
+    return p["board"][1]["name"]
+
+
 def _shape_loading(p):
     """No payload has arrived yet. ⚠️ THE STATE R30's TWO DEFECTS LIVED IN.
 
@@ -1872,6 +2105,12 @@ FIXTURES = [
          what="rows carrying a real avatar_url — R25. The face renders "
               "inside Design's disc, a row without one keeps her monogram, "
               "no disc shows both, and a hostile URL falls back to initials"),
+    dict(out="leaderboard-podium-fixture.html",
+         js="leaderboard-fixture-podium.js",
+         axis=("Higher", "Overall"), week="live", shape=_shape_podium,
+         status="ok", viewer_fn=_viewer_rank2,
+         what="the viewer is RANK 2, on the podium — R32. Mide's own state "
+              "when he reported that nothing on the board said so"),
     dict(out="leaderboard-loading-fixture.html",
          js="leaderboard-fixture-loading.js",
          axis=("Foundation", "Overall"), week="live", shape=_shape_loading,
@@ -2089,8 +2328,31 @@ def build():
             "`*.initials` interpolations until R2 has rewritten them — "
             "run first it finds four and reports success."
             % (AVATAR_DISCS_EXPECTED, n_av))
+    roots, n_cap = unwidth(roots)
+    if n_cap != WIDTH_CAPS_EXPECTED:
+        raise SystemExit(
+            "build_leaderboard_port.py: R31 expected %d width-capped "
+            "container and found %d.\n"
+            "  Mide ruled the page fills the screen; a second capped "
+            "container is one Design has newly drawn and needs its own "
+            "decision, not a silent widening."
+            % (WIDTH_CAPS_EXPECTED, n_cap))
+
+    roots, n_you = bind_podium_you(roots)
+    if n_you != PODIUM_YOU_EXPECTED:
+        raise SystemExit(
+            "build_leaderboard_port.py: R32 expected %d podium place(s) and "
+            "gave the YOU chip to %d.\n"
+            "  The three are p1, p2 and p3. Fewer means a podium name is no "
+            "longer a bare `pN.name` interpolation and a viewer on that "
+            "place would silently lose their marker again — which is the "
+            "defect Mide reported."
+            % (PODIUM_YOU_EXPECTED, n_you))
+
     print("     ⊕ tree:  %d monogram(s) bound to me.initials, "
-          "%d disc(s) given a bound avatar" % (n_ay, n_av))
+          "%d disc(s) given a bound avatar,\n"
+          "              %d width cap removed (R31), %d podium place(s) can "
+          "wear YOU (R32)" % (n_ay, n_av, n_cap, n_you))
 
     # ── the nav, read from the landing page ──────────────────────────────
     nav = live_nav()
@@ -2209,10 +2471,17 @@ def build():
         if spec.get("post") and shaped:
             shaped = spec["post"](shaped, key)
         tier, subject = spec["axis"]
+        # ⊕ R32's fixture names its viewer FROM THE DATA rather than from a
+        # literal: the podium fixture's viewer must BE the rank-2 student,
+        # and hardcoding a name would silently stop being that student the
+        # day the frozen sample shifts.
+        who = spec.get("viewer", viewer)
+        if spec.get("viewer_fn"):
+            who = spec["viewer_fn"](shaped[key])
         start = dict(tier=tier, subject=subject, week=key.split("|")[2])
         js = _FIXTURE_API % dict(
             payloads=json.dumps(shaped, separators=(",", ":")),
-            viewer=json.dumps(spec.get("viewer", viewer)),
+            viewer=json.dumps(who),
             start=json.dumps(start),
             status=json.dumps(spec["status"]))
         with open(os.path.join(FIXTURE_OUT, spec["js"]), "w",
