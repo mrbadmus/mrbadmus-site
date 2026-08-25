@@ -128,6 +128,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `LIGHT` | Light — what travels, how fast, what a surface does to it, how an image forms, and what colour is | 2026-08-25, by P7 |
 | `CIRC` | Current and circuits — what a current is and what it is not, what a battery does, what happens at a junction, what a resistance is, and what a meter measures | 2026-08-25, by P8 |
 | `CHRG` | Electric charge — where charge comes from when things are rubbed, what a charged object does to another, and what an electric field is | 2026-08-25, by P9 |
+| `SPACE` | Space — how far gravity reaches and what a weight reading means away from the ground, what the Sun and the stars are, why the seasons happen, and what a light year measures | 2026-08-25, by P12 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -1470,6 +1471,8 @@ DELIVERED page rather than taken from her proposed table: her `NOTES-P3.md` §4 
 | `FORCE-43` | An overstretched spring goes back to its natural length if you leave it long enough. | `s-ladder` | `s-ladder` | `springs-and-hookes-law` |
 | `FORCE-44` | A force needs something in between to carry it across. | `s-hook` | `s-think` | `non-contact-forces` |
 | `FORCE-45` | There is no gravity in space. | *(none — nothing on the page asks for this commitment)* | `s-think` | `non-contact-forces` |
+| `FORCE-45` | There is no gravity in space. | `s-ladder` | `think-no-gravity-in-space` | `gravity-and-weight` |
+| `FORCE-45` | There is no gravity in space. | *(none — nothing on the page asks for this commitment)* | `think-orbit-is-not-a-balance` | `gravity-earth-moon-and-sun` |
 | `FORCE-46` | Magnets attract all metals. | *(none — nothing on the page asks for this commitment)* | `three-forces` | `non-contact-forces` |
 
 ⊖ **ONE OF DESIGN'S PROPOSED ROWS MINTS NOTHING.** Her table names *"a steeper line means it went
@@ -1477,6 +1480,21 @@ further"* as a row of its own, attached to `p3-02`'s rung 2. The belief IS on th
 that rung's first distractor — but it is `FORCE-07` read from the other side: both are reading a
 gradient as something other than a speed. It takes no row, following `p1-08`'s precedent for a
 second quote that re-dresses an existing belief. `FORCE-08` takes the number instead.
+
+⊕ **`FORCE-45` REAPPEARS TWICE IN P12, 25 Aug 2026, AND HAS TWO EXTRA ROWS IN THE TABLE ABOVE.**
+*"There is no gravity in space"* is confronted again on `p12-01` — where Design's first Think-again
+quote is *"Astronauts float because there is no gravity in space"* and her rung 2 elicits it in as
+many words — and again on `p12-03`, where her second quote is the sentence itself. Both rows carry
+the IDENTICAL statement and the same number, which is what a reappearance means here (`CELL-08` is
+the precedent). No `SPACE` twin was minted: one belief with two ids is the silent broken join §5.3
+exists to prevent, and it would have been invisible to every gate in the build.
+
+⚠️ **`FORCE-22` MEETS ITS NEIGHBOUR IN P12 AND STAYS SEPARATE.** `SPACE-01` is *"Weight is measured
+in kilograms"*, which is not *"Weight in newtons is the same number as the mass in kilograms"*. A
+student holds the first before the units have landed and the second afterwards, and the two are
+taken apart by different arguments. `p12-01` rung 1's fourth option is `FORCE-22` appearing as a
+distractor and cites no id, because a distractor its own rung answers in place is not a second
+confrontation. Reasoning in full under `SPACE`.
 
 ⚠️ **`FORCE-04` IS THE ONE TO WATCH, AND DESIGN SAID SO FIRST.** Her notes: *"it is arguably the
 same wrong idea as `PART-05`-style 'the numbers do what they are told', i.e. a mathematics
@@ -2578,3 +2596,107 @@ same shape as any inverse-square belief and will reappear in P12's gravity lesso
 pre-allocates for P8 — is not opened here: P9 is another lane's neighbour, not its owner, and this register's
 standing rule is that a family is opened by the unit that mints into it. `p9-01` names insulators and conductors
 from nothing, with `p8-06` carried as an edge, and cites no `CIRC` id.
+
+
+---
+
+
+### `SPACE` — space: how far gravity reaches, what a weight reading means, what the Sun and the stars are, why the seasons happen, and what a light year measures
+
+⊕ **OPENED 25 Aug 2026, BY P12 *Space*.** Every row below was checked against Design's DELIVERED
+page rather than taken from a proposed table — she proposes none for this unit. Each is drawn
+from one of her two Think-again quotes per page, from a hook option, from a bench-gate distractor
+or from a ladder distractor that carries a real wrong idea rather than a slip.
+
+⚖️ **WHY A NEW FAMILY AND NOT `FORCE`.** `FORCE` is declared as *forces and motion — what a speed
+is and what it is measured against; and what a force is, what it takes to make one, what is left
+over when they are added, and what that leftover does*. Weight is a force and the first two P12
+lessons are about it, so the case for putting these in `FORCE` is real and was considered. It
+fails on the other four lessons: what a galaxy is, why the seasons happen and what a light year
+measures are not beliefs about forces at all, and splitting one unit's twenty-two entries across
+two families to honour a boundary that holds for only a third of them is how a taxonomy stops
+being usable. `PRESS`, `WAVE`, `LIGHT` and `CHRG` were all opened on the same reasoning.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `SPACE-01` | Weight is measured in kilograms. | `s-ladder` | `think-no-gravity-in-space` | `gravity-and-weight` |
+| `SPACE-02` | Where gravity is weaker you have less mass, because you are lighter there. | `s-hook` | `bench` | `gravity-and-weight` |
+| `SPACE-03` | A kilogram is a kilogram everywhere, so nothing about it changes on the Moon. | `bench` | `bench` | `gravity-and-weight` |
+| `SPACE-04` | In orbit things are weightless, so they have no mass. | `s-ladder` | `think-weightless-not-massless` | `mass-vs-weight` |
+| `SPACE-05` | Weight and mass are the same thing measured in different units, like metres and feet. | *(none — nothing on the page asks for this commitment)* | `think-weightless-not-massless` | `mass-vs-weight` |
+| `SPACE-06` | On the Moon everything is easier, so a hammer is easier to swing as well as easier to lift. | `s-hook` | `s-ladder` | `mass-vs-weight` |
+| `SPACE-07` | A spring balance reads a mass, so it gives the same answer wherever you take it. | `bench` | `bench` | `mass-vs-weight` |
+| `SPACE-08` | The Moon is held up by a balance between gravity pulling it in and a force flinging it out. | `s-hook` | `think-orbit-is-not-a-balance` | `gravity-earth-moon-and-sun` |
+| `SPACE-09` | The bigger body pulls harder, so the Sun pulls the Earth far more than the Earth pulls the Sun. | `bench` | `bench` | `gravity-earth-moon-and-sun` |
+| `SPACE-10` | Gravity falls in step with the distance, so twice as far apart means half the pull. | `s-ladder` | `bench` | `gravity-earth-moon-and-sun` |
+| `SPACE-11` | The Sun is not a star — stars are the small twinkling things at night. | `s-hook` | `think-the-sun-is-a-star` | `the-sun-stars-and-galaxies` |
+| `SPACE-12` | Stars are all about the same, and the brighter ones are the closer ones. | `s-ladder` | `think-the-sun-is-a-star` | `the-sun-stars-and-galaxies` |
+| `SPACE-13` | The stars you can see at night are part of our solar system. | `s-ladder` | `bench` | `the-sun-stars-and-galaxies` |
+| `SPACE-14` | A galaxy is something inside a solar system, because the solar system is the whole system. | `bench` | `bench` | `the-sun-stars-and-galaxies` |
+| `SPACE-15` | It is summer when the Earth is closer to the Sun. | `s-hook` | `think-not-the-distance` | `seasons-and-the-tilt` |
+| `SPACE-16` | The Earth’s tilt changes through the year, leaning towards the Sun in summer and away in winter. | *(none — nothing on the page asks for this commitment)* | `think-not-the-distance` | `seasons-and-the-tilt` |
+| `SPACE-17` | It is the same season everywhere on the Earth on the same date. | `bench` | `bench` | `seasons-and-the-tilt` |
+| `SPACE-18` | A high Sun warms the ground more because it is closer to it. | `s-ladder` | `bench` | `seasons-and-the-tilt` |
+| `SPACE-19` | A light year is a very long time. | `s-hook` | `think-a-year-that-is-a-distance` | `how-far-is-a-light-year` |
+| `SPACE-20` | Because light is so fast, we see distant things as they are now. | `bench` | `think-a-year-that-is-a-distance` | `how-far-is-a-light-year` |
+| `SPACE-21` | A light year measures how fast light travels. | `s-hook` | `bench` | `how-far-is-a-light-year` |
+| `SPACE-22` | A spacecraft that can reach a star four light years away would get there in about four years. | `s-ladder` | `s-ladder` | `how-far-is-a-light-year` |
+
+⚠️ **`FORCE-45` IS RE-CONFRONTED TWICE IN THIS UNIT AND IS NOT RE-MINTED.** *"There is no gravity
+in space"* is already `FORCE-45`, opened by `p4-09 non-contact-forces`. `p12-01`'s first
+Think-again quote is *"Astronauts float because there is no gravity in space"* and `p12-03`'s
+second is the sentence itself, word for word. Both take a row in the `FORCE` table above with the
+IDENTICAL statement and the same number — the `CELL-08` precedent, and the thing this register's
+law actually forbids is one id meaning two DIFFERENT things. Minting a `SPACE` twin would have
+been exactly that: one belief wearing two names, with no gate anywhere able to see the pair.
+
+⚠️ **`FORCE-22` IS ADJACENT TO `SPACE-01` AND THE TWO ARE NOT THE SAME BELIEF.** `FORCE-22` is
+*"Weight in newtons is the same number as the mass in kilograms"* — a student who has the units
+right and the arithmetic wrong. `SPACE-01` is *"Weight is measured in kilograms"* — a student who
+has not separated the two quantities at all. A class holds both, in different children, and often
+in sequence: `SPACE-01` first, then `FORCE-22` after the units have landed but before the ×10
+has. They are confronted differently too — `SPACE-01` by naming the newton, `FORCE-22` by doing
+the multiplication — so one row could not carry both `confronted_by` values honestly. `p12-01`
+rung 1's fourth option (*"24 N — weight and mass are the same number on Earth"*) is `FORCE-22`
+appearing as a distractor; it is answered by that rung's own correction and cites no id, because
+a distractor a page answers in place is not a second confrontation.
+
+⚠️ **`SPACE-10` IS `CHRG-07` IN GRAVITATIONAL CLOTHES, AND IT IS MINTED RATHER THAN REUSED.**
+The `CHRG` family's own closing note predicts the arrival: *"`CHRG-07` is the same shape as any
+inverse-square belief and will reappear in P12's gravity lessons."* It does — `p12-03` rung 1's
+first distractor is *"It has fallen to a third of what it was"* against a trebled separation.
+It is not reused, because `CHRG-07`'s statement names CHARGES (*"The force between two charges
+falls in step with the distance, so doubling the gap halves it"*) and that sentence is not true
+of gravity, while a re-used id must carry an IDENTICAL statement. This is the `ENER-03` /
+`PTAB-07` treatment exactly: two entries, elicited by different phenomena, with the edge recorded
+rather than the rows merged. A student can hold either without the other, and the commonest case
+in a real class is to hold it about gravity having never met electrostatics at all.
+
+⚠️ **`SPACE-05`, `SPACE-16` AND BOTH P12 `FORCE-45` ROWS HAVE NO `elicited_by`, WHICH §5.3
+ALLOWS.** Each is Design's SECOND Think-again quote, which sits under her amber rule as static
+markup with no gate in front of it; nothing on those pages asks the student to commit to them,
+and each is confronted because it sits underneath one that is. Recording the gap is the honest
+answer, as `CELL-13`'s row already establishes. (`p12-01`'s `FORCE-45` row DOES carry one, and it
+is her own: rung 2's second option is *"There is no gravity that far out…"*.)
+
+⚠️ **`#s-think` IS A CONFRONTATION ANCHOR ON ALL SIX PAGES AND A RAIL STOP ON THREE.** `p12-03`,
+`p12-04` and `p12-05` include it, because Design's `isDone()` gives it
+`s.answers.r1 !== null || s.hookChoice !== null`; `p12-01`, `p12-02` and `p12-06` put their third
+stop on `#s-formula` instead. That is a fact about the rail and not about the register — every
+`confronted_by` above resolves against its own built page either way.
+
+⊕ **THIS PARALLELS THE OPEN `p9-01` FLAG AND DOES NOT RE-RAISE IT.** P9 recorded *Think-again as a
+rail stop* as a new thing in the key stage, true of `p9-01` and of nothing before it. Three P12
+pages do the same on a DIFFERENT predicate — hers is satisfied by the hook or by ladder rung 1
+rather than by the bench's gate, so the section takes a wire function of its own instead of being
+marked by the bench through `band_anchor`. Noted here so the two are read as one pattern with two
+shapes; the flag itself stays where P9 left it.
+
+**Where these are expected to resurface** (`reappears_in`, filled as the units are authored):
+
+- `SPACE-04` (weightless means massless) → wherever KS4 meets inertia, where the same belief
+  makes `F = m × a` unreadable rather than merely wrong.
+- `SPACE-19` (a light year is a time) → every later meeting with an astronomical distance. It is
+  the single most durable belief in the unit, because ordinary English keeps reinforcing it.
+- `SPACE-20` (we see distant things as they are now) → KS4 astronomy, where red shift makes the
+  delay load-bearing rather than merely true.
