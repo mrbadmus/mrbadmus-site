@@ -128,6 +128,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `LIGHT` | Light — what travels, how fast, what a surface does to it, how an image forms, and what colour is | 2026-08-25, by P7 |
 | `CIRC` | Current and circuits — what a current is and what it is not, what a battery does, what happens at a junction, what a resistance is, and what a meter measures | 2026-08-25, by P8 |
 | `CHRG` | Electric charge — where charge comes from when things are rubbed, what a charged object does to another, and what an electric field is | 2026-08-25, by P9 |
+| `MAG` | Magnetism — what a magnet is and is not, where a field is, what the Earth's magnetism is, what makes an electromagnet, and what turns a motor | 2026-08-25, by P10 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -2578,3 +2579,98 @@ same shape as any inverse-square belief and will reappear in P12's gravity lesso
 pre-allocates for P8 — is not opened here: P9 is another lane's neighbour, not its owner, and this register's
 standing rule is that a family is opened by the unit that mints into it. `p9-01` names insulators and conductors
 from nothing, with `p8-06` carried as an edge, and cites no `CIRC` id.
+
+
+---
+
+### `MAG` — magnetism: what a magnet is and is not, where a field is, what the Earth's is, what makes an electromagnet, and what turns a motor
+
+⊕ **OPENED 25 Aug 2026, BY P10.** `docs/ks3/design-reference/p10/NOTES-P10.md` §6 pre-allocated a range four per
+lesson in slot order and authored FIFTEEN entries, leaving the last of each four as a named spare, without citing
+one on any page — because her access was read-only and this register had no open family for magnetism. **Every id
+she wrote is minted here on the number she gave it, in her words.** The five spares are minted too, and each one
+is minted from REAL PAGE CONTENT rather than reserved, which is this register's own rule: an id is minted from
+what a page actually confronts, never against what one might.
+
+⚠️ **HER PREFIX IS KEPT.** Unlike P9 — where her `STAT` collided with the statutory ids `KS3.P.STAT.01` printed on
+the same page — `MAG` collides with nothing a student or a reader meets. The statutory strand these five lessons
+own is also spelt `MAG` (`KS3.P.MAG.01` … `.04`), but those are always written in full with the `KS3.P.` stem and
+a dotted number, and a misconception id is always `MAG-nn` with a hyphen. Checked against the prefix table above:
+no other family uses it.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `MAG-01` | All metals are magnetic. | `track` | `s-think` | `magnets-and-poles` |
+| `MAG-02` | It stuck to the magnet, so it must be a magnet. | `s-hook` | `s-think` | `magnets-and-poles` |
+| `MAG-03` | Turning a magnet round makes it stronger or weaker. | `s-hook` | `track` | `magnets-and-poles` |
+| `MAG-04` | A magnet only does anything to another magnet, so plain steel just sits there. | `track` | `track` | `magnets-and-poles` |
+| `MAG-05` | The field is only where the lines are drawn. In between the lines there is nothing. | `plot` | `s-think` | `magnetic-fields` |
+| `MAG-06` | The iron filings make the field. | `s-hook` | `s-think` | `magnetic-fields` |
+| `MAG-07` | Field lines can cross if the field is strong enough. | `s-ladder` | `rules` | `magnetic-fields` |
+| `MAG-08` | Where the lines are crowded there are more of them, because the magnet makes extra lines at its ends. | `s-ladder` | `rules` | `magnetic-fields` |
+| `MAG-09` | The Earth's North Pole is a magnetic north pole. | `s-ladder` | `s-think` | `the-earth-is-a-magnet` |
+| `MAG-10` | A compass points at the North Pole. | `s-hook` | `s-think` | `the-earth-is-a-magnet` |
+| `MAG-11` | There is a bar of iron inside the Earth. | `dip` | `no-bar-down-there` | `the-earth-is-a-magnet` |
+| `MAG-12` | A compass works better at the magnetic pole than anywhere else, because that is what it has been pointing at all along. | `dip` | `dip` | `the-earth-is-a-magnet` |
+| `MAG-13` | The iron core is what makes the magnetism. The coil just holds it. | `coil` | `s-think` | `electromagnets` |
+| `MAG-14` | Adding more turns makes it stronger because there is more wire, so more current. | `coil` | `s-think` | `electromagnets` |
+| `MAG-15` | Switching off leaves a weak field that drains away. | `coil` | `coil` | `electromagnets` |
+| `MAG-16` | Once the iron core has been magnetised it stays a magnet, so switching off changes nothing. | `coil` | `coil` | `electromagnets` |
+| `MAG-17` | The coil is pulled round because the magnets attract it. | `motor` | `s-think` | `how-a-motor-works` |
+| `MAG-18` | The split ring is what makes it turn. | `motor` | `s-think` | `how-a-motor-works` |
+| `MAG-19` | Reversing the current and the magnets reverses it twice over. | `motor` | `motor` | `how-a-motor-works` |
+| `MAG-20` | If the current and the field are both reversed they work against each other, so the coil stops. | `motor` | `motor` | `how-a-motor-works` |
+
+⚠️ **THE FIVE SPARES ARE MINTED, AND EACH ONE NAMES THE OPTION IT CAME FROM.** Her §6 reserves `MAG-04`, `-08`,
+`-12`, `-16` and `-20` as "the named spare" of each four. A reservation is not a minting, and this register does
+not hold ids against future need — so each of the five was tested against the page's own content and each one
+turned out to be there already, in a gate distractor or a rung distractor with its own correction. The test
+applied to all five is the one this register always applies: is it a genuinely SEPARATE belief, or the same one
+in other words?
+
+  * **`MAG-04` — a magnet only acts on another magnet.** `p10-01`'s commit gate, option D, which now states the
+    rule completely: *"It does nothing either time, because only a magnet can be pushed or pulled by another
+    magnet."* Separate from `MAG-01`, which is about WHICH MATERIALS respond, and from `MAG-02`, which is about
+    what attraction PROVES. A student can have both of those right and still predict that a steel nail sits
+    still — and the bench's twenty-four magnet-and-steel states exist to break exactly that.
+  * **`MAG-08` — crowding means there are MORE lines there.** `p10-02`'s rung 1, option B, with Design's own
+    correction: *"Every line that leaves the north pole arrives at the south pole, so the count is the same
+    everywhere. What differs is how much space they are spread over."* Separate from `MAG-05`: a student can
+    accept that the field fills the gaps between drawn lines and still believe a magnet grows extra lines at its
+    ends, and that belief is what turns a comparison into a count.
+  * **`MAG-12` — a compass works BEST at the pole.** `p10-03`'s commit gate, option C: *"It points more strongly
+    than anywhere else, because the pole is right there."* Separate from `MAG-10`: a student who has given up
+    "it points AT the pole" entirely can still expect the reading to be best where the pole is. It is the exact
+    opposite of what happens, the bench's at-the-pole state is what breaks it, and rung 4 asks for it.
+  * **`MAG-16` — the core STAYS magnetised.** `p10-04`'s commit gate, option A, and rung 2's. Separate from
+    `MAG-15`, and the two are opposite predictions rather than one belief: `MAG-15` expects the field to FADE,
+    this one expects it to persist for good. A student holding this one has understood that iron can be
+    magnetised and has not yet met the difference between soft iron and hardened steel.
+  * **`MAG-20` — current and field cancel to a standstill.** `p10-05`'s commit gate, option C, and rung 1's
+    option B. Separate from `MAG-19`, and it reaches a different wrong answer by a different route: `MAG-19`
+    treats two reversals as adding up to a double reversal, while this one treats current and field as two
+    forces along one line that can oppose each other. A student holding it has not met the idea that the push is
+    at right angles to both.
+
+⚠️ **ONE `confronted_by` NAMES AN EXPLAINER, AND THE EXPLAINER CARRIES AN `id` FOR THAT REASON.** `MAG-11` —
+*there is a bar of iron inside the Earth* — is confronted on `p10-03` in the paragraph that says the core is far
+too hot for a magnet to survive in, and nowhere else on the page. MRB-244 requires every `confronted_by` to name
+a real element on its own page, so that paragraph is authored with `id: "no-bar-down-there"`. It is an anchor and
+nothing else: no treatment changes, and Design's explainer stack is untouched. Its `elicited_by` is the BENCH,
+which is honest rather than convenient — the globe on that bench literally draws a bar magnet inside the Earth,
+and that drawing is what plants the belief the paragraph then takes away.
+
+⚠️ **EVERY `elicited_by` IS PRESENT ON THIS FAMILY**, which is unusual — `CHRG-02` and `CHRG-09` have none, and
+§5.3 allows that. Here all twenty beliefs are asked for somewhere: eight in a hook or a commit gate, six in a
+rung, six on a bench where the student has to choose a setting before the note appears.
+
+⚠️ **EXPECTED TO RESURFACE.** `MAG-05` — *the field is only where the lines are drawn* — is the magnetic twin of
+`CHRG-09`, and the two should be named together whenever a field is introduced a third time. `MAG-17` — *the
+magnets attract the coil* — will meet the induction motor at KS4 and is worth naming again there. `CHRG-10` —
+*the air in the gap must be carrying it* — was expected in P10 by P9's own note and did NOT need a new id: it is
+not confronted here, because these five pages never argue about what is in the gap. It stands where it is.
+
+⊖ **NOTHING IN P10 RE-CONFRONTS AN EXISTING FAMILY AND NOTHING IS RE-DECLARED.** `CHRG` is the nearest neighbour
+and no `CHRG` id is cited: `p10-02` introduces a field from nothing rather than borrowing the electric one, which
+is Design's §3 rule for the whole unit. `CIRC` is not cited either — `p10-04` and `p10-05` both restate that a
+current makes a magnetic field in a clause of their own, so neither depends on P8.
