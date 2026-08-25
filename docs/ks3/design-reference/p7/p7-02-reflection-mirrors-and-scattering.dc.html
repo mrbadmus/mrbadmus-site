@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reflection: mirrors and scattering · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Light</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Reflection: mirrors and scattering</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Light · Model</p>
+        <h1>Reflection: mirrors and scattering</h1>
+        <p class="ks3-bigq">A mirror and a sheet of paper send back about the same amount of light and obey exactly the same rule. Only one of them shows you your face, and the reason is the surface rather than the rule.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two white surfaces. One shows your face.</h2>
+        <p class="ks3-hook-prompt">A mirror and a sheet of white paper both send back almost all the light that falls on them. Hold either up to a window and the room brightens. Only one of them shows you your own face.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is different about what the light does at the two surfaces?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every ray that meets a surface obeys the same rule. Draw a line at right angles to the surface where the ray lands — that line is called the <strong>normal</strong> — and measure both angles from it. Then the <strong>angle of reflection equals the angle of incidence</strong>, always, on every surface, however rough.</p>
+        <p>What changes between a mirror and a sheet of paper is not the rule but the surface. A mirror is smooth on the scale of light, so the normal points the same way everywhere and a set of parallel rays comes off still parallel: the pattern survives, and the pattern is the image. That is <strong>specular reflection</strong>. Paper is rough on that scale, so every tiny facet has its own normal pointing a different way. Each ray still reflects correctly, and the set of them leaves in all directions with the pattern destroyed. That is <strong>diffuse scattering</strong>, and it is why you can see the paper from anywhere in the room and cannot see yourself in it.</p>
+        <p>Some of the light is neither reflected nor scattered but <strong>absorbed</strong>, its energy taken up by the surface. A matt black card is rough like paper and absorbs most of what lands on it, so very little leaves in any direction at all.</p>
+      </section>
+
+      <section id="s-ray" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a ray box, a protractor and four surfaces</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">One rule. Four different results.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A single narrow ray from a ray box lands on a surface, with the normal drawn in at the point where it lands. Set the angle it comes in at, and set what it lands on.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A ray hits a mirror at 30° to the normal. The mirror is swapped for a sheet of white paper and the ray comes in at exactly the same 30°. What happens to the angle of reflection of that one ray?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p72a" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Angle from the normal</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ incLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p72a" min="0" max="80" step="5" value="{{ incValue }}" onChange="{{ onInc }}" onInput="{{ onInc }}">
+              </div>
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What it lands on</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ surfTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 420" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="{{ surfPath }}" style="fill: none; stroke: #E9DCC8; stroke-width: 10; stroke-linecap: round;"></path>
+                  <path d="M500 340 V60" style="fill: none; stroke: #8C8177; stroke-width: 3; stroke-dasharray: 9 9;"></path>
+                  <text x="510" y="52" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #8C8177;">NORMAL</text>
+                  <path d="{{ incRay }}" style="fill: none; stroke: #8FB7FF; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ refRays }}" style="{{ refStyle }}"></path>
+                  <path d="{{ arcs }}" style="fill: none; stroke: #C6B9A7; stroke-width: 3;"></path>
+                </svg>
+                <span style="position: absolute; left: 6%; right: 3%; top: 90.5%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); letter-spacing: .08em; color: #C6B9A7; white-space: normal; pointer-events: none;">{{ surfCaption }}</span>
+                <span style="position: absolute; left: 40%; top: 55%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ incLabel }}</span>
+                <span style="position: absolute; left: 56%; top: 55%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ refLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Angle of incidence</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ incLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">measured from the normal</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Angle of reflection</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ refLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">measured from the normal</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Roughly how much leaves again</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ backLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">the rest is absorbed</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How the rays leave</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-beam" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Angle of reflection = angle of incidence</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The beam</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Two equal bars, always</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 640 220" role="img" aria-label="Two bars of exactly equal length, one labelled i for the incoming angle and one labelled r for the reflected angle, with an equals sign between them." style="width: 340px; max-width: 100%; height: auto; flex: 0 0 auto;">
+            <rect x="120" y="24" width="440" height="58" rx="10" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <text x="340" y="70" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 42px; fill: var(--ks3-ink);">i</text>
+            <text x="60" y="70" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink-muted);">IN</text>
+            <rect x="120" y="138" width="440" height="58" rx="10" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <text x="340" y="184" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 42px; fill: var(--ks3-ink);">r</text>
+            <text x="60" y="184" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink-muted);">OUT</text>
+            <path d="M120 24 V196 M560 24 V196" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 3; stroke-dasharray: 7 7;"></path>
+            <text x="592" y="120" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink);">=</text>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">r = i</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">Both measured from the normal</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two bars of the same length, always. Nothing is being added up here and nothing is being shared out, so there is nothing to cover: whatever one bar reads, the other reads too.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">i</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">angle of incidence, from the normal</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">°</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">r</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">angle of reflection, from the normal</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">°</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">The angle of reflection equals the angle of incidence, both measured from the normal — the line at right angles to the surface. On a smooth surface parallel rays stay parallel and the pattern survives as an image, which is specular reflection. On a rough surface every facet has its own normal, so the rays leave in all directions and the pattern is lost, which is diffuse scattering. Some light is absorbed at every surface.</p>
+        </div>
+
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Rough surfaces break the law of reflection.&rdquo;</p>
+        <p>Not one ray disobeys it. Zoom in far enough on a sheet of paper and it is a landscape of fibres, each facet flat and each with its own normal pointing wherever that facet happens to face. A ray landing on one of them reflects at exactly the angle it arrived at, measured from that facet\u2019s normal \u2014 and because the facets point every which way, the rays that started off parallel finish scattered. The law holds perfectly. What is lost is the arrangement, and the arrangement was the image.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Angles in reflection are measured from the mirror.&rdquo;</p>
+          <p>They are measured from the normal, the line drawn at right angles to the surface, and it is a convention worth being fussy about because it is the one that keeps working. A ray at 20\u00b0 to the mirror is at 70\u00b0 to the normal, and if you quote 20\u00b0 as the angle of incidence every later answer is wrong by the same amount. Measuring from the normal also survives being taken to a curved mirror, where there is no single surface to measure from, and to refraction in the next lesson, where the two materials meet at one point.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>The angle of reflection equals the angle of incidence, both measured from the normal — the line at right angles to the surface at the point where the ray lands. A smooth surface keeps parallel rays parallel, so the arrangement of the light survives and an image forms: specular reflection. A rough surface gives every facet its own normal, so the rays leave in every direction and the arrangement is lost: diffuse scattering. At every surface some light is absorbed instead.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Almost everything you can see is being seen by diffuse scattering. Only a handful of objects — mirrors, still water, polished metal, glass at a glancing angle — reflect specularly, and those are precisely the ones that show you something other than themselves. A room lit by a single lamp is visible in every corner because every rough surface in it is scattering light in all directions at once, which is also why the shadows are soft.</p>
+          <p>Smooth is a comparison with the wavelength of light, not with your finger. Visible light has a wavelength of a few ten-thousandths of a millimetre, so a surface has to be flat to well within that to act as a mirror. Radio waves have wavelengths measured in metres, and a wire mesh with centimetre holes is a perfect mirror to them — which is why a satellite dish can be a grid rather than a solid sheet, and why the door of a microwave oven has a metal grid you can see straight through.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p7-01-light-travels.html">Light travels<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p7-03-refraction.html">Refraction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p6-07-echoes-reflection-and-absorption.html">Echoes, reflection and absorption<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p7-07-why-things-look-coloured.html">Why things look coloured<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Ray diagrams for plane and curved mirrors, virtual images, specular and diffuse reflection at a boundary, and the relationship between surface roughness and wavelength.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got an angle and a surface, and want to know where the ray goes?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Angles are drawn to scale from the normal and the law of reflection is applied exactly. The percentages of light leaving again are round teaching figures for a typical surface of each kind and depend on the colour of the light and the angle it arrives at. The scattered fans are drawn as five rays spread over a fixed angle so the spread can be seen; a real rough surface sends light out over the whole half-space above it, and the number and spacing of the drawn rays carry no information. The surface profiles are drawn far rougher than any of these materials really are, since paper is rough only on the scale of the wavelength of light.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Mirror and paper', short: 'PAPER' },
+  { id: 's-ray', label: 'Ray box and four surfaces', short: 'RAY' },
+  { id: 's-beam', label: 'The beam and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-ray') return s.gate !== null && (s.touched.a || s.touched.surf);
+  if (id === 's-beam') return s.buildOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const SURFS = [
+  { label: 'Plane mirror', spread: 0, back: 95, kind: 'Specular \u2014 the pattern survives', caption: 'PLANE MIRROR \u2014 SMOOTH ON THE SCALE OF LIGHT',
+    note: 'A mirror is smooth enough that the normal points the same way everywhere on it, so a set of parallel rays leaves still parallel and the arrangement of the light is preserved. That preserved arrangement is what an image is.' },
+  { label: 'White paper', spread: 34, back: 80, kind: 'Diffuse \u2014 the pattern is lost', caption: 'WHITE PAPER \u2014 ROUGH ON THE SCALE OF LIGHT',
+    note: 'Paper sends back nearly as much light as a mirror, which is why it looks bright, and scatters it in every direction, which is why it shows no image. Every one of those scattered rays has still obeyed the law of reflection at its own tiny facet.' },
+  { label: 'Crumpled foil', spread: 20, back: 88, kind: 'Diffuse \u2014 the pattern is lost', caption: 'CRUMPLED FOIL \u2014 SHINY BUT NOT FLAT',
+    note: 'Foil is the case that separates shiny from smooth. The metal reflects almost everything, so it stays bright, but the crumpling gives every patch a different normal and the reflection breaks into a jumble of bright fragments rather than one image.' },
+  { label: 'Matt black card', spread: 34, back: 6, kind: 'Diffuse, and mostly absorbed', caption: 'MATT BLACK CARD \u2014 ROUGH AND ABSORBING',
+    note: 'Black card is rough like paper, so what does leave is scattered in every direction \u2014 but almost nothing leaves. Most of the arriving light is absorbed and its energy ends up warming the card very slightly, which is why black surfaces in sunlight get hot.' }
+];
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A ray strikes a plane mirror at 20° to the mirror surface. What is the angle of reflection?',
+    next: 'Angles are angles — nothing here can arrive in the wrong size. Your turn below.',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '20° stays 20° · 90° stays 90°',
+        note: 'Both angles are in degrees and the rule compares them directly, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'r = i, both measured from the normal',
+        note: 'The rule is an equality, so the two angles are always the same number.' },
+      { letter: 'I', label: 'Insert', line: 'i = 90° − 20°',
+        note: 'The 20° given is to the mirror surface, and the normal is at right angles to that surface.' },
+      { letter: 'F', label: 'Fine-tune', line: '90 − 20 = 70, so i = 70°',
+        note: 'Degrees taken from degrees leave degrees.' },
+      { letter: 'A', label: 'Answer', line: 'r = 70°',
+        note: 'Seventy degrees from the normal, which is 20° from the mirror on the other side.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Calculate',
+    question: 'A ray strikes a plane mirror at 25\u00b0 to the mirror surface. What is the angle of reflection?',
+    options: [
+      { text: '65\u00b0', correct: true },
+      { text: '25\u00b0 \u2014 the angle of reflection equals the angle given', correction: 'The rule is right and the angle given is the wrong one. The 25\u00b0 is measured from the mirror; angles of incidence and reflection are measured from the normal, which makes it 65\u00b0.' },
+      { text: '50\u00b0 \u2014 double the angle, because the ray turns through both angles', correction: 'Fifty degrees is the angle between the incoming and outgoing rays when each is 25\u00b0 from the normal. It is not the angle of reflection, which is measured from the normal to one ray.' },
+      { text: '115\u00b0 \u2014 add the 25\u00b0 on to the 90\u00b0 of the normal', correction: 'The normal is at 90\u00b0 to the mirror, so a ray 25\u00b0 from the mirror is 25\u00b0 short of the normal, not 25\u00b0 past it. Take it away rather than adding it.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'You can see a sheet of white paper from anywhere in the room but cannot see your face in it. Which statement is right?',
+    options: [
+      { text: 'Its rough surface gives every facet a different normal, so rays that arrive parallel leave in all directions \u2014 each one still obeying the law of reflection.', correct: true },
+      { text: 'Paper does not obey the law of reflection, which is why the rays come off in random directions.', correction: 'Every single ray obeys it exactly. What varies is the direction each facet faces, and therefore the direction of each normal.' },
+      { text: 'Paper absorbs almost all the light, so there is too little left to form an image.', correction: 'White paper sends back most of what lands on it, which is why it looks bright. Absorption is what makes black card dark, not what stops paper showing a face.' },
+      { text: 'Paper is not shiny enough, and only shiny surfaces can reflect light.', correction: 'Crumpled kitchen foil is thoroughly shiny and still shows no image. Shiny is about how much comes back; smooth is about whether the pattern survives, and those are different things.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Explain why a mirror shows an image and a sheet of white paper does not, using the words normal, parallel and scattering.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'At every point the angle of reflection\u2026',
+    criteria: [
+      'Says the law of reflection holds at both surfaces: the angle of reflection equals the angle of incidence from the normal.',
+      'Says a mirror is smooth, so the normal points the same way all over it.',
+      'Says parallel rays therefore leave the mirror still parallel, and that preserved arrangement is the image.',
+      'Says paper is rough, so each tiny facet has its own normal pointing a different way.',
+      'Says the rays are therefore scattered in all directions and the arrangement is lost.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A wet road at night is dangerous to drive on partly because it reflects headlights very differently from a dry one. Explain what changes when the road is wet, and why oncoming drivers are dazzled by long streaks of light.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A dry road surface is rough, so\u2026',
+    criteria: [
+      'Says a dry road is rough, so it scatters headlight beams in all directions.',
+      'Says scattering sends a little light to every driver and lets the road surface itself be seen.',
+      'Says water fills the roughness and leaves a smooth surface.',
+      'Says the smooth surface reflects specularly, sending the beam mostly in one direction rather than scattering it.',
+      'Says an oncoming driver in that direction receives a great deal of the light at once, while the road surface itself becomes hard to make out.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, a: 40, surf: 0, touched: {}, workedStep: 0, formPick: null, insertPick: null, ansText: '', ansUnit: '', buildOpen: false });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+
+  cfifaVals(q1, q2) {
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: q2 ? [q1, q2] : [q1]
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const sf = SURFS[s.surf];
+    const a = s.a;
+    const R = (deg) => (deg * Math.PI) / 180;
+    const L = 300;
+    const ix = 500 - L * Math.sin(R(a)), iy = 340 - L * Math.cos(R(a));
+    let refs = '';
+    if (sf.spread === 0) {
+      const rx = 500 + L * Math.sin(R(a)), ry = 340 - L * Math.cos(R(a));
+      refs = 'M500 340 L' + rx.toFixed(1) + ' ' + ry.toFixed(1);
+    } else {
+      for (let k = -2; k <= 2; k++) {
+        const ang = a + k * (sf.spread / 2);
+        const cl = Math.max(-80, Math.min(80, ang));
+        refs += 'M500 340 L' + (500 + L * Math.sin(R(cl))).toFixed(1) + ' ' + (340 - L * Math.cos(R(cl))).toFixed(1) + ' ';
+      }
+    }
+    const arcR = 110;
+    const arcs = 'M500 ' + (340 - arcR) + ' A' + arcR + ' ' + arcR + ' 0 0 0 ' + (500 - arcR * Math.sin(R(a))).toFixed(1) + ' ' + (340 - arcR * Math.cos(R(a))).toFixed(1) +
+      ' M500 ' + (340 - arcR) + ' A' + arcR + ' ' + arcR + ' 0 0 1 ' + (500 + arcR * Math.sin(R(a))).toFixed(1) + ' ' + (340 - arcR * Math.cos(R(a))).toFixed(1);
+    let surfPath = 'M120 340 H880';
+    if (s.surf === 1 || s.surf === 3) {
+      surfPath = 'M120 340 q10 -8 20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0 t20 0';
+    } else if (s.surf === 2) {
+      surfPath = 'M120 340 l30 -12 l28 16 l32 -14 l30 12 l28 -16 l30 14 l32 -10 l28 14 l30 -16 l28 12 l32 -12 l30 14 l28 -14 l30 12 l28 -12 l30 10 l28 -8';
+    }
+    return Object.assign({
+      hookOptions: [
+        { letter: 'A', text: 'The paper does not really reflect light \u2014 it makes its own' },
+        { letter: 'B', text: 'The mirror keeps the rays in the arrangement they arrived in; the paper scrambles them' },
+        { letter: 'C', text: 'The mirror sends back far more light than the paper does' },
+        { letter: 'D', text: 'The paper absorbs the image and only sends back the brightness' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'Both surfaces send back most of the light, and both obey the law of reflection at every single point. The difference is the surface itself. A mirror is smooth, so parallel rays stay parallel and the arrangement of the light survives \u2014 and the arrangement is the image. Paper is rough, so each ray leaves at its own angle and the arrangement is gone.',
+
+      benchProgress: (s.touched.a || s.touched.surf) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It is still 30\u00b0 \u2014 the rule holds on every surface' },
+        { letter: 'B', text: 'It becomes random, because paper scatters light' },
+        { letter: 'C', text: 'It becomes 0\u00b0, because paper sends light straight back out' },
+        { letter: 'D', text: 'There is no angle of reflection, because paper absorbs the ray' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      incValue: a, incLabel: a + '\u00b0',
+      onInc: (e) => this.setState((st) => ({ a: Number(e.target.value), touched: Object.assign({}, st.touched, { a: true }) })),
+      surfTabs: SURFS.map((x, i) => ({
+        label: x.label, pressed: s.surf === i, style: this.seg(s.surf === i, true, false),
+        onClick: () => this.setState((st) => ({ surf: i, touched: Object.assign({}, st.touched, { surf: true }) }))
+      })),
+      surfPath: surfPath,
+      incRay: 'M' + ix.toFixed(1) + ' ' + iy.toFixed(1) + ' L500 340',
+      refRays: refs.trim(),
+      refStyle: 'fill: none; stroke: #8FB7FF; stroke-width: ' + (sf.back < 20 ? '3' : '7') + '; stroke-linecap: round; stroke-linejoin: round;' + (sf.back < 20 ? ' opacity: .55;' : ''),
+      arcs: arcs,
+      refLabel: a + '\u00b0',
+      backLabel: 'about ' + sf.back + '%',
+      verdictWord: sf.kind,
+      surfCaption: sf.caption,
+      benchAlt: 'A ray arriving at ' + a + ' degrees to the normal on ' + sf.label.toLowerCase() + ', with the normal drawn dashed and ' +
+        (sf.spread === 0 ? 'one reflected ray leaving at the same angle on the other side.' : 'a fan of reflected rays leaving in a spread of directions.'),
+      benchNote: sf.note + ' Your ray comes in at ' + a + '\u00b0 from the normal and every reflected ray here leaves at ' + a +
+        '\u00b0 from the normal of the facet it hit; about ' + sf.back + '% of the light leaves again and the rest is absorbed.'
+    }, this.cfifaVals({
+      tab: 'Question 1', id: 'p702q1',
+      head: 'Your ray arrives at ' + a + '\u00b0 from the normal.',
+      formOptions: ['r = i, both measured from the normal', 'r = 90\u00b0 - i', 'r = 2 \u00d7 i'],
+      insertOptions: ['r = ' + a + '\u00b0', 'r = 90\u00b0 - ' + a + '\u00b0', 'r = 2 \u00d7 ' + a + '\u00b0'],
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+        line: 'the angle is already in degrees',
+        note: 'The protractor reads in degrees and the rule compares degrees with degrees, so there is nothing to convert.' },
+        { letter: 'F', label: 'Formula', line: 'r = i, both from the normal',
+          note: 'An equality: whatever the incoming angle is, the reflected one matches it.' },
+        { letter: 'I', label: 'Insert', line: 'i = ' + a + '\u00b0',
+          note: 'Read from the protractor on the bench, measured from the dashed normal.' },
+        { letter: 'F', label: 'Fine-tune', line: 'r = ' + a + '\u00b0, so the ray leaves at ' + (90 - a) + '\u00b0 to the surface',
+          note: 'The normal is at right angles to the surface, so the two angles add to 90\u00b0.' },
+        { letter: 'A', label: 'Answer', line: 'r = ' + a + '\u00b0',
+          note: 'On the far side of the normal from the incoming ray, and the same on any of the four surfaces.' }
+      ],
+      close: 'The five lines above give ' + a +
+        '\u00b0, which is the angle the bench above is drawing.'
+    }));
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

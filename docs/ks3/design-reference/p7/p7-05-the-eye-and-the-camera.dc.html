@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The eye and the camera · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Light</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">The eye and the camera</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Light · System</p>
+        <h1>The eye and the camera</h1>
+        <p class="ks3-bigq">Two instruments, built four hundred million years apart by completely different processes, and they have the same five parts doing the same five jobs. That is not a coincidence — it is what the physics of light leaves you.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Walk into a dark room and you cannot see. Wait a minute and you can.</h2>
+        <p class="ks3-hook-prompt">Nothing in the room has changed. No lamp has been switched on, no curtain opened. The same very small amount of light is arriving as when you walked in.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What has changed in the minute you waited?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>An eye and a camera are built to do the same job with the same physics. Light from a source — the Sun, a lamp, a screen — reflects off the things around you and some of it arrives at an opening. A <strong>convex lens</strong> behind that opening refracts the rays so that all the light from one point of the scene lands at one point at the back. There, something <strong>photosensitive</strong> — sensitive to light — absorbs it.</p>
+        <p>This is where the energy goes. Light carries energy from a source to an absorber, and at the absorber it does something. In your <strong>retina</strong> it is absorbed by pigment molecules in the rod and cone cells and causes a <strong>chemical</strong> change in them, which sets off an electrical signal along the optic nerve. In a camera it is absorbed by a sensor and produces an <strong>electrical</strong> signal directly. Older cameras used film, where the light caused a chemical change in silver compounds — the same effect as in the eye, kept rather than sent on.</p>
+        <p>The two also do the same two adjustments in different ways. Both control how much light gets in — the eye with the <strong>iris</strong> opening and closing the <strong>pupil</strong>, the camera with an adjustable <strong>aperture</strong>. And both keep the picture in focus — the camera by moving its lens, the eye by changing the shape of its own.</p>
+      </section>
+
+      <section id="s-eye" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · the same scene, two instruments</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">One scene. Two ways of catching it.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">The same scene at the same brightness, looked at by an eye and by a camera. Choose which one you are looking inside, and set how bright it is.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. You step from bright sunlight into a dim room. What does the pupil of your eye do, and why?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Which instrument</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ sysTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p75l" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How bright the scene is</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ lightLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p75l" min="0" max="4" step="1" value="{{ lightValue }}" onChange="{{ onLight }}" onInput="{{ onLight }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M120 200 V90 M120 90 l-11 18 M120 90 l11 18" style="fill: none; stroke: #E9DCC8; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <text x="60" y="72" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">THE SCENE</text>
+                  <path d="{{ bodyPath }}" style="fill: none; stroke: #8C8177; stroke-width: 6; stroke-linejoin: round;"></path>
+                  <path d="{{ stopPath }}" style="fill: none; stroke: #E9DCC8; stroke-width: 12; stroke-linecap: round;"></path>
+                  <path d="{{ lensPath }}" style="fill: #3A4A63; stroke: #8FB7FF; stroke-width: 4;"></path>
+                  <path d="{{ backPath }}" style="fill: none; stroke: #8FB7FF; stroke-width: 12; stroke-linecap: round;"></path>
+                  <path d="{{ rays }}" style="fill: none; stroke: #8FB7FF; stroke-width: 4; stroke-linecap: round;"></path>
+                  <path d="{{ imgArrow }}" style="fill: none; stroke: #E9DCC8; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round;"></path>
+                </svg>
+                <span style="position: absolute; left: 6%; right: 3%; top: 93%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); letter-spacing: .08em; color: #C6B9A7; white-space: normal; pointer-events: none;">{{ sysCaption }}</span>
+                <span style="{{ stopLabelStyle }}">{{ stopLabel }}</span>
+                <span style="{{ absorbLabelStyle }} font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ absorbName }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How bright the scene is</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ lightLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ luxLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How wide the opening is</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ stopLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ stopName }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How it keeps the picture sharp</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ focusWord }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What absorbs the light, and what it becomes</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ absorbWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-parts" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Same five jobs, two sets of parts</h2>
+        <div style="margin-top: 18px; overflow-x: auto; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 4px;">
+          <table style="border-collapse: collapse; width: 100%; min-width: 620px; font-size: 18px;">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">The job</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">In the eye</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">In a camera</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Keep the light out except through the opening</th><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">The tough white outer coat, and the iris</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">The body of the camera</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Control how much gets in</th><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">The iris, opening and closing the pupil</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">The aperture, opened and closed by blades</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Bring the rays back to a point</th><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">The cornea and the lens together</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">The lens</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Focus on near and far things</th><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Muscles change the shape of the lens</td><td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">A motor moves the lens back and forth</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 14px 16px; font-weight: 700;">Absorb the light and turn it into a signal</th><td style="padding: 14px 16px;">The retina: rod and cone cells, a chemical change, then nerve signals</td><td style="padding: 14px 16px;">The sensor: an electrical signal, straight away</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">The last row is the one this lesson is really about. Light carries energy from a source to an absorber, and at the absorber that energy is used to make something happen — a chemical change in a retina or in photographic film, an electrical signal in a camera sensor or a solar cell. A picture is the record of where that energy landed.</p>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">An eye and a camera both let light through an opening, focus it with a convex lens and absorb it at the back. Both control how much gets in — the iris opening the pupil, the aperture opening in a camera — and both keep the picture sharp, the eye by changing the shape of its lens and the camera by moving its lens. Light carries energy from a source to an absorber: in the retina it causes a chemical change in rod and cone cells which sets off nerve signals, and in a camera sensor it produces an electrical signal.</p>
+        </div>
+
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Your eyes send something out in order to see.&rdquo;</p>
+        <p>They receive and nothing more. Light leaves a source, bounces off an object and arrives at your eye, which is exactly why a room with no light in it shows you nothing however hard you stare \u2014 there is nothing arriving. Cats\u2019 eyes appear to glow at night because a mirror-like layer behind the retina sends headlight beams back out again, not because the cat is producing anything. The idea that sight is something the eye projects is an old and very persistent one, and every dark room disproves it.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;In a dark room your pupils open, and that is why you can eventually see.&rdquo;</p>
+          <p>Opening the pupil is part of it and much the smaller part, and it happens in about a second. Waiting a minute or two in the dark gives you something far bigger: the pigment in the rod cells of your retina rebuilds itself after being bleached by bright light, and a fully dark-adapted eye is thousands of times more sensitive than one that has just come indoors. The pupil is the aperture; dark adaptation is the retina being made more sensitive, and only one of those has anything a camera can copy.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>An eye and a camera both admit light through a controlled opening, focus it with a convex lens and absorb it at the back. The iris sets the size of the pupil and the aperture does the same job in a camera; the eye focuses by changing the shape of its lens and a camera by moving its lens. Light carries energy from a source to an absorber, and at the absorber it makes something happen: a chemical change in the rod and cone cells of the retina, which sets off nerve signals, or an electrical signal directly in a camera sensor.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Light causing a chemical change is not only how you see. Photographic film worked by light breaking down silver compounds in an emulsion, and the developing process made that invisible change visible. Photosynthesis is the same idea on an industrial scale: light absorbed by chlorophyll drives a chemical reaction that builds sugars. Sunburn is light absorbed by skin causing chemical damage to the molecules in it. In every case the light delivers energy from the source to an absorber, and the absorber does something with it.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p7-04-lenses-and-images.html">Lenses and images<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p7-06-colour-and-the-spectrum.html">Colour and the spectrum<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p7-07-why-things-look-coloured.html">Why things look coloured<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b7-01-the-photosynthesis-reaction.html">The photosynthesis reaction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The structure of the eye in detail, accommodation, short and long sight and their correction with lenses, and the transfer of energy by light to chemical and electrical stores.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check which part of an eye matches which part of a camera?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <aside aria-label="Getting help" style="margin: 26px 0 0; padding: 16px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-rule-strong);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">If this is about you</p>
+        <p style="margin: 6px 0 0; font-size: 15px; line-height: 1.6; color: var(--ks3-ink-body);">Never look directly at the Sun, at a welding arc or into a laser, even briefly — the damage is to the retina, it is painless at the time, and it does not heal. If your sight changes, or something feels wrong with an eye, that is worth telling someone the same day. You can talk to a doctor, a school nurse or any adult you trust. Childline is free, confidential and open at any hour, on <strong>0800 1111</strong>, and you do not have to give your name.</p>
+      </aside>
+
+      <p class="ks3-legal">The bench is a teaching model. The pupil and aperture widths are typical values for a healthy adult eye and for one ordinary camera lens, and both vary widely between individuals, with age and between cameras; the eye figures are given as diameters and the camera figures as the width of the opening in the lens rather than as f-numbers. The light levels are order-of-magnitude figures in lux and are meant for comparison, not measurement. The drawings are simplified cross-sections: the eye’s cornea does most of the focusing and is not drawn separately, and the retina, optic nerve, shutter and mirror are left out or reduced to one line. Both pictures at the back are inverted, as they are in life.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Waiting in the dark', short: 'DARK' },
+  { id: 's-eye', label: 'Eye and camera', short: 'BENCH' },
+  { id: 's-parts', label: 'Same jobs, two parts', short: 'PARTS' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-eye') return s.gate !== null && (s.touched.sys || s.touched.l);
+  if (id === 's-parts') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const LEVELS = [
+  { label: 'A moonless night', lux: 'about 0.001 lux', eye: 8.0, cam: 50 },
+  { label: 'A dim room', lux: 'about 20 lux', eye: 6.0, cam: 25 },
+  { label: 'An indoor room', lux: 'about 300 lux', eye: 4.5, cam: 12 },
+  { label: 'An overcast day', lux: 'about 5000 lux', eye: 3.0, cam: 6 },
+  { label: 'Bright sunlight', lux: 'about 50 000 lux', eye: 2.0, cam: 3 }
+];
+
+const SYS = [
+  { label: 'Your eye', stopName: 'the pupil, opened by the iris', focus: 'Muscles squeeze the lens fatter or let it go thinner',
+    absorb: 'The retina \u2014 a chemical change in rod and cone cells, then nerve signals',
+    absorbName: 'RETINA', caption: 'THE EYE \u2014 CORNEA, IRIS AND PUPIL, LENS, RETINA' },
+  { label: 'A camera', stopName: 'the aperture, opened by blades', focus: 'A motor slides the whole lens backwards or forwards',
+    absorb: 'The sensor \u2014 an electrical signal, straight away',
+    absorbName: 'SENSOR', caption: 'A CAMERA \u2014 BODY, APERTURE, LENS, SENSOR' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Match the parts',
+    question: 'Which pair of parts do the same job in an eye and in a camera?',
+    options: [
+      { text: 'The pupil and the aperture \u2014 both set how much light is let in.', correct: true },
+      { text: 'The retina and the lens \u2014 both bring the light to a point at the back.', correction: 'The retina is the absorber, not a focuser. Its opposite number is the camera sensor; the eye\u2019s lens is matched by the camera\u2019s lens.' },
+      { text: 'The iris and the shutter \u2014 both open to let a picture through.', correction: 'The iris changes the size of the opening; a shutter controls how long it stays open. The camera part that matches the iris is the aperture.' },
+      { text: 'The optic nerve and the lens \u2014 both carry the picture inwards.', correction: 'The optic nerve carries a signal after the light has been absorbed; the lens handles the light before it lands. Different ends of the chain.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A student says you can see a book in a dark room because your eyes send out rays that reach it. Which statement is right?',
+    options: [
+      { text: 'Eyes only receive. Light has to come from a source, reflect off the book and arrive at the eye \u2014 which is why a room with no light in it shows nothing at all.', correct: true },
+      { text: 'The student is right, and it is why cats\u2019 eyes glow in the dark.', correction: 'Cats\u2019 eyes appear to glow because a mirror-like layer behind the retina reflects light that arrived from outside, usually headlights. Nothing is being produced.' },
+      { text: 'Eyes send out rays, but they are too weak to reach anything more than a metre or so away.', correction: 'They send nothing out at any distance. If they did, a completely dark room would be visible, and it is not.' },
+      { text: 'You cannot see the book because your pupils are not wide enough, not because there is no light.', correction: 'The verdict about not seeing is right and the reason is wrong. A fully open pupil in a room with no light still receives nothing, because there is nothing to receive.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Trace the journey of the light from a lamp to a signal in your brain when you look at a red apple, naming what happens at the pupil, the lens and the retina.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Light leaves the lamp and\u2026',
+    criteria: [
+      'Says light leaves the lamp and reflects off the apple.',
+      'Says some of that reflected light enters the eye through the pupil, whose size the iris sets.',
+      'Says the lens refracts the rays so that light from each point of the apple meets at one point on the retina.',
+      'Says the retina absorbs the light and its energy causes a chemical change in the rod and cone cells.',
+      'Says that sets off electrical signals which travel along the optic nerve to the brain.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A camera and an eye both have to focus on something close and then on something far away. Explain how each one does it, and say why the eye cannot use the camera\u2019s method.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A camera focuses by\u2026',
+    criteria: [
+      'Says a camera moves its lens closer to or further from the sensor.',
+      'Says the eye changes the shape of its lens instead, making it fatter for close objects.',
+      'Says muscles inside the eye do that squeezing.',
+      'Says the retina is at a fixed distance behind the lens, so the eye cannot move the lens to suit.',
+      'Says both methods have the same purpose: putting the sharp picture exactly on the absorbing surface.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, sys: 0, l: 2, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const L = LEVELS[s.l];
+    const y = SYS[s.sys];
+    const eye = s.sys === 0;
+    const mm = eye ? L.eye : L.cam;
+    const rPx = eye ? mm * 9 : mm * 1.7;
+    const cx = 520;
+    const body = eye
+      ? 'M' + cx + ' 60 a140 140 0 1 1 -0.1 0 M' + (cx - 140) + ' 200 h-70'
+      : 'M420 80 H860 V320 H420 Z M420 120 H360 V280 H420';
+    const stop = 'M' + (cx - 118) + ' ' + (200 - rPx).toFixed(1) + ' V' + (200 - 6) + ' M' + (cx - 118) + ' ' + (200 + 6) + ' V' + (200 + rPx).toFixed(1);
+    const lens = eye
+      ? 'M' + (cx - 60) + ' 120 Q' + (cx - 16) + ' 200 ' + (cx - 60) + ' 280 Q' + (cx - 104) + ' 200 ' + (cx - 60) + ' 120 Z'
+      : 'M520 116 Q560 200 520 284 Q480 200 520 116 Z';
+    const back = eye
+      ? 'M' + (cx + 100) + ' 90 A140 140 0 0 1 ' + (cx + 100) + ' 310'
+      : 'M840 110 V290';
+    const bx = eye ? cx + 108 : 840;
+    const rays = 'M120 90 L' + (cx - 118) + ' ' + (200 - rPx * 0.7).toFixed(1) + ' L' + bx + ' 255 M120 200 L' + (cx - 118) + ' ' + (200 + rPx * 0.7).toFixed(1) + ' L' + bx + ' 200';
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Your pupils have opened wider, and that is the whole of it' },
+        { letter: 'B', text: 'Your pupils opened, and the retina itself has also become far more sensitive' },
+        { letter: 'C', text: 'Your eyes have started sending out a little light of their own' },
+        { letter: 'D', text: 'Your brain has learned the shape of the room and is filling in the rest' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'Two things happen and they are wildly different sizes. The pupil widens within a second or so, letting in perhaps ten times as much light. Then, over several minutes, the pigment in the rod cells of your retina rebuilds after being bleached by the daylight outside, and a fully dark-adapted eye is thousands of times more sensitive than one that has just come in. A camera can copy the first and has nothing to match the second.',
+
+      benchProgress: (s.touched.sys || s.touched.l) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It opens wider, to let more of the little light there is reach the retina' },
+        { letter: 'B', text: 'It closes down, to protect the retina from the change' },
+        { letter: 'C', text: 'It stays the same size, and the lens changes shape instead' },
+        { letter: 'D', text: 'It opens wider, so the eye can send more light out into the room' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      sysTabs: SYS.map((x, i) => ({
+        label: x.label, pressed: s.sys === i, style: this.seg(s.sys === i, true, false),
+        onClick: () => this.setState((st) => ({ sys: i, touched: Object.assign({}, st.touched, { sys: true }) }))
+      })),
+      lightValue: s.l, lightLabel: L.label,
+      onLight: (e) => this.setState((st) => ({ l: Number(e.target.value), touched: Object.assign({}, st.touched, { l: true }) })),
+      luxLabel: L.lux,
+      bodyPath: body, stopPath: stop, lensPath: lens, backPath: back, rays: rays,
+      imgArrow: 'M' + bx + ' 200 V255 M' + bx + ' 255 l-9 -15 M' + bx + ' 255 l9 -15',
+      stopLabel: mm.toFixed(1) + ' mm across',
+      stopName: y.stopName,
+      stopLabelStyle: 'position:absolute;left:' + (((cx - 118) / 1000) * 100).toFixed(2) +
+        '%;top:82%;transform:translate(-50%,0);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.4vw,17px);color:#E9DCC8;white-space:nowrap;pointer-events:none;',
+      focusWord: y.focus,
+      absorbWord: y.absorb,
+      absorbName: y.absorbName,
+      absorbLabelStyle: 'position:absolute;left:' + (((bx + 16) / 1000) * 100).toFixed(2) + '%;top:14%;' +
+        'font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.4vw,17px);color:#8FB7FF;white-space:nowrap;pointer-events:none;',
+      sysCaption: y.caption,
+      benchAlt: 'A cross-section of ' + (eye ? 'an eye' : 'a camera') + ' with the scene on the left, two rays crossing through an opening drawn ' +
+        mm.toFixed(1) + ' millimetres across and a lens behind it, meeting at the ' + y.absorbName.toLowerCase() + ' at the back, where the picture is inverted.',
+      benchNote: (eye
+        ? 'In ' + L.label.toLowerCase() + ' the iris holds the pupil at about ' + mm.toFixed(1) + ' mm across. A camera looking at the same scene opens its aperture to about ' + LEVELS[s.l].cam.toFixed(1) + ' mm, because it is a bigger instrument doing the same job.'
+        : 'In ' + L.label.toLowerCase() + ' this camera opens its aperture to about ' + mm.toFixed(1) + ' mm. An eye looking at the same scene holds its pupil at about ' + LEVELS[s.l].eye.toFixed(1) + ' mm.') +
+        ' Either way the opening is only the doorway: the lens still has to put the rays back together at the back, and the ' + y.absorbName.toLowerCase() +
+        ' still has to absorb the light and turn it into a signal. ' + (eye
+          ? 'That signal starts as a chemical change in the rod and cone cells.'
+          : 'That signal is electrical from the moment the light lands.')
+    };
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

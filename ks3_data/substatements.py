@@ -741,6 +741,122 @@ SUBSTATEMENTS = {
               "on the ear drum.", "P6"),
         ("c", "Sound waves are longitudinal.", "P6"),
     ],
+    # ── P7 · Light ──────────────────────────────────────────────────────
+    #
+    # Six statements over seven slots (ratio 0.86) — the surplus case again,
+    # and the reason three of the six are split is Design's own §2 table:
+    # `LGT.04` alone is claimed by FOUR lessons, which without a notation the
+    # coverage gate reads as one statement owned four times. `LGT.01`,
+    # `LGT.02` and `LGT.05` are whole and take no sub-IDs.
+    #
+    # The bullet reads:
+    #   "the transmission of light through materials: absorption, diffuse
+    #    scattering and specular reflection at a surface"
+    # Two clauses, and P7 teaches them two lessons apart: p7-02 owns what a
+    # surface does to the light it sends BACK, p7-07 owns what it does to the
+    # light it keeps. The clause order here follows the split rather than the
+    # bullet's own word order, because scattering and specular reflection are
+    # one lesson's idea and absorption is another's.
+    "KS3.P.LGT.03": [
+        ("a", "The transmission of light through materials: diffuse "
+              "scattering and specular reflection at a surface.", "P7"),
+        ("b", "Absorption of light at a surface.", "P7"),
+    ],
+    # The bullet reads:
+    #   "use of ray model to explain imaging in mirrors, the pinhole camera,
+    #    the refraction of light and action of convex lens in focusing
+    #    (qualitative); the human eye"
+    # Four separate lessons' worth, and the widest split in the key stage:
+    # p7-02 owns the mirror, p7-03 owns refraction, p7-04 owns the pinhole and
+    # the convex lens together — they are one argument, the bargain and the
+    # thing that refuses it — and p7-05 owns the eye.
+    "KS3.P.LGT.04": [
+        ("a", "Use of the ray model to explain imaging in mirrors.", "P7"),
+        ("b", "The refraction of light.", "P7"),
+        ("c", "The pinhole camera, and the action of a convex lens in "
+              "focusing (qualitative).", "P7"),
+        ("d", "The human eye.", "P7"),
+    ],
+    # The bullet reads:
+    #   "colours and the different frequencies of light, white light and
+    #    prisms (qualitative only); differential colour effects in absorption
+    #    and diffuse reflection"
+    # Two clauses and two lessons: p7-06 establishes that white light is a
+    # mixture sorted by frequency, p7-07 uses that to explain what a coloured
+    # surface does. Design's §4 records that neither depends on the other.
+    "KS3.P.LGT.06": [
+        ("a", "Colours and the different frequencies of light; white light "
+              "and prisms (qualitative only).", "P7"),
+        ("b", "Differential colour effects in absorption and diffuse "
+              "reflection.", "P7"),
+    ],
+    # ── P8 · Electric circuits ──────────────────────────────────────────
+    #
+    # P8 is the most surplus-slot unit in physics: THREE statements over
+    # SEVEN lessons, a ratio of 0.43. Design's `NOTES-P8-P9.md` FLAG 1 is the
+    # third repeat of the flag P4 and P6 already answered — *"a gate counting
+    # statements per lesson will read `CUR.01` as claimed three times"* — and
+    # she is right that it would. She could not see that the notation exists,
+    # because this file is not in the read-only reference set she works from.
+    #
+    # Minted lazily, per unit, at authoring time (rule 3 above). `CUR.03` is
+    # whole and takes no sub-IDs; `p8-07` owns no subject-content clause at
+    # all (her FLAG 2) and claims a Working Scientifically statement instead,
+    # which §5.7 exempts from the exactly-once rule.
+    #
+    # The bullet reads:
+    #   "electric current, measured in amperes, in circuits, series and
+    #    parallel circuits, currents add where branches meet and current as
+    #    flow of charge"
+    # Three clauses, and P8 teaches them as three lessons: p8-01 owns what a
+    # current IS and the loop it needs, p8-02 owns the two arrangements,
+    # p8-03 owns what happens where branches meet.
+    "KS3.P.CUR.01": [
+        ("a", "Electric current, measured in amperes, in circuits; current "
+              "as a flow of charge.", "P8"),
+        ("b", "Series and parallel circuits.", "P8"),
+        ("c", "Currents add where branches meet.", "P8"),
+    ],
+    # The bullet reads:
+    #   "potential difference, measured in volts, battery and bulb ratings;
+    #    resistance, measured in ohms, as the ratio of potential difference
+    #    (p.d.) to current"
+    # Two clauses and two lessons. The semicolon in the source is doing the
+    # dividing: what a p.d. IS and what a rating means is p8-04's, and the
+    # RATIO that defines resistance is p8-05's whole subject.
+    "KS3.P.CUR.02": [
+        ("a", "Potential difference, measured in volts; battery and bulb "
+              "ratings.", "P8"),
+        ("b", "Resistance, measured in ohms, as the ratio of potential "
+              "difference (p.d.) to current.", "P8"),
+    ],
+    # ── P9 · Static electricity ─────────────────────────────────────────
+    #
+    # P9 owns two statements over three slots (ratio 0.67) — the surplus case
+    # again, and Design's own §2 table splits the compound one at the clause.
+    # `STAT.02` is whole and takes no sub-ID: *the idea of* an electric field
+    # is one lesson's worth and `p9-03` owns all of it.
+    #
+    # ⚑ Her `NOTES-P8-P9.md` FLAG 1 asks for this notation for the third time
+    # in the physics run ("the register needs `.a` / `.b` sub-IDs, or lesson
+    # records need `covers_partial`"). It already existed, and she could not
+    # see it: her access is read-only and this file is not in the reference
+    # set she was given. Same answer as P4's and P6's — mint lazily, per unit,
+    # at authoring time.
+    #
+    # The bullet reads:
+    #   "separation of positive or negative charges when objects are rubbed
+    #    together: transfer of electrons, forces between charged objects"
+    # Two clauses and two lessons: `p9-01` owns HOW an object becomes charged,
+    # `p9-02` owns what two charged objects then do to each other. Splitting
+    # them is not a convenience — a page that taught both would have to teach
+    # induction as an aside, and induction is the whole second half of
+    # `p9-02`.
+    "KS3.P.STAT.01": [
+        ("a", "Separation of positive or negative charges when objects are "
+              "rubbed together: transfer of electrons.", "P9"),
+        ("b", "Forces between charged objects.", "P9"),
+    ],
 }
 
 

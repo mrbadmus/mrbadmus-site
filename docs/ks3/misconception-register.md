@@ -125,10 +125,13 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `FORCE` | Forces and motion — what a speed is and what it is measured against; and what a force is, what it takes to make one, what is left over when they are added, and what that leftover does | 2026-08-24, by P3; widened 24 Aug 2026 by P4 |
 | `PRESS` | Pressure — what a force does to a surface, which way a fluid pushes, and what happens where there is nothing to push | 2026-08-25, by P5 |
 | `WAVE` | Waves — what travels and what stays put, what a wave's two measurements are, and how sound is made, carried, reflected, heard and put to work | 2026-08-25, by P6 |
+| `LIGHT` | Light — what travels, how fast, what a surface does to it, how an image forms, and what colour is | 2026-08-25, by P7 |
+| `CIRC` | Current and circuits — what a current is and what it is not, what a battery does, what happens at a junction, what a resistance is, and what a meter measures | 2026-08-25, by P8 |
+| `CHRG` | Electric charge — where charge comes from when things are rubbed, what a charged object does to another, and what an electric field is | 2026-08-25, by P9 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
-and `CIRC` (current and circuits).
+and ~~`CIRC` (current and circuits)~~. **Both are now open and the list is empty.**
 
 ⊕ **`FORCE` IS OPEN AS OF 24 Aug 2026, BY P3.** The strikethrough is kept rather than the line
 deleted, because the sentence is what a later lane would read to decide whether to mint a new
@@ -143,6 +146,15 @@ exists rather than left standing beside it — and applying it consistently is t
 that minted `MOT` here would leave the next lane with two plausible families and no rule.
 
 P4 continues from `FORCE-12`.
+
+⊕ **`CIRC` IS OPEN AS OF 25 Aug 2026, BY P8.** The strikethrough is kept rather than the line
+deleted, for the reason `FORCE`'s is: the sentence is what a later lane would read to decide
+whether to mint a new family, and the answer is now no. Design's `NOTES-P8-P9.md` §7 wrote
+her sixteen proposed entries against `CIRC` and cited none of them, because access was read-only
+and the family was not open. It is open now, on her numbers and in her words, and the same
+ruling that discharged `ENERGY` into `ENER` and `MOT` into `FORCE` applies here: a reservation is
+discharged INTO the family that exists rather than left standing beside a new one. **No `ELEC`
+family is minted.**
 
 ⊕ **`ENERGY` IS GONE FROM THAT LIST, AND THE FAMILY IT RESERVED IS OPEN UNDER A SHORTER
 NAME.** The reserved prefix was `ENERGY` (energy and temperature); Design's C7 delivery
@@ -1655,6 +1667,39 @@ The pattern this follows is the chemistry one — `MIX` for C3, `REACT` for C4, 
 | `PRESS-15` | A sealed bag swells at altitude because gravity is weaker up there. | `climb` | `s-ladder` | `atmospheric-pressure` |
 | `PRESS-16` | The air runs out at a definite height, and above it there is none at all. | `s-ladder` | `climb` | `atmospheric-pressure` |
 
+⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor
+rather than from her §6 list. Each is a genuinely separate belief rather than a re-dressing of one
+already minted, which is the `p1-08` test this register applies:
+
+  * `PRESS-04` more of the sole touching the floor means MORE pressure on it (`p5-01` rung 2
+    option C). Separate from `PRESS-01`: a student can have given up "sharp pushes harder" and
+    still have the area the wrong way round.
+  * `PRESS-08` a NARROW container concentrates the pressure, so its base takes more than a wide
+    one at the same depth (`p5-02` rung 2 option B). It is `PRESS-05` from the other side — not
+    "more water" but "a narrower tube concentrates it" — and it is a `p5-01` idea being
+    misapplied one lesson later, which is exactly the kind of thing worth its own id.
+  * `PRESS-12` being HOLLOW is what makes something float (`p5-03` rung 2 option D), whose
+    correction is that a hollow object full of water sinks.
+  * `PRESS-16` the air runs out at a definite height and above it there is none at all. It
+    arrived with Design's own six-band stack, which thins upwards without ever reaching zero, and
+    with the bench readout that never gets to 0 per cent.
+
+⚠️ **`PRESS-02` AND `PRESS-14` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on either page
+asks the student to commit to them; each is confronted because it sits underneath one that is.
+
+⚠️ **EXPECTED TO RESURFACE.** `PRESS-13` — *a vacuum sucks* — in P11 (the particle model of a
+gas) and anywhere a syringe, a pipette or a pump is drawn. `PRESS-06` — *the stuff is heavier
+lower down* — is the same shape as `PART`'s compression beliefs and will meet them in P11.
+
+⊖ **`p5-01` RE-CONFRONTS `ENER-19` AND MINTS NOTHING.** Design's FLAG 9 records that the register
+routes a force-multiplication belief to a P5 `hydraulics` lesson that `structure.py` does not
+have, and resolves it by putting the hydraulic jack in `p5-01`'s *Going further* with the distance
+traded explicitly against the force. That resolution is kept. **The register was never pointing at
+nothing**: the entry she names is `ENERGY-11`, the `ENERGY` prefix was discharged into `ENER` on
+21 Aug, and the belief lives as `ENER-19` — *"a machine that multiplies force gives you energy
+for free"* — owned by `p1-08 simple-machines` and confronted by its lever bench. `p5-01` meets it
+in a second situation, which is what this register asks a lesson to do.
+
 ### `WAVE` — waves and sound
 
 ⊕ **OPENED 25 Aug 2026, BY P6.** `docs/ks3/design-reference/p6/NOTES-P6-P7.md` §7 pre-allocated `WAVE-01` … `WAVE-36`, four per
@@ -1705,39 +1750,6 @@ fills it reads it.
 | `WAVE-34` | A scan works by shining ultrasound through you and seeing what comes out the other side. | *(none — nothing on the page asks for this commitment)* | `s-think` | `ultrasound-at-work` |
 | `WAVE-35` | Ultrasound is used because it travels faster than audible sound. | `s-ladder` | `gauge` | `ultrasound-at-work` |
 | `WAVE-36` | The gel on the skin is there to help the probe slide about. | `s-ladder` | `s-think` | `ultrasound-at-work` |
-
-⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor
-rather than from her §6 list. Each is a genuinely separate belief rather than a re-dressing of one
-already minted, which is the `p1-08` test this register applies:
-
-  * `PRESS-04` more of the sole touching the floor means MORE pressure on it (`p5-01` rung 2
-    option C). Separate from `PRESS-01`: a student can have given up "sharp pushes harder" and
-    still have the area the wrong way round.
-  * `PRESS-08` a NARROW container concentrates the pressure, so its base takes more than a wide
-    one at the same depth (`p5-02` rung 2 option B). It is `PRESS-05` from the other side — not
-    "more water" but "a narrower tube concentrates it" — and it is a `p5-01` idea being
-    misapplied one lesson later, which is exactly the kind of thing worth its own id.
-  * `PRESS-12` being HOLLOW is what makes something float (`p5-03` rung 2 option D), whose
-    correction is that a hollow object full of water sinks.
-  * `PRESS-16` the air runs out at a definite height and above it there is none at all. It
-    arrived with Design's own six-band stack, which thins upwards without ever reaching zero, and
-    with the bench readout that never gets to 0 per cent.
-
-⚠️ **`PRESS-02` AND `PRESS-14` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on either page
-asks the student to commit to them; each is confronted because it sits underneath one that is.
-
-⚠️ **EXPECTED TO RESURFACE.** `PRESS-13` — *a vacuum sucks* — in P11 (the particle model of a
-gas) and anywhere a syringe, a pipette or a pump is drawn. `PRESS-06` — *the stuff is heavier
-lower down* — is the same shape as `PART`'s compression beliefs and will meet them in P11.
-
-⊖ **`p5-01` RE-CONFRONTS `ENER-19` AND MINTS NOTHING.** Design's FLAG 9 records that the register
-routes a force-multiplication belief to a P5 `hydraulics` lesson that `structure.py` does not
-have, and resolves it by putting the hydraulic jack in `p5-01`'s *Going further* with the distance
-traded explicitly against the force. That resolution is kept. **The register was never pointing at
-nothing**: the entry she names is `ENERGY-11`, the `ENERGY` prefix was discharged into `ENER` on
-21 Aug, and the belief lives as `ENER-19` — *"a machine that multiplies force gives you energy
-for free"* — owned by `p1-08 simple-machines` and confronted by its lever bench. `p5-01` meets it
-in a second situation, which is what this register asks a lesson to do.
 
 ### `MATL` — metals and materials: what an order of reactivity is, what it predicts, and the words a material is judged by
 
@@ -2287,3 +2299,282 @@ EXTRACTION — metals are in the ground as metal, so getting them out is digging
 can hold either without the other, and joining them would blur the one thing C10 adds to C9: that
 the interesting number is not what it costs to get a material out but what fraction of it ever
 comes back.
+
+### `LIGHT` — light
+
+⊕ **OPENED 25 Aug 2026, BY P7.** `docs/ks3/design-reference/p7/NOTES-P6-P7.md` §7 pre-allocated `LIGHT-01` … `LIGHT-28`, four per
+lesson in slot order, and authored FOURTEEN of them without citing one on any page — because access was read-only and this register
+had no open family for light. **Every id she wrote is minted here on the number she gave it.** The fourteen gaps are minted from the
+real lesson content, which is the register's own rule: an id is minted from what a page actually confronts, never reserved against
+what one might.
+
+⚠️ **HER STATEMENTS ARE TAKEN FROM THE PAGE, NOT FROM THE NOTES, WHERE THE TWO DIFFER.** Both are hers, and the page's wording is
+the sentence a student actually meets — her `#s-think` quote is what appears in quotation marks in front of them. So `LIGHT-01` is
+*"Light is instant — it takes no time at all"* rather than the notes' shorter *"Light is instant"*, and the same choice is made on
+`LIGHT-02`, `LIGHT-06`, `LIGHT-09`, `LIGHT-10`, `LIGHT-13`, `LIGHT-18`, `LIGHT-21` and `LIGHT-25`. This is the `WAVE-33` / `WAVE-34`
+precedent, applied on the way in rather than as a correction.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `LIGHT-01` | Light is instant — it takes no time at all. | `s-hook` | `s-think` | `light-travels` |
+| `LIGHT-02` | Space is empty, so light has nothing to travel in and must be slowed down by it. | `s-ladder` | `s-think` | `light-travels` |
+| `LIGHT-03` | Light is longitudinal, like sound is. | *(none — nothing on the page asks for this commitment)* | `light-vs-waves` | `light-travels` |
+| `LIGHT-04` | The thunder is made a moment after the flash, so the two did not start together. | `s-hook` | `s-hook` | `light-travels` |
+| `LIGHT-05` | Rough surfaces break the law of reflection. | `ray` | `s-think` | `reflection-mirrors-and-scattering` |
+| `LIGHT-06` | Angles in reflection are measured from the mirror. | `s-ladder` | `s-think` | `reflection-mirrors-and-scattering` |
+| `LIGHT-07` | The mirror sends back far more light than the paper does. | `s-hook` | `ray` | `reflection-mirrors-and-scattering` |
+| `LIGHT-08` | Only shiny surfaces can reflect light. | `s-ladder` | `ray` | `reflection-mirrors-and-scattering` |
+| `LIGHT-09` | The straw really does bend in water. | `s-hook` | `s-think` | `refraction` |
+| `LIGHT-10` | Light bends because water is thicker and pushes it sideways. | `block` | `s-think` | `refraction` |
+| `LIGHT-11` | Light speeds up when it enters glass, because glass is clearer than air. | `s-ladder` | `block` | `refraction` |
+| `LIGHT-12` | Light only slows down when it bends, so a ray that carries straight on has not changed speed. | `block` | `block` | `refraction` |
+| `LIGHT-13` | The pinhole flips the picture over, so a lens must flip it back. | `s-hook` | `s-think` | `lenses-and-images` |
+| `LIGHT-14` | A bigger hole makes a bigger picture. | `s-ladder` | `camera` | `lenses-and-images` |
+| `LIGHT-15` | A longer box spreads the light out, so the picture gets smaller. | `camera` | `camera` | `lenses-and-images` |
+| `LIGHT-16` | A wider hole cannot blur the picture, because light travels in straight lines. | `s-ladder` | `lens-pair` | `lenses-and-images` |
+| `LIGHT-17` | Your eyes send something out in order to see. | `s-ladder` | `s-think` | `the-eye-and-the-camera` |
+| `LIGHT-18` | In a dark room your pupils open, and that is why you can eventually see. | `s-hook` | `s-think` | `the-eye-and-the-camera` |
+| `LIGHT-19` | The retina focuses the light, the way a lens does. | `s-ladder` | `eye-camera-parts` | `the-eye-and-the-camera` |
+| `LIGHT-20` | A camera's shutter does the same job as the iris. | `s-ladder` | `eye-camera-parts` | `the-eye-and-the-camera` |
+| `LIGHT-21` | The prism adds the colour to the light. | `s-hook` | `s-think` | `colour-and-the-spectrum` |
+| `LIGHT-22` | A rainbow has seven colours with lines between them. | *(none — nothing on the page asks for this commitment)* | `s-think` | `colour-and-the-spectrum` |
+| `LIGHT-23` | High-frequency light is bent the least by a prism. | `s-ladder` | `spectrum-band` | `colour-and-the-spectrum` |
+| `LIGHT-24` | The colours come off the coloured edges of the prism. | `s-hook` | `prism` | `colour-and-the-spectrum` |
+| `LIGHT-25` | An object has a colour, and the light just lets you see it. | `lamp` | `s-think` | `why-things-look-coloured` |
+| `LIGHT-26` | A red filter turns white light red. | *(none — nothing on the page asks for this commitment)* | `s-think` | `why-things-look-coloured` |
+| `LIGHT-27` | The lamp's colour and the object's colour mix on the surface to give what you see. | `s-hook` | `lamp` | `why-things-look-coloured` |
+| `LIGHT-28` | You cannot see red under a green lamp because the eye stops being able to, not because the light is not there. | `s-hook` | `colour-grid` | `why-things-look-coloured` |
+
+⚠️ **FOURTEEN ROWS ARE NOT IN DESIGN'S PROPOSED TABLE.** Her §7 pre-allocates `LIGHT-01`, `02`, `05`, `06`, `09`, `10`, `13`, `14`,
+`17`, `18`, `21`, `22`, `25` and `26` — the first two of each lesson's four — and leaves the rest of each range as a named spare.
+A spare that is never used is an id reserved against nothing, so each of the fourteen below is minted from a delivered distractor or
+a delivered quote instead, and each is a genuinely separate belief rather than a re-dressing of one already minted. That is the
+`p1-08` test this register applies.
+
+  * `LIGHT-03` light is LONGITUDINAL, like sound (`p7-01`'s comparison table, row four). Separate from `LIGHT-02`: a student can
+    have accepted that light crosses a vacuum and still be drawing it as a squeeze passed along.
+  * `LIGHT-04` the thunder is MADE a moment after the flash (`p7-01` hook option B). It is the one rival explanation that fits the
+    observation exactly, and it survives being told that light is faster.
+  * `LIGHT-07` the mirror sends back FAR MORE light than the paper (`p7-02` hook option C). This is how much against how ORDERED,
+    and the bench answers it with two numbers that are nearly the same — 95% and 80%.
+  * `LIGHT-08` only SHINY surfaces reflect (`p7-02` rung 2 option D, *"Paper is not shiny enough"*). Crumpled foil is the object
+    that separates shiny from smooth, and it is on the tab row for that reason.
+  * `LIGHT-11` light SPEEDS UP in glass because glass is clearer than air (`p7-03` rung 1 option C). Separate from `LIGHT-10`: this
+    one has the direction of the speed change wrong rather than the mechanism of the bend.
+  * `LIGHT-12` light only slows down WHEN IT BENDS (`p7-03` rung 2 option C, and her gate option C). It is the exact converse of the
+    zero-angle state the bench is built around, and it is why that state has its own branch and its own verdict word.
+  * `LIGHT-15` a LONGER box makes a SMALLER picture (`p7-04` rung 1 option B). Separate from `LIGHT-14`: that one is about the hole,
+    this one is about the box, and a student can have the box the wrong way round while knowing the hole does nothing.
+  * `LIGHT-16` a wider hole CANNOT blur, because light travels in straight lines (`p7-04` rung 2 option C). The premise is correct
+    and the rule drawn from it is wrong, which is exactly why students reach for it.
+  * `LIGHT-19` the RETINA focuses (`p7-05` rung 1 option B). It pairs the wrong two parts and it is the commonest mismatch in the
+    five-job table.
+  * `LIGHT-20` a camera's SHUTTER matches the iris (`p7-05` rung 1 option C). How WIDE against how LONG, and the eye has nothing at
+    all that does the second.
+  * `LIGHT-23` HIGH-frequency light is bent LEAST (`p7-06` rung 1 option B). It is the whole of dispersion pointing backwards, and
+    the spectrum figure's two arrows are what settle it.
+  * `LIGHT-24` the colours come off the prism's coloured EDGES (`p7-06` hook option D and rung 2 option D). Separate from
+    `LIGHT-21`: it locates the colour in the glass's surface rather than in the glass at all, and the whole beam fanning out is what
+    answers it.
+  * `LIGHT-27` the lamp's colour and the object's colour MIX on the surface (`p7-07` hook option C, gate option D). What the bench
+    computes is an INTERSECTION, and "red and green make yellow" is the arithmetic a student brings from paint.
+  * `LIGHT-28` the failure is in the EYE, not in the light (`p7-07` hook option D). It is the only one of the four that keeps the
+    physics of the surface intact and moves the fault into the observer, and the twenty-cell grid is what shows the lamp deciding.
+
+⚠️ **`LIGHT-03`, `LIGHT-22` AND `LIGHT-26` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on those pages asks the student to
+commit to them: `p7-01`'s table states the transverse row without asking, and `p7-06` and `p7-07` each carry their second Think-again
+quote underneath a belief that IS elicited. Recording the gap is the honest answer, and MRB-248 makes absence legal precisely so
+that it need not be invented.
+
+⚠️ **EXPECTED TO RESURFACE.** `LIGHT-17` — *eyes send something out* — wherever seeing is drawn as a ray from an eye, which is most
+of the way people sketch it. `LIGHT-25` — *an object HAS a colour* — in B7, where a leaf's greenness is the part of sunlight
+chlorophyll throws away, and in any lesson that treats colour as a property of a substance.
+
+⊖ **`LIGHT` DOES NOT RE-DECLARE `WAVE-21`.** `p7-01` opens by restating that sound needs a medium and light does not, which is
+`p6-06`'s belief met from the other side. That is a REAPPEARANCE and not a re-confrontation: nothing on `p7-01` takes a student's
+commitment about sound and takes it apart. The lesson carries `sound-needs-a-medium` as an edge instead, which is what the register
+asks for.
+
+### `CIRC` — current and circuits: what a current is and what it is not, what a battery does, what happens at a junction, what a resistance is, and what a meter measures
+
+⊕ **OPENED 25 Aug 2026, BY P8.** `docs/ks3/design-reference/p8/NOTES-P8-P9.md` §7 pre-allocated `CIRC-01` … `CIRC-28`, four per
+lesson in slot order, and authored 16 of them without citing one on any page — because access was read-only and this register had no
+open family for electricity. **Every id she wrote is minted here on the number she gave it, in her words.** The twelve gaps are minted
+from the real lesson content, which is the register's own rule: an id is minted from what a page actually confronts, never reserved
+against what one might.
+
+⚠️ **THE RESERVATION IS DISCHARGED, NOT LEFT STANDING BESIDE THE FAMILY.** The not-yet-opened list above reserved `CIRC` for
+*current and circuits*; that is this family, so the reservation is struck exactly as `FORCE`'s was, and `ENER`'s before it. A physics
+lane meeting a circuits misconception adds to `CIRC`; it does not open `ELEC`.
+
+⚠️ **WHERE HER NOTES AND HER PAGE WORD A BELIEF DIFFERENTLY, THE PAGE WINS.** Eleven of the sixteen are stated at length in a
+*Think again* quote on the page and more briefly in her §7 table. Both are hers; the page's is the sentence a student actually meets.
+Same ruling as `WAVE-33` / `WAVE-34` in P6.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `CIRC-01` | The bulb uses up the current, so there is less of it coming back than going in. | `loop` | `loop` | `current-and-circuits` |
+| `CIRC-02` | The electricity has to get from the cell to the bulb, which is why there is a tiny delay when you flick the switch. | `s-hook` | `s-think` | `current-and-circuits` |
+| `CIRC-03` | A circuit only has to reach the bulb; what happens on the way back does not matter. | `s-hook` | `loop` | `current-and-circuits` |
+| `CIRC-04` | A cell holds a store of current and sends it out into the wire. | `s-ladder` | `s-think` | `current-and-circuits` |
+| `CIRC-05` | In parallel the current has to split between the two bulbs, so each one is dimmer. | `bench` | `bench` | `series-and-parallel` |
+| `CIRC-06` | In series the first bulb gets the current first, so it is brighter than the second one. | *(none — nothing on the page asks for this commitment)* | `s-think` | `series-and-parallel` |
+| `CIRC-07` | Two bulbs in series are each as bright as one, because the battery has not changed. | `s-ladder` | `bench` | `series-and-parallel` |
+| `CIRC-08` | A fuse box is what keeps the other lights on when one bulb fails. | `s-hook` | `s-hook` | `series-and-parallel` |
+| `CIRC-09` | At a junction the current halves, because it has two ways to go. | `junction` | `junction` | `current-at-a-junction` |
+| `CIRC-10` | Adding a second branch means less current for the first one. | `s-ladder` | `s-think` | `current-at-a-junction` |
+| `CIRC-11` | To find the total at a junction you add every reading you can see, including the main wire's. | `s-ladder` | `junction` | `current-at-a-junction` |
+| `CIRC-12` | Some of the current is left behind in the branch that resists more. | `s-hook` | `s-hook` | `current-at-a-junction` |
+| `CIRC-13` | Voltage flows round the circuit and gets used up by each bulb. | *(none — nothing on the page asks for this commitment)* | `s-think` | `potential-difference` |
+| `CIRC-14` | A voltmeter goes in the circuit, like an ammeter. | *(none — see the note below)* | `s-think` | `potential-difference` |
+| `CIRC-15` | A reading equal to the battery's p.d. across one component must be a fault. | `s-ladder` | `volt` | `potential-difference` |
+| `CIRC-16` | The number stamped on a bulb says how much electricity it uses up while it is on. | `s-hook` | `s-hook` | `potential-difference` |
+| `CIRC-17` | Resistance is a force pushing back against the current. | *(none — nothing on the page asks for this commitment)* | `s-think` | `resistance` |
+| `CIRC-18` | A component has one resistance, so it does not matter what supply you test it on. | `bench` | `bench` | `resistance` |
+| `CIRC-19` | You find a resistance by multiplying the voltmeter reading by the ammeter reading. | `s-ladder` | `your-turn-resistance` | `resistance` |
+| `CIRC-20` | If one component gives two different resistances, one of the meters must be faulty. | `s-ladder` | `s-think` | `resistance` |
+| `CIRC-21` | An insulator blocks electricity completely — absolutely nothing gets through. | `test` | `test` | `conductors-and-insulators` |
+| `CIRC-22` | Materials are either conductors or insulators, with nothing between. | `s-hook` | `s-scale` | `conductors-and-insulators` |
+| `CIRC-23` | Plastic insulates because it has no charged particles in it at all. | `s-ladder` | `s-ladder` | `conductors-and-insulators` |
+| `CIRC-24` | A short enough piece of an insulator would conduct properly. | `test` | `test` | `conductors-and-insulators` |
+| `CIRC-25` | The meter reads zero, so the meter must be broken. | `s-hook` | `wire` | `building-and-measuring-a-circuit` |
+| `CIRC-26` | It cannot matter which way round the leads go on a meter. | *(none — nothing on the page asks for this commitment)* | `s-think` | `building-and-measuring-a-circuit` |
+| `CIRC-27` | The order the components come in round a single loop changes what the meters read. | `s-hook` | `s-hook` | `building-and-measuring-a-circuit` |
+| `CIRC-28` | A voltmeter reading close to the battery's value means the circuit is working. | `s-ladder` | `wire` | `building-and-measuring-a-circuit` |
+
+⚠️ **TWELVE ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and every one arrived from a delivered
+distractor, hook option or bench state rather than from her §7 list. Each is a genuinely separate
+belief rather than a re-dressing of one already minted, which is the `p1-08` test this register
+applies:
+
+  * `CIRC-03` a circuit only has to REACH the bulb (`p8-01` hook option B). Separate from
+    `CIRC-01`: a student can have given up "the bulb uses it up" and still think the return wire
+    is decoration.
+  * `CIRC-04` a cell HOLDS a store of current (`p8-01` rung 2 option D, *"a cell … makes new ones
+    in the wire as they are needed"*). It is about where the charge comes from, which `CIRC-01`
+    and `CIRC-02` both take for granted.
+  * `CIRC-08` a FUSE BOX is what keeps the other lights on (`p8-02` hook option D). The right
+    verdict from the wrong mechanism, and it survives being told the answer is "parallel".
+  * `CIRC-11` add EVERY reading you can see (`p8-03` rung 1 option B, *"1.55 A — add all three
+    readings together"*). Design's own §8 calls it *"the single most common wrong answer to a
+    three-branch junction question"*, and it is arithmetic rather than physics — separate from
+    `CIRC-09`, which is about the split.
+  * `CIRC-12` some current is LEFT BEHIND in the harder branch (`p8-03` hook option B). It is
+    conservation, not sharing, and a student can hold it while getting the split right.
+  * `CIRC-16` a rating says how much a bulb USES UP (`p8-04` hook option B). About what a printed
+    number means, which is a different question from what a p.d. is.
+  * `CIRC-19` MULTIPLY the two readings (`p8-05` rung 1 option B). The wrong operation rather than
+    a wrong idea about what resistance is, which is `CIRC-17`.
+  * `CIRC-20` two answers means a faulty METER (`p8-05` rung 2 option B). `CIRC-18` is a belief
+    about the component; this is a belief about the instrument, and it is the one that stops a
+    student trusting a correct measurement.
+  * `CIRC-23` plastic has no charged particles AT ALL (`p8-06` rung 2 option D). `CIRC-21` is
+    about how much gets through; this is about what is in the material, and correcting one leaves
+    the other standing.
+  * `CIRC-24` a SHORT ENOUGH piece of an insulator conducts (`p8-06`'s bench gate option D). It
+    arrives with the length control, which really does change the resistance tenfold, and it is
+    the misreading that control invites.
+  * `CIRC-27` the ORDER of the components round a loop matters (`p8-07` hook option D). Her hook
+    reveal answers it in a clause — *"the sequence, incidentally, does not matter at all in a
+    single loop"* — which is what a belief being confronted looks like.
+  * `CIRC-28` a NEAR-FULL voltmeter reading means it works (`p8-07` rung 2 option B). Separate
+    from `CIRC-25`: this one is a student trusting a reading that is perfectly correct and about
+    the wrong circuit.
+
+⚠️ **`CIRC-14`'s `elicited_by` IS ABSENT, AND THAT IS A CORRECTION TO DESIGN'S TABLE RATHER THAN
+A GAP.** Her §7 gives it *`r1` of `p8-07`* — a cross-page pointer. MRB-248 requires the value to
+resolve on the page that DECLARES the entry, and `p8-04` cannot resolve a rung on `p8-07`, so it
+is left absent, which §5.3 allows. The belief is still elicited on `p8-07`; what it may not do is
+claim that from `p8-04`. `p8-07` does not re-declare it either — the standing rule is CITE, DO NOT
+RE-DECLARE — so it appears there as a reappearance and nowhere as a second entry.
+
+⚠️ **FOUR MORE HAVE NO `elicited_by`, WHICH §5.3 ALLOWS, AND ALL FOUR ARE HERS.** `CIRC-06`,
+`CIRC-13`, `CIRC-17` and `CIRC-26` are marked *(none)* in her own §7 table, and the pages agree:
+nothing on any of the four asks the student to commit to the belief. Each is confronted because it
+sits underneath one that is.
+
+⚠️ **EXPECTED TO RESURFACE.** `CIRC-13` — *voltage flows and is used up* — anywhere a p.d. is
+named, and P10 will meet it again the moment a motor is driven. `CIRC-21` — *an insulator blocks
+current completely* — in P9, where a charged rod on an insulating stand is the whole apparatus and
+"insulator" has to mean *leaks slowly* rather than *never*.
+
+⚑ **`CIRC-01` OVERLAPS `ENER`'s NEIGHBOURHOOD IN SHAPE ONLY and no cross-reference is recorded.**
+Both are wrong beliefs about something being consumed. But `ENER` is about energy, which really IS
+transferred out of a store, and `CIRC-01` is about CHARGE, which is not — the whole correction is
+that the two are different quantities and only one of them is spent. A `reappears_in` edge between
+them would blur exactly the distinction `p8-01` exists to draw.
+
+### `CHRG` — electric charge: where it comes from, what it does to another object, and what a field is
+
+⊕ **OPENED 25 Aug 2026, BY P9.** `docs/ks3/design-reference/p9/NOTES-P8-P9.md` §7 pre-allocated a range four
+per lesson in slot order and authored EIGHT entries without citing one on any page — because her access was
+read-only and this register had no open family for electricity or electrostatics. **Every id she wrote is minted
+here on the number she gave it, in her words**, and the four gaps are minted from the real lesson content, which
+is the register's own rule: an id is minted from what a page actually confronts, never reserved against what one
+might.
+
+⚠️ **THE PREFIX IS `CHRG`, NOT DESIGN'S `STAT`, AND THE NUMBERS ARE UNCHANGED.** Her §7 table proposes
+`STAT-01` … `STAT-12`. `STAT` is the strand code of the two statutory statements these three lessons own —
+`KS3.P.STAT.01` and `KS3.P.STAT.02` — and both are printed on the same pages, so a reader meeting `STAT-05`
+beside `KS3.P.STAT.01a` has two different registers wearing one prefix. Ruled by the commander: the family is
+`CHRG`, her `STAT-01` is `CHRG-01`, and so on one for one. Nothing else about her allocation moves.
+
+⚠️ **HER TABLE CARRIES EIGHT ROWS, NOT NINE.** The unit addendum names nine (01, 02, 03, 05, 06, 09, 10, 11) and
+lists eight; eight is what `NOTES-P8-P9.md` §7 actually contains. So four ids are minted from content rather than
+three. Recorded here rather than silently resolved, because the discrepancy is in the instruction and not in her
+delivery.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `CHRG-01` | Rubbing creates charge. | `s-ladder` | `s-think` | `charging-by-rubbing` |
+| `CHRG-02` | A positive object has had positive charge added to it. | *(none — nothing on the page asks for this commitment)* | `s-think` | `charging-by-rubbing` |
+| `CHRG-03` | Only one of the two objects ends up charged. | `s-hook` | `rub` | `charging-by-rubbing` |
+| `CHRG-04` | A material has a charge of its own that it always takes, whatever it is rubbed with. | `rub` | `rub` | `charging-by-rubbing` |
+| `CHRG-05` | The rod picks up the paper, so the paper must be charged. | `spheres` | `s-think` | `forces-between-charges` |
+| `CHRG-06` | They have to touch, or the air has to carry it. | `s-hook` | `s-think` | `forces-between-charges` |
+| `CHRG-07` | The force between two charges falls in step with the distance, so doubling the gap halves it. | `s-ladder` | `spheres` | `forces-between-charges` |
+| `CHRG-08` | A charged object does nothing at all to an uncharged one, because there is no charge for it to act on. | `spheres` | `matrix` | `forces-between-charges` |
+| `CHRG-09` | A field only exists when something is in it to feel it. | *(none — nothing on the page asks for this commitment)* | `s-think` | `electric-fields` |
+| `CHRG-10` | The air in the gap must be carrying the force. | `s-hook` | `s-think` | `electric-fields` |
+| `CHRG-11` | The field is strongest half-way between two like charges. | `field` | `field` | `electric-fields` |
+| `CHRG-12` | A negative charge follows the field arrows, the same way a positive one does. | `s-ladder` | `field` | `electric-fields` |
+
+⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor rather than from
+her §7 list. Each is a genuinely separate belief rather than a re-dressing of one already minted, which is the
+test this register applies:
+
+  * `CHRG-04` a material has a charge OF ITS OWN. It is her own commit gate's first option — *"both become
+    negative, because polythene always ends up negative"* — and it is separate from `CHRG-01`: a student can have
+    given up "rubbing makes charge" entirely and still believe the outcome is a property of one material rather
+    than of the pair. It is also the belief the same-material state of the bench exists to break, and that state
+    is reachable at seven of the forty-nine pairs.
+  * `CHRG-07` the force falls IN STEP with the distance. Her rung 2 option B — *"it falls to about half, because
+    the distance doubled"* — and the commonest wrong answer to the whole topic. Separate from anything about
+    sign: a student who has like-and-unlike perfectly can still expect a straight proportion.
+  * `CHRG-08` a charged object does NOTHING to an uncharged one. Her bench gate's option A. It is `CHRG-05` from
+    the other side and it is not the same belief: `CHRG-05` is an INFERENCE (attraction proves charge) and
+    `CHRG-08` is a PREDICTION (nothing will happen). A student can hold either without the other, and the
+    commonest combination in a real class is to hold `CHRG-08` before the bench and `CHRG-05` after it.
+  * `CHRG-12` a negative charge follows the arrows. Her rung 1 option C — *"the object is positively charged, and
+    a negative charge would be pushed outwards along the arrows"* — a half-right answer that gets the sign of the
+    source right and the response wrong, which is exactly the shape a distractor should have. Separate from
+    `CHRG-09` and `CHRG-11`, both of which are about the field itself rather than about what responds to it.
+
+⚠️ **`CHRG-02` AND `CHRG-09` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on either page asks the student
+to commit to them; each is confronted because it sits underneath one that is. Design's own §7 records the same
+two as having none.
+
+⚠️ **`s-think` IS A CONFRONTATION ANCHOR ON ALL THREE PAGES AND A RAIL STOP ON ONE.** `p9-01`'s rail includes it,
+because Design's `isDone()` gives it `s.gate !== null`; `p9-02` and `p9-03` put their third stop on the figure
+instead. That is a fact about the rail and not about the register — every `confronted_by` above resolves against
+its own built page either way.
+
+⚠️ **EXPECTED TO RESURFACE.** `CHRG-10` — *the air in the gap must be carrying it* — in P10, where a magnetic
+field is introduced the same way, and again wherever gravity acts across a vacuum. `CHRG-02` — *positive means
+something positive was added* — will meet ions in KS4 chemistry and is worth naming again there. `CHRG-07` is the
+same shape as any inverse-square belief and will reappear in P12's gravity lessons.
+
+⊖ **NOTHING IN P9 RE-CONFRONTS AN EXISTING FAMILY AND NOTHING IS RE-DECLARED.** `CIRC` — the family Design
+pre-allocates for P8 — is not opened here: P9 is another lane's neighbour, not its owner, and this register's
+standing rule is that a family is opened by the unit that mints into it. `p9-01` names insulators and conductors
+from nothing, with `p8-06` carried as an edge, and cites no `CIRC` id.
