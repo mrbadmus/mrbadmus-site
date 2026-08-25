@@ -28515,9 +28515,10 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    `--ks3-blue-light` are THE SAME VALUE (`#8FB7FF`, deliberately — see
    `shared/tokens.css`), and the other bars are already painted with it, so
    a straight swap would make the selected bar identical to the four beside
-   it. The selection therefore moves to a 2px `--ks3-accent` RING on the
-   track plus the row label at 700 — accent as a border rather than as
-   text, which the token annotation permits — and every readout card names
+   it. The selection therefore moves to a structural mark — a 3px
+   `--ks3-on-dark` RING on the track plus the row label at 800, the SAME mark
+   P11's `matter-bench` uses on the same Bench shell (unified at integration;
+   the unit had first drawn a 2px accent ring) — and every readout card names
    the current selection in words as well. Registered in DEPARTURES-P12.md.
 
    ⚠️ NO `.ks3-spbench-head` RULE AND NO `-progress` RULE. This unit draws
@@ -28606,10 +28607,14 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    because the token 5A.2 sends a selection to is the colour the other bars
    are already painted in. */
 .ks3-spbench-bar[data-current="1"] .ks3-spbench-track {
-  border-color: var(--ks3-accent);
+  /* ⊕ Integration, 25 Aug 2026 — the SAME mark as P11's `matter-bench`, which
+     draws the same Bench shell: a 3px `--ks3-on-dark` ring and the label at
+     800. The unit had a 2px `--ks3-accent` ring; P11 and P12 are one shell
+     on ten pages and a student moving between them meets one treatment. */
+  border-width: 3px; border-color: var(--ks3-on-dark);
 }
 .ks3-spbench-bar[data-current="1"] .ks3-spbench-barlabel {
-  font-weight: 700;
+  font-weight: 800;
 }
 .ks3-spbench-barsub {
   margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;

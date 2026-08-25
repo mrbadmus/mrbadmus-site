@@ -262,7 +262,7 @@ LESSON = {
                        "each square metre of ground receives about {pct}% of "
                        "what it would get with the Sun straight overhead. "
                        "{verdict} Change the date and the tilt has not moved "
-                       "at all — the Earth has simply travelled to the other "
+                       "an inch — the Earth has simply travelled to the other "
                        "side of its orbit, so the same fixed lean now points "
                        "the other way.",
          }},
