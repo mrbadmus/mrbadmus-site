@@ -88,7 +88,8 @@ QUESTIONS = [
             {"text": "To make the skydiver weigh less", "correct": False,
              "why": "The weight is unchanged. What changes is the force "
                     "resisting the fall."},
-            {"text": "To catch the wind and lift the skydiver upwards",
+            {"text": "To catch the wind and lift the skydiver upwards, so "
+                     "that the fall turns into a rise",
              "correct": False,
              "why": "Nobody goes up. The canopy slows the fall; it does not "
                     "reverse it."},
@@ -161,7 +162,7 @@ QUESTIONS = [
              "why": "Some cars have one, but the physics reason is about "
                     "forces, not about a limiter."},
             {"text": "The car has reached the fastest speed anything can "
-                     "travel.", "correct": False,
+                     "travel, which is fixed and the same for everything", "correct": False,
              "why": "It is this car's balance point, not a universal limit. "
                     "A more powerful car settles higher."},
         ],
@@ -179,7 +180,8 @@ QUESTIONS = [
             {"text": "Because water is much denser than air — a cubic metre "
                      "of it has around eight hundred times the mass.",
              "correct": True},
-            {"text": "Because water resistance does not depend on speed.",
+            {"text": "Because water resistance does not depend on speed, so "
+                     "it is the same however fast you go",
              "correct": False,
              "why": "It does, exactly as air resistance does. The difference "
                     "is what is being shoved aside."},
@@ -223,8 +225,9 @@ QUESTIONS = [
              "correct": False,
              "why": "Weaker gravity slows both equally. It is not what makes "
                     "the difference."},
-            {"text": "Because the feather is lighter, and weight decides how "
-                     "fast things fall.", "correct": False,
+            {"text": "Because the feather is lighter, and weight decides "
+                     "how fast things fall, so a heavier thing always wins "
+                     "whatever the air is doing to either of them", "correct": False,
              "why": "Then the Moon test would fail too. Weight on its own "
                     "does not decide it."},
             {"text": "Because on Earth the air resists both, and that "
@@ -243,7 +246,8 @@ QUESTIONS = [
         "text": "Air resistance roughly QUADRUPLES when the speed doubles. "
                 "Why?",
         "options": [
-            {"text": "Because the object gets heavier as it speeds up.",
+            {"text": "Because the object gets heavier as it speeds up, and "
+                     "a heavier object needs more to hold it back",
              "correct": False,
              "why": "Its weight is unchanged. Only the resistance grows."},
             {"text": "Because you hit twice as much air per second, and hit "

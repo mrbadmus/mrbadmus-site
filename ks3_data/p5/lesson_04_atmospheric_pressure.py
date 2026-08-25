@@ -107,12 +107,18 @@ LESSON = {
                   "second.",
         "commit": "What crushed it?",
         "options": [
-            "The cold water squeezed it as it cooled",
-            "The metal shrank as it cooled and pulled itself in",
-            "The vacuum inside sucked the walls together",
-            "The air outside, which was pressing that hard the whole time",
+            # ⊕ PHASE 3, 25 Aug 2026 — HER four options. These had
+            # been invented: her prompt was ported and her answers were
+            # not, which the HTML comparison could not see because a
+            # `.dc.html` renders them from `{{ opt.text }}`.
+            "The vacuum inside sucked the sides in",
+            "The air outside was always pressing that hard, and the steam "
+            "inside had been pushing back",
+            "The metal shrank as it cooled",
+            "The steam pulled the sides in as it cooled, because a gas "
+            "turning back to liquid drags whatever is around it",
         ],
-        "answer": 3,
+        "answer": 1,
         "reveal": "The air outside. It was pressing that hard the whole time "
                   "— about 100 000 N on every square metre of that can, "
                   "from every side. Nothing changed outside; what changed "
@@ -411,41 +417,51 @@ LESSON = {
                            "leaves newtons."},
                   {"letter": "A", "label": "Answer",
                    "line": "force = {palmforce}",
-                   "note": "On one palm, and the same again from the other "
-                           "side — which is why you never notice it."},
+                   # ⊕ PHASE 3, 25 Aug 2026 — hers, verbatim. The
+                   # paraphrase said the same thing and lost the word
+                   # "pushing", which is the one this page spends its
+                   # whole length on.
+                   "note": "And the same force is pushing back on the "
+                           "other side of your hand, which is why you "
+                           "feel nothing."},
               ],
               "close": "The five lines give {palmforce} on a palm at "
                        "{label}. At sea level the same palm carries about "
                        "1010 N."},
              {"id": "q2", "tab": "Question 2",
-              "head": "A shop door panel is 1.6 m². The air presses on it "
-                      "with 99 kPa. What force is that?",
-              "lead": "This one needs the Convert line to do some work.",
+              # ⊕ PHASE 3, 25 Aug 2026 — HER question. A different
+              # one with different numbers had been written here;
+              # hers lives in her page's JS, which the HTML
+              # comparison could not see.
+              "head": "A car windscreen is 1.5 m². The air outside presses "
+                      "on it with 98 kPa. What force is that?",
+              "lead": "This one needs the Convert line to do some "
+                      "work.",
               "steps": [
                   {"letter": "C", "label": "Convert",
                    "placeholder": "anything to convert?",
-                   "line": "99 kPa × 1000 = 99 000 Pa",
-                   "note": "Only pascals times square metres give newtons, "
-                           "and a kilopascal is a thousand of them."},
+                   "line": "98 kPa × 1000 = 98 000 Pa",
+                   "note": "A kilopascal is a thousand pascals, and only "
+                           "pascals times square metres give newtons."},
                   {"letter": "F", "label": "Formula",
                    "line": "force = pressure × area",
                    "note": "Rearranged for the force."},
                   {"letter": "I", "label": "Insert",
-                   "line": "force = 99 000 Pa × 1.6 m²",
-                   "note": "The converted pressure goes in. The 99 never "
+                   "line": "force = 98 000 Pa × 1.5 m²",
+                   "note": "The converted pressure goes in. The 98 never "
                            "does."},
                   {"letter": "F", "label": "Fine-tune",
-                   "line": "99 000 × 1.6 = 158 400",
+                   "line": "98 000 × 1.5 = 147 000",
                    "note": "Newtons per square metre times square metres "
                            "leaves newtons."},
                   {"letter": "A", "label": "Answer",
-                   "line": "force = 158 400 N",
-                   "note": "Insert 99 instead of 99 000 and the answer comes "
-                           "out 158 N."},
+                   "line": "force = 147 000 N",
+                   "note": "Insert 98 instead of 98 000 and the answer "
+                           "comes out 147 N."},
               ],
-              "close": "The five lines give 158 400 N — and the door opens "
-                       "easily, because the same air is pushing just as hard "
-                       "on the other side."},
+              "close": "The five lines give 147 000 N — and the same again "
+                       "from inside the car, which is why the glass "
+                       "survives."},
          ]},
 
         {"id": "think-vacuum-sucks",

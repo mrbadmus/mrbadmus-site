@@ -86,7 +86,7 @@ QUESTIONS = [
         "band": "easier",
         "text": "An object floats when…",
         "options": [
-            {"text": "it is lighter than water", "correct": False,
+            {"text": "it is lighter than water, whatever shape it is in", "correct": False,
              "why": "A ship is not lighter than water. What matters is the "
                     "water it pushes aside."},
             {"text": "it has air inside it", "correct": False,
@@ -152,7 +152,8 @@ QUESTIONS = [
             {"text": "The water makes the rock lighter.", "correct": False,
              "why": "Its weight is unchanged throughout. What changes is "
                     "how much of it you have to supply."},
-            {"text": "Water reduces the pull of gravity on it.",
+            {"text": "Water reduces the pull of gravity on it, so the "
+                     "object genuinely weighs less while it is under",
              "correct": False,
              "why": "Gravity is unchanged. Something else is helping you "
                     "while the rock is submerged."},
@@ -178,7 +179,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The steel is unchanged. What changed is the SHAPE it "
                     "is in."},
-            {"text": "Gravity acts more strongly on a solid shape.",
+            {"text": "Gravity acts more strongly on a solid shape than on a "
+                     "hollow one of the same weight",
              "correct": False,
              "why": "Gravity does not care about shape. Neither does the "
                     "weight."},
@@ -195,8 +197,8 @@ QUESTIONS = [
         "band": "harder",
         "text": "Where does upthrust actually come from?",
         "options": [
-            {"text": "From the liquid trying to get back to where the object "
-                     "is.", "correct": False,
+            {"text": "From the liquid trying to get back to where the "
+                     "object is, and shoving it out of the way as it does", "correct": False,
              "why": "A liquid does not try to do anything. The force has a "
                     "mechanical origin."},
             {"text": "From the pressure being greater on the bottom of the "
@@ -250,8 +252,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Sealed things sink all the time. What matters is what "
                     "is pushed aside."},
-            {"text": "The balloon is lighter than air, so gravity misses "
-                     "it.", "correct": False,
+            {"text": "The balloon is lighter than air, so gravity misses it "
+                     "and there is nothing to pull it down", "correct": False,
              "why": "Gravity pulls on it exactly as on anything else. The "
                     "upthrust simply beats it."},
             {"text": "The hot air inside weighs less than the cold air the "
@@ -267,7 +269,7 @@ QUESTIONS = [
                 "and salt water. Why?",
         "options": [
             {"text": "Salt water is more corrosive, so the hull must sit "
-                     "higher.", "correct": False,
+                     "higher to keep the paint out of it", "correct": False,
              "why": "Corrosion is a real problem and a separate one. The "
                     "marks are about how deep the hull may legally sit."},
             {"text": "A cubic metre of salt water weighs more, so the same "

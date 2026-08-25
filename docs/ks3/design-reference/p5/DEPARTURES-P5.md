@@ -15,21 +15,25 @@ The register is expected to be SHORT. A long one means rewriting to taste.
 
 ## Changed — 1 row
 
-### 1. Four rung-2 distractors are rewritten as full wrong rules
+### 1. Ten distractors are finished into full wrong rules
+
+⊖ **COUNT CORRECTED 25 Aug 2026.** This row used to say *"one distractor per
+rung"* across four rungs. The measured figure, taken against Design's own
+`HOOK` and `RUNGS` constants rather than against the row, is **ten**: eight
+ladder options across all four lessons, and two hook options on `p5-03` and
+`p5-04`. Three of the eight had already been extended by the pass that built
+the unit, without reaching a row at all.
 
 | | |
 |---|---|
-| **Lessons** | `p5-01`, `p5-02`, `p5-03`, `p5-04` — the *apply* rung on each |
-| **What she wrote** | On all four, the correct answer states a full rule and every distractor is shorter. Measured: `p5-01` 21 words against a longest distractor of 17; `p5-02` 16 against 12; `p5-03` 31 against 26; `p5-04` 24 against 19. |
-| **What is built** | Her correct answers are untouched **to the character**. One distractor per rung is extended so that it states a complete wrong rule rather than a clipped one — the boots distractor now says why more contact area would mean more pressure, the pipe distractor now states the wrong rule it depends on, the bolt distractor finishes its own claim, and the gravity distractor completes the mechanism it is asserting. |
-| **The defect in hers** | **A student can score all four rungs without reading them, by choosing the longest option.** Measured, not judged, and `verify_ks3`'s MRB-177 gate names it: *"the correct answer is a length tell — a student can score these without reading them"*. This is the same defect and the same remedy as P4 row 2. |
+| **Lessons** | All four — the *apply* rung on each, and the hook commit on `p5-03` and `p5-04` |
+| **What she wrote** | On ten option sets the correct answer is the longest by MRB-177's threshold. `p5-03`'s apply rung ran 31 words against 12; `p5-04`'s ran 24 against 19. |
+| **What is built** | Her correct answers are untouched **to the character**, and so is every other option. Ten distractors are finished so that each states a complete wrong rule rather than a clipped one. Each carries the same wrong idea her original carried and keeps its own correction verbatim. |
+| **The defect in hers** | **A student can score ten commitments without reading them, by choosing the longest option.** Measured, not judged, and the remedy is the engine's own: fix the construct at the distractor, never shorten a correct answer. |
 
-⚠️ **THE FIX IS AT THE DISTRACTOR, AND THAT IS THE ENGINE'S RULING.**
-`verify_ks3.py` states it: *"distractors on a rule-stating rung now state
-WRONG RULES — the same three-part shape, with the misconception as the
-consequence"*, and *"no correct answer was shortened"*. None was here. Each
-rewritten distractor carries the same wrong idea her original carried, and
-keeps its own correction verbatim.
+⚠️ **THE SAME PASS FIXED 22 OF P5's OWN 48 BANK QUESTIONS**, which are this
+lane's and not hers.
+
 
 ---
 
@@ -155,3 +159,31 @@ All 24 are fixed, all 13 P4/P5 key facts now match Design's word for word,
 and `verify_ks3` has gained a check that sweeps the served tree for an empty
 key-fact body. It was proved by reintroducing the defect on one page and
 confirming the sweep reports it.
+
+---
+
+## ⊖ Phase 3, second pass — 25 Aug 2026, after P5 had shipped
+
+The first Phase 3 pass compared the built pages against her **HTML**. That is
+not enough: a `.dc.html` renders its hook, its bench gate, its ladder, its
+branch notes and its attempt panel from `{{ }}` holes, so everything a page
+computes is invisible to an HTML comparison and reports as a match. Reading
+her **JavaScript** found five more.
+
+| # | Where | What had been done | Now |
+|---|---|---|---|
+| R6 | `p5-02`, `p5-03`, `p5-04` | **Three hook commits were invented.** Her prompt had been ported on each and her four answers had not — eleven options in all | Hers, ported, permuted for position |
+| R7 | `p5-03`, `p5-04` | Both attempt Question 2s were **different questions with different numbers** — hers are a 0.60 kg sinker reading 4.5 N, and a 1.5 m² windscreen at 98 kPa | Hers, ported |
+| R8 | `p5-04` | One step note was paraphrased, losing the word *pushing* — the word this page spends its whole length on | Hers, verbatim |
+| R9 | `p5-01` | **The sand bench's three branch notes never reached the page.** `r_block_on_sand` read no `branches` key at all, so its note panel was empty in every state — the same defect as `p6-08`'s log-range, in a unit that had already shipped | Emitted, and the drawer now refuses a payload missing a branch |
+| R10 | four hooks, eight rungs | Length tells — see the corrected row 1 above | Distractors finished |
+
+⚠️ **R9 IS THE ONE A STUDENT WOULD HAVE NOTICED.** `p5-01` is the unit's
+first lesson and its bench is the drawing pin made quantitative; the panel
+under it that explains what just happened was blank on every setting. It was
+found by asking the built bytes rather than the payload, and every other P4,
+P5 and P6 bench was then checked the same way — one defect in twenty-two.
+
+⚠️ **P4 WAS CHECKED THE SAME WAY AND ITS LADDERS, HOOKS AND GATES ARE ALL
+HERS.** Only the length-tell extensions differ, which row 2 of its own
+register now counts correctly.

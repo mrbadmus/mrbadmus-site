@@ -116,7 +116,8 @@ LESSON = {
                   "lean.",
         "commit": "Why is the same force so much less use near the hinge?",
         "options": [
-            "You push harder at the handle without noticing",
+            "You push harder at the handle without noticing, because a long "
+            "handle is easier to lean your weight on",
             "The turning effect depends on the distance from the pivot as "
             "well as the force",
             "The door is heavier near the hinge",

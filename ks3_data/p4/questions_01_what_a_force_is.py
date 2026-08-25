@@ -32,7 +32,8 @@ QUESTIONS = [
         "band": "easier",
         "text": "A force is…",
         "options": [
-            {"text": "something an object stores inside it", "correct": False,
+            {"text": "something an object stores inside it and spends as it "
+                     "moves", "correct": False,
              "why": "A force is not stuff and cannot be stored. It exists "
                     "only while two objects are interacting."},
             {"text": "how fast an object is travelling", "correct": False,
@@ -186,7 +187,7 @@ QUESTIONS = [
             {"text": "No force from the boot at all — only the air and the "
                      "Earth act on it.", "correct": True},
             {"text": "The force is in the ball's movement, so it acts on "
-                     "nothing.", "correct": False,
+                     "nothing and needs no second object", "correct": False,
              "why": "Movement is not a force. Every force on the ball has a "
                     "second object at the other end of it."},
         ],
@@ -234,7 +235,7 @@ QUESTIONS = [
              "why": "The pair exists across a gap too — the Earth and the "
                     "Moon — and things still move."},
             {"text": "Because one of the forces is used up in moving the "
-                     "object.", "correct": False,
+                     "object, leaving the other to act alone", "correct": False,
              "why": "Nothing is used up. Both forces act for exactly as long "
                     "as the interaction lasts."},
         ],

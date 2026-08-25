@@ -697,6 +697,50 @@ SUBSTATEMENTS = {
         ("a", "Pressure in liquids, increasing with depth.", "P5"),
         ("b", "Upthrust effects, floating and sinking.", "P5"),
     ],
+    # ── P6 · Waves and sound ────────────────────────────────────────────
+    #
+    # Three of P6's six statements are compound and are split at the clause;
+    # SND.02, SND.04 and EAW.01 are whole and take no sub-IDs. Minted lazily,
+    # per unit, at authoring time — rule 3 above — and for the same reason
+    # P4's were: nine lessons over six statements is the surplus case, and
+    # without the split the coverage gate reads three of them as claimed
+    # twice.
+    #
+    # The bullet reads:
+    #   "waves on water as undulations which travel through water with
+    #    transverse motion; these waves can be reflected, and add or cancel
+    #    – superposition"
+    # Three clauses, and P6 teaches them as two lessons: p6-01 owns what a
+    # wave IS, p6-02 owns what two of them do when they meet.
+    "KS3.P.OBW.01": [
+        ("a", "Waves on water as undulations which travel through water "
+              "with transverse motion.", "P6"),
+        ("b", "These waves can be reflected.", "P6"),
+        ("c", "These waves add or cancel — superposition.", "P6"),
+    ],
+    # The bullet reads:
+    #   "frequencies of sound waves, measured in hertz (Hz); echoes,
+    #    reflection and absorption of sound"
+    # Two clauses that are four lessons apart in any scheme of work: p6-05
+    # owns the hertz, p6-07 owns the echo.
+    "KS3.P.SND.01": [
+        ("a", "Frequencies of sound waves, measured in hertz (Hz).", "P6"),
+        ("b", "Echoes, reflection and absorption of sound.", "P6"),
+    ],
+    # The bullet reads:
+    #   "sound produced by vibrations of objects, in loudspeakers, detected
+    #    by their effects on microphone diaphragm and the ear drum; sound
+    #    waves are longitudinal"
+    # Production, detection and longitudinality are three separate lessons'
+    # worth. p6-03 owns the first two — they are one chain and teaching them
+    # apart would break it — and p6-04 owns the third.
+    "KS3.P.SND.03": [
+        ("a", "Sound produced by vibrations of objects, and in "
+              "loudspeakers.", "P6"),
+        ("b", "Sound detected by its effects on a microphone diaphragm and "
+              "on the ear drum.", "P6"),
+        ("c", "Sound waves are longitudinal.", "P6"),
+    ],
 }
 
 

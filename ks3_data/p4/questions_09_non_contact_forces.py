@@ -74,7 +74,7 @@ QUESTIONS = [
                     "steel, straight through the paper."},
             {"text": "That the force does not need the two to be touching.",
              "correct": True},
-            {"text": "That the magnet is stuck by friction.",
+            {"text": "That the magnet is stuck by friction against the door",
              "correct": False,
              "why": "Friction needs the surfaces to press together, and it "
                     "would not survive the paper."},
@@ -95,7 +95,8 @@ QUESTIONS = [
             {"text": "The magnet has run out of magnetism.", "correct": False,
              "why": "The same magnet still attracts iron and steel. Nothing "
                     "about it has been used up."},
-            {"text": "The air in between is blocking the pull.",
+            {"text": "The air in between is blocking the pull, so a thicker "
+                     "gap would block more of it",
              "correct": False,
              "why": "Magnetism crosses air perfectly well — and a vacuum "
                     "too."},
@@ -158,7 +159,8 @@ QUESTIONS = [
                 "a centimetre. What could you do to show it is a force "
                 "rather than moving air?",
         "options": [
-            {"text": "Blow gently at the hair and compare.",
+            {"text": "Blow gently at the hair and compare, since moving air "
+                     "would do the same job",
              "correct": False,
              "why": "That shows air CAN move hair. It does not rule it out "
                     "as the cause here."},
@@ -213,7 +215,7 @@ QUESTIONS = [
              "why": "Glass is not magnetic and is doing nothing. Remove the "
                     "jar entirely and the pull is the same."},
             {"text": "The paperclip pulls itself towards the magnet using "
-                     "its own magnetism.", "correct": False,
+                     "its own magnetism, which the magnet has switched on", "correct": False,
              "why": "It becomes magnetised, but that is half the pair — "
                     "the force still acts between two objects across a gap."},
         ],
@@ -237,7 +239,9 @@ QUESTIONS = [
             {"text": "Because gravity never repels, so it only ever adds up "
                      "— while the other two come in two signs and nearly "
                      "cancel on any large object.", "correct": True},
-            {"text": "Because planets are made of a special kind of matter.",
+            {"text": "Because planets are made of a special kind of matter, "
+                     "and ordinary matter does not pull on anything at all "
+                     "however much of it there is",
              "correct": False,
              "why": "They are made of ordinary atoms, and every one of them "
                     "pulls."},

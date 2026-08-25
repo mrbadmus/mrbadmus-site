@@ -84,7 +84,8 @@ QUESTIONS = [
         "band": "easier",
         "text": "Why is a drawing pin given a sharp point?",
         "options": [
-            {"text": "To make the force pushing it bigger", "correct": False,
+            {"text": "To make the force pushing it bigger than it would be "
+                     "with a blunt one", "correct": False,
              "why": "The force is whatever your thumb supplies. Sharpening "
                     "changes no force anywhere."},
             {"text": "To make the metal harder", "correct": False,
@@ -176,8 +177,9 @@ QUESTIONS = [
             {"text": "They spread the same weight over a much larger area, "
                      "so the pressure on the soft ground is much lower.",
              "correct": True},
-            {"text": "They concentrate the weight into a smaller area, so it "
-                     "presses through the soft layer.", "correct": False,
+            {"text": "They concentrate the weight into a smaller area, so "
+                     "it presses through the soft layer instead of resting "
+                     "on it", "correct": False,
              "why": "That is what a stiletto heel does, and it is exactly "
                     "how to sink. Tracks do the opposite."},
             {"text": "They reduce the friction, so nothing digs in.",
@@ -244,7 +246,8 @@ QUESTIONS = [
         "text": "A hydraulic jack lets a small force on a small piston hold "
                 "up a car on a big one. What is the catch?",
         "options": [
-            {"text": "The pressure in the big cylinder is much higher.",
+            {"text": "The pressure in the big cylinder is much higher, "
+                     "which is where the extra force comes from",
              "correct": False,
              "why": "The pressure is the SAME in both. What differs is the "
                     "area it acts on."},

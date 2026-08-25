@@ -94,7 +94,7 @@ QUESTIONS = [
             {"text": "In a hip joint", "correct": False,
              "why": "A joint is lubricated precisely to keep friction as low "
                     "as possible."},
-            {"text": "In a drawer that sticks", "correct": False,
+            {"text": "In a drawer that sticks and will not slide open", "correct": False,
              "why": "That is friction being a nuisance. Nobody wants a "
                     "drawer that will not open."},
             {"text": "Between a brake block and a wheel rim", "correct": True},
@@ -116,7 +116,8 @@ QUESTIONS = [
             {"text": "Because left at rest the two surfaces settle into one "
                      "another, and sliding never lets them settle again.",
              "correct": True},
-            {"text": "Because your push gets stronger once it is moving.",
+            {"text": "Because your push gets stronger once it is moving, "
+                     "and a moving push is worth more than a still one",
              "correct": False,
              "why": "It gets weaker — you need less. The change is in the "
                     "friction, not in you."},
@@ -210,7 +211,8 @@ QUESTIONS = [
             {"text": "Because only the highest peaks are actually touching, "
                      "and pressing harder flattens them so more come into "
                      "contact.", "correct": True},
-            {"text": "Because a bigger block has more surface to heat up.",
+            {"text": "Because a bigger block has more surface to heat up, "
+                     "and heating is what friction costs you",
              "correct": False,
              "why": "Heating is a consequence of friction, not what sets its "
                     "size."},
@@ -224,7 +226,9 @@ QUESTIONS = [
                 "front of the stone. Why does the stone then travel "
                 "further?",
         "options": [
-            {"text": "The water pushes the stone forwards.", "correct": False,
+            {"text": "The water pushes the stone forwards, adding to "
+                     "whatever the throw gave it, which is why a thrown "
+                     "stone speeds up under water", "correct": False,
              "why": "Nothing pushes it forwards. The stone was already "
                     "moving and needs no push."},
             {"text": "The water keeps the surfaces apart, so the backwards "
@@ -257,7 +261,8 @@ QUESTIONS = [
                      "and each part is being tuned for its own.",
              "correct": True},
             {"text": "Neither job is about friction — oil and rubber do "
-                     "different things.", "correct": False,
+                     "different things, and only one of them touches the "
+                     "surface", "correct": False,
              "why": "Both are about friction, in opposite directions."},
         ],
         "figure": None,
@@ -272,7 +277,8 @@ QUESTIONS = [
                      "sliding on polished wood, so friction is real there.",
              "correct": True},
             {"text": "They are right, and that is why polished floors are "
-                     "dangerous.", "correct": False,
+                     "dangerous: a smooth surface has nothing left to grip "
+                     "with", "correct": False,
              "why": "Polished floors are slippery, not frictionless. A "
                     "block on one does stop."},
             {"text": "They are wrong, because friction only acts on rough "

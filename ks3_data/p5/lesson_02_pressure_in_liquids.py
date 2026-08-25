@@ -109,10 +109,15 @@ LESSON = {
                   "Same can, same water, holes the same size.",
         "commit": "Why does the bottom jet travel furthest?",
         "options": [
-            "The water at the bottom is heavier",
-            "The water at the bottom is packed tighter",
-            "There is more water stacked above the bottom hole",
-            "The hole at the bottom is closer to the ground",
+            # ⊕ PHASE 3, 25 Aug 2026 — HER four options. These had
+            # been invented: her prompt was ported and her answers were
+            # not, which the HTML comparison could not see because a
+            # `.dc.html` renders them from `{{ opt.text }}`.
+            "The can is narrower at the bottom, so the water speeds up",
+            "The water from the bottom hole has further to fall",
+            "There is more water stacked above the bottom hole, so it "
+            "presses harder there",
+            "Water gets heavier as it sinks",
         ],
         "answer": 2,
         "reveal": "Nothing about the water changes as it sinks. A litre near "

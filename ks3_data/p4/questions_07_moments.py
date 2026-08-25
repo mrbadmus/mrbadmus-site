@@ -31,7 +31,7 @@ QUESTIONS = [
         "band": "easier",
         "text": "The moment of a force is measured in…",
         "options": [
-            {"text": "newtons", "correct": False,
+            {"text": "newtons, the same unit the force itself is in", "correct": False,
              "why": "A moment is not a force. It is a force multiplied by a "
                     "distance."},
             {"text": "metres", "correct": False,
@@ -96,7 +96,8 @@ QUESTIONS = [
             {"text": "Because that is the furthest point from the pivot, so "
                      "the same push gives the biggest moment.",
              "correct": True},
-            {"text": "Because the hinges would get in the way of your hand.",
+            {"text": "Because the hinges would get in the way of your hand, "
+                     "not because the distance matters",
              "correct": False,
              "why": "Handles are fitted well clear of hinges anyway. The "
                     "reason is the turning effect."},
@@ -170,7 +171,8 @@ QUESTIONS = [
         "text": "Someone says “a longer spanner means I am pulling harder.” "
                 "How would you settle it?",
         "options": [
-            {"text": "Time how long each takes to shift the nut.",
+            {"text": "Time how long each takes to shift the nut, since a "
+                     "bigger moment should do it faster",
              "correct": False,
              "why": "That measures the outcome, not the pull. It would not "
                     "tell you what the hand is doing."},
@@ -248,7 +250,7 @@ QUESTIONS = [
                      "with a much smaller force, which most people can "
                      "actually manage.", "correct": True},
             {"text": "Because a longer brace tightens the nut more than a "
-                     "short one ever could.", "correct": False,
+                     "short one ever could, whatever force is used on it", "correct": False,
              "why": "Either reaches the same 110 N m. The difference is how "
                     "hard you have to pull to get there."},
         ],

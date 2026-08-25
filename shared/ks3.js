@@ -10725,6 +10725,1569 @@
   }
 /* ═══ END P5 wiring ═══ */
 
+  /* ═══ BEGIN P6 wiring ═══════════════════════════════════════════════════
+     P6's instrument families — *Waves and sound*. Behaviour measured off
+     Claude Design's delivered pages in `docs/ks3/design-reference/p6/`, one
+     page at a time, from her own `lessonVals()` and `DONE()`.
+
+     The helpers this block leans on — `each`, `toArray`, `setHidden`,
+     `markStage`, `markSibling`, `fillTokens`, `tagStyle`, `fillSpan`,
+     `setOut`, `setPath`, `arrowV`, `arrowH`, `groupN` — are P4's and P5's
+     and are deliberately NOT redefined here. The CFIFA attempt is
+     namespaced `…P6` for the same reason P5's is: one family per unit, so
+     `ks3_art.load()`'s one-family-one-module rule holds and the placement
+     gates see each unit's as its own.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  function paintAttemptP6(wrap, vals, blocked) {
+    var qs = toArray(wrap.querySelectorAll("[data-p6cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }        /* Question 1 alone is live */
+      var head = q.querySelector("[data-p6cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p6cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p6cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p6cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+      var block = q.querySelector("[data-p6cfa-blocked]");
+      var rows = q.querySelector(".ks3-cfa-rows");
+      var chk = q.querySelector("[data-p6cfa-check]");
+      if (block) { setHidden(block, !blocked); }
+      if (rows) { setHidden(rows, !!blocked); }
+      if (chk && blocked) { chk.setAttribute("disabled", ""); }
+    });
+  }
+
+  function publishLiveP6(sec, vals, blocked) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    each(toArray(host.querySelectorAll("[data-p6cfa]")), function (p) {
+      paintAttemptP6(p, vals, blocked);
+    });
+  }
+
+  function wireCfifaAttemptP6(sec) {
+    var wrap = sec.querySelector("[data-p6cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p6cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p6cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p6cfa-input]"));
+      var btn = q.querySelector("[data-p6cfa-check]");
+      var hint = q.querySelector("[data-p6cfa-hint]");
+      var reveal = q.querySelector("[data-p6cfa-reveal]");
+      var tally = q.querySelector("[data-p6cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p6cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p6cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p6cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+    /* ⊕ `wireBandAfter` WAS HERE, and MRB-249's gate removed it.
+     `p6-03`'s `#s-stages` ticks on the HOOK, and this watched the hook
+     section's DOM and wrote the band section's own `data-stage-done`. It
+     worked. It was still wrong: the gate reads Design's `isDone()` as a
+     MIRROR MAP and compares it with what the RAIL DECLARES, so a stop
+     ticking by a private route fails it — and did. The stop now carries
+     `mirrors: "s-hook"`, `wireRail` resolves it, and R2 accepts it as
+     reachable through the hook's own reachability. No wiring needed. */
+
+  /* p6-01 `#s-parts` — a fixed reference wave with a four-way selector.
+
+     ⚖️ THE UNSELECTED STATE SHOWS THE WAVE WITH NOTHING MARKED AND SAYS SO.
+     Design's resting note gives both measurements and marks neither, because
+     the only question the block asks is *which of these four is which*.
+
+     ⚖️ PRESSING THE SAME TAB AGAIN CLEARS IT. Four marks and no way back to
+     the unmarked state would make the resting note unreachable after the
+     first press, and the resting note is half the teaching. */
+  function wireWaveAnatomy(sec) {
+    var wrap = sec.querySelector("[data-wanat]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-wanat-tab]"));
+    var marks = toArray(wrap.querySelectorAll("[data-wanat-mark]"));
+    var noteEl = wrap.querySelector("[data-wanat-note-out]");
+    var svg = wrap.querySelector("[data-wanat-alt]");
+    var REST = wrap.getAttribute("data-resting") || "";
+    var BASE = wrap.getAttribute("data-alt-base") || "";
+    var at = "";
+
+    function paint() {
+      each(tabs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-wanat-tab") === at ? "true" : "false");
+      });
+      each(marks, function (g) {
+        setHidden(g, g.getAttribute("data-wanat-mark") !== at);
+      });
+      var src = at
+        ? wrap.querySelector('[data-wanat-note="' + at + '"]') : null;
+      if (noteEl) {
+        noteEl.textContent = src ? (src.getAttribute("data-note") || "")
+                                 : REST;
+      }
+      if (svg) {
+        svg.setAttribute("aria-label", at
+          ? BASE + " " + (noteEl ? noteEl.textContent : "")
+          : BASE);
+      }
+      markStage(sec, !!at);            /* a_part_chosen */
+    }
+
+    each(tabs, function (b) {
+      b.addEventListener("click", function () {
+        var id = b.getAttribute("data-wanat-tab");
+        at = (at === id) ? "" : id;
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* A sampled sine as one `d`, matching `ks3_art.p6._wave_path` exactly so
+     that what JS draws and what the drawer draws are the same curve. */
+  function waveP6(x0, x1, mid, amp, lam, phase, step) {
+    var d = "", x = x0, y;
+    var s = step || 4;
+    var ph = phase || 0;
+    while (x <= x1) {
+      y = mid - amp * Math.sin((2 * Math.PI * (x - x0)) / lam + ph);
+      d += (d ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+      x += s;
+    }
+    return d;
+  }
+
+  /* p6-01 `#s-tank` — one paddle, two things you can change about it.
+
+     ⚖️ BOTH AXES TO ONE SCALE (her flag 7). 0.88 px per mm horizontally AND
+     vertically, so the largest amplitude is 35 px on a 1000-wide viewBox.
+     It looks small, and exaggerating it would make the drawn geometry
+     contradict the 1-in-7 label beside it.
+
+     ⚖️ STEEPNESS IS CREST-TO-TROUGH OVER WAVELENGTH, which is the form the
+     1-in-7 breaking limit is quoted in — so `2 × amplitude ÷ wavelength`,
+     not amplitude over wavelength. Getting that wrong would put the break
+     at twice the real steepness and make the breaking branch unreachable.
+
+     ⚠️ NO FREQUENCY ANYWHERE (her flag 2). Nothing here computes or prints
+     one; `SND.01` is p6-05's. */
+  function wireRippleTank(sec) {
+    var wrap = sec.querySelector("[data-rtank]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-rtank-gate]");
+    var body = wrap.querySelector("[data-rtank-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-rtank-gopt]"));
+    var ampEl = wrap.querySelector('[data-rtank-slider="amp"]');
+    var wavEl = wrap.querySelector('[data-rtank-slider="wav"]');
+    var svg = wrap.querySelector("[data-rtank-alt]");
+    var noteEl = wrap.querySelector("[data-rtank-note]");
+    var WIDTH = parseFloat(wrap.getAttribute("data-width-m")) || 1;
+    var BREAK = parseFloat(wrap.getAttribute("data-break-at")) || 0.143;
+    var PXMM = parseFloat(wrap.getAttribute("data-px-per-mm")) || 0.88;
+    var SWELL = 0.05;                  /* 1 in 20 — an open-ocean swell */
+    var X0 = 60, X1 = 940, MID = 300, CX = 500;
+    var committed = false, touched = 0;
+
+    function paint() {
+      var amp = ampEl ? Number(ampEl.value) : 0;      /* mm */
+      var wav = wavEl ? Number(wavEl.value) : 1;      /* mm */
+      var steep = (2 * amp) / wav;
+      var waves = (WIDTH * 1000) / wav;
+      var swing = 2 * amp;
+
+      setPath(wrap, "[data-rtank-wave]",
+              waveP6(X0, X1, MID, amp * PXMM, wav * PXMM, 0, 4));
+
+      /* The float sits ON the surface at the tank's midpoint, so its own
+         height is the wave's height there — which is what makes "it rises
+         and falls and goes nowhere" something a student can watch. */
+      var fy = MID - amp * PXMM *
+        Math.sin((2 * Math.PI * (CX - X0)) / (wav * PXMM));
+      var float = wrap.querySelector("[data-rtank-float]");
+      if (float) { float.setAttribute("cy", fy.toFixed(1)); }
+
+      var half = amp * PXMM;
+      setPath(wrap, "[data-rtank-swing]",
+              half > 2
+                ? ("M" + (CX + 44) + " " + (MID - half) +
+                   " V" + (MID + half) +
+                   " M" + (CX + 34) + " " + (MID - half) +
+                   " H" + (CX + 54) +
+                   " M" + (CX + 34) + " " + (MID + half) +
+                   " H" + (CX + 54))
+                : null);
+
+      fillSpan(wrap, "rtank", "swing", swing + " mm",
+               tagStyle(0.60, (MID + half + 26) / 520, "#C6B9A7", "start"));
+
+      setOut(wrap, "rtank", "amp", amp + " mm");
+      setOut(wrap, "rtank", "wav", wav + " mm");
+      setOut(wrap, "rtank", "swing", swing + " mm");
+      setOut(wrap, "rtank", "steep",
+             "1 in " + Math.round(1 / steep) +
+             (steep >= BREAK ? " — steep enough to break" : ""));
+
+      var key = steep >= BREAK ? "breaking"
+        : (steep <= SWELL ? "swell" : "ordinary");
+      var bEl = wrap.querySelector('[data-rtank-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          head: "Amplitude " + amp + " mm and wavelength " + wav +
+                " mm is a steepness of 1 in " + Math.round(1 / steep) + ". ",
+          waves: (Math.round(waves * 10) / 10),
+          swing: swing,
+          amp: amp, wav: wav
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A tank " + WIDTH.toFixed(2) + " metres across with a wave of " +
+          "amplitude " + amp + " millimetres and wavelength " + wav +
+          " millimetres drawn to one scale in both directions. A float at " +
+          "the middle rises and falls through " + swing +
+          " millimetres and stays where it is.");
+      }
+
+      var prog = wrap.querySelector("[data-rtank-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Move a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each([ampEl, wavEl], function (el) {
+      if (!el) { return; }
+      ["input", "change"].forEach(function (ev) {
+        el.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+
+    paint();
+  }
+
+  /* p6-02 `#s-meet` — two wave trains in one channel, and the third trace.
+
+     ⚖️ FIVE BRANCHES, AND THE EXACT CANCEL IS ITS OWN. `WAVE-05` is *when
+     two waves cancel they destroy each other*, so the state where they
+     cancel to nothing has to say, in its own words, that both waves are
+     still there and both leave the overlap unchanged. A single "they
+     subtract" branch would leave the misconception standing.
+
+     ⚖️ THE ZERO STATE AND THE ONE-WAVE STATE ARE DISTINCT, AND NEITHER IS
+     "CANCELLING". Nothing plus nothing is not a cancellation, and one wave
+     alone reads the same crest-on-crest as crest-on-trough — which is the
+     control a student needs before the two-wave cases mean anything.
+
+     ⚖️ THE THIRD TRACE IS THE SUM, DRAWN, NOT ASSERTED. Both lanes and the
+     result are on one scale, so equal heights are equal millimetres. */
+  function wireSuperpositionLanes(sec) {
+    var wrap = sec.querySelector("[data-slane]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-slane-gate]");
+    var body = wrap.querySelector("[data-slane-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-slane-gopt]"));
+    var aEl = wrap.querySelector('[data-slane-slider="a"]');
+    var bEl2 = wrap.querySelector('[data-slane-slider="b"]');
+    var steps = toArray(wrap.querySelectorAll("[data-slane-step]"));
+    var svg = wrap.querySelector("[data-slane-alt]");
+    var noteEl = wrap.querySelector("[data-slane-note]");
+    var PXMM = parseFloat(wrap.getAttribute("data-px-per-mm")) || 2.5;
+    var inStep = wrap.getAttribute("data-start-in-step") !== "0";
+    var X0 = 120, X1 = 960, LAM = 280;
+    var MIDS = { a: 80, b: 210, r: 390 };
+    var committed = false, touched = 0;
+
+    function paint() {
+      var a = aEl ? Number(aEl.value) : 0;
+      var b = bEl2 ? Number(bEl2.value) : 0;
+      var r = inStep ? (a + b) : Math.abs(a - b);
+      var ph = inStep ? 0 : Math.PI;
+
+      each(steps, function (s) {
+        s.setAttribute("aria-pressed",
+          (s.getAttribute("data-slane-step") === "1") === inStep
+            ? "true" : "false");
+      });
+
+      setPath(wrap, '[data-slane-trace="a"]',
+              waveP6(X0, X1, MIDS.a, a * PXMM, LAM, 0, 4));
+      setPath(wrap, '[data-slane-trace="b"]',
+              waveP6(X0, X1, MIDS.b, b * PXMM, LAM, ph, 4));
+      /* The result is drawn from the SUM of the two displacements rather
+         than from `r`, so a partial cancel comes out of the arithmetic
+         instead of being asserted by the readout. */
+      var d = "", x = X0, y;
+      while (x <= X1) {
+        y = MIDS.r
+          - a * PXMM * Math.sin((2 * Math.PI * (x - X0)) / LAM)
+          - b * PXMM * Math.sin((2 * Math.PI * (x - X0)) / LAM + ph);
+        d += (d ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+        x += 4;
+      }
+      setPath(wrap, '[data-slane-trace="r"]', d);
+
+      setOut(wrap, "slane", "a", a + " mm");
+      setOut(wrap, "slane", "b", b + " mm");
+      setOut(wrap, "slane", "r", r + " mm");
+      setOut(wrap, "slane", "verdict",
+             (a === 0 && b === 0) ? "Nothing is running"
+               : (a === 0 || b === 0) ? "Only one wave"
+               : inStep ? "Adding"
+               : (a === b ? "Cancelling exactly" : "Cancelling in part"));
+
+      var key = (a === 0 && b === 0) ? "none"
+        : (a === 0 || b === 0) ? "one_only"
+        : inStep ? "adding"
+        : (a === b ? "cancels_exactly" : "partly");
+      var src = wrap.querySelector('[data-slane-branch="' + key + '"]');
+      if (noteEl && src) {
+        noteEl.textContent = fillTokens(src.getAttribute("data-note"), {
+          a: a, b: b, r: r,
+          diff: Math.abs(a - b),
+          only: a === 0 ? "B" : "A",
+          big: Math.max(a, b), small: Math.min(a, b),
+          gap: Math.abs(a - b)
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "Three traces on one scale. Wave A at " + a + " millimetres, " +
+          "wave B at " + b + " millimetres arriving " +
+          (inStep ? "crest on crest" : "crest on trough") +
+          ", and where they meet " + r + " millimetres.");
+      }
+
+      var prog = wrap.querySelector("[data-slane-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Move a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+      /* Question 1 is live on this channel. Design's own head, formula note
+         and answer note switch on which way B arrives, so they are
+         published rather than fixed. */
+      publishLiveP6(sec, {
+        inA: a, inB: b, r: r, sign: inStep ? "+" : "−",
+        arrive: inStep ? "crest on crest" : "crest on trough",
+        formnote: inStep
+          ? "Crest on crest, so both displacements are upwards and they add."
+          : "Crest on trough, so one is up and one is down, and the smaller "
+            + "takes away from the bigger.",
+        answernote: r === 0
+          ? "Flat water, and only while the two are overlapping."
+          : r + " millimetres from the still level, and only while the two "
+            + "are overlapping."
+      }, false);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each([aEl, bEl2], function (el) {
+      if (!el) { return; }
+      ["input", "change"].forEach(function (ev) {
+        el.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+    each(steps, function (s) {
+      s.addEventListener("click", function () {
+        inStep = s.getAttribute("data-slane-step") === "1";
+        touched += 1;
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p6-03 `#s-chain` — one source, one detector, the air in between.
+
+     ⚖️ THE CHAIN IS THE CONSTANT AND THE SOURCE IS THE VARIABLE. Five very
+     different things vibrate and the middle of the drawing never changes:
+     the same columns of air, bunched and spread, travelling the same way.
+     That is the whole claim of the lesson, and it is made by what does NOT
+     move on screen when the source is swapped.
+
+     ⚖️ THE NOTE IS THE SOURCE'S AND THE DETECTOR'S, IN THAT ORDER. There
+     are no branch spans here because there is no computed state — every
+     combination is a source sentence followed by a detector sentence, and
+     both are Design's own. */
+  function wireVibrationChain(sec) {
+    var wrap = sec.querySelector("[data-vchain]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-vchain-gate]");
+    var body = wrap.querySelector("[data-vchain-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-vchain-gopt]"));
+    var srcs = toArray(wrap.querySelectorAll("[data-vchain-source]"));
+    var dets = toArray(wrap.querySelectorAll("[data-vchain-det]"));
+    var svg = wrap.querySelector("[data-vchain-alt]");
+    var noteEl = wrap.querySelector("[data-vchain-note]");
+    var atS = wrap.getAttribute("data-start-source") || "0";
+    var atD = wrap.getAttribute("data-start-det") || "0";
+    var committed = false, touched = 0;
+
+    function pick(list, attr, want) {
+      var i = parseInt(want, 10);
+      if (!isNaN(i) && String(i) === String(want) && list[i]) { return list[i]; }
+      for (var k = 0; k < list.length; k += 1) {
+        if (list[k].getAttribute(attr) === want) { return list[k]; }
+      }
+      return list[0];
+    }
+
+    /* The columns of air: evenly spaced at rest, then shifted along by a
+       sine so that some crowd together and others open out. It is drawn
+       once and never varies, because nothing on this bench changes it —
+       which is the point being made. */
+    function airPath() {
+      var d = "", x0 = 340, x1 = 830, n = 26, i, x, shift;
+      for (i = 0; i < n; i += 1) {
+        x = x0 + (i / (n - 1)) * (x1 - x0);
+        shift = 13 * Math.sin((2 * Math.PI * i) / 6.5);
+        d += "M" + (x + shift).toFixed(1) + " 108 V232 ";
+      }
+      return d;
+    }
+
+    function paint() {
+      var s = pick(srcs, "data-vchain-source", atS);
+      var d = pick(dets, "data-vchain-det", atD);
+
+      each(srcs, function (b) {
+        b.setAttribute("aria-pressed", b === s ? "true" : "false");
+      });
+      each(dets, function (b) {
+        b.setAttribute("aria-pressed", b === d ? "true" : "false");
+      });
+
+      setPath(wrap, "[data-vchain-ghost]", s.getAttribute("data-ghost"));
+      setPath(wrap, "[data-vchain-shape]", s.getAttribute("data-path"));
+      setPath(wrap, "[data-vchain-arrow]", s.getAttribute("data-arrow"));
+      setPath(wrap, "[data-vchain-air]", airPath());
+
+      fillSpan(wrap, "vchain", "src", s.getAttribute("data-caption"),
+               tagStyle(0.16, 0.90, "#C6B9A7"));
+      fillSpan(wrap, "vchain", "det", d.getAttribute("data-caption"),
+               tagStyle(0.89, 0.90, "#C6B9A7", "end"));
+
+      setOut(wrap, "vchain", "moves", s.getAttribute("data-moves"));
+      setOut(wrap, "vchain", "amp", s.getAttribute("data-amp"));
+      setOut(wrap, "vchain", "freq", s.getAttribute("data-freq"));
+      setOut(wrap, "vchain", "out", d.getAttribute("data-out"));
+
+      if (noteEl) {
+        noteEl.textContent = s.getAttribute("data-note") + " " +
+                             d.getAttribute("data-note");
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          (s.getAttribute("data-caption") || "").toLowerCase() +
+          " at the left, " + s.getAttribute("data-driven") +
+          ", with columns of air between it and a " +
+          (d.getAttribute("data-caption") || "").toLowerCase() +
+          " at the right. The columns are crowded in some places and " +
+          "spread out in others, and the disturbance travels left to right.");
+      }
+
+      var prog = wrap.querySelector("[data-vchain-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(srcs, function (b) {
+      b.addEventListener("click", function () {
+        atS = b.getAttribute("data-vchain-source"); touched += 1; paint();
+      });
+    });
+    each(dets, function (b) {
+      b.addEventListener("click", function () {
+        atD = b.getAttribute("data-vchain-det"); touched += 1; paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p6-04 `#s-slinky` — the same slinky, driven two ways, with one coil
+     marked.
+
+     ⚖️ SAME AMPLITUDE, SAME WAVELENGTH, SAME LENGTH, BOTH WAYS. 60 mm and
+     300 mm on a 1.20 m slinky whichever drive is chosen, so the ONLY thing
+     that differs between the two pictures is the direction the coil moves.
+     Changing anything else would let a student read the contrast off the
+     wrong difference.
+
+     ⚖️ SIX BRANCHES, THREE PER DRIVE, AND THE MIDDLE ONE MATTERS MOST. A
+     coil at its rest place is still part of a wave — `WAVE-15` is *a
+     longitudinal wave has no amplitude because there is no hump to
+     measure*, and the rest-place branch is where that is answered.
+
+     ⚖️ THE MARKED COIL'S DISPLACEMENT IS ACROSS THE SLINKY FOR TRANSVERSE
+     AND ALONG IT FOR LONGITUDINAL, and the arrow is drawn on that axis. It
+     is the one drawn difference, so it carries the lesson. */
+  function wireSlinkyDual(sec) {
+    var wrap = sec.querySelector("[data-slink]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-slink-gate]");
+    var body = wrap.querySelector("[data-slink-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-slink-gopt]"));
+    var drives = toArray(wrap.querySelectorAll("[data-slink-drive]"));
+    var markEl = wrap.querySelector('[data-slink-slider="mark"]');
+    var svg = wrap.querySelector("[data-slink-alt]");
+    var noteEl = wrap.querySelector("[data-slink-note]");
+    var AMP = parseFloat(wrap.getAttribute("data-amp-mm")) || 60;
+    var LAM = parseFloat(wrap.getAttribute("data-lam-mm")) || 300;
+    var LEN = parseFloat(wrap.getAttribute("data-length-mm")) || 1200;
+    var at = wrap.getAttribute("data-start-drive") || "trans";
+    var X0 = 60, X1 = 940, MID = 180;
+    var PX = (X1 - X0) / LEN;          /* px per mm, one scale both ways */
+    var committed = false, touched = 0;
+
+    function drive() {
+      for (var i = 0; i < drives.length; i += 1) {
+        if (drives[i].getAttribute("data-slink-drive") === at) {
+          return drives[i];
+        }
+      }
+      return drives[0];
+    }
+
+    function paint() {
+      var d = drive();
+      var kind = d.getAttribute("data-kind");
+      var trans = kind === "transverse";
+      var pct = markEl ? Number(markEl.value) : 0;
+      var restMm = (pct / 100) * LEN;            /* rest position, mm */
+      var phase = (2 * Math.PI * restMm) / LAM;
+      var disp = AMP * Math.sin(phase);          /* mm, signed */
+      /* ⚠️ A COMPRESSION IS IN THE GRADIENT, NOT THE DISPLACEMENT, and
+         getting that wrong is the one error this bench cannot survive.
+         For s(x) = A sin(kx) the crowding goes as −∂s/∂x = −cos(kx): the
+         coils are packed where NEIGHBOURING coils have moved towards each
+         other, which happens where the coil's own displacement is zero,
+         and they are at rest spacing where the displacement is largest.
+         Labelling by `disp` — as this did — put "compression" on 17 of the
+         21 positions the slider can reach where the drawing plainly showed
+         the opposite, so the words contradicted the picture beside them.
+         The DRAWING was always right: it places each coil at rest + disp,
+         so the crowding comes out of the arithmetic. Only the label was
+         wrong. */
+
+
+      each(drives, function (b) {
+        b.setAttribute("aria-pressed", b === d ? "true" : "false");
+      });
+
+      /* The coils. Transverse: evenly spaced along, displaced across.
+         Longitudinal: on the axis, displaced ALONG, so the spacing itself
+         carries the compressions and rarefactions. */
+      var path = "", i, n = 60, rm, ph, dm, x, y;
+      for (i = 0; i <= n; i += 1) {
+        rm = (i / n) * LEN;
+        ph = (2 * Math.PI * rm) / LAM;
+        dm = AMP * Math.sin(ph);
+        x = X0 + (trans ? rm : rm + dm) * PX;
+        y = MID + (trans ? -dm * PX : 0);
+        path += (trans
+          ? ((i ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1))
+          : ("M" + x.toFixed(1) + " " + (MID - 34) +
+             " V" + (MID + 34) + " "));
+      }
+      setPath(wrap, "[data-slink-coils]", path);
+      setPath(wrap, "[data-slink-rest]",
+              "M" + (X0 + restMm * PX).toFixed(1) + " " + (MID - 52) +
+              " V" + (MID + 52));
+
+      var cx = X0 + (trans ? restMm : restMm + disp) * PX;
+      var cy = MID + (trans ? -disp * PX : 0);
+      var dot = wrap.querySelector("[data-slink-marked]");
+      if (dot) {
+        dot.setAttribute("cx", cx.toFixed(1));
+        dot.setAttribute("cy", cy.toFixed(1));
+      }
+
+      var len = Math.abs(disp) * PX;
+      var arrow = null;
+      if (len > 2) {
+        arrow = trans
+          ? arrowV(cx, MID, len, disp < 0, 20)
+          : arrowH(X0 + restMm * PX, MID, len, disp > 0, 20);
+      }
+      /* One path element, so shaft and head go in together. Both helpers
+         return `M0 0` below 2px rather than a zero-length arrow, which is
+         why the length is tested before either is asked for. */
+      setPath(wrap, "[data-slink-arrow]",
+              arrow ? (arrow.shaft + " " + arrow.head) : null);
+
+      fillSpan(wrap, "slink", "caption", d.getAttribute("data-caption"),
+               tagStyle(0.5, 0.06, "#C6B9A7"));
+
+      var mm = Math.round(Math.abs(disp));
+      setOut(wrap, "slink", "travel", "Along the slinky, to the right");
+      setOut(wrap, "slink", "coildir",
+             mm < 1 ? "At its rest place"
+               : (trans
+                   ? (disp > 0 ? mm + " mm across, upwards"
+                               : mm + " mm across, downwards")
+                   : (disp > 0 ? mm + " mm along, forwards"
+                               : mm + " mm along, backwards")));
+      /* ⚖️ HER THRESHOLDS AND HER WORDS, from `lessonVals()` on
+         `p6-04-sound-is-longitudinal.dc.html`:
+
+             if (g.cosv < -0.5) region = 'In a compression'
+             else if (g.cosv > 0.5) region = 'In a rarefaction'
+             else region = 'Between a compression and a rarefaction'
+
+         and ±0.85 on the sine for the transverse case. This had ±0 on the
+         DISPLACEMENT for both, which called every position above the rest
+         line "At a crest" — including one a hair above it — and put
+         "compression" where her own drawing shows the coils opening out.
+         The thresholds are hers because the bench is hers. */
+      var sinv = Math.sin(phase), cosv = Math.cos(phase);
+      setOut(wrap, "slink", "region",
+             trans
+               ? (sinv > 0.85 ? "At a crest"
+                   : sinv < -0.85 ? "At a trough"
+                                  : "Between a crest and a trough")
+               : (cosv < -0.5 ? "In a compression"
+                   : cosv > 0.5 ? "In a rarefaction"
+                                : "Between a compression and a rarefaction"));
+      setOut(wrap, "slink", "kind",
+             trans ? "Transverse" : "Longitudinal");
+
+      var key = trans
+        ? ("trans-" + (sinv > 0.85 ? "crest"
+                       : sinv < -0.85 ? "trough" : "mid"))
+        : ("long-" + (cosv < -0.5 ? "comp"
+                      : cosv > 0.5 ? "rare" : "mid"));
+      var src = wrap.querySelector('[data-slink-branch="' + key + '"]');
+      if (noteEl && src) {
+        noteEl.textContent = fillTokens(src.getAttribute("data-note"), {
+          amp: AMP, lam: LAM, mm: mm, pct: pct
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A slinky " + (LEN / 1000).toFixed(2) + " metres long, driven " +
+          (trans ? "across its length" : "along its length") +
+          ", with one coil marked " + pct + " per cent of the way along. " +
+          "It has moved " + mm + " millimetres " +
+          (trans ? "across the slinky" : "along the slinky") +
+          " from where it started" +
+          (trans ? "."
+             : ", and the coils around it are " +
+               (cosv < -0.5 ? "crowded closer than their rest spacing."
+                : cosv > 0.5 ? "further apart than their rest spacing."
+                             : "at their rest spacing.")));
+      }
+
+      var prog = wrap.querySelector("[data-slink-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(drives, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-slink-drive"); touched += 1; paint();
+      });
+    });
+    if (markEl) {
+      ["input", "change"].forEach(function (ev) {
+        markEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p6-05 `#s-signal` — a signal generator, a loudspeaker and a scope.
+
+     ⚖️ THE WINDOW IS FIXED AND THE COUNT IS DERIVED. 20 ms, always, and the
+     number of complete vibrations drawn is `f × 0.02` rather than an
+     authored figure. That is what makes the hertz something a student can
+     SEE rather than a label: the trace crowds as the frequency rises,
+     because more of them fit in the same fixed slice of time.
+
+     ⚖️ EVERY BRANCH ENDS BY NAMING WHAT THE OTHER DIAL WOULD DO, with live
+     figures. `WAVE-17` is *a loud note is a high note*, and a bench that
+     let a student move one dial, read one number and stop would never
+     confront it. `r_scope_trace` refuses a payload with no `independence`
+     sentence, and this is where that sentence is filled and appended.
+
+     ⚖️ THE AMPLITUDE BRACKET IS DRAWN FROM THE ZERO LINE, not trough to
+     crest, because that is what amplitude means — the same discrimination
+     `p6-01`'s figure makes for water. */
+  function wireScopeTrace(sec) {
+    var wrap = sec.querySelector("[data-scope]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-scope-gate]");
+    var body = wrap.querySelector("[data-scope-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-scope-gopt]"));
+    var fEl = wrap.querySelector('[data-scope-slider="f"]');
+    var aEl = wrap.querySelector('[data-scope-slider="a"]');
+    var svg = wrap.querySelector("[data-scope-alt]");
+    var noteEl = wrap.querySelector("[data-scope-note]");
+    var WIN = parseFloat(wrap.getAttribute("data-window-ms")) || 20;
+    var IND = wrap.getAttribute("data-independence") || "";
+    var BANDS = (wrap.getAttribute("data-bands") || "200|600").split("|");
+    var LOW = parseFloat(BANDS[0]), HIGH = parseFloat(BANDS[1]);
+    var X0 = 70, X1 = 930, MID = 190, MAXA = 130;
+    var committed = false, touched = 0;
+
+    function paint() {
+      var f = fEl ? Number(fEl.value) : 0;
+      var aRaw = aEl ? Number(aEl.value) : 0;      /* tenths of a mm */
+      var mm = aRaw / 10;
+      var cyc = f * (WIN / 1000);                  /* complete vibrations */
+      var ampPx = (aRaw / Number(aEl.max)) * MAXA;
+      var lam = (X1 - X0) / (cyc || 1);
+
+      setPath(wrap, "[data-scope-trace]",
+              waveP6(X0, X1, MID, ampPx, lam, 0, 2));
+
+      /* One tick per millisecond, so the window's own scale is visible and
+         the crowding can be counted against something. */
+      var ticks = "", i, x;
+      for (i = 0; i <= WIN; i += 1) {
+        x = X0 + (i / WIN) * (X1 - X0);
+        ticks += "M" + x.toFixed(1) + " 330 V" +
+                 (i % 5 === 0 ? 312 : 322) + " ";
+      }
+      setPath(wrap, "[data-scope-ticks]", ticks);
+
+      setPath(wrap, "[data-scope-bracket]",
+              ampPx > 3
+                ? ("M" + (X0 + 26) + " " + MID +
+                   " V" + (MID - ampPx).toFixed(1) +
+                   " M" + (X0 + 16) + " " + MID + " H" + (X0 + 36) +
+                   " M" + (X0 + 16) + " " + (MID - ampPx).toFixed(1) +
+                   " H" + (X0 + 36))
+                : null);
+
+      fillSpan(wrap, "scope", "amp", mm.toFixed(1) + " mm",
+               tagStyle(0.115, (MID - ampPx - 18) / 420, "#C6B9A7", "start"));
+
+      var other = mm === 2 ? "0.4" : "0.2";
+      setOut(wrap, "scope", "freq", f + " Hz");
+      setOut(wrap, "scope", "f", f + " Hz");
+      setOut(wrap, "scope", "cycles", String(Math.round(cyc * 10) / 10));
+      setOut(wrap, "scope", "amp", mm.toFixed(1) + " mm");
+      setOut(wrap, "scope", "a", mm.toFixed(1) + " mm");
+      setOut(wrap, "scope", "verdict",
+             (f < LOW ? "A low note" : f > HIGH ? "A high note"
+                                                : "A middling note") +
+             ", " + (mm >= 1.4 ? "loud" : mm <= 0.6 ? "quiet"
+                                                    : "moderately loud"));
+
+      var key = f < LOW ? "low" : (f > HIGH ? "high" : "middle");
+      var src = wrap.querySelector('[data-scope-branch="' + key + '"]');
+      var vals = {
+        f: f, cyc: Math.round(cyc * 10) / 10, amp: mm.toFixed(1),
+        other: other, win: WIN
+      };
+      if (noteEl && src) {
+        noteEl.textContent = fillTokens(src.getAttribute("data-note"), vals) +
+                             fillTokens(IND, vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "An oscilloscope window " + WIN + " milliseconds wide showing a " +
+          "steady tone at " + f + " hertz. " +
+          (Math.round(cyc * 10) / 10) + " complete vibrations fit in the " +
+          "window, and the trace reaches " + mm.toFixed(1) +
+          " millimetres above the zero line.");
+      }
+
+      var prog = wrap.querySelector("[data-scope-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both dials live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+      /* ⚠️ THREE SECONDS, WHICH IS HER QUESTION. This published a
+         two-second count against a head that had been written here; the
+         head is now hers and asks for 3.0 s. */
+      publishLiveP6(sec, { f: f, n: f * 3 }, false);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each([fEl, aEl], function (el) {
+      if (!el) { return; }
+      ["input", "change"].forEach(function (ev) {
+        el.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+
+    paint();
+  }
+
+  /* p6-06 `#s-range` — a striker, a microphone, and a measured gap.
+
+     ⚖️ THE VACUUM REPORTS NOTHING, IN WORDS. Not a very small number and
+     not a very long time: no sound, at any distance, for any length of
+     time. A bench that printed `0 m/s` and a time would teach that sound
+     crosses a vacuum slowly, which is `WAVE-21` exactly — so the time and
+     the verdict are sentences, not zeros, when v is 0.
+
+     ⚖️ THE PARTICLE PATTERN IS THE EXPLANATION. Scattered for a gas, close
+     rows for a liquid, a linked lattice for a solid, nothing at all for a
+     vacuum — and each material's note names the same arrangement in words,
+     so the drawing is never the only channel. */
+  function wireMediumRange(sec) {
+    var wrap = sec.querySelector("[data-mrange]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-mrange-gate]");
+    var body = wrap.querySelector("[data-mrange-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-mrange-gopt]"));
+    var mats = toArray(wrap.querySelectorAll("[data-mrange-mat]"));
+    var distEl = wrap.querySelector('[data-mrange-slider="dist"]');
+    var svg = wrap.querySelector("[data-mrange-alt]");
+    var noteEl = wrap.querySelector("[data-mrange-note]");
+    var at = wrap.getAttribute("data-start-mat") || "0";
+    var X0 = 160, X1 = 880, MID = 150;
+    var committed = false, touched = 0;
+
+    function mat() {
+      var i = parseInt(at, 10);
+      if (!isNaN(i) && String(i) === String(at) && mats[i]) { return mats[i]; }
+      for (var k = 0; k < mats.length; k += 1) {
+        if (mats[k].getAttribute("data-mrange-mat") === at) { return mats[k]; }
+      }
+      return mats[0];
+    }
+
+    /* Three arrangements and an absence. The counts and rows are chosen so
+       that gas / liquid / solid read as progressively closer without any
+       of them looking like a different KIND of thing. */
+    function patterns(kind) {
+      var dots = "", links = "", cols, rows, i, j, x, y, gapX, gapY;
+      if (kind === "none") { return { dots: null, links: null }; }
+      cols = kind === "gas" ? 9 : (kind === "liquid" ? 18 : 22);
+      rows = kind === "gas" ? 3 : 4;
+      gapX = (X1 - X0) / (cols + 1);
+      gapY = 30;
+      for (j = 0; j < rows; j += 1) {
+        y = MID - ((rows - 1) * gapY) / 2 + j * gapY;
+        for (i = 0; i < cols; i += 1) {
+          x = X0 + gapX * (i + 1) +
+              (kind === "gas" ? ((i * 37 + j * 53) % 19) - 9 : 0);
+          dots += "M" + (x - 4).toFixed(1) + " " + y.toFixed(1) +
+                  " a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 ";
+          if (kind === "lattice" && i) {
+            links += "M" + (x - gapX).toFixed(1) + " " + y.toFixed(1) +
+                     " H" + x.toFixed(1) + " ";
+          }
+        }
+      }
+      return { dots: dots, links: links || null };
+    }
+
+    function paint() {
+      var m = mat();
+      var v = parseFloat(m.getAttribute("data-v"));
+      var dist = distEl ? Number(distEl.value) : 0;
+      var silent = !(v > 0);
+      var t = silent ? null : dist / v;
+
+      each(mats, function (b) {
+        b.setAttribute("aria-pressed", b === m ? "true" : "false");
+      });
+
+      var p = patterns(m.getAttribute("data-pattern"));
+      setPath(wrap, "[data-mrange-particles]", p.dots);
+      setPath(wrap, "[data-mrange-links]", p.links);
+
+      fillSpan(wrap, "mrange", "gap", dist + " m",
+               tagStyle(0.52, 0.90, "#C6B9A7"));
+      fillSpan(wrap, "mrange", "caption", m.getAttribute("data-caption"),
+               tagStyle(0.52, 0.11, "#C6B9A7"));
+
+      setOut(wrap, "mrange", "dist", dist + " m");
+      setOut(wrap, "mrange", "gap", dist + " m");
+      setOut(wrap, "mrange", "speed",
+             silent ? "No speed of sound at all" : v + " m/s");
+      setOut(wrap, "mrange", "time",
+             silent ? "Nothing ever arrives"
+                    : (t >= 1 ? t.toFixed(2) : t >= 0.1 ? t.toFixed(3)
+                                                        : t.toFixed(4)) + " s");
+      setOut(wrap, "mrange", "verdict",
+             silent ? "Silence, at any distance" : "The blow arrives");
+
+      if (noteEl) {
+        noteEl.textContent = fillTokens(m.getAttribute("data-note"), {
+          dist: dist, v: v, name: m.getAttribute("data-name")
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A striker and a microphone " + dist + " metres apart with " +
+          (m.getAttribute("data-state") || "") + " between them. " +
+          (silent
+            ? "There are no particles in the gap, so nothing arrives at all."
+            : "Sound crosses at about " + v + " metres per second."));
+      }
+
+      var prog = wrap.querySelector("[data-mrange-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+      /* ⚠️ THE VACUUM BLOCKS THE ATTEMPT, AND THAT IS NOT A NICETY.
+         `t = d ÷ v` with v = 0 is not a hard sum, it is not a sum at all,
+         and printing "200 m ÷ 0 m/s" would teach that the arithmetic is
+         merely difficult there. The panel says instead that there is
+         nothing to work out, which is the physics. */
+      /* ⚖️ HER HANDLING OF THE VACUUM, AND IT IS BETTER THAN BLOCKING.
+         She does not hide the five boxes: she says the vacuum has no speed
+         of sound and nothing to time, and runs the steps on AIR across the
+         same gap. The student still gets the practice, and the physics
+         point is made in the head rather than by an absence. */
+      var qv = silent ? 340 : v;
+      var qn = silent ? "air" : (m.getAttribute("data-name") || "").toLowerCase();
+      var qt = dist / qv;
+      publishLiveP6(sec, {
+        headline: silent
+          ? ("A vacuum has no speed of sound and nothing to time, so these "
+             + "five steps use air across your " + dist + " m gap.")
+          : ("Your gap: " + dist + " m of " + qn + "."),
+        dist: dist, v: qv, name: qn,
+        timenum: Math.round(qt * 10000) / 10000,
+        /* ⚖️ HER `fmtT`, EXACTLY: seconds throughout, with the number of
+           decimals stepping down as the time gets shorter. This had
+           switched to milliseconds below a second, which reads as a
+           different quantity from the one the triangle just produced. */
+        time: (qt >= 1 ? qt.toFixed(2) : qt >= 0.1 ? qt.toFixed(3)
+                                                   : qt.toFixed(4)) + " s"
+      }, false);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(mats, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-mrange-mat"); touched += 1; paint();
+      });
+    });
+    if (distEl) {
+      ["input", "change"].forEach(function (ev) {
+        distEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p6-07 `#s-cliff` — one shout, one flat surface, a stopwatch.
+
+     ⚖️ TWO CONDITIONS, AND THE VERDICT NAMES WHICH ONE FAILED. An echo needs
+     enough sound back AND enough delay. A single verdict word would let a
+     student in a carpeted bedroom conclude the room is too small, and in a
+     sports hall that the walls are too soft — so the three branches are
+     keyed to exactly that, and each names the figure that failed.
+
+     ⚖️ THE RETURNING ARROW CARRIES THE FRACTION ON TWO CHANNELS. Its stroke
+     width is how much comes back, AND it goes dashed below the audible
+     threshold, so the drawing never rests on thickness alone. */
+  function wireEchoRange(sec) {
+    var wrap = sec.querySelector("[data-echo]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-echo-gate]");
+    var body = wrap.querySelector("[data-echo-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-echo-gopt]"));
+    var surfs = toArray(wrap.querySelectorAll("[data-echo-surf]"));
+    var distEl = wrap.querySelector('[data-echo-slider="dist"]');
+    var svg = wrap.querySelector("[data-echo-alt]");
+    var noteEl = wrap.querySelector("[data-echo-note]");
+    var V = parseFloat(wrap.getAttribute("data-v")) || 340;
+    var MINF = parseFloat(wrap.getAttribute("data-min-frac")) || 15;
+    var MINT = parseFloat(wrap.getAttribute("data-min-time")) || 0.1;
+    var at = wrap.getAttribute("data-start-surf") || "0";
+    var committed = false, touched = 0;
+
+    function surf() {
+      var i = parseInt(at, 10);
+      if (!isNaN(i) && String(i) === String(at) && surfs[i]) {
+        return surfs[i];
+      }
+      for (var k = 0; k < surfs.length; k += 1) {
+        if (surfs[k].getAttribute("data-echo-surf") === at) {
+          return surfs[k];
+        }
+      }
+      return surfs[0];
+    }
+
+    function paint() {
+      var s = surf();
+      var frac = parseFloat(s.getAttribute("data-frac"));
+      var dist = distEl ? Number(distEl.value) : 0;
+      var lo = Number(distEl.min), hi = Number(distEl.max);
+      var path = 2 * dist;
+      var t = path / V;
+      var enough = frac >= MINF;
+      var late = t >= MINT;
+
+      each(surfs, function (b) {
+        b.setAttribute("aria-pressed", b === s ? "true" : "false");
+      });
+
+      var wallX = 250 + ((dist - lo) / (hi - lo)) * 640;
+      var wall = wrap.querySelector("[data-echo-wall]");
+      if (wall) { wall.setAttribute("x", wallX.toFixed(1)); }
+
+      var outA = arrowH(190, 214, Math.max(4, wallX - 190 - 26), true, 22);
+      setPath(wrap, "[data-echo-out-arrow]", outA.shaft + " " + outA.head);
+      var backA = arrowH(wallX - 6, 268, Math.max(4, wallX - 190 - 26),
+                         false, 22);
+      var back = wrap.querySelector("[data-echo-back]");
+      if (back) {
+        back.setAttribute("stroke-width",
+                          String(Math.max(2, (frac / 100) * 14)));
+        back.setAttribute("stroke-dasharray", enough ? "none" : "14 12");
+      }
+      setPath(wrap, "[data-echo-back]", backA.shaft + " " + backA.head);
+      setPath(wrap, "[data-echo-dim]",
+              "M150 330 H" + wallX.toFixed(1) +
+              " M150 318 V342 M" + wallX.toFixed(1) + " 318 V342");
+
+      fillSpan(wrap, "echo", "dist", dist + " m",
+               tagStyle((150 + wallX) / 2000, 0.98, "#C6B9A7"));
+      fillSpan(wrap, "echo", "back", "about " + frac + "% comes back",
+               tagStyle((wallX + 10) / 1000, 0.80, "#C6B9A7", "end"));
+      fillSpan(wrap, "echo", "caption", s.getAttribute("data-caption"),
+               tagStyle(0.5, 0.06, "#C6B9A7"));
+
+      setOut(wrap, "echo", "dist", dist + " m");
+      setOut(wrap, "echo", "path", path + " m");
+      setOut(wrap, "echo", "time", (Math.round(t * 100) / 100) + " s");
+      setOut(wrap, "echo", "verdict",
+             !enough ? "No echo you can pick out"
+               : (!late ? "One fuller sound, not two"
+                        : "Your own shout, coming back"));
+
+      var key = !enough ? "too_quiet" : (!late ? "too_close" : "heard");
+      var src = wrap.querySelector('[data-echo-branch="' + key + '"]');
+      if (noteEl && src) {
+        /* Her notes quote the time to two decimals in two branches and to
+           THREE in the too-close one, because 0.06 s and 0.059 s carry
+           different amounts of the point being made there. Two tokens
+           rather than one rounding rule. */
+        noteEl.textContent = fillTokens(src.getAttribute("data-note"), {
+          surf: s.getAttribute("data-name"),
+          lower: (s.getAttribute("data-name") || "").toLowerCase(),
+          frac: frac, dist: dist, path: path,
+          time: t.toFixed(2), time3: t.toFixed(3),
+          use: s.getAttribute("data-use")
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "Someone shouting at " + (s.getAttribute("data-name") || "")
+            .toLowerCase() + " " + dist + " metres away. About " + frac +
+          " per cent of the sound is drawn coming back, and the round trip " +
+          "of " + path + " metres takes " + (Math.round(t * 100) / 100) +
+          " seconds.");
+      }
+
+      var prog = wrap.querySelector("[data-echo-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+      publishLiveP6(sec, {
+        dist: dist, path: path,
+        surf: (s.getAttribute("data-name") || "").toLowerCase(),
+        time: t.toFixed(t < 0.1 ? 3 : 2)
+      }, false);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(surfs, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-echo-surf"); touched += 1; paint();
+      });
+    });
+    if (distEl) {
+      ["input", "change"].forEach(function (ev) {
+        distEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p6-08 `#s-range` — one tone, one listener, on an axis that multiplies.
+
+     ⚖️ A DECADE AXIS, AND THE SLIDER MOVES IN DECADES. The control's value
+     is thousandths of a decade, so `f = 10 ^ (value / 1000)` — which is
+     what makes a single slider reach from 1 Hz to 100 000 Hz with the same
+     feel at both ends. A linear slider would spend nine tenths of its
+     travel above 10 000 Hz and be unusable below 1000.
+
+     ⚖️ EVERY BRANCH NAMES A SECOND LISTENER AT THE SAME FREQUENCY. "The dog
+     can hear it" is a reading; "the dog can hear it and you cannot" is the
+     lesson. The comparison is computed against the actual list rather than
+     authored, so it is true whichever listener is selected.
+
+     ⚖️ THE VERDICT IS A WORD. Inside, below, above — never a colour. */
+  function wireLogRange(sec) {
+    var wrap = sec.querySelector("[data-lrange]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-lrange-gate]");
+    var body = wrap.querySelector("[data-lrange-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-lrange-gopt]"));
+    var whos = toArray(wrap.querySelectorAll("[data-lrange-who]"));
+    var fEl = wrap.querySelector('[data-lrange-slider="f"]');
+    var svg = wrap.querySelector("[data-lrange-alt]");
+    var noteEl = wrap.querySelector("[data-lrange-note]");
+    var at = wrap.getAttribute("data-start-who") || "0";
+    var X0 = 90, PERDEC = 164;
+    var committed = false, touched = 0;
+
+    function xf(hz) {
+      return X0 + (Math.log(Math.max(hz, 1)) / Math.LN10) * PERDEC;
+    }
+    function tidy(hz) {
+      return hz >= 1000 ? groupN(hz) : String(Math.round(hz));
+    }
+    function who() {
+      var i = parseInt(at, 10);
+      if (!isNaN(i) && String(i) === String(at) && whos[i]) { return whos[i]; }
+      for (var k = 0; k < whos.length; k += 1) {
+        if (whos[k].getAttribute("data-lrange-who") === at) { return whos[k]; }
+      }
+      return whos[0];
+    }
+
+    function paint() {
+      var w = who();
+      var lo = parseFloat(w.getAttribute("data-lo"));
+      var hi = parseFloat(w.getAttribute("data-hi"));
+      var f = Math.pow(10, (fEl ? Number(fEl.value) : 0) / 1000);
+      var heard = f >= lo && f <= hi;
+
+      each(whos, function (b) {
+        b.setAttribute("aria-pressed", b === w ? "true" : "false");
+      });
+
+      var band = wrap.querySelector("[data-lrange-band]");
+      if (band) {
+        band.setAttribute("x", xf(lo).toFixed(1));
+        band.setAttribute("width", Math.max(4, xf(hi) - xf(lo)).toFixed(1));
+      }
+      setPath(wrap, "[data-lrange-marker]",
+              "M" + xf(f).toFixed(1) + " 96 V204");
+      fillSpan(wrap, "lrange", "mark", tidy(f) + " Hz",
+               tagStyle(xf(f) / 1000, 0.26, "#FFC53D"));
+
+      setOut(wrap, "lrange", "f", tidy(f) + " Hz");
+      setOut(wrap, "lrange", "freq", tidy(f) + " Hz");
+      setOut(wrap, "lrange", "lo", tidy(lo) + " Hz");
+      setOut(wrap, "lrange", "hi", tidy(hi) + " Hz");
+      setOut(wrap, "lrange", "verdict",
+             heard ? "Yes — it is inside the range"
+               : (f < lo ? "No — below the bottom of the range"
+                         : "No — above the top of the range"));
+
+      /* ⚖️ HER RULE FOR THE SECOND LISTENER, from `lessonVals()`: an
+         elephant below the band, a bat above it, and inside the band a
+         bat when the young human is selected and a young person when it
+         is not. This used to pick whichever listener happened to differ
+         first, which is a different lesson on some selections. */
+      var YOUNG = whos[0];
+      var ylo = parseFloat(YOUNG.getAttribute("data-lo"));
+      var yhi = parseFloat(YOUNG.getAttribute("data-hi"));
+      var other;
+      if (heard) {
+        other = (w === YOUNG)
+          ? ("A bat, whose range starts at about 2000 Hz, "
+             + (f >= 2000 ? "hears it too." : "would miss it entirely."))
+          : ("A young person "
+             + (f >= ylo && f <= yhi ? "hears it as well."
+                                     : "hears nothing at all."));
+      } else if (f < lo) {
+        other = f >= 16 ? "would hear it."
+          : "would miss this one too — it is below every range on the chart.";
+      } else {
+        other = f <= 110000 ? "would hear it perfectly well."
+          : "would miss it as well — nothing on the chart reaches this high.";
+      }
+
+      var key = heard ? "inside" : (f < lo ? "below" : "above");
+      var src = wrap.querySelector('[data-lrange-branch="' + key + '"]');
+      if (noteEl && src) {
+        /* Her `benchNote` is the listener's own note and then the tone's
+           sentence, in that order. */
+        noteEl.textContent =
+          (w.getAttribute("data-note") || "") + " " +
+          fillTokens(src.getAttribute("data-note"), {
+            f: tidy(f), lo: tidy(lo), hi: tidy(hi),
+            who: w.getAttribute("data-name"), other: other
+          });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A frequency axis from 1 to 100 000 hertz, each mark ten times " +
+          "the one before. " + w.getAttribute("data-name") + " hears from " +
+          tidy(lo) + " to " + tidy(hi) + " hertz, and the tone is at " +
+          tidy(f) + " hertz, " + (heard ? "inside" : "outside") +
+          " that band.");
+      }
+
+      var prog = wrap.querySelector("[data-lrange-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(whos, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-lrange-who"); touched += 1; paint();
+      });
+    });
+    if (fEl) {
+      ["input", "change"].forEach(function (ev) {
+        fEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p6-09 `#s-gauge` — a probe on a block, and a screen showing two pips.
+
+     ⚖️ THE BENCH PRINTS ITS OWN WORKING AND TAKES NO FORMULA BLOCK (her
+     flag 3). It computes `d = v × t` and then halves, and both halves are
+     owned one and two lessons back — p6-06's triangle and p6-07's bar. So
+     the path and the time are shown line by line instead, and the two
+     owning lessons are carried as edges.
+
+     ⚖️ THE WINDOW IS FIXED AT 0.30 ms AND THE ECHO PIP IS PLACED TO SCALE
+     IN IT. That is the whole of what the material control does: a faster
+     material visibly brings the two pips together, which is why a gauge has
+     to be told what it is standing on before it can read a depth at all. */
+  function wireFlawGauge(sec) {
+    var wrap = sec.querySelector("[data-fgauge]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-fgauge-gate]");
+    var body = wrap.querySelector("[data-fgauge-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-fgauge-gopt]"));
+    var mats = toArray(wrap.querySelectorAll("[data-fgauge-mat]"));
+    /* ⚠️ `"d"`, NOT `"depth"`. `_slider()` names the control from the key
+       it is given, and the payload's key is `depth` while the emitted
+       value is the short one. Queried by the long name this was null, so
+       the depth control did nothing at all — and the liveness gate could
+       not see it, because pressing a material tab moved the block and the
+       block is what that gate watches. */
+    var depthEl = wrap.querySelector('[data-fgauge-slider="d"]');
+    var svg = wrap.querySelector("[data-fgauge-alt]");
+    var noteEl = wrap.querySelector("[data-fgauge-note]");
+    var WIN = parseFloat(wrap.getAttribute("data-window-ms")) || 0.3;
+    var at = wrap.getAttribute("data-start-mat") || "0";
+    var TOP = 90, BOT = 330, SX0 = 560, SX1 = 940, BASE = 280;
+    var committed = false, touched = 0;
+
+    function mat() {
+      var i = parseInt(at, 10);
+      if (!isNaN(i) && String(i) === String(at) && mats[i]) { return mats[i]; }
+      for (var k = 0; k < mats.length; k += 1) {
+        if (mats[k].getAttribute("data-fgauge-mat") === at) { return mats[k]; }
+      }
+      return mats[0];
+    }
+
+    function paint() {
+      var m = mat();
+      var v = parseFloat(m.getAttribute("data-v"));
+      var mm = depthEl ? Number(depthEl.value) : 0;
+      var max = depthEl ? Number(depthEl.max) : 200;
+      var pathMm = 2 * mm;
+      var ms = (pathMm / 1000) / v * 1000;         /* milliseconds */
+
+      each(mats, function (b) {
+        b.setAttribute("aria-pressed", b === m ? "true" : "false");
+      });
+
+      var y = TOP + (mm / max) * (BOT - TOP);
+      var flaw = wrap.querySelector("[data-fgauge-flaw]");
+      if (flaw) { flaw.setAttribute("y", (y - 6).toFixed(1)); }
+
+      var len = Math.max(4, y - TOP - 14);
+      var dA = arrowV(250, TOP + 4, len, true, 20);
+      var uA = arrowV(292, y - 10, len, false, 20);
+      setPath(wrap, "[data-fgauge-down]", dA.shaft + " " + dA.head);
+      setPath(wrap, "[data-fgauge-up]", uA.shaft + " " + uA.head);
+      setPath(wrap, "[data-fgauge-dim]",
+              "M400 " + TOP + " V" + y.toFixed(1) +
+              " M388 " + TOP + " H412 M388 " + y.toFixed(1) + " H412");
+
+      /* Off the right-hand edge means the echo has not come back inside the
+         window — which cannot happen with these three materials and this
+         depth range, and is clamped rather than drawn off-screen so that a
+         later material cannot silently put the pip outside the box. */
+      var px = SX0 + Math.min(1, ms / WIN) * (SX1 - SX0);
+      setPath(wrap, '[data-fgauge-pip="echo"]',
+              "M" + px.toFixed(1) + " " + BASE + " V170");
+
+      fillSpan(wrap, "fgauge", "depth", mm + " mm",
+               tagStyle(0.42, (TOP + (y - TOP) / 2) / 420, "#C6B9A7",
+                        "start"));
+      fillSpan(wrap, "fgauge", "caption", m.getAttribute("data-caption"),
+               tagStyle(0.27, 0.97, "#C6B9A7"));
+
+      setOut(wrap, "fgauge", "depth", mm + " mm");
+      setOut(wrap, "fgauge", "speed", groupN(v) + " m/s");
+      setOut(wrap, "fgauge", "path",
+             pathMm + " mm — " + mm + " mm down and " + mm + " mm back");
+      setOut(wrap, "fgauge", "time",
+             (Math.round(ms * 1000) / 1000) + " ms");
+
+      if (noteEl) {
+        noteEl.textContent = fillTokens(m.getAttribute("data-note"), {
+          depth: mm, v: groupN(v), path: pathMm,
+          ms: Math.round(ms * 1000) / 1000,
+          name: m.getAttribute("data-name")
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A probe on " + (m.getAttribute("data-state") || "") +
+          " with a reflector " + mm + " millimetres down. Sound travels at " +
+          groupN(v) + " metres per second in it, so the echo returns " +
+          (Math.round(ms * 1000) / 1000) +
+          " milliseconds after the pulse left, and the two pips are drawn " +
+          "to scale in a window of " + WIN + " milliseconds.");
+      }
+
+      var prog = wrap.querySelector("[data-fgauge-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(mats, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-fgauge-mat"); touched += 1; paint();
+      });
+    });
+    if (depthEl) {
+      ["input", "change"].forEach(function (ev) {
+        depthEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* ═══ END P6 wiring ═══ */
+
+
 
 
 
@@ -28623,6 +30186,19 @@
     each(root.querySelectorAll("[data-altblock]"), wireAltitudeColumn);
     each(root.querySelectorAll("[data-p5cfablock]"), wireCfifaAttemptP5);
     // ═══ END P5 wiring ═══
+    // ═══ BEGIN P6 wiring ═══
+    each(root.querySelectorAll("[data-wanatblock]"), wireWaveAnatomy);
+    each(root.querySelectorAll("[data-rtankblock]"), wireRippleTank);
+    each(root.querySelectorAll("[data-slaneblock]"), wireSuperpositionLanes);
+    each(root.querySelectorAll("[data-vchainblock]"), wireVibrationChain);
+    each(root.querySelectorAll("[data-slinkblock]"), wireSlinkyDual);
+    each(root.querySelectorAll("[data-scopeblock]"), wireScopeTrace);
+    each(root.querySelectorAll("[data-mrangeblock]"), wireMediumRange);
+    each(root.querySelectorAll("[data-echoblock]"), wireEchoRange);
+    each(root.querySelectorAll("[data-lrangeblock]"), wireLogRange);
+    each(root.querySelectorAll("[data-fgaugeblock]"), wireFlawGauge);
+    each(root.querySelectorAll("[data-p6cfablock]"), wireCfifaAttemptP6);
+    // ═══ END P6 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

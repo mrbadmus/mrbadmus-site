@@ -124,6 +124,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `ENER` | Energy in a change: which way it travels, where it is stored, and what a thermometer is and is not measuring | 2026-08-21, by C7 |
 | `FORCE` | Forces and motion — what a speed is and what it is measured against; and what a force is, what it takes to make one, what is left over when they are added, and what that leftover does | 2026-08-24, by P3; widened 24 Aug 2026 by P4 |
 | `PRESS` | Pressure — what a force does to a surface, which way a fluid pushes, and what happens where there is nothing to push | 2026-08-25, by P5 |
+| `WAVE` | Waves — what travels and what stays put, what a wave's two measurements are, and how sound is made, carried, reflected, heard and put to work | 2026-08-25, by P6 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -1653,6 +1654,57 @@ The pattern this follows is the chemistry one — `MIX` for C3, `REACT` for C4, 
 | `PRESS-14` | If air really pressed that hard, we would feel it. | *(none — nothing on the page asks for this commitment)* | `s-think` | `atmospheric-pressure` |
 | `PRESS-15` | A sealed bag swells at altitude because gravity is weaker up there. | `climb` | `s-ladder` | `atmospheric-pressure` |
 | `PRESS-16` | The air runs out at a definite height, and above it there is none at all. | `s-ladder` | `climb` | `atmospheric-pressure` |
+
+### `WAVE` — waves and sound
+
+⊕ **OPENED 25 Aug 2026, BY P6.** `docs/ks3/design-reference/p6/NOTES-P6-P7.md` §7 pre-allocated `WAVE-01` … `WAVE-36`, four per
+lesson in slot order, and authored 22 of them without citing one on any page — because access was read-only and this register had no
+open family for waves or sound. **Every id she wrote is minted here on the number she gave it, in her words.** The fourteen gaps are
+minted from the real lesson content, which is the register's own rule: an id is minted from what a page actually confronts, never
+reserved against what one might.
+
+⚠️ **TWO OF HERS ARE ON THE NUMBER SHE GAVE THEM BECAUSE THIS PASS CHECKED.** `WAVE-30` had been minted onto 31 and one of her own
+statements pushed onto a spare; `WAVE-27` had been paraphrased. Both are back. A pre-allocation is only useful if the lane that
+fills it reads it.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `WAVE-01` | The water travels along with the wave. | `s-hook` | `s-think` | `waves-on-water` |
+| `WAVE-02` | A bigger wave is a longer wave. | `tank` | `s-think` | `waves-on-water` |
+| `WAVE-03` | The amplitude runs from the trough up to the crest. | `s-ladder` | `parts` | `waves-on-water` |
+| `WAVE-04` | A wave whose water only goes up and down is standing still. | `s-hook` | `s-hook` | `waves-on-water` |
+| `WAVE-05` | When two waves cancel they destroy each other. | `meet` | `meet` | `transverse-waves-and-superposition` |
+| `WAVE-06` | If the water is flat the energy has gone. | *(none — nothing on the page asks for this commitment)* | `meet` | `transverse-waves-and-superposition` |
+| `WAVE-07` | Two waves meeting average out. | `s-ladder` | `s-ladder` | `transverse-waves-and-superposition` |
+| `WAVE-08` | The stronger wave wins and the weaker one disappears. | `s-hook` | `s-think` | `transverse-waves-and-superposition` |
+| `WAVE-09` | Sound is made by the air, not by the object. | `s-hook` | `chain` | `how-sound-is-made` |
+| `WAVE-10` | If you cannot see it moving it is not vibrating. | `chain` | `s-think` | `how-sound-is-made` |
+| `WAVE-11` | A microphone is a quiet loudspeaker. | `s-ladder` | `s-think` | `how-sound-is-made` |
+| `WAVE-12` | Sound is stored inside an object and gets out. | `s-ladder` | `s-ladder` | `how-sound-is-made` |
+| `WAVE-13` | Sound is transverse, because it is drawn as a wavy line. | `s-hook` | `slinky` | `sound-is-longitudinal` |
+| `WAVE-14` | In a compression the air travels to your ear. | `slinky` | `s-think` | `sound-is-longitudinal` |
+| `WAVE-15` | A longitudinal wave has no amplitude, because there is no hump to measure. | `s-ladder` | `slinky` | `sound-is-longitudinal` |
+| `WAVE-16` | A compression is a place where the air is hotter. | *(none — nothing on the page asks for this commitment)* | `slinky` | `sound-is-longitudinal` |
+| `WAVE-17` | A loud note is a high note. | `s-hook` | `signal` | `frequency-pitch-and-loudness` |
+| `WAVE-18` | A higher note travels faster. | `s-ladder` | `s-think` | `frequency-pitch-and-loudness` |
+| `WAVE-19` | Turning the volume up adds vibrations each second. | `signal` | `signal` | `frequency-pitch-and-loudness` |
+| `WAVE-20` | A hertz measures how loud something is. | *(none — nothing on the page asks for this commitment)* | `s-think` | `frequency-pitch-and-loudness` |
+| `WAVE-21` | Sound crosses a vacuum, faintly. | `s-hook` | `range` | `sound-needs-a-medium` |
+| `WAVE-22` | Sound is fastest in air, because air is easiest to get through. | `range` | `range` | `sound-needs-a-medium` |
+| `WAVE-23` | A vacuum stops sound because there is nothing for the source to push against. | *(none — nothing on the page asks for this commitment)* | `s-think` | `sound-needs-a-medium` |
+| `WAVE-24` | Sound needs air specifically, rather than any material at all. | `s-ladder` | `range` | `sound-needs-a-medium` |
+| `WAVE-25` | An echo is a new sound the wall makes. | `s-hook` | `s-think` | `echoes-reflection-and-absorption` |
+| `WAVE-26` | Soft materials stop sound travelling. | *(none — nothing on the page asks for this commitment)* | `s-think` | `echoes-reflection-and-absorption` |
+| `WAVE-27` | The distance to the cliff is speed × time. | `s-hook` | `your-turn-echo` | `echoes-reflection-and-absorption` |
+| `WAVE-28` | A small room gives no echo because there is not enough room for the sound. | `s-ladder` | `cliff` | `echoes-reflection-and-absorption` |
+| `WAVE-29` | A dog whistle makes no sound. | `s-hook` | `s-think` | `hearing-and-auditory-range` |
+| `WAVE-30` | Losing the top of your hearing range just makes everything a bit quieter. | *(none — nothing on the page asks for this commitment)* | `s-think` | `hearing-and-auditory-range` |
+| `WAVE-31` | Ultrasound is a different kind of sound from ordinary sound. | `range` | `range` | `hearing-and-auditory-range` |
+| `WAVE-32` | Animals hear better than people do. | `s-ladder` | `range` | `hearing-and-auditory-range` |
+| `WAVE-33` | Ultrasound is a special kind of wave that can get through solids where ordinary sound cannot. | `s-hook` | `s-think` | `ultrasound-at-work` |
+| `WAVE-34` | A scan works by shining ultrasound through you and seeing what comes out the other side. | *(none — nothing on the page asks for this commitment)* | `s-think` | `ultrasound-at-work` |
+| `WAVE-35` | Ultrasound is used because it travels faster than audible sound. | `s-ladder` | `gauge` | `ultrasound-at-work` |
+| `WAVE-36` | The gel on the skin is there to help the probe slide about. | `s-ladder` | `s-think` | `ultrasound-at-work` |
 
 ⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor
 rather than from her §6 list. Each is a genuinely separate belief rather than a re-dressing of one

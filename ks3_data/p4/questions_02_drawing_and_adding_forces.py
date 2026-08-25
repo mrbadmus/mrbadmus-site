@@ -92,7 +92,8 @@ QUESTIONS = [
             {"text": "15 N", "correct": False,
              "why": "The unit is there and the direction is missing. A "
                     "resultant needs all three."},
-            {"text": "To the right", "correct": False,
+            {"text": "To the right, because the right-hand pull is the one "
+                     "that started first", "correct": False,
              "why": "A direction with no size. How hard is it being pushed?"},
             {"text": "15 N to the right", "correct": True},
         ],
@@ -223,7 +224,7 @@ QUESTIONS = [
              "why": "Then it would prove nothing. The lengths are derived "
                     "from the newtons, at one scale."},
             {"text": "Because the resultant is always a third of the "
-                     "biggest force.", "correct": False,
+                     "biggest force, whatever the other forces are doing", "correct": False,
              "why": "There is no such rule. Change the 25 N and the leftover "
                     "changes with it."},
             {"text": "Because 40 × 25 gives the length of the third bar.",
@@ -250,7 +251,9 @@ QUESTIONS = [
                     "where each one acts."},
             {"text": "That WHERE an arrow starts is part of the diagram, not "
                      "just a place to begin drawing.", "correct": True},
-            {"text": "That force diagrams do not work on round objects.",
+            {"text": "That force diagrams do not work on round objects, "
+                     "because there is no flat side for an arrow to start "
+                     "from",
              "correct": False,
              "why": "They work perfectly well. The diagram is telling you "
                     "about a second effect a force can have."},

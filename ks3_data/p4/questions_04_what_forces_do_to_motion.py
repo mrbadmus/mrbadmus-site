@@ -37,7 +37,8 @@ QUESTIONS = [
             {"text": "Slow something down", "correct": False,
              "why": "That is one of the three. A resultant against the "
                     "motion makes it slower."},
-            {"text": "Change the direction something is going",
+            {"text": "Change the direction something is going, and nothing "
+                     "else about its motion",
              "correct": False,
              "why": "That is one of the three. A resultant across the motion "
                     "bends the path."},
@@ -186,7 +187,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Friction acts on the box the whole time it slides. That "
                     "is what the push is matching."},
-            {"text": "Nothing is wrong — a push is what makes things move.",
+            {"text": "Nothing is wrong — a push is what makes things move, "
+                     "and anything moving must have one behind it.",
              "correct": False,
              "why": "Moving needs no force. Only a CHANGE in motion does."},
             {"text": "At a steady speed nothing is winning: the push matches "
@@ -208,7 +210,8 @@ QUESTIONS = [
             {"text": "No, because its speed is constant.", "correct": False,
              "why": "Motion is speed AND direction. Going round a circle "
                     "changes direction continuously."},
-            {"text": "No, because there is no force on it in space.",
+            {"text": "No, because there is no force on it in space, and a "
+                     "thing with no force on it cannot keep going",
              "correct": False,
              "why": "The Earth's pull is acting the whole time. It is what "
                     "keeps the satellite in orbit."},
@@ -234,7 +237,8 @@ QUESTIONS = [
             {"text": "That heavier balls roll further.", "correct": False,
              "why": "Not the point of the experiment, and not what he "
                     "concluded."},
-            {"text": "That slopes make balls speed up.", "correct": False,
+            {"text": "That slopes make balls speed up, which is a property "
+                     "of slopes rather than of forces", "correct": False,
              "why": "True and directly observable. The powerful move was "
                     "imagining the limit he could not reach."},
         ],

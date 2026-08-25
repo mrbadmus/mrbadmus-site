@@ -106,7 +106,8 @@ LESSON = {
             "The crate gets lighter once it is moving",
             "Friction is largest just before sliding starts, and drops once "
             "the surfaces are sliding",
-            "Your push gets stronger as you lean into it",
+            "Your push gets stronger as you lean into it, so the crate only "
+            "moves once you are pushing hard enough",
             "The floor stops pushing back once the crate moves",
         ],
         "answer": 1,

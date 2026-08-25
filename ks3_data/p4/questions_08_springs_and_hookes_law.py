@@ -133,7 +133,9 @@ QUESTIONS = [
         "text": "A student plots TOTAL LENGTH against load instead of "
                 "extension. What is wrong with the graph?",
         "options": [
-            {"text": "It will be a curve rather than a straight line.",
+            {"text": "It will be a curve rather than a straight line, "
+                     "because springs get harder to stretch from the very "
+                     "first newton",
              "correct": False,
              "why": "It is still straight, and that is what makes the error "
                     "so easy to miss."},
@@ -155,7 +157,8 @@ QUESTIONS = [
                 "at 3 N and 112 mm at 5 N. What does the fourth reading "
                 "tell you?",
         "options": [
-            {"text": "That the reading was taken wrongly.", "correct": False,
+            {"text": "That the reading was taken wrongly and should be "
+                     "measured again", "correct": False,
              "why": "It might have been — but the pattern is exactly what "
                     "a spring does past its limit, so the honest first "
                     "reading is that something real has changed."},
@@ -188,7 +191,7 @@ QUESTIONS = [
              "why": "Then the scale would be useless — every load would "
                     "read the same."},
             {"text": "Because the scale is a rough guide rather than a "
-                     "measurement.", "correct": False,
+                     "measurement, so any reading off it is an estimate", "correct": False,
              "why": "It is a real measurement, and its accuracy depends on "
                     "the proportionality holding."},
         ],
@@ -257,7 +260,7 @@ QUESTIONS = [
              "why": "It is still used, exactly as he stated it, within the "
                     "range he stated."},
             {"text": "That laws in physics that apply to everything are the "
-                     "best kind.", "correct": False,
+                     "best kind, and one with a limit is a weaker law", "correct": False,
              "why": "The opposite lesson. A law with no stated range is "
                     "usually one whose limits have not been found yet."},
             {"text": "That an honest law comes with a range attached, and "
@@ -272,7 +275,9 @@ QUESTIONS = [
         "text": "A car's suspension spring and its crumple zone both deform "
                 "under a force. What is the important difference?",
         "options": [
-            {"text": "The crumple zone deforms and the spring does not.",
+            {"text": "The crumple zone deforms and the spring does not, "
+                     "which is the whole of the difference between the two "
+                     "of them",
              "correct": False,
              "why": "Both deform. That is the whole point of a suspension "
                     "spring."},

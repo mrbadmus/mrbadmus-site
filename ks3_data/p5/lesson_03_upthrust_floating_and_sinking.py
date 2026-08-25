@@ -105,11 +105,16 @@ LESSON = {
                   "it leaves the water.",
         "commit": "Where does that upward shove come from?",
         "options": [
-            "The air trapped inside the ball is trying to rise",
-            "The water is pushed out of shape and springs back",
-            "The bottom of the ball is deeper, so the water pushes up on it "
-            "harder than it pushes down on the top",
-            "The ball is lighter than the water around it",
+            # ⊕ PHASE 3, 25 Aug 2026 — HER four options. These had
+            # been invented: her prompt was ported and her answers were
+            # not, which the HTML comparison could not see because a
+            # `.dc.html` renders them from `{{ opt.text }}`.
+            "The water is trying to get out of the way",
+            "A floating object has no weight, so nothing holds it down and "
+            "it simply stays at the top",
+            "The water presses harder on the bottom of the ball than on the "
+            "top, and the difference pushes up",
+            "The air inside makes it rise on its own",
         ],
         "answer": 2,
         "reveal": "It comes from the pressure being different at different "
@@ -373,36 +378,40 @@ LESSON = {
               "close": "The five lines give {answer}, and the two arrows on "
                        "the bench are drawn to match."},
              {"id": "q2", "tab": "Question 2",
-              "head": "A brick of mass 2.4 kg hangs from a balance. Fully "
-                      "under water the balance reads 15 N. What is the "
+              # ⊕ PHASE 3, 25 Aug 2026 — HER question. A different
+              # one with different numbers had been written here;
+              # hers lives in her page's JS, which the HTML
+              # comparison could not see.
+              "head": "A sinker of mass 0.60 kg hangs from a balance. Fully "
+                      "under water the balance reads 4.5 N. What is the "
                       "upthrust?",
-              "lead": "This one needs the Convert line to do some work.",
+              "lead": "This one needs the Convert line to do some "
+                      "work.",
               "steps": [
                   {"letter": "C", "label": "Convert",
                    "placeholder": "anything to convert?",
-                   "line": "2.4 kg × 10 N/kg = 24 N",
-                   "note": "The subtraction needs two forces, and a mass is "
-                           "not a force."},
+                   "line": "0.60 kg × 10 N/kg = 6.0 N",
+                   "note": "A mass is not a force. Weight in newtons is "
+                           "mass in kilograms × 10 N/kg."},
                   {"letter": "F", "label": "Formula",
                    "line": "upthrust = weight in air − reading in water",
                    "note": "The balance loses exactly what the water is "
                            "supporting."},
                   {"letter": "I", "label": "Insert",
-                   "line": "upthrust = 24 N − 15 N",
-                   "note": "The converted weight goes in. The 2.4 kg never "
+                   "line": "upthrust = 6.0 N − 4.5 N",
+                   "note": "The converted weight goes in. The 0.60 kg never "
                            "does."},
                   {"letter": "F", "label": "Fine-tune",
-                   "line": "24 − 15 = 9",
+                   "line": "6.0 − 4.5 = 1.5",
                    "note": "Newtons take away newtons, so the answer is in "
                            "newtons."},
                   {"letter": "A", "label": "Answer",
-                   "line": "upthrust = 9 N upwards",
-                   "note": "Subtract 15 from 2.4 and the upthrust comes out "
-                           "negative, which no upthrust ever is."},
+                   "line": "upthrust = 1.5 N upwards",
+                   "note": "Subtract 4.5 from 0.60 and the upthrust comes "
+                           "out negative."},
               ],
-              "close": "The five lines give 9 N upwards — and the brick "
-                       "still sinks, because 15 N is left over pulling "
-                       "down."},
+              "close": "The five lines give 1.5 N upwards. The whole "
+                       "question turned on the first one."},
          ]},
 
         {"id": "think-heavy-sinks",

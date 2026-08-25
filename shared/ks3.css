@@ -26626,3 +26626,550 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 }
 
 /* ═══ END P5 ═══ */
+
+/* ═══ BEGIN P6 ═══════════════════════════════════════════════════════════
+   P6 — *Waves and sound*. One marked block per unit.
+
+   ⚠️ EVERY SELECTOR HERE IS P6-ONLY, and every shell stem was checked
+   against the whole registry before it was written: none of `ks3-wanat-`,
+   `ks3-rtank-`, `ks3-slane-`, `ks3-vchain-`, `ks3-slink-`, `ks3-scope-`,
+   `ks3-mrange-`, `ks3-echo-`, `ks3-lrange-`, `ks3-fgauge-` or
+   `ks3-wband-` was taken.
+
+   ⚠️ EVERY FIGURE WRAPPER IS `position: relative`, for the reason the P4
+   block gives at length: every live value is an absolutely positioned HTML
+   span over the SVG, because a hole inside an SVG `<text>` renders nothing
+   and fails silently — and without a positioned ancestor those spans
+   resolve against the page and widen the document on a phone.
+
+   ⚠️ TOKENS, NOT LITERALS, FOR EVERY PIECE OF TEXT. `--ks3-accent` is
+   3.4:1 and is LARGE TEXT ONLY; anything under 24px that wants orange
+   takes `--ks3-accent-text`. Captions on the ink-dark benches take
+   `--ks3-on-dark-muted`, which is 6.08:1 there.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── shared P6 bench shapes — the nine dark instruments ─────────────── */
+
+.ks3-rtank-gate, .ks3-slane-gate, .ks3-vchain-gate, .ks3-slink-gate,
+.ks3-scope-gate, .ks3-mrange-gate, .ks3-echo-gate, .ks3-lrange-gate,
+.ks3-fgauge-gate {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+.ks3-rtank-head, .ks3-slane-head, .ks3-vchain-head, .ks3-slink-head,
+.ks3-scope-head, .ks3-mrange-head, .ks3-echo-head, .ks3-lrange-head,
+.ks3-fgauge-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.ks3-rtank-head h2, .ks3-slane-head h2, .ks3-vchain-head h2,
+.ks3-slink-head h2, .ks3-scope-head h2, .ks3-mrange-head h2,
+.ks3-echo-head h2, .ks3-lrange-head h2, .ks3-fgauge-head h2 {
+  margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;
+  color: var(--ks3-on-dark);
+}
+.ks3-rtank-progress, .ks3-slane-progress, .ks3-vchain-progress,
+.ks3-slink-progress, .ks3-scope-progress, .ks3-mrange-progress,
+.ks3-echo-progress, .ks3-lrange-progress, .ks3-fgauge-progress {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 15px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+.ks3-rtank-lead, .ks3-slane-lead, .ks3-vchain-lead, .ks3-slink-lead,
+.ks3-scope-lead, .ks3-mrange-lead, .ks3-echo-lead, .ks3-lrange-lead,
+.ks3-fgauge-lead {
+  margin: 0 0 18px; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+.ks3-rtank-controls, .ks3-slane-controls, .ks3-vchain-controls,
+.ks3-slink-controls, .ks3-scope-controls, .ks3-mrange-controls,
+.ks3-echo-controls, .ks3-lrange-controls, .ks3-fgauge-controls {
+  display: grid; gap: 18px;
+}
+.ks3-rtank-row, .ks3-slane-row, .ks3-slink-row, .ks3-scope-row,
+.ks3-mrange-row, .ks3-echo-row, .ks3-lrange-row, .ks3-fgauge-row {
+  display: grid; gap: 8px;
+}
+.ks3-rtank-rowhead, .ks3-slane-rowhead, .ks3-slink-rowhead,
+.ks3-scope-rowhead, .ks3-mrange-rowhead, .ks3-echo-rowhead,
+.ks3-lrange-rowhead, .ks3-fgauge-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-rtank-reading, .ks3-slane-reading, .ks3-slink-reading,
+.ks3-scope-reading, .ks3-mrange-reading, .ks3-echo-reading,
+.ks3-lrange-reading, .ks3-fgauge-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 19px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+/* 44px of vertical target, which is the smallest a thumb should be asked
+   to find — the sliders are the only control on five of these benches. */
+.ks3-rtank-slider, .ks3-slane-slider, .ks3-slink-slider,
+.ks3-scope-slider, .ks3-mrange-slider, .ks3-echo-slider,
+.ks3-lrange-slider, .ks3-fgauge-slider {
+  width: 100%; min-height: 44px; accent-color: var(--ks3-accent);
+}
+
+.ks3-rtank-picker, .ks3-slane-picker, .ks3-vchain-picker,
+.ks3-slink-picker, .ks3-mrange-picker, .ks3-echo-picker,
+.ks3-lrange-picker, .ks3-fgauge-picker { display: grid; gap: 9px; }
+.ks3-rtank-pickerlabel, .ks3-slane-pickerlabel, .ks3-vchain-pickerlabel,
+.ks3-slink-pickerlabel, .ks3-mrange-pickerlabel, .ks3-echo-pickerlabel,
+.ks3-lrange-pickerlabel, .ks3-fgauge-pickerlabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-rtank-tabrow, .ks3-slane-tabrow, .ks3-vchain-tabrow,
+.ks3-slink-tabrow, .ks3-mrange-tabrow, .ks3-echo-tabrow,
+.ks3-lrange-tabrow, .ks3-fgauge-tabrow, .ks3-wanat-tabrow {
+  display: flex; flex-wrap: wrap; gap: 9px;
+}
+
+.ks3-rtank-figwrap, .ks3-slane-figwrap, .ks3-vchain-figwrap,
+.ks3-slink-figwrap, .ks3-scope-figwrap, .ks3-mrange-figwrap,
+.ks3-echo-figwrap, .ks3-lrange-figwrap, .ks3-fgauge-figwrap,
+.ks3-wanat-figwrap { position: relative; margin-top: 20px; }
+.ks3-rtank-svg, .ks3-slane-svg, .ks3-vchain-svg, .ks3-slink-svg,
+.ks3-scope-svg, .ks3-mrange-svg, .ks3-echo-svg, .ks3-lrange-svg,
+.ks3-fgauge-svg, .ks3-wanat-svg { display: block; width: 100%; height: auto; }
+.ks3-rtank-fill, .ks3-vchain-fill, .ks3-slink-fill, .ks3-scope-fill,
+.ks3-mrange-fill, .ks3-echo-fill, .ks3-lrange-fill, .ks3-fgauge-fill {
+  position: absolute; font-family: var(--ks3-font-mono); font-weight: 500;
+  font-size: clamp(10px, 1.5vw, 19px); white-space: nowrap;
+  pointer-events: none;
+}
+
+.ks3-rtank-tiles, .ks3-slane-tiles, .ks3-vchain-tiles, .ks3-slink-tiles,
+.ks3-scope-tiles, .ks3-mrange-tiles, .ks3-echo-tiles, .ks3-lrange-tiles,
+.ks3-fgauge-tiles {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-rtank-tile, .ks3-slane-tile, .ks3-vchain-tile, .ks3-slink-tile,
+.ks3-scope-tile, .ks3-mrange-tile, .ks3-echo-tile, .ks3-lrange-tile,
+.ks3-fgauge-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .07);
+}
+.ks3-rtank-tile-label, .ks3-slane-tile-label, .ks3-vchain-tile-label,
+.ks3-slink-tile-label, .ks3-scope-tile-label, .ks3-mrange-tile-label,
+.ks3-echo-tile-label, .ks3-lrange-tile-label, .ks3-fgauge-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-rtank-tile-value, .ks3-slane-tile-value, .ks3-vchain-tile-value,
+.ks3-slink-tile-value, .ks3-scope-tile-value, .ks3-mrange-tile-value,
+.ks3-echo-tile-value, .ks3-lrange-tile-value, .ks3-fgauge-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 20px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+.ks3-rtank-tile-sub, .ks3-vchain-tile-sub, .ks3-slink-tile-sub,
+.ks3-scope-tile-sub, .ks3-mrange-tile-sub, .ks3-echo-tile-sub,
+.ks3-lrange-tile-sub, .ks3-fgauge-tile-sub {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  color: var(--ks3-on-dark-muted);
+}
+
+.ks3-rtank-note, .ks3-slane-note, .ks3-vchain-note, .ks3-slink-note,
+.ks3-scope-note, .ks3-mrange-note, .ks3-echo-note, .ks3-lrange-note,
+.ks3-fgauge-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: rgba(255, 255, 255, .07);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+
+/* ── p6-01 · the wave anatomy figure (light ground) ─────────────────── */
+
+.ks3-wanat { margin-top: 26px; }
+.ks3-wanat-heading {
+  margin: 6px 0 16px; font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: 30px; line-height: 1.12;
+  letter-spacing: -.03em; color: var(--ks3-ink);
+}
+.ks3-wanat-still {
+  fill: none; stroke: var(--ks3-rule-strong); stroke-width: 3;
+  stroke-dasharray: 14 12;
+}
+.ks3-wanat-wave {
+  fill: none; stroke: var(--ks3-ink); stroke-width: 6;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-wanat-travel {
+  fill: none; stroke: var(--ks3-ink-muted); stroke-width: 3;
+  stroke-linecap: round;
+}
+.ks3-wanat-travellabel {
+  font-family: var(--ks3-font-mono); font-size: 17px; letter-spacing: .07em;
+  text-transform: uppercase; fill: var(--ks3-ink-muted);
+}
+.ks3-wanat-mark circle { fill: var(--ks3-accent); stroke: var(--ks3-ink);
+  stroke-width: 4; }
+.ks3-wanat-dim path {
+  fill: none; stroke: var(--ks3-accent-text); stroke-width: 5;
+  stroke-linecap: round;
+}
+.ks3-wanat-note {
+  margin: 18px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);
+}
+
+/* ── p6-01 · the ripple tank ────────────────────────────────────────── */
+
+.ks3-rtank-tank { fill: rgba(255, 255, 255, .05);
+  stroke: var(--ks3-on-dark-muted); stroke-width: 3; }
+.ks3-rtank-still { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; stroke-dasharray: 12 10; }
+.ks3-rtank-wave { fill: none; stroke: #8FB7FF; stroke-width: 5;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-rtank-paddle { fill: var(--ks3-on-dark-muted); }
+.ks3-rtank-float { fill: #FFC53D; stroke: var(--ks3-on-dark);
+  stroke-width: 3; }
+.ks3-rtank-swing { fill: none; stroke: #FFC53D; stroke-width: 3;
+  stroke-linecap: round; }
+.ks3-rtank-widthlabel {
+  font-family: var(--ks3-font-mono); font-size: 17px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+.ks3-rtank-swing-label { color: #FFC53D; }
+
+/* ── p6-02 · the superposition lanes ────────────────────────────────── */
+
+.ks3-slane-still { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; stroke-dasharray: 12 10; }
+.ks3-slane-lanelabel {
+  font-family: var(--ks3-font-mono); font-size: 16px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+/* Three traces, three hues AND three positions — the lane label is what
+   names each one, so hue is never the only channel. */
+.ks3-slane-trace { fill: none; stroke-width: 5; stroke-linecap: round;
+  stroke-linejoin: round; }
+.ks3-slane-trace-a { stroke: #8FB7FF; }
+.ks3-slane-trace-b { stroke: #C6B9A7; }
+.ks3-slane-trace-r { stroke: #FFC53D; stroke-width: 6; }
+
+/* ── p6-03 · the vibration chain ────────────────────────────────────── */
+
+.ks3-vchain-ghost { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; stroke-dasharray: 10 9; }
+.ks3-vchain-shape { fill: none; stroke: var(--ks3-on-dark);
+  stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.ks3-vchain-arrow { fill: none; stroke: #FFC53D; stroke-width: 4;
+  stroke-linecap: round; }
+.ks3-vchain-air { fill: none; stroke: #8FB7FF; stroke-width: 3;
+  stroke-linecap: round; }
+.ks3-vchain-diaphragm { fill: var(--ks3-on-dark-muted); }
+.ks3-vchain-travel { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; stroke-linecap: round; }
+.ks3-vchain-travellabel {
+  font-family: var(--ks3-font-mono); font-size: 16px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+
+/* ── p6-04 · the dual slinky ────────────────────────────────────────── */
+
+.ks3-slink-axis { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; stroke-dasharray: 12 10; }
+.ks3-slink-coils { fill: none; stroke: #8FB7FF; stroke-width: 4;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-slink-rest { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; stroke-dasharray: 8 8; }
+.ks3-slink-marked { fill: #FFC53D; stroke: var(--ks3-on-dark);
+  stroke-width: 3; }
+.ks3-slink-arrow { fill: #FFC53D; stroke: #FFC53D; stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-slink-travel { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; stroke-linecap: round; }
+.ks3-slink-travellabel {
+  font-family: var(--ks3-font-mono); font-size: 16px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+.ks3-slink-caption { color: var(--ks3-on-dark-muted); }
+
+/* ── p6-05 · the oscilloscope ───────────────────────────────────────── */
+
+.ks3-scope-screen { fill: rgba(255, 255, 255, .05);
+  stroke: var(--ks3-on-dark-muted); stroke-width: 3; }
+.ks3-scope-zero { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; stroke-dasharray: 12 10; }
+.ks3-scope-ticks { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; }
+.ks3-scope-trace { fill: none; stroke: #8FB7FF; stroke-width: 4;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-scope-bracket { fill: none; stroke: #FFC53D; stroke-width: 3;
+  stroke-linecap: round; }
+.ks3-scope-axislabel {
+  font-family: var(--ks3-font-mono); font-size: 17px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+.ks3-scope-amp { color: #FFC53D; }
+
+/* ── p6-06 · the medium range ───────────────────────────────────────── */
+
+.ks3-mrange-gapbox { fill: rgba(255, 255, 255, .05);
+  stroke: var(--ks3-on-dark-muted); stroke-width: 3; }
+.ks3-mrange-particles { fill: #8FB7FF; stroke: none; }
+.ks3-mrange-links { fill: none; stroke: #8FB7FF; stroke-width: 2; }
+.ks3-mrange-striker, .ks3-mrange-mic { fill: var(--ks3-on-dark-muted); }
+.ks3-mrange-dim { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; }
+.ks3-mrange-gap, .ks3-mrange-caption { color: var(--ks3-on-dark-muted); }
+
+/* The chain's two end captions. They are overlay spans rather than SVG
+   `<text>` for the reason the whole key stage now uses spans: a hole
+   inside a `<text>` renders nothing and fails silently. */
+.ks3-vchain-src, .ks3-vchain-det { color: var(--ks3-on-dark-muted); }
+
+/* ── p6-07 · the echo bench ─────────────────────────────────────────── */
+
+.ks3-echo-ground { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-echo-person { fill: var(--ks3-on-dark-muted); }
+.ks3-echo-wall { fill: rgba(255, 255, 255, .12);
+  stroke: var(--ks3-on-dark); stroke-width: 3; }
+.ks3-echo-out { fill: #8FB7FF; stroke: #8FB7FF; stroke-width: 5;
+  stroke-linecap: round; }
+/* ⚠️ NO `stroke-width` HERE. The returning arrow's width IS the fraction
+   reflected and is set per state from JS; a value in this rule would win
+   or lose depending on specificity and make the drawing lie. The dash is
+   set from JS for the same reason — it is the second channel, so that the
+   audible threshold is never carried on thickness alone. */
+.ks3-echo-back { fill: #FFC53D; stroke: #FFC53D; stroke-linecap: round; }
+.ks3-echo-dim { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; }
+.ks3-echo-dist, .ks3-echo-caption { color: var(--ks3-on-dark-muted); }
+.ks3-echo-back-label { color: #FFC53D; }
+
+/* ── p6-08 · the decade axis ────────────────────────────────────────── */
+
+.ks3-lrange-axis { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-lrange-tick { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; }
+.ks3-lrange-ticklabel {
+  font-family: var(--ks3-font-mono); font-size: 17px;
+  fill: var(--ks3-on-dark-muted);
+}
+.ks3-lrange-band { fill: rgba(143, 183, 255, .38);
+  stroke: #8FB7FF; stroke-width: 2; }
+.ks3-lrange-marker { fill: none; stroke: #FFC53D; stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-lrange-axislabel {
+  font-family: var(--ks3-font-mono); font-size: 16px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+.ks3-lrange-mark { color: #FFC53D; }
+.ks3-lrange-bandlabel {
+  font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+
+/* ── p6-09 · the flaw gauge ─────────────────────────────────────────── */
+
+.ks3-fgauge-block { fill: rgba(255, 255, 255, .05);
+  stroke: var(--ks3-on-dark-muted); stroke-width: 3; }
+.ks3-fgauge-probe { fill: var(--ks3-on-dark-muted); }
+.ks3-fgauge-flaw { fill: #FFC53D; }
+.ks3-fgauge-down { fill: #8FB7FF; stroke: #8FB7FF; stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-fgauge-up { fill: #FFC53D; stroke: #FFC53D; stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-fgauge-dim { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; }
+.ks3-fgauge-screen { fill: rgba(255, 255, 255, .05);
+  stroke: var(--ks3-on-dark-muted); stroke-width: 3; }
+.ks3-fgauge-base { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 2; }
+.ks3-fgauge-pip { fill: none; stroke: #FFC53D; stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-fgauge-screenlabel {
+  font-family: var(--ks3-font-mono); font-size: 16px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+.ks3-fgauge-partlabel {
+  font-family: var(--ks3-font-mono); font-size: 15px; letter-spacing: .07em;
+  fill: var(--ks3-on-dark-muted);
+}
+.ks3-fgauge-depth, .ks3-fgauge-caption { color: var(--ks3-on-dark-muted); }
+
+/* ── the band block · five shapes on one light ground ───────────────── */
+
+.ks3-wband { margin-top: 26px; }
+.ks3-wband-heading {
+  margin: 6px 0 14px; font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: 30px; line-height: 1.12;
+  letter-spacing: -.03em; color: var(--ks3-ink);
+}
+.ks3-wband-lead, .ks3-wband-close {
+  margin: 0 0 16px; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-wband-close { margin: 18px 0 0; }
+
+.ks3-wband-list {
+  list-style: none; margin: 0; padding: 0; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-wband-item {
+  padding: 17px 19px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-wband-num {
+  display: grid; place-items: center; width: 30px; height: 30px;
+  border-radius: 9px; background: var(--ks3-accent);
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 16px;
+  color: var(--ks3-on-dark);
+}
+.ks3-wband-name {
+  margin: 10px 0 6px; font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: 19px; line-height: 1.2; color: var(--ks3-ink);
+}
+.ks3-wband-body { margin: 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body); }
+/* ⚠️ `--ks3-accent-text`, NOT `--ks3-accent`. This is 14px, and the accent
+   is 3.4:1 — large text only. MRB-252's gate reads exactly this pair. */
+.ks3-wband-tell {
+  margin: 9px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .05em; color: var(--ks3-accent-text);
+}
+
+.ks3-wband-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-wband-col {
+  padding: 17px 19px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-rule);
+}
+.ks3-wband-coltitle {
+  margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-wband-collist {
+  margin: 0; padding-left: 20px; font-size: 17px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-wband-collist li { margin: 0 0 7px; }
+
+/* ⚠️ THE TWO CHART SHAPES SCROLL SIDEWAYS RATHER THAN SHRINK. A 1000-unit
+   viewBox squeezed into a 358px phone column puts every label near 7px,
+   which is not a small chart but an unreadable one. WCAG 1.4.10 allows a
+   scroll region for content that genuinely needs two dimensions, and a
+   decade axis with seven labelled rows does. */
+.ks3-wband-strip, .ks3-wband-chart {
+  margin-top: 16px; overflow-x: auto; position: relative;
+}
+.ks3-wband-stripsvg, .ks3-wband-chartsvg {
+  display: block; width: 100%; min-width: 660px; height: auto;
+}
+.ks3-wband-stagebox { fill: var(--ks3-card); stroke: var(--ks3-ink);
+  stroke-width: 3; }
+.ks3-wband-stageglyph { fill: none; stroke: var(--ks3-accent-text);
+  stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.ks3-wband-stagearrow { fill: var(--ks3-ink-muted);
+  stroke: var(--ks3-ink-muted); stroke-width: 3; stroke-linecap: round; }
+.ks3-wband-stagelabel {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px;
+  fill: var(--ks3-ink);
+}
+.ks3-wband-stagecaption {
+  font-family: var(--ks3-font-mono); font-size: 15px;
+  fill: var(--ks3-ink-muted);
+}
+
+.ks3-wband-axhead {
+  font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .07em;
+  text-transform: uppercase; fill: var(--ks3-ink-muted);
+}
+.ks3-wband-humanband { fill: rgba(228, 87, 46, .13); }
+.ks3-wband-bound { fill: none; stroke: var(--ks3-accent-text);
+  stroke-width: 3; stroke-dasharray: 10 9; }
+.ks3-wband-boundlabel {
+  font-family: var(--ks3-font-mono); font-size: 15px; letter-spacing: .06em;
+  fill: var(--ks3-accent-text);
+}
+.ks3-wband-rowlabel {
+  font-family: var(--ks3-font-mono); font-size: 17px; fill: var(--ks3-ink);
+}
+.ks3-wband-rowband { fill: var(--ks3-ink); }
+.ks3-wband-rowvalue {
+  font-family: var(--ks3-font-mono); font-size: 16px;
+  fill: var(--ks3-ink-body);
+}
+/* ── the five-material speed chart and the paired cards ─────────────── */
+
+.ks3-wband-rowempty {
+  font-family: var(--ks3-font-mono); font-size: 16px; letter-spacing: .06em;
+  fill: var(--ks3-ink-muted);
+}
+.ks3-wband-particle { fill: var(--ks3-ink); }
+.ks3-wband-lattice { fill: none; stroke: var(--ks3-ink); stroke-width: 2; }
+
+.ks3-wband-pair {
+  margin-top: 18px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: 16px;
+}
+.ks3-wband-paircard {
+  padding: 18px; border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+}
+.ks3-wband-pairtitle {
+  margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-wband-pairsvg { display: block; width: 100%; height: auto; }
+.ks3-wband-pairbody {
+  margin: 12px 0 0; font-size: 17px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-wband-pairwave, .ks3-wband-paircoil {
+  fill: none; stroke: #2F6FEB; stroke-width: 6; stroke-linecap: round;
+}
+.ks3-wband-paircoil { stroke-width: 4; }
+.ks3-wband-pairdot {
+  fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 4;
+}
+/* ⚠️ THE PARTICLE'S ARROW AND THE TRAVEL ARROW ARE DIFFERENT WEIGHTS AND
+   DIFFERENT COLOURS, because the entire figure is the ANGLE between them.
+   Drawn alike, a reader has to work out which is which before the point
+   can land. */
+.ks3-wband-pairmove {
+  fill: none; stroke: var(--ks3-ink); stroke-width: 4;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-wband-pairtravel {
+  fill: none; stroke: var(--ks3-ink-muted); stroke-width: 4;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-wband-pairregion {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 13px;
+  letter-spacing: .06em; fill: var(--ks3-ink-muted);
+}
+.ks3-wband-pairtravellabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  fill: var(--ks3-ink-muted);
+}
+
+.ks3-wband-tick { fill: none; stroke: var(--ks3-rule-strong);
+  stroke-width: 2; }
+.ks3-wband-ticklabel {
+  font-family: var(--ks3-font-mono); font-size: 16px;
+  fill: var(--ks3-ink-muted);
+}
+
+/* ═══ END P6 ═══ */
+

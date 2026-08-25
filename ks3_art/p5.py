@@ -205,6 +205,27 @@ def r_block_on_sand(a, act_id):
             "the %.0f Pa limit, so the surface never holds."
             % (act_id, lo, limit))
 
+    # ⚠️ THE THREE BRANCH NOTES WERE AUTHORED AND NEVER READ. This drawer
+    # took no `branches` key at all, so `p5-01`'s note panel was empty in
+    # every state — the JS looks for `[data-sand-branch="…"]` and nothing
+    # emitted one. Same defect as `p6-08`'s, found the same way: by reading
+    # the built bytes rather than the payload. The three states are the
+    # sinking one, the one that holds at any face, and the one that holds
+    # only on this face — and the third is the interesting one, so all
+    # three are required.
+    branches = a.get("branches") or {}
+    need = ("sinks", "holds_any", "holds_for_now")
+    missing = [k for k in need if not branches.get(k)]
+    if missing:
+        raise ValueError(
+            "block-on-sand %r has no note for state(s) %s. Holding on every "
+            "face and holding only on this one are different things to know, "
+            "and a bench with one holding note cannot say which it is."
+            % (act_id, ", ".join(missing)))
+    branch_data = "".join(
+        '<span data-sand-branch="%s" data-note="%s" hidden></span>'
+        % (e(k), e(branches[k])) for k in need)
+
     tabs = "".join(
         _seg("ks3-seg-btn ks3-sand-face", f["label"],
              pressed=(i == int(a.get("start_face", 0))),
@@ -262,7 +283,7 @@ def r_block_on_sand(a, act_id):
             'min="%s" max="%s" step="%s" value="%s" data-sand-mass></div>'
             '</div>'
             '<div class="ks3-sand-figwrap">%s%s</div>%s'
-            '<p class="ks3-sand-note" data-sand-note></p></div></div>'
+            '<p class="ks3-sand-note" data-sand-note></p>%s</div></div>'
             % (e(int(limit)), e(g), e(a.get("scale", 1400)),
                e(a.get("w_scale", 1.6)), e(a.get("base_y", 470)),
                e(a.get("cx", 420)), e(a.get("start_face", 0)),
@@ -272,7 +293,8 @@ def r_block_on_sand(a, act_id):
                e(act_id), t(mass.get("label", "Mass on the sand")),
                e(mass["start"]), e(act_id), e(mass["min"]), e(mass["max"]),
                e(mass["step"]), e(mass["start"]),
-               svg, fills, _tiles("sand", a.get("readouts") or [])))
+               svg, fills, _tiles("sand", a.get("readouts") or []),
+               branch_data))
 
 
 # ═══ p5-02 · #s-bench · the probe in the tank ════════════════════════════

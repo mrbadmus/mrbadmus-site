@@ -114,7 +114,8 @@ LESSON = {
         "commit": "Why does the falling stop getting faster?",
         "options": [
             "Gravity gets weaker as you fall",
-            "There is a fastest speed anything can fall at",
+            "There is a fastest speed anything can fall at, and every "
+            "falling object reaches the same one",
             "Air resistance grows with speed until it matches the weight, "
             "leaving 0 N over",
             "The air is holding the skydiver up completely",

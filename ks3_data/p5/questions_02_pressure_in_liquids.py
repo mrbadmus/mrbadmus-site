@@ -159,7 +159,8 @@ QUESTIONS = [
              "correct": False,
              "why": "How easily a liquid flows is not what sets the "
                     "pressure. The weight of the column above is."},
-            {"text": "It stays the same, because the depth is the same.",
+            {"text": "It stays the same, because the depth is the same and "
+                     "nothing else in the tank has changed",
              "correct": False,
              "why": "Depth is one of two things that matter. The other is "
                     "the liquid, and it has changed."},
@@ -184,7 +185,9 @@ QUESTIONS = [
             {"text": "Because the pressure at the taps comes from the HEIGHT "
                      "of the water above them, not from how many litres it "
                      "holds.", "correct": True},
-            {"text": "So the water stays colder at the top.",
+            {"text": "So the water stays colder at the top, where the wall "
+                     "is thinnest and the pressure is least, and cold water "
+                     "presses less",
              "correct": False,
              "why": "Temperature is a separate matter and is not why the "
                     "shape is chosen."},
@@ -237,7 +240,8 @@ QUESTIONS = [
             {"text": "No — the atmosphere is pressing on the surface too, "
                      "and adds about 100 000 Pa everywhere in the tank.",
              "correct": True},
-            {"text": "No, because a probe can never read a true zero.",
+            {"text": "No, because a probe can never read a true zero "
+                     "however carefully it is made or wherever it is placed",
              "correct": False,
              "why": "It can, and it is reading one honestly — for the "
                     "quantity it measures."},
@@ -253,7 +257,9 @@ QUESTIONS = [
             {"text": "A sphere holds more for its size.", "correct": False,
              "why": "It does, but that is not what keeps the crew alive at "
                     "depth."},
-            {"text": "A sphere is easier to make out of thick metal.",
+            {"text": "A sphere is easier to make out of thick metal than "
+                     "any other shape is, so deep-sea vessels are built "
+                     "that way",
              "correct": False,
              "why": "It is considerably harder. The shape is chosen despite "
                     "that."},
@@ -280,7 +286,8 @@ QUESTIONS = [
             {"text": "That blood is measured by weighing it.",
              "correct": False,
              "why": "Nothing is weighed. A height is read off a scale."},
-            {"text": "That blood pressure is not a real pressure.",
+            {"text": "That blood pressure is not a real pressure, only a "
+                     "number doctors have agreed on",
              "correct": False,
              "why": "It is, and it could be quoted in pascals. The mercury "
                     "unit survives because the instrument did."},

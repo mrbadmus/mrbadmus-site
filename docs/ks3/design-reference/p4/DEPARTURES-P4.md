@@ -48,22 +48,30 @@ changed is only which slot it renders in, and that is Mide's to overrule.**
 If the amber callout is wanted, it is a new §5.1.1 block type and a
 `architecture.md` amendment, not a P4 edit.
 
-### 2. Three rung-2 distractors are rewritten as full wrong rules
+### 2. Eight distractors are finished into full wrong rules
+
+⊖ **COUNT CORRECTED 25 Aug 2026.** This row used to read *"Three rung-2
+distractors"* and *"Six distractors — two per rung"*, and named three
+lessons. The measured figure, taken by comparing every option on every built
+page against Design's own `HOOK`, `GATE` and `RUNGS` constants, is **eight**:
+five ladder options across `p4-06`, `p4-07` and `p4-09`, and three hook
+options on `p4-05`, `p4-06` and `p4-07`. The three hooks were not in the old
+row at all, because the pass that wrote it measured the ladder only — and
+`verify_ks3`'s MRB-177 sweep reads ladder rungs and activity option sets,
+not hooks and not bench gates, so nothing else was going to count them.
 
 | | |
 |---|---|
-| **Lessons** | `p4-06 air-and-water-resistance`, `p4-07 moments`, `p4-09 non-contact-forces` — the *apply* rung on each |
-| **What she wrote** | Each correct answer states a full RULE (subject, condition, consequence) and each distractor states one short wrong clause. `p4-06`: correct 28 words against a longest distractor of 15. `p4-07`: 21 against 13. `p4-09`: 22 against 12. |
-| **What is built** | Her correct answers are untouched **to the character**. Six distractors — two per rung — are rewritten as full wrong rules of comparable length, with the misconception as the consequence rather than as a bare clause. |
-| **The defect in hers** | **A student can score all three rungs without reading them, by choosing the longest option.** That is not a stylistic judgement: it is measured, and MRB-177's gate names it — *"the correct answer is a length tell — a student can score these without reading them"*. It is also the defect the ruling of 17 Aug 2026 already fixed across twenty other rungs. |
+| **Lessons** | `p4-05`, `p4-06`, `p4-07` — the hook commit on each — and `p4-06`, `p4-07`, `p4-09` — the *apply* rung on each |
+| **What she wrote** | On eight option sets the correct answer is the longest by MRB-177's threshold: four words clear of the longest distractor, or 1.4× it. `p4-06`'s apply rung ran 28 words against 15; its hook ran 14 against 9. |
+| **What is built** | Her correct answers are untouched **to the character**, and so is every other option. Eight distractors are finished so that each states a complete wrong rule rather than a clipped one, with the misconception as the consequence. Each carries the same wrong idea her original carried and keeps its own correction verbatim. |
+| **The defect in hers** | **A student can score eight commitments without reading them, by choosing the longest option.** Measured, not judged. The remedy is the engine's own ruling: *"distractors on a rule-stating rung now state WRONG RULES … no correct answer was shortened."* None was here either. |
 
-⚠️ **THE FIX IS AT THE DISTRACTOR, AND THAT IS THE ENGINE'S OWN RULING, NOT A
-CHOICE MADE HERE.** `verify_ks3.py` states it in terms: *"The ruling fixes the
-CONSTRUCT rather than the threshold: distractors on a rule-stating rung now
-state WRONG RULES — the same three-part shape, with the misconception as the
-consequence"*, and *"no correct answer was shortened"*. None was here either.
-The rewritten distractors carry the same wrong ideas her originals carried,
-and each keeps its own correction verbatim.
+⚠️ **THE SAME PASS FIXED 38 OF P4's OWN 108 BANK QUESTIONS, and none of
+those is a departure from anything** — the bank is authored here, not by
+Design. It is recorded so the ratio is honest: eight of her sets needed the
+fix and thirty-eight of mine did.
+
 
 ---
 
@@ -183,3 +191,30 @@ absent, which is the failure that looks most like success.
 branch returned the SVG and nothing else, so a `caption` or `note` in the
 payload would have been silently discarded even if one had been written. Both
 are now emitted, both are optional, and no existing figure moves a byte.
+
+---
+
+## ⊖ Phase 3, second pass — 25 Aug 2026
+
+The first Phase 3 pass compared the built pages against her **HTML**. That is
+not enough: a `.dc.html` renders its hook, its bench gate, its ladder and its
+attempt panel from `{{ }}` holes, so everything a page computes is invisible
+to an HTML comparison and reports as a match. P6 lost nine lessons' worth of
+ladders that way.
+
+**P4 was then read against her JavaScript, constant by constant, and it is
+clean.** Every hook option, every bench gate option, every rung question,
+every rung option, every correction and every success criterion on all nine
+pages is hers, and so is every worked example and every attempt question.
+The only differences are the eight length-tell extensions counted in row 2.
+
+Two things were checked and found sound rather than fixed:
+
+- **Every P4 bench prints a real note in every state it can reach.** Driven
+  headlessly, tab by tab and slider end to slider end. `p4-09`'s force sorter
+  is empty until a label is chosen, which is correct — nothing has been
+  committed yet.
+- **Every P4 branch note authored in a payload reaches the page.** Five
+  benches carry them and all five emit; the four that carry none use
+  per-item `data-note` instead, which works. `p5-01` was the one bench in
+  twenty-two that did not, and it is fixed in P5's own register.

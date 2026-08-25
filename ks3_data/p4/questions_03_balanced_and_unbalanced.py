@@ -51,7 +51,8 @@ QUESTIONS = [
             {"text": "the object is stationary", "correct": False,
              "why": "Balanced means no CHANGE. A car at a steady 70 mph has "
                     "balanced forces and is not stationary."},
-            {"text": "there are no forces on the object", "correct": False,
+            {"text": "there are no forces on the object at all, which is "
+                     "what being still means", "correct": False,
              "why": "There are forces; they cancel. Remove them and the "
                     "situation is completely different."},
             {"text": "the forces cancel to a resultant of 0 N, so nothing "
@@ -177,7 +178,8 @@ QUESTIONS = [
                      "stops squashing at the point where its push equals the "
                      "load.", "correct": True},
             {"text": "Because the book pulls the shelf down and the two "
-                     "cancel by chance.", "correct": False,
+                     "cancel by chance, which is why a shelf can hold "
+                     "anything at all", "correct": False,
              "why": "It is not chance. The mechanism settles at equality "
                     "every time, which is why the answer is always exact."},
             {"text": "Because a shelf can only push with a fixed amount.",
@@ -270,7 +272,7 @@ QUESTIONS = [
              "why": "A resultant is 0 N or it is not. There is no negative "
                     "balance."},
             {"text": "It means the bridge pushes back harder than the load "
-                     "presses down.", "correct": False,
+                     "presses down, which is how it stops the load sinking", "correct": False,
              "why": "It cannot: a support supplies exactly what is needed. "
                     "If it pushed harder the bridge would rise."},
             {"text": "It means an unexpected extra load still leaves the "

@@ -90,7 +90,8 @@ QUESTIONS = [
         "band": "easier",
         "text": "Why do you not feel the air pressing on you?",
         "options": [
-            {"text": "Because it is too small to notice", "correct": False,
+            {"text": "Because it is too small to notice against everything "
+                     "else pressing on you", "correct": False,
              "why": "It is about 1000 N on each palm. That is not small."},
             {"text": "Because it pushes equally from every side, and your "
                      "insides push out just as hard", "correct": True},
@@ -131,7 +132,8 @@ QUESTIONS = [
         "band": "standard",
         "text": "Water boils at about 71 °C on the summit of Everest. Why?",
         "options": [
-            {"text": "Because the water up there is colder to start with.",
+            {"text": "Because the water up there is colder to start with, "
+                     "so it takes longer to reach its boiling point",
              "correct": False,
              "why": "The starting temperature sets how long it takes, not "
                     "what temperature it boils at."},
@@ -159,7 +161,7 @@ QUESTIONS = [
                      "cabin air is lower, so the inside push wins.",
              "correct": True},
             {"text": "There is less gravity that high, so the air inside "
-                     "spreads out.", "correct": False,
+                     "spreads out until it fills whatever it is in", "correct": False,
              "why": "Gravity is essentially unchanged 11 km up. The outside "
                     "pressure is what has changed."},
             {"text": "The low pressure outside sucks the bag outwards.",
@@ -185,7 +187,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The low pressure inside is real, but it does not HOLD "
                     "anything. Something has to push."},
-            {"text": "The air pressure inside rises and grips the surface.",
+            {"text": "The air pressure inside rises and grips the surface, "
+                     "holding the cup in place",
              "correct": False,
              "why": "Squeezing air out LOWERS the pressure inside. That is "
                     "the point of squeezing it."},
@@ -212,7 +215,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Capillary action works in very narrow tubes and would "
                     "lift a drink a millimetre or two, not up a straw."},
-            {"text": "The vacuum in the straw pulls the drink into it.",
+            {"text": "The vacuum in the straw pulls the drink into it, the "
+                     "way a magnet pulls iron",
              "correct": False,
              "why": "There is no vacuum, and a vacuum could not pull if "
                     "there were."},
@@ -225,7 +229,7 @@ QUESTIONS = [
         "text": "You try the same straw on the Moon. What happens?",
         "options": [
             {"text": "It works better, because there is less to push "
-                     "against.", "correct": False,
+                     "against and the pump has an easier job", "correct": False,
              "why": "There is nothing to do the pushing. The atmosphere was "
                     "the thing making it work."},
             {"text": "It works the same, because your mouth does the work.",
@@ -247,7 +251,8 @@ QUESTIONS = [
         "text": "A pump cannot lift water more than about ten metres up a "
                 "pipe, however good the pump is. Why?",
         "options": [
-            {"text": "Because water is too heavy to be pulled that far.",
+            {"text": "Because water is too heavy to be pulled that far up a "
+                     "pipe of any width, whatever pump is used on it",
              "correct": False,
              "why": "Nothing is pulling it. The framing is what makes the "
                     "limit look mysterious."},
@@ -271,7 +276,8 @@ QUESTIONS = [
         "text": "The space station orbits at 400 km, well above the usual "
                 "100 km 'edge of space'. What does it still meet up there?",
         "options": [
-            {"text": "Nothing at all — space begins at 100 km.",
+            {"text": "Nothing at all — space begins at 100 km, and "
+                     "there is no air above that line.",
              "correct": False,
              "why": "The 100 km line is an agreed boundary for "
                     "record-keeping, not a physical edge."},
