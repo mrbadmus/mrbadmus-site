@@ -127,6 +127,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `WAVE` | Waves — what travels and what stays put, what a wave's two measurements are, and how sound is made, carried, reflected, heard and put to work | 2026-08-25, by P6 |
 | `LIGHT` | Light — what travels, how fast, what a surface does to it, how an image forms, and what colour is | 2026-08-25, by P7 |
 | `CIRC` | Current and circuits — what a current is and what it is not, what a battery does, what happens at a junction, what a resistance is, and what a meter measures | 2026-08-25, by P8 |
+| `CHRG` | Electric charge — where charge comes from when things are rubbed, what a charged object does to another, and what an electric field is | 2026-08-25, by P9 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -2502,3 +2503,78 @@ Both are wrong beliefs about something being consumed. But `ENER` is about energ
 transferred out of a store, and `CIRC-01` is about CHARGE, which is not — the whole correction is
 that the two are different quantities and only one of them is spent. A `reappears_in` edge between
 them would blur exactly the distinction `p8-01` exists to draw.
+
+### `CHRG` — electric charge: where it comes from, what it does to another object, and what a field is
+
+⊕ **OPENED 25 Aug 2026, BY P9.** `docs/ks3/design-reference/p9/NOTES-P8-P9.md` §7 pre-allocated a range four
+per lesson in slot order and authored EIGHT entries without citing one on any page — because her access was
+read-only and this register had no open family for electricity or electrostatics. **Every id she wrote is minted
+here on the number she gave it, in her words**, and the four gaps are minted from the real lesson content, which
+is the register's own rule: an id is minted from what a page actually confronts, never reserved against what one
+might.
+
+⚠️ **THE PREFIX IS `CHRG`, NOT DESIGN'S `STAT`, AND THE NUMBERS ARE UNCHANGED.** Her §7 table proposes
+`STAT-01` … `STAT-12`. `STAT` is the strand code of the two statutory statements these three lessons own —
+`KS3.P.STAT.01` and `KS3.P.STAT.02` — and both are printed on the same pages, so a reader meeting `STAT-05`
+beside `KS3.P.STAT.01a` has two different registers wearing one prefix. Ruled by the commander: the family is
+`CHRG`, her `STAT-01` is `CHRG-01`, and so on one for one. Nothing else about her allocation moves.
+
+⚠️ **HER TABLE CARRIES EIGHT ROWS, NOT NINE.** The unit addendum names nine (01, 02, 03, 05, 06, 09, 10, 11) and
+lists eight; eight is what `NOTES-P8-P9.md` §7 actually contains. So four ids are minted from content rather than
+three. Recorded here rather than silently resolved, because the discrepancy is in the instruction and not in her
+delivery.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `CHRG-01` | Rubbing creates charge. | `s-ladder` | `s-think` | `charging-by-rubbing` |
+| `CHRG-02` | A positive object has had positive charge added to it. | *(none — nothing on the page asks for this commitment)* | `s-think` | `charging-by-rubbing` |
+| `CHRG-03` | Only one of the two objects ends up charged. | `s-hook` | `rub` | `charging-by-rubbing` |
+| `CHRG-04` | A material has a charge of its own that it always takes, whatever it is rubbed with. | `rub` | `rub` | `charging-by-rubbing` |
+| `CHRG-05` | The rod picks up the paper, so the paper must be charged. | `spheres` | `s-think` | `forces-between-charges` |
+| `CHRG-06` | They have to touch, or the air has to carry it. | `s-hook` | `s-think` | `forces-between-charges` |
+| `CHRG-07` | The force between two charges falls in step with the distance, so doubling the gap halves it. | `s-ladder` | `spheres` | `forces-between-charges` |
+| `CHRG-08` | A charged object does nothing at all to an uncharged one, because there is no charge for it to act on. | `spheres` | `matrix` | `forces-between-charges` |
+| `CHRG-09` | A field only exists when something is in it to feel it. | *(none — nothing on the page asks for this commitment)* | `s-think` | `electric-fields` |
+| `CHRG-10` | The air in the gap must be carrying the force. | `s-hook` | `s-think` | `electric-fields` |
+| `CHRG-11` | The field is strongest half-way between two like charges. | `field` | `field` | `electric-fields` |
+| `CHRG-12` | A negative charge follows the field arrows, the same way a positive one does. | `s-ladder` | `field` | `electric-fields` |
+
+⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor rather than from
+her §7 list. Each is a genuinely separate belief rather than a re-dressing of one already minted, which is the
+test this register applies:
+
+  * `CHRG-04` a material has a charge OF ITS OWN. It is her own commit gate's first option — *"both become
+    negative, because polythene always ends up negative"* — and it is separate from `CHRG-01`: a student can have
+    given up "rubbing makes charge" entirely and still believe the outcome is a property of one material rather
+    than of the pair. It is also the belief the same-material state of the bench exists to break, and that state
+    is reachable at seven of the forty-nine pairs.
+  * `CHRG-07` the force falls IN STEP with the distance. Her rung 2 option B — *"it falls to about half, because
+    the distance doubled"* — and the commonest wrong answer to the whole topic. Separate from anything about
+    sign: a student who has like-and-unlike perfectly can still expect a straight proportion.
+  * `CHRG-08` a charged object does NOTHING to an uncharged one. Her bench gate's option A. It is `CHRG-05` from
+    the other side and it is not the same belief: `CHRG-05` is an INFERENCE (attraction proves charge) and
+    `CHRG-08` is a PREDICTION (nothing will happen). A student can hold either without the other, and the
+    commonest combination in a real class is to hold `CHRG-08` before the bench and `CHRG-05` after it.
+  * `CHRG-12` a negative charge follows the arrows. Her rung 1 option C — *"the object is positively charged, and
+    a negative charge would be pushed outwards along the arrows"* — a half-right answer that gets the sign of the
+    source right and the response wrong, which is exactly the shape a distractor should have. Separate from
+    `CHRG-09` and `CHRG-11`, both of which are about the field itself rather than about what responds to it.
+
+⚠️ **`CHRG-02` AND `CHRG-09` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on either page asks the student
+to commit to them; each is confronted because it sits underneath one that is. Design's own §7 records the same
+two as having none.
+
+⚠️ **`s-think` IS A CONFRONTATION ANCHOR ON ALL THREE PAGES AND A RAIL STOP ON ONE.** `p9-01`'s rail includes it,
+because Design's `isDone()` gives it `s.gate !== null`; `p9-02` and `p9-03` put their third stop on the figure
+instead. That is a fact about the rail and not about the register — every `confronted_by` above resolves against
+its own built page either way.
+
+⚠️ **EXPECTED TO RESURFACE.** `CHRG-10` — *the air in the gap must be carrying it* — in P10, where a magnetic
+field is introduced the same way, and again wherever gravity acts across a vacuum. `CHRG-02` — *positive means
+something positive was added* — will meet ions in KS4 chemistry and is worth naming again there. `CHRG-07` is the
+same shape as any inverse-square belief and will reappear in P12's gravity lessons.
+
+⊖ **NOTHING IN P9 RE-CONFRONTS AN EXISTING FAMILY AND NOTHING IS RE-DECLARED.** `CIRC` — the family Design
+pre-allocates for P8 — is not opened here: P9 is another lane's neighbour, not its owner, and this register's
+standing rule is that a family is opened by the unit that mints into it. `p9-01` names insulators and conductors
+from nothing, with `p8-06` carried as an edge, and cites no `CIRC` id.

@@ -14637,6 +14637,746 @@
 
   /* ═══ END P8 wiring ═══ */
 
+/* ═══ BEGIN P9 wiring ═══════════════════════════════════════════════════
+     P9 — *Static electricity*. Three benches, ported from Claude Design's
+     delivered pages CONSTANT BY CONSTANT rather than compared as markup.
+
+     ⚖️ EVERY LIVE VALUE IS AN HTML SPAN OVER A `position: relative` WRAPPER,
+     never an SVG `<text>`. Design's own note for the generator, and the
+     failure is silent. Her overlays hang DOWN from their percentage —
+     `translate(-50%, 0)` — which is why `p9Tag` exists beside `tagStyle`
+     rather than reusing it: P4's helper centres vertically, and using it
+     here would move every label on all three pages by half its own height.
+
+     ⚖️ COLOUR COMES FROM THE SPAN'S CLASS, NOT FROM THE STYLE STRING. P6
+     wrote hexes into `tagStyle(…, "#C6B9A7")`; those are text colours, the
+     token law binds them, and a literal in a JS string is a text colour no
+     stylesheet gate can see. Every P9 overlay carries its own class and the
+     token lives in `shared/ks3.css`.
+
+     ⚖️ THE READOUT WORDS ARE AUTHORED, NOT TYPED HERE. `zero on this scale`,
+     `feels no force`, `short of electrons` are sentences a student reads, so
+     they arrive through `data-<hook>-word` from the lesson record. What IS
+     in this file is arithmetic and geometry.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  function p9Tag(fx, fy) {
+    return "position:absolute;left:" + (fx * 100).toFixed(2) +
+      "%;top:" + (fy * 100).toFixed(2) + "%;transform:translate(-50%,0);";
+  }
+
+  function p9Word(wrap, hook, key) {
+    var el = wrap.querySelector('[data-' + hook + '-word="' + key + '"]');
+    return el ? (el.getAttribute("data-text") || "") : "";
+  }
+
+  function p9Branch(wrap, hook, key) {
+    return wrap.querySelector('[data-' + hook + '-branch="' + key + '"]');
+  }
+
+  function p9Attr(el, name) {
+    return el ? (el.getAttribute(name) || "") : "";
+  }
+
+  /* A note panel is a paragraph, so it starts with a capital. See the call
+     site in `wireTransferPair` for the one branch pair this exists for. */
+  function p9Sentence(text) {
+    return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+  }
+
+  /* A readout tile's SUB-line. `setOut` owns the value; this owns the line
+     under it, and both set EVERY matching element for the reason `setOut`'s
+     own note gives — a bench that names a slider and a tile with one id had
+     four tiles ship permanently dead. */
+  function p9Sub(wrap, hook, id, text) {
+    var els = wrap.querySelectorAll('[data-' + hook + '-sub="' + id + '"]');
+    for (var i = 0; i < els.length; i += 1) { els[i].textContent = text; }
+  }
+
+  /* The commit gate every P9 bench opens behind. One shape, three benches:
+     Design locks all three, and on all three her own `isDone()` gives the
+     SECTION BESIDE the bench `s.gate !== null` — so the gate is not a
+     nicety, it is what ticks two of the four rail stops. */
+  function p9Gate(wrap, hook, onCommit) {
+    var gate = wrap.querySelector("[data-" + hook + "-gate]");
+    var body = wrap.querySelector("[data-" + hook + "-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-" + hook + "-gopt]"));
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(body, false);
+        onCommit();
+      });
+    });
+  }
+
+  /* The strength ladder, read highest threshold first. A comparative label
+     over per-state values is COMPUTED, never authored beside them (5A.1) —
+     which is what makes it true in the equal state and the zero state by
+     construction rather than by somebody remembering. */
+  function p9Bands(wrap, hook) {
+    return toArray(wrap.querySelectorAll("[data-" + hook + "-band]"))
+      .map(function (b) {
+        return { at: parseFloat(b.getAttribute("data-" + hook + "-band")),
+                 word: b.getAttribute("data-word") || "" };
+      })
+      .sort(function (x, y) { return y.at - x.at; });
+  }
+
+  function p9BandWord(bands, value) {
+    for (var i = 0; i < bands.length; i += 1) {
+      if (value >= bands[i].at) { return bands[i].word; }
+    }
+    return bands.length ? bands[bands.length - 1].word : "";
+  }
+
+  /* p9-01 `#s-rub` — two dry insulators, rubbed.
+
+     ⚖️ THE SAME-MATERIAL STATE DRAWS NOTHING. No arrow, no dot train, no
+     signs — because nothing crosses, and a faint transfer there would teach
+     the opposite of the gate the bench opens behind. It is reachable at
+     seven of the forty-nine pairs, so it is a state a student WILL meet.
+
+     ⚖️ THE CHARGE APPROACHES A CEILING AND NEVER PASSES IT. Ruled by Mide
+     on 21 Aug 2026, and it is Design's own model: her FLAG 8 says this page
+     has no ceiling and her page carries `STROKE_CEIL = 26.3` and
+     `STROKE_TAU = 14`. The drawing was measured. A model that climbed for
+     ever would teach "rub harder, get more, without limit"; a real charge
+     stops rising because it leaks away and because the air breaks down. */
+  function wireTransferPair(sec) {
+    var wrap = sec.querySelector("[data-xfer]");
+    if (!wrap) { return; }
+    var mats = toArray(wrap.querySelectorAll("[data-xfer-mat]"));
+    var aTabs = mats.filter(function (m) {
+      return m.getAttribute("data-side") === "a";
+    });
+    var bTabs = mats.filter(function (m) {
+      return m.getAttribute("data-side") === "b";
+    });
+    if (!aTabs.length || !bTabs.length) { return; }
+    var rubEl = wrap.querySelector('[data-xfer-slider="rubs"]');
+    var svg = wrap.querySelector("[data-xfer-alt]");
+    var noteEl = wrap.querySelector("[data-xfer-note]");
+    var PER = parseFloat(wrap.getAttribute("data-per"));
+    var TAU = parseFloat(wrap.getAttribute("data-tau"));
+    var CEIL = parseFloat(wrap.getAttribute("data-ceil"));
+    var ai = parseInt(wrap.getAttribute("data-start-a"), 10) || 0;
+    var bi = parseInt(wrap.getAttribute("data-start-b"), 10) || 0;
+    var committed = false, touched = 0;
+
+    /* Her `fmtN`. The count is reported in WORDS, because the point is the
+       SIZE and "6.9e10" is not a size a Year 8 reader has. The step down to
+       no decimal place above ten billion is hers too. */
+    function fmtN(n) {
+      if (n === 0) { return "none"; }
+      if (n < 1e9) { return Math.round(n / 1e6) + " million"; }
+      if (n < 1e12) {
+        return (n / 1e9).toFixed(n < 1e10 ? 1 : 0) + " billion";
+      }
+      return (n / 1e12).toFixed(1) + " million million";
+    }
+
+    /* Her `signs()`: a row of marks centred on the block and CAPPED AT SIX,
+       so the drawing says *more* without pretending to be a count. The
+       number lives in the tile. One path string, no per-mark element. */
+    function signs(cx, sign, count) {
+      var d = "", n = Math.min(6, count), start = cx - (n - 1) * 21, i, x;
+      for (i = 0; i < n; i += 1) {
+        x = start + i * 42;
+        d += "M" + (x - 13) + " 240 H" + (x + 13) + " ";
+        if (sign > 0) { d += "M" + x + " 227 V253 "; }
+      }
+      return d.replace(/\s+$/, "");
+    }
+
+    function paint() {
+      var A = aTabs[ai], B = bTabs[bi];
+      var rubs = rubEl ? Number(rubEl.value) : 1;
+      var diff = bi - ai;
+      var steps = Math.abs(diff);
+      var strokeFactor = CEIL * (1 - Math.exp(-rubs / TAU));
+      var n = strokeFactor * PER * steps;
+      var nearCeiling = strokeFactor > 0.55 * CEIL;
+      var nC = n * 1.602e-10;
+      var aSign = diff > 0 ? 1 : diff < 0 ? -1 : 0;
+      var bSign = -aSign;
+      var signCount = Math.max(1, Math.min(6, Math.round(nC / 3)));
+      var key = diff === 0 ? "same"
+        : diff > 0 ? "left_above" : "left_below";
+      var br = p9Branch(wrap, "xfer", key);
+      var i, arrow;
+
+      /* U+2212 MINUS SIGN, which the shipped subsets carry — a hyphen would
+         read as a dash beside a "+" of a different weight. */
+      function fq(sign) {
+        return sign === 0 ? "0.0 nC"
+          : (sign > 0 ? "+" : "−") + nC.toFixed(1) + " nC";
+      }
+      function word(sign) {
+        return p9Word(wrap, "xfer", sign === 0 ? "unchanged"
+          : sign > 0 ? "short" : "extra");
+      }
+
+      each(mats, function (b) {
+        var at = parseInt(b.getAttribute("data-rank"), 10);
+        var mine = b.getAttribute("data-side") === "a" ? ai : bi;
+        b.setAttribute("aria-pressed", at === mine ? "true" : "false");
+      });
+
+      setPath(wrap, '[data-xfer-signs="a"]',
+              aSign === 0 ? null : signs(245, aSign, signCount));
+      setPath(wrap, '[data-xfer-signs="b"]',
+              bSign === 0 ? null : signs(755, bSign, signCount));
+      setPath(wrap, "[data-xfer-arrow]", diff === 0 ? null
+        : diff > 0 ? "M400 200 H600 M600 200 L580 188 M600 200 L580 212"
+                   : "M600 200 H400 M400 200 L420 188 M400 200 L420 212");
+      /* Her arrow thickens with the number of rungs apart — a second
+         channel beside the count in the tile, never the only one. */
+      arrow = wrap.querySelector("[data-xfer-arrow]");
+      if (arrow) {
+        arrow.setAttribute("stroke-width",
+                           (3 + Math.min(7, steps * 1.2)).toFixed(1));
+      }
+      setPath(wrap, "[data-xfer-dots]", diff === 0 ? null
+        : [430, 470, 510, 550].map(function (x) {
+            return "M" + (x - 7) + " 200 a 7 7 0 1 0 14 0 " +
+                   "a 7 7 0 1 0 -14 0 Z";
+          }).join(" "));
+
+      fillSpan(wrap, "xfer", "aname", p9Attr(A, "data-name"),
+               p9Tag(0.245, 0.33));
+      fillSpan(wrap, "xfer", "bname", p9Attr(B, "data-name"),
+               p9Tag(0.755, 0.33));
+      fillSpan(wrap, "xfer", "acharge", fq(aSign), p9Tag(0.245, 0.44));
+      fillSpan(wrap, "xfer", "bcharge", fq(bSign), p9Tag(0.755, 0.44));
+      fillSpan(wrap, "xfer", "transfer", fmtN(n), p9Tag(0.5, 0.55));
+
+      setOut(wrap, "xfer", "rubs",
+             rubs + (rubs === 1 ? " stroke" : " strokes"));
+      setOut(wrap, "xfer", "crossed", fmtN(n));
+      p9Sub(wrap, "xfer", "crossed", p9Attr(br, "data-dir"));
+      setOut(wrap, "xfer", "a", fq(aSign));
+      p9Sub(wrap, "xfer", "a", word(aSign));
+      setOut(wrap, "xfer", "b", fq(bSign));
+      p9Sub(wrap, "xfer", "b", word(bSign));
+      /* ⚖️ THE ONE READING THAT NEVER MOVES, AND IT IS THE LESSON. Written
+         on every repaint rather than left in the shipped bytes, so it is a
+         live claim about the state rather than a caption beside it. */
+      setOut(wrap, "xfer", "total", "0.0 nC");
+
+      if (noteEl && br) {
+        /* ⚖️ THE FIRST LETTER IS CAPITALISED, AND HER PAGE'S IS NOT. Her note
+           for both transfer directions opens with the material's own name
+           lower-cased — `A.name.toLowerCase() + ' sits above '` — so the
+           panel renders "polythene rod sits below wool duster on the list…"
+           with a lower-case first word. It is a paragraph in a panel of its
+           own, not a clause, and starting it in lower case reads as a
+           typesetting fault rather than as a choice. Registered in
+           DEPARTURES-P9.md; every word is otherwise hers. */
+        noteEl.textContent = p9Sentence(fillTokens(br.getAttribute("data-note"), {
+          a: p9Attr(A, "data-label").toLowerCase(),
+          b: p9Attr(B, "data-label").toLowerCase(),
+          aname: p9Attr(A, "data-name").toLowerCase(),
+          bname: p9Attr(B, "data-name").toLowerCase(),
+          n: fmtN(n), aq: fq(aSign), bq: fq(bSign),
+          steps: steps + (steps === 1 ? " step" : " steps"),
+          rubs: rubs + (rubs === 1 ? " stroke" : " strokes"),
+          ceiling: p9Word(wrap, "xfer",
+                          nearCeiling ? "ceiling_near" : "ceiling")
+        }));
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          p9Attr(A, "data-name").toLowerCase() + " rubbed against " +
+          p9Attr(B, "data-name").toLowerCase() + " for " + rubs +
+          (rubs === 1 ? " stroke. " : " strokes. ") +
+          (diff === 0
+            ? "No electrons cross and both stay neutral."
+            : fmtN(n) + " electrons cross from the " +
+              (diff > 0 ? "left" : "right") + " object to the " +
+              (diff > 0 ? "right" : "left") + " one."));
+      }
+
+      /* The head-row readout is the SHELL's element, driven by the
+         engine's own `setCountState`. This unit draws no head row of
+         its own — see the note where `_head` is not, in
+         `ks3_art/p9.py`, and the live P6 pages that show what
+         happens when both draw one. */
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+      /* ⚠️ `#s-think` — THE ONLY CONFRONTATION ON A RAIL IN THE KEY STAGE.
+         Design's `DONE` gives it the gate alone, before this bench is
+         finished, so it is marked here at 1 rather than tied to this
+         section with `mirrors`, which would tick it late. */
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    p9Gate(wrap, "xfer", function () { committed = true; paint(); });
+    each(mats, function (b) {
+      b.addEventListener("click", function () {
+        var at = parseInt(b.getAttribute("data-rank"), 10);
+        if (b.getAttribute("data-side") === "a") { ai = at; } else { bi = at; }
+        touched += 1;
+        paint();
+      });
+    });
+    if (rubEl) {
+      ["input", "change"].forEach(function (ev) {
+        rubEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+    paint();
+  }
+
+  /* p9-02 `#s-spheres` — charge them, move them.
+
+     ⚖️ NINE STATES, AND FOUR BRANCHES KEYED TO WHAT THE PAIR DOES. Three
+     charge states each over seventeen separations is 153 reachable states;
+     the both-neutral case is the only one of the nine that gives no force.
+
+     ⚖️ INDUCED ATTRACTION IN RELATIVE WORDS ONLY, RULED 21 Aug 2026. The
+     strength tile's sub-line for a neutral pair is a COMPARISON with no
+     figure in it, because the coefficient behind it is chosen rather than
+     measured. The only place a number is printed at all says on the same
+     line what scale it is on. No newtons anywhere on the page.
+
+     ⚖️ THE FORCES ARE EQUAL AND OPPOSITE, IN THE DRAWING AND IN A TILE.
+     Both arrows are the same length whichever sphere carries what, because
+     that is the physics and a student who has understood everything else
+     still expects the bigger charge to push harder. */
+  function wireChargePair(sec) {
+    var wrap = sec.querySelector("[data-chpair]");
+    if (!wrap) { return; }
+    var states = toArray(wrap.querySelectorAll("[data-chpair-state]"));
+    var aTabs = states.filter(function (s) {
+      return s.getAttribute("data-side") === "a";
+    });
+    var bTabs = states.filter(function (s) {
+      return s.getAttribute("data-side") === "b";
+    });
+    if (!aTabs.length || !bTabs.length) { return; }
+    var sepEl = wrap.querySelector('[data-chpair-slider="d"]');
+    var svg = wrap.querySelector("[data-chpair-alt]");
+    var noteEl = wrap.querySelector("[data-chpair-note]");
+    var bands = p9Bands(wrap, "chpair");
+    var K = parseFloat(wrap.getAttribute("data-k"));
+    var INDK = parseFloat(wrap.getAttribute("data-ind-k"));
+    var REFD = parseFloat(wrap.getAttribute("data-ref-d"));
+    var INDSUB = wrap.getAttribute("data-induced-sub") || "";
+    var ai = parseInt(wrap.getAttribute("data-start-a"), 10) || 0;
+    var bi = parseInt(wrap.getAttribute("data-start-b"), 10) || 0;
+    var committed = false, touched = 0;
+
+    /* Her `sign()`. A bar, plus an upright for a positive — so the two
+       signs differ in SHAPE and not only in where they sit. */
+    function sign(q, cx, cy, half) {
+      if (q === 0) { return ""; }
+      var d = "M" + (cx - half) + " " + cy + " H" + (cx + half);
+      if (q > 0) { d += " M" + cx + " " + (cy - half) + " V" + (cy + half); }
+      return d;
+    }
+
+    function paint() {
+      var A = aTabs[ai], B = bTabs[bi];
+      var qa = parseFloat(A.getAttribute("data-q"));
+      var qb = parseFloat(B.getAttribute("data-q"));
+      var d = sepEl ? Number(sepEl.value) : REFD;
+      var lo = sepEl ? Number(sepEl.min) : REFD;
+      var hi = sepEl ? Number(sepEl.max) : REFD + 1;
+      var both = qa !== 0 && qb !== 0;
+      var oneNeutral = (qa === 0) !== (qb === 0);
+      /* ⚖️ HER MODEL. The charged pair falls as the inverse square, which is
+         the real relationship; the induced case falls as the fourth power,
+         which is right in KIND on a coefficient chosen to be readable.
+         `ref_d` is the closest gap, where the charged pair reads 100. */
+      var strength = both ? K * Math.pow(REFD / d, 2)
+        : oneNeutral ? INDK * Math.pow(REFD / d, 4) : 0;
+      var attract = both ? (qa * qb < 0) : oneNeutral;
+      var key = strength === 0 ? "none"
+        : (both && !attract) ? "repel" : both ? "attract" : "induced";
+      var br = p9Branch(wrap, "chpair", key);
+      var sw = strength > 0 ? p9BandWord(bands, strength)
+                            : p9Word(wrap, "chpair", "zero_word");
+
+      var gap = 160 + ((d - lo) / (hi - lo)) * 540;
+      var cxA = Math.round(500 - gap / 2);
+      var cxB = Math.round(500 + gap / 2);
+      var cq = qa !== 0 ? qa : qb;
+      var nSide = qa === 0 ? "left" : "right";
+      var cSide = qa === 0 ? "right" : "left";
+      var ind = "", nCx, nearOnRight, nearX, farX, L, arrowPath, sa, sb;
+
+      each(states, function (b) {
+        var mySide = b.getAttribute("data-side") === "a";
+        var at = (mySide ? aTabs : bTabs).indexOf(b);
+        b.setAttribute("aria-pressed",
+                       at === (mySide ? ai : bi) ? "true" : "false");
+      });
+
+      sa = wrap.querySelector('[data-chpair-sphere="a"]');
+      sb = wrap.querySelector('[data-chpair-sphere="b"]');
+      if (sa) {
+        sa.setAttribute("cx", cxA);
+        sa.setAttribute("data-neutral", qa === 0 ? "1" : "0");
+      }
+      if (sb) {
+        sb.setAttribute("cx", cxB);
+        sb.setAttribute("data-neutral", qb === 0 ? "1" : "0");
+      }
+
+      setPath(wrap, "[data-chpair-stand]",
+              "M" + cxA + " 228 V340 M" + (cxA - 40) + " 340 H" + (cxA + 40) +
+              " M" + cxB + " 228 V340 M" + (cxB - 40) + " 340 H" +
+              (cxB + 40));
+      setPath(wrap, '[data-chpair-sign="a"]', sign(qa, cxA, 180, 20) || null);
+      setPath(wrap, '[data-chpair-sign="b"]', sign(qb, cxB, 180, 20) || null);
+
+      /* ⚖️ THE INDUCED SIGNS SIT ON THE NEAR AND FAR FACES OF THE NEUTRAL
+         SPHERE, one of each, so its total is visibly still zero. That is
+         `CHRG-05` drawn rather than described. */
+      if (oneNeutral) {
+        nCx = qa === 0 ? cxA : cxB;
+        nearOnRight = qa === 0;
+        nearX = nearOnRight ? nCx + 28 : nCx - 28;
+        farX = nearOnRight ? nCx - 28 : nCx + 28;
+        ind = sign(-cq, nearX, 180, 12) + " " + sign(cq, farX, 180, 12);
+      }
+      setPath(wrap, "[data-chpair-ind]", ind.replace(/\s+$/, "") || null);
+
+      L = strength > 0
+        ? Math.round(22 + Math.min(1, strength / 100) * 100) : 0;
+      arrowPath = "";
+      if (L > 0 && attract) {
+        arrowPath =
+          "M" + (cxA - 56 - L) + " 180 H" + (cxA - 56) +
+          " M" + (cxA - 56) + " 180 L" + (cxA - 72) + " 168" +
+          " M" + (cxA - 56) + " 180 L" + (cxA - 72) + " 192" +
+          " M" + (cxB + 56 + L) + " 180 H" + (cxB + 56) +
+          " M" + (cxB + 56) + " 180 L" + (cxB + 72) + " 168" +
+          " M" + (cxB + 56) + " 180 L" + (cxB + 72) + " 192";
+      } else if (L > 0) {
+        arrowPath =
+          "M" + (cxA - 56) + " 180 H" + (cxA - 56 - L) +
+          " M" + (cxA - 56 - L) + " 180 L" + (cxA - 40 - L) + " 168" +
+          " M" + (cxA - 56 - L) + " 180 L" + (cxA - 40 - L) + " 192" +
+          " M" + (cxB + 56) + " 180 H" + (cxB + 56 + L) +
+          " M" + (cxB + 56 + L) + " 180 L" + (cxB + 40 + L) + " 168" +
+          " M" + (cxB + 56 + L) + " 180 L" + (cxB + 40 + L) + " 192";
+      }
+      setPath(wrap, "[data-chpair-arrow]", arrowPath || null);
+      setPath(wrap, "[data-chpair-dim]",
+              "M" + cxA + " 260 V292 M" + cxB + " 260 V292 M" + cxA +
+              " 280 H" + cxB);
+
+      fillSpan(wrap, "chpair", "alabel",
+               p9Attr(A, "data-label").toUpperCase(),
+               p9Tag(cxA / 1000, 0.26));
+      fillSpan(wrap, "chpair", "blabel",
+               p9Attr(B, "data-label").toUpperCase(),
+               p9Tag(cxB / 1000, 0.26));
+      fillSpan(wrap, "chpair", "sep", d + " cm", p9Tag(0.5, 0.72));
+      fillSpan(wrap, "chpair", "verdict", p9Attr(br, "data-verdict"),
+               p9Tag(0.5, 0.06));
+
+      setOut(wrap, "chpair", "d", d + " cm");
+      setOut(wrap, "chpair", "sep", d + " cm");
+      setOut(wrap, "chpair", "verdict", p9Attr(br, "data-verdict"));
+      /* Two like charges: the sub-line names WHICH like, so the tile is not
+         the same three words for two different states. */
+      p9Sub(wrap, "chpair", "verdict",
+            (key === "repel" && qa < 0)
+              ? (p9Attr(br, "data-sub_alt") || p9Attr(br, "data-sub"))
+              : p9Attr(br, "data-sub"));
+      setOut(wrap, "chpair", "strength", sw);
+      p9Sub(wrap, "chpair", "strength",
+            strength === 0 ? p9Word(wrap, "chpair", "zero_sub")
+              : oneNeutral ? INDSUB
+                : fillTokens(p9Word(wrap, "chpair", "scale_sub"),
+                             { strength: strength.toFixed(1) }));
+      setOut(wrap, "chpair", "pair",
+             strength === 0 ? p9Word(wrap, "chpair", "pair_none")
+                            : p9Word(wrap, "chpair", "pair"));
+
+      if (noteEl && br) {
+        noteEl.textContent = fillTokens(br.getAttribute("data-note"), {
+          d: d, strength: strength.toFixed(1),
+          sign: qa > 0 ? "positive" : "negative",
+          cside: cSide, nside: nSide,
+          csign: cq > 0 ? "positive" : "negative",
+          nearsign: cq > 0 ? "negative" : "positive",
+          farsign: cq > 0 ? "positive" : "negative"
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "Two spheres on insulating stands " + d + " cm apart. The left " +
+          "one is " + p9Attr(A, "data-word") + " and the right one is " +
+          p9Attr(B, "data-word") + ". " +
+          (strength === 0 ? "No force arrows are drawn."
+            : "Arrows of equal length show them " +
+              (attract ? "pulled together" : "pushed apart") +
+              (oneNeutral ? ", weakly."
+                : ", at a relative strength of " + strength.toFixed(1) +
+                  ".")));
+      }
+
+      /* The head-row readout is the SHELL's element, driven by the
+         engine's own `setCountState`. This unit draws no head row of
+         its own — see the note where `_head` is not, in
+         `ks3_art/p9.py`, and the live P6 pages that show what
+         happens when both draw one. */
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    p9Gate(wrap, "chpair", function () { committed = true; paint(); });
+    each(states, function (b) {
+      b.addEventListener("click", function () {
+        var side = b.getAttribute("data-side");
+        var at = (side === "a" ? aTabs : bTabs).indexOf(b);
+        if (at < 0) { return; }
+        if (side === "a") { ai = at; } else { bi = at; }
+        touched += 1;
+        paint();
+      });
+    });
+    if (sepEl) {
+      ["input", "change"].forEach(function (ev) {
+        sepEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+    paint();
+  }
+
+  /* p9-03 `#s-field` — a field map and one movable test point.
+
+     ⚖️ THE WHOLE FIELD IS ONE PATH STRING. Thirteen columns by seven rows,
+     each with a shaft and two head strokes, built here and set as one `d`.
+     Design's own note for the generator: no `<sc-for>` inside an `<svg>`
+     anywhere, because a single attribute hole is the shape that is safe.
+
+     ⚖️ POINTS TOO CLOSE TO A CHARGE ARE OMITTED, AND SO IS THE READING. The
+     model treats a charge as a point, so inside `near` it has no value —
+     and printing an enormous number there would be teaching a figure the
+     model cannot support.
+
+     ⚖️ THE NULL POINT IS A STOP THE SLIDER LANDS ON. Two equal positives at
+     350 and 650 put the mid-point at 500, which is step 12 of 24 because
+     `x = 80 + 35 × step`. `r_field_grid` refuses an arrangement where that
+     arithmetic stops working. */
+  function wireFieldGrid(sec) {
+    var wrap = sec.querySelector("[data-fgrid]");
+    if (!wrap) { return; }
+    var setups = toArray(wrap.querySelectorAll("[data-fgrid-setup]"));
+    if (!setups.length) { return; }
+    var posEl = wrap.querySelector('[data-fgrid-slider="pos"]');
+    var svg = wrap.querySelector("[data-fgrid-alt]");
+    var noteEl = wrap.querySelector("[data-fgrid-note]");
+    var bands = p9Bands(wrap, "fgrid");
+    var EREF = parseFloat(wrap.getAttribute("data-eref"));
+    var X0 = parseFloat(wrap.getAttribute("data-x0"));
+    var DX = parseFloat(wrap.getAttribute("data-dx"));
+    var NEAR = parseFloat(wrap.getAttribute("data-near"));
+    var si = parseInt(wrap.getAttribute("data-start-setup"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function charges(el) {
+      return (el.getAttribute("data-charges") || "").split(/\s+/)
+        .filter(function (s) { return s; })
+        .map(function (s) {
+          var bits = s.split(":");
+          return { x: parseFloat(bits[0]), q: parseFloat(bits[1]) };
+        });
+    }
+
+    /* Her `fieldAt`. `k = q ÷ r³` with components `k × dx` and `k × dy`,
+       which IS the inverse square written so the direction falls out of the
+       same expression. Returns null inside a charge — the honest answer,
+       and what the "no value here" state is built on. */
+    function fieldAt(cs, px, py) {
+      var ex = 0, ey = 0, i, c, dx, dy, r2, r, k;
+      for (i = 0; i < cs.length; i += 1) {
+        c = cs[i];
+        dx = px - c.x; dy = py - 250;
+        r2 = dx * dx + dy * dy;
+        r = Math.sqrt(r2);
+        if (r < 1) { return null; }
+        k = c.q / (r2 * r);
+        ex += k * dx; ey += k * dy;
+      }
+      return { ex: ex, ey: ey, mag: Math.sqrt(ex * ex + ey * ey) };
+    }
+
+    function paint() {
+      var S = setups[si];
+      var cs = charges(S);
+      var pos = posEl ? Number(posEl.value) : 0;
+      var hi = posEl ? Number(posEl.max) : 0;
+      var tx = X0 + pos * DX;
+      var grid = "", cpath = "", csigns = "";
+      var gx, gy, i, c, dx, dy, near, f, len, ux, uy, x1, y1, x2, y2, hx, hy;
+
+      each(setups, function (b, k) {
+        b.setAttribute("aria-pressed", k === si ? "true" : "false");
+      });
+
+      for (gy = 70; gy <= 430; gy += 60) {
+        for (gx = 80; gx <= 920; gx += 70) {
+          near = false;
+          for (i = 0; i < cs.length; i += 1) {
+            dx = gx - cs[i].x; dy = gy - 250;
+            if (Math.sqrt(dx * dx + dy * dy) < NEAR) { near = true; }
+          }
+          if (near) { continue; }
+          f = fieldAt(cs, gx, gy);
+          if (!f || f.mag < 1e-9) { continue; }
+          /* A shortest and a longest length, so very weak and very strong
+             regions are drawn CLIPPED rather than to scale. The legal line
+             says so; without the clamp the near field would leave the
+             viewBox and the far field would vanish. */
+          len = 8 + Math.min(1, f.mag / EREF) * 30;
+          ux = f.ex / f.mag; uy = f.ey / f.mag;
+          x1 = gx - ux * len / 2; y1 = gy - uy * len / 2;
+          x2 = gx + ux * len / 2; y2 = gy + uy * len / 2;
+          hx = -uy * 4.5; hy = ux * 4.5;
+          grid += "M" + x1.toFixed(1) + " " + y1.toFixed(1) +
+            " L" + x2.toFixed(1) + " " + y2.toFixed(1) +
+            " M" + x2.toFixed(1) + " " + y2.toFixed(1) +
+            " L" + (x2 - ux * 8 + hx).toFixed(1) + " " +
+            (y2 - uy * 8 + hy).toFixed(1) +
+            " M" + x2.toFixed(1) + " " + y2.toFixed(1) +
+            " L" + (x2 - ux * 8 - hx).toFixed(1) + " " +
+            (y2 - uy * 8 - hy).toFixed(1) + " ";
+        }
+      }
+
+      for (i = 0; i < cs.length; i += 1) {
+        c = cs[i];
+        /* Two arcs rather than a `<circle>`, so every charge in the
+           arrangement lives in ONE attribute — Design's own note. */
+        cpath += "M" + (c.x - 34) + " 250 a 34 34 0 1 0 68 0 " +
+                 "a 34 34 0 1 0 -68 0 Z ";
+        csigns += "M" + (c.x - 15) + " 250 H" + (c.x + 15) + " ";
+        if (c.q > 0) { csigns += "M" + c.x + " 235 V265 "; }
+      }
+
+      var tooClose = false;
+      for (i = 0; i < cs.length; i += 1) {
+        if (Math.abs(tx - cs[i].x) < NEAR) { tooClose = true; }
+      }
+      var f0 = tooClose ? null : fieldAt(cs, tx, 250);
+      var mag = f0 ? f0.mag : 0;
+      var rel = Math.min(200, (mag / EREF) * 100);
+      var dirRight = !!f0 && f0.ex > 1e-9;
+      var dirLeft = !!f0 && f0.ex < -1e-9;
+      var zero = !dirRight && !dirLeft;
+      var L = zero ? 0 : Math.round(22 + Math.min(1, mag / EREF) * 70);
+      var sgn = dirRight ? 1 : -1;
+      var x2t = tx + sgn * L;
+
+      setPath(wrap, "[data-fgrid-grid]", grid.replace(/\s+$/, "") || null);
+      setPath(wrap, "[data-fgrid-charges]", cpath.replace(/\s+$/, "") || null);
+      setPath(wrap, "[data-fgrid-signs]", csigns.replace(/\s+$/, "") || null);
+      setPath(wrap, "[data-fgrid-test]", L > 0
+        ? "M" + tx + " 250 H" + x2t +
+          " M" + x2t + " 250 L" + (x2t - sgn * 20) + " 236" +
+          " M" + x2t + " 250 L" + (x2t - sgn * 20) + " 264"
+        : null);
+      var pt = wrap.querySelector("[data-fgrid-point]");
+      if (pt) { pt.setAttribute("cx", tx); }
+
+      /* The verdict is a WORD, never a colour. `close_word` and `zero_word`
+         are two different states and two different words: on top of a
+         charge the model has no value; at a null point it has one, and it
+         is nothing. */
+      var strengthWord = tooClose ? p9Word(wrap, "fgrid", "close_word")
+        : zero ? p9Word(wrap, "fgrid", "zero_word")
+               : p9BandWord(bands, rel);
+      var dirWord = tooClose ? p9Word(wrap, "fgrid", "on_charge_dir")
+        : zero ? p9Word(wrap, "fgrid", "zero_dir")
+          : p9Word(wrap, "fgrid", dirRight ? "right" : "left");
+      var scale = tooClose ? p9Word(wrap, "fgrid", "no_value")
+        : zero ? p9Word(wrap, "fgrid", "zero_scale")
+          : fillTokens(p9Word(wrap, "fgrid", "scale"),
+                       { rel: rel.toFixed(0) });
+      var key = tooClose ? "on_charge"
+        : cs.length === 1 ? (cs[0].q > 0 ? "single_positive"
+                                         : "single_negative")
+          : (cs[0].q === cs[1].q ? (zero ? "null_point" : "two_positive")
+                                 : "dipole");
+      var br = p9Branch(wrap, "fgrid", key);
+
+      fillSpan(wrap, "fgrid", "reading", scale, p9Tag(tx / 1000, 0.38));
+
+      setOut(wrap, "fgrid", "pos", "step " + pos + " of " + hi);
+      setOut(wrap, "fgrid", "dir", dirWord);
+      p9Sub(wrap, "fgrid", "dir", p9Attr(br, "data-sub"));
+      setOut(wrap, "fgrid", "strength", strengthWord);
+      p9Sub(wrap, "fgrid", "strength", scale);
+      setOut(wrap, "fgrid", "posf",
+             tooClose ? p9Word(wrap, "fgrid", "no_value")
+               : zero ? p9Word(wrap, "fgrid", "no_force")
+                 : fillTokens(p9Word(wrap, "fgrid", "pushed"),
+                              { dir: dirWord }));
+      /* ⚖️ THE WHOLE DISCRIMINATION OF THE LESSON, IN TWO TILES. The arrows
+         show the push on a POSITIVE charge; a negative one goes the other
+         way, and the tile says which way rather than leaving it to be
+         inferred from the convention line. */
+      setOut(wrap, "fgrid", "negf",
+             tooClose ? p9Word(wrap, "fgrid", "no_value")
+               : zero ? p9Word(wrap, "fgrid", "no_force")
+                 : fillTokens(p9Word(wrap, "fgrid", "pushed"),
+                              { dir: p9Word(wrap, "fgrid",
+                                            dirRight ? "left" : "right") }));
+
+      if (noteEl && br) {
+        noteEl.textContent = fillTokens(br.getAttribute("data-note"), {
+          strength: strengthWord, rel: rel.toFixed(0), dir: dirWord
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A field map for " + p9Attr(S, "data-label").toLowerCase() +
+          ", drawn as a grid of arrows. At the test point the field " +
+          (tooClose
+            ? "has no value, because the point is on top of a charge."
+            : zero ? "cancels to nothing."
+              : "points " + dirWord + " with a relative strength of " +
+                rel.toFixed(0) + "."));
+      }
+
+      /* The head-row readout is the SHELL's element, driven by the
+         engine's own `setCountState`. This unit draws no head row of
+         its own — see the note where `_head` is not, in
+         `ks3_art/p9.py`, and the live P6 pages that show what
+         happens when both draw one. */
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    p9Gate(wrap, "fgrid", function () { committed = true; paint(); });
+    each(setups, function (b, k) {
+      b.addEventListener("click", function () {
+        si = k; touched += 1; paint();
+      });
+    });
+    if (posEl) {
+      ["input", "change"].forEach(function (ev) {
+        posEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+    paint();
+  }
+  /* ═══ END P9 wiring ═══ */
+
 
 
 
@@ -32581,6 +33321,19 @@
     // ticked by the bench beside them through `markSibling`. See the P8
     // wiring block's header.
     // ═══ END P8 wiring ═══
+
+// ═══ BEGIN P9 wiring ═══
+    each(root.querySelectorAll("[data-xferblock]"), wireTransferPair);
+    each(root.querySelectorAll("[data-chpairblock]"), wireChargePair);
+    each(root.querySelectorAll("[data-fgridblock]"), wireFieldGrid);
+    // ⚠️ `data-chbandblock` AND `data-chthink` HAVE NO LINE HERE, AND
+    // MUST NOT GAIN ONE. Both are shell-only: the band figures carry no
+    // control and are ticked by the bench beside them through
+    // `markSibling`, and `#s-think` on p9-01 is a rail stop for the same
+    // reason. A wire function for either would be a function with nothing
+    // to wire, and it would be the place a later pass added a control
+    // Design did not draw.
+    // ═══ END P9 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

@@ -28066,3 +28066,405 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 
 /* ═══ END P8 ═══ */
 
+/* ═══ BEGIN P9 ═══════════════════════════════════════════════════════════
+   P9 — *Static electricity*. One marked block per unit.
+
+   ⚠️ EVERY SELECTOR HERE IS P9-ONLY, and every shell stem was checked
+   against the whole registry before it was written. One of them had to
+   move: `ks3-cpair-` — the obvious stem for a pair of charged spheres — is
+   already C4's `change-pairs`, so this unit uses `ks3-chpair-`. That is the
+   MRB-279 collision exactly, caught by the assertion rather than in a
+   browser open on a chemistry page.
+
+   ⚠️ EVERY FIGURE WRAPPER IS `position: relative`. Every live value on all
+   three benches is an absolutely positioned HTML span over the SVG, because
+   a hole inside an SVG `<text>` renders nothing and fails silently — and
+   without a positioned ancestor those spans resolve against the page and
+   widen the document on a phone.
+
+   ⚠️ TOKENS, NOT LITERALS, FOR EVERY PIECE OF TEXT. Design draws her fixed
+   SVG captions at `#8C8177`, which is 3.08:1 on `--ks3-dark-panel` at 14px
+   — below AA for body-size text, and the exact case `shared/tokens.css`
+   warns about beside `--ks3-on-dark-muted`. Every one of them takes
+   `--ks3-on-dark-muted` here (6.09:1). Registered in `DEPARTURES-P9.md`.
+
+   ⚠️ THE ONE AMBER IN THE UNIT IS `p9-03`'s TEST POINT, AND IT STAYS.
+   `--ks3-data` is the token 5A.2 sends a selection mark to — and its value
+   is `#8FB7FF`, which is the colour of the ninety-one field arrows the test
+   point has to be distinguishable from. Design's own §9 records amber on
+   this marker as one of four declared uses in P8/P9, the tiles carry the
+   same reading in words, and the substitution would erase the distinction
+   rather than improve it. Kept, and logged as considered-not-changed.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── shared P9 bench shapes — the three dark instruments ─────────────── */
+
+.ks3-xfer-gate, .ks3-chpair-gate, .ks3-fgrid-gate {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+/* ⚠️ NO `.ks3-*-head` RULES, AND NO `-progress` RULE. This unit draws no head
+   row of its own: `r_activity`'s shell owns it, `.ks3-blockhead` and
+   `.ks3-blockhead-count` already style it, and it is already Design's layout
+   — eyebrow and heading left, readout right. See the long note where `_head`
+   is NOT, in `ks3_art/p9.py`, and the live P4/P5/P6 pages that render both. */
+.ks3-xfer-lead, .ks3-chpair-lead, .ks3-fgrid-lead {
+  margin: 0 0 18px; font-size: 19px; line-height: 1.65;
+  color: var(--ks3-on-dark-body); max-width: 58ch;
+}
+
+.ks3-xfer-controls, .ks3-chpair-controls, .ks3-fgrid-controls {
+  display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-start;
+}
+.ks3-xfer-picker, .ks3-chpair-picker, .ks3-fgrid-picker {
+  display: grid; gap: 9px; flex: 1 1 320px;
+}
+.ks3-xfer-row, .ks3-chpair-row, .ks3-fgrid-row {
+  display: grid; gap: 8px; flex: 1 1 280px; min-width: 240px;
+}
+.ks3-xfer-pickerlabel, .ks3-chpair-pickerlabel, .ks3-fgrid-pickerlabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-xfer-tabrow, .ks3-chpair-tabrow, .ks3-fgrid-tabrow {
+  display: flex; flex-wrap: wrap; gap: 9px;
+}
+.ks3-xfer-rowhead, .ks3-chpair-rowhead, .ks3-fgrid-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-xfer-reading, .ks3-chpair-reading, .ks3-fgrid-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 17px;
+  font-weight: 500; letter-spacing: 0; text-transform: none;
+  color: var(--ks3-blue-light); white-space: nowrap;
+}
+/* 44px of vertical target, which is the smallest a thumb should be asked
+   to find — the slider is one of only two or three controls on each bench. */
+.ks3-xfer-slider, .ks3-chpair-slider, .ks3-fgrid-slider {
+  width: 100%; min-height: 44px; accent-color: var(--ks3-accent);
+}
+
+.ks3-xfer-figwrap, .ks3-chpair-figwrap, .ks3-fgrid-figwrap {
+  position: relative; margin-top: 18px; padding: 18px;
+  border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);
+}
+.ks3-xfer-svg, .ks3-chpair-svg, .ks3-fgrid-svg {
+  display: block; width: 100%; height: auto;
+}
+.ks3-xfer-fill, .ks3-chpair-fill, .ks3-fgrid-fill {
+  position: absolute; font-family: var(--ks3-font-mono); font-weight: 500;
+  white-space: nowrap; pointer-events: none;
+}
+/* Every fixed caption inside the three drawings. `--ks3-on-dark-muted`
+   rather than Design's `#8C8177`: see the block header. */
+.ks3-xfer-caption, .ks3-chpair-caption, .ks3-fgrid-caption {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .07em; fill: var(--ks3-on-dark-muted);
+}
+
+.ks3-xfer-tiles, .ks3-chpair-tiles, .ks3-fgrid-tiles {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-xfer-tile, .ks3-chpair-tile, .ks3-fgrid-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-xfer-tile-label, .ks3-chpair-tile-label, .ks3-fgrid-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-xfer-tile-value, .ks3-chpair-tile-value, .ks3-fgrid-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+/* Design sets the four VERDICT tiles on `p9-02` and `p9-03` in the body
+   face at 700 rather than in mono, because they carry a WORD and not a
+   reading. Kept: the two shapes are how a student tells a verdict from a
+   measurement without reading either. */
+.ks3-chpair-tile-value, .ks3-fgrid-tile-value {
+  font-family: var(--ks3-font-body); font-size: 20px; font-weight: 700;
+}
+.ks3-chpair-tile-value[data-chpair-out="sep"] {
+  font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500;
+}
+.ks3-xfer-tile-sub, .ks3-chpair-tile-sub, .ks3-fgrid-tile-sub {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+
+.ks3-xfer-note, .ks3-chpair-note, .ks3-fgrid-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+
+/* ── p9-01 · the transfer pair ───────────────────────────────────────── */
+
+/* Design's block fill is a shade darker than the panel behind it, so the
+   two objects read as objects rather than as regions of the panel. */
+.ks3-xfer-block .ks3-xfer-block,
+.ks3-xfer rect.ks3-xfer-block {
+  fill: #2A241E; stroke: var(--ks3-on-dark-muted); stroke-width: 5;
+}
+.ks3-xfer-signs {
+  fill: none; stroke: var(--ks3-blue-light); stroke-width: 6;
+  stroke-linecap: round;
+}
+.ks3-xfer-arrow {
+  fill: none; stroke: var(--ks3-blue-light); stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ks3-xfer-dots { fill: var(--ks3-blue-light); stroke: none; }
+.ks3-xfer-aname, .ks3-xfer-bname {
+  color: var(--ks3-on-dark-body); font-size: clamp(9px, 1.3vw, 16px);
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.ks3-xfer-acharge, .ks3-xfer-bcharge {
+  color: var(--ks3-blue-light); font-size: clamp(10px, 1.6vw, 19px);
+}
+.ks3-xfer-transfer {
+  color: var(--ks3-on-dark-muted); font-size: clamp(9px, 1.3vw, 16px);
+}
+
+/* ── p9-02 · the charged pair ────────────────────────────────────────── */
+
+.ks3-chpair-bench {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 5;
+}
+.ks3-chpair-stand {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 6;
+  stroke-linecap: round;
+}
+/* A charged sphere is filled, a neutral one is hollow — and the sphere's
+   own label span names which, so the fill is never the only channel. */
+.ks3-chpair-sphere {
+  fill: var(--ks3-blue-light); stroke: var(--ks3-on-dark-muted);
+  stroke-width: 6;
+}
+.ks3-chpair-sphere[data-neutral="1"] { fill: #2A241E; }
+.ks3-chpair-sign {
+  fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;
+}
+.ks3-chpair-ind {
+  fill: none; stroke: var(--ks3-on-dark-body); stroke-width: 5;
+  stroke-linecap: round;
+}
+.ks3-chpair-arrow {
+  fill: none; stroke: var(--ks3-blue-light); stroke-width: 8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-chpair-dim {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 3;
+}
+.ks3-chpair-alabel, .ks3-chpair-blabel {
+  color: var(--ks3-on-dark-body); font-size: clamp(9px, 1.2vw, 15px);
+  letter-spacing: .07em;
+}
+.ks3-chpair-sep {
+  color: var(--ks3-on-dark-body); font-size: clamp(10px, 1.6vw, 19px);
+}
+.ks3-chpair-verdict {
+  color: var(--ks3-blue-light); font-size: clamp(10px, 1.6vw, 19px);
+}
+
+/* ── p9-03 · the field grid ──────────────────────────────────────────── */
+
+/* ⚠️ THE GRID IS THE INSTRUMENT'S PICTURE, SO IT CLEARS THE 3:1 BAR FOR A
+   MEANINGFUL GRAPHIC. Design draws it at `#6E655D`, which is 2.05:1 on the
+   panel; this is `#8C8177` — a colour already on her own drawing, and
+   3.08:1. Registered in `DEPARTURES-P9.md`. It stays a step below the test
+   point and the charges, which is the hierarchy she drew. */
+.ks3-fgrid-grid {
+  fill: none; stroke: #8C8177; stroke-width: 3; stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ks3-fgrid-axis {
+  fill: none; stroke: #4A423B; stroke-width: 2; stroke-dasharray: 8 10;
+}
+.ks3-fgrid-charges {
+  fill: var(--ks3-blue-light); stroke: var(--ks3-on-dark-body);
+  stroke-width: 5;
+}
+.ks3-fgrid-signs {
+  fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;
+}
+/* The one amber in the unit. See the block header for why it is not
+   `--ks3-data`. */
+.ks3-fgrid-test {
+  fill: none; stroke: #FFC53D; stroke-width: 8; stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ks3-fgrid-point {
+  fill: #FFC53D; stroke: var(--ks3-ink); stroke-width: 4;
+}
+.ks3-fgrid-reading {
+  color: #FFC53D; font-size: clamp(10px, 1.6vw, 19px);
+}
+.ks3-fgrid-caption { font-size: 14px; }
+
+/* ── the fixed figures · the ladder, the matrix, the three fields ─────── */
+
+/* Design's band sections sit on `--ks3-band` rather than the check shell's
+   card, and the ground is a measured property of her block. */
+.ks3-chband-block { background: var(--ks3-band); }
+/* The eyebrow and the `<h2>` are the SHELL's — this unit draws neither. */
+.ks3-chband-block > .ks3-eyebrow { color: var(--ks3-accent-text); }
+.ks3-chband-block > h2 { margin: 6px 0 0; }
+.ks3-chband-lead {
+  margin: 12px 0 0; max-width: 62ch; font-size: 19px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-chband-close {
+  margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+  font-size: 19px; line-height: 1.6; color: var(--ks3-ink-body);
+}
+
+/* p9-01's triboelectric ladder. The arrow between the two axis labels is
+   the figure's argument, so it is drawn and not written. */
+.ks3-chband-ladder {
+  margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap;
+  align-items: stretch;
+}
+.ks3-chband-axis {
+  flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
+  justify-content: space-between; padding: 10px 0;
+}
+.ks3-chband-axislabel {
+  font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ks3-ink-muted); writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+.ks3-chband-arrowsvg { flex: 0 0 auto; }
+.ks3-chband-arrow {
+  fill: none; stroke: var(--ks3-accent); stroke-width: 4;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-chband-rungs {
+  flex: 1 1 320px; list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 8px;
+}
+/* ⚠️ `flex-wrap` IS LOAD-BEARING AND IT IS NOT COSMETIC. Design's row is a
+   single non-wrapping flex — badge, name, tell — and her tell is
+   `flex: 0 0 auto`. Measured at 360 and 390: the tell keeps its intrinsic
+   width, the row runs to 464px, and the DOCUMENT scrolls sideways on a
+   phone. The tell drops to its own line instead. */
+.ks3-chband-rung {
+  display: flex; align-items: center; gap: 6px 14px; flex-wrap: wrap;
+  padding: 12px 18px;
+  border-radius: var(--ks3-r-panel); background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+/* The one material Design marks as middling takes the inset ground and the
+   softer border — a poor choice for a demonstration, said by the row's own
+   treatment as well as by its note. */
+.ks3-chband-rung.is-middle {
+  background: var(--ks3-inset); border-color: var(--ks3-option-border);
+}
+.ks3-chband-num {
+  flex: 0 0 44px; display: grid; place-items: center;
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px;
+  color: var(--ks3-ink);
+}
+/* Design's three badge tones. The split the list is about, before a word is
+   read — and every row still carries its number and its name. */
+.ks3-chband-rung.is-loses  .ks3-chband-num { background: var(--ks3-accent-tint); }
+.ks3-chband-rung.is-middle .ks3-chband-num { background: var(--ks3-band); }
+.ks3-chband-rung.is-gains  .ks3-chband-num { background: var(--ks3-blue-tint); }
+.ks3-chband-name {
+  flex: 1 1 auto; min-width: 0; font-size: 19px; font-weight: 700;
+}
+.ks3-chband-tell {
+  flex: 0 1 auto; min-width: 0; font-family: var(--ks3-font-mono);
+  font-size: 15px; color: var(--ks3-ink-muted);
+}
+
+/* p9-02's nine-case table. It scrolls inside its own box on a phone — the
+   page body never scrolls sideways. */
+.ks3-chband-tablewrap {
+  margin-top: 18px; overflow-x: auto; border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 4px;
+}
+.ks3-chband-table {
+  border-collapse: collapse; width: 100%; min-width: 620px; font-size: 18px;
+}
+.ks3-chband-table th[scope="col"] {
+  text-align: left; padding: 14px 16px;
+  border-bottom: 3px solid var(--ks3-ink);
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-chband-table th[scope="row"] {
+  text-align: left; padding: 14px 16px; font-weight: 700;
+  color: var(--ks3-ink);
+}
+.ks3-chband-table td { padding: 14px 16px; color: var(--ks3-ink-body); }
+.ks3-chband-table tbody tr:not(:last-child) th,
+.ks3-chband-table tbody tr:not(:last-child) td {
+  border-bottom: 2px solid var(--ks3-rule);
+}
+
+/* p9-03's three fields. One layout for all three cards, because the claim
+   is that the electric field is not a special case. */
+.ks3-chband-cards {
+  margin-top: 20px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-chband-card {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+}
+.ks3-chband-cardtitle {
+  margin: 0 0 14px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-chband-cardsvg { display: block; width: 100%; height: auto; }
+.ks3-chband-cardbody {
+  margin: 14px 0 0; font-size: 18px; line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-chband-body {
+  fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;
+}
+.ks3-chband-charge {
+  fill: none; stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;
+}
+/* ⚠️ THE GAP IS DASHED AND IT IS NEVER FILLED. `CHRG-10` is *the air in the
+   gap must be carrying the force*, and a card that drew something in the
+   gap would be committing it. */
+.ks3-chband-gap {
+  fill: none; stroke: var(--ks3-rule-strong); stroke-width: 3;
+  stroke-dasharray: 8 9;
+}
+.ks3-chband-cardarrow {
+  fill: none; stroke: var(--ks3-accent); stroke-width: 4;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ── p9-01 · `#s-think` ──────────────────────────────────────────────────
+
+   ⚠️ `.ks3-chthink` DELIBERATELY CARRIES NO RULE, and this comment is here so
+   the next reader does not add one. It is a SHELL, not a treatment: the
+   class exists so that the section carrying it declares
+   `data-stage-done="0"` in the shipped bytes, because `p9-01` is the only
+   lesson in the key stage whose rail includes the confrontation. The block
+   is styled by `.ks3-misconception`, exactly as the other fifty-six are,
+   and a rule here would make one page's wrong-idea block look different
+   from every other one for a reason that is about the rail. */
+/* ═══ END P9 ═══ */
+

@@ -224,3 +224,6 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `resistance` | `p8-05-resistance` | s-hook s-bench s-triangle s-ladder | — |
 | `conductors-and-insulators` | `p8-06-conductors-and-insulators` | s-hook s-test s-scale s-ladder | — |
 | `building-and-measuring-a-circuit` | `p8-07-building-and-measuring-a-circuit` | s-hook s-wire s-fault s-ladder | — |
+| `charging-by-rubbing` | `p9-01-charging-by-rubbing` | s-hook s-rub s-think s-ladder | — |
+| `forces-between-charges` | `p9-02-forces-between-charges` | s-hook s-spheres s-matrix s-ladder | — |
+| `electric-fields` | `p9-03-electric-fields` | s-hook s-field s-reach s-ladder | — |

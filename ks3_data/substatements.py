@@ -830,6 +830,33 @@ SUBSTATEMENTS = {
         ("b", "Resistance, measured in ohms, as the ratio of potential "
               "difference (p.d.) to current.", "P8"),
     ],
+    # ── P9 · Static electricity ─────────────────────────────────────────
+    #
+    # P9 owns two statements over three slots (ratio 0.67) — the surplus case
+    # again, and Design's own §2 table splits the compound one at the clause.
+    # `STAT.02` is whole and takes no sub-ID: *the idea of* an electric field
+    # is one lesson's worth and `p9-03` owns all of it.
+    #
+    # ⚑ Her `NOTES-P8-P9.md` FLAG 1 asks for this notation for the third time
+    # in the physics run ("the register needs `.a` / `.b` sub-IDs, or lesson
+    # records need `covers_partial`"). It already existed, and she could not
+    # see it: her access is read-only and this file is not in the reference
+    # set she was given. Same answer as P4's and P6's — mint lazily, per unit,
+    # at authoring time.
+    #
+    # The bullet reads:
+    #   "separation of positive or negative charges when objects are rubbed
+    #    together: transfer of electrons, forces between charged objects"
+    # Two clauses and two lessons: `p9-01` owns HOW an object becomes charged,
+    # `p9-02` owns what two charged objects then do to each other. Splitting
+    # them is not a convenience — a page that taught both would have to teach
+    # induction as an aside, and induction is the whole second half of
+    # `p9-02`.
+    "KS3.P.STAT.01": [
+        ("a", "Separation of positive or negative charges when objects are "
+              "rubbed together: transfer of electrons.", "P9"),
+        ("b", "Forces between charged objects.", "P9"),
+    ],
 }
 
 
