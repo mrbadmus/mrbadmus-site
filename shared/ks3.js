@@ -15377,6 +15377,1158 @@
   }
   /* ═══ END P9 wiring ═══ */
 
+/* ═══ BEGIN P10 wiring ══════════════════════════════════════════════════
+     P10 — *Magnetism and electromagnetism*. Five benches, ported from Claude
+     Design's delivered pages CONSTANT BY CONSTANT rather than compared as
+     markup.
+
+     ⚖️ EVERY LIVE VALUE IS AN HTML SPAN OVER A `position: relative` WRAPPER,
+     never an SVG `<text>`. Design's own note for the generator says so in
+     terms, and the failure is silent — a `{{ hole }}` inside a `<text>`
+     renders nothing at all. Her overlays here CENTRE on their percentage
+     (`translate(-50%, -50%)`), which is why `p10Tag` exists beside P9's
+     `p9Tag`: P9's hangs DOWN from its percentage, and reusing it would move
+     every label in this unit by half its own height.
+
+     ⚖️ COLOUR COMES FROM THE SPAN'S CLASS, NOT FROM THE STYLE STRING. A hex
+     in a JS string is a text colour no stylesheet gate can see, and the token
+     law binds text colours. Every P10 overlay carries its own class and the
+     token lives in `shared/ks3.css`.
+
+     ⚖️ THE READOUT WORDS ARE AUTHORED, NOT TYPED HERE. `no reading here`,
+     `the compass is on the metal`, `not a pole — there is no field` are
+     sentences a student reads, so they arrive through `data-<hook>-word` and
+     `data-<hook>-branch` from the lesson record. What IS in this file is
+     arithmetic and geometry.
+
+     ⚖️ ONE NUMBER FORMAT FOR EVERY RELATIVE FIGURE IN THE UNIT, and it is
+     `p10-01`'s own: one decimal at or above 1, TWO below it, and a bare `0`
+     for an exact zero. Design's other three benches use one decimal
+     everywhere, which prints `0.0` for nine real fields on `p10-04` — on a
+     page whose own tile says *zero, not merely small*. See `p10Rel`.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Design's `lab()`. Centred on the percentage in BOTH axes. */
+  function p10Tag(fx, fy) {
+    return "position:absolute;left:" + (fx * 100).toFixed(2) +
+      "%;top:" + (fy * 100).toFixed(2) + "%;transform:translate(-50%,-50%);";
+  }
+
+  function p10Word(wrap, hook, key) {
+    var el = wrap.querySelector('[data-' + hook + '-word="' + key + '"]');
+    return el ? (el.getAttribute("data-text") || "") : "";
+  }
+
+  function p10Branch(wrap, hook, key) {
+    return wrap.querySelector('[data-' + hook + '-branch="' + key + '"]');
+  }
+
+  function p10Attr(el, name) {
+    return el ? (el.getAttribute(name) || "") : "";
+  }
+
+  function p10Nums(wrap, name) {
+    return (wrap.getAttribute(name) || "").split(/\s+/)
+      .filter(function (s) { return s; })
+      .map(function (s) { return parseFloat(s); });
+  }
+
+  /* ⚖️ THE ONE PLACE A RELATIVE FIGURE IS FORMATTED.
+
+     An exact zero prints `0` — never `0.00`, because on these pages zero is a
+     claim and a string of decimals reads as a rounded measurement. Anything
+     below 1 takes TWO decimals, so a field that is small does not print as a
+     field that is absent: `p10-04`'s weakest on-state is 0.0125, which
+     Design's `toFixed(1)` renders `0.0` beside a tile insisting that zero
+     means zero. `p10-01` already used two decimals for its own lowest band;
+     this is that convention applied to all four relative scales. */
+  function p10Rel(v) {
+    if (!(v > 0)) { return "0"; }
+    var s = v >= 1 ? v.toFixed(1) : v.toFixed(2);
+    /* ⚠️ ROUND FIRST, THEN DECIDE. `100 × cos(90°)` is 6e-15 rather than 0,
+       so a bare `> 0` guard lets it through and the tile prints `0.00` on the
+       one page whose argument is that there is no sideways pull left at all.
+       If the printed figure IS zero, print zero. */
+    return parseFloat(s) === 0 ? "0" : s;
+  }
+
+  /* ⚠️ A POLE LETTER'S TONE IS A FACT ABOUT WHAT IT IS STANDING ON, and it
+     has to be an attribute rather than a colour in the style string, because
+     the token law binds text colours and a hex inside a JS string is a text
+     colour no stylesheet gate can see.
+
+     A north pole face is filled with `--ks3-data`, and ink reads on it at
+     8.2:1; the other half of the same magnet is the near-black body, where
+     ink is 1.1:1 and the letter is simply gone. Design fixes p10-02's four
+     letters at two colours that are right for her four layouts and wrong the
+     moment a bar is turned round, and fixes BOTH of p10-05's at ink — where
+     only one of the two is ever on the filled face. The letter that names a
+     pole is not a letter to lose. */
+  function p10Tone(wrap, hook, key, onNorth) {
+    var el = wrap.querySelector('[data-' + hook + '-fill="' + key + '"]');
+    if (el) { el.setAttribute("data-on-north", onNorth ? "1" : "0"); }
+  }
+
+  /* A readout tile's SUB-line. `setOut` owns the value; this owns the line
+     under it, and both set EVERY matching element for the reason `setOut`'s
+     own note gives — a bench that names a slider and a tile with one id had
+     four tiles ship permanently dead. */
+  function p10Sub(wrap, hook, id, text) {
+    var els = wrap.querySelectorAll('[data-' + hook + '-sub="' + id + '"]');
+    for (var i = 0; i < els.length; i += 1) { els[i].textContent = text; }
+  }
+
+  /* The commit gate every P10 bench opens behind. One shape, five benches:
+     Design locks all five, and on all five her own `isDone()` gives the
+     SECTION BESIDE the bench `s.gate !== null` — so the gate is not a nicety,
+     it is what ticks two of the four rail stops. */
+  function p10Gate(wrap, hook, onCommit) {
+    var gate = wrap.querySelector("[data-" + hook + "-gate]");
+    var body = wrap.querySelector("[data-" + hook + "-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-" + hook + "-gopt]"));
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(body, false);
+        onCommit();
+      });
+    });
+  }
+
+  /* A ladder of thresholds, read highest first. A comparative label over
+     per-state values is COMPUTED, never authored beside them (5A.1) — which
+     is what makes it true in the equal state and the zero state by
+     construction rather than by somebody remembering. */
+  function p10Bands(wrap, hook, kind) {
+    return toArray(wrap.querySelectorAll("[data-" + hook + "-" + kind +
+                                         "band]"))
+      .map(function (b) {
+        return { at: parseFloat(b.getAttribute("data-" + hook + "-" + kind +
+                                               "band")),
+                 word: b.getAttribute("data-word") || "" };
+      })
+      .sort(function (x, y) { return y.at - x.at; });
+  }
+
+  function p10BandWord(bands, value) {
+    for (var i = 0; i < bands.length; i += 1) {
+      if (value >= bands[i].at) { return bands[i].word; }
+    }
+    return bands.length ? bands[bands.length - 1].word : "";
+  }
+
+  /* Wire a row of segmented buttons: press one, remember which. */
+  function p10Row(wrap, sel, onPick) {
+    var btns = toArray(wrap.querySelectorAll(sel));
+    each(btns, function (b, i) {
+      b.addEventListener("click", function () { onPick(i); });
+    });
+    return btns;
+  }
+
+  function p10Press(btns, at) {
+    each(btns, function (b, i) {
+      b.setAttribute("aria-pressed", i === at ? "true" : "false");
+    });
+  }
+
+  /* p10-01 `#s-bench` — two objects on a low-friction track.
+
+     ⚖️ 102 OF THE 150 STATES DO NOTHING, AND THAT IS THE LESSON. `MAG-01` is
+     *all metals are magnetic*, and the only thing that breaks it is putting a
+     magnet next to aluminium and watching the arrows stay away. Design gives
+     the state three different sentences — neither object magnetic, both
+     steel, or one of the two inert — and all three are authored.
+
+     ⚖️ THE DRAWN GAP IS PROPORTIONAL TO THE GAP IN CENTIMETRES. `data-gappx`
+     units per cm, so 2 cm is 52 and 12 cm is 312. The force arrow is NOT
+     proportional and is clamped at both ends; the legal line says so, because
+     an arrow drawn to a fourth-power scale would leave the viewBox at one end
+     and vanish at the other.
+
+     ⚖️ THE PULL ON PLAIN STEEL PRINTS NO FIGURE AT ALL. Her §8: how strongly
+     a piece of steel magnetises depends on its shape, its carbon content and
+     its history, so a coefficient here would be a guess. The tile reads
+     `reported in words, not on the scale` for all twenty-four of those
+     states. */
+  function wireTrackPair(sec) {
+    var wrap = sec.querySelector("[data-tpair]");
+    if (!wrap) { return; }
+    var objs = toArray(wrap.querySelectorAll("[data-tpair-obj]"));
+    var aTabs = objs.filter(function (o) {
+      return o.getAttribute("data-side") === "a";
+    });
+    var bTabs = objs.filter(function (o) {
+      return o.getAttribute("data-side") === "b";
+    });
+    if (!aTabs.length || !bTabs.length) { return; }
+    var gapEl = wrap.querySelector('[data-tpair-slider="d"]');
+    var svg = wrap.querySelector("[data-tpair-alt]");
+    var noteEl = wrap.querySelector("[data-tpair-note]");
+    var bands = p10Bands(wrap, "tpair", "s");
+    var K = parseFloat(wrap.getAttribute("data-k"));
+    var REF = parseFloat(wrap.getAttribute("data-refgap"));
+    var GPX = parseFloat(wrap.getAttribute("data-gappx"));
+    var GAPS = p10Nums(wrap, "data-gaps");
+    var ai = parseInt(wrap.getAttribute("data-start-a"), 10) || 0;
+    var bi = parseInt(wrap.getAttribute("data-start-b"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function paint() {
+      var A = aTabs[ai], B = bTabs[bi];
+      var gi = gapEl ? parseInt(gapEl.value, 10) : 0;
+      var d = GAPS[gi];
+      var ka = p10Attr(A, "data-kind"), kb = p10Attr(B, "data-kind");
+      var bothMag = ka === "mag" && kb === "mag";
+      var magFerro = (ka === "mag" && kb === "ferro") ||
+                     (ka === "ferro" && kb === "mag");
+      var acting = bothMag || magFerro;
+      var repel = bothMag &&
+                  p10Attr(A, "data-near") === p10Attr(B, "data-near");
+      var attract = (bothMag && !repel) || magFerro;
+      /* ⚖️ HER MODEL. Two bar magnets end to end fall as the FOURTH power of
+         the gap, which is about right for this arrangement and is
+         deliberately NOT the inverse square that applies to charges — the
+         legal line says both halves. */
+      var strength = bothMag ? K * Math.pow(REF / d, 4) : 0;
+
+      var gapPx = d * GPX;
+      var xA = Math.round(500 - gapPx / 2);
+      var xB = Math.round(500 + gapPx / 2);
+      var L = bothMag ? Math.max(28, Math.min(150, 30 + Math.sqrt(strength) *
+                                              13)) : 46;
+      var key, br, sWord, sSub, arrowPath, bodyA, bodyB, inert;
+
+      each(objs, function (b) {
+        var at = parseInt(b.getAttribute("data-rank"), 10);
+        var mine = b.getAttribute("data-side") === "a" ? ai : bi;
+        b.setAttribute("aria-pressed", at === mine ? "true" : "false");
+      });
+
+      setPath(wrap, "[data-tpair-abody]",
+              "M" + (xA - 200) + " 180 H" + xA + " V260 H" + (xA - 200) + " Z");
+      setPath(wrap, "[data-tpair-bbody]",
+              "M" + xB + " 180 H" + (xB + 200) + " V260 H" + xB + " Z");
+      /* ⚠️ A NON-MAGNETIC OBJECT IS DRAWN DASHED, so identity is never hue
+         alone — and its own name is printed under it either way. */
+      bodyA = wrap.querySelector("[data-tpair-abody]");
+      bodyB = wrap.querySelector("[data-tpair-bbody]");
+      if (bodyA) { bodyA.setAttribute("data-kind", ka); }
+      if (bodyB) { bodyB.setAttribute("data-kind", kb); }
+
+      setPath(wrap, "[data-tpair-apole]", ka === "mag"
+        ? "M" + (xA - 60) + " 183 H" + (xA - 3) + " V257 H" + (xA - 60) + " Z"
+        : null);
+      setPath(wrap, "[data-tpair-bpole]", kb === "mag"
+        ? "M" + (xB + 3) + " 183 H" + (xB + 60) + " V257 H" + (xB + 3) + " Z"
+        : null);
+
+      arrowPath = null;
+      if (acting && attract) {
+        arrowPath =
+          "M" + (xA - 110 - L) + " 140 H" + (xA - 110) +
+          " M" + (xA - 110) + " 140 L" + (xA - 126) + " 128" +
+          " M" + (xA - 110) + " 140 L" + (xA - 126) + " 152" +
+          " M" + (xB + 110 + L) + " 140 H" + (xB + 110) +
+          " M" + (xB + 110) + " 140 L" + (xB + 126) + " 128" +
+          " M" + (xB + 110) + " 140 L" + (xB + 126) + " 152";
+      } else if (acting) {
+        arrowPath =
+          "M" + (xA - 110) + " 140 H" + (xA - 110 - L) +
+          " M" + (xA - 110 - L) + " 140 L" + (xA - 94 - L) + " 128" +
+          " M" + (xA - 110 - L) + " 140 L" + (xA - 94 - L) + " 152" +
+          " M" + (xB + 110) + " 140 H" + (xB + 110 + L) +
+          " M" + (xB + 110 + L) + " 140 L" + (xB + 94 + L) + " 128" +
+          " M" + (xB + 110 + L) + " 140 L" + (xB + 94 + L) + " 152";
+      }
+      setPath(wrap, "[data-tpair-arrow]", arrowPath);
+      setPath(wrap, "[data-tpair-dim]",
+              "M" + xA + " 274 V300 M" + xB + " 274 V300 M" + xA + " 287 H" +
+              xB);
+
+      if (!acting) {
+        key = (ka === "non" && kb === "non") ? "nothing_neither"
+          : (ka === "ferro" && kb === "ferro") ? "nothing_steel"
+            : "nothing_inert";
+      } else {
+        key = repel ? "repel" : bothMag ? "attract" : "induced";
+      }
+      br = p10Branch(wrap, "tpair", key);
+
+      if (!acting) {
+        sWord = p10Word(wrap, "tpair", "nothing_word");
+        sSub = p10Word(wrap, "tpair", "nothing_sub");
+      } else if (magFerro) {
+        sWord = p10Word(wrap, "tpair", "steel_word");
+        sSub = p10Word(wrap, "tpair", "steel_sub");
+      } else {
+        sWord = p10BandWord(bands, strength);
+        sSub = fillTokens(p10Word(wrap, "tpair", "scale_sub"),
+                          { strength: p10Rel(strength) });
+      }
+
+      inert = ka === "non" ? p10Attr(A, "data-word") : p10Attr(B, "data-word");
+      var vals = {
+        d: d,
+        strength: p10Rel(strength),
+        anear: p10Attr(A, "data-near"),
+        bnear: p10Attr(B, "data-near"),
+        anearword: p10Word(wrap, "tpair",
+                           p10Attr(A, "data-near") === "N" ? "north" : "south"),
+        bnearword: p10Word(wrap, "tpair",
+                           p10Attr(B, "data-near") === "N" ? "north" : "south"),
+        near: p10Word(wrap, "tpair",
+                      p10Attr(A, "data-near") === "N" ? "north" : "south"),
+        magside: p10Word(wrap, "tpair", ka === "mag" ? "left" : "right"),
+        steelside: p10Word(wrap, "tpair", ka === "mag" ? "right" : "left"),
+        magpole: p10Word(wrap, "tpair",
+                         p10Attr(ka === "mag" ? A : B, "data-near") === "N"
+                           ? "north" : "south"),
+        inert: inert
+      };
+
+      fillSpan(wrap, "tpair", "aname", p10Attr(A, "data-short"),
+               p10Tag((xA - 100) / 1000, 0.82));
+      fillSpan(wrap, "tpair", "bname", p10Attr(B, "data-short"),
+               p10Tag((xB + 100) / 1000, 0.82));
+      fillSpan(wrap, "tpair", "anear", p10Attr(A, "data-near"),
+               p10Tag((xA - 31) / 1000, 0.55));
+      fillSpan(wrap, "tpair", "afar", p10Attr(A, "data-far"),
+               p10Tag((xA - 165) / 1000, 0.55));
+      fillSpan(wrap, "tpair", "bnear", p10Attr(B, "data-near"),
+               p10Tag((xB + 31) / 1000, 0.55));
+      fillSpan(wrap, "tpair", "bfar", p10Attr(B, "data-far"),
+               p10Tag((xB + 165) / 1000, 0.55));
+      fillSpan(wrap, "tpair", "gap", d + " cm", p10Tag(0.5, 0.65));
+
+      setOut(wrap, "tpair", "d", d + " cm");
+      setOut(wrap, "tpair", "gap", d + " cm");
+      setOut(wrap, "tpair", "verdict", p10Attr(br, "data-verdict"));
+      p10Sub(wrap, "tpair", "verdict",
+             fillTokens(p10Attr(br, "data-sub"), vals));
+      setOut(wrap, "tpair", "strength", sWord);
+      p10Sub(wrap, "tpair", "strength", sSub);
+      setOut(wrap, "tpair", "proof", p10Attr(br, "data-proof"));
+
+      if (noteEl && br) {
+        noteEl.textContent = fillTokens(p10Attr(br, "data-note"), vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "Two objects " + d + " cm apart on a track. On the left, " +
+          p10Attr(A, "data-word") + ". On the right, " +
+          p10Attr(B, "data-word") + ". " +
+          (!acting ? "No force arrows are drawn."
+            : "Arrows show them " + (attract ? "pulled together."
+                                             : "pushed apart.")));
+      }
+
+      /* The head-row readout is the SHELL's element, driven by the engine's
+         own `setCountState`. This unit draws no head row of its own — see the
+         note where `_head` is NOT, in `ks3_art/p10.py`. */
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+      /* ⚠️ Design's `DONE` ticks `#s-proof` on the GATE alone, before this
+         bench is finished, so it is marked at 1 rather than tied to this
+         section with `mirrors`, which would tick it late. */
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    p10Gate(wrap, "tpair", function () { committed = true; paint(); });
+    each(objs, function (b) {
+      b.addEventListener("click", function () {
+        var at = parseInt(b.getAttribute("data-rank"), 10);
+        if (b.getAttribute("data-side") === "a") { ai = at; } else { bi = at; }
+        touched += 1;
+        paint();
+      });
+    });
+    if (gapEl) {
+      ["input", "change"].forEach(function (ev) {
+        gapEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+    paint();
+  }
+
+  /* p10-02 `#s-bench` — a plotting compass on a field map.
+
+     ⚖️ THE WHOLE FIELD IS ONE PATH STRING. Thirteen columns by seven rows,
+     each with a shaft and two head strokes, built here and set as one `d`.
+     Design's own note for the generator: no repeated marks inside an `<svg>`,
+     because a single attribute hole is the shape that is safe.
+
+     ⚖️ A NEUTRAL POINT IS A CANCELLATION, NOT A SMALL NUMBER. Design tests
+     the reading against a threshold; measured over her own hundred states
+     that fires seventeen times and is a neutral point once. The test here
+     compares the VECTOR sum of the poles' contributions with the sum of their
+     SIZES: 0.000 at the true null, 0.298 at the next nearest state.
+
+     ⚖️ TWO MAXIMA, FOR TWO DIFFERENT JOBS. The lattice maximum scales the
+     ARROWS, because that is the drawing and it is clamped either way. The
+     READING is against the strongest of the twenty-five spots a compass can
+     actually be put on — which is what the readout says it is, and which
+     Design's lattice maximum was not: on her scale the highest reading a
+     student could ever reach was 18. */
+  function wireCompassPlot(sec) {
+    var wrap = sec.querySelector("[data-cplot]");
+    if (!wrap) { return; }
+    var setups = toArray(wrap.querySelectorAll("[data-cplot-setup]"));
+    var spots = toArray(wrap.querySelectorAll("[data-cplot-spot]"));
+    if (!setups.length || !spots.length) { return; }
+    var svg = wrap.querySelector("[data-cplot-alt]");
+    var noteEl = wrap.querySelector("[data-cplot-note]");
+    var sBands = p10Bands(wrap, "cplot", "s");
+    var cBands = p10Bands(wrap, "cplot", "c");
+    var XS = p10Nums(wrap, "data-spot-x");
+    var YS = p10Nums(wrap, "data-spot-y");
+    var NULLR = parseFloat(wrap.getAttribute("data-nullratio"));
+    var POINTS = p10Word(wrap, "cplot", "compass_points")
+      .split("·").map(function (s) { return s.trim(); });
+    var si = parseInt(wrap.getAttribute("data-start-setup"), 10) || 0;
+    var sx = parseInt(wrap.getAttribute("data-start-x"), 10) || 0;
+    var sy = parseInt(wrap.getAttribute("data-start-y"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function poles(el) {
+      return (el.getAttribute("data-poles") || "").split(/\s+/)
+        .filter(function (s) { return s; })
+        .map(function (s) {
+          var b = s.split(":");
+          return { x: parseFloat(b[0]), y: parseFloat(b[1]),
+                   q: parseFloat(b[2]) };
+        });
+    }
+
+    function bars(el) {
+      return (el.getAttribute("data-bars") || "").split(/\s+/)
+        .filter(function (s) { return s; })
+        .map(function (s) {
+          var b = s.split(":");
+          return { x1: parseFloat(b[0]), x2: parseFloat(b[1]),
+                   y: parseFloat(b[2]), left: b[3] };
+        });
+    }
+
+    /* Her `fieldAt`, plus the SCALAR sum the cancellation test needs. Returns
+       null inside a pole — the honest answer, and what the "no reading here"
+       state is built on. */
+    function fieldAt(ps, x, y) {
+      var fx = 0, fy = 0, scalar = 0, i, p, dx, dy, r2, r, k;
+      for (i = 0; i < ps.length; i += 1) {
+        p = ps[i];
+        dx = x - p.x; dy = y - p.y;
+        r2 = dx * dx + dy * dy;
+        if (r2 < 100) { return null; }
+        r = Math.sqrt(r2);
+        k = p.q / r2;
+        fx += k * dx / r; fy += k * dy / r;
+        scalar += Math.abs(k);
+      }
+      return { fx: fx, fy: fy, mag: Math.sqrt(fx * fx + fy * fy),
+               scalar: scalar };
+    }
+
+    function paint() {
+      var S = setups[si];
+      var ps = poles(S);
+      var bs = bars(S);
+      var cx = XS[sx], cy = YS[sy];
+      var grid = "", magPath = "", northPath = "";
+      var latticeMax = 0, reachMax = 0;
+      var samples = [], ix, iy, x, y, f, i, b, mid, h;
+
+      each(setups, function (el, k) {
+        el.setAttribute("aria-pressed", k === si ? "true" : "false");
+      });
+      each(spots, function (el) {
+        var at = (el.getAttribute("data-cplot-spot") || "").split(":");
+        el.setAttribute("aria-pressed",
+          (parseInt(at[0], 10) === sx && parseInt(at[1], 10) === sy)
+            ? "true" : "false");
+      });
+
+      for (ix = 0; ix < 13; ix += 1) {
+        for (iy = 0; iy < 7; iy += 1) {
+          x = 60 + ix * 73.3; y = 40 + iy * 53.3;
+          f = fieldAt(ps, x, y);
+          if (!f) { continue; }
+          samples.push({ x: x, y: y, f: f });
+          if (f.mag > latticeMax) { latticeMax = f.mag; }
+        }
+      }
+      for (ix = 0; ix < XS.length; ix += 1) {
+        for (iy = 0; iy < YS.length; iy += 1) {
+          f = fieldAt(ps, XS[ix], YS[iy]);
+          if (f && f.mag > reachMax) { reachMax = f.mag; }
+        }
+      }
+
+      samples.forEach(function (sm) {
+        var g = sm.f, ux, uy, len, x1, y1, x2, y2, hx, hy;
+        if (!(g.mag > 0) || !(latticeMax > 0)) { return; }
+        ux = g.fx / g.mag; uy = g.fy / g.mag;
+        /* ⚖️ THE ARROW LENGTH RUNS WITH THE SQUARE ROOT OF THE FIELD, between
+           a shortest and a longest. Design's own scaling, and the legal line
+           declares the clamp: without it the near field would leave the
+           viewBox and the far field would vanish. */
+        len = 10 + 16 * Math.min(1, Math.sqrt(g.mag / latticeMax));
+        x1 = sm.x - ux * len; y1 = sm.y - uy * len;
+        x2 = sm.x + ux * len; y2 = sm.y + uy * len;
+        hx = x2 - ux * 8; hy = y2 - uy * 8;
+        grid += "M" + x1.toFixed(1) + " " + y1.toFixed(1) +
+          " L" + x2.toFixed(1) + " " + y2.toFixed(1) +
+          " M" + x2.toFixed(1) + " " + y2.toFixed(1) +
+          " L" + (hx - uy * 5).toFixed(1) + " " + (hy + ux * 5).toFixed(1) +
+          " M" + x2.toFixed(1) + " " + y2.toFixed(1) +
+          " L" + (hx + uy * 5).toFixed(1) + " " + (hy - ux * 5).toFixed(1) +
+          " ";
+      });
+
+      for (i = 0; i < bs.length; i += 1) {
+        b = bs[i]; h = 34; mid = (b.x1 + b.x2) / 2;
+        magPath += "M" + b.x1 + " " + (b.y - h) + " H" + b.x2 + " V" +
+          (b.y + h) + " H" + b.x1 + " Z ";
+        northPath += b.left === "N"
+          ? "M" + (b.x1 + 3) + " " + (b.y - h + 3) + " H" + mid + " V" +
+            (b.y + h - 3) + " H" + (b.x1 + 3) + " Z "
+          : "M" + mid + " " + (b.y - h + 3) + " H" + (b.x2 - 3) + " V" +
+            (b.y + h - 3) + " H" + mid + " Z ";
+      }
+
+      var here = fieldAt(ps, cx, cy);
+      var onMagnet = !here;
+      /* ⚖️ CANCELLING, NOT SMALL. See the block header. */
+      var ratio = here && here.scalar > 0 ? here.mag / here.scalar : 1;
+      var neutral = !onMagnet && ratio < NULLR;
+      var rel = (!onMagnet && reachMax > 0) ? 100 * here.mag / reachMax : 0;
+      var bearing = 0, compass = "", needle = null, ux, uy;
+      if (!onMagnet && here.mag > 0) {
+        bearing = (Math.atan2(here.fx, -here.fy) * 180 / Math.PI + 360) % 360;
+        compass = POINTS[Math.round(bearing / 45) % 8] || "";
+      }
+      /* ⚠️ NO NEEDLE ON THE METAL AND NONE AT THE NULL. A needle drawn at a
+         neutral point would be a direction the model does not have, and the
+         tiles say why in words in both cases. */
+      if (!onMagnet && !neutral && here.mag > 0) {
+        ux = here.fx / here.mag; uy = here.fy / here.mag;
+        needle = "M" + (cx - ux * 24).toFixed(1) + " " +
+          (cy - uy * 24).toFixed(1) +
+          " L" + (cx + ux * 24).toFixed(1) + " " + (cy + uy * 24).toFixed(1) +
+          " M" + (cx + ux * 24).toFixed(1) + " " + (cy + uy * 24).toFixed(1) +
+          " L" + (cx + ux * 12 - uy * 8).toFixed(1) + " " +
+          (cy + uy * 12 + ux * 8).toFixed(1) +
+          " M" + (cx + ux * 24).toFixed(1) + " " + (cy + uy * 24).toFixed(1) +
+          " L" + (cx + ux * 12 + uy * 8).toFixed(1) + " " +
+          (cy + uy * 12 - ux * 8).toFixed(1);
+      }
+
+      setPath(wrap, "[data-cplot-grid]", grid.replace(/\s+$/, "") || null);
+      setPath(wrap, "[data-cplot-mag]", magPath.replace(/\s+$/, "") || null);
+      setPath(wrap, "[data-cplot-north]",
+              northPath.replace(/\s+$/, "") || null);
+      setPath(wrap, "[data-cplot-needle]", needle);
+      var dial = wrap.querySelector("[data-cplot-dial]");
+      if (dial) { dial.setAttribute("cx", cx); dial.setAttribute("cy", cy); }
+
+      for (i = 0; i < 4; i += 1) {
+        b = bs[i >> 1];
+        if (!b) { fillSpan(wrap, "cplot", "p" + i, "", ""); continue; }
+        var isLeft = (i % 2) === 0;
+        var letter = isLeft ? b.left : (b.left === "N" ? "S" : "N");
+        fillSpan(wrap, "cplot", "p" + i, letter,
+                 p10Tag((isLeft ? b.x1 + 30 : b.x2 - 30) / 1000, b.y / 400));
+        /* The filled half IS the north half, so the letter that reads `N` is
+           the one standing on `--ks3-data`. */
+        p10Tone(wrap, "cplot", "p" + i, letter === "N");
+      }
+
+      var key = onMagnet ? "on_magnet" : neutral ? "neutral" : "reading";
+      var br = p10Branch(wrap, "cplot", key);
+      var vals = {
+        bearing: bearing.toFixed(0) + "°",
+        compass: compass,
+        rel: p10Rel(rel),
+        setup: p10Attr(S, "data-note")
+      };
+
+      setOut(wrap, "cplot", "bearing",
+             onMagnet ? p10Word(wrap, "cplot", "no_reading")
+               : neutral ? p10Word(wrap, "cplot", "no_direction")
+                 : bearing.toFixed(0) + "°");
+      p10Sub(wrap, "cplot", "bearing",
+             onMagnet ? p10Word(wrap, "cplot", "on_metal")
+               : neutral ? p10Word(wrap, "cplot", "is_zero")
+                 : fillTokens(p10Word(wrap, "cplot", "on_page"), vals));
+      setOut(wrap, "cplot", "strength",
+             (onMagnet || neutral) ? p10Attr(br, "data-verdict")
+                                   : p10BandWord(sBands, rel));
+      p10Sub(wrap, "cplot", "strength",
+             (onMagnet || neutral) ? p10Attr(br, "data-sub")
+               : fillTokens(p10Word(wrap, "cplot", "scale"), vals));
+      setOut(wrap, "cplot", "crowd",
+             (onMagnet || neutral) ? p10Attr(br, "data-crowd")
+                                   : p10BandWord(cBands, rel));
+
+      if (noteEl && br) {
+        noteEl.textContent = fillTokens(p10Attr(br, "data-note"), vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A field map of " + p10Attr(S, "data-word") + ", drawn as a lattice "
+          + "of arrows, with a plotting compass placed on it. " +
+          (onMagnet
+            ? "The compass is on the magnet and its needle is not drawn."
+            : neutral
+              ? "The compass sits at a point where the fields cancel and its "
+                + "needle is not drawn."
+              : "The needle points on a bearing of " + bearing.toFixed(0) +
+                " degrees."));
+      }
+
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    p10Gate(wrap, "cplot", function () { committed = true; paint(); });
+    each(setups, function (el, k) {
+      el.addEventListener("click", function () {
+        si = k; touched += 1; paint();
+      });
+    });
+    each(spots, function (el) {
+      el.addEventListener("click", function () {
+        var at = (el.getAttribute("data-cplot-spot") || "").split(":");
+        sx = parseInt(at[0], 10); sy = parseInt(at[1], 10);
+        touched += 1; paint();
+      });
+    });
+    paint();
+  }
+
+  /* p10-03 `#s-bench` — a compass free to tip, taken to another latitude.
+
+     ⚖️ A CENTRED DIPOLE ALIGNED WITH THE SPIN AXIS. `tan(dip) = 2 tan(lat)`
+     and the sideways part goes as `cos(lat)`. Her §9 ruling 3, and the legal
+     line names the eleven-degree tilt this leaves out.
+
+     ⚖️ THE DRAWN TILT IS THE DIP ANGLE ITSELF, not a proxy for it: the needle
+     is rotated by the number the tile prints and the arc beside it subtends
+     the same angle.
+
+     ⚖️ `CLAMPED FLAT` READS ZERO AND SAYS THE MOUNTING IS DOING IT — except
+     at the equator, where the field really is level and the sentence would be
+     false. That state has its own branch. */
+  function wireDipCircle(sec) {
+    var wrap = sec.querySelector("[data-dipc]");
+    if (!wrap) { return; }
+    var latEl = wrap.querySelector('[data-dipc-slider="lat"]');
+    var svg = wrap.querySelector("[data-dipc-alt]");
+    var noteEl = wrap.querySelector("[data-dipc-note]");
+    var DEGS = p10Nums(wrap, "data-degs");
+    var NAMES = (wrap.getAttribute("data-names") || "").split("|");
+    var NAVAT = parseFloat(wrap.getAttribute("data-navat"));
+    var STEELAT = parseFloat(wrap.getAttribute("data-steelat"));
+    var ni = parseInt(wrap.getAttribute("data-start-near"), 10) || 0;
+    var mi = parseInt(wrap.getAttribute("data-start-mount"), 10) || 0;
+    var committed = false, touched = 0;
+    var nearBtns, mountBtns;
+
+    function paint() {
+      var li = latEl ? parseInt(latEl.value, 10) : 0;
+      var deg = DEGS[li];
+      var name = NAMES[li] || "";
+      var rad = deg * Math.PI / 180;
+      var dip = Math.atan(2 * Math.tan(rad)) * 180 / Math.PI;
+      var nearKey = p10Attr(nearBtns[ni], "data-dipc-near");
+      var mountKey = p10Attr(mountBtns[mi], "data-dipc-mount");
+      var flat = mountKey === "flat";
+      var dipShown = flat ? 0 : dip;
+      var horizRel = 100 * Math.cos(rad);
+      var captured = nearKey === "magnet" ||
+                     (nearKey === "steel" && Math.abs(deg) >= STEELAT);
+      var atPole = Math.abs(deg) >= 89;
+      var level = Math.abs(dip) < 0.5;
+      var tilt = dipShown * Math.PI / 180;
+      var needleAngle = captured ? (nearKey === "magnet" ? -0.55 : 0.9) : tilt;
+      var nx = Math.cos(needleAngle), ny = Math.sin(needleAngle);
+      var arcR = 62, key, br, navWord, dipSub;
+
+      p10Press(nearBtns, ni);
+      p10Press(mountBtns, mi);
+
+      setPath(wrap, "[data-dipc-needle]",
+              "M" + (270 - nx * 92).toFixed(1) + " " +
+              (200 - ny * 92).toFixed(1) +
+              " L" + (270 + nx * 92).toFixed(1) + " " +
+              (200 + ny * 92).toFixed(1) +
+              " M" + (270 + nx * 92).toFixed(1) + " " +
+              (200 + ny * 92).toFixed(1) +
+              " L" + (270 + nx * 70 - ny * 15).toFixed(1) + " " +
+              (200 + ny * 70 + nx * 15).toFixed(1) +
+              " M" + (270 + nx * 92).toFixed(1) + " " +
+              (200 + ny * 92).toFixed(1) +
+              " L" + (270 + nx * 70 + ny * 15).toFixed(1) + " " +
+              (200 + ny * 70 - nx * 15).toFixed(1));
+      var needleEl = wrap.querySelector("[data-dipc-needle]");
+      if (needleEl) {
+        needleEl.setAttribute("data-captured", captured ? "1" : "0");
+      }
+      setPath(wrap, "[data-dipc-arc]",
+              (!captured && Math.abs(dipShown) > 1)
+                ? "M" + (270 + arcR) + " 200 A " + arcR + " " + arcR +
+                  " 0 0 " + (dipShown > 0 ? "1" : "0") + " " +
+                  (270 + arcR * Math.cos(tilt)).toFixed(1) + " " +
+                  (200 + arcR * Math.sin(tilt)).toFixed(1)
+                : null);
+
+      var youAng = (90 - deg) * Math.PI / 180;
+      var you = wrap.querySelector("[data-dipc-you]");
+      if (you) {
+        you.setAttribute("cx", (720 + 128 * Math.sin(youAng)).toFixed(1));
+        you.setAttribute("cy", (200 - 128 * Math.cos(youAng)).toFixed(1));
+      }
+
+      if (captured && nearKey === "magnet") { key = "captured_magnet"; }
+      else if (captured) { key = "captured_steel"; }
+      else if (flat && atPole) { key = "flat_at_pole"; }
+      else if (flat && level) { key = "flat_level"; }
+      else if (flat) { key = "flat"; }
+      else if (atPole) { key = "at_pole"; }
+      else { key = "tipped"; }
+      br = p10Branch(wrap, "dipc", key);
+
+      /* ⚠️ THE MIDDLE VERDICT IS REACHABLE, AND IT IS THE STATE RUNG 4 IS
+         WRITTEN ABOUT. Design's threshold is below every latitude on her own
+         list; see the lesson record. */
+      navWord = p10Attr(br, "data-nav") ||
+        (horizRel < NAVAT ? p10Word(wrap, "dipc", "nav_barely")
+                          : p10Word(wrap, "dipc", "nav_yes"));
+
+      dipSub = captured ? p10Word(wrap, "dipc", "on_bench")
+        : flat ? p10Word(wrap, "dipc", "held_level")
+          : p10Word(wrap, "dipc", deg >= 0 ? "north_down" : "north_up");
+
+      var vals = {
+        place: name,
+        dip: Math.abs(dip).toFixed(0),
+        horiz: p10Rel(horizRel),
+        tipword: p10Word(wrap, "dipc", deg >= 0 ? "tips_down" : "tips_up"),
+        tipend: p10Word(wrap, "dipc", deg >= 0 ? "end_down" : "end_up")
+      };
+
+      fillSpan(wrap, "dipc", "level", p10Word(wrap, "dipc", "level_label"),
+               p10Tag(0.27, 0.41));
+      fillSpan(wrap, "dipc", "dip",
+               (captured || Math.abs(dipShown) < 1) ? ""
+                 : fillTokens(p10Word(wrap, "dipc", "dip_tag"),
+                              { dip: Math.abs(dipShown).toFixed(0) }),
+               p10Tag(0.38, 0.57));
+
+      if (latEl) { setOut(wrap, "dipc", "lat", name); }
+      setOut(wrap, "dipc", "turn", p10Attr(br, "data-turn"));
+      p10Sub(wrap, "dipc", "turn", fillTokens(p10Attr(br, "data-sub"), vals));
+      setOut(wrap, "dipc", "dip",
+             captured ? p10Word(wrap, "dipc", "not_a_reading")
+                      : Math.abs(dipShown).toFixed(0) + "°");
+      p10Sub(wrap, "dipc", "dip", dipSub);
+      setOut(wrap, "dipc", "horiz", p10Rel(horizRel));
+      setOut(wrap, "dipc", "nav", navWord);
+
+      if (noteEl && br) {
+        noteEl.textContent = fillTokens(p10Attr(br, "data-note"), vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A compass at " + name + ", " + (flat ? "clamped flat"
+                                                : "hung freely") +
+          ", with " + (nearKey === "none" ? "nothing beside it"
+                        : p10Attr(nearBtns[ni], "data-label").toLowerCase() +
+                          " beside it") +
+          ", shown next to a globe with a bar magnet drawn inside it along "
+          + "the spin axis and a marker where you are standing.");
+      }
+
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    nearBtns = p10Row(wrap, "[data-dipc-near]", function (i) {
+      ni = i; touched += 1; paint();
+    });
+    mountBtns = p10Row(wrap, "[data-dipc-mount]", function (i) {
+      mi = i; touched += 1; paint();
+    });
+    if (!nearBtns.length || !mountBtns.length) { return; }
+    p10Gate(wrap, "dipc", function () { committed = true; paint(); });
+    if (latEl) {
+      ["input", "change"].forEach(function (ev) {
+        latEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+    paint();
+  }
+
+  /* p10-04 `#s-bench` — a coil, a supply and a pile of paper clips.
+
+     ⚖️ TURNS AND CURRENT ARE TWO SEPARATE CONTROLS BECAUSE THEY ARE TWO
+     SEPARATE REASONS. `MAG-14` is *more turns means more wire, so more
+     current*, and the only thing that breaks it is holding the current still
+     and watching the field rise anyway.
+
+     ⚖️ THE COIL IS EIGHT DRAWN LOOPS AT EVERY SETTING. The drawing is a
+     symbol and the number is the readout beside it; drawing 160 loops would
+     be unreadable and drawing 10 would make the symbol a count that then lies
+     at every other setting. The clip chain is capped at ten marks for the
+     same reason, and the legal line says both.
+
+     ⚖️ SWITCHED OFF IS ZERO AND SAYS SO — and a field that is merely SMALL
+     never prints `0.0`, which is what `p10Rel` is for. */
+  function wireSolenoidBench(sec) {
+    var wrap = sec.querySelector("[data-solen]");
+    if (!wrap) { return; }
+    var turnsEl = wrap.querySelector('[data-solen-slider="t"]');
+    var curEl = wrap.querySelector('[data-solen-slider="i"]');
+    var svg = wrap.querySelector("[data-solen-alt]");
+    var noteEl = wrap.querySelector("[data-solen-note]");
+    var bands = p10Bands(wrap, "solen", "s");
+    var TURNS = p10Nums(wrap, "data-turns");
+    var CURRENTS = p10Nums(wrap, "data-currents");
+    var MAXF = parseFloat(wrap.getAttribute("data-maxfield"));
+    var RATE = parseFloat(wrap.getAttribute("data-cliprate"));
+    var coi = parseInt(wrap.getAttribute("data-start-core"), 10) || 0;
+    var swi = parseInt(wrap.getAttribute("data-start-switch"), 10) || 0;
+    var committed = false, touched = 0;
+    var coreBtns, swBtns, ironFactor = 1;
+
+    function paint() {
+      var ti = turnsEl ? parseInt(turnsEl.value, 10) : 0;
+      var ci = curEl ? parseInt(curEl.value, 10) : 0;
+      var N = TURNS[ti], I = CURRENTS[ci];
+      var core = coreBtns[coi];
+      var ckey = p10Attr(core, "data-solen-core");
+      var factor = parseFloat(p10Attr(core, "data-factor")) || 1;
+      var on = p10Attr(swBtns[swi], "data-solen-switch") === "on";
+      var field = on ? N * I * factor : 0;
+      var rel = 100 * field / MAXF;
+      var clips = on ? Math.floor(RATE * field) : 0;
+      var coil = "", clipPath = "", i, x, y, shown, coilEl, fieldEl, coreEl;
+
+      p10Press(coreBtns, coi);
+      p10Press(swBtns, swi);
+
+      for (i = 0; i < 8; i += 1) {
+        x = 400 + i * 34;
+        coil += "M" + x + " 232 C" + (x + 6) + " 262 " + (x + 28) + " 262 " +
+          (x + 34) + " 232 M" + x + " 232 C" + (x + 6) + " 202 " + (x + 28) +
+          " 202 " + (x + 34) + " 232 ";
+      }
+      setPath(wrap, "[data-solen-coil]", coil.replace(/\s+$/, ""));
+      coilEl = wrap.querySelector("[data-solen-coil]");
+      if (coilEl) {
+        coilEl.setAttribute("data-on", on ? "1" : "0");
+        coilEl.setAttribute("stroke-width",
+                            on ? (3.5 + Math.min(4, I)).toFixed(1) : "4");
+      }
+
+      setPath(wrap, "[data-solen-core-path]",
+              ckey === "air" ? null : "M370 214 H710 V250 H370 Z");
+      coreEl = wrap.querySelector("[data-solen-core-path]");
+      if (coreEl) { coreEl.setAttribute("data-core", ckey); }
+
+      setPath(wrap, "[data-solen-switchpath]",
+              on ? "M260 120 H360 M360 120 V186"
+                 : "M260 120 H320 M340 120 V186 M320 120 L364 92");
+
+      setPath(wrap, "[data-solen-field]", on
+        ? "M710 232 C800 232 810 130 540 130 C270 130 280 232 370 232 " +
+          "M710 232 C790 232 796 160 540 160 C284 160 290 232 370 232"
+        : null);
+      fieldEl = wrap.querySelector("[data-solen-field]");
+      if (fieldEl && on) {
+        fieldEl.setAttribute("stroke-width",
+                             (2 + Math.min(4, rel / 22)).toFixed(1));
+      }
+
+      if (clips > 0) {
+        shown = Math.min(10, clips);
+        for (i = 0; i < shown; i += 1) {
+          y = 262 + i * 9.5;
+          clipPath += "M" + (700 - i * 1.5) + " " + y.toFixed(1) + " h34 ";
+        }
+      }
+      setPath(wrap, "[data-solen-clips]", clipPath.replace(/\s+$/, "") || null);
+
+      fillSpan(wrap, "solen", "west", on ? "S" : "", p10Tag(0.36, 0.58));
+      fillSpan(wrap, "solen", "east", on ? "N" : "", p10Tag(0.72, 0.58));
+
+      var br = p10Branch(wrap, "solen",
+                         !on ? "off"
+                           : ckey === "iron" ? "iron"
+                             : ckey === "plastic" ? "plastic" : "air");
+      var clipPhrase = clips === 0 ? p10Word(wrap, "solen", "clip_zero")
+        : clips + " " + p10Word(wrap, "solen",
+                                clips === 1 ? "clip_one" : "clip_many");
+      var vals = {
+        turns: N,
+        current: I.toFixed(1),
+        clips: clipPhrase,
+        rel: p10Rel(rel),
+        bare: p10Rel(rel / ironFactor),
+        withiron: p10Rel(rel * ironFactor),
+        corewith: p10Attr(core, "data-with"),
+        coredown: p10Attr(core, "data-down")
+      };
+
+      if (turnsEl) { setOut(wrap, "solen", "t", N + " turns"); }
+      if (curEl) { setOut(wrap, "solen", "i", I.toFixed(1) + " A"); }
+      setOut(wrap, "solen", "clips", String(clips));
+      p10Sub(wrap, "solen", "clips",
+             on ? (clips === 0 ? p10Word(wrap, "solen", "clip_none")
+                               : p10Word(wrap, "solen", "clip_chain"))
+                : p10Word(wrap, "solen", "clip_off"));
+      setOut(wrap, "solen", "strength",
+             on ? p10BandWord(bands, rel) : p10Word(wrap, "solen", "no_field"));
+      p10Sub(wrap, "solen", "strength",
+             on ? fillTokens(p10Word(wrap, "solen", "scale_sub"), vals)
+                : p10Word(wrap, "solen", "zero_sub"));
+      setOut(wrap, "solen", "pole",
+             on ? p10Word(wrap, "solen", "north_end")
+                : p10Word(wrap, "solen", "no_pole"));
+      setOut(wrap, "solen", "core",
+             !on ? p10Word(wrap, "solen", "core_off")
+               : ckey === "iron" ? p10Word(wrap, "solen", "core_iron")
+                 : ckey === "plastic" ? p10Word(wrap, "solen", "core_plastic")
+                   : p10Word(wrap, "solen", "core_air"));
+
+      if (noteEl && br) {
+        noteEl.textContent = fillTokens(p10Attr(br, "data-note"), vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A coil of " + N + " turns on a supply set to " + I.toFixed(1) +
+          " A with " + p10Attr(core, "data-with") + ", switch " +
+          (on ? "closed" : "open") + ", holding " + clips + " paper clips.");
+      }
+
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    coreBtns = p10Row(wrap, "[data-solen-core]", function (i) {
+      coi = i; touched += 1; paint();
+    });
+    swBtns = p10Row(wrap, "[data-solen-switch]", function (i) {
+      swi = i; touched += 1; paint();
+    });
+    if (!coreBtns.length || !swBtns.length) { return; }
+    each(coreBtns, function (b) {
+      if (p10Attr(b, "data-solen-core") === "iron") {
+        ironFactor = parseFloat(p10Attr(b, "data-factor")) || 1;
+      }
+    });
+    p10Gate(wrap, "solen", function () { committed = true; paint(); });
+    each([turnsEl, curEl], function (el) {
+      if (!el) { return; }
+      ["input", "change"].forEach(function (ev) {
+        el.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+    paint();
+  }
+
+  /* p10-05 `#s-bench` — a coil on an axle between two magnets.
+
+     ⚖️ THE DIRECTION IS THE SIGN OF `current × field`, which is what makes
+     *reverse both and nothing changes* true by construction rather than by an
+     authored sentence that could drift away from the commit gate asking about
+     exactly that case.
+
+     ⚖️ THE COIL IS FROZEN HORIZONTAL. Nothing animates and nothing has a
+     timer: the drawing is the position where the turning effect is largest,
+     and the legal line says both that and the fact that a real single-coil
+     motor's turning effect falls to nothing twice a turn.
+
+     ⚖️ A ROTATION ARC IS DRAWN ONLY WHERE THE COIL ACTUALLY TURNS. An arc
+     under a coil that friction is holding still is the one mark on this bench
+     that could contradict its own readout. */
+  function wireMotorCoil(sec) {
+    var wrap = sec.querySelector("[data-mcoil]");
+    if (!wrap) { return; }
+    var curEl = wrap.querySelector('[data-mcoil-slider="i"]');
+    var svg = wrap.querySelector("[data-mcoil-alt]");
+    var noteEl = wrap.querySelector("[data-mcoil-note]");
+    var CURRENTS = p10Nums(wrap, "data-currents");
+    var FRICTION = parseFloat(wrap.getAttribute("data-friction"));
+    var MAXC = parseFloat(wrap.getAttribute("data-maxcurrent"));
+    var di = parseInt(wrap.getAttribute("data-start-dir"), 10) || 0;
+    var mi = parseInt(wrap.getAttribute("data-start-mag"), 10) || 0;
+    var ci = parseInt(wrap.getAttribute("data-start-comm"), 10) || 0;
+    var committed = false, touched = 0;
+    var dirBtns, magBtns, commBtns;
+
+    function paint() {
+      var ii = curEl ? parseInt(curEl.value, 10) : 0;
+      var I = CURRENTS[ii];
+      var dsign = parseFloat(p10Attr(dirBtns[di], "data-sign"));
+      var msign = parseFloat(p10Attr(magBtns[mi], "data-sign"));
+      var comm = p10Attr(commBtns[ci], "data-mcoil-comm");
+      var torque = 100 * I / MAXC;
+      var turns = torque >= FRICTION;
+      /* +1 means the left-hand side is pushed DOWN the page. The left side is
+         at nine o'clock, so pushing it down turns the coil anticlockwise. */
+      var leftDown = dsign * msign > 0;
+      var clockwise = !leftDown;
+      var fl = leftDown ? 1 : -1;
+      var armLen = Math.round(30 + torque * 0.55);
+      var spinR = 74, currentEl, ringEl;
+
+      p10Press(dirBtns, di);
+      p10Press(magBtns, mi);
+      p10Press(commBtns, ci);
+
+      setPath(wrap, "[data-mcoil-pole]", msign > 0
+        ? "M144 99 H177 V301 H144 Z" : "M823 99 H856 V301 H823 Z");
+      setPath(wrap, "[data-mcoil-field]",
+              "M200 140 H800 M200 200 H800 M200 260 H800 " +
+              (msign > 0
+                ? "M800 140 L780 130 M800 140 L780 150 M800 200 L780 190 " +
+                  "M800 200 L780 210 M800 260 L780 250 M800 260 L780 270"
+                : "M200 140 L220 130 M200 140 L220 150 M200 200 L220 190 " +
+                  "M200 200 L220 210 M200 260 L220 250 M200 260 L220 270"));
+      setPath(wrap, "[data-mcoil-current]", dsign > 0
+        ? "M360 150 V250 M360 250 L350 228 M360 250 L370 228 " +
+          "M640 250 V150 M640 150 L630 172 M640 150 L650 172"
+        : "M360 250 V150 M360 150 L350 172 M360 150 L370 172 " +
+          "M640 150 V250 M640 250 L630 228 M640 250 L650 228");
+      currentEl = wrap.querySelector("[data-mcoil-current]");
+      if (currentEl) {
+        currentEl.setAttribute("stroke-width", (4 + I).toFixed(1));
+      }
+
+      setPath(wrap, "[data-mcoil-force]",
+              "M360 200 v" + (fl * armLen) +
+              " M360 " + (200 + fl * armLen) + " l-12 " + (-fl * 14) +
+              " M360 " + (200 + fl * armLen) + " l12 " + (-fl * 14) +
+              " M640 200 v" + (-fl * armLen) +
+              " M640 " + (200 - fl * armLen) + " l-12 " + (fl * 14) +
+              " M640 " + (200 - fl * armLen) + " l12 " + (fl * 14));
+
+      setPath(wrap, "[data-mcoil-ring]", comm === "split"
+        ? "M500 174 a26 26 0 0 1 0 52 M500 174 a26 26 0 0 0 0 52 M500 168 V232"
+        : "M474 200 a26 26 0 0 1 52 0 a26 26 0 0 1 -52 0");
+      ringEl = wrap.querySelector("[data-mcoil-ring]");
+      if (ringEl) { ringEl.setAttribute("data-ring", comm); }
+
+      setPath(wrap, "[data-mcoil-spin]", turns
+        ? (clockwise
+            ? "M" + (500 - spinR) + " 200 A " + spinR + " " + spinR +
+              " 0 0 1 500 " + (200 - spinR) + " M500 " + (200 - spinR) +
+              " l-16 -8 M500 " + (200 - spinR) + " l-2 18"
+            : "M" + (500 + spinR) + " 200 A " + spinR + " " + spinR +
+              " 0 0 0 500 " + (200 - spinR) + " M500 " + (200 - spinR) +
+              " l16 -8 M500 " + (200 - spinR) + " l2 18")
+        : null);
+
+      var br = p10Branch(wrap, "mcoil",
+                         !turns ? "never" : comm === "split" ? "split"
+                                                             : "plain");
+      var upW = p10Word(wrap, "mcoil", "up");
+      var downW = p10Word(wrap, "mcoil", "down");
+      var spinW = !turns ? p10Word(wrap, "mcoil", "still")
+        : p10Word(wrap, "mcoil", clockwise ? "clockwise" : "anticlockwise");
+      var vals = {
+        current: I.toFixed(1),
+        torque: torque.toFixed(0),
+        friction: FRICTION,
+        leftdir: leftDown ? downW : upW,
+        rightdir: leftDown ? upW : downW,
+        spin: spinW,
+        dirlabel: p10Attr(dirBtns[di], "data-label").toLowerCase(),
+        fielddir: p10Word(wrap, "mcoil",
+                          msign > 0 ? "field_lr" : "field_rl")
+      };
+
+      /* The axle caption spans the drawing rather than centring on a point,
+         so it does not take `p10Tag`. Its wording is authored on the control
+         it describes. */
+      fillSpan(wrap, "mcoil", "axle", p10Attr(commBtns[ci], "data-caption"),
+               "position:absolute;left:4%;right:4%;top:91%;text-align:center;");
+      fillSpan(wrap, "mcoil", "leftpole", msign > 0 ? "N" : "S",
+               p10Tag(0.16, 0.50));
+      fillSpan(wrap, "mcoil", "rightpole", msign > 0 ? "S" : "N",
+               p10Tag(0.84, 0.50));
+      /* Only one pole face is filled at a time, and it is always the north
+         one — so the letter reading `N` is the one on the fill. */
+      p10Tone(wrap, "mcoil", "leftpole", msign > 0);
+      p10Tone(wrap, "mcoil", "rightpole", msign < 0);
+
+      if (curEl) { setOut(wrap, "mcoil", "i", I.toFixed(1) + " A"); }
+      setOut(wrap, "mcoil", "left",
+             fillTokens(p10Word(wrap, "mcoil", "left_is"),
+                        { dir: vals.leftdir }));
+      p10Sub(wrap, "mcoil", "left",
+             fillTokens(p10Word(wrap, "mcoil", "right_is"),
+                        { dir: vals.rightdir }));
+      setOut(wrap, "mcoil", "torque", torque.toFixed(0));
+      setOut(wrap, "mcoil", "spin", spinW);
+      setOut(wrap, "mcoil", "keep", p10Attr(br, "data-keep"));
+
+      if (noteEl && br) {
+        noteEl.textContent = fillTokens(p10Attr(br, "data-note"), vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A coil on an axle between two magnets, " +
+          p10Attr(magBtns[mi], "data-label").toLowerCase() + ", current " +
+          p10Attr(dirBtns[di], "data-label").toLowerCase() + ", " +
+          p10Attr(commBtns[ci], "data-label").toLowerCase() + ", carrying " +
+          I.toFixed(1) + " A. " +
+          (turns ? "The coil turns " + spinW + "." : "The coil does not turn."));
+      }
+
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    dirBtns = p10Row(wrap, "[data-mcoil-dir]", function (i) {
+      di = i; touched += 1; paint();
+    });
+    magBtns = p10Row(wrap, "[data-mcoil-mag]", function (i) {
+      mi = i; touched += 1; paint();
+    });
+    commBtns = p10Row(wrap, "[data-mcoil-comm]", function (i) {
+      ci = i; touched += 1; paint();
+    });
+    if (!dirBtns.length || !magBtns.length || !commBtns.length) { return; }
+    p10Gate(wrap, "mcoil", function () { committed = true; paint(); });
+    if (curEl) {
+      ["input", "change"].forEach(function (ev) {
+        curEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+    paint();
+  }
+  /* ═══ END P10 wiring ═══ */
+
+
+
+
+
+
+
 /* ═══ BEGIN P11 wiring ═══════════════════════════════════════════════════
      P11 — *Matter and the particle model*. ONE bench, four models, ported
      from Claude Design's `Bench.dc.html` and her four `benchVals()` bodies
@@ -34772,6 +35924,20 @@
     // to wire, and it would be the place a later pass added a control
     // Design did not draw.
     // ═══ END P9 wiring ═══
+
+// ═══ BEGIN P10 wiring ═══
+    each(root.querySelectorAll("[data-tpairblock]"), wireTrackPair);
+    each(root.querySelectorAll("[data-cplotblock]"), wireCompassPlot);
+    each(root.querySelectorAll("[data-dipcblock]"), wireDipCircle);
+    each(root.querySelectorAll("[data-solenblock]"), wireSolenoidBench);
+    each(root.querySelectorAll("[data-mcoilblock]"), wireMotorCoil);
+    // ⚠️ `data-magbandblock` HAS NO LINE HERE, AND MUST NOT GAIN
+    // ONE. All five band figures are shell-only: none carries a control, and
+    // each is ticked by the bench beside it through `markSibling` at
+    // Design's own earlier threshold. A wire function for it would be a
+    // function with nothing to wire, and it would be the place a later pass
+    // added a control Design did not draw.
+    // ═══ END P10 wiring ═══
 
 // ═══ BEGIN P11 wiring ═══
     each(root.querySelectorAll("[data-mtbenchblock]"), wireMatterBench);

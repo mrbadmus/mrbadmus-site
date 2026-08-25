@@ -28488,6 +28488,559 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    from every other one for a reason that is about the rail. */
 /* ═══ END P9 ═══ */
 
+/* ═══ BEGIN P10 ══════════════════════════════════════════════════════════
+   P10 — *Magnetism and electromagnetism*. One marked block per unit.
+
+   ⚠️ EVERY SELECTOR HERE IS P10-ONLY, and all six shell stems were checked
+   against the whole registry, every line of `shared/ks3.js` and every rule in
+   this file before they were written. All six were free — `ks3-tpair-`,
+   `ks3-cplot-`, `ks3-dipc-`, `ks3-solen-`, `ks3-mcoil-` and `ks3-magband-`.
+
+   ⚠️ EVERY FIGURE WRAPPER IS `position: relative`. Every live value on all
+   five benches is an absolutely positioned HTML span over the SVG, because a
+   hole inside an SVG `<text>` renders nothing and fails silently — and
+   without a positioned ancestor those spans resolve against the page and
+   widen the document on a phone.
+
+   ⚠️ TOKENS, NOT LITERALS, FOR EVERY PIECE OF TEXT. Design draws her fixed
+   SVG captions at `#8C8177`, which is 3.08:1 on `--ks3-dark-panel` at 15px —
+   below AA for body-size text, and the exact case `shared/tokens.css` warns
+   about beside `--ks3-on-dark-muted`. Every one of them takes
+   `--ks3-on-dark-muted` here (6.09:1), which is P9's ruling applied again.
+   Her `#C6B9A7` IS `--ks3-on-dark-muted` to the byte, so those move nowhere.
+
+   ⚠️ AND THE MEANINGFUL GRAPHICS CLEAR 3:1. Design draws the field lattices,
+   the Earth's field arcs and the solenoid's field loops at `#6E6357`, which
+   is 2.05:1 on the panel. Every one of them is `#8C8177` here — a colour
+   already on her own drawings, and 3.08:1, which is the bar for a graphic
+   that carries meaning. Each stays a step below the instrument mark above it,
+   which is the hierarchy she drew.
+
+   ⚖️ `--ks3-data` IS USED HERE, AND THIS IS THE UNIT THAT OPENS IT.
+   `docs/ks3/design-reference/p10/design-reference-font-and-token-law.md` §R8
+   grants it from P10 onward and asks for a fallback because the token is
+   absent from the design-system copy bound to her project. The ENGINE's
+   `shared/tokens.css` carries it (MRB-252), so no fallback is written: the
+   value is `#8FB7FF` — Design's own blue, byte for byte — and what is new is
+   that the ROLE has a name. It marks CATEGORY AND SELECTION: a magnet's
+   north face, a chosen button, the current in a coil. It is never a mark of
+   correctness and never amber's job.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── shared P10 bench shapes — the five dark instruments ─────────────── */
+
+.ks3-tpair-gate, .ks3-cplot-gate, .ks3-dipc-gate, .ks3-solen-gate,
+.ks3-mcoil-gate {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+/* ⚠️ NO `.ks3-*-head` RULES, AND NO `-progress` RULE. This unit draws no head
+   row of its own: `r_activity`'s shell owns it, `.ks3-blockhead` and
+   `.ks3-blockhead-count` already style it, and it is already Design's layout
+   — eyebrow and heading left, readout right. See the long note where `_head`
+   is NOT, in `ks3_art/p10.py`, and the live P4/P5/P6 pages that render both. */
+.ks3-tpair-lead, .ks3-cplot-lead, .ks3-dipc-lead, .ks3-solen-lead,
+.ks3-mcoil-lead {
+  margin: 0 0 18px; font-size: 19px; line-height: 1.65;
+  color: var(--ks3-on-dark-body); max-width: 58ch;
+}
+
+.ks3-tpair-controls, .ks3-cplot-controls, .ks3-dipc-controls,
+.ks3-solen-controls, .ks3-mcoil-controls {
+  display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-start;
+}
+.ks3-tpair-picker, .ks3-cplot-picker, .ks3-dipc-picker, .ks3-solen-picker,
+.ks3-mcoil-picker {
+  display: grid; gap: 9px; flex: 1 1 300px;
+}
+.ks3-tpair-row, .ks3-cplot-row, .ks3-dipc-row, .ks3-solen-row,
+.ks3-mcoil-row {
+  display: grid; gap: 8px; flex: 1 1 240px; min-width: 220px;
+}
+.ks3-tpair-pickerlabel, .ks3-cplot-pickerlabel, .ks3-dipc-pickerlabel,
+.ks3-solen-pickerlabel, .ks3-mcoil-pickerlabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-tpair-tabrow, .ks3-cplot-tabrow, .ks3-dipc-tabrow, .ks3-solen-tabrow,
+.ks3-mcoil-tabrow {
+  display: flex; flex-wrap: wrap; gap: 9px;
+}
+.ks3-tpair-rowhead, .ks3-cplot-rowhead, .ks3-dipc-rowhead,
+.ks3-solen-rowhead, .ks3-mcoil-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-tpair-reading, .ks3-cplot-reading, .ks3-dipc-reading,
+.ks3-solen-reading, .ks3-mcoil-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 17px;
+  font-weight: 500; letter-spacing: 0; text-transform: none;
+  color: var(--ks3-data); white-space: normal;
+}
+/* 44px of vertical target, which is the smallest a thumb should be asked to
+   find — the slider is one of only two or three controls on each bench. */
+.ks3-tpair-slider, .ks3-cplot-slider, .ks3-dipc-slider, .ks3-solen-slider,
+.ks3-mcoil-slider {
+  width: 100%; min-height: 44px; accent-color: var(--ks3-accent);
+}
+
+.ks3-tpair-figwrap, .ks3-cplot-figwrap, .ks3-dipc-figwrap,
+.ks3-solen-figwrap, .ks3-mcoil-figwrap {
+  margin-top: 18px; padding: 18px;
+  border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);
+}
+/* ⚠️ THE POSITIONED ANCESTOR IS THIS ONE, NOT THE PADDED PANEL, and the
+   distinction is the whole correctness of every live label on these benches.
+   A label's `left` is a percentage read straight off the SVG's viewBox, so
+   the box it resolves against has to be the SVG's box. Put it on the panel
+   and the padding is inside the percentage: `36f − 18` px of error, nothing
+   at the centre and eighteen pixels at either edge — which is how `p10-05`'s
+   `N` ended up half off the pole face it names. */
+.ks3-tpair-fig, .ks3-cplot-fig, .ks3-dipc-fig, .ks3-solen-fig,
+.ks3-mcoil-fig { position: relative; }
+.ks3-tpair-svg, .ks3-cplot-svg, .ks3-dipc-svg, .ks3-solen-svg,
+.ks3-mcoil-svg {
+  display: block; width: 100%; height: auto;
+}
+.ks3-tpair-fill, .ks3-cplot-fill, .ks3-dipc-fill, .ks3-solen-fill,
+.ks3-mcoil-fill {
+  position: absolute; font-family: var(--ks3-font-mono); font-weight: 500;
+  white-space: nowrap; pointer-events: none;
+}
+/* Every fixed caption inside the five drawings. `--ks3-on-dark-muted` rather
+   than Design's `#8C8177`: see the block header. */
+.ks3-tpair-caption, .ks3-dipc-caption, .ks3-solen-caption {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .07em; fill: var(--ks3-on-dark-muted);
+}
+
+.ks3-tpair-tiles, .ks3-cplot-tiles, .ks3-dipc-tiles, .ks3-solen-tiles,
+.ks3-mcoil-tiles {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-tpair-tile, .ks3-cplot-tile, .ks3-dipc-tile, .ks3-solen-tile,
+.ks3-mcoil-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-tpair-tile-label, .ks3-cplot-tile-label, .ks3-dipc-tile-label,
+.ks3-solen-tile-label, .ks3-mcoil-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* Design sets a tile that carries a WORD in the body face at 700, and a tile
+   that carries a READING in mono. Kept: the two shapes are how a student
+   tells a verdict from a measurement without reading either. */
+.ks3-tpair-tile-value, .ks3-cplot-tile-value, .ks3-dipc-tile-value,
+.ks3-solen-tile-value, .ks3-mcoil-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-body); font-size: 20px;
+  font-weight: 700; color: var(--ks3-on-dark);
+}
+.ks3-tpair-tile-value[data-tpair-out="gap"],
+.ks3-cplot-tile-value[data-cplot-out="bearing"],
+.ks3-dipc-tile-value[data-dipc-out="dip"],
+.ks3-dipc-tile-value[data-dipc-out="horiz"],
+.ks3-solen-tile-value[data-solen-out="clips"],
+.ks3-mcoil-tile-value[data-mcoil-out="torque"] {
+  font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500;
+}
+.ks3-tpair-tile-sub, .ks3-cplot-tile-sub, .ks3-dipc-tile-sub,
+.ks3-solen-tile-sub, .ks3-mcoil-tile-sub {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+
+.ks3-tpair-note, .ks3-cplot-note, .ks3-dipc-note, .ks3-solen-note,
+.ks3-mcoil-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+
+/* ── p10-01 · two objects on a track ─────────────────────────────────── */
+
+/* The track the two objects slide on. Design draws it at `#4A4139`, 1.6:1 on
+   the panel — the one line on the drawing a student is told is frictionless,
+   and effectively invisible. Lifted to the caption tone, which is what the
+   caption under it already uses. */
+.ks3-tpair-track {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 6;
+  stroke-linecap: round;
+}
+/* A block is a shade darker than the panel behind it, so it reads as an
+   object rather than as a region of the panel — and a NON-MAGNETIC one is
+   dashed, so identity is never carried by hue alone. */
+.ks3-tpair-body {
+  fill: #2A241E; stroke: var(--ks3-on-dark-muted); stroke-width: 5;
+  stroke-linejoin: round;
+}
+.ks3-tpair-body[data-kind="non"] { stroke-dasharray: 14 11; }
+.ks3-tpair-pole { fill: var(--ks3-data); stroke: none; }
+.ks3-tpair-arrow {
+  fill: none; stroke: var(--ks3-data); stroke-width: 8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-tpair-dim {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 3;
+}
+.ks3-tpair-aname, .ks3-tpair-bname {
+  color: var(--ks3-on-dark-muted); font-size: clamp(9px, 1.3vw, 15px);
+  letter-spacing: .06em;
+}
+/* The NEAR letter sits on the filled pole face, so it takes ink (8.2:1 on
+   `--ks3-data`); the FAR letter sits on the dark body and takes the light
+   caption tone. */
+.ks3-tpair-anear, .ks3-tpair-bnear {
+  color: var(--ks3-ink); font-weight: 700;
+  font-size: clamp(11px, 1.9vw, 24px);
+}
+.ks3-tpair-afar, .ks3-tpair-bfar {
+  color: var(--ks3-on-dark-muted); font-weight: 700;
+  font-size: clamp(11px, 1.9vw, 24px);
+}
+.ks3-tpair-gap {
+  color: var(--ks3-on-dark-muted); font-size: clamp(9px, 1.3vw, 15px);
+}
+
+/* ── p10-02 · the plotting compass ───────────────────────────────────── */
+
+/* The lattice of ninety-one arrows. `#8C8177` rather than Design's `#6E6357`
+   — see the block header. It stays a step below the needle and the magnets,
+   which is the hierarchy she drew. */
+.ks3-cplot-grid {
+  fill: none; stroke: #8C8177; stroke-width: 3; stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ks3-cplot-mag {
+  fill: #2A241E; stroke: var(--ks3-on-dark-muted); stroke-width: 5;
+  stroke-linejoin: round;
+}
+.ks3-cplot-north { fill: var(--ks3-data); stroke: none; }
+.ks3-cplot-dial {
+  fill: #15110C; stroke: var(--ks3-on-dark); stroke-width: 4;
+}
+/* The needle is the one moving instrument mark on this bench and it takes the
+   accent, exactly as Design draws it. It is a stroke on a drawing, never
+   text, so the accent's large-text-only rule does not reach it. */
+.ks3-cplot-needle {
+  fill: none; stroke: var(--ks3-accent); stroke-width: 7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+/* ⚠️ THE POLE LETTER'S TONE FOLLOWS WHICH HALF IT IS STANDING ON, and the
+   wiring sets the attribute. Design fixes the four letters at two colours
+   that happen to be right for her four layouts and would be wrong the moment
+   a bar was turned round. */
+.ks3-cplot-pole {
+  font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: clamp(11px, 1.9vw, 24px);
+}
+.ks3-cplot-pole[data-on-north="1"] { color: var(--ks3-ink); }
+.ks3-cplot-pole[data-on-north="0"] { color: var(--ks3-on-dark-muted); }
+
+/* The five-by-five grid of positions. A 44px target each, which is what a
+   thumb needs, and the selection takes `--ks3-data` because selection is
+   exactly what that token was minted for. */
+.ks3-cplot-grid-btns {
+  display: grid; grid-template-columns: repeat(5, 44px); gap: 6px;
+}
+.ks3-cplot-spot {
+  width: 44px; height: 44px; min-height: 44px; border-radius: 10px;
+  cursor: pointer; background: transparent;
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+.ks3-cplot-spot[aria-pressed="true"] {
+  background: var(--ks3-data); border-color: var(--ks3-data);
+}
+
+/* ── p10-03 · the dip circle ─────────────────────────────────────────── */
+
+.ks3-dipc-levelline {
+  fill: none; stroke: #8C8177; stroke-width: 4; stroke-dasharray: 12 10;
+}
+.ks3-dipc-pivot { fill: var(--ks3-on-dark); }
+/* The needle goes to the accent when it has been CAPTURED by something on the
+   bench — a state the tiles also name in words — and to the data blue when it
+   is reading the Earth. Two states, two channels. */
+.ks3-dipc-needle {
+  fill: none; stroke: var(--ks3-data); stroke-width: 8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-dipc-needle[data-captured="1"] { stroke: var(--ks3-accent); }
+.ks3-dipc-arc { fill: none; stroke: var(--ks3-data); stroke-width: 4; }
+.ks3-dipc-globe {
+  fill: #221E1B; stroke: var(--ks3-on-dark-muted); stroke-width: 5;
+}
+.ks3-dipc-lines { fill: none; stroke: #8C8177; stroke-width: 3; }
+.ks3-dipc-bar {
+  fill: #2A241E; stroke: var(--ks3-on-dark-muted); stroke-width: 4;
+}
+.ks3-dipc-barnorth { fill: var(--ks3-data); stroke: none; }
+.ks3-dipc-you {
+  fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 3;
+}
+.ks3-dipc-level {
+  color: var(--ks3-on-dark-muted); font-size: clamp(9px, 1.2vw, 14px);
+  letter-spacing: .07em;
+}
+.ks3-dipc-dip {
+  color: var(--ks3-data); font-size: clamp(9px, 1.3vw, 16px);
+  letter-spacing: .06em;
+}
+
+/* ── p10-04 · the solenoid bench ─────────────────────────────────────── */
+
+.ks3-solen-wire {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 6;
+  stroke-linecap: round;
+}
+.ks3-solen-cell {
+  fill: none; stroke: var(--ks3-on-dark); stroke-width: 6;
+  stroke-linecap: round;
+}
+/* A live coil takes the data blue; a dead one drops to the graphic grey, and
+   the tiles say `no field at all` in words beside it. */
+.ks3-solen-coil {
+  fill: none; stroke: #8C8177; stroke-linecap: round;
+}
+.ks3-solen-coil[data-on="1"] { stroke: var(--ks3-data); }
+/* Iron is solid; a plastic former is dashed and hollow, which is the same
+   channel `p10-01` uses for a non-magnetic object — and the tile says
+   `nothing — plastic is not magnetic` in words as well. */
+.ks3-solen-corepath {
+  fill: #4A4139; stroke: var(--ks3-on-dark-muted); stroke-width: 4;
+}
+.ks3-solen-corepath[data-core="plastic"] {
+  fill: #2A241E; stroke: #8C8177; stroke-dasharray: 12 9;
+}
+.ks3-solen-field { fill: none; stroke: #8C8177; }
+.ks3-solen-clips {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 5;
+  stroke-linecap: round;
+}
+.ks3-solen-west, .ks3-solen-east {
+  color: var(--ks3-data); font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: clamp(11px, 1.9vw, 24px);
+}
+
+/* ── p10-05 · the motor coil ─────────────────────────────────────────── */
+
+.ks3-mcoil-magnet {
+  fill: #2A241E; stroke: var(--ks3-on-dark-muted); stroke-width: 5;
+  stroke-linejoin: round;
+}
+.ks3-mcoil-pole { fill: var(--ks3-data); stroke: none; }
+.ks3-mcoil-field { fill: none; stroke: #8C8177; stroke-width: 3; }
+.ks3-mcoil-loop {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 8;
+  stroke-linejoin: round;
+}
+.ks3-mcoil-lead {
+  fill: none; stroke: #8C8177; stroke-width: 3; stroke-dasharray: 10 8;
+}
+.ks3-mcoil-current {
+  fill: none; stroke: var(--ks3-data); stroke-linecap: round;
+}
+/* The two force arrows take the accent, as Design draws them: they are the
+   one thing on this bench that is neither a part nor a category but the
+   RESULT, and the tiles name their directions in words. */
+.ks3-mcoil-force {
+  fill: none; stroke: var(--ks3-accent); stroke-width: 8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-mcoil-axlepin {
+  fill: #15110C; stroke: var(--ks3-on-dark-muted); stroke-width: 4;
+}
+/* A split ring is solid; two plain rings are dashed — and the caption under
+   the drawing says which, in words, in both states. */
+.ks3-mcoil-ring {
+  fill: none; stroke: var(--ks3-on-dark); stroke-width: 5;
+}
+.ks3-mcoil-ring[data-ring="plain"] {
+  stroke: #8C8177; stroke-dasharray: 9 7;
+}
+.ks3-mcoil-spin {
+  fill: none; stroke: var(--ks3-on-dark); stroke-width: 5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-mcoil-axle {
+  color: var(--ks3-on-dark-muted); font-size: clamp(10px, 1.4vw, 17px);
+  letter-spacing: .07em; white-space: normal; text-align: center;
+}
+/* ⚠️ SAME TONE RULE AS `p10-02`, AND HERE IT IS A CORRECTION. Design draws
+   BOTH pole letters at `#15110C`; only one of the two ever sits on the filled
+   face, and the other is near-black on the near-black magnet body at 1.1:1 —
+   invisible in half the states, and it is the letter that names the pole. */
+.ks3-mcoil-leftpole, .ks3-mcoil-rightpole {
+  font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: clamp(11px, 1.9vw, 24px);
+}
+.ks3-mcoil-leftpole[data-on-north="1"],
+.ks3-mcoil-rightpole[data-on-north="1"] { color: var(--ks3-ink); }
+.ks3-mcoil-leftpole[data-on-north="0"],
+.ks3-mcoil-rightpole[data-on-north="0"] { color: var(--ks3-on-dark-muted); }
+
+/* ── the band figure beside each bench ───────────────────────────────── */
+
+/* Design's band sections sit on `--ks3-band` rather than the check shell's
+   card, and the ground is a measured property of her block. */
+.ks3-magband-block { background: var(--ks3-band); }
+/* The eyebrow and the `<h2>` are the SHELL's — this unit draws neither. */
+.ks3-magband-block > .ks3-eyebrow { color: var(--ks3-accent-text); }
+.ks3-magband-block > h2 { margin: 6px 0 0; }
+.ks3-magband-lead {
+  margin: 12px 0 0; max-width: 62ch; font-size: 19px; line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+.ks3-magband-tiles {
+  margin-top: 18px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-magband-tile {
+  padding: 20px 22px; border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); border: 3px solid var(--ks3-ink);
+}
+/* ⚠️ EXACTLY ONE TILE PER FIGURE TAKES THE OFFSET, and the drawer refuses a
+   payload that marks two: it is the tile that is the ANSWER rather than one
+   of the alternatives, and two marked tiles is two claims to be the point. */
+.ks3-magband-tile.is-accent { box-shadow: 5px 5px 0 var(--ks3-accent); }
+.ks3-magband-eyebrow {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-magband-tile.is-accent > .ks3-magband-eyebrow {
+  color: var(--ks3-accent-text);
+}
+.ks3-magband-art { display: block; width: 100%; height: auto; }
+.ks3-magband-title {
+  margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 24px; line-height: 1.2; letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+.ks3-magband-eyebrow + .ks3-magband-title { margin-top: 7px; font-size: 22px; }
+.ks3-magband-body {
+  margin: 8px 0 0; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-magband-panels {
+  margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px;
+}
+.ks3-magband-panel {
+  flex: 1 1 260px; padding: 16px 18px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+}
+.ks3-magband-panellabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-magband-paneltext {
+  margin: 6px 0 0; font-size: 19px; font-weight: 700; line-height: 1.4;
+  color: var(--ks3-ink);
+}
+.ks3-magband-close {
+  margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+  font-size: 19px; line-height: 1.6; color: var(--ks3-ink-body);
+}
+
+/* The seven drawings inside the band figures. Every one is a constant, so
+   every caption is a literal `<text>` — MRB-254's rule is about a `<text>`
+   that ships EMPTY and is filled later, and none of these is. */
+.ks3-magband-bar {
+  fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;
+}
+.ks3-magband-plain { fill: var(--ks3-inset); stroke: var(--ks3-ink); stroke-width: 3; }
+.ks3-magband-dashed {
+  fill: var(--ks3-inset); stroke: var(--ks3-ink); stroke-width: 3;
+  stroke-dasharray: 7 6;
+}
+.ks3-magband-arrow {
+  fill: none; stroke: var(--ks3-accent); stroke-width: 5;
+  stroke-linecap: round;
+}
+/* The inconclusive outcome's arrows are DELIBERATELY not the accent: the
+   figure's whole claim is that only one of the three settles anything. */
+.ks3-magband-quiet {
+  fill: none; stroke: var(--ks3-ink-muted); stroke-width: 5;
+  stroke-linecap: round;
+}
+.ks3-magband-line { fill: none; stroke: var(--ks3-accent); stroke-width: 4; }
+.ks3-magband-head { fill: var(--ks3-accent); }
+.ks3-magband-ghost {
+  fill: none; stroke: var(--ks3-rule-strong); stroke-width: 3;
+  stroke-dasharray: 8 7;
+}
+.ks3-magband-ring { fill: none; stroke: var(--ks3-accent); stroke-width: 4; }
+.ks3-magband-strike {
+  fill: none; stroke: var(--ks3-accent); stroke-width: 4;
+  stroke-linecap: round;
+}
+.ks3-magband-dial {
+  fill: var(--ks3-inset); stroke: var(--ks3-ink); stroke-width: 3;
+}
+.ks3-magband-needle {
+  fill: none; stroke: var(--ks3-accent); stroke-width: 4;
+  stroke-linecap: round;
+}
+.ks3-magband-pole {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 17px;
+  fill: var(--ks3-ink);
+}
+.ks3-magband-artcap {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px;
+  letter-spacing: .06em; fill: var(--ks3-ink-muted);
+}
+
+/* ⚠️ THE POSITION GRID DROPS TO A SCROLLER RATHER THAN WIDENING THE PAGE.
+   Five 44px targets plus gaps is 244px, which fits a 360px viewport inside
+   the block's padding — but the tab rows beside it do not, and a flex row
+   that cannot wrap is what scrolled the whole document sideways on `p9-01`.
+   Everything here wraps; nothing has an intrinsic minimum wider than the
+   narrowest phone. */
+@media (max-width: 460px) {
+  .ks3-cplot-grid-btns { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .ks3-cplot-spot { width: 100%; }
+}
+
+/* ⚖️ THE PRESSED SEGMENTED BUTTON IS SELECTION, SO IT IS `--ks3-data`.
+
+   The shared dark control paints its pressed state `--ks3-alert` — added
+   under MRB-242 from B1's pages, before MRB-252 existed. MRB-252 then ruled
+   that AMBER WARNS AND NEVER MERELY LABELS, and that category and selection
+   uses move to `--ks3-data`; a pressed tab on a bench is selection and
+   nothing else. Design's own P10 `seg()` draws it that way already —
+   `--ks3-blue-light` ground, ink text, and `--ks3-blue-light` is what
+   `--ks3-data` is valued at.
+
+   ⚠️ SCOPED TO THIS UNIT'S FIVE BLOCKS, NOT CHANGED IN THE SHARED RULE. That
+   rule dresses every dark segmented control in the key stage, and repainting
+   it would move B1's fit tabs, B1's sabotage tabs and every unit since —
+   pages Mide has already approved. This is P10 matching its own drawing and
+   the standing ruling; the corpus-wide question is a separate unit of work
+   with its own gate. Ink on `--ks3-data` is 8.2:1. */
+.ks3-tpair-block .ks3-seg-btn[aria-pressed="true"],
+.ks3-cplot-block .ks3-seg-btn[aria-pressed="true"],
+.ks3-dipc-block .ks3-seg-btn[aria-pressed="true"],
+.ks3-solen-block .ks3-seg-btn[aria-pressed="true"],
+.ks3-mcoil-block .ks3-seg-btn[aria-pressed="true"] {
+  background: var(--ks3-data);
+  border-color: var(--ks3-data);
+  color: var(--ks3-ink);
+}
+
+/* ═══ END P10 ═══ */
+
 /* ═══ BEGIN P11 ═══════════════════════════════════════════════════════════
    P11 — *Matter and the particle model*. ONE block, because Design drew one
    component: `Bench.dc.html`, mounted on all four pages and on all six of

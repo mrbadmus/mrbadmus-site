@@ -857,6 +857,28 @@ SUBSTATEMENTS = {
               "rubbed together: transfer of electrons.", "P9"),
         ("b", "Forces between charged objects.", "P9"),
     ],
+    # Minted for P10 (MRB-223, 2026-08-25). The bullet reads:
+    #   "the magnetic effect of a current, electromagnets, D.C. motors
+    #    (principles only)"
+    # Three clauses and two lessons, and the split falls at the second comma
+    # because the first two clauses are one idea: a current makes a field, and
+    # an electromagnet is what you build out of that. The motor is a different
+    # fact — the field pushing BACK on a current — and it needs nothing from
+    # the electromagnet lesson except the sentence `a current makes a field`,
+    # which `p10-05` restates in one clause of its own so a school running the
+    # unit in another order strands nobody.
+    #
+    # ⚑ Minted because Design's NOTES §1 claims `MAG.04` for `p10-04` AND for
+    # `p10-05` and records that as needing no notation. Under §4.4 rule 3 it
+    # does: `covers` is exactly-once across the key stage and `verify_ks3`
+    # asserts it, so a second claim on the parent is a build failure rather
+    # than a duplicate. This is the compound-bullet case this file exists for
+    # and it needs no ruling from Mide — the two lessons are already in
+    # `structure.py` as separate slots.
+    "KS3.P.MAG.04": [
+        ("a", "The magnetic effect of a current, and electromagnets.", "P10"),
+        ("b", "D.C. motors, principles only.", "P10"),
+    ],
     # ── P12 · Space ─────────────────────────────────────────────────────
     #
     # P12 owns four statements over six slots (ratio 1.5) — the surplus case
