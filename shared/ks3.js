@@ -13348,6 +13348,1295 @@
 
   /* ═══ END P7 wiring ═══ */
 
+/* ═══ BEGIN P8 wiring ═══════════════════════════════════════════════════
+     P8's instrument families — *Electric circuits*. Behaviour measured off
+     Claude Design's delivered pages in `docs/ks3/design-reference/p8/`, one
+     page at a time, from her own `lessonVals()` and `DONE()`.
+
+     The helpers this block leans on — `each`, `toArray`, `setHidden`,
+     `markStage`, `markSibling`, `fillTokens`, `tagStyle`, `fillSpan`,
+     `setOut`, `setPath` — are P4's, P5's and P6's and are deliberately NOT
+     redefined here. The CFIFA attempt is namespaced `…P8` for the same
+     reason P5's and P6's are: one family per unit, so `ks3_art.load()`'s
+     one-family-one-module rule holds and the placement gates see each
+     unit's as its own.
+
+     ⚠️ `circ-band` and `circ-think` have NO WIRE FUNCTION and no dispatch
+     line, on purpose. Both are fixed figures: a symbol key, four tables, a
+     decade chart and one pair of misconception quotes. They carry
+     `data-stage-done="0"` because their rail stops are ticked by the bench
+     beside them through `markSibling`, and they carry no control of their
+     own — which is what `ks3_instrument_liveness` calls STATIC BY DESIGN,
+     the same standing `confrontation` and `state-matrix` already have.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Design's own on-dark palette for the absolutely-positioned live labels.
+     Tokens rather than the hex literals her page inlines: `--ks3-blue-light`
+     is specified for ink-dark grounds and `--ks3-on-dark-muted` measures
+     6.08:1 there. */
+  var P8_READ = "var(--ks3-blue-light)";
+  var P8_MUTED = "var(--ks3-on-dark-muted)";
+
+  /* Two decimal places with a unit, which is every current and every p.d.
+     on the four benches that report one. Design's own `fa` and `fv`. */
+  function p8Fix(v, dp, unit) {
+    return Number(v).toFixed(dp) + " " + unit;
+  }
+
+  function paintAttemptP8(wrap, vals, blocked) {
+    var qs = toArray(wrap.querySelectorAll("[data-p8cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }        /* Question 1 alone is live */
+      var head = q.querySelector("[data-p8cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p8cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p8cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p8cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+      /* ⚖️ HER OWN HANDLING OF THE COPPER STATE, AND IT IS NOT A BLOCK FOR
+         ITS OWN SAKE. `p8-06`'s bench refuses to print a current for a bare
+         copper wire, so there is nothing for the five lines to divide. She
+         says so in the head and hides the boxes rather than inviting a
+         student to write `6.0 V ÷ ?`. */
+      var block = q.querySelector("[data-p8cfa-blocked]");
+      var rows = q.querySelector(".ks3-cfa-rows");
+      var chk = q.querySelector("[data-p8cfa-check]");
+      if (block) { setHidden(block, !blocked); }
+      if (rows) { setHidden(rows, !!blocked); }
+      /* ⚠️ THE BUTTON'S STATE IS RECOMPUTED FROM THE BOXES, NEVER SET.
+         The kit's contract is that Check REFUSES AN EMPTY ATTEMPT — a
+         student who taps it first has been handed all five model lines
+         before writing anything, which is the whole thing this half of the
+         block exists to prevent.
+         Measured, in a browser: an earlier cut of this said
+         `else { chk.removeAttribute("disabled") }`, to re-enable the button
+         when `p8-06`'s bench moves off the copper specimen and unblocks the
+         panel. Every bench publishes on its FIRST paint, so that line ran on
+         load and left the button live with nothing typed — on all four CFIFA
+         pages, not just the one with a blocked state. P6's copy only ever
+         DISABLES, which is why it never had this; P8 is the first unit whose
+         panel can come back from blocked, and coming back has to restore the
+         real state rather than assert one. */
+      if (chk && chk.textContent !== "Marked") {
+        var typed = 0;
+        each(toArray(q.querySelectorAll("[data-p8cfa-input]")),
+             function (i) { if (i.value.trim()) { typed += 1; } });
+        if (blocked || !typed) { chk.setAttribute("disabled", ""); }
+        else { chk.removeAttribute("disabled"); }
+        var hint = q.querySelector("[data-p8cfa-hint]");
+        if (hint) {
+          /* ⚖️ HER `blockedProgress` — "Waiting on a specimen the ammeter
+             can read" — is what the readout says while the copper short
+             has nothing to divide. Carried on the wrapper by
+             `r_p8_attempt`. */
+          hint.textContent = blocked
+            ? (wrap.getAttribute("data-blocked-progress") || "")
+            : (typed
+              ? typed + " of " +
+                q.querySelectorAll("[data-p8cfa-input]").length + " written"
+              : "Write at least one line first");
+        }
+      }
+    });
+  }
+
+  function publishLiveP8(sec, vals, blocked) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    each(toArray(host.querySelectorAll("[data-p8cfa]")), function (p) {
+      paintAttemptP8(p, vals, blocked);
+    });
+  }
+
+  function wireCfifaAttemptP8(sec) {
+    var wrap = sec.querySelector("[data-p8cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p8cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p8cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p8cfa-input]"));
+      var btn = q.querySelector("[data-p8cfa-check]");
+      var hint = q.querySelector("[data-p8cfa-hint]");
+      var reveal = q.querySelector("[data-p8cfa-reveal]");
+      var tally = q.querySelector("[data-p8cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p8cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        if (btn.textContent === "Marked") { return; }
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p8cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p8cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+  /* The commit gate every P8 bench opens behind. Seven benches, one shape:
+     press an option, the gate goes and the body arrives. Factored because
+     seven copies of six lines is six chances for one of them to drift. */
+  function p8Gate(sec, wrap, hook, onCommit) {
+    var gate = wrap.querySelector("[data-" + hook + "-gate]");
+    var body = wrap.querySelector("[data-" + hook + "-body]");
+    var opts = toArray(wrap.querySelectorAll("[data-" + hook + "-gopt]"));
+    each(opts, function (b) {
+      b.addEventListener("click", function () {
+        each(opts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(body, false);
+        onCommit();
+      });
+    });
+  }
+
+  /* A segmented row where exactly one button is pressed. Returns the chosen
+     button; `onPick` fires only on a real change of selection, so pressing
+     the control that already claims to be pressed is a no-op — which is the
+     invariant §5A.5 names and the one a count-based check cannot see. */
+  function p8Tabs(wrap, hook, name, onPick) {
+    var btns = toArray(wrap.querySelectorAll("[data-" + hook + "-" + name + "]"));
+    each(btns, function (b) {
+      b.addEventListener("click", function () {
+        if (b.getAttribute("aria-pressed") === "true") { return; }
+        each(btns, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        onPick(b);
+      });
+    });
+    return btns;
+  }
+
+  function p8Pressed(btns) {
+    for (var i = 0; i < btns.length; i += 1) {
+      if (btns[i].getAttribute("aria-pressed") === "true") { return btns[i]; }
+    }
+    return btns[0];
+  }
+
+  function p8Note(wrap, hook, key, vals) {
+    var el = wrap.querySelector("[data-" + hook + "-note]");
+    var src = wrap.querySelector('[data-' + hook + '-branch="' + key + '"]');
+    if (!el || !src) { return; }
+    el.textContent = fillTokens(src.getAttribute("data-note") || "",
+                                vals || {});
+  }
+
+  function p8Branch(wrap, hook, key) {
+    var src = wrap.querySelector('[data-' + hook + '-branch="' + key + '"]');
+    return src ? (src.getAttribute("data-note") || "") : "";
+  }
+
+  /* The head row's readout is the SHELL's, not the instrument's.
+
+     ⚠️ AND THE WORDS ARE THE PAGE'S, NOT THIS FILE'S. `r_activity` emits
+     `data-state-idle` and `data-state-live` from the lesson record, so the
+     two sentences live where an author can read them. P6 keeps its own copy
+     of "Both controls live" in this file AND authors a `progress` string on
+     the record — two sources for one sentence, free to drift. */
+  function p8Progress(sec, touched) {
+    var el = sec.querySelector("[data-count]");
+    if (!el) { return; }
+    var key = touched ? "live" : "idle";
+    var word = el.getAttribute("data-state-" + key);
+    if (word === null) { return; }
+    el.setAttribute("data-state", key);
+    el.textContent = word;
+  }
+
+  /* p8-01 `#s-loop` — move the meter; the reading does not move.
+
+     ⚖️ THE POSITION CONTROL IS MODELLED AND ITS EFFECT IS STATED. §5A.1
+     forbids a dial that is drawn and not modelled; this one is the opposite
+     case and the harder one — it is modelled, it moves the drawing, and the
+     number it produces is deliberately the same in all three positions. So
+     every branch note NAMES the live reading and says the other two give it
+     too. A bench that merely failed to move the number would be
+     indistinguishable from a broken control.
+
+     ⚖️ THE LOOP IS ONE BASE PATH WITH THREE GAPS AND ONE BRIDGING PATH, so
+     the wire is continuous in every state without any element being added
+     or removed. Design's own construction. */
+  function wireCircuitLoop(sec) {
+    var wrap = sec.querySelector("[data-cloop]");
+    if (!wrap) { return; }
+    var svg = wrap.querySelector("[data-cloop-alt]");
+    var VPC = parseFloat(wrap.getAttribute("data-volts-per-cell")) || 1.5;
+    var APC = parseFloat(wrap.getAttribute("data-amps-per-cell")) || 0.15;
+    var RAYS = "M880 148 V126 M880 252 V274 M828 200 H806 M932 200 H954 " +
+               "M843 163 L827 147 M917 237 L933 253 M917 163 L933 147 " +
+               "M843 237 L827 253";
+    var committed = false, touched = 0;
+
+    var cellBtns = p8Tabs(wrap, "cloop", "cells", function () {
+      touched += 1; paint();
+    });
+    var swBtns = p8Tabs(wrap, "cloop", "sw", function () {
+      touched += 1; paint();
+    });
+    var slotBtns = p8Tabs(wrap, "cloop", "slot", function () {
+      touched += 1; paint();
+    });
+
+    function paint() {
+      var n = parseInt(p8Pressed(cellBtns).getAttribute("data-cloop-cells"),
+                       10) || 1;
+      var closed = p8Pressed(swBtns).getAttribute("data-cloop-sw") === "1";
+      var slot = p8Pressed(slotBtns);
+      var amps = closed ? n * APC : 0;
+      var volts = (n * VPC).toFixed(1) + " V";
+      var reading = amps.toFixed(2) + " A";
+      var sx = parseFloat(slot.getAttribute("data-x"));
+      var sy = parseFloat(slot.getAttribute("data-y"));
+
+      /* The cell plates, as ONE path string. No per-cell element. */
+      var d = "", start = 200 - n * 13, i, y;
+      for (i = 0; i < n; i += 1) {
+        y = start + i * 26;
+        d += "M84 " + y + " H156 M104 " + (y + 13) + " H136 ";
+      }
+      setPath(wrap, "[data-cloop-cellpath]", d.trim());
+
+      /* Bridge the two sockets the meter is NOT in. */
+      var fill = "";
+      each(slotBtns, function (b) {
+        if (b === slot) { return; }
+        var x = parseFloat(b.getAttribute("data-x"));
+        fill += "M" + (x - 46) + " " + b.getAttribute("data-y") +
+                " H" + (x + 46) + " ";
+      });
+      setPath(wrap, "[data-cloop-bridge]", fill.trim());
+
+      setPath(wrap, "[data-cloop-lever]",
+              closed ? "M330 100 H430" : "M330 100 L420 60");
+
+      var bulb = wrap.querySelector("[data-cloop-bulb]");
+      if (bulb) { bulb.setAttribute("data-lit", amps > 0 ? "1" : "0"); }
+      var rays = wrap.querySelector("[data-cloop-rays]");
+      if (rays) {
+        rays.style.strokeWidth = amps > 0 ? Math.min(8, 2 + n * 1.5) : 0;
+      }
+      setPath(wrap, "[data-cloop-rays]", amps > 0 ? RAYS : null);
+
+      var meter = wrap.querySelector("[data-cloop-meter]");
+      if (meter) {
+        meter.setAttribute("cx", sx);
+        meter.setAttribute("cy", sy);
+      }
+      var letter = wrap.querySelector("[data-cloop-meterlabel]");
+      if (letter) {
+        letter.setAttribute("x", sx);
+        letter.setAttribute("y", sy + 15);
+      }
+
+      fillSpan(wrap, "cloop", "reading", reading,
+               "position:absolute;left:" + slot.getAttribute("data-lx") +
+               "%;top:" + slot.getAttribute("data-ly") +
+               "%;transform:translate(-50%,0);color:" + P8_READ + ";");
+
+      setOut(wrap, "cloop", "volts", volts);
+      setOut(wrap, "cloop", "reading", reading);
+      setOut(wrap, "cloop", "loop", closed ? "complete" : "broken at the switch");
+      setOut(wrap, "cloop", "bright", !closed ? "dark"
+        : n === 1 ? "dim" : n === 2 ? "lit normally"
+        : n === 3 ? "bright" : "very bright, and running hot");
+      p8Sub(wrap, "cloop", "volts",
+            n === 1 ? "one cell at 1.5 V" : n + " cells at 1.5 V each");
+      p8Sub(wrap, "cloop", "loop", closed
+        ? "charge can go all the way round" : "nowhere for the charge to go");
+      p8Sub(wrap, "cloop", "reading", slot.getAttribute("data-caption"));
+
+      p8Note(wrap, "cloop", !closed ? "open" : (n === 1 ? "one" : "many"), {
+        name: slot.getAttribute("data-name"), reading: reading,
+        n: n, volts: volts
+      });
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A single loop with " + n + " cell" + (n === 1 ? "" : "s") +
+          ", a switch drawn " + (closed ? "closed" : "open") +
+          ", a bulb and an ammeter " + slot.getAttribute("data-name") +
+          ". The meter reads " + reading + ".");
+      }
+
+      p8Progress(sec, touched);
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    p8Gate(sec, wrap, "cloop", function () { committed = true; paint(); });
+    paint();
+  }
+
+  /* A tile's SUB line. `setOut` owns the value; this owns the small mono
+     line under it, which on four P8 benches carries a caption that changes
+     with the state rather than a fixed one. */
+  function p8Sub(wrap, hook, id, text) {
+    var els = wrap.querySelectorAll('[data-' + hook + '-sub="' + id + '"]');
+    for (var i = 0; i < els.length; i += 1) { els[i].textContent = text; }
+  }
+
+  /* p8-02 `#s-bench` — rewire it, then take one out.
+
+     ⚖️ EVERY BRIGHTNESS WORD IS COMPUTED. `CIRC-05` is *in parallel the
+     current is shared out, so each bulb is dimmer*, and what kills it is
+     reading `at full brightness` twice beside a total that has doubled. An
+     authored word per control would be a second source for a fact the
+     numbers already carry, and §5A.1 rules that out.
+
+     ⚖️ A REMOVED BULB IS A DASHED EMPTY SOCKET, NOT A GAP. In series that
+     socket is the break in the only path, and the difference between "the
+     bulb is out" and "the bulb is dark" is the whole of what the two states
+     teach. */
+  function wireTwoArrangementLoop(sec) {
+    var wrap = sec.querySelector("[data-parr]");
+    if (!wrap) { return; }
+    var VOLTS = parseFloat(wrap.getAttribute("data-volts")) || 3;
+    var ONE = parseFloat(wrap.getAttribute("data-one-amps")) || 0.3;
+    var committed = false, touched = 0;
+
+    var wireBtns = p8Tabs(wrap, "parr", "wire", function () {
+      touched += 1; paint();
+    });
+    var outBtns = p8Tabs(wrap, "parr", "out-btn", function () {
+      touched += 1; paint();
+    });
+
+    /* Design's own bulb geometry: the cross when the bulb is present, the
+       four rays when it is lit, and nothing at all when the socket is
+       empty. One helper, four placements. */
+    function bulb(key, cx, cy, lit, present) {
+      var r = 40;
+      var el = wrap.querySelector('[data-parr-bulb="' + key + '"]');
+      if (el) {
+        el.setAttribute("data-lit", lit ? "1" : "0");
+        el.setAttribute("data-present", present ? "1" : "0");
+      }
+      setPath(wrap, '[data-parr-cross="' + key + '"]', present
+        ? "M" + (cx - 28) + " " + (cy - 28) + " L" + (cx + 28) + " " +
+          (cy + 28) + " M" + (cx + 28) + " " + (cy - 28) + " L" +
+          (cx - 28) + " " + (cy + 28)
+        : null);
+      setPath(wrap, '[data-parr-rays="' + key + '"]', lit
+        ? "M" + cx + " " + (cy - r - 8) + " V" + (cy - r - 30) +
+          " M" + cx + " " + (cy + r + 8) + " V" + (cy + r + 30) +
+          " M" + (cx - r - 8) + " " + cy + " H" + (cx - r - 30) +
+          " M" + (cx + r + 8) + " " + cy + " H" + (cx + r + 30)
+        : null);
+    }
+
+    function paint() {
+      var series = p8Pressed(wireBtns).getAttribute("data-parr-wire") ===
+                   "series";
+      var out = parseInt(
+        p8Pressed(outBtns).getAttribute("data-parr-out-btn"), 10) || 0;
+      var b1In = out !== 1, b2In = out !== 2;
+      var half = ONE / 2;
+      var flowing = b1In && b2In;
+      var total, b1Lit, b2Lit, b1Word, b2Word, b1Sub, b2Sub;
+
+      if (series) {
+        total = flowing ? half : 0;
+        b1Lit = flowing; b2Lit = flowing;
+        b1Word = b1In ? (flowing ? "dim" : "dark") : "taken out";
+        b2Word = b2In ? (flowing ? "dim" : "dark") : "taken out";
+        b1Sub = b1In ? (flowing ? p8Fix(half, 2, "A") + " through it"
+                                : "no current anywhere")
+                     : "a gap in the only path";
+        b2Sub = b2In ? (flowing ? p8Fix(half, 2, "A") + " through it"
+                                : "no current anywhere")
+                     : "a gap in the only path";
+      } else {
+        b1Lit = b1In; b2Lit = b2In;
+        total = (b1In ? ONE : 0) + (b2In ? ONE : 0);
+        b1Word = b1In ? "at full brightness" : "taken out";
+        b2Word = b2In ? "at full brightness" : "taken out";
+        b1Sub = b1In ? p8Fix(ONE, 2, "A") + " in its branch"
+                     : "its branch is broken";
+        b2Sub = b2In ? p8Fix(ONE, 2, "A") + " in its branch"
+                     : "its branch is broken";
+      }
+
+      each(toArray(wrap.querySelectorAll("[data-parr-fig]")), function (f) {
+        setHidden(f, f.getAttribute("data-parr-fig") ===
+                     (series ? "parallel" : "series"));
+      });
+      bulb("1s", 400, 80, series && b1Lit, b1In);
+      bulb("2s", 640, 80, series && b2Lit, b2In);
+      bulb("1p", 440, 180, !series && b1Lit, b1In);
+      bulb("2p", 740, 180, !series && b2Lit, b2In);
+
+      fillSpan(wrap, "parr", "total", p8Fix(total, 2, "A"),
+               "position:absolute;left:30%;top:93%;" +
+               "transform:translate(-50%,0);color:" + P8_READ + ";");
+
+      setOut(wrap, "parr", "paths", series ? "one" : "two");
+      p8Sub(wrap, "parr", "paths",
+            series ? "through both bulbs" : "one through each bulb");
+      setOut(wrap, "parr", "total", p8Fix(total, 2, "A"));
+      setOut(wrap, "parr", "b1", b1Word);
+      setOut(wrap, "parr", "b2", b2Word);
+      p8Sub(wrap, "parr", "b1", b1Sub);
+      p8Sub(wrap, "parr", "b2", b2Sub);
+
+      p8Note(wrap, "parr",
+             series ? (out === 0 ? "series_both" : "series_out")
+                    : (out === 0 ? "parallel_both" : "parallel_out"), {
+        out: out, total: p8Fix(total, 2, "A"), one: p8Fix(ONE, 2, "A"),
+        half: p8Fix(half, 2, "A"), volts: VOLTS.toFixed(1) + " V"
+      });
+
+      each(toArray(wrap.querySelectorAll("[data-parr-alt]")), function (s) {
+        s.setAttribute("aria-label",
+          "Two bulbs wired " +
+          (series ? "in series in one loop" : "in parallel on two branches") +
+          " across a " + VOLTS.toFixed(1) + " volt battery, with " +
+          (out === 0 ? "both bulbs in" : "bulb " + out + " taken out") +
+          ". The ammeter beside the battery reads " + p8Fix(total, 2, "A") +
+          ".");
+      });
+
+      p8Progress(sec, touched);
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    p8Gate(sec, wrap, "parr", function () { committed = true; paint(); });
+    paint();
+  }
+
+  /* Design's own component shapes for `p8-03`, as ONE stroked path and ONE
+     filled path each, so a lamp, a resistor, a buzzer and an empty socket
+     are the same two attributes at different values.
+
+     ⚠️ CIRCLES INSIDE A COMPUTED PATH ARE TWO ARCS (`a r r 0 1 0 …`), never
+     a `<circle>`. Design's own note for the generator: `<circle>` is used
+     only where the centre itself is the computed value. */
+  function p8CompGeom(kind, cx, cy) {
+    if (kind === "lamp") {
+      return {
+        path: "M" + (cx - 38) + " " + cy + " a 38 38 0 1 0 76 0 " +
+              "a 38 38 0 1 0 -76 0 M" + (cx - 27) + " " + (cy - 27) +
+              " L" + (cx + 27) + " " + (cy + 27) + " M" + (cx + 27) + " " +
+              (cy - 27) + " L" + (cx - 27) + " " + (cy + 27),
+        fill: null
+      };
+    }
+    if (kind === "res") {
+      return {
+        path: "M" + (cx - 30) + " " + (cy - 36) + " H" + (cx + 30) +
+              " V" + (cy + 36) + " H" + (cx - 30) + " Z",
+        fill: null
+      };
+    }
+    if (kind === "buz") {
+      return {
+        path: "M" + (cx - 38) + " " + (cy + 20) + " A 38 38 0 0 1 " +
+              (cx + 38) + " " + (cy + 20) + " Z M" + cx + " " + (cy - 38) +
+              " V" + (cy - 18) + " M" + cx + " " + (cy + 20) + " V" +
+              (cy + 38),
+        fill: null
+      };
+    }
+    return {
+      path: null,
+      fill: "M" + (cx - 9) + " " + (cy - 30) + " a 9 9 0 1 0 18 0 " +
+            "a 9 9 0 1 0 -18 0 Z M" + (cx - 9) + " " + (cy + 30) +
+            " a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 Z"
+    };
+  }
+
+  /* p8-03 `#s-junction` — change what is in the branches.
+
+     ⚖️ THE EQUAL STATE AND THE ZERO STATE ARE BOTH REAL AND BOTH HAVE THEIR
+     OWN SENTENCE. Halving works only when the branches match, and the note
+     for the equal state says so in terms — which is the only thing that
+     turns `CIRC-09` from a rule into a special case.
+
+     ⚠️ THE ARROW WIDTH IS NEVER THE ONLY CHANNEL. Every arrow has a mono
+     reading beside it and a tile under it. */
+  function wireJunctionBench(sec) {
+    var wrap = sec.querySelector("[data-junc]");
+    if (!wrap) { return; }
+    var svg = wrap.querySelector("[data-junc-alt]");
+    var committed = false, touched = 0;
+
+    var aBtns = p8Tabs(wrap, "junc", "a", function () {
+      touched += 1; paint();
+    });
+    var bBtns = p8Tabs(wrap, "junc", "b", function () {
+      touched += 1; paint();
+    });
+
+    function arrow(x, amps) {
+      if (!(amps > 0)) { return { d: null, w: 0 }; }
+      return {
+        d: "M" + x + " 318 V366 M" + x + " 366 L" + (x - 12) + " 350 " +
+           "M" + x + " 366 L" + (x + 12) + " 350",
+        w: (3 + amps * 20).toFixed(1)
+      };
+    }
+
+    function setArrow(key, spec) {
+      var el = wrap.querySelector('[data-junc-arrow="' + key + '"]');
+      if (el) { el.style.strokeWidth = spec.w; }
+      setPath(wrap, '[data-junc-arrow="' + key + '"]', spec.d);
+    }
+
+    function paint() {
+      var A = p8Pressed(aBtns), B = p8Pressed(bBtns);
+      var aA = parseFloat(A.getAttribute("data-amps"));
+      var bA = parseFloat(B.getAttribute("data-amps"));
+      var total = aA + bA;
+      var gA = p8CompGeom(A.getAttribute("data-shape"), 430, 270);
+      var gB = p8CompGeom(B.getAttribute("data-shape"), 760, 270);
+
+      setPath(wrap, '[data-junc-comp="a"]', gA.path);
+      setPath(wrap, '[data-junc-compfill="a"]', gA.fill);
+      setPath(wrap, '[data-junc-comp="b"]', gB.path);
+      setPath(wrap, '[data-junc-compfill="b"]', gB.fill);
+      setArrow("a", arrow(430, aA));
+      setArrow("b", arrow(760, bA));
+      setArrow("main", total > 0
+        ? { d: "M380 380 H196 M196 380 L212 368 M196 380 L212 392",
+            w: (3 + total * 20).toFixed(1) }
+        : { d: null, w: 0 });
+
+      fillSpan(wrap, "junc", "main", p8Fix(total, 2, "A"),
+               "position:absolute;left:30.5%;top:15%;color:" + P8_READ + ";");
+      fillSpan(wrap, "junc", "a", p8Fix(aA, 2, "A"),
+               "position:absolute;left:49.5%;top:33%;color:" + P8_READ + ";");
+      fillSpan(wrap, "junc", "b", p8Fix(bA, 2, "A"),
+               "position:absolute;left:82.5%;top:33%;color:" + P8_READ + ";");
+      fillSpan(wrap, "junc", "aname", A.getAttribute("data-name"),
+               "position:absolute;left:43%;top:74%;color:" + P8_MUTED + ";");
+      fillSpan(wrap, "junc", "bname", B.getAttribute("data-name"),
+               "position:absolute;left:76%;top:74%;color:" + P8_MUTED + ";");
+
+      setOut(wrap, "junc", "a", p8Fix(aA, 2, "A"));
+      setOut(wrap, "junc", "b", p8Fix(bA, 2, "A"));
+      setOut(wrap, "junc", "main", p8Fix(total, 2, "A"));
+      p8Sub(wrap, "junc", "a", A.getAttribute("data-sub"));
+      p8Sub(wrap, "junc", "b", B.getAttribute("data-sub"));
+      p8Sub(wrap, "junc", "main",
+            p8Fix(aA, 2, "A") + " + " + p8Fix(bA, 2, "A"));
+
+      var key, split, vals = {
+        a: p8Fix(aA, 2, "A"), b: p8Fix(bA, 2, "A"),
+        total: p8Fix(total, 2, "A"), half: p8Fix(total / 2, 2, "A")
+      };
+      if (total === 0) {
+        key = "none"; split = "nothing flowing";
+      } else if (aA === 0 || bA === 0) {
+        key = "one_open";
+        vals.live = aA === 0 ? "B" : "A";
+        vals.dead = aA === 0 ? "A" : "B";
+        split = "all through branch " + vals.live;
+      } else if (aA === bA) {
+        key = "equal";
+        split = "evenly, " + p8Fix(aA, 2, "A") + " each";
+      } else {
+        key = "uneven";
+        vals.bigger = aA > bA ? "A" : "B";
+        split = "unevenly, " +
+                (Math.max(aA, bA) / Math.min(aA, bA)).toFixed(1) + " to 1";
+      }
+      setOut(wrap, "junc", "split", split);
+      p8Note(wrap, "junc", key, vals);
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A battery feeding two parallel branches. Branch A holds " +
+          A.getAttribute("data-label").toLowerCase() + " and carries " +
+          p8Fix(aA, 2, "A") + "; branch B holds " +
+          B.getAttribute("data-label").toLowerCase() + " and carries " +
+          p8Fix(bA, 2, "A") + ". The ammeter in the main wire reads " +
+          p8Fix(total, 2, "A") + ".");
+      }
+
+      p8Progress(sec, touched);
+      markStage(sec, committed && touched > 0);
+
+      publishLiveP8(sec, {
+        total: p8Fix(total, 2, "A"), a: p8Fix(aA, 2, "A"),
+        b: p8Fix(bA, 2, "A"), totalnum: total.toFixed(2),
+        anum: aA.toFixed(2), bnum: bA.toFixed(2)
+      }, false);
+    }
+
+    p8Gate(sec, wrap, "junc", function () { committed = true; paint(); });
+    paint();
+  }
+
+  /* p8-04 `#s-volt` — move the voltmeter across.
+
+     ⚖️ THE SHARE IS COMPUTED FROM THE RESISTANCES, NEVER AUTHORED. Two lamps
+     split 3.0 V evenly; a lamp and a 20 Ω resistor split it one to two; a
+     lamp and a wire link give the lamp all of it. A note that named the
+     larger share as a fixed component would be wrong on a third of the
+     states, and the comparative word is derived for the same reason —
+     including the EQUAL case, which a load sweep never reaches. */
+  function wireVoltmeterTap(sec) {
+    var wrap = sec.querySelector("[data-vtap]");
+    if (!wrap) { return; }
+    var svg = wrap.querySelector("[data-vtap-alt]");
+    var R1 = parseFloat(wrap.getAttribute("data-lamp-ohms")) || 10;
+    var VPC = parseFloat(wrap.getAttribute("data-volts-per-cell")) || 1.5;
+    var committed = false, touched = 0;
+
+    var battBtns = p8Tabs(wrap, "vtap", "batt", function () {
+      touched += 1; paint();
+    });
+    var compBtns = p8Tabs(wrap, "vtap", "comp", function () {
+      touched += 1; paint();
+    });
+    var posBtns = p8Tabs(wrap, "vtap", "pos", function () {
+      touched += 1; paint();
+    });
+
+    function paint() {
+      var battB = p8Pressed(battBtns);
+      var C = p8Pressed(compBtns);
+      var P = p8Pressed(posBtns);
+      var n = parseInt(battB.getAttribute("data-vtap-batt"), 10) || 2;
+      var V = n * VPC;
+      var ohms = parseFloat(C.getAttribute("data-ohms"));
+      var a = V * R1 / (R1 + ohms);
+      var b = V - a;
+      var pos = P.getAttribute("data-vtap-pos");
+      var reading = pos === "batt" ? V : pos === "lamp" ? a
+                  : pos === "comp" ? b : V;
+
+      var d = "", start = 245 - n * 13, i, y;
+      for (i = 0; i < n; i += 1) {
+        y = start + i * 26;
+        d += "M74 " + y + " H146 M94 " + (y + 13) + " H126 ";
+      }
+      setPath(wrap, "[data-vtap-battpath]", d.trim());
+
+      var shape = C.getAttribute("data-shape");
+      setPath(wrap, "[data-vtap-comp2]",
+        shape === "lamp"
+          ? "M620 110 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0 " +
+            "M633 83 L687 137 M687 83 L633 137"
+          : shape === "res" ? "M626 74 H694 V146 H626 Z" : "M620 110 H700");
+
+      setPath(wrap, "[data-vtap-lead]", P.getAttribute("data-lead"));
+      var taps = "";
+      each(P.getAttribute("data-taps").split(" "), function (pair) {
+        var xy = pair.split(",");
+        taps += "M" + (Number(xy[0]) - 9) + " " + xy[1] +
+                " a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 Z ";
+      });
+      setPath(wrap, "[data-vtap-tap]", taps.trim());
+
+      fillSpan(wrap, "vtap", "reading", p8Fix(reading, 2, "V"),
+               "position:absolute;left:30%;top:57%;color:" + P8_READ + ";");
+      fillSpan(wrap, "vtap", "lamp", "LAMP",
+               "position:absolute;left:38%;top:31%;" +
+               "transform:translate(-50%,0);color:" + P8_MUTED + ";");
+      fillSpan(wrap, "vtap", "comp2", C.getAttribute("data-name"),
+               "position:absolute;left:66%;top:31%;" +
+               "transform:translate(-50%,0);color:" + P8_MUTED + ";");
+
+      setOut(wrap, "vtap", "batt", V.toFixed(1) + " V");
+      p8Sub(wrap, "vtap", "batt", battB.getAttribute("data-sub"));
+      setOut(wrap, "vtap", "a", p8Fix(a, 2, "V"));
+      setOut(wrap, "vtap", "b", p8Fix(b, 2, "V"));
+      p8Sub(wrap, "vtap", "b", C.getAttribute("data-sub"));
+      setOut(wrap, "vtap", "reading", p8Fix(reading, 2, "V"));
+      p8Sub(wrap, "vtap", "reading", P.getAttribute("data-caption"));
+
+      var name = C.getAttribute("data-name").toLowerCase();
+      var key, vals = {
+        v: p8Fix(V, 2, "V"), n: n, a: p8Fix(a, 2, "V"), b: p8Fix(b, 2, "V"),
+        name: name, reading: p8Fix(reading, 2, "V")
+      };
+      if (pos === "batt") { key = "battery"; }
+      else if (pos === "both") { key = "both"; }
+      else if (reading === 0) { key = "zero"; }
+      else {
+        key = "share";
+        var other = pos === "lamp" ? b : a;
+        vals.other = pos === "lamp" ? "the " + name : "the lamp";
+        vals.otherv = p8Fix(other, 2, "V");
+        vals["this"] = pos === "lamp" ? "the lamp" : "the " + name;
+        vals.cmp = reading > other
+          ? "the larger share, because it resists more"
+          : reading < other
+            ? "the smaller share, because it resists less"
+            : "exactly half, because the two resist the same";
+      }
+      p8Note(wrap, "vtap", key, vals);
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A series loop of a lamp and a " + name + " on a " +
+          V.toFixed(1) + " volt battery, with a voltmeter connected across " +
+          P.getAttribute("data-name") + ", reading " +
+          p8Fix(reading, 2, "V") + ".");
+      }
+
+      p8Progress(sec, touched);
+      markStage(sec, committed && touched > 0);
+
+      publishLiveP8(sec, {
+        v1: V.toFixed(1), v2: V.toFixed(2), a: p8Fix(a, 2, "V"),
+        b: p8Fix(b, 2, "V"), anum: a.toFixed(2), bnum: b.toFixed(2),
+        name: name
+      }, false);
+    }
+
+    p8Gate(sec, wrap, "vtap", function () { committed = true; paint(); });
+    paint();
+  }
+
+  /* p8-05 `#s-bench` — two readings, one division.
+
+     ⚖️ THE LAMP RISES AND THE WIRING NEVER SAYS HOW EVENLY. Ruled by Mide on
+     21 Aug 2026: the linear model stays, because the teaching point is that
+     resistance is not fixed and the true concave curve is GCSE — and the
+     page may not then claim the climb is steady. Every sentence here says
+     the resistance RISES and names the two ends; `ks3_art/p8.py` refuses a
+     payload that says more, so the ruling is enforced at build time rather
+     than by a sweep somebody has to remember to run. */
+  function wireComponentUnderTest(sec) {
+    var wrap = sec.querySelector("[data-cundt]");
+    if (!wrap) { return; }
+    var svg = wrap.querySelector("[data-cundt-alt]");
+    var BASE = parseFloat(wrap.getAttribute("data-lamp-base")) || 4;
+    var SLOPE = parseFloat(wrap.getAttribute("data-lamp-slope")) || 1.2;
+    var VOLTS = (wrap.getAttribute("data-volts") || "").split("|")
+      .map(function (x) { return parseFloat(x); });
+    var slider = wrap.querySelector('[data-cundt-slider="v"]');
+    var committed = false, touched = 0;
+
+    var compBtns = p8Tabs(wrap, "cundt", "comp", function () {
+      touched += 1; paint();
+    });
+    if (slider) {
+      ["input", "change"].forEach(function (ev) {
+        slider.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    function ohmsAt(C, V) {
+      return C.getAttribute("data-band") === "lamp"
+        ? BASE + SLOPE * V : parseFloat(C.getAttribute("data-ohms"));
+    }
+
+    function paint() {
+      var C = p8Pressed(compBtns);
+      var V = VOLTS[slider ? Number(slider.value) : 0];
+      var R = ohmsAt(C, V);
+      var I = V / R;
+      var band = C.getAttribute("data-band");
+      var name = C.getAttribute("data-name").toLowerCase();
+      var fv = p8Fix(V, 2, "V"), fi = p8Fix(I, 3, "A"),
+          fr = p8Fix(R, 1, "Ω");
+
+      var shape = C.getAttribute("data-shape");
+      var el = wrap.querySelector("[data-cundt-comppath]");
+      if (shape === "lamp") {
+        setPath(wrap, "[data-cundt-comppath]",
+          "M406 110 a 44 44 0 1 0 88 0 a 44 44 0 1 0 -88 0 " +
+          "M419 79 L481 141 M481 79 L419 141");
+        if (el) { el.style.strokeWidth = 6; el.style.strokeLinecap = "round"; }
+      } else if (shape === "res") {
+        setPath(wrap, "[data-cundt-comppath]", "M406 74 H494 V146 H406 Z");
+        if (el) { el.style.strokeWidth = 6; el.style.strokeLinecap = "butt"; }
+      } else {
+        setPath(wrap, "[data-cundt-comppath]", "M400 110 H500");
+        if (el) {
+          el.style.strokeWidth = C.getAttribute("data-width") || 7;
+          el.style.strokeLinecap = "butt";
+        }
+      }
+
+      var flow = wrap.querySelector("[data-cundt-flow]");
+      if (flow) { flow.style.strokeWidth = Math.min(11, 2 + I * 6).toFixed(1); }
+      setPath(wrap, "[data-cundt-flow]",
+              "M780 380 H560 M560 380 L578 368 M560 380 L578 392");
+
+      fillSpan(wrap, "cundt", "v", fv,
+               "position:absolute;left:51%;top:62%;color:" + P8_READ + ";");
+      fillSpan(wrap, "cundt", "i", fi,
+               "position:absolute;left:74%;top:51%;color:" + P8_READ + ";");
+      fillSpan(wrap, "cundt", "name", C.getAttribute("data-name"),
+               "position:absolute;left:45%;top:35%;" +
+               "transform:translate(-50%,0);color:" + P8_MUTED + ";");
+      fillSpan(wrap, "cundt", "r", fr,
+               "position:absolute;left:45%;top:41%;" +
+               "transform:translate(-50%,0);color:var(--ks3-on-dark);");
+
+      setOut(wrap, "cundt", "v", fv);
+      setOut(wrap, "cundt", "i", fi);
+      setOut(wrap, "cundt", "r", fr);
+      p8Sub(wrap, "cundt", "r", V.toFixed(2) + " ÷ " + I.toFixed(3));
+      setOut(wrap, "cundt", "verdict",
+             band === "lamp" ? "the ratio climbs" : "the ratio stays put");
+
+      p8Note(wrap, "cundt", band === "lamp" ? "lamp" : band, {
+        v: fv, i: fi, r: fr, name: name,
+        rint: R.toFixed(0),
+        rcold: (BASE + SLOPE * VOLTS[0]).toFixed(1),
+        rhot: (BASE + SLOPE * VOLTS[VOLTS.length - 1]).toFixed(1)
+      });
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A variable supply set to " + fv + " driving a " + name +
+          ", with a voltmeter across it reading " + fv +
+          " and an ammeter in the loop reading " + fi + ".");
+      }
+
+      p8Progress(sec, touched);
+      markStage(sec, committed && touched > 0);
+
+      publishLiveP8(sec, {
+        v: fv, i: fi, r: fr, vnum: V.toFixed(2), inum: I.toFixed(3),
+        rnum: R.toFixed(1), name: name,
+        anote: band === "lamp"
+          ? "That is this lamp’s resistance at " + fv +
+            ". Move the supply and the answer moves with it."
+          : "It takes " + R.toFixed(1) +
+            " V across this component to drive 1 A through it."
+      }, false);
+    }
+
+    p8Gate(sec, wrap, "cundt", function () { committed = true; paint(); });
+    paint();
+  }
+
+  /* Design's own resistance and current formatters, and her comparison
+     phrase. Ported rather than reinvented: the prefixes are what make the
+     fourteen decades readable, and `times()` is what turns a ratio of
+     4 × 10^13 into words a Year 8 can hold. */
+  function p8FmtR(r) {
+    if (r < 1000) { return (r < 10 ? r.toFixed(2) : r.toFixed(0)) + " Ω"; }
+    if (r < 1e6) { return (r / 1e3).toFixed(r < 1e4 ? 1 : 0) + " kΩ"; }
+    if (r < 1e9) { return (r / 1e6).toFixed(r < 1e7 ? 1 : 0) + " MΩ"; }
+    if (r < 1e12) { return (r / 1e9).toFixed(r < 1e10 ? 1 : 0) + " GΩ"; }
+    return (r / 1e12).toFixed(r < 1e13 ? 1 : 0) + " TΩ";
+  }
+
+  function p8FmtI(i) {
+    if (i >= 1) { return i.toFixed(1) + " A"; }
+    if (i >= 1e-3) { return (i * 1e3).toFixed(1) + " mA"; }
+    if (i >= 1e-6) { return (i * 1e6).toFixed(1) + " µA"; }
+    if (i >= 1e-9) { return (i * 1e9).toFixed(1) + " nA"; }
+    return (i * 1e12).toFixed(1) + " pA";
+  }
+
+  function p8Times(n) {
+    if (n < 1000) { return "about " + Math.round(n) + " times more"; }
+    if (n < 1e6) { return "about " + Math.round(n / 1e3) + " thousand times more"; }
+    if (n < 1e9) { return "about " + Math.round(n / 1e6) + " million times more"; }
+    if (n < 1e12) { return "about " + Math.round(n / 1e9) + " billion times more"; }
+    return "about " + Math.round(n / 1e12) + " million million times more";
+  }
+
+  function p8Group(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+
+  /* p8-06 `#s-test` — clip a specimen in and divide.
+
+     ⚖️ THE COPPER STATE PRINTS NO CURRENT, AND THE RULING IS IN FOUR
+     PLACES. ⊕ Mide, 21 Aug 2026: 6.0 V ÷ 0.05 Ω is 120 A, which is a
+     division result and not a reading — no school supply delivers it,
+     because the supply's own internal resistance is what limits the current
+     there. So the tile reads a sentence, its sub-line says why, the
+     division line names the reference instead, and the mark on the drawing
+     reads SUPPLY-LIMITED. The resistance readout keeps its real value and
+     the bar on the chart still draws, because copper is what everything
+     else is measured against.
+
+     ⚖️ THE ARROW REFUSES TO DRAW BELOW A MICROAMP and goes dashed between a
+     milliamp and a nanoamp. Two channels, and the reading is always a
+     number in words as well. */
+  function wireTestGap(sec) {
+    var wrap = sec.querySelector("[data-tgap]");
+    if (!wrap) { return; }
+    var svg = wrap.querySelector("[data-tgap-alt]");
+    var VOLTS = parseFloat(wrap.getAttribute("data-volts")) || 6;
+    var COPPER = parseFloat(wrap.getAttribute("data-copper")) || 0.05;
+    var SHORT = wrap.getAttribute("data-short");
+    var GOOD = parseFloat(wrap.getAttribute("data-good-below")) || 100;
+    var POOR = parseFloat(wrap.getAttribute("data-poor-below")) || 100000;
+    var UNITS = { "A": 1, "mA": 1e3, "µA": 1e6, "nA": 1e9, "pA": 1e12 };
+    var NAMES = { "A": "amps", "mA": "milliamps", "µA": "microamps",
+                  "nA": "nanoamps", "pA": "picoamps" };
+    var committed = false, touched = 0;
+
+    var specBtns = p8Tabs(wrap, "tgap", "spec", function () {
+      touched += 1; paint();
+    });
+    var lenBtns = p8Tabs(wrap, "tgap", "len", function () {
+      touched += 1; paint();
+    });
+
+    function paint() {
+      var S = p8Pressed(specBtns), L = p8Pressed(lenBtns);
+      var mult = parseFloat(L.getAttribute("data-tgap-len")) || 1;
+      var R = parseFloat(S.getAttribute("data-ohms")) * mult;
+      var I = VOLTS / R;
+      var isShort = S.getAttribute("data-tgap-spec") === SHORT;
+      var lenWord = L.getAttribute("data-word");
+      var name = S.getAttribute("data-name").toLowerCase();
+      var verdict = R < GOOD ? "a conductor"
+                  : R < POOR ? "a poor conductor" : "an insulator, in practice";
+      var band = R < GOOD ? "good" : R < POOR ? "poor" : "ins";
+
+      var flow = wrap.querySelector("[data-tgap-flow]");
+      if (flow) {
+        if (I >= 1e-3) {
+          flow.style.strokeWidth =
+            (3 + Math.min(9, (Math.log(I) / Math.LN10 + 3) * 1.6)).toFixed(1);
+          flow.style.strokeDasharray = "";
+        } else if (I >= 1e-9) {
+          flow.style.strokeWidth = 3;
+          flow.style.strokeDasharray = "12 14";
+        } else {
+          flow.style.strokeWidth = 0;
+          flow.style.strokeDasharray = "";
+        }
+      }
+      setPath(wrap, "[data-tgap-flow]", I >= 1e-9
+        ? "M700 320 H420 M420 320 L438 308 M420 320 L438 332" : null);
+
+      fillSpan(wrap, "tgap", "name",
+               S.getAttribute("data-name") + " · " + lenWord,
+               "position:absolute;left:50%;top:22%;" +
+               "transform:translate(-50%,0);color:var(--ks3-on-dark);");
+      fillSpan(wrap, "tgap", "r", p8FmtR(R),
+               "position:absolute;left:50%;top:38%;" +
+               "transform:translate(-50%,0);color:" + P8_READ + ";");
+      fillSpan(wrap, "tgap", "i",
+               isShort ? wrap.getAttribute("data-short-mark") : p8FmtI(I),
+               "position:absolute;left:62%;top:46%;" +
+               "transform:translate(-100%,0);color:" + P8_READ + ";");
+
+      /* The one tile in the unit with two value elements. The mono figure
+         and the sentence are different type at different sizes, so they are
+         two elements and a `hidden` toggle rather than one element changing
+         class. */
+      var num = wrap.querySelector('[data-tgap-out="i"]');
+      var alt = wrap.querySelector('[data-tgap-alt="i"]');
+      /* ⚠️ THE HIDDEN ELEMENT DOES NOT HOLD THE NUMBER EITHER. `120.0 A`
+         sitting in a `display: none` paragraph is off the page and off the
+         accessibility tree, and it is still the string the ruling says must
+         not be there. Belt and braces: when the gap is shorted, both
+         elements carry the sentence. */
+      if (num) {
+        setHidden(num, isShort);
+        num.textContent = isShort
+          ? wrap.getAttribute("data-short-reading") : p8FmtI(I);
+      }
+      if (alt) {
+        setHidden(alt, !isShort);
+        alt.textContent = wrap.getAttribute("data-short-reading");
+      }
+      p8Sub(wrap, "tgap", "i", isShort
+        ? wrap.getAttribute("data-short-sub") : "at 6.0 V across the gap");
+      setOut(wrap, "tgap", "r", p8FmtR(R));
+      p8Sub(wrap, "tgap", "r", isShort
+        ? wrap.getAttribute("data-short-div")
+        : VOLTS.toFixed(1) + " V ÷ " + p8FmtI(I));
+      setOut(wrap, "tgap", "verdict", verdict);
+      p8Sub(wrap, "tgap", "verdict", S.getAttribute("data-carriers"));
+      setOut(wrap, "tgap", "ratio", isShort && mult === 1
+        ? "this is the copper" : p8Times(R / COPPER));
+
+      var note = fillTokens(p8Branch(wrap, "tgap",
+                                     isShort ? "short" : band), {
+        len: lenWord, name: name, r: p8FmtR(R), i: p8FmtI(I),
+        times: p8Times(R / COPPER),
+        carriers: S.getAttribute("data-carriers")
+      });
+      if (mult !== 1 && !isShort) {
+        note += p8Branch(wrap, "tgap", "longer");
+      }
+      var noteEl = wrap.querySelector("[data-tgap-note]");
+      if (noteEl) { noteEl.textContent = note; }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A " + VOLTS.toFixed(1) + " volt supply, a test gap holding " +
+          lenWord + " of " + name +
+          " between two crocodile clips, and an ammeter " +
+          (isShort
+            ? "showing no reading, because a bare copper wire across the " +
+              "supply is a short circuit."
+            : "reading " + p8FmtI(I) + "."));
+      }
+
+      p8Progress(sec, touched);
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+
+      /* The Convert line is computed from whatever unit the ammeter is
+         showing — mA, µA, nA or pA — so an insulator specimen converts
+         correctly rather than being waved through. Design's own rule. */
+      var unit = p8FmtI(I).split(" ")[1];
+      var div = UNITS[unit] || 1;
+      var amps = div === 1 ? p8FmtI(I) : Number(I.toPrecision(3)) + " A";
+      publishLiveP8(sec, {
+        len: lenWord, name: name, i: p8FmtI(I), iamps: amps,
+        ibare: amps.replace(" A", ""),
+        r: p8FmtR(R), rbare: p8FmtR(R).replace(/ [^ ]+$/, ""),
+        verdict: verdict,
+        convline: div === 1
+          ? p8FmtI(I) + " stays " + p8FmtI(I)
+          : p8FmtI(I) + " ÷ " + p8Group(div) + " = " + amps,
+        convnote: div === 1
+          ? "The ammeter already reads in amps, so there is nothing to convert."
+          : "There are " + p8Group(div) + " " + NAMES[unit] +
+            " in an amp, so divide before you go any further.",
+        qhead: isShort
+          ? fillTokens(wrap.getAttribute("data-short-head"), { len: lenWord })
+          : "Your gap: " + VOLTS.toFixed(1) + " V across " + lenWord +
+            " of " + name + ", and the ammeter reads " + p8FmtI(I) + ".",
+        qclose: isShort
+          ? "Pick a specimen with a reading and the five lines will fill in."
+          : "The five lines give " + p8FmtR(R) + " for " + lenWord +
+            " of " + name + "."
+      }, isShort);
+    }
+
+    p8Gate(sec, wrap, "tgap", function () { committed = true; paint(); });
+    paint();
+  }
+
+  /* p8-07 `#s-wire` — wire it wrong on purpose.
+
+     ⚖️ THE LOOSE CONNECTION DOMINATES. Three booleans is eight states and
+     five sentences, because a break in the loop makes both meter positions
+     irrelevant — and that IS the lesson, because the commonest failure in
+     the practical looks exactly like a broken instrument.
+
+     ⚠️ THE SHORTED AMMETER READS A PHRASE, NEVER A FIGURE. What a real
+     supply and a real meter do in that state depends on the equipment and
+     none of it is a measurement. */
+  function wireMeterPlacement(sec) {
+    var wrap = sec.querySelector("[data-mplace]");
+    if (!wrap) { return; }
+    var svg = wrap.querySelector("[data-mplace-alt]");
+    var SHORT = wrap.getAttribute("data-short-reading") || "off the scale";
+    var RAYS = "M500 92 V66 M500 188 V214 M448 140 H422 M552 140 H578 " +
+               "M462 102 L444 84 M538 178 L556 196 M538 102 L556 84 " +
+               "M462 178 L444 196";
+    var committed = false, touched = 0;
+
+    var aBtns = p8Tabs(wrap, "mplace", "a", function () {
+      touched += 1; paint();
+    });
+    var vBtns = p8Tabs(wrap, "mplace", "v", function () {
+      touched += 1; paint();
+    });
+    var jBtns = p8Tabs(wrap, "mplace", "j", function () {
+      touched += 1; paint();
+    });
+
+    function paint() {
+      var aLoop = p8Pressed(aBtns).getAttribute("data-mplace-a") === "0";
+      var vAcross = p8Pressed(vBtns).getAttribute("data-mplace-v") === "0";
+      var loose = p8Pressed(jBtns).getAttribute("data-mplace-j") === "1";
+      var aRead, vRead, lampLit, lampWord, verdict, key, aCap, vCap;
+
+      if (loose) {
+        aRead = "0.00 A"; vRead = "0.00 V"; lampLit = false;
+        lampWord = "dark"; verdict = "a break in the loop"; key = "loose";
+        aCap = "nothing is flowing"; vCap = "no difference across it";
+      } else if (!aLoop && vAcross) {
+        aRead = SHORT; vRead = "0.00 V"; lampLit = false;
+        lampWord = "dark — bypassed";
+        verdict = "the lamp is shorted out"; key = "shorted";
+        aCap = "far more than the meter can show";
+        vCap = "no p.d. left across the lamp";
+      } else if (aLoop && !vAcross) {
+        aRead = "0.00 A"; vRead = "2.94 V"; lampLit = false;
+        lampWord = "dark"; verdict = "the loop is strangled";
+        key = "strangled";
+        aCap = "about 3 millionths of an amp — below what it can show";
+        vCap = "almost the whole battery p.d., across the meter itself";
+      } else if (!aLoop && !vAcross) {
+        aRead = "0.00 A"; vRead = "2.94 V"; lampLit = false;
+        lampWord = "dark — bypassed"; verdict = "both meters misplaced";
+        key = "both";
+        aCap = "the current through the bypass is far too small to show";
+        vCap = "almost the whole battery p.d., across the meter itself";
+      } else {
+        aRead = "0.30 A"; vRead = "3.00 V"; lampLit = true;
+        lampWord = "lit, at full brightness"; verdict = "wired correctly";
+        key = "correct";
+        aCap = "in the loop, carrying the current";
+        vCap = "across the lamp, reading its p.d.";
+      }
+
+      var aX = aLoop ? 770 : 500, aY = aLoop ? 140 : 265;
+      var vX = vAcross ? 500 : 330, vY = vAcross ? 52 : 400;
+      var fill = "";
+      if (!aLoop) { fill += "M730 140 H810 "; }
+      if (vAcross) { fill += "M290 400 H370 "; }
+      if (!loose) { fill += "M640 400 H700 "; }
+      setPath(wrap, "[data-mplace-bridge]", fill.trim());
+
+      setPath(wrap, "[data-mplace-alead]", aLoop ? null
+        : "M460 265 V210 H400 V140 M540 265 V210 H600 V140");
+      setPath(wrap, "[data-mplace-vlead]", vAcross
+        ? "M460 52 V110 H440 V140 M540 52 V110 H560 V140" : null);
+      var taps = "";
+      if (!aLoop) {
+        taps += "M391 140 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 Z " +
+                "M591 140 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 Z ";
+      }
+      if (vAcross) {
+        taps += "M431 140 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 Z " +
+                "M551 140 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 Z ";
+      }
+      setPath(wrap, "[data-mplace-tap]", taps.trim());
+      setPath(wrap, "[data-mplace-joint]", loose
+        ? "M631 400 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 Z " +
+          "M691 400 a 9 9 0 1 0 18 0 a 9 9 0 1 0 -18 0 Z" : null);
+
+      var am = wrap.querySelector("[data-mplace-ameter]");
+      if (am) { am.setAttribute("cx", aX); am.setAttribute("cy", aY); }
+      var al = wrap.querySelector("[data-mplace-aletter]");
+      if (al) { al.setAttribute("x", aX); al.setAttribute("y", aY + 13); }
+      var vm = wrap.querySelector("[data-mplace-vmeter]");
+      if (vm) { vm.setAttribute("cx", vX); vm.setAttribute("cy", vY); }
+      var vl = wrap.querySelector("[data-mplace-vletter]");
+      if (vl) { vl.setAttribute("x", vX); vl.setAttribute("y", vY + 13); }
+
+      var lamp = wrap.querySelector("[data-mplace-lamp]");
+      if (lamp) { lamp.setAttribute("data-lit", lampLit ? "1" : "0"); }
+      var rays = wrap.querySelector("[data-mplace-rays]");
+      if (rays) { rays.style.strokeWidth = lampLit ? 7 : 0; }
+      setPath(wrap, "[data-mplace-rays]", lampLit ? RAYS : null);
+
+      fillSpan(wrap, "mplace", "a", aRead, aLoop
+        ? "position:absolute;left:77%;top:10%;transform:translate(-50%,0);" +
+          "color:" + P8_READ + ";"
+        : "position:absolute;left:55%;top:47%;color:" + P8_READ + ";");
+      fillSpan(wrap, "mplace", "v", vRead, vAcross
+        ? "position:absolute;left:55%;top:5%;color:" + P8_READ + ";"
+        : "position:absolute;left:38.5%;top:72%;color:" + P8_READ + ";");
+      /* ⚠️ AMBER WARNS, IT NEVER MERELY LABELS (§5A.2). `LOOSE` is a fault
+         state and takes `--ks3-alert`; `TIGHT` is the ordinary state and
+         takes the muted on-dark. The word is on the page either way, so hue
+         is never the only channel. */
+      fillSpan(wrap, "mplace", "joint", loose ? "LOOSE" : "TIGHT",
+               "position:absolute;left:67%;top:83%;color:" +
+               (loose ? "var(--ks3-alert)" : P8_MUTED) + ";");
+
+      setOut(wrap, "mplace", "a", aRead);
+      setOut(wrap, "mplace", "v", vRead);
+      p8Sub(wrap, "mplace", "a", aCap);
+      p8Sub(wrap, "mplace", "v", vCap);
+      setOut(wrap, "mplace", "lamp", lampWord);
+      setOut(wrap, "mplace", "verdict", verdict);
+      p8Note(wrap, "mplace", key, {});
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A 3.0 volt battery driving a lamp, with the ammeter " +
+          (aLoop ? "in the loop" : "connected across the lamp") +
+          ", the voltmeter " +
+          (vAcross ? "across the lamp" : "wired into the loop") +
+          ", and the far connection " + (loose ? "loose" : "tight") +
+          ". The ammeter reads " + aRead + " and the voltmeter reads " +
+          vRead + ".");
+      }
+
+      p8Progress(sec, touched);
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    p8Gate(sec, wrap, "mplace", function () { committed = true; paint(); });
+    paint();
+  }
+
+  /* ═══ END P8 wiring ═══ */
+
 
 
 
@@ -31271,6 +32560,27 @@
     each(root.querySelectorAll("[data-clampblock]"), wireColourBench);
     each(root.querySelectorAll("[data-p7cfablock]"), wireCfifaAttemptP7);
     // ═══ END P7 wiring ═══
+
+// ═══ BEGIN P8 wiring ═══
+    each(root.querySelectorAll("[data-cloopblock]"), wireCircuitLoop);
+    each(root.querySelectorAll("[data-parrblock]"), wireTwoArrangementLoop);
+    each(root.querySelectorAll("[data-juncblock]"), wireJunctionBench);
+    each(root.querySelectorAll("[data-vtapblock]"), wireVoltmeterTap);
+    each(root.querySelectorAll("[data-cundtblock]"), wireComponentUnderTest);
+    each(root.querySelectorAll("[data-tgapblock]"), wireTestGap);
+    each(root.querySelectorAll("[data-mplaceblock]"), wireMeterPlacement);
+    // ⚠️ ORDER IS IMMATERIAL HERE, for the reason the P4 block gives at
+    // length: Question 1's `{token}` holes are filled by `publishLiveP8`,
+    // which each bench calls from its OWN `paint()` — it walks the DOM and
+    // calls `paintAttemptP8` directly, so it does not depend on this line
+    // having run. `wireCfifaAttemptP8` only attaches listeners and paints
+    // the hint.
+    each(root.querySelectorAll("[data-p8cfablock]"), wireCfifaAttemptP8);
+    // ⚠️ `data-cbandblock` and `data-cthinkblock` have NO LINE HERE, and
+    // that is deliberate: both families are fixed figures with no control,
+    // ticked by the bench beside them through `markSibling`. See the P8
+    // wiring block's header.
+    // ═══ END P8 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

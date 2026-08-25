@@ -217,3 +217,10 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `the-eye-and-the-camera` | `p7-05-the-eye-and-the-camera` | s-hook s-eye s-parts s-ladder | — |
 | `colour-and-the-spectrum` | `p7-06-colour-and-the-spectrum` | s-hook s-prism s-band s-ladder | — |
 | `why-things-look-coloured` | `p7-07-why-things-look-coloured` | s-hook s-lamp s-grid s-ladder | — |
+| `current-and-circuits` | `p8-01-current-and-circuits` | s-hook s-loop s-think s-ladder | — |
+| `series-and-parallel` | `p8-02-series-and-parallel` | s-hook s-bench s-compare s-ladder | — |
+| `current-at-a-junction` | `p8-03-current-at-a-junction` | s-hook s-junction s-bar s-ladder | — |
+| `potential-difference` | `p8-04-potential-difference` | s-hook s-volt s-bar s-ladder | — |
+| `resistance` | `p8-05-resistance` | s-hook s-bench s-triangle s-ladder | — |
+| `conductors-and-insulators` | `p8-06-conductors-and-insulators` | s-hook s-test s-scale s-ladder | — |
+| `building-and-measuring-a-circuit` | `p8-07-building-and-measuring-a-circuit` | s-hook s-wire s-fault s-ladder | — |

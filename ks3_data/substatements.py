@@ -790,6 +790,46 @@ SUBSTATEMENTS = {
         ("b", "Differential colour effects in absorption and diffuse "
               "reflection.", "P7"),
     ],
+    # ── P8 · Electric circuits ──────────────────────────────────────────
+    #
+    # P8 is the most surplus-slot unit in physics: THREE statements over
+    # SEVEN lessons, a ratio of 0.43. Design's `NOTES-P8-P9.md` FLAG 1 is the
+    # third repeat of the flag P4 and P6 already answered — *"a gate counting
+    # statements per lesson will read `CUR.01` as claimed three times"* — and
+    # she is right that it would. She could not see that the notation exists,
+    # because this file is not in the read-only reference set she works from.
+    #
+    # Minted lazily, per unit, at authoring time (rule 3 above). `CUR.03` is
+    # whole and takes no sub-IDs; `p8-07` owns no subject-content clause at
+    # all (her FLAG 2) and claims a Working Scientifically statement instead,
+    # which §5.7 exempts from the exactly-once rule.
+    #
+    # The bullet reads:
+    #   "electric current, measured in amperes, in circuits, series and
+    #    parallel circuits, currents add where branches meet and current as
+    #    flow of charge"
+    # Three clauses, and P8 teaches them as three lessons: p8-01 owns what a
+    # current IS and the loop it needs, p8-02 owns the two arrangements,
+    # p8-03 owns what happens where branches meet.
+    "KS3.P.CUR.01": [
+        ("a", "Electric current, measured in amperes, in circuits; current "
+              "as a flow of charge.", "P8"),
+        ("b", "Series and parallel circuits.", "P8"),
+        ("c", "Currents add where branches meet.", "P8"),
+    ],
+    # The bullet reads:
+    #   "potential difference, measured in volts, battery and bulb ratings;
+    #    resistance, measured in ohms, as the ratio of potential difference
+    #    (p.d.) to current"
+    # Two clauses and two lessons. The semicolon in the source is doing the
+    # dividing: what a p.d. IS and what a rating means is p8-04's, and the
+    # RATIO that defines resistance is p8-05's whole subject.
+    "KS3.P.CUR.02": [
+        ("a", "Potential difference, measured in volts; battery and bulb "
+              "ratings.", "P8"),
+        ("b", "Resistance, measured in ohms, as the ratio of potential "
+              "difference (p.d.) to current.", "P8"),
+    ],
 }
 
 

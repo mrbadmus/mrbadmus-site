@@ -126,10 +126,11 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `PRESS` | Pressure — what a force does to a surface, which way a fluid pushes, and what happens where there is nothing to push | 2026-08-25, by P5 |
 | `WAVE` | Waves — what travels and what stays put, what a wave's two measurements are, and how sound is made, carried, reflected, heard and put to work | 2026-08-25, by P6 |
 | `LIGHT` | Light — what travels, how fast, what a surface does to it, how an image forms, and what colour is | 2026-08-25, by P7 |
+| `CIRC` | Current and circuits — what a current is and what it is not, what a battery does, what happens at a junction, what a resistance is, and what a meter measures | 2026-08-25, by P8 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
-and `CIRC` (current and circuits).
+and ~~`CIRC` (current and circuits)~~. **Both are now open and the list is empty.**
 
 ⊕ **`FORCE` IS OPEN AS OF 24 Aug 2026, BY P3.** The strikethrough is kept rather than the line
 deleted, because the sentence is what a later lane would read to decide whether to mint a new
@@ -144,6 +145,15 @@ exists rather than left standing beside it — and applying it consistently is t
 that minted `MOT` here would leave the next lane with two plausible families and no rule.
 
 P4 continues from `FORCE-12`.
+
+⊕ **`CIRC` IS OPEN AS OF 25 Aug 2026, BY P8.** The strikethrough is kept rather than the line
+deleted, for the reason `FORCE`'s is: the sentence is what a later lane would read to decide
+whether to mint a new family, and the answer is now no. Design's `NOTES-P8-P9.md` §7 wrote
+her sixteen proposed entries against `CIRC` and cited none of them, because access was read-only
+and the family was not open. It is open now, on her numbers and in her words, and the same
+ruling that discharged `ENERGY` into `ENER` and `MOT` into `FORCE` applies here: a reservation is
+discharged INTO the family that exists rather than left standing beside a new one. **No `ELEC`
+family is minted.**
 
 ⊕ **`ENERGY` IS GONE FROM THAT LIST, AND THE FAMILY IT RESERVED IS OPEN UNDER A SHORTER
 NAME.** The reserved prefix was `ENERGY` (energy and temperature); Design's C7 delivery
@@ -2383,3 +2393,112 @@ chlorophyll throws away, and in any lesson that treats colour as a property of a
 `p6-06`'s belief met from the other side. That is a REAPPEARANCE and not a re-confrontation: nothing on `p7-01` takes a student's
 commitment about sound and takes it apart. The lesson carries `sound-needs-a-medium` as an edge instead, which is what the register
 asks for.
+
+### `CIRC` — current and circuits: what a current is and what it is not, what a battery does, what happens at a junction, what a resistance is, and what a meter measures
+
+⊕ **OPENED 25 Aug 2026, BY P8.** `docs/ks3/design-reference/p8/NOTES-P8-P9.md` §7 pre-allocated `CIRC-01` … `CIRC-28`, four per
+lesson in slot order, and authored 16 of them without citing one on any page — because access was read-only and this register had no
+open family for electricity. **Every id she wrote is minted here on the number she gave it, in her words.** The twelve gaps are minted
+from the real lesson content, which is the register's own rule: an id is minted from what a page actually confronts, never reserved
+against what one might.
+
+⚠️ **THE RESERVATION IS DISCHARGED, NOT LEFT STANDING BESIDE THE FAMILY.** The not-yet-opened list above reserved `CIRC` for
+*current and circuits*; that is this family, so the reservation is struck exactly as `FORCE`'s was, and `ENER`'s before it. A physics
+lane meeting a circuits misconception adds to `CIRC`; it does not open `ELEC`.
+
+⚠️ **WHERE HER NOTES AND HER PAGE WORD A BELIEF DIFFERENTLY, THE PAGE WINS.** Eleven of the sixteen are stated at length in a
+*Think again* quote on the page and more briefly in her §7 table. Both are hers; the page's is the sentence a student actually meets.
+Same ruling as `WAVE-33` / `WAVE-34` in P6.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `CIRC-01` | The bulb uses up the current, so there is less of it coming back than going in. | `loop` | `loop` | `current-and-circuits` |
+| `CIRC-02` | The electricity has to get from the cell to the bulb, which is why there is a tiny delay when you flick the switch. | `s-hook` | `s-think` | `current-and-circuits` |
+| `CIRC-03` | A circuit only has to reach the bulb; what happens on the way back does not matter. | `s-hook` | `loop` | `current-and-circuits` |
+| `CIRC-04` | A cell holds a store of current and sends it out into the wire. | `s-ladder` | `s-think` | `current-and-circuits` |
+| `CIRC-05` | In parallel the current has to split between the two bulbs, so each one is dimmer. | `bench` | `bench` | `series-and-parallel` |
+| `CIRC-06` | In series the first bulb gets the current first, so it is brighter than the second one. | *(none — nothing on the page asks for this commitment)* | `s-think` | `series-and-parallel` |
+| `CIRC-07` | Two bulbs in series are each as bright as one, because the battery has not changed. | `s-ladder` | `bench` | `series-and-parallel` |
+| `CIRC-08` | A fuse box is what keeps the other lights on when one bulb fails. | `s-hook` | `s-hook` | `series-and-parallel` |
+| `CIRC-09` | At a junction the current halves, because it has two ways to go. | `junction` | `junction` | `current-at-a-junction` |
+| `CIRC-10` | Adding a second branch means less current for the first one. | `s-ladder` | `s-think` | `current-at-a-junction` |
+| `CIRC-11` | To find the total at a junction you add every reading you can see, including the main wire's. | `s-ladder` | `junction` | `current-at-a-junction` |
+| `CIRC-12` | Some of the current is left behind in the branch that resists more. | `s-hook` | `s-hook` | `current-at-a-junction` |
+| `CIRC-13` | Voltage flows round the circuit and gets used up by each bulb. | *(none — nothing on the page asks for this commitment)* | `s-think` | `potential-difference` |
+| `CIRC-14` | A voltmeter goes in the circuit, like an ammeter. | *(none — see the note below)* | `s-think` | `potential-difference` |
+| `CIRC-15` | A reading equal to the battery's p.d. across one component must be a fault. | `s-ladder` | `volt` | `potential-difference` |
+| `CIRC-16` | The number stamped on a bulb says how much electricity it uses up while it is on. | `s-hook` | `s-hook` | `potential-difference` |
+| `CIRC-17` | Resistance is a force pushing back against the current. | *(none — nothing on the page asks for this commitment)* | `s-think` | `resistance` |
+| `CIRC-18` | A component has one resistance, so it does not matter what supply you test it on. | `bench` | `bench` | `resistance` |
+| `CIRC-19` | You find a resistance by multiplying the voltmeter reading by the ammeter reading. | `s-ladder` | `your-turn-resistance` | `resistance` |
+| `CIRC-20` | If one component gives two different resistances, one of the meters must be faulty. | `s-ladder` | `s-think` | `resistance` |
+| `CIRC-21` | An insulator blocks electricity completely — absolutely nothing gets through. | `test` | `test` | `conductors-and-insulators` |
+| `CIRC-22` | Materials are either conductors or insulators, with nothing between. | `s-hook` | `s-scale` | `conductors-and-insulators` |
+| `CIRC-23` | Plastic insulates because it has no charged particles in it at all. | `s-ladder` | `s-ladder` | `conductors-and-insulators` |
+| `CIRC-24` | A short enough piece of an insulator would conduct properly. | `test` | `test` | `conductors-and-insulators` |
+| `CIRC-25` | The meter reads zero, so the meter must be broken. | `s-hook` | `wire` | `building-and-measuring-a-circuit` |
+| `CIRC-26` | It cannot matter which way round the leads go on a meter. | *(none — nothing on the page asks for this commitment)* | `s-think` | `building-and-measuring-a-circuit` |
+| `CIRC-27` | The order the components come in round a single loop changes what the meters read. | `s-hook` | `s-hook` | `building-and-measuring-a-circuit` |
+| `CIRC-28` | A voltmeter reading close to the battery's value means the circuit is working. | `s-ladder` | `wire` | `building-and-measuring-a-circuit` |
+
+⚠️ **TWELVE ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and every one arrived from a delivered
+distractor, hook option or bench state rather than from her §7 list. Each is a genuinely separate
+belief rather than a re-dressing of one already minted, which is the `p1-08` test this register
+applies:
+
+  * `CIRC-03` a circuit only has to REACH the bulb (`p8-01` hook option B). Separate from
+    `CIRC-01`: a student can have given up "the bulb uses it up" and still think the return wire
+    is decoration.
+  * `CIRC-04` a cell HOLDS a store of current (`p8-01` rung 2 option D, *"a cell … makes new ones
+    in the wire as they are needed"*). It is about where the charge comes from, which `CIRC-01`
+    and `CIRC-02` both take for granted.
+  * `CIRC-08` a FUSE BOX is what keeps the other lights on (`p8-02` hook option D). The right
+    verdict from the wrong mechanism, and it survives being told the answer is "parallel".
+  * `CIRC-11` add EVERY reading you can see (`p8-03` rung 1 option B, *"1.55 A — add all three
+    readings together"*). Design's own §8 calls it *"the single most common wrong answer to a
+    three-branch junction question"*, and it is arithmetic rather than physics — separate from
+    `CIRC-09`, which is about the split.
+  * `CIRC-12` some current is LEFT BEHIND in the harder branch (`p8-03` hook option B). It is
+    conservation, not sharing, and a student can hold it while getting the split right.
+  * `CIRC-16` a rating says how much a bulb USES UP (`p8-04` hook option B). About what a printed
+    number means, which is a different question from what a p.d. is.
+  * `CIRC-19` MULTIPLY the two readings (`p8-05` rung 1 option B). The wrong operation rather than
+    a wrong idea about what resistance is, which is `CIRC-17`.
+  * `CIRC-20` two answers means a faulty METER (`p8-05` rung 2 option B). `CIRC-18` is a belief
+    about the component; this is a belief about the instrument, and it is the one that stops a
+    student trusting a correct measurement.
+  * `CIRC-23` plastic has no charged particles AT ALL (`p8-06` rung 2 option D). `CIRC-21` is
+    about how much gets through; this is about what is in the material, and correcting one leaves
+    the other standing.
+  * `CIRC-24` a SHORT ENOUGH piece of an insulator conducts (`p8-06`'s bench gate option D). It
+    arrives with the length control, which really does change the resistance tenfold, and it is
+    the misreading that control invites.
+  * `CIRC-27` the ORDER of the components round a loop matters (`p8-07` hook option D). Her hook
+    reveal answers it in a clause — *"the sequence, incidentally, does not matter at all in a
+    single loop"* — which is what a belief being confronted looks like.
+  * `CIRC-28` a NEAR-FULL voltmeter reading means it works (`p8-07` rung 2 option B). Separate
+    from `CIRC-25`: this one is a student trusting a reading that is perfectly correct and about
+    the wrong circuit.
+
+⚠️ **`CIRC-14`'s `elicited_by` IS ABSENT, AND THAT IS A CORRECTION TO DESIGN'S TABLE RATHER THAN
+A GAP.** Her §7 gives it *`r1` of `p8-07`* — a cross-page pointer. MRB-248 requires the value to
+resolve on the page that DECLARES the entry, and `p8-04` cannot resolve a rung on `p8-07`, so it
+is left absent, which §5.3 allows. The belief is still elicited on `p8-07`; what it may not do is
+claim that from `p8-04`. `p8-07` does not re-declare it either — the standing rule is CITE, DO NOT
+RE-DECLARE — so it appears there as a reappearance and nowhere as a second entry.
+
+⚠️ **FOUR MORE HAVE NO `elicited_by`, WHICH §5.3 ALLOWS, AND ALL FOUR ARE HERS.** `CIRC-06`,
+`CIRC-13`, `CIRC-17` and `CIRC-26` are marked *(none)* in her own §7 table, and the pages agree:
+nothing on any of the four asks the student to commit to the belief. Each is confronted because it
+sits underneath one that is.
+
+⚠️ **EXPECTED TO RESURFACE.** `CIRC-13` — *voltage flows and is used up* — anywhere a p.d. is
+named, and P10 will meet it again the moment a motor is driven. `CIRC-21` — *an insulator blocks
+current completely* — in P9, where a charged rod on an insulating stand is the whole apparatus and
+"insulator" has to mean *leaks slowly* rather than *never*.
+
+⚑ **`CIRC-01` OVERLAPS `ENER`'s NEIGHBOURHOOD IN SHAPE ONLY and no cross-reference is recorded.**
+Both are wrong beliefs about something being consumed. But `ENER` is about energy, which really IS
+transferred out of a store, and `CIRC-01` is about CHARGE, which is not — the whole correction is
+that the two are different quantities and only one of them is spent. A `reappears_in` edge between
+them would blur exactly the distinction `p8-01` exists to draw.

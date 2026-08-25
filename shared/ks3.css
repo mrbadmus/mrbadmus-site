@@ -27633,3 +27633,436 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 
 /* ═══ END P7 ═══ */
 
+/* ═══ BEGIN P8 ═══════════════════════════════════════════════════════════
+   P8 — *Electric circuits*. One marked block per unit.
+
+   ⚠️ EVERY SELECTOR HERE IS P8-ONLY, and every shell stem was checked
+   against the whole registry before it was written: none of `ks3-cloop-`,
+   `ks3-parr-`, `ks3-junc-`, `ks3-vtap-`, `ks3-cundt-`, `ks3-tgap-`,
+   `ks3-mplace-`, `ks3-cband-` or `ks3-cthink-` was taken. Two obvious ones
+   WERE — `ks3-cut-block` and `ks3-fault-block` — which is why
+   `component-under-test` wears `ks3-cundt-` and the fault table goes
+   through the band family.
+
+   ⚠️ EVERY FIGURE WRAPPER IS `position: relative`, for the reason the P4
+   block gives at length: every live value is an absolutely positioned HTML
+   span over the SVG, because a hole inside an SVG `<text>` renders nothing
+   and fails silently — and without a positioned ancestor those spans
+   resolve against the page and widen the document on a phone. The band
+   block's table SCROLLER is positioned for the same reason.
+
+   ⚠️ TOKENS, NOT LITERALS, FOR EVERY PIECE OF TEXT. `--ks3-accent` is
+   3.4:1 and is LARGE TEXT ONLY; anything under 24px that wants orange
+   takes `--ks3-accent-text`, and that token never lands on a dark ground.
+   Captions on the ink-dark benches take `--ks3-on-dark-muted`, which is
+   6.08:1 there, and readings take `--ks3-blue-light`.
+
+   ⚠️ AMBER WARNS; IT NEVER MERELY LABELS. The only amber in this unit is
+   `p8-07`'s LOOSE marker, which is a fault state, and the divider the
+   engine already draws above a second misconception quote.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── shared P8 bench shapes — the seven dark instruments ────────────── */
+
+.ks3-cloop-gate, .ks3-parr-gate, .ks3-junc-gate, .ks3-vtap-gate,
+.ks3-cundt-gate, .ks3-tgap-gate, .ks3-mplace-gate {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+/* ⚠️ NO `-head` OR `-progress` RULES HERE, AND NO `-cband-heading`.
+   `r_activity`'s shell draws the head row — eyebrow, `<h2>` and the
+   right-aligned mono readout — and styles it as `.ks3-blockhead` /
+   `.ks3-blockhead-count`, which already exist. An instrument that drew its
+   own would ship the title twice; a stylesheet that styled the second one
+   would be dead CSS, which is evidence to a grep and nothing to a browser. */
+.ks3-cloop-lead, .ks3-parr-lead, .ks3-junc-lead, .ks3-vtap-lead,
+.ks3-cundt-lead, .ks3-tgap-lead, .ks3-mplace-lead {
+  margin: 0 0 18px; font-size: 19px; line-height: 1.65;
+  color: var(--ks3-on-dark-body); max-width: 58ch;
+}
+
+.ks3-cloop-controls, .ks3-parr-controls, .ks3-junc-controls,
+.ks3-vtap-controls, .ks3-cundt-controls, .ks3-tgap-controls,
+.ks3-mplace-controls {
+  display: flex; flex-wrap: wrap; gap: 20px 30px;
+}
+.ks3-cloop-picker, .ks3-parr-picker, .ks3-junc-picker, .ks3-vtap-picker,
+.ks3-cundt-picker, .ks3-tgap-picker, .ks3-mplace-picker {
+  display: grid; gap: 9px; flex: 1 1 260px;
+}
+.ks3-cloop-pickerlabel, .ks3-parr-pickerlabel, .ks3-junc-pickerlabel,
+.ks3-vtap-pickerlabel, .ks3-cundt-pickerlabel, .ks3-tgap-pickerlabel,
+.ks3-mplace-pickerlabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-cloop-tabrow, .ks3-parr-tabrow, .ks3-junc-tabrow, .ks3-vtap-tabrow,
+.ks3-cundt-tabrow, .ks3-tgap-tabrow, .ks3-mplace-tabrow {
+  display: flex; flex-wrap: wrap; gap: 9px;
+}
+
+/* Only `p8-05` carries a slider, and it is the supply. 44px of vertical
+   target, which is the smallest a thumb should be asked to find. */
+.ks3-cundt-row { display: grid; gap: 8px; flex: 1 1 280px; min-width: 240px; }
+.ks3-cundt-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-cundt-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 17px;
+  font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;
+}
+.ks3-cundt-slider {
+  width: 100%; min-height: 44px; accent-color: var(--ks3-accent);
+}
+
+.ks3-cloop-figwrap, .ks3-parr-figwrap, .ks3-junc-figwrap,
+.ks3-vtap-figwrap, .ks3-cundt-figwrap, .ks3-tgap-figwrap,
+.ks3-mplace-figwrap {
+  position: relative; margin-top: 18px; padding: 18px;
+  border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);
+}
+.ks3-cloop-svg, .ks3-parr-svg, .ks3-junc-svg, .ks3-vtap-svg,
+.ks3-cundt-svg, .ks3-tgap-svg, .ks3-mplace-svg {
+  display: block; width: 100%; height: auto;
+}
+.ks3-cloop-fill, .ks3-parr-fill, .ks3-junc-fill, .ks3-vtap-fill,
+.ks3-cundt-fill, .ks3-tgap-fill, .ks3-mplace-fill {
+  position: absolute; font-family: var(--ks3-font-mono); font-weight: 500;
+  font-size: clamp(10px, 1.6vw, 19px); white-space: nowrap;
+  pointer-events: none;
+}
+/* The two that are part names rather than readings sit a size down, as
+   Design draws them, and take the muted on-dark rather than the reading
+   blue — a name is not a measurement. */
+.ks3-junc-aname, .ks3-junc-bname, .ks3-vtap-lamp, .ks3-vtap-comp2 {
+  font-size: clamp(9px, 1.2vw, 15px); letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-tgap-name {
+  font-size: clamp(9px, 1.3vw, 16px); letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.ks3-cundt-name, .ks3-mplace-joint {
+  font-size: clamp(9px, 1.2vw, 15px); letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.ks3-cloop-tiles, .ks3-parr-tiles, .ks3-junc-tiles, .ks3-vtap-tiles,
+.ks3-cundt-tiles, .ks3-tgap-tiles, .ks3-mplace-tiles {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-cloop-tile, .ks3-parr-tile, .ks3-junc-tile, .ks3-vtap-tile,
+.ks3-cundt-tile, .ks3-tgap-tile, .ks3-mplace-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-cloop-tile-label, .ks3-parr-tile-label, .ks3-junc-tile-label,
+.ks3-vtap-tile-label, .ks3-cundt-tile-label, .ks3-tgap-tile-label,
+.ks3-mplace-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-cloop-tile-value, .ks3-parr-tile-value, .ks3-junc-tile-value,
+.ks3-vtap-tile-value, .ks3-cundt-tile-value, .ks3-tgap-tile-value,
+.ks3-mplace-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+/* A verdict is a WORD, not a reading, so it takes the body face at a
+   weight rather than the mono a measurement takes. Design's own split. */
+/* ⚠️ `.ks3-vtap-tile-word` IS NOT IN THIS LIST. `p8-04`'s four readouts are
+   all numbers — the battery, the two shares and the meter — so it has no
+   word tile, and a selector for one would be dead CSS. */
+.ks3-cloop-tile-word, .ks3-parr-tile-word, .ks3-junc-tile-word,
+.ks3-cundt-tile-word, .ks3-tgap-tile-word, .ks3-mplace-tile-word {
+  font-family: inherit; font-size: 20px; font-weight: 700;
+}
+/* ⚠️ THE SECOND VALUE ELEMENT, and it exists for exactly one tile in the
+   unit: `p8-06`'s ammeter, which reads a mono figure for six specimens and
+   the sentence "limited by the supply, not by the wire" for copper. Two
+   elements and a `hidden` toggle, because they are different type at
+   different sizes. */
+.ks3-tgap-tile-alt {
+  margin: 5px 0 0; font-size: 18px; font-weight: 700; line-height: 1.3;
+  color: var(--ks3-on-dark);
+}
+.ks3-cloop-tile-sub, .ks3-parr-tile-sub, .ks3-junc-tile-sub,
+.ks3-vtap-tile-sub, .ks3-cundt-tile-sub, .ks3-tgap-tile-sub,
+.ks3-mplace-tile-sub {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+
+.ks3-cloop-note, .ks3-parr-note, .ks3-junc-note, .ks3-vtap-note,
+.ks3-cundt-note, .ks3-tgap-note, .ks3-mplace-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+
+/* ── the wire, the cells and the meters — shared across all seven ───── */
+
+.ks3-cloop-wire, .ks3-parr-wirepath, .ks3-junc-wire, .ks3-vtap-wire,
+.ks3-cundt-wire, .ks3-tgap-wire, .ks3-mplace-wire {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 6;
+  stroke-linecap: round;
+}
+.ks3-cloop-cell, .ks3-parr-cell, .ks3-junc-cell, .ks3-vtap-cell,
+.ks3-cundt-cell, .ks3-tgap-cell, .ks3-mplace-cell {
+  fill: none; stroke: var(--ks3-on-dark); stroke-width: 6;
+  stroke-linecap: round;
+}
+.ks3-cloop-dot, .ks3-parr-dot, .ks3-junc-dot { fill: var(--ks3-on-dark); }
+.ks3-cloop-meter, .ks3-parr-meter, .ks3-junc-meter, .ks3-vtap-meter,
+.ks3-cundt-meter, .ks3-tgap-meter, .ks3-mplace-meter {
+  fill: var(--ks3-ink); stroke: var(--ks3-blue-light); stroke-width: 6;
+}
+.ks3-cloop-meterletter, .ks3-parr-meterletter, .ks3-junc-meterletter,
+.ks3-vtap-meterletter, .ks3-cundt-meterletter, .ks3-tgap-meterletter,
+.ks3-mplace-meterletter {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px;
+  fill: var(--ks3-blue-light);
+}
+.ks3-junc-meterletter-sm { font-size: 32px; }
+.ks3-parr-meterletter, .ks3-mplace-meterletter { font-size: 36px; }
+.ks3-junc-meterletter { font-size: 36px; }
+.ks3-cloop-partlabel, .ks3-parr-partlabel, .ks3-junc-partlabel,
+.ks3-vtap-partlabel, .ks3-cundt-partlabel, .ks3-tgap-partlabel,
+.ks3-mplace-partlabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  fill: var(--ks3-on-dark-muted);
+}
+/* The lamp: solid ring, cross always drawn while the bulb is present, and
+   a blue fill only while it is lit. Hue is never the only channel — the
+   tile beside it says `dim`, `dark` or `lit, at full brightness`. */
+.ks3-cloop-bulb, .ks3-parr-bulb, .ks3-mplace-lamp {
+  fill: var(--ks3-ink); stroke: var(--ks3-on-dark-muted); stroke-width: 6;
+}
+.ks3-cloop-bulb[data-lit="1"], .ks3-parr-bulb[data-lit="1"],
+.ks3-mplace-lamp[data-lit="1"] { fill: var(--ks3-blue-light); }
+.ks3-parr-bulb[data-present="0"] {
+  fill: none; stroke: var(--ks3-ink-muted); stroke-dasharray: 13 11;
+}
+.ks3-cloop-filament, .ks3-parr-cross, .ks3-mplace-filament {
+  fill: none; stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;
+}
+/* ⊕ THE FILAMENT CROSS STAYS LEGIBLE WHEN THE LAMP IS DARK, and that is a
+   registered departure from Design's drawing. Hers strokes the cross in
+   `#221E1B` on an unlit fill of `#15110C` — about 1.2:1, which is invisible
+   — so a dark lamp reads as a plain circle with a ring round it. The cross
+   IS the lamp symbol, and `p8-01` spends a whole figure teaching a student
+   to read it; a symbol that disappears exactly when the page asks "why is
+   it dark?" is the one moment it has to be there. Dark ink on the blue
+   filament when lit, as she drew it; muted on-dark when not.
+   See DEPARTURES-P8.md. */
+.ks3-cloop-bulb[data-lit="0"] + .ks3-cloop-filament,
+.ks3-parr-bulb[data-lit="0"] + .ks3-parr-cross,
+.ks3-mplace-lamp[data-lit="0"] + .ks3-mplace-filament {
+  stroke: var(--ks3-on-dark-muted);
+}
+.ks3-cloop-rays, .ks3-parr-rays, .ks3-mplace-rays {
+  fill: none; stroke: var(--ks3-blue-light); stroke-linecap: round;
+}
+.ks3-cloop-lever {
+  fill: none; stroke: var(--ks3-on-dark); stroke-width: 6;
+  stroke-linecap: round;
+}
+
+/* ── p8-03 · the junction bench ─────────────────────────────────────── */
+
+.ks3-junc-comp {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 6;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-junc-compfill { fill: var(--ks3-on-dark-muted); stroke: none; }
+.ks3-junc-arrow {
+  fill: none; stroke: var(--ks3-blue-light); stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── p8-04 · the voltmeter tap ──────────────────────────────────────── */
+
+.ks3-vtap-comp {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-width: 6;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-vtap-lead, .ks3-cundt-lead {
+  fill: none; stroke: var(--ks3-blue-light); stroke-width: 5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-vtap-tap, .ks3-cundt-tap { fill: var(--ks3-blue-light); stroke: none; }
+
+/* ── p8-05 · the component under test ───────────────────────────────── */
+
+.ks3-cundt-comppath {
+  fill: none; stroke: var(--ks3-on-dark-muted); stroke-linejoin: round;
+}
+.ks3-cundt-dial {
+  fill: none; stroke: var(--ks3-blue-light); stroke-width: 5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-cundt-flow {
+  fill: none; stroke: var(--ks3-blue-light); stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── p8-06 · the test gap ───────────────────────────────────────────── */
+
+.ks3-tgap-clip { fill: var(--ks3-on-dark-muted); stroke: none; }
+.ks3-tgap-specimen {
+  fill: var(--ks3-dark-panel); stroke: var(--ks3-on-dark-muted);
+  stroke-width: 5;
+}
+.ks3-tgap-flow {
+  fill: none; stroke: var(--ks3-blue-light); stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── p8-07 · the meter placement bench ──────────────────────────────── */
+
+.ks3-mplace-lead {
+  fill: none; stroke: var(--ks3-blue-light); stroke-width: 5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-mplace-tap { fill: var(--ks3-blue-light); stroke: none; }
+/* ⚠️ AMBER WARNS. The loose joint is a FAULT state, which is the one thing
+   §8's amber is reserved for, and the word LOOSE is printed beside it so
+   the colour is never the only channel. */
+.ks3-mplace-joint { fill: var(--ks3-alert); stroke: none; }
+
+/* ── the band block · every fixed figure in the unit ────────────────── */
+
+.ks3-cband { margin-top: 4px; }
+.ks3-cband-lead {
+  margin: 12px 0 0; font-size: 19px; line-height: 1.6;
+  color: var(--ks3-ink-body); max-width: 62ch;
+}
+.ks3-cband-close {
+  margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+  font-size: 19px; line-height: 1.6; color: var(--ks3-ink-body);
+}
+
+/* p8-01's eight symbols. */
+.ks3-cband-symbols {
+  margin-top: 20px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-cband-symcard {
+  padding: 16px 18px 12px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+}
+.ks3-cband-symsvg { display: block; width: 100%; height: auto; }
+.ks3-cband-symstroke {
+  fill: none; stroke: var(--ks3-ink); stroke-linecap: round;
+}
+.ks3-cband-symletter {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px;
+  fill: var(--ks3-ink);
+}
+.ks3-cband-symname {
+  margin: 10px 0 0; font-weight: 700; font-size: 18px; color: var(--ks3-ink);
+}
+.ks3-cband-symnote {
+  margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  color: var(--ks3-ink-muted);
+}
+
+/* The four tables. ⚠️ `position: relative` on the scroller: nothing here is
+   absolutely positioned today, and an absolutely positioned element inside
+   a scroller with no positioned ancestor resolves against the page. */
+.ks3-cband-scroll {
+  position: relative; margin-top: 18px; overflow-x: auto;
+  border-radius: var(--ks3-r-card); background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink); padding: 4px;
+}
+.ks3-cband-table {
+  border-collapse: collapse; width: 100%; font-size: 18px;
+  color: var(--ks3-ink-body);
+}
+.ks3-cband-table thead th {
+  text-align: left; padding: 14px 16px;
+  border-bottom: 3px solid var(--ks3-ink);
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cband-table tbody th {
+  text-align: left; padding: 13px 16px; font-weight: 700;
+  color: var(--ks3-ink);
+}
+.ks3-cband-table tbody td { padding: 13px 16px; }
+.ks3-cband-table tbody tr { border-bottom: 2px solid var(--ks3-rule); }
+.ks3-cband-table tbody tr:last-child { border-bottom: 0; }
+/* A `same resistor` / `same lamp` row is a REPEAT of the row above it, and
+   Design lightens its row header to say so. The word is what carries the
+   meaning; the weight is the redundant second channel. */
+.ks3-cband-samehead { font-weight: 400 !important; color: var(--ks3-ink-muted) !important; }
+
+/* p8-06's decade chart. */
+.ks3-cband-chartwrap {
+  margin-top: 18px; border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); border: 2px solid var(--ks3-ink);
+  padding: 16px;
+}
+.ks3-cband-chart { display: block; width: 100%; height: auto; }
+.ks3-cband-axis { fill: none; stroke: var(--ks3-ink); stroke-width: 4; }
+.ks3-cband-tick { fill: none; stroke: var(--ks3-ink); stroke-width: 3; }
+.ks3-cband-ticklabel, .ks3-cband-axisnote {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  fill: var(--ks3-ink-muted);
+}
+.ks3-cband-axisnote { font-size: 14px; letter-spacing: .08em; }
+/* ⚠️ THE BOUNDARY IS DASHED AND ITS LABEL SAYS `NO SHARP LINE`. It is a
+   convenience, not a real dividing line, and the figure says so on its own
+   face rather than in a caption a reader may not reach. */
+.ks3-cband-bound {
+  fill: none; stroke: var(--ks3-rule-strong); stroke-width: 3;
+  stroke-dasharray: 9 8;
+}
+.ks3-cband-boundlabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px;
+  letter-spacing: .06em; fill: var(--ks3-ink-muted);
+}
+/* Two tones, derived from the boundary rather than authored per row — and
+   every bar carries its own resistance in words beside it, so the tone is
+   the redundant channel and never the only one. */
+.ks3-cband-bar {
+  fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;
+}
+.ks3-cband-bar-high { fill: var(--ks3-accent-tint); }
+.ks3-cband-rowlabel {
+  font-family: var(--ks3-font-body); font-weight: 700; font-size: 17px;
+  fill: var(--ks3-ink);
+}
+.ks3-cband-rowvalue {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  fill: var(--ks3-ink-muted);
+}
+
+/* ── p8-01 · the one confrontation that is a rail stop ──────────────── */
+/*
+   No treatment of its own, deliberately. `circ-think` renders exactly the
+   three classes `r_confrontation` renders — `.ks3-mis-quote`,
+   `.ks3-mis-body` and the `.ks3-mis-next` divider — inside the same
+   `ks3-misconception` shell, so the block a student sees is the block every
+   other "Think again" in the key stage is. The family exists only to get
+   `data-stage-done="0"` into the tag, because Design puts this section on
+   `p8-01`'s rail and `ks3_parity.check_rail_reachable` reads the shipped
+   bytes.
+*/
+.ks3-cthink { display: contents; }
+
+/* ═══ END P8 ═══ */
+
