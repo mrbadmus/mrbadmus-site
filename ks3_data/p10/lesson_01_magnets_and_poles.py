@@ -674,15 +674,22 @@ LESSON = {
     # exactly those words: *"inline, small type, bottom edge, above the legal
     # line"*. Her eyebrow becomes the opening condition of the sentence so
     # that no wording of hers is lost; the rest is character for character.
-    "safeguarding_note":
-        "If a magnet has been swallowed, or you are worried about someone: "
-        "swallowing a strong magnet is treated urgently even when the person "
-        "seems fine, so it is worth telling an adult straight away rather "
-        "than waiting to see — a pharmacist, your GP or 111 will tell you "
-        "what to do next, and at school the school nurse or any member of "
-        "staff can start that. If you would rather talk to somebody outside "
-        "all of that, Childline is free on 0800 1111, at any hour, and you do "
-        "not have to give your name.",
+    # ⊕ Integration, 25 Aug 2026 — HER WORDS, CHARACTER FOR CHARACTER: the
+    # eyebrow line and the body as she drew them (the body keeps her
+    # <strong> around the helpline). The SLOT is still the engine's ruled foot
+    # line; see DEPARTURES-P10.md row 14.
+    "safeguarding_note": {
+        "eyebrow": "If a magnet has been swallowed, or you are worried about "
+                   "someone",
+        "body": "Swallowing a strong magnet is treated urgently even when the "
+                "person seems fine, so it is worth telling an adult straight "
+                "away rather than waiting to see — a pharmacist, your GP or "
+                "111 will tell you what to do next, and at school the school "
+                "nurse or any member of staff can start that. If you would "
+                "rather talk to somebody outside all of that, <strong>Childline "
+                "is free on 0800 1111</strong>, at any hour, and you do not "
+                "have to give your name.",
+    },
 
     "convention_note": "The bench is a teaching model. Strength is reported "
                        "as a relative figure with the closest pair of magnets "

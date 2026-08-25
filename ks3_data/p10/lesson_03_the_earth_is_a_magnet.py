@@ -124,9 +124,10 @@ LESSON = {
                         "magnetic field, and the pole in the Arctic is "
                         "magnetically a south pole.",
 
-    "big_question": "Nothing is near the compass and it still finds north, so "
-                    "what is it lining up with — and why does the pole it "
-                    "turns towards have to be a magnetic south pole?",
+    # ⊕ Integration, 25 Aug 2026 — HER LEDE, verbatim (Phase 3 revert; the
+    # authored question was a paraphrase no row claimed).
+    "big_question": "A compass works because it is one magnet finding another "
+                    "one, and the other one is the planet you are standing on.",
 
     "rail": [
         {"anchor": "s-hook",  "short": "COMPASS",

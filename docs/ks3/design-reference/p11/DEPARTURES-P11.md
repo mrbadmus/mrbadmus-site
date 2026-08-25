@@ -66,7 +66,7 @@ long.
 |---|---|
 | **Where** | `p11-04` `#s-bench` closing note, `odd` branch |
 | **What she wrote** | *"…so it floats — with about a ninth of it above the surface and the rest below."* |
-| **What is built** | *"…so it floats — with about 8% of it above the surface and the rest below."* The 8 is computed as `1 − solid ÷ liquid` from the two densities in the payload. |
+| **What is built** | *"…so it floats — with about 8% of it above the surface and the rest below."* The 8 is computed as `1 − solid ÷ liquid` from the two densities in the payload. ⊕ Integration note: the legal line gains the clause *"and the fraction of a floating lump above the surface"* to its list of what is calculated from the quoted densities, so the derived figure is disclosed where the other derived figures are. |
 | **Rationale** | **A ninth is 11%, and it is the SEAWATER figure** (ice 0.917 against seawater 1.025). This page is about fresh water at 1.00, where the fraction above is 8% — which is what her own rung 1 marks correct (*"About 8%"*) and what her own Think-again says (*"about 92% of itself below the surface"*). Two sentences on the page against one, and the two are the ones a student is marked on. Deriving it rather than retyping it means the note cannot drift from the bars above it. |
 
 ### 6. The bar in focus takes `--ks3-data` **and** a structural ring
@@ -122,6 +122,8 @@ index.
 | **What she drew** | A link back to `p10-05-how-a-motor-works`. |
 | **What is built** | `requires: []`, which renders the engine's own *"Nothing — this is where the unit starts."* |
 | **Rationale** | The edge crosses into P10, which is a different lane and is not in this worktree, and `validate()` fails a `requires` naming a lesson the registry cannot resolve (`UNKNOWN PREREQUISITE`). The rendered sentence is true as it stands — P11 is where the unit starts — and restoring her edge is one line when the lanes merge. Flagged for the commander rather than worked around. |
+
+⊕ **Ruled at integration, 25 Aug 2026: the edge stays empty.** P10 is authored now and the link would resolve, but P11's typical year is 7 and `p10-05` sits in year 9, so a `requires` edge would be a forward reference — a lesson pointing at one a student meets two years later. Her "before this lesson" link is the folder's prev-link, which the engine already emits from the unit order (5A.5) on the index and the page nav; it is not a prerequisite claim. No row needed beyond this one.
 
 ---
 
@@ -215,3 +217,12 @@ state belongs to a unit still unbuilt) or retired with the slice they were
 written for. Every other gate in the run is green — 137 pass, these 2 fail,
 and no P11 page, component, figure, contrast, rail or content check is
 among them.
+
+---
+
+## ⊖ Commander's Phase 3 — 25 Aug 2026
+
+The built pages were compared against her JavaScript constants and her HTML
+prose, string by string, by the commander's own comparator after the
+executor's pass. Every residue it returned is a row above (rows 2–5, 8), the
+engine's ladder chrome, or her `aria-label` composition. **Zero reverts.**

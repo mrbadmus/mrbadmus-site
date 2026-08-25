@@ -29013,31 +29013,10 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   .ks3-cplot-spot { width: 100%; }
 }
 
-/* ⚖️ THE PRESSED SEGMENTED BUTTON IS SELECTION, SO IT IS `--ks3-data`.
-
-   The shared dark control paints its pressed state `--ks3-alert` — added
-   under MRB-242 from B1's pages, before MRB-252 existed. MRB-252 then ruled
-   that AMBER WARNS AND NEVER MERELY LABELS, and that category and selection
-   uses move to `--ks3-data`; a pressed tab on a bench is selection and
-   nothing else. Design's own P10 `seg()` draws it that way already —
-   `--ks3-blue-light` ground, ink text, and `--ks3-blue-light` is what
-   `--ks3-data` is valued at.
-
-   ⚠️ SCOPED TO THIS UNIT'S FIVE BLOCKS, NOT CHANGED IN THE SHARED RULE. That
-   rule dresses every dark segmented control in the key stage, and repainting
-   it would move B1's fit tabs, B1's sabotage tabs and every unit since —
-   pages Mide has already approved. This is P10 matching its own drawing and
-   the standing ruling; the corpus-wide question is a separate unit of work
-   with its own gate. Ink on `--ks3-data` is 8.2:1. */
-.ks3-tpair-block .ks3-seg-btn[aria-pressed="true"],
-.ks3-cplot-block .ks3-seg-btn[aria-pressed="true"],
-.ks3-dipc-block .ks3-seg-btn[aria-pressed="true"],
-.ks3-solen-block .ks3-seg-btn[aria-pressed="true"],
-.ks3-mcoil-block .ks3-seg-btn[aria-pressed="true"] {
-  background: var(--ks3-data);
-  border-color: var(--ks3-data);
-  color: var(--ks3-ink);
-}
+/* The pressed segmented button keeps the key stage's shared dark rule
+   (`--ks3-alert`). Unified at integration with P11 and P12: one control for
+   the whole system by an explicit ruling; the corpus-wide question is raised
+   as a finding, not answered in one unit. */
 
 /* ═══ END P10 ═══ */
 

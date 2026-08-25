@@ -119,9 +119,11 @@ LESSON = {
                         "magnet can be built, made stronger three different "
                         "ways, and switched off.",
 
-    "big_question": "A scrapyard crane picks a car up and then drops it, and "
-                    "nothing on the crane moved — so what kind of magnet can "
-                    "be turned off?",
+    # ⊕ Integration, 25 Aug 2026 — HER LEDE, verbatim (Phase 3 revert; the
+    # authored question was a paraphrase no row claimed).
+    "big_question": "A current makes a magnetic field. Wind the wire into a coil, "
+                    "drop a piece of iron down the middle, and you have a magnet "
+                    "with a switch.",
 
     "rail": [
         {"anchor": "s-hook",  "short": "CRANE",

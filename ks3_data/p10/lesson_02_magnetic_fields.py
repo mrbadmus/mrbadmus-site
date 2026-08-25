@@ -102,9 +102,11 @@ LESSON = {
                         "feel a force — and a field line is nothing more than "
                         "a row of compass readings joined up.",
 
-    "big_question": "Iron filings fall into a pattern nobody arranged, and a "
-                    "small compass will tell you the same thing one point at "
-                    "a time — so what is the drawing a drawing of?",
+    # ⊕ Integration, 25 Aug 2026 — HER LEDE, verbatim (Phase 3 revert; the
+    # authored question was a paraphrase no row claimed).
+    "big_question": "The space around a magnet is not empty. A compass needle "
+                    "finds a direction at every point in it, and joining those "
+                    "directions up is the whole of what a field line is.",
 
     "rail": [
         {"anchor": "s-hook",  "short": "FILINGS",

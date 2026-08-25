@@ -114,10 +114,11 @@ LESSON = {
                         "pushed sideways — and two opposite pushes either "
                         "side of an axle are what turns a motor.",
 
-    "big_question": "Swap the two wires on a motor and it runs backwards at "
-                    "the same speed, with nothing inside it touched — so what "
-                    "decides which way a coil turns, and what keeps it going "
-                    "past the half turn?",
+    # ⊕ Integration, 25 Aug 2026 — HER LEDE, verbatim (Phase 3 revert; the
+    # authored question was a paraphrase no row claimed).
+    "big_question": "A wire carrying a current inside a magnetic field is pushed. "
+                    "Arrange for the push to keep going the same way round, and "
+                    "you have a motor.",
 
     "rail": [
         {"anchor": "s-hook",  "short": "MOTOR",
