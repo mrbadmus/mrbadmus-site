@@ -239,7 +239,7 @@ GATES = [
          cmd=["python3", "leaderboard_seam.py"],
          speed="fast",
          needs="shared/leaderboard-live.js",
-         why="the leaderboard's DATA LAYER, driven directly — 27 checks "
+         why="the leaderboard's DATA LAYER, driven directly — 31 checks "
              "against the real shared/leaderboard-live.js under Node with a "
              "stubbed fetch and a stubbed Supabase client. ⚑ IT EXISTS "
              "BECAUSE leaderboard_behaviour CANNOT REACH ANY OF THIS: all "
@@ -263,16 +263,22 @@ GATES = [
     dict(name="leaderboard_behaviour",
          cmd=["python3", "leaderboard_behaviour.py"],
          speed="slow",
-         why="eight leaderboard fixtures driven headless, on load and again "
+         why="NINE leaderboard fixtures driven headless, on load and again "
              "after a reload: every control pressed (tier, four subjects, "
              "the week rail's prev/next/This week and every chip, every row "
              "expand), no press leaves the page blank, no computed value "
-             "(null%, NaN, undefined) reaches the copy, and the console "
-             "stays quiet. Five of the eight are states Design never drew — "
-             "an empty week (which was the LIVE state of Higher/Overall on "
-             "25 Aug 2026), one entrant, week one, a viewer below the cut, "
-             "and a failed fetch — plus the avatar fixture that holds R25's "
-             "never-both property. ⚠️ FIXTURE-DRIVEN: the live page "
+             "reaches the copy — checked as substrings AND word-bounded, "
+             "because the live page's 'TOP 10 ONLY · null SAT THIS "
+             "WEEK' was a bare `null` that no substring in the list matched "
+             "— at most ONE 'YOU' chip renders anywhere, and the console "
+             "stays quiet. Six of the nine are states Design never drew: an "
+             "empty week (the LIVE state of Higher/Overall on 25 Aug 2026), "
+             "one entrant, week one, a viewer below the cut, a failed fetch, "
+             "and LOADING — the seconds-long cold-Render window that held "
+             "two student-visible defects (R30) precisely because every "
+             "other fixture starts from a settled payload. Plus the avatar "
+             "fixture holding R25's never-both property. ⚠️ FIXTURE-DRIVEN: "
+             "the live page "
              "needs a Supabase session and a warm Render dyno, so this "
              "proves everything between the data arriving and the pixels "
              "and nothing about whether the seam asks for the right rows."),

@@ -348,6 +348,31 @@ rule("R22", "`density`, `topCount`, `showPodium` and `showWeekTops` are "
       "four dead switches; shipping them as props with no control is what "
       "Design's own `?? ` defaults already do."),
 
+rule("R30", "While the payload is not `ok`, the board footer's left label "
+            "drops its '· N SAT THIS WEEK' clause entirely, and the "
+            "countdown pill renders an em dash instead of LOCKED or "
+            "CLOSES IN.",
+      "TWO DEFECTS FOUND BY SCREENSHOTTING THE LIVE PAGE MID-LOAD against a "
+      "cold Render dyno — a window that lasts seconds in the wild and that "
+      "NO FIXTURE COVERED, because every fixture hands the seam a settled "
+      "payload. "
+      "(1) `cutLabel` interpolated `entries` unconditionally, so while the "
+      "payload was null a student read 'TOP 10 ONLY · null SAT THIS "
+      "WEEK' — the literal string `null` as body copy. The clause is DROPPED "
+      "rather than dashed: a clause whose only content is a fact we do not "
+      "have has no place in the sentence, and 'ALL — SAT THIS WEEK' "
+      "would be the same defect wearing a nicer character. "
+      "(2) `closeLabel`'s not-live branch fires whenever `is_current` is "
+      "false, which an empty payload also satisfies — so the pill told a "
+      "student the week was LOCKED when it was merely loading. That is "
+      "MRB-287's 'ON TIME 0' exactly: unknown rendered as one of the two "
+      "real answers. Unknown is neither, and an em dash is what neither "
+      "looks like everywhere else on this page. "
+      "⚠️ The pill's colours already read correctly for this state and are "
+      "NOT touched: `live` is false while loading, so Design's own muted "
+      "locked palette (crumb ground, rule border, no pulse) is already the "
+      "neutral presentation. Only the label lied."),
+
 rule("R29", "The Node evaluation environment pins a fixed reference date "
             "(`2026-08-25T12:00:00Z`, TZ=UTC) before Design's unmodified "
             "logic runs.",
@@ -946,6 +971,46 @@ def seam_logic(logic):
                  "       draws NO ROWS AT ALL. Foundation's current week has\n"
                  "       exactly one entry. */\n"
                  "    const listStart = podium.length >= 3 ? 3 : 0;", "R16")
+
+    # ── R30 — the loading state must not put a fact where it has none ────
+    #
+    # ⚠️ ANCHORED ON THE POST-SWAP TEXT, and the ordering is why this block
+    # sits here rather than beside R13. `board.length` became `entries` at
+    # R14 and `dates[s.wk].long` became `_wk.long` at R24, so both of these
+    # anchors only exist once those have run. Anchored on Design's original
+    # text they would match nothing, and `swap` would stop the build — which
+    # is the good failure, but pointlessly.
+    logic = swap(
+        logic,
+        "cutLabel: 'TOP ' + topCount + ' ONLY \\u00B7 ' + entries "
+        "+ ' SAT THIS WEEK',",
+        "cutLabel: MRB_STATUS() !== 'ok'\n"
+        "        /* ⊕ MRB-290 R30. The clause is DROPPED, not dashed: while\n"
+        "           the payload is null this read 'TOP 10 ONLY \\u00B7 null\n"
+        "           SAT THIS WEEK' on the live page. A clause whose only\n"
+        "           content is a fact we do not have does not belong in the\n"
+        "           sentence at all. */\n"
+        "        ? ('TOP ' + topCount + ' ONLY')\n"
+        "        : ('TOP ' + topCount + ' ONLY \\u00B7 ' + entries\n"
+        "           + ' SAT THIS WEEK'),", "R30")
+
+    logic = swap(
+        logic,
+        "closeLabel: live ? 'CLOSES IN ' + d + 'D ' + String(h).padStart(2, "
+        "'0') + 'H ' + String(mi).padStart(2, '0') + 'M ' + "
+        "String(sec).padStart(2, '0') + 'S' : 'LOCKED ' "
+        "+ _wk.long.toUpperCase(),",
+        "closeLabel: MRB_STATUS() !== 'ok'\n"
+        "        /* ⊕ MRB-290 R30. Design's not-live branch fires on an\n"
+        "           empty payload too, so this pill told a student the week\n"
+        "           was LOCKED while it was merely loading — unknown\n"
+        "           rendered as one of the two real answers, which is\n"
+        "           MRB-287's 'ON TIME 0' again. Unknown is neither. */\n"
+        "        ? '\\u2014'\n"
+        "        : (live ? 'CLOSES IN ' + d + 'D ' + String(h).padStart(2, '0')\n"
+        "            + 'H ' + String(mi).padStart(2, '0') + 'M '\n"
+        "            + String(sec).padStart(2, '0') + 'S'\n"
+        "          : 'LOCKED ' + _wk.long.toUpperCase()),", "R30")
 
     # ── R17 / R19 / R20 — the cut line says which state it is in ─────────
     logic = swap(
@@ -1747,6 +1812,17 @@ def _shape_avatars(p):
     return p
 
 
+def _shape_loading(p):
+    """No payload has arrived yet. ⚠️ THE STATE R30's TWO DEFECTS LIVED IN.
+
+    Every other fixture hands the seam a settled payload, which is why a
+    window that is on screen for SECONDS against a cold Render dyno had no
+    coverage at all: the footer read "TOP 10 ONLY \u00b7 null SAT THIS WEEK"
+    and the pill read "LOCKED \u2014", and eight green fixtures said nothing.
+    """
+    return None
+
+
 def _shape_error(p):
     """The fetch failed. No payload at all — status drives the page."""
     return None
@@ -1796,6 +1872,13 @@ FIXTURES = [
          what="rows carrying a real avatar_url — R25. The face renders "
               "inside Design's disc, a row without one keeps her monogram, "
               "no disc shows both, and a hostile URL falls back to initials"),
+    dict(out="leaderboard-loading-fixture.html",
+         js="leaderboard-fixture-loading.js",
+         axis=("Foundation", "Overall"), week="live", shape=_shape_loading,
+         status="loading",
+         what="no payload yet — R30. The seconds-long window a student "
+              "actually sees against a cold Render dyno, and the one state "
+              "no other fixture could reach because they all start settled"),
     dict(out="leaderboard-error-fixture.html",
          js="leaderboard-fixture-error.js",
          axis=("Higher", "Overall"), week="live", shape=_shape_error,

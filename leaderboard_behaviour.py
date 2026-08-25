@@ -78,6 +78,8 @@ FIXTURES = [
      "no session — no pinned row, no YOU badge"),
     ("leaderboard-avatars-fixture.html",
      "rows with a real avatar_url — R25, faces inside Design's disc"),
+    ("leaderboard-loading-fixture.html",
+     "no payload yet — R30, the live cold-start window"),
     ("leaderboard-error-fixture.html",
      "the fetch failed — every control still live"),
 ]
@@ -102,6 +104,14 @@ AVATAR_EXPECT = {
 RENDER_TELLS = ["null%", "NaN", "undefined", "-Infinity", "Infinity",
                 "[object Object]", "nullm", "null/", "/null", "NEW ENTRYNEW"]
 
+# ⊕ MRB-290 R30 — WORD-BOUNDED, and the substring list above could not have
+# caught what these do. The live page read "TOP 10 ONLY · null SAT THIS WEEK"
+# while loading: a bare `null` with a space either side, which matches none of
+# `null%`, `nullm`, `null/` or `/null`. Word boundaries catch the value
+# standing on its own as a word — which is exactly how an unguarded
+# interpolation of a null renders inside a sentence.
+WORD_TELLS = ["null", "undefined", "NaN", "Infinity"]
+
 # What a state must SAY. A thin state that renders nothing at all still
 # passes a blank check if the page was already short, so each of these
 # fixtures names a string that must be on the page for the state to have
@@ -111,13 +121,34 @@ MUST_SAY = {
     "leaderboard-thin-fixture.html": ["ALL 1 LISTED"],
     "leaderboard-outside-fixture.html": ["YOU"],
     "leaderboard-error-fixture.html": ["COULD NOT LOAD"],
+    # R30: the footer keeps its label and loses only the clause it has no
+    # fact for; the cut value names the state.
+    "leaderboard-loading-fixture.html": ["LOADING", "TOP 10 ONLY"],
     "leaderboard-weekone-fixture.html": ["NEW"],
 }
 
+# ⚠️ EACH ENTRY CARRIES ITS OWN REASON, and it does so because the first
+# version did not. One shared message — written for the YOU badge — was
+# printed for every token, so a correct failure on "LOCKED" was explained as
+# "badging a row as the viewer's when there is no viewer". A gate that fails
+# for the right reason and says the wrong one sends the next reader to the
+# wrong file.
 MUST_NOT_SAY = {
-    # Signed out there is no viewer, so nothing may be badged as theirs.
-    "leaderboard-signedout-fixture.html": ["YOU"],
+    "leaderboard-signedout-fixture.html": [
+        ("YOU", "there is no signed-in viewer here, and badging a row as "
+                "the viewer's when there is no viewer is how a student is "
+                "shown somebody else's standing as their own"),
+    ],
+    "leaderboard-loading-fixture.html": [
+        ("LOCKED", "the payload has not arrived, so the week is not locked "
+                   "— it is unknown. Rendering unknown as one of the two "
+                   "real answers is MRB-287's 'ON TIME 0' again (R30)"),
+        ("SAT THIS WEEK", "the footer's clause survived with no number to "
+                          "put in it. R30 drops the clause entirely rather "
+                          "than dashing it"),
+    ],
 }
+
 
 HOST = "#mrb-leaderboard"
 
@@ -334,6 +365,16 @@ def drive(pg, port, path, what, label):
     # state; the drive presses every control and navigates away from it.
     text = got.get("firstText") or ""
     after_text = got.get("text") or ""
+    for tell in WORD_TELLS:
+        for when, hay in (("on load", text), ("after the drive", after_text)):
+            if re.search(r"\b%s\b" % tell, hay):
+                problems.append(
+                    "%s: the word %r stands alone in the copy %s. That is a "
+                    "value with no guard reaching a student inside a "
+                    "sentence — the shape that put 'TOP 10 ONLY \u00b7 null "
+                    "SAT THIS WEEK' on the live page (R30)."
+                    % (tag, tell, when))
+
     for tell in RENDER_TELLS:
         if tell in text or tell in after_text:
             problems.append(
@@ -347,17 +388,13 @@ def drive(pg, port, path, what, label):
                 "%s: does not say %r. %s — and a state that renders nothing "
                 "to say which state it is in is a blank with extra steps."
                 % (tag, want, label))
-    for never in MUST_NOT_SAY.get(path, []):
+    for never, why in MUST_NOT_SAY.get(path, []):
         # ⚠️ WORD-BOUNDED. A plain substring "YOU" matches Design's own
         # "YOUR STANDING" heading, which is on every render including the
         # signed-out one — the first version failed this fixture for a
         # heading rather than for a badge.
         if re.search(r"\b%s\b" % re.escape(never), text):
-            problems.append(
-                "%s: says %r, and this fixture has no signed-in viewer. "
-                "Badging a row as the viewer's when there is no viewer is "
-                "how a student is shown somebody else's standing as their "
-                "own." % (tag, never))
+            problems.append("%s: says %r — %s." % (tag, never, why))
 
     # ⊕ AT MOST ONE "YOU" CHIP, on every fixture, before and after the drive.
     #

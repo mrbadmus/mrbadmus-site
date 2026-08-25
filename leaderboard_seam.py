@@ -147,6 +147,29 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
        + 'the whole cold start');
   }
 
+  /* ── 1b. the loading contract the R30 fixture depends on ─────────── */
+  {
+    /* Synchronously after boot, before any promise resolves. The port's R30
+       guards are written as `MRB_STATUS() !== 'ok'`, so what the loading
+       state renders depends entirely on these four answers being right at
+       this instant. Asserted here because the behaviour fixture STUBS the
+       seam and therefore cannot prove them of the real file. */
+    const s = boot({});
+    ok('before any payload: status is "loading"', s.api.status() === 'loading',
+       'got ' + s.api.status());
+    ok('before any payload: payload() is null', s.api.payload() === null,
+       String(s.api.payload()));
+    ok('before any payload: rows() and weeks() are empty arrays, not null',
+       Array.isArray(s.api.rows()) && s.api.rows().length === 0
+       && Array.isArray(s.api.weeks()) && s.api.weeks().length === 0,
+       'rows=' + JSON.stringify(s.api.rows())
+       + ' weeks=' + JSON.stringify(s.api.weeks()));
+    ok('before any payload: isCurrent() is false and closesAt() is null',
+       s.api.isCurrent() === false && s.api.closesAt() === null,
+       'isCurrent=' + s.api.isCurrent() + ' closesAt=' + s.api.closesAt());
+    await wait(30);
+  }
+
   /* ── 2/3. an error is not a cached answer; an ok answer is ───────── */
   {
     /* ⚠️ THE ORDER HERE IS LOAD-BEARING, AND THE FIRST VERSION OF THIS

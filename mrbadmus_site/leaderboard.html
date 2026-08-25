@@ -369,7 +369,17 @@ class Component extends DCLogic {
       closeDot: live ? 'var(--st-accent)' : 'var(--st-rule-strong)',
       closeFg: live ? 'var(--st-accent-text)' : 'var(--st-muted)',
       closeAnim: live ? 'livedot 2s ease-out infinite' : 'none',
-      closeLabel: live ? 'CLOSES IN ' + d + 'D ' + String(h).padStart(2, '0') + 'H ' + String(mi).padStart(2, '0') + 'M ' + String(sec).padStart(2, '0') + 'S' : 'LOCKED ' + _wk.long.toUpperCase(),
+      closeLabel: MRB_STATUS() !== 'ok'
+        /* ⊕ MRB-290 R30. Design's not-live branch fires on an
+           empty payload too, so this pill told a student the week
+           was LOCKED while it was merely loading — unknown
+           rendered as one of the two real answers, which is
+           MRB-287's 'ON TIME 0' again. Unknown is neither. */
+        ? '\u2014'
+        : (live ? 'CLOSES IN ' + d + 'D ' + String(h).padStart(2, '0')
+            + 'H ' + String(mi).padStart(2, '0') + 'M '
+            + String(sec).padStart(2, '0') + 'S'
+          : 'LOCKED ' + _wk.long.toUpperCase()),
       stats: [
         { label: 'ENTRIES', value: entries == null ? '\u2014' : String(entries), hue: 'var(--st-accent)' },
         { label: 'MEDIAN SCORE', value: median == null ? '\u2014' : median + '%', hue: 'var(--biology)' },
@@ -378,7 +388,15 @@ class Component extends DCLogic {
       ],
       me: me ? Object.assign({}, me, { percentile: 'TOP ' + Math.max(1, Math.round(me.rank / Math.max(1, entries) * 100)) + '%' }) : { rankLabel: '\u2014', percentile: 'NOT ENTERED', pctLabel: '\u2014', name: MRB_VIEWER_NAME(), initials: '', avImg: 'none', score: '\u2014', time: '\u2014', sub: 'no entry this week', papers: [], moveFull: '', moveFg: 'var(--st-muted)' },
       pinMe: !!me && !meVisible,
-      cutLabel: 'TOP ' + topCount + ' ONLY \u00B7 ' + entries + ' SAT THIS WEEK',
+      cutLabel: MRB_STATUS() !== 'ok'
+        /* ⊕ MRB-290 R30. The clause is DROPPED, not dashed: while
+           the payload is null this read 'TOP 10 ONLY \u00B7 null
+           SAT THIS WEEK' on the live page. A clause whose only
+           content is a fact we do not have does not belong in the
+           sentence at all. */
+        ? ('TOP ' + topCount + ' ONLY')
+        : ('TOP ' + topCount + ' ONLY \u00B7 ' + entries
+           + ' SAT THIS WEEK'),
       cutValue: MRB_CUT_STATE() || (cut ? 'CUT LINE ' + cut.pct + '%'
         : (entries ? 'ALL ' + entries + ' LISTED' : 'NO ENTRIES')),
       grid: density === 'compact'
