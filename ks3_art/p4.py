@@ -114,12 +114,21 @@ def _tiles(hook, specs):
 
 
 def _head(hook, a):
-    """Eyebrow, heading and the head counter Design puts opposite them."""
-    return ('<div class="ks3-%s-head"><div>'
-            '<p class="ks3-eyebrow">%s</p><h2>%s</h2></div>'
-            '<p class="ks3-%s-progress" data-%s-progress>%s</p></div>'
-            % (hook, t(a.get("eyebrow", "")), t(a.get("heading", "")),
-               hook, hook, t(a.get("progress", ""))))
+    """⊕ MRB-223, 25 Aug 2026 — RETURNS NOTHING, DELIBERATELY. A live defect.
+
+    This used to draw a second head row — eyebrow, `<h2>` and a progress
+    paragraph — inside every bench in this unit. `r_activity` had ALREADY
+    drawn Design's row (`.ks3-blockhead`, from the same `eyebrow` /
+    `heading` / `progress` keys), so every shipped bench in P4, P5 and P6
+    printed its eyebrow and its heading twice. Measured in the built bytes:
+    one duplicated `<h2>` on all 22 lesson pages; 16 placements in P6 alone.
+    P7 onwards never drew the second row (see `ks3_art/p7.py`); this brings
+    the three earlier units to the same shape without touching any of the
+    templates that call it. The wiring now writes the readout into the
+    shell's own `[data-count]`, which is the element the student was always
+    reading first.
+    """
+    return ""
 
 
 def _sibling(a):
@@ -811,8 +820,15 @@ def r_drag_lane(a, act_id):
                _gate(act_id, "drag-lane", a.get("gate") or {}, "dlane"),
                t(a.get("surface_label", "The surface underneath")), surf_tabs,
                t(a.get("mass_label", "The load in the block")), mass_tabs,
-               e(a.get("compare", "")),
-               svg, fills, _tiles("dlane", a.get("readouts") or [])))
+               # ⊕ MRB-223, 25 Aug 2026 — ARGUMENT ORDER. `compare` was passed
+               # HERE, one slot early, so on the live friction page the raw
+               # compare template ("At {mass} kg the sliding reading is
+               # {slide} N…") printed as visible text inside the figure
+               # wrap, the fills landed where the tiles go, and the tiles'
+               # HTML went into `data-template`. ks3_smoke had been red on
+               # physics/forces for exactly this and nobody had run it.
+               svg, fills, _tiles("dlane", a.get("readouts") or []),
+               e(a.get("compare", ""))))
 
 
 # ═══ p4-06 · #s-bench · the fall ═════════════════════════════════════════
@@ -1424,11 +1440,12 @@ def r_force_band(a, act_id):
     close = ('<p class="ks3-fband-close">%s</p>' % rich(a["close"])
              if a.get("close") else "")
 
+    # ⊕ MRB-223 — the `check` shell already emits this figure's eyebrow and
+    # <h2> from the same two keys; the band printed them a second time
+    # (measured on every P4 figure page). The shell's row is the only one.
     return ('<div class="ks3-fband" data-fband>'
-            '<p class="ks3-eyebrow">%s</p><p class="ks3-fband-heading">%s</p>'
             '%s%s<ol class="ks3-fband-list">%s</ol>%s%s</div>'
-            % (t(a.get("eyebrow", "")), t(a.get("heading", "")),
-               lead, strip, items, columns, close))
+            % (lead, strip, items, columns, close))
 
 
 # ═══ the drawn figures ═══════════════════════════════════════════════════
@@ -1689,7 +1706,11 @@ def r_p4_attempt(a, act_id):
     scaffold can never contradict the instrument the student is reading.
     Question 2 is fixed and is always the one that needs a conversion.
     """
-    return r_cfifa_attempt(a, act_id, "p4cfa")
+    # ⊕ MRB-223 — ONE EYEBROW, NOT TWO. The `check` shell already prints
+    # this activity's eyebrow in Design's `.ks3-blockhead`; the kit helper
+    # printed it again. `None` tells the helper it is already on the page
+    # (the P7 opt-out, applied here after it was measured on live pages).
+    return r_cfifa_attempt(dict(a, eyebrow=None), act_id, "p4cfa")
 
 
 # ═══ registration ════════════════════════════════════════════════════════

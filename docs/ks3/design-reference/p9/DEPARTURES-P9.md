@@ -261,6 +261,10 @@ whoever owns them.
 Measured: 2 `ks3-blockhead` on each P9 page against 6 on `p6-06`, and zero
 duplicated `<h2>` on all three P9 pages.
 
+⊕ **Fixed 25 Aug 2026 (MRB-223), on P4, P5 and P6 themselves** — see the
+`⊕ Fixed` section at the end of each of `DEPARTURES-P4.md`, `-P5.md` and
+`-P6.md`. Measured after: zero duplicated `<h2>` on all 22 pages.
+
 ---
 
 ## A finding about A GATE — `ks3_figure_sweep` is flaky, and here is exactly why

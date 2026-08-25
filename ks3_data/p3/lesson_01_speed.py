@@ -291,6 +291,17 @@ LESSON = {
         {"type": "worked-example", "id": "cfifa-speed-plain",
          "anchor": "s-build"},
         {"type": "worked-example", "id": "cfifa-speed-convert"},
+        # ⊕ MRB-223 — HER CARD GRID, at the end of #s-build where she drew it
+        # (under the attempt; see the vocabulary note). Eyebrow and lead are
+        # hers verbatim. NOT a rail stop — her RAIL has four stops and this is
+        # inside the third. The engine's block is its own section rather than
+        # a div inside the CFIFA one, which is the one structural difference
+        # and is registered in DEPARTURES-P3.md.
+        {"type": "keyword",
+         "eyebrow": "Three words you have just used",
+         "lead": "Say what each one means out loud. Then turn the card and "
+                 "check yourself.",
+         "terms": ["Speed", "Average speed", "Metre per second"]},
 
         # ── #s-compare · NOT a rail stop ───────────────────────────────
         {"type": "compare-pairs",
@@ -552,18 +563,32 @@ LESSON = {
     "support": [],
 
     "vocabulary": [
-        {"term": "speed",
+        # ⊕ MRB-223, 25 Aug 2026 — DESIGN'S THREE CARDS, AS SHE WROTE THEM.
+        # Her p3-01 is the ONLY physics page in the key stage that draws a
+        # vocabulary card grid ("Three words you have just used", inside
+        # #s-build under the CFIFA attempt), and the live page never placed
+        # it. Her `CARDS` constant carries `term` / `def` / `note` for these
+        # three; they were merged into one definition each here, and the
+        # grid was never authored. Now: her term (capitalised, as on her
+        # card), her `def` as the definition and her `note` as the note,
+        # byte for byte, and the `keyword` block below places them. `mean`
+        # is not one of her cards and stays as it was — it still feeds the
+        # unit's word box and the flashcards.
+        {"term": "Speed",
          "definition": "How far something travels in a certain time — "
-                       "distance divided by time. Not how fast it looks: a "
-                       "plane looks slow because it is far away."},
-        {"term": "average speed",
+                       "distance divided by time.",
+         "note": "Not \"how fast it looks\". A plane looks slow because it "
+                 "is far away."},
+        {"term": "Average speed",
          "definition": "Total distance divided by total time for a whole "
-                       "journey. It is not the average of the speeds — "
-                       "time spent slowly counts for more."},
-        {"term": "metre per second",
+                       "journey.",
+         "note": "It is not the average of the speeds. Time spent slowly "
+                 "counts for more."},
+        {"term": "Metre per second",
          "definition": "The unit of speed: the number of metres travelled in "
-                       "each second. Written m/s, where the slash means "
-                       "“divided by”."},
+                       "each second.",
+         "note": "Written m/s. The slash means \"divided by\", which is where "
+                 "it comes from."},
         {"term": "mean",
          "definition": "Add the readings and divide by how many there were. "
                        "Here it is taken of the TIMES, then the distance is "

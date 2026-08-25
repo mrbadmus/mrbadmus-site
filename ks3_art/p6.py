@@ -97,11 +97,21 @@ def _tiles(hook, specs):
 
 
 def _head(hook, a):
-    return ('<div class="ks3-%s-head"><div>'
-            '<p class="ks3-eyebrow">%s</p><h2>%s</h2></div>'
-            '<p class="ks3-%s-progress" data-%s-progress>%s</p></div>'
-            % (hook, t(a.get("eyebrow", "")), t(a.get("heading", "")),
-               hook, hook, t(a.get("progress", ""))))
+    """⊕ MRB-223, 25 Aug 2026 — RETURNS NOTHING, DELIBERATELY. A live defect.
+
+    This used to draw a second head row — eyebrow, `<h2>` and a progress
+    paragraph — inside every bench in this unit. `r_activity` had ALREADY
+    drawn Design's row (`.ks3-blockhead`, from the same `eyebrow` /
+    `heading` / `progress` keys), so every shipped bench in P4, P5 and P6
+    printed its eyebrow and its heading twice. Measured in the built bytes:
+    one duplicated `<h2>` on all 22 lesson pages; 16 placements in P6 alone.
+    P7 onwards never drew the second row (see `ks3_art/p7.py`); this brings
+    the three earlier units to the same shape without touching any of the
+    templates that call it. The wiring now writes the readout into the
+    shell's own `[data-count]`, which is the element the student was always
+    reading first.
+    """
+    return ""
 
 
 def _slider(act_id, hook, spec, key=""):
@@ -250,7 +260,6 @@ def r_wave_anatomy(a, act_id):
 
     return ('<div class="ks3-wanat" data-wanat data-resting="%s" '
             'data-alt-base="%s">'
-            '<p class="ks3-eyebrow">%s</p><p class="ks3-wanat-heading">%s</p>'
             '<div class="ks3-wanat-tabrow">%s</div>'
             '<div class="ks3-wanat-figwrap">'
             '<svg class="ks3-wanat-svg" viewBox="0 0 1000 340" role="img" '
@@ -262,9 +271,9 @@ def r_wave_anatomy(a, act_id):
             '<text class="ks3-wanat-travellabel" x="410" y="322" '
             'text-anchor="end">%s</text>%s</svg></div>'
             '<p class="ks3-wanat-note" data-wanat-note-out>%s</p>%s</div>'
-            % (e(a["resting_note"]), e(a.get("alt_base", "")),
-               t(a.get("eyebrow", "The figure")),
-               t(a.get("heading", "Pick a part to measure")), tabs,
+            # ⊕ MRB-223 — eyebrow and heading come from the `check` shell's own
+            # head row; the figure printed them a second time (measured).
+            % (e(a["resting_note"]), e(a.get("alt_base", "")), tabs,
                e(a.get("alt_base", "")), wave,
                t(a.get("travel_label", "the wave travels this way")), marks,
                t(a["resting_note"]), notes))
@@ -1350,11 +1359,12 @@ def r_wave_band(a, act_id):
     # declares `"mirrors": "s-hook"` in its rail row and the engine
     # resolves it, which is also what makes R2 accept it as reachable.
 
+    # ⊕ MRB-223 — the `check` shell already emits this figure's eyebrow and
+    # <h2>; the band printed them a second time (measured: two "The figure",
+    # two "Four stages, every time" on how-sound-is-made.html).
     return ('<div class="ks3-wband" data-wband>'
-            '<p class="ks3-eyebrow">%s</p><p class="ks3-wband-heading">%s</p>'
             '%s%s%s</div>'
-            % (t(a.get("eyebrow", "")), t(a.get("heading", "")),
-               lead, body, close))
+            % (lead, body, close))
 
 
 def _strip(strip, act_id):
@@ -1730,7 +1740,11 @@ def r_p6_attempt(a, act_id):
     FAMILY is P6's own, so `ks3_art.load()`'s one-family-one-module rule
     holds and the placement gates see it as this unit's.
     """
-    return r_cfifa_attempt(a, act_id, "p6cfa")
+    # ⊕ MRB-223 — ONE EYEBROW, NOT TWO. The `check` shell already prints
+    # this activity's eyebrow in Design's `.ks3-blockhead`; the kit helper
+    # printed it again. `None` tells the helper it is already on the page
+    # (the P7 opt-out, applied here after it was measured on live pages).
+    return r_cfifa_attempt(dict(a, eyebrow=None), act_id, "p6cfa")
 
 
 # ═══ registration ════════════════════════════════════════════════════════

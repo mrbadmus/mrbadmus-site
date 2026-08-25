@@ -8603,7 +8603,7 @@
       each(cases, function (c, i) { setHidden(c, i !== at); });
       setHidden(panel, !open);
 
-      var prog = wrap.querySelector("[data-iboard-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = opened + " of " + TOTAL + " cases opened";
       }
@@ -8756,7 +8756,7 @@
           dirWord + ".");
       }
 
-      var prog = wrap.querySelector("[data-rbench-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both sliders live" : "Set a pull to begin";
       }
@@ -8906,7 +8906,7 @@
                    ", the same length as each other."));
       }
 
-      var prog = wrap.querySelector("[data-hrig-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -9066,7 +9066,7 @@
           r.getAttribute("data-after") + ".");
       }
 
-      var prog = wrap.querySelector("[data-grun-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -9240,7 +9240,7 @@
           " newtons keep it sliding steadily.");
       }
 
-      var prog = wrap.querySelector("[data-dlane-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -9420,7 +9420,7 @@
               " left over " + (up ? "upwards." : "downwards.")));
       }
 
-      var prog = wrap.querySelector("[data-fall-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -9558,7 +9558,7 @@
                  : ", which is not enough to turn the nut."));
       }
 
-      var prog = wrap.querySelector("[data-span-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -9723,7 +9723,7 @@
           "readings make.");
       }
 
-      var prog = wrap.querySelector("[data-splot-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = readings.length
           ? readings.length + " reading" +
@@ -9887,7 +9887,7 @@
 
       if (svg) { svg.setAttribute("aria-label", d.getAttribute("data-alt")); }
 
-      var prog = wrap.querySelector("[data-fsort-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = count === TOTAL
           ? "All " + TOTAL + " labelled"
@@ -10199,7 +10199,7 @@
                  + "to sink in." : ", which the sand surface holds."));
       }
 
-      var prog = wrap.querySelector("[data-sand-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -10343,7 +10343,7 @@
           " pascals from every direction.");
       }
 
-      var prog = wrap.querySelector("[data-dprobe-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -10504,7 +10504,7 @@
           " newtons down and an upthrust arrow of " + U + " newtons up.");
       }
 
-      var prog = wrap.querySelector("[data-ftank-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -10686,7 +10686,7 @@
           c().textContent.toLowerCase() + " at that height.");
       }
 
-      var prog = wrap.querySelector("[data-alt-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -11032,7 +11032,7 @@
           " millimetres and stays where it is.");
       }
 
-      var prog = wrap.querySelector("[data-rtank-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Move a control to begin";
@@ -11155,7 +11155,7 @@
           ", and where they meet " + r + " millimetres.");
       }
 
-      var prog = wrap.querySelector("[data-slane-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Move a control to begin";
@@ -11297,7 +11297,7 @@
           "spread out in others, and the disturbance travels left to right.");
       }
 
-      var prog = wrap.querySelector("[data-vchain-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -11505,7 +11505,7 @@
                              : "at their rest spacing.")));
       }
 
-      var prog = wrap.querySelector("[data-slink-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -11638,7 +11638,7 @@
           " millimetres above the zero line.");
       }
 
-      var prog = wrap.querySelector("[data-scope-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both dials live"
                                    : "Change a control to begin";
@@ -11779,7 +11779,7 @@
             : "Sound crosses at about " + v + " metres per second."));
       }
 
-      var prog = wrap.querySelector("[data-mrange-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -11953,7 +11953,7 @@
           " seconds.");
       }
 
-      var prog = wrap.querySelector("[data-echo-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -12111,7 +12111,7 @@
           " that band.");
       }
 
-      var prog = wrap.querySelector("[data-lrange-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
@@ -12251,7 +12251,7 @@
           "to scale in a window of " + WIN + " milliseconds.");
       }
 
-      var prog = wrap.querySelector("[data-fgauge-progress]");
+      var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
       if (prog) {
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
