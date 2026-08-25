@@ -94,6 +94,15 @@ GATES = [
          why="garbage strings in the built key stage — unsubstituted "
              "placeholders, stray markup, `undefined` reaching a page."),
 
+    dict(name="answer_positions",
+         cmd=["python3", "verify_answer_positions.py"],
+         speed="fast",
+         why="MRB-278 made permanent and cross-key-stage: no fixed-position "
+             "MCQ corpus — KS3 authored (served verbatim) or KS4 built "
+             "(served post-shuffle) — lets one option position hold more "
+             "than half the answers or never be the answer. KS3's bank once "
+             "never landed on D; nothing watched KS4 until this row."),
+
     dict(name="3d_isolation",
          cmd=["python3", "3d_isolation_check.py"],
          speed="fast",
@@ -449,6 +458,10 @@ EXCLUDED = {
         "stamps. It cannot run before the thing it checks exists.",
     "check_b1_live.sh":
         "the same, for B1's lessons.",
+    "check_ks4_live.sh":
+        "verifies mrbadmus.com's KS4 and root pages AFTER a push, including "
+        "the cache-bust stamps (MRB-290). It cannot run before the thing it "
+        "checks exists.",
 }
 
 # The KS4 subtopic corpora are DATA, not scripts: one module each of AQA spec
@@ -457,8 +470,11 @@ EXCLUDED = {
 EXCLUDED_PREFIXES = {
     "all_subtopics_":
         "AQA KS4 subtopic content data, imported by generate_site_v5. No "
-        "entry point and nothing to assert — the audit of this content is "
-        "audit_content.py.",
+        "entry point; the audit of this content is audit_content.py, and "
+        "the served answer-position property over what these build into is "
+        "asserted by the answer_positions gate. (The authored files are "
+        "deliberately 100%% index-0 — the build-time shuffle is what a "
+        "student sees, which is why the gate measures the built tree.)",
 }
 
 
