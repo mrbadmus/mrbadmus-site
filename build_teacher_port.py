@@ -741,8 +741,12 @@ def index_tree(roots):
     return found, parent
 
 
-def apply_rulings(spec, roots):
+def apply_rulings(spec, roots, logic):
     """Design's template with MRB-287's rulings applied, for ONE page.
+
+    `logic` is the SEAMED logic for this build — it is here so step 6 can
+    assert every `WRAP` expression is a key that actually exists. See there
+    for why an unchecked one is invisible rather than fatal.
 
     Returns (roots, stats). Every index every ruling names must be found, or
     the build stops. A prune that silently matched nothing is how a screen
@@ -997,9 +1001,80 @@ def apply_rulings(spec, roots):
                        handler))
             checked += 1
 
+    # ── 6. one of Design's nodes, made conditional ───────────────────────
+    #
+    # ⚑ See `teacher_rulings.WRAP`. The node is REPLACED IN ITS PARENT by an
+    # `<if>` whose single child is the node itself, so its subtree, its index,
+    # its handlers and its bindings are all untouched — the only change is
+    # that it now renders when the expression is truthy and not otherwise.
+    # The wrapper carries no `i`: `student-runtime` renders an `<if>` as a
+    # BRANCH and never as an element, so there is nothing to hang a
+    # `data-dc-tpl` on, and Design's numbering must not move.
+    #
+    # ⚠️ IT RUNS LAST, AFTER THE INSERTS AND THE NAV CHECK, AND BEFORE
+    # `bindings_for`. After, so an insert cannot land inside a node that has
+    # just become an `<if>`'s only child and so the NAV assertion still reads
+    # Design's own node; before, because `bindings_for` computes child-index
+    # PATHS over the tree that ships, and a wrapper adds a level.
+    #
+    # ⛔ AND EVERY EXPRESSION IS ASSERTED INTO THE LOGIC, WHICH THE STUDENT
+    # PORT DOES NOT DO. `student-runtime.js:146` evaluates an `<if>` with
+    # `lookup(node.e, scope, null)` — WITHOUT the miss recorder — so a key
+    # that is not in `renderVals` is not an error and does not register as a
+    # missed binding. It is silently FALSE. A typo here would take the
+    # shoutout composer off every class page, leave `data-mrb-misses` at
+    # zero, and pass every gate in the set.
+    wraps = dict(R.WRAP.get(spec["out"], {}))
+    for node, expr in sorted(wraps.items()):
+        name = expr.split(".")[0].strip()
+        if not re.search(r"\b%s\b" % re.escape(name), logic):
+            raise SystemExit(
+                "build_teacher_port.py: %s wraps template node %s in `<if "
+                "%s>`, and no `renderVals` key of that name is anywhere in "
+                "the emitted logic.\n"
+                "  `student-runtime` looks an `<if>` expression up WITHOUT "
+                "the miss recorder, so a key that does not exist is not an "
+                "error — it is silently FALSE, and the node simply never "
+                "renders. Add the key in teacher_rulings.LOGIC, or fix the "
+                "spelling here: unchecked, this ships a page with the "
+                "control missing and every gate green."
+                % (spec["out"], node, expr))
+
+    wrapped = [0]
+
+    def enclose(node):
+        if not isinstance(node, dict) or not node.get("c"):
+            return
+        kids = node["c"]
+        for pos, kid in enumerate(kids):
+            if isinstance(kid, dict) and kid.get("i") in wraps:
+                kids[pos] = {"t": "if", "e": wraps.pop(kid["i"]), "c": [kid]}
+                wrapped[0] += 1
+            enclose(kid)
+
+    for root in roots:
+        if isinstance(root, dict) and root.get("i") in wraps:
+            raise SystemExit(
+                "build_teacher_port.py: the MRB-287 E1 ruling wraps template "
+                "node %s in a conditional on %s, and that node is a template "
+                "ROOT with no parent to hold the wrapper. Wrap something "
+                "further in." % (root.get("i"), spec["out"]))
+        enclose(root)
+    if wraps:
+        raise SystemExit(
+            "build_teacher_port.py: %s wraps template node(s) %s in a "
+            "conditional and they are not in the tree.\n"
+            "  Either Design has redrawn them, or they were pruned by DEAD / "
+            "by another screen before the wrap ran. A silently skipped wrap "
+            "leaves a WRITE control on a read-only academic year — which is "
+            "the MRB-261 breach this ruling exists to close — and the build "
+            "stays green. Re-anchor teacher_rulings.WRAP[%r]."
+            % (spec["out"], sorted(wraps), spec["out"]))
+
     return roots, dict(pruned=removed[0], attred=attred, wired=wired,
                        attr_bound=attr_bound, nav_checked=checked,
-                       retexted=retexted, inserted=inserted)
+                       retexted=retexted, inserted=inserted,
+                       wrapped=wrapped[0])
 
 
 # ── the binding table: text nodes Design typed that are sample data ──────
@@ -1344,9 +1419,28 @@ DESIGN_SCALARS = dict(
     viewingYearLabel="Viewing 2026–27",
     academicWeek=1,
     termWeekLabel="Autumn Week 1",
-    hasPastYears=True,
+    # ── ⊕ MRB-287 E1 · THE YEAR IN VIEW ──────────────────────────────────
+    #
+    # ⊕ `hasPastYears` AND `pastYears` WERE HERE AND ARE GONE. They shipped
+    # as `hasPastYears=True` beside `pastYears=[]` — a fixture asserting that
+    # previous years exist and naming none of them, which is a shape no seam
+    # can produce. Both are superseded: `hasOtherYears` asks the question the
+    # control actually needs ("is there another year to reach"), which is
+    # also true in the direction the old key could not express — the way BACK
+    # from a past year to the working one.
+    #
+    # ⚠️ `yearOptions` EXCLUDES THE YEAR IN VIEW, mirroring the seam. The
+    # fixture views 2026-27, so the one option is 2025-26. The id is not a
+    # uuid, on the same terms as FIXTURE_ME above: every real academic year
+    # id is one, so this cannot be mistaken for a row or pasted into a query
+    # that would match one.
     pastYearsLabel="Previous years",
-    pastYears=[],
+    yearOptions=[dict(id="fixture-year-2025-26", name="2025–26")],
+    hasOtherYears=True,
+    viewingIsPast=False,
+    canWrite=True,
+    readOnlyLine="",
+    yearParam="",
     weekRangeLabel="Mon 17 – Fri 21 Aug 2026",
     weekOfLabel="Week of Mon 17 Aug 2026",
     printedOn="24 Aug 2026",
@@ -1367,6 +1461,16 @@ def fixture_payload(data, templates, class_id):
     classes = data["CLASSES"]
     payload = dict(data)
     payload.update(DESIGN_SCALARS)
+    # ⊕ MRB-287 E1 — THE CARD'S OWN ACADEMIC YEAR, DERIVED AND NOT TYPED.
+    #
+    # Design's classes have no year at all: the string lives once, in her
+    # markup, as the welded "· 2026–27" this port took out. So the fixture's
+    # per-card value is derived from the ONE scalar that already states the
+    # fixture's year rather than written twelve times — twelve literals would
+    # be twelve chances to disagree with `yearLabel`, and the card meta's
+    # whole defect was a year that disagreed with the class it described.
+    classes = [dict(c, yearName=DESIGN_SCALARS["yearLabel"]) for c in classes]
+    payload["CLASSES"] = classes
     payload.update(
         TEMPLATES=templates,
         classCount=len(classes),
@@ -1401,16 +1505,34 @@ def fixture_payload(data, templates, class_id):
 # data could never be in at the same time.
 EMPTY_SHAPES = {
     "classes.html": (
-        "no classes at all — a teacher a school admin has not added to "
-        "anything. On the live page `teacher-live.js` throws its own "
-        "`noClasses` sentence before mounting; this is what the PAGE does "
-        "when it mounts anyway, which is the half no live test can reach.",
-        lambda p: _shape_no_classes(p)),
+        "no classes IN THE YEAR BEING VIEWED, and that year is a PAST one. "
+        "⊕ MRB-287 E1 — THIS FIXTURE CARRIES TWO PROPERTIES, deliberately, "
+        "and they are the same teacher: someone whose classes are all last "
+        "year's. Before E1 that person could not reach the dashboard at all "
+        "— `teacher-live.js` threw `noClasses` whenever the WORKING year was "
+        "empty, so the one control that would have helped them was behind "
+        "the sentence telling them there was nothing to see. It now throws "
+        "only when no OTHER year exists, and this is the state that proves "
+        "it: the page mounts, the grid draws Design's own \"No classes\" "
+        "panel, the year strip is on screen and pressable, and \"Import "
+        "students\" is ABSENT because a finished year is read-only. It is "
+        "also the only fixture in the set where `canWrite` is false on the "
+        "classes screen.",
+        lambda p: _shape_past_year(_shape_no_classes(p))),
     "class-detail.html": (
         "a class with no roster — `ROSTER: []`, `n: 0`, `state: 'empty'`. "
         "Design DREW this one (\"No students yet\" and an Import action), so "
-        "it should render Design's own empty state rather than a blank.",
-        lambda p: _shape_no_roster(p)),
+        "it should render Design's own empty state rather than a blank. "
+        "⊕ MRB-287 E1 — AND IT IS A PAST-YEAR CLASS, a second property on "
+        "one fixture rather than a thirteenth and fourteenth. It is what "
+        "drives MRB-261's read-only rule on this screen: the shoutout "
+        "composer and the bulk-send opener are ABSENT (not disabled), the "
+        "header says which year it is with `readOnlyLine`, and the feed "
+        "stays — a past year is read-only, not invisible. The four "
+        "`shoutout-delete` additions carry `needs_data` and are already "
+        "skipped on this fixture, so nothing that was pressed here stops "
+        "being pressed.",
+        lambda p: _shape_past_year(_shape_no_roster(p))),
     "digest.html": (
         "a class with students and no work set — `PAPERS: []`, `WEEKS: []`, "
         "`state: 'nowork'`. Design's README: \"classes with no work set have "
@@ -1457,6 +1579,41 @@ def _blank_class(payload, cid, state, keep_papers):
         payload["GRID"] = {kk: v for kk, v in payload["GRID"].items()
                            if not kk.startswith(cid + ":")}
     return payload
+
+
+def _shape_past_year(p):
+    """The year in view is a FINISHED one — MRB-261's read-only state.
+
+    ⚑ THE ONLY SHAPE IN THIS FILE THAT MAKES A PAGE LESS CAPABLE, and it is
+    the one no live test can be relied on to reach: it needs a school with two
+    academic years and a teacher holding classes in the older one, which is a
+    fact about a database rather than about the code.
+
+    Everything here is what `teacher-live.js` computes when `pickYear` lands
+    on a past year — `canWrite` false, the read-only sentence, and the options
+    list flipped so the way BACK to the working year is what the selector
+    offers. That last one is why `hasOtherYears` replaced `hasPastYears`: from
+    here the year a teacher wants is a FUTURE one relative to the one in view.
+    """
+    p = json.loads(json.dumps(p))
+    past = DESIGN_SCALARS["yearOptions"][0]           # the 2025-26 row
+    p.update(
+        viewingIsPast=True,
+        canWrite=False,
+        # A binding, never a literal — the same rule the live seam follows.
+        readOnlyLine="%s is read-only" % past["name"],
+        viewingYearLabel="Viewing %s · read-only" % past["name"],
+        # Viewing the past year, so the option is the working one.
+        yearOptions=[dict(id="fixture-year-2026-27",
+                          name=DESIGN_SCALARS["yearLabel"])],
+        hasOtherYears=True,
+        pastYearsLabel="Other years",
+        yearParam=past["id"],
+    )
+    # Every class on screen belongs to the year being viewed, so the cards
+    # say so too. Derived from the same row, never typed per card.
+    p["CLASSES"] = [dict(c, yearName=past["name"]) for c in p["CLASSES"]]
+    return p
 
 
 def _shape_no_classes(p):
@@ -2329,7 +2486,7 @@ def build():
     empty_report = {}
 
     for spec in PAGES:
-        roots, stats = apply_rulings(spec, tpl["roots"])
+        roots, stats = apply_rulings(spec, tpl["roots"], logic)
         table, bind_values = bindings_for(spec, roots)
         shipped = scrub(roots, table)
 
@@ -2478,6 +2635,50 @@ def build():
                     "reach by accident, or cannot reach at all."
                     % (spec["out"], add["marker"], add["page"]))
 
+        # ── ⊕ MRB-287 E1 · EVERY CLASS STATES ITS OWN ACADEMIC YEAR ──────
+        #
+        # ⛔ THE DEFECT THIS CATCHES CANNOT BE CAUGHT BY DRIVING THE PAGE, and
+        # that is why it is a byte check. The grid is year-scoped, so every
+        # card in one payload legitimately carries the SAME year string — a
+        # drive watching those strings cannot tell "each card states its own
+        # year" from "every card states the dashboard's year", because on
+        # correct data the two render identically. It only diverges on a past
+        # year, which no fixture can hold alongside a current one without
+        # inventing a shape the database cannot be in.
+        #
+        # What CAN be checked exactly is which value the expression reads. The
+        # card meta and the class header must read the CLASS's year
+        # (`c.yearName` / `k.yearName`) and must not reach for the dashboard's
+        # (`MRB_DATA('yearLabel')`), which is what both did until E1 and what
+        # made twelve cards out of 2025-26 each say 2026-27.
+        for what, own, line in (
+                ("the class card's meta line", "c.yearName", "meta:"),
+                ("the class header's long meta", "k.yearName", "longMeta:")):
+            seg = ""
+            at = page_logic.find(line)
+            if at != -1:
+                seg = page_logic[at:at + 260]
+            if own not in seg:
+                raise SystemExit(
+                    "build_teacher_port.py: %s — %s does not read %r.\n"
+                    "  Every class must state ITS OWN academic year, not the "
+                    "one the dashboard is scoped to. The retired page put it "
+                    "on every card and recorded why: 10H/Ph1 and 11h/Ph1 are "
+                    "the same 17 students a year apart and must never read "
+                    "as a duplicate. Re-anchor teacher_rulings.LOGIC."
+                    % (spec["out"], what, own))
+            if "MRB_DATA('yearLabel')" in seg:
+                raise SystemExit(
+                    "build_teacher_port.py: %s — %s reads "
+                    "MRB_DATA('yearLabel'), which is the WORKING year and "
+                    "not this class's.\n"
+                    "  Correct while the working year is the only one a "
+                    "teacher can open, and wrong the moment a past year is. "
+                    "That is the E1 defect exactly; it is a byte check "
+                    "because no drive can see it (the grid is year-scoped, "
+                    "so both readings render the same string on correct "
+                    "data)." % (spec["out"], what))
+
         # ⚑ ASSERTED, NOT ASSUMED. No bound literal may survive in the
         # template the PRODUCTION page ships — otherwise the binding is
         # cosmetic, the page carries the sample anyway, and a failed data load
@@ -2497,11 +2698,11 @@ def build():
             nav_nodes_seen |= {n for n in nav["nodes"] if n in here}
 
         print("     ✅ %-24s %7d bytes  (%d node(s) pruned, %d inserted, "
-              "%d binding(s), %d retext(s), %d region(s) named, %d live "
-              "region(s) carried)"
+              "%d wrapped, %d binding(s), %d retext(s), %d region(s) named, "
+              "%d live region(s) carried)"
               % (spec["out"], len(body), stats["pruned"], stats["inserted"],
-                 len(table), stats["retexted"], stats["attred"],
-                 len(region_ids)))
+                 stats["wrapped"], len(table), stats["retexted"],
+                 stats["attred"], len(region_ids)))
         print("        %-26s %7d  ·  %-26s %7d"
               % (spec["fixture_out"], len(fix), spec["empty_out"], len(mt)))
 

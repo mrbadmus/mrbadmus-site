@@ -1163,20 +1163,71 @@
 
   function reset() { cache = null; }
 
+  /* ⊕ MRB-287 E1 — THE ACADEMIC YEAR BEING VIEWED.
+     ...
+     ⚠️ THIS IS NOT PERSISTENCE, AND MRB-261's RULING IS INTACT. The retired
+     hand-written page held the selection in a plain local and said why:
+     "a teacher who looked at 2025-26 on Friday lands on 2026-27 on Monday.
+     Persisting it would silently hand someone a historical dashboard they
+     believed was current." That property is unchanged — `run()` reads the
+     year off the URL and nothing writes it anywhere, so a bare
+     `/teacher/classes.html` resolves the WORKING year on every load, exactly
+     as before.
+
+     What a local cannot do is survive a NAVIGATION, and Design's one file is
+     six URLs here. That is the same seam that left the week rail parked on
+     June for a page opened cold. `teacher-data.loadTeacherClasses` already
+     anticipates the caller naming a year — "the grid does, when a teacher has
+     opened a past year" — and this is the grid doing it.                  */
+  var selectedYearId = null;
+
+  /* The year list, read once per page load. `base()` is dropped and rebuilt
+     when the selection changes, and asking Supabase again for a list that
+     cannot have moved inside one page load is a second answer to a settled
+     question. */
+  var yearsCache = null;
+  async function yearIndex() {
+    if (!yearsCache) {
+      yearsCache = await window.MrBadmusTeacherData.loadAcademicYears();
+    }
+    return yearsCache;
+  }
+
+  /* Which year a URL is asking for, or the working one.
+
+     ⚠️ A `?year=` NAMING A YEAR THAT DOES NOT EXIST IS NOT AN ERROR AND IS
+     NOT HONOURED, and neither is a FUTURE one: a school that has created
+     2027-28 early must not be viewable through a hand-typed URL, which is the
+     same rule `loadAcademicYears` already applies when it tags a year
+     `is_future` rather than `is_past`. Both fall through to the working year,
+     which is where a bare URL lands — a wrong parameter gets you the right
+     dashboard, never a blank one. */
+  function pickYear(idx, wanted) {
+    var hit = null;
+    if (wanted) {
+      (idx.years || []).forEach(function (y) {
+        if (y.id === wanted && !y.is_future) { hit = y; }
+      });
+    }
+    return hit || idx.working || null;
+  }
+
   async function base() {
     if (cache) { return cache; }
     var TD = window.MrBadmusTeacherData;
 
     // The year first, on its own, because everything else is scoped by it and
-    // because the "previous years" control needs the full list. NEVER
-    // `is_current` and never a bare `end_date >= today` — `workingAcademicYear`
-    // owns that rule and carries the reasoning (MRB-261 / MRB-267).
-    var years = await TD.loadAcademicYears();
+    // because the year selector needs the full list. NEVER `is_current` and
+    // never a bare `end_date >= today` — `workingAcademicYear` owns that rule
+    // and carries the reasoning (MRB-261 / MRB-267).
+    var years = await yearIndex();
+    var viewing = pickYear(years, selectedYearId);
+    selectedYearId = viewing ? viewing.id : null;
 
     // The authorised, year-scoped class list. Reused rather than re-queried:
-    // this is the one function that knows which classes a teacher holds this
-    // year, and a second implementation of that is a second answer.
-    var classRows = await TD.loadTeacherClasses(years.working ? years.working.id : null);
+    // this is the one function that knows which classes a teacher holds in a
+    // given year, and a second implementation of that is a second answer.
+    var classRows = await TD.loadTeacherClasses(selectedYearId);
     var classIds = classRows.map(function (c) { return c.id; });
 
     var packs = classIds.length ? await TD.loadClassMatrices(classIds) : {};
@@ -1232,6 +1283,21 @@
         science_pathway: c.science_pathway,
         pill_label: c.pill_label,
         academic_year_id: c.academic_year_id,
+        /* ⊕ MRB-287 E1 — THE CARD'S OWN YEAR, and it was being dropped here.
+           `teacher-data.js` has returned `academic_year_name` since MRB-261;
+           this map carried the id and not the name, so the card had nothing
+           to state and the porter's ruling reached for the DASHBOARD's year
+           instead. Right while the working year is the only one you can open,
+           wrong the moment a past year is — twelve cards from 2025-26 each
+           saying 2026-27.
+
+           The retired page put it on every card and recorded the reason:
+           10H/Ph1 and 11h/Ph1 are the same 17 students a year apart, and with
+           no year on the card they read as a duplicate.
+
+           Empty when the school has not named the year — the card drops the
+           part rather than printing "undefined". */
+        yearName: c.academic_year_name || "",
         departed: pack.departed_count,
         assignment_count: papers.length
       });
@@ -1242,9 +1308,29 @@
       return String(a.code).localeCompare(String(b.code), undefined, { numeric: true });
     });
 
+    /* Every year a teacher may switch INTO, newest first, minus the one they
+       are already looking at.
+
+       ⚠️ THE CURRENT YEAR IS EXCLUDED ON PURPOSE, and it is not tidiness.
+       Included, it would have to render as a disabled row with no handler —
+       and `student-runtime.js` looks a handler up THROUGH the miss recorder
+       (`lookup(node.on, scope, ctx.miss)`), so a looped button with no `on`
+       writes `data-mrb-misses` and fails `teacher_behaviour`'s own binding
+       check. Design's node 84 already names the year in view; this list is
+       the years you can go TO, so every row rendered is pressable.
+
+       ⚠️ AND FUTURE YEARS ARE NOT OFFERED. A school that has created 2027-28
+       early has no classes in it and nothing to show; `loadAcademicYears`
+       tags it `is_future` for exactly this. */
+    var options = (years.years || []).filter(function (y) {
+      return !y.is_future && y.id !== selectedYearId;
+    }).map(function (y) { return { id: y.id, name: y.name }; });
+
     cache = {
       now: now,
       years: years,
+      viewing: viewing,
+      yearOptions: options,
       classRows: classRows,
       packs: packs,
       CLASSES: CLASSES,
@@ -1382,26 +1468,61 @@
   /* ═════════════════════════════════════════════════════════════════════
      load(screen, params)
      ═════════════════════════════════════════════════════════════════════ */
+  /* ⊕ MRB-287 E1 — which academic year a class belongs to.
+
+     ⚠️ THIS IS ALSO THE AUTHORISATION CHECK, which is why it is this call and
+     not a lighter one. `loadClassMatrices` drives off `class_teachers` under
+     RLS and throws `not_authorised` for a class the caller does not teach, and
+     it is year-agnostic — so it answers both halves of the question at once:
+     is this class mine, and which year is it in. */
+  async function yearOfClass(classId) {
+    var packs = await window.MrBadmusTeacherData.loadClassMatrices([classId]);
+    var pack = packs && packs[classId];
+    return (pack && pack.class && pack.class.academic_year_id) || null;
+  }
+
+  function notMine(classId) {
+    var e = new Error("[teacher-live] class not reachable: " + classId);
+    e.code = "not_authorised";
+    return e;
+  }
+
   async function load(screen, params) {
     params = params || {};
     var c = await base();
+
+    /* ⛔ THIS USED TO THROW `not_authorised` OUTRIGHT, AND IT WAS A DEAD END.
+       A bookmark to last year's class, a link that lost its `?year=`, or a
+       teacher whose classes are all past-year: every one of them landed on
+       "That class is not one of yours" for a class that was entirely theirs.
+       MRB-261 exists to keep that history reachable, so refusing to open it
+       was the ticket's own rule inverted.
+
+       ⚠️ THE AUTHORISATION IS NOT WEAKENED, IT IS ASKED SOMEWHERE THAT CAN
+       ANSWER IT. A class this teacher does not teach still throws — from
+       `yearOfClass`, with the same code and the same sentence — and a year
+       that is not in this school's list is refused here. What changes is that
+       a class that IS theirs, in a year they are not currently viewing, moves
+       the view to that year instead of being disowned. */
+    if (params.classId && !c.MATRIX[params.classId]) {
+      var ay = await yearOfClass(params.classId);          // throws if foreign
+      var known = (c.years.years || []).some(function (y) { return y.id === ay; });
+      if (!ay || !known || ay === selectedYearId) { throw notMine(params.classId); }
+      selectedYearId = ay;
+      reset();
+      c = await base();
+      // Belt and braces: the year moved and the class still is not in it.
+      if (!c.MATRIX[params.classId]) { throw notMine(params.classId); }
+    }
+
     var now = c.now;
     var year = c.years.working;
+    var viewing = c.viewing;
     var todayYmd = ymd(now);
 
     var classId = params.classId && c.MATRIX[params.classId]
       ? params.classId
       : (c.CLASSES[0] ? c.CLASSES[0].id : null);
-
-    /* A class id in the URL that is not one of the teacher's is an error, not
-       a silent redirect to their first class. `loadClassMatrices` would have
-       thrown for a class they do not teach; this catches a class that is
-       simply not in the year being viewed. */
-    if (params.classId && !c.MATRIX[params.classId]) {
-      var e = new Error("[teacher-live] class not in the working year: " + params.classId);
-      e.code = "not_authorised";
-      throw e;
-    }
 
     // ── prefetch only the grids this screen will actually draw ──────────
     if (screen === "marking" && classId) {
@@ -1437,11 +1558,14 @@
     var week = teachingWeek(new Date(now));
     var academicWeek = academicWeekOf(now, year);
 
-    /* Is there a year BEHIND the working one? Design offers "Previous years"
-       unconditionally and its handler pings "2025–26 is read-only". A school
-       in its first year has no previous year, and offering one is a control
-       that leads nowhere. */
-    var pastYears = (c.years.years || []).filter(function (y) { return y.is_past; });
+    /* ⊕ MRB-287 E1 — the year in view, and whether it is history.
+       Design offers "Previous years" unconditionally and its handler pings
+       "2025–26 is read-only". A school in its first year has no other year at
+       all, so the strip is GATED in the markup (`teacher_rulings.WRAP` on
+       `hasOtherYears`) rather than answered with a toast — a control that
+       exists to tell you it should not exist is still a dead control. */
+    var viewingName = viewing ? yearLabelOf(viewing) : "";
+    var viewingIsPast = !!(viewing && viewing.is_past);
 
     return {
       // ── who and when ────────────────────────────────────────────────
@@ -1456,12 +1580,43 @@
       termSeason: year ? season : "",
       yearLabel: yearLabel,
       yearName: (year && year.name) || "",
-      viewingYearLabel: yearLabel ? "Viewing " + yearLabel : "",
       academicWeek: academicWeek,
       termWeekLabel: (year && academicWeek != null) ? season + " Week " + academicWeek : "",
-      hasPastYears: pastYears.length > 0,
-      pastYearsLabel: pastYears.length ? "Previous years" : "",
-      pastYears: pastYears.map(function (y) { return { id: y.id, name: y.name }; }),
+
+      /* ── ⊕ MRB-287 E1 · THE YEAR IN VIEW ──────────────────────────────
+         ⚠️ `yearLabel` ABOVE IS THE WORKING YEAR AND EVERYTHING HERE IS THE
+         VIEWED ONE, and conflating the two is the defect this phase fixes.
+         `termLabel`, `termSeason` and `termWeekLabel` describe NOW, which is
+         always the working year — "Autumn Week 3" is not a fact about
+         2025-26. Everything below describes what is on screen. */
+      viewingYearLabel: viewingName
+        ? ("Viewing " + viewingName + (viewingIsPast ? " · read-only" : ""))
+        : "",
+      viewingIsPast: viewingIsPast,
+      yearOptions: c.yearOptions,
+      hasOtherYears: c.yearOptions.length > 0,
+      pastYearsLabel: c.yearOptions.length
+        ? (viewingIsPast ? "Other years" : "Previous years") : "",
+
+      /* MRB-261: a past year is read-only, and must SAY so. Both halves ship
+         together — this sentence and the WRAP that takes the write controls
+         off the page — because a page that suppresses a control silently
+         reads as broken rather than as finished.
+
+         ⚠️ A BINDING, NEVER A LITERAL. `teacher_tells` fails the build on a
+         typed academic year and it is right to: Design's "2025–26 is
+         read-only" was wrong from 1 September and wrong on day one for any
+         school whose previous year is not 2025-26. */
+      canWrite: !viewingIsPast,
+      readOnlyLine: (viewingIsPast && viewingName)
+        ? (viewingName + " is read-only") : "",
+
+      /* Threaded onto the two navigations that would otherwise lose the year
+         — a card into its class, and Back out of one. EMPTY on the working
+         year so `MRB_GO` drops the parameter entirely: the ordinary URL is
+         unchanged, and the bookmark a teacher keeps never pins a year they
+         will have left by September. */
+      yearParam: viewingIsPast ? selectedYearId : "",
 
       // ── this teaching week, in words ────────────────────────────────
       // Design's digest header literals: "Mon 17 – Fri 21 Aug 2026" and
@@ -1568,13 +1723,36 @@
             // ⊕ MRB-287 — and the id, from the same handover. The guard has
             // already validated this session; `ctx.user.id` IS `auth.uid()`.
             viewerId = (ctx.user && ctx.user.id) || null;
+
+            /* ⊕ MRB-287 E1 — THE YEAR IS RESOLVED BEFORE THE FIRST ROW IS
+               ASKED FOR, because `base()` scopes every read by it. A bare URL
+               leaves this null and `pickYear` returns the working year. */
+            var q = new URLSearchParams(window.location.search);
+            selectedYearId = q.get("year") || null;
+
             var c = await base();
-            if (!c.CLASSES.length) {
-              var e = new Error("[teacher-live] no classes this year");
+
+            /* ⛔ THIS USED TO THROW WHENEVER THE WORKING YEAR WAS EMPTY, and
+               it put the one control that would have helped behind the
+               sentence saying there was nothing to see. A teacher whose
+               classes are ALL last year's — the exact person MRB-261's
+               history is for — got "You are not teaching any classes this
+               year", no grid, and no year selector, on every load.
+
+               An empty SELECTED year is a STATE, not a failure: the page
+               mounts, the grid draws Design's own "No classes" panel
+               (`noneShownLine`), and the year strip stays reachable.
+
+               The sentence survives for the case it is actually true of. With
+               no other year to switch to, the working year IS every year, so
+               "you are not teaching any classes" is exactly right — and that
+               is a school in its first year, where there is no history to
+               reach and nothing a selector could offer. */
+            if (!c.CLASSES.length && !c.yearOptions.length) {
+              var e = new Error("[teacher-live] no classes in any year");
               e.mrbSay = SAY.noClasses;
               throw e;
             }
-            var q = new URLSearchParams(window.location.search);
             return load(screenFromLocation(), {
               classId: q.get("class"),
               studentId: q.get("student"),
