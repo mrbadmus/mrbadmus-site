@@ -80,6 +80,26 @@ STEPS = [
     # print a successful build and change nothing.
     ("teacher pages — teacher/*.html (6 screens, one URL each;\n    import.html is NOT ported and stays hand-written — see teacher_rulings)",
      "build_teacher_port.py"),
+    # ⊕ MRB-290, 25 Aug 2026 — the KS4 weekly leaderboard.
+    #
+    # AFTER generate_site_v5.py for the reason the three steps above are: the
+    # KS4 generator rmtree's mrbadmus_site/ on the way in and the site root is
+    # not a foreign output tree.
+    #
+    # And there is a SECOND reason here that none of the others have.
+    # generate_site_v5's own `_auth_file` list still names leaderboard.html
+    # and copies the ROOT copy into mrbadmus_site/. Run before it, this
+    # build's output would be overwritten by whatever sat at the root; run
+    # after it, this build writes BOTH trees itself, which is what it does.
+    # Do not reorder.
+    #
+    # ⊕ On the FIRST build_all after the retirement, step 1 prints
+    # "⚠️ leaderboard.html not found — skipping", because this build has moved
+    # the hand-written original to docs/ks3/retired/ and has not yet written
+    # its replacement. That warning is expected, appears exactly once, and is
+    # not a symptom: `_auth_file` skips a missing source rather than failing.
+    ("KS4 weekly leaderboard — leaderboard.html (site root, both trees)",
+     "build_leaderboard_port.py"),
 ]
 
 

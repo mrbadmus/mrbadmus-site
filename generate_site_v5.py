@@ -5573,20 +5573,22 @@ def build_site(output_dir="mrbadmus_site"):
     # KS3 loads none of these (checked: zero references in the built ks3/
     # tree), so build_ks3.py's VERSIONED_ASSETS is unchanged.
     #
+    # ⊕ MRB-290 (25 Aug 2026) — the hand-maintained list is GONE. It had
+    # grown by exactly the mechanism the paragraph above describes twice
+    # over, and it was still one file short: `student-breakpoints.js`,
+    # loaded by the two student preview pages, was never added, so those
+    # two pages shipped it bare. The list is now every top-level .css/.js
+    # in the published shared/ tree, so "add the file we happened to
+    # touch" is structurally impossible. A file in shared/ that no page
+    # links costs nothing here — the alternation simply never matches it.
+    #
     # Longest-first, because the alternation below is ordered and a name
     # that prefixes another would otherwise mask it.
-    _versioned_assets = sorted([
-        "tokens.css", "styles.css", "nav.css", "nav.js",
-        "class-entry.js", "mrbadmus.v2.js",
-        "student-data.js", "teacher-data.js",
-        # the six named as outstanding
-        "config.js", "student-guard.js", "teacher-guard.js", "shoutouts.js",
-        "search-index.js", "search.js",
-        # the instrument engines, same hole, never named
-        "rd-page.js", "quiz.js", "tap-match.js", "predict-wrapper.js",
-        "write-then-mark.js", "periodic-table.js", "formula-deducer.js",
-        "exam-ladder.js", "chain-builder.js", "username-generator.js",
-    ], key=len, reverse=True)
+    _versioned_assets = sorted(
+        [_fn for _fn in os.listdir(os.path.join(output_dir, "shared"))
+         if _fn.endswith((".css", ".js"))
+         and os.path.isfile(os.path.join(output_dir, "shared", _fn))],
+        key=lambda _n: (-len(_n), _n))
     _asset_ver = {}
     for _name in _versioned_assets:
         _p = os.path.join(output_dir, "shared", _name)
@@ -5630,6 +5632,71 @@ def build_site(output_dir="mrbadmus_site"):
                         _fh.write(_new)
                     _stamped += 1
         print(f"  ✅ cache-bust: stamped {_stamped} pages — {_asset_ver}")
+
+        # ⊕ MRB-290 (25 Aug 2026) — the stamps are VERIFIED, not trusted.
+        # Ported from build_student_port._verify_stamps, which explains why
+        # each check exists. Three assertions, and a failure is a dead build,
+        # not a warning — a stamp naming bytes that are not what will be
+        # served is worse than no stamp at all:
+        #
+        #   1. every stamp equals md5[:8] of the published shared/ copy,
+        #      re-read from disk after everything that writes it has run;
+        #   2. where a repo-root shared/ source exists, it agrees — the two
+        #      trees are round-tripped and must not diverge;
+        #   3. no quote-terminated `/shared/…"` reference survives in any
+        #      built page without a stamp. Anchored on the trailing quote,
+        #      exactly like the stamping regex above, so this verifies
+        #      precisely what that pass could have stamped — and prose
+        #      mentions of /shared/ paths inside comments (revision.html,
+        #      auth.html and friends carry several) cannot false-positive.
+        #      The stamp group is OPTIONAL-and-tested, never a negative
+        #      lookahead — see build_student_port.py for the twelve-page
+        #      false alarm the lookahead produced.
+        #
+        # Runs BEFORE the repo-root round-trip below, so an unstamped page
+        # can never reach the mirror.
+        _bad_stamps = []
+        for _name, _want in sorted(_asset_ver.items()):
+            for _tree in (os.path.join(output_dir, "shared"), "shared"):
+                _p = os.path.join(_tree, _name)
+                if not os.path.exists(_p):
+                    continue  # only files present in a tree are checked
+                with open(_p, "rb") as _fh:
+                    _got = _hashlib.md5(_fh.read()).hexdigest()[:8]
+                if _got != _want:
+                    _bad_stamps.append(
+                        "%s hashes %s but pages shipped ?v=%s" % (_p, _got, _want))
+        _linked = _re.compile(r'/shared/[A-Za-z0-9._/-]+(\?v=[0-9a-f]+)?"')
+        for _root, _subdirs, _files in os.walk(output_dir):
+            if os.path.abspath(_root) == os.path.abspath(output_dir):
+                for _d in FOREIGN_OUTPUT_DIRS:
+                    if _d in _subdirs:
+                        _subdirs.remove(_d)
+            for _fn in _files:
+                if not _fn.endswith(".html"):
+                    continue
+                _fp = os.path.join(_root, _fn)
+                with open(_fp, "r", encoding="utf-8") as _fh:
+                    _content = _fh.read()
+                for _m in _linked.finditer(_content):
+                    if _m.group(1):
+                        continue
+                    _ref = _m.group(0).rstrip('"')[len("/shared/"):]
+                    # Only top-level .css/.js are versioned: the stamping
+                    # regex alternates over BASENAMES, so a subdirectory ref
+                    # (/shared/fonts/…) could never be stamped by it and a
+                    # non-css/js asset (woff2 preloads) is not versioned.
+                    # Verify exactly what the pass could have stamped.
+                    if "/" in _ref or not _ref.endswith((".css", ".js")):
+                        continue
+                    _bad_stamps.append(
+                        "%s links %s with no cache-bust stamp" % (_fp, _m.group(0)))
+        if _bad_stamps:
+            raise SystemExit(
+                "generate_site_v5.py: the cache-bust stamps are not honest.\n  "
+                + "\n  ".join(_bad_stamps))
+        print(f"  ✅ cache-bust: verified — every stamped asset re-hashed from "
+              f"disk, no bare /shared/ link in {output_dir}")
 
     # ── Copy to repo root ──
     for item in os.listdir(output_dir):

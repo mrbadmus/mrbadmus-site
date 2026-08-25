@@ -368,7 +368,8 @@ class Component extends DCLogic {
     ks: 'All', sort: 'code', modal: null, toast: '',
     boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', search: '',
     importStep: 1, digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
-    chartKind: 'submissions', chartScope: MRB_Q('class') || 'all'
+    chartKind: 'submissions', chartScope: MRB_Q('class') || 'all',
+    yearsOpen: false
   };
 
   HUE = ['#2F5CE0', '#A93411', '#0A6B36', '#5A31C0', '#7A5F00', '#2545A8'];
@@ -767,7 +768,8 @@ class Component extends DCLogic {
       code: c.code,
       subject: c.subject,
       dots: this.dotsFor(c.subject),
-      meta: 'Year ' + c.year + ' · ' + c.ks + ' · ' + MRB_DATA('yearLabel'),
+      meta: [c.year == null ? '' : 'Year ' + c.year, c.ks, c.yearName]
+        .filter(Boolean).join(' · '),
       live: c.state === 'live',
       noWork: c.state === 'nowork',
       empty: c.state === 'empty',
@@ -778,7 +780,7 @@ class Component extends DCLogic {
       pct: c.week[1] ? Math.round((c.week[0] / c.week[1]) * 100) : 0,
       emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',
       activity: c.state === 'empty' ? c.last : 'Last activity ' + c.last,
-      open: () => MRB_GO(c.n > 0 ? 'class' : 'import', { 'class': c.id }),
+      open: () => MRB_GO(c.n > 0 ? 'class' : 'import', { 'class': c.id, year: MRB_DATA('yearParam') }),
       act: (e) => { e.stopPropagation(); MRB_GO('import', { 'class': c.id }); }
     }));
 
@@ -974,6 +976,15 @@ class Component extends DCLogic {
 
     return {
       teacher,
+      /* ⊕ MRB-287 E1 — the year in view. See teacher_rulings. */
+      yearsOpen: s.yearsOpen,
+      hasOtherYears: MRB_DATA('hasOtherYears'),
+      canWrite: MRB_DATA('canWrite'),
+      readOnlyLine: MRB_DATA('readOnlyLine'),
+      yearOptions: MRB_DATA('yearOptions').map((y) => ({
+        name: y.name,
+        open: () => MRB_GO('classes', { year: y.id })
+      })),
       rowPad: compact ? '10px 18px' : '13px 18px',
       showMeter: meter,
       crumb: s.screen === 'classes' ? 'My classes' : (s.screen === 'import' ? 'Import' : (s.screen === 'digest' ? 'Digest' : (s.screen === 'insights' ? 'Insights' : k.code))),
@@ -1000,7 +1011,10 @@ class Component extends DCLogic {
         code: k.code,
         subject: k.subject,
         dots: this.dotsFor(k.subject),
-        longMeta: 'Year ' + k.year + ' · ' + k.ks + ' · ' + MRB_DATA('yearLabel') + ' · ' + k.n + ' students · ' + (kPapers.length ? kPapers.length + (kPapers.length === 1 ? ' assignment' : ' assignments') : 'no assignments'),
+        longMeta: [k.year == null ? '' : 'Year ' + k.year, k.ks, k.yearName,
+          k.n + ' students',
+          kPapers.length ? kPapers.length + (kPapers.length === 1 ? ' assignment' : ' assignments') : 'no assignments'
+        ].filter(Boolean).join(' · '),
         rosterLine: k.n + ' active members',
         paperLine: kPapers.length ? kPapers.length + ' assignments' : 'None set',
         hasWork: kPapers.length > 0,
@@ -1051,7 +1065,17 @@ class Component extends DCLogic {
            auth_user_teaches_class(class_id)`, so this asks the same
            question the database will ask, BEFORE the control is drawn
            rather than after it is pressed. */
-        canDelete: !!(f.id && f.author_id && f.author_id === MRB_ME()),
+        /* ⊕ MRB-287 E1 — AND NOT ON A PAST YEAR. Removing a shoutout
+           is a WRITE, and MRB-261 makes a finished year read-only.
+           Without this the E1 wrap would take the composer off the
+           page and leave the destructive half of the feed live, which
+           is the worse half to leave. `canWrite` is the same key that
+           gates the composer, so the two cannot disagree.
+           ⚠️ READ THROUGH `MRB_DATA`, NOT AS A BARE NAME: `canWrite`
+           is a KEY of the object being built here, not a local, so
+           the identifier is not in scope inside this map. */
+        canDelete: !!(MRB_DATA('canWrite') && f.id && f.author_id &&
+                      f.author_id === MRB_ME()),
         del: () => this.setState({ delId: f.id, delName: f.name }),
       })),
       noteCount: (s.note || '').length + ' / 500',
@@ -1236,7 +1260,7 @@ class Component extends DCLogic {
       hasToast: !!s.toast,
       toast: s.toast,
       signOut: () => window.MrBadmusTeacherGuard.signOut(),
-      goClasses: () => MRB_GO('classes', {}),
+      goClasses: () => MRB_GO('classes', { year: MRB_DATA('yearParam') }),
       goClass: () => MRB_GO('class', { 'class': k && k.id }),
       goDigest: () => MRB_GO('digest', {}),
       goReport: () => MRB_GO('digest', { 'class': k && k.id }),
@@ -1277,10 +1301,7 @@ class Component extends DCLogic {
         const line = MRB_DATA('importCountLabel');
         if (line) { this.ping(line); }
       },
-      pastYears: () => { const ys = MRB_DATA('pastYears');
-        return this.ping(ys.length
-          ? ys.map(y => y.name).join(', ') + (ys.length === 1 ? ' is read-only' : ' are read-only')
-          : 'No earlier years to open'); }
+      pastYears: () => this.setState({ yearsOpen: !this.state.yearsOpen }),
     };
   }
 }
@@ -1298,7 +1319,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","config.js":"06f24811","shoutouts.js":"23393220","teacher-data.js":"cff2f131","teacher-guard.js":"bbc08e89","teacher-live.js":"6f4e160d"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","config.js":"06f24811","shoutouts.js":"23393220","teacher-data.js":"cff2f131","teacher-guard.js":"bbc08e89","teacher-live.js":"e4b01152"};</script>
 <script src="teacher-fixture-student-detail-empty.js"></script>
 <script>window.__MRB_MOUNT__();</script>
 </body>

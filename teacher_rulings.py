@@ -295,6 +295,24 @@ SET_ON = {
 # : ''`), and dropping it would send a teacher testing in the sandbox back
 # into production data one click later.
 #
+# ── ⊕ MRB-287 E1 · AND `year`, ON EXACTLY TWO OF THEM ────────────────────
+#
+# `c.open` (a card into its class) and `goClasses` (Back, out of one) carry
+# `year: MRB_DATA('yearParam')`. Those two and no others, for two reasons:
+#
+#   · `yearParam` is EMPTY on the working year and `MRB_GO` drops an empty
+#     param, so the ordinary URL is unchanged byte-for-byte and the bookmark
+#     a teacher keeps never pins a year they will have left by September.
+#   · every OTHER navigation already carries `?class=`, and `teacher-live.js`
+#     resolves a class's own academic year when it is not the one in view.
+#     Threading `year` through them as well would put a redundant uuid in
+#     five more URLs to answer a question the class id already answers.
+#
+# The pair matters because they are the two that would otherwise LOSE the
+# year: a card press from a 2025-26 grid, and the Back out of the class it
+# opened. Without it a teacher browsing last year is silently returned to
+# this one, which is the dead end MRB-261 exists to remove.
+#
 # ── nodes whose role differed from the brief, and were rewired to what
 #    they ACTUALLY are ──────────────────────────────────────────────────
 #
@@ -319,7 +337,8 @@ NAV = {
         nodes=(11, 89),
         frm="      goClasses: () => this.setState({ screen: 'classes', "
             "modal: null }),",
-        to="      goClasses: () => MRB_GO('classes', {}),",
+        to="      goClasses: () => MRB_GO('classes', "
+           "{ year: MRB_DATA('yearParam') }),",
         why="the brand mark in the top bar (11) and the class screen's Back "
             "(89). Design's node 348 — the import screen's Back — is drawn by "
             "the same handler and is not emitted; see the note above."),
@@ -394,7 +413,7 @@ NAV = {
             "        ? this.openClass({ classId: c.id })\n"
             "        : this.setState({ screen: 'import', importStep: 1 }),",
         to="      open: () => MRB_GO(c.n > 0 ? 'class' : 'import', "
-           "{ 'class': c.id }),",
+           "{ 'class': c.id, year: MRB_DATA('yearParam') }),",
         why="the class card. ⚠️ DESIGN'S FORK IS KEPT: a card with no "
             "students opens the IMPORT screen, not an empty class page. That "
             "route is real — `roster-import` is one of the three writes that "
@@ -612,6 +631,13 @@ BINDINGS_AT = {
     # ── the classes screen ──────────────────────────────────────────────
     34:  ("Autumn term · 2026–27", "termLabel"),
     84:  ("Viewing 2026–27", "viewingYearLabel"),
+    # ⊕ MRB-287 E1 — the year toggle's own label. "Previous years" is right
+    # only while the WORKING year is in view; opened FROM a past year the same
+    # list leads forward as well, and the retired hand-written page said
+    # "other years" for exactly that case
+    # (teacher-classes-2026-08-24-retired.html:677). It is `pastYearsLabel`,
+    # computed in the seam, and it is the reason that key is no longer dead.
+    86:  ("Previous years", "pastYearsLabel"),
 
     # ── the digest ──────────────────────────────────────────────────────
     319: ("Mon 17 – Fri 21 Aug 2026", "weekRangeLabel"),
@@ -688,6 +714,33 @@ RETEXT_AT = {
 _LEGEND_KEY = ("display:flex;align-items:center;gap:6px;"
                "font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;"
                "text-transform:uppercase;color:var(--st-caption)")
+
+# ── ⊕ MRB-287 E1 · the year selector's two treatments ────────────────────
+#
+# Both are Design's own, copied off nodes she DID draw rather than invented:
+#
+#   `_YEAR_OPTION` is node 86's exact style string — the "Previous years"
+#   toggle it sits under — with one substitution: `--st-caption` becomes
+#   `--st-accent-text`, which is the token Design uses on every other
+#   in-place ACTION link in this delivery (node 78's "Import", node 196's
+#   "Send to several students"). The toggle is chrome and the options are
+#   actions, and those are Design's two colours for exactly that difference.
+#
+#   `_READONLY_CHIP` is node 96's pill — the subject-dots chip beside the
+#   class code in the same header row — at Design's own measurements, with
+#   node 84's mono caption register for the text inside it.
+_YEAR_OPTION = ("font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;"
+                "text-transform:uppercase;color:var(--st-accent-text);"
+                "background:none;border:none;padding:2px 0;cursor:pointer;"
+                "text-decoration:underline;text-underline-offset:3px")
+
+_YEAR_LIST = "display:flex;align-items:center;gap:8px;flex-wrap:wrap"
+
+_READONLY_CHIP = ("display:flex;align-items:center;gap:6px;padding:6px 9px;"
+                  "border:1px solid var(--st-rule);border-radius:9px")
+
+_READONLY_TEXT = ("font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;"
+                  "text-transform:uppercase;color:var(--st-caption)")
 
 
 # ── ⊕ RULED, MRB-287 · A THIRD CATEGORY: MARKUP MIDE ASKED FOR ───────────
@@ -844,6 +897,92 @@ INSERT_AT = {
         "the 20px display line; the action button is dropped because there "
         "is nothing to do but change the filter that is already on screen."),
 
+    # ── ⊕ MRB-287 E1 · THE LIST BEHIND "PREVIOUS YEARS" ────────────────
+    #
+    # ⛔ THE CONTROL WAS A DEAD END, AND THE HISTORY IS THE POINT. Design
+    # drew the strip at the foot of the class grid as "VIEWING 2026–27 ·
+    # Previous years" and gave the button a handler that pings
+    # "2025–26 is read-only" — it names a year and offers no way to open it.
+    # `LIVE_REGIONS["classes.html"]["year-switch"]` already records the
+    # diagnosis: "Design drew HALF of it … but drew no LIST behind the
+    # button. The list is what makes it a control."
+    #
+    # MRB-261 is the reason it matters: a teacher's past classes are not
+    # clutter, they are the record, and until now the only way to reach one
+    # was to already know its uuid.
+    #
+    # ⚠️ THE OPTIONS EXCLUDE THE YEAR ALREADY IN VIEW, AND THAT IS LOAD-
+    # BEARING RATHER THAN TIDY. Included, the current year would have to
+    # render as a disabled row with no handler — and `student-runtime.js`
+    # looks a handler up THROUGH the miss recorder (`lookup(node.on, scope,
+    # ctx.miss)`), so a looped button with no `on` writes `data-mrb-misses`
+    # and fails `teacher_behaviour`'s own binding check. Node 84 names the
+    # year in view; this list is the years you can go TO. Every option
+    # rendered is therefore pressable, which is also what lets the drive
+    # gate press one.
+    #
+    # ⚠️ NO READ-ONLY CHIP HERE. It would print the year a second time
+    # eight pixels from node 84, which already says it. The statement rides
+    # on `viewingYearLabel` instead — "Viewing 2025–26 · read-only" — one
+    # binding, one sentence, and no literal year anywhere near it.
+    83: (86, {
+        "t": "if", "e": "yearsOpen",
+        "c": [{
+            "t": "span",
+            "a": {"style": _YEAR_LIST},
+            "c": [{
+                "t": "for", "e": "yearOptions", "as": "y",
+                "c": [{
+                    "t": "button",
+                    "a": {"type": "button",
+                          "data-mrb-added": "year-open",
+                          "style": _YEAR_OPTION},
+                    "hov": "color:var(--st-ink)",
+                    "on": "y.open",
+                    "c": [{"t": "#", "v": {"parts": [{"e": "y.name"}]}}],
+                }],
+            }],
+        }]},
+        "the academic years a teacher can switch into, behind Design's own "
+        "\"Previous years\" toggle. The treatment is node 86's exact style "
+        "string in Design's action colour — see _YEAR_OPTION."),
+
+    # ── ⊕ MRB-287 E1 · A PAST YEAR SAYS SO, ON THE CLASS PAGE ──────────
+    #
+    # ⛔ MRB-261: "a past year is read-only and must SAY so." It did not.
+    # `is_past_year` has been computed in `teacher-data.js` since MRB-261 and
+    # read by nothing — MRB-287's own report lists it under "Found and NOT
+    # fixed, deliberately" — so the class page let a teacher open a class
+    # that finished in July, compose a shoutout against it, and never told
+    # them which year they were looking at.
+    #
+    # This is the half that TELLS them. The half that stops them is `WRAP`,
+    # which takes the composer off the page entirely; the two ship together
+    # on purpose, because a page that suppresses a control and does not say
+    # why reads as broken rather than as read-only.
+    #
+    # ⚠️ APPENDED TO NODE 94 — Design's `<h1>` row, which already holds the
+    # class code and the subject-dots pill and is `flex-wrap`ped for exactly
+    # this. Not to node 92: that row is `justify-content:space-between` and
+    # a third child there would push the header actions off their edge.
+    94: (None, {
+        "t": "if", "e": "readOnlyLine",
+        "c": [{
+            "t": "span",
+            "a": {"style": _READONLY_CHIP},
+            "c": [{
+                "t": "span",
+                "a": {"style": _READONLY_TEXT},
+                "c": [{"t": "#", "v": {"parts": [{"e": "readOnlyLine"}]}}],
+            }],
+        }]},
+        "the read-only statement on a past-year class, in Design's own "
+        "header pill (node 96) at her own measurements. The year is a "
+        "BINDING: `teacher_tells` fails the build on a typed academic year, "
+        "and it is right to — Design's \"2025–26 is read-only\" was wrong "
+        "from 1 September and wrong on day one for any school whose "
+        "previous year is not 2025-26."),
+
     # ── ⊕ AMENDED ADDITION · the shoutout a teacher wrote, removable ────
     #
     # ⛔ ONLY ON A SHOUTOUT THIS TEACHER WROTE. The RLS UPDATE policy on
@@ -967,6 +1106,70 @@ INSERT_AT = {
 }
 
 
+# ── ⊕ MRB-287 E1 · ONE OF DESIGN'S NODES, MADE CONDITIONAL ──────────────
+#
+# ⚑ THE MECHANISM THIS FILE WAS MISSING. `DEAD` deletes a node on every page,
+# `INSERT_AT` adds one; neither can say "draw the thing Design drew, but only
+# when the data says so". Every conditional the port needed until now happened
+# to be inside a `renderVals` string, so this gap did not show. Two rulings in
+# E1 need it and cannot be expressed any other way:
+#
+#   · a control the data cannot power must not ship — the year toggle on a
+#     school with one academic year leads nowhere; and
+#   · MRB-261's read-only rule, which is about ABSENCE. The retired page's
+#     `applyWriteControls` (teacher-classes-2026-08-24-retired.html:648-657)
+#     states the standard: the write controls are ABSENT, not present-and-
+#     disabled, because "setting homework against a class that no longer runs
+#     is not a mistake worth leaving available."
+#
+# The implementation is `build_student_port.py`'s, ported rather than
+# reinvented: the node is REPLACED IN ITS PARENT by an `<if>` whose single
+# child is the node itself, so its subtree, its index, its handlers and its
+# bindings are all untouched. The wrapper carries no `i` — `student-runtime`
+# renders an `<if>` as a branch and never as an element, so there is nothing
+# to hang a `data-dc-tpl` on, and Design's numbering does not move.
+#
+# ⛔ EVERY EXPRESSION HERE MUST BE A `renderVals` KEY, AND THE BUILD CHECKS.
+# `student-runtime.js:146` evaluates an `<if>` with `lookup(node.e, scope,
+# null)` — WITHOUT the miss recorder — so a key that does not exist is not an
+# error, it is silently FALSE. A typo here would take the shoutout composer
+# off every class page with every gate green and nothing in the console.
+# `build_teacher_port` asserts each name into the emitted logic for that
+# reason; see the guard beside the wrap step.
+#
+# `{page: {node index: renderVals key}}`.
+WRAP = {
+    "classes.html": {
+        # The year strip's separator and its toggle. A school in its first
+        # year has no other year to reach, and Design's unconditional button
+        # would answer "there are none" — which is a control that exists to
+        # tell you it should not.
+        85: "hasOtherYears",
+        86: "hasOtherYears",
+        # The two import routes. `roster-import` is one of only three write
+        # paths on the whole teacher surface, and importing children into a
+        # class that finished in July is not an action worth offering.
+        # Node 40 is the header action; node 78 is the same route from an
+        # empty class card (the one node 74's pruning deliberately spared).
+        40: "canWrite",
+        78: "canWrite",
+    },
+    "class-detail.html": {
+        # The bulk sheet's opener and the composer card. Node 198 is the
+        # WHOLE composer — its label (199), the recipient select (200), the
+        # six template buttons (206/207), the textarea (209) and the footer
+        # holding "Send shoutout" (212) are all inside it — so one wrap takes
+        # the write surface off the page without touching Design's grid.
+        #
+        # ⚠️ NODE 213, THE FEED, STAYS. A past year is READ-only, not
+        # invisible: what a teacher wrote about a child last year is exactly
+        # the record MRB-261 exists to keep reachable.
+        196: "canWrite",
+        198: "canWrite",
+    },
+}
+
+
 # ── ⊕ RULED, MRB-287 · what this port ADDED to Design's delivery ─────────
 #
 # ⚑ THE REGISTER THAT MAKES AN ADDITION VISIBLE. `student_behaviour.py` has
@@ -998,6 +1201,34 @@ INSERT_AT = {
 # — chrome is on screen in every state, and claiming otherwise would excuse it
 # from the only gate that presses it.
 AMENDED_ADDITIONS = (
+    # ⊕ MRB-287 E1 — the academic year a teacher is switching TO.
+    #
+    # ⚠️ `needs_data` IS DELIBERATELY NOT SET, per the warning above. This is
+    # CHROME: the year strip is on screen in every state the classes page can
+    # be in, including the one with no classes at all — which is precisely the
+    # state it matters most in, because a teacher whose classes are ALL last
+    # year's arrives at an empty grid and this is their only way out of it.
+    #
+    # ⚠️ `opener_tpl` IS DESIGN'S NODE, NOT AN ADDITION, AND THE GATE NEEDED
+    # TEACHING THAT. `teacher_behaviour`'s reveal loop presses earlier
+    # ADDITIONS to uncover a later one; this is the first addition on its page
+    # and the thing that opens it is node 86, one of Design's own. Without the
+    # opener the marker is reported unreachable — correctly, because it would
+    # be, to that gate.
+    dict(marker="year-open", page="classes.html", node=83, opener_tpl=86,
+         label="<the year's name>",
+         # ⚠️ WHERE IT GOES, NOT JUST THAT IT MOVES. A control whose entire
+         # job is to navigate proves nothing by re-rendering, and `MRB_GO`
+         # DROPS an empty parameter — so a year link that computed no id
+         # would navigate to the working year and be indistinguishable from
+         # one that works. `teacher_behaviour` compares the recorded nav.
+         expect_nav=dict(screen="classes", param="year"),
+         why="the list behind Design's \"Previous years\" toggle. Design "
+             "drew the toggle and no list, so `pastYears` could only toast a "
+             "hardcoded \"2025–26 is read-only\" — a control that names a "
+             "year and cannot open it. MRB-261 is explicit that the history "
+             "stays reachable; this is what makes the strip a control "
+             "instead of a caption."),
     dict(marker="shoutout-delete", page="class-detail.html", node=216,
          label="Remove", needs_data=True,
          why="Mide, 24 Aug 2026: \"A teacher who can post a shoutout can "
@@ -1311,7 +1542,8 @@ LOGIC = (
     ks: 'All', sort: 'code', modal: null, toast: '',
     boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', search: '',
     importStep: 1, digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
-    chartKind: 'submissions', chartScope: MRB_Q('class') || 'all'
+    chartKind: 'submissions', chartScope: MRB_Q('class') || 'all',
+    yearsOpen: false
   };""",
      "the state initialiser. See the block comment above."),
 
@@ -1361,10 +1593,33 @@ LOGIC = (
     #
     # Not a text node, so no binding reaches it: `2026–27` is concatenated
     # inside `renderVals` and would have gone on reading 2026–27 in 2028.
+    #
+    # ⊕ CORRECTED, MRB-287 E1 — AND THE FIRST FIX WAS THE WRONG ONE.
+    # This ruling used to read `MRB_DATA('yearLabel')`, which is the WORKING
+    # year: right while the working year is the only one you can see, and
+    # wrong the moment a past year opens — twelve cards from 2025-26 each
+    # confidently stating 2026-27. Binding a literal to the nearest key is not
+    # the same as binding it to the RIGHT key, and this is what that looks
+    # like when it ships.
+    #
+    # The card states ITS OWN year, off the class's `academic_year_name`,
+    # which `teacher-data.js:610` has always returned and `teacher-live.js`
+    # was dropping. The retired hand-written page did this correctly and
+    # recorded why (teacher-classes-2026-08-24-retired.html:497-506): "The
+    # academic year is on EVERY card regardless of which year is selected, so
+    # 10H/Ph1 and 11h/Ph1 — the same 17 students a year apart — can never read
+    # as a duplicate again."
+    #
+    # ⚠️ EMPTY PARTS ARE DROPPED, NOT PRINTED. `year_group` is nullable and
+    # `academic_year_name` can be null on a year nobody named; the retired
+    # page's `buildMetaLine` filtered for exactly that reason. Blanks over
+    # invented values — "Year null · KS3 · undefined" is worse than "KS3".
     ("      meta: 'Year ' + c.year + ' · ' + c.ks + ' · 2026–27',",
-     "      meta: 'Year ' + c.year + ' · ' + c.ks + ' · ' + "
-     "MRB_DATA('yearLabel'),",
-     "the class card's meta line."),
+     "      meta: [c.year == null ? '' : 'Year ' + c.year, c.ks, c.yearName]\n"
+     "        .filter(Boolean).join(' · '),",
+     "the class card's meta line — the card's OWN academic year, not the "
+     "dashboard's. See the block comment: the first port bound this to the "
+     "working year, which is a different question."),
 
     # ══ THE ROSTER ROW: /8, AND \"on time\" FOR AN UNKNOWN ══════════════
     #
@@ -1591,12 +1846,22 @@ LOGIC = (
     ("        longMeta: 'Year ' + k.year + ' · ' + k.ks + ' · 2026–27 · ' + "
      "k.n + ' students · ' + (kPapers.length ? kPapers.length + "
      "' assignments' : 'no assignments'),",
-     "        longMeta: 'Year ' + k.year + ' · ' + k.ks + ' · ' + "
-     "MRB_DATA('yearLabel') + ' · ' + k.n + ' students · ' + "
-     "(kPapers.length ? kPapers.length + (kPapers.length === 1 ? "
-     "' assignment' : ' assignments') : 'no assignments'),",
+     "        longMeta: [k.year == null ? '' : 'Year ' + k.year, k.ks, "
+     "k.yearName,\n"
+     "          k.n + ' students',\n"
+     "          kPapers.length ? kPapers.length + (kPapers.length === 1 ? "
+     "' assignment' : ' assignments') : 'no assignments'\n"
+     "        ].filter(Boolean).join(' · '),",
      "the class header's long meta line. The year, and a plural that said "
-     "\"1 assignments\"."),
+     "\"1 assignments\".\n"
+     "\n"
+     "        ⊕ CORRECTED AGAIN, MRB-287 E1 — IT WAS THE SAME DEFECT AS THE "
+     "CARD META, on the same class, one screen along. `MRB_DATA('yearLabel')` "
+     "is the WORKING year, so a class opened out of 2025-26 read 2026-27 in "
+     "its own header. Fixed here rather than left for later because two "
+     "statements of one class's year that can disagree is worse than the "
+     "line of scope it costs — and the class page is exactly where a teacher "
+     "goes to check WHICH 11h/Ph1 they are looking at."),
 
     # ══ THE DIGEST ══════════════════════════════════════════════════════
     ("          : (c.state === 'nowork' ? 'No work set for two weeks' : (fl ? "
@@ -1773,7 +2038,17 @@ LOGIC = (
      "           auth_user_teaches_class(class_id)`, so this asks the same\n"
      "           question the database will ask, BEFORE the control is drawn\n"
      "           rather than after it is pressed. */\n"
-     "        canDelete: !!(f.id && f.author_id && f.author_id === MRB_ME()),\n"
+     "        /* ⊕ MRB-287 E1 — AND NOT ON A PAST YEAR. Removing a shoutout\n"
+     "           is a WRITE, and MRB-261 makes a finished year read-only.\n"
+     "           Without this the E1 wrap would take the composer off the\n"
+     "           page and leave the destructive half of the feed live, which\n"
+     "           is the worse half to leave. `canWrite` is the same key that\n"
+     "           gates the composer, so the two cannot disagree.\n"
+     "           ⚠️ READ THROUGH `MRB_DATA`, NOT AS A BARE NAME: `canWrite`\n"
+     "           is a KEY of the object being built here, not a local, so\n"
+     "           the identifier is not in scope inside this map. */\n"
+     "        canDelete: !!(MRB_DATA('canWrite') && f.id && f.author_id &&\n"
+     "                      f.author_id === MRB_ME()),\n"
      "        del: () => this.setState({ delId: f.id, delName: f.name }),\n"
      "      })),",
      "⚑ TWO COMPLETE FABRICATED SHOUTOUTS, and they are NOT in the template "
@@ -1905,6 +2180,39 @@ LOGIC = (
      "Design's own computed sentence about the same overlay, so the two "
      "cannot drift apart."),
 
+    # ══ ⊕ MRB-287 E1 · THE ACADEMIC YEAR IN VIEW, ON EVERY SCREEN ═══════
+    #
+    # ⚠️ AT THE HEAD OF THE RETURN OBJECT, NOT IN THE CLASSES BLOCK, AND THAT
+    # IS DELIBERATE. `hasOtherYears` and `yearOptions` are only ever read on
+    # the classes screen, but `canWrite` gates the shoutout composer on
+    # class-detail and `readOnlyLine` is drawn in its header. One key with two
+    # derivations is how two screens end up disagreeing about whether a year
+    # is writable — so there is ONE derivation, in the seam, and one placement
+    # here that every screen can see.
+    #
+    # A `<for>` scope reaches these through the prototype chain
+    # (`student-runtime.js:158`, `Object.create(scope)`), which is what lets
+    # `WRAP` gate node 78 — a control inside the class-card loop — on
+    # `canWrite`.
+    ("    return {\n      teacher,",
+     "    return {\n      teacher,\n"
+     "      /* ⊕ MRB-287 E1 — the year in view. See teacher_rulings. */\n"
+     "      yearsOpen: s.yearsOpen,\n"
+     "      hasOtherYears: MRB_DATA('hasOtherYears'),\n"
+     "      canWrite: MRB_DATA('canWrite'),\n"
+     "      readOnlyLine: MRB_DATA('readOnlyLine'),\n"
+     "      yearOptions: MRB_DATA('yearOptions').map((y) => ({\n"
+     "        name: y.name,\n"
+     "        open: () => MRB_GO('classes', { year: y.id })\n"
+     "      })),",
+     "the five keys the year selector and the read-only rule need. "
+     "`yearOptions` is mapped into Design's own row idiom — a `name` and an "
+     "`open`, the same shape as `t.pick` on the template buttons — so the "
+     "inserted list is a list of Design's rows rather than a new pattern. "
+     "Switching year always returns to the GRID, which is the retired page's "
+     "behaviour and the only destination that is certainly valid in the year "
+     "being opened."),
+
     ("      goClasses: () =>",
      "      signOut: () => window.MrBadmusTeacherGuard.signOut(),\n"
      "      goClasses: () =>",
@@ -1920,17 +2228,26 @@ LOGIC = (
     # of copy a person reads as a statement about what just happened to their
     # own data.
     ("      pastYears: () => this.ping('2025–26 is read-only')",
-     "      pastYears: () => { const ys = MRB_DATA('pastYears');\n"
-     "        return this.ping(ys.length\n"
-     "          ? ys.map(y => y.name).join(', ') + (ys.length === 1 ? "
-     "' is read-only' : ' are read-only')\n"
-     "          : 'No earlier years to open'); }",
-     "'2025-26 is read-only'. A hardcoded academic year in user-visible "
-     "copy: wrong from 1 September, and wrong today for any school whose "
-     "previous year is not 2025–26. The seam supplies `pastYears` — the "
-     "actual list, empty for a school in its first year, which is the case "
-     "Design's version cannot express at all and which now says so instead "
-     "of naming a year that never existed."),
+     "      pastYears: () => this.setState({ yearsOpen: "
+     "!this.state.yearsOpen }),",
+     "'2025-26 is read-only'. TWO defects in one line, and the second is the "
+     "one that mattered.\n"
+     "\n"
+     "        · A hardcoded academic year in user-visible copy: wrong from "
+     "1 September, and wrong on day one for any school whose previous year "
+     "is not 2025-26.\n"
+     "        · A DEAD END DRESSED AS AN ANSWER. It named a year and offered "
+     "no way to open it, on the one screen whose whole point (MRB-261) is "
+     "that a teacher's past classes stay reachable. An earlier pass replaced "
+     "the literal with the real list and kept it a toast, which fixed the "
+     "copy and left the dead end exactly where it was.\n"
+     "\n"
+     "        It is the disclosure half of a real control now: the list it "
+     "opens is `INSERT_AT[83]`, the years come from the seam as "
+     "`yearOptions`, and node 86 does not render at all when there is no "
+     "other year to reach (`WRAP`, `hasOtherYears`) — so the state Design's "
+     "version answered with a toast is now a control that is simply not "
+     "there."),
 
     ("      impDone: () => { this.setState({ screen: 'classes', importStep: "
      "1 }); this.ping('26 students imported into 8r/Sc4'); },",

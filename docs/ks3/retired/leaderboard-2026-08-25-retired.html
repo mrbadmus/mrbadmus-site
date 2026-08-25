@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Leaderboard | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=21ae3356"/>
+  <link rel="stylesheet" href="/shared/nav.css?v=d1f3d76a"/>
+  <script src="/shared/search-index.js?v=c016cb14" defer></script>
+  <script src="/shared/search.js?v=d011978d" defer></script>
+  <script src="/shared/nav.js?v=f23df349" defer></script>
+  <script src="/shared/class-entry.js?v=8be18391" defer></script>
+  <style>
+    html { background: var(--bg); }
+    :root {
+      --gold: var(--higher); --silver: #8C8C8C; --bronze: #B06A2E;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-sans); min-height: 100vh; }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 28px 20px 48px; }
+    .header { text-align: center; margin-bottom: 6px; }
+    .header h1 { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; letter-spacing: -0.01em; font-size: 2rem; }
+    .week-info { text-align: center; font-size: 0.82rem; color: var(--muted); margin-bottom: 20px; font-weight: 700; }
+
+    /* ── CHIP ROWS ─────────────────────────────────────── */
+    .week-row { display: flex; gap: 8px; justify-content: center; align-items: center; margin-bottom: 12px; }
+    .week-label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+    #week-pick {
+      padding: 7px 14px; border-radius: 999px; border: 2px solid var(--border-strong);
+      background: transparent; color: var(--text); font-family: var(--font-sans);
+      font-weight: 700; font-size: 0.82rem; cursor: pointer;
+    }
+    .chip-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .chip {
+      padding: 7px 16px; border-radius: 999px; border: 2px solid var(--border-strong);
+      background: transparent; color: var(--muted); font-family: var(--font-sans);
+      font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.15s;
+    }
+    .chip:hover { border-color: var(--accent-border); }
+    .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .chip.active.foundation { background: var(--biology-soft); border-color: var(--biology); color: var(--biology); }
+    .chip.active.higher     { background: var(--higher-soft);  border-color: var(--higher);  color: var(--higher); }
+    .chip.active.overall    { background: var(--higher-soft);  border-color: var(--higher);  color: var(--higher); }
+    .chip.active.bio        { background: var(--biology-soft); border-color: var(--biology); color: var(--biology); }
+    .chip.active.chem       { background: var(--chemistry-soft); border-color: var(--chemistry); color: var(--chemistry); }
+    .chip.active.phys       { background: var(--physics-soft); border-color: var(--physics); color: var(--physics); }
+    .chip-row.subjects { margin-bottom: 18px; }
+
+    /* ── TABLE ─────────────────────────────────────────── */
+    .lb-head, .lb-row { display: grid; grid-template-columns: 34px 40px minmax(0, 1fr) 52px 46px 58px; align-items: center; gap: 10px; }
+    .lb-head {
+      padding: 0 14px 8px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--muted);
+    }
+    .lb-head .h-right { text-align: right; }
+    .lb-list { display: flex; flex-direction: column; gap: 7px; }
+    .lb-row {
+      padding: 11px 14px; background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .lb-rank { text-align: center; font-family: var(--font-serif); font-weight: 600; font-size: 1rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .lb-av {
+      width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--sunken);
+      border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
+    }
+    .lb-av img { width: 100%; height: 100%; object-fit: cover; }
+    .lb-namewrap { min-width: 0; }
+    .lb-name { font-weight: 800; font-size: 0.92rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+    .lb-sub { color: var(--muted); font-size: 0.72rem; font-weight: 600; margin-top: 1px; }
+    .lb-pct { text-align: right; font-weight: 800; font-size: 1.02rem; color: var(--text); font-variant-numeric: tabular-nums; }
+    .lb-score { text-align: right; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .lb-time { text-align: right; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+    /* pathway badge */
+    .pw-badge { flex-shrink: 0; font-size: 0.6rem; font-weight: 800; width: 17px; height: 17px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; letter-spacing: 0; }
+    .pw-badge.combined { background: var(--physics-soft); color: var(--physics); border: 1px solid var(--physics); }
+    .pw-badge.triple   { background: var(--chemistry-soft); color: var(--chemistry); border: 1px solid var(--chemistry); }
+
+    /* top-3 emphasis */
+    .lb-row.top { padding: 14px; }
+    .lb-row.top .lb-name { font-size: 1rem; }
+    .lb-row.top .lb-pct { font-size: 1.12rem; }
+    .lb-row.top .lb-av { width: 44px; height: 44px; }
+    .lb-row.r1 { border-color: var(--gold); background: var(--higher-soft); }
+    .lb-row.r1 .lb-av { border-color: var(--gold); }
+    .lb-row.r2 { border-color: rgba(140,140,140,0.5); }
+    .lb-row.r2 .lb-av { border-color: var(--silver); }
+    .lb-row.r3 { border-color: rgba(176,106,46,0.5); }
+    .lb-row.r3 .lb-av { border-color: var(--bronze); }
+    .medal { font-size: 1.15rem; line-height: 1; }
+    .crown { font-size: 0.95rem; }
+
+    .empty { text-align: center; padding: 48px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 18px; }
+    .empty h3 { font-family: var(--font-serif); margin: 14px 0 8px; }
+    .empty p { color: var(--muted); }
+
+    .loading { text-align: center; padding-top: 90px; }
+    .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+
+    /* ── How it works (collapsible) ─────────────────────── */
+    .how { margin-top: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .how summary { cursor: pointer; padding: 14px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text); list-style: none; display: flex; align-items: center; justify-content: space-between; }
+    .how summary::-webkit-details-marker { display: none; }
+    .how summary::after { content: '▾'; color: var(--muted); transition: transform 0.2s; }
+    .how[open] summary::after { transform: rotate(180deg); }
+    .how summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .how-body { padding: 0 16px 16px; color: var(--muted); font-size: 0.86rem; line-height: 1.65; }
+    .how-body strong { color: var(--text); }
+    .how-body ul { margin: 8px 0 0 18px; }
+    .how-body li { margin-bottom: 4px; }
+
+    .cta-challenge {
+      display: block; text-align: center; margin-top: 20px; padding: 16px;
+      border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: var(--on-accent); font-family: var(--font-serif); font-weight: 700; font-size: 1rem;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .cta-challenge:hover { opacity: 0.92; transform: translateY(-2px); }
+    @media (prefers-reduced-motion: reduce) { .cta-challenge:hover { transform: none; } }
+
+    /* Responsive: drop time then score on narrow screens */
+    @media (max-width: 460px) {
+      .lb-head, .lb-row { grid-template-columns: 30px 38px minmax(0, 1fr) 48px 44px; gap: 8px; }
+      .lb-time, .h-time { display: none; }
+    }
+    @media (max-width: 380px) {
+      .lb-head, .lb-row { grid-template-columns: 28px 34px minmax(0, 1fr) 46px; }
+      .lb-score, .h-score { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <div class="nav-cluster">
+    <a href="/3d/" class="nav-text-link">3D Studio</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
+    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
+    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
+    <span id="nav-auth-area"></span>
+    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="color:var(--muted);">Loading leaderboard...</p>
+  </div>
+
+  <div id="content" style="display:none;">
+    <div class="header"><h1>🏆 Leaderboard</h1></div>
+    <div class="week-info" id="week-info"></div>
+
+    <!-- WEEK SELECTOR ─────────────────────────────────────────────────
+         ⊕ 22 Aug 2026. The board could only ever show the current week, and
+         ten weeks of real results going back to April had no way to be
+         reached. A <select> rather than another chip row on purpose: the list
+         GROWS by one every Friday, and a chip row that is fine at four weeks
+         is unusable at forty.
+
+         Hidden until it has something to offer — see `renderWeeks()`. On a
+         brand-new deployment with one week of data, a picker offering one
+         choice is furniture. -->
+    <div class="week-row" id="week-row" style="display:none;">
+      <label class="week-label" for="week-pick">Week</label>
+      <select id="week-pick" onchange="switchWeek(this.value)"></select>
+    </div>
+
+    <!-- TIER CHIPS -->
+    <div class="chip-row" id="tier-chips" role="group" aria-label="Tier">
+      <button class="chip foundation active" id="chip-foundation" aria-pressed="true" onclick="switchTier('foundation', this)">🌱 Foundation</button>
+      <button class="chip higher" id="chip-higher" aria-pressed="false" onclick="switchTier('higher', this)">⭐ Higher</button>
+    </div>
+
+    <!-- SUBJECT CHIPS -->
+    <div class="chip-row subjects" id="subject-chips" role="group" aria-label="Subject">
+      <button class="chip overall active" aria-pressed="true" onclick="switchSubject('overall', this)">🏅 Overall</button>
+      <button class="chip bio" aria-pressed="false" onclick="switchSubject('biology', this)">🌿 Biology</button>
+      <button class="chip chem" aria-pressed="false" onclick="switchSubject('chemistry', this)">🧪 Chemistry</button>
+      <button class="chip phys" aria-pressed="false" onclick="switchSubject('physics', this)">⚡ Physics</button>
+    </div>
+
+    <div class="lb-head" id="lb-head" style="display:none;">
+      <span>#</span><span></span><span>Student</span>
+      <span class="h-right">%</span><span class="h-right h-score">Score</span><span class="h-right h-time">Time</span>
+    </div>
+    <div class="lb-list" id="lb-list"></div>
+
+    <div class="empty" id="empty" style="display:none;">
+      <div style="font-size:3rem;">🏟️</div>
+      <h3>No scores yet!</h3>
+      <p>Be the first to complete the challenge and claim the top spot.</p>
+    </div>
+
+    <details class="how">
+      <summary>How the Weekly Quiz works</summary>
+      <div class="how-body">
+        <p>A fresh set of questions drops every week for each subject. Take it once per subject, and your best goes on the board.</p>
+        <ul>
+          <li><strong>Ranked by percentage</strong> — so Combined (out of 30) and Triple (out of 45) compete fairly side by side.</li>
+          <li>Ties are broken by the <strong>faster time</strong>.</li>
+          <li>The <strong>C</strong> / <strong>T</strong> badge shows whether a score came from the Combined or Triple paper.</li>
+          <li>Your pathway and tier come from your profile — pick your subject on the challenge page and go.</li>
+        </ul>
+      </div>
+    </details>
+
+    <a href="/weekly-challenge.html" class="cta-challenge">Take the Weekly Challenge ⚡</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  var SUPABASE_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
+  var medals = ['🥇', '🥈', '🥉'];
+  /* null means "whatever the backend calls now" — the behaviour this page had
+     before there was a picker, and what it falls back to if the week list
+     cannot be read. */
+  var currentWeek = null;
+  var currentSubject = 'overall';
+  var currentTier = 'foundation';
+
+  fetch(RENDER_URL + '/api/health').catch(function(){});
+
+  // Display seam (MRB-138): handles appear automatically once the backend adds
+  // `username` to the leaderboard payload; falls back to first name until then.
+  function displayName(u) { return (u && (u.username || u.name || u.first_name)) || 'Student'; }
+  function esc(str) { var d = document.createElement('div'); d.textContent = str == null ? '' : str; return d.innerHTML; }
+  function pctOf(e) { return e.max_score ? Math.round(100 * e.score / e.max_score) : 0; }
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    var d = new Date(dateStr + 'T00:00:00');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+  function formatTime(secs) { var m = Math.floor(secs / 60); var s = secs % 60; return m + 'm ' + s + 's'; }
+
+  function switchTier(tier, el) {
+    currentTier = tier;
+    document.querySelectorAll('#tier-chips .chip').forEach(function(c){ c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+    el.classList.add('active'); el.setAttribute('aria-pressed','true');
+    loadLeaderboard();
+  }
+  function switchSubject(subject, el) {
+    currentSubject = subject;
+    document.querySelectorAll('#subject-chips .chip').forEach(function(c){ c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+    el.classList.add('active'); el.setAttribute('aria-pressed','true');
+    loadLeaderboard();
+  }
+
+  /* The week composes with the filters rather than replacing them: pick a week
+     and the Foundation/Higher and subject choices carry straight over. A
+     combination nobody sat that week comes back as an empty board, which is a
+     normal answer and reads as one. */
+  function weekParam() { return currentWeek ? '&week_start=' + encodeURIComponent(currentWeek) : ''; }
+
+  function urlFor(pathway) {
+    if (currentSubject === 'overall') {
+      return RENDER_URL + '/api/weekly-leaderboard?overall=true&pathway=' + pathway + '&tier=' + currentTier + weekParam();
+    }
+    return RENDER_URL + '/api/weekly-leaderboard?subject=' + currentSubject + '&pathway=' + pathway + '&tier=' + currentTier + weekParam();
+  }
+
+  function switchWeek(week) {
+    currentWeek = week || null;
+    loadLeaderboard();
+  }
+
+  /* The picker is built from the weeks the backend says HAVE something in them,
+     never from a date range this page invents. A week nobody sat is not a week
+     of the competition, and offering it is a click that leads nowhere. */
+  async function loadWeeks() {
+    try {
+      var r = await fetch(RENDER_URL + '/api/weekly-leaderboard/weeks');
+      if (!r.ok) return;
+      var data = await r.json();
+      var weeks = (data && data.weeks) || [];
+      if (weeks.length < 2) return;          // one choice is not a choice
+      var sel = document.getElementById('week-pick');
+      sel.innerHTML = weeks.map(function (w) {
+        return '<option value="' + esc(w.week_start) + '">' +
+               (w.is_current ? 'This week' : esc(formatDate(w.week_start))) +
+               '</option>';
+      }).join('');
+      currentWeek = weeks[0].week_start;
+      sel.value = currentWeek;
+      document.getElementById('week-row').style.display = 'flex';
+    } catch (e) {
+      /* No picker, and the board behaves exactly as it did before there was
+         one. A leaderboard that will not load because its week list would not
+         is a worse page than one showing this week. */
+    }
+  }
+  function fetchPathway(pathway) {
+    return fetch(urlFor(pathway)).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+  }
+
+  async function loadLeaderboard() {
+    var listEl = document.getElementById('lb-list');
+    var emptyEl = document.getElementById('empty');
+    var headEl = document.getElementById('lb-head');
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'none';
+    headEl.style.display = 'none';
+    // reset any prior error copy on the shared empty element
+    emptyEl.querySelector('h3').textContent = 'No scores yet!';
+    emptyEl.querySelector('p').textContent = 'Be the first to complete the challenge and claim the top spot.';
+
+    try {
+      // Combined /30 and Triple /45 are separate backend lists — fetch both and
+      // merge, so we can rank by PERCENTAGE and drop the pathway filter (MRB-137).
+      var results = await Promise.all([fetchPathway('combined'), fetchPathway('triple')]);
+      var combined = results[0], triple = results[1];
+      var weekStart = (combined && combined.week_start) || (triple && triple.week_start) || '';
+
+      var all = [];
+      [['combined', combined], ['triple', triple]].forEach(function(pair) {
+        var pw = pair[0], data = pair[1];
+        var lb = (data && data.leaderboard) || [];
+        lb.forEach(function(e) { e._pathway = pw; e._pct = e.max_score ? e.score / e.max_score : 0; all.push(e); });
+      });
+      // Primary sort: percentage desc. Tiebreak: faster time.
+      all.sort(function(a, b) {
+        if (b._pct !== a._pct) return b._pct - a._pct;
+        return (a.time_taken || 1e9) - (b.time_taken || 1e9);
+      });
+      all = all.slice(0, 10);
+
+      var subjectLabels = { overall: '🏅 Overall', biology: '🌿 Biology', chemistry: '🧪 Chemistry', physics: '⚡ Physics' };
+      var tierLabel = currentTier.charAt(0).toUpperCase() + currentTier.slice(1);
+      document.getElementById('week-info').textContent =
+        (subjectLabels[currentSubject] || currentSubject) + ' · ' + tierLabel + ' — Week of ' + formatDate(weekStart);
+
+      if (all.length === 0) { emptyEl.style.display = 'block'; return; }
+
+      headEl.style.display = 'grid';
+      var html = '';
+      for (var i = 0; i < all.length; i++) {
+        var e = all[i];
+        var rank = i + 1;
+        var isTop = rank <= 3;
+        var rowCls = 'lb-row' + (isTop ? ' top r' + rank : '');
+        var rankCell = isTop ? '<span class="medal">' + medals[i] + '</span>' : rank;
+        var av = e.avatar_url ? '<img src="' + esc(e.avatar_url) + '" alt=""/>' : '🧑‍🎓';
+        var crown = rank === 1 ? '<span class="crown" title="Champion">👑</span>' : '';
+        var badge = '<span class="pw-badge ' + e._pathway + '" title="' + (e._pathway === 'combined' ? 'Combined' : 'Triple') + ' Science">' +
+                    (e._pathway === 'combined' ? 'C' : 'T') + '</span>';
+        var sub = (currentSubject === 'overall' && e.subjects_done)
+          ? '<div class="lb-sub">' + e.subjects_done + '/3 subjects</div>' : '';
+        var timeTxt = e.time_taken ? formatTime(e.time_taken) : '—';
+
+        html += '<div class="' + rowCls + '">' +
+          '<span class="lb-rank">' + rankCell + '</span>' +
+          '<span class="lb-av">' + av + '</span>' +
+          '<span class="lb-namewrap">' +
+            '<span class="lb-name">' + crown + esc(displayName(e)) + badge + '</span>' + sub +
+          '</span>' +
+          '<span class="lb-pct">' + pctOf(e) + '%</span>' +
+          '<span class="lb-score">' + e.score + '/' + e.max_score + '</span>' +
+          '<span class="lb-time">' + timeTxt + '</span>' +
+        '</div>';
+      }
+      listEl.innerHTML = html;
+
+    } catch (err) {
+      console.error(err);
+      emptyEl.style.display = 'block';
+      emptyEl.querySelector('h3').textContent = 'Could not load leaderboard';
+      emptyEl.querySelector('p').textContent = 'Try refreshing the page.';
+    }
+  }
+
+  async function init() {
+    // Auto-land on the student's own tier (pathway is no longer a filter).
+    try {
+      var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      var result = await sb.auth.getSession();
+      if (result.data.session) {
+        var uid = result.data.session.user.id;
+        var profileRes = await sb.from('profiles').select('tier').eq('id', uid).single();
+        if (profileRes.data && profileRes.data.tier) {
+          currentTier = profileRes.data.tier;
+          document.querySelectorAll('#tier-chips .chip').forEach(function(c){ c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+          var tb = document.getElementById('chip-' + currentTier);
+          if (tb) { tb.classList.add('active'); tb.setAttribute('aria-pressed','true'); }
+        }
+      }
+    } catch(e) { /* logged-out visitors use defaults — fine */ }
+
+    try {
+      /* Before the first board, so the first board is already the right week.
+         Loading it after would paint this week, then repaint. */
+      await loadWeeks();
+      await loadLeaderboard();
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    } catch (err) {
+      document.getElementById('loading').innerHTML = '<p style="color:var(--danger);">Could not load leaderboard. Try refreshing.</p>';
+    }
+  }
+  init();
+</script>
+</body>
+</html>

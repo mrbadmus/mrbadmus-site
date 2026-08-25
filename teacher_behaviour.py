@@ -49,9 +49,17 @@ every array has something in it; it is the other path that throws on
 
 The five shapes, from the port's own emission:
 
-    no classes at all · a class with no roster · a class with students but
-    no work set · a paper with nobody's submission · a grid whose paper was
-    not prefetched
+    no classes in the year being viewed · a class with no roster · a class
+    with students but no work set · a paper with nobody's submission · a grid
+    whose paper was not prefetched
+
+⊕ MRB-287 E1 — the first two are also PAST-YEAR, and that is a second
+property on one fixture rather than a thirteenth and fourteenth. They are what
+drive MRB-261's read-only rule: a finished year offers no write controls and
+says which year it is. Between them they cover both halves — the classes
+screen (the import action absent, the year selector reachable on an empty
+grid) and the class page (the shoutout composer and the bulk opener absent,
+the feed still readable).
 
 ── THE RELOAD ───────────────────────────────────────────────────────────
 
@@ -88,8 +96,15 @@ SCREENS = ["classes", "class-detail", "student-detail", "assignment",
 # Every fixture, and what it is supposed to be showing. The empty ones name
 # their shape so a failure says which state broke rather than just "empty".
 EMPTY_SHAPE = {
-    "classes": "a teacher with no classes at all",
-    "class-detail": "a class with no roster, and one with no work set",
+    # ⊕ MRB-287 E1 — BOTH OF THE FIRST TWO GAINED A SECOND PROPERTY, and the
+    # note says so rather than going stale. They are the only fixtures in the
+    # set where the academic year in view is a FINISHED one, which is what
+    # drives MRB-261's read-only rule: the year selector reachable on an empty
+    # grid, and the write controls absent on a class page. See EMPTY_SHAPES in
+    # build_teacher_port.py for the reasoning, and `_shape_past_year` for what
+    # it actually changes.
+    "classes": "no classes in the year being viewed, and that year is past",
+    "class-detail": "a class with no roster, in a past (read-only) year",
     "student-detail": "a student with no submissions",
     "assignment": "a paper nobody has submitted",
     "digest": "no live classes to digest",
@@ -145,6 +160,9 @@ _DRIVE_JS = r"""
 (async function () {
   var EXEMPT = __EXEMPT__;
   var ADDED = __ADDED__;
+  /* {marker: template index}. An addition whose opener is one of DESIGN'S
+     nodes rather than an earlier addition — see the reveal loop. */
+  var OPENERS = __OPENERS__;
   var host = document.querySelector('#mrb-teacher');
   if (!host) { return JSON.stringify({error: 'no #mrb-teacher host'}); }
 
@@ -350,11 +368,30 @@ _DRIVE_JS = r"""
      it, THAT is the failure, and it is reported as unreachable rather than as
      dead. `build_teacher_port` has already proved the markup is in the file,
      so "in the file and unreachable" is a real and separate defect. */
-  var added = [], addedDead = [], addedGone = [];
+  var added = [], addedDead = [], addedGone = [], addedNav = {};
   for (var t = 0; t < ADDED.length; t++) {
     var want = ADDED[t];
     var sel = '[data-mrb-added="' + want + '"]';
     var el = host.querySelector(sel);
+
+    /* ⊕ MRB-287 E1 — AN OPENER THAT IS ONE OF DESIGN'S OWN NODES.
+       The loop below reveals an addition by pressing EARLIER ADDITIONS, which
+       works for the shoutout sheet — every step of it is markup this port
+       added. It cannot work for the year list: that sits behind Design's node
+       86, the "Previous years" toggle she drew and this port only rewired. So
+       an addition may name an opener by TEMPLATE INDEX, and it is pressed
+       first. Without it the year options are reported unreachable — correctly,
+       from this gate's point of view, which is exactly why the gate had to be
+       taught rather than the marker moved. */
+    if (!el && OPENERS[want] != null) {
+      var byTpl = host.querySelector('[data-dc-tpl="' + OPENERS[want] + '"]');
+      if (byTpl) {
+        byTpl.click();
+        await frame();
+        el = host.querySelector(sel);
+      }
+    }
+
     for (var u = 0; u < t && !el; u++) {
       var opener = host.querySelector('[data-mrb-added="' + ADDED[u] + '"]');
       if (!opener) { continue; }
@@ -375,6 +412,9 @@ _DRIVE_JS = r"""
     }
     await frame();
     var aAfter = snap();
+    /* WHERE the press said it was going, not just that it moved. A control
+       whose whole job is to navigate proves nothing by re-rendering. */
+    if (navs.length > aNavs) { addedNav[want] = navs[navs.length - 1]; }
     if (aAfter.text === aBefore.text && aAfter.renders === aBefore.renders &&
         aAfter.nodes === aBefore.nodes && navs.length === aNavs) {
       addedDead.push({i: want, label: aLabel,
@@ -398,6 +438,7 @@ _DRIVE_JS = r"""
     added: added,
     addedDead: addedDead,
     addedGone: addedGone,
+    addedNav: addedNav,
     errors: errors
   });
 })()
@@ -648,6 +689,10 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                   if a["page"] == page + ".html"
                   and not (is_empty and a.get("needs_data"))]
     added_why = {a["marker"]: a for a in R.AMENDED_ADDITIONS}
+    # ⊕ MRB-287 E1 — additions revealed by one of DESIGN'S nodes rather than
+    # by an earlier addition. See the probe's note beside OPENERS.
+    openers = {a["marker"]: a["opener_tpl"] for a in R.AMENDED_ADDITIONS
+               if a.get("opener_tpl") is not None}
     # ⊕ MRB-287 — the search overlay's three nodes, if this page keeps it.
     search_nodes = _search_nodes(os.path.join(PAGE_DIR, path))
     with cdp.Browser() as b:
@@ -678,7 +723,8 @@ def drive(page, path, is_empty, cdp, port, shots=None):
             probe = (_DRIVE_JS
                      .replace("__EXEMPT__",
                               json.dumps(sorted(EXEMPT_LABELS.values())))
-                     .replace("__ADDED__", json.dumps(added_here)))
+                     .replace("__ADDED__", json.dumps(added_here))
+                     .replace("__OPENERS__", json.dumps(openers)))
             got = json.loads(pg.eval(probe))
             if got.get("error"):
                 problems.append("%s: %s" % (what, got["error"]))
@@ -776,6 +822,53 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                     "because it was asked for, which makes a dead one worse "
                     "than a missing one."
                     % (what, d["i"], d["tag"], d["label"]))
+
+            # 5c. ⊕ MRB-287 E1 — AND IT WENT WHERE IT SAID IT WOULD.
+            #
+            # ⚑ "MOVED" IS NOT "WORKED" FOR A CONTROL THAT NAVIGATES. The
+            # check above is satisfied by any nav at all, so a year option
+            # wired to the wrong screen — or to the right screen with no year
+            # on it, which is the whole point of the control — passes it. The
+            # register names the destination and the parameter that must
+            # carry a value, and the recorded nav is compared against both.
+            #
+            # ⚠️ THE PARAMETER IS CHECKED FOR A VALUE, NOT FOR A PARTICULAR
+            # ONE. Which uuid is right depends on which option the sweep
+            # reached, and pinning it here would pin the fixture's ordering
+            # rather than the control's behaviour. Empty is the failure that
+            # matters: `MRB_GO` DROPS an empty param, so a year link that
+            # computed nothing navigates to the working year and looks
+            # exactly like a working control.
+            navs_seen = got.get("addedNav") or {}
+            for m in added_here:
+                want_nav = (added_why.get(m) or {}).get("expect_nav")
+                if not want_nav:
+                    continue
+                got_nav = navs_seen.get(m)
+                if not got_nav:
+                    problems.append(
+                        "%s: the addition %r navigates nowhere. It is "
+                        "registered to open %r, and pressing it reached "
+                        "MRB_GO not at all."
+                        % (what, m, want_nav.get("screen")))
+                    continue
+                if got_nav.get("screen") != want_nav.get("screen"):
+                    problems.append(
+                        "%s: the addition %r is registered to open %r and "
+                        "pressing it went to %r instead."
+                        % (what, m, want_nav.get("screen"),
+                           got_nav.get("screen")))
+                key = want_nav.get("param")
+                val = (got_nav.get("params") or {}).get(key)
+                if key and not val:
+                    problems.append(
+                        "%s: the addition %r reached %r with no %r "
+                        "parameter (%r). MRB_GO DROPS an empty param, so "
+                        "this navigates to the default and is "
+                        "indistinguishable from a control that works — "
+                        "which for a year selector means silently landing "
+                        "the teacher back on the working year."
+                        % (what, m, got_nav.get("screen"), key, val))
 
             # 6. And no press emptied the page. See the probe's note on
             #    node 78 — the control that navigated a pinned-screen page

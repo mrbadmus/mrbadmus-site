@@ -296,6 +296,22 @@ SHIM_SRC = os.path.join("shared", "student-breakpoints.js")
 SHIM_URL = "/shared/student-breakpoints.js"
 
 
+def shim_url_stamped():
+    """The shim URL with its cache-bust stamp — md5[:8] of the SOURCE bytes,
+    the same scheme as every other generator (see build_ks3.asset_versions).
+
+    ⊕ MRB-290 (25 Aug 2026). This generator runs AFTER generate_site_v5's
+    whole-tree stamping pass (build_all step 3 vs step 1), so its output was
+    the one page pair in the tree that shipped a bare /shared/ link — found
+    when the stamping assertion landed. Stamped at emission, at the only
+    place this builder names a shared asset, rather than by a second pass.
+    """
+    import hashlib
+    with open(SHIM_SRC, "rb") as fh:
+        return "%s?v=%s" % (SHIM_URL,
+                            hashlib.md5(fh.read()).hexdigest()[:8])
+
+
 def switch_table(page_name):
     """The measured switch table for one page, as a JS literal."""
     import json
@@ -336,7 +352,7 @@ def page_html(spec, data):
            data["faces"],
            data["styles"],
            switch_table(spec["page"]),
-           SHIM_URL,
+           shim_url_stamped(),
            html.escape(data.get("shellStyle") or
                        "background:var(--st-ground);min-height:100vh",
                        quote=True),
@@ -375,6 +391,15 @@ def build():
         data["fontsaved"] = saved
         data["nfaces"] = n_faces
         body = page_html(spec, data)
+        # MRB-290 — same property the other generators assert: no shared
+        # asset leaves here without a stamp. Optional group, tested — never
+        # a negative lookahead (see build_student_port._verify_stamps).
+        for m in re.finditer(r'/shared/[A-Za-z0-9._-]+(\?v=[0-9a-f]+)?"',
+                             body):
+            if not m.group(1):
+                raise SystemExit(
+                    "build_student.py: %s links %s with no cache-bust stamp"
+                    % (spec["out"], m.group(0)))
         for out_dir in (SITE_OUT, MIRROR_OUT):
             write(os.path.join(out_dir, spec["out"]), body)
         written.append((spec["out"], data["nodes"], data["text"], len(body)))

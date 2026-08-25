@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<script src="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+  body { margin: 0; background: var(--st-ground); }
+  a { color: var(--st-accent-text); text-decoration: none; }
+  a:hover { color: var(--st-accent-hover); }
+  @keyframes rowInA { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+  @keyframes rowInB { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+  @keyframes popA { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  @keyframes popB { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  @keyframes livedot { 0% { box-shadow: 0 0 0 0 rgba(228,87,46,.6); } 70% { box-shadow: 0 0 0 8px rgba(228,87,46,0); } 100% { box-shadow: 0 0 0 0 rgba(228,87,46,0); } }
+  @keyframes confetti { 0% { transform: translate3d(0,0,0) rotate(0deg); } 50% { transform: translate3d(4px,-11px,0) rotate(14deg); } 100% { transform: translate3d(0,0,0) rotate(0deg); } }
+  @keyframes growA { from { transform: scaleY(.55); opacity: .1; } to { transform: none; opacity: 1; } }
+  @keyframes growB { from { transform: scaleY(.55); opacity: .1; } to { transform: none; opacity: 1; } }
+  @keyframes crownGlow { 0%, 100% { box-shadow: 0 0 0 7px rgba(201,124,27,.14); } 50% { box-shadow: 0 0 0 13px rgba(201,124,27,.05); } }
+  .wkrail::-webkit-scrollbar { height: 0; }
+</style>
+</helmet>
+<div style="min-height: 100vh; background: var(--st-ground); color: var(--st-ink); font-family: var(--st-ui); -webkit-font-smoothing: antialiased;">
+
+  <div style="height: 4px; background: linear-gradient(90deg, var(--brand-grad-a), var(--brand-grad-b));"></div>
+
+  <nav style="position: sticky; top: 0; z-index: 40; background: rgba(255,253,248,.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--st-rule);">
+    <div style="max-width: 1180px; margin: 0 auto; padding: 0 28px; height: 62px; display: flex; align-items: center; gap: 20px;">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <x-import component-from-global-scope="MrBadmusDS.BrandMark" size="22" hint-size="22px,22px"></x-import>
+        <span style="font: 600 21px/1 var(--st-display); letter-spacing: -0.025em;">MrBadmusAI</span>
+      </div>
+      <div style="flex: 1;"></div>
+      <a href="#" style="flex: none; white-space: nowrap; font: 500 16px/1 var(--st-ui); color: var(--st-body);">3D Studio</a>
+      <a href="#" style="display: flex; align-items: center; gap: 7px; background: var(--st-accent-text); color: var(--st-paper); font: 600 16px/1 var(--st-ui); padding: 10px 16px; border-radius: var(--r-pill);">
+        <svg width="12" height="14" viewBox="0 0 22 24" aria-hidden="true"><path d="M13 1 3 14h6l-1 9 10-13h-6l1-9Z" fill="currentColor"></path></svg>
+        Challenge
+      </a>
+      <span style="display: flex; align-items: center; gap: 7px; color: var(--st-accent-text); font: 500 16px/1 var(--st-ui); padding-bottom: 2px; border-bottom: 2px solid var(--st-accent);">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M8 3.5h8V9a4 4 0 0 1-8 0V3.5Z"></path><path d="M8 4.5H5.4a2.6 2.6 0 0 0 2.7 5"></path><path d="M16 4.5h2.6a2.6 2.6 0 0 1-2.7 5"></path><path d="M12 13.2V17"></path><path d="M8.6 20.5h6.8"></path></svg>
+        Leaderboard
+      </span>
+      <a href="#" style="flex: none; white-space: nowrap; font: 500 16px/1 var(--st-ui); color: var(--st-body);">My class</a>
+      <div style="width: 34px; height: 34px; border-radius: 50%; background: var(--st-chip-tint); border: 1px solid var(--st-chip-tint-border); color: var(--st-accent-text); display: grid; place-items: center; font: 500 14.5px/1 var(--st-mono); letter-spacing: .04em;">AY</div>
+    </div>
+  </nav>
+
+  <div style="max-width: 1180px; margin: 0 auto; padding: 30px 28px 96px;">
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap;">
+      <div>
+        <h1 style="margin: 12px 0 0; font: 600 62px/0.94 var(--st-display); letter-spacing: -0.045em;">Leaderboard</h1>
+        <div style="margin-top: 12px; display: flex; align-items: center; gap: 10px; font: 500 15px/1 var(--st-mono); letter-spacing: .1em; color: var(--st-caption);">
+          <span style="color: var(--st-accent-text);">{{ weekTitle }}</span>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 14px; background: var(--st-paper); border: 1px solid var(--st-edge); border-radius: var(--st-r-frame); padding: 14px 20px 14px 16px; box-shadow: 0 10px 26px -22px rgba(40,26,10,.5);">
+        <div style="width: 46px; height: 46px; border-radius: 50%; background: var(--st-chip-tint); border: 1.5px solid var(--st-accent); color: var(--st-accent-text); display: grid; place-items: center; font: 500 16px/1 var(--st-mono);">AY</div>
+        <div>
+          <div style="white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .2em; color: var(--st-caption);">YOUR STANDING</div>
+          <div style="margin-top: 7px; display: flex; align-items: baseline; gap: 9px;">
+            <span style="font: 600 20px/1 var(--st-display); letter-spacing: -0.02em;">{{ me.rankLabel }}</span>
+          </div>
+        </div>
+        <div style="width: 1px; align-self: stretch; background: var(--st-rule-soft);"></div>
+        <div style="text-align: right;">
+          <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .2em; color: var(--st-caption);">SCORE</div>
+          <div style="margin-top: 7px; font: 600 20px/1 var(--st-display);">{{ me.pctLabel }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; background: var(--st-paper); border: 1px solid var(--st-edge); border-radius: var(--st-r-frame); box-shadow: 0 12px 30px -26px rgba(40,26,10,.55); overflow: hidden;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px 10px 20px; border-bottom: 1px solid var(--st-rule-soft);">
+        <div style="display: flex; align-items: center; gap: 8px; background: {{ closeBg }}; border: 1px solid {{ closeBd }}; border-radius: var(--r-pill); padding: 7px 13px;">
+          <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ closeDot }}; animation: {{ closeAnim }};"></span>
+          <span style="white-space: nowrap; font: 500 14.5px/1 var(--st-mono); letter-spacing: .06em; color: {{ closeFg }};">{{ closeLabel }}</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" onClick="{{ scrollBack }}" style="width: 32px; height: 32px; border-radius: var(--st-r-btn); border: 1px solid var(--st-btn-border); background: var(--st-paper); color: var(--st-body); display: grid; place-items: center; cursor: pointer;" style-hover="border-color: var(--st-accent); color: var(--st-accent-text);">
+            <svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6.5 1 1.5 6l5 5"></path></svg>
+          </button>
+          <button type="button" onClick="{{ scrollFwd }}" style="width: 32px; height: 32px; border-radius: var(--st-r-btn); border: 1px solid var(--st-btn-border); background: var(--st-paper); color: var(--st-body); display: grid; place-items: center; cursor: pointer;" style-hover="border-color: var(--st-accent); color: var(--st-accent-text);">
+            <svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1.5 1l5 5-5 5"></path></svg>
+          </button>
+          <button type="button" onClick="{{ goLive }}" style="font: 600 15px/1 var(--st-ui); color: var(--st-paper); background: var(--st-ink); border: none; border-radius: var(--r-pill); padding: 10px 15px; cursor: pointer;">This week</button>
+        </div>
+      </div>
+
+      <div class="wkrail" id="ks4-week-rail" style="display: flex; gap: 10px; padding: 16px; overflow-x: auto; scrollbar-width: none;">
+        <sc-for list="{{ weeks }}" as="w" hint-placeholder-count="9">
+          <button type="button" onClick="{{ w.onSelect }}" style="position: relative; flex: none; width: 154px; text-align: left; cursor: pointer; padding: 12px 30px 11px 14px; border-radius: var(--st-r-card); border: 1px solid; transition: transform .16s ease; background: {{ w.bg }}; border-color: {{ w.bd }}; color: {{ w.fg }};" style-hover="transform: translateY(-2px);">
+            <span style="position: absolute; top: 13px; right: 12px; width: 7px; height: 7px; border-radius: 50%; background: {{ w.dot }};"></span>
+            <div style="font: 500 15px/1 var(--st-mono); letter-spacing: .02em; white-space: nowrap;">{{ w.range }}</div>
+            <sc-if value="{{ showTops }}" hint-placeholder-val="{{ true }}">
+              <div style="margin-top: 12px; display: flex; align-items: center; gap: 7px;">
+                <span style="flex: 1; height: 4px; border-radius: 2px; background: {{ w.trough }}; overflow: hidden; display: block;">
+                  <span style="display: block; height: 4px; border-radius: 2px; background: {{ w.barFill }}; width: {{ w.barW }};"></span>
+                </span>
+                <span style="font: 400 14px/1 var(--st-mono); opacity: .7;">{{ w.topLabel }}</span>
+              </div>
+            </sc-if>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="margin-top: 22px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap;">
+      <div style="display: flex; gap: 4px; background: var(--st-seg-bg); border-radius: var(--r-pill); padding: 4px;">
+        <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="2">
+          <button type="button" onClick="{{ t.onSelect }}" style="cursor: pointer; border: none; border-radius: var(--r-pill); padding: 10px 20px; font: 600 15.5px/1 var(--st-ui); background: {{ t.bg }}; color: {{ t.fg }};">{{ t.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <sc-for list="{{ subjects }}" as="s" hint-placeholder-count="4">
+          <button type="button" onClick="{{ s.onSelect }}" style="display: flex; align-items: center; gap: 9px; cursor: pointer; border: 1px solid; border-radius: var(--r-pill); padding: 9px 16px 9px 13px; font: 600 15.5px/1 var(--st-ui); background: {{ s.bg }}; border-color: {{ s.bd }}; color: {{ s.fg }};">
+            <span style="width: 9px; height: 9px; border-radius: 3px; background: {{ s.dot }};"></span>
+            {{ s.label }}
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{ podiumOn }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top: 24px; position: relative; border-radius: var(--st-r-frame); overflow: hidden; border: 1px solid var(--st-edge); background: linear-gradient(178deg, var(--st-paper) 0%, var(--st-crumb-bg) 100%); box-shadow: 0 20px 44px -34px rgba(64,45,26,.5);">
+        <div style="position: absolute; inset: 0; pointer-events: none; background: radial-gradient(46% 58% at 50% -4%, rgba(201,124,27,.20), transparent 72%);"></div>
+        <div style="position: absolute; inset: 0; pointer-events: none; overflow: hidden;">
+          <sc-for list="{{ confetti }}" as="c" hint-placeholder-count="20">
+            <span style="position: absolute; display: block; left: {{ c.left }}; top: {{ c.top }}; width: {{ c.w }}; height: {{ c.h }}; border-radius: 50%; background: rgba(201,124,27,.55); opacity: {{ c.opacity }}; animation: {{ c.anim }};"></span>
+          </sc-for>
+        </div>
+
+        <div style="position: relative; padding: 30px 34px 0;">
+          <div style="display: grid; grid-template-columns: 1fr 1.24fr 1fr; align-items: end; gap: 20px;">
+
+            <div style="display: flex; flex-direction: column; align-items: center; min-width: 0; animation: {{ animB }};">
+              <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--st-paper); border: 2px solid #B6AC9C; color: var(--st-body); display: grid; place-items: center; font: 500 17px/1 var(--st-mono);">{{ p2.initials }}</div>
+              <div style="margin: 12px 0 16px; width: 100%; font: 600 22px/1.15 var(--st-display); letter-spacing: -0.025em; color: var(--st-ink); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p2.name }}</div>
+              <div style="align-self: stretch; min-height: 148px; transform-origin: bottom; animation: {{ riseB }}; border-radius: 10px 10px 0 0; border: 1px solid var(--st-rule-strong); border-bottom: none; border-top: 4px solid #B6AC9C; background: linear-gradient(180deg, var(--st-paper) 0%, var(--st-crumb-bg) 100%); text-align: center; padding: 18px 14px 0;">
+                <div style="font: 600 56px/1 var(--st-display); letter-spacing: -0.04em; color: var(--st-muted);">2</div>
+                <div style="margin-top: 10px; font: 600 24px/1 var(--st-display); letter-spacing: -0.02em; color: var(--st-ink);">{{ p2.pctLabel }}</div>
+                <div style="margin-top: 8px; font: 400 14px/1 var(--st-mono); color: var(--st-muted);">{{ p2.score }}</div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center; min-width: 0; animation: {{ animA }};">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px;">
+                <span style="display: grid; place-items: center; color: var(--higher);">
+                  <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.4l2.94 6.06 6.66.9-4.86 4.62 1.2 6.6L12 17.4l-5.94 3.18 1.2-6.6L2.4 9.36l6.66-.9L12 2.4Z" fill="currentColor"></path></svg>
+                </span>
+                <span style="font: 500 14.5px/1 var(--st-mono); letter-spacing: .22em; color: var(--st-accent-text);">CHAMPION</span>
+              </div>
+              <div style="width: 92px; height: 92px; border-radius: 50%; background: var(--st-paper); border: 2.5px solid var(--brand-grad-a); animation: crownGlow 3.4s ease-in-out infinite; color: var(--higher); display: grid; place-items: center; font: 500 26px/1 var(--st-mono);">{{ p1.initials }}</div>
+              <div style="margin: 14px 0 18px; width: 100%; font: 600 30px/1.08 var(--st-display); letter-spacing: -0.035em; color: var(--st-ink); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p1.name }}</div>
+              <div style="align-self: stretch; min-height: 212px; transform-origin: bottom; animation: {{ riseA }}; border-radius: 12px 12px 0 0; border: 1px solid rgba(201,124,27,.45); border-bottom: none; border-top: 5px solid var(--brand-grad-a); background: linear-gradient(180deg, rgba(201,124,27,.15) 0%, var(--st-paper) 82%); text-align: center; padding: 20px 16px 0;">
+                <div style="font: 600 86px/0.95 var(--st-display); letter-spacing: -0.05em; color: var(--brand-grad-a);">1</div>
+                <div style="margin-top: 12px; font: 600 32px/1 var(--st-display); letter-spacing: -0.03em; color: var(--st-ink);">{{ p1.pctLabel }}</div>
+                <div style="margin-top: 9px; font: 400 15px/1 var(--st-mono); color: var(--st-body);">{{ p1.score }}</div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; align-items: center; min-width: 0; animation: {{ animC }};">
+              <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--st-paper); border: 2px solid var(--st-hatch-b); color: var(--st-accent-text); display: grid; place-items: center; font: 500 17px/1 var(--st-mono);">{{ p3.initials }}</div>
+              <div style="margin: 12px 0 16px; width: 100%; font: 600 22px/1.15 var(--st-display); letter-spacing: -0.025em; color: var(--st-ink); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ p3.name }}</div>
+              <div style="align-self: stretch; min-height: 116px; transform-origin: bottom; animation: {{ riseC }}; border-radius: 10px 10px 0 0; border: 1px solid rgba(179,62,28,.4); border-bottom: none; border-top: 4px solid var(--st-hatch-b); background: linear-gradient(180deg, var(--st-paper) 0%, var(--st-crumb-bg) 100%); text-align: center; padding: 16px 14px 0;">
+                <div style="font: 600 48px/1 var(--st-display); letter-spacing: -0.04em; color: var(--st-muted);">3</div>
+                <div style="margin-top: 9px; font: 600 24px/1 var(--st-display); letter-spacing: -0.02em; color: var(--st-ink);">{{ p3.pctLabel }}</div>
+                <div style="margin-top: 8px; font: 400 14px/1 var(--st-mono); color: var(--st-muted);">{{ p3.score }}</div>
+              </div>
+            </div>
+          </div>
+          <div style="margin: 0 -34px; height: 3px; background: var(--st-rule-strong);"></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;">
+      <sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+        <div style="background: var(--st-paper); border: 1px solid var(--st-rule); border-radius: var(--st-r-card); padding: 16px 18px; border-left: 3px solid {{ st.hue }};">
+          <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);">{{ st.label }}</div>
+          <div style="margin-top: 11px; font: 600 27px/1 var(--st-display); letter-spacing: -0.03em;">{{ st.value }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="margin-top: 18px; background: var(--st-paper); border: 1px solid var(--st-edge); border-radius: var(--st-r-frame); box-shadow: 0 14px 34px -30px rgba(40,26,10,.55); overflow: hidden;">
+      <div style="display: grid; grid-template-columns: {{ grid }}; align-items: center; gap: 10px; padding: 13px 20px; background: var(--st-crumb-bg); border-bottom: 1px solid var(--st-rule);">
+        <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);">RANK</div>
+        <div></div>
+        <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);">STUDENT</div>
+        <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);">PAPERS</div>
+        <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);">MOVE</div>
+        <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption); text-align: right;">SCORE</div>
+        <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption); text-align: right;">MARKS</div>
+        <div style="font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption); text-align: right;">TIME</div>
+        <div></div>
+      </div>
+
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="9">
+        <div style="border-bottom: 1px solid var(--st-rule-fact); background: {{ r.rowBg }}; animation: {{ r.anim }};">
+          <div onClick="{{ r.onToggle }}" style="display: grid; grid-template-columns: {{ grid }}; align-items: center; gap: 10px; padding: {{ rowPad }}; cursor: pointer;" style-hover="background: rgba(228,87,46,.045);">
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <span style="font: 500 {{ rankSize }} var(--st-mono); color: {{ r.rankColor }};">{{ r.rankLabel }}</span>
+            </div>
+            <div style="width: {{ avatar }}; height: {{ avatar }}; border-radius: 50%; background: {{ r.avBg }}; border: 1px solid {{ r.avBd }}; color: {{ r.avFg }}; display: grid; place-items: center; font: 500 14.5px/1 var(--st-mono);">{{ r.initials }}</div>
+            <div style="min-width: 0; overflow: hidden;">
+              <div style="display: flex; align-items: center; gap: 9px; min-width: 0;">
+                <span style="flex: none; font: 600 {{ nameSize }} var(--st-display); letter-spacing: -0.02em; color: var(--st-ink); white-space: nowrap;">{{ r.name }}</span>
+                <sc-if value="{{ r.isYou }}">
+                  <span style="flex: none; white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .16em; color: var(--st-paper); background: var(--st-accent-text); border-radius: 4px; padding: 4px 6px;">YOU</span>
+                </sc-if>
+              </div>
+              <sc-if value="{{ r.streakOn }}">
+                <div style="margin-top: 6px; white-space: nowrap; font: 400 14.5px/1 var(--st-mono); color: var(--higher);">{{ r.streakLabel }}</div>
+              </sc-if>
+            </div>
+            <div style="display: flex; gap: 5px;">
+              <sc-for list="{{ r.papers }}" as="p" hint-placeholder-count="3">
+                <span style="width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font: 500 14px/1 var(--st-mono); background: {{ p.bg }}; color: {{ p.fg }}; border: 1px solid {{ p.bd }};">{{ p.k }}</span>
+              </sc-for>
+            </div>
+            <div>
+              <span style="display: inline-flex; align-items: center; gap: 5px; font: 500 14.5px/1 var(--st-mono); color: {{ r.moveFg }}; background: {{ r.moveBg }}; border-radius: 5px; padding: 5px 7px;">
+                <sc-if value="{{ r.up }}">
+                  <svg width="9" height="8" viewBox="0 0 10 9" aria-hidden="true"><path d="M5 0l5 9H0z" fill="currentColor"></path></svg>
+                </sc-if>
+                <sc-if value="{{ r.down }}">
+                  <svg width="9" height="8" viewBox="0 0 10 9" aria-hidden="true"><path d="M5 9L0 0h10z" fill="currentColor"></path></svg>
+                </sc-if>
+                <sc-if value="{{ r.flat }}">
+                  <svg width="9" height="8" viewBox="0 0 10 9" aria-hidden="true"><rect x="0" y="3.7" width="10" height="1.6" fill="currentColor"></rect></svg>
+                </sc-if>
+                {{ r.moveLabel }}
+              </span>
+            </div>
+            <div style="text-align: right;">
+              <div style="font: 600 {{ pctSize }} var(--st-display); letter-spacing: -0.02em;">{{ r.pctLabel }}</div>
+              <div style="margin-top: 6px; height: 4px; border-radius: 2px; background: var(--st-num-well); overflow: hidden;">
+                <div style="height: 4px; border-radius: 2px; background: {{ r.barFill }}; width: {{ r.barW }}; margin-left: auto;"></div>
+              </div>
+            </div>
+            <div style="text-align: right; font: 400 15px/1 var(--st-mono); color: var(--st-body);">{{ r.score }}</div>
+            <div style="text-align: right; font: 400 15px/1 var(--st-mono); color: var(--st-muted);">{{ r.time }}</div>
+            <div style="display: grid; place-items: center; color: var(--st-ghost); transform: {{ r.caret }};">
+              <svg width="11" height="7" viewBox="0 0 12 8" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M1 1.5 6 6.5l5-5"></path></svg>
+            </div>
+          </div>
+
+          <sc-if value="{{ r.open }}">
+            <div style="padding: 4px 20px 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: var(--st-crumb-bg); border-top: 1px solid var(--st-rule-soft);">
+              <sc-for list="{{ r.breakdown }}" as="b" hint-placeholder-count="3">
+                <div style="background: var(--st-paper); border: 1px solid var(--st-rule-soft); border-radius: var(--st-r-chip); padding: 13px 15px; margin-top: 16px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                    <span style="display: flex; align-items: center; gap: 8px; font: 500 14.5px/1 var(--st-mono); letter-spacing: .12em; color: {{ b.fg }};">
+                      <span style="width: 8px; height: 8px; border-radius: 3px; background: {{ b.dot }};"></span>
+                      {{ b.name }}
+                    </span>
+                    <span style="font: 500 15px/1 var(--st-mono); color: {{ b.valueFg }};">{{ b.value }}</span>
+                  </div>
+                  <div style="margin-top: 11px; height: 6px; border-radius: 3px; background: var(--st-num-well); overflow: hidden;">
+                    <div style="height: 6px; border-radius: 3px; background: {{ b.dot }}; width: {{ b.barW }};"></div>
+                  </div>
+                  <div style="margin-top: 10px; font: 400 14.5px/1 var(--st-mono); color: var(--st-ghost);">{{ b.note }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 20px; background: var(--st-crumb-bg);">
+        <span style="font: 400 14.5px/1 var(--st-mono); letter-spacing: .08em; color: var(--st-ghost);">{{ cutLabel }}</span>
+        <span style="font: 500 14.5px/1 var(--st-mono); letter-spacing: .08em; color: var(--st-accent-text); background: var(--st-chip-tint); border: 1px solid var(--st-note-border); border-radius: var(--r-pill); padding: 8px 13px;">{{ cutValue }}</span>
+      </div>
+
+      <sc-if value="{{ pinMe }}">
+        <div style="position: sticky; bottom: 0; z-index: 5; display: grid; grid-template-columns: {{ grid }}; align-items: center; gap: 10px; padding: 14px 20px; background: var(--st-paper); border-top: 2px solid var(--st-accent); box-shadow: 0 -14px 26px -22px rgba(40,26,10,.6);">
+          <span style="font: 500 16.5px/1 var(--st-mono); color: var(--st-accent-text);">{{ me.rankLabel }}</span>
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--st-chip-tint); border: 1px solid var(--st-accent); color: var(--st-accent-text); display: grid; place-items: center; font: 500 14.5px/1 var(--st-mono);">AY</div>
+          <div style="min-width: 0; overflow: hidden;">
+            <div style="display: flex; align-items: center; gap: 9px; min-width: 0;">
+              <span style="flex: none; font: 600 16.5px/1 var(--st-display); letter-spacing: -0.02em; white-space: nowrap;">{{ me.name }}</span>
+              <span style="flex: none; white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .16em; color: var(--st-paper); background: var(--st-accent-text); border-radius: 4px; padding: 4px 6px;">YOU</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 5px;">
+            <sc-for list="{{ me.papers }}" as="p" hint-placeholder-count="3">
+              <span style="width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font: 500 14px/1 var(--st-mono); background: {{ p.bg }}; color: {{ p.fg }}; border: 1px solid {{ p.bd }};">{{ p.k }}</span>
+            </sc-for>
+          </div>
+          <div style="font: 500 14.5px/1 var(--st-mono); color: {{ me.moveFg }}; white-space: nowrap;">{{ me.moveFull }}</div>
+          <div style="text-align: right; font: 600 17px/1 var(--st-display);">{{ me.pctLabel }}</div>
+          <div style="text-align: right; font: 400 15px/1 var(--st-mono); color: var(--st-body);">{{ me.score }}</div>
+          <div style="text-align: right; font: 400 15px/1 var(--st-mono); color: var(--st-muted);">{{ me.time }}</div>
+          <div></div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;comfortable&quot;,&quot;tsType&quot;:&quot;'comfortable' | 'compact'&quot;,&quot;section&quot;:&quot;Board&quot;},&quot;topCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:10,&quot;min&quot;:3,&quot;max&quot;:25,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Board&quot;},&quot;showPodium&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Board&quot;},&quot;showWeekTops&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Week bar&quot;}}">
+const FIRST = ['Fox','Falcon','Blaze','Coral','Void','Wolf','Lunar','Waffle','Ember','Nova','Quartz','Cobalt','Hazel','Onyx','Pixel','Sable','Tidal','Umber','Verve','Zephyr','Cinder','Marble','Nimbus','Ochre','Rune','Ridge','Sonic','Thorn','Glint','Harbor'];
+const LAST = ['Wave','Glide','Cove','Trail','Prism','Spark','Flare','Summit','Pulse','Drift','Ridge','Bloom','Forge','Quill','Vault','Crest','Loop','Spire','Flux','Grove'];
+const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const VIEWER = 'AmberYew12';
+const WEEKS = 9;
+const LIVE = WEEKS - 1;
+const PAPERS = { B: { name: 'BIOLOGY', hue: 'var(--biology)', soft: 'var(--biology-soft)' }, C: { name: 'CHEMISTRY', hue: 'var(--chemistry)', soft: 'var(--chemistry-soft)' }, P: { name: 'PHYSICS', hue: 'var(--physics)', soft: 'var(--physics-soft)' } };
+const KEYS = ['B', 'C', 'P'];
+const SUBJ_KEY = { Overall: null, Biology: 'B', Chemistry: 'C', Physics: 'P' };
+const CONFETTI = ['var(--brand-grad-a)', 'var(--st-accent)', 'var(--accent)', 'var(--biology)', 'var(--chemistry)', 'var(--physics)', 'var(--higher)'];
+
+function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed) { let t = (seed + 0x6D2B79F5) >>> 0; return function () { t = (t + 0x6D2B79F5) >>> 0; let r = Math.imul(t ^ (t >>> 15), 1 | t); r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r; return ((r ^ (r >>> 14)) >>> 0) / 4294967296; }; }
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function initialsOf(n) { const m = n.match(/^([A-Z])[a-z]*([A-Z])/); return m ? m[1] + m[2] : n.slice(0, 2).toUpperCase(); }
+function fmtTime(s) { return Math.floor(s / 60) + 'm ' + String(s % 60).padStart(2, '0') + 's'; }
+function isoWeek(d) {
+  const t = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  t.setDate(t.getDate() - ((t.getDay() + 6) % 7) + 3);
+  const f = new Date(t.getFullYear(), 0, 4);
+  f.setDate(f.getDate() - ((f.getDay() + 6) % 7) + 3);
+  return 1 + Math.round((t - f) / 604800000);
+}
+
+class Component extends DCLogic {
+  state = { wk: LIVE, tier: 'Higher', subject: 'Overall', open: null, flip: false, now: Date.now() };
+
+  constructor(props) { super(props); this._cache = new Map(); }
+
+  rail() { return document.getElementById('ks4-week-rail'); }
+
+  componentDidMount() {
+    this._t = setInterval(() => { if (this.state.wk === LIVE) this.setState({ now: Date.now() }); }, 1000);
+    const snap = () => { const el = this.rail(); if (el && el.scrollWidth > el.clientWidth) { el.scrollLeft = el.scrollWidth; } else { setTimeout(snap, 120); } };
+    setTimeout(snap, 60);
+  }
+  componentWillUnmount() { clearInterval(this._t); }
+
+  weekDates() {
+    const now = new Date();
+    const mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((now.getDay() + 6) % 7));
+    return Array.from({ length: WEEKS }, (_, i) => {
+      const s = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() - (LIVE - i) * 7);
+      const e = new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6);
+      const range = s.getMonth() === e.getMonth()
+        ? s.getDate() + '\u2013' + e.getDate() + ' ' + MON[e.getMonth()]
+        : s.getDate() + ' ' + MON[s.getMonth()] + '\u2013' + e.getDate() + ' ' + MON[e.getMonth()];
+      return { start: s, end: e, range: range, no: 'W' + isoWeek(s), long: s.getDate() + ' ' + MON[s.getMonth()].charAt(0) + MON[s.getMonth()].slice(1).toLowerCase() };
+    });
+  }
+
+  roster(tier) {
+    const off = tier === 'Higher' ? 0 : 3;
+    const out = FIRST.map((f, i) => f + LAST[(i * 7 + off) % LAST.length] + (21 + ((i * 13 + off) % 58)));
+    out.push(VIEWER);
+    return out;
+  }
+
+  seed(w, name) { return hash(w + '|' + this.state.tier + '|' + this.state.subject + '|' + name); }
+
+  entered(w, name) { return rng(this.seed(w, name))() <= (name === VIEWER ? 0.97 : 0.84); }
+
+  raw(w) {
+    const ck = 'raw' + w + this.state.tier + this.state.subject;
+    if (this._cache.has(ck)) return this._cache.get(ck);
+    const only = SUBJ_KEY[this.state.subject];
+    const rows = [];
+    this.roster(this.state.tier).forEach(name => {
+      const r = rng(this.seed(w, name));
+      const enter = r();
+      if (enter > (name === VIEWER ? 0.97 : 0.84)) return;
+      const skill = rng(hash('skill|' + name + '|' + this.state.tier))();
+      const per = {};
+      KEYS.forEach(k => { per[k] = clamp(Math.round(48 + skill * 44 + (r() - 0.5) * 18), 28, 99); });
+      let done;
+      if (only) done = [only];
+      else if (r() < 0.34) done = KEYS.slice();
+      else { const skip = Math.floor(r() * 3); done = KEYS.filter((_, i) => i !== skip); }
+      const total = done.length * 15;
+      const marks = done.reduce((a, k) => a + Math.round(per[k] / 100 * 15), 0);
+      rows.push({ name: name, per: per, done: done, total: total, marks: marks, pct: Math.round(marks / total * 100), secs: Math.round(85 + r() * 860) });
+    });
+    rows.sort((a, b) => b.pct - a.pct || a.secs - b.secs || a.name.localeCompare(b.name));
+    rows.forEach((x, i) => { x.rank = i + 1; });
+    this._cache.set(ck, rows);
+    return rows;
+  }
+
+  streak(w, name) { let n = 0; for (let i = w; i >= 0 && this.entered(i, name); i--) n++; return n; }
+
+  board(w) {
+    const prev = w > 0 ? this.raw(w - 1) : [];
+    const pmap = {};
+    prev.forEach(x => { pmap[x.name] = x.rank; });
+    return this.raw(w).map(x => {
+      const was = pmap[x.name];
+      const move = was ? was - x.rank : null;
+      return Object.assign({}, x, { was: was, move: move, streak: this.streak(w, x.name) });
+    });
+  }
+
+  renderVals() {
+    const s = this.state;
+    const density = this.props.density === 'compact' ? 'compact' : 'comfortable';
+    const topCount = clamp(this.props.topCount ?? 10, 3, 25);
+    const podiumOn = (this.props.showPodium ?? true);
+    const dates = this.weekDates();
+    const board = this.board(s.wk);
+    const only = SUBJ_KEY[s.subject];
+    const anim = s.flip ? 'rowInB' : 'rowInA';
+    const grow = s.flip ? 'growB' : 'growA';
+    const pop = s.flip ? 'popB' : 'popA';
+
+    const weeks = dates.map((d, i) => {
+      const live = i === LIVE;
+      const on = i === s.wk;
+      const top = this.raw(i)[0];
+      return {
+        no: d.no, range: d.range,
+        bg: on ? 'var(--st-ink)' : live ? 'var(--st-note-bg)' : 'var(--st-paper)',
+        fg: on ? 'var(--st-cream)' : 'var(--st-body)',
+        bd: on ? 'var(--st-ink)' : live ? 'var(--st-accent)' : 'var(--st-rule)',
+        dot: live ? 'var(--st-accent)' : on ? 'var(--brand-grad-a)' : 'var(--st-rule-strong)',
+        trough: on ? 'rgba(251,243,230,.18)' : 'var(--st-num-well)',
+        barFill: on ? 'var(--brand-grad-a)' : live ? 'var(--st-accent)' : 'var(--st-rule-strong)',
+        barW: (top ? top.pct : 0) + '%',
+        topLabel: top ? top.pct + '%' : '\u2014',
+        onSelect: () => this.setState(p => ({ wk: i, flip: !p.flip, open: null }))
+      };
+    });
+
+    const tiers = ['Foundation', 'Higher'].map(t => ({
+      label: t,
+      bg: s.tier === t ? 'var(--st-paper)' : 'transparent',
+      fg: s.tier === t ? 'var(--st-ink)' : 'var(--st-muted)',
+      onSelect: () => this.setState(p => ({ tier: t, flip: !p.flip, open: null }))
+    }));
+
+    const subjects = ['Overall', 'Biology', 'Chemistry', 'Physics'].map(k => {
+      const on = s.subject === k;
+      const hue = SUBJ_KEY[k] ? PAPERS[SUBJ_KEY[k]].hue : 'var(--st-accent)';
+      const soft = SUBJ_KEY[k] ? PAPERS[SUBJ_KEY[k]].soft : 'var(--st-chip-tint)';
+      return {
+        label: k, dot: hue,
+        bg: on ? soft : 'var(--st-paper)',
+        bd: on ? hue : 'var(--st-rule)',
+        fg: on ? (SUBJ_KEY[k] ? hue : 'var(--st-accent-text)') : 'var(--st-body)',
+        onSelect: () => this.setState(p => ({ subject: k, flip: !p.flip, open: null }))
+      };
+    });
+
+    const deco = (x, i) => {
+      const up = x.move !== null && x.move > 0;
+      const down = x.move !== null && x.move < 0;
+      const flat = x.move === 0;
+      const isYou = x.name === VIEWER;
+      return {
+        name: x.name, initials: initialsOf(x.name), rank: x.rank,
+        rankLabel: String(x.rank).padStart(2, '0'),
+        rankColor: x.rank <= 3 ? 'var(--st-accent-text)' : 'var(--st-muted)',
+        pctLabel: x.pct + '%', score: x.marks + '/' + x.total, time: fmtTime(x.secs),
+        barW: x.pct + '%',
+        barFill: isYou ? 'var(--st-accent)' : x.rank <= 3 ? 'var(--brand-grad-a)' : 'var(--st-rule-strong)',
+        avBg: isYou ? 'var(--st-chip-tint)' : 'var(--st-num-well)',
+        avBd: isYou ? 'var(--st-accent)' : 'var(--st-rule)',
+        avFg: isYou ? 'var(--st-accent-text)' : 'var(--st-muted)',
+        rowBg: isYou ? 'rgba(228,87,46,.06)' : 'var(--st-paper)',
+        isYou: isYou,
+        streakOn: x.streak >= 3, streakLabel: x.streak + ' wk run',
+        up: up, down: down, flat: flat,
+        moveLabel: x.move === null ? 'NEW' : flat ? 'HELD' : String(Math.abs(x.move)),
+        moveFull: x.move === null ? 'NEW ENTRY' : flat ? 'HELD' : (up ? 'UP ' : 'DOWN ') + Math.abs(x.move),
+        moveFg: x.move === null ? 'var(--st-accent-text)' : up ? 'var(--success)' : down ? 'var(--danger)' : 'var(--st-muted)',
+        moveBg: x.move === null ? 'var(--st-chip-tint)' : up ? 'var(--success-soft)' : down ? 'var(--danger-soft)' : 'var(--st-num-well)',
+        papers: KEYS.map(k => {
+          const on = x.done.indexOf(k) >= 0;
+          return { k: k, bg: on ? PAPERS[k].soft : 'var(--st-paper)', fg: on ? PAPERS[k].hue : 'var(--st-rule-strong)', bd: on ? PAPERS[k].soft : 'var(--st-rule-soft)' };
+        }),
+        breakdown: KEYS.map(k => {
+          const on = x.done.indexOf(k) >= 0;
+          return {
+            k: k, name: PAPERS[k].name, dot: on ? PAPERS[k].hue : 'var(--st-rule)',
+            fg: on ? PAPERS[k].hue : 'var(--st-ghost)',
+            value: on ? x.per[k] + '%' : '\u2014',
+            valueFg: on ? 'var(--st-ink)' : 'var(--st-ghost)',
+            barW: on ? x.per[k] + '%' : '0%',
+            note: on ? Math.round(x.per[k] / 100 * 15) + '/15 marks' : 'not attempted'
+          };
+        }),
+        open: s.open === x.name,
+        caret: s.open === x.name ? 'rotate(180deg)' : 'none',
+        anim: anim + ' .42s cubic-bezier(.22,.75,.2,1) ' + Math.min(i, 14) * 26 + 'ms both',
+        onToggle: () => this.setState(p => ({ open: p.open === x.name ? null : x.name }))
+      };
+    };
+
+    const podium = board.slice(0, 3).map(deco);
+    const blank = { name: '\u2014', initials: '--', pctLabel: '\u2014', score: '\u2014' };
+    const listStart = podiumOn ? 3 : 0;
+    const qualified = board.slice(0, topCount);
+    const list = qualified.slice(listStart).map(deco);
+    const meRow = board.find(x => x.name === VIEWER);
+    const me = meRow ? deco(meRow, 0) : null;
+    const meVisible = !!me && me.rank <= topCount;
+    const cut = qualified.length ? qualified[qualified.length - 1] : null;
+    const pcts = board.map(x => x.pct).sort((a, b) => a - b);
+    const median = pcts.length ? pcts[Math.floor(pcts.length / 2)] : 0;
+    const fastest = board.slice().sort((a, b) => a.secs - b.secs)[0];
+    const climb = board.filter(x => x.move !== null).sort((a, b) => b.move - a.move)[0];
+    const live = s.wk === LIVE;
+    const ms = new Date(dates[LIVE].end.getFullYear(), dates[LIVE].end.getMonth(), dates[LIVE].end.getDate(), 23, 59, 59) - s.now;
+    const d = Math.max(0, Math.floor(ms / 864e5));
+    const h = Math.max(0, Math.floor(ms / 36e5) % 24);
+    const mi = Math.max(0, Math.floor(ms / 6e4) % 60);
+    const sec = Math.max(0, Math.floor(ms / 1000) % 60);
+
+    return {
+      weeks: weeks, tiers: tiers, subjects: subjects, rows: list,
+      showTops: this.props.showWeekTops ?? true,
+      podiumOn: podiumOn && podium.length >= 3,
+      p1: podium[0] || blank, p2: podium[1] || blank, p3: podium[2] || blank,
+      animA: pop + ' .55s cubic-bezier(.2,.8,.2,1) 60ms both',
+      animB: pop + ' .55s cubic-bezier(.2,.8,.2,1) 160ms both',
+      animC: pop + ' .55s cubic-bezier(.2,.8,.2,1) 240ms both',
+      riseA: grow + ' .62s cubic-bezier(.2,.8,.2,1) 160ms both',
+      riseB: grow + ' .62s cubic-bezier(.2,.8,.2,1) 300ms both',
+      riseC: grow + ' .62s cubic-bezier(.2,.8,.2,1) 380ms both',
+      confetti: Array.from({ length: 14 }, (_, i) => {
+        const r = rng(hash('conf|' + s.wk + '|' + s.subject + '|' + i));
+        const hue = CONFETTI[Math.floor(r() * CONFETTI.length)];
+        const round = r() < 0.34;
+        const w = 5 + Math.round(r() * 7);
+        return {
+          left: Math.round(3 + r() * 94) + '%',
+          top: Math.round(6 + r() * 82) + '%',
+          w: w + 'px',
+          h: (round ? w : 3 + Math.round(r() * 5)) + 'px',
+          radius: round ? '50%' : '1.5px',
+          color: hue,
+          opacity: (0.22 + r() * 0.26).toFixed(2),
+          anim: 'confetti ' + (5.5 + r() * 6).toFixed(1) + 's ease-in-out ' + (r() * 4).toFixed(1) + 's infinite'
+        };
+      }),
+      weekTitle: dates[s.wk].no + ' \u00B7 ' + dates[s.wk].range,
+      closeBg: live ? 'var(--st-note-bg)' : 'var(--st-crumb-bg)',
+      closeBd: live ? 'var(--st-note-border)' : 'var(--st-rule)',
+      closeDot: live ? 'var(--st-accent)' : 'var(--st-rule-strong)',
+      closeFg: live ? 'var(--st-accent-text)' : 'var(--st-muted)',
+      closeAnim: live ? 'livedot 2s ease-out infinite' : 'none',
+      closeLabel: live ? 'CLOSES IN ' + d + 'D ' + String(h).padStart(2, '0') + 'H ' + String(mi).padStart(2, '0') + 'M ' + String(sec).padStart(2, '0') + 'S' : 'LOCKED ' + dates[s.wk].long.toUpperCase(),
+      stats: [
+        { label: 'ENTRIES', value: String(board.length), hue: 'var(--st-accent)' },
+        { label: 'MEDIAN SCORE', value: median + '%', hue: 'var(--biology)' },
+        { label: 'FASTEST PAPER', value: fastest ? fmtTime(fastest.secs) : '\u2014', hue: 'var(--physics)' },
+        { label: 'BIGGEST CLIMB', value: climb && climb.move > 0 ? '+' + climb.move : '\u2014', hue: 'var(--chemistry)' }
+      ],
+      me: me ? Object.assign({}, me, { percentile: 'TOP ' + Math.max(1, Math.round(me.rank / Math.max(1, board.length) * 100)) + '%' }) : { rankLabel: '\u2014', percentile: 'NOT ENTERED', pctLabel: '\u2014', name: VIEWER, score: '\u2014', time: '\u2014', sub: 'no entry this week', papers: [], moveFull: '', moveFg: 'var(--st-muted)' },
+      pinMe: !!me && !meVisible,
+      cutLabel: 'TOP ' + topCount + ' ONLY \u00B7 ' + board.length + ' SAT THIS WEEK',
+      cutValue: cut ? 'CUT LINE ' + cut.pct + '%' : 'NO ENTRIES',
+      grid: density === 'compact'
+        ? '46px 34px minmax(150px,2.2fr) minmax(74px,.85fr) minmax(66px,.8fr) minmax(80px,1fr) minmax(68px,.8fr) minmax(74px,.85fr) 22px'
+        : '52px 42px minmax(172px,2.4fr) minmax(80px,.9fr) minmax(72px,.8fr) minmax(88px,1fr) minmax(74px,.8fr) minmax(80px,.9fr) 24px',
+      rowPad: density === 'compact' ? '13px 22px' : '18px 22px',
+      rankSize: density === 'compact' ? '16px/1' : '18px/1',
+      nameSize: density === 'compact' ? '17.5px/1' : '20px/1',
+      pctSize: density === 'compact' ? '19px/1' : '22px/1',
+      avatar: density === 'compact' ? '34px' : '42px',
+      scrollBack: () => { const el = this.rail(); if (el) el.scrollBy({ left: -300, behavior: 'smooth' }); },
+      scrollFwd: () => { const el = this.rail(); if (el) el.scrollBy({ left: 300, behavior: 'smooth' }); },
+      goLive: () => { const el = this.rail(); if (el) el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' }); this.setState(p => ({ wk: LIVE, flip: !p.flip, open: null })); }
+    };
+  }
+}
+</script>
+</body>
+</html>
