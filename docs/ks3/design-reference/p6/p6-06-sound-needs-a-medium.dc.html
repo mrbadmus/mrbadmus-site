@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sound needs a medium · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Waves and sound</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Sound needs a medium</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Waves and sound · Investigation</p>
+        <h1>Sound needs a medium</h1>
+        <p class="ks3-bigq">A buzzer in a jar goes quiet while you watch it still ringing. Nothing has been done to the buzzer at all — something has been taken away from the space around it.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The buzzer is still going. The sound is not.</h2>
+        <p class="ks3-hook-prompt">A small buzzer hangs on a thread inside a thick glass jar, ringing away. A pump starts pulling the air out of the jar. Through the glass you can still see the little hammer beating against the bell, exactly as fast as before.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">As the last of the air leaves the jar, what happens to what you hear?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Sound is a disturbance passed from one particle of a material to the next. A vibrating surface pushes the particles touching it, those push the next ones along, and the squeeze travels. Take the particles away and there is nothing to do the passing on: <strong>sound cannot travel through a vacuum</strong>. The buzzer is still vibrating, and the vibration has nowhere to go.</p>
+        <p>Give it particles and it travels — through gases, through liquids and through solids. How fast depends on the material, and the pattern is the same one every time: the closer the particles sit and the more strongly they are held to each other, the more quickly each one passes the shove on. Sound is slowest in gases, faster in liquids, and fastest in solids. In air it manages about 340 metres every second; in steel, about 5000.</p>
+      </section>
+
+      <section id="s-range" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a striker and a microphone, with a measured gap between them</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Same bang. Change what is in the way.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A hammer strikes a plate at one end and a microphone records the arrival at the other. Set what fills the gap, and set how long the gap is.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. The same striker and microphone are set 100 m apart, once through air and once through steel. Which arrives first, and why?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What fills the gap</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ matTabs }}" as="t" hint-placeholder-count="5">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p66d" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How long the gap is</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ distLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p66d" min="50" max="1000" step="50" value="{{ distValue }}" onChange="{{ onDist }}" onInput="{{ onDist }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 320" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <rect x="40" y="70" width="26" height="150" rx="6" style="fill: #C6B9A7;"></rect>
+                  <path d="M76 110 h34 v70 h-34" style="fill: none; stroke: #E9DCC8; stroke-width: 7; stroke-linejoin: round;"></path>
+                  <rect x="936" y="70" width="26" height="150" rx="6" style="fill: #C6B9A7;"></rect>
+                  <path d="M926 110 h-34 v70 h34" style="fill: none; stroke: #E9DCC8; stroke-width: 7; stroke-linejoin: round;"></path>
+                  <path d="{{ particles }}" style="fill: none; stroke: #8FB7FF; stroke-width: 14; stroke-linecap: round;"></path>
+                  <path d="{{ links }}" style="fill: none; stroke: #5C7BB0; stroke-width: 3;"></path>
+                  <path d="M140 262 V282 M860 262 V282 M140 272 H860" style="fill: none; stroke: #8C8177; stroke-width: 3;"></path>
+                  <text x="40" y="46" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">STRIKER</text>
+                  <text x="962" y="46" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">MICROPHONE</text>
+                </svg>
+                <span style="position: absolute; left: 4%; right: 3%; top: 93%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.5vw,18px); letter-spacing: .08em; color: #C6B9A7; white-space: normal; pointer-events: none;">{{ matCaption }}</span>
+                <span style="position: absolute; left: 50%; top: 82%; transform: translate(-50%,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.5vw,18px); color: #E9DCC8; white-space: nowrap; pointer-events: none;">{{ distLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The gap</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ distLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">measured striker to microphone</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Speed of sound in it</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ speedLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ matState }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Time to arrive</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ timeLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ timeWorking }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">At the microphone</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">All five side by side, to one scale</h2>
+        <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 18px;">
+          <svg viewBox="0 0 1000 400" role="img" aria-label="A bar chart of the speed of sound in five materials, all to one scale: vacuum, no sound at all; air about 340 metres per second; water about 1500; oak about 3800; steel about 5000. Beside each bar the particles are drawn at their spacing, from empty for a vacuum to a locked lattice for steel." style="display: block; width: 100%; height: auto;">
+            <text x="0" y="26" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">MATERIAL</text>
+            <text x="170" y="26" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">PARTICLES</text>
+            <text x="360" y="26" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">SPEED OF SOUND</text>
+
+            <text x="0" y="82" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Vacuum</text>
+            <rect x="170" y="54" width="160" height="38" rx="6" style="fill: none; stroke: var(--ks3-rule-strong); stroke-width: 2; stroke-dasharray: 7 7;"></rect>
+            <text x="250" y="80" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-ink-ghost);">NOTHING HERE</text>
+            <text x="360" y="82" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; fill: var(--ks3-ink);">no sound at all</text>
+
+            <text x="0" y="152" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Air</text>
+            <path d="M186 132 h0 M226 156 h0 M266 128 h0 M306 152 h0 M206 168 h0 M286 172 h0" style="fill: none; stroke: var(--ks3-blue); stroke-width: 13; stroke-linecap: round;"></path>
+            <rect x="360" y="132" width="43" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="415" y="157" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 340 m/s</text>
+
+            <text x="0" y="222" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Water</text>
+            <path d="M182 208 h0 M208 216 h0 M234 206 h0 M260 218 h0 M286 208 h0 M312 216 h0 M195 232 h0 M221 240 h0 M247 230 h0 M273 240 h0 M299 232 h0" style="fill: none; stroke: var(--ks3-blue); stroke-width: 15; stroke-linecap: round;"></path>
+            <rect x="360" y="202" width="188" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="560" y="227" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 1500 m/s</text>
+
+            <text x="0" y="292" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Oak</text>
+            <path d="M182 278 h0 M208 278 h0 M234 278 h0 M260 278 h0 M286 278 h0 M312 278 h0 M182 302 h0 M208 302 h0 M234 302 h0 M260 302 h0 M286 302 h0 M312 302 h0" style="fill: none; stroke: var(--ks3-blue); stroke-width: 15; stroke-linecap: round;"></path>
+            <path d="M182 278 H312 M182 302 H312 M182 278 V302 M208 278 V302 M234 278 V302 M260 278 V302 M286 278 V302 M312 278 V302" style="fill: none; stroke: var(--ks3-blue); stroke-width: 3;"></path>
+            <rect x="360" y="272" width="475" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="378" y="297" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 3800 m/s</text>
+
+            <text x="0" y="362" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Steel</text>
+            <path d="M182 348 h0 M208 348 h0 M234 348 h0 M260 348 h0 M286 348 h0 M312 348 h0 M182 372 h0 M208 372 h0 M234 372 h0 M260 372 h0 M286 372 h0 M312 372 h0" style="fill: none; stroke: var(--ks3-blue); stroke-width: 17; stroke-linecap: round;"></path>
+            <path d="M182 348 H312 M182 372 H312 M182 348 V372 M208 348 V372 M234 348 V372 M260 348 V372 M286 348 V372 M312 348 V372" style="fill: none; stroke: var(--ks3-blue); stroke-width: 5;"></path>
+            <rect x="360" y="342" width="625" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="378" y="367" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 5000 m/s</text>
+          </svg>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">The order runs with the particles, not against them. A gas has its particles far apart and free, so each shove takes a while to reach the next one. A solid has them close and strongly linked, so the shove is handed on almost at once. A vacuum has none, and the bar has nothing to draw.</p>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Distance = speed of sound × time</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. The distance d sits above a dividing line; the speed of sound v and the time t sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 62px; fill: var(--ks3-ink);">d</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">v</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">t</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">d</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">v</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">t</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">m with s gives m/s · km with h gives km/h</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">d</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">distance the sound travels</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">v</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">speed of sound in that material</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m/s</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">t</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">time it takes</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Sound needs a material to travel through and cannot cross a vacuum, because there are no particles to pass the disturbance on. It goes fastest where the particles are closest together and most strongly linked: about 340 m/s in air, about 1500 m/s in water and about 5000 m/s in steel.</p>
+        </div>
+
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Sound crosses a vacuum, just very slowly and faintly.&rdquo;</p>
+        <p>There is no slow, faint version. Sound is particles shoving their neighbours, so with no particles there is no mechanism at all, and the loudness does not tail off towards a whisper — it goes to nothing. That is why an astronaut outside a spacecraft hears their own breathing and their radio and nothing else, no matter how violent the thing happening a few metres away, and why the explosions in space films are a sound-effects decision rather than physics. Light does cross a vacuum, which is why you can see the thing you cannot hear.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Sound goes fastest through air, because air is the easiest thing to get through.&rdquo;</p>
+          <p>Easy to walk through is not the same as easy to pass a shove along. Getting through the air is easy precisely because its particles are far apart and barely hold on to each other — and that is exactly what makes it slow at handing a disturbance on. In steel every particle is packed tight against its neighbours and firmly linked to them, so the shove is passed on almost immediately and sound manages about 5000 m/s, roughly fifteen times its speed in air. Put your ear to a long metal fence and have someone tap the far end: you hear it through the metal first and through the air a moment later.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Sound is a disturbance passed from particle to particle, so it needs a material to travel through and cannot cross a vacuum at all. It travels through gases, liquids and solids, and it goes faster where the particles are closer together and more strongly linked: about 340 m/s in air, about 1500 m/s in water and about 5000 m/s in steel. Distance = speed of sound × time.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Sound going faster in solids is what makes a stethoscope, a train-track trick and a whole branch of engineering work. Ultrasonic testers send a pulse into a steel casting and time what comes back: a crack inside sends a reflection home early, and the timing gives its depth to within a millimetre. Nobody has to cut the casting open.</p>
+          <p>The speed in air is not quite a constant. It rises with temperature, by roughly 0.6 m/s for every degree Celsius, because warmer particles are already moving faster and hand the shove on more quickly. On a hot day sound outruns its cold-morning self by several metres a second, and on a cold clear night the layer of warm air above can bend sound back down to the ground and carry a distant conversation much further than it has any right to go.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p6-05-frequency-pitch-and-loudness.html">Frequency, pitch and loudness<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p6-07-echoes-reflection-and-absorption.html">Echoes, reflection and absorption<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p6-04-sound-is-longitudinal.html">Sound is longitudinal<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-02-solids-liquids-and-gases.html">Solids, liquids and gases<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Measuring the speed of sound in air and in solids, ultrasound imaging and non-destructive testing, and the wave equation applied to sound.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a distance and a material and want the travel time?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Every speed in it is an approximate value for one ordinary sample at about 20 degrees Celsius: air varies by roughly 0.6 m/s per degree, sea water differs from fresh, oak differs across the grain from along it, and steel differs with its alloy. The particle drawings show relative spacing only and are not to scale in size or number, and real particles are in constant random motion rather than in rows. The gap is treated as filled with one material end to end, with no losses, so the blow arrives at full strength however far away it is; over long distances in real air a sound both spreads out and is absorbed.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The buzzer in the jar', short: 'JAR' },
+  { id: 's-range', label: 'Striker and microphone', short: 'RANGE' },
+  { id: 's-formula', label: 'Triangle and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-range') return s.gate !== null && (s.touched.mat || s.touched.dist);
+  if (id === 's-formula') return s.buildOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const COVERS = { d: 'd = v \u00d7 t', v: 'v = d \u00f7 t', t: 't = d \u00f7 v' };
+
+const MATS = [
+  { label: 'Air', v: 340, state: 'a gas at about 20 \u00b0C', caption: 'AIR \u2014 PARTICLES FAR APART AND FREE',
+    note: 'Air is a gas: its particles are far apart and barely hold on to each other, so each one travels a good way before it reaches the next. That is the slowest arrangement here, and about 340 m/s is the result.' },
+  { label: 'Water', v: 1500, state: 'a liquid at about 20 \u00b0C', caption: 'WATER \u2014 PARTICLES TOUCHING BUT FREE TO SLIDE',
+    note: 'In water the particles are already touching, so a shove reaches the next one almost immediately, and sound manages about 1500 m/s \u2014 more than four times its speed in air. Whales use that: a call can carry for tens of kilometres through the sea.' },
+  { label: 'Oak', v: 3800, state: 'a solid, measured along the grain', caption: 'OAK \u2014 PARTICLES LOCKED IN PLACE',
+    note: 'Oak is a solid, so its particles are both close together and strongly linked, and the shove is handed on at about 3800 m/s along the grain. Across the grain it is far slower, which is why the direction has to be stated.' },
+  { label: 'Steel', v: 5000, state: 'a solid, strongly bonded', caption: 'STEEL \u2014 PARTICLES PACKED AND STRONGLY LINKED',
+    note: 'Steel has its particles packed tight and held to each other very strongly, which is the fastest arrangement here at about 5000 m/s \u2014 roughly fifteen times the speed in air. Tap one end of a long steel fence and the sound reaches the far end through the metal well before it arrives through the air.' },
+  { label: 'Vacuum', v: 0, state: 'no particles at all', caption: 'VACUUM \u2014 NOTHING TO PASS THE SHOVE ON',
+    note: 'There is nothing in the gap to be squeezed, so the striker vibrates and nothing at all leaves it. This is not a very slow or very quiet sound: it is no sound, at any distance, for any length of time.' }
+];
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A hammer strikes one end of a steel rail 1000 m long. The blow is heard through the rail 0.20 s later. What is the speed of sound in steel?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '1000 m stays 1000 m · 0.20 s stays 0.20 s',
+        note: 'The length is already in metres and the time already in seconds, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'speed = distance ÷ time',
+        note: 'Cover v on the triangle: d sits over t, so you divide.' },
+      { letter: 'I', label: 'Insert', line: 'speed = 1000 m ÷ 0.20 s',
+        note: 'The distance is the length of the rail, because the sound went through the steel.' },
+      { letter: 'F', label: 'Fine-tune', line: '1000 ÷ 0.20 = 5000',
+        note: 'Metres divided by seconds leaves metres per second.' },
+      { letter: 'A', label: 'Answer', line: 'speed = 5000 m/s',
+        note: 'About fifteen times the speed of the same blow through the air.' }
+    ] },
+  { tab: 'Convert first', head: 'A blow travels 2.4 km along a steel pipe in 0.48 s. What is the speed of sound in the pipe?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '2.4 km × 1000 = 2400 m',
+        note: 'Metres per second needs the distance in metres, and a kilometre is a thousand of them.' },
+      { letter: 'F', label: 'Formula', line: 'speed = distance ÷ time',
+        note: 'Cover v on the triangle: d sits over t, so you divide.' },
+      { letter: 'I', label: 'Insert', line: 'speed = 2400 m ÷ 0.48 s',
+        note: 'The converted distance goes in. The 2.4 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '2400 ÷ 0.48 = 5000',
+        note: 'Metres divided by seconds leaves metres per second.' },
+      { letter: 'A', label: 'Answer', line: 'speed = 5000 m/s',
+        note: 'Insert 2.4 instead of 2400 and the answer comes out 5 m/s — slower than walking.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Calculate',
+    question: 'A shout crosses 680 m of still air. Sound travels at about 340 m/s in air. How long does it take?',
+    options: [
+      { text: 'About 2.0 s', correct: true },
+      { text: 'About 231 000 s \u2014 multiply the distance by the speed', correction: 'Multiplying gives you a distance back when you already know one. To find a time you share the distance out at so many metres each second, so you divide.' },
+      { text: 'About 0.50 s \u2014 divide the speed by the distance', correction: 'That is the calculation upside down. Cover t on the triangle and d sits over v, so the distance is the one being divided.' },
+      { text: 'About 2.0 m', correction: 'The arithmetic is right and the unit is wrong. Metres divided by metres per second leaves seconds, and the question asked how long.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A spacecraft explodes a hundred metres from an astronaut on a spacewalk. Which statement is right?',
+    options: [
+      { text: 'The astronaut sees it and hears nothing at all, because there are no particles between them to pass the disturbance on.', correct: true },
+      { text: 'The astronaut hears a faint, delayed bang, because space is very thin rather than completely empty.', correction: 'Faint is not what happens. With no particles there is no way for a disturbance to be handed along at all, so the sound does not arrive weakened \u2014 it does not arrive.' },
+      { text: 'The astronaut hears nothing, because the explosion is too far away for sound to carry.', correction: 'The verdict is right and the rule is wrong. A hundred metres is nothing for sound in air; what stops it is the absence of a material, not the distance.' },
+      { text: 'The astronaut hears it immediately, because with nothing in the way sound is not slowed down.', correction: 'Nothing in the way is exactly the problem. Sound is not something that flies through a gap \u2014 it is a disturbance in a material, and it needs the material.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'A ringing buzzer hangs inside a glass jar. A pump slowly removes the air. Describe what happens and explain why, using the word particles.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'As the air is pumped out\u2026',
+    criteria: [
+      'Says the sound gets quieter as the air is removed and fades to nothing.',
+      'Says the buzzer can still be seen vibrating throughout.',
+      'Says sound is passed from particle to particle through a material.',
+      'Says removing the air removes the particles, so there is nothing left to pass the disturbance on.',
+      'Says letting the air back in brings the sound back, which shows the buzzer never stopped.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'Standing beside a long steel railway rail, you hear a hammer blow from far down the track twice: once through the rail and once through the air. The rail is 1700 m long. Work out both arrival times and the gap between them, then say which arrives first and why.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Through the steel, time = distance \u00f7 speed\u2026',
+    criteria: [
+      'Uses time = distance \u00f7 speed for both journeys.',
+      'Gets about 0.34 s through the steel, using about 5000 m/s.',
+      'Gets about 5.0 s through the air, using about 340 m/s.',
+      'Gives the gap as about 4.7 s, with the unit.',
+      'Says the steel arrives first because its particles are closer together and more strongly linked, so each one passes the shove on sooner.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, mat: 0, dist: 200, touched: {}, cover: 'v', workedStep: 0, formPick: null, insertPick: null, ansText: '', ansUnit: '', buildOpen: false });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  fmtT(t) {
+    if (t >= 1) return t.toFixed(2) + ' s';
+    if (t >= 0.1) return t.toFixed(3) + ' s';
+    return t.toFixed(4) + ' s';
+  }
+
+  cfifaVals(q1, q2) {
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: q2 ? [q1, q2] : [q1]
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const m = MATS[s.mat];
+    const vac = m.v === 0;
+    const t = vac ? 0 : s.dist / m.v;
+    const airT = s.dist / 340;
+    let particles = '', links = '';
+    if (!vac) {
+      if (m.label === 'Air') {
+        const xs = [180, 246, 300, 372, 430, 498, 560, 626, 690, 752, 818, 876, 210, 276, 340, 408, 470, 536, 600, 664, 726, 790, 850];
+        xs.forEach((x, i) => { particles += 'M' + x + ' ' + (110 + ((i * 37) % 80)) + ' h0 '; });
+      } else if (m.label === 'Water') {
+        for (let r = 0; r < 3; r++) {
+          for (let i = 0; i < 24; i++) {
+            particles += 'M' + (162 + i * 30 + (r % 2) * 15) + ' ' + (112 + r * 34) + ' h0 ';
+          }
+        }
+      } else {
+        for (let r = 0; r < 4; r++) {
+          for (let i = 0; i < 25; i++) {
+            const x = 160 + i * 29, y = 104 + r * 30;
+            particles += 'M' + x + ' ' + y + ' h0 ';
+            if (i < 24) links += 'M' + x + ' ' + y + ' H' + (x + 29) + ' ';
+            if (r < 3) links += 'M' + x + ' ' + y + ' V' + (y + 30) + ' ';
+          }
+        }
+      }
+    }
+    return Object.assign({
+      hookOptions: [
+        { letter: 'A', text: 'The buzzer stops working, because it needs air to run' },
+        { letter: 'B', text: 'The buzzer keeps vibrating and the sound fades away to nothing' },
+        { letter: 'C', text: 'The note gets higher as the air thins out' },
+        { letter: 'D', text: 'The sound gets quieter but never disappears, because it can still cross the empty space slowly' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'The hammer never stops. What stops is the delivery: sound is a squeeze handed from one particle to the next, and the pump is taking the particles away. Let the air back in and the ringing returns at once, exactly as loud as before, which proves the buzzer was working the whole time.',
+
+      benchProgress: (s.touched.mat || s.touched.dist) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Through the air, because a gas puts less in the way of the sound' },
+        { letter: 'B', text: 'Through the steel, because its particles are close together and strongly linked, so each passes the shove on sooner' },
+        { letter: 'C', text: 'They arrive together, because the sound is the same sound in both' },
+        { letter: 'D', text: 'Through the steel, because a solid makes a louder sound than a gas does' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      matTabs: MATS.map((x, i) => ({
+        label: x.label, pressed: s.mat === i, style: this.seg(s.mat === i, true, false),
+        onClick: () => this.setState((st) => ({ mat: i, touched: Object.assign({}, st.touched, { mat: true }) }))
+      })),
+      distValue: s.dist, distLabel: s.dist + ' m',
+      onDist: (e) => this.setState((st) => ({ dist: Number(e.target.value), touched: Object.assign({}, st.touched, { dist: true }) })),
+      particles: particles.trim() || 'M0 0',
+      links: links.trim() || 'M0 0',
+      matCaption: m.caption,
+      matState: m.state,
+      speedLabel: vac ? 'none' : 'about ' + m.v + ' m/s',
+      timeLabel: vac ? 'it never arrives' : this.fmtT(t),
+      timeWorking: vac ? 'nothing to time' : s.dist + ' m \u00f7 ' + m.v + ' m/s',
+      verdictWord: vac ? 'Silence' : 'The blow arrives',
+      benchAlt: vac
+        ? 'A striker and a microphone ' + s.dist + ' metres apart with nothing at all between them, and no sound arriving.'
+        : 'A striker and a microphone ' + s.dist + ' metres apart with ' + m.label.toLowerCase() +
+          ' between them, its particles drawn at their spacing, and the blow arriving after ' + this.fmtT(t) + '.',
+      benchNote: m.note + (vac
+        ? ' Put air in the same ' + s.dist + ' m gap and the blow arrives after ' + this.fmtT(airT) + '.'
+        : (m.label === 'Air' ? ' Over your ' + s.dist + ' m gap that is ' + this.fmtT(t) + '.'
+                             : ' Over your ' + s.dist + ' m gap that is ' + this.fmtT(t) + ', against ' + this.fmtT(airT) + ' for the same gap filled with air.')),
+
+      coverResult: COVERS[s.cover],
+      coverTop: s.cover === 'd', coverLeft: s.cover === 'v', coverRight: s.cover === 't',
+      coverTabs: this.coverBtns([{ id: 'd', label: 'Cover d' }, { id: 'v', label: 'Cover v' }, { id: 't', label: 'Cover t' }])
+    }, this.cfifaVals((function (self) {
+      const mm = vac ? MATS[0] : m;
+      const tt = s.dist / mm.v;
+      return {
+        tab: 'Question 1', id: 'p606q1',
+        head: vac
+          ? 'A vacuum has no speed of sound and nothing to time, so these five steps use air across your ' + s.dist + ' m gap.'
+          : 'Your gap: ' + s.dist + ' m of ' + mm.label.toLowerCase() + '.',
+        formOptions: ['time = distance \u00f7 speed', 'time = distance \u00d7 speed', 'time = speed \u00f7 distance'],
+        insertOptions: ['t = ' + s.dist + ' m \u00f7 ' + mm.v + ' m/s', 't = ' + s.dist + ' m \u00d7 ' + mm.v + ' m/s', 't = ' + mm.v + ' m/s \u00f7 ' + s.dist + ' m'],
+        steps: [
+          { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+        line: 'the distance is already in metres · the time is already in seconds',
+        note: 'The bench measures in metres and seconds, which is what m/s needs, so there is nothing to convert.' },
+          { letter: 'F', label: 'Formula', line: 't = d \u00f7 v',
+            note: 'Cover t on the triangle: d sits over v, so you divide.' },
+          { letter: 'I', label: 'Insert', line: 't = ' + s.dist + ' m \u00f7 ' + mm.v + ' m/s',
+            note: 'The gap comes from your slider; the speed is the one for ' + mm.label.toLowerCase() + '.' },
+          { letter: 'F', label: 'Fine-tune', line: s.dist + ' \u00f7 ' + mm.v + ' = ' + (Math.round(tt * 10000) / 10000),
+            note: 'Metres divided by metres per second leaves seconds.' },
+          { letter: 'A', label: 'Answer', line: 't = ' + self.fmtT(tt),
+            note: 'Seconds, because that is what is left when the metres cancel.' }
+        ],
+        close: 'The five lines above give ' + self.fmtT(tt) +
+          ' for ' + s.dist + ' m of ' + mm.label.toLowerCase() + '.'
+      };
+    })(this), {
+      tab: 'Question 2', id: 'p606q2',
+      head: 'A sound travels 1.5 km through sea water in 1.0 s. What is its speed?',
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+          line: '1.5 km × 1000 = 1500 m',
+          note: 'Metres per second needs the distance in metres, so multiply the kilometres by 1000.' },
+        { letter: 'F', label: 'Formula', line: 'speed = distance ÷ time',
+          note: 'Cover v on the triangle: d sits over t, so you divide.' },
+        { letter: 'I', label: 'Insert', line: 'speed = 1500 m ÷ 1.0 s',
+          note: 'The converted distance goes in. The 1.5 never does.' },
+        { letter: 'F', label: 'Fine-tune', line: '1500 ÷ 1.0 = 1500',
+          note: 'Metres divided by seconds leaves metres per second.' },
+        { letter: 'A', label: 'Answer', line: 'speed = 1500 m/s',
+          note: 'Insert 1.5 instead of 1500 and the answer comes out 1.5 m/s.' }
+      ],
+      close: 'The five lines give 1500 m/s — about four times the speed of sound in air.'
+    }));
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

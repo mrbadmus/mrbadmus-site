@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waves on water: what a wave is · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Waves and sound</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Waves on water: what a wave is</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Waves and sound · Model</p>
+        <h1>Waves on water: what a wave is</h1>
+        <p class="ks3-bigq">A wave crosses a pond in seconds. Drop a cork in and it bobs a hundred times and stays exactly where you put it. Both of those are true at once, and the second one is the more useful.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The wave crosses the whole pond. The gull does not.</h2>
+        <p class="ks3-hook-prompt">A gull is sitting on open water. A line of waves comes in under it, one after another, for a full minute. The waves reach the far side. The gull is exactly where it started.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Something clearly travelled from one side to the other. What was it?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The water did not go anywhere. Each patch of it lifted and dropped and finished where it began, and so did the gull. What crossed the pond was the <strong>disturbance</strong> — the pattern of lifting and dropping, handed on from one patch of water to the next, carrying energy with it. That travelling disturbance is a <strong>wave</strong>.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A <strong>wave</strong> is a disturbance that travels, carrying energy from one place to another without carrying the material with it. On water the disturbance is an <strong>undulation</strong>: the surface rises into a <strong>crest</strong> and drops into a <strong>trough</strong>, over and over. The water itself moves up and down — at right angles to the direction the wave is travelling — which is what makes a water wave a <strong>transverse</strong> wave.</p>
+        <p>Two measurements describe the shape of it, and they are independent of each other. The <strong>amplitude</strong> is how far the surface rises above the still level, measured in millimetres or metres. The <strong>wavelength</strong> is the distance from one crest to the next crest, measured the same way. Changing one does not change the other.</p>
+      </section>
+
+      <section id="s-parts" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Pick a part to measure</h2>
+        <div style="display: flex; gap: 9px; flex-wrap: wrap; margin-top: 18px;">
+          <sc-for list="{{ partTabs }}" as="t" hint-placeholder-count="4">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+        <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 16px;">
+          <svg viewBox="0 0 1000 380" role="img" aria-label="{{ partsAlt }}" style="display: block; width: 100%; height: auto;">
+            <path d="M50 190 H950" style="fill: none; stroke: var(--ks3-rule-strong); stroke-width: 3; stroke-dasharray: 9 9;"></path>
+            <text x="56" y="212" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">STILL LEVEL</text>
+            <path d="{{ refWave }}" style="fill: none; stroke: var(--ks3-blue); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;"></path>
+            <path d="M760 330 H930 M930 330 L910 318 M930 330 L910 342" style="fill: none; stroke: var(--ks3-ink); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;"></path>
+            <text x="760" y="360" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">THE WAVE TRAVELS THIS WAY</text>
+            <sc-if value="{{ showCrest }}">
+              <path d="M50 118 H950" style="fill: none; stroke: var(--ks3-accent); stroke-width: 3; stroke-dasharray: 6 8;"></path>
+              <circle cx="140" cy="118" r="13" style="fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 4;"></circle>
+              <circle cx="500" cy="118" r="13" style="fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 4;"></circle>
+              <circle cx="860" cy="118" r="13" style="fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 4;"></circle>
+              <text x="500" y="98" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .08em; fill: var(--ks3-ink);">CREST</text>
+            </sc-if>
+            <sc-if value="{{ showTrough }}">
+              <path d="M50 262 H950" style="fill: none; stroke: var(--ks3-accent); stroke-width: 3; stroke-dasharray: 6 8;"></path>
+              <circle cx="320" cy="262" r="13" style="fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 4;"></circle>
+              <circle cx="680" cy="262" r="13" style="fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 4;"></circle>
+              <text x="500" y="296" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px; letter-spacing: .08em; fill: var(--ks3-ink);">TROUGH</text>
+            </sc-if>
+            <sc-if value="{{ showAmp }}">
+              <path d="M140 190 V118 M128 190 H152 M128 118 H152 M140 124 L132 140 M140 124 L148 140 M140 184 L132 168 M140 184 L148 168" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4; stroke-linecap: round;"></path>
+              <text x="166" y="160" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 19px; letter-spacing: .06em; fill: var(--ks3-ink);">AMPLITUDE 0.08 m</text>
+            </sc-if>
+            <sc-if value="{{ showWav }}">
+              <path d="M140 118 V72 M500 118 V72 M140 84 H500 M140 84 L158 74 M140 84 L158 94 M500 84 L482 74 M500 84 L482 94" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4; stroke-linecap: round;"></path>
+              <text x="320" y="62" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 19px; letter-spacing: .06em; fill: var(--ks3-ink);">WAVELENGTH 0.40 m</text>
+            </sc-if>
+          </svg>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">{{ partNote }}</p>
+      </section>
+
+      <section id="s-tank" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a ripple tank one metre across</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">One paddle. Two things you can change about it.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A motor dips a paddle into one end of the tank. How deep it dips, and how far apart it lays the crests, are set separately. A float sits at the middle of the tank.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. The paddle dips deeper but keeps exactly the same rhythm. What happens on the water?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p6amp" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How deep the paddle dips</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ ampLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p6amp" min="5" max="40" step="5" value="{{ ampValue }}" onChange="{{ onAmp }}" onInput="{{ onAmp }}">
+              </div>
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p6wav" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How far apart it lays the crests</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ wavLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p6wav" min="100" max="500" step="50" value="{{ wavValue }}" onChange="{{ onWav }}" onInput="{{ onWav }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 520" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M60 120 V470 H940 V120" style="fill: none; stroke: #8C8177; stroke-width: 6; stroke-linecap: round;"></path>
+                  <path d="M60 300 H940" style="fill: none; stroke: #5C554D; stroke-width: 3; stroke-dasharray: 9 9;"></path>
+                  <path d="{{ tankWave }}" style="fill: none; stroke: #8FB7FF; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ swingLine }}" style="fill: none; stroke: #E9DCC8; stroke-width: 3;"></path>
+                  <circle cx="500" cy="{{ floatY }}" r="15" style="fill: #E9DCC8; stroke: #15110C; stroke-width: 4;"></circle>
+                  <text x="72" y="152" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">PADDLE END</text>
+                  <path d="M700 148 H930 M930 148 L912 138 M930 148 L912 158" style="fill: none; stroke: #C6B9A7; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <text x="930" y="130" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">THE WAVE TRAVELS THIS WAY</text>
+                  <path d="M60 486 V502 M940 486 V502 M60 494 H940" style="fill: none; stroke: #8C8177; stroke-width: 3;"></path>
+                  <text x="500" y="516" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #8C8177;">TANK 1.00 m ACROSS</text>
+                </svg>
+                <span style="{{ swingLabelStyle }}">{{ swingLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Amplitude</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ ampLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">above the still level</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Wavelength</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ wavLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ crestCount }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The float rises and falls through</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ swingValue }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">and stays in the same place</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Steepness</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ steepWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A wave carries energy from place to place without carrying the material with it. On water the surface rises into crests and drops into troughs at right angles to the direction of travel, which makes it transverse. Amplitude is the rise above the still level; wavelength is the distance from one crest to the next. Neither one sets the other.</p>
+        </div>
+
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;The water travels along with the wave.&rdquo;</p>
+        <p>Drop a cork in a tank and send a hundred waves under it. The cork bobs a hundred times and ends up where it started. If the water were travelling, the far end of the tank would fill up and the near end would empty, and a swimmer would be carried out to sea by every passing swell. What travels is the disturbance, handed from each patch of water to the next; each patch lifts its neighbour, gets lifted in turn, and settles back. Energy moves across the tank. Water does not.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A bigger wave is a longer wave.&rdquo;</p>
+          <p>Two different measurements are hiding inside the word <em>bigger</em>. Amplitude is how far the surface lifts; wavelength is how far apart the crests are. A wave can be tall and short — a steep chop with crests a hand's width apart — or low and long, like an ocean swell that lifts a boat a few centimetres over a hundred metres. The bench above sets the two independently, and moving one leaves the other exactly where it was.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A wave is a travelling disturbance that carries energy from place to place without carrying the material with it. Waves on water are undulations: the surface rises into crests and drops into troughs, moving at right angles to the direction the wave travels, which makes them transverse. Amplitude is the rise above the still level and wavelength is the distance from one crest to the next; changing one does not change the other.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The independence of amplitude and wavelength is what makes deep-ocean tsunamis so dangerous. Out over deep water a tsunami has an amplitude of well under a metre and a wavelength that can reach 200 km, which is a steepness of about 1 in 200 000 — a ship rides over it and the crew notice nothing at all. The energy is still there; it is simply spread through a very long, very low undulation. When that undulation reaches shallow water it slows, the back of it catches the front, and the same energy is repacked into something short and tall.</p>
+          <p>One honest limit of the picture drawn above: the water in a wave does not move in a straight line up and down. Each patch travels round a small near-circle, forward at the crest and backward in the trough, returning to about where it began. The straight up-and-down version is close enough to see what transverse means, and it is what the bench draws, but a diver watching sand grains under a swell sees the circles.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p5-04-atmospheric-pressure.html">Atmospheric pressure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p6-02-transverse-waves-and-superposition.html">Transverse waves, reflection and superposition<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p6-04-sound-is-longitudinal.html">Sound is longitudinal<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p7-01-light-travels.html">Light travels<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-03-how-sound-is-made.html">How sound is made<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Frequency and period, the wave equation linking wave speed to frequency and wavelength, and measuring wave speed in a ripple tank.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a wave of your own to describe — a rope, a pond, the sea?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The tank is a teaching model. Both figures are drawn to a single scale in both directions, so the steepness you see is the steepness the numbers claim; the tank is taken as exactly 1.00 m across and the float as weightless, riding the surface without disturbing it. The paddle is treated as making one steady train of identical waves, which a real paddle only approximates. The roughly 1-in-7 limit at which a crest spills over and breaks is an approximate figure for deep water and shifts with depth, wind and how the wave was made. Real water in a wave moves round small near-circles rather than straight up and down.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The gull that stays put', short: 'GULL' },
+  { id: 's-parts', label: 'The parts of a wave', short: 'PARTS' },
+  { id: 's-tank', label: 'Ripple tank', short: 'TANK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-parts') return s.part !== null;
+  if (id === 's-tank') return s.gate !== null && (s.touched.amp || s.touched.wav);
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const PARTS = [
+  { id: 'crest', label: 'Crest',
+    note: 'The crest is the highest point of the undulation. On this wave three crests fall inside the figure, each one 0.08 m above the still level and 0.40 m from the next.' },
+  { id: 'trough', label: 'Trough',
+    note: 'The trough is the lowest point, 0.08 m below the still level — the same distance down as the crest is up. Crest to trough is 0.16 m, and that is not the amplitude.' },
+  { id: 'amp', label: 'Amplitude',
+    note: 'Amplitude is measured from the still level to a crest: 0.08 m here. It is how far the surface is displaced, not how far it travels from top to bottom.' },
+  { id: 'wav', label: 'Wavelength',
+    note: 'Wavelength is one whole wave: 0.40 m from this crest to the next. Trough to trough gives the same 0.40 m, and so does any point to the matching point on the following wave.' }
+];
+
+const GATE = [
+  { letter: 'A', text: 'The crests get taller and stay the same distance apart' },
+  { letter: 'B', text: 'The crests get taller and move closer together' },
+  { letter: 'C', text: 'The crests stay the same height and move closer together' },
+  { letter: 'D', text: 'Nothing changes on the water — a deeper dip just pushes the wave further along the tank' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the wave',
+    question: 'A wave on a tank has crests 0.60 m apart. A float on it rises 0.05 m above the still level and drops 0.05 m below it. Give the wavelength and the amplitude.',
+    options: [
+      { text: 'Wavelength 0.60 m, amplitude 0.05 m', correct: true },
+      { text: 'Wavelength 0.60 m, amplitude 0.10 m \u2014 amplitude runs from the trough up to the crest', correction: 'Amplitude is measured from the still level, not from trough to crest. Trough to crest is 0.10 m here, which is twice the amplitude.' },
+      { text: 'Wavelength 0.30 m, amplitude 0.05 m \u2014 wavelength runs from a crest to the next trough', correction: 'Crest to trough is half a wave. Wavelength is one whole wave: crest to the next crest, which is the 0.60 m you were given.' },
+      { text: 'Wavelength 0.05 m, amplitude 0.60 m \u2014 the bigger number is the size of the wave', correction: 'The two measurements are in fixed places, not in order of size. Wavelength is along the water; amplitude is up from the still level.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Waves pass under a gull for a minute and the gull finishes exactly where it started. Which statement is right?',
+    options: [
+      { text: 'Each patch of water lifted and dropped on the spot and passed the disturbance on, so energy crossed the water and the water did not.', correct: true },
+      { text: 'The waves cannot have been moving, because a moving wave would have moved the gull.', correction: 'The waves moved and the water did not go with them. A wave is a travelling disturbance in the water, not a lump of water in transit.' },
+      { text: 'The water travelled along with the wave, but a gull is too light to be dragged with it.', correction: 'A heavier object would have finished in the same place. Nothing floating is dragged along, because the water underneath is not going anywhere.' },
+      { text: 'Each wave carried the gull forward and the next one carried it back the same distance, so the two cancelled out.', correction: 'The verdict is right and the rule underneath it is wrong. There is no forward carry to cancel: the water lifts and drops, and the gull rides up and down with it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'A cork floats in a ripple tank while waves cross from one end to the other. Explain what the cork does and what the wave does, using the words disturbance, energy and transverse.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The cork moves\u2026',
+    criteria: [
+      'Says the cork moves up and down and returns to the same place.',
+      'Says the wave, not the water, travels across the tank.',
+      'Says what travels is a disturbance, passed from one patch of water to the next.',
+      'Says the wave carries energy from one end of the tank to the other.',
+      'Says the water moves at right angles to the direction the wave travels, which is what transverse means.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A crowd in a stadium sends a wave right round the ground in 40 seconds, and nobody leaves their seat. Say what plays the part of the amplitude and what plays the part of the wavelength, then give one way this is not like a wave on water.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Each person stands and sits, so\u2026',
+    criteria: [
+      'Says each person stands and sits and stays in their own seat.',
+      'Says the disturbance travels round the ground while the people do not.',
+      'Names the amplitude as how far each person rises \u2014 how far out of the seat they stand.',
+      'Names the wavelength as the distance between one standing group and the next.',
+      'Gives one real difference, such as: people decide when to stand, whereas water is pushed by its neighbours; or the crowd wave only goes one way round.'
+    ] }
+];
+
+function fmt1(n) { return (Math.round(n * 10) / 10).toFixed(1); }
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, part: null, gate: null, amp: 20, wav: 300, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  wavePath(x0, x1, mid, amp, lam, step) {
+    let d = '';
+    for (let x = x0; x <= x1; x += step) {
+      const y = mid - amp * Math.sin((2 * Math.PI * (x - x0)) / lam);
+      d += (d ? ' L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+    }
+    return d;
+  }
+
+  benchNote() {
+    const s = this.state;
+    const a = s.amp, lam = s.wav;
+    const h = 2 * a;
+    const oneIn = Math.round(lam / h);
+    const waves = fmt1(1000 / lam);
+    const head = h + ' mm from trough to crest, with crests ' + lam + ' mm apart, is a steepness of about 1 in ' + oneIn + '. ';
+    if (h / lam > 0.143) {
+      return head + 'Water cannot hold a shape steeper than about 1 in 7: past that the crest spills forward and the wave breaks, which is why surf exists. ' +
+        waves + ' waves fit across the 1.00 m tank, and the float still finishes where it started \u2014 it rises and falls through ' + h + ' mm and goes nowhere.';
+    }
+    if (h / lam > 0.05) {
+      return head + 'That is an ordinary ripple: steep enough to see clearly, well short of the roughly 1 in 7 at which a crest spills over and breaks. ' +
+        waves + ' waves fit across the 1.00 m tank, and the float rises and falls through ' + h + ' mm without moving along.';
+    }
+    return head + 'That is a low, long swell \u2014 the shape open ocean carries between storms. It lifts the float ' + h +
+      ' mm and sets it down again, and only ' + waves + ' waves fit across the 1.00 m tank.';
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const A = s.amp * 0.88;
+    const LAM = s.wav * 0.88;
+    const floatY = 300 - A * Math.sin((2 * Math.PI * (500 - 60)) / LAM);
+    const h = 2 * s.amp;
+    const oneIn = Math.round(s.wav / h);
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The water travelled across the pond, and the gull was too light to be carried with it' },
+        { letter: 'B', text: 'The disturbance travelled across the pond; the water and the gull moved up and down on the spot' },
+        { letter: 'C', text: 'Nothing travelled \u2014 the water only went up and down, so the wave was standing still' },
+        { letter: 'D', text: 'The wind travelled across the pond and the water simply followed it' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      partTabs: PARTS.map((p, i) => ({
+        label: p.label, pressed: s.part === i,
+        style: this.seg(s.part === i, false, false),
+        onClick: () => this.setState({ part: i })
+      })),
+      refWave: this.wavePath(50, 950, 190, 72, 360, 4),
+      showCrest: s.part === 0,
+      showTrough: s.part === 1,
+      showAmp: s.part === 2,
+      showWav: s.part === 3,
+      partsAlt: 'A wave drawn to scale: wavelength 0.40 metres, amplitude 0.08 metres, with a dashed still level through the middle and an arrow showing the direction of travel.' +
+        (s.part === null ? '' : ' The ' + PARTS[s.part].label.toLowerCase() + ' is marked on it.'),
+      partNote: s.part === null
+        ? 'Nothing is marked yet. This wave is drawn to one scale in both directions: 0.40 m from crest to crest, and 0.08 m from the still level up to a crest.'
+        : PARTS[s.part].note,
+
+      benchProgress: (s.touched.amp || s.touched.wav) ? 'Both controls live' : 'Move a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: GATE.map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      ampValue: s.amp,
+      wavValue: s.wav,
+      onAmp: (e) => this.setState((st) => ({ amp: Number(e.target.value), touched: Object.assign({}, st.touched, { amp: true }) })),
+      onWav: (e) => this.setState((st) => ({ wav: Number(e.target.value), touched: Object.assign({}, st.touched, { wav: true }) })),
+      ampLabel: s.amp + ' mm',
+      wavLabel: s.wav + ' mm',
+      tankWave: this.wavePath(60, 940, 300, A, LAM, 4),
+      floatY: floatY.toFixed(1),
+      swingLine: 'M398 ' + (300 - A).toFixed(1) + ' H442 M398 ' + (300 + A).toFixed(1) + ' H442 M420 ' + (300 - A).toFixed(1) + ' V' + (300 + A).toFixed(1) +
+        ' M420 ' + (300 - A).toFixed(1) + ' l-7 13 M420 ' + (300 - A).toFixed(1) + ' l7 13 M420 ' + (300 + A).toFixed(1) + ' l-7 -13 M420 ' + (300 + A).toFixed(1) + ' l7 -13',
+      swingLabelStyle: 'position:absolute;left:42%;top:' + (((300 + A + 30) / 520) * 100).toFixed(2) +
+        '%;transform:translate(-50%,0);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,18px);color:#E9DCC8;white-space:nowrap;pointer-events:none;',
+      swingLabel: h + ' mm swing',
+      swingValue: h + ' mm',
+      crestCount: fmt1(1000 / s.wav) + ' waves across the tank',
+      steepWord: '1 in ' + oneIn + (h / s.wav > 0.143 ? ' \u2014 steep enough to break' : ''),
+      benchAlt: 'A ripple tank one metre across seen from the side, carrying a wave of amplitude ' + s.amp + ' millimetres and wavelength ' +
+        s.wav + ' millimetres, with a float at the middle riding ' + h + ' millimetres up and down.',
+      benchNote: this.benchNote()
+    };
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

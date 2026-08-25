@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atmospheric pressure · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes p5-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: p5-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Pressure</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Atmospheric pressure</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Pressure · System</p>
+        <h1>Atmospheric pressure</h1>
+        <p class="ks3-bigq">Boil a splash of water in an empty can, seal it, and cool it. The can crushes itself flat, and nothing goes anywhere near it.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Nothing touched the can.</h2>
+        <p class="ks3-hook-prompt">A little water is boiled in a thin metal can until steam has driven the air out. The can is sealed and stood in cold water. It folds in on itself with a bang, in about a second.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What crushed it?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The air outside. It was pressing that hard the whole time — about 100 000 N on every square metre of that can, from every side. Nothing changed outside; what changed was inside. Steam filled the can and pushed back just as hard, and when the steam cooled it turned back into a few drops of water and stopped pushing. With the push from inside gone, the outside push had nothing to work against. <strong>Nothing sucked the can in.</strong></p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>You are at the bottom of an ocean of air about a hundred kilometres deep, and it has weight. All of it presses down on you, and — as with any fluid — it presses in every direction at once, roughly <strong>100 000 Pa</strong> at sea level. Climb, and some of that air is now below you instead of above you, so there is less weight pressing and the pressure falls. Air is squashable, unlike water, so most of its mass is packed into the lowest few kilometres, which is why the pressure drops fastest near the ground.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · take three things up a mountain</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Same objects. Less air above them.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A foil bag sealed at sea level, a pan of water on a stove, and a barometer. Choose a height, and choose which one to watch.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A foil bag of crisps is sealed at sea level and carried up to 5500 m. What happens to it?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-end;">
+              <div style="flex: 1 1 460px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Height above sea level</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ altTabs }}" as="t" hint-placeholder-count="6">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 300px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What to watch</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ caseTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+              <svg viewBox="0 0 1000 620" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                <rect x="90" y="{{ airTop }}" width="210" height="{{ airH }}" style="fill: #4E6B87;"></rect>
+                <rect x="90" y="560" width="210" height="40" style="fill: #8C8177;"></rect>
+                <path d="M90 40 V600 M300 40 V600" style="fill: none; stroke: #C6B9A7; stroke-width: 4;"></path>
+                <path d="M90 {{ markY }} H300" style="fill: none; stroke: #8FB7FF; stroke-width: 5;"></path>
+                <path d="{{ marker }}" style="fill: #8FB7FF;"></path>
+                <text x="196" y="590" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #15110C;">SEA LEVEL</text>
+                <text x="344" y="46" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: #C6B9A7;">12 km</text>
+                <text x="344" y="176" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: #C6B9A7;">9 km</text>
+                <text x="344" y="306" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: #C6B9A7;">6 km</text>
+                <text x="344" y="436" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: #C6B9A7;">3 km</text>
+                <text x="196" y="26" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">AIR ABOVE YOU</text>
+
+                <sc-if value="{{ isBag }}">
+                  <rect x="{{ bagX }}" y="{{ bagY }}" width="{{ bagW }}" height="{{ bagH }}" rx="26" style="fill: #C6B9A7; stroke: #15110C; stroke-width: 4;"></rect>
+                  <path d="{{ bagSeal }}" style="fill: none; stroke: #15110C; stroke-width: 4; stroke-dasharray: 10 8;"></path>
+                  <text x="700" y="560" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .08em; fill: #C6B9A7;">SEALED AT SEA LEVEL</text>
+                </sc-if>
+                <sc-if value="{{ isPan }}">
+                  <path d="M580 300 H820 V430 H580 Z" style="fill: none; stroke: #C6B9A7; stroke-width: 6;"></path>
+                  <rect x="586" y="{{ waterY }}" width="228" height="{{ waterH }}" style="fill: #4E6B87;"></rect>
+                  <path d="M620 400 a12 12 0 1 0 .1 0 M680 380 a16 16 0 1 0 .1 0 M740 404 a10 10 0 1 0 .1 0 M780 374 a14 14 0 1 0 .1 0 M660 340 a9 9 0 1 0 .1 0 M726 348 a12 12 0 1 0 .1 0" style="fill: none; stroke: #E9DCC8; stroke-width: 3;"></path>
+                  <path d="M600 470 H800" style="fill: none; stroke: #8C8177; stroke-width: 10;"></path>
+                  <text x="700" y="560" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .08em; fill: #C6B9A7;">BOILING, NOT HOTTER</text>
+                </sc-if>
+                <sc-if value="{{ isBaro }}">
+                  <circle cx="700" cy="360" r="140" style="fill: #1D1913; stroke: #C6B9A7; stroke-width: 6;"></circle>
+                  <path d="M700 360 L700 250" style="fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round;" transform="{{ needle }}"></path>
+                  <circle cx="700" cy="360" r="14" style="fill: #C6B9A7;"></circle>
+                  <text x="586" y="470" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: #8C8177;">0</text>
+                  <text x="790" y="470" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: #8C8177;">110 kPa</text>
+                  <text x="700" y="560" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .08em; fill: #C6B9A7;">BAROMETER</text>
+                </sc-if>
+              </svg>
+                <span style="{{ altLabelStyle }}">{{ altLabel }}</span>
+                <span style="position: absolute; left: 44%; top: 8%; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(13px, 2.1vw, 26px); color: #FBF3E6; white-space: nowrap; pointer-events: none;">{{ pressureLabel }}</span>
+                <span style="position: absolute; left: 44%; top: 17%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px, 1.4vw, 17px); letter-spacing: .08em; text-transform: uppercase; color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ shareWord }}</span>
+                <span style="{{ caseLabelStyle }}">{{ caseValue }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Height</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ altLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ altName }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Air pressure</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ pressureLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ paLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Air left above you</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ shareLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ caseTile }}</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ caseValue }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Air pressure = weight of the air above ÷ the area it presses on</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The stack</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Fewer layers above you</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 520 470" role="img" aria-label="A column of air divided into five bands. At 11 km the pressure is 23 kilopascals, at 8.85 km 31, at 5.5 km 50, at 2.5 km 75, and at sea level 101 kilopascals. The bands get thinner and heavier towards the ground." style="width: 320px; height: auto; flex: 0 0 auto;">
+            <rect x="30" y="24" width="230" height="110" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <rect x="30" y="134" width="230" height="86" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <rect x="30" y="220" width="230" height="76" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <rect x="30" y="296" width="230" height="68" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <rect x="30" y="364" width="230" height="60" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <text x="145" y="86" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: var(--ks3-ink-muted);">thin air</text>
+            <text x="278" y="140" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; fill: var(--ks3-ink-muted);">11 km · 23 kPa</text>
+            <text x="278" y="226" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; fill: var(--ks3-ink-muted);">8.85 km · 31 kPa</text>
+            <text x="278" y="302" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; fill: var(--ks3-ink-muted);">5.5 km · 50 kPa</text>
+            <text x="278" y="370" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 19px; fill: var(--ks3-ink-muted);">2.5 km · 75 kPa</text>
+            <text x="278" y="432" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px; fill: var(--ks3-ink);">0 m · 101 kPa</text>
+            <path d="M30 424 H260" style="fill: none; stroke: var(--ks3-ink); stroke-width: 6;"></path>
+            <text x="145" y="458" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 16px; letter-spacing: .06em; fill: var(--ks3-ink-muted);">1 m² OF GROUND</text>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">P = W ÷ A</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Every layer adds its weight to what is below it. Climb, and the layers you pass are no longer pressing on you.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">P</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">air pressure at that height</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">Pa</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">W</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">weight of the air above</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">N</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">A</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">area it presses on</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m²</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">h</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">height above sea level</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Atmospheric pressure is the weight of the air above you, spread over the area it presses on — about 100 000 Pa at sea level. It falls as you climb, because less air is left above you. Nothing sucks: air pushes.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“A vacuum sucks things in.”</p>
+        <p>A vacuum is <em>nothing</em>, and nothing cannot pull. Every case that looks like sucking is the air on the other side pushing. Drinking through a straw: you lower the pressure in your mouth, and the atmosphere pressing on the surface of the drink pushes it up the straw. A sink plunger: you squeeze the air out, and the outside air holds it against the surface. The can at the top of this lesson: the steam stopped pushing outwards and the air outside had a free run. Rewriting these the right way round is the whole skill — <em>what is pushing, and from where?</em></p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“If air really pressed that hard, we would feel it.”</p>
+          <p>You are pressed by roughly 100 000 Pa right now — about 1000 N on each palm — and you feel nothing, for two reasons. It pushes equally in every direction, so it does not squash you in any one direction; and the fluids and gases inside your body push out just as hard, so the two match. You only notice when the balance changes, which is exactly what your ears do on a plane or a mountain road: for a few seconds the pressure inside the eardrum no longer matches the pressure outside, and you can feel the difference until it evens out.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>The atmosphere has weight, and atmospheric pressure is that weight divided by the area it presses on — about 100 000 Pa at sea level, in every direction at once. It decreases with height, because the higher you go the less air there is above you. Air pushes; nothing sucks. What looks like suction is always the atmosphere pushing on one side of something while the push on the other side has been reduced.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Atmospheric pressure does not only change with height — it changes with the weather, and that is what a weather map is showing. A "low" is a region where the air above is lighter and the pressure at the ground is a few thousand pascals below normal; a "high" is the opposite. Air flows from high pressure towards low, which is what wind is, and the tighter the lines on the map are packed the stronger the wind. The first instrument to measure any of this was a tube of mercury stood upside down in a dish by Torricelli in 1643: the atmosphere pushing on the dish held a column of mercury about 760 mm high, and when the weather changed the height changed with it. Blood pressure is still quoted in millimetres of mercury for that reason.</p>
+          <p>Aircraft take the same physics seriously. At 11 km the air outside a cabin is at about 23 kPa, far too little to keep anyone conscious, so cabins are pumped up to roughly the pressure you would meet at 2000 to 2400 m — enough to be comfortable, low enough that the hull is not fighting a full 100 kPa difference. The cost of that difference is why a fuselage is a pressure vessel and why a cabin door is enormous work to open in flight. Climbers face the raw version: at the summit of Everest each breath contains about a third of the oxygen molecules it would at sea level, which is why bodies acclimatise for weeks and why almost everyone still carries gas. And in the kitchen it shows up gently — at altitude water boils below 100 °C, so an egg genuinely takes longer to cook and rice may never soften properly.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p5-03-upthrust-floating-and-sinking.html">Upthrust, floating and sinking<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next unit</h2>
+          <ul>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="c1-04-gas-pressure.html">Gas pressure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b4-02-how-breathing-works.html">How breathing works<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-01-what-a-force-is.html">What a force is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Atmospheric pressure from the weight of the air column, why the decrease with height is not a straight line, and pressure differences in gases.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got something that looks like suction and needs rewriting?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The heights and pressures are standard-atmosphere values rounded to the nearest kilopascal: real pressure at any height varies with the weather by several kilopascals, and with temperature. The boiling points are approximate for pure water. "Air left above you" is the share of the whole atmosphere's weight still overhead, worked out from the pressure itself. The bag is drawn swelling in proportion to the pressure drop and is clipped once it would leave the panel; a real bag stops stretching and then splits.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The crushed can', short: 'CAN' },
+  { id: 's-bench', label: 'Up the mountain', short: 'CLIMB' },
+  { id: 's-formula', label: 'The stack and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const PALM = 0.01;      // m², the palm of a hand
+const GROUND = 560;     // y of sea level in the drawing
+const TOP = 40;         // y of 12 km
+const SEA = 101;        // kPa at sea level
+
+const ALTS = [
+  { m: 0, label: 'Sea level', name: 'a beach', kpa: 101, boil: 100 },
+  { m: 1000, label: '1000 m', name: 'a Lake District summit', kpa: 90, boil: 97 },
+  { m: 2500, label: '2500 m', name: 'an Alpine ski village', kpa: 75, boil: 92 },
+  { m: 5500, label: '5500 m', name: 'Everest base camp and a bit higher', kpa: 50, boil: 82 },
+  { m: 8850, label: '8850 m', name: 'the summit of Everest', kpa: 31, boil: 71 },
+  { m: 11000, label: '11 000 m', name: 'cruising height for an airliner', kpa: 23, boil: 65 }
+];
+
+const CASES = [
+  { key: 'bag', label: 'Sealed bag', tile: 'The bag' },
+  { key: 'pan', label: 'Pan of water', tile: 'Water boils at' },
+  { key: 'baro', label: 'Barometer', tile: 'The barometer' }
+];
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A window is 2 m². At sea level the air presses on it with 101 000 Pa. What force is that?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '101 000 Pa stays 101 000 Pa · 2 m² stays 2 m²',
+        note: 'The pressure is already in pascals and the area already in square metres, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'force = pressure × area',
+        note: 'The same relationship as always, rearranged for the force.' },
+      { letter: 'I', label: 'Insert', line: 'force = 101 000 Pa × 2 m²',
+        note: 'Pascals are newtons per square metre, so this will give newtons.' },
+      { letter: 'F', label: 'Fine-tune', line: '101 000 × 2 = 202 000',
+        note: 'Two square metres carry twice the force of one.' },
+      { letter: 'A', label: 'Answer', line: 'force = 202 000 N',
+        note: 'Two hundred thousand newtons on one window — and the same again from inside, which is why it stays put.' }
+    ] },
+  { tab: 'Convert first', head: 'A skylight is 0.8 m². At a mountain station the air presses with 80 kPa. What force is that?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '80 kPa × 1000 = 80 000 Pa',
+        note: 'A kilopascal is a thousand pascals, and only pascals times square metres give newtons.' },
+      { letter: 'F', label: 'Formula', line: 'force = pressure × area',
+        note: 'Rearranged for the force.' },
+      { letter: 'I', label: 'Insert', line: 'force = 80 000 Pa × 0.8 m²',
+        note: 'The converted pressure goes in. The 80 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '80 000 × 0.8 = 64 000',
+        note: 'Newtons per square metre times square metres leaves newtons.' },
+      { letter: 'A', label: 'Answer', line: 'force = 64 000 N',
+        note: 'Insert 80 instead of 80 000 and the answer comes out 64 N — a thousand times too small.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'Atmospheric pressure is 100 000 Pa. What force does the air push on a shop window of 1.5 m² with?',
+    options: [
+      { text: '150 000 N', correct: true },
+      { text: '66 667 N — divide the pressure by the area', correction: 'Dividing is how you get a pressure from a force. Here the pressure is known and each square metre carries 100 000 N, so the two multiply.' },
+      { text: '150 000 Pa — the air is pressing, so the answer is a pressure', correction: 'The arithmetic is right and the unit is wrong. Pressure × area gives a force, in newtons.' },
+      { text: '0.000015 N — divide the area by the pressure', correction: 'That is the calculation upside down, and it gives an answer far too small to be a force on a window.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A foil bag of crisps sealed at sea level puffs up tight on an aircraft at cruising height. Which statement is right?',
+    options: [
+      { text: 'The air sealed inside is still at sea-level pressure while the cabin air is lower, so the inside push wins until the foil stretches.', correct: true },
+      { text: 'There is less gravity that high up, so the air inside spreads out.', correction: 'Gravity is essentially unchanged 11 km up. What has changed is the pressure of the air outside the bag.' },
+      { text: 'The cabin heating warms the bag and the air inside expands.', correction: 'A warm bag would swell a little, but a cabin is not much warmer than a shop. The big change is the drop in outside pressure.' },
+      { text: 'The low pressure outside sucks the bag outwards.', correction: 'The verdict is right and the reason is wrong. Low pressure cannot pull — the bag swells because the air inside is pushing out harder than the cabin air pushes in.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain why atmospheric pressure at the top of a mountain is lower than at sea level. Use the weight of the air in your answer.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'At sea level the whole depth of the atmosphere\u2026',
+    criteria: [
+      'Says air has weight.',
+      'Says the pressure comes from the weight of all the air above, spread over the area it presses on.',
+      'Says at the top of a mountain some of that air is now below you instead of above you.',
+      'Says there is therefore less weight pressing on each square metre.',
+      'Concludes that the pressure is lower, and does not claim the air has become lighter or that gravity has changed.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Explain how a drink comes up a straw, without using the word suck. Then say what would happen if you tried it on the Moon, and why.',
+    fieldLabel: 'Your answer',
+    placeholder: 'When you breathe in, the pressure in your mouth\u2026',
+    criteria: [
+      'Says you lower the air pressure inside your mouth and the straw.',
+      'Says the atmosphere is pushing down on the surface of the drink in the glass.',
+      'Says the drink is pushed up the straw by that outside pressure, into the region of lower pressure.',
+      'Says on the Moon there is no atmosphere to push on the drink.',
+      'Concludes that nothing would rise up the straw however hard you breathed in, and does not describe a vacuum as pulling.'
+    ] }
+];
+
+function fmt(n) {
+  const s = String(n);
+  if (s.length < 5) return s;
+  return s.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    alt: 0,
+    kase: 0,
+    touched: {},
+    workedStep: 0,
+    formPick: null,
+    insertPick: null,
+    ansText: '',
+    ansUnit: '',
+    buildOpen: false,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  alt() { return ALTS[this.state.alt]; }
+  kase() { return CASES[this.state.kase]; }
+  pa() { return this.alt().kpa * 1000; }
+  share() { return Math.round((this.alt().kpa / SEA) * 100); }
+  palmForce() { return Math.round(this.pa() * PALM); }
+
+  caseValue() {
+    const a = this.alt();
+    const k = this.kase().key;
+    if (k === 'pan') return a.boil + ' °C';
+    if (k === 'baro') return a.kpa + ' kPa';
+    if (a.m === 0) return 'As sealed';
+    return 'Swollen ' + (Math.round((SEA / a.kpa) * 10) / 10) + '×';
+  }
+
+  benchNote() {
+    const a = this.alt();
+    const k = this.kase();
+    let caseClause;
+    if (k.key === 'pan') {
+      caseClause = a.m === 0
+        ? 'The pan boils at 100 °C, which is the number everyone learns — and it is a fact about sea level, not about water.'
+        : 'The pan boils at ' + a.boil + ' °C. It is not cooler because the stove is weaker; water boils when its vapour can push the air out of the way, and there is less air to push.';
+    } else if (k.key === 'baro') {
+      caseClause = 'The barometer reads ' + a.kpa + ' kPa, which is ' + this.share() + '% of its sea-level reading.';
+    } else {
+      caseClause = a.m === 0
+        ? 'The bag looks exactly as it did when it was sealed, because the air inside and the air outside are pressing equally.'
+        : 'The bag is tight, holding about ' + (Math.round((SEA / a.kpa) * 10) / 10) + ' times the volume it had at sea level: the air sealed inside is still at ' +
+          SEA + ' kPa while the air outside is down to ' + a.kpa + ' kPa, so the inside push wins.';
+    }
+    if (a.m === 0) {
+      return 'At sea level the whole atmosphere is above you and it presses with ' + a.kpa + ' kPa, or ' + fmt(this.pa()) +
+        ' Pa — about ' + fmt(this.palmForce()) + ' N on each palm, which you never notice because it pushes from every side at once. ' + caseClause;
+    }
+    return 'At ' + a.label + ' — ' + a.name + ' — ' + this.share() + '% of the atmosphere is still above you, so the pressure is ' + a.kpa +
+      ' kPa instead of ' + SEA + '. Nothing about the air has changed: you have simply climbed above some of it, and what is above you is what presses. ' + caseClause;
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return s.gate !== null && Object.keys(s.touched).length >= 1;
+          if (id === 's-formula') return s.buildOpen;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const a = this.alt();
+    const k = this.kase();
+    const markY = Math.round(GROUND - (a.m / 12000) * (GROUND - TOP));
+    const swell = Math.min(1.85, Math.sqrt(SEA / a.kpa));
+    const bagW = Math.round(210 * swell);
+    const bagH = Math.round(150 * swell);
+    const waterH = 96;
+    const needleDeg = Math.round(-120 + (a.kpa / 110) * 240);
+    return {
+      benchProgress: Object.keys(s.touched).length ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It puffs up tight — the air sealed inside is still at sea-level pressure' },
+        { letter: 'B', text: 'It stays exactly as it was — it is sealed, so nothing can change' },
+        { letter: 'C', text: 'It is crushed inwards by the thinner air' },
+        { letter: 'D', text: 'It puffs up because there is less gravity up there' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      altTabs: ALTS.map((x, i) => ({
+        label: x.label, pressed: s.alt === i,
+        style: this.seg(s.alt === i, true, false),
+        onClick: () => this.setState((st) => ({ alt: i, touched: Object.assign({}, st.touched, { alt: true }) }))
+      })),
+      caseTabs: CASES.map((c, i) => ({
+        label: c.label, pressed: s.kase === i,
+        style: this.seg(s.kase === i, true, false),
+        onClick: () => this.setState((st) => ({ kase: i, touched: Object.assign({}, st.touched, { kase: true }) }))
+      })),
+      airTop: TOP,
+      airH: Math.max(2, markY - TOP),
+      markY: markY,
+      marker: 'M300 ' + markY + ' L330 ' + (markY - 14) + ' L330 ' + (markY + 14) + ' Z',
+      isBag: k.key === 'bag',
+      isPan: k.key === 'pan',
+      isBaro: k.key === 'baro',
+      bagX: 700 - Math.round(bagW / 2),
+      bagY: 360 - Math.round(bagH / 2),
+      bagW: bagW,
+      bagH: bagH,
+      bagSeal: 'M' + (700 - Math.round(bagW / 2)) + ' ' + (360 - Math.round(bagH / 2) + 26) + ' H' + (700 + Math.round(bagW / 2)),
+      waterY: 430 - waterH,
+      waterH: waterH,
+      needle: 'rotate(' + needleDeg + ' 700 360)',
+      altLabelStyle: 'position:absolute;left:9%;top:' + ((markY / 620) * 100).toFixed(2) +
+        '%;transform:translate(-100%,-50%);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,19px);color:#8FB7FF;white-space:nowrap;pointer-events:none;',
+      caseLabelStyle: k.key === 'baro' ? 'display:none;'
+        : 'position:absolute;left:70%;top:82%;transform:translate(-50%,0);font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(12px,1.9vw,24px);color:#FBF3E6;white-space:nowrap;pointer-events:none;',
+      altLabel: a.label,
+      altName: a.name,
+      pressureLabel: a.kpa + ' kPa',
+      paLabel: fmt(this.pa()) + ' Pa',
+      shareLabel: this.share() + '%',
+      shareWord: this.share() + '% OF THE AIR IS STILL ABOVE YOU',
+      caseTile: k.tile,
+      caseValue: this.caseValue(),
+      benchAlt: 'A column showing the air above a marker set at ' + a.label + ', with ' + this.share() +
+        ' per cent of the atmosphere still overhead and a pressure of ' + a.kpa + ' kilopascals, beside the ' + k.label.toLowerCase() + ' at that height.',
+      benchNote: this.benchNote()
+    };
+  }
+
+  buildVals() {
+    const s = this.state;
+    const P = this.pa();
+    const F = this.palmForce();
+    const committed = (s.formPick !== null ? 1 : 0) + (s.insertPick !== null ? 1 : 0) + (s.ansText.trim() && s.ansUnit ? 1 : 0);
+    const locked = s.buildOpen || committed < 3;
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: [
+        {
+          tab: 'Question 1', id: 'p504q1',
+          
+          head: 'Your palm: ' + PALM + ' m², at ' + this.alt().label + ', where the air presses with ' + fmt(P) + ' Pa.',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: fmt(P) + ' Pa stays ' + fmt(P) + ' Pa · ' + PALM + ' m² stays ' + PALM + ' m²',
+              note: 'The pressure is already in pascals and the area already in square metres, so there is nothing to convert.' }
+          ].concat([
+        { letter: 'F', label: 'Formula', line: 'force = pressure × area',
+          note: 'Pressure is known, so this time the two multiply.' },
+        { letter: 'I', label: 'Insert', line: 'force = ' + fmt(P) + ' Pa × ' + PALM + ' m²',
+          note: 'The pressure is the reading at ' + this.alt().label + '.' },
+        { letter: 'F', label: 'Fine-tune', line: fmt(P) + ' × ' + PALM + ' = ' + fmt(F),
+          note: 'Pascals times square metres leaves newtons.' },
+        { letter: 'A', label: 'Answer', line: 'force = ' + fmt(F) + ' N',
+          note: 'And the same force is pushing back on the other side of your hand, which is why you feel nothing.' }
+      ]),
+          close: 'The five lines give ' + fmt(F) + ' N at ' + this.alt().label + ' — at sea level the same palm carries ' + fmt(Math.round(SEA * 1000 * PALM)) + ' N.'
+        },
+        {
+          tab: 'Question 2', id: 'p504q2',
+          head: 'A car windscreen is 1.5 m². The air outside presses on it with 98 kPa. What force is that?',
+          steps: [
+            { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+              line: '98 kPa × 1000 = 98 000 Pa',
+              note: 'A kilopascal is a thousand pascals, and only pascals times square metres give newtons.' },
+            { letter: 'F', label: 'Formula', line: 'force = pressure × area',
+              note: 'Rearranged for the force.' },
+            { letter: 'I', label: 'Insert', line: 'force = 98 000 Pa × 1.5 m²',
+              note: 'The converted pressure goes in. The 98 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '98 000 × 1.5 = 147 000',
+              note: 'Newtons per square metre times square metres leaves newtons.' },
+            { letter: 'A', label: 'Answer', line: 'force = 147 000 N',
+              note: 'Insert 98 instead of 98 000 and the answer comes out 147 N.' }
+          ],
+          close: 'The five lines give 147 000 N — and the same again from inside the car, which is why the glass survives.'
+        }
+      ]
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    return Object.assign({
+      draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { letter: 'A', text: 'The steam pulled the sides in as it cooled' },
+        { letter: 'B', text: 'The air outside was always pressing that hard, and the steam inside had been pushing back' },
+        { letter: 'C', text: 'The metal shrank as it cooled' },
+        { letter: 'D', text: 'The vacuum inside sucked the sides in' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null
+    }, this.railVals(), this.benchVals(), this.buildVals(), this.ladderVals());
+  }
+}
+
+</script>
+</body>
+</html>

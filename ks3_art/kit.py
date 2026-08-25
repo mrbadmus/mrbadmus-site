@@ -962,3 +962,227 @@ NUMBER_WORDS = ("no", "one", "two", "three", "four", "five", "six", "seven",
                 "eight", "nine", "ten", "eleven", "twelve")
 def _count_word(n):
     return NUMBER_WORDS[n] if n < len(NUMBER_WORDS) else str(n)
+
+
+# ═══ THE CFIFA ATTEMPT PANEL (⊕ MRB-223 / P4–P6, 24 Aug 2026) ════════════
+#
+# ⚠️ THIS IS A SHARED PRIMITIVE. Changing it changes more than one unit's
+# output. See `docs/ks3/worktrees.md` §2 before you do.
+#
+# ── WHAT IT IS, AND WHY IT IS HERE RATHER THAN IN A UNIT MODULE ─────────
+#
+# Design's `Cfifa.dc.html` is ONE component with TWO halves, and only the
+# first half had ever been ported:
+#
+#   1. the WORKED EXAMPLE — two tabbed scenarios, five steps revealed one at
+#      a time. This is the engine's `worked-example` block and P1, P2 and P3
+#      all ship it.
+#   2. "YOUR TURN · THE SAME FIVE STEPS" — two tabbed questions, five empty
+#      boxes with a placeholder on the Convert line alone, a Check button,
+#      then the model answer step by step with a self-tick against each.
+#      **Nothing in the corpus rendered this.**
+#
+# Her `NOTES-P4-P6.md` §3 makes the second half load-bearing rather than
+# decorative: the locked order is diagram, then tap-to-reveal worked example,
+# then *"a scaffold the student fills on the numbers their own bench is
+# showing, committed line by line before the four steps open"*, and
+# **"nothing independent is asked until all three have happened."** A page
+# that shows the method twice and never asks for it has removed the step
+# where the student produces the artifact — MRB-204 step 4, and law 5's "the
+# same artifact, produced by the student".
+#
+# Thirteen lessons across P4, P5 and P6 carry a Cfifa. Three unit modules
+# cannot each hold a copy of the drawing (`kit.py` exists precisely so they
+# do not have to), and `ks3_art/core.py` is not this lane's to edit — so the
+# DRAWING lives here and each unit registers its own thin family around it.
+# One implementation; a change to the block is a change to one function.
+#
+# ── ⚖️ QUESTION 1 IS LIVE ON THE STUDENT'S OWN BENCH ────────────────────
+#
+# Design's first tab is not a fixed scenario: its head, its five lines and
+# its closing sentence are computed from the bench state above it, so the
+# five lines can never contradict the instrument the student is looking at.
+# A step `line` may therefore carry `{token}` placeholders, which the unit's
+# own bench wiring fills from the state it already computes. A token that
+# the bench never publishes renders as the literal template — visible, and
+# caught by the liveness sweep — rather than as an empty gap.
+#
+# ── ⚖️ THE CHECK BUTTON REFUSES AN EMPTY ATTEMPT ───────────────────────
+#
+# Design's own Check accepts nothing and reveals the model. A student who
+# taps it first has been handed the answer before writing anything, which is
+# the whole thing this half exists to prevent. Here it is disabled until at
+# least one line is written — the same ruling `wireConstruct` already
+# carries, applied to the block that replaces it.
+
+_TOKEN_RE = re.compile(r"\{([a-zA-Z0-9_]+)\}")
+
+
+def _rest_fill(tpl, rest, act_id, where):
+    """Fill a `{token}` template with the bench's OPENING values.
+
+    ⚠️ THE BYTES A CRAWLER GETS ARE THE RESTING STATE, AND THEY HAVE TO BE
+    REAL. The first draft of this block emitted the raw template as the
+    visible text and relied on JS to fill it, reasoning that a missing token
+    would then be visible rather than blank. `ks3_smoke --static` caught it
+    at once — ten counts of *"an unexpanded {placeholder}"* across four
+    pages — and it was right to: a reader with JavaScript off, a crawler,
+    and the search snippet all got `Your rig: {mass} kg, {supportword}.`
+
+    So the template is filled HERE with the values the bench opens on, and
+    `data-template` is kept beside it for the wiring to refill from live
+    state. A token with no resting value RAISES, because the alternative is
+    shipping the brace itself to a student.
+    """
+    def sub(m):
+        key = m.group(1)
+        if key not in rest:
+            raise ValueError(
+                "cfifa-attempt %r: %s uses {%s} and the payload gives it no "
+                "resting value. Question 1 is live on the bench, so its "
+                "RESTING text has to be the bench's opening state — "
+                "otherwise the brace itself ships to anyone reading without "
+                "JavaScript, which is what `ks3_smoke --static` gates."
+                % (act_id, where, key))
+        return str(rest[key])
+    return _TOKEN_RE.sub(sub, tpl or "")
+
+
+def r_cfifa_attempt(a, act_id, ns):
+    """The student's own five lines. `ns` is the unit's hook namespace.
+
+    HOOKS (all prefixed with `ns`): `data-<ns>` (wrapper) ·
+    `data-<ns>-tab` · `data-<ns>-q` · `data-<ns>-head` · `data-<ns>-lead` ·
+    `data-<ns>-input` (valued with the step index) · `data-<ns>-check` ·
+    `data-<ns>-hint` · `data-<ns>-reveal` · `data-<ns>-model` ·
+    `data-<ns>-line` · `data-<ns>-tick` · `data-<ns>-tally` ·
+    `data-<ns>-close` · `data-<ns>-blocked`.
+    """
+    qs = a.get("questions") or []
+    if len(qs) != 2:
+        raise ValueError(
+            "cfifa-attempt %r declares %d question(s). Design's is two — one "
+            "on the student's own bench and one that needs a conversion — "
+            "and dropping either loses the half of the pattern it carries."
+            % (act_id, len(qs)))
+
+    letters = ("C", "F", "I", "F", "A")
+    labels = ("Convert", "Formula", "Insert", "Fine-tune", "Answer")
+
+    # Question 1 is live on the bench above; question 2 is fixed. Only the
+    # live one needs resting values, and only it is filled from them.
+    rest = a.get("rest") or {}
+
+    tabs = ""
+    panels = ""
+    for qi, q in enumerate(qs):
+        steps = q.get("steps") or []
+        if len(steps) != 5:
+            raise ValueError(
+                "cfifa-attempt %r question %r has %d step(s). CFIFA is five, "
+                "and the C is the one that was added — a four-step attempt "
+                "beside a five-step worked example teaches that the Convert "
+                "line is optional." % (act_id, q.get("id"), len(steps)))
+        for si, st in enumerate(steps):
+            if st.get("letter") != letters[si] or st.get("label") != labels[si]:
+                raise ValueError(
+                    "cfifa-attempt %r question %r step %d is %r/%r; CFIFA's "
+                    "order is fixed at %s / %s."
+                    % (act_id, q.get("id"), si + 1, st.get("letter"),
+                       st.get("label"), letters[si], labels[si]))
+            if not st.get("line"):
+                raise ValueError(
+                    "cfifa-attempt %r question %r step %d has no model line "
+                    "for the student to check against."
+                    % (act_id, q.get("id"), si + 1))
+        if steps[0].get("placeholder") is None:
+            raise ValueError(
+                "cfifa-attempt %r question %r has no placeholder on its "
+                "Convert line. Design puts one there and nowhere else: it is "
+                "the only box whose answer might be 'nothing', and a student "
+                "who does not know that leaves the whole attempt blank."
+                % (act_id, q.get("id")))
+
+        live = (qi == 0)
+
+        def shown(tpl, where, _live=live):
+            return (_rest_fill(tpl, rest, act_id, where) if _live
+                    else (tpl or ""))
+
+        tabs += ('<button type="button" class="ks3-seg-btn ks3-cfa-tab" '
+                 'data-%s-tab="%d" aria-pressed="%s">%s</button>'
+                 % (ns, qi, "true" if qi == 0 else "false",
+                    t(q.get("tab", "Question %d" % (qi + 1)))))
+
+        rows = ""
+        for si, st in enumerate(steps):
+            ph = st.get("placeholder") or ""
+            rows += (
+                '<div class="ks3-cfa-row">'
+                '<span class="ks3-cfa-chip" aria-hidden="true">%s</span>'
+                '<div class="ks3-cfa-field">'
+                '<label class="ks3-cfa-label" for="%s-%d-%d">%s</label>'
+                '<input class="ks3-cfa-input" type="text" id="%s-%d-%d" '
+                'data-%s-input="%d" placeholder="%s" autocomplete="off">'
+                '</div></div>'
+                % (e(st["letter"]), e(act_id), qi, si, t(st["label"]),
+                   e(act_id), qi, si, ns, si, e(ph)))
+
+        model = ""
+        for si, st in enumerate(steps):
+            model += (
+                '<div class="ks3-cfa-modelrow" data-%s-model="%d">'
+                '<span class="ks3-cfa-chip" aria-hidden="true">%s</span>'
+                '<div class="ks3-cfa-modelbody">'
+                '<p class="ks3-cfa-label">%s</p>'
+                '<p class="ks3-cfa-line" data-%s-line="%d" '
+                'data-template="%s">%s</p>'
+                '<p class="ks3-cfa-stepnote" data-%s-note="%d" '
+                'data-template="%s">%s</p>'
+                '<div class="ks3-cfa-yours" data-%s-yours="%d" hidden>'
+                '<p class="ks3-cfa-yourline" data-%s-yourline="%d"></p>'
+                '<button type="button" class="ks3-cfa-tick" '
+                'data-%s-tick="%d" aria-pressed="false">%s</button>'
+                '</div></div></div>'
+                % (ns, si, e(st["letter"]), t(st["label"]),
+                   ns, si, e(st["line"]),
+                   t(shown(st["line"], "step %d's line" % (si + 1))),
+                   ns, si, e(st.get("note", "")),
+                   t(shown(st.get("note", ""), "step %d's note" % (si + 1))),
+                   ns, si, ns, si, ns, si,
+                   t(a.get("tick_label", "I had this"))))
+
+        blocked = ""
+        if q.get("blocked_lead"):
+            blocked = ('<p class="ks3-cfa-blocked" data-%s-blocked hidden>%s'
+                       '</p>' % (ns, rich(q["blocked_lead"])))
+
+        panels += (
+            '<div class="ks3-cfa-q" data-%s-q="%d"%s>'
+            '<p class="ks3-cfa-head" data-%s-head data-template="%s">%s</p>'
+            '<p class="ks3-cfa-lead">%s</p>%s'
+            '<div class="ks3-cfa-rows">%s</div>'
+            '<div class="ks3-cfa-check">'
+            '<button type="button" class="ks3-reveal-btn ks3-cfa-checkbtn" '
+            'data-%s-check disabled>%s</button>'
+            '<span class="ks3-cfa-hint" data-%s-hint>%s</span></div>'
+            '<div class="ks3-cfa-reveal" data-%s-reveal hidden>'
+            '<p class="ks3-cfa-revealhead">%s</p>%s'
+            '<p class="ks3-cfa-tally" data-%s-tally role="status"></p>'
+            '<p class="ks3-cfa-close" data-%s-close data-template="%s">%s</p>'
+            '</div></div>'
+            % (ns, qi, "" if qi == 0 else " hidden",
+               ns, e(q.get("head", "")),
+               t(shown(q.get("head", ""), "the head")),
+               rich(shown(q.get("lead", ""), "the lead")), blocked, rows,
+               ns, t(a.get("check_label", "Check my five lines")),
+               ns, t(a.get("hint_zero", "Write at least one line first")),
+               ns, t(a.get("reveal_label", "The five lines, marked")), model,
+               ns, ns, e(q.get("close", "")),
+               t(shown(q.get("close", ""), "the closing line"))))
+
+    return ('<div class="ks3-cfa" data-%s data-total="5">'
+            '<p class="ks3-eyebrow">%s</p>'
+            '<div class="ks3-cfa-tabs">%s</div>%s</div>'
+            % (ns, t(a.get("eyebrow", "Your turn · the same five steps")),
+               tabs, panels))

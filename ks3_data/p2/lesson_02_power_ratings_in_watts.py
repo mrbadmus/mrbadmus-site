@@ -224,7 +224,7 @@ LESSON = {
                   "total is smaller. A rating is a height; the bill is an "
                   "area."},
 
-        {"type": "key-fact", "id": "power-is-a-rate"},
+        {"type": "key-fact", "ref": "power-is-a-rate"},
 
         # ── #s-sort · NOT a rail stop ───────────────────────────────────
         {"type": "power-energy-sort",
@@ -319,7 +319,7 @@ LESSON = {
         {"type": "misconception", "id": "think-lower-wattage",
          "anchor": "s-think"},
 
-        {"type": "key-fact", "id": "rating-is-how-fast"},
+        {"type": "key-fact", "ref": "rating-is-how-fast"},
 
         {"type": "quiz", "anchor": "s-ladder"},
         {"type": "summary"},

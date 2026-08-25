@@ -122,7 +122,9 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `REACT` | Chemical reactions — what counts as one, what happens to the atoms, and how one is written down | 2026-08-20, by C4 |
 | `ACID` | Acids, alkalis and the pH scale — what the words mean, what the scale measures, and what a catalyst does | 2026-08-21, by C6 |
 | `ENER` | Energy in a change: which way it travels, where it is stored, and what a thermometer is and is not measuring | 2026-08-21, by C7 |
-| `FORCE` | Forces and motion — what a speed is, what it is measured against, and what a distance–time graph does and does not record | 2026-08-24, by P3 |
+| `FORCE` | Forces and motion — what a speed is and what it is measured against; and what a force is, what it takes to make one, what is left over when they are added, and what that leftover does | 2026-08-24, by P3; widened 24 Aug 2026 by P4 |
+| `PRESS` | Pressure — what a force does to a surface, which way a fluid pushes, and what happens where there is nothing to push | 2026-08-25, by P5 |
+| `WAVE` | Waves — what travels and what stays put, what a wave's two measurements are, and how sound is made, carried, reflected, heard and put to work | 2026-08-25, by P6 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -1422,6 +1424,41 @@ DELIVERED page rather than taken from her proposed table: her `NOTES-P3.md` §4 
 | `FORCE-09` | An object has one true speed; a speed measured from a moving train is an illusion. | `s-hook` | `relative-frames` | `relative-motion` |
 | `FORCE-10` | Two things moving towards each other pass at the speed of one of them. | `s-think` | `s-think` | `relative-motion` |
 | `FORCE-11` | Sitting still in a train seat, you are not moving. | `s-think` | `s-think` | `relative-motion` |
+| `FORCE-12` | A moving object has force in it, and the force runs out. | `s-hook` | `s-think` | `what-a-force-is` |
+| `FORCE-13` | A table is not doing anything; it is just there. | *(none — nothing on the page asks for this commitment)* | `s-think` | `what-a-force-is` |
+| `FORCE-14` | A force can only act between things that are touching. | `board` | `board` | `what-a-force-is` |
+| `FORCE-15` | The force is in the movement of the object, and not in either object. | `s-ladder` | `s-ladder` | `what-a-force-is` |
+| `FORCE-16` | The bigger arrow wins, so the object moves at the bigger force. | `s-hook` | `s-think` | `drawing-and-adding-forces` |
+| `FORCE-17` | Force arrows should all be drawn the same length. | `s-ladder` | `s-think` | `drawing-and-adding-forces` |
+| `FORCE-18` | Forces along a line always add up. | `sledge` | `sledge` | `drawing-and-adding-forces` |
+| `FORCE-19` | Equal and opposite forces cancel out and stop existing. | `s-ladder` | `s-ladder` | `drawing-and-adding-forces` |
+| `FORCE-20` | If something is not moving, there are no forces on it. | `s-hook` | `s-think` | `balanced-and-unbalanced` |
+| `FORCE-21` | Balanced forces mean the object is stopped. | `s-ladder` | `s-think` | `balanced-and-unbalanced` |
+| `FORCE-22` | Weight in newtons is the same number as the mass in kilograms. | `rig` | `s-ladder` | `balanced-and-unbalanced` |
+| `FORCE-23` | A support pushes back as hard as it is able to, rather than as hard as it needs to. | `s-ladder` | `s-ladder` | `balanced-and-unbalanced` |
+| `FORCE-24` | If something is moving, a force must be pushing it along. | `s-hook` | `s-think` | `what-forces-do-to-motion` |
+| `FORCE-25` | A sideways force makes it go sideways instead. | `gates` | `s-think` | `what-forces-do-to-motion` |
+| `FORCE-26` | At the top of its flight a thrown ball has no force on it. | `s-ladder` | `s-ladder` | `what-forces-do-to-motion` |
+| `FORCE-27` | A force that is slowing something down has been used up by the time it stops. | `s-ladder` | `s-ladder` | `what-forces-do-to-motion` |
+| `FORCE-28` | Starting something sliding and keeping it sliding need the same push. | `s-hook` | `drag` | `friction` |
+| `FORCE-29` | A smooth surface has no friction. | `drag` | `s-think` | `friction` |
+| `FORCE-30` | Friction only exists once something is moving. | `s-ladder` | `s-think` | `friction` |
+| `FORCE-31` | A steady speed means the friction has been overcome, so there is none left. | `s-ladder` | `s-ladder` | `friction` |
+| `FORCE-32` | Heavier things always fall faster. | `s-ladder` | `s-think` | `air-and-water-resistance` |
+| `FORCE-33` | Air resistance is a fixed force, the same at any speed. | `fall` | `fall` | `air-and-water-resistance` |
+| `FORCE-34` | When the parachute opens you are pushed back upwards. | *(none — nothing on the page asks for this commitment)* | `s-think` | `air-and-water-resistance` |
+| `FORCE-35` | Terminal velocity is a speed limit that falling cannot pass. | `s-hook` | `fall` | `air-and-water-resistance` |
+| `FORCE-36` | A longer spanner means you are pulling harder. | `spanner` | `s-think` | `moments` |
+| `FORCE-37` | The distance is measured from where you are standing. | *(none — nothing on the page asks for this commitment)* | `s-think` | `moments` |
+| `FORCE-38` | A moment is a force, so it is measured in newtons. | `s-ladder` | `s-ladder` | `moments` |
+| `FORCE-39` | The distance from the pivot only decides which way something turns, not how much. | `s-ladder` | `s-ladder` | `moments` |
+| `FORCE-40` | Extension is how long the spring is. | *(none — nothing on the page asks for this commitment)* | `s-think` | `springs-and-hookes-law` |
+| `FORCE-41` | Double the load always doubles the extension. | `s-hook` | `plot` | `springs-and-hookes-law` |
+| `FORCE-42` | Past the limit of proportionality the spring snaps. | `s-hook` | `s-think` | `springs-and-hookes-law` |
+| `FORCE-43` | An overstretched spring goes back to its natural length if you leave it long enough. | `s-ladder` | `s-ladder` | `springs-and-hookes-law` |
+| `FORCE-44` | A force needs something in between to carry it across. | `s-hook` | `s-think` | `non-contact-forces` |
+| `FORCE-45` | There is no gravity in space. | *(none — nothing on the page asks for this commitment)* | `s-think` | `non-contact-forces` |
+| `FORCE-46` | Magnets attract all metals. | *(none — nothing on the page asks for this commitment)* | `three-forces` | `non-contact-forces` |
 
 ⊖ **ONE OF DESIGN'S PROPOSED ROWS MINTS NOTHING.** Her table names *"a steeper line means it went
 further"* as a row of its own, attached to `p3-02`'s rung 2. The belief IS on the page — it is
@@ -1440,6 +1477,56 @@ If a mathematics-facing family is ever opened, this is the first row that should
 ⚠️ **`FORCE-03` CLOSES ITS OWN LOOP IN `p3-03`.** Rung 4 there asks for the round trip to be found
 from total distance ÷ total time rather than by averaging 300 and 200 m/s — which is
 `FORCE-03` met again in a different situation. It is re-confronted and mints nothing.
+
+⊕ **`FORCE-12` … `FORCE-46` MINTED 24 Aug 2026 BY P4 *Forces*, exactly where this family's own
+ruling said they would be:** *"P4 continues from `FORCE-12`."* Thirty-five rows over nine lessons.
+
+⚠️ **DESIGN'S PROPOSED NUMBERS ARE NOT THE ONES USED, AND COULD NOT HAVE BEEN.** Her
+`NOTES-P4-P6.md` §6 reserves `FORCE-01` … `FORCE-36`, four per lesson, opening `p4-01` at
+`FORCE-01`. Those numbers were already spent three weeks' work earlier in the same family: P3 took
+`FORCE-01`…`FORCE-11` and `FORCE-01` there is *"whichever one gets there first is going faster"*.
+Her ranges are a reservation made without sight of this file, which she says in as many words —
+*"access here is read-only, so no id is cited on any page"* — and the ranges are the only part
+of her proposal that moved. **Every STATEMENT below is hers or is drawn from her delivered page.**
+
+⊕ **EIGHT ROWS ARE NOT IN HER PROPOSED TABLE.** Each arrived from a delivered distractor or a
+delivered correction rather than from her §6 list, and each is a genuinely separate belief rather
+than a re-dressing of one already minted — which is the `p1-08` test this register applies:
+
+  * `FORCE-15` the force is in the MOVEMENT, not in either object (`p4-01` rung 1 option D). A
+    student can hold this while being perfectly sound that force does not run out.
+  * `FORCE-19` equal and opposite forces cancel out and STOP EXISTING (`p4-02` rung 2 option D).
+    Separate from `FORCE-18`: the arithmetic is accepted and the forces are thought to have gone.
+  * `FORCE-23` a support pushes back as hard as it is ABLE to, not as hard as it NEEDS to
+    (`p4-03` rung 1 option D, 80 N under a 40 N box). It is the belief the *Going further* layer
+    answers.
+  * `FORCE-27` a force that is slowing something down has been USED UP by the time it stops
+    (`p4-04` rung 1 option C). The impetus theory in its second form — not "motion needs a
+    force" but "the force drains".
+  * `FORCE-31` a steady speed means friction has been OVERCOME, so there is none left
+    (`p4-05` rung 1 option B). A `p4-03` idea meeting friction for the first time.
+  * `FORCE-35` terminal velocity is a speed LIMIT rather than a balance. Design's own bench note
+    corrects it in as many words — *"this is terminal velocity, and it is a balance, not a
+    limit"* — which is a correction with no elicitation, and therefore a belief the page is
+    answering.
+  * `FORCE-39` the distance from the pivot only decides WHICH WAY it turns, not how much
+    (`p4-07` rung 1 option D).
+  * `FORCE-43` an overstretched spring recovers if you LEAVE IT LONG ENOUGH (`p4-08` rung 2
+    option B). Separate from `FORCE-42`: the permanence is accepted as a rate rather than denied.
+
+⊖ **THE PREDICTION ABOUT `FORCE-09` DID NOT COME TRUE, AND IT IS LEFT STANDING.** The note below
+says *"`FORCE-09` in P4 (`what-forces-do-to-motion`)"* — that a student's belief in one true
+speed would resurface there. It does not: `p4-04` never changes frame, and its hook is a curling
+stone on ice rather than anything measured against a moving thing. The prediction is kept rather
+than deleted because it is still a reasonable one for **P12** `gravity-earth-moon-and-sun`, which
+is the other half of the same sentence, and because a register that quietly removes its own
+wrong guesses stops being a record of what was expected.
+
+⚠️ **`FORCE-12` IS THE OLDEST IDEA IN THIS SUBJECT AND IT IS CONFRONTED FOUR TIMES.** Impetus —
+*a moving object has force in it, and the force runs out* — is elicited on `p4-01` and met again
+on `p4-04` (rung 1 option C, as `FORCE-27`), on `p4-05` (the crate) and on `p4-09` (the kicked
+ball, whose note says nothing is pushing the ball forwards once it has left the boot). Only the
+first mints; the rest are the same belief in new clothes, which is what this family is for.
 
 ⚠️ **EXPECTED TO RESURFACE.** `FORCE-06`/`FORCE-07` in P6 (waves on a graph) and in ANY graph
 lesson in biology or chemistry — `B10 variation` plots something completely different and the
@@ -1530,6 +1617,127 @@ and confronts both whatever family they eventually sit in.
 
 
 ---
+
+
+### `PRESS` — pressure, and what a fluid is doing to everything in it
+
+Opened 25 Aug 2026 by P5 *Pressure*. Every row below was checked against Design's DELIVERED page
+rather than taken from her proposed table.
+
+⚖️ **WHY A NEW FAMILY AND NOT `FORCE`.** `FORCE` is declared as *forces and motion*, and this
+register's own rule is to discharge a reservation into the family that exists rather than open one
+beside it — that is how `ENER` absorbed `ENERGY` and how `FORCE` absorbed `MOT`. It does not
+reach here. Pressure is its own statutory strand (`KS3.P.PRES.*`), and the beliefs below are not
+about forces and motion at all: they are about what a fluid does to a surface, which direction it
+does it in, and what happens when there is nothing there to do it. Filing *"a vacuum sucks things
+in"* under a family whose description is *"what a speed is and what it is measured against"* would
+make the family name stop meaning anything.
+
+The pattern this follows is the chemistry one — `MIX` for C3, `REACT` for C4, `ACID` for C6,
+`ENER` for C7 — one family per strand of related beliefs, minted by the unit that first needs it.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `PRESS-01` | A sharp point pushes harder than a blunt one. | `s-hook` | `s-think` | `pressure-force-over-area` |
+| `PRESS-02` | Pressure only pushes downwards. | *(none — nothing on the page asks for this commitment)* | `s-think` | `pressure-force-over-area` |
+| `PRESS-03` | Pressure is a force, so it is measured in newtons. | `s-ladder` | `s-ladder` | `pressure-force-over-area` |
+| `PRESS-04` | More of the sole touching the floor means more pressure on it. | `s-ladder` | `sand` | `pressure-force-over-area` |
+| `PRESS-05` | More liquid in total means more pressure at the bottom. | `s-ladder` | `s-think` | `pressure-in-liquids` |
+| `PRESS-06` | Water is heavier, or packed tighter, deeper down. | `s-hook` | `s-think` | `pressure-in-liquids` |
+| `PRESS-07` | Pressure in a liquid acts downwards only. | *(none — nothing on the page asks for this commitment)* | `probe` | `pressure-in-liquids` |
+| `PRESS-08` | A narrow container concentrates the pressure, so its base takes more than a wide one at the same depth. | `s-ladder` | `s-ladder` | `pressure-in-liquids` |
+| `PRESS-09` | Heavy things sink and light things float. | `s-ladder` | `s-think` | `upthrust-floating-and-sinking` |
+| `PRESS-10` | Only things that float get upthrust. | *(none — nothing on the page asks for this commitment)* | `s-think` | `upthrust-floating-and-sinking` |
+| `PRESS-11` | Upthrust depends on how heavy the object is. | `tank` | `tank` | `upthrust-floating-and-sinking` |
+| `PRESS-12` | Being hollow is what makes something float. | `s-ladder` | `s-ladder` | `upthrust-floating-and-sinking` |
+| `PRESS-13` | A vacuum sucks things in. | `s-hook` | `s-think` | `atmospheric-pressure` |
+| `PRESS-14` | If air really pressed that hard, we would feel it. | *(none — nothing on the page asks for this commitment)* | `s-think` | `atmospheric-pressure` |
+| `PRESS-15` | A sealed bag swells at altitude because gravity is weaker up there. | `climb` | `s-ladder` | `atmospheric-pressure` |
+| `PRESS-16` | The air runs out at a definite height, and above it there is none at all. | `s-ladder` | `climb` | `atmospheric-pressure` |
+
+### `WAVE` — waves and sound
+
+⊕ **OPENED 25 Aug 2026, BY P6.** `docs/ks3/design-reference/p6/NOTES-P6-P7.md` §7 pre-allocated `WAVE-01` … `WAVE-36`, four per
+lesson in slot order, and authored 22 of them without citing one on any page — because access was read-only and this register had no
+open family for waves or sound. **Every id she wrote is minted here on the number she gave it, in her words.** The fourteen gaps are
+minted from the real lesson content, which is the register's own rule: an id is minted from what a page actually confronts, never
+reserved against what one might.
+
+⚠️ **TWO OF HERS ARE ON THE NUMBER SHE GAVE THEM BECAUSE THIS PASS CHECKED.** `WAVE-30` had been minted onto 31 and one of her own
+statements pushed onto a spare; `WAVE-27` had been paraphrased. Both are back. A pre-allocation is only useful if the lane that
+fills it reads it.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `WAVE-01` | The water travels along with the wave. | `s-hook` | `s-think` | `waves-on-water` |
+| `WAVE-02` | A bigger wave is a longer wave. | `tank` | `s-think` | `waves-on-water` |
+| `WAVE-03` | The amplitude runs from the trough up to the crest. | `s-ladder` | `parts` | `waves-on-water` |
+| `WAVE-04` | A wave whose water only goes up and down is standing still. | `s-hook` | `s-hook` | `waves-on-water` |
+| `WAVE-05` | When two waves cancel they destroy each other. | `meet` | `meet` | `transverse-waves-and-superposition` |
+| `WAVE-06` | If the water is flat the energy has gone. | *(none — nothing on the page asks for this commitment)* | `meet` | `transverse-waves-and-superposition` |
+| `WAVE-07` | Two waves meeting average out. | `s-ladder` | `s-ladder` | `transverse-waves-and-superposition` |
+| `WAVE-08` | The stronger wave wins and the weaker one disappears. | `s-hook` | `s-think` | `transverse-waves-and-superposition` |
+| `WAVE-09` | Sound is made by the air, not by the object. | `s-hook` | `chain` | `how-sound-is-made` |
+| `WAVE-10` | If you cannot see it moving it is not vibrating. | `chain` | `s-think` | `how-sound-is-made` |
+| `WAVE-11` | A microphone is a quiet loudspeaker. | `s-ladder` | `s-think` | `how-sound-is-made` |
+| `WAVE-12` | Sound is stored inside an object and gets out. | `s-ladder` | `s-ladder` | `how-sound-is-made` |
+| `WAVE-13` | Sound is transverse, because it is drawn as a wavy line. | `s-hook` | `slinky` | `sound-is-longitudinal` |
+| `WAVE-14` | In a compression the air travels to your ear. | `slinky` | `s-think` | `sound-is-longitudinal` |
+| `WAVE-15` | A longitudinal wave has no amplitude, because there is no hump to measure. | `s-ladder` | `slinky` | `sound-is-longitudinal` |
+| `WAVE-16` | A compression is a place where the air is hotter. | *(none — nothing on the page asks for this commitment)* | `slinky` | `sound-is-longitudinal` |
+| `WAVE-17` | A loud note is a high note. | `s-hook` | `signal` | `frequency-pitch-and-loudness` |
+| `WAVE-18` | A higher note travels faster. | `s-ladder` | `s-think` | `frequency-pitch-and-loudness` |
+| `WAVE-19` | Turning the volume up adds vibrations each second. | `signal` | `signal` | `frequency-pitch-and-loudness` |
+| `WAVE-20` | A hertz measures how loud something is. | *(none — nothing on the page asks for this commitment)* | `s-think` | `frequency-pitch-and-loudness` |
+| `WAVE-21` | Sound crosses a vacuum, faintly. | `s-hook` | `range` | `sound-needs-a-medium` |
+| `WAVE-22` | Sound is fastest in air, because air is easiest to get through. | `range` | `range` | `sound-needs-a-medium` |
+| `WAVE-23` | A vacuum stops sound because there is nothing for the source to push against. | *(none — nothing on the page asks for this commitment)* | `s-think` | `sound-needs-a-medium` |
+| `WAVE-24` | Sound needs air specifically, rather than any material at all. | `s-ladder` | `range` | `sound-needs-a-medium` |
+| `WAVE-25` | An echo is a new sound the wall makes. | `s-hook` | `s-think` | `echoes-reflection-and-absorption` |
+| `WAVE-26` | Soft materials stop sound travelling. | *(none — nothing on the page asks for this commitment)* | `s-think` | `echoes-reflection-and-absorption` |
+| `WAVE-27` | The distance to the cliff is speed × time. | `s-hook` | `your-turn-echo` | `echoes-reflection-and-absorption` |
+| `WAVE-28` | A small room gives no echo because there is not enough room for the sound. | `s-ladder` | `cliff` | `echoes-reflection-and-absorption` |
+| `WAVE-29` | A dog whistle makes no sound. | `s-hook` | `s-think` | `hearing-and-auditory-range` |
+| `WAVE-30` | Losing the top of your hearing range just makes everything a bit quieter. | *(none — nothing on the page asks for this commitment)* | `s-think` | `hearing-and-auditory-range` |
+| `WAVE-31` | Ultrasound is a different kind of sound from ordinary sound. | `range` | `range` | `hearing-and-auditory-range` |
+| `WAVE-32` | Animals hear better than people do. | `s-ladder` | `range` | `hearing-and-auditory-range` |
+| `WAVE-33` | Ultrasound is a special kind of wave that can get through solids where ordinary sound cannot. | `s-hook` | `s-think` | `ultrasound-at-work` |
+| `WAVE-34` | A scan works by shining ultrasound through you and seeing what comes out the other side. | *(none — nothing on the page asks for this commitment)* | `s-think` | `ultrasound-at-work` |
+| `WAVE-35` | Ultrasound is used because it travels faster than audible sound. | `s-ladder` | `gauge` | `ultrasound-at-work` |
+| `WAVE-36` | The gel on the skin is there to help the probe slide about. | `s-ladder` | `s-think` | `ultrasound-at-work` |
+
+⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor
+rather than from her §6 list. Each is a genuinely separate belief rather than a re-dressing of one
+already minted, which is the `p1-08` test this register applies:
+
+  * `PRESS-04` more of the sole touching the floor means MORE pressure on it (`p5-01` rung 2
+    option C). Separate from `PRESS-01`: a student can have given up "sharp pushes harder" and
+    still have the area the wrong way round.
+  * `PRESS-08` a NARROW container concentrates the pressure, so its base takes more than a wide
+    one at the same depth (`p5-02` rung 2 option B). It is `PRESS-05` from the other side — not
+    "more water" but "a narrower tube concentrates it" — and it is a `p5-01` idea being
+    misapplied one lesson later, which is exactly the kind of thing worth its own id.
+  * `PRESS-12` being HOLLOW is what makes something float (`p5-03` rung 2 option D), whose
+    correction is that a hollow object full of water sinks.
+  * `PRESS-16` the air runs out at a definite height and above it there is none at all. It
+    arrived with Design's own six-band stack, which thins upwards without ever reaching zero, and
+    with the bench readout that never gets to 0 per cent.
+
+⚠️ **`PRESS-02` AND `PRESS-14` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on either page
+asks the student to commit to them; each is confronted because it sits underneath one that is.
+
+⚠️ **EXPECTED TO RESURFACE.** `PRESS-13` — *a vacuum sucks* — in P11 (the particle model of a
+gas) and anywhere a syringe, a pipette or a pump is drawn. `PRESS-06` — *the stuff is heavier
+lower down* — is the same shape as `PART`'s compression beliefs and will meet them in P11.
+
+⊖ **`p5-01` RE-CONFRONTS `ENER-19` AND MINTS NOTHING.** Design's FLAG 9 records that the register
+routes a force-multiplication belief to a P5 `hydraulics` lesson that `structure.py` does not
+have, and resolves it by putting the hydraulic jack in `p5-01`'s *Going further* with the distance
+traded explicitly against the force. That resolution is kept. **The register was never pointing at
+nothing**: the entry she names is `ENERGY-11`, the `ENERGY` prefix was discharged into `ENER` on
+21 Aug, and the belief lives as `ENER-19` — *"a machine that multiplies force gives you energy
+for free"* — owned by `p1-08 simple-machines` and confronted by its lever bench. `p5-01` meets it
+in a second situation, which is what this register asks a lesson to do.
 
 ### `MATL` — metals and materials: what an order of reactivity is, what it predicts, and the words a material is judged by
 

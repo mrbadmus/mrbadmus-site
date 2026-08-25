@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How sound is made · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Waves and sound</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">How sound is made</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Waves and sound · Process</p>
+        <h1>How sound is made</h1>
+        <p class="ks3-bigq">A guitar string, a loudspeaker cone and two folds of tissue in your throat have nothing in common except the one thing that matters: all three are moving to and fro, fast, and pushing on the air while they do it.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Hum with your fingers on your throat.</h2>
+        <p class="ks3-hook-prompt">Two fingers on the front of your throat, and hum. Something under the skin is buzzing. Stop humming but keep breathing out through an open mouth: air is still pouring past exactly the same place, and there is no buzz and no note.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Air moving is not enough on its own. What has to be happening for there to be a sound?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every sound starts with something <strong>vibrating</strong> — moving quickly to and fro about one place. The vibrating surface pushes on the air touching it, then pulls away from it, then pushes again. That gives the air a shove-and-release, over and over, and the disturbance travels outwards.</p>
+        <p>At the far end the same thing happens in reverse. The arriving disturbance pushes and releases whatever it meets, so a thin stretched sheet is set vibrating in time with the source. In a <strong>microphone</strong> that sheet is called a <strong>diaphragm</strong>, and its movement is turned into a changing electrical signal. In your ear it is the <strong>eardrum</strong>, and its movement is turned into signals along a nerve. A <strong>loudspeaker</strong> runs the same chain the other way: a changing electrical signal drives a cone back and forth, and the cone does to the air what your vocal folds do.</p>
+      </section>
+
+      <section id="s-stages" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Four stages, every time</h2>
+        <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 16px;">
+          <svg viewBox="0 0 1000 320" role="img" aria-label="Four stages of a sound: a source vibrating, the air being pushed back and forth along the direction of travel, a detector sheet vibrating in time with it, and a signal coming out." style="display: block; width: 100%; height: auto;">
+            <text x="20" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">1 SOMETHING VIBRATES</text>
+            <path d="M64 90 V240" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M44 96 V234 M84 96 V234" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 4; stroke-dasharray: 8 8;"></path>
+            <path d="M100 165 H140 M140 165 L128 156 M140 165 L128 174 M28 165 H-2" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;"></path>
+            <text x="20" y="288" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-ink-muted);">to and fro</text>
+
+            <text x="200" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">2 THE AIR IS PUSHED AND RELEASED</text>
+            <path d="M206 112 v106 M218 112 v106 M228 112 v106 M262 112 v106 M290 112 v106 M312 112 v106 M322 112 v106 M332 112 v106 M368 112 v106 M398 112 v106 M420 112 v106 M430 112 v106 M440 112 v106 M474 112 v106 M504 112 v106 M526 112 v106 M536 112 v106 M546 112 v106 M580 112 v106" style="fill: none; stroke: var(--ks3-blue); stroke-width: 5; stroke-linecap: round;"></path>
+            <path d="M206 258 H590 M590 258 L576 249 M590 258 L576 267" style="fill: none; stroke: var(--ks3-ink); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;"></path>
+            <text x="206" y="288" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-ink-muted);">the disturbance travels this way</text>
+
+            <text x="640" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">3 A SHEET VIBRATES</text>
+            <path d="M700 96 V234 M700 96 H726 M700 234 H726" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 4;"></path>
+            <path d="M712 100 Q734 165 712 230" style="fill: none; stroke: var(--ks3-ink); stroke-width: 7; stroke-linecap: round;"></path>
+            <path d="M660 165 H700 M700 165 L688 156 M700 165 L688 174 M744 165 H784 M784 165 L772 156 M784 165 L772 174" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;"></path>
+            <text x="640" y="288" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-ink-muted);">diaphragm or eardrum</text>
+
+            <text x="830" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">4 A SIGNAL</text>
+            <path d="M836 165 q16 -52 32 0 t32 0 t32 0 t32 0" style="fill: none; stroke: var(--ks3-accent); stroke-width: 6; stroke-linecap: round;"></path>
+            <text x="830" y="288" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-ink-muted);">electrical, or along a nerve</text>
+            <path d="M600 60 V270" style="fill: none; stroke: var(--ks3-rule); stroke-width: 3;"></path>
+            <path d="M810 60 V270" style="fill: none; stroke: var(--ks3-rule); stroke-width: 3;"></path>
+            <path d="M172 60 V270" style="fill: none; stroke: var(--ks3-rule); stroke-width: 3;"></path>
+          </svg>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">Take away stage one and there is nothing to send. Take away stage two and there is nothing to carry it. Stage four is the only stage that is not sound: by then it is electricity, or a nerve signal, and it is on its way somewhere else.</p>
+      </section>
+
+      <section id="s-chain" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · one source, one detector, the air in between</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Change what vibrates. The chain does not change.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A source at one end of the bench and a detector at the other, half a metre apart in ordinary air.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A tuning fork is struck and rings. Someone lays a finger on the prongs and the note stops instantly. Why?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 340px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What is vibrating</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ sourceTabs }}" as="t" hint-placeholder-count="5">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 260px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What is listening</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ detTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 340" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="{{ srcGhost }}" style="fill: none; stroke: #5C554D; stroke-width: 5; stroke-dasharray: 8 8;"></path>
+                  <path d="{{ srcPath }}" style="fill: none; stroke: #E9DCC8; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ srcArrow }}" style="fill: none; stroke: #8FB7FF; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ airDots }}" style="fill: none; stroke: #8FB7FF; stroke-width: 5; stroke-linecap: round;"></path>
+                  <path d="M300 292 H700 M700 292 L686 283 M700 292 L686 301" style="fill: none; stroke: #C6B9A7; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <text x="300" y="322" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">THE AIR IS PUSHED AND RELEASED ALONG THIS LINE</text>
+                  <path d="M812 70 V270 M812 70 H842 M812 270 H842" style="fill: none; stroke: #8C8177; stroke-width: 5;"></path>
+                  <path d="M826 76 Q852 170 826 264" style="fill: none; stroke: #E9DCC8; stroke-width: 8; stroke-linecap: round;"></path>
+                  <path d="M760 170 H802 M802 170 L790 161 M802 170 L790 179 M872 170 H914 M914 170 L902 161 M914 170 L902 179" style="fill: none; stroke: #8FB7FF; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <text x="60" y="36" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">SOURCE</text>
+                  <text x="940" y="36" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">DETECTOR</text>
+                </svg>
+                <span style="position: absolute; left: 6%; top: 88%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #E9DCC8; white-space: nowrap; pointer-events: none;">{{ srcName }}</span>
+                <span style="position: absolute; right: 3%; top: 88%; transform: translate(0,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #E9DCC8; white-space: nowrap; pointer-events: none;">{{ detName }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What moves at the source</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ srcMoves }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ srcDriven }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How far it moves</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ srcAmp }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">typical, and greatly exaggerated in the drawing</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How many times a second</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ srcFreq }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">typical for this source</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What comes out at the far end</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ detOut }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Every sound begins with something vibrating. The vibration pushes and releases the air, the disturbance travels through it, and at the far end it sets a thin sheet vibrating in time — a microphone diaphragm or your eardrum — which passes the pattern on as an electrical or a nerve signal. Stop the vibration and the sound stops at that instant.</p>
+        </div>
+
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Sound is made by the air.&rdquo;</p>
+        <p>The air is the delivery, not the maker. Hold a struck tuning fork in front of a candle flame and the flame flickers in time with the prongs: the fork is doing something to the air, not the other way round. That is why touching the prongs kills the note at once, while the air in the room is untouched and carries on exactly as before. Something has to vibrate first. The air is what is next in the chain.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;If you cannot see it moving, it cannot be vibrating.&rdquo;</p>
+          <p>Almost every vibration that makes a sound is far too small and far too fast to see. A guitar string is the rare exception, and even then you only see a blur. Rest a struck tuning fork on a table top and the note jumps in volume, because the whole table is now vibrating too — and the table looks perfectly still. Sprinkle a few grains of rice on a loudspeaker cone playing a bass note and they jump about; the rice is doing the seeing for you.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Sound is produced by objects vibrating. The vibrating surface pushes and releases the air touching it, and the disturbance travels outwards. At the far end it makes a thin sheet vibrate in time with the source: a microphone diaphragm, which turns that movement into a changing electrical signal, or your eardrum, which turns it into signals along a nerve. A loudspeaker runs the same chain backwards, its cone driven by an electrical signal.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The reversibility of the chain is not a curiosity, it is engineering. A cheap intercom uses one small loudspeaker as both speaker and microphone, switching which end of the wire is driving which. Older headphones can be plugged into a microphone socket and shouted into, and they work — badly, but they work — because a coil moving near a magnet generates a voltage whether you meant it to or not.</p>
+          <p>Not everything that vibrates gets its own sound out into the room. A tuning fork held in the air is quiet, because two thin prongs push very little air; stand its base on a table and the note leaps in volume, since the whole table top is now being driven and a table top pushes a great deal of air. Nothing has been added to the fork, and it dies away faster than before. The same energy is simply being handed to the air more quickly.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p6-02-transverse-waves-and-superposition.html">Transverse waves, reflection and superposition<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p6-04-sound-is-longitudinal.html">Sound is longitudinal<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p6-05-frequency-pitch-and-loudness.html">Frequency, pitch and loudness<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-06-sound-needs-a-medium.html">Sound needs a medium<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The range of human hearing, sound as a longitudinal wave in a solid, liquid or gas, and how the ear converts pressure changes into electrical impulses.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a sound of your own and want to know what is vibrating in it?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Every vibration in it is drawn many times larger than it really is: a tuning fork prong moving half a millimetre would be invisible at this size. The distances the sources move and the number of times a second they move are typical values for one ordinary example of each and vary widely with size, tension and how hard the thing was struck; only the 440 times a second of a concert A tuning fork is a fixed figure, and that is a convention rather than a measurement. The loudspeaker and microphone drawings leave out the coil and magnet that do the converting. The columns of air are drawn bunched and spread to show where the air is squeezed; real air is not in rows.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Fingers on your throat', short: 'THROAT' },
+  { id: 's-stages', label: 'Four stages, every time', short: 'STAGES' },
+  { id: 's-chain', label: 'Source and detector', short: 'CHAIN' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-stages') return s.hookChoice !== null;
+  if (id === 's-chain') return s.gate !== null && (s.touched.src || s.touched.det);
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const SOURCES = [
+  { label: 'Guitar string', name: 'PLUCKED STRING', moves: 'The string', driven: 'set going by a pluck, then left alone',
+    amp: 'about 3 mm at first', freq: 'about 82 times a second',
+    path: 'M70 170 Q160 96 250 170', ghost: 'M70 170 Q160 244 250 170 M70 170 H250',
+    arrow: 'M160 74 V52 M160 52 l-9 13 M160 52 l9 13 M160 266 V288 M160 288 l-9 -13 M160 288 l9 -13',
+    note: 'A plucked string swings widest the instant you let go and gets quieter from then on, because every push it gives the air takes energy out of the string. Nothing is topping it up.' },
+  { label: 'Loudspeaker cone', name: 'SPEAKER CONE', moves: 'The cone', driven: 'driven back and forth by an electrical signal',
+    amp: 'about 1 mm on a loud bass note', freq: 'whatever the signal says, often about 200 times a second',
+    path: 'M96 96 L200 148 V192 L96 244', ghost: 'M126 96 L230 148 V192 L126 244',
+    arrow: 'M244 170 H286 M286 170 L274 161 M286 170 L274 179 M60 170 H18 M18 170 L30 161 M18 170 L30 179',
+    note: 'A cone is the one source here that is told what to do from outside: the electrical signal sets both how far and how often it moves, and it keeps going for as long as the signal does. Everything downstream of it is the same as for a plucked string.' },
+  { label: 'Tuning fork', name: 'TUNING FORK', moves: 'The two prongs', driven: 'struck once, then left to ring',
+    amp: 'about 0.5 mm', freq: 'exactly 440 times a second for a concert A fork',
+    path: 'M120 84 V190 Q160 236 200 190 V84', ghost: 'M96 84 V190 Q160 260 224 190 V84',
+    arrow: 'M92 130 H56 M56 130 L68 121 M56 130 L68 139 M228 130 H264 M264 130 L252 121 M264 130 L252 139',
+    note: 'A fork is built to vibrate at one rate and almost nothing else, which is why it is used for tuning. Its prongs move much less far than a plucked string and it still fills a room, because it goes on doing it for a long time.' },
+  { label: 'Drum skin', name: 'DRUM SKIN', moves: 'The stretched skin', driven: 'set going by a hit, then left alone',
+    amp: 'about 0.5 mm', freq: 'about 80 times a second for a large drum',
+    path: 'M74 110 H246 M74 110 Q160 202 246 110', ghost: 'M74 110 Q160 18 246 110 M74 110 V250 M246 110 V250',
+    arrow: 'M160 232 V266 M160 266 l-9 -13 M160 266 l9 -13 M160 60 V26 M160 26 l-9 13 M160 26 l9 13',
+    note: 'A big skin moves a lot of air at once, which is why a drum is loud without moving far. The skin is heavy and slow compared with a fork, so it goes to and fro fewer times a second.' },
+  { label: 'Vocal folds', name: 'VOCAL FOLDS', moves: 'Two folds of tissue in your throat', driven: 'blown open and snapped shut by air from your lungs',
+    amp: 'about 1 mm', freq: 'about 120 times a second for a low voice',
+    path: 'M112 90 Q166 170 112 250 M208 90 Q154 170 208 250', ghost: 'M88 90 Q142 170 88 250 M232 90 Q186 170 232 250',
+    arrow: 'M74 170 H40 M40 170 L52 161 M40 170 L52 179 M246 170 H280 M280 170 L268 161 M280 170 L268 179',
+    note: 'Your folds are the only source here that needs a supply of air to keep going, which is why you run out of breath and a fork does not. Breathing out with the folds held open moves far more air and makes no note at all.' }
+];
+
+const DETS = [
+  { label: 'Microphone diaphragm', name: 'MICROPHONE', out: 'A changing electrical signal',
+    note: 'The diaphragm moves in time with the arriving air and a coil behind it turns that movement into a changing voltage. A loudspeaker is the same parts wired the other way round.' },
+  { label: 'Your eardrum', name: 'EARDRUM', out: 'Signals along a nerve to your brain',
+    note: 'The eardrum moves in time with the arriving air, three small bones pass that movement inwards, and nerve signals go to your brain. The movement is far too small to see.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Apply the rule',
+    question: 'A wine glass is tapped and rings. Someone grips the rim and the note stops instantly. What has happened?',
+    options: [
+      { text: 'The grip stops the glass vibrating, and with nothing vibrating there is nothing left to disturb the air.', correct: true },
+      { text: 'The hand blocks the sound and stops it getting out of the glass.', correction: 'Sound is not stored in the glass waiting to get out. It only exists while something is vibrating, and the grip ends the vibration.' },
+      { text: 'The hand absorbs the sound as it comes off the rim.', correction: 'Absorption is a real thing, but it would muffle the note rather than end it instantly, and it would not need contact with the rim. The vibration itself has stopped.' },
+      { text: 'The hand takes the energy out of the air around the glass, so the air can no longer carry the sound.', correction: 'The right idea in the wrong place. The energy is taken out of the glass, not out of the air \u2014 the air in the room is untouched and would carry any other sound perfectly well.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A microphone and a loudspeaker contain almost the same parts. Which statement is right?',
+    options: [
+      { text: 'A loudspeaker turns an electrical signal into a vibrating cone, and a microphone lets a vibrating diaphragm make an electrical signal \u2014 the same chain, run in opposite directions.', correct: true },
+      { text: 'A microphone makes the sound and a loudspeaker detects it.', correction: 'The two jobs are the right pair and the wrong way round. The microphone is the detector at the end of the chain; the loudspeaker is the source at the start of it.' },
+      { text: 'Both turn electricity into sound, and a microphone simply does it much more quietly.', correction: 'A microphone is not a quiet loudspeaker. Sound goes in and electricity comes out, which is the chain running backwards, not the same chain turned down.' },
+      { text: 'A microphone stores the sound and a loudspeaker plays it back, so the parts inside must be different.', correction: 'Neither one stores anything. Both convert while the sound is happening, which is why the same sheet-and-coil works for either job.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Describe the whole chain from plucking a guitar string to hearing the note, naming what happens at each stage.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The plucked string\u2026',
+    criteria: [
+      'Says the plucked string vibrates \u2014 moves quickly to and fro.',
+      'Says the string pushes and releases the air next to it.',
+      'Says the disturbance travels out through the air.',
+      'Says the arriving disturbance makes the eardrum vibrate in time with the string.',
+      'Says the eardrum passes the pattern on as nerve signals to the brain.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'You phone a friend. Trace the chain from your mouth to their ear, and say clearly which parts of it are sound and which parts are not.',
+    fieldLabel: 'Your answer',
+    placeholder: 'My vocal folds vibrate, which\u2026',
+    criteria: [
+      'Starts with the vocal folds vibrating and pushing on the air.',
+      'Says the microphone diaphragm in the phone is set vibrating by that air.',
+      'Says the diaphragm movement becomes an electrical signal, and that this part of the journey is not sound.',
+      'Says a loudspeaker in the other phone turns the signal back into a vibrating cone, which pushes on the air again.',
+      'Ends with the air setting the listener\u2019s eardrum vibrating, and says sound exists only in the two stretches where something material is being pushed and released.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, src: 0, det: 1, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  airDots() {
+    let d = '';
+    const groups = [[320, 6], [420, 14], [500, 6], [600, 14], [680, 6]];
+    groups.forEach((g) => {
+      for (let i = -2; i <= 2; i++) {
+        const x = g[0] + i * g[1];
+        d += 'M' + x + ' 108 v124 ';
+      }
+    });
+    return d.trim();
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const src = SOURCES[s.src];
+    const det = DETS[s.det];
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Air has to be moving past the place where the sound comes from' },
+        { letter: 'B', text: 'Something has to be vibrating \u2014 moving quickly to and fro' },
+        { letter: 'C', text: 'Your mouth has to be open, so the sound has a way out' },
+        { letter: 'D', text: 'The air has to be pushed out fast enough to carry the note' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'Breathing out moves far more air than humming does, and makes no note. What the hum adds is two folds of tissue snapping open and shut about a hundred times a second. Every sound in the world starts the same way: something vibrates, and the air next to it gets pushed and released over and over.',
+
+      benchProgress: (s.touched.src || s.touched.det) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'The finger blocks the sound before it can leave the prongs' },
+        { letter: 'B', text: 'The finger stops the prongs vibrating, so there is nothing left to disturb the air' },
+        { letter: 'C', text: 'The finger cools the metal, and cool metal cannot carry a note' },
+        { letter: 'D', text: 'The finger takes the energy out of the air around the fork' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      sourceTabs: SOURCES.map((x, i) => ({
+        label: x.label, pressed: s.src === i, style: this.seg(s.src === i, true, false),
+        onClick: () => this.setState((st) => ({ src: i, touched: Object.assign({}, st.touched, { src: true }) }))
+      })),
+      detTabs: DETS.map((x, i) => ({
+        label: x.label, pressed: s.det === i, style: this.seg(s.det === i, true, false),
+        onClick: () => this.setState((st) => ({ det: i, touched: Object.assign({}, st.touched, { det: true }) }))
+      })),
+      srcPath: src.path, srcGhost: src.ghost, srcArrow: src.arrow, srcName: src.name,
+      detName: det.name,
+      airDots: this.airDots(),
+      srcMoves: src.moves, srcDriven: src.driven, srcAmp: src.amp, srcFreq: src.freq,
+      detOut: det.out,
+      benchAlt: src.label + ' drawn at the left with its extreme positions dashed behind it and arrows showing which way it moves, columns of air between it and a ' +
+        det.label.toLowerCase() + ' at the right, bunched where the air is squeezed and spread where it is stretched.',
+      benchNote: src.note + ' ' + det.note
+    };
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

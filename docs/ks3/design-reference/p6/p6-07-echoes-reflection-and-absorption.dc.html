@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Echoes, reflection and absorption · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Waves and sound</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Echoes, reflection and absorption</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Waves and sound · Process</p>
+        <h1>Echoes, reflection and absorption</h1>
+        <p class="ks3-bigq">The same shout comes straight back at you off a cliff and vanishes without trace in a bedroom. Two things decide which happens: what the surface is made of, and how far away it is.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Shout at a cliff and count.</h2>
+        <p class="ks3-hook-prompt">Stand a few hundred metres from a rock face on a still day and shout once. A moment later your own voice comes back at you, a little quieter and unmistakably yours. Shout the same word in a carpeted bedroom and nothing comes back at all.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">You are 170 m from the cliff and the echo reaches you 1.0 s after you shout. How far has the sound travelled in that second?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Sound that meets a surface does one of three things, and usually all three at once. Some of it is <strong>reflected</strong> — sent back the way it came. Some of it is <strong>absorbed</strong> — its energy taken up by the material and turned into a tiny amount of heating. Some of it is <strong>transmitted</strong>, carrying on into and through the material.</p>
+        <p>An <strong>echo</strong> is reflected sound arriving back at you late enough to be heard as a separate sound. Two things have to be true. Enough of it has to come back: a hard, flat, heavy surface reflects most of what hits it, while something soft and open-textured absorbs most of it. And it has to take long enough: if the reflection returns within about a tenth of a second your ear runs it together with the original and hears one sound, a bit fuller. Since sound covers about 340 m every second, that tenth of a second means the surface has to be roughly 17 m away or more.</p>
+      </section>
+
+      <section id="s-cliff" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · one shout, one flat surface, a stopwatch</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Move the wall. Change the wall.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">One shout in still air, and a flat surface facing you. Set how far away it is, and set what it is made of.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. You move twice as far from the same rock face and shout again. What happens to the time before the echo returns?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p67d" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How far away the surface is</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ distLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p67d" min="5" max="500" step="5" value="{{ distValue }}" onChange="{{ onDist }}" onInput="{{ onDist }}">
+              </div>
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What the surface is</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ surfTabs }}" as="t" hint-placeholder-count="5">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 340" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M60 250 H960" style="fill: none; stroke: #5C554D; stroke-width: 4;"></path>
+                  <circle cx="120" cy="120" r="20" style="fill: #C6B9A7;"></circle>
+                  <path d="M120 142 V206 M120 160 L96 190 M120 160 L144 190 M120 206 L100 250 M120 206 L140 250" style="fill: none; stroke: #C6B9A7; stroke-width: 8; stroke-linecap: round;"></path>
+                  <path d="{{ wallPath }}" style="fill: none; stroke: #E9DCC8; stroke-width: 12; stroke-linecap: round;"></path>
+                  <path d="{{ outArrow }}" style="{{ outStyle }}"></path>
+                  <path d="{{ backArrow }}" style="{{ backStyle }}"></path>
+                  <path d="{{ dimLine }}" style="fill: none; stroke: #8C8177; stroke-width: 3;"></path>
+                </svg>
+                <span style="position: absolute; left: 6%; right: 3%; top: 93.5%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.5vw,18px); letter-spacing: .08em; color: #C6B9A7; white-space: normal; pointer-events: none;">{{ surfCaption }}</span>
+                <span style="{{ dimLabelStyle }}">{{ distLabel }}</span>
+                <span style="position: absolute; left: 16%; top: 8%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ backLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Distance to the surface</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ distLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">in still air at about 340 m/s</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Total path, out and back</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ pathLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ pathWorking }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Time before it returns</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ timeLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ timeWorking }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What you hear</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ fracLabel }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Five surfaces, one shout each</h2>
+        <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 18px;">
+          <svg viewBox="0 0 1000 380" role="img" aria-label="A chart of five surfaces to one scale, showing roughly how much of the sound each sends back: bare rock about 90 per cent, brick about 70, mown grass about 20, a heavy curtain about 10, foam wedges about 3. Below 15 per cent no separate echo is heard." style="display: block; width: 100%; height: auto;">
+            <text x="0" y="26" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">SURFACE</text>
+            <text x="300" y="26" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: var(--ks3-ink-muted);">ROUGHLY HOW MUCH COMES BACK</text>
+            <path d="M395 40 V368" style="fill: none; stroke: var(--ks3-accent); stroke-width: 3; stroke-dasharray: 8 8;"></path>
+            <text x="402" y="58" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-accent-text);">15% — BELOW THIS, NO SEPARATE ECHO</text>
+
+            <text x="0" y="110" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Bare rock</text>
+            <rect x="300" y="84" width="585" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="318" y="109" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 90%</text>
+            <text x="900" y="109" style="font-family: var(--ks3-font-body); font-size: 17px; fill: var(--ks3-ink-muted);">a quarry</text>
+
+            <text x="0" y="172" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Brick wall</text>
+            <rect x="300" y="146" width="455" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="318" y="171" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 70%</text>
+            <text x="770" y="171" style="font-family: var(--ks3-font-body); font-size: 17px; fill: var(--ks3-ink-muted);">a bare sports hall</text>
+
+            <text x="0" y="234" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Mown grass</text>
+            <rect x="300" y="208" width="130" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="446" y="233" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 20%</text>
+            <text x="610" y="233" style="font-family: var(--ks3-font-body); font-size: 17px; fill: var(--ks3-ink-muted);">a playing field</text>
+
+            <text x="0" y="296" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Heavy curtain</text>
+            <rect x="300" y="270" width="65" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="381" y="295" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 10%</text>
+            <text x="545" y="295" style="font-family: var(--ks3-font-body); font-size: 17px; fill: var(--ks3-ink-muted);">a theatre, a bedroom</text>
+
+            <text x="0" y="358" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 21px; fill: var(--ks3-ink);">Foam wedges</text>
+            <rect x="300" y="332" width="20" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+            <text x="336" y="357" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 20px; fill: var(--ks3-ink);">about 3%</text>
+            <text x="480" y="357" style="font-family: var(--ks3-font-body); font-size: 17px; fill: var(--ks3-ink-muted);">a recording booth</text>
+          </svg>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">What sends sound back is hard, flat and heavy. What absorbs it is soft and full of holes, so the air can be pushed into the gaps and rub its way to a stop. Both ends of the list are wanted by somebody: a swimming pool has the first problem and a recording booth is built to have the second.</p>
+      </section>
+
+      <section id="s-bar" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">The shout goes out and comes back</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The bar</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 640 240" role="img" aria-label="A part-whole bar. One long bar labelled s sits above two equal bars, each labelled d, which together fill exactly the length of s." style="width: 340px; max-width: 100%; height: auto; flex: 0 0 auto;">
+            <rect x="40" y="34" width="560" height="58" rx="10" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <path d="M45 50 L31 63 L45 76 Z M595 50 L609 63 L595 76 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="320" y="80" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 42px; fill: var(--ks3-ink);">s</text>
+            <path d="M320 92 V150" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 3; stroke-dasharray: 7 7;"></path>
+            <path d="M40 92 V150 M600 92 V150" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 3; stroke-dasharray: 7 7;"></path>
+            <rect x="40" y="150" width="275" height="58" rx="10" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <path d="M45 166 L31 179 L45 192 Z M310 166 L324 179 L310 192 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="177.5" y="196" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink);">d</text>
+            <rect x="325" y="150" width="275" height="58" rx="10" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <path d="M330 166 L316 179 L330 192 Z M595 166 L609 179 L595 192 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="462.5" y="196" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink);">d</text>
+            <sc-if value="{{ coverWhole }}">
+              <rect x="40" y="34" width="560" height="58" rx="10" style="fill: var(--ks3-ink);"></rect>
+              <text x="320" y="80" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 42px; fill: var(--ks3-ink-ghost);">s</text>
+            </sc-if>
+            <sc-if value="{{ coverP0 }}">
+              <rect x="40" y="150" width="275" height="58" rx="10" style="fill: var(--ks3-ink);"></rect>
+              <text x="177.5" y="196" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink-ghost);">d</text>
+            </sc-if>
+            <sc-if value="{{ coverP1 }}">
+              <rect x="325" y="150" width="275" height="58" rx="10" style="fill: var(--ks3-ink);"></rect>
+              <text x="462.5" y="196" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink-ghost);">d</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">Both parts are equal, so d = s ÷ 2</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two parts side by side make the whole. Cover the part you want and take the other one away from the whole.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">d</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">distance to the surface</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">s</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">total path, out and back</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">m</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">An echo is sound reflected back and heard as a separate sound. It needs a surface that sends enough of it back — hard, flat and heavy rather than soft and open — and it needs the surface to be far enough away, roughly 17 m or more in air, so that the reflection arrives more than about a tenth of a second late. The sound travels out and back, so the total path is twice the distance to the surface.</p>
+        </div>
+
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;An echo is a new sound the wall makes.&rdquo;</p>
+        <p>The wall makes nothing. Your shout arrives, pushes on the surface, and most of it is sent straight back the way it came \u2014 which is why an echo is recognisably your own voice, your own words, in your own accent, and why it is a little quieter rather than a little different. A wall that made sounds of its own would be a very odd wall, and it would still be making them when you were silent.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Soft materials stop sound travelling.&rdquo;</p>
+          <p>Soft materials absorb sound, which is not the same as stopping it. Absorbing means the energy is taken up by the material and ends as a very small amount of heating; the sound stops existing rather than being turned back. Blocking is a different job and is done by mass, not softness: a thin foam panel kills an echo beautifully and does almost nothing to stop your neighbour hearing the television, while a solid brick wall does the opposite. A recording studio needs both, and uses different materials for each.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Sound meeting a surface is partly reflected, partly absorbed and partly transmitted. An echo is reflected sound heard as a separate sound, and it needs both a surface that sends enough back — hard, flat and heavy rather than soft and open — and a distance of roughly 17 m or more, so the reflection arrives more than about a tenth of a second late. The sound travels out and back, so the total path is twice the distance to the surface.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Timing an echo is how a great deal of the world gets measured. A ship's echo sounder pings the sea bed and halves the answer; a bat does the same thing in air, fast enough to catch a moth in flight; an ultrasound scanner reads the reflections from the boundaries inside a body. Every one of them has to halve, and every one of them has to know the speed of sound in the material it is looking through — which is why a scanner set up for soft tissue would misplace everything if it were used on bone.</p>
+          <p>Designing a room for sound is a balancing act rather than a hunt for silence. A concert hall with no reflections at all sounds dead and lifeless, and musicians hate it; a hall with too many sounds like a swimming pool. Architects aim for a reverberation time — how long a sound takes to die away — of roughly two seconds for an orchestra, under a second for speech, and they get there by choosing how much of each surface is hard and how much is soft. Nothing about it stops sound reaching the audience; it only controls how much of it arrives late.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p6-06-sound-needs-a-medium.html">Sound needs a medium<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p6-08-hearing-and-auditory-range.html">Hearing and auditory range<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p6-02-transverse-waves-and-superposition.html">Transverse waves, reflection and superposition<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-09-ultrasound-at-work.html">Ultrasound at work<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Reverberation time, ultrasound and echo sounding calculations, and the reflection, absorption and transmission of waves at a boundary.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got an echo to time, or a room that sounds wrong?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The percentages of sound sent back are round teaching figures for a typical surface of each kind: real reflection depends strongly on the frequency of the sound and on the angle it arrives at, and a curtain that absorbs a high note well may do almost nothing to a low one. The 15% below which no separate echo is heard, and the tenth of a second inside which your ear runs two sounds together, are both approximate thresholds fixed here so that the states can be reached and compared. The speed of sound is taken as about 340 m/s, its value in air at around 20 degrees Celsius. The surface is treated as flat and facing you squarely, with no sound lost on the way there and back; over hundreds of metres a real shout both spreads and is absorbed by the air.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Shout at a cliff', short: 'SHOUT' },
+  { id: 's-cliff', label: 'Move the wall', short: 'CLIFF' },
+  { id: 's-bar', label: 'The bar and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-cliff') return s.gate !== null && (s.touched.d || s.touched.surf);
+  if (id === 's-bar') return s.buildOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const V = 340;
+const COVERS = { s: 's = d + d', d: 'd = s - d' };
+
+const SURFS = [
+  { label: 'Bare rock', frac: 90, caption: 'BARE ROCK \u2014 HARD, FLAT AND HEAVY', use: 'a quarry face' },
+  { label: 'Brick wall', frac: 70, caption: 'BRICK WALL \u2014 HARD BUT SLIGHTLY POROUS', use: 'a bare sports hall' },
+  { label: 'Mown grass', frac: 20, caption: 'MOWN GRASS \u2014 SOFT AND OPEN-TEXTURED', use: 'a playing field' },
+  { label: 'Heavy curtain', frac: 10, caption: 'HEAVY CURTAIN \u2014 SOFT, THICK AND FOLDED', use: 'a theatre' },
+  { label: 'Foam wedges', frac: 3, caption: 'FOAM WEDGES \u2014 BUILT TO ABSORB', use: 'a recording booth' }
+];
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A cliff echo comes back 2.0 s after you shout. In that time the sound covers 680 m. How far away is the cliff?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '680 m stays 680 m',
+        note: 'The distance is already in metres and the answer is wanted in metres, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'd = s ÷ 2',
+        note: 'The shout goes out and comes back, so the total path is two equal helpings of the distance.' },
+      { letter: 'I', label: 'Insert', line: 'd = 680 m ÷ 2',
+        note: 'The 680 m is the whole journey, out to the cliff and back — not the distance to the cliff.' },
+      { letter: 'F', label: 'Fine-tune', line: '680 ÷ 2 = 340',
+        note: 'Metres divided by a plain number leaves metres.' },
+      { letter: 'A', label: 'Answer', line: 'd = 340 m',
+        note: 'Forgetting to halve is the commonest way to get this wrong.' }
+    ] },
+  { tab: 'Convert first', head: 'An echo returns after the sound has travelled 1.02 km. How far away is the wall?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '1.02 km × 1000 = 1020 m',
+        note: 'The answer is wanted in metres, and a kilometre is a thousand of them.' },
+      { letter: 'F', label: 'Formula', line: 'd = s ÷ 2',
+        note: 'Out and back, so the path is two equal helpings of the distance.' },
+      { letter: 'I', label: 'Insert', line: 'd = 1020 m ÷ 2',
+        note: 'The converted total goes in. The 1.02 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '1020 ÷ 2 = 510',
+        note: 'Metres divided by a plain number leaves metres.' },
+      { letter: 'A', label: 'Answer', line: 'd = 510 m',
+        note: 'Halve 1.02 instead and the answer comes out 0.51 m — half a metre from a wall you shouted at.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Calculate',
+    question: 'You shout at a cliff and the echo returns 3.0 s later. Sound travels at about 340 m/s in air. How far away is the cliff?',
+    options: [
+      { text: 'About 510 m', correct: true },
+      { text: 'About 1020 m \u2014 multiply the speed by the time and that is the distance to the cliff', correction: 'That is the whole journey, out and back. The sound reached the cliff halfway through, so the distance to it is half of the 1020 m.' },
+      { text: 'About 255 m \u2014 halve the time first, then halve the distance', correction: 'Halving twice takes a quarter. Do one or the other: either halve the time to get 1.5 s each way, or work out the whole 1020 m path and halve that.' },
+      { text: 'About 113 m \u2014 divide the speed by the time', correction: 'That is the calculation upside down, and it gives metres per second squared rather than metres. Distance is speed multiplied by time.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A bedroom with a carpet, curtains and a bed gives no echo at all. Which statement is right?',
+    options: [
+      { text: 'The soft surfaces absorb most of the sound instead of reflecting it, and the room is also too small for a reflection to arrive late enough to be heard separately.', correct: true },
+      { text: 'Sound cannot travel through a room full of soft things.', correction: 'Sound crosses the room perfectly well \u2014 you can hear someone talking in it. What the soft surfaces change is how much comes back off them.' },
+      { text: 'There is no echo because the room is warm, and warm air absorbs sound.', correction: 'Temperature changes the speed of sound slightly and does not absorb it. The absorbing is done by the carpet, curtains and bedding.' },
+      { text: 'The sound is reflected just as strongly as in a sports hall, but the walls are too close for you to notice it.', correction: 'Half right, and the half that is missing matters. The distance really is too short, but soft furnishings also send far less back \u2014 an empty room the same size sounds noticeably live.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'A school sports hall with bare brick walls and a hard floor is so echoey that announcements are hard to make out. Explain why, and describe one change that would fix it and why it would work.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The hard walls\u2026',
+    criteria: [
+      'Says hard, flat, heavy surfaces reflect most of the sound that hits them.',
+      'Says the reflections arrive after the original sound, so words overlap with earlier words.',
+      'Says the hall is large enough for the delay to be long enough to hear as separate sound.',
+      'Names a soft, open-textured material to add \u2014 curtains, carpet, acoustic panels or similar.',
+      'Says that material absorbs the sound instead of reflecting it, so less comes back.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A ship measures the depth of the sea by sending a pulse of sound straight down and timing what comes back. The pulse returns after 0.40 s, and sound travels at about 1500 m/s in sea water. Work out the depth, and say why the answer would be wrong if you forgot that the pulse makes two journeys.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The total path is speed \u00d7 time\u2026',
+    criteria: [
+      'Works out the total path as about 1500 \u00d7 0.40 = 600 m.',
+      'Says that 600 m is down to the sea bed and back up again.',
+      'Halves it to give a depth of about 300 m, with the unit.',
+      'Says forgetting to halve would give 600 m, twice the real depth.',
+      'Uses the speed of sound in water rather than in air, and says why that matters here.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, dist: 100, surf: 0, touched: {}, cover: 's', workedStep: 0, formPick: null, insertPick: null, ansText: '', ansUnit: '', buildOpen: false });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+
+  cfifaVals(q1, q2) {
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: q2 ? [q1, q2] : [q1]
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const sf = SURFS[s.surf];
+    const path = 2 * s.dist;
+    const t = path / V;
+    const heard = sf.frac >= 15 && t >= 0.10;
+    const wallX = Math.round(200 + (s.dist / 500) * 700);
+    const bw = Math.max(1.5, 9 * (sf.frac / 100));
+    const midX = Math.round((150 + wallX) / 2);
+    let verdict, note;
+    if (sf.frac < 15) {
+      verdict = 'No echo you can pick out';
+      note = sf.label + ' sends only about ' + sf.frac + '% of the sound back, and below roughly 15% there is not enough returning to hear as a separate sound. The timing is not the problem: at ' +
+        s.dist + ' m the reflection would arrive ' + t.toFixed(2) + ' s after you shout, which is late enough. Put bare rock at the same ' + s.dist +
+        ' m and about 90% comes back, and you hear it.';
+    } else if (t < 0.10) {
+      verdict = 'One fuller sound, not two';
+      note = 'At ' + s.dist + ' m the reflection is back in ' + t.toFixed(3) + ' s, and your ear runs anything inside about 0.10 s together with the original. Plenty is coming back \u2014 about ' +
+        sf.frac + '% off ' + sf.label.toLowerCase() + ' \u2014 so the room sounds live rather than silent. Move out past about 17 m and the same reflection separates into an echo.';
+    } else {
+      verdict = 'A clear echo';
+      note = 'About ' + sf.frac + '% of your shout comes back off ' + sf.label.toLowerCase() + ', and the journey is ' + s.dist + ' m out and ' + s.dist +
+        ' m back \u2014 ' + path + ' m in all, which at about 340 m/s takes ' + t.toFixed(2) + ' s. Both conditions are met: enough returns, and it returns late enough to hear on its own.';
+    }
+    return Object.assign({
+      hookOptions: [
+        { letter: 'A', text: '170 m \u2014 the distance to the cliff' },
+        { letter: 'B', text: '340 m \u2014 out to the cliff and back again' },
+        { letter: 'C', text: '85 m \u2014 half the distance, because the echo is the return half' },
+        { letter: 'D', text: 'It depends on how loudly you shout' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'The sound made two journeys of 170 m: one out to the rock and one back to your ears. That is 340 m in 1.0 s, which is the speed of sound in air. Every echo calculation turns on that doubling, and forgetting it is the single commonest slip in this topic.',
+
+      benchProgress: (s.touched.d || s.touched.surf) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It doubles, because the sound has twice as far to go each way' },
+        { letter: 'B', text: 'It stays the same, because the speed of sound has not changed' },
+        { letter: 'C', text: 'It halves, because you are further from the reflection' },
+        { letter: 'D', text: 'It is four times as long, because both journeys have doubled' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      distValue: s.dist, distLabel: s.dist + ' m',
+      onDist: (e) => this.setState((st) => ({ dist: Number(e.target.value), touched: Object.assign({}, st.touched, { d: true }) })),
+      surfTabs: SURFS.map((x, i) => ({
+        label: x.label, pressed: s.surf === i, style: this.seg(s.surf === i, true, false),
+        onClick: () => this.setState((st) => ({ surf: i, touched: Object.assign({}, st.touched, { surf: true }) }))
+      })),
+      wallPath: 'M' + wallX + ' 70 V250',
+      outArrow: 'M150 108 H' + (wallX - 26) + ' M' + (wallX - 26) + ' 108 L' + (wallX - 42) + ' 99 M' + (wallX - 26) + ' 108 L' + (wallX - 42) + ' 117',
+      outStyle: 'fill: none; stroke: #8FB7FF; stroke-width: 9; stroke-linecap: round; stroke-linejoin: round;',
+      backArrow: 'M' + (wallX - 26) + ' 176 H152 M152 176 L168 167 M152 176 L168 185',
+      backStyle: 'fill: none; stroke: #8FB7FF; stroke-width: ' + bw.toFixed(1) + '; stroke-linecap: round; stroke-linejoin: round;' + (sf.frac < 15 ? ' stroke-dasharray: 14 12;' : ''),
+      backLabel: 'about ' + sf.frac + '% comes back',
+      dimLine: 'M150 274 V294 M' + wallX + ' 274 V294 M150 284 H' + wallX,
+      dimLabelStyle: 'position:absolute;left:' + (((150 + wallX) / 2 / 1000) * 100).toFixed(2) +
+        '%;top:75%;transform:translate(-50%,0);font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.5vw,18px);color:#E9DCC8;white-space:nowrap;pointer-events:none;',
+      surfCaption: sf.caption,
+      pathLabel: path + ' m',
+      pathWorking: s.dist + ' m out + ' + s.dist + ' m back',
+      timeLabel: t.toFixed(t < 0.1 ? 3 : 2) + ' s',
+      timeWorking: path + ' m \u00f7 340 m/s',
+      fracLabel: 'about ' + sf.frac + '% of the sound returns',
+      verdictWord: verdict,
+      benchAlt: 'A person shouting at a ' + sf.label.toLowerCase() + ' surface ' + s.dist +
+        ' metres away, with an arrow going out at full thickness and a thinner arrow coming back drawn to about ' + sf.frac + ' per cent of it.',
+      benchNote: note,
+
+      coverResult: COVERS[s.cover],
+      coverWhole: s.cover === 's', coverP0: s.cover === 'd', coverP1: false,
+      coverTabs: this.coverBtns([{ id: 's', label: 'Cover s' }, { id: 'd', label: 'Cover d' }])
+    }, this.cfifaVals({
+      tab: 'Question 1', id: 'p607q1',
+      head: 'Your surface is ' + s.dist + ' m away.',
+      formOptions: ['s = d + d', 's = d \u00f7 2', 's = d \u00d7 340'],
+      insertOptions: ['s = ' + s.dist + ' m + ' + s.dist + ' m', 's = ' + s.dist + ' m \u00f7 2', 's = ' + s.dist + ' m \u00d7 340 m/s'],
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+        line: 'the round trip is already in metres',
+        note: 'The bench gives the whole path in metres and the answer is wanted in metres, so there is nothing to convert.' },
+        { letter: 'F', label: 'Formula', line: 's = d + d',
+          note: 'Two equal parts, out and back, make the whole path.' },
+        { letter: 'I', label: 'Insert', line: 's = ' + s.dist + ' m + ' + s.dist + ' m',
+          note: 'Both parts are the distance to the surface, which your slider sets.' },
+        { letter: 'F', label: 'Fine-tune', line: s.dist + ' + ' + s.dist + ' = ' + path,
+          note: 'Metres added to metres leave metres.' },
+        { letter: 'A', label: 'Answer', line: 's = ' + path + ' m',
+          note: 'At about 340 m/s that takes ' + t.toFixed(t < 0.1 ? 3 : 2) + ' s, which is what the stopwatch on the bench reads.' }
+      ],
+      close: 'The five lines above give ' + path +
+        ' m, and the bench shows the same journey drawn out and back.'
+    }, {
+      tab: 'Question 2', id: 'p607q2',
+      head: 'A sonar ping covers 2.4 km on its round trip to the sea bed and back. How deep is the water?',
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+          line: '2.4 km × 1000 = 2400 m',
+          note: 'The answer is wanted in metres, so multiply the kilometres by 1000.' },
+        { letter: 'F', label: 'Formula', line: 'd = s ÷ 2',
+          note: 'Down and back, so the path is two equal helpings of the depth.' },
+        { letter: 'I', label: 'Insert', line: 'd = 2400 m ÷ 2',
+          note: 'The converted total goes in. The 2.4 never does.' },
+        { letter: 'F', label: 'Fine-tune', line: '2400 ÷ 2 = 1200',
+          note: 'Metres divided by a plain number leaves metres.' },
+        { letter: 'A', label: 'Answer', line: 'd = 1200 m',
+          note: 'Halve 2.4 instead and the sea bed comes out 1.2 m down.' }
+      ],
+      close: 'The five lines give 1200 m. The whole question turned on the first one.'
+    }));
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

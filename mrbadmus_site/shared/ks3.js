@@ -8309,6 +8309,3985 @@
   }
 /* ═══ END P3 wiring ═══ */
 
+/* ═══ BEGIN P4 wiring ═══════════════════════════════════════════════════
+   P4's instrument families — *Forces*. Behaviour measured off Claude
+   Design's delivered pages in `docs/ks3/design-reference/p4/`.
+
+   ⚖️ THE BAND STOP TICKS EARLIER THAN THE BENCH, AND THAT IS HERS. On five
+   of the nine pages her own `DONE(id, s)` gives the band section a LOWER
+   threshold than the practical above it — `s-pairs` at one case opened
+   against `s-bench` at three, `s-three` at the gate alone against `s-bench`
+   at the gate AND a control touched. MRB-249's `mirrors` ties two stops
+   together and would make the band stop tick LATE, so it is not used: each
+   bench marks its own band sibling through `markSibling`, at her threshold.
+
+   ⚖️ EVERY LIVE VALUE IS AN HTML SPAN OVER A `position: relative` WRAPPER,
+   NEVER AN SVG `<text>`. Design's own note for the generator, and it fails
+   SILENTLY: the runtime wraps interpolated text in a `<span>`, and a `span`
+   created in the SVG namespace is not a renderable element. Fixed captions
+   stay as literal `<text>`; attribute holes (`d`, `x`, `width`) are fine.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  /* The band section a bench ticks on its own count. See the note above. */
+  function markSibling(sec, wrap, n) {
+    var id = wrap.getAttribute("data-sibling");
+    var at = parseInt(wrap.getAttribute("data-sibling-at"), 10);
+    if (!id || !(at > 0)) { return; }
+    var band = document.getElementById(id);
+    if (band) { markStage(band, n >= at); }
+  }
+
+  /* Fill `{token}` holes from a live map. Used by the CFIFA attempt panel,
+     whose first question is computed from the bench above it. A token the
+     bench never publishes is LEFT AS THE LITERAL TEMPLATE — visible on the
+     page and caught by the liveness sweep — rather than blanked, which is
+     the failure mode that ships an empty sentence nobody notices. */
+  function fillTokens(tpl, vals) {
+    if (!tpl) { return ""; }
+    return tpl.replace(/\{([a-zA-Z0-9_]+)\}/g, function (whole, key) {
+      return Object.prototype.hasOwnProperty.call(vals, key)
+        ? String(vals[key]) : whole;
+    });
+  }
+
+  /* A bench publishes its live numbers here; the attempt panel on the same
+     page repaints from them. One direction only: the panel never writes
+     back, so a bench cannot be moved by the scaffold that reads it. */
+  function publishLive(sec, vals, blocked) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    var panels = toArray(host.querySelectorAll("[data-p4cfa]"));
+    each(panels, function (p) { paintAttempt(p, vals, blocked); });
+  }
+
+  function tagStyle(fx, fy, colour, align) {
+    return "position:absolute;left:" + (fx * 100).toFixed(2) + "%;top:" +
+      (fy * 100).toFixed(2) + "%;transform:translate(" +
+      (align === "end" ? "-100%" : align === "start" ? "0" : "-50%") +
+      ",-50%);color:" + colour + ";";
+  }
+
+  function fillSpan(wrap, hook, key, text, style) {
+    var el = wrap.querySelector('[data-' + hook + '-fill="' + key + '"]');
+    if (!el) { return; }
+    el.textContent = text === null || text === undefined ? "" : text;
+    if (style) { el.setAttribute("style", style); }
+    setHidden(el, !text);
+  }
+
+  function outEl(wrap, hook, id) {
+    return wrap.querySelector('[data-' + hook + '-out="' + id + '"]');
+  }
+
+  /* ⊕ PHASE 3, 25 Aug 2026 · SETS EVERY ELEMENT THAT DECLARES THE OUTPUT,
+     not just the first.
+
+     ⚠️ FOUR TILES SHIPPED PERMANENTLY DEAD BECAUSE THIS SAID
+     `querySelector`. Where a bench names a slider and a readout tile with
+     the SAME id — `rbench` right and left, `span` force, `splot` load,
+     `dprobe` depth — the row-head reading matched first and the tile below
+     it never updated. It sat at the authored placeholder, an em dash,
+     while the identical value was displayed a few centimetres above it.
+
+     No gate could see it. `ks3_instrument_liveness` asserts the BLOCK's DOM
+     changed when a control is pressed, and it did — every other tile moved.
+     A single dead element inside a live block is invisible to it, which is
+     exactly the shape of failure that survives longest.
+
+     Two elements carrying `data-<hook>-out="X"` both mean "display output
+     X". Updating both is what the attribute already claimed. */
+  function setOut(wrap, hook, id, text) {
+    var els = wrap.querySelectorAll(
+      '[data-' + hook + '-out="' + id + '"]');
+    for (var i = 0; i < els.length; i += 1) { els[i].textContent = text; }
+  }
+
+  /* A vertical arrow, Design's own head geometry. `len` in px of the
+     drawing's own viewBox. Refuses to draw below 2px: a zero-length arrow
+     is not a small arrow, and every P4 bench prints words at zero instead. */
+  function arrowV(x, y0, len, down, head, half) {
+    head = head || 26; half = half || 17;
+    if (!(len > 2)) { return { shaft: "M0 0", head: "M0 0" }; }
+    var tip = down ? y0 + len : y0 - len;
+    var base = down ? tip - head : tip + head;
+    return {
+      shaft: "M" + x + " " + y0 + " V" + base,
+      head: "M" + x + " " + tip + " L" + (x - half) + " " + base +
+            " L" + (x + half) + " " + base + " Z"
+    };
+  }
+
+  function arrowH(x0, y, len, right, head, half) {
+    head = head || 28; half = half || 16;
+    if (!(len > 2)) { return { shaft: "M0 0", head: "M0 0" }; }
+    var tip = right ? x0 + len : x0 - len;
+    var base = right ? tip - head : tip + head;
+    return {
+      shaft: "M" + x0 + " " + y + " H" + base,
+      head: "M" + tip + " " + y + " L" + base + " " + (y - half) +
+            " L" + base + " " + (y + half) + " Z"
+    };
+  }
+
+  function setPath(wrap, sel, d) {
+    var el = wrap.querySelector(sel);
+    if (!el) { return; }
+    el.setAttribute("d", d || "M0 0");
+    setHidden(el, !d || d === "M0 0");
+  }
+
+  /* ── the CFIFA attempt panel (shared shape, P4's copy of the wiring) ──
+
+     ⚖️ THE CHECK BUTTON REFUSES AN EMPTY ATTEMPT. Design's own Check accepts
+     nothing and reveals the model; a student who taps it first has been
+     handed the answer before writing anything, which is the whole thing this
+     half of the block exists to prevent. Disabled until one line is written.
+
+     ⚖️ THE SELF-TICK IS THE STUDENT'S, AND THE TALLY COUNTS IT. Nothing here
+     marks a line right or wrong: the five model lines appear beside what the
+     student wrote and they decide. That is the same contract the mastery
+     ladder's rungs 3 and 4 already use. */
+  function paintAttempt(wrap, vals, blocked) {
+    var qs = toArray(wrap.querySelectorAll("[data-p4cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }     /* only Q1 is live on the bench */
+      var head = q.querySelector("[data-p4cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p4cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p4cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p4cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+      var block = q.querySelector("[data-p4cfa-blocked]");
+      var rows = q.querySelector(".ks3-cfa-rows");
+      var chk = q.querySelector("[data-p4cfa-check]");
+      if (block) { setHidden(block, !blocked); }
+      if (rows) { setHidden(rows, !!blocked); }
+      if (chk && blocked) { chk.setAttribute("disabled", ""); }
+    });
+  }
+
+  function wireCfifaAttempt(sec) {
+    var wrap = sec.querySelector("[data-p4cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p4cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p4cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p4cfa-input]"));
+      var btn = q.querySelector("[data-p4cfa-check]");
+      var hint = q.querySelector("[data-p4cfa-hint]");
+      var reveal = q.querySelector("[data-p4cfa-reveal]");
+      var tally = q.querySelector("[data-p4cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p4cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p4cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p4cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+  /* p4-01 `#s-bench` — the interaction board.
+
+     ⚖️ THE VERDICT IS SEALED UNTIL THE PARTNER IS NAMED. Each case opens on
+     the question and three options and NOTHING ELSE; the diagram, the tiles
+     and the note appear together once one is pressed. Drawing the pair first
+     would hand over the answer to the only question the case asks.
+
+     ⚖️ THE ARROWS ARE A FIXED LENGTH AND THE SIZES ARE PRINTED. Five cases
+     spanning about 2 N to about 200 billion billion N cannot share a linear
+     bar. What the drawing asserts is that the two forces are the SAME, which
+     is true in every case; it asserts nothing about how big. */
+  function wireInteractionBoard(sec) {
+    var wrap = sec.querySelector("[data-iboard]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-iboard-tab]"));
+    var cases = toArray(wrap.querySelectorAll("[data-iboard-case]"));
+    var panel = wrap.querySelector("[data-iboard-panel]");
+    var svg = wrap.querySelector("[data-iboard-alt]");
+    var live = wrap.querySelector("[data-iboard-live]");
+    var TOTAL = parseInt(wrap.getAttribute("data-total"), 10) || cases.length;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
+    var at = 0;
+    var picks = {};
+
+    function data(i) {
+      return wrap.querySelector('[data-iboard-data="' + i + '"]');
+    }
+
+    function paint() {
+      var d = data(at);
+      var opened = Object.keys(picks).length;
+      var open = picks[at] !== undefined;
+
+      each(tabs, function (t, i) {
+        t.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+      each(cases, function (c, i) { setHidden(c, i !== at); });
+      setHidden(panel, !open);
+
+      var prog = wrap.querySelector("[data-iboard-progress]");
+      if (prog) {
+        prog.textContent = opened + " of " + TOTAL + " cases opened";
+      }
+
+      if (open && d) {
+        var contact = d.getAttribute("data-contact") === "1";
+        var kind = d.getAttribute("data-kind");
+        each(toArray(wrap.querySelectorAll("[data-iboard-arrow]")),
+          function (g) {
+            setHidden(g, g.getAttribute("data-iboard-arrow") !== kind);
+          });
+        each(toArray(wrap.querySelectorAll("[data-iboard-join]")),
+          function (g) {
+            setHidden(g, g.getAttribute("data-iboard-join") !==
+              (contact ? "contact" : "gap"));
+          });
+        fillSpan(wrap, "iboard", "name_a", d.getAttribute("data-a"),
+                 tagStyle(0.312, 0.505, "#FBF3E6"));
+        fillSpan(wrap, "iboard", "name_b", d.getAttribute("data-b"),
+                 tagStyle(0.688, 0.505, "#FBF3E6"));
+        fillSpan(wrap, "iboard", "size_a", d.getAttribute("data-size"),
+                 tagStyle(0.312, 0.12, "#8FB7FF"));
+        fillSpan(wrap, "iboard", "size_b", d.getAttribute("data-size"),
+                 tagStyle(0.688, 0.12, "#8FB7FF"));
+        fillSpan(wrap, "iboard", "join",
+                 contact ? "TOUCHING" : "NOT TOUCHING",
+                 tagStyle(0.5, 0.36, "#C6B9A7"));
+        fillSpan(wrap, "iboard", "cap_a", d.getAttribute("data-capa"),
+                 tagStyle(0.312, 0.74, "#C6B9A7"));
+        fillSpan(wrap, "iboard", "cap_b", d.getAttribute("data-capb"),
+                 tagStyle(0.688, 0.74, "#C6B9A7"));
+        setOut(wrap, "iboard", "pair", d.getAttribute("data-pair"));
+        setOut(wrap, "iboard", "size", d.getAttribute("data-size"));
+        setOut(wrap, "iboard", "kind",
+               kind === "push" ? "A push, apart" : "A pull, together");
+        if (svg) { svg.setAttribute("aria-label", d.getAttribute("data-alt")); }
+        var note = cases[at].querySelector(
+          '[data-iboard-note="' + picks[at] + '"]');
+        each(toArray(cases[at].querySelectorAll("[data-iboard-note]")),
+          function (n) { setHidden(n, n !== note); });
+        if (live && note) { live.textContent = note.textContent; }
+      }
+
+      setCount(sec, opened);
+      markStage(sec, opened >= TARGET);
+      markSibling(sec, wrap, opened);
+    }
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () { at = i; paint(); });
+    });
+
+    each(cases, function (c, i) {
+      each(toArray(c.querySelectorAll("[data-iboard-opt]")), function (b, j) {
+        b.addEventListener("click", function () {
+          if (picks[i] !== undefined) { return; }
+          picks[i] = j;
+          each(toArray(c.querySelectorAll("[data-iboard-opt]")),
+            function (o, k) {
+              o.setAttribute("aria-pressed", k === j ? "true" : "false");
+              o.setAttribute("disabled", "");
+            });
+          paint();
+        });
+      });
+    });
+
+    paint();
+  }
+
+  /* p4-02 `#s-bench` — the sledge on ice.
+
+     ⚖️ ONE PX-PER-NEWTON SCALE FOR ALL THREE ARROWS, INCLUDING THE
+     RESULTANT. The lesson's own second misconception is that arrows should
+     be drawn the same length for tidiness; a bench that scaled its arrows to
+     fit would be committing the error the block below it marks wrong.
+
+     ⚖️ ZERO DRAWS NOTHING AND PRINTS `0 N`. `arrowH` refuses below 2px. */
+  function wireResultantBench(sec) {
+    var wrap = sec.querySelector("[data-rbench]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-rbench-gate]");
+    var body = wrap.querySelector("[data-rbench-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-rbench-gopt]"));
+    var sliders = toArray(wrap.querySelectorAll("[data-rbench-slider]"));
+    var svg = wrap.querySelector("[data-rbench-alt]");
+    var noRes = wrap.querySelector("[data-rbench-nores]");
+    var noteEl = wrap.querySelector("[data-rbench-note]");
+    var SCALE = parseFloat(wrap.getAttribute("data-scale")) || 6.33;
+    var committed = false, touched = 0;
+
+    function val(id) {
+      var el = wrap.querySelector('[data-rbench-slider="' + id + '"]');
+      return el ? Number(el.value) : 0;
+    }
+    function branchNote(key, vals) {
+      var el = wrap.querySelector('[data-rbench-branch="' + key + '"]');
+      return el ? fillTokens(el.getAttribute("data-note"), vals) : "";
+    }
+
+    function paint() {
+      var r = val("right"), l = val("left");
+      var diff = Math.abs(r - l);
+      var big = Math.max(r, l), small = Math.min(r, l);
+      var resRight = r > l;
+      var dirWord = r === l ? "neither way"
+        : (resRight ? "to the right" : "to the left");
+
+      var rLen = Math.round(r * SCALE), lLen = Math.round(l * SCALE);
+      var resLen = Math.round(diff * SCALE);
+      var rA = arrowH(660, 56, rLen, true);
+      var lA = arrowH(460, 56, lLen, false);
+      var resA = resRight ? arrowH(560, 320, resLen, true)
+                          : arrowH(560, 320, resLen, false);
+
+      setPath(wrap, '[data-rbench-shaft="right"]', r > 0 ? rA.shaft : null);
+      setPath(wrap, '[data-rbench-head="right"]', r > 0 ? rA.head : null);
+      setPath(wrap, '[data-rbench-shaft="left"]', l > 0 ? lA.shaft : null);
+      setPath(wrap, '[data-rbench-head="left"]', l > 0 ? lA.head : null);
+      setPath(wrap, '[data-rbench-shaft="res"]', diff > 0 ? resA.shaft : null);
+      setPath(wrap, '[data-rbench-head="res"]', diff > 0 ? resA.head : null);
+      if (noRes) { setHidden(noRes, diff !== 0); }
+
+      fillSpan(wrap, "rbench", "right", r > 0 ? r + " N" : "",
+               tagStyle((660 + rLen / 2) / 1120, 0.068, "#8FB7FF"));
+      fillSpan(wrap, "rbench", "left", l > 0 ? l + " N" : "",
+               tagStyle((460 - lLen / 2) / 1120, 0.068, "#8FB7FF"));
+      fillSpan(wrap, "rbench", "res", diff > 0 ? diff + " N" : "",
+               tagStyle((resRight ? 560 + resLen / 2 : 560 - resLen / 2)
+                        / 1120, 0.921, "#FFC53D"));
+
+      setOut(wrap, "rbench", "right", r + " N");
+      setOut(wrap, "rbench", "left", l + " N");
+      setOut(wrap, "rbench", "res", diff === 0
+        ? "0 N — nothing left over" : diff + " N " + dirWord);
+
+      var key = (r === 0 && l === 0) ? "both_zero"
+        : (l === 0) ? "right_only"
+        : (r === 0) ? "left_only"
+        : (r === l) ? "equal" : "unequal";
+      var vals = { right: r, left: l, big: big, small: small, diff: diff,
+                   dir: dirWord };
+      if (noteEl) { noteEl.textContent = branchNote(key, vals); }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A sledge on ice. An arrow of " + r + " newtons points right and " +
+          "an arrow of " + l + " newtons points left, drawn to the same " +
+          "scale. Below them, a single arrow of " + diff + " newtons " +
+          dirWord + ".");
+      }
+
+      var prog = wrap.querySelector("[data-rbench-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both sliders live" : "Set a pull to begin";
+      }
+      publishLive(sec, vals, r === 0 && l === 0);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+
+    each(sliders, function (s) {
+      ["input", "change"].forEach(function (ev) {
+        s.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+
+    paint();
+  }
+
+  /* p4-03 `#s-bench` — the support rig.
+
+     ⚖️ `upward = min(weight, cap)` AND THE LEFTOVER IS THE REMAINDER. One
+     place, and everything on the block is derived from it: the two arrows,
+     the third arrow, the verdict word and the branch. A support that cannot
+     match the weight supplies what it can and the rest is left over
+     downwards.
+
+     ⚖️ THE COIL LENGTH TRACKS THE FORCE. Design redraws the zig at
+     `20 + U × 1.6` px, so the drawing agrees with rung 3 — the spring stops
+     stretching where its pull reaches the weight. A fixed coil would make
+     the figure contradict the answer the lesson marks. */
+  function wireSupportRig(sec) {
+    var wrap = sec.querySelector("[data-hrig]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-hrig-gate]");
+    var body = wrap.querySelector("[data-hrig-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-hrig-gopt]"));
+    var sups = toArray(wrap.querySelectorAll("[data-hrig-support]"));
+    var mass = wrap.querySelector("[data-hrig-mass]");
+    var svg = wrap.querySelector("[data-hrig-alt]");
+    var noteEl = wrap.querySelector("[data-hrig-note]");
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var SCALE = parseFloat(wrap.getAttribute("data-scale")) || 3;
+    var at = wrap.getAttribute("data-start") || "";
+    var committed = false, touched = 0;
+
+    function sup() {
+      for (var i = 0; i < sups.length; i += 1) {
+        if (sups[i].getAttribute("data-hrig-support") === at) {
+          return sups[i];
+        }
+      }
+      return sups[0];
+    }
+
+    function paint() {
+      var s = sup();
+      var m = mass ? Number(mass.value) : 0;
+      var W = Math.round(m * G * 100) / 100;
+      var capRaw = s.getAttribute("data-cap");
+      var cap = capRaw === "inf" ? Infinity : parseFloat(capRaw);
+      var U = Math.min(W, cap);
+      var L = Math.round((W - U) * 100) / 100;
+      var shape = s.getAttribute("data-shape");
+      var torn = shape === "sheet" && L > 0;
+
+      each(sups, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-hrig-support") === at ? "true" : "false");
+      });
+
+      each(toArray(wrap.querySelectorAll("[data-hrig-shape]")), function (g) {
+        var want = g.getAttribute("data-hrig-shape");
+        var show = (shape === "solid" && want === "solid")
+          || (shape === "sheet" && want === (torn ? "torn" : "sheet"));
+        setHidden(g, !show);
+      });
+
+      /* The coil, redrawn so its length tracks the pull. */
+      var coil = "M0 0";
+      if (shape === "spring") {
+        var stretch = Math.round(20 + U * 1.6);
+        coil = "M500 50";
+        for (var i = 0; i < 7; i += 1) {
+          coil += " L" + (i % 2 ? 460 : 540) + " " +
+                  (50 + (stretch / 7) * (i + 1));
+        }
+        coil += " L500 " + (50 + stretch + 12) + " V190";
+      }
+      setPath(wrap, "[data-hrig-coil]", shape === "spring" ? coil : null);
+
+      var wA = arrowV(760, 230, Math.round(W * SCALE), true);
+      var uA = arrowV(240, 230, Math.round(U * SCALE), false);
+      var oA = arrowV(520, 230, Math.round(L * SCALE), true);
+      setPath(wrap, '[data-hrig-shaft="weight"]', wA.shaft);
+      setPath(wrap, '[data-hrig-head="weight"]', wA.head);
+      setPath(wrap, '[data-hrig-shaft="up"]', U > 0 ? uA.shaft : null);
+      setPath(wrap, '[data-hrig-head="up"]', U > 0 ? uA.head : null);
+      setPath(wrap, '[data-hrig-shaft="over"]', L > 0 ? oA.shaft : null);
+      setPath(wrap, '[data-hrig-head="over"]', L > 0 ? oA.head : null);
+
+      fillSpan(wrap, "hrig", "mass", m.toFixed(1) + " kg",
+               tagStyle(0.5, 0.30, "#FBF3E6"));
+      fillSpan(wrap, "hrig", "weight", W + " N",
+               tagStyle(0.78, (230 + W * SCALE + 30) / 460, "#8FB7FF"));
+      fillSpan(wrap, "hrig", "up", U > 0 ? U + " N" : "",
+               tagStyle(0.24, (230 - U * SCALE - 26) / 460, "#8FB7FF"));
+      fillSpan(wrap, "hrig", "over", L > 0 ? L + " N left over" : "",
+               tagStyle(0.53, (230 + L * SCALE + 26) / 460, "#FFC53D",
+                        "start"));
+      fillSpan(wrap, "hrig", "word", s.getAttribute("data-word"),
+               tagStyle(0.5, 0.94, "#C6B9A7"));
+
+      setOut(wrap, "hrig", "mass", m.toFixed(1) + " kg");
+      setOut(wrap, "hrig", "weight", W + " N");
+      setOut(wrap, "hrig", "up", U + " N");
+      setOut(wrap, "hrig", "res", L === 0 ? "0 N" : L + " N down");
+      setOut(wrap, "hrig", "verdict",
+             L === 0 ? "Balanced — no change" : "Unbalanced — it falls");
+
+      var tpl = (torn || (shape === "sheet" && L === 0))
+        ? (L === 0 ? s.getAttribute("data-note-ok") : s.getAttribute("data-note"))
+        : s.getAttribute("data-note");
+      if (!tpl) { tpl = s.getAttribute("data-note"); }
+      if (noteEl) {
+        noteEl.textContent = fillTokens(tpl,
+          { up: U, weight: W, over: L, mass: m.toFixed(1) });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A " + m.toFixed(1) + " kilogram load with " +
+          (s.getAttribute("data-word") || "").toLowerCase() +
+          ". A downward arrow of " + W + " newtons and an upward arrow of " +
+          U + " newtons, drawn to the same scale" +
+          (L > 0 ? ", with a third arrow showing " + L +
+                   " newtons left over downwards." :
+                   ", the same length as each other."));
+      }
+
+      var prog = wrap.querySelector("[data-hrig-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+
+      /* The rig publishes the whole CFIFA line-set, because which
+         relationship the five lines need depends on whether it balances. */
+      var balanced = L === 0;
+      publishLive(sec, {
+        mass: m.toFixed(1), weight: W, up: U, over: L,
+        supportword: (s.getAttribute("data-word") || "").toLowerCase(),
+        target: balanced ? U : L,
+        formula: balanced ? "upward force = weight"
+                          : "resultant = weight − upward force",
+        formulanote: balanced
+          ? "It is at rest and staying at rest, so the two are equal."
+          : "The support cannot match the weight, so something is left over.",
+        insert: balanced
+          ? "upward force = " + m.toFixed(1) + " kg × 10 N/kg"
+          : "resultant = " + W + " N − " + U + " N",
+        finetune: balanced ? m.toFixed(1) + " × 10 = " + W
+                           : W + " − " + U + " = " + L,
+        answer: balanced ? "upward force = " + U + " N, upwards"
+                         : "resultant = " + L + " N, downwards",
+        answernote: balanced
+          ? "And the resultant is 0 N, which is why nothing happens."
+          : "Unbalanced, so the motion changes: it starts to fall."
+      }, false);
+
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+
+    each(sups, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-hrig-support");
+        touched += 1;
+        paint();
+      });
+    });
+
+    if (mass) {
+      ["input", "change"].forEach(function (ev) {
+        mass.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p4-04 `#s-bench` — the trolley and the light gates.
+
+     ⚖️ EVERY RUN STARTS AT THE SAME 2.0 m/s, AND THAT IS THE CONTROL. The
+     only things allowed to vary between runs are the resultant and how long
+     it acts, because the lesson's claim is that the resultant decides what
+     changes. Gate 1 is a fixed readout and is never written to.
+
+     ⚖️ `s-three` TICKS ON THE GATE ALONE, before any control is moved. */
+  function wireGateRun(sec) {
+    var wrap = sec.querySelector("[data-grun]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-grun-gate]");
+    var body = wrap.querySelector("[data-grun-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-grun-gopt]"));
+    var caseBtns = toArray(wrap.querySelectorAll("[data-grun-case]"));
+    var secsBtns = toArray(wrap.querySelectorAll("[data-grun-secs]"));
+    var svg = wrap.querySelector("[data-grun-alt]");
+    var noteEl = wrap.querySelector("[data-grun-note]");
+    var at = wrap.getAttribute("data-start-case");
+    var secs = parseInt(wrap.getAttribute("data-start-secs"), 10) || 1;
+    var committed = false, touched = 0;
+
+    function caseData(id) {
+      return wrap.querySelector('[data-grun-case-data="' + id + '"]');
+    }
+    function runData(id, s) {
+      return wrap.querySelector('[data-grun-data="' + id + "|" + s + '"]');
+    }
+
+    function paint() {
+      var c = caseData(at), r = runData(at, secs);
+      if (!c || !r) { return; }
+      var dir = c.getAttribute("data-dir");
+      var far = secs === 3;
+      var bend = dir === "side" ? (far ? 96 : 34) : 0;
+      var stopShort = dir === "back" && far;
+      var endX = stopShort ? 520 : 840;
+      var tx = stopShort ? 400 : 720;
+      var ty = 194 - bend;
+
+      each(caseBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-grun-case") === at ? "true" : "false");
+      });
+      each(secsBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          parseInt(b.getAttribute("data-grun-secs"), 10) === secs
+            ? "true" : "false");
+      });
+
+      var track = "M180 222";
+      track += dir === "side"
+        ? " Q" + ((180 + endX) / 2) + " 222 " + endX + " " + (222 - bend)
+        : " H" + endX;
+      setPath(wrap, "[data-grun-track]", track);
+
+      var trolley = wrap.querySelector("[data-grun-trolley]");
+      if (trolley) {
+        trolley.setAttribute("x", tx);
+        trolley.setAttribute("y", ty);
+      }
+
+      var f = { shaft: "M0 0", head: "M0 0" }, fx = 0, fy = 0;
+      if (dir === "fwd") {
+        f = arrowH(tx + 120, ty + 28, 124, true);
+        fx = tx + 172; fy = ty - 4;
+      } else if (dir === "back") {
+        f = arrowH(tx, ty + 28, 124, false);
+        fx = tx - 52; fy = ty - 4;
+      } else if (dir === "side") {
+        f = arrowV(tx + 60, ty, 110, false, 30);
+        fx = tx + 150; fy = ty - 74;
+      }
+      setPath(wrap, '[data-grun-force="shaft"]',
+              dir === "none" ? null : f.shaft);
+      setPath(wrap, '[data-grun-force="head"]',
+              dir === "none" ? null : f.head);
+
+      fillSpan(wrap, "grun", "force",
+               dir === "none" ? "" : c.getAttribute("data-label"),
+               tagStyle(fx / 1080, (fy - 8) / 330, "#FFC53D"));
+      fillSpan(wrap, "grun", "path", c.getAttribute("data-path"),
+               tagStyle(0.5, 0.86, "#C6B9A7"));
+
+      setOut(wrap, "grun", "gate2", r.getAttribute("data-after"));
+      setOut(wrap, "grun", "changed", c.getAttribute("data-changed"));
+      setOut(wrap, "grun", "same", c.getAttribute("data-same"));
+      if (noteEl) { noteEl.textContent = r.getAttribute("data-note"); }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A trolley on a track between two light gates, with a resultant " +
+          "force of " + c.getAttribute("data-label") + " acting for " + secs +
+          " second" + (secs === 1 ? "" : "s") + ". The dashed path is " +
+          c.getAttribute("data-path") + ", and the second gate reads " +
+          r.getAttribute("data-after") + ".");
+      }
+
+      var prog = wrap.querySelector("[data-grun-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(caseBtns, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-grun-case"); touched += 1; paint();
+      });
+    });
+    each(secsBtns, function (b) {
+      b.addEventListener("click", function () {
+        secs = parseInt(b.getAttribute("data-grun-secs"), 10);
+        touched += 1; paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p4-05 `#s-bench` — the block and the spring balance.
+
+     ⚖️ TWO LANES, ONE SCALE, AND THE GAP IS THE LESSON. The break-away pull
+     and the sliding pull are drawn one above the other at the same px per
+     newton, because the hook is that starting is harder than keeping going.
+     Two figures at two scales would show the same numbers and hide the point.
+
+     ⚖️ THE SECOND SENTENCE IS ALWAYS PRESENT — a surface branch AND a
+     comparison against another load on the same surface, so a student is
+     never left with a reading whose only meaning is itself. */
+  function wireDragLane(sec) {
+    var wrap = sec.querySelector("[data-dlane]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-dlane-gate]");
+    var body = wrap.querySelector("[data-dlane-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-dlane-gopt]"));
+    var surfs = toArray(wrap.querySelectorAll("[data-dlane-surface]"));
+    var masses = toArray(wrap.querySelectorAll("[data-dlane-mass]"));
+    var svg = wrap.querySelector("[data-dlane-alt]");
+    var noteEl = wrap.querySelector("[data-dlane-note]");
+    var cmpEl = wrap.querySelector("[data-dlane-compare]");
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var SCALE = parseFloat(wrap.getAttribute("data-scale")) || 3;
+    var SF = parseFloat(wrap.getAttribute("data-start-factor")) || 1.2;
+    var at = wrap.getAttribute("data-start-surface");
+    var kg = parseFloat(wrap.getAttribute("data-start-mass")) || 6;
+    var committed = false, touched = 0;
+    var CMP = cmpEl ? cmpEl.getAttribute("data-template") : "";
+
+    function surf() {
+      for (var i = 0; i < surfs.length; i += 1) {
+        if (surfs[i].getAttribute("data-dlane-surface") === at) {
+          return surfs[i];
+        }
+      }
+      return surfs[0];
+    }
+    function grip() { return parseFloat(surf().getAttribute("data-grip")); }
+    function one(v) { return Math.round(v * 10) / 10; }
+
+    /* Design's four generated textures. Repeated marks are ONE path string
+       — no per-mark element, and no `<sc-for>` inside an `<svg>`. */
+    function texture(kind, y) {
+      var d = "", i, x;
+      if (kind === "gloss") {
+        for (i = 0; i < 5; i += 1) {
+          x = 120 + i * 180; d += "M" + x + " " + (y + 14) + " h96 ";
+        }
+      } else if (kind === "planks") {
+        for (i = 0; i < 9; i += 1) {
+          x = 100 + i * 100; d += "M" + x + " " + y + " v22 ";
+        }
+      } else if (kind === "loops") {
+        for (i = 0; i < 18; i += 1) {
+          x = 70 + i * 50; d += "M" + x + " " + y + " q12 26 24 0 ";
+        }
+      } else {
+        for (i = 0; i < 22; i += 1) {
+          x = 62 + i * 41; d += "M" + x + " " + y + " l10 20 l10 -20 ";
+        }
+      }
+      return d;
+    }
+
+    function paint() {
+      var s = surf();
+      var W = kg * G;
+      var slide = one(W * grip());
+      var start = one(W * grip() * SF);
+      var kind = s.getAttribute("data-texture");
+
+      each(surfs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-dlane-surface") === at ? "true" : "false");
+      });
+      each(masses, function (b) {
+        b.setAttribute("aria-pressed",
+          parseFloat(b.getAttribute("data-dlane-mass")) === kg
+            ? "true" : "false");
+      });
+
+      setPath(wrap, '[data-dlane-texture="start"]', texture(kind, 212));
+      setPath(wrap, '[data-dlane-texture="slide"]', texture(kind, 402));
+
+      [["start", start, 170], ["slide", slide, 360]].forEach(function (row) {
+        var name = row[0], n = row[1], y = row[2];
+        var len = Math.round(n * SCALE);
+        var p = arrowH(580, y, len, true, 18, 13);
+        var f = arrowH(400, y, len, false, 18, 13);
+        setPath(wrap, '[data-dlane-shaft="pull-' + name + '"]', p.shaft);
+        setPath(wrap, '[data-dlane-head="pull-' + name + '"]', p.head);
+        setPath(wrap, '[data-dlane-shaft="fric-' + name + '"]', f.shaft);
+        setPath(wrap, '[data-dlane-head="fric-' + name + '"]', f.head);
+        fillSpan(wrap, "dlane", "pull-" + name, n + " N",
+                 tagStyle(596 / 1000, (y - 28) / 430, "#8FB7FF", "start"));
+        fillSpan(wrap, "dlane", "fric-" + name, n + " N",
+                 tagStyle(384 / 1000, (y - 28) / 430, "#8FB7FF", "end"));
+      });
+
+      setOut(wrap, "dlane", "weight", W + " N");
+      setOut(wrap, "dlane", "start", start + " N");
+      setOut(wrap, "dlane", "slide", slide + " N");
+      setOut(wrap, "dlane", "gap", one(start - slide) + " N more to start it");
+
+      var first = surfs[0] ? parseFloat(surfs[0].getAttribute("data-grip"))
+                           : grip();
+      if (noteEl) {
+        noteEl.textContent = fillTokens(s.getAttribute("data-note"), {
+          slide: slide, start: start,
+          ratio: Math.round((grip() / first) * 10) / 10
+        });
+      }
+
+      /* Design's own choice of the load to compare against: double it where
+         doubling stays on the bench, otherwise wrap to the smallest. The
+         comparison is never against the load already selected. */
+      var all = masses.map(function (b) {
+        return parseFloat(b.getAttribute("data-dlane-mass"));
+      });
+      var top = all[all.length - 1];
+      var other = kg === top ? all[0] : (kg * 2 <= top ? kg * 2 : all[0]);
+      if (cmpEl) {
+        cmpEl.textContent = fillTokens(CMP, {
+          mass: kg, slide: slide, other: other,
+          otherslide: one(other * G * grip())
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A " + kg + " kilogram block on " +
+          (s.getAttribute("data-name") || "").toLowerCase() +
+          ", drawn twice to one scale. In the upper diagram a pull of " +
+          start + " newtons and a friction arrow of " + start +
+          " newtons break it away; in the lower diagram a pull of " + slide +
+          " newtons and a friction arrow of " + slide +
+          " newtons keep it sliding steadily.");
+      }
+
+      var prog = wrap.querySelector("[data-dlane-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(surfs, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-dlane-surface"); touched += 1; paint();
+      });
+    });
+    each(masses, function (b) {
+      b.addEventListener("click", function () {
+        kg = parseFloat(b.getAttribute("data-dlane-mass"));
+        touched += 1; paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p4-06 `#s-bench` — the fall.
+
+     ⚖️ THE WEIGHT ARROW NEVER MOVES. One fixed length for every object and
+     every speed, because the whole lesson is that terminal velocity is a
+     BALANCE and not a limit: the weight is the same 750 N all the way down
+     and it is the resistance that changes.
+
+     ⚖️ `drag = weight × f²`, which is why it reaches the weight at f = 1 for
+     every object without the drawing knowing anything about the object.
+
+     ⚖️ THE HAILSTONE TAKES TWO DECIMALS. One rounding rule across a bench
+     spanning 1 N to 750 N prints `0.0 N` at half speed — a bench saying the
+     resistance is nothing when it is a quarter of the weight. */
+  function wireFallBalance(sec) {
+    var wrap = sec.querySelector("[data-fall]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-fall-gate]");
+    var bench = wrap.querySelector("[data-fall-bench]");
+    var gopts = toArray(wrap.querySelectorAll("[data-fall-gopt]"));
+    var objs = toArray(wrap.querySelectorAll("[data-fall-object]"));
+    var frac = wrap.querySelector("[data-fall-frac]");
+    var svg = wrap.querySelector("[data-fall-alt]");
+    var noteEl = wrap.querySelector("[data-fall-note]");
+    var noDrag = wrap.querySelector("[data-fall-nodrag]");
+    var WLEN = parseFloat(wrap.getAttribute("data-weight-px")) || 130;
+    var at = wrap.getAttribute("data-start-body");
+    var committed = false, touched = 0;
+
+    function obj() {
+      for (var i = 0; i < objs.length; i += 1) {
+        if (objs[i].getAttribute("data-fall-object") === at) {
+          return objs[i];
+        }
+      }
+      return objs[0];
+    }
+
+    function paint() {
+      var o = obj();
+      var weight = parseFloat(o.getAttribute("data-weight"));
+      var term = parseFloat(o.getAttribute("data-term"));
+      var small = weight < 10;
+      var pct = frac ? Number(frac.value) : 0;
+      var f = pct / 100;
+      var raw = weight * f * f;
+      var drag = small ? Math.round(raw * 100) / 100
+                       : Math.round(raw * 10) / 10;
+      var over = Math.round((weight - drag) * 100) / 100;
+      var up = over < 0;
+      var balanced = Math.abs(over) <= 0.001;
+
+      function n(v) {
+        return (small ? Number(v).toFixed(2)
+                      : Math.round(v * 10) / 10) + " N";
+      }
+
+      each(objs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-fall-object") === at ? "true" : "false");
+      });
+
+      var shape = wrap.querySelector("[data-fall-body-shape]");
+      if (shape) {
+        var w = parseFloat(o.getAttribute("data-w"));
+        shape.setAttribute("x", 500 - w / 2);
+        shape.setAttribute("width", w);
+        shape.setAttribute("rx", o.getAttribute("data-r"));
+      }
+
+      var streaks = "";
+      if (pct > 0) {
+        var h = Math.round(12 + f * 46);
+        [300, 700].forEach(function (x) {
+          for (var i = 0; i < 3; i += 1) {
+            var y = 120 + i * 92;
+            streaks += "M" + x + " " + y + " V" + (y + h) + " ";
+          }
+        });
+      }
+      setPath(wrap, "[data-fall-streaks]", streaks || null);
+
+      var dLen = Math.round(WLEN * f * f);
+      var oLen = Math.round((Math.abs(over) / weight) * WLEN);
+      var wA = arrowV(500, 290, WLEN, true);
+      var dA = arrowV(500, 210, dLen, false);
+      var oA = arrowV(790, 250, oLen, !up ? true : false);
+      setPath(wrap, '[data-fall-shaft="weight"]', wA.shaft);
+      setPath(wrap, '[data-fall-head="weight"]', wA.head);
+      setPath(wrap, '[data-fall-shaft="drag"]', dLen > 2 ? dA.shaft : null);
+      setPath(wrap, '[data-fall-head="drag"]', dLen > 2 ? dA.head : null);
+      setPath(wrap, '[data-fall-shaft="over"]',
+              (!balanced && oLen > 2) ? oA.shaft : null);
+      setPath(wrap, '[data-fall-head="over"]',
+              (!balanced && oLen > 2) ? oA.head : null);
+      if (noDrag) { setHidden(noDrag, dLen > 2); }
+
+      fillSpan(wrap, "fall", "drag", n(drag),
+               tagStyle(0.52, (210 - Math.max(dLen, 14) - 16) / 520,
+                        "#8FB7FF", "start"));
+      fillSpan(wrap, "fall", "weight", n(weight),
+               tagStyle(0.52, (290 + WLEN + 24) / 520, "#8FB7FF", "start"));
+      fillSpan(wrap, "fall", "over",
+               balanced ? "" : n(Math.abs(over)) + " left over, " +
+                               (up ? "up" : "down"),
+               tagStyle(0.81, ((up ? 250 - oLen - 22 : 250 + oLen + 22))
+                        / 520, "#FFC53D", "start"));
+      fillSpan(wrap, "fall", "word", o.getAttribute("data-word"),
+               tagStyle(0.5, 0.95, "#C6B9A7"));
+
+      setOut(wrap, "fall", "speed",
+             (Math.round(term * f * 10) / 10) + " m/s · " + pct +
+             "% of steady");
+      setOut(wrap, "fall", "weight", n(weight));
+      setOut(wrap, "fall", "drag", n(drag));
+      setOut(wrap, "fall", "res",
+             balanced ? "0 N" : n(Math.abs(over)) + (up ? " up" : " down"));
+      setOut(wrap, "fall", "verdict",
+             pct === 0 ? "About to speed up"
+               : balanced ? "Steady — terminal velocity"
+               : (up ? "Slowing down" : "Still speeding up"));
+
+      var canopy = o.getAttribute("data-canopy") === "1";
+      var key = pct === 0 ? "at_rest"
+        : balanced ? "matched"
+        : up ? (canopy ? "canopy" : "past")
+        : "growing";
+      var bEl = wrap.querySelector('[data-fall-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          weight: n(weight), drag: n(drag), over: n(Math.abs(over)),
+          pct: pct, term: term
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          (o.getAttribute("data-word") || "").toLowerCase() +
+          " falling at " + pct + " per cent of its steady speed. A downward " +
+          "weight arrow of " + n(weight) + " and an upward resistance arrow " +
+          "of " + n(drag) + ", drawn to one scale" +
+          (balanced ? ", exactly equal in length."
+            : ", with a third arrow showing " + n(Math.abs(over)) +
+              " left over " + (up ? "upwards." : "downwards.")));
+      }
+
+      var prog = wrap.querySelector("[data-fall-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(bench, false);
+        paint();
+      });
+    });
+    each(objs, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-fall-object"); touched += 1; paint();
+      });
+    });
+    if (frac) {
+      ["input", "change"].forEach(function (ev) {
+        frac.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p4-07 `#s-bench` — the spanner and the tight nut.
+
+     ⚖️ BOTH BRANCHES NAME BOTH ROUTES TO THE THRESHOLD, WITH LIVE FIGURES.
+     The same pull further out, or a smaller pull at this distance — that is
+     the product being taught rather than a number being reported, so the
+     note computes `need ÷ arm` and `need ÷ force` rather than describing
+     them.
+
+     ⚖️ TWO SCALES, AND THEY ARE DIFFERENT QUANTITIES. The handle is a
+     LENGTH at 1400 px per metre; the pull is a FORCE at 0.9 px per newton.
+     One scale for both would be meaningless rather than more honest.
+
+     ⚖️ THE TURN ARROW IS SOLID WHEN IT CLEARS AND DASHED WHEN IT DOES NOT,
+     and the verdict is also a WORD. Hue is never the only channel. */
+  function wireSpannerRig(sec) {
+    var wrap = sec.querySelector("[data-span]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-span-gate]");
+    var body = wrap.querySelector("[data-span-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-span-gopt]"));
+    var arms = toArray(wrap.querySelectorAll("[data-span-arm]"));
+    var force = wrap.querySelector("[data-span-force]");
+    var svg = wrap.querySelector("[data-span-alt]");
+    var noteEl = wrap.querySelector("[data-span-note]");
+    var turn = wrap.querySelector("[data-span-turn]");
+    var NEED = parseFloat(wrap.getAttribute("data-need")) || 12;
+    var ARMS = parseFloat(wrap.getAttribute("data-arm-scale")) || 1400;
+    var FS = parseFloat(wrap.getAttribute("data-f-scale")) || 0.9;
+    var arm = parseFloat(wrap.getAttribute("data-start-arm")) || 0.1;
+    var committed = false, touched = 0;
+
+    function longest() {
+      var m = 0;
+      each(arms, function (b) {
+        m = Math.max(m, parseFloat(b.getAttribute("data-span-arm")));
+      });
+      return m;
+    }
+
+    function paint() {
+      var F = force ? Number(force.value) : 0;
+      var M = Math.round(F * arm * 100) / 100;
+      var arm2 = arm.toFixed(2);
+      var turns = M >= NEED;
+
+      each(arms, function (b) {
+        b.setAttribute("aria-pressed",
+          parseFloat(b.getAttribute("data-span-arm")) === arm
+            ? "true" : "false");
+      });
+
+      var handleW = Math.round(arm * ARMS);
+      var endX = 250 + handleW;
+      var handle = wrap.querySelector("[data-span-handle]");
+      if (handle) { handle.setAttribute("width", handleW); }
+      var grip = wrap.querySelector("[data-span-grip]");
+      if (grip) { grip.setAttribute("x", endX - 46); }
+
+      var fLen = Math.round(F * FS);
+      var fx = endX - 4;
+      var fA = arrowV(fx, 314, fLen, true, 24);
+      setPath(wrap, "[data-span-shaft]", fA.shaft);
+      setPath(wrap, "[data-span-head]", fA.head);
+      setPath(wrap, "[data-span-dim]",
+              "M250 258 H" + endX + " M250 248 V268 M" + endX + " 248 V268");
+      if (turn) {
+        turn.setAttribute("stroke-dasharray", turns ? "" : "10 10");
+      }
+
+      fillSpan(wrap, "span", "force", F + " N",
+               tagStyle((fx + 22) / 1000, (314 + fLen - 10) / 420,
+                        "#8FB7FF", "start"));
+      fillSpan(wrap, "span", "dist", arm2 + " m",
+               tagStyle((250 + handleW / 2) / 1000, 0.40, "#C6B9A7"));
+      fillSpan(wrap, "span", "turn",
+               turns ? "ENOUGH — IT TURNS" : "NOT ENOUGH — IT HOLDS",
+               tagStyle(0.5, 0.06, turns ? "#8FB7FF" : "#C6B9A7"));
+
+      setOut(wrap, "span", "force", F + " N");
+      setOut(wrap, "span", "arm", arm2 + " m");
+      setOut(wrap, "span", "moment", M + " N m");
+      setOut(wrap, "span", "verdict", turns ? "Moves" : "Does not budge");
+
+      var needF = Math.ceil(NEED / arm);
+      var needArm = Math.round((NEED / Math.max(F, 1)) * 100) / 100;
+      var key = turns ? "turns"
+        : (needArm > longest() ? "stuck_far" : "stuck");
+      var bEl = wrap.querySelector('[data-span-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          moment: M + " N m", need: NEED + " N m", force: F + " N",
+          arm: arm2 + " m", needf: needF + " N", needarm: needArm + " m"
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A spanner drawn to scale with its handle " + arm2 +
+          " metres from the centre of the nut, pulled at right angles with " +
+          F + " newtons, giving a moment of " + M + " newton metres" +
+          (turns ? ", which is enough to turn the nut."
+                 : ", which is not enough to turn the nut."));
+      }
+
+      var prog = wrap.querySelector("[data-span-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLive(sec, {
+        force: F + " N", arm: arm2 + " m", moment: M + " N m",
+        fnum: F, armnum: arm2, mnum: M,
+        verdictnote: turns
+          ? "More than the " + NEED + " N m the nut needs, so it turns."
+          : "Less than the " + NEED + " N m the nut needs, so it holds."
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(arms, function (b) {
+      b.addEventListener("click", function () {
+        arm = parseFloat(b.getAttribute("data-span-arm"));
+        touched += 1; paint();
+      });
+    });
+    if (force) {
+      ["input", "change"].forEach(function (ev) {
+        force.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p4-08 `#s-bench` — loading a spring.
+
+     ⚖️ THE GRAPH SHOWS ONLY WHAT THE STUDENT CHOSE TO RECORD, so an
+     incomplete investigation LOOKS incomplete. A bench that drew the whole
+     curve on load would answer the question the investigation exists to ask
+     — where does the line stop being straight — before a single reading
+     was taken.
+
+     ⚠️ POINTS ARE ARCS IN ONE `d` STRING, NOT `<circle>` ELEMENTS. Design's
+     note for the generator: no per-point element inside the SVG. */
+  function wireSpringPlot(sec) {
+    var wrap = sec.querySelector("[data-splot]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-splot-gate]");
+    var body = wrap.querySelector("[data-splot-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-splot-gopt]"));
+    var load = wrap.querySelector("[data-splot-load]");
+    var recBtn = wrap.querySelector("[data-splot-record]");
+    var clrBtn = wrap.querySelector("[data-splot-clear]");
+    var springSvg = wrap.querySelector("[data-splot-springalt]");
+    var graphSvg = wrap.querySelector("[data-splot-graphalt]");
+    var noteEl = wrap.querySelector("[data-splot-note]");
+    var PER = parseFloat(wrap.getAttribute("data-per-n")) || 20;
+    var LIMIT = parseFloat(wrap.getAttribute("data-limit")) || 6;
+    var SPOIL = parseFloat(wrap.getAttribute("data-spoil")) || 9;
+    var PAST = parseFloat(wrap.getAttribute("data-past")) || 32;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 2;
+    var committed = false;
+    var readings = [];
+
+    function ext(L) {
+      return L <= LIMIT ? L * PER : LIMIT * PER + (L - LIMIT) * PAST;
+    }
+    function gx(L) { return 120 + L * 82; }
+    function gy(mm) { return 340 - mm * 1.1538; }
+
+    function paint() {
+      var L = load ? Number(load.value) : 0;
+      var E = ext(L);
+      var px = E * 0.9;
+      var coilTop = 40, natural = 70;
+      var coilEnd = coilTop + natural + px;
+
+      var coil = "M150 " + coilTop;
+      var turns = 7, seg = (natural + px) / turns;
+      for (var i = 0; i < turns; i += 1) {
+        coil += " L" + (i % 2 ? 106 : 194) + " " +
+                (coilTop + seg * (i + 0.5)) + " L150 " +
+                (coilTop + seg * (i + 1));
+      }
+      setPath(wrap, "[data-splot-coil]", coil);
+      var hanger = wrap.querySelector("[data-splot-hanger]");
+      if (hanger) { hanger.setAttribute("y", coilEnd); }
+      setPath(wrap, "[data-splot-extbar]", px > 4
+        ? "M250 110 V" + coilEnd + " M240 110 H260 M240 " + coilEnd + " H260"
+        : null);
+
+      var sorted = readings.slice().sort(function (a, b) { return a - b; });
+      var dots = "", line = "";
+      sorted.forEach(function (r, i) {
+        var cx = gx(r), cy = gy(ext(r));
+        dots += "M" + (cx - 7) + " " + cy + " a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0 ";
+        line += (i ? "L" : "M") + cx + " " + cy + " ";
+      });
+      var grid = "";
+      for (var k = 1; k <= 10; k += 1) { grid += "M" + gx(k) + " 340 V334 "; }
+      [50, 100, 150, 200, 250].forEach(function (mm) {
+        grid += "M120 " + gy(mm).toFixed(1) + " H126 ";
+      });
+      setPath(wrap, "[data-splot-grid]", grid);
+      setPath(wrap, "[data-splot-prop]",
+              "M" + gx(0) + " " + gy(0) + " L" + gx(LIMIT) + " " +
+              gy(LIMIT * PER));
+      setPath(wrap, "[data-splot-dots]", dots || null);
+      setPath(wrap, "[data-splot-line]", sorted.length > 1 ? line : null);
+
+      fillSpan(wrap, "splot", "ext", E + " mm",
+               tagStyle(0.88, ((110 + coilEnd) / 2) / 460, "#8FB7FF", "end"));
+      fillSpan(wrap, "splot", "load", L + " N",
+               tagStyle(0.5, (coilEnd + 27) / 460, "#FBF3E6"));
+
+      setOut(wrap, "splot", "load", L + " N");
+      setOut(wrap, "splot", "ext", E + " mm");
+      setOut(wrap, "splot", "pern", L === 0 ? "—"
+        : (Math.round((E / L) * 10) / 10) + " mm/N");
+      setOut(wrap, "splot", "verdict",
+             L === 0 ? "Unloaded"
+               : L < LIMIT ? "On the straight line"
+               : L === LIMIT ? "At the limit"
+               : L <= SPOIL ? "Past the limit" : "Permanently stretched");
+
+      var key = L === 0 ? "zero"
+        : L < LIMIT ? "on_line"
+        : L === LIMIT ? "at_limit"
+        : L <= SPOIL ? "past_limit" : "deformed";
+      var bEl = wrap.querySelector('[data-splot-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          load: L, ext: E, predicted: L * PER
+        });
+      }
+
+      if (recBtn) {
+        var already = readings.indexOf(L) >= 0;
+        recBtn.textContent = already ? "Already plotted"
+                                     : "Record this reading";
+        if (already) { recBtn.setAttribute("disabled", ""); }
+        else { recBtn.removeAttribute("disabled"); }
+      }
+
+      if (springSvg) {
+        springSvg.setAttribute("aria-label",
+          "A spring hanging from a clamp with " + L + " newtons on it, " +
+          "stretched " + E + " millimetres below the dashed line marking " +
+          "its natural length.");
+      }
+      if (graphSvg) {
+        graphSvg.setAttribute("aria-label",
+          "A graph of extension in millimetres against load in newtons " +
+          "with " + readings.length + " points plotted, and a dashed line " +
+          "showing the straight line through the origin that the first " +
+          "readings make.");
+      }
+
+      var prog = wrap.querySelector("[data-splot-progress]");
+      if (prog) {
+        prog.textContent = readings.length
+          ? readings.length + " reading" +
+            (readings.length === 1 ? "" : "s") + " plotted"
+          : "No readings plotted yet";
+      }
+
+      var dbl = L * 2;
+      var pred = E * 2;
+      var actual = ext(dbl);
+      var pern = Math.round((E / Math.max(L, 1)) * 10) / 10;
+      publishLive(sec, {
+        load: L, ext: E, dbl: dbl, pern: pern, predicted: pred,
+        checkclose: dbl > 10
+          ? "The five lines predict " + pred + " mm at " + dbl +
+            " N — but the bench only goes to 10 N, so this one cannot be " +
+            "checked. Choose a smaller load and run it again."
+          : (Math.abs(actual - pred) < 0.5
+            ? "The five lines predict " + pred + " mm, and setting the " +
+              "bench to " + dbl + " N gives exactly " + actual + " mm. The " +
+              "proportionality held, because both loads are on the " +
+              "straight line."
+            : "The five lines predict " + pred + " mm, but setting the " +
+              "bench to " + dbl + " N gives " + actual + " mm — more than " +
+              "predicted. Doubling took the spring past its limit of " +
+              "proportionality. The arithmetic was right; the assumption " +
+              "behind it was not.")
+      }, L === 0);
+
+      setCount(sec, readings.length);
+      markStage(sec, committed && readings.length >= TARGET);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    if (load) {
+      ["input", "change"].forEach(function (ev) {
+        load.addEventListener(ev, paint);
+      });
+    }
+    if (recBtn) {
+      recBtn.addEventListener("click", function () {
+        var L = load ? Number(load.value) : 0;
+        if (readings.indexOf(L) < 0) { readings.push(L); }
+        paint();
+      });
+    }
+    if (clrBtn) {
+      clrBtn.addEventListener("click", function () {
+        readings = [];
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p4-09 `#s-bench` — the sorter.
+
+     ⚖️ THE DIAGRAM IS DRAWN FROM THE START; THE VERDICT IS NOT. The two
+     bodies, the gap-or-contact marker and the arrow carry the evidence the
+     classification is made from. Printing the answer beside them would
+     remove the only demand the block makes.
+
+     ⚖️ A LABEL LOCKS ON COMMIT. A sorter that lets a student cycle through
+     four labels until the tick appears is a guessing game. */
+  function wireForceSorter(sec) {
+    var wrap = sec.querySelector("[data-fsort]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-fsort-tab]"));
+    var labels = toArray(wrap.querySelectorAll("[data-fsort-label]"));
+    var verdict = wrap.querySelector("[data-fsort-verdict]");
+    var sealed = wrap.querySelector("[data-fsort-sealed]");
+    var titleEl = wrap.querySelector("[data-fsort-title]");
+    var noteEl = wrap.querySelector("[data-fsort-note]");
+    /* The join word is a LIVE value, so it is a span over the drawing and
+       never an SVG <text>: an empty <text> ships in the bytes, which is
+       what MRB-254 gates. */
+    var svg = wrap.querySelector("[data-fsort-alt]");
+    var TOTAL = parseInt(wrap.getAttribute("data-total"), 10) || tabs.length;
+    var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || TOTAL;
+    var at = 0;
+    var picks = {};
+
+    function data(i) {
+      return wrap.querySelector('[data-fsort-data="' + i + '"]');
+    }
+
+    function paint() {
+      var d = data(at);
+      if (!d) { return; }
+      var touching = d.getAttribute("data-touch") === "1";
+      var done = picks[at] !== undefined;
+      var count = Object.keys(picks).length;
+
+      each(tabs, function (t, i) {
+        t.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+
+      var aX = touching ? 396 : 250;
+      var bX = touching ? 604 : 750;
+      var bodyA = wrap.querySelector('[data-fsort-body="a"]');
+      var bodyB = wrap.querySelector('[data-fsort-body="b"]');
+      if (bodyA) { bodyA.setAttribute("cx", aX); }
+      if (bodyB) { bodyB.setAttribute("cx", bX); }
+
+      var from = touching ? 476 : 350;
+      var to = touching ? 500 : 590;
+      var head = touching ? 524 : 640;
+      setPath(wrap, "[data-fsort-shaft]", "M" + from + " 150 H" + to);
+      setPath(wrap, "[data-fsort-head]",
+              "M" + head + " 150 L" + (head - 26) + " 132 L" +
+              (head - 26) + " 168 Z");
+      setPath(wrap, '[data-fsort-join="gap"]', touching ? null
+        : "M" + (aX + 74) + " 244 H" + (bX - 74) +
+          " M" + (aX + 74) + " 230 V258 M" + (bX - 74) + " 230 V258");
+      setPath(wrap, '[data-fsort-join="contact"]', touching
+        ? "M494 216 V262" : null);
+      fillSpan(wrap, "fsort", "join",
+               touching ? "TOUCHING" : "NOT TOUCHING",
+               tagStyle(0.5, 300 / 340, "#C6B9A7"));
+
+      fillSpan(wrap, "fsort", "a", d.getAttribute("data-a"),
+               tagStyle(aX / 1000, 150 / 340, "#FBF3E6"));
+      fillSpan(wrap, "fsort", "b", d.getAttribute("data-b"),
+               tagStyle(bX / 1000, 150 / 340, "#FBF3E6"));
+      if (titleEl) { titleEl.textContent = d.getAttribute("data-title"); }
+
+      each(labels, function (b) {
+        var id = b.getAttribute("data-fsort-label");
+        b.setAttribute("aria-pressed",
+          done && picks[at] === id ? "true" : "false");
+        if (done) { b.setAttribute("disabled", ""); }
+        else { b.removeAttribute("disabled"); }
+      });
+
+      setHidden(verdict, !done);
+      setHidden(sealed, done);
+      if (done) {
+        var yours = "";
+        each(labels, function (b) {
+          if (b.getAttribute("data-fsort-label") === picks[at]) {
+            yours = b.textContent;
+          }
+        });
+        setOut(wrap, "fsort", "yours", yours);
+        setOut(wrap, "fsort", "true", d.getAttribute("data-answer-label"));
+        setOut(wrap, "fsort", "kind", d.getAttribute("data-kind"));
+        setOut(wrap, "fsort", "sense", d.getAttribute("data-sense"));
+        if (noteEl) { noteEl.textContent = d.getAttribute("data-note"); }
+      }
+
+      if (svg) { svg.setAttribute("aria-label", d.getAttribute("data-alt")); }
+
+      var prog = wrap.querySelector("[data-fsort-progress]");
+      if (prog) {
+        prog.textContent = count === TOTAL
+          ? "All " + TOTAL + " labelled"
+          : count + " of " + TOTAL + " labelled";
+      }
+      setCount(sec, count);
+      markStage(sec, count >= TARGET);
+      markSibling(sec, wrap, count);
+    }
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () { at = i; paint(); });
+    });
+    each(labels, function (b) {
+      b.addEventListener("click", function () {
+        if (picks[at] !== undefined) { return; }
+        picks[at] = b.getAttribute("data-fsort-label");
+        paint();
+      });
+    });
+
+    paint();
+  }
+/* ═══ END P4 wiring ═══ */
+
+/* ═══ BEGIN P5 wiring ═══════════════════════════════════════════════════
+   P5's instrument families — *Pressure*. Behaviour measured off Claude
+   Design's delivered pages in `docs/ks3/design-reference/p5/`.
+
+   ⚖️ EVERY P5 RAIL STOP SITS ON A BLOCK THAT CARRIES ITS OWN CONTROL, so
+   unlike P4 there is no band sibling to mark and no `markSibling` here. All
+   four pages are the same shape: hook, bench, formula-with-attempt, ladder.
+
+   ⚖️ EVERY LIVE VALUE IS AN HTML SPAN OVER A `position: relative` WRAPPER,
+   never an SVG `<text>`. MRB-254 gates the empty-`<text>` failure and caught
+   one in P4's sorter on the first run.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  /* P5's attempt panel is the same shared block as P4's, in its own
+     namespace so the two units' pages cannot reach each other's. */
+  function paintAttemptP5(wrap, vals, blocked) {
+    var qs = toArray(wrap.querySelectorAll("[data-p5cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }
+      var head = q.querySelector("[data-p5cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p5cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p5cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p5cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+      var block = q.querySelector("[data-p5cfa-blocked]");
+      var rows = q.querySelector(".ks3-cfa-rows");
+      var chk = q.querySelector("[data-p5cfa-check]");
+      if (block) { setHidden(block, !blocked); }
+      if (rows) { setHidden(rows, !!blocked); }
+      if (chk && blocked) { chk.setAttribute("disabled", ""); }
+    });
+  }
+
+  function publishLiveP5(sec, vals, blocked) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    each(toArray(host.querySelectorAll("[data-p5cfa]")), function (p) {
+      paintAttemptP5(p, vals, blocked);
+    });
+  }
+
+  function wireCfifaAttemptP5(sec) {
+    var wrap = sec.querySelector("[data-p5cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p5cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p5cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p5cfa-input]"));
+      var btn = q.querySelector("[data-p5cfa-check]");
+      var hint = q.querySelector("[data-p5cfa-hint]");
+      var reveal = q.querySelector("[data-p5cfa-reveal]");
+      var tally = q.querySelector("[data-p5cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p5cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p5cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p5cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+  /* Group a number the way Design does: `50000` → `50 000`, with the narrow
+     no-break space, and only from five digits up. */
+  function groupN(n) {
+    var s = String(Math.round(n));
+    if (s.length < 5) { return s; }
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+
+  /* p5-01 `#s-bench` — the block on sand.
+
+     ⚖️ ONE SOLID, THREE FACES, AND THE AREA IS WHAT CHANGED. The weight is
+     recomputed from the mass every time and the pressure from the face, so
+     the two tiles cannot disagree with the hole in the sand.
+
+     ⚖️ THE BLOCK IS DRAWN TO SCALE IN METRES AND THE ARROW IN PX PER
+     NEWTON. Different quantities, so one scale for both would be
+     meaningless rather than more honest. */
+  function wireBlockOnSand(sec) {
+    var wrap = sec.querySelector("[data-sand]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-sand-gate]");
+    var body = wrap.querySelector("[data-sand-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-sand-gopt]"));
+    var faces = toArray(wrap.querySelectorAll("[data-sand-face]"));
+    var mass = wrap.querySelector("[data-sand-mass]");
+    var svg = wrap.querySelector("[data-sand-alt]");
+    var noteEl = wrap.querySelector("[data-sand-note]");
+    var LIMIT = parseFloat(wrap.getAttribute("data-limit")) || 6000;
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var SCALE = parseFloat(wrap.getAttribute("data-scale")) || 1400;
+    var WS = parseFloat(wrap.getAttribute("data-wscale")) || 1.6;
+    var GROUND = parseFloat(wrap.getAttribute("data-base-y")) || 470;
+    var CX = parseFloat(wrap.getAttribute("data-cx")) || 420;
+    var at = parseInt(wrap.getAttribute("data-start-face"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function face(i) { return faces[i === undefined ? at : i]; }
+    function areaOf(i) {
+      return parseFloat(face(i).getAttribute("data-area"));
+    }
+
+    function paint() {
+      var f = face();
+      var kg = mass ? Number(mass.value) : 0;
+      var W = kg * G;
+      var area = areaOf();
+      var P = Math.round(W / area);
+      var sinks = P >= LIMIT;
+
+      each(faces, function (b, i) {
+        b.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+
+      /* ⚠️ THE SIDE ELEVATION, NOT THE FOOTPRINT. `data-w`/`data-h` are
+         the face resting on the sand and their product is the area; what
+         the drawing needs is how the block looks from the side standing on
+         that face, which is `data-draww`/`data-drawh`. Drawing the
+         elevation with the footprint's numbers made the block change
+         volume every time the face was switched — on end it came out a
+         quarter of its real height — and that is the one thing this bench
+         must hold constant. */
+      var w = Math.round(parseFloat(f.getAttribute("data-draww")) * SCALE);
+      var h = Math.round(parseFloat(f.getAttribute("data-drawh")) * SCALE);
+      var x = CX - w / 2;
+      var sink = sinks ? 20 : 0;
+      var yTop = GROUND - h + sink;
+      var len = Math.max(34, Math.round(W * WS));
+      var tipY = yTop - 14;
+      var startY = tipY - len;
+
+      var block = wrap.querySelector("[data-sand-block]");
+      if (block) {
+        block.setAttribute("x", x); block.setAttribute("y", yTop);
+        block.setAttribute("width", w); block.setAttribute("height", h);
+      }
+      setPath(wrap, "[data-sand-line]", sinks
+        ? "M60 " + GROUND + " H" + (x - 46) + " L" + (x - 10) + " " +
+          (GROUND + 20) + " H" + (x + w + 10) + " L" + (x + w + 46) + " " +
+          GROUND + " H940"
+        : "M60 " + GROUND + " H940");
+      setPath(wrap, "[data-sand-was]", sinks
+        ? "M" + (x - 52) + " " + GROUND + " H" + (x + w + 52) : null);
+      setPath(wrap, "[data-sand-shaft]",
+              "M" + CX + " " + startY + " V" + Math.max(startY + 4, tipY - 22));
+      setPath(wrap, "[data-sand-head]",
+              "M" + CX + " " + tipY + " L" + (CX - 17) + " " + (tipY - 24) +
+              " L" + (CX + 17) + " " + (tipY - 24) + " Z");
+      setPath(wrap, "[data-sand-dim]",
+              "M" + x + " 514 V534 M" + (x + w) + " 514 V534 M" + x +
+              " 524 H" + (x + w));
+
+      fillSpan(wrap, "sand", "weight", groupN(W) + " N",
+               tagStyle((CX + 24) / 1000, (startY + len / 2) / 600,
+                        "#8FB7FF", "start"));
+      fillSpan(wrap, "sand", "area", f.getAttribute("data-arealabel"),
+               tagStyle((x + w + 14) / 1000, 524 / 600, "#E9DCC8", "start"));
+      fillSpan(wrap, "sand", "verdict",
+               sinks ? "OVER THE LIMIT — IT SINKS IN"
+                     : "UNDER THE LIMIT — IT HOLDS",
+               tagStyle(0.5, 0.06, "#C6B9A7"));
+
+      setOut(wrap, "sand", "mass", kg + " kg");
+      setOut(wrap, "sand", "weight", groupN(W) + " N");
+      setOut(wrap, "sand", "area", f.getAttribute("data-arealabel"));
+      setOut(wrap, "sand", "pressure", groupN(P) + " Pa");
+      setOut(wrap, "sand", "verdict", sinks ? "Sinks in" : "Holds");
+      var sub = wrap.querySelector('[data-sand-sub="weight"]');
+      if (sub) { sub.textContent = kg + " kg × 10 N/kg"; }
+      sub = wrap.querySelector('[data-sand-sub="area"]');
+      if (sub) {
+        sub.textContent = f.getAttribute("data-dims") + " face down";
+      }
+
+      /* The smallest face is the last tab — Design's own order. */
+      var small = faces.length - 1;
+      var onSmall = Math.round(W / areaOf(small));
+      var key, vals = {
+        weight: groupN(W) + " N", area: f.getAttribute("data-arealabel"),
+        pressure: groupN(P) + " Pa", limit: groupN(LIMIT) + " Pa",
+        smallestarea: faces[small].getAttribute("data-arealabel"),
+        smallestname: faces[small].getAttribute("data-name"),
+        onsmallest: groupN(onSmall) + " Pa",
+        needarea: Math.round((W / LIMIT) * 10000) / 10000,
+        holdmass: (Math.floor((LIMIT * area) / G) >= 1
+          ? Math.floor((LIMIT * area) / G) + " kg or less."
+          : "something under 1 kg, which is off the end of this slider."),
+        needmass: Math.ceil((LIMIT * area) / G) + " kg"
+      };
+      if (sinks) { key = "sinks"; }
+      else if (onSmall < LIMIT) { key = "holds_any"; }
+      else { key = "holds_for_now"; }
+      var bEl = wrap.querySelector('[data-sand-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A block drawn to scale standing on its " +
+          f.getAttribute("data-dims") + " face, with a weight of " + W +
+          " newtons pressing down on " + f.getAttribute("data-arealabel") +
+          " of sand, giving a pressure of " + P + " pascals" +
+          (sinks ? ", which is enough for the sand to give way and the block "
+                 + "to sink in." : ", which the sand surface holds."));
+      }
+
+      var prog = wrap.querySelector("[data-sand-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLiveP5(sec, {
+        weight: groupN(W) + " N", area: f.getAttribute("data-arealabel"),
+        pressure: groupN(P) + " Pa", mass: kg,
+        wnum: W, anum: f.getAttribute("data-arealabel").replace(" m²", ""),
+        pnum: groupN(P), dims: f.getAttribute("data-dims"),
+        verdictnote: sinks
+          ? "Over the " + groupN(LIMIT) + " Pa this sand gives way at, so " +
+            "the block sinks in."
+          : "Under the " + groupN(LIMIT) + " Pa this sand gives way at, so " +
+            "the surface holds."
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(faces, function (b, i) {
+      b.addEventListener("click", function () {
+        at = i; touched += 1; paint();
+      });
+    });
+    if (mass) {
+      ["input", "change"].forEach(function (ev) {
+        mass.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p5-02 `#s-bench` — the probe in the tank.
+
+     ⚖️ EVERY BRANCH NAMES THE SAME DEPTH IN ANOTHER LIQUID, so a student who
+     moves the probe AND swaps the liquid is never left with two variables
+     and no way to tell which did what.
+
+     ⚖️ THE WEIGHT ABOVE IS DERIVED FROM THE PRESSURE, so the tile and the
+     reading cannot disagree — and it comes out right physically: a 2 m
+     column over 0.02 m² is 0.04 m³, 40 kg, 400 N. */
+  function wireDepthProbe(sec) {
+    var wrap = sec.querySelector("[data-dprobe]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-dprobe-gate]");
+    var body = wrap.querySelector("[data-dprobe-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-dprobe-gopt]"));
+    var liquids = toArray(wrap.querySelectorAll("[data-dprobe-liquid]"));
+    var depth = wrap.querySelector("[data-dprobe-depth]");
+    var svg = wrap.querySelector("[data-dprobe-alt]");
+    var noteEl = wrap.querySelector("[data-dprobe-note]");
+    var FACE = parseFloat(wrap.getAttribute("data-face")) || 0.02;
+    var PX = parseFloat(wrap.getAttribute("data-px-per-m")) || 90;
+    var SURF = parseFloat(wrap.getAttribute("data-surface")) || 90;
+    var PER = parseFloat(wrap.getAttribute("data-per-step")) || 0.5;
+    var at = parseInt(wrap.getAttribute("data-start-liquid"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function liq(i) { return liquids[i === undefined ? at : i]; }
+    function rho(i) { return parseFloat(liq(i).getAttribute("data-rho")); }
+    function pressureAt(d, i) { return Math.round(rho(i) * 10 * d); }
+
+    function paint() {
+      var d = (depth ? Number(depth.value) : 0) * PER;
+      var P = pressureAt(d);
+      var W = Math.round(P * FACE * 10) / 10;
+
+      each(liquids, function (b, i) {
+        b.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+
+      var colH = Math.round(d * PX);
+      var probeTop = SURF + colH;
+      var cy = probeTop + 13;
+      var col = wrap.querySelector("[data-dprobe-col]");
+      if (col) { col.setAttribute("height", Math.max(1, colH)); }
+      var probe = wrap.querySelector("[data-dprobe-probe]");
+      if (probe) { probe.setAttribute("y", probeTop); }
+      setPath(wrap, "[data-dprobe-cable]", "M440 " + SURF + " V" + probeTop);
+      /* Four arrows at the face: a liquid presses equally in every
+         direction at one depth, whatever the depth. */
+      setPath(wrap, "[data-dprobe-rosette]",
+              "M440 " + (cy - 74) + " V" + (cy - 26) +
+              " M440 " + (cy + 74) + " V" + (cy + 26) +
+              " M318 " + cy + " H366 M562 " + cy + " H514");
+      setPath(wrap, "[data-dprobe-dim]",
+              "M248 " + SURF + " V" + probeTop +
+              " M236 " + SURF + " H260 M236 " + probeTop + " H260");
+
+      fillSpan(wrap, "dprobe", "depth", d.toFixed(1) + " m",
+               tagStyle(0.12, (SURF + colH / 2) / 600, "#E9DCC8", "end"));
+      fillSpan(wrap, "dprobe", "col", W + " N above",
+               tagStyle(0.52, (SURF + Math.max(24, colH / 2)) / 600,
+                        "#FBF3E6", "start"));
+      fillSpan(wrap, "dprobe", "dir", "THE SAME IN EVERY DIRECTION",
+               tagStyle(0.5, 0.94, "#C6B9A7"));
+
+      setOut(wrap, "dprobe", "depth", d.toFixed(1) + " m");
+      setOut(wrap, "dprobe", "weight", W + " N");
+      setOut(wrap, "dprobe", "pressure", groupN(P) + " Pa");
+      setOut(wrap, "dprobe", "same", "Same reading");
+      var sub = wrap.querySelector('[data-dprobe-sub="weight"]');
+      if (sub) { sub.textContent = liq().getAttribute("data-name"); }
+
+      /* The comparison liquid is the first one with a different density. */
+      var other = at;
+      for (var i = 0; i < liquids.length; i += 1) {
+        if (rho(i) !== rho()) { other = i; break; }
+      }
+      var key = d === 0 ? "surface" : (d <= 2 ? "shallow" : "deep");
+      var bEl = wrap.querySelector('[data-dprobe-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          name: liq().getAttribute("data-name"),
+          depth: d + " m", weight: W + " N",
+          pressure: groupN(P) + " Pa",
+          half: (d / 2) + " m",
+          halfp: groupN(pressureAt(d / 2)) + " Pa",
+          othername: liq(other).getAttribute("data-name"),
+          otherp: groupN(pressureAt(d, other)) + " Pa"
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A tank of " + liq().getAttribute("data-name") + " with a probe "
+          + "hanging " + d.toFixed(1) + " metres below the surface. The "
+          + "column of liquid above its face is shaded, weighs " + W +
+          " newtons, and presses on the face with " + P +
+          " pascals from every direction.");
+      }
+
+      var prog = wrap.querySelector("[data-dprobe-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLiveP5(sec, {
+        weight: W + " N", face: FACE + " m²", depth: d.toFixed(1) + " m",
+        name: liq().getAttribute("data-name"),
+        wnum: W, fnum: FACE, pnum: groupN(P),
+        pressure: groupN(P) + " Pa"
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(liquids, function (b, i) {
+      b.addEventListener("click", function () {
+        at = i; touched += 1; paint();
+      });
+    });
+    if (depth) {
+      ["input", "change"].forEach(function (ev) {
+        depth.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p5-03 `#s-bench` — five blocks, one tank.
+
+     ⚖️ EVERY BLOCK IS ONE LITRE, so a block pushed fully under can never get
+     more than one litre's worth of upthrust. That is what makes the commit
+     gate answerable: pine and steel get the SAME upthrust.
+
+     ⚖️ A FLOATER SITS AT `weight ÷ litre` OF ITS DEPTH — ice at 9.2 N of
+     10 N floats 92 per cent under, which is the real figure.
+
+     ⚖️ A SINKER STILL GETS ITS FULL UPTHRUST, and the balance tile says so:
+     weight minus upthrust, visibly less than the weight in air. */
+  function wireFloatTank(sec) {
+    var wrap = sec.querySelector("[data-ftank]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-ftank-gate]");
+    var body = wrap.querySelector("[data-ftank-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-ftank-gopt]"));
+    var blocks = toArray(wrap.querySelectorAll("[data-ftank-block]"));
+    var holdBtn = wrap.querySelector("[data-ftank-hold]");
+    var svg = wrap.querySelector("[data-ftank-alt]");
+    var noteEl = wrap.querySelector("[data-ftank-note]");
+    var LITRE = parseFloat(wrap.getAttribute("data-litre")) || 10;
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var WARR = parseFloat(wrap.getAttribute("data-warrow")) || 120;
+    var SURF = parseFloat(wrap.getAttribute("data-surface")) || 200;
+    var BOX = parseFloat(wrap.getAttribute("data-box")) || 120;
+    var at = parseInt(wrap.getAttribute("data-start-block"), 10) || 0;
+    var holding = false, committed = false, touched = 0;
+
+    function blk() { return blocks[at]; }
+    function weight() {
+      return Math.round(parseFloat(blk().getAttribute("data-mass")) * G * 10)
+        / 10;
+    }
+    function floats() { return weight() < LITRE; }
+    function under() { return holding || !floats(); }
+    function upthrust() { return under() ? LITRE : weight(); }
+
+    function paint() {
+      var W = weight();
+      var U = upthrust();
+      var R = Math.round((U - W) * 10) / 10;
+      var frac = under() ? 1 : W / LITRE;
+      var pct = Math.round(frac * 100);
+
+      each(blocks, function (b, i) {
+        b.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+      if (holdBtn) {
+        holdBtn.setAttribute("aria-pressed", holding ? "true" : "false");
+        /* The two labels are authored on the button, not written here.
+           They used to be these two literals, which made `hold_on` an
+           authored string nothing read. */
+        holdBtn.textContent = holding
+          ? (holdBtn.getAttribute("data-on") || "Let it go")
+          : (holdBtn.getAttribute("data-off") || "Hold it right under");
+      }
+
+      /* A sinker is drawn part-way down rather than on the floor, so both
+         arrows fit inside the tank. */
+      var top = under() ? SURF + 100 : SURF - BOX * (1 - frac);
+      var bottom = top + BOX;
+      var cx = 500;
+      var box = wrap.querySelector("[data-ftank-box]");
+      if (box) { box.setAttribute("y", top); }
+
+      var upLen = Math.max(40, Math.min(260, Math.round(WARR * (U / W))));
+      var uA = arrowV(cx, top, upLen, false, 24);
+      var wA = arrowV(cx, bottom, WARR, true, 24);
+      setPath(wrap, '[data-ftank-shaft="up"]', uA.shaft);
+      setPath(wrap, '[data-ftank-head="up"]', uA.head);
+      setPath(wrap, '[data-ftank-shaft="w"]', wA.shaft);
+      setPath(wrap, '[data-ftank-head="w"]', wA.head);
+
+      fillSpan(wrap, "ftank", "up", U + " N",
+               tagStyle(0.52, (top - upLen / 2) / 620, "#8FB7FF", "start"));
+      fillSpan(wrap, "ftank", "w", W + " N",
+               tagStyle(0.52, (bottom + WARR / 2) / 620, "#E9DCC8", "start"));
+      fillSpan(wrap, "ftank", "leftword",
+               R === 0 ? "NOTHING LEFT OVER"
+                 : (R > 0 ? R + " N LEFT OVER, UPWARDS"
+                          : Math.abs(R) + " N LEFT OVER, DOWNWARDS"));
+
+      setOut(wrap, "ftank", "weight", W + " N");
+      setOut(wrap, "ftank", "up", U + " N");
+      setOut(wrap, "ftank", "reading",
+             floats() && !holding ? "0 N — it holds itself up"
+                                  : (Math.round((W - U) * 10) / 10) + " N");
+      setOut(wrap, "ftank", "verdict",
+             floats() ? (holding ? "Pushes back up" : "Floats") : "Sinks");
+      var sub = wrap.querySelector('[data-ftank-sub="weight"]');
+      if (sub) {
+        sub.textContent = blk().getAttribute("data-mass") + " kg × 10 N/kg";
+      }
+      sub = wrap.querySelector('[data-ftank-sub="up"]');
+      if (sub) {
+        sub.textContent = under() ? "a full litre pushed aside"
+                                  : pct + "% of a litre pushed aside";
+      }
+
+      var key = floats() ? (holding ? "held_under" : "floating") : "sinking";
+      var bEl = wrap.querySelector('[data-ftank-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          name: blk().getAttribute("data-name"),
+          weight: W + " N", up: U + " N", over: Math.abs(R) + " N",
+          pct: pct + "%",
+          restpct: Math.round((W / LITRE) * 100) + "%",
+          reading: (Math.round((W - U) * 10) / 10) + " N"
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A one-litre block of " + blk().getAttribute("data-name") +
+          " in a tank of water, " +
+          (under() ? "held completely below the surface"
+                   : pct + " per cent below the surface") +
+          ", with a weight arrow of " + W +
+          " newtons down and an upthrust arrow of " + U + " newtons up.");
+      }
+
+      var prog = wrap.querySelector("[data-ftank-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLiveP5(sec, {
+        name: blk().getAttribute("data-name"),
+        weight: W + " N", up: U + " N",
+        wnum: W, unum: U, onum: Math.abs(R),
+        answer: R === 0 ? "nothing left over — it floats"
+          : Math.abs(R) + " N " + (R > 0 ? "upwards" : "downwards"),
+        finenote: R === 0
+          ? "They cancel exactly, which is what floating is."
+          : "The bigger arrow decides which way it goes.",
+        answernote: R === 0
+          ? "Upthrust and weight are equal, so nothing is left over."
+          : (R > 0
+            ? "Left over upwards, which is the push you feel in your hand."
+            : "Left over downwards, so it sinks.")
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(blocks, function (b, i) {
+      b.addEventListener("click", function () {
+        at = i; touched += 1; paint();
+      });
+    });
+    if (holdBtn) {
+      holdBtn.addEventListener("click", function () {
+        holding = !holding; touched += 1; paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p5-04 `#s-bench` — up the mountain.
+
+     ⚖️ SEA LEVEL IS ITS OWN BRANCH, because it is the state every other
+     height is compared with. Two branches × three objects covers all
+     eighteen states.
+
+     ⚠️ THE BAROMETER NEEDLE IS AN ATTRIBUTE-HOLE ROTATION, not a redrawn
+     path — Design's own note for the generator. */
+  function wireAltitudeColumn(sec) {
+    var wrap = sec.querySelector("[data-alt]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-alt-gate]");
+    var body = wrap.querySelector("[data-alt-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-alt-gopt]"));
+    var heights = toArray(wrap.querySelectorAll("[data-alt-height]"));
+    var cases = toArray(wrap.querySelectorAll("[data-alt-case]"));
+    var svg = wrap.querySelector("[data-alt-alt]");
+    var noteEl = wrap.querySelector("[data-alt-note]");
+    var SEA = parseFloat(wrap.getAttribute("data-sea")) || 101;
+    var PALM = parseFloat(wrap.getAttribute("data-palm")) || 0.01;
+    var GROUND = parseFloat(wrap.getAttribute("data-base-y")) || 560;
+    var TOP = parseFloat(wrap.getAttribute("data-top")) || 40;
+    var SPAN = parseFloat(wrap.getAttribute("data-span")) || 12000;
+    var at = parseInt(wrap.getAttribute("data-start-height"), 10) || 0;
+    var kase = parseInt(wrap.getAttribute("data-start-case"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function h() { return heights[at]; }
+    function c() { return cases[kase]; }
+    function kpa() { return parseFloat(h().getAttribute("data-kpa")); }
+
+    function paint() {
+      var m = parseFloat(h().getAttribute("data-m"));
+      var k = kpa();
+      var pa = k * 1000;
+      var share = Math.round((k / SEA) * 100);
+      var palmF = Math.round(pa * PALM);
+      var key = m === 0 ? "sea" : "above";
+      var kind = c().getAttribute("data-alt-case");
+
+      each(heights, function (b, i) {
+        b.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+      each(cases, function (b, i) {
+        b.setAttribute("aria-pressed", i === kase ? "true" : "false");
+      });
+
+      var markY = Math.round(GROUND - (m / SPAN) * (GROUND - TOP));
+      var air = wrap.querySelector("[data-alt-air]");
+      if (air) { air.setAttribute("height", Math.max(2, markY - TOP)); }
+      setPath(wrap, "[data-alt-marker]",
+              "M300 " + markY + " L330 " + (markY - 14) +
+              " L330 " + (markY + 14) + " Z");
+
+      each(toArray(wrap.querySelectorAll("[data-alt-case-shape]")),
+        function (g) {
+          setHidden(g, g.getAttribute("data-alt-case-shape") !== kind);
+        });
+
+      var swell = Math.min(1.85, Math.sqrt(SEA / k));
+      var bagW = Math.round(210 * swell);
+      var bagH = Math.round(150 * swell);
+      var bag = wrap.querySelector("[data-alt-bag]");
+      if (bag) {
+        bag.setAttribute("x", 700 - Math.round(bagW / 2));
+        bag.setAttribute("y", 360 - Math.round(bagH / 2));
+        bag.setAttribute("width", bagW);
+        bag.setAttribute("height", bagH);
+      }
+      setPath(wrap, "[data-alt-bagseal]",
+              "M" + (700 - Math.round(bagW / 2)) + " " +
+              (360 - Math.round(bagH / 2) + 26) + " H" +
+              (700 + Math.round(bagW / 2)));
+      var water = wrap.querySelector("[data-alt-panwater]");
+      if (water) {
+        water.setAttribute("y", 430 - 96);
+        water.setAttribute("height", 96);
+      }
+      var needle = wrap.querySelector("[data-alt-needle]");
+      if (needle) {
+        needle.setAttribute("transform",
+          "rotate(" + Math.round(-120 + (k / 110) * 240) + " 700 360)");
+      }
+
+      fillSpan(wrap, "alt", "height", h().textContent,
+               tagStyle(0.09, markY / 620, "#8FB7FF", "end"));
+      var caseValue;
+      if (kind === "pan") {
+        caseValue = h().getAttribute("data-boil") + " °C";
+      } else if (kind === "baro") {
+        caseValue = k + " kPa";
+      } else {
+        caseValue = m === 0 ? "As sealed"
+          : "Swollen " + (Math.round((SEA / k) * 10) / 10) + "×";
+      }
+      /* The barometer's reading is on its own dial, so the overlay label
+         is suppressed there rather than printed twice. */
+      fillSpan(wrap, "alt", "case", kind === "baro" ? "" : caseValue,
+               tagStyle(0.70, 0.82, "#FBF3E6"));
+
+      setOut(wrap, "alt", "height", h().textContent);
+      setOut(wrap, "alt", "pressure", k + " kPa");
+      setOut(wrap, "alt", "share", share + "%");
+      setOut(wrap, "alt", "case", caseValue);
+      var lab = wrap.querySelector('[data-alt-label="case"]');
+      if (lab) { lab.textContent = c().getAttribute("data-tile"); }
+      var sub = wrap.querySelector('[data-alt-sub="height"]');
+      if (sub) { sub.textContent = h().getAttribute("data-name"); }
+      sub = wrap.querySelector('[data-alt-sub="pressure"]');
+      if (sub) { sub.textContent = groupN(pa) + " Pa"; }
+
+      var vals = {
+        kpa: k, pa: groupN(pa) + " Pa", sea: SEA,
+        palmforce: groupN(palmF) + " N", share: share + "%",
+        label: h().textContent, name: h().getAttribute("data-name"),
+        boil: h().getAttribute("data-boil"),
+        swell: Math.round((SEA / k) * 10) / 10
+      };
+      var bEl = wrap.querySelector('[data-alt-branch="' + key + '"]');
+      var clause = c().getAttribute(
+        key === "sea" ? "data-clause-sea" : "data-clause-above");
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), vals)
+          + fillTokens(clause, vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A column showing the air above a marker set at " + h().textContent +
+          ", with " + share + " per cent of the atmosphere still overhead " +
+          "and a pressure of " + k + " kilopascals, beside the " +
+          c().textContent.toLowerCase() + " at that height.");
+      }
+
+      var prog = wrap.querySelector("[data-alt-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLiveP5(sec, {
+        label: h().textContent, kpa: k, pa: groupN(pa) + " Pa",
+        panum: groupN(pa), fnum: groupN(palmF),
+        palmforce: groupN(palmF) + " N"
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(heights, function (b, i) {
+      b.addEventListener("click", function () {
+        at = i; touched += 1; paint();
+      });
+    });
+    each(cases, function (b, i) {
+      b.addEventListener("click", function () {
+        kase = i; touched += 1; paint();
+      });
+    });
+
+    paint();
+  }
+/* ═══ END P5 wiring ═══ */
+
+  /* ═══ BEGIN P6 wiring ═══════════════════════════════════════════════════
+     P6's instrument families — *Waves and sound*. Behaviour measured off
+     Claude Design's delivered pages in `docs/ks3/design-reference/p6/`, one
+     page at a time, from her own `lessonVals()` and `DONE()`.
+
+     The helpers this block leans on — `each`, `toArray`, `setHidden`,
+     `markStage`, `markSibling`, `fillTokens`, `tagStyle`, `fillSpan`,
+     `setOut`, `setPath`, `arrowV`, `arrowH`, `groupN` — are P4's and P5's
+     and are deliberately NOT redefined here. The CFIFA attempt is
+     namespaced `…P6` for the same reason P5's is: one family per unit, so
+     `ks3_art.load()`'s one-family-one-module rule holds and the placement
+     gates see each unit's as its own.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  function paintAttemptP6(wrap, vals, blocked) {
+    var qs = toArray(wrap.querySelectorAll("[data-p6cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }        /* Question 1 alone is live */
+      var head = q.querySelector("[data-p6cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p6cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p6cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p6cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+      var block = q.querySelector("[data-p6cfa-blocked]");
+      var rows = q.querySelector(".ks3-cfa-rows");
+      var chk = q.querySelector("[data-p6cfa-check]");
+      if (block) { setHidden(block, !blocked); }
+      if (rows) { setHidden(rows, !!blocked); }
+      if (chk && blocked) { chk.setAttribute("disabled", ""); }
+    });
+  }
+
+  function publishLiveP6(sec, vals, blocked) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    each(toArray(host.querySelectorAll("[data-p6cfa]")), function (p) {
+      paintAttemptP6(p, vals, blocked);
+    });
+  }
+
+  function wireCfifaAttemptP6(sec) {
+    var wrap = sec.querySelector("[data-p6cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p6cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p6cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p6cfa-input]"));
+      var btn = q.querySelector("[data-p6cfa-check]");
+      var hint = q.querySelector("[data-p6cfa-hint]");
+      var reveal = q.querySelector("[data-p6cfa-reveal]");
+      var tally = q.querySelector("[data-p6cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p6cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p6cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p6cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+    /* ⊕ `wireBandAfter` WAS HERE, and MRB-249's gate removed it.
+     `p6-03`'s `#s-stages` ticks on the HOOK, and this watched the hook
+     section's DOM and wrote the band section's own `data-stage-done`. It
+     worked. It was still wrong: the gate reads Design's `isDone()` as a
+     MIRROR MAP and compares it with what the RAIL DECLARES, so a stop
+     ticking by a private route fails it — and did. The stop now carries
+     `mirrors: "s-hook"`, `wireRail` resolves it, and R2 accepts it as
+     reachable through the hook's own reachability. No wiring needed. */
+
+  /* p6-01 `#s-parts` — a fixed reference wave with a four-way selector.
+
+     ⚖️ THE UNSELECTED STATE SHOWS THE WAVE WITH NOTHING MARKED AND SAYS SO.
+     Design's resting note gives both measurements and marks neither, because
+     the only question the block asks is *which of these four is which*.
+
+     ⚖️ PRESSING THE SAME TAB AGAIN CLEARS IT. Four marks and no way back to
+     the unmarked state would make the resting note unreachable after the
+     first press, and the resting note is half the teaching. */
+  function wireWaveAnatomy(sec) {
+    var wrap = sec.querySelector("[data-wanat]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-wanat-tab]"));
+    var marks = toArray(wrap.querySelectorAll("[data-wanat-mark]"));
+    var noteEl = wrap.querySelector("[data-wanat-note-out]");
+    var svg = wrap.querySelector("[data-wanat-alt]");
+    var REST = wrap.getAttribute("data-resting") || "";
+    var BASE = wrap.getAttribute("data-alt-base") || "";
+    var at = "";
+
+    function paint() {
+      each(tabs, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-wanat-tab") === at ? "true" : "false");
+      });
+      each(marks, function (g) {
+        setHidden(g, g.getAttribute("data-wanat-mark") !== at);
+      });
+      var src = at
+        ? wrap.querySelector('[data-wanat-note="' + at + '"]') : null;
+      if (noteEl) {
+        noteEl.textContent = src ? (src.getAttribute("data-note") || "")
+                                 : REST;
+      }
+      if (svg) {
+        svg.setAttribute("aria-label", at
+          ? BASE + " " + (noteEl ? noteEl.textContent : "")
+          : BASE);
+      }
+      markStage(sec, !!at);            /* a_part_chosen */
+    }
+
+    each(tabs, function (b) {
+      b.addEventListener("click", function () {
+        var id = b.getAttribute("data-wanat-tab");
+        at = (at === id) ? "" : id;
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* A sampled sine as one `d`, matching `ks3_art.p6._wave_path` exactly so
+     that what JS draws and what the drawer draws are the same curve. */
+  function waveP6(x0, x1, mid, amp, lam, phase, step) {
+    var d = "", x = x0, y;
+    var s = step || 4;
+    var ph = phase || 0;
+    while (x <= x1) {
+      y = mid - amp * Math.sin((2 * Math.PI * (x - x0)) / lam + ph);
+      d += (d ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+      x += s;
+    }
+    return d;
+  }
+
+  /* p6-01 `#s-tank` — one paddle, two things you can change about it.
+
+     ⚖️ BOTH AXES TO ONE SCALE (her flag 7). 0.88 px per mm horizontally AND
+     vertically, so the largest amplitude is 35 px on a 1000-wide viewBox.
+     It looks small, and exaggerating it would make the drawn geometry
+     contradict the 1-in-7 label beside it.
+
+     ⚖️ STEEPNESS IS CREST-TO-TROUGH OVER WAVELENGTH, which is the form the
+     1-in-7 breaking limit is quoted in — so `2 × amplitude ÷ wavelength`,
+     not amplitude over wavelength. Getting that wrong would put the break
+     at twice the real steepness and make the breaking branch unreachable.
+
+     ⚠️ NO FREQUENCY ANYWHERE (her flag 2). Nothing here computes or prints
+     one; `SND.01` is p6-05's. */
+  function wireRippleTank(sec) {
+    var wrap = sec.querySelector("[data-rtank]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-rtank-gate]");
+    var body = wrap.querySelector("[data-rtank-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-rtank-gopt]"));
+    var ampEl = wrap.querySelector('[data-rtank-slider="amp"]');
+    var wavEl = wrap.querySelector('[data-rtank-slider="wav"]');
+    var svg = wrap.querySelector("[data-rtank-alt]");
+    var noteEl = wrap.querySelector("[data-rtank-note]");
+    var WIDTH = parseFloat(wrap.getAttribute("data-width-m")) || 1;
+    var BREAK = parseFloat(wrap.getAttribute("data-break-at")) || 0.143;
+    var PXMM = parseFloat(wrap.getAttribute("data-px-per-mm")) || 0.88;
+    var SWELL = 0.05;                  /* 1 in 20 — an open-ocean swell */
+    var X0 = 60, X1 = 940, MID = 300, CX = 500;
+    var committed = false, touched = 0;
+
+    function paint() {
+      var amp = ampEl ? Number(ampEl.value) : 0;      /* mm */
+      var wav = wavEl ? Number(wavEl.value) : 1;      /* mm */
+      var steep = (2 * amp) / wav;
+      var waves = (WIDTH * 1000) / wav;
+      var swing = 2 * amp;
+
+      setPath(wrap, "[data-rtank-wave]",
+              waveP6(X0, X1, MID, amp * PXMM, wav * PXMM, 0, 4));
+
+      /* The float sits ON the surface at the tank's midpoint, so its own
+         height is the wave's height there — which is what makes "it rises
+         and falls and goes nowhere" something a student can watch. */
+      var fy = MID - amp * PXMM *
+        Math.sin((2 * Math.PI * (CX - X0)) / (wav * PXMM));
+      var float = wrap.querySelector("[data-rtank-float]");
+      if (float) { float.setAttribute("cy", fy.toFixed(1)); }
+
+      var half = amp * PXMM;
+      setPath(wrap, "[data-rtank-swing]",
+              half > 2
+                ? ("M" + (CX + 44) + " " + (MID - half) +
+                   " V" + (MID + half) +
+                   " M" + (CX + 34) + " " + (MID - half) +
+                   " H" + (CX + 54) +
+                   " M" + (CX + 34) + " " + (MID + half) +
+                   " H" + (CX + 54))
+                : null);
+
+      fillSpan(wrap, "rtank", "swing", swing + " mm",
+               tagStyle(0.60, (MID + half + 26) / 520, "#C6B9A7", "start"));
+
+      setOut(wrap, "rtank", "amp", amp + " mm");
+      setOut(wrap, "rtank", "wav", wav + " mm");
+      setOut(wrap, "rtank", "swing", swing + " mm");
+      setOut(wrap, "rtank", "steep",
+             "1 in " + Math.round(1 / steep) +
+             (steep >= BREAK ? " — steep enough to break" : ""));
+
+      var key = steep >= BREAK ? "breaking"
+        : (steep <= SWELL ? "swell" : "ordinary");
+      var bEl = wrap.querySelector('[data-rtank-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          head: "Amplitude " + amp + " mm and wavelength " + wav +
+                " mm is a steepness of 1 in " + Math.round(1 / steep) + ". ",
+          waves: (Math.round(waves * 10) / 10),
+          swing: swing,
+          amp: amp, wav: wav
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A tank " + WIDTH.toFixed(2) + " metres across with a wave of " +
+          "amplitude " + amp + " millimetres and wavelength " + wav +
+          " millimetres drawn to one scale in both directions. A float at " +
+          "the middle rises and falls through " + swing +
+          " millimetres and stays where it is.");
+      }
+
+      var prog = wrap.querySelector("[data-rtank-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Move a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each([ampEl, wavEl], function (el) {
+      if (!el) { return; }
+      ["input", "change"].forEach(function (ev) {
+        el.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+
+    paint();
+  }
+
+  /* p6-02 `#s-meet` — two wave trains in one channel, and the third trace.
+
+     ⚖️ FIVE BRANCHES, AND THE EXACT CANCEL IS ITS OWN. `WAVE-05` is *when
+     two waves cancel they destroy each other*, so the state where they
+     cancel to nothing has to say, in its own words, that both waves are
+     still there and both leave the overlap unchanged. A single "they
+     subtract" branch would leave the misconception standing.
+
+     ⚖️ THE ZERO STATE AND THE ONE-WAVE STATE ARE DISTINCT, AND NEITHER IS
+     "CANCELLING". Nothing plus nothing is not a cancellation, and one wave
+     alone reads the same crest-on-crest as crest-on-trough — which is the
+     control a student needs before the two-wave cases mean anything.
+
+     ⚖️ THE THIRD TRACE IS THE SUM, DRAWN, NOT ASSERTED. Both lanes and the
+     result are on one scale, so equal heights are equal millimetres. */
+  function wireSuperpositionLanes(sec) {
+    var wrap = sec.querySelector("[data-slane]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-slane-gate]");
+    var body = wrap.querySelector("[data-slane-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-slane-gopt]"));
+    var aEl = wrap.querySelector('[data-slane-slider="a"]');
+    var bEl2 = wrap.querySelector('[data-slane-slider="b"]');
+    var steps = toArray(wrap.querySelectorAll("[data-slane-step]"));
+    var svg = wrap.querySelector("[data-slane-alt]");
+    var noteEl = wrap.querySelector("[data-slane-note]");
+    var PXMM = parseFloat(wrap.getAttribute("data-px-per-mm")) || 2.5;
+    var inStep = wrap.getAttribute("data-start-in-step") !== "0";
+    var X0 = 120, X1 = 960, LAM = 280;
+    var MIDS = { a: 80, b: 210, r: 390 };
+    var committed = false, touched = 0;
+
+    function paint() {
+      var a = aEl ? Number(aEl.value) : 0;
+      var b = bEl2 ? Number(bEl2.value) : 0;
+      var r = inStep ? (a + b) : Math.abs(a - b);
+      var ph = inStep ? 0 : Math.PI;
+
+      each(steps, function (s) {
+        s.setAttribute("aria-pressed",
+          (s.getAttribute("data-slane-step") === "1") === inStep
+            ? "true" : "false");
+      });
+
+      setPath(wrap, '[data-slane-trace="a"]',
+              waveP6(X0, X1, MIDS.a, a * PXMM, LAM, 0, 4));
+      setPath(wrap, '[data-slane-trace="b"]',
+              waveP6(X0, X1, MIDS.b, b * PXMM, LAM, ph, 4));
+      /* The result is drawn from the SUM of the two displacements rather
+         than from `r`, so a partial cancel comes out of the arithmetic
+         instead of being asserted by the readout. */
+      var d = "", x = X0, y;
+      while (x <= X1) {
+        y = MIDS.r
+          - a * PXMM * Math.sin((2 * Math.PI * (x - X0)) / LAM)
+          - b * PXMM * Math.sin((2 * Math.PI * (x - X0)) / LAM + ph);
+        d += (d ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+        x += 4;
+      }
+      setPath(wrap, '[data-slane-trace="r"]', d);
+
+      setOut(wrap, "slane", "a", a + " mm");
+      setOut(wrap, "slane", "b", b + " mm");
+      setOut(wrap, "slane", "r", r + " mm");
+      setOut(wrap, "slane", "verdict",
+             (a === 0 && b === 0) ? "Nothing is running"
+               : (a === 0 || b === 0) ? "Only one wave"
+               : inStep ? "Adding"
+               : (a === b ? "Cancelling exactly" : "Cancelling in part"));
+
+      var key = (a === 0 && b === 0) ? "none"
+        : (a === 0 || b === 0) ? "one_only"
+        : inStep ? "adding"
+        : (a === b ? "cancels_exactly" : "partly");
+      var src = wrap.querySelector('[data-slane-branch="' + key + '"]');
+      if (noteEl && src) {
+        noteEl.textContent = fillTokens(src.getAttribute("data-note"), {
+          a: a, b: b, r: r,
+          diff: Math.abs(a - b),
+          only: a === 0 ? "B" : "A",
+          big: Math.max(a, b), small: Math.min(a, b),
+          gap: Math.abs(a - b)
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "Three traces on one scale. Wave A at " + a + " millimetres, " +
+          "wave B at " + b + " millimetres arriving " +
+          (inStep ? "crest on crest" : "crest on trough") +
+          ", and where they meet " + r + " millimetres.");
+      }
+
+      var prog = wrap.querySelector("[data-slane-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Move a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+      /* Question 1 is live on this channel. Design's own head, formula note
+         and answer note switch on which way B arrives, so they are
+         published rather than fixed. */
+      publishLiveP6(sec, {
+        inA: a, inB: b, r: r, sign: inStep ? "+" : "−",
+        arrive: inStep ? "crest on crest" : "crest on trough",
+        formnote: inStep
+          ? "Crest on crest, so both displacements are upwards and they add."
+          : "Crest on trough, so one is up and one is down, and the smaller "
+            + "takes away from the bigger.",
+        answernote: r === 0
+          ? "Flat water, and only while the two are overlapping."
+          : r + " millimetres from the still level, and only while the two "
+            + "are overlapping."
+      }, false);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each([aEl, bEl2], function (el) {
+      if (!el) { return; }
+      ["input", "change"].forEach(function (ev) {
+        el.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+    each(steps, function (s) {
+      s.addEventListener("click", function () {
+        inStep = s.getAttribute("data-slane-step") === "1";
+        touched += 1;
+        paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p6-03 `#s-chain` — one source, one detector, the air in between.
+
+     ⚖️ THE CHAIN IS THE CONSTANT AND THE SOURCE IS THE VARIABLE. Five very
+     different things vibrate and the middle of the drawing never changes:
+     the same columns of air, bunched and spread, travelling the same way.
+     That is the whole claim of the lesson, and it is made by what does NOT
+     move on screen when the source is swapped.
+
+     ⚖️ THE NOTE IS THE SOURCE'S AND THE DETECTOR'S, IN THAT ORDER. There
+     are no branch spans here because there is no computed state — every
+     combination is a source sentence followed by a detector sentence, and
+     both are Design's own. */
+  function wireVibrationChain(sec) {
+    var wrap = sec.querySelector("[data-vchain]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-vchain-gate]");
+    var body = wrap.querySelector("[data-vchain-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-vchain-gopt]"));
+    var srcs = toArray(wrap.querySelectorAll("[data-vchain-source]"));
+    var dets = toArray(wrap.querySelectorAll("[data-vchain-det]"));
+    var svg = wrap.querySelector("[data-vchain-alt]");
+    var noteEl = wrap.querySelector("[data-vchain-note]");
+    var atS = wrap.getAttribute("data-start-source") || "0";
+    var atD = wrap.getAttribute("data-start-det") || "0";
+    var committed = false, touched = 0;
+
+    function pick(list, attr, want) {
+      var i = parseInt(want, 10);
+      if (!isNaN(i) && String(i) === String(want) && list[i]) { return list[i]; }
+      for (var k = 0; k < list.length; k += 1) {
+        if (list[k].getAttribute(attr) === want) { return list[k]; }
+      }
+      return list[0];
+    }
+
+    /* The columns of air: evenly spaced at rest, then shifted along by a
+       sine so that some crowd together and others open out. It is drawn
+       once and never varies, because nothing on this bench changes it —
+       which is the point being made. */
+    function airPath() {
+      var d = "", x0 = 340, x1 = 830, n = 26, i, x, shift;
+      for (i = 0; i < n; i += 1) {
+        x = x0 + (i / (n - 1)) * (x1 - x0);
+        shift = 13 * Math.sin((2 * Math.PI * i) / 6.5);
+        d += "M" + (x + shift).toFixed(1) + " 108 V232 ";
+      }
+      return d;
+    }
+
+    function paint() {
+      var s = pick(srcs, "data-vchain-source", atS);
+      var d = pick(dets, "data-vchain-det", atD);
+
+      each(srcs, function (b) {
+        b.setAttribute("aria-pressed", b === s ? "true" : "false");
+      });
+      each(dets, function (b) {
+        b.setAttribute("aria-pressed", b === d ? "true" : "false");
+      });
+
+      setPath(wrap, "[data-vchain-ghost]", s.getAttribute("data-ghost"));
+      setPath(wrap, "[data-vchain-shape]", s.getAttribute("data-path"));
+      setPath(wrap, "[data-vchain-arrow]", s.getAttribute("data-arrow"));
+      setPath(wrap, "[data-vchain-air]", airPath());
+
+      fillSpan(wrap, "vchain", "src", s.getAttribute("data-caption"),
+               tagStyle(0.16, 0.90, "#C6B9A7"));
+      fillSpan(wrap, "vchain", "det", d.getAttribute("data-caption"),
+               tagStyle(0.89, 0.90, "#C6B9A7", "end"));
+
+      setOut(wrap, "vchain", "moves", s.getAttribute("data-moves"));
+      setOut(wrap, "vchain", "amp", s.getAttribute("data-amp"));
+      setOut(wrap, "vchain", "freq", s.getAttribute("data-freq"));
+      setOut(wrap, "vchain", "out", d.getAttribute("data-out"));
+
+      if (noteEl) {
+        noteEl.textContent = s.getAttribute("data-note") + " " +
+                             d.getAttribute("data-note");
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          (s.getAttribute("data-caption") || "").toLowerCase() +
+          " at the left, " + s.getAttribute("data-driven") +
+          ", with columns of air between it and a " +
+          (d.getAttribute("data-caption") || "").toLowerCase() +
+          " at the right. The columns are crowded in some places and " +
+          "spread out in others, and the disturbance travels left to right.");
+      }
+
+      var prog = wrap.querySelector("[data-vchain-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(srcs, function (b) {
+      b.addEventListener("click", function () {
+        atS = b.getAttribute("data-vchain-source"); touched += 1; paint();
+      });
+    });
+    each(dets, function (b) {
+      b.addEventListener("click", function () {
+        atD = b.getAttribute("data-vchain-det"); touched += 1; paint();
+      });
+    });
+
+    paint();
+  }
+
+  /* p6-04 `#s-slinky` — the same slinky, driven two ways, with one coil
+     marked.
+
+     ⚖️ SAME AMPLITUDE, SAME WAVELENGTH, SAME LENGTH, BOTH WAYS. 60 mm and
+     300 mm on a 1.20 m slinky whichever drive is chosen, so the ONLY thing
+     that differs between the two pictures is the direction the coil moves.
+     Changing anything else would let a student read the contrast off the
+     wrong difference.
+
+     ⚖️ SIX BRANCHES, THREE PER DRIVE, AND THE MIDDLE ONE MATTERS MOST. A
+     coil at its rest place is still part of a wave — `WAVE-15` is *a
+     longitudinal wave has no amplitude because there is no hump to
+     measure*, and the rest-place branch is where that is answered.
+
+     ⚖️ THE MARKED COIL'S DISPLACEMENT IS ACROSS THE SLINKY FOR TRANSVERSE
+     AND ALONG IT FOR LONGITUDINAL, and the arrow is drawn on that axis. It
+     is the one drawn difference, so it carries the lesson. */
+  function wireSlinkyDual(sec) {
+    var wrap = sec.querySelector("[data-slink]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-slink-gate]");
+    var body = wrap.querySelector("[data-slink-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-slink-gopt]"));
+    var drives = toArray(wrap.querySelectorAll("[data-slink-drive]"));
+    var markEl = wrap.querySelector('[data-slink-slider="mark"]');
+    var svg = wrap.querySelector("[data-slink-alt]");
+    var noteEl = wrap.querySelector("[data-slink-note]");
+    var AMP = parseFloat(wrap.getAttribute("data-amp-mm")) || 60;
+    var LAM = parseFloat(wrap.getAttribute("data-lam-mm")) || 300;
+    var LEN = parseFloat(wrap.getAttribute("data-length-mm")) || 1200;
+    var at = wrap.getAttribute("data-start-drive") || "trans";
+    var X0 = 60, X1 = 940, MID = 180;
+    var PX = (X1 - X0) / LEN;          /* px per mm, one scale both ways */
+    var committed = false, touched = 0;
+
+    function drive() {
+      for (var i = 0; i < drives.length; i += 1) {
+        if (drives[i].getAttribute("data-slink-drive") === at) {
+          return drives[i];
+        }
+      }
+      return drives[0];
+    }
+
+    function paint() {
+      var d = drive();
+      var kind = d.getAttribute("data-kind");
+      var trans = kind === "transverse";
+      var pct = markEl ? Number(markEl.value) : 0;
+      var restMm = (pct / 100) * LEN;            /* rest position, mm */
+      var phase = (2 * Math.PI * restMm) / LAM;
+      var disp = AMP * Math.sin(phase);          /* mm, signed */
+      /* ⚠️ A COMPRESSION IS IN THE GRADIENT, NOT THE DISPLACEMENT, and
+         getting that wrong is the one error this bench cannot survive.
+         For s(x) = A sin(kx) the crowding goes as −∂s/∂x = −cos(kx): the
+         coils are packed where NEIGHBOURING coils have moved towards each
+         other, which happens where the coil's own displacement is zero,
+         and they are at rest spacing where the displacement is largest.
+         Labelling by `disp` — as this did — put "compression" on 17 of the
+         21 positions the slider can reach where the drawing plainly showed
+         the opposite, so the words contradicted the picture beside them.
+         The DRAWING was always right: it places each coil at rest + disp,
+         so the crowding comes out of the arithmetic. Only the label was
+         wrong. */
+
+
+      each(drives, function (b) {
+        b.setAttribute("aria-pressed", b === d ? "true" : "false");
+      });
+
+      /* The coils. Transverse: evenly spaced along, displaced across.
+         Longitudinal: on the axis, displaced ALONG, so the spacing itself
+         carries the compressions and rarefactions. */
+      var path = "", i, n = 60, rm, ph, dm, x, y;
+      for (i = 0; i <= n; i += 1) {
+        rm = (i / n) * LEN;
+        ph = (2 * Math.PI * rm) / LAM;
+        dm = AMP * Math.sin(ph);
+        x = X0 + (trans ? rm : rm + dm) * PX;
+        y = MID + (trans ? -dm * PX : 0);
+        path += (trans
+          ? ((i ? " L" : "M") + x.toFixed(1) + " " + y.toFixed(1))
+          : ("M" + x.toFixed(1) + " " + (MID - 34) +
+             " V" + (MID + 34) + " "));
+      }
+      setPath(wrap, "[data-slink-coils]", path);
+      setPath(wrap, "[data-slink-rest]",
+              "M" + (X0 + restMm * PX).toFixed(1) + " " + (MID - 52) +
+              " V" + (MID + 52));
+
+      var cx = X0 + (trans ? restMm : restMm + disp) * PX;
+      var cy = MID + (trans ? -disp * PX : 0);
+      var dot = wrap.querySelector("[data-slink-marked]");
+      if (dot) {
+        dot.setAttribute("cx", cx.toFixed(1));
+        dot.setAttribute("cy", cy.toFixed(1));
+      }
+
+      var len = Math.abs(disp) * PX;
+      var arrow = null;
+      if (len > 2) {
+        arrow = trans
+          ? arrowV(cx, MID, len, disp < 0, 20)
+          : arrowH(X0 + restMm * PX, MID, len, disp > 0, 20);
+      }
+      /* One path element, so shaft and head go in together. Both helpers
+         return `M0 0` below 2px rather than a zero-length arrow, which is
+         why the length is tested before either is asked for. */
+      setPath(wrap, "[data-slink-arrow]",
+              arrow ? (arrow.shaft + " " + arrow.head) : null);
+
+      fillSpan(wrap, "slink", "caption", d.getAttribute("data-caption"),
+               tagStyle(0.5, 0.06, "#C6B9A7"));
+
+      var mm = Math.round(Math.abs(disp));
+      setOut(wrap, "slink", "travel", "Along the slinky, to the right");
+      setOut(wrap, "slink", "coildir",
+             mm < 1 ? "At its rest place"
+               : (trans
+                   ? (disp > 0 ? mm + " mm across, upwards"
+                               : mm + " mm across, downwards")
+                   : (disp > 0 ? mm + " mm along, forwards"
+                               : mm + " mm along, backwards")));
+      /* ⚖️ HER THRESHOLDS AND HER WORDS, from `lessonVals()` on
+         `p6-04-sound-is-longitudinal.dc.html`:
+
+             if (g.cosv < -0.5) region = 'In a compression'
+             else if (g.cosv > 0.5) region = 'In a rarefaction'
+             else region = 'Between a compression and a rarefaction'
+
+         and ±0.85 on the sine for the transverse case. This had ±0 on the
+         DISPLACEMENT for both, which called every position above the rest
+         line "At a crest" — including one a hair above it — and put
+         "compression" where her own drawing shows the coils opening out.
+         The thresholds are hers because the bench is hers. */
+      var sinv = Math.sin(phase), cosv = Math.cos(phase);
+      setOut(wrap, "slink", "region",
+             trans
+               ? (sinv > 0.85 ? "At a crest"
+                   : sinv < -0.85 ? "At a trough"
+                                  : "Between a crest and a trough")
+               : (cosv < -0.5 ? "In a compression"
+                   : cosv > 0.5 ? "In a rarefaction"
+                                : "Between a compression and a rarefaction"));
+      setOut(wrap, "slink", "kind",
+             trans ? "Transverse" : "Longitudinal");
+
+      var key = trans
+        ? ("trans-" + (sinv > 0.85 ? "crest"
+                       : sinv < -0.85 ? "trough" : "mid"))
+        : ("long-" + (cosv < -0.5 ? "comp"
+                      : cosv > 0.5 ? "rare" : "mid"));
+      var src = wrap.querySelector('[data-slink-branch="' + key + '"]');
+      if (noteEl && src) {
+        noteEl.textContent = fillTokens(src.getAttribute("data-note"), {
+          amp: AMP, lam: LAM, mm: mm, pct: pct
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A slinky " + (LEN / 1000).toFixed(2) + " metres long, driven " +
+          (trans ? "across its length" : "along its length") +
+          ", with one coil marked " + pct + " per cent of the way along. " +
+          "It has moved " + mm + " millimetres " +
+          (trans ? "across the slinky" : "along the slinky") +
+          " from where it started" +
+          (trans ? "."
+             : ", and the coils around it are " +
+               (cosv < -0.5 ? "crowded closer than their rest spacing."
+                : cosv > 0.5 ? "further apart than their rest spacing."
+                             : "at their rest spacing.")));
+      }
+
+      var prog = wrap.querySelector("[data-slink-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(drives, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-slink-drive"); touched += 1; paint();
+      });
+    });
+    if (markEl) {
+      ["input", "change"].forEach(function (ev) {
+        markEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p6-05 `#s-signal` — a signal generator, a loudspeaker and a scope.
+
+     ⚖️ THE WINDOW IS FIXED AND THE COUNT IS DERIVED. 20 ms, always, and the
+     number of complete vibrations drawn is `f × 0.02` rather than an
+     authored figure. That is what makes the hertz something a student can
+     SEE rather than a label: the trace crowds as the frequency rises,
+     because more of them fit in the same fixed slice of time.
+
+     ⚖️ EVERY BRANCH ENDS BY NAMING WHAT THE OTHER DIAL WOULD DO, with live
+     figures. `WAVE-17` is *a loud note is a high note*, and a bench that
+     let a student move one dial, read one number and stop would never
+     confront it. `r_scope_trace` refuses a payload with no `independence`
+     sentence, and this is where that sentence is filled and appended.
+
+     ⚖️ THE AMPLITUDE BRACKET IS DRAWN FROM THE ZERO LINE, not trough to
+     crest, because that is what amplitude means — the same discrimination
+     `p6-01`'s figure makes for water. */
+  function wireScopeTrace(sec) {
+    var wrap = sec.querySelector("[data-scope]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-scope-gate]");
+    var body = wrap.querySelector("[data-scope-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-scope-gopt]"));
+    var fEl = wrap.querySelector('[data-scope-slider="f"]');
+    var aEl = wrap.querySelector('[data-scope-slider="a"]');
+    var svg = wrap.querySelector("[data-scope-alt]");
+    var noteEl = wrap.querySelector("[data-scope-note]");
+    var WIN = parseFloat(wrap.getAttribute("data-window-ms")) || 20;
+    var IND = wrap.getAttribute("data-independence") || "";
+    var BANDS = (wrap.getAttribute("data-bands") || "200|600").split("|");
+    var LOW = parseFloat(BANDS[0]), HIGH = parseFloat(BANDS[1]);
+    var X0 = 70, X1 = 930, MID = 190, MAXA = 130;
+    var committed = false, touched = 0;
+
+    function paint() {
+      var f = fEl ? Number(fEl.value) : 0;
+      var aRaw = aEl ? Number(aEl.value) : 0;      /* tenths of a mm */
+      var mm = aRaw / 10;
+      var cyc = f * (WIN / 1000);                  /* complete vibrations */
+      var ampPx = (aRaw / Number(aEl.max)) * MAXA;
+      var lam = (X1 - X0) / (cyc || 1);
+
+      setPath(wrap, "[data-scope-trace]",
+              waveP6(X0, X1, MID, ampPx, lam, 0, 2));
+
+      /* One tick per millisecond, so the window's own scale is visible and
+         the crowding can be counted against something. */
+      var ticks = "", i, x;
+      for (i = 0; i <= WIN; i += 1) {
+        x = X0 + (i / WIN) * (X1 - X0);
+        ticks += "M" + x.toFixed(1) + " 330 V" +
+                 (i % 5 === 0 ? 312 : 322) + " ";
+      }
+      setPath(wrap, "[data-scope-ticks]", ticks);
+
+      setPath(wrap, "[data-scope-bracket]",
+              ampPx > 3
+                ? ("M" + (X0 + 26) + " " + MID +
+                   " V" + (MID - ampPx).toFixed(1) +
+                   " M" + (X0 + 16) + " " + MID + " H" + (X0 + 36) +
+                   " M" + (X0 + 16) + " " + (MID - ampPx).toFixed(1) +
+                   " H" + (X0 + 36))
+                : null);
+
+      fillSpan(wrap, "scope", "amp", mm.toFixed(1) + " mm",
+               tagStyle(0.115, (MID - ampPx - 18) / 420, "#C6B9A7", "start"));
+
+      var other = mm === 2 ? "0.4" : "0.2";
+      setOut(wrap, "scope", "freq", f + " Hz");
+      setOut(wrap, "scope", "f", f + " Hz");
+      setOut(wrap, "scope", "cycles", String(Math.round(cyc * 10) / 10));
+      setOut(wrap, "scope", "amp", mm.toFixed(1) + " mm");
+      setOut(wrap, "scope", "a", mm.toFixed(1) + " mm");
+      setOut(wrap, "scope", "verdict",
+             (f < LOW ? "A low note" : f > HIGH ? "A high note"
+                                                : "A middling note") +
+             ", " + (mm >= 1.4 ? "loud" : mm <= 0.6 ? "quiet"
+                                                    : "moderately loud"));
+
+      var key = f < LOW ? "low" : (f > HIGH ? "high" : "middle");
+      var src = wrap.querySelector('[data-scope-branch="' + key + '"]');
+      var vals = {
+        f: f, cyc: Math.round(cyc * 10) / 10, amp: mm.toFixed(1),
+        other: other, win: WIN
+      };
+      if (noteEl && src) {
+        noteEl.textContent = fillTokens(src.getAttribute("data-note"), vals) +
+                             fillTokens(IND, vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "An oscilloscope window " + WIN + " milliseconds wide showing a " +
+          "steady tone at " + f + " hertz. " +
+          (Math.round(cyc * 10) / 10) + " complete vibrations fit in the " +
+          "window, and the trace reaches " + mm.toFixed(1) +
+          " millimetres above the zero line.");
+      }
+
+      var prog = wrap.querySelector("[data-scope-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both dials live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+      /* ⚠️ THREE SECONDS, WHICH IS HER QUESTION. This published a
+         two-second count against a head that had been written here; the
+         head is now hers and asks for 3.0 s. */
+      publishLiveP6(sec, { f: f, n: f * 3 }, false);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each([fEl, aEl], function (el) {
+      if (!el) { return; }
+      ["input", "change"].forEach(function (ev) {
+        el.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    });
+
+    paint();
+  }
+
+  /* p6-06 `#s-range` — a striker, a microphone, and a measured gap.
+
+     ⚖️ THE VACUUM REPORTS NOTHING, IN WORDS. Not a very small number and
+     not a very long time: no sound, at any distance, for any length of
+     time. A bench that printed `0 m/s` and a time would teach that sound
+     crosses a vacuum slowly, which is `WAVE-21` exactly — so the time and
+     the verdict are sentences, not zeros, when v is 0.
+
+     ⚖️ THE PARTICLE PATTERN IS THE EXPLANATION. Scattered for a gas, close
+     rows for a liquid, a linked lattice for a solid, nothing at all for a
+     vacuum — and each material's note names the same arrangement in words,
+     so the drawing is never the only channel. */
+  function wireMediumRange(sec) {
+    var wrap = sec.querySelector("[data-mrange]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-mrange-gate]");
+    var body = wrap.querySelector("[data-mrange-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-mrange-gopt]"));
+    var mats = toArray(wrap.querySelectorAll("[data-mrange-mat]"));
+    var distEl = wrap.querySelector('[data-mrange-slider="dist"]');
+    var svg = wrap.querySelector("[data-mrange-alt]");
+    var noteEl = wrap.querySelector("[data-mrange-note]");
+    var at = wrap.getAttribute("data-start-mat") || "0";
+    var X0 = 160, X1 = 880, MID = 150;
+    var committed = false, touched = 0;
+
+    function mat() {
+      var i = parseInt(at, 10);
+      if (!isNaN(i) && String(i) === String(at) && mats[i]) { return mats[i]; }
+      for (var k = 0; k < mats.length; k += 1) {
+        if (mats[k].getAttribute("data-mrange-mat") === at) { return mats[k]; }
+      }
+      return mats[0];
+    }
+
+    /* Three arrangements and an absence. The counts and rows are chosen so
+       that gas / liquid / solid read as progressively closer without any
+       of them looking like a different KIND of thing. */
+    function patterns(kind) {
+      var dots = "", links = "", cols, rows, i, j, x, y, gapX, gapY;
+      if (kind === "none") { return { dots: null, links: null }; }
+      cols = kind === "gas" ? 9 : (kind === "liquid" ? 18 : 22);
+      rows = kind === "gas" ? 3 : 4;
+      gapX = (X1 - X0) / (cols + 1);
+      gapY = 30;
+      for (j = 0; j < rows; j += 1) {
+        y = MID - ((rows - 1) * gapY) / 2 + j * gapY;
+        for (i = 0; i < cols; i += 1) {
+          x = X0 + gapX * (i + 1) +
+              (kind === "gas" ? ((i * 37 + j * 53) % 19) - 9 : 0);
+          dots += "M" + (x - 4).toFixed(1) + " " + y.toFixed(1) +
+                  " a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 ";
+          if (kind === "lattice" && i) {
+            links += "M" + (x - gapX).toFixed(1) + " " + y.toFixed(1) +
+                     " H" + x.toFixed(1) + " ";
+          }
+        }
+      }
+      return { dots: dots, links: links || null };
+    }
+
+    function paint() {
+      var m = mat();
+      var v = parseFloat(m.getAttribute("data-v"));
+      var dist = distEl ? Number(distEl.value) : 0;
+      var silent = !(v > 0);
+      var t = silent ? null : dist / v;
+
+      each(mats, function (b) {
+        b.setAttribute("aria-pressed", b === m ? "true" : "false");
+      });
+
+      var p = patterns(m.getAttribute("data-pattern"));
+      setPath(wrap, "[data-mrange-particles]", p.dots);
+      setPath(wrap, "[data-mrange-links]", p.links);
+
+      fillSpan(wrap, "mrange", "gap", dist + " m",
+               tagStyle(0.52, 0.90, "#C6B9A7"));
+      fillSpan(wrap, "mrange", "caption", m.getAttribute("data-caption"),
+               tagStyle(0.52, 0.11, "#C6B9A7"));
+
+      setOut(wrap, "mrange", "dist", dist + " m");
+      setOut(wrap, "mrange", "gap", dist + " m");
+      setOut(wrap, "mrange", "speed",
+             silent ? "No speed of sound at all" : v + " m/s");
+      setOut(wrap, "mrange", "time",
+             silent ? "Nothing ever arrives"
+                    : (t >= 1 ? t.toFixed(2) : t >= 0.1 ? t.toFixed(3)
+                                                        : t.toFixed(4)) + " s");
+      setOut(wrap, "mrange", "verdict",
+             silent ? "Silence, at any distance" : "The blow arrives");
+
+      if (noteEl) {
+        noteEl.textContent = fillTokens(m.getAttribute("data-note"), {
+          dist: dist, v: v, name: m.getAttribute("data-name")
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A striker and a microphone " + dist + " metres apart with " +
+          (m.getAttribute("data-state") || "") + " between them. " +
+          (silent
+            ? "There are no particles in the gap, so nothing arrives at all."
+            : "Sound crosses at about " + v + " metres per second."));
+      }
+
+      var prog = wrap.querySelector("[data-mrange-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+      /* ⚠️ THE VACUUM BLOCKS THE ATTEMPT, AND THAT IS NOT A NICETY.
+         `t = d ÷ v` with v = 0 is not a hard sum, it is not a sum at all,
+         and printing "200 m ÷ 0 m/s" would teach that the arithmetic is
+         merely difficult there. The panel says instead that there is
+         nothing to work out, which is the physics. */
+      /* ⚖️ HER HANDLING OF THE VACUUM, AND IT IS BETTER THAN BLOCKING.
+         She does not hide the five boxes: she says the vacuum has no speed
+         of sound and nothing to time, and runs the steps on AIR across the
+         same gap. The student still gets the practice, and the physics
+         point is made in the head rather than by an absence. */
+      var qv = silent ? 340 : v;
+      var qn = silent ? "air" : (m.getAttribute("data-name") || "").toLowerCase();
+      var qt = dist / qv;
+      publishLiveP6(sec, {
+        headline: silent
+          ? ("A vacuum has no speed of sound and nothing to time, so these "
+             + "five steps use air across your " + dist + " m gap.")
+          : ("Your gap: " + dist + " m of " + qn + "."),
+        dist: dist, v: qv, name: qn,
+        timenum: Math.round(qt * 10000) / 10000,
+        /* ⚖️ HER `fmtT`, EXACTLY: seconds throughout, with the number of
+           decimals stepping down as the time gets shorter. This had
+           switched to milliseconds below a second, which reads as a
+           different quantity from the one the triangle just produced. */
+        time: (qt >= 1 ? qt.toFixed(2) : qt >= 0.1 ? qt.toFixed(3)
+                                                   : qt.toFixed(4)) + " s"
+      }, false);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(mats, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-mrange-mat"); touched += 1; paint();
+      });
+    });
+    if (distEl) {
+      ["input", "change"].forEach(function (ev) {
+        distEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p6-07 `#s-cliff` — one shout, one flat surface, a stopwatch.
+
+     ⚖️ TWO CONDITIONS, AND THE VERDICT NAMES WHICH ONE FAILED. An echo needs
+     enough sound back AND enough delay. A single verdict word would let a
+     student in a carpeted bedroom conclude the room is too small, and in a
+     sports hall that the walls are too soft — so the three branches are
+     keyed to exactly that, and each names the figure that failed.
+
+     ⚖️ THE RETURNING ARROW CARRIES THE FRACTION ON TWO CHANNELS. Its stroke
+     width is how much comes back, AND it goes dashed below the audible
+     threshold, so the drawing never rests on thickness alone. */
+  function wireEchoRange(sec) {
+    var wrap = sec.querySelector("[data-echo]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-echo-gate]");
+    var body = wrap.querySelector("[data-echo-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-echo-gopt]"));
+    var surfs = toArray(wrap.querySelectorAll("[data-echo-surf]"));
+    var distEl = wrap.querySelector('[data-echo-slider="dist"]');
+    var svg = wrap.querySelector("[data-echo-alt]");
+    var noteEl = wrap.querySelector("[data-echo-note]");
+    var V = parseFloat(wrap.getAttribute("data-v")) || 340;
+    var MINF = parseFloat(wrap.getAttribute("data-min-frac")) || 15;
+    var MINT = parseFloat(wrap.getAttribute("data-min-time")) || 0.1;
+    var at = wrap.getAttribute("data-start-surf") || "0";
+    var committed = false, touched = 0;
+
+    function surf() {
+      var i = parseInt(at, 10);
+      if (!isNaN(i) && String(i) === String(at) && surfs[i]) {
+        return surfs[i];
+      }
+      for (var k = 0; k < surfs.length; k += 1) {
+        if (surfs[k].getAttribute("data-echo-surf") === at) {
+          return surfs[k];
+        }
+      }
+      return surfs[0];
+    }
+
+    function paint() {
+      var s = surf();
+      var frac = parseFloat(s.getAttribute("data-frac"));
+      var dist = distEl ? Number(distEl.value) : 0;
+      var lo = Number(distEl.min), hi = Number(distEl.max);
+      var path = 2 * dist;
+      var t = path / V;
+      var enough = frac >= MINF;
+      var late = t >= MINT;
+
+      each(surfs, function (b) {
+        b.setAttribute("aria-pressed", b === s ? "true" : "false");
+      });
+
+      var wallX = 250 + ((dist - lo) / (hi - lo)) * 640;
+      var wall = wrap.querySelector("[data-echo-wall]");
+      if (wall) { wall.setAttribute("x", wallX.toFixed(1)); }
+
+      var outA = arrowH(190, 214, Math.max(4, wallX - 190 - 26), true, 22);
+      setPath(wrap, "[data-echo-out-arrow]", outA.shaft + " " + outA.head);
+      var backA = arrowH(wallX - 6, 268, Math.max(4, wallX - 190 - 26),
+                         false, 22);
+      var back = wrap.querySelector("[data-echo-back]");
+      if (back) {
+        back.setAttribute("stroke-width",
+                          String(Math.max(2, (frac / 100) * 14)));
+        back.setAttribute("stroke-dasharray", enough ? "none" : "14 12");
+      }
+      setPath(wrap, "[data-echo-back]", backA.shaft + " " + backA.head);
+      setPath(wrap, "[data-echo-dim]",
+              "M150 330 H" + wallX.toFixed(1) +
+              " M150 318 V342 M" + wallX.toFixed(1) + " 318 V342");
+
+      fillSpan(wrap, "echo", "dist", dist + " m",
+               tagStyle((150 + wallX) / 2000, 0.98, "#C6B9A7"));
+      fillSpan(wrap, "echo", "back", "about " + frac + "% comes back",
+               tagStyle((wallX + 10) / 1000, 0.80, "#C6B9A7", "end"));
+      fillSpan(wrap, "echo", "caption", s.getAttribute("data-caption"),
+               tagStyle(0.5, 0.06, "#C6B9A7"));
+
+      setOut(wrap, "echo", "dist", dist + " m");
+      setOut(wrap, "echo", "path", path + " m");
+      setOut(wrap, "echo", "time", (Math.round(t * 100) / 100) + " s");
+      setOut(wrap, "echo", "verdict",
+             !enough ? "No echo you can pick out"
+               : (!late ? "One fuller sound, not two"
+                        : "Your own shout, coming back"));
+
+      var key = !enough ? "too_quiet" : (!late ? "too_close" : "heard");
+      var src = wrap.querySelector('[data-echo-branch="' + key + '"]');
+      if (noteEl && src) {
+        /* Her notes quote the time to two decimals in two branches and to
+           THREE in the too-close one, because 0.06 s and 0.059 s carry
+           different amounts of the point being made there. Two tokens
+           rather than one rounding rule. */
+        noteEl.textContent = fillTokens(src.getAttribute("data-note"), {
+          surf: s.getAttribute("data-name"),
+          lower: (s.getAttribute("data-name") || "").toLowerCase(),
+          frac: frac, dist: dist, path: path,
+          time: t.toFixed(2), time3: t.toFixed(3),
+          use: s.getAttribute("data-use")
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "Someone shouting at " + (s.getAttribute("data-name") || "")
+            .toLowerCase() + " " + dist + " metres away. About " + frac +
+          " per cent of the sound is drawn coming back, and the round trip " +
+          "of " + path + " metres takes " + (Math.round(t * 100) / 100) +
+          " seconds.");
+      }
+
+      var prog = wrap.querySelector("[data-echo-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+      publishLiveP6(sec, {
+        dist: dist, path: path,
+        surf: (s.getAttribute("data-name") || "").toLowerCase(),
+        time: t.toFixed(t < 0.1 ? 3 : 2)
+      }, false);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(surfs, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-echo-surf"); touched += 1; paint();
+      });
+    });
+    if (distEl) {
+      ["input", "change"].forEach(function (ev) {
+        distEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p6-08 `#s-range` — one tone, one listener, on an axis that multiplies.
+
+     ⚖️ A DECADE AXIS, AND THE SLIDER MOVES IN DECADES. The control's value
+     is thousandths of a decade, so `f = 10 ^ (value / 1000)` — which is
+     what makes a single slider reach from 1 Hz to 100 000 Hz with the same
+     feel at both ends. A linear slider would spend nine tenths of its
+     travel above 10 000 Hz and be unusable below 1000.
+
+     ⚖️ EVERY BRANCH NAMES A SECOND LISTENER AT THE SAME FREQUENCY. "The dog
+     can hear it" is a reading; "the dog can hear it and you cannot" is the
+     lesson. The comparison is computed against the actual list rather than
+     authored, so it is true whichever listener is selected.
+
+     ⚖️ THE VERDICT IS A WORD. Inside, below, above — never a colour. */
+  function wireLogRange(sec) {
+    var wrap = sec.querySelector("[data-lrange]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-lrange-gate]");
+    var body = wrap.querySelector("[data-lrange-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-lrange-gopt]"));
+    var whos = toArray(wrap.querySelectorAll("[data-lrange-who]"));
+    var fEl = wrap.querySelector('[data-lrange-slider="f"]');
+    var svg = wrap.querySelector("[data-lrange-alt]");
+    var noteEl = wrap.querySelector("[data-lrange-note]");
+    var at = wrap.getAttribute("data-start-who") || "0";
+    var X0 = 90, PERDEC = 164;
+    var committed = false, touched = 0;
+
+    function xf(hz) {
+      return X0 + (Math.log(Math.max(hz, 1)) / Math.LN10) * PERDEC;
+    }
+    function tidy(hz) {
+      return hz >= 1000 ? groupN(hz) : String(Math.round(hz));
+    }
+    function who() {
+      var i = parseInt(at, 10);
+      if (!isNaN(i) && String(i) === String(at) && whos[i]) { return whos[i]; }
+      for (var k = 0; k < whos.length; k += 1) {
+        if (whos[k].getAttribute("data-lrange-who") === at) { return whos[k]; }
+      }
+      return whos[0];
+    }
+
+    function paint() {
+      var w = who();
+      var lo = parseFloat(w.getAttribute("data-lo"));
+      var hi = parseFloat(w.getAttribute("data-hi"));
+      var f = Math.pow(10, (fEl ? Number(fEl.value) : 0) / 1000);
+      var heard = f >= lo && f <= hi;
+
+      each(whos, function (b) {
+        b.setAttribute("aria-pressed", b === w ? "true" : "false");
+      });
+
+      var band = wrap.querySelector("[data-lrange-band]");
+      if (band) {
+        band.setAttribute("x", xf(lo).toFixed(1));
+        band.setAttribute("width", Math.max(4, xf(hi) - xf(lo)).toFixed(1));
+      }
+      setPath(wrap, "[data-lrange-marker]",
+              "M" + xf(f).toFixed(1) + " 96 V204");
+      fillSpan(wrap, "lrange", "mark", tidy(f) + " Hz",
+               tagStyle(xf(f) / 1000, 0.26, "#FFC53D"));
+
+      setOut(wrap, "lrange", "f", tidy(f) + " Hz");
+      setOut(wrap, "lrange", "freq", tidy(f) + " Hz");
+      setOut(wrap, "lrange", "lo", tidy(lo) + " Hz");
+      setOut(wrap, "lrange", "hi", tidy(hi) + " Hz");
+      setOut(wrap, "lrange", "verdict",
+             heard ? "Yes — it is inside the range"
+               : (f < lo ? "No — below the bottom of the range"
+                         : "No — above the top of the range"));
+
+      /* ⚖️ HER RULE FOR THE SECOND LISTENER, from `lessonVals()`: an
+         elephant below the band, a bat above it, and inside the band a
+         bat when the young human is selected and a young person when it
+         is not. This used to pick whichever listener happened to differ
+         first, which is a different lesson on some selections. */
+      var YOUNG = whos[0];
+      var ylo = parseFloat(YOUNG.getAttribute("data-lo"));
+      var yhi = parseFloat(YOUNG.getAttribute("data-hi"));
+      var other;
+      if (heard) {
+        other = (w === YOUNG)
+          ? ("A bat, whose range starts at about 2000 Hz, "
+             + (f >= 2000 ? "hears it too." : "would miss it entirely."))
+          : ("A young person "
+             + (f >= ylo && f <= yhi ? "hears it as well."
+                                     : "hears nothing at all."));
+      } else if (f < lo) {
+        other = f >= 16 ? "would hear it."
+          : "would miss this one too — it is below every range on the chart.";
+      } else {
+        other = f <= 110000 ? "would hear it perfectly well."
+          : "would miss it as well — nothing on the chart reaches this high.";
+      }
+
+      var key = heard ? "inside" : (f < lo ? "below" : "above");
+      var src = wrap.querySelector('[data-lrange-branch="' + key + '"]');
+      if (noteEl && src) {
+        /* Her `benchNote` is the listener's own note and then the tone's
+           sentence, in that order. */
+        noteEl.textContent =
+          (w.getAttribute("data-note") || "") + " " +
+          fillTokens(src.getAttribute("data-note"), {
+            f: tidy(f), lo: tidy(lo), hi: tidy(hi),
+            who: w.getAttribute("data-name"), other: other
+          });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A frequency axis from 1 to 100 000 hertz, each mark ten times " +
+          "the one before. " + w.getAttribute("data-name") + " hears from " +
+          tidy(lo) + " to " + tidy(hi) + " hertz, and the tone is at " +
+          tidy(f) + " hertz, " + (heard ? "inside" : "outside") +
+          " that band.");
+      }
+
+      var prog = wrap.querySelector("[data-lrange-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(whos, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-lrange-who"); touched += 1; paint();
+      });
+    });
+    if (fEl) {
+      ["input", "change"].forEach(function (ev) {
+        fEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p6-09 `#s-gauge` — a probe on a block, and a screen showing two pips.
+
+     ⚖️ THE BENCH PRINTS ITS OWN WORKING AND TAKES NO FORMULA BLOCK (her
+     flag 3). It computes `d = v × t` and then halves, and both halves are
+     owned one and two lessons back — p6-06's triangle and p6-07's bar. So
+     the path and the time are shown line by line instead, and the two
+     owning lessons are carried as edges.
+
+     ⚖️ THE WINDOW IS FIXED AT 0.30 ms AND THE ECHO PIP IS PLACED TO SCALE
+     IN IT. That is the whole of what the material control does: a faster
+     material visibly brings the two pips together, which is why a gauge has
+     to be told what it is standing on before it can read a depth at all. */
+  function wireFlawGauge(sec) {
+    var wrap = sec.querySelector("[data-fgauge]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-fgauge-gate]");
+    var body = wrap.querySelector("[data-fgauge-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-fgauge-gopt]"));
+    var mats = toArray(wrap.querySelectorAll("[data-fgauge-mat]"));
+    /* ⚠️ `"d"`, NOT `"depth"`. `_slider()` names the control from the key
+       it is given, and the payload's key is `depth` while the emitted
+       value is the short one. Queried by the long name this was null, so
+       the depth control did nothing at all — and the liveness gate could
+       not see it, because pressing a material tab moved the block and the
+       block is what that gate watches. */
+    var depthEl = wrap.querySelector('[data-fgauge-slider="d"]');
+    var svg = wrap.querySelector("[data-fgauge-alt]");
+    var noteEl = wrap.querySelector("[data-fgauge-note]");
+    var WIN = parseFloat(wrap.getAttribute("data-window-ms")) || 0.3;
+    var at = wrap.getAttribute("data-start-mat") || "0";
+    var TOP = 90, BOT = 330, SX0 = 560, SX1 = 940, BASE = 280;
+    var committed = false, touched = 0;
+
+    function mat() {
+      var i = parseInt(at, 10);
+      if (!isNaN(i) && String(i) === String(at) && mats[i]) { return mats[i]; }
+      for (var k = 0; k < mats.length; k += 1) {
+        if (mats[k].getAttribute("data-fgauge-mat") === at) { return mats[k]; }
+      }
+      return mats[0];
+    }
+
+    function paint() {
+      var m = mat();
+      var v = parseFloat(m.getAttribute("data-v"));
+      var mm = depthEl ? Number(depthEl.value) : 0;
+      var max = depthEl ? Number(depthEl.max) : 200;
+      var pathMm = 2 * mm;
+      var ms = (pathMm / 1000) / v * 1000;         /* milliseconds */
+
+      each(mats, function (b) {
+        b.setAttribute("aria-pressed", b === m ? "true" : "false");
+      });
+
+      var y = TOP + (mm / max) * (BOT - TOP);
+      var flaw = wrap.querySelector("[data-fgauge-flaw]");
+      if (flaw) { flaw.setAttribute("y", (y - 6).toFixed(1)); }
+
+      var len = Math.max(4, y - TOP - 14);
+      var dA = arrowV(250, TOP + 4, len, true, 20);
+      var uA = arrowV(292, y - 10, len, false, 20);
+      setPath(wrap, "[data-fgauge-down]", dA.shaft + " " + dA.head);
+      setPath(wrap, "[data-fgauge-up]", uA.shaft + " " + uA.head);
+      setPath(wrap, "[data-fgauge-dim]",
+              "M400 " + TOP + " V" + y.toFixed(1) +
+              " M388 " + TOP + " H412 M388 " + y.toFixed(1) + " H412");
+
+      /* Off the right-hand edge means the echo has not come back inside the
+         window — which cannot happen with these three materials and this
+         depth range, and is clamped rather than drawn off-screen so that a
+         later material cannot silently put the pip outside the box. */
+      var px = SX0 + Math.min(1, ms / WIN) * (SX1 - SX0);
+      setPath(wrap, '[data-fgauge-pip="echo"]',
+              "M" + px.toFixed(1) + " " + BASE + " V170");
+
+      fillSpan(wrap, "fgauge", "depth", mm + " mm",
+               tagStyle(0.42, (TOP + (y - TOP) / 2) / 420, "#C6B9A7",
+                        "start"));
+      fillSpan(wrap, "fgauge", "caption", m.getAttribute("data-caption"),
+               tagStyle(0.27, 0.97, "#C6B9A7"));
+
+      setOut(wrap, "fgauge", "depth", mm + " mm");
+      setOut(wrap, "fgauge", "speed", groupN(v) + " m/s");
+      setOut(wrap, "fgauge", "path",
+             pathMm + " mm — " + mm + " mm down and " + mm + " mm back");
+      setOut(wrap, "fgauge", "time",
+             (Math.round(ms * 1000) / 1000) + " ms");
+
+      if (noteEl) {
+        noteEl.textContent = fillTokens(m.getAttribute("data-note"), {
+          depth: mm, v: groupN(v), path: pathMm,
+          ms: Math.round(ms * 1000) / 1000,
+          name: m.getAttribute("data-name")
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A probe on " + (m.getAttribute("data-state") || "") +
+          " with a reflector " + mm + " millimetres down. Sound travels at " +
+          groupN(v) + " metres per second in it, so the echo returns " +
+          (Math.round(ms * 1000) / 1000) +
+          " milliseconds after the pulse left, and the two pips are drawn " +
+          "to scale in a window of " + WIN + " milliseconds.");
+      }
+
+      var prog = wrap.querySelector("[data-fgauge-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      markStage(sec, committed && touched > 0);
+      markSibling(sec, wrap, committed ? 1 : 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(mats, function (b) {
+      b.addEventListener("click", function () {
+        at = b.getAttribute("data-fgauge-mat"); touched += 1; paint();
+      });
+    });
+    if (depthEl) {
+      ["input", "change"].forEach(function (ev) {
+        depthEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* ═══ END P6 wiring ═══ */
+
+
 
 
 
@@ -26182,6 +30161,44 @@
     each(root.querySelectorAll("[data-rframeblock]"), wireRelativeFrames);
     each(root.querySelectorAll("[data-passblock]"), wirePassingSpeeds);
     // ═══ END P3 wiring ═══
+    // ═══ BEGIN P4 wiring ═══
+    each(root.querySelectorAll("[data-iboardblock]"), wireInteractionBoard);
+    each(root.querySelectorAll("[data-rbenchblock]"), wireResultantBench);
+    each(root.querySelectorAll("[data-hrigblock]"), wireSupportRig);
+    each(root.querySelectorAll("[data-grunblock]"), wireGateRun);
+    each(root.querySelectorAll("[data-dlaneblock]"), wireDragLane);
+    each(root.querySelectorAll("[data-fallblock]"), wireFallBalance);
+    each(root.querySelectorAll("[data-spanblock]"), wireSpannerRig);
+    each(root.querySelectorAll("[data-splotblock]"), wireSpringPlot);
+    each(root.querySelectorAll("[data-fsortblock]"), wireForceSorter);
+    // ⚠️ ORDER IS IMMATERIAL HERE, and it is worth saying why rather than
+    // leaving the next reader to work it out. Question 1's `{token}` holes
+    // are filled by `publishLive`, which each bench calls from its OWN
+    // `paint()` at the end of its own wiring — it walks the DOM and calls
+    // `paintAttempt` directly, so it does not depend on this line having
+    // run. `wireCfifaAttempt` only attaches listeners and paints the hint.
+    each(root.querySelectorAll("[data-p4cfablock]"), wireCfifaAttempt);
+    // ═══ END P4 wiring ═══
+    // ═══ BEGIN P5 wiring ═══
+    each(root.querySelectorAll("[data-sandblock]"), wireBlockOnSand);
+    each(root.querySelectorAll("[data-dprobeblock]"), wireDepthProbe);
+    each(root.querySelectorAll("[data-ftankblock]"), wireFloatTank);
+    each(root.querySelectorAll("[data-altblock]"), wireAltitudeColumn);
+    each(root.querySelectorAll("[data-p5cfablock]"), wireCfifaAttemptP5);
+    // ═══ END P5 wiring ═══
+    // ═══ BEGIN P6 wiring ═══
+    each(root.querySelectorAll("[data-wanatblock]"), wireWaveAnatomy);
+    each(root.querySelectorAll("[data-rtankblock]"), wireRippleTank);
+    each(root.querySelectorAll("[data-slaneblock]"), wireSuperpositionLanes);
+    each(root.querySelectorAll("[data-vchainblock]"), wireVibrationChain);
+    each(root.querySelectorAll("[data-slinkblock]"), wireSlinkyDual);
+    each(root.querySelectorAll("[data-scopeblock]"), wireScopeTrace);
+    each(root.querySelectorAll("[data-mrangeblock]"), wireMediumRange);
+    each(root.querySelectorAll("[data-echoblock]"), wireEchoRange);
+    each(root.querySelectorAll("[data-lrangeblock]"), wireLogRange);
+    each(root.querySelectorAll("[data-fgaugeblock]"), wireFlawGauge);
+    each(root.querySelectorAll("[data-p6cfablock]"), wireCfifaAttemptP6);
+    // ═══ END P6 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

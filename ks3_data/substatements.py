@@ -629,6 +629,118 @@ SUBSTATEMENTS = {
         ("c", "Transfer by radiation, including across a vacuum.", "P1"),
         ("d", "The use of insulators to slow a transfer down.", "P1"),
     ],
+    # ── Minted for P4 (2026-08-24, MRB-223) ───────────────────────────────
+    #
+    # ⚑ THIS IS THE NOTATION DESIGN'S `NOTES-P4-P6.md` FLAG 1 ASKS FOR, AND
+    # IT ALREADY EXISTED. Her flag reads: *"the register records ownership per
+    # statement, per unit … Either the register needs `.a` / `.b` sub-IDs or
+    # lesson records need a `covers_partial` field. Until then a build gate
+    # counting statements per lesson will read `FORCES.04` as claimed three
+    # times."*
+    #
+    # She was right about the defect and right about the fix, and she could
+    # not see that the fix was already in the tree — her access was read-only
+    # and this file is not in the reference set she was given. The gate did
+    # read FORCES.02 as double-owned and FORCES.04 as triple-owned on the
+    # first P4 build, exactly as she predicted. **No new mechanism was
+    # invented; rule 3 above was followed — mint lazily, per unit, at
+    # authoring time.**
+    #
+    # The bullet reads:
+    #   "using force arrows in diagrams, adding forces in 1 dimension,
+    #    balanced and unbalanced forces"
+    # Three clauses, and P4 teaches them as two lessons: p4-02 owns the
+    # drawing and the adding, p4-03 owns the balanced/unbalanced contrast.
+    "KS3.P.FORCES.02": [
+        ("a", "Using force arrows in diagrams: an arrow's start, direction "
+              "and length as the record of a force.", "P4"),
+        ("b", "Adding forces in one dimension to give a resultant.", "P4"),
+        ("c", "Balanced and unbalanced forces.", "P4"),
+    ],
+    # The bullet reads:
+    #   "forces: associated with deforming objects; stretching and squashing
+    #    – springs; with rubbing and friction between surfaces, with pushing
+    #    things out of the way; resistance to motion of air and water"
+    # Four genuinely separate practicals, and P4 is written at that grain:
+    # p4-05 owns friction, p4-06 owns resistance, p4-08 owns deformation.
+    # This is the bullet the gate read as claimed three times.
+    "KS3.P.FORCES.04": [
+        ("a", "Forces associated with deforming objects: stretching and "
+              "squashing, springs.", "P4"),
+        ("b", "Forces with rubbing and friction between surfaces.", "P4"),
+        ("c", "Forces with pushing things out of the way: resistance to "
+              "motion of air and water.", "P4"),
+    ],
+    # The bullet reads:
+    #   "forces measured in newtons, measurements of stretch or compression
+    #    as force is changed"
+    # Two ideas taught weeks apart: the UNIT, which p4-03 needs the moment it
+    # says a table pushes back with 8 N, and the MEASUREMENT SERIES, which is
+    # p4-08's whole investigation.
+    "KS3.P.FORCES.05": [
+        ("a", "Forces measured in newtons.", "P4"),
+        ("b", "Measurements of stretch or compression as force is changed.",
+         "P4"),
+    ],
+    # ── Minted for P5 (2026-08-24, MRB-223) ───────────────────────────────
+    #
+    # The bullet reads:
+    #   "pressure in liquids, increasing with depth; upthrust effects,
+    #    floating and sinking"
+    # Two different physical ideas in one line, and P5 is written at that
+    # grain: p5-02 owns what depth does to the pressure, p5-03 owns what the
+    # pressure difference does to an object in it. Design's own note says the
+    # split "has to be", and it is the only one of P5's three bullets that
+    # needs one — the unit has four slots for three statements, so nothing
+    # else is under pressure to divide.
+    "KS3.P.PRES.02": [
+        ("a", "Pressure in liquids, increasing with depth.", "P5"),
+        ("b", "Upthrust effects, floating and sinking.", "P5"),
+    ],
+    # ── P6 · Waves and sound ────────────────────────────────────────────
+    #
+    # Three of P6's six statements are compound and are split at the clause;
+    # SND.02, SND.04 and EAW.01 are whole and take no sub-IDs. Minted lazily,
+    # per unit, at authoring time — rule 3 above — and for the same reason
+    # P4's were: nine lessons over six statements is the surplus case, and
+    # without the split the coverage gate reads three of them as claimed
+    # twice.
+    #
+    # The bullet reads:
+    #   "waves on water as undulations which travel through water with
+    #    transverse motion; these waves can be reflected, and add or cancel
+    #    – superposition"
+    # Three clauses, and P6 teaches them as two lessons: p6-01 owns what a
+    # wave IS, p6-02 owns what two of them do when they meet.
+    "KS3.P.OBW.01": [
+        ("a", "Waves on water as undulations which travel through water "
+              "with transverse motion.", "P6"),
+        ("b", "These waves can be reflected.", "P6"),
+        ("c", "These waves add or cancel — superposition.", "P6"),
+    ],
+    # The bullet reads:
+    #   "frequencies of sound waves, measured in hertz (Hz); echoes,
+    #    reflection and absorption of sound"
+    # Two clauses that are four lessons apart in any scheme of work: p6-05
+    # owns the hertz, p6-07 owns the echo.
+    "KS3.P.SND.01": [
+        ("a", "Frequencies of sound waves, measured in hertz (Hz).", "P6"),
+        ("b", "Echoes, reflection and absorption of sound.", "P6"),
+    ],
+    # The bullet reads:
+    #   "sound produced by vibrations of objects, in loudspeakers, detected
+    #    by their effects on microphone diaphragm and the ear drum; sound
+    #    waves are longitudinal"
+    # Production, detection and longitudinality are three separate lessons'
+    # worth. p6-03 owns the first two — they are one chain and teaching them
+    # apart would break it — and p6-04 owns the third.
+    "KS3.P.SND.03": [
+        ("a", "Sound produced by vibrations of objects, and in "
+              "loudspeakers.", "P6"),
+        ("b", "Sound detected by its effects on a microphone diaphragm and "
+              "on the ear drum.", "P6"),
+        ("c", "Sound waves are longitudinal.", "P6"),
+    ],
 }
 
 

@@ -244,7 +244,7 @@ LESSON = {
                   "it never switches off. Nothing about its rating hints at "
                   "that."},
 
-        {"type": "key-fact", "id": "convert-on-the-insert-line"},
+        {"type": "key-fact", "ref": "convert-on-the-insert-line"},
 
         # ── #s-worked · CFIFA ───────────────────────────────────────────
         {"type": "worked-example", "id": "cfifa-energy-plain",

@@ -194,7 +194,7 @@ LESSON = {
          "close": "Four different shapes, one area. That area is the unit "
                   "you are billed for."},
 
-        {"type": "key-fact", "id": "a-unit-is-a-kilowatt-hour"},
+        {"type": "key-fact", "ref": "a-unit-is-a-kilowatt-hour"},
 
         # ── #s-bill · the bill builder ─────────────────────────────────
         {"type": "bill-builder",

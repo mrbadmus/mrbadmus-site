@@ -354,6 +354,7 @@ def main():
     # settle it. Whitespace-only counts as empty — a `<text> </text>` renders
     # exactly as nothing does.
     empty_text, n_text = [], 0
+    empty_keyfact, n_keyfact = [], 0
     for u in units:
         for l in u["lessons"]:
             if not l.get("authored"):
@@ -368,11 +369,43 @@ def main():
                 if not re.sub(r"(?s)<[^>]*>", "", m.group(2)).strip():
                     empty_text.append("%s: <text%s></text>"
                                       % (l["slug"], m.group(1)[:70]))
+            for m in re.finditer(
+                    r'(?is)<p class="ks3-keyfact-body">(.*?)</p>', raw):
+                n_keyfact += 1
+                if not re.sub(r"(?s)<[^>]*>", "", m.group(1)).strip():
+                    empty_keyfact.append("%s/%s" % (u["code"], l["slug"]))
+
     check("⊕ MRB-254 · no figure draws an empty <text> anywhere in the tree",
           not empty_text,
           "%d <text> element(s) swept across the built tree, every one of "
           "them carrying a string" % n_text
           if not empty_text else "%d: %s" % (len(empty_text), empty_text[:4]))
+
+    # ⊕ MRB-286-adjacent · THE KEY FACT'S BODY, ADDED 25 Aug 2026.
+    #
+    # ⚠️ THIS GATE EXISTS BECAUSE 24 PAGES SHIPPED WITHOUT ONE. `r_key_fact`
+    # resolves the text through `ref`, naming an entry in `key_facts[]`. A
+    # core block written `{"type": "key-fact", "id": ...}` sets no `ref`, so
+    # the renderer falls through to `spec.get("text", "")` and emits the
+    # label with an EMPTY body — the cream band, the ink outline, the orange
+    # shadow, the words "Key fact", and then nothing. It is the one line
+    # §4.8.1 B says must survive the lesson, and it was silently absent from
+    # every page of P1 (1), P2 (7), P3 (3), P4 (9) and P5 (4).
+    #
+    # Nothing caught it. The build was green; `verify_ks3` was green; the
+    # 23 Aug audit's own note that "any gate counting `[data-key-fact]` now
+    # passes on all seventy" was true and measured the WRAPPER. Counting a
+    # block is not reading it. This gate reads it.
+    #
+    # It sweeps the SERVED tree for the same reason the check above does: a
+    # drawer that is right and a page that is wrong is the failure mode, and
+    # only the built bytes settle it.
+    check("⊕ §4.8.1 B · no key fact ships with an empty body",
+          not empty_keyfact,
+          "%d key-fact block(s) across the built tree, every one of them "
+          "carrying its sentence" % n_keyfact
+          if not empty_keyfact
+          else "%d EMPTY: %s" % (len(empty_keyfact), empty_keyfact[:6]))
 
     # ⊕ MRB-254 · the figure record's own shape.
     #

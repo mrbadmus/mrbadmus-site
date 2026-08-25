@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transverse waves, reflection and superposition · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Waves and sound</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Transverse waves, reflection and superposition</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Waves and sound · Model</p>
+        <h1>Transverse waves, reflection and superposition</h1>
+        <p class="ks3-bigq">Two waves arrive at the same patch of water and each one wants the surface somewhere different. The surface obeys both at once, and the arithmetic for that is the whole lesson.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two stones, one pond, and patches of water that never move.</h2>
+        <p class="ks3-hook-prompt">Drop two stones into still water at the same moment, a metre apart. Two sets of rings spread out and run into each other. Where they cross, some patches of the surface heave twice as far as either ring on its own. Others sit almost dead flat while rings pour through them from both sides.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">At a spot where the two sets of ripples are crossing, what is the water doing?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The surface cannot be in two places, so it does the only thing left: it goes to the sum of what each wave was asking for. A 6 mm lift and a 6 mm lift make a 12 mm lift. A 6 mm lift and a 6 mm drop make no movement at all. Adding the two displacements at every point is called <strong>superposition</strong>, and it is the whole of what happens where waves meet.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A wave on water is <strong>transverse</strong>: the surface moves up and down, at right angles to the direction the wave is travelling. That up-or-down amount at a point is its <strong>displacement</strong>, and it is a displacement rather than a distance because it has a direction — up counts as positive, down as negative.</p>
+        <p>Waves on water also <strong>reflect</strong>. Put a barrier across a tank and a wave train bounces back off it and travels the other way, still a wave, still the same wavelength. And when two waves are in the same water at the same time, the surface takes the sum of both displacements at every point. Two crests arriving together give a bigger crest — the waves <strong>add</strong>. A crest arriving with a trough of the same size gives flat water — the waves <strong>cancel</strong>. Both are superposition; nothing else is happening.</p>
+      </section>
+
+      <section id="s-meet" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · two wave trains sent along one channel</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Set two waves going. Read the third.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Two paddles at the same end of a narrow channel, both laying crests 500 mm apart. Set the height of each, and set whether the second one starts crest-with-crest or crest-with-trough.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. Two waves of exactly the same height meet crest on trough. What is the water doing where they overlap?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 240px; min-width: 220px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p6a" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Wave A</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ aLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p6a" min="0" max="20" step="2" value="{{ aValue }}" onChange="{{ onA }}" onInput="{{ onA }}">
+              </div>
+              <div style="flex: 1 1 240px; min-width: 220px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p6b" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Wave B</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light);">{{ bLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p6b" min="0" max="20" step="2" value="{{ bValue }}" onChange="{{ onB }}" onInput="{{ onB }}">
+              </div>
+              <div style="flex: 1 1 240px; min-width: 220px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How B arrives</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ stepTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 520" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M60 80 H940" style="fill: none; stroke: #5C554D; stroke-width: 3; stroke-dasharray: 9 9;"></path>
+                  <text x="64" y="44" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">WAVE A ON ITS OWN</text>
+                  <path d="M60 210 H940" style="fill: none; stroke: #5C554D; stroke-width: 3; stroke-dasharray: 9 9;"></path>
+                  <text x="64" y="174" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">WAVE B ON ITS OWN</text>
+                  <path d="M60 288 H940" style="fill: none; stroke: #5C554D; stroke-width: 3;"></path>
+                  <text x="64" y="322" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #C6B9A7;">WHERE THEY MEET</text>
+                  <path d="M60 390 H940" style="fill: none; stroke: #5C554D; stroke-width: 3; stroke-dasharray: 9 9;"></path>
+                  <path d="{{ traceA }}" style="fill: none; stroke: #8FB7FF; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ traceB }}" style="fill: none; stroke: #8FB7FF; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 16 10;"></path>
+                  <path d="{{ traceR }}" style="fill: none; stroke: #E9DCC8; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round;"></path>
+                </svg>
+                <span style="position: absolute; right: 1.5%; top: 15.4%; transform: translate(0,-50%); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.5vw,18px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ aLabel }}</span>
+                <span style="position: absolute; right: 1.5%; top: 40.4%; transform: translate(0,-50%); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.5vw,18px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ bLabel }}</span>
+                <span style="position: absolute; right: 1.5%; top: 75%; transform: translate(0,-50%); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(11px,1.7vw,20px); color: #E9DCC8; white-space: nowrap; pointer-events: none;">{{ rLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Wave A alone</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ aLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Wave B alone</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ bLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Where they meet</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 24px; font-weight: 500; color: var(--ks3-on-dark);">{{ rLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Verdict</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-bar" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Where two waves meet, the displacements add</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The bar</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 640 240" role="img" aria-label="A part-whole bar. One long bar labelled R sits above two shorter bars labelled a and b, which together fill exactly the length of R." style="width: 340px; max-width: 100%; height: auto; flex: 0 0 auto;">
+            <rect x="40" y="34" width="560" height="58" rx="10" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <path d="M45 50 L31 63 L45 76 Z M595 50 L609 63 L595 76 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="320" y="80" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 42px; fill: var(--ks3-ink);">R</text>
+            <path d="M383 92 V150" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 3; stroke-dasharray: 7 7;"></path>
+            <path d="M40 92 V150 M600 92 V150" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 3; stroke-dasharray: 7 7;"></path>
+            <rect x="40" y="150" width="338" height="58" rx="10" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <path d="M45 166 L31 179 L45 192 Z M373 166 L387 179 L373 192 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="209" y="196" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink);">a</text>
+            <rect x="388" y="150" width="212" height="58" rx="10" style="fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4;"></rect>
+            <path d="M393 166 L379 179 L393 192 Z M595 166 L609 179 L595 192 Z" style="fill: var(--ks3-ink);"></path>
+            <text x="494" y="196" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink);">b</text>
+            <sc-if value="{{ coverWhole }}">
+              <rect x="40" y="34" width="560" height="58" rx="10" style="fill: var(--ks3-ink);"></rect>
+              <text x="320" y="80" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 42px; fill: var(--ks3-ink-ghost);">R</text>
+            </sc-if>
+            <sc-if value="{{ coverP0 }}">
+              <rect x="40" y="150" width="338" height="58" rx="10" style="fill: var(--ks3-ink);"></rect>
+              <text x="209" y="196" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink-ghost);">a</text>
+            </sc-if>
+            <sc-if value="{{ coverP1 }}">
+              <rect x="388" y="150" width="212" height="58" rx="10" style="fill: var(--ks3-ink);"></rect>
+              <text x="494" y="196" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 40px; fill: var(--ks3-ink-ghost);">b</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">Crest on trough: R = a - b</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two parts side by side make the whole. Cover the part you want and take the other one away from the whole.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">a</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">height of the first wave on its own</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">mm</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">b</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">height of the second wave on its own</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">mm</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">R</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">height of the water where the two meet</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">mm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Where two waves overlap, the surface takes the sum of the two displacements at every point. Crest on crest adds and gives a bigger wave; crest on trough of the same size cancels and gives flat water. Both waves then carry on past the overlap exactly as they were.</p>
+        </div>
+
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;When two waves cancel, they destroy each other.&rdquo;</p>
+        <p>Cancelling is something that happens to a <em>place</em>, not to the waves. While the two are on top of one another the surface there is flat, because one wave is asking it to rise by as much as the other is asking it to drop. Keep watching and both waves come out the far side with their original heights, wavelengths and directions, as though nothing had happened. Two ripples crossing a pond do not knock lumps out of each other; they pass straight through.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;If the water is flat, the energy has gone.&rdquo;</p>
+          <p>Energy is not stored point by point in the surface, and cancelling does not remove any. Wherever two waves cancel there are other places, half a wavelength away, where the same two waves add — the energy is moved about the pattern, not deleted. That is why the crossing rings from two stones show still patches and violent patches side by side: the total is unchanged, and it has simply been dealt out unevenly.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Waves on water are transverse: the surface is displaced at right angles to the direction of travel, upwards or downwards. Waves reflect off a barrier and travel back. Where two waves overlap, the surface takes the sum of the two displacements at every point: crest on crest adds to a bigger wave, and crest on trough of equal size cancels to flat water. That is superposition, and both waves leave the overlap unchanged.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Reflection and superposition together make something worth seeing. Send a wave train down a channel with a barrier at the far end and the reflected train runs back through the train still coming in. Where the two superpose, some points end up permanently still and some heave hard, and — because both trains have the same wavelength — the still points sit half a wavelength apart and never move along. The pattern stops looking like a travelling wave at all and starts looking like water rocking on the spot, which is what a bath sloshing end to end is doing.</p>
+          <p>The same rule works for waves that are not on water. Two loudspeakers wired to the same note give quiet patches you can walk through, and noise-cancelling headphones work by generating a wave that arrives crest on trough with the sound they want gone. Different material, identical arithmetic — which is the reason superposition is taught on water first, where you can see it.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p6-03-how-sound-is-made.html">How sound is made<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p6-07-echoes-reflection-and-absorption.html">Echoes, reflection and absorption<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p7-02-reflection-mirrors-and-scattering.html">Reflection: mirrors and scattering<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p7-01-light-travels.html">Light travels<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Path difference and phase, constructive and destructive interference, standing waves, and the two-source interference experiment.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got two waves meeting somewhere and want to know what the water does?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. It shows the two waves as though they travel along the same line with the same wavelength of 500 mm, which is the simplest case and the only one where a single number describes the overlap; ripples spreading from two stones cross at an angle, and the result then changes from place to place across the pattern. All three traces are drawn to one scale of 2.5 pixels per millimetre. The traces are snapshots rather than animations, and a real overlap is moving. Heights are displacements from the still level, so a crest counts as up and a trough as down.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two stones, one pond', short: 'STONES' },
+  { id: 's-meet', label: 'Where two waves meet', short: 'MEET' },
+  { id: 's-bar', label: 'The bar and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-meet') return s.gate !== null && (s.touched.a || s.touched.b || s.touched.step);
+  if (id === 's-bar') return s.buildOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const COVERS = { R: 'R = a + b', a: 'a = R - b', b: 'b = R - a' };
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'Two ripples meet crest on crest. One is 8 mm high, the other is 5 mm. How high is the water where they meet?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '8 mm stays 8 mm · 5 mm stays 5 mm',
+        note: 'Both heights are already in millimetres, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'R = a + b',
+        note: 'Crest on crest, so the two displacements are both upwards and they add.' },
+      { letter: 'I', label: 'Insert', line: 'R = 8 mm + 5 mm',
+        note: 'Both heights are measured from the still level.' },
+      { letter: 'F', label: 'Fine-tune', line: '8 + 5 = 13',
+        note: 'Millimetres added to millimetres leave millimetres.' },
+      { letter: 'A', label: 'Answer', line: 'R = 13 mm',
+        note: 'Thirteen millimetres above the still level, and only while the two are overlapping.' }
+    ] },
+  { tab: 'Convert first', head: 'A crest 1.2 cm high meets a crest 7 mm high. How high is the water where they meet?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '1.2 cm × 10 = 12 mm',
+        note: 'Two heights cannot be added until they are in the same unit, and a centimetre is ten millimetres.' },
+      { letter: 'F', label: 'Formula', line: 'R = a + b',
+        note: 'Crest on crest, so both displacements are upwards and they add.' },
+      { letter: 'I', label: 'Insert', line: 'R = 12 mm + 7 mm',
+        note: 'The converted height goes in. The 1.2 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '12 + 7 = 19',
+        note: 'Millimetres added to millimetres leave millimetres.' },
+      { letter: 'A', label: 'Answer', line: 'R = 19 mm',
+        note: 'Add 1.2 to 7 and you get 8.2 of nothing at all — the units were never the same.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Calculate',
+    question: 'Two waves meet crest on crest. One has an amplitude of 6 mm, the other 4 mm. What is the amplitude of the water where they overlap?',
+    options: [
+      { text: '10 mm', correct: true },
+      { text: '2 mm \u2014 take the smaller from the bigger, because one wave always cancels part of the other', correction: 'Subtracting is the crest-on-trough case. Crest on crest means both are lifting the surface at once, so the two displacements add.' },
+      { text: '5 mm \u2014 take the average, because the surface can only be in one place at a time', correction: 'The surface being in one place is exactly why you add: it goes to the total of what both waves ask for, not to a compromise between them.' },
+      { text: '24 mm \u2014 multiply the two amplitudes, because both waves are acting at once', correction: 'Two things acting at once are added, not multiplied. Multiplying millimetres by millimetres would give square millimetres, which is an area, not a height.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'Two wave trains of amplitude 7 mm meet exactly crest on trough. A student says the two waves have destroyed each other. Which statement is right?',
+    options: [
+      { text: 'The surface is flat where they overlap, and both waves carry on past unchanged \u2014 the cancelling lasts only while they are on top of each other.', correct: true },
+      { text: 'The two waves have destroyed each other, so nothing carries on past the overlap.', correction: 'Waves are not objects that can be broken. Each one is still travelling through, and both come out the far side at 7 mm.' },
+      { text: 'The bigger wave absorbs the smaller one, so a single 7 mm wave carries on.', correction: 'Neither is bigger here, and absorption is not what superposition does. Both waves carry on, and the flat patch exists only where they overlap.' },
+      { text: 'The whole tank goes flat, because the two waves cancel everywhere they are present.', correction: 'The verdict is right in one place and wrong everywhere else. Cancelling happens where a crest lands on a trough; half a wavelength along, the same two waves are adding.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Two stones are dropped into a pond a metre apart at the same moment. Explain why some patches of the crossing pattern heave twice as far as either ripple on its own while other patches stay almost flat.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Where the two sets of ripples overlap\u2026',
+    criteria: [
+      'Says the two sets of ripples overlap and the surface takes the sum of both displacements.',
+      'Says a crest arriving with a crest gives a bigger crest, so those patches heave further.',
+      'Says a crest arriving with a trough of the same size gives no movement, so those patches stay flat.',
+      'Says which patch is which depends on how far each ripple has had to travel to get there.',
+      'Says both sets of ripples carry on past the crossing unchanged.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A harbour wall has two gaps in it. Inside the harbour, boats moored at some spots rock hard on a swell while boats a few metres away barely move, and the pattern is the same every time that swell runs. Explain what is going on, then say what would change if one gap were blocked up.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Each gap lets a set of waves into the harbour, so\u2026',
+    criteria: [
+      'Says each gap lets its own set of waves spread into the harbour.',
+      'Says the two sets overlap inside and superpose.',
+      'Says the hard-rocking spots are where crests arrive together and add.',
+      'Says the calm spots are where a crest from one gap arrives with a trough from the other and they cancel.',
+      'Says blocking one gap leaves a single set of waves, so the pattern of calm and rough spots disappears and every boat rocks about the same amount.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, a: 8, b: 5, inStep: true, touched: {}, cover: 'R', workedStep: 0, formPick: null, insertPick: null, ansText: '', ansUnit: '', buildOpen: false });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  trace(mid, amp, invert) {
+    let d = '';
+    for (let x = 60; x <= 892; x += 4) {
+      const y = mid - (invert ? -1 : 1) * amp * Math.sin((2 * Math.PI * (x - 60)) / 440);
+      d += (d ? ' L' : 'M') + x + ' ' + y.toFixed(1);
+    }
+    return d;
+  }
+
+  res() {
+    const s = this.state;
+    return s.inStep ? s.a + s.b : Math.abs(s.a - s.b);
+  }
+
+  verdict() {
+    const s = this.state;
+    if (s.a === 0 && s.b === 0) return 'Still water';
+    if (s.a === 0 || s.b === 0) return 'One wave only';
+    if (s.inStep) return 'Adds to a bigger wave';
+    if (s.a === s.b) return 'Cancels completely';
+    return 'Partly cancels';
+  }
+
+  benchNote() {
+    const s = this.state;
+    const R = this.res();
+    if (s.a === 0 && s.b === 0) {
+      return 'Neither paddle is moving, so there is nothing to add: the channel reads 0 mm all the way along. This is not cancelling \u2014 cancelling needs two waves, and there are none.';
+    }
+    if (s.a === 0 || s.b === 0) {
+      const only = s.a === 0 ? 'B' : 'A';
+      return 'Only wave ' + only + ' is running, at ' + R + ' mm, so the bottom trace is a copy of it. With nothing to add to and nothing to cancel against, crest-on-crest and crest-on-trough give the same ' + R + ' mm.';
+    }
+    if (s.inStep) {
+      return 'Crest on crest: ' + s.a + ' mm and ' + s.b + ' mm both lift the surface at the same moment, so the water goes to ' + s.a + ' + ' + s.b + ' = ' + R +
+        ' mm. Send the same two waves crest on trough and the same water reads ' + Math.abs(s.a - s.b) + ' mm instead. Nothing about either paddle has changed \u2014 only when the second one starts.';
+    }
+    if (s.a === s.b) {
+      return 'Crest on trough, and both waves are ' + s.a + ' mm: one lifts the surface by exactly as much as the other drops it, so the water reads 0 mm and lies flat. Both waves are still there, and both leave the overlap at ' + s.a + ' mm.';
+    }
+    const big = Math.max(s.a, s.b), small = Math.min(s.a, s.b);
+    return 'Crest on trough: the ' + small + ' mm wave cancels ' + small + ' mm of the ' + big + ' mm one, leaving ' + big + ' - ' + small + ' = ' + R +
+      ' mm. Only an exact match cancels to nothing, and these two are ' + (big - small) + ' mm apart.';
+  }
+
+  cfifaVals(q1, q2) {
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: q2 ? [q1, q2] : [q1]
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const R = this.res();
+    const big = Math.max(s.a, s.b), small = Math.min(s.a, s.b);
+    const sign = s.inStep ? '+' : '-';
+    const inA = s.inStep ? s.a : big, inB = s.inStep ? s.b : small;
+    return Object.assign({
+      hookOptions: [
+        { letter: 'A', text: 'The two waves bounce off each other and stop where they meet' },
+        { letter: 'B', text: 'At every point the two displacements add: up with up makes a bigger up, up with down cancels' },
+        { letter: 'C', text: 'The stronger set of ripples wins and the weaker set disappears' },
+        { letter: 'D', text: 'The two join into one new wave, and the original two are gone' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: (s.touched.a || s.touched.b || s.touched.step) ? 'All three controls live' : 'Move a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It heaves twice as far, because two waves are arriving instead of one' },
+        { letter: 'B', text: 'It lies flat while they overlap, and both waves carry on out the far side' },
+        { letter: 'C', text: 'Both waves stop dead at the overlap and nothing travels on' },
+        { letter: 'D', text: 'The wave that got there first keeps going and the other one is blocked' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      aValue: s.a, bValue: s.b,
+      onA: (e) => this.setState((st) => ({ a: Number(e.target.value), touched: Object.assign({}, st.touched, { a: true }) })),
+      onB: (e) => this.setState((st) => ({ b: Number(e.target.value), touched: Object.assign({}, st.touched, { b: true }) })),
+      stepTabs: [
+        { on: true, label: 'Crest on crest' },
+        { on: false, label: 'Crest on trough' }
+      ].map((t) => ({
+        label: t.label, pressed: s.inStep === t.on,
+        style: this.seg(s.inStep === t.on, true, false),
+        onClick: () => this.setState((st) => ({ inStep: t.on, touched: Object.assign({}, st.touched, { step: true }) }))
+      })),
+      aLabel: s.a + ' mm', bLabel: s.b + ' mm', rLabel: R + ' mm',
+      traceA: this.trace(80, s.a * 2.5, false),
+      traceB: this.trace(210, s.b * 2.5, !s.inStep),
+      traceR: this.trace(390, (s.inStep ? s.a + s.b : s.a - s.b) * 2.5, false),
+      verdictWord: this.verdict(),
+      benchAlt: 'Three traces on one scale: wave A at ' + s.a + ' millimetres, wave B at ' + s.b + ' millimetres arriving ' +
+        (s.inStep ? 'crest on crest' : 'crest on trough') + ', and the water where they meet at ' + R + ' millimetres.',
+      benchNote: this.benchNote(),
+
+      coverResult: COVERS[s.cover],
+      coverWhole: s.cover === 'R', coverP0: s.cover === 'a', coverP1: s.cover === 'b',
+      coverTabs: this.coverBtns([{ id: 'R', label: 'Cover R' }, { id: 'a', label: 'Cover a' }, { id: 'b', label: 'Cover b' }])
+    }, this.cfifaVals({
+      tab: 'Question 1', id: 'p602q1',
+      head: 'Your two waves: ' + s.a + ' mm and ' + s.b + ' mm, arriving ' + (s.inStep ? 'crest on crest' : 'crest on trough') + '.',
+      formOptions: ['R = a + b   (crest on crest)', 'R = a - b   (crest on trough)', 'R = a \u00d7 b'],
+      insertOptions: ['R = ' + inA + ' mm ' + sign + ' ' + inB + ' mm', 'R = ' + inA + ' mm ' + (s.inStep ? '-' : '+') + ' ' + inB + ' mm', 'R = ' + inA + ' mm \u00d7 ' + inB + ' mm'],
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+        line: inA + ' mm stays ' + inA + ' mm · ' + inB + ' mm stays ' + inB + ' mm',
+        note: 'Both sliders read in millimetres, so there is nothing to convert.' },
+        { letter: 'F', label: 'Formula', line: 'R = a ' + sign + ' b',
+          note: s.inStep ? 'Crest on crest, so both displacements are upwards and they add.' : 'Crest on trough, so one is up and one is down, and the smaller takes away from the bigger.' },
+        { letter: 'I', label: 'Insert', line: 'R = ' + inA + ' mm ' + sign + ' ' + inB + ' mm',
+          note: 'Both heights come from the sliders above, measured from the still level.' },
+        { letter: 'F', label: 'Fine-tune', line: inA + ' ' + sign + ' ' + inB + ' = ' + R,
+          note: 'Millimetres and millimetres leave millimetres.' },
+        { letter: 'A', label: 'Answer', line: 'R = ' + R + ' mm',
+          note: R === 0 ? 'Flat water, and only while the two are overlapping.' : R + ' millimetres from the still level, and only while the two are overlapping.' }
+      ],
+      close: 'The five lines above give ' + R +
+        ' mm, and the bottom trace on the bench is drawn at that height.'
+    }, {
+      tab: 'Question 2', id: 'p602q2',
+      head: 'A crest 0.9 cm high meets a crest 4 mm high, crest on crest.',
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+          line: '0.9 cm × 10 = 9 mm',
+          note: 'Two heights cannot be added until they share a unit, and a centimetre is ten millimetres.' },
+        { letter: 'F', label: 'Formula', line: 'R = a + b',
+          note: 'Crest on crest, so both are upwards and they add.' },
+        { letter: 'I', label: 'Insert', line: 'R = 9 mm + 4 mm',
+          note: 'The converted height goes in. The 0.9 never does.' },
+        { letter: 'F', label: 'Fine-tune', line: '9 + 4 = 13',
+          note: 'Millimetres added to millimetres leave millimetres.' },
+        { letter: 'A', label: 'Answer', line: 'R = 13 mm',
+          note: 'Add 0.9 to 4 and you get 4.9 of nothing at all.' }
+      ],
+      close: 'The five lines give 13 mm. The whole question turned on the first one.'
+    }));
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

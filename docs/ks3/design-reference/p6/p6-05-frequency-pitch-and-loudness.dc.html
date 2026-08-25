@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frequency, pitch and loudness · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Waves and sound</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Frequency, pitch and loudness</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Waves and sound · Quantitative</p>
+        <h1>Frequency, pitch and loudness</h1>
+        <p class="ks3-bigq">Two dials on a signal generator, and neither one does anything the other one does. One sets how high the note is. One sets how loud it is. Getting them the wrong way round is the single most common slip in this topic.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two strings, one guitar, and only one of them is wrong.</h2>
+        <p class="ks3-hook-prompt">Tighten a guitar string a little and the note goes up. Pluck the same string harder and the note gets louder and stays exactly where it was. Two different changes; two different results; and students routinely swap them.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">A loudspeaker plays a steady note. You turn the volume up and touch nothing else. What has changed about what the cone is doing?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A vibrating object goes to and fro over and over, and two separate things can be measured about that. How <em>often</em> it goes to and fro is its <strong>frequency</strong>, measured in <strong>hertz</strong>: 1 Hz is one complete vibration each second. How <em>far</em> it moves each time is its <strong>amplitude</strong>, measured in millimetres.</p>
+        <p>Frequency decides the <strong>pitch</strong> you hear — a higher frequency is a higher note. Amplitude decides the <strong>loudness</strong> — a bigger movement pushes the air harder and sounds louder. Neither one sets the other. A quiet high note and a loud high note have the same frequency; a quiet high note and a quiet low note have the same amplitude.</p>
+      </section>
+
+      <section id="s-signal" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a signal generator, a loudspeaker and an oscilloscope</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Two dials. Two different things happen.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">The oscilloscope draws how far the cone is from its rest place against time, over a window of 20 milliseconds. Set how often the cone goes to and fro, and set how far it moves each time.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. You double the frequency of the signal and leave the volume dial alone. What happens to the trace on the screen?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p65f" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How often the cone goes to and fro</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ freqLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p65f" min="50" max="1000" step="50" value="{{ freqValue }}" onChange="{{ onFreq }}" onInput="{{ onFreq }}">
+              </div>
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p65a" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How far the cone moves each time</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ ampLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p65a" min="2" max="20" step="2" value="{{ ampValue }}" onChange="{{ onAmp }}" onInput="{{ onAmp }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M60 40 V360 M60 200 H940" style="fill: none; stroke: #5C554D; stroke-width: 3;"></path>
+                  <path d="M280 194 v12 M500 194 v12 M720 194 v12 M940 194 v12" style="fill: none; stroke: #8C8177; stroke-width: 3;"></path>
+                  <text x="280" y="386" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #8C8177;">5 ms</text>
+                  <text x="500" y="386" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #8C8177;">10 ms</text>
+                  <text x="720" y="386" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #8C8177;">15 ms</text>
+                  <text x="920" y="386" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: #8C8177;">20 ms</text>
+                  <text x="64" y="30" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .08em; fill: #8C8177;">HOW FAR THE CONE IS FROM ITS REST PLACE</text>
+                  <path d="{{ trace }}" style="fill: none; stroke: #8FB7FF; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ ampBracket }}" style="fill: none; stroke: #E9DCC8; stroke-width: 3;"></path>
+                </svg>
+                <span style="{{ ampLabelStyle }}">{{ ampLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Frequency</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ freqLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">complete vibrations each second</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">In this 20 ms window</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ cycleLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">complete vibrations drawn</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How far the cone moves</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ ampLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">from its rest place, each way</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What you hear</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ soundWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Number of vibrations = frequency × time</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. The number of vibrations N sits above a dividing line; frequency f and time t sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 62px; fill: var(--ks3-ink);">N</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">f</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">t</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">N</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">f</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">t</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">1 Hz is 1 vibration each second</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">N</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">complete vibrations counted</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">vibrations</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">f</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">frequency</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">Hz</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">t</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">time you counted for</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Frequency is the number of complete vibrations each second, measured in hertz: 1 Hz is one vibration per second. Frequency sets pitch and amplitude sets loudness, and the two are independent — turning a note up does not raise it, and raising it does not make it louder.</p>
+        </div>
+
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;A loud note is a high note.&rdquo;</p>
+        <p>Loud and high are answers to two different questions. High is about how often the source goes to and fro; loud is about how far it moves each time. A double bass played hard is very loud and very low. A recorder played gently is quiet and very high. On the bench above the two dials do not talk to each other at all: move one and the other reading does not budge. The confusion is partly the fault of the English word big, which people use for both, and partly of turning the volume up on a speaker and hearing a thin sound get more present — which is more of it, not more of a higher note.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A higher note travels faster, which is why you hear it first.&rdquo;</p>
+          <p>Every note in the same air travels at the same speed, about 340 m/s, whatever its frequency. It has to: if high notes outran low ones, a brass band a hundred metres away would arrive scrambled, with the piccolo half a bar ahead of the tuba, and it does not. What frequency changes is how many times a second the air is squeezed as the sound goes past, not how quickly the squeezing travels.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Frequency is the number of complete vibrations each second, measured in hertz, where 1 Hz is one vibration per second. Frequency sets the pitch: more vibrations each second is a higher note. Amplitude is how far the source moves from its rest place each time, and it sets the loudness. The two are independent, and every frequency of sound travels at the same speed through the same material.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The numbers behind musical pitch are tidier than they look. Double a frequency and you get the same note one octave higher: 220 Hz, 440 Hz and 880 Hz are all the note A. The concert A that orchestras tune to is fixed at 440 Hz by international agreement, which is a convention rather than a fact about the universe — eighteenth-century instruments were tuned lower, and a few orchestras still play at 415 Hz to suit the music.</p>
+          <p>Loudness is the awkward one to put a number on, because your ear does not respond in proportion. Doubling the amplitude does not sound twice as loud, and doubling it again adds much less than the first doubling did. That is why loudness is measured on the decibel scale, which is built on multiplying rather than adding: every 10 dB is ten times the energy arriving, and roughly twice as loud to a listener. A whisper sits near 30 dB, a conversation near 60 dB, and a road drill near 100 dB — a million times the energy of the whisper, and nothing like a million times as loud.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p6-04-sound-is-longitudinal.html">Sound is longitudinal<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p6-06-sound-needs-a-medium.html">Sound needs a medium<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p6-03-how-sound-is-made.html">How sound is made<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-08-hearing-and-auditory-range.html">Hearing and auditory range<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Period as the reciprocal of frequency, the wave equation, the audible range, and reading frequency and amplitude off an oscilloscope trace.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a note you want to work the frequency out for?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The trace is a graph of the cone’s displacement against time over a fixed 20 millisecond window, drawn to one scale throughout: 44 pixels per millisecond across, and 45 pixels per millimetre up. The cone is treated as making one pure frequency, which no real instrument does — a real guitar string or voice puts out a mixture, and that mixture is what makes a violin and a flute at the same pitch sound different. The words quiet, moderate and loud are bands set for this bench and are not decibel measurements. The speed of sound in air is taken as about 340 m/s, which is the value at about 20 degrees Celsius and rises with temperature.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two strings, one guitar', short: 'GUITAR' },
+  { id: 's-signal', label: 'Signal generator', short: 'BENCH' },
+  { id: 's-formula', label: 'Triangle and four steps', short: 'FIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-signal') return s.gate !== null && (s.touched.f || s.touched.a);
+  if (id === 's-formula') return s.buildOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const COVERS = { N: 'N = f \u00d7 t', f: 'f = N \u00f7 t', t: 't = N \u00f7 f' };
+
+const CFIFA_EX = [
+  { tab: 'Nothing to convert', head: 'A string is filmed and makes 1500 complete vibrations in 5.0 seconds. What is its frequency?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '1500 vibrations stays 1500 · 5.0 s stays 5.0 s',
+        note: 'A hertz is counted per second, and the time is already in seconds, so there is nothing to convert.' },
+      { letter: 'F', label: 'Formula', line: 'frequency = number of vibrations ÷ time',
+        note: 'Cover f on the triangle: N sits over t, so you divide.' },
+      { letter: 'I', label: 'Insert', line: 'frequency = 1500 vibrations ÷ 5.0 s',
+        note: 'The count has no unit of its own; the second is what makes it a hertz.' },
+      { letter: 'F', label: 'Fine-tune', line: '1500 ÷ 5.0 = 300',
+        note: 'Vibrations divided by seconds leaves vibrations each second.' },
+      { letter: 'A', label: 'Answer', line: 'frequency = 300 Hz',
+        note: 'Three hundred hertz, because 1 Hz is one vibration each second.' }
+    ] },
+  { tab: 'Convert first', head: 'A tuning fork makes 15 000 vibrations in 0.50 minutes. What is its frequency?',
+    steps: [
+      { letter: 'C', label: 'Convert', line: '0.50 min × 60 = 30 s',
+        note: 'A hertz is counted per second, so the minutes have to become seconds first.' },
+      { letter: 'F', label: 'Formula', line: 'frequency = number of vibrations ÷ time',
+        note: 'Cover f on the triangle: N sits over t, so you divide.' },
+      { letter: 'I', label: 'Insert', line: 'frequency = 15 000 vibrations ÷ 30 s',
+        note: 'The converted time goes in. The 0.50 never does.' },
+      { letter: 'F', label: 'Fine-tune', line: '15 000 ÷ 30 = 500',
+        note: 'Vibrations divided by seconds leaves vibrations each second.' },
+      { letter: 'A', label: 'Answer', line: 'frequency = 500 Hz',
+        note: 'Divide by 0.50 instead of 30 and the answer comes out 30 000 Hz — sixty times too big.' }
+    ] }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Calculate',
+    question: 'A tuning fork of frequency 256 Hz is struck and rings for 4.0 seconds. How many complete vibrations does it make in that time?',
+    options: [
+      { text: '1024 vibrations', correct: true },
+      { text: '64 vibrations \u2014 divide the frequency by the time', correction: 'Dividing is how you get a frequency when you already have a count. Here the frequency is given, so each second brings another 256 vibrations and you multiply.' },
+      { text: '260 vibrations \u2014 add the four seconds on to the 256', correction: 'Adding a time to a frequency is adding two different quantities. The 256 is a rate: it happens again every second, so four seconds means four helpings of it.' },
+      { text: '1024 Hz', correction: 'The arithmetic is right and the unit is wrong. Hertz counts vibrations per second; this answer is a plain count of vibrations, over a stated four seconds.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A brass band plays a hundred metres away. A student says the piccolo reaches you before the tuba, because higher notes travel faster. Which statement is right?',
+    options: [
+      { text: 'Both notes travel at about 340 m/s in the same air, so they arrive together \u2014 which is why the band sounds like a band and not a mess.', correct: true },
+      { text: 'The student is right: higher frequency means the wave gets along faster, so the piccolo arrives first.', correction: 'Frequency is how often the air is squeezed as the sound goes past, not how fast the squeezing travels. If the two differed, distant music would arrive scrambled.' },
+      { text: 'The tuba arrives first, because a louder, lower note carries more energy and pushes through the air more quickly.', correction: 'The verdict is reversed and the rule is still wrong. Loudness is amplitude, and amplitude does not change the speed either.' },
+      { text: 'They arrive together, because the band members are all the same distance away.', correction: 'The verdict is right and the reason does not do the work. Even from exactly the same spot the two notes would only arrive together if they travelled at the same speed, and that is the fact being tested.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'A loudspeaker plays a note. Explain what has to change about the cone to make the note higher, and what has to change to make it louder.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'To make the note higher, the cone\u2026',
+    criteria: [
+      'Says a higher note needs the cone to go to and fro more times each second.',
+      'Names that as a higher frequency, measured in hertz.',
+      'Says a louder note needs the cone to move further from its rest place each time.',
+      'Names that as a bigger amplitude.',
+      'Says the two are independent \u2014 changing one leaves the other as it was.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'On a guitar, the thin strings sound higher than the thick ones, tightening a string raises its note, and pressing it down at a fret raises it too. Plucking any of them harder does none of those things. Explain what all three of the first changes have in common, and why the fourth is different.',
+    fieldLabel: 'Your answer',
+    placeholder: 'A thinner, tighter or shorter string\u2026',
+    criteria: [
+      'Says all three of the first changes make the string vibrate more times each second.',
+      'Says that is a higher frequency, which is heard as a higher pitch.',
+      'Gives a reason for at least one of them \u2014 for example that a shorter or lighter string can go to and fro more quickly.',
+      'Says plucking harder moves the string further from its rest place.',
+      'Says that is a bigger amplitude, heard as louder, and that it leaves the number of vibrations each second unchanged.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, freq: 300, amp: 10, touched: {}, cover: 'f', workedStep: 0, formPick: null, insertPick: null, ansText: '', ansUnit: '', buildOpen: false });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  band(f) { return f < 200 ? 'low' : (f <= 500 ? 'middle' : 'high'); }
+  loud(a) { return a < 0.7 ? 'quiet' : (a <= 1.4 ? 'moderate' : 'loud'); }
+
+  benchNote() {
+    const s = this.state;
+    const a = s.amp / 10;
+    const cyc = (s.freq * 0.02).toFixed(1);
+    const other = s.amp >= 12 ? 0.4 : 2.0;
+    const tail = ' Move the second dial to ' + other.toFixed(1) + ' mm and the trace changes height and keeps exactly ' + cyc +
+      ' vibrations in the window: ' + s.freq + ' Hz either way.';
+    const b = this.band(s.freq);
+    if (b === 'low') {
+      return s.freq + ' Hz is a low note \u2014 the cone goes to and fro ' + s.freq + ' times a second, and only ' + cyc +
+        ' of those fit in this 20 ms window, so the trace is stretched out.' + tail;
+    }
+    if (b === 'middle') {
+      return s.freq + ' Hz sits in the middle of a singing voice, and ' + cyc +
+        ' complete vibrations fit in this 20 ms window.' + tail;
+    }
+    return s.freq + ' Hz is a high note, and ' + cyc +
+      ' complete vibrations are packed into this 20 ms window, so the trace is crowded.' + tail;
+  }
+
+  cfifaVals(q1, q2) {
+    return {
+      cfifaExamples: CFIFA_EX,
+      onCfifaOpen: () => this.setState({ buildOpen: true }),
+      cfifaQuestions: q2 ? [q1, q2] : [q1]
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const a = s.amp / 10;
+    const A = a * 45;
+    const N = Math.round(s.freq * 3);
+    let d = '';
+    for (let x = 60; x <= 940; x += 2) {
+      const tms = ((x - 60) / 44);
+      d += (d ? ' L' : 'M') + x + ' ' + (200 - A * Math.sin(2 * Math.PI * s.freq * tms / 1000)).toFixed(1);
+    }
+    return Object.assign({
+      hookOptions: [
+        { letter: 'A', text: 'The cone moves further from its rest place each time, and goes to and fro just as often' },
+        { letter: 'B', text: 'The cone goes to and fro more times a second' },
+        { letter: 'C', text: 'The cone moves further and goes to and fro more times a second' },
+        { letter: 'D', text: 'The cone pushes the sound out faster, so it reaches you sooner' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'Volume moves the cone further; it does not move it more often. How far it goes is the amplitude and it sets the loudness. How often it goes is the frequency and it sets the pitch. Two dials, two answers, and the bench below keeps them apart.',
+
+      benchProgress: (s.touched.f || s.touched.a) ? 'Both dials live' : 'Move a dial to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Twice as many complete vibrations fit in the window, and the trace stays the same height' },
+        { letter: 'B', text: 'Twice as many vibrations fit in the window, and the trace gets twice as tall' },
+        { letter: 'C', text: 'The trace gets twice as tall and the number of vibrations does not change' },
+        { letter: 'D', text: 'The trace moves across the screen twice as fast and looks the same' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+      freqValue: s.freq, ampValue: s.amp,
+      onFreq: (e) => this.setState((st) => ({ freq: Number(e.target.value), touched: Object.assign({}, st.touched, { f: true }) })),
+      onAmp: (e) => this.setState((st) => ({ amp: Number(e.target.value), touched: Object.assign({}, st.touched, { a: true }) })),
+      freqLabel: s.freq + ' Hz',
+      ampLabel: a.toFixed(1) + ' mm',
+      cycleLabel: (s.freq * 0.02).toFixed(1),
+      soundWord: 'A ' + this.band(s.freq) + ' note, ' + this.loud(a),
+      trace: d,
+      ampBracket: 'M30 ' + (200 - A).toFixed(1) + ' H74 M30 ' + (200 + A).toFixed(1) + ' H74 M52 ' + (200 - A).toFixed(1) + ' V' + (200 + A).toFixed(1),
+      ampLabelStyle: 'position:absolute;left:1%;top:' + (((200 + A + 26) / 400) * 100).toFixed(2) +
+        '%;font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(10px,1.4vw,17px);color:#E9DCC8;white-space:nowrap;pointer-events:none;',
+      benchAlt: 'An oscilloscope trace of a note at ' + s.freq + ' hertz and ' + a.toFixed(1) + ' millimetres of cone movement, showing ' +
+        (s.freq * 0.02).toFixed(1) + ' complete vibrations across a 20 millisecond window.',
+      benchNote: this.benchNote(),
+
+      coverResult: COVERS[s.cover],
+      coverTop: s.cover === 'N', coverLeft: s.cover === 'f', coverRight: s.cover === 't',
+      coverTabs: this.coverBtns([{ id: 'N', label: 'Cover N' }, { id: 'f', label: 'Cover f' }, { id: 't', label: 'Cover t' }])
+    }, this.cfifaVals({
+      tab: 'Question 1', id: 'p605q1',
+      head: 'Your note: ' + s.freq + ' Hz. How many complete vibrations in 3.0 seconds?',
+      formOptions: ['number of vibrations = frequency \u00d7 time', 'number of vibrations = frequency \u00f7 time', 'number of vibrations = time \u00f7 frequency'],
+      insertOptions: ['N = ' + s.freq + ' Hz \u00d7 3.0 s', 'N = ' + s.freq + ' Hz \u00f7 3.0 s', 'N = 3.0 s \u00f7 ' + s.freq + ' Hz'],
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+        line: 'the count stays a count · the time is already in seconds',
+        note: 'A hertz is counted per second, and the bench times in seconds, so there is nothing to convert.' },
+        { letter: 'F', label: 'Formula', line: 'N = f \u00d7 t',
+          note: 'Cover N on the triangle: f and t sit side by side, so you multiply.' },
+        { letter: 'I', label: 'Insert', line: 'N = ' + s.freq + ' Hz \u00d7 3.0 s',
+          note: 'The frequency is the one your slider is set to; the time is in seconds already.' },
+        { letter: 'F', label: 'Fine-tune', line: s.freq + ' \u00d7 3.0 = ' + N,
+          note: 'Vibrations each second, multiplied by seconds, leaves vibrations.' },
+        { letter: 'A', label: 'Answer', line: 'N = ' + N + ' vibrations',
+          note: 'A plain count, not a frequency \u2014 the seconds have been used up.' }
+      ],
+      close: 'The five lines above give ' + N +
+        ' vibrations, and the bench window above shows ' + (s.freq * 0.02).toFixed(1) + ' of them in 20 milliseconds.'
+    }, {
+      tab: 'Question 2', id: 'p605q2',
+      head: 'An insect wing beats 7200 times in 2.0 minutes. What is its frequency?',
+      steps: [
+        { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+          line: '2.0 min × 60 = 120 s',
+          note: 'A hertz is counted per second, so the minutes have to become seconds first.' },
+        { letter: 'F', label: 'Formula', line: 'frequency = number of vibrations ÷ time',
+          note: 'Cover f on the triangle: N sits over t, so you divide.' },
+        { letter: 'I', label: 'Insert', line: 'frequency = 7200 beats ÷ 120 s',
+          note: 'The converted time goes in. The 2.0 never does.' },
+        { letter: 'F', label: 'Fine-tune', line: '7200 ÷ 120 = 60',
+          note: 'Beats divided by seconds leaves beats each second.' },
+        { letter: 'A', label: 'Answer', line: 'frequency = 60 Hz',
+          note: 'Divide by 2.0 instead of 120 and the answer comes out 3600 Hz.' }
+      ],
+      close: 'The five lines give 60 Hz. The whole question turned on the first one.'
+    }));
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

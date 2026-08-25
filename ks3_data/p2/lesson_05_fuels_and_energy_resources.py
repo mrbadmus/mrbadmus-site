@@ -277,7 +277,7 @@ LESSON = {
                   "wins all three. That is the honest picture, and it is why "
                   "the lesson refuses to name a best one."},
 
-        {"type": "key-fact", "id": "renewable-is-one-question"},
+        {"type": "key-fact", "ref": "renewable-is-one-question"},
 
         # ── #s-think · NOT a rail stop ────────────────────────────────
         {"type": "misconception", "id": "think-renewable-means-clean",

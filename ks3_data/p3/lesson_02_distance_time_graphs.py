@@ -223,7 +223,7 @@ LESSON = {
          "close": "Seven readings, one line, and a whole journey — "
                   "including four seconds in which nothing happened at all."},
 
-        {"type": "key-fact", "id": "gradient-is-the-speed"},
+        {"type": "key-fact", "ref": "gradient-is-the-speed"},
 
         # ── #s-match · walk the graph ─────────────────────────────────
         {"type": "journey-match",
