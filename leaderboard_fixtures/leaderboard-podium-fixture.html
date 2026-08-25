@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F7F1E5">
+<title>Leaderboard | MrBadmusAI</title>
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  GENERATED FIXTURE — not the live page, and NOT PUBLISHED.
+
+  It carries Design's OWN sample: sixty-one invented handles derived from the
+  delivery's constants and evaluated rather than retyped. That is the point —
+  it is what lets leaderboard_behaviour.py drive every control with no
+  network and no credential.
+
+  ⛔ It lives in leaderboard_fixtures/ precisely so that it is outside every tree
+  generate_site_v5.py publishes or round-trips. Do not move it into shared/,
+  student/ or teacher/, and never add an ignore rule to a copytree to hold it
+  back — that is the MRB-287 §7 defect, and the second attempt at it deleted
+  the fixtures from source.
+  ══════════════════════════════════════════════════════════════════════════
+-->
+<link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/shared/tokens.css?v=21ae3356">
+<link rel="stylesheet" href="/shared/nav.css?v=d1f3d76a">
+<script src="/shared/search-index.js?v=c016cb14" defer></script>
+<script src="/shared/search.js?v=d011978d" defer></script>
+<script src="/shared/nav.js?v=f23df349" defer></script>
+<script src="/shared/class-entry.js?v=8be18391" defer></script>
+<link rel="stylesheet" href="/shared/leaderboard-ds.css?v=543225fd">
+<style>body{margin:0;background:var(--st-ground,#FBF3E6)}a{color:var(--st-accent-text);text-decoration:none}a:hover{color:var(--st-accent-hover)}button{font-family:inherit}</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+  
+  <div class="nav-cluster">
+    <a href="/3d/" class="nav-text-link">3D Studio</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
+    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
+    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
+    <span id="nav-auth-area"></span>
+    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div id="mrb-leaderboard" style="background:var(--st-ground);min-height:100vh"></div>
+<script src="/shared/student-runtime.js?v=2ec8f6a8"></script>
+<script>window.__MRB_TPL__={"roots":[{"c":[{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css","rel":"stylesheet"},"i":1,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css","rel":"stylesheet"},"i":2,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css","rel":"stylesheet"},"i":3,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css","rel":"stylesheet"},"i":4,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css","rel":"stylesheet"},"i":5,"t":"link"},{"a":{"href":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css","rel":"stylesheet"},"i":6,"t":"link"},{"a":{"src":"_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"},"i":7,"t":"script"},{"c":[{"t":"#","v":"\n  body { margin: 0; background: var(--st-ground); }\n  a { color: var(--st-accent-text); text-decoration: none; }\n  a:hover { color: var(--st-accent-hover); }\n  @keyframes rowInA { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }\n  @keyframes rowInB { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }\n  @keyframes popA { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }\n  @keyframes popB { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }\n  @keyframes livedot { 0% { box-shadow: 0 0 0 0 rgba(228,87,46,.6); } 70% { box-shadow: 0 0 0 8px rgba(228,87,46,0); } 100% { box-shadow: 0 0 0 0 rgba(228,87,46,0); } }\n  @keyframes confetti { 0% { transform: translate3d(0,0,0) rotate(0deg); } 50% { transform: translate3d(4px,-11px,0) rotate(14deg); } 100% { transform: translate3d(0,0,0) rotate(0deg); } }\n  @keyframes growA { from { transform: scaleY(.55); opacity: .1; } to { transform: none; opacity: 1; } }\n  @keyframes growB { from { transform: scaleY(.55); opacity: .1; } to { transform: none; opacity: 1; } }\n  @keyframes crownGlow { 0%, 100% { box-shadow: 0 0 0 7px rgba(201,124,27,.14); } 50% { box-shadow: 0 0 0 13px rgba(201,124,27,.05); } }\n  .wkrail::-webkit-scrollbar { height: 0; }\n"}],"i":8,"t":"style"}],"i":0,"t":"helmet"},{"a":{"style":"min-height: 100vh; background: var(--st-ground); color: var(--st-ink); font-family: var(--st-ui); -webkit-font-smoothing: antialiased;"},"c":[{"a":{"style":"height: 4px; background: linear-gradient(90deg, var(--brand-grad-a), var(--brand-grad-b));"},"i":10,"t":"div"},{"a":{"style":"margin: 0 auto; padding: 30px 28px 96px;"},"c":[{"a":{"style":"display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap;"},"c":[{"c":[{"a":{"style":"margin: 12px 0 0; font: 600 62px/0.94 var(--st-display); letter-spacing: -0.045em;"},"c":[{"t":"#","v":"Leaderboard"}],"i":14,"t":"h1"},{"a":{"style":"margin-top: 12px; display: flex; align-items: center; gap: 10px; font: 500 15px/1 var(--st-mono); letter-spacing: .1em; color: var(--st-caption);"},"c":[{"a":{"style":"color: var(--st-accent-text);"},"c":[{"t":"#","v":{"parts":[{"e":"weekTitle"}]}}],"i":16,"t":"span"}],"i":15,"t":"div"}],"i":13,"t":"div"},{"a":{"style":"display: flex; align-items: center; gap: 14px; background: var(--st-paper); border: 1px solid var(--st-edge); border-radius: var(--st-r-frame); padding: 14px 20px 14px 16px; box-shadow: 0 10px 26px -22px rgba(40,26,10,.5);"},"c":[{"a":{"style":{"parts":["width: 46px; height: 46px; border-radius: 50%; background: var(--st-chip-tint); border: 1.5px solid var(--st-accent); color: var(--st-accent-text); display: grid; place-items: center; font: 500 16px/1 var(--st-mono);",";background-image:",{"e":"me.avImg"},";background-size:cover;background-position:center;background-repeat:no-repeat"]}},"c":[{"t":"#","v":{"parts":[{"e":"me.initials"}]}}],"i":18,"t":"div"},{"c":[{"a":{"style":"white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .2em; color: var(--st-caption);"},"c":[{"t":"#","v":"YOUR STANDING"}],"i":20,"t":"div"},{"a":{"style":"margin-top: 7px; display: flex; align-items: baseline; gap: 9px;"},"c":[{"a":{"style":"font: 600 20px/1 var(--st-display); letter-spacing: -0.02em;"},"c":[{"t":"#","v":{"parts":[{"e":"me.rankLabel"}]}}],"i":22,"t":"span"}],"i":21,"t":"div"}],"i":19,"t":"div"},{"a":{"style":"width: 1px; align-self: stretch; background: var(--st-rule-soft);"},"i":23,"t":"div"},{"a":{"style":"text-align: right;"},"c":[{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .2em; color: var(--st-caption);"},"c":[{"t":"#","v":"SCORE"}],"i":25,"t":"div"},{"a":{"style":"margin-top: 7px; font: 600 20px/1 var(--st-display);"},"c":[{"t":"#","v":{"parts":[{"e":"me.pctLabel"}]}}],"i":26,"t":"div"}],"i":24,"t":"div"}],"i":17,"t":"div"}],"i":12,"t":"div"},{"a":{"style":"margin-top: 30px; background: var(--st-paper); border: 1px solid var(--st-edge); border-radius: var(--st-r-frame); box-shadow: 0 12px 30px -26px rgba(40,26,10,.55); overflow: hidden;"},"c":[{"a":{"style":"display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px 10px 20px; border-bottom: 1px solid var(--st-rule-soft);"},"c":[{"a":{"style":{"parts":["display: flex; align-items: center; gap: 8px; background: ",{"e":"closeBg"},"; border: 1px solid ",{"e":"closeBd"},"; border-radius: var(--r-pill); padding: 7px 13px;"]}},"c":[{"a":{"style":{"parts":["width: 7px; height: 7px; border-radius: 50%; background: ",{"e":"closeDot"},"; animation: ",{"e":"closeAnim"},";"]}},"i":30,"t":"span"},{"a":{"style":{"parts":["white-space: nowrap; font: 500 14.5px/1 var(--st-mono); letter-spacing: .06em; color: ",{"e":"closeFg"},";"]}},"c":[{"t":"#","v":{"parts":[{"e":"closeLabel"}]}}],"i":31,"t":"span"}],"i":29,"t":"div"},{"a":{"style":"display: flex; align-items: center; gap: 8px;"},"c":[{"a":{"style":"width: 32px; height: 32px; border-radius: var(--st-r-btn); border: 1px solid var(--st-btn-border); background: var(--st-paper); color: var(--st-body); display: grid; place-items: center; cursor: pointer;","type":"button"},"c":[{"a":{"aria-hidden":"true","fill":"none","height":"12","stroke":"currentColor","stroke-linecap":"round","stroke-linejoin":"round","stroke-width":"1.7","viewBox":"0 0 8 12","width":"8"},"c":[{"a":{"d":"M6.5 1 1.5 6l5 5"},"i":35,"t":"path"}],"i":34,"t":"svg"}],"hov":"border-color: var(--st-accent); color: var(--st-accent-text);","i":33,"on":"scrollBack","t":"button"},{"a":{"style":"width: 32px; height: 32px; border-radius: var(--st-r-btn); border: 1px solid var(--st-btn-border); background: var(--st-paper); color: var(--st-body); display: grid; place-items: center; cursor: pointer;","type":"button"},"c":[{"a":{"aria-hidden":"true","fill":"none","height":"12","stroke":"currentColor","stroke-linecap":"round","stroke-linejoin":"round","stroke-width":"1.7","viewBox":"0 0 8 12","width":"8"},"c":[{"a":{"d":"M1.5 1l5 5-5 5"},"i":38,"t":"path"}],"i":37,"t":"svg"}],"hov":"border-color: var(--st-accent); color: var(--st-accent-text);","i":36,"on":"scrollFwd","t":"button"},{"a":{"style":"font: 600 15px/1 var(--st-ui); color: var(--st-paper); background: var(--st-ink); border: none; border-radius: var(--r-pill); padding: 10px 15px; cursor: pointer;","type":"button"},"c":[{"t":"#","v":"This week"}],"i":39,"on":"goLive","t":"button"}],"i":32,"t":"div"}],"i":28,"t":"div"},{"a":{"class":"wkrail","id":"ks4-week-rail","style":"display: flex; gap: 10px; padding: 16px; overflow-x: auto; scrollbar-width: none;"},"c":[{"as":"w","c":[{"a":{"style":{"parts":["position: relative; flex: none; width: 154px; text-align: left; cursor: pointer; padding: 12px 30px 11px 14px; border-radius: var(--st-r-card); border: 1px solid; transition: transform .16s ease; background: ",{"e":"w.bg"},"; border-color: ",{"e":"w.bd"},"; color: ",{"e":"w.fg"},";"]},"type":"button"},"c":[{"a":{"style":{"parts":["position: absolute; top: 13px; right: 12px; width: 7px; height: 7px; border-radius: 50%; background: ",{"e":"w.dot"},";"]}},"i":43,"t":"span"},{"a":{"style":"font: 500 15px/1 var(--st-mono); letter-spacing: .02em; white-space: nowrap;"},"c":[{"t":"#","v":{"parts":[{"e":"w.range"}]}}],"i":44,"t":"div"},{"c":[{"a":{"style":"margin-top: 12px; display: flex; align-items: center; gap: 7px;"},"c":[{"a":{"style":{"parts":["flex: 1; height: 4px; border-radius: 2px; background: ",{"e":"w.trough"},"; overflow: hidden; display: block;"]}},"c":[{"a":{"style":{"parts":["display: block; height: 4px; border-radius: 2px; background: ",{"e":"w.barFill"},"; width: ",{"e":"w.barW"},";"]}},"i":48,"t":"span"}],"i":47,"t":"span"},{"a":{"style":"font: 400 14px/1 var(--st-mono); opacity: .7;"},"c":[{"t":"#","v":{"parts":[{"e":"w.topLabel"}]}}],"i":49,"t":"span"}],"i":46,"t":"div"}],"e":"showTops","i":45,"t":"if"}],"hov":"transform: translateY(-2px);","i":42,"on":"w.onSelect","t":"button"}],"e":"weeks","i":41,"t":"for"}],"i":40,"t":"div"}],"i":27,"t":"div"},{"a":{"style":"margin-top: 22px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap;"},"c":[{"a":{"style":"display: flex; gap: 4px; background: var(--st-seg-bg); border-radius: var(--r-pill); padding: 4px;"},"c":[{"as":"t","c":[{"a":{"style":{"parts":["cursor: pointer; border: none; border-radius: var(--r-pill); padding: 10px 20px; font: 600 15.5px/1 var(--st-ui); background: ",{"e":"t.bg"},"; color: ",{"e":"t.fg"},";"]},"type":"button"},"c":[{"t":"#","v":{"parts":[{"e":"t.label"}]}}],"i":53,"on":"t.onSelect","t":"button"}],"e":"tiers","i":52,"t":"for"}],"i":51,"t":"div"},{"a":{"style":"display: flex; gap: 8px; flex-wrap: wrap;"},"c":[{"as":"s","c":[{"a":{"style":{"parts":["display: flex; align-items: center; gap: 9px; cursor: pointer; border: 1px solid; border-radius: var(--r-pill); padding: 9px 16px 9px 13px; font: 600 15.5px/1 var(--st-ui); background: ",{"e":"s.bg"},"; border-color: ",{"e":"s.bd"},"; color: ",{"e":"s.fg"},";"]},"type":"button"},"c":[{"a":{"style":{"parts":["width: 9px; height: 9px; border-radius: 3px; background: ",{"e":"s.dot"},";"]}},"i":57,"t":"span"},{"t":"#","v":{"parts":["\n            ",{"e":"s.label"},"\n          "]}}],"i":56,"on":"s.onSelect","t":"button"}],"e":"subjects","i":55,"t":"for"}],"i":54,"t":"div"}],"i":50,"t":"div"},{"c":[{"a":{"style":"margin-top: 24px; position: relative; border-radius: var(--st-r-frame); overflow: hidden; border: 1px solid var(--st-edge); background: linear-gradient(178deg, var(--st-paper) 0%, var(--st-crumb-bg) 100%); box-shadow: 0 20px 44px -34px rgba(64,45,26,.5);"},"c":[{"a":{"style":"position: absolute; inset: 0; pointer-events: none; background: radial-gradient(46% 58% at 50% -4%, rgba(201,124,27,.20), transparent 72%);"},"i":60,"t":"div"},{"a":{"style":"position: absolute; inset: 0; pointer-events: none; overflow: hidden;"},"c":[{"as":"c","c":[{"a":{"style":{"parts":["position: absolute; display: block; left: ",{"e":"c.left"},"; top: ",{"e":"c.top"},"; width: ",{"e":"c.w"},"; height: ",{"e":"c.h"},"; border-radius: 50%; background: rgba(201,124,27,.55); opacity: ",{"e":"c.opacity"},"; animation: ",{"e":"c.anim"},";"]}},"i":63,"t":"span"}],"e":"confetti","i":62,"t":"for"}],"i":61,"t":"div"},{"a":{"style":"position: relative; padding: 30px 34px 0;"},"c":[{"a":{"style":"display: grid; grid-template-columns: 1fr 1.24fr 1fr; align-items: end; gap: 20px;"},"c":[{"a":{"style":{"parts":["display: flex; flex-direction: column; align-items: center; min-width: 0; animation: ",{"e":"animB"},";"]}},"c":[{"a":{"style":{"parts":["width: 64px; height: 64px; border-radius: 50%; background: var(--st-paper); border: 2px solid #B6AC9C; color: var(--st-body); display: grid; place-items: center; font: 500 17px/1 var(--st-mono);",";background-image:",{"e":"p2.avImg"},";background-size:cover;background-position:center;background-repeat:no-repeat"]}},"c":[{"t":"#","v":{"parts":[{"e":"p2.initials"}]}}],"i":67,"t":"div"},{"a":{"style":"margin: 12px 0 16px; width: 100%; font: 600 22px/1.15 var(--st-display); letter-spacing: -0.025em; color: var(--st-ink); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"},"c":[{"t":"#","v":{"parts":[{"e":"p2.name"}]}}],"i":68,"t":"div"},{"c":[{"a":{"style":"flex: none; white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .16em; color: var(--st-paper); background: var(--st-accent-text); border-radius: 4px; padding: 4px 6px;"},"c":[{"t":"#","v":"YOU"}],"i":119,"t":"span"}],"e":"p2.isYou","i":118,"t":"if"},{"a":{"style":{"parts":["align-self: stretch; min-height: 148px; transform-origin: bottom; animation: ",{"e":"riseB"},"; border-radius: 10px 10px 0 0; border: 1px solid var(--st-rule-strong); border-bottom: none; border-top: 4px solid #B6AC9C; background: linear-gradient(180deg, var(--st-paper) 0%, var(--st-crumb-bg) 100%); text-align: center; padding: 18px 14px 0;"]}},"c":[{"a":{"style":"font: 600 56px/1 var(--st-display); letter-spacing: -0.04em; color: var(--st-muted);"},"c":[{"t":"#","v":"2"}],"i":70,"t":"div"},{"a":{"style":"margin-top: 10px; font: 600 24px/1 var(--st-display); letter-spacing: -0.02em; color: var(--st-ink);"},"c":[{"t":"#","v":{"parts":[{"e":"p2.pctLabel"}]}}],"i":71,"t":"div"},{"a":{"style":"margin-top: 8px; font: 400 14px/1 var(--st-mono); color: var(--st-muted);"},"c":[{"t":"#","v":{"parts":[{"e":"p2.score"}]}}],"i":72,"t":"div"}],"i":69,"t":"div"}],"i":66,"t":"div"},{"a":{"style":{"parts":["display: flex; flex-direction: column; align-items: center; min-width: 0; animation: ",{"e":"animA"},";"]}},"c":[{"a":{"style":"display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px;"},"c":[{"a":{"style":"display: grid; place-items: center; color: var(--higher);"},"c":[{"a":{"aria-hidden":"true","height":"15","viewBox":"0 0 24 24","width":"15"},"c":[{"a":{"d":"M12 2.4l2.94 6.06 6.66.9-4.86 4.62 1.2 6.6L12 17.4l-5.94 3.18 1.2-6.6L2.4 9.36l6.66-.9L12 2.4Z","fill":"currentColor"},"i":77,"t":"path"}],"i":76,"t":"svg"}],"i":75,"t":"span"},{"a":{"style":"font: 500 14.5px/1 var(--st-mono); letter-spacing: .22em; color: var(--st-accent-text);"},"c":[{"t":"#","v":"CHAMPION"}],"i":78,"t":"span"}],"i":74,"t":"div"},{"a":{"style":{"parts":["width: 92px; height: 92px; border-radius: 50%; background: var(--st-paper); border: 2.5px solid var(--brand-grad-a); animation: crownGlow 3.4s ease-in-out infinite; color: var(--higher); display: grid; place-items: center; font: 500 26px/1 var(--st-mono);",";background-image:",{"e":"p1.avImg"},";background-size:cover;background-position:center;background-repeat:no-repeat"]}},"c":[{"t":"#","v":{"parts":[{"e":"p1.initials"}]}}],"i":79,"t":"div"},{"a":{"style":"margin: 14px 0 18px; width: 100%; font: 600 30px/1.08 var(--st-display); letter-spacing: -0.035em; color: var(--st-ink); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"},"c":[{"t":"#","v":{"parts":[{"e":"p1.name"}]}}],"i":80,"t":"div"},{"c":[{"a":{"style":"flex: none; white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .16em; color: var(--st-paper); background: var(--st-accent-text); border-radius: 4px; padding: 4px 6px;"},"c":[{"t":"#","v":"YOU"}],"i":119,"t":"span"}],"e":"p1.isYou","i":118,"t":"if"},{"a":{"style":{"parts":["align-self: stretch; min-height: 212px; transform-origin: bottom; animation: ",{"e":"riseA"},"; border-radius: 12px 12px 0 0; border: 1px solid rgba(201,124,27,.45); border-bottom: none; border-top: 5px solid var(--brand-grad-a); background: linear-gradient(180deg, rgba(201,124,27,.15) 0%, var(--st-paper) 82%); text-align: center; padding: 20px 16px 0;"]}},"c":[{"a":{"style":"font: 600 86px/0.95 var(--st-display); letter-spacing: -0.05em; color: var(--brand-grad-a);"},"c":[{"t":"#","v":"1"}],"i":82,"t":"div"},{"a":{"style":"margin-top: 12px; font: 600 32px/1 var(--st-display); letter-spacing: -0.03em; color: var(--st-ink);"},"c":[{"t":"#","v":{"parts":[{"e":"p1.pctLabel"}]}}],"i":83,"t":"div"},{"a":{"style":"margin-top: 9px; font: 400 15px/1 var(--st-mono); color: var(--st-body);"},"c":[{"t":"#","v":{"parts":[{"e":"p1.score"}]}}],"i":84,"t":"div"}],"i":81,"t":"div"}],"i":73,"t":"div"},{"a":{"style":{"parts":["display: flex; flex-direction: column; align-items: center; min-width: 0; animation: ",{"e":"animC"},";"]}},"c":[{"a":{"style":{"parts":["width: 64px; height: 64px; border-radius: 50%; background: var(--st-paper); border: 2px solid var(--st-hatch-b); color: var(--st-accent-text); display: grid; place-items: center; font: 500 17px/1 var(--st-mono);",";background-image:",{"e":"p3.avImg"},";background-size:cover;background-position:center;background-repeat:no-repeat"]}},"c":[{"t":"#","v":{"parts":[{"e":"p3.initials"}]}}],"i":86,"t":"div"},{"a":{"style":"margin: 12px 0 16px; width: 100%; font: 600 22px/1.15 var(--st-display); letter-spacing: -0.025em; color: var(--st-ink); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"},"c":[{"t":"#","v":{"parts":[{"e":"p3.name"}]}}],"i":87,"t":"div"},{"c":[{"a":{"style":"flex: none; white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .16em; color: var(--st-paper); background: var(--st-accent-text); border-radius: 4px; padding: 4px 6px;"},"c":[{"t":"#","v":"YOU"}],"i":119,"t":"span"}],"e":"p3.isYou","i":118,"t":"if"},{"a":{"style":{"parts":["align-self: stretch; min-height: 116px; transform-origin: bottom; animation: ",{"e":"riseC"},"; border-radius: 10px 10px 0 0; border: 1px solid rgba(179,62,28,.4); border-bottom: none; border-top: 4px solid var(--st-hatch-b); background: linear-gradient(180deg, var(--st-paper) 0%, var(--st-crumb-bg) 100%); text-align: center; padding: 16px 14px 0;"]}},"c":[{"a":{"style":"font: 600 48px/1 var(--st-display); letter-spacing: -0.04em; color: var(--st-muted);"},"c":[{"t":"#","v":"3"}],"i":89,"t":"div"},{"a":{"style":"margin-top: 9px; font: 600 24px/1 var(--st-display); letter-spacing: -0.02em; color: var(--st-ink);"},"c":[{"t":"#","v":{"parts":[{"e":"p3.pctLabel"}]}}],"i":90,"t":"div"},{"a":{"style":"margin-top: 8px; font: 400 14px/1 var(--st-mono); color: var(--st-muted);"},"c":[{"t":"#","v":{"parts":[{"e":"p3.score"}]}}],"i":91,"t":"div"}],"i":88,"t":"div"}],"i":85,"t":"div"}],"i":65,"t":"div"},{"a":{"style":"margin: 0 -34px; height: 3px; background: var(--st-rule-strong);"},"i":92,"t":"div"}],"i":64,"t":"div"}],"i":59,"t":"div"}],"e":"podiumOn","i":58,"t":"if"},{"a":{"style":"margin-top: 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;"},"c":[{"as":"st","c":[{"a":{"style":{"parts":["background: var(--st-paper); border: 1px solid var(--st-rule); border-radius: var(--st-r-card); padding: 16px 18px; border-left: 3px solid ",{"e":"st.hue"},";"]}},"c":[{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);"},"c":[{"t":"#","v":{"parts":[{"e":"st.label"}]}}],"i":96,"t":"div"},{"a":{"style":"margin-top: 11px; font: 600 27px/1 var(--st-display); letter-spacing: -0.03em;"},"c":[{"t":"#","v":{"parts":[{"e":"st.value"}]}}],"i":97,"t":"div"}],"i":95,"t":"div"}],"e":"stats","i":94,"t":"for"}],"i":93,"t":"div"},{"a":{"style":"margin-top: 18px; background: var(--st-paper); border: 1px solid var(--st-edge); border-radius: var(--st-r-frame); box-shadow: 0 14px 34px -30px rgba(40,26,10,.55); overflow: hidden;"},"c":[{"a":{"style":{"parts":["display: grid; grid-template-columns: ",{"e":"grid"},"; align-items: center; gap: 10px; padding: 13px 20px; background: var(--st-crumb-bg); border-bottom: 1px solid var(--st-rule);"]}},"c":[{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);"},"c":[{"t":"#","v":"RANK"}],"i":100,"t":"div"},{"i":101,"t":"div"},{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);"},"c":[{"t":"#","v":"STUDENT"}],"i":102,"t":"div"},{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);"},"c":[{"t":"#","v":"PAPERS"}],"i":103,"t":"div"},{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption);"},"c":[{"t":"#","v":"MOVE"}],"i":104,"t":"div"},{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption); text-align: right;"},"c":[{"t":"#","v":"SCORE"}],"i":105,"t":"div"},{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption); text-align: right;"},"c":[{"t":"#","v":"MARKS"}],"i":106,"t":"div"},{"a":{"style":"font: 500 14px/1 var(--st-mono); letter-spacing: .18em; color: var(--st-caption); text-align: right;"},"c":[{"t":"#","v":"TIME"}],"i":107,"t":"div"},{"i":108,"t":"div"}],"i":99,"t":"div"},{"as":"r","c":[{"a":{"style":{"parts":["border-bottom: 1px solid var(--st-rule-fact); background: ",{"e":"r.rowBg"},"; animation: ",{"e":"r.anim"},";"]}},"c":[{"a":{"style":{"parts":["display: grid; grid-template-columns: ",{"e":"grid"},"; align-items: center; gap: 10px; padding: ",{"e":"rowPad"},"; cursor: pointer;"]}},"c":[{"a":{"style":"display: flex; align-items: center; gap: 9px;"},"c":[{"a":{"style":{"parts":["font: 500 ",{"e":"rankSize"}," var(--st-mono); color: ",{"e":"r.rankColor"},";"]}},"c":[{"t":"#","v":{"parts":[{"e":"r.rankLabel"}]}}],"i":113,"t":"span"}],"i":112,"t":"div"},{"a":{"style":{"parts":["width: ",{"e":"avatar"},"; height: ",{"e":"avatar"},"; border-radius: 50%; background: ",{"e":"r.avBg"},"; border: 1px solid ",{"e":"r.avBd"},"; color: ",{"e":"r.avFg"},"; display: grid; place-items: center; font: 500 14.5px/1 var(--st-mono);",";background-image:",{"e":"r.avImg"},";background-size:cover;background-position:center;background-repeat:no-repeat"]}},"c":[{"t":"#","v":{"parts":[{"e":"r.initials"}]}}],"i":114,"t":"div"},{"a":{"style":"min-width: 0; overflow: hidden;"},"c":[{"a":{"style":"display: flex; align-items: center; gap: 9px; min-width: 0;"},"c":[{"a":{"style":{"parts":["flex: none; font: 600 ",{"e":"nameSize"}," var(--st-display); letter-spacing: -0.02em; color: var(--st-ink); white-space: nowrap;"]}},"c":[{"t":"#","v":{"parts":[{"e":"r.name"}]}}],"i":117,"t":"span"},{"c":[{"a":{"style":"flex: none; white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .16em; color: var(--st-paper); background: var(--st-accent-text); border-radius: 4px; padding: 4px 6px;"},"c":[{"t":"#","v":"YOU"}],"i":119,"t":"span"}],"e":"r.isYou","i":118,"t":"if"}],"i":116,"t":"div"},{"c":[{"a":{"style":"margin-top: 6px; white-space: nowrap; font: 400 14.5px/1 var(--st-mono); color: var(--higher);"},"c":[{"t":"#","v":{"parts":[{"e":"r.streakLabel"}]}}],"i":121,"t":"div"}],"e":"r.streakOn","i":120,"t":"if"}],"i":115,"t":"div"},{"a":{"style":"display: flex; gap: 5px;"},"c":[{"as":"p","c":[{"a":{"style":{"parts":["width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font: 500 14px/1 var(--st-mono); background: ",{"e":"p.bg"},"; color: ",{"e":"p.fg"},"; border: 1px solid ",{"e":"p.bd"},";"]}},"c":[{"t":"#","v":{"parts":[{"e":"p.k"}]}}],"i":124,"t":"span"}],"e":"r.papers","i":123,"t":"for"}],"i":122,"t":"div"},{"c":[{"a":{"style":{"parts":["display: inline-flex; align-items: center; gap: 5px; font: 500 14.5px/1 var(--st-mono); color: ",{"e":"r.moveFg"},"; background: ",{"e":"r.moveBg"},"; border-radius: 5px; padding: 5px 7px;"]}},"c":[{"c":[{"a":{"aria-hidden":"true","height":"8","viewBox":"0 0 10 9","width":"9"},"c":[{"a":{"d":"M5 0l5 9H0z","fill":"currentColor"},"i":129,"t":"path"}],"i":128,"t":"svg"}],"e":"r.up","i":127,"t":"if"},{"c":[{"a":{"aria-hidden":"true","height":"8","viewBox":"0 0 10 9","width":"9"},"c":[{"a":{"d":"M5 9L0 0h10z","fill":"currentColor"},"i":132,"t":"path"}],"i":131,"t":"svg"}],"e":"r.down","i":130,"t":"if"},{"c":[{"a":{"aria-hidden":"true","height":"8","viewBox":"0 0 10 9","width":"9"},"c":[{"a":{"fill":"currentColor","height":"1.6","width":"10","x":"0","y":"3.7"},"i":135,"t":"rect"}],"i":134,"t":"svg"}],"e":"r.flat","i":133,"t":"if"},{"t":"#","v":{"parts":["\n                ",{"e":"r.moveLabel"},"\n              "]}}],"i":126,"t":"span"}],"i":125,"t":"div"},{"a":{"style":"text-align: right;"},"c":[{"a":{"style":{"parts":["font: 600 ",{"e":"pctSize"}," var(--st-display); letter-spacing: -0.02em;"]}},"c":[{"t":"#","v":{"parts":[{"e":"r.pctLabel"}]}}],"i":137,"t":"div"},{"a":{"style":"margin-top: 6px; height: 4px; border-radius: 2px; background: var(--st-num-well); overflow: hidden;"},"c":[{"a":{"style":{"parts":["height: 4px; border-radius: 2px; background: ",{"e":"r.barFill"},"; width: ",{"e":"r.barW"},"; margin-left: auto;"]}},"i":139,"t":"div"}],"i":138,"t":"div"}],"i":136,"t":"div"},{"a":{"style":"text-align: right; font: 400 15px/1 var(--st-mono); color: var(--st-body);"},"c":[{"t":"#","v":{"parts":[{"e":"r.score"}]}}],"i":140,"t":"div"},{"a":{"style":"text-align: right; font: 400 15px/1 var(--st-mono); color: var(--st-muted);"},"c":[{"t":"#","v":{"parts":[{"e":"r.time"}]}}],"i":141,"t":"div"},{"a":{"style":{"parts":["display: grid; place-items: center; color: var(--st-ghost); transform: ",{"e":"r.caret"},";"]}},"c":[{"a":{"aria-hidden":"true","fill":"none","height":"7","stroke":"currentColor","stroke-linecap":"round","stroke-linejoin":"round","stroke-width":"1.7","viewBox":"0 0 12 8","width":"11"},"c":[{"a":{"d":"M1 1.5 6 6.5l5-5"},"i":144,"t":"path"}],"i":143,"t":"svg"}],"i":142,"t":"div"}],"hov":"background: rgba(228,87,46,.045);","i":111,"on":"r.onToggle","t":"div"},{"c":[{"a":{"style":"padding: 4px 20px 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: var(--st-crumb-bg); border-top: 1px solid var(--st-rule-soft);"},"c":[{"as":"b","c":[{"a":{"style":"background: var(--st-paper); border: 1px solid var(--st-rule-soft); border-radius: var(--st-r-chip); padding: 13px 15px; margin-top: 16px;"},"c":[{"a":{"style":"display: flex; align-items: center; justify-content: space-between; gap: 10px;"},"c":[{"a":{"style":{"parts":["display: flex; align-items: center; gap: 8px; font: 500 14.5px/1 var(--st-mono); letter-spacing: .12em; color: ",{"e":"b.fg"},";"]}},"c":[{"a":{"style":{"parts":["width: 8px; height: 8px; border-radius: 3px; background: ",{"e":"b.dot"},";"]}},"i":151,"t":"span"},{"t":"#","v":{"parts":["\n                      ",{"e":"b.name"},"\n                    "]}}],"i":150,"t":"span"},{"a":{"style":{"parts":["font: 500 15px/1 var(--st-mono); color: ",{"e":"b.valueFg"},";"]}},"c":[{"t":"#","v":{"parts":[{"e":"b.value"}]}}],"i":152,"t":"span"}],"i":149,"t":"div"},{"a":{"style":"margin-top: 11px; height: 6px; border-radius: 3px; background: var(--st-num-well); overflow: hidden;"},"c":[{"a":{"style":{"parts":["height: 6px; border-radius: 3px; background: ",{"e":"b.dot"},"; width: ",{"e":"b.barW"},";"]}},"i":154,"t":"div"}],"i":153,"t":"div"},{"a":{"style":"margin-top: 10px; font: 400 14.5px/1 var(--st-mono); color: var(--st-ghost);"},"c":[{"t":"#","v":{"parts":[{"e":"b.note"}]}}],"i":155,"t":"div"}],"i":148,"t":"div"}],"e":"r.breakdown","i":147,"t":"for"}],"i":146,"t":"div"}],"e":"r.open","i":145,"t":"if"}],"i":110,"t":"div"}],"e":"rows","i":109,"t":"for"},{"a":{"style":"display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 20px; background: var(--st-crumb-bg);"},"c":[{"a":{"style":"font: 400 14.5px/1 var(--st-mono); letter-spacing: .08em; color: var(--st-ghost);"},"c":[{"t":"#","v":{"parts":[{"e":"cutLabel"}]}}],"i":157,"t":"span"},{"a":{"style":"font: 500 14.5px/1 var(--st-mono); letter-spacing: .08em; color: var(--st-accent-text); background: var(--st-chip-tint); border: 1px solid var(--st-note-border); border-radius: var(--r-pill); padding: 8px 13px;"},"c":[{"t":"#","v":{"parts":[{"e":"cutValue"}]}}],"i":158,"t":"span"}],"i":156,"t":"div"},{"c":[{"a":{"style":{"parts":["position: sticky; bottom: 0; z-index: 5; display: grid; grid-template-columns: ",{"e":"grid"},"; align-items: center; gap: 10px; padding: 14px 20px; background: var(--st-paper); border-top: 2px solid var(--st-accent); box-shadow: 0 -14px 26px -22px rgba(40,26,10,.6);"]}},"c":[{"a":{"style":"font: 500 16.5px/1 var(--st-mono); color: var(--st-accent-text);"},"c":[{"t":"#","v":{"parts":[{"e":"me.rankLabel"}]}}],"i":161,"t":"span"},{"a":{"style":{"parts":["width: 36px; height: 36px; border-radius: 50%; background: var(--st-chip-tint); border: 1px solid var(--st-accent); color: var(--st-accent-text); display: grid; place-items: center; font: 500 14.5px/1 var(--st-mono);",";background-image:",{"e":"me.avImg"},";background-size:cover;background-position:center;background-repeat:no-repeat"]}},"c":[{"t":"#","v":{"parts":[{"e":"me.initials"}]}}],"i":162,"t":"div"},{"a":{"style":"min-width: 0; overflow: hidden;"},"c":[{"a":{"style":"display: flex; align-items: center; gap: 9px; min-width: 0;"},"c":[{"a":{"style":"flex: none; font: 600 16.5px/1 var(--st-display); letter-spacing: -0.02em; white-space: nowrap;"},"c":[{"t":"#","v":{"parts":[{"e":"me.name"}]}}],"i":165,"t":"span"},{"a":{"style":"flex: none; white-space: nowrap; font: 500 14px/1 var(--st-mono); letter-spacing: .16em; color: var(--st-paper); background: var(--st-accent-text); border-radius: 4px; padding: 4px 6px;"},"c":[{"t":"#","v":"YOU"}],"i":166,"t":"span"}],"i":164,"t":"div"}],"i":163,"t":"div"},{"a":{"style":"display: flex; gap: 5px;"},"c":[{"as":"p","c":[{"a":{"style":{"parts":["width: 22px; height: 22px; border-radius: 6px; display: grid; place-items: center; font: 500 14px/1 var(--st-mono); background: ",{"e":"p.bg"},"; color: ",{"e":"p.fg"},"; border: 1px solid ",{"e":"p.bd"},";"]}},"c":[{"t":"#","v":{"parts":[{"e":"p.k"}]}}],"i":169,"t":"span"}],"e":"me.papers","i":168,"t":"for"}],"i":167,"t":"div"},{"a":{"style":{"parts":["font: 500 14.5px/1 var(--st-mono); color: ",{"e":"me.moveFg"},"; white-space: nowrap;"]}},"c":[{"t":"#","v":{"parts":[{"e":"me.moveFull"}]}}],"i":170,"t":"div"},{"a":{"style":"text-align: right; font: 600 17px/1 var(--st-display);"},"c":[{"t":"#","v":{"parts":[{"e":"me.pctLabel"}]}}],"i":171,"t":"div"},{"a":{"style":"text-align: right; font: 400 15px/1 var(--st-mono); color: var(--st-body);"},"c":[{"t":"#","v":{"parts":[{"e":"me.score"}]}}],"i":172,"t":"div"},{"a":{"style":"text-align: right; font: 400 15px/1 var(--st-mono); color: var(--st-muted);"},"c":[{"t":"#","v":{"parts":[{"e":"me.time"}]}}],"i":173,"t":"div"},{"i":174,"t":"div"}],"i":160,"t":"div"}],"e":"pinMe","i":159,"t":"if"}],"i":98,"t":"div"}],"i":11,"t":"div"}],"i":9,"t":"div"}],"imports":{}};</script>
+<script>
+/* No number reaches this page except through here, and there is no
+   fallback that invents one. Design's delivery is a SAMPLE — sixty-one
+   invented handles and a hashed mark for each — so the alternative to a
+   blank is a real student shown a rank that is not theirs. */
+function MRB_LB(){var L=window.MrBadmusLeaderboardLive;
+  if(!L)throw new Error('leaderboard: shared/leaderboard-live.js has not '
+    +'loaded; there is no data source and nothing may be drawn.');
+  return L;}
+function MRB_STATE(c){return MRB_LB().stateFor(c);}
+function MRB_D(){return MRB_LB().payload();}
+function MRB_STATUS(){return MRB_LB().status();}
+function MRB_ROWS(){return MRB_LB().rows();}
+function MRB_ME(){return MRB_LB().me();}
+function MRB_WEEKS(){return MRB_LB().weeks();}
+function MRB_TOP(i){return MRB_LB().topFor(i);}
+function MRB_IS_CURRENT(){return MRB_LB().isCurrent();}
+function MRB_SET(p){return MRB_LB().select(p);}
+function MRB_VIEWER_NAME(){return MRB_LB().viewerName();}
+function MRB_VIEWER_INITIALS(){return MRB_LB().viewerInitials();}
+function MRB_IS_YOU(n){return MRB_LB().isYou(n);}
+/* ⚠️ SERVER-ANCHORED. `server_now` arrives with every payload and the offset
+   from `Date.now()` is captured once, at first load. A device clock a day
+   fast must not be able to close the round early, nor a slow one hold it
+   open. */
+function MRB_NOW(){return MRB_LB().now();}
+function MRB_CLOSES(){return MRB_LB().closesAt();}
+/* The three states a payload can be in, as the ONE label the cut line
+   already had a slot for. Design drew neither loading nor error, because a
+   sample never waits and never fails. */
+function MRB_CUT_STATE(){var s=MRB_STATUS();
+  return s==='ok'?null:(s==='error'?'COULD NOT LOAD':'LOADING');}
+var DCLogic = window.MrBadmusStudentRuntime.MrbLogic;
+var StreamableLogic = DCLogic;
+const MON = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const PAPERS = { B: { name: 'BIOLOGY', hue: 'var(--biology)', soft: 'var(--biology-soft)' }, C: { name: 'CHEMISTRY', hue: 'var(--chemistry)', soft: 'var(--chemistry-soft)' }, P: { name: 'PHYSICS', hue: 'var(--physics)', soft: 'var(--physics-soft)' } };
+const KEYS = ['B', 'C', 'P'];
+const SUBJ_KEY = { Overall: null, Biology: 'B', Chemistry: 'C', Physics: 'P' };
+const CONFETTI = ['var(--brand-grad-a)', 'var(--st-accent)', 'var(--accent)', 'var(--biology)', 'var(--chemistry)', 'var(--physics)', 'var(--higher)'];
+
+function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed) { let t = (seed + 0x6D2B79F5) >>> 0; return function () { t = (t + 0x6D2B79F5) >>> 0; let r = Math.imul(t ^ (t >>> 15), 1 | t); r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r; return ((r ^ (r >>> 14)) >>> 0) / 4294967296; }; }
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function initialsOf(n) { const m = n.match(/^([A-Z])[a-z]*([A-Z])/); return m ? m[1] + m[2] : n.slice(0, 2).toUpperCase(); }
+function fmtTime(s) { return Math.floor(s / 60) + 'm ' + String(s % 60).padStart(2, '0') + 's'; }
+function isoWeek(d) {
+  const t = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  t.setDate(t.getDate() - ((t.getDay() + 6) % 7) + 3);
+  const f = new Date(t.getFullYear(), 0, 4);
+  f.setDate(f.getDate() - ((f.getDay() + 6) % 7) + 3);
+  return 1 + Math.round((t - f) / 604800000);
+}
+
+class Component extends DCLogic {
+  /* ⊕ MRB-290 R26. `wk`, `tier` and `subject` live in the seam
+     (R10) — the weeks array changes with the subject, so an index
+     is not stable across a press. `LIVE` is gone (R4), and
+     Design's 'Higher' default is overridden by the signed-in
+     student's own profile tier. What is left is genuinely this
+     component's: which row is open, the animation flip, and the
+     countdown tick. */
+  state = { open: null, flip: false, now: Date.now() };
+
+  constructor(props) { super(props); this._cache = new Map(); }
+
+  rail() { return document.getElementById('ks4-week-rail'); }
+
+  componentDidMount() {
+    /* ⊕ MRB-290 R12. `LIVE` is gone (R4); `is_current` is the payload's
+       own answer and survives a subject press that reindexes the array.
+       Design's rail scroll-snap below is kept exactly as drawn. */
+    this._t = setInterval(() => {
+      if (MRB_IS_CURRENT()) { this.setState({ now: Date.now() }); }
+    }, 1000);
+    const snap = () => {
+      const el = this.rail();
+      if (el && el.scrollWidth > el.clientWidth) { el.scrollLeft = el.scrollWidth; }
+      else { setTimeout(snap, 120); }
+    };
+    setTimeout(snap, 60);
+  }
+  componentWillUnmount() { clearInterval(this._t); }
+
+  /* ⊕ MRB-290 R28 — ADDED. Design's class has no
+     componentDidUpdate, because her prototype never re-rendered
+     into a fresh host. Without this the week rail returns to scroll
+     0 on every tier, subject or week press, throwing away the
+     right-hand snap componentDidMount performs and jumping the
+     student back to the oldest week on the rail.
+
+     ⊕ MRB-290 R33 SUPERSEDES ITS BEHAVIOUR WHEN THE SELECTION
+     MOVES. Preserving the old scrollLeft is right for a redraw
+     that does NOT move the week — a countdown tick, a filter press
+     that keeps the week, a student browsing the strip who must not
+     be yanked back. It is wrong for one that DOES: Mide clicked a
+     past week and the rail stayed parked at the oldest end, so he
+     had to hunt back for what he had just chosen. The two cases
+     are told apart by the last-snapped week_start. */
+  componentDidUpdate() {
+    const el = this.rail();
+    if (!el) { return; }
+    const idx = MRB_STATE(this).wk;
+    const wks = MRB_WEEKS();
+    const sel = wks[idx] ? wks[idx].week_start : null;
+    if (sel !== this._railWeek) {
+      this._railWeek = sel;
+      const chip = el.children[idx];
+      /* Only when it is actually out of view: a selection change
+         to a chip already on screen moves nothing. */
+      if (chip) {
+        const l = chip.offsetLeft, r = l + chip.offsetWidth;
+        if (l < el.scrollLeft) {
+          el.scrollLeft = Math.max(0, l - 16);
+        } else if (r > el.scrollLeft + el.clientWidth) {
+          el.scrollLeft = r - el.clientWidth + 16;
+        }
+      }
+      this._railWant = el.scrollLeft;
+      return;
+    }
+    if (this._railWant != null && el.scrollWidth > el.clientWidth) {
+      el.scrollLeft = this._railWant;
+    }
+  }
+
+  weekDates() {
+    /* ⊕ MRB-290 R8. Weeks run FRIDAY → THURSDAY and `week_start` is
+       always the Friday. Design counted back from the device's current
+       Monday, which is wrong by four days, wrong about which weeks exist,
+       and derived from a clock the student sets. `isoWeek` is Design's own
+       and is kept: the ISO week of a Friday is the week that Friday is in. */
+    return MRB_WEEKS().map(function (w) {
+      const p = String(w.week_start).split('-');
+      const s = new Date(+p[0], +p[1] - 1, +p[2]);
+      const e = new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6);
+      const range = s.getMonth() === e.getMonth()
+        ? s.getDate() + '\u2013' + e.getDate() + ' ' + MON[e.getMonth()]
+        : s.getDate() + ' ' + MON[s.getMonth()] + '\u2013'
+          + e.getDate() + ' ' + MON[e.getMonth()];
+      return {
+        start: s, end: e, range: range, no: 'W' + isoWeek(s),
+        week_start: w.week_start,
+        long: s.getDate() + ' ' + MON[s.getMonth()].charAt(0)
+              + MON[s.getMonth()].slice(1).toLowerCase()
+      };
+    });
+  }
+
+  raw(w) {
+    /* ⊕ MRB-290 R7. Design hashed a cohort out of a week and a name.
+       These are the real rows, already ranked by the backend — which has the
+       whole cohort to rank and the client, by design, does not. `w` is only
+       ever the selected week: the strip's other-week read is R9. */
+    if (w !== MRB_STATE(this).wk) { return []; }
+    return MRB_ROWS();
+  }
+
+  board(w) {
+    /* ⊕ MRB-290 R7. Design derived `move`/`was`/`streak` by diffing this
+       week's fabricated board against last week's. All three arrive on the
+       payload: `move` null means NEW and 0 means HELD, and those are
+       different facts. */
+    return this.raw(w);
+  }
+
+  renderVals() {
+    const s = MRB_STATE(this);
+    /* ⊕ MRB-290 R28. The runtime rebuilds the host on every draw
+       and restores focus, field values and window scroll — but not
+       an element's scrollLeft. Read it here, while the old rail is
+       still mounted; componentDidUpdate puts it back. */
+    { const _r0 = this.rail();
+      if (_r0) { this._railWant = _r0.scrollLeft; } }
+    const density = this.props.density === 'compact' ? 'compact' : 'comfortable';
+    const topCount = clamp(this.props.topCount ?? 10, 3, 25);
+    const podiumOn = (this.props.showPodium ?? true);
+    const dates = this.weekDates();
+    /* ⊕ MRB-290 R24. Design's `dates` is nine entries off the
+       device clock and can never be empty; the real one is empty
+       until the first payload lands and on any failed fetch, and
+       `dates[s.wk].no` on an empty array throws from inside
+       renderVals — a page that paints its nav and then stops. */
+    const _wk = dates[s.wk] || { no: '', range: '', long: '\u2014' };
+    const board = this.board(s.wk);
+    const only = SUBJ_KEY[s.subject];
+    const anim = s.flip ? 'rowInB' : 'rowInA';
+    const grow = s.flip ? 'growB' : 'growA';
+    const pop = s.flip ? 'popB' : 'popA';
+
+    const weeks = dates.map((d, i) => {
+      /* ⊕ MRB-290 R27. Each week carries its own `is_current`;
+         `LIVE` was an index into a fixed nine (R4). */
+      const live = !!(MRB_WEEKS()[i] || {}).is_current;
+      const on = i === s.wk;
+      const top = MRB_TOP(i);
+      return {
+        no: d.no, range: d.range,
+        bg: on ? 'var(--st-ink)' : live ? 'var(--st-note-bg)' : 'var(--st-paper)',
+        fg: on ? 'var(--st-cream)' : 'var(--st-body)',
+        bd: on ? 'var(--st-ink)' : live ? 'var(--st-accent)' : 'var(--st-rule)',
+        dot: live ? 'var(--st-accent)' : on ? 'var(--brand-grad-a)' : 'var(--st-rule-strong)',
+        trough: on ? 'rgba(251,243,230,.18)' : 'var(--st-num-well)',
+        barFill: on ? 'var(--brand-grad-a)' : live ? 'var(--st-accent)' : 'var(--st-rule-strong)',
+        barW: (top ? top.pct : 0) + '%',
+        topLabel: top ? top.pct + '%' : '\u2014',
+        onSelect: () => { const _w = MRB_WEEKS()[i];
+          if (_w) { MRB_SET({ week: _w.week_start }); }
+          this.setState(p => ({ flip: !p.flip, open: null })); }
+      };
+    });
+
+    const tiers = ['Foundation', 'Higher'].map(t => ({
+      label: t,
+      bg: s.tier === t ? 'var(--st-paper)' : 'transparent',
+      fg: s.tier === t ? 'var(--st-ink)' : 'var(--st-muted)',
+      onSelect: () => { MRB_SET({ tier: t });
+        this.setState(p => ({ flip: !p.flip, open: null })); }
+    }));
+
+    const subjects = ['Overall', 'Biology', 'Chemistry', 'Physics'].map(k => {
+      const on = s.subject === k;
+      const hue = SUBJ_KEY[k] ? PAPERS[SUBJ_KEY[k]].hue : 'var(--st-accent)';
+      const soft = SUBJ_KEY[k] ? PAPERS[SUBJ_KEY[k]].soft : 'var(--st-chip-tint)';
+      return {
+        label: k, dot: hue,
+        bg: on ? soft : 'var(--st-paper)',
+        bd: on ? hue : 'var(--st-rule)',
+        fg: on ? (SUBJ_KEY[k] ? hue : 'var(--st-accent-text)') : 'var(--st-body)',
+        onSelect: () => { MRB_SET({ subject: k });
+          this.setState(p => ({ flip: !p.flip, open: null })); }
+      };
+    });
+
+    const deco = (x, i) => {
+      const up = x.move !== null && x.move > 0;
+      const down = x.move !== null && x.move < 0;
+      const flat = x.move === 0;
+      const isYou = MRB_IS_YOU(x.name);
+      return {
+        name: x.name,
+        /* ⊕ MRB-290 R25 — Design's monogram, or the student's own
+           face in the same disc. The URL is sanitised at the seam
+           (shared/leaderboard-live.js), never here. */
+        initials: x.avatar_url ? '' : initialsOf(x.name),
+        avImg: x.avatar_url ? 'url("' + x.avatar_url + '")' : 'none',
+        rank: x.rank,
+        rankLabel: String(x.rank).padStart(2, '0'),
+        rankColor: x.rank <= 3 ? 'var(--st-accent-text)' : 'var(--st-muted)',
+        pctLabel: x.pct + '%', score: x.marks + '/' + x.total, time: fmtTime(x.secs),
+        barW: x.pct + '%',
+        barFill: isYou ? 'var(--st-accent)' : x.rank <= 3 ? 'var(--brand-grad-a)' : 'var(--st-rule-strong)',
+        avBg: isYou ? 'var(--st-chip-tint)' : 'var(--st-num-well)',
+        avBd: isYou ? 'var(--st-accent)' : 'var(--st-rule)',
+        avFg: isYou ? 'var(--st-accent-text)' : 'var(--st-muted)',
+        rowBg: isYou ? 'rgba(228,87,46,.06)' : 'var(--st-paper)',
+        isYou: isYou,
+        streakOn: x.streak >= 3, streakLabel: x.streak + ' wk run',
+        up: up, down: down, flat: flat,
+        moveLabel: x.move === null ? 'NEW' : flat ? 'HELD' : String(Math.abs(x.move)),
+        moveFull: x.move === null ? 'NEW ENTRY' : flat ? 'HELD' : (up ? 'UP ' : 'DOWN ') + Math.abs(x.move),
+        moveFg: x.move === null ? 'var(--st-accent-text)' : up ? 'var(--success)' : down ? 'var(--danger)' : 'var(--st-muted)',
+        moveBg: x.move === null ? 'var(--st-chip-tint)' : up ? 'var(--success-soft)' : down ? 'var(--danger-soft)' : 'var(--st-num-well)',
+        papers: KEYS.map(k => {
+          const on = x.done.indexOf(k) >= 0;
+          return { k: k, bg: on ? PAPERS[k].soft : 'var(--st-paper)', fg: on ? PAPERS[k].hue : 'var(--st-rule-strong)', bd: on ? PAPERS[k].soft : 'var(--st-rule-soft)' };
+        }),
+        breakdown: KEYS.map(k => {
+          const on = x.done.indexOf(k) >= 0;
+          return {
+            k: k, name: PAPERS[k].name, dot: on ? PAPERS[k].hue : 'var(--st-rule)',
+            fg: on ? PAPERS[k].hue : 'var(--st-ghost)',
+            value: on ? x.per[k] + '%' : '\u2014',
+            valueFg: on ? 'var(--st-ink)' : 'var(--st-ghost)',
+            barW: on ? x.per[k] + '%' : '0%',
+            note: on ? Math.round(x.per[k] / 100 * 15) + '/15 marks' : 'not attempted'
+          };
+        }),
+        open: s.open === x.name,
+        caret: s.open === x.name ? 'rotate(180deg)' : 'none',
+        anim: anim + ' .42s cubic-bezier(.22,.75,.2,1) ' + Math.min(i, 14) * 26 + 'ms both',
+        onToggle: () => this.setState(p => ({ open: p.open === x.name ? null : x.name }))
+      };
+    };
+
+    const podium = board.slice(0, 3).map(deco);
+    const blank = { name: '\u2014', initials: '--', avImg: 'none', isYou: false, pctLabel: '\u2014', score: '\u2014' };
+    /* ⊕ MRB-290 R16. Design consults the PROP here and the
+       podium's own `sc-if` consults `podium.length >= 3`.
+       With one or two entrants those disagree, the podium
+       hides, the list still starts at 3, and the board
+       draws NO ROWS AT ALL. Foundation's current week has
+       exactly one entry. */
+    const listStart = podium.length >= 3 ? 3 : 0;
+    const qualified = board.slice(0, topCount);
+    const list = qualified.slice(listStart).map(deco);
+    const meRow = MRB_ME();
+    const me = meRow ? deco(meRow, 0) : null;
+    const meVisible = !!me && me.rank <= topCount;
+    /* ⊕ MRB-290 R13 — Design's five aggregates computed from `board`,
+       replaced by the payload's own. The client is served the top ten plus
+       the viewer and never sees the cohort, so a median taken here would be
+       the median of ten top scorers and would read as the median of the
+       year group. */
+    var D = MRB_D();
+    const entries = D && D.entries != null ? D.entries : null;
+    const cut = (D && D.cut_pct != null) ? {pct: D.cut_pct} : null;
+    const median = D && D.median_pct != null ? D.median_pct : null;
+    const fastest = (D && D.fastest_secs != null)
+      ? {secs: D.fastest_secs} : null;
+    const climb = (D && D.biggest_climb != null)
+      ? {move: D.biggest_climb} : null;
+    const live = MRB_IS_CURRENT();
+    /* R13, second half — the countdown. `closes_at` is 09:15 UTC on the
+       Friday AFTER the week's Thursday end, which is not derivable from the
+       week at all, and `MRB_NOW()` is the server's clock, not the device's. */
+    const _closes = MRB_CLOSES();
+    const ms = _closes == null ? 0 : _closes - MRB_NOW();
+    const d = Math.max(0, Math.floor(ms / 864e5));
+    const h = Math.max(0, Math.floor(ms / 36e5) % 24);
+    const mi = Math.max(0, Math.floor(ms / 6e4) % 60);
+    const sec = Math.max(0, Math.floor(ms / 1000) % 60);
+
+    return {
+      weeks: weeks, tiers: tiers, subjects: subjects, rows: list,
+      showTops: this.props.showWeekTops ?? true,
+      podiumOn: podiumOn && podium.length >= 3,
+      p1: podium[0] || blank, p2: podium[1] || blank, p3: podium[2] || blank,
+      animA: pop + ' .55s cubic-bezier(.2,.8,.2,1) 60ms both',
+      animB: pop + ' .55s cubic-bezier(.2,.8,.2,1) 160ms both',
+      animC: pop + ' .55s cubic-bezier(.2,.8,.2,1) 240ms both',
+      riseA: grow + ' .62s cubic-bezier(.2,.8,.2,1) 160ms both',
+      riseB: grow + ' .62s cubic-bezier(.2,.8,.2,1) 300ms both',
+      riseC: grow + ' .62s cubic-bezier(.2,.8,.2,1) 380ms both',
+      confetti: Array.from({ length: 14 }, (_, i) => {
+        const r = rng(hash('conf|' + s.wk + '|' + s.subject + '|' + i));
+        const hue = CONFETTI[Math.floor(r() * CONFETTI.length)];
+        const round = r() < 0.34;
+        const w = 5 + Math.round(r() * 7);
+        return {
+          left: Math.round(3 + r() * 94) + '%',
+          top: Math.round(6 + r() * 82) + '%',
+          w: w + 'px',
+          h: (round ? w : 3 + Math.round(r() * 5)) + 'px',
+          radius: round ? '50%' : '1.5px',
+          color: hue,
+          opacity: (0.22 + r() * 0.26).toFixed(2),
+          anim: 'confetti ' + (5.5 + r() * 6).toFixed(1) + 's ease-in-out ' + (r() * 4).toFixed(1) + 's infinite'
+        };
+      }),
+      weekTitle: _wk.range ? (_wk.no + ' \u00B7 ' + _wk.range) : '',
+      closeBg: live ? 'var(--st-note-bg)' : 'var(--st-crumb-bg)',
+      closeBd: live ? 'var(--st-note-border)' : 'var(--st-rule)',
+      closeDot: live ? 'var(--st-accent)' : 'var(--st-rule-strong)',
+      closeFg: live ? 'var(--st-accent-text)' : 'var(--st-muted)',
+      closeAnim: live ? 'livedot 2s ease-out infinite' : 'none',
+      closeLabel: MRB_STATUS() !== 'ok'
+        /* ⊕ MRB-290 R30. Design's not-live branch fires on an
+           empty payload too, so this pill told a student the week
+           was LOCKED while it was merely loading — unknown
+           rendered as one of the two real answers, which is
+           MRB-287's 'ON TIME 0' again. Unknown is neither. */
+        ? '\u2014'
+        : (live ? 'CLOSES IN ' + d + 'D ' + String(h).padStart(2, '0')
+            + 'H ' + String(mi).padStart(2, '0') + 'M '
+            + String(sec).padStart(2, '0') + 'S'
+          : 'LOCKED ' + _wk.long.toUpperCase()),
+      stats: [
+        { label: 'ENTRIES', value: entries == null ? '\u2014' : String(entries), hue: 'var(--st-accent)' },
+        { label: 'MEDIAN SCORE', value: median == null ? '\u2014' : median + '%', hue: 'var(--biology)' },
+        { label: 'FASTEST PAPER', value: fastest ? fmtTime(fastest.secs) : '\u2014', hue: 'var(--physics)' },
+        { label: 'BIGGEST CLIMB', value: climb && climb.move > 0 ? '+' + climb.move : '\u2014', hue: 'var(--chemistry)' }
+      ],
+      me: me ? Object.assign({}, me, { percentile: 'TOP ' + Math.max(1, Math.round(me.rank / Math.max(1, entries) * 100)) + '%' }) : { rankLabel: '\u2014', percentile: 'NOT ENTERED', pctLabel: '\u2014', name: MRB_VIEWER_NAME(), initials: '', avImg: 'none', score: '\u2014', time: '\u2014', sub: 'no entry this week', papers: [], moveFull: '', moveFg: 'var(--st-muted)' },
+      pinMe: !!me && !meVisible,
+      cutLabel: MRB_STATUS() !== 'ok'
+        /* ⊕ MRB-290 R30. The clause is DROPPED, not dashed: while
+           the payload is null this read 'TOP 10 ONLY \u00B7 null
+           SAT THIS WEEK' on the live page. A clause whose only
+           content is a fact we do not have does not belong in the
+           sentence at all. */
+        ? ('TOP ' + topCount + ' ONLY')
+        : ('TOP ' + topCount + ' ONLY \u00B7 ' + entries
+           + ' SAT THIS WEEK'),
+      cutValue: MRB_CUT_STATE() || (cut ? 'CUT LINE ' + cut.pct + '%'
+        : (entries ? 'ALL ' + entries + ' LISTED' : 'NO ENTRIES')),
+      grid: density === 'compact'
+        ? '46px 34px minmax(150px,2.2fr) minmax(74px,.85fr) minmax(66px,.8fr) minmax(80px,1fr) minmax(68px,.8fr) minmax(74px,.85fr) 22px'
+        : '52px 42px minmax(172px,2.4fr) minmax(80px,.9fr) minmax(72px,.8fr) minmax(88px,1fr) minmax(74px,.8fr) minmax(80px,.9fr) 24px',
+      rowPad: density === 'compact' ? '13px 22px' : '18px 22px',
+      rankSize: density === 'compact' ? '16px/1' : '18px/1',
+      nameSize: density === 'compact' ? '17.5px/1' : '20px/1',
+      pctSize: density === 'compact' ? '19px/1' : '22px/1',
+      avatar: density === 'compact' ? '34px' : '42px',
+      scrollBack: () => { const el = this.rail(); if (el) el.scrollBy({ left: -300, behavior: 'smooth' }); },
+      scrollFwd: () => { const el = this.rail(); if (el) el.scrollBy({ left: 300, behavior: 'smooth' }); },
+      goLive: () => { const el = this.rail();
+        if (el) el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+        /* ⊕ MRB-290 R27. 'This week' selects the week the payload
+           calls current, not the last index in the array. */
+        const _c = MRB_WEEKS().filter(w => w.is_current)[0];
+        if (_c) { MRB_SET({ week: _c.week_start }); }
+        this.setState(p => ({ flip: !p.flip, open: null })); }
+    };
+  }
+}
+</script>
+<script>
+window.__MRB_MOUNT__ = function () {
+  var R = window.MrBadmusStudentRuntime;
+  var tpl = window.__MRB_TPL__;
+  return R.mount({
+    into: '#mrb-leaderboard',
+    template: tpl,
+    imports: tpl.imports,
+    Component: Component,
+    props: {"density":"comfortable","topCount":10,"showPodium":true,"showWeekTops":true}
+  });
+};
+</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","leaderboard-live.js":"53f5053b","nav.css":"d1f3d76a","nav.js":"f23df349","search-index.js":"c016cb14","search.js":"d011978d","tokens.css":"21ae3356"};</script>
+<script src="leaderboard-fixture-podium.js"></script>
+<script>window.__MRB_MOUNT__();</script>
+</body>
+</html>

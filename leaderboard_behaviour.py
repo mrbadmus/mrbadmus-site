@@ -78,6 +78,8 @@ FIXTURES = [
      "no session — no pinned row, no YOU badge"),
     ("leaderboard-avatars-fixture.html",
      "rows with a real avatar_url — R25, faces inside Design's disc"),
+    ("leaderboard-podium-fixture.html",
+     "the viewer is RANK 2, on the podium — R32"),
     ("leaderboard-loading-fixture.html",
      "no payload yet — R30, the live cold-start window"),
     ("leaderboard-error-fixture.html",
@@ -88,6 +90,28 @@ FIXTURES = [
 # carry letters). `None` means "not asserted here". The avatars fixture is
 # built with a mix on purpose — some rows have a face, some have none, and
 # one carries a hostile URL the seam must reject back to a monogram.
+# ⊕ R32 — EXACTLY how many YOU chips each fixture must render, not merely
+# "at most one". "At most" passes when the marker is MISSING, which is the
+# defect Mide reported: he was rank 2 and nothing said so. A fixture whose
+# viewer is on screen must show exactly one; a fixture with no viewer on
+# screen must show none.
+YOU_EXPECT = {
+    "leaderboard-podium-fixture.html":
+        (1, "the viewer is rank 2 — the podium chip R32 adds"),
+    "leaderboard-outside-fixture.html":
+        (1, "the viewer is below the cut — the pinned row is the only place"),
+    "leaderboard-signedout-fixture.html":
+        (0, "there is no viewer at all"),
+    "leaderboard-loading-fixture.html":
+        (0, "no payload has arrived, so no row is anyone's"),
+    "leaderboard-empty-fixture.html":
+        (0, "nobody sat this week"),
+    "leaderboard-error-fixture.html":
+        (0, "the fetch failed; there are no rows to mark"),
+    "leaderboard-thin-fixture.html":
+        (0, "one entrant, and it is not the viewer"),
+}
+
 AVATAR_EXPECT = {
     "leaderboard-avatars-fixture.html": dict(faces_min=3, letters_min=1),
     # Design's own sample carries no avatar at all, so every disc must be a
@@ -314,8 +338,40 @@ _DRIVE_JS = r"""
     }
   }
 
+  /* ⊕ R33 — THE RAIL FOLLOWS THE SELECTION.
+     Press the OLDEST chip (the far end from where the mount snap leaves the
+     rail, so a rail that does not follow leaves it off screen), then assert
+     the chip that is now selected is inside the rail's visible scroll range.
+     Then press it AGAIN — a redraw where the selection has NOT changed — and
+     assert it is still in view, which is R28's preserve path proving it does
+     not yank a student away from what they just chose. */
+  var railFollow = null;
+  var rr = document.getElementById('ks4-week-rail');
+  if (rr && rr.children.length > 2 && rr.scrollWidth > rr.clientWidth + 2) {
+    function inView(i) {
+      var el = document.getElementById('ks4-week-rail');
+      var c = el && el.children[i];
+      if (!c) { return null; }
+      return c.offsetLeft >= el.scrollLeft - 3 &&
+             (c.offsetLeft + c.offsetWidth) <= el.scrollLeft + el.clientWidth + 3;
+    }
+    rr.children[0].click();
+    await frame();
+    await new Promise(function (r) { setTimeout(r, 500); });
+    var afterSelect = inView(0);
+    var el2 = document.getElementById('ks4-week-rail');
+    if (el2 && el2.children[0]) { el2.children[0].click(); }
+    await frame();
+    await new Promise(function (r) { setTimeout(r, 500); });
+    var afterRedraw = inView(0);
+    railFollow = {tested: true, afterSelect: afterSelect,
+                  afterRedraw: afterRedraw};
+  } else {
+    railFollow = {tested: false};
+  }
+
   var s = snap();
-  return {found: found, pressed: pressed, dead: dead, blanked: blanked,
+  return {railFollow: railFollow, found: found, pressed: pressed, dead: dead, blanked: blanked,
           errors: errors, misses: s.misses, renders: s.renders,
           text: s.text, len: (s.text || '').trim().length,
           youFirst: youChips(first.text), youLast: youChips(s.text),
@@ -407,6 +463,7 @@ def drive(pg, port, path, what, label):
     # from that same user's profile — which is exactly why a fixture could
     # drift there unchallenged: nothing downstream of the seam was asserting
     # the invariant the seam happens to guarantee.
+    want_you = YOU_EXPECT.get(path)
     for when, n in (("on load", got.get("youFirst", 0)),
                     ("after the drive", got.get("youLast", 0))):
         if n > 1:
@@ -414,9 +471,37 @@ def drive(pg, port, path, what, label):
                 "%s: %d 'YOU' chips render %s, and a page has exactly one "
                 "viewer. Two means one of them is on somebody else's row — "
                 "a student shown another student's standing as their own. "
-                "The pinned row and the in-board row are the same person by "
-                "construction; if a fixture disagrees, the fixture is wrong."
-                % (tag, n, when))
+                "The pinned row, the podium chip and the in-board row are "
+                "the same person by construction; if a fixture disagrees, "
+                "the fixture is wrong." % (tag, n, when))
+        # ⊕ R32. Only the INITIAL render is pinned to an exact count: the
+        # drive changes tier, subject and week, and on another week the
+        # viewer legitimately is somewhere else or nowhere.
+        elif want_you is not None and when == "on load" \
+                and n != want_you[0]:
+            problems.append(
+                "%s: %d 'YOU' chip(s) render on load and exactly %d was "
+                "expected — %s. A missing marker passes any 'at most one' "
+                "check, and a missing marker is the defect Mide reported: "
+                "rank 2, and nothing on the board said so."
+                % (tag, n, want_you[0], want_you[1]))
+
+    # ⊕ MRB-290 R33 — the rail follows the selection.
+    rf = got.get("railFollow") or {}
+    if rf.get("tested"):
+        if not rf.get("afterSelect"):
+            problems.append(
+                "%s: after pressing the oldest week chip, that chip is "
+                "OUTSIDE the rail's visible scroll range. Mide's report "
+                "exactly: the board loads the week he chose and the rail "
+                "leaves him hunting for it (R33)." % tag)
+        if not rf.get("afterRedraw"):
+            problems.append(
+                "%s: the selected week chip left the visible range on a "
+                "redraw where the selection did NOT change. That is R28's "
+                "preserve path yanking a student away from what they just "
+                "chose — the opposite failure to R33's, and just as "
+                "disorienting." % tag)
 
     # ⊕ MRB-290 R25 — identity is frozen, and the avatar is half of it.
     if got.get("both"):
