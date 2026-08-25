@@ -1059,11 +1059,33 @@ def r_cfifa_attempt(a, act_id, ns):
     `data-<ns>-close` · `data-<ns>-blocked`.
     """
     qs = a.get("questions") or []
-    if len(qs) != 2:
+    # ⊕ MRB-223 / P7, 25 Aug 2026 — THE ONE EXPLICIT OPT-IN, AND WHY.
+    #
+    # Design's `p7-02` carries ONE question, and her README states the
+    # reason in terms: *"its quantities are angles in degrees, so conversion
+    # cannot arise and the C step reads as the no-conversion case."* Her own
+    # `Cfifa` component renders `q2 ? [q1, q2] : [q1]`, so a single question
+    # is a shape she built for and used once.
+    #
+    # The two-question rule below is still right for every other page: the
+    # second question is where the CONVERSION lives, and dropping it there
+    # would teach that the C line is decoration. So this lifts THAT CHECK
+    # AND NOTHING ELSE, and it costs a sentence naming the reason — which
+    # is what stops it becoming the way a lane skips authoring a question.
+    #
+    # ⚠️ It is not a licence to drop the second question and it is not a
+    # default. A payload that wants one question says why, in the record,
+    # where a reviewer reads it.
+    only = (a.get("one_question_because") or "").strip()
+    if len(qs) == 1 and only:
+        pass
+    elif len(qs) != 2:
         raise ValueError(
             "cfifa-attempt %r declares %d question(s). Design's is two — one "
             "on the student's own bench and one that needs a conversion — "
-            "and dropping either loses the half of the pattern it carries."
+            "and dropping either loses the half of the pattern it carries. "
+            "A page Design drew with ONE question declares "
+            "`one_question_because` with her reason for it."
             % (act_id, len(qs)))
 
     letters = ("C", "F", "I", "F", "A")
@@ -1181,8 +1203,17 @@ def r_cfifa_attempt(a, act_id, ns):
                ns, ns, e(q.get("close", "")),
                t(shown(q.get("close", ""), "the closing line"))))
 
+    # ⊕ MRB-223 / P7, 25 Aug 2026 — a unit may pass `eyebrow: None` to say
+    # "the shell already printed it". The `check` shell (`r_activity`'s
+    # `.ks3-blockhead`) emits the activity's eyebrow above this block, and
+    # this line emitted it again, so every shipped P4/P5/P6 attempt panel
+    # reads "Your turn · the same five steps" twice (measured in
+    # `sound-needs-a-medium.html`). An absent key still takes the default,
+    # so no shipped unit's output moves; only a unit that opts out changes.
+    eyebrow = ("" if a.get("eyebrow", "") is None else
+               '<p class="ks3-eyebrow">%s</p>'
+               % t(a.get("eyebrow", "Your turn · the same five steps")))
     return ('<div class="ks3-cfa" data-%s data-total="5">'
-            '<p class="ks3-eyebrow">%s</p>'
+            '%s'
             '<div class="ks3-cfa-tabs">%s</div>%s</div>'
-            % (ns, t(a.get("eyebrow", "Your turn · the same five steps")),
-               tabs, panels))
+            % (ns, eyebrow, tabs, panels))

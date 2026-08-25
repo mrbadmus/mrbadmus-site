@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Series and parallel · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Electric circuits</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Series and parallel</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Electric circuits · Contrast</p>
+        <h1>Series and parallel</h1>
+        <p class="ks3-bigq">Two bulbs, one battery, two ways to join them up. One arrangement dims both bulbs and fails completely if either one goes. The other keeps them bright and survives.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>One blown bulb. The whole room stays lit.</h2>
+        <p class="ks3-hook-prompt">A bulb goes in the kitchen. Nothing else in the house notices — the hall stays lit, the fridge keeps running. Yet a cheap string of decorations can lose one bulb and go dark from end to end.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is different about the way those two sets of lamps are joined to their supply?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>There are exactly two ways to add a second component to a circuit. You can put it <strong>in the same loop</strong>, so the charge has to go through one and then the other — that is <strong>series</strong>. Or you can give it <strong>a loop of its own</strong> off the same battery, so the charge can go through one <em>or</em> the other — that is <strong>parallel</strong>.</p>
+        <p>Counting paths is how you tell them apart, and it is more reliable than looking at the shape of the drawing. Follow a route from one end of the battery to the other. If there is only one route, everything on it is in series. If there is a point where the route divides and later joins back up, the branches are in parallel.</p>
+        <p>The consequences are large. In series there is one current, and every extra component makes it harder for the charge to get round, so everything dims. In parallel each branch gets the battery's full push, so two lamps are as bright as one — and each branch is independent, so a break in one leaves the others working.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · two identical bulbs, one 3.0 V battery</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Rewire it. Then take one out.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">The same two bulbs and the same battery every time. Only the wiring changes. An ammeter beside the battery reads the total current leaving it.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. One bulb on this battery draws 0.30 A. You wire the two bulbs in parallel. What total current leaves the battery?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 260px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How they are wired</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ wireTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 340px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Unscrew a bulb</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ outTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <sc-if value="{{ isSeries }}">
+                  <svg viewBox="0 0 1000 360" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                    <path d="M120 280 V212 M120 148 V80 H360 M440 80 H600 M680 80 H880 V280 H120" style="fill: none; stroke: #C6B9A7; stroke-width: 6; stroke-linecap: round;"></path>
+                    <path d="M84 154 H156 M104 167 H136 M84 193 H156 M104 206 H136" style="fill: none; stroke: #E9DCC8; stroke-width: 6; stroke-linecap: round;"></path>
+                    <circle cx="400" cy="80" r="40" style="{{ bulb1Style }}"></circle>
+                    <path d="{{ bulb1Cross }}" style="fill: none; stroke: #221E1B; stroke-width: 5; stroke-linecap: round;"></path>
+                    <path d="{{ bulb1Rays }}" style="{{ ray1Style }}"></path>
+                    <circle cx="640" cy="80" r="40" style="{{ bulb2Style }}"></circle>
+                    <path d="{{ bulb2Cross }}" style="fill: none; stroke: #221E1B; stroke-width: 5; stroke-linecap: round;"></path>
+                    <path d="{{ bulb2Rays }}" style="{{ ray2Style }}"></path>
+                    <circle cx="300" cy="280" r="44" style="fill: #15110C; stroke: #8FB7FF; stroke-width: 6;"></circle>
+                    <text x="300" y="295" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 38px; fill: #8FB7FF;">A</text>
+                    <path d="M254 280 H120 M344 280 H880" style="fill: none; stroke: #C6B9A7; stroke-width: 6; stroke-linecap: round;"></path>
+                    <text x="400" y="152" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: #8C8177;">BULB 1</text>
+                    <text x="640" y="152" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: #8C8177;">BULB 2</text>
+                    <text x="120" y="330" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: #8C8177;">3.0 V</text>
+                    <text x="640" y="330" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: #8C8177;">ONE PATH ROUND</text>
+                  </svg>
+                  <span style="position: absolute; left: 30%; top: 93%; transform: translate(-50%,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(11px,1.8vw,20px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ totalLabel }}</span>
+                </sc-if>
+                <sc-if value="{{ isParallel }}">
+                  <svg viewBox="0 0 1000 360" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                    <path d="M120 280 V212 M120 148 V80 H740 M740 80 V140 M740 220 V280 M740 280 H344 M254 280 H120" style="fill: none; stroke: #C6B9A7; stroke-width: 6; stroke-linecap: round;"></path>
+                    <path d="M440 80 V140 M440 220 V280" style="fill: none; stroke: #C6B9A7; stroke-width: 6; stroke-linecap: round;"></path>
+                    <path d="M84 154 H156 M104 167 H136 M84 193 H156 M104 206 H136" style="fill: none; stroke: #E9DCC8; stroke-width: 6; stroke-linecap: round;"></path>
+                    <circle cx="440" cy="80" r="9" style="fill: #C6B9A7;"></circle>
+                    <circle cx="440" cy="280" r="9" style="fill: #C6B9A7;"></circle>
+                    <circle cx="440" cy="180" r="40" style="{{ bulb1Style }}"></circle>
+                    <path d="{{ bulb1CrossP }}" style="fill: none; stroke: #221E1B; stroke-width: 5; stroke-linecap: round;"></path>
+                    <path d="{{ bulb1RaysP }}" style="{{ ray1Style }}"></path>
+                    <circle cx="740" cy="180" r="40" style="{{ bulb2Style }}"></circle>
+                    <path d="{{ bulb2CrossP }}" style="fill: none; stroke: #221E1B; stroke-width: 5; stroke-linecap: round;"></path>
+                    <path d="{{ bulb2RaysP }}" style="{{ ray2Style }}"></path>
+                    <circle cx="300" cy="280" r="44" style="fill: #15110C; stroke: #8FB7FF; stroke-width: 6;"></circle>
+                    <text x="300" y="295" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 38px; fill: #8FB7FF;">A</text>
+                    <text x="440" y="46" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: #8C8177;">BULB 1</text>
+                    <text x="740" y="46" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: #8C8177;">BULB 2</text>
+                    <text x="120" y="330" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: #8C8177;">3.0 V</text>
+                    <text x="600" y="330" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: #8C8177;">TWO PATHS, ONE JUNCTION EACH END</text>
+                  </svg>
+                  <span style="position: absolute; left: 30%; top: 93%; transform: translate(-50%,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(11px,1.8vw,20px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ totalLabel }}</span>
+                </sc-if>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Paths from + to −</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ pathLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ pathSub }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Total current from the battery</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ totalLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Bulb 1</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ b1Word }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ b1Sub }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Bulb 2</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ b2Word }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ b2Sub }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-compare" class="ks3-block" style="background: var(--ks3-band); scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">The same two bulbs, judged five ways</h2>
+        <div style="margin-top: 18px; overflow-x: auto; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 4px;">
+          <table style="border-collapse: collapse; width: 100%; min-width: 620px; font-size: 18px;">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">&nbsp;</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Series</th>
+                <th scope="col" style="text-align: left; padding: 14px 16px; border-bottom: 3px solid var(--ks3-ink); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Parallel</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Paths the charge can take</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">One, through both bulbs</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Two, one through each bulb</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Current from the battery</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">0.15 A — <strong>halved</strong> by the second bulb</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">0.60 A — <strong>doubled</strong> by the second branch</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">Brightness of each bulb</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Both dim</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);">Both at full brightness</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule); font-weight: 700;">If one bulb fails</th>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);"><strong>Both go out</strong> — the only path is broken</td>
+                <td style="padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);"><strong>The other stays lit</strong> — its path is untouched</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align: left; padding: 14px 16px; font-weight: 700;">Where you meet it</th>
+                <td style="padding: 14px 16px;">A torch, a set of fairy lights, a dimmer chain, a fuse</td>
+                <td style="padding: 14px 16px;">Every socket and light in a house, every lamp in a car</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">Series is not a worse circuit — it is a different tool. Anything that has to switch or protect a whole loop belongs in series with it, which is exactly where a switch and a fuse go. Anything that has to work on its own belongs in parallel.</p>
+      </section>
+
+      <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">In series there is one path: one current through everything, and a break anywhere stops the lot. In parallel there is a path for each branch: every branch gets the battery's full push, the battery supplies the branch currents added together, and a break in one branch leaves the others working.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;In parallel the current has to split between the two bulbs, so each one is dimmer.&rdquo;</p>
+        <p>The current does split — but it is not a fixed amount being shared out. Each branch decides for itself how much it draws, because each branch has the battery's full push across it, and one bulb on 3.0 V draws 0.30 A whether or not there is another bulb next to it. The battery does not ration the current; it supplies whatever the branches ask for, which here is 0.60 A. That is why adding lamps in parallel makes the battery flatten sooner rather than making the lamps dimmer.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;In series the first bulb gets the current first, so it is brighter than the second one.&rdquo;</p>
+          <p>There is no first. The current is the same at every point of a single loop, at the same instant, so two identical bulbs in series are equally dim and swapping them over changes nothing. The charge does not queue up and arrive somewhere sooner: it is already spread all the way round, and it all starts moving together.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Components in series sit in one loop, so one current passes through all of them and a break anywhere stops everything. Components in parallel sit on separate branches of the same battery: each branch has the battery's full push across it, the battery supplies the branch currents added together, and a break in one branch leaves the others working. To tell which you have, count the paths from one end of the battery to the other.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Cheap decorative light strings are wired in series, and the reason is money: in series the supply voltage is shared out between all the lamps, so each one can be a tiny low-voltage bulb instead of a mains-rated one. The price is the failure you know about. Better strings hide a trick — each bulb carries a small piece of coated wire called a shunt, which does nothing while the filament works and conducts once the filament breaks, keeping the loop closed. The string stays lit, and the surviving bulbs each get a slightly bigger share of the voltage, which is why the failures then start to come faster.</p>
+          <p>A house is parallel from the meter outwards, and every branch runs at the same 230 V. That is what makes appliances interchangeable: a kettle designed for 230 V works in any socket, in any room, whatever else is switched on. It also means the currents add up at the fuse box, which is the whole reason a house has fuses and circuit breakers at all.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p8-01-current-and-circuits.html">Current and circuits<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p8-03-current-at-a-junction.html">Current at a junction<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p8-04-potential-difference.html">Potential difference<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p9-01-charging-by-rubbing.html">Charging by rubbing<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p8-05-resistance.html">Resistance<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Adding resistances in series and in parallel, the rules for current and potential difference in each, and why a parallel combination resists less than either branch alone.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a circuit diagram and not sure whether it is series or parallel?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Both bulbs are treated as identical and as having a fixed resistance of 10 ohms, so one on 3.0 V draws 0.30 A exactly; a real filament's resistance rises as it heats, so two real bulbs in series draw somewhat more than a quarter of the power of one and the dimming is less extreme than the arithmetic suggests. The battery is treated as having no resistance of its own, which is why the parallel reading doubles cleanly; a real cell sags a little under the larger current. An unscrewed bulb is drawn as a clean gap.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'One blown bulb', short: 'HOUSE' },
+  { id: 's-bench', label: 'Rewire it', short: 'BENCH' },
+  { id: 's-compare', label: 'Judged five ways', short: 'TABLE' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && (s.touched.wire || s.touched.out);
+  if (id === 's-compare') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the circuit',
+    question: 'Three identical lamps are wired in parallel across a 6 V battery. Each one on its own draws 0.20 A. What total current leaves the battery, and what happens if the middle lamp is unscrewed?',
+    options: [
+      { text: '0.60 A, and the other two stay at full brightness', correct: true },
+      { text: '0.20 A shared between the three, so about 0.07 A each, and the other two get brighter', correction: 'Nothing is shared. Each branch has the full 6 V across it and draws its own 0.20 A, so the battery supplies 0.60 A. Removing one lamp does not change the other two at all.' },
+      { text: '0.60 A, and all three go out', correction: 'The total is right. But three parallel branches are three separate paths, and breaking one leaves the other two complete \u2014 that is the point of wiring in parallel.' },
+      { text: '0.20 A, and the other two stay lit', correction: 'The verdict on the other lamps is right and the current is not. Three branches each drawing 0.20 A add up at the battery to 0.60 A.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A student adds a second identical bulb in series with the first and predicts each bulb will be as bright as before, because the battery has not changed. What is wrong?',
+    options: [
+      { text: 'A second bulb in series makes it harder for the charge to get round the one loop, so the current everywhere falls \u2014 here from 0.30 A to 0.15 A \u2014 and both bulbs are dim.', correct: true },
+      { text: 'Nothing is wrong \u2014 in series the current is the same everywhere, so both bulbs must be as bright as the single bulb was.', correction: 'The current is the same at every point of the loop, but that shared value is smaller than it was with one bulb. Same everywhere does not mean unchanged.' },
+      { text: 'The first bulb will be as bright as before and the second will be dim, because the current reaches the first bulb first.', correction: 'There is no first. One loop means one current at every point at the same instant, so two identical bulbs are equally dim.' },
+      { text: 'The bulbs will be dimmer because the battery has to divide its charge between two bulbs and each gets half as much.', correction: 'The verdict is right and the reason is not. Charge is not divided up in series \u2014 all of it goes through both bulbs. What has changed is how hard it is to push, so the flow slows down.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Two identical bulbs are wired in series and then rewired in parallel across the same battery. Explain what happens to the brightness of each bulb and to the current leaving the battery, and why.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'In series there is one path, so\u2026',
+    criteria: [
+      'Says series is one path and parallel is two paths from the battery.',
+      'Says in series both bulbs share one current, which is smaller than a single bulb would draw.',
+      'Says in parallel each branch has the battery\u2019s full push across it, so each bulb draws its full current.',
+      'Says the current leaving the battery is larger in parallel, because the branch currents add.',
+      'Concludes that both bulbs are dim in series and both are at full brightness in parallel.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A car has two headlamps, two brake lamps and one ignition switch that must kill everything. Say how you would wire it, and justify each choice by what would happen if you did it the other way.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The headlamps go in parallel because\u2026',
+    criteria: [
+      'Puts the headlamps in parallel with each other, and the brake lamps in parallel.',
+      'Justifies it: one lamp failing must not take the other out, and each needs the full 12 V to be bright.',
+      'Says that in series the lamps would be dim and one failure would blind the car completely.',
+      'Puts the ignition switch in series with the whole set, so it can break the only shared path.',
+      'Says a switch wired in parallel with the lamps would not cut them off \u2014 it would short them out instead.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, wire: 0, out: 0, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  bulb(lit, present, cx, cy, r) {
+    const rays = ['M' + cx + ' ' + (cy - r - 8) + ' V' + (cy - r - 30),
+      'M' + cx + ' ' + (cy + r + 8) + ' V' + (cy + r + 30),
+      'M' + (cx - r - 8) + ' ' + cy + ' H' + (cx - r - 30),
+      'M' + (cx + r + 8) + ' ' + cy + ' H' + (cx + r + 30)].join(' ');
+    return {
+      style: 'stroke: ' + (present ? '#C6B9A7' : '#8C8177') + '; stroke-width: 6; fill: ' +
+        (lit ? '#8FB7FF' : present ? '#15110C' : 'none') + ';' + (present ? '' : ' stroke-dasharray: 13 11;'),
+      cross: present
+        ? 'M' + (cx - 28) + ' ' + (cy - 28) + ' L' + (cx + 28) + ' ' + (cy + 28) + ' M' + (cx + 28) + ' ' + (cy - 28) + ' L' + (cx - 28) + ' ' + (cy + 28)
+        : 'M' + cx + ' ' + cy,
+      rays: lit ? rays : 'M' + cx + ' ' + cy
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const series = s.wire === 0;
+    const out = s.out;
+    const b1In = out !== 1;
+    const b2In = out !== 2;
+    let total, b1Lit, b2Lit, b1Word, b2Word, b1Sub, b2Sub;
+    if (series) {
+      const flowing = b1In && b2In;
+      total = flowing ? 0.15 : 0;
+      b1Lit = flowing; b2Lit = flowing;
+      b1Word = b1In ? (flowing ? 'dim' : 'dark') : 'taken out';
+      b2Word = b2In ? (flowing ? 'dark' : 'dark') : 'taken out';
+      if (flowing) { b2Word = 'dim'; }
+      b1Sub = b1In ? (flowing ? '0.15 A through it' : 'no current anywhere') : 'a gap in the only path';
+      b2Sub = b2In ? (flowing ? '0.15 A through it' : 'no current anywhere') : 'a gap in the only path';
+    } else {
+      b1Lit = b1In; b2Lit = b2In;
+      total = (b1In ? 0.3 : 0) + (b2In ? 0.3 : 0);
+      b1Word = b1In ? 'at full brightness' : 'taken out';
+      b2Word = b2In ? 'at full brightness' : 'taken out';
+      b1Sub = b1In ? '0.30 A in its branch' : 'its branch is broken';
+      b2Sub = b2In ? '0.30 A in its branch' : 'its branch is broken';
+    }
+    const g1 = this.bulb(b1Lit, b1In, 400, 80, 40);
+    const g2 = this.bulb(b2Lit, b2In, 640, 80, 40);
+    const p1 = this.bulb(b1Lit, b1In, 440, 180, 40);
+    const p2 = this.bulb(b2Lit, b2In, 740, 180, 40);
+    const outName = out === 0 ? 'both bulbs in' : 'bulb ' + out + ' taken out';
+
+    let note;
+    if (series && out === 0) {
+      note = 'One path round, so one current: 0.15 A through the battery, through bulb 1 and through bulb 2 alike. That is half what a single bulb draws on this battery, because the charge now has two bulbs to push through instead of one. Both bulbs are equally dim, and swapping them over would change nothing.';
+    } else if (series) {
+      note = 'Bulb ' + out + ' is out, and the meter reads 0.00 A. There is only one path from one end of the battery to the other, and the missing bulb is a gap in it, so the other bulb is dark as well \u2014 not dim, dark. It does not matter which of the two you take out; the reading is the same.';
+    } else if (out === 0) {
+      note = 'Two paths, so two currents that meet at the junctions: 0.30 A in each branch and 0.60 A leaving the battery. Each branch has the whole 3.0 V across it, which is why each bulb is as bright as it would be on its own. Adding the second bulb did not dim the first \u2014 it made the battery work twice as hard.';
+    } else {
+      note = 'Bulb ' + out + ' is out and its branch carries nothing, but the other branch is untouched: still 0.30 A, still fully bright. The total leaving the battery has dropped to 0.30 A, which is the honest signal that one lamp has gone. This is why a house is wired this way.';
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The house lamps each have their own path to the supply; the decorations are all threaded onto one path' },
+        { letter: 'B', text: 'House wiring runs at a higher voltage, and higher voltages survive a broken bulb' },
+        { letter: 'C', text: 'The decorations use much smaller bulbs, and small bulbs fail together' },
+        { letter: 'D', text: 'A house has a fuse box that keeps the other rooms going when one bulb fails' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'It is the number of paths. Every light in a house has its own branch off the supply, so a broken filament breaks one branch and nothing else. A cheap decoration string threads every bulb onto a single loop, so one broken filament is a gap in the only path there is, and all hundred go out at once.',
+
+      benchProgress: (s.touched.wire || s.touched.out) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: '0.30 A \u2014 the same as one bulb, shared between the two' },
+        { letter: 'B', text: '0.15 A \u2014 each bulb gets half' },
+        { letter: 'C', text: '0.60 A \u2014 each branch draws its own 0.30 A and they add at the battery' },
+        { letter: 'D', text: '0.30 A \u2014 the battery can only ever supply what it supplied before' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+
+      wireTabs: [{ label: 'In series', v: 0 }, { label: 'In parallel', v: 1 }].map((t) => ({
+        label: t.label, pressed: s.wire === t.v, style: this.seg(s.wire === t.v, true, false),
+        onClick: () => this.setState((st) => ({ wire: t.v, touched: Object.assign({}, st.touched, { wire: true }) }))
+      })),
+      outTabs: [{ label: 'Both in', v: 0 }, { label: 'Bulb 1 out', v: 1 }, { label: 'Bulb 2 out', v: 2 }].map((t) => ({
+        label: t.label, pressed: s.out === t.v, style: this.seg(s.out === t.v, true, false),
+        onClick: () => this.setState((st) => ({ out: t.v, touched: Object.assign({}, st.touched, { out: true }) }))
+      })),
+
+      isSeries: series, isParallel: !series,
+      bulb1Style: g1.style, bulb1Cross: g1.cross, bulb1Rays: g1.rays,
+      bulb2Style: g2.style, bulb2Cross: g2.cross, bulb2Rays: g2.rays,
+      bulb1CrossP: p1.cross, bulb1RaysP: p1.rays,
+      bulb2CrossP: p2.cross, bulb2RaysP: p2.rays,
+      ray1Style: 'fill: none; stroke: #8FB7FF; stroke-width: ' + (b1Lit ? (series ? 4 : 7) : 0) + '; stroke-linecap: round;',
+      ray2Style: 'fill: none; stroke: #8FB7FF; stroke-width: ' + (b2Lit ? (series ? 4 : 7) : 0) + '; stroke-linecap: round;',
+
+      totalLabel: total.toFixed(2) + ' A',
+      pathLabel: series ? 'one' : 'two',
+      pathSub: series ? 'through both bulbs' : 'one through each bulb',
+      b1Word: b1Word, b2Word: b2Word, b1Sub: b1Sub, b2Sub: b2Sub,
+      benchAlt: 'Two bulbs wired ' + (series ? 'in series in one loop' : 'in parallel on two branches') + ' across a 3.0 V battery, with ' +
+        outName + '. The ammeter beside the battery reads ' + total.toFixed(2) + ' A.',
+      benchNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+
+</script>
+</body>
+</html>

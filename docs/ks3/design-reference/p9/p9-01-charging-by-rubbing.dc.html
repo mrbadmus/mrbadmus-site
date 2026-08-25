@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charging by rubbing · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Static electricity</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Charging by rubbing</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Static electricity · Process</p>
+        <h1>Charging by rubbing</h1>
+        <p class="ks3-bigq">Rubbing does not make charge. It moves electrons from one surface to the other, so the two objects end up equally and oppositely charged — and the total is exactly what it was before.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The rod comes out negative. What about the duster?</h2>
+        <p class="ks3-hook-prompt">A polythene rod rubbed with a woollen duster picks up small pieces of paper, and a careful test shows the rod is negatively charged. The duster was neutral before you started, and so was the rod.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is the duster now?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every atom holds positive protons in a nucleus and negative electrons around it, and in a neutral object the two exactly balance. The protons are locked into the nuclei and cannot go anywhere. <strong>Only the electrons can move</strong> — which means every piece of static electricity you have ever met is a story about electrons and nothing else.</p>
+        <p>Rubbing two surfaces together presses them into contact at millions of tiny points. Some materials hold their outer electrons more tightly than others, so at those points of contact electrons cross over from the looser material to the tighter one. Pull the surfaces apart and the electrons stay where they went.</p>
+        <p>So the object that <strong>lost</strong> electrons is left with more protons than electrons: it is <strong>positively charged</strong>. The object that <strong>gained</strong> them has more electrons than protons: it is <strong>negatively charged</strong>. Both are charged, by exactly the same amount, in opposite directions — and nothing was created. This only works with insulators, because a conductor would let the charge run straight back or away to earth through your hand.</p>
+      </section>
+
+      <section id="s-rub" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · two dry insulators, rubbed together</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Pick the pair. Count the rubs.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Two objects, both neutral to start with, both dry. Choose what is in each hand and how many strokes you give them.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. You rub a polythene rod with a second, identical polythene rod. What happens?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 420px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">In your left hand</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ aTabs }}" as="t" hint-placeholder-count="7">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 420px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">In your right hand</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ bTabs }}" as="t" hint-placeholder-count="7">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p91r" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Strokes</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ rubLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p91r" min="1" max="20" step="1" value="{{ rubValue }}" onChange="{{ onRub }}" onInput="{{ onRub }}">
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <rect x="110" y="110" width="270" height="170" rx="18" style="fill: #2A241E; stroke: #C6B9A7; stroke-width: 5;"></rect>
+                  <rect x="620" y="110" width="270" height="170" rx="18" style="fill: #2A241E; stroke: #C6B9A7; stroke-width: 5;"></rect>
+                  <path d="{{ signAPath }}" style="{{ signAStyle }}"></path>
+                  <path d="{{ signBPath }}" style="{{ signBStyle }}"></path>
+                  <path d="{{ arrowPath }}" style="{{ arrowStyle }}"></path>
+                  <path d="{{ dotsPath }}" style="fill: #8FB7FF;"></path>
+                  <text x="500" y="160" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #8C8177;">ELECTRONS</text>
+                  <text x="245" y="320" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: #8C8177;">LEFT HAND</text>
+                  <text x="755" y="320" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: #8C8177;">RIGHT HAND</text>
+                  <text x="500" y="368" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .07em; fill: #8C8177;">PROTONS DO NOT MOVE</text>
+                </svg>
+                <span style="position: absolute; left: 24.5%; top: 33%; transform: translate(-50%,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(9px,1.3vw,16px); letter-spacing: .06em; text-transform: uppercase; color: #E9DCC8; white-space: nowrap; pointer-events: none;">{{ aName }}</span>
+                <span style="position: absolute; left: 75.5%; top: 33%; transform: translate(-50%,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(9px,1.3vw,16px); letter-spacing: .06em; text-transform: uppercase; color: #E9DCC8; white-space: nowrap; pointer-events: none;">{{ bName }}</span>
+                <span style="position: absolute; left: 24.5%; top: 44%; transform: translate(-50%,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.6vw,19px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ aCharge }}</span>
+                <span style="position: absolute; left: 75.5%; top: 44%; transform: translate(-50%,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.6vw,19px); color: #8FB7FF; white-space: nowrap; pointer-events: none;">{{ bCharge }}</span>
+                <span style="position: absolute; left: 50%; top: 55%; transform: translate(-50%,0); font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(9px,1.3vw,16px); color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ transferLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Electrons that crossed</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ transferLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ dirCaption }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Left-hand object</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ aCharge }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ aWord }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Right-hand object</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ bCharge }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ bWord }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The two added together</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">0.0 nC</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">nothing was created</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Which way the electrons go</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Materials can be put in an order by how tightly they hold their outer electrons. Rub any two together and the one higher up this list loses electrons to the one lower down, so the higher one ends up positive. The further apart they are on the list, the more electrons cross.</p>
+        <div style="margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap; align-items: stretch;">
+          <div style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px 0;">
+            <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted); writing-mode: vertical-rl; text-orientation: mixed;">Loses electrons</span>
+            <svg width="24" height="120" viewBox="0 0 24 120" aria-hidden="true" style="flex: 0 0 auto;"><path d="M12 4 V116 M12 116 L4 100 M12 116 L20 100" fill="none" stroke="var(--ks3-accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted); writing-mode: vertical-rl; text-orientation: mixed;">Gains electrons</span>
+          </div>
+          <ol style="flex: 1 1 320px; list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+            <li style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--ks3-accent-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; color: var(--ks3-ink);">1</span>
+              <span style="flex: 1 1 auto; font-size: 19px; font-weight: 700;">Human hair</span>
+              <span style="flex: 0 0 auto; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">most likely to end up positive</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--ks3-accent-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; color: var(--ks3-ink);">2</span>
+              <span style="flex: 1 1 auto; font-size: 19px; font-weight: 700;">Glass rod</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--ks3-accent-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; color: var(--ks3-ink);">3</span>
+              <span style="flex: 1 1 auto; font-size: 19px; font-weight: 700;">Wool duster</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+              <span aria-hidden="true" style="flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; color: var(--ks3-ink);">4</span>
+              <span style="flex: 1 1 auto; font-size: 19px; font-weight: 700;">Cotton cloth</span>
+              <span style="flex: 0 0 auto; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">middling — poor at either job</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; color: var(--ks3-ink);">5</span>
+              <span style="flex: 1 1 auto; font-size: 19px; font-weight: 700;">Acetate strip</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; color: var(--ks3-ink);">6</span>
+              <span style="flex: 1 1 auto; font-size: 19px; font-weight: 700;">Polythene rod</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <span aria-hidden="true" style="flex: 0 0 44px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; color: var(--ks3-ink);">7</span>
+              <span style="flex: 1 1 auto; font-size: 19px; font-weight: 700;">PVC pipe</span>
+              <span style="flex: 0 0 auto; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">most likely to end up negative</span>
+            </li>
+          </ol>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">Nothing on this list is a conductor or an insulator by accident: every one is an insulator, which is what lets the charge stay where the rubbing put it. Try the same experiment with a metal rod held in your hand and no charge builds up at all — it runs away through you.</p>
+      </section>
+
+      <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Rubbing two insulators together transfers electrons from one surface to the other. Protons never move. The object that loses electrons is left positive, the one that gains them is negative, both by the same amount — so no charge is created and the two together are still neutral.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Rubbing makes the charge — the friction creates it.&rdquo;</p>
+        <p>Nothing is made. Every electron that ends up on the duster was on the rod a moment earlier, and the two objects together carry exactly the charge they carried before you touched them: none. The rubbing supplies contact, not charge. It matters because it presses the surfaces together at millions of points and then peels them apart, and each of those contacts is a chance for an electron to change sides. Press two surfaces together firmly and lift them straight off and you get some charge without rubbing at all.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A positively charged rod has had positive charge added to it.&rdquo;</p>
+          <p>Nothing positive was added. It has had electrons taken away, and the protons that were always there are now unbalanced. This is worth being fussy about, because it is the reason the two objects always end up opposite: one loses exactly what the other gains. Protons sit in nuclei, bound by a force enormously stronger than anything a duster can supply, and in ordinary matter they never go anywhere.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>In a neutral object the protons and electrons balance. Rubbing two insulators together presses their surfaces into contact at many points, and electrons cross from the material that holds them less tightly to the one that holds them more tightly. Protons never move. The object that loses electrons is left positively charged and the one that gains them negatively charged, by exactly the same amount, so no charge has been created — it has been separated. It only works with insulators, because a conductor lets the charge escape.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The order of materials is called the triboelectric series, and the honest truth is that published versions disagree with each other. Where a material lands depends on how rough its surface is, how clean it is, how humid the room is and even which way it was rubbed, and some pairs reverse if you swap a polished sample for a scratched one. The list is a reliable guide for glass, polythene and PVC, and a rough one in the middle — which is why cotton, sitting near the middle, is a poor choice for a demonstration.</p>
+          <p>Humidity is the reason this experiment fails on a wet day. Water is a far better conductor than any of these materials, and a film of it a few molecules thick on the surface is enough to let charge creep away as fast as the rubbing separates it. Winter is the season of static shocks for the same reason: cold air holds very little water, so indoor air that has been heated is extremely dry, and charge separated by your shoes on a carpet has nowhere to go until you touch a door handle.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p8-07-building-and-measuring-a-circuit.html">Building and measuring a circuit<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p9-02-forces-between-charges.html">Forces between charges<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p9-03-electric-fields.html">Electric fields<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p8-06-conductors-and-insulators.html">Conductors and insulators<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p8-01-current-and-circuits.html">Current and circuits<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Charge measured in coulombs, sparking and the breakdown of air, and the uses and dangers of static charge in industry.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got two materials and want to know which one ends up negative?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The order of the seven materials is the commonly published one, but real triboelectric series disagree with each other and a material's position shifts with surface roughness, cleanliness and humidity — so the direction of transfer for two materials close together on the list should be treated as a likely outcome, not a certainty. The number of electrons is generated by a simple rule — it rises with the number of steps apart on the list and with the number of strokes, but the stroke term levels off towards a ceiling rather than climbing without limit, because a real charge leaks away and because the air eventually breaks down. The figures are chosen to give charges of the order of a few nanocoulombs, which is typical of a rubbed rod, and are not measurements. Charges are rounded to one decimal place.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Rod and duster', short: 'ROD' },
+  { id: 's-rub', label: 'Pick the pair', short: 'BENCH' },
+  { id: 's-think', label: 'Nothing is created', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-rub') return s.gate !== null && (s.touched.a || s.touched.b || s.touched.r);
+  if (id === 's-think') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const MATS = [
+  { label: 'Hair', name: 'HUMAN HAIR' },
+  { label: 'Glass', name: 'GLASS ROD' },
+  { label: 'Wool', name: 'WOOL DUSTER' },
+  { label: 'Cotton', name: 'COTTON CLOTH' },
+  { label: 'Acetate', name: 'ACETATE STRIP' },
+  { label: 'Polythene', name: 'POLYTHENE ROD' },
+  { label: 'PVC', name: 'PVC PIPE' }
+];
+
+const PER = 2.0e9;
+// Charge approaches a ceiling: it leaks away and the air eventually breaks down.
+// STROKE_CEIL and STROKE_TAU are set so 20 strokes still lands where the linear
+// model landed, and the curve is visibly flattening by then.
+const STROKE_TAU = 14;
+const STROKE_CEIL = 26.3;
+
+function fmtN(n) {
+  if (n === 0) return 'none';
+  if (n < 1e9) return Math.round(n / 1e6) + ' million';
+  if (n < 1e12) return (n / 1e9).toFixed(n < 1e10 ? 1 : 0) + ' billion';
+  return (n / 1e12).toFixed(1) + ' million million';
+}
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Predict the signs',
+    question: 'A glass rod is rubbed with a wool duster. Glass sits above wool on the list, so which statement is right?',
+    options: [
+      { text: 'The glass loses electrons and becomes positive; the wool gains them and becomes negative.', correct: true },
+      { text: 'The glass gains electrons and becomes negative; the wool loses them and becomes positive.', correction: 'That is the transfer the wrong way. Material higher on the list holds its electrons less tightly, so glass gives them up and ends positive.' },
+      { text: 'The glass becomes positive because protons move onto it from the wool.', correction: 'The sign is right and the mechanism is not. Protons are locked in nuclei; the glass is positive because electrons have left it.' },
+      { text: 'The glass becomes positive and the wool stays neutral, because only one object is rubbed.', correction: 'Both surfaces take part. Every electron that leaves the glass arrives on the wool, so the wool must end up negatively charged by the same amount.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A student rubs a balloon on a jumper, finds the balloon negative, and says the friction created the negative charge. What is right?',
+    options: [
+      { text: 'No charge was created. Electrons moved from the jumper to the balloon, so the jumper is now positive by exactly as much as the balloon is negative.', correct: true },
+      { text: 'The student is right \u2014 friction turns movement into electric charge, which is why you have to rub hard.', correction: 'Rubbing hard makes more contact, not more charge from nothing. The electrons on the balloon all came off the jumper.' },
+      { text: 'No charge was created, because the balloon and the jumper end up with the same charge as each other.', correction: 'The verdict is right and the detail is wrong. They end up with opposite charges of the same size \u2014 that is what makes the total still zero.' },
+      { text: 'Charge was created, but an equal amount of positive charge was created on the jumper at the same time, so it balances.', correction: 'Nothing was created on either side. The positive charge on the jumper is protons that were always there, left unbalanced by the electrons that walked off.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'A polythene rod is rubbed with a woollen duster and ends up negatively charged. Explain what has happened, naming what moves and what does not, and say what the duster is now.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Both objects started neutral, so\u2026',
+    criteria: [
+      'Says both objects started neutral, with protons and electrons balanced.',
+      'Says electrons moved from the wool to the polythene.',
+      'Says protons do not move, because they are held in the nuclei.',
+      'Says the rod is negative because it has more electrons than protons.',
+      'Says the duster is now positively charged, by the same amount, so the total charge is still zero.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A road tanker delivering fuel is connected to a metal spike in the ground before any fuel is pumped, and the pumping is stopped if the connection comes off. Explain what is being prevented, and why the same precaution is pointless for a plastic bottle of water.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Fuel rubbing through the pipe\u2026',
+    criteria: [
+      'Says fuel flowing through a pipe rubs against it, so charge is separated.',
+      'Says charge building up on the tanker or the fuel could reach a p.d. large enough to spark.',
+      'Says a spark near fuel vapour could ignite it.',
+      'Says the earthing wire is a conductor, so it lets the separated charge flow away instead of building up.',
+      'Says earthing a plastic bottle achieves nothing, because plastic is an insulator and the charge cannot travel along it to the wire.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, a: 5, b: 2, rubs: 8, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  signs(cx, sign, count) {
+    let d = '';
+    const n = Math.min(6, count);
+    const start = cx - (n - 1) * 21;
+    for (let i = 0; i < n; i++) {
+      const x = start + i * 42;
+      d += 'M' + (x - 13) + ' 240 H' + (x + 13) + ' ';
+      if (sign > 0) d += 'M' + x + ' 227 V253 ';
+    }
+    return d.trim();
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const A = MATS[s.a];
+    const B = MATS[s.b];
+    const diff = s.b - s.a;
+    const steps = Math.abs(diff);
+    const strokeFactor = STROKE_CEIL * (1 - Math.exp(-s.rubs / STROKE_TAU));
+    const n = strokeFactor * PER * steps;
+    const nearCeiling = strokeFactor > 0.55 * STROKE_CEIL;
+    const nC = n * 1.602e-10;
+    const aSign = diff > 0 ? 1 : diff < 0 ? -1 : 0;
+    const bSign = -aSign;
+    const signCount = Math.max(1, Math.min(6, Math.round(nC / 3)));
+
+    const fq = (sign) => sign === 0 ? '0.0 nC' : (sign > 0 ? '+' : '\u2212') + nC.toFixed(1) + ' nC';
+
+    let note;
+    if (diff === 0) {
+      note = 'Both hands hold ' + A.name.toLowerCase() + ', so the two surfaces hold their electrons equally tightly and there is no reason for any of them to prefer one side. Nothing crosses, both objects stay neutral, and neither will pick up a scrap of paper. Rubbing on its own does nothing \u2014 it takes two different materials.';
+    } else if (diff > 0) {
+      note = A.name.toLowerCase() + ' sits above ' + B.name.toLowerCase() + ' on the list, so it holds its electrons less tightly and gives them up: ' +
+        fmtN(n) + ' of them cross to the right hand. That leaves the ' + A.label.toLowerCase() + ' with more protons than electrons, at ' + fq(1) +
+        ', and the ' + B.label.toLowerCase() + ' with more electrons than protons, at ' + fq(-1) + '. Equal and opposite, from one transfer. They are ' + steps +
+        (steps === 1 ? ' step' : ' steps') + ' apart on the list and you gave ' + s.rubs + (s.rubs === 1 ? ' stroke' : ' strokes') + ', and both of those raise the count. ' +
+        (nearCeiling ? 'Each extra stroke is now adding less than the one before it: the charge is levelling off towards a ceiling, because it leaks away into the air as fast as more of it is separated.' : 'Keep stroking and the gain per stroke gets smaller \u2014 the charge levels off towards a ceiling rather than climbing without limit.');
+    } else {
+      note = A.name.toLowerCase() + ' sits below ' + B.name.toLowerCase() + ' on the list, so it holds its electrons more tightly and takes some: ' +
+        fmtN(n) + ' of them cross from the right hand to the left. The ' + A.label.toLowerCase() + ' ends up at ' + fq(-1) + ' and the ' + B.label.toLowerCase() +
+        ' at ' + fq(1) + '. Swapping which hand holds which object changes nothing about who gains and who loses \u2014 that is set by the materials, not by the hands. ' +
+        (nearCeiling ? 'Each extra stroke is now adding less than the one before it: the charge is levelling off towards a ceiling, because it leaks away into the air as fast as more of it is separated.' : 'Keep stroking and the gain per stroke gets smaller \u2014 the charge levels off towards a ceiling rather than climbing without limit.');
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Positively charged, by exactly the same amount as the rod is negative' },
+        { letter: 'B', text: 'Also negatively charged, because both were rubbed' },
+        { letter: 'C', text: 'Still neutral, because only the rod was being charged' },
+        { letter: 'D', text: 'Positively charged, but by a smaller amount, because some charge is lost in the rubbing' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'Positive, by exactly as much. Every electron the rod gained came off the duster, so the duster is left short of electrons and its protons are no longer balanced. Nothing was created and nothing was lost \u2014 charge was separated. Hang the duster up on a thread and it will attract the rod, which is the next lesson.',
+
+      benchProgress: (s.touched.a || s.touched.b || s.touched.r) ? 'Three controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Both become negative, because polythene always ends up negative' },
+        { letter: 'B', text: 'Nothing happens \u2014 identical materials hold their electrons equally tightly, so none cross' },
+        { letter: 'C', text: 'One becomes positive and the other negative, chosen at random' },
+        { letter: 'D', text: 'Both become positive, because the friction removes electrons into the air' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+
+      aTabs: MATS.map((m, i) => ({
+        label: m.label, pressed: s.a === i, style: this.seg(s.a === i, true, false),
+        onClick: () => this.setState((st) => ({ a: i, touched: Object.assign({}, st.touched, { a: true }) }))
+      })),
+      bTabs: MATS.map((m, i) => ({
+        label: m.label, pressed: s.b === i, style: this.seg(s.b === i, true, false),
+        onClick: () => this.setState((st) => ({ b: i, touched: Object.assign({}, st.touched, { b: true }) }))
+      })),
+      rubValue: s.rubs, rubLabel: s.rubs + (s.rubs === 1 ? ' stroke' : ' strokes'),
+      onRub: (e) => this.setState((st) => ({ rubs: Number(e.target.value), touched: Object.assign({}, st.touched, { r: true }) })),
+
+      aName: A.name, bName: B.name,
+      signAPath: aSign === 0 ? 'M245 240' : this.signs(245, aSign, signCount),
+      signAStyle: 'fill: none; stroke: ' + (aSign === 0 ? 'transparent' : '#8FB7FF') + '; stroke-width: 6; stroke-linecap: round;',
+      signBPath: bSign === 0 ? 'M755 240' : this.signs(755, bSign, signCount),
+      signBStyle: 'fill: none; stroke: ' + (bSign === 0 ? 'transparent' : '#8FB7FF') + '; stroke-width: 6; stroke-linecap: round;',
+      arrowPath: diff === 0 ? 'M500 200'
+        : diff > 0 ? 'M400 200 H600 M600 200 L580 188 M600 200 L580 212'
+          : 'M600 200 H400 M400 200 L420 188 M400 200 L420 212',
+      arrowStyle: 'fill: none; stroke: ' + (diff === 0 ? 'transparent' : '#8FB7FF') + '; stroke-width: ' +
+        (3 + Math.min(7, steps * 1.2)).toFixed(1) + '; stroke-linecap: round; stroke-linejoin: round;',
+      dotsPath: diff === 0 ? 'M500 200'
+        : [430, 470, 510, 550].map((x) => 'M' + (x - 7) + ' 200 a 7 7 0 1 0 14 0 a 7 7 0 1 0 -14 0 Z').join(' '),
+      aCharge: fq(aSign), bCharge: fq(bSign),
+      aWord: aSign === 0 ? 'unchanged' : aSign > 0 ? 'short of electrons' : 'extra electrons',
+      bWord: bSign === 0 ? 'unchanged' : bSign > 0 ? 'short of electrons' : 'extra electrons',
+      transferLabel: fmtN(n),
+      dirCaption: diff === 0 ? 'neither way' : diff > 0 ? 'left hand to right hand' : 'right hand to left hand',
+      benchAlt: A.name.toLowerCase() + ' rubbed against ' + B.name.toLowerCase() + ' for ' + s.rubs + ' strokes. ' +
+        (diff === 0 ? 'No electrons cross and both stay neutral.'
+          : fmtN(n) + ' electrons cross from the ' + (diff > 0 ? 'left' : 'right') + ' object to the ' + (diff > 0 ? 'right' : 'left') + ' one.'),
+      benchNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+
+</script>
+</body>
+</html>
