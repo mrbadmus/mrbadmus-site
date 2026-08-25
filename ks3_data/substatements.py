@@ -741,6 +741,55 @@ SUBSTATEMENTS = {
               "on the ear drum.", "P6"),
         ("c", "Sound waves are longitudinal.", "P6"),
     ],
+    # ── P7 · Light ──────────────────────────────────────────────────────
+    #
+    # Six statements over seven slots (ratio 0.86) — the surplus case again,
+    # and the reason three of the six are split is Design's own §2 table:
+    # `LGT.04` alone is claimed by FOUR lessons, which without a notation the
+    # coverage gate reads as one statement owned four times. `LGT.01`,
+    # `LGT.02` and `LGT.05` are whole and take no sub-IDs.
+    #
+    # The bullet reads:
+    #   "the transmission of light through materials: absorption, diffuse
+    #    scattering and specular reflection at a surface"
+    # Two clauses, and P7 teaches them two lessons apart: p7-02 owns what a
+    # surface does to the light it sends BACK, p7-07 owns what it does to the
+    # light it keeps. The clause order here follows the split rather than the
+    # bullet's own word order, because scattering and specular reflection are
+    # one lesson's idea and absorption is another's.
+    "KS3.P.LGT.03": [
+        ("a", "The transmission of light through materials: diffuse "
+              "scattering and specular reflection at a surface.", "P7"),
+        ("b", "Absorption of light at a surface.", "P7"),
+    ],
+    # The bullet reads:
+    #   "use of ray model to explain imaging in mirrors, the pinhole camera,
+    #    the refraction of light and action of convex lens in focusing
+    #    (qualitative); the human eye"
+    # Four separate lessons' worth, and the widest split in the key stage:
+    # p7-02 owns the mirror, p7-03 owns refraction, p7-04 owns the pinhole and
+    # the convex lens together — they are one argument, the bargain and the
+    # thing that refuses it — and p7-05 owns the eye.
+    "KS3.P.LGT.04": [
+        ("a", "Use of the ray model to explain imaging in mirrors.", "P7"),
+        ("b", "The refraction of light.", "P7"),
+        ("c", "The pinhole camera, and the action of a convex lens in "
+              "focusing (qualitative).", "P7"),
+        ("d", "The human eye.", "P7"),
+    ],
+    # The bullet reads:
+    #   "colours and the different frequencies of light, white light and
+    #    prisms (qualitative only); differential colour effects in absorption
+    #    and diffuse reflection"
+    # Two clauses and two lessons: p7-06 establishes that white light is a
+    # mixture sorted by frequency, p7-07 uses that to explain what a coloured
+    # surface does. Design's §4 records that neither depends on the other.
+    "KS3.P.LGT.06": [
+        ("a", "Colours and the different frequencies of light; white light "
+              "and prisms (qualitative only).", "P7"),
+        ("b", "Differential colour effects in absorption and diffuse "
+              "reflection.", "P7"),
+    ],
 }
 
 

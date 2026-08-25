@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Refraction · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Light</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Refraction</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Light · Process</p>
+        <h1>Refraction</h1>
+        <p class="ks3-bigq">A straw in a glass of water is straight and looks broken. Every part of that illusion is doing exactly what it should — including your brain, which is making the only reasonable assumption available to it.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The straw that is not broken.</h2>
+        <p class="ks3-hook-prompt">A straw standing in a glass of water looks snapped in two at the surface, and the part under the water looks shorter and shifted sideways. Lift it out and it is perfectly straight. Nothing has been done to the straw at all.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What has happened between the straw and your eye?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Light travels fastest in a vacuum, and almost as fast in air. Send it into water, perspex or glass and it slows down — in glass to about two thirds of its speed in air. That slowing is the whole cause of what follows.</p>
+        <p>If the light arrives along the normal, straight on, it slows and carries on in the same direction. If it arrives at an angle to the normal, one side of the beam reaches the slower material before the other, and the beam swings round: it <strong>bends towards the normal</strong> on the way in. Coming out of the other side it speeds up again and <strong>bends away from the normal</strong> by the same amount, so the ray leaving a parallel-sided block travels in the original direction but shifted sideways. Bending light like this on going from one material to another is called <strong>refraction</strong>.</p>
+        <p>Your eye and brain assume light has come in a straight line, because it almost always has. Refracted light breaks that assumption, and the straw appears where the straight line would have started rather than where it is.</p>
+      </section>
+
+      <section id="s-block" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a ray box and a rectangular block</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Send one ray in. Watch where it goes.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">A narrow ray from a ray box enters a parallel-sided block through its flat face, with the normal drawn in. Set the angle it arrives at, and set what the block is made of.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A ray is aimed straight at the block, exactly along the normal. What does it do on entering?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 280px; min-width: 240px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+                  <label for="p73a" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Angle from the normal in air</label>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ incLabel }}</p>
+                </div>
+                <input class="ks3-slider" type="range" id="p73a" min="0" max="70" step="5" value="{{ incValue }}" onChange="{{ onInc }}" onInput="{{ onInc }}">
+              </div>
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What the block is</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ matTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 460" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <rect x="140" y="150" width="720" height="160" rx="6" style="fill: #3A4A63; stroke: #8FB7FF; stroke-width: 4;"></rect>
+                  <path d="M400 40 V420" style="fill: none; stroke: #8C8177; stroke-width: 3; stroke-dasharray: 9 9;"></path>
+                  <path d="{{ normal2 }}" style="fill: none; stroke: #8C8177; stroke-width: 3; stroke-dasharray: 9 9;"></path>
+                  <text x="410" y="36" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #8C8177;">NORMAL</text>
+                  <path d="{{ rayIn }}" style="fill: none; stroke: #8FB7FF; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ rayMid }}" style="fill: none; stroke: #E9DCC8; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ rayOut }}" style="fill: none; stroke: #8FB7FF; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ ghostLine }}" style="fill: none; stroke: #5C554D; stroke-width: 3; stroke-dasharray: 10 10;"></path>
+                  <text x="150" y="140" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .08em; fill: #8C8177;">AIR</text>
+                </svg>
+                <span style="position: absolute; left: 15%; right: 3%; top: 89.5%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); letter-spacing: .08em; color: #C6B9A7; white-space: normal; pointer-events: none;">{{ matCaption }}</span>
+                <span style="position: absolute; left: 33%; top: 25%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ incLabel }}</span>
+                <span style="position: absolute; left: 42%; top: 45%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); color: #C6B9A7; white-space: nowrap; pointer-events: none;">{{ refLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Angle in the air</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ incLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">from the normal</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Angle inside the block</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ refLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">from the normal</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Speed of light inside</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ speedLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">against 300 000 000 m/s in a vacuum</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">What the ray does</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-inout" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-band);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Why the straw looks broken</h2>
+        <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 18px;">
+          <svg viewBox="0 0 1000 380" role="img" aria-label="A glass of water seen from the side. A straw runs from above the surface down to the bottom. A ray leaves the submerged end, bends away from the normal as it leaves the water, and reaches an eye. A dashed line continues that ray straight backwards to a point higher and closer than the real end, which is where the end appears to be." style="display: block; width: 100%; height: auto;">
+            <path d="M300 60 V340 H620 V60" style="fill: none; stroke: var(--ks3-ink); stroke-width: 6; stroke-linejoin: round;"></path>
+            <rect x="303" y="140" width="314" height="197" style="fill: var(--ks3-blue-tint);"></rect>
+            <path d="M300 140 H620" style="fill: none; stroke: var(--ks3-blue); stroke-width: 5;"></path>
+            <text x="240" y="134" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: var(--ks3-ink-muted);">WATER SURFACE</text>
+            <path d="M470 60 L400 330" style="fill: none; stroke: var(--ks3-ink); stroke-width: 12; stroke-linecap: round;"></path>
+            <path d="M400 330 L520 140" style="fill: none; stroke: var(--ks3-accent); stroke-width: 5; stroke-linecap: round;"></path>
+            <path d="M520 140 L800 90" style="fill: none; stroke: var(--ks3-accent); stroke-width: 5; stroke-linecap: round;"></path>
+            <path d="M520 140 L740 296" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 4; stroke-dasharray: 10 10;"></path>
+            <path d="M520 140 V60" style="fill: none; stroke: var(--ks3-ink-ghost); stroke-width: 3; stroke-dasharray: 8 8;"></path>
+            <text x="530" y="54" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-ink-muted);">NORMAL</text>
+            <circle cx="840" cy="80" r="26" style="fill: none; stroke: var(--ks3-ink); stroke-width: 5;"></circle>
+            <circle cx="840" cy="80" r="9" style="fill: var(--ks3-ink);"></circle>
+            <text x="874" y="86" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; fill: var(--ks3-ink-muted);">EYE</text>
+            <circle cx="452" cy="253" r="11" style="fill: none; stroke: var(--ks3-accent); stroke-width: 5;"></circle>
+            <text x="466" y="248" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-accent-text);">WHERE IT LOOKS</text>
+            <circle cx="400" cy="330" r="11" style="fill: var(--ks3-ink);"></circle>
+            <text x="240" y="336" text-anchor="end" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; fill: var(--ks3-ink-muted);">WHERE IT IS</text>
+          </svg>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">Light leaves the submerged end of the straw, speeds up as it leaves the water and bends away from the normal. Your eye and brain trace it back in a straight line, because light almost always has come in a straight line — and the straight line starts higher up and closer in than the real end. The straw is not bent. The rule your brain is using is.</p>
+      </section>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Light slows down when it enters a denser transparent material and speeds up when it leaves. Arriving along the normal it carries straight on; arriving at an angle it bends towards the normal on the way in and away from the normal on the way out. That bending is refraction, and it is why a straw in water looks broken: the eye traces the light back in a straight line it did not take.</p>
+        </div>
+
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;The straw really does bend in water.&rdquo;</p>
+        <p>Lift it out and it is straight; put a ruler in and the ruler is straight when you take it out too. Nothing mechanical has happened. What changes is the path the light takes from the submerged part to your eye \u2014 it bends as it leaves the water \u2014 and your brain, which has no way of knowing that, follows the ray backwards in a straight line to a place the straw is not. Every trick of this kind is the same trick: the light bent, and the assumption that it did not is what produces the illusion.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Light bends because water is thicker and pushes it sideways.&rdquo;</p>
+          <p>Nothing pushes it. Light slows in water because of how it interacts with the material, and the bending follows from the slowing plus the angle: one edge of the beam reaches the slower material before the other, so the whole beam swings round \u2014 the same way a trolley with one stiff wheel veers. Send the ray in exactly along the normal and both edges arrive together, so it slows just as much and does not bend at all. If thickness pushed light aside, the straight-on ray would bend too.</p>
+        </div>
+      </section>
+
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Light slows down on entering a denser transparent material and speeds up on leaving it. Arriving along the normal it carries straight on; arriving at an angle it bends towards the normal going in and away from the normal coming out. That change of direction is refraction. Because the eye traces light back in a straight line, refracted light makes objects appear where they are not: a straw looks broken and a pool looks shallower than it is.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Push the angle far enough going the other way — from glass or water out into air — and the bending runs out of room. Past a certain angle the ray cannot escape at all and is reflected back inside instead, which is called total internal reflection. It is what makes an optical fibre work: light fired into a thin glass thread keeps striking the inside of the wall at a steep angle and keeps bouncing back in, all the way along, even round bends. Almost all long-distance internet traffic is doing that at this moment.</p>
+          <p>Refraction also depends slightly on colour, because the different colours in white light travel at slightly different speeds in glass. Blue is slowed a little more than red and so bends a little more, and a triangular block turns that tiny difference into a spread of colours across a wall.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p7-02-reflection-mirrors-and-scattering.html">Reflection: mirrors and scattering<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p7-04-lenses-and-images.html">Lenses and images<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p7-01-light-travels.html">Light travels<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p7-06-colour-and-the-spectrum.html">Colour and the spectrum<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p6-01-waves-on-water.html">Waves on water: what a wave is<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Ray diagrams for refraction at a boundary, the refractive index, total internal reflection and the critical angle, and optical fibres.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a ray, an angle and a material, and want to know where it goes?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The angles are calculated and drawn to scale for a typical sample of each material with light of an average visible colour; real values shift slightly with the colour of the light and with the exact composition of the glass or perspex. Speeds are rounded. Some light is reflected at every surface as well as refracted, and the drawing leaves that out to keep one ray to follow. The block is treated as having exactly parallel faces, which is what makes the emerging ray parallel to the original.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The broken straw', short: 'STRAW' },
+  { id: 's-block', label: 'Ray into a block', short: 'BLOCK' },
+  { id: 's-inout', label: 'Why it looks broken', short: 'WHY' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-block') return s.gate !== null && (s.touched.a || s.touched.mat);
+  if (id === 's-inout') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const MATS = [
+  { label: 'Water', n: 1.33, v: 226000000, caption: 'WATER \u2014 LIGHT SLOWS TO ABOUT 226 000 000 m/s',
+    note: 'Water slows light the least of the three here, so it bends the ray the least. It is also the case you meet most: every swimming pool that looks shallower than it is, and every fish that is not quite where it appears, is this.' },
+  { label: 'Perspex', n: 1.49, v: 201000000, caption: 'PERSPEX \u2014 LIGHT SLOWS TO ABOUT 201 000 000 m/s',
+    note: 'Perspex slows light more than water does and bends the ray further at the same angle of arrival. It is the block most often used at the bench because it is hard to break.' },
+  { label: 'Glass', n: 1.52, v: 197000000, caption: 'GLASS \u2014 LIGHT SLOWS TO ABOUT 197 000 000 m/s',
+    note: 'Glass is the slowest here, at about two thirds of the speed of light in air, and bends the ray the most. Slower material, bigger bend \u2014 that pattern holds all the way through this topic.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Apply the rule',
+    question: 'A ray of light passes from air into a glass block, arriving at 40\u00b0 to the normal. Which describes what happens?',
+    options: [
+      { text: 'It slows down and bends towards the normal, so the angle inside the glass is less than 40\u00b0.', correct: true },
+      { text: 'It slows down and bends away from the normal, so the angle inside the glass is more than 40\u00b0.', correction: 'Bending away from the normal is what happens on the way out, when the light speeds up. Going into a slower material, it bends towards the normal.' },
+      { text: 'It speeds up and bends towards the normal, because glass is clearer than air.', correction: 'Light is fastest in a vacuum and slower in any material. Glass slows it to about two thirds of its speed in air, and clarity is a separate matter from speed.' },
+      { text: 'It carries straight on and only slows down, because the block has flat parallel sides.', correction: 'Flat parallel sides mean the ray leaves travelling in its original direction, shifted sideways. It still bends at each face; the two bends cancel in direction, not in position.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 The one that catches people',
+    question: 'A ray is aimed at a glass block exactly along the normal, arriving straight on. What happens?',
+    options: [
+      { text: 'It slows down inside the glass and carries straight on without bending.', correct: true },
+      { text: 'It bends towards the normal, because all light entering glass is refracted.', correction: 'Refraction is a change of direction, and here there is none. The light does slow down; it is the angle that gives it a direction to swing towards, and at 0\u00b0 there is no angle.' },
+      { text: 'It carries straight on at exactly the same speed, because it has not been bent.', correction: 'The speed always drops on entering glass, whatever the angle. Bending is a consequence of the slowing plus an angle, not the other way round.' },
+      { text: 'It reflects straight back out, because it hits the surface square on.', correction: 'A little is always reflected at a surface, but most of it goes in. Arriving square on is the one case with no bending at all.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Explain why a straw standing in a glass of water looks broken at the surface, using the words refraction, normal and straight line.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Light leaves the part of the straw under the water and\u2026',
+    criteria: [
+      'Says light leaves the submerged part of the straw and travels up to the surface.',
+      'Says it speeds up as it leaves the water and bends away from the normal.',
+      'Names that bending as refraction.',
+      'Says the eye and brain trace the light back in a straight line.',
+      'Says that straight line starts at a different place from the real end of the straw, so the submerged part appears shifted.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A swimming pool with a flat bottom always looks shallower than it is, and the effect is stronger when you look at the far end of the pool than when you look straight down at your feet. Explain both parts.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Light from the bottom of the pool\u2026',
+    criteria: [
+      'Says light from the bottom of the pool bends away from the normal as it leaves the water.',
+      'Says the eye traces the light back in a straight line to a point higher than the real bottom.',
+      'Says that makes the bottom appear closer to the surface, so the pool looks shallower.',
+      'Says looking straight down means the light leaves along the normal, or close to it.',
+      'Says light along the normal is not bent, so the effect is smallest looking straight down and grows as the angle grows.'
+    ] }
+];
+
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, a: 45, mat: 2, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  coverBtns(ids) {
+    const s = this.state;
+    return ids.map((c) => ({
+      label: c.label, pressed: s.cover === c.id,
+      style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+        (s.cover === c.id ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c.id ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+      onClick: () => this.setState({ cover: c.id })
+    }));
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const m = MATS[s.mat];
+    const R = (d) => (d * Math.PI) / 180;
+    const i = s.a;
+    const r = Math.round((Math.asin(Math.sin(R(i)) / m.n) * 180) / Math.PI);
+    const inX = 400 - 300 * Math.sin(R(i)), inY = 150 - 300 * Math.cos(R(i));
+    const exitX = 400 + 160 * Math.tan(R(r));
+    const outX = exitX + 300 * Math.sin(R(i)), outY = 310 + 300 * Math.cos(R(i));
+    const ghostX = 400 + 460 * Math.sin(R(i)), ghostY = 150 + 460 * Math.cos(R(i));
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The water has bent the straw' },
+        { letter: 'B', text: 'The light from the submerged part changed direction as it left the water' },
+        { letter: 'C', text: 'The water magnifies the lower half, so it looks a different size' },
+        { letter: 'D', text: 'The surface of the water reflects the top half down onto the bottom half' }
+      ].map((op, i2) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i2, onClick: () => this.setState({ hookChoice: i2 }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'Light leaving the submerged part speeds up as it crosses back into the air, and it changes direction as it does so. Your brain then does the only sensible thing and assumes the light came straight to you, which puts the lower half of the straw somewhere it is not. The straw is straight; the ray is the thing that bent.',
+
+      benchProgress: (s.touched.a || s.touched.mat) ? 'Both controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It slows down and carries straight on' },
+        { letter: 'B', text: 'It slows down and bends towards the normal' },
+        { letter: 'C', text: 'It carries on at exactly the same speed, because it was not bent' },
+        { letter: 'D', text: 'It bounces straight back out of the block' }
+      ].map((op, i2) => ({ letter: op.letter, text: op.text, pressed: s.gate === i2, onClick: () => this.setState({ gate: i2 }) })),
+      benchOpen: s.gate !== null,
+      incValue: i, incLabel: i + '\u00b0',
+      onInc: (e) => this.setState((st) => ({ a: Number(e.target.value), touched: Object.assign({}, st.touched, { a: true }) })),
+      matTabs: MATS.map((x, k) => ({
+        label: x.label, pressed: s.mat === k, style: this.seg(s.mat === k, true, false),
+        onClick: () => this.setState((st) => ({ mat: k, touched: Object.assign({}, st.touched, { mat: true }) }))
+      })),
+      normal2: 'M' + exitX.toFixed(1) + ' 210 V420',
+      rayIn: 'M' + inX.toFixed(1) + ' ' + inY.toFixed(1) + ' L400 150',
+      rayMid: 'M400 150 L' + exitX.toFixed(1) + ' 310',
+      rayOut: 'M' + exitX.toFixed(1) + ' 310 L' + outX.toFixed(1) + ' ' + outY.toFixed(1),
+      ghostLine: i === 0 ? 'M0 0' : 'M400 150 L' + ghostX.toFixed(1) + ' ' + ghostY.toFixed(1),
+      refLabel: r + '\u00b0',
+      speedLabel: 'about ' + m.v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + ' m/s',
+      verdictWord: i === 0 ? 'Straight on, but slower' : 'Bends towards the normal',
+      matCaption: m.caption,
+      benchAlt: 'A ray entering a block of ' + m.label.toLowerCase() + ' at ' + i + ' degrees to the normal, running through it at ' + r +
+        ' degrees to the normal, and leaving the far face at ' + i + ' degrees again, shifted sideways from the path it would have taken.',
+      benchNote: i === 0
+        ? m.note + ' Your ray is aimed straight along the normal, so it slows to about ' + m.v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') +
+          ' m/s and carries on in exactly the same direction. Slowing on its own does not bend anything; move the angle off zero and the bending starts.'
+        : m.note + ' Your ray arrives at ' + i + '\u00b0 to the normal and runs through the block at ' + r + '\u00b0 \u2014 ' + (i - r) +
+          '\u00b0 closer to the normal. It leaves the far face at ' + i + '\u00b0 again, so it ends up travelling in its original direction but shifted across, which is the dashed line to compare it with.'
+    };
+  }
+
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

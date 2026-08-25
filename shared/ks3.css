@@ -27173,3 +27173,463 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 
 /* ═══ END P6 ═══ */
 
+/* ═══ BEGIN P7 ═══════════════════════════════════════════════════════════
+   P7 — *Light*. One marked block per unit.
+
+   ⚠️ EVERY SELECTOR HERE IS P7-ONLY, and every shell stem was checked
+   against the whole registry before it was written: none of `ks3-lrace-`,
+   `ks3-rsurf-`, `ks3-rblock-`, `ks3-pinh-`, `ks3-eyecam-`, `ks3-prism-`,
+   `ks3-clamp-` or `ks3-lband-` was taken. `ks3-cbench-` WAS taken (C7's),
+   which is why the colour bench is `clamp`.
+
+   ⚠️ EVERY FIGURE WRAPPER IS `position: relative`, for the reason the P4
+   and P6 blocks give at length: every live value is an absolutely
+   positioned HTML span over the SVG, because a hole inside an SVG `<text>`
+   renders nothing and fails silently — and without a positioned ancestor
+   those spans resolve against the page and widen the document on a phone.
+
+   ⚠️ TOKENS, NOT LITERALS, FOR EVERY PIECE OF TEXT. `--ks3-accent` is
+   3.4:1 and is LARGE TEXT ONLY; anything under 24px that wants orange
+   takes `--ks3-accent-text`. Captions on the ink-dark benches take
+   `--ks3-on-dark-muted`, which is 6.08:1 there, and readings take
+   `--ks3-blue-light`.
+
+   ⚠️ NO P7 BENCH STYLES A HEAD ROW, because no P7 bench draws one: the
+   shell's `.ks3-blockhead` is Design's row and it is already styled.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── shared P7 bench shapes — the seven dark instruments ────────────── */
+
+.ks3-lrace-gate, .ks3-rsurf-gate, .ks3-rblock-gate, .ks3-pinh-gate,
+.ks3-eyecam-gate, .ks3-prism-gate, .ks3-clamp-gate {
+  margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+.ks3-lrace-body, .ks3-rsurf-body, .ks3-rblock-body, .ks3-pinh-body,
+.ks3-eyecam-body, .ks3-prism-body, .ks3-clamp-body { margin-top: 22px; }
+
+.ks3-lrace-controls, .ks3-rsurf-controls, .ks3-rblock-controls,
+.ks3-pinh-controls, .ks3-eyecam-controls, .ks3-prism-controls,
+.ks3-clamp-controls {
+  display: grid; gap: 18px;
+}
+.ks3-lrace-row, .ks3-rsurf-row, .ks3-rblock-row, .ks3-pinh-row,
+.ks3-eyecam-row { display: grid; gap: 8px; }
+.ks3-lrace-rowhead, .ks3-rsurf-rowhead, .ks3-rblock-rowhead,
+.ks3-pinh-rowhead, .ks3-eyecam-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-lrace-reading, .ks3-rsurf-reading, .ks3-rblock-reading,
+.ks3-pinh-reading, .ks3-eyecam-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 17px;
+  font-weight: 500; letter-spacing: normal; text-transform: none;
+  color: var(--ks3-blue-light);
+}
+/* 44px of vertical target, which is the smallest a thumb should be asked
+   to find — on p7-04 the sliders are two of the three controls. */
+.ks3-lrace-slider, .ks3-rsurf-slider, .ks3-rblock-slider,
+.ks3-pinh-slider, .ks3-eyecam-slider {
+  width: 100%; min-height: 44px; accent-color: var(--ks3-accent);
+}
+
+.ks3-lrace-picker, .ks3-rsurf-picker, .ks3-rblock-picker,
+.ks3-pinh-picker, .ks3-eyecam-picker, .ks3-prism-picker,
+.ks3-clamp-picker { display: grid; gap: 9px; }
+.ks3-lrace-pickerlabel, .ks3-rsurf-pickerlabel, .ks3-rblock-pickerlabel,
+.ks3-pinh-pickerlabel, .ks3-eyecam-pickerlabel, .ks3-prism-pickerlabel,
+.ks3-clamp-pickerlabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-lrace-tabrow, .ks3-rsurf-tabrow, .ks3-rblock-tabrow,
+.ks3-pinh-tabrow, .ks3-eyecam-tabrow, .ks3-prism-tabrow,
+.ks3-clamp-tabrow { display: flex; flex-wrap: wrap; gap: 9px; }
+
+.ks3-lrace-figwrap, .ks3-rsurf-figwrap, .ks3-rblock-figwrap,
+.ks3-pinh-figwrap, .ks3-eyecam-figwrap, .ks3-prism-figwrap,
+.ks3-clamp-figwrap {
+  position: relative; margin-top: 18px; padding: 18px;
+  border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);
+}
+/* ⚠️ THE INNER DIV IS THE POSITIONING CONTEXT, AND THE PADDING IS ON THE
+   PANEL. Every live label's `left` / `top` is a percentage of Design's own
+   viewBox, so it has to resolve against the DRAWING and not against the
+   drawing plus 18px of card on every side. Making the padded panel the
+   positioned ancestor slides every label on all seven benches up and to the
+   left by that padding — on `p7-07` far enough to put "White light" under
+   the lamp, so the page read "hite light". See `ks3_art/p7.py`. */
+.ks3-lrace-figinner, .ks3-rsurf-figinner, .ks3-rblock-figinner,
+.ks3-pinh-figinner, .ks3-eyecam-figinner, .ks3-prism-figinner,
+.ks3-clamp-figinner { position: relative; }
+.ks3-lrace-svg, .ks3-rsurf-svg, .ks3-rblock-svg, .ks3-pinh-svg,
+.ks3-eyecam-svg, .ks3-prism-svg, .ks3-clamp-svg {
+  display: block; width: 100%; height: auto;
+}
+.ks3-lrace-fill, .ks3-rsurf-fill, .ks3-rblock-fill, .ks3-pinh-fill,
+.ks3-eyecam-fill, .ks3-prism-fill, .ks3-clamp-fill {
+  position: absolute; font-family: var(--ks3-font-mono); font-weight: 500;
+  font-size: clamp(10px, 1.4vw, 17px); letter-spacing: .08em;
+  pointer-events: none;
+}
+
+.ks3-lrace-tiles, .ks3-rsurf-tiles, .ks3-rblock-tiles, .ks3-pinh-tiles,
+.ks3-eyecam-tiles, .ks3-prism-tiles, .ks3-clamp-tiles {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-lrace-tile, .ks3-rsurf-tile, .ks3-rblock-tile, .ks3-pinh-tile,
+.ks3-eyecam-tile, .ks3-prism-tile, .ks3-clamp-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-lrace-tile-label, .ks3-rsurf-tile-label, .ks3-rblock-tile-label,
+.ks3-pinh-tile-label, .ks3-eyecam-tile-label, .ks3-prism-tile-label,
+.ks3-clamp-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-lrace-tile-value, .ks3-rsurf-tile-value, .ks3-rblock-tile-value,
+.ks3-pinh-tile-value, .ks3-eyecam-tile-value, .ks3-prism-tile-value,
+.ks3-clamp-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 20px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+/* ⚖️ THE VERDICT TILE IS A SENTENCE, NOT A NUMBER. Design sets the fourth
+   tile in the body face at 700 rather than mono, on every P7 bench, and it
+   is the tile that says in WORDS what the drawing has just said in
+   geometry — so hue is never carrying it alone. */
+.ks3-lrace-tile:last-child .ks3-lrace-tile-value,
+.ks3-rsurf-tile:last-child .ks3-rsurf-tile-value,
+.ks3-rblock-tile:last-child .ks3-rblock-tile-value,
+.ks3-prism-tile:last-child .ks3-prism-tile-value,
+.ks3-clamp-tile:last-child .ks3-clamp-tile-value,
+.ks3-eyecam-tile:nth-child(3) .ks3-eyecam-tile-value,
+.ks3-eyecam-tile:nth-child(4) .ks3-eyecam-tile-value,
+.ks3-pinh-tile:nth-child(4) .ks3-pinh-tile-value {
+  font-family: var(--ks3-font-body); font-size: 20px; font-weight: 700;
+}
+.ks3-lrace-tile-sub, .ks3-rsurf-tile-sub, .ks3-rblock-tile-sub,
+.ks3-pinh-tile-sub, .ks3-eyecam-tile-sub, .ks3-prism-tile-sub,
+.ks3-clamp-tile-sub {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+
+.ks3-lrace-note, .ks3-rsurf-note, .ks3-rblock-note, .ks3-pinh-note,
+.ks3-eyecam-note, .ks3-prism-note, .ks3-clamp-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+
+/* ── p7-01 · the flash-and-bang race ────────────────────────────────── */
+
+.ks3-lrace-axis { fill: none; stroke: #8C8177; stroke-width: 4; }
+.ks3-lrace-tick { fill: none; stroke: #8C8177; stroke-width: 3; }
+.ks3-lrace-ticklabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px;
+  fill: var(--ks3-on-dark-muted);
+}
+.ks3-lrace-mark { fill: none; stroke: #E9DCC8; stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-lrace-lanelabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .08em; fill: var(--ks3-on-dark-muted);
+}
+.ks3-lrace-light, .ks3-lrace-sound {
+  fill: none; stroke: var(--ks3-blue-light); stroke-width: 8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+/* ⚖️ THE BLOCKED SOUND ARROW IS THINNER AND DASHED AND STOPS SHORT. Three
+   channels for one fact, because "it never arrives" is the fact the whole
+   lesson turns on and a reader who cannot judge a length still gets it. */
+.ks3-lrace-sound.is-blocked { stroke-width: 5; stroke-dasharray: 14 12; }
+.ks3-lrace-axislabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px;
+  letter-spacing: .08em; fill: #8C8177;
+}
+.ks3-lrace-lt, .ks3-lrace-st { letter-spacing: normal; }
+
+/* ── p7-02 · the ray box and four surfaces ──────────────────────────── */
+
+.ks3-rsurf-surface { fill: none; stroke: #E9DCC8; stroke-width: 10;
+  stroke-linecap: round; }
+.ks3-rsurf-normal { fill: none; stroke: #8C8177; stroke-width: 3;
+  stroke-dasharray: 9 9; }
+.ks3-rsurf-normallabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .08em; fill: #8C8177;
+}
+.ks3-rsurf-in, .ks3-rsurf-out {
+  fill: none; stroke: var(--ks3-blue-light); stroke-width: 7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+/* ⚖️ MOSTLY ABSORBED IS DRAWN THIN AND FADED, and the readout says "about
+   6%" beside it. Two channels: nobody has to judge a stroke width. */
+.ks3-rsurf-out.is-faint { stroke-width: 3; opacity: .55; }
+.ks3-rsurf-arcs { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-rsurf-caption, .ks3-rsurf-inc, .ks3-rsurf-ref {
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-rsurf-inc, .ks3-rsurf-ref { letter-spacing: normal; }
+
+/* ── p7-03 · the ray into a block ───────────────────────────────────── */
+
+.ks3-rblock-block { fill: #3A4A63; stroke: var(--ks3-blue-light);
+  stroke-width: 4; }
+.ks3-rblock-normal { fill: none; stroke: #8C8177; stroke-width: 3;
+  stroke-dasharray: 9 9; }
+.ks3-rblock-normallabel, .ks3-rblock-airlabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .08em; fill: #8C8177;
+}
+.ks3-rblock-ray { fill: none; stroke: var(--ks3-blue-light);
+  stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+/* The ray INSIDE the block is drawn in bone rather than blue, because the
+   block itself is blue and a blue ray on a blue ground would be carrying
+   its own path on contrast alone. */
+.ks3-rblock-inner { fill: none; stroke: #E9DCC8; stroke-width: 7;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-rblock-ghost { fill: none; stroke: #5C554D; stroke-width: 3;
+  stroke-dasharray: 10 10; }
+.ks3-rblock-caption, .ks3-rblock-inc, .ks3-rblock-ref {
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-rblock-inc, .ks3-rblock-ref { letter-spacing: normal; }
+
+/* ── p7-04 · the pinhole camera ─────────────────────────────────────── */
+
+.ks3-pinh-axis { fill: none; stroke: #5C554D; stroke-width: 3;
+  stroke-dasharray: 9 9; }
+.ks3-pinh-object { fill: none; stroke: #E9DCC8; stroke-width: 8;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-pinh-box { fill: none; stroke: #8C8177; stroke-width: 5;
+  stroke-linejoin: round; }
+.ks3-pinh-ray { fill: none; stroke: var(--ks3-blue-light); stroke-width: 4;
+  stroke-linecap: round; }
+/* ⚠️ THE STROKE WIDTH IS THE BLUR, set from the payload at paint time, so
+   it is deliberately NOT declared here — a `stroke-width` in this rule
+   would be overridden by the inline one on every state and would be dead
+   CSS that reads as the answer. */
+.ks3-pinh-img { fill: none; stroke: #E9DCC8; stroke-linecap: round; }
+.ks3-pinh-partlabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .08em; fill: var(--ks3-on-dark-muted);
+}
+.ks3-pinh-axislabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .08em; fill: #8C8177;
+}
+.ks3-pinh-hole-label { color: var(--ks3-on-dark-muted); }
+
+/* ── p7-05 · the eye and the camera ─────────────────────────────────── */
+
+.ks3-eyecam-scene { fill: none; stroke: #E9DCC8; stroke-width: 8;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-eyecam-case { fill: none; stroke: #8C8177; stroke-width: 6;
+  stroke-linejoin: round; }
+.ks3-eyecam-stop { fill: none; stroke: #E9DCC8; stroke-width: 12;
+  stroke-linecap: round; }
+.ks3-eyecam-lens { fill: #3A4A63; stroke: var(--ks3-blue-light);
+  stroke-width: 4; }
+.ks3-eyecam-back { fill: none; stroke: var(--ks3-blue-light);
+  stroke-width: 12; stroke-linecap: round; }
+.ks3-eyecam-rays { fill: none; stroke: var(--ks3-blue-light);
+  stroke-width: 4; stroke-linecap: round; }
+.ks3-eyecam-img { fill: none; stroke: #E9DCC8; stroke-width: 7;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-eyecam-partlabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .08em; fill: var(--ks3-on-dark-muted);
+}
+.ks3-eyecam-caption { color: var(--ks3-on-dark-muted); }
+.ks3-eyecam-fill.ks3-eyecam-stop { color: #E9DCC8; }
+.ks3-eyecam-fill.ks3-eyecam-absorb { color: var(--ks3-blue-light); }
+
+/* ── p7-06 · the prism bench ────────────────────────────────────────── */
+
+.ks3-prism-glass { fill: #3A4A63; stroke: var(--ks3-blue-light);
+  stroke-width: 4; stroke-linejoin: round; }
+.ks3-prism-beam { fill: none; stroke: #F2ECDD; stroke-width: 9;
+  stroke-linecap: round; }
+/* ⚖️ HUE IS PART OF THE MESSAGE HERE AND IT IS NEVER ALONE. The six rays
+   are the six colours, and every state also names them in the readout
+   tiles and in the note — "red bent least, violet bent most" — so the
+   figure is answerable without seeing the hues at all. */
+.ks3-prism-ray { fill: none; stroke-width: 7; stroke-linecap: round; }
+.ks3-prism-ray-r { stroke: #D9563A; }
+.ks3-prism-ray-o { stroke: #DE8A3C; }
+.ks3-prism-ray-y { stroke: #D8C24A; }
+.ks3-prism-ray-g { stroke: #5BA45C; }
+.ks3-prism-ray-b { stroke: #4F7DC4; }
+.ks3-prism-ray-v { stroke: #8567B5; }
+.ks3-prism-screen { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 10; stroke-linecap: round; }
+.ks3-prism-partlabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .08em; fill: var(--ks3-on-dark-muted);
+}
+.ks3-prism-caption { color: var(--ks3-on-dark-muted); }
+
+/* ── p7-07 · the colour bench ───────────────────────────────────────── */
+
+.ks3-clamp-lampbody { fill: var(--ks3-on-dark-muted); stroke: #8C8177;
+  stroke-width: 4; stroke-linejoin: round; }
+.ks3-clamp-in, .ks3-clamp-out {
+  fill: none; stroke-width: 11; stroke-linecap: round;
+}
+/* ⚖️ NOTHING COMES BACK IS DRAWN AS A GREY DASH, and the label beside it
+   says "nothing comes back". Two channels, and the second one survives a
+   reader who cannot tell the dashes from the colours. */
+.ks3-clamp-out.is-blocked { stroke: #5C554D; stroke-width: 4;
+  stroke-dasharray: 12 12; }
+.ks3-clamp-rect { stroke: var(--ks3-on-dark-muted); stroke-width: 4; }
+.ks3-clamp-eye { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 5; }
+.ks3-clamp-pupil { fill: var(--ks3-on-dark-muted); }
+.ks3-clamp-partlabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  letter-spacing: .08em; fill: var(--ks3-on-dark-muted);
+}
+.ks3-clamp-absorbcap, .ks3-clamp-objcap, .ks3-clamp-inlabel,
+.ks3-clamp-outlabel { color: var(--ks3-on-dark-muted); }
+
+/* ── the band blocks · the six fixed figures, on the light ground ───── */
+
+.ks3-lband { margin-top: 6px; }
+.ks3-lband-heading {
+  margin: 6px 0 16px; font-family: var(--ks3-font-display);
+  font-weight: 800; font-size: 30px; line-height: 1.12;
+  letter-spacing: -.03em; color: var(--ks3-ink);
+}
+/* ⚠️ A WIDE TABLE SCROLLS INSIDE ITS OWN BOX, never on the page body, and
+   the scroller is `position: relative` because §5A's rule for absolutely
+   positioned children applies to any scroller — this one has none today
+   and would resolve them against the page if it ever gained one. */
+.ks3-lband-scroller {
+  position: relative; margin-top: 18px; overflow-x: auto;
+  border-radius: var(--ks3-r-card); background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink); padding: 4px;
+}
+.ks3-lband-table {
+  border-collapse: collapse; width: 100%; min-width: 620px; font-size: 18px;
+}
+.ks3-lband-table th[scope="col"] {
+  text-align: left; padding: 14px 16px;
+  border-bottom: 3px solid var(--ks3-ink);
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-lband-table th[scope="row"] {
+  text-align: left; padding: 14px 16px; font-weight: 700;
+  border-bottom: 2px solid var(--ks3-rule); color: var(--ks3-ink);
+}
+.ks3-lband-table td {
+  padding: 14px 16px; border-bottom: 2px solid var(--ks3-rule);
+  color: var(--ks3-ink-body);
+}
+.ks3-lband-table tbody tr:last-child th[scope="row"],
+.ks3-lband-table tbody tr:last-child td { border-bottom: 0; }
+
+.ks3-lband-figwrap {
+  position: relative; margin-top: 18px; padding: 18px;
+  border-radius: var(--ks3-r-card); background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-lband-svg { display: block; width: 100%; height: auto; }
+
+.ks3-lband-close {
+  margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+  font-size: 19px; line-height: 1.6; color: var(--ks3-ink-body);
+}
+
+/* p7-03 · the apparent-depth drawing */
+.ks3-lband-glass { fill: none; stroke: var(--ks3-ink); stroke-width: 6;
+  stroke-linejoin: round; }
+.ks3-lband-water { fill: var(--ks3-blue-tint); }
+.ks3-lband-surface { fill: none; stroke: var(--ks3-blue); stroke-width: 5; }
+.ks3-lband-straw { fill: none; stroke: var(--ks3-ink); stroke-width: 12;
+  stroke-linecap: round; }
+.ks3-lband-rayline { fill: none; stroke: var(--ks3-accent);
+  stroke-width: 5; stroke-linecap: round; }
+.ks3-lband-back { fill: none; stroke: var(--ks3-ink-ghost);
+  stroke-width: 4; stroke-dasharray: 10 10; }
+.ks3-lband-normal { fill: none; stroke: var(--ks3-ink-ghost);
+  stroke-width: 3; stroke-dasharray: 8 8; }
+.ks3-lband-eye { fill: none; stroke: var(--ks3-ink); stroke-width: 5; }
+.ks3-lband-pupil { fill: var(--ks3-ink); }
+.ks3-lband-looks { fill: none; stroke: var(--ks3-accent); stroke-width: 5; }
+.ks3-lband-is { fill: var(--ks3-ink); }
+.ks3-lband-figlabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px;
+  fill: var(--ks3-ink-muted);
+}
+/* `--ks3-accent-text`, not `--ks3-accent`: this label is 14px and the
+   accent is LARGE TEXT ONLY. */
+.ks3-lband-looklabel {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px;
+  fill: var(--ks3-accent-text);
+}
+
+/* p7-04 · the two lens diagrams */
+.ks3-lband-pair {
+  margin-top: 18px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: 16px;
+}
+.ks3-lband-paircard {
+  border-radius: var(--ks3-r-card); background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink); padding: 18px;
+}
+.ks3-lband-pairtitle {
+  margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-lband-pairsvg { display: block; width: 100%; height: auto; }
+.ks3-lband-pairbody {
+  margin: 14px 0 0; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-lband-axis { fill: none; stroke: var(--ks3-ink-ghost);
+  stroke-width: 2; stroke-dasharray: 8 8; }
+.ks3-lband-lens { fill: var(--ks3-blue-tint); stroke: var(--ks3-ink);
+  stroke-width: 4; }
+.ks3-lband-beam { fill: none; stroke: var(--ks3-blue); stroke-width: 4; }
+.ks3-lband-focus { fill: var(--ks3-accent); stroke: var(--ks3-ink);
+  stroke-width: 4; }
+.ks3-lband-object { fill: none; stroke: var(--ks3-ink); stroke-width: 6;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-lband-screen { fill: none; stroke: var(--ks3-ink-ghost);
+  stroke-width: 6; }
+.ks3-lband-image { fill: none; stroke: var(--ks3-accent); stroke-width: 6;
+  stroke-linecap: round; stroke-linejoin: round; }
+
+/* p7-06 · the spectrum band */
+.ks3-lband-segframe { fill: none; stroke: var(--ks3-ink); stroke-width: 4; }
+.ks3-lband-segname {
+  font-family: var(--ks3-font-mono); font-weight: 500; font-size: 17px;
+  fill: var(--ks3-ink);
+}
+.ks3-lband-arrow { fill: none; stroke: var(--ks3-ink); stroke-width: 4;
+  stroke-linecap: round; stroke-linejoin: round; }
+.ks3-lband-arrow-accent { stroke: var(--ks3-accent); }
+.ks3-lband-arrowlabel {
+  font-family: var(--ks3-font-body); font-weight: 600; font-size: 19px;
+  fill: var(--ks3-ink);
+}
+
+/* ═══ END P7 ═══ */
+

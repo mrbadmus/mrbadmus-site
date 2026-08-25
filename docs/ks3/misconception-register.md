@@ -125,6 +125,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `FORCE` | Forces and motion — what a speed is and what it is measured against; and what a force is, what it takes to make one, what is left over when they are added, and what that leftover does | 2026-08-24, by P3; widened 24 Aug 2026 by P4 |
 | `PRESS` | Pressure — what a force does to a surface, which way a fluid pushes, and what happens where there is nothing to push | 2026-08-25, by P5 |
 | `WAVE` | Waves — what travels and what stays put, what a wave's two measurements are, and how sound is made, carried, reflected, heard and put to work | 2026-08-25, by P6 |
+| `LIGHT` | Light — what travels, how fast, what a surface does to it, how an image forms, and what colour is | 2026-08-25, by P7 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -1655,6 +1656,39 @@ The pattern this follows is the chemistry one — `MIX` for C3, `REACT` for C4, 
 | `PRESS-15` | A sealed bag swells at altitude because gravity is weaker up there. | `climb` | `s-ladder` | `atmospheric-pressure` |
 | `PRESS-16` | The air runs out at a definite height, and above it there is none at all. | `s-ladder` | `climb` | `atmospheric-pressure` |
 
+⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor
+rather than from her §6 list. Each is a genuinely separate belief rather than a re-dressing of one
+already minted, which is the `p1-08` test this register applies:
+
+  * `PRESS-04` more of the sole touching the floor means MORE pressure on it (`p5-01` rung 2
+    option C). Separate from `PRESS-01`: a student can have given up "sharp pushes harder" and
+    still have the area the wrong way round.
+  * `PRESS-08` a NARROW container concentrates the pressure, so its base takes more than a wide
+    one at the same depth (`p5-02` rung 2 option B). It is `PRESS-05` from the other side — not
+    "more water" but "a narrower tube concentrates it" — and it is a `p5-01` idea being
+    misapplied one lesson later, which is exactly the kind of thing worth its own id.
+  * `PRESS-12` being HOLLOW is what makes something float (`p5-03` rung 2 option D), whose
+    correction is that a hollow object full of water sinks.
+  * `PRESS-16` the air runs out at a definite height and above it there is none at all. It
+    arrived with Design's own six-band stack, which thins upwards without ever reaching zero, and
+    with the bench readout that never gets to 0 per cent.
+
+⚠️ **`PRESS-02` AND `PRESS-14` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on either page
+asks the student to commit to them; each is confronted because it sits underneath one that is.
+
+⚠️ **EXPECTED TO RESURFACE.** `PRESS-13` — *a vacuum sucks* — in P11 (the particle model of a
+gas) and anywhere a syringe, a pipette or a pump is drawn. `PRESS-06` — *the stuff is heavier
+lower down* — is the same shape as `PART`'s compression beliefs and will meet them in P11.
+
+⊖ **`p5-01` RE-CONFRONTS `ENER-19` AND MINTS NOTHING.** Design's FLAG 9 records that the register
+routes a force-multiplication belief to a P5 `hydraulics` lesson that `structure.py` does not
+have, and resolves it by putting the hydraulic jack in `p5-01`'s *Going further* with the distance
+traded explicitly against the force. That resolution is kept. **The register was never pointing at
+nothing**: the entry she names is `ENERGY-11`, the `ENERGY` prefix was discharged into `ENER` on
+21 Aug, and the belief lives as `ENER-19` — *"a machine that multiplies force gives you energy
+for free"* — owned by `p1-08 simple-machines` and confronted by its lever bench. `p5-01` meets it
+in a second situation, which is what this register asks a lesson to do.
+
 ### `WAVE` — waves and sound
 
 ⊕ **OPENED 25 Aug 2026, BY P6.** `docs/ks3/design-reference/p6/NOTES-P6-P7.md` §7 pre-allocated `WAVE-01` … `WAVE-36`, four per
@@ -1705,39 +1739,6 @@ fills it reads it.
 | `WAVE-34` | A scan works by shining ultrasound through you and seeing what comes out the other side. | *(none — nothing on the page asks for this commitment)* | `s-think` | `ultrasound-at-work` |
 | `WAVE-35` | Ultrasound is used because it travels faster than audible sound. | `s-ladder` | `gauge` | `ultrasound-at-work` |
 | `WAVE-36` | The gel on the skin is there to help the probe slide about. | `s-ladder` | `s-think` | `ultrasound-at-work` |
-
-⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor
-rather than from her §6 list. Each is a genuinely separate belief rather than a re-dressing of one
-already minted, which is the `p1-08` test this register applies:
-
-  * `PRESS-04` more of the sole touching the floor means MORE pressure on it (`p5-01` rung 2
-    option C). Separate from `PRESS-01`: a student can have given up "sharp pushes harder" and
-    still have the area the wrong way round.
-  * `PRESS-08` a NARROW container concentrates the pressure, so its base takes more than a wide
-    one at the same depth (`p5-02` rung 2 option B). It is `PRESS-05` from the other side — not
-    "more water" but "a narrower tube concentrates it" — and it is a `p5-01` idea being
-    misapplied one lesson later, which is exactly the kind of thing worth its own id.
-  * `PRESS-12` being HOLLOW is what makes something float (`p5-03` rung 2 option D), whose
-    correction is that a hollow object full of water sinks.
-  * `PRESS-16` the air runs out at a definite height and above it there is none at all. It
-    arrived with Design's own six-band stack, which thins upwards without ever reaching zero, and
-    with the bench readout that never gets to 0 per cent.
-
-⚠️ **`PRESS-02` AND `PRESS-14` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on either page
-asks the student to commit to them; each is confronted because it sits underneath one that is.
-
-⚠️ **EXPECTED TO RESURFACE.** `PRESS-13` — *a vacuum sucks* — in P11 (the particle model of a
-gas) and anywhere a syringe, a pipette or a pump is drawn. `PRESS-06` — *the stuff is heavier
-lower down* — is the same shape as `PART`'s compression beliefs and will meet them in P11.
-
-⊖ **`p5-01` RE-CONFRONTS `ENER-19` AND MINTS NOTHING.** Design's FLAG 9 records that the register
-routes a force-multiplication belief to a P5 `hydraulics` lesson that `structure.py` does not
-have, and resolves it by putting the hydraulic jack in `p5-01`'s *Going further* with the distance
-traded explicitly against the force. That resolution is kept. **The register was never pointing at
-nothing**: the entry she names is `ENERGY-11`, the `ENERGY` prefix was discharged into `ENER` on
-21 Aug, and the belief lives as `ENER-19` — *"a machine that multiplies force gives you energy
-for free"* — owned by `p1-08 simple-machines` and confronted by its lever bench. `p5-01` meets it
-in a second situation, which is what this register asks a lesson to do.
 
 ### `MATL` — metals and materials: what an order of reactivity is, what it predicts, and the words a material is judged by
 
@@ -2287,3 +2288,98 @@ EXTRACTION — metals are in the ground as metal, so getting them out is digging
 can hold either without the other, and joining them would blur the one thing C10 adds to C9: that
 the interesting number is not what it costs to get a material out but what fraction of it ever
 comes back.
+
+### `LIGHT` — light
+
+⊕ **OPENED 25 Aug 2026, BY P7.** `docs/ks3/design-reference/p7/NOTES-P6-P7.md` §7 pre-allocated `LIGHT-01` … `LIGHT-28`, four per
+lesson in slot order, and authored FOURTEEN of them without citing one on any page — because access was read-only and this register
+had no open family for light. **Every id she wrote is minted here on the number she gave it.** The fourteen gaps are minted from the
+real lesson content, which is the register's own rule: an id is minted from what a page actually confronts, never reserved against
+what one might.
+
+⚠️ **HER STATEMENTS ARE TAKEN FROM THE PAGE, NOT FROM THE NOTES, WHERE THE TWO DIFFER.** Both are hers, and the page's wording is
+the sentence a student actually meets — her `#s-think` quote is what appears in quotation marks in front of them. So `LIGHT-01` is
+*"Light is instant — it takes no time at all"* rather than the notes' shorter *"Light is instant"*, and the same choice is made on
+`LIGHT-02`, `LIGHT-06`, `LIGHT-09`, `LIGHT-10`, `LIGHT-13`, `LIGHT-18`, `LIGHT-21` and `LIGHT-25`. This is the `WAVE-33` / `WAVE-34`
+precedent, applied on the way in rather than as a correction.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `LIGHT-01` | Light is instant — it takes no time at all. | `s-hook` | `s-think` | `light-travels` |
+| `LIGHT-02` | Space is empty, so light has nothing to travel in and must be slowed down by it. | `s-ladder` | `s-think` | `light-travels` |
+| `LIGHT-03` | Light is longitudinal, like sound is. | *(none — nothing on the page asks for this commitment)* | `light-vs-waves` | `light-travels` |
+| `LIGHT-04` | The thunder is made a moment after the flash, so the two did not start together. | `s-hook` | `s-hook` | `light-travels` |
+| `LIGHT-05` | Rough surfaces break the law of reflection. | `ray` | `s-think` | `reflection-mirrors-and-scattering` |
+| `LIGHT-06` | Angles in reflection are measured from the mirror. | `s-ladder` | `s-think` | `reflection-mirrors-and-scattering` |
+| `LIGHT-07` | The mirror sends back far more light than the paper does. | `s-hook` | `ray` | `reflection-mirrors-and-scattering` |
+| `LIGHT-08` | Only shiny surfaces can reflect light. | `s-ladder` | `ray` | `reflection-mirrors-and-scattering` |
+| `LIGHT-09` | The straw really does bend in water. | `s-hook` | `s-think` | `refraction` |
+| `LIGHT-10` | Light bends because water is thicker and pushes it sideways. | `block` | `s-think` | `refraction` |
+| `LIGHT-11` | Light speeds up when it enters glass, because glass is clearer than air. | `s-ladder` | `block` | `refraction` |
+| `LIGHT-12` | Light only slows down when it bends, so a ray that carries straight on has not changed speed. | `block` | `block` | `refraction` |
+| `LIGHT-13` | The pinhole flips the picture over, so a lens must flip it back. | `s-hook` | `s-think` | `lenses-and-images` |
+| `LIGHT-14` | A bigger hole makes a bigger picture. | `s-ladder` | `camera` | `lenses-and-images` |
+| `LIGHT-15` | A longer box spreads the light out, so the picture gets smaller. | `camera` | `camera` | `lenses-and-images` |
+| `LIGHT-16` | A wider hole cannot blur the picture, because light travels in straight lines. | `s-ladder` | `lens-pair` | `lenses-and-images` |
+| `LIGHT-17` | Your eyes send something out in order to see. | `s-ladder` | `s-think` | `the-eye-and-the-camera` |
+| `LIGHT-18` | In a dark room your pupils open, and that is why you can eventually see. | `s-hook` | `s-think` | `the-eye-and-the-camera` |
+| `LIGHT-19` | The retina focuses the light, the way a lens does. | `s-ladder` | `eye-camera-parts` | `the-eye-and-the-camera` |
+| `LIGHT-20` | A camera's shutter does the same job as the iris. | `s-ladder` | `eye-camera-parts` | `the-eye-and-the-camera` |
+| `LIGHT-21` | The prism adds the colour to the light. | `s-hook` | `s-think` | `colour-and-the-spectrum` |
+| `LIGHT-22` | A rainbow has seven colours with lines between them. | *(none — nothing on the page asks for this commitment)* | `s-think` | `colour-and-the-spectrum` |
+| `LIGHT-23` | High-frequency light is bent the least by a prism. | `s-ladder` | `spectrum-band` | `colour-and-the-spectrum` |
+| `LIGHT-24` | The colours come off the coloured edges of the prism. | `s-hook` | `prism` | `colour-and-the-spectrum` |
+| `LIGHT-25` | An object has a colour, and the light just lets you see it. | `lamp` | `s-think` | `why-things-look-coloured` |
+| `LIGHT-26` | A red filter turns white light red. | *(none — nothing on the page asks for this commitment)* | `s-think` | `why-things-look-coloured` |
+| `LIGHT-27` | The lamp's colour and the object's colour mix on the surface to give what you see. | `s-hook` | `lamp` | `why-things-look-coloured` |
+| `LIGHT-28` | You cannot see red under a green lamp because the eye stops being able to, not because the light is not there. | `s-hook` | `colour-grid` | `why-things-look-coloured` |
+
+⚠️ **FOURTEEN ROWS ARE NOT IN DESIGN'S PROPOSED TABLE.** Her §7 pre-allocates `LIGHT-01`, `02`, `05`, `06`, `09`, `10`, `13`, `14`,
+`17`, `18`, `21`, `22`, `25` and `26` — the first two of each lesson's four — and leaves the rest of each range as a named spare.
+A spare that is never used is an id reserved against nothing, so each of the fourteen below is minted from a delivered distractor or
+a delivered quote instead, and each is a genuinely separate belief rather than a re-dressing of one already minted. That is the
+`p1-08` test this register applies.
+
+  * `LIGHT-03` light is LONGITUDINAL, like sound (`p7-01`'s comparison table, row four). Separate from `LIGHT-02`: a student can
+    have accepted that light crosses a vacuum and still be drawing it as a squeeze passed along.
+  * `LIGHT-04` the thunder is MADE a moment after the flash (`p7-01` hook option B). It is the one rival explanation that fits the
+    observation exactly, and it survives being told that light is faster.
+  * `LIGHT-07` the mirror sends back FAR MORE light than the paper (`p7-02` hook option C). This is how much against how ORDERED,
+    and the bench answers it with two numbers that are nearly the same — 95% and 80%.
+  * `LIGHT-08` only SHINY surfaces reflect (`p7-02` rung 2 option D, *"Paper is not shiny enough"*). Crumpled foil is the object
+    that separates shiny from smooth, and it is on the tab row for that reason.
+  * `LIGHT-11` light SPEEDS UP in glass because glass is clearer than air (`p7-03` rung 1 option C). Separate from `LIGHT-10`: this
+    one has the direction of the speed change wrong rather than the mechanism of the bend.
+  * `LIGHT-12` light only slows down WHEN IT BENDS (`p7-03` rung 2 option C, and her gate option C). It is the exact converse of the
+    zero-angle state the bench is built around, and it is why that state has its own branch and its own verdict word.
+  * `LIGHT-15` a LONGER box makes a SMALLER picture (`p7-04` rung 1 option B). Separate from `LIGHT-14`: that one is about the hole,
+    this one is about the box, and a student can have the box the wrong way round while knowing the hole does nothing.
+  * `LIGHT-16` a wider hole CANNOT blur, because light travels in straight lines (`p7-04` rung 2 option C). The premise is correct
+    and the rule drawn from it is wrong, which is exactly why students reach for it.
+  * `LIGHT-19` the RETINA focuses (`p7-05` rung 1 option B). It pairs the wrong two parts and it is the commonest mismatch in the
+    five-job table.
+  * `LIGHT-20` a camera's SHUTTER matches the iris (`p7-05` rung 1 option C). How WIDE against how LONG, and the eye has nothing at
+    all that does the second.
+  * `LIGHT-23` HIGH-frequency light is bent LEAST (`p7-06` rung 1 option B). It is the whole of dispersion pointing backwards, and
+    the spectrum figure's two arrows are what settle it.
+  * `LIGHT-24` the colours come off the prism's coloured EDGES (`p7-06` hook option D and rung 2 option D). Separate from
+    `LIGHT-21`: it locates the colour in the glass's surface rather than in the glass at all, and the whole beam fanning out is what
+    answers it.
+  * `LIGHT-27` the lamp's colour and the object's colour MIX on the surface (`p7-07` hook option C, gate option D). What the bench
+    computes is an INTERSECTION, and "red and green make yellow" is the arithmetic a student brings from paint.
+  * `LIGHT-28` the failure is in the EYE, not in the light (`p7-07` hook option D). It is the only one of the four that keeps the
+    physics of the surface intact and moves the fault into the observer, and the twenty-cell grid is what shows the lamp deciding.
+
+⚠️ **`LIGHT-03`, `LIGHT-22` AND `LIGHT-26` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on those pages asks the student to
+commit to them: `p7-01`'s table states the transverse row without asking, and `p7-06` and `p7-07` each carry their second Think-again
+quote underneath a belief that IS elicited. Recording the gap is the honest answer, and MRB-248 makes absence legal precisely so
+that it need not be invented.
+
+⚠️ **EXPECTED TO RESURFACE.** `LIGHT-17` — *eyes send something out* — wherever seeing is drawn as a ray from an eye, which is most
+of the way people sketch it. `LIGHT-25` — *an object HAS a colour* — in B7, where a leaf's greenness is the part of sunlight
+chlorophyll throws away, and in any lesson that treats colour as a property of a substance.
+
+⊖ **`LIGHT` DOES NOT RE-DECLARE `WAVE-21`.** `p7-01` opens by restating that sound needs a medium and light does not, which is
+`p6-06`'s belief met from the other side. That is a REAPPEARANCE and not a re-confrontation: nothing on `p7-01` takes a student's
+commitment about sound and takes it apart. The lesson carries `sound-needs-a-medium` as an edge instead, which is what the register
+asks for.

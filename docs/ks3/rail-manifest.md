@@ -210,3 +210,10 @@ rewrites §1 below. Run it when Design delivers a new unit; never hand-edit rows
 | `echoes-reflection-and-absorption` | `p6-07-echoes-reflection-and-absorption` | s-hook s-cliff s-bar s-ladder | — |
 | `hearing-and-auditory-range` | `p6-08-hearing-and-auditory-range` | s-hook s-range s-chart s-ladder | — |
 | `ultrasound-at-work` | `p6-09-ultrasound-at-work` | s-hook s-gauge s-uses s-ladder | — |
+| `light-travels` | `p7-01-light-travels` | s-hook s-race s-formula s-ladder | — |
+| `reflection-mirrors-and-scattering` | `p7-02-reflection-mirrors-and-scattering` | s-hook s-ray s-beam s-ladder | — |
+| `refraction` | `p7-03-refraction` | s-hook s-block s-inout s-ladder | — |
+| `lenses-and-images` | `p7-04-lenses-and-images` | s-hook s-camera s-lens s-ladder | — |
+| `the-eye-and-the-camera` | `p7-05-the-eye-and-the-camera` | s-hook s-eye s-parts s-ladder | — |
+| `colour-and-the-spectrum` | `p7-06-colour-and-the-spectrum` | s-hook s-prism s-band s-ladder | — |
+| `why-things-look-coloured` | `p7-07-why-things-look-coloured` | s-hook s-lamp s-grid s-ladder | — |
