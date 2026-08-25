@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temperature, particle motion and internal energy · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Matter and the particle model</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Temperature, particle motion and internal energy</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Matter and the particle model · Model</p>
+        <h1>Temperature, particle motion and internal energy</h1>
+        <p class="ks3-bigq">A spark from a grinder is at a thousand degrees and it bounces off your arm without a mark. A bath at forty would scald you. Both facts are about energy, and neither is about temperature alone.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A spark at 1000 °C and a bath at 40 °C.</h2>
+        <p class="ks3-hook-prompt">A grinding wheel throws a shower of white-hot sparks against your forearm and you feel a faint tick, nothing more. A bath run too hot at 40 °C will take the skin off you.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Which one holds more energy?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Every particle in every object is moving — vibrating in a solid, sliding past its neighbours in a liquid, flying about in a gas. <strong>Temperature</strong> is a measure of how much kinetic energy one particle has, on average. It says nothing whatever about how many particles there are.</p>
+        <p><strong>Internal energy</strong> is the total: the kinetic energy of every particle in the object, plus the energy stored in the forces holding them together. It is measured in joules, and it depends on the temperature <em>and</em> on how much stuff there is. Two objects at the same temperature can hold wildly different internal energies.</p>
+        <p>Heating moves internal energy from the hotter object to the colder one, and it keeps going until both are at the same temperature. Which way it goes is decided by temperature; how much there is to move is decided by internal energy. Confusing the two is the commonest mistake in this part of physics, and the spark is the cleanest place to see the difference.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <dc-import name="Bench" eyebrow="{{ bEyebrow }}" heading="{{ bHeading }}" lead="{{ bLead }}" progress="{{ bProgress }}" gate-prompt="{{ bGatePrompt }}" gate-options="{{ bGateOptions }}" open="{{ bOpen }}" tabs-label="{{ bTabsLabel }}" tabs="{{ bTabs }}" slider-id="{{ bSliderId }}" slider-label="{{ bSliderLabel }}" slider-value-label="{{ bSliderValueLabel }}" slider-min="{{ bSliderMin }}" slider-max="{{ bSliderMax }}" slider-value="{{ bSliderValue }}" on-slider="{{ bOnSlider }}" bars-caption="{{ bBarsCaption }}" bars-alt="{{ bBarsAlt }}" bars="{{ bBars }}" readouts="{{ bReadouts }}" note="{{ bNote }}" hint-size="100%,760px"></dc-import>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Temperature measures the average kinetic energy of one particle, in degrees Celsius. Internal energy is the total energy of all the particles added together, in joules. Temperature decides which way heating goes; internal energy decides how much there is to move.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Temperature and heat are two words for the same thing.&rdquo;</p>
+        <p>They are not even the same kind of quantity. Temperature is a state an object is in, measured in degrees; heating is a process — energy on the move from a hotter object to a colder one — measured in joules. An object does not contain heat. It contains internal energy, and heating is one of the ways that energy gets in or out. The everyday sentence "the heat in this room" is really about internal energy, and the confusion it creates is worth undoing carefully.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Adding energy to something always makes it hotter.&rdquo;</p>
+          <p>Not while it is changing state. Put a beaker of ice and water on a hotplate and the thermometer sits at 0 °C, minute after minute, while the energy pours in — because that energy is going into breaking the forces holding the solid together rather than into speeding the particles up. Only when the last of the ice has gone does the temperature start to climb again. The internal energy rose the whole time; the temperature did not.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Temperature measures the average kinetic energy of a single particle and is read in degrees Celsius. Internal energy is the total energy of every particle in an object, measured in joules, and depends on the temperature and on how much matter there is. A spark at 1000 °C holds almost no internal energy because it has almost no mass; a bath at 40 °C holds an enormous amount. Heating is energy transferred from a hotter object to a colder one, and it stops when their temperatures are equal.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Water is unusually expensive to warm up. It takes about 4200 J to raise one kilogram of it by one degree, against roughly 900 J for aluminium and 130 J for lead. That number is the specific heat capacity, and water has one of the highest of any ordinary substance — which is why it is used in radiators and cooling systems, why coastal towns have milder winters than inland ones, and why a hot water bottle stays useful for hours.</p>
+          <p>There is a floor to all this. Cool an object and its particles move less; at −273.15 °C they carry the least energy the laws of physics permit, and no further cooling is possible. That point is absolute zero, and it is why scientists usually measure temperature in kelvin, which starts there. Nothing has ever reached it, though laboratories have got within a few billionths of a degree.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p11-02-brownian-motion.html">Brownian motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p11-04-why-ice-floats.html">Why ice floats<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p1-04-heating-and-thermal-equilibrium.html">Heating and thermal equilibrium<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-03-changes-of-state.html">Changes of state<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-02-solids-liquids-and-gases.html">Solids, liquids and gases<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Specific heat capacity and its required practical, specific latent heat, and internal energy as the sum of kinetic and potential stores in the particle model.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Muddled about when to say temperature and when to say energy?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Energies are calculated as mass × 4200 J/kg°C × temperature above 0 °C, using a single specific heat capacity for water and ignoring its small variation with temperature. Masses are nominal: a teaspoon 5 g, a mug 250 g, a kettleful 1.7 kg and a bathful 80 kg. The bars use a logarithmic scale so that four quantities spanning five orders of magnitude can be shown together, and no energy is shown for 0 °C because the reference point is 0 °C itself.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'A spark and a bath', short: 'HOOK' },
+  { id: 's-bench', label: 'Four amounts of water', short: 'BENCH' },
+  { id: 's-think', label: 'Hot is not the same as a lot', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];;
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && s.touched;
+  if (id === 's-think') return s.answers.r1 !== null || s.hookChoice !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const TABS = [
+  { label: 'A teaspoon', name: 'a teaspoon of water', m: 0.005, mLabel: '5 g' },
+  { label: 'A mug', name: 'a mug of water', m: 0.25, mLabel: '250 g' },
+  { label: 'A kettleful', name: 'a kettleful of water', m: 1.7, mLabel: '1.7 kg' },
+  { label: 'A bathful', name: 'a bathful of water', m: 80, mLabel: '80 kg' }
+];
+const SLIDER = [10, 20, 40, 60, 80, 100];
+
+const HOOK_OPTIONS = ["The spark, because it is far hotter","The bath, because there is far more of it","Neither — they are both the same kind of energy","The spark, because sparks are made of metal"];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Read the model',
+    question: 'Two beakers of water are at 50 °C. One holds 100 g, the other 400 g. Which statement is right?',
+    options: [
+      { text: 'The particles in both are moving at the same average speed, but the 400 g beaker holds four times the internal energy.', correct: true },
+      { text: 'The particles in the 400 g beaker are moving four times faster.', correction: 'Average particle speed is set by temperature alone, and both are at 50 °C. What differs is how many particles there are.' },
+      { text: 'Both hold the same internal energy, because both are at the same temperature.', correction: 'Temperature is an average per particle; internal energy is the total. Four times the particles at the same average is four times the total.' },
+      { text: 'The 100 g beaker is hotter, because the same energy is packed into less water.', correction: 'Both thermometers read 50 °C. Nothing has been said about giving them equal energy.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A spark from an angle grinder lands on your arm at about 1000 °C and does no harm. Why not?',
+    options: [
+      { text: 'It has almost no mass, so despite the very high temperature its internal energy is tiny — and it cools to skin temperature almost instantly.', correct: true },
+      { text: 'Sparks are not really hot; the number is exaggerated.', correction: 'The temperature is real. What is small is the amount of matter at that temperature.' },
+      { text: 'Skin is a good conductor, so the energy passes straight through.', correction: 'Skin is a poor conductor. The reason nothing happens is that there is almost no energy in the spark to pass anywhere.' },
+      { text: 'The spark cools on the way through the air, so it arrives cold.', correction: 'It does cool on the way, and it still arrives hot. The point is that a hot thing with almost no mass carries almost no energy.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain the difference between temperature and internal energy, using a mug of tea and a swimming pool.',
+    fieldLabel: 'Your explanation', placeholder: 'Temperature tells you…',
+    criteria: [
+      'Says temperature measures the average kinetic energy of the particles.',
+      'Says internal energy is the total energy of all the particles added together.',
+      'Says a mug of tea can be at a much higher temperature than a pool.',
+      'Says the pool still holds far more internal energy, because it has vastly more particles.',
+      'Says the two quantities have different units — degrees Celsius against joules.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A storage heater holds bricks that are warmed overnight and give the energy out through the day. Explain why bricks are used rather than the same volume of air, in terms of particles and internal energy.',
+    fieldLabel: 'Your answer', placeholder: 'A brick has far more particles in the same space because…',
+    criteria: [
+      'Says a brick is far denser than air, so the same volume holds vastly more particles.',
+      'Says internal energy depends on the number of particles as well as the temperature.',
+      'Says the bricks can therefore store a large amount of energy at a modest temperature.',
+      'Says the same volume of air at the same temperature would store almost nothing.',
+      'Says the stored energy is released by heating the room, which happens because the bricks are hotter than the air around them.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    active: 0, hookChoice: null, gate: null, tab: 1, sv: 2,
+    cover: null, cfifaOpen: false, touched: false,
+    answers: { r1: null, r2: null }, text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] }
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const ci = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === ci, isWrong: done && chosen !== ci,
+          feedbackClass: 'ks3-feedback ' + (chosen === ci ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === ci ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === ci ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isC = done && i === ci;
+            const isW = done && i === chosen && i !== ci;
+            let cls = 'ks3-option';
+            if (done) cls += isC ? ' is-correct' : (isW ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isC, isWrong: isW, showLetter: !isC && !isW, disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+
+  hookVals() {
+    const s = this.state;
+    return {
+      hookOptions: HOOK_OPTIONS.map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: "The bath, easily — by something like a hundred million times. The spark is at about 1000 °C and the bath at 40 °C, so the spark wins on temperature by a wide margin and loses on everything else. Temperature says how fast the individual particles are moving. Internal energy is that added up over every particle there is, and a bath has an enormous number of particles while a spark has almost none. That is why the spark bounces off your arm and does nothing, and the bath would scald you at a quarter of its temperature."
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const T = TABS[s.tab];
+    const V = SLIDER.length ? SLIDER[s.sv] : null;
+    const fmtE = (j) => j >= 1e6 ? (j / 1e6).toFixed(2) + ' MJ' : (j >= 1000 ? (j / 1000).toFixed(1) + ' kJ' : Math.round(j) + ' J');
+    const E = T.m * 4200 * V;
+    const sliderLabel = V + ' °C';
+    const bars = TABS.map((t) => {
+      const e = t.m * 4200 * V;
+      return {
+        label: t.label + ' · ' + t.mLabel,
+        value: fmtE(e),
+        pct: e <= 0 ? 1.5 : Math.max(2, Math.min(100, ((Math.log10(e) + 1) / 8.6) * 100)),
+        tone: t === T ? 'var(--ks3-alert)' : 'var(--ks3-blue-light)',
+        sub: 'at ' + V + ' °C, the same as the other three'
+      };
+    });
+    const ratio = Math.round(80 / T.m);
+    const readouts = [
+      { label: 'Thermometer reads', value: V + ' °C', sub: 'identical for all four' },
+      { label: 'Mass of water', value: T.mLabel, sub: T.name },
+      { label: 'Internal energy above 0 °C', value: fmtE(E), sub: 'every particle added up' },
+      { label: 'A bathful holds', value: T.m === 80 ? 'this one' : ratio.toLocaleString('en-GB') + ' × more', sub: 'at exactly the same temperature' }
+    ];
+    const barsAlt = 'Four bars on a ten-times scale showing the energy in a teaspoon, a mug, a kettleful and a bathful of water, all at ' + V + ' degrees Celsius.';
+    const note = 'All four are at ' + V + ' °C, so in all four the individual water molecules are moving at the same average speed. That is what a temperature reading is: a measure of the average kinetic energy of one particle. ' +
+      'Internal energy is a different quantity — it is that average multiplied by how many particles there are — and ' + T.name + ' holds ' + fmtE(E) + ' of it. ' +
+      (T.m === 80 ? 'A teaspoon at the same temperature holds sixteen thousand times less.' : 'A bathful at the same temperature holds about ' + ratio.toLocaleString('en-GB') + ' times more, without being one degree hotter.') +
+      ' Drop the temperature to 0 °C and every bar collapses, because you have taken the energy out — but the number of particles has not changed at all.';
+  
+    return {
+      bEyebrow: "At the bench · four amounts of the same substance, one thermometer",
+      bHeading: "Same temperature, wildly different energies.",
+      bLead: "Every one of these is water, and the slider sets all four to the same temperature. The bars are the energy each one holds — and they are nothing like each other.",
+      bProgress: s.touched ? 'Controls live' : 'Change a control to begin',
+      bGatePrompt: "Commit first. A mug and a bath are both at 60 °C. Which holds more internal energy?",
+      bGateOptions: ["The same — they are at the same temperature","The mug, because the water is more concentrated in it","The bath, because internal energy counts every particle","It cannot be compared unless they are the same size"].map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      bOpen: s.gate !== null,
+      bTabsLabel: "How much water",
+      bTabs: TABS.map((t, i) => ({
+        label: t.label, pressed: s.tab === i, style: this.seg(s.tab === i, true),
+        onClick: () => this.setState({ tab: i, touched: true })
+      })),
+      bSliderId: "p1103t",
+      bSliderLabel: "Temperature of all four",
+      bSliderValueLabel: sliderLabel,
+      bSliderMin: 0, bSliderMax: Math.max(0, SLIDER.length - 1), bSliderValue: s.sv,
+      bOnSlider: (e) => this.setState({ sv: Number(e.target.value), touched: true }),
+      bBarsCaption: "Energy needed to warm each one from 0 °C — each bar step is ten times the one before",
+      bBarsAlt: barsAlt, bBars: bars, bReadouts: readouts, bNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(), this.ladderVals(), this.hookVals(), this.benchVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Density · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Matter and the particle model</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Density</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Matter and the particle model · Quantitative</p>
+        <h1>Density</h1>
+        <p class="ks3-bigq">A kilogram of lead and a kilogram of feathers weigh the same. Everybody knows that, and everybody still feels it is wrong. What they are reaching for is a different quantity altogether.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A block of iron and a block of oak balance exactly.</h2>
+        <p class="ks3-hook-prompt">On the pan balance in front of you: a small lump of iron on the left, a large block of oak on the right. The beam is dead level. The oak is about twelve times the size.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Which one is heavier?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Density</strong> is how much mass is packed into a given amount of space. It is worked out by dividing the mass of a sample by the volume that sample takes up, and it is measured in <strong>grams per cubic centimetre</strong> (g/cm³) or in <strong>kilograms per cubic metre</strong> (kg/m³). Those are the only two pairings you will meet: grams go with cubic centimetres and kilograms go with cubic metres. There is no such unit as kg/cm³ or g/m³, so if a question gives you a mass in one family and a volume in the other, converting one of them is the first line of the working.</p>
+        <p>The word people usually reach for is <em>heavy</em>, and it is the wrong word, because heavy is about a particular object. A paving slab is heavy and a chip of the same stone is not, and they are the same material at the same density. Density is a property of the <strong>material</strong>: every cubic centimetre of iron has a mass of 7.87 g whether it came from a girder or from a nail.</p>
+        <p>That is why cutting something in half does not change its density. You halve the mass, and you halve the volume at the same time, and the ratio of one to the other is untouched. It is also why density identifies things — measure a mass, measure a volume, divide, and the number that comes out tells you what the material is.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <dc-import name="Bench" eyebrow="{{ bEyebrow }}" heading="{{ bHeading }}" lead="{{ bLead }}" progress="{{ bProgress }}" gate-prompt="{{ bGatePrompt }}" gate-options="{{ bGateOptions }}" open="{{ bOpen }}" tabs-label="{{ bTabsLabel }}" tabs="{{ bTabs }}" slider-id="{{ bSliderId }}" slider-label="{{ bSliderLabel }}" slider-value-label="{{ bSliderValueLabel }}" slider-min="{{ bSliderMin }}" slider-max="{{ bSliderMax }}" slider-value="{{ bSliderValue }}" on-slider="{{ bOnSlider }}" bars-caption="{{ bBarsCaption }}" bars-alt="{{ bBarsAlt }}" bars="{{ bBars }}" readouts="{{ bReadouts }}" note="{{ bNote }}" hint-size="100%,760px"></dc-import>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Density = mass ÷ volume</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. The mass m sits above a dividing line; the density d and the volume V sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 62px; fill: var(--ks3-ink);">m</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">d</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">V</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">m</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">d</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">V</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.2; letter-spacing: -.02em; color: var(--ks3-ink-body);">g with cm³ gives g/cm³ · kg with m³ gives kg/m³</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">m</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">mass of the sample</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g or kg</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">V</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">volume the sample takes up</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">cm³ or m³</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">d</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">density of the material</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">g/cm³ or kg/m³</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 22px;">
+          <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+        </div>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Density is mass ÷ volume. The units come in matched pairs — grams with cubic centimetres gives g/cm³, kilograms with cubic metres gives kg/m³ — and there is no such unit as kg/cm³ or g/m³, so a mismatched pair must be converted before you divide. Density belongs to the material, not the object: cut a block in half and both halves have the same density. Anything below 1.00 g/cm³, or 1000 kg/m³, floats on water.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Heavy things are dense and light things are not.&rdquo;</p>
+        <p>Heavy is about the object; dense is about the material. A polystyrene packing block the size of a fridge is awkward to carry and has a density of about 0.02 g/cm³ — a fiftieth that of water. A gold ring is light enough to forget you are wearing and has a density of 19.30. The two words answer different questions, and only one of them survives cutting the object up.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Things float because they are light and sink because they are heavy.&rdquo;</p>
+          <p>An oil tanker floats and a 5p coin sinks. What decides it is not the weight but how that weight compares with the weight of the water pushed out of the way — a comparison of densities, not of masses. Below 1.00 g/cm³ a thing floats on water however large it is; above, it sinks however small. It is also why the same coin sinks in water and floats in mercury, which has a density of 13.5.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Density is mass divided by volume, measured in g/cm³ or in kg/m³ — 1.00 g/cm³ is the same density as 1000 kg/m³. The two units in the pair must match: grams go with cubic centimetres and kilograms with cubic metres, and if the question hands you one of each, converting is the first thing you do. Density is a property of the material rather than of the object, so a block and a chip of the same substance share it, and cutting something in half changes neither. Finding a density means two measurements and one division: a mass from a balance, and a volume from a cylinder or from displacement. Below 1.00 g/cm³ a material floats on water; above it, it sinks.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The numbers vary so widely because they are set by two things at once: how heavy the individual atoms are, and how tightly the structure packs them. Osmium, the densest element at 22.6 g/cm³, wins on both counts — heavy atoms in a tight hexagonal arrangement. Lithium, at 0.53, has light atoms in a loose one, and would float on water if it did not react with it violently first.</p>
+          <p>Archimedes is supposed to have solved a density problem in the bath and gone straight out into the streets of Syracuse to announce it. The story is almost certainly invented; the physics underneath it is not. A crown of pure gold and a crown of gold mixed with silver have the same mass and different volumes, so measuring the volume by displacement settles the question without damaging the crown. Every hydrometer in a brewery and every battery tester in a garage is still doing the same trick.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p10-05-how-a-motor-works.html">How a motor works<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p11-02-brownian-motion.html">Brownian motion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p11-04-why-ice-floats.html">Why ice floats<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p11-03-temperature-and-internal-energy.html">Temperature, particle motion and internal energy<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-02-solids-liquids-and-gases.html">Solids, liquids and gases<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Density in kg/m³, the required practical for regular and irregular solids and for liquids, and density as the link between particle spacing and state of matter.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a mass and a volume and want the density?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Densities are quoted at room temperature and ordinary pressure to two decimal places: oak 0.65, ice 0.92, water 1.00, aluminium 2.70, iron 7.87 and gold 19.30 g/cm³. Real timber varies widely with species and moisture content, and the figure for oak is a typical seasoned value rather than a measurement of a particular piece. Masses shown are calculated from the quoted density and the chosen volume, and are rounded to one decimal place.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Which is heavier', short: 'HOOK' },
+  { id: 's-bench', label: 'The density table', short: 'BENCH' },
+  { id: 's-formula', label: 'Triangle and five steps', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];;
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && s.touched;
+  if (id === 's-formula') return !!s.cfifaOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const TABS = [
+  { label: 'Oak', name: 'oak', d: 0.65 },
+  { label: 'Ice', name: 'ice', d: 0.92 },
+  { label: 'Water', name: 'water', d: 1.00 },
+  { label: 'Aluminium', name: 'aluminium', d: 2.70 },
+  { label: 'Iron', name: 'iron', d: 7.87 },
+  { label: 'Gold', name: 'gold', d: 19.30 }
+];
+const SLIDER = [10, 20, 50, 100, 200, 500];
+const COVERS = { d: 'density = mass ÷ volume', m: 'mass = density × volume', V: 'volume = mass ÷ density' };
+const HOOK_OPTIONS = ["The iron, because iron is a heavy metal","The oak, because there is more of it","They weigh the same, because the balance is level","It depends on the shape of each block"];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A stone has a mass of 240 g and displaces 80 cm³ of water. What is its density?',
+    options: [
+      { text: '3.0 g/cm³', correct: true },
+      { text: '19 200 g/cm³ — multiply the two', correction: 'Multiplying mass by volume gives a number with no meaning. Cover d on the triangle and m sits over V, so you divide.' },
+      { text: '0.33 g/cm³ — divide the volume by the mass', correction: 'That is the division upside down. Density is how much mass sits in each cubic centimetre, so the mass goes on top.' },
+      { text: '3.0 g — the stone is what you weighed', correction: 'The number is right and the unit is wrong. Grams divided by cubic centimetres leaves grams per cubic centimetre.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A student says a 2 kg block of oak must be denser than a 50 g lump of gold, because the oak is forty times heavier. What is right?',
+    options: [
+      { text: 'The gold is far denser. Heavier says how much there is; denser says how much mass sits in each cubic centimetre, and only the second is a property of the material.', correct: true },
+      { text: 'The student is right, because a bigger mass always means a bigger density.', correction: 'Mass on its own says nothing about density — you also need the volume. That 2 kg of oak takes up about 3000 cm³; the gold takes up under 3.' },
+      { text: 'They have the same density, because density does not depend on how much you have.', correction: 'Density does not depend on how much you have, which is true — but oak and gold are different materials, so their densities are different numbers.' },
+      { text: 'The oak is denser, but only because wood contains water.', correction: 'The verdict is wrong and so is the reason. Even soaking wet, oak stays under about 1.1 g/cm³; gold is 19.30.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Describe how you would find the density of a small irregular stone using a balance, a measuring cylinder and water, and say why the cylinder is needed at all.',
+    fieldLabel: 'Your method', placeholder: 'First put the stone on the balance and…',
+    criteria: [
+      'Finds the mass of the dry stone on the balance first, in grams.',
+      'Part-fills the measuring cylinder with water and records the reading.',
+      'Lowers the stone in fully and records the new reading.',
+      'Takes the difference between the two readings as the volume in cm³.',
+      'Divides mass by volume and gives the unit as g/cm³, explaining that a density needs both a mass and a volume.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A steel ship floats even though steel has a density of about 7.9 g/cm³. A solid steel bar of the same mass sinks. Explain the difference using density, and predict what happens if the hull fills with water.',
+    fieldLabel: 'Your answer', placeholder: 'The ship is not solid steel, so…',
+    criteria: [
+      'Says the ship is mostly air, not solid steel.',
+      'Says the density that matters is the mass of the whole ship divided by the whole volume it takes up, hull and air together.',
+      'Says that average density comes out below 1.00 g/cm³, so it floats.',
+      'Says the solid bar has the same mass in a far smaller volume, so its density stays at 7.9 g/cm³ and it sinks.',
+      'Predicts that water filling the hull replaces the air, pushing the average density above 1.00 g/cm³, and the ship sinks.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    active: 0, hookChoice: null, gate: null, tab: 3, sv: 3,
+    cover: 'd', cfifaOpen: false, touched: false,
+    answers: { r1: null, r2: null }, text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] }
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const ci = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === ci, isWrong: done && chosen !== ci,
+          feedbackClass: 'ks3-feedback ' + (chosen === ci ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === ci ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === ci ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isC = done && i === ci;
+            const isW = done && i === chosen && i !== ci;
+            let cls = 'ks3-option';
+            if (done) cls += isC ? ' is-correct' : (isW ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isC, isWrong: isW, showLetter: !isC && !isW, disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+
+  hookVals() {
+    const s = this.state;
+    return {
+      hookOptions: HOOK_OPTIONS.map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: "They weigh the same — that is what a level balance means. What differs is size: it takes about twelve times as much oak to match one lump of iron. Heavy is a property of the object; density is a property of the material, and it is the second one that lets you compare iron with oak at all."
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const T = TABS[s.tab];
+    const V = SLIDER.length ? SLIDER[s.sv] : null;
+    const m = T.d * V;
+    const fm = m >= 1000 ? (m / 1000).toFixed(2) + ' kg' : m.toFixed(1) + ' g';
+    const sliderLabel = V + ' cm³';
+    const bars = TABS.map((t) => ({
+      label: t.label, value: t.d.toFixed(2) + ' g/cm³', pct: (t.d / 19.30) * 100,
+      tone: t === T ? 'var(--ks3-alert)' : 'var(--ks3-blue-light)',
+      sub: (t.d * V).toFixed(1) + ' g for ' + V + ' cm³'
+    }));
+    const floats = T.d < 1.00;
+    const readouts = [
+      { label: 'The cylinder says', value: V + ' cm³', sub: 'the space the block takes up' },
+      { label: 'The balance says', value: fm, sub: 'mass of that much ' + T.name },
+      { label: 'So the density is', value: T.d.toFixed(2) + ' g/cm³', sub: m.toFixed(1) + ' ÷ ' + V },
+      { label: 'Dropped in water it', value: floats ? 'floats' : 'sinks', sub: floats ? 'under 1.00 g/cm³' : 'over 1.00 g/cm³' }
+    ];
+    const barsAlt = 'A bar chart of density for six materials, from oak at 0.65 grams per cubic centimetre to gold at 19.30, with ' + T.name + ' highlighted.';
+    const note = 'A ' + V + ' cm³ block of ' + T.name + ' has a mass of ' + fm + ', so every single cubic centimetre of it carries ' + T.d.toFixed(2) +
+      ' g. Move the volume slider and the mass changes with it — but the bar does not move, because the mass and the volume change together and their ratio does not. That ratio is the density, and it belongs to the material, not to the block. ' +
+      (floats ? 'At under 1.00 g/cm³ this one floats: a cubic centimetre of it is lighter than the cubic centimetre of water it would have to push out of the way.'
+              : 'At over 1.00 g/cm³ this one sinks: a cubic centimetre of it is heavier than the cubic centimetre of water it would have to push out of the way.');
+    return {
+      bEyebrow: "At the bench · six materials, one balance, one measuring cylinder",
+      bHeading: "Same volume, very different masses.",
+      bLead: "Pick a material, choose how big a block of it you want, and read the mass off the balance. The bars are the density league table — and they do not move when you change the volume.",
+      bProgress: s.touched ? 'Controls live' : 'Change a control to begin',
+      bGatePrompt: "Commit first. You take a 100 cm³ block of aluminium and cut it exactly in half. What happens to its density?",
+      bGateOptions: ["It halves, because there is half as much of it","It doubles, because it is more concentrated now","It stays at 2.70 g/cm³, because mass and volume both halved","It cannot be worked out without weighing both halves"].map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      bOpen: s.gate !== null,
+      bTabsLabel: "The material on the balance",
+      bTabs: TABS.map((t, i) => ({
+        label: t.label, pressed: s.tab === i, style: this.seg(s.tab === i, true),
+        onClick: () => this.setState({ tab: i, touched: true })
+      })),
+      bSliderId: "p1101v",
+      bSliderLabel: "Volume of the block",
+      bSliderValueLabel: sliderLabel,
+      bSliderMin: 0, bSliderMax: Math.max(0, SLIDER.length - 1), bSliderValue: s.sv,
+      bOnSlider: (e) => this.setState({ sv: Number(e.target.value), touched: true }),
+      bBarsCaption: "Density of each material, to scale against gold",
+      bBarsAlt: barsAlt, bBars: bars, bReadouts: readouts, bNote: note
+    };
+  }
+
+  coverVals() {
+    const s = this.state;
+    return {
+      coverResult: COVERS[s.cover],
+      coverTop: s.cover === 'm',
+      coverLeft: s.cover === 'd',
+      coverRight: s.cover === 'V',
+      coverTabs: ["d","m","V"].map((c) => ({
+        label: 'Cover ' + c, pressed: s.cover === c,
+        style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (s.cover === c ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+        onClick: () => this.setState({ cover: c })
+      })),
+      onCfifaOpen: () => this.setState({ cfifaOpen: true }),
+      cfifaExamples: [
+        { tab: 'Nothing to convert', head: 'A block has a mass of 54 g and a volume of 20 cm³. What is its density?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '54 g stays 54 g · 20 cm³ stays 20 cm³',
+              note: 'The answer is wanted in g/cm³, and the mass is already in grams and the volume already in cubic centimetres, so there is nothing to convert.' },
+            { letter: 'F', label: 'Formula', line: 'density = mass ÷ volume', note: 'Cover d on the triangle: m sits over V, so you divide.' },
+            { letter: 'I', label: 'Insert', line: 'density = 54 g ÷ 20 cm³', note: 'Mass on top, because density is how much mass sits in each cubic centimetre.' },
+            { letter: 'F', label: 'Fine-tune', line: '54 ÷ 20 = 2.7', note: 'Grams divided by cubic centimetres leaves grams per cubic centimetre.' },
+            { letter: 'A', label: 'Answer', line: 'density = 2.70 g/cm³', note: 'Which identifies it: that is aluminium.' }
+          ] },
+        { tab: 'Convert first', head: 'A block has a mass of 1.2 kg and a volume of 150 cm³. What is its density in g/cm³?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '1.2 kg × 1000 = 1200 g',
+              note: 'A mass in kilograms with a volume in cubic centimetres is a mismatched pair — kg/cm³ is not a unit. Bring the mass into grams and it pairs with cm³.' },
+            { letter: 'F', label: 'Formula', line: 'density = mass ÷ volume', note: 'Cover d on the triangle: m sits over V, so you divide.' },
+            { letter: 'I', label: 'Insert', line: 'density = 1200 g ÷ 150 cm³', note: 'The converted mass goes in. The 1.2 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '1200 ÷ 150 = 8', note: 'Grams divided by cubic centimetres leaves grams per cubic centimetre.' },
+            { letter: 'A', label: 'Answer', line: 'density = 8.00 g/cm³', note: 'Insert 1.2 instead of 1200 and the answer comes out 0.008 g/cm³ — light enough to float on a puddle.' }
+          ] }
+      ],
+      cfifaQuestions: (function (s, T, V) {
+        const m = T.d * V;
+        return [
+          { tab: 'Question 1', id: 'p1101q1',
+            head: 'Your block: ' + m.toFixed(1) + ' g of ' + T.name + ', taking up ' + V + ' cm³.',
+            steps: [
+              { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+                line: m.toFixed(1) + ' g stays ' + m.toFixed(1) + ' g · ' + V + ' cm³ stays ' + V + ' cm³',
+                note: 'The balance reads grams and the cylinder reads cubic centimetres, which is what g/cm³ needs, so there is nothing to convert.' },
+              { letter: 'F', label: 'Formula', line: 'density = mass ÷ volume', note: 'Cover d on the triangle: m sits over V, so you divide.' },
+              { letter: 'I', label: 'Insert', line: 'density = ' + m.toFixed(1) + ' g ÷ ' + V + ' cm³', note: 'Mass on top. Both readings come from the same block.' },
+              { letter: 'F', label: 'Fine-tune', line: m.toFixed(1) + ' ÷ ' + V + ' = ' + T.d.toFixed(2), note: 'Grams divided by cubic centimetres leaves grams per cubic centimetre.' },
+              { letter: 'A', label: 'Answer', line: 'density = ' + T.d.toFixed(2) + ' g/cm³', note: 'Change the volume slider and this line does not change. That is the whole point of a density.' }
+            ],
+            close: 'The five lines give ' + T.d.toFixed(2) + ' g/cm³ — the bar for ' + T.name + ' on the chart above.' },
+          { tab: 'Question 2', id: 'p1101q2',
+            head: 'A steel bolt has a mass of 0.039 kg and a volume of 5.0 cm³. What is its density in g/cm³?',
+            steps: [
+              { letter: 'C', label: 'Convert', placeholder: 'anything to convert?', line: '0.039 kg × 1000 = 39 g',
+                note: 'Kilograms with cubic centimetres is a mismatched pair. Grams go with cm³, kilograms go with m³ — pick one family and stay in it.' },
+              { letter: 'F', label: 'Formula', line: 'density = mass ÷ volume', note: 'Cover d on the triangle: m sits over V, so you divide.' },
+              { letter: 'I', label: 'Insert', line: 'density = 39 g ÷ 5.0 cm³', note: 'The converted mass goes in. The 0.039 never does.' },
+              { letter: 'F', label: 'Fine-tune', line: '39 ÷ 5.0 = 7.8', note: 'Grams divided by cubic centimetres leaves grams per cubic centimetre.' },
+              { letter: 'A', label: 'Answer', line: 'density = 7.80 g/cm³', note: 'Insert 0.039 instead of 39 and the bolt comes out less dense than air.' }
+            ],
+            close: 'The five lines give 7.80 g/cm³ — steel, near the iron bar on the chart. The whole question turned on the first one.' }
+        ];
+      })(this.state, TABS[this.state.tab], SLIDER.length ? SLIDER[this.state.sv] : null)
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(), this.ladderVals(), this.hookVals(), this.benchVals(), this.coverVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

@@ -539,13 +539,23 @@ def main():
     check("generator detects an injected cycle", bool(cyc),
           cyc[0] if cyc else "no cycle reported — detection is broken")
 
-    # 4. P11 cross-reference renders before P11 exists.
+    # 4. The P11 cross-reference from C1.
+    #
+    # ⊕ MRB-223, 25 Aug 2026 — THE PRECONDITION OF THIS CHECK HAS FLIPPED.
+    # It used to assert the PENDING state ("renders a graceful pending state",
+    # "is not a link") because P11 did not exist and the reference had to
+    # degrade honestly. P11 is now authored, so the same reference must now
+    # be a REAL link to the real page, and the pending chrome must be GONE
+    # from it — a `coming soon` on a lesson that exists is the defect this
+    # check was written to prevent, seen from the other side. Both halves are
+    # asserted, so the check is stronger than before, not weaker: it fails if
+    # the link is missing AND it fails if the pending state survives.
     p = "ks3/chemistry/particles-and-their-behaviour/testing-the-model.html"
     html = open(p, encoding="utf-8").read() if os.path.exists(p) else ""
-    check("P11 reference renders a graceful pending state",
-          "ks3-pending" in html and "coming soon" in html.lower())
-    check("P11 pending reference is not a link",
-          "why-ice-floats.html" not in html)
+    check("P11 reference resolves to the real why-ice-floats page",
+          "why-ice-floats.html" in html)
+    check("P11 reference no longer carries the pending state",
+          "ks3-pending" not in html)
 
     # 5. ks4_links resolve.
     missing = B.check_ks4_links(units)

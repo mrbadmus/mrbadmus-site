@@ -107,11 +107,21 @@ def _tiles(hook, specs):
 
 
 def _head(hook, a):
-    return ('<div class="ks3-%s-head"><div>'
-            '<p class="ks3-eyebrow">%s</p><h2>%s</h2></div>'
-            '<p class="ks3-%s-progress" data-%s-progress>%s</p></div>'
-            % (hook, t(a.get("eyebrow", "")), t(a.get("heading", "")),
-               hook, hook, t(a.get("progress", ""))))
+    """⊕ MRB-223, 25 Aug 2026 — RETURNS NOTHING, DELIBERATELY. A live defect.
+
+    This used to draw a second head row — eyebrow, `<h2>` and a progress
+    paragraph — inside every bench in this unit. `r_activity` had ALREADY
+    drawn Design's row (`.ks3-blockhead`, from the same `eyebrow` /
+    `heading` / `progress` keys), so every shipped bench in P4, P5 and P6
+    printed its eyebrow and its heading twice. Measured in the built bytes:
+    one duplicated `<h2>` on all 22 lesson pages; 16 placements in P6 alone.
+    P7 onwards never drew the second row (see `ks3_art/p7.py`); this brings
+    the three earlier units to the same shape without touching any of the
+    templates that call it. The wiring now writes the readout into the
+    shell's own `[data-count]`, which is the element the student was always
+    reading first.
+    """
+    return ""
 
 
 def _unique(rows, act_id, family, what, key="id"):
@@ -894,7 +904,11 @@ def r_p5_attempt(a, act_id):
     is P5's own, so `ks3_art.load()`'s one-family-one-module rule holds and
     the placement gates still see it as this unit's.
     """
-    return r_cfifa_attempt(a, act_id, "p5cfa")
+    # ⊕ MRB-223 — ONE EYEBROW, NOT TWO. The `check` shell already prints
+    # this activity's eyebrow in Design's `.ks3-blockhead`; the kit helper
+    # printed it again. `None` tells the helper it is already on the page
+    # (the P7 opt-out, applied here after it was measured on live pages).
+    return r_cfifa_attempt(dict(a, eyebrow=None), act_id, "p5cfa")
 
 
 # ═══ registration ════════════════════════════════════════════════════════

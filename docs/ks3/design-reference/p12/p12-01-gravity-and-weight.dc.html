@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gravity and weight · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Space</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Gravity and weight</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Space · Quantitative</p>
+        <h1>Gravity and weight</h1>
+        <p class="ks3-bigq">Bathroom scales are marked in kilograms and measure newtons. That single piece of everyday dishonesty is behind almost every mistake made in this topic.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>You climb Everest. What has changed about you?</h2>
+        <p class="ks3-hook-prompt">You weigh yourself at sea level, then again on the summit of Everest, 8849 m higher up, using the same scales and wearing the same clothes.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What has changed — your mass, your weight, both or neither?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Mass</strong> is how much matter something is made of. It is measured in kilograms, it is the same everywhere in the universe, and nothing but adding or removing material will change it.</p>
+        <p><strong>Weight</strong> is a force: the pull of gravity on that matter. It is measured in newtons, it has a direction — towards the centre of whatever is pulling — and it changes completely depending on where you are. <strong>W = m × g</strong>, where g is the gravitational field strength of the place you are standing, in newtons for each kilogram.</p>
+        <p>On Earth g is about 10 N/kg, so every kilogram is pulled with about 10 N. On the Moon it is 1.6, on Mars 3.7, on Jupiter 24.8. The same 70 kg astronaut weighs about 700 N on Earth, 112 N on the Moon and 1740 N on Jupiter, and is made of exactly the same amount of matter throughout.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <dc-import name="Bench" eyebrow="{{ bEyebrow }}" heading="{{ bHeading }}" lead="{{ bLead }}" progress="{{ bProgress }}" gate-prompt="{{ bGatePrompt }}" gate-options="{{ bGateOptions }}" open="{{ bOpen }}" tabs-label="{{ bTabsLabel }}" tabs="{{ bTabs }}" slider-id="{{ bSliderId }}" slider-label="{{ bSliderLabel }}" slider-value-label="{{ bSliderValueLabel }}" slider-min="{{ bSliderMin }}" slider-max="{{ bSliderMax }}" slider-value="{{ bSliderValue }}" on-slider="{{ bOnSlider }}" bars-caption="{{ bBarsCaption }}" bars-alt="{{ bBarsAlt }}" bars="{{ bBars }}" readouts="{{ bReadouts }}" note="{{ bNote }}" hint-size="100%,760px"></dc-import>
+      </section>
+
+      <section id="s-formula" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <div style="padding: 20px 24px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(24px, 3.2vw, 36px); line-height: 1.14; letter-spacing: -.03em; text-align: center;">Weight = mass × gravitational field strength</p>
+        </div>
+        <p class="ks3-eyebrow" style="margin: 24px 0 0; color: var(--ks3-accent-text);">The triangle</p>
+        <h2 style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 32px; line-height: 1.1; letter-spacing: -.03em;">Cover the one you want</h2>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 30px 48px; margin-top: 22px;">
+          <svg viewBox="0 0 300 214" role="img" aria-label="A formula triangle. The weight W sits above a dividing line; the mass m and the field strength g sit below it, multiplied together. Covering one letter leaves the way to work it out." style="width: 260px; height: auto; flex: 0 0 auto;">
+            <path d="M150 8L290 200H10Z" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 5; stroke-linejoin: round;"></path>
+            <line x1="66" y1="120" x2="234" y2="120" style="stroke: var(--ks3-ink); stroke-width: 5; stroke-linecap: round;"></line>
+            <text x="150" y="100" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 62px; fill: var(--ks3-ink);">W</text>
+            <text x="106" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">m</text>
+            <text x="150" y="178" text-anchor="middle" style="font-family: var(--ks3-font-body); font-weight: 600; font-size: 26px; fill: var(--ks3-ink-muted);">×</text>
+            <text x="196" y="182" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 58px; fill: var(--ks3-ink);">g</text>
+            <sc-if value="{{ coverTop }}">
+              <rect x="84" y="50" width="132" height="60" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="150" y="94" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">W</text>
+            </sc-if>
+            <sc-if value="{{ coverLeft }}">
+              <rect x="60" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="107" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">m</text>
+            </sc-if>
+            <sc-if value="{{ coverRight }}">
+              <rect x="150" y="132" width="94" height="58" rx="13" style="fill: var(--ks3-ink);"></rect>
+              <text x="197" y="176" text-anchor="middle" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 44px; fill: var(--ks3-ink-ghost);">g</text>
+            </sc-if>
+          </svg>
+          <div style="flex: 1 1 340px; min-width: 280px;">
+            <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+              <sc-for list="{{ coverTabs }}" as="t" hint-placeholder-count="3">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(30px, 3.8vw, 40px); line-height: 1.14; letter-spacing: -.02em;">{{ coverResult }}</p>
+            <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body);">Two things side by side means multiply. One thing over another means divide.</p>
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 9px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">W</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">weight, the force gravity pulls with</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">N</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">m</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">mass of the object</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">kg</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <span aria-hidden="true" style="flex: 0 0 46px; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px; background: var(--ks3-blue-tint); border: 2px solid var(--ks3-ink); font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; line-height: 1; color: var(--ks3-ink);">g</span>
+                <span style="flex: 1 1 auto; font-size: 19px; font-weight: 600; line-height: 1.35;">gravitational field strength where you are</span>
+                <span style="flex: 0 0 auto; min-width: 4.6rem; padding: 5px 16px; border-radius: 99px; background: var(--ks3-accent-text); color: var(--ks3-ground); font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500; white-space: nowrap; text-align: center;">N/kg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 22px;">
+          <dc-import name="Cfifa" examples="{{ cfifaExamples }}" questions="{{ cfifaQuestions }}" on-open="{{ onCfifaOpen }}" hint-size="100%,980px"></dc-import>
+        </div>
+
+        <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Weight = mass × gravitational field strength, W = m × g. Mass is in kilograms and never changes; weight is a force in newtons and changes with where you are. On Earth g is about 10 N/kg, so a 1 kg bag of sugar weighs about 10 N.</p>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;Astronauts float because there is no gravity in space.&rdquo;</p>
+        <p>The International Space Station orbits about 400 km up, where the Earth’s gravitational field is still around 90% as strong as it is at the surface. If gravity were absent the station would fly off in a straight line instead of going round. What the astronauts have lost is not the pull but the push — the floor is falling at exactly the same rate they are, so nothing presses on them. That is free fall, not the absence of gravity, and the correct name for the sensation is weightlessness.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;Weight is measured in kilograms.&rdquo;</p>
+          <p>Weight is a force, and forces are measured in newtons. The scales in your bathroom really do measure a force, then quietly divide it by 10 N/kg and print a mass, because a mass is what you wanted to know and the assumption is that you are on Earth. It is a reasonable shortcut and a bad habit: the moment the question moves off this planet, the difference between the 70 kg and the 700 N is the whole answer.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Mass is the amount of matter in an object, measured in kilograms and unchanged by location. Weight is the force of gravity acting on that mass, measured in newtons and given by W = m × g. Gravitational field strength g is the pull in newtons on each kilogram: about 10 N/kg on Earth, 1.6 on the Moon, 3.7 on Mars and 24.8 on Jupiter. Bathroom scales measure a force and display a mass by assuming Earth’s field strength.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Field strength depends on the mass of the body you are standing on and on how far you are from its centre. Jupiter is over three hundred times the mass of the Earth and pulls only about two and a half times as hard at its cloud tops, because those cloud tops are eleven times further from the middle than the Earth’s surface is from ours. Distance is doing as much work in that comparison as mass.</p>
+          <p>Because g varies slightly across the Earth — with altitude, latitude and the density of the rock underneath — a laboratory balance that compares an unknown mass against a known one gives the same answer anywhere, while a spring scale does not. That is why the kilogram was defined by a physical object for 130 years, and why gravimeters sensitive enough to detect a few parts per billion are used to hunt for oil and for buried voids.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p11-04-why-ice-floats.html">Why ice floats<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p12-02-mass-vs-weight.html">Mass vs weight<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p12-03-gravity-earth-moon-and-sun.html">Gravity between Earth, Moon and Sun<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p4-09-non-contact-forces.html">Non-contact forces<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p7-01-light-travels.html">Light travels<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Gravitational field strength in N/kg, weight measured with a calibrated spring balance, and gravitational potential energy as mass × g × height.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Got a mass in one unit and want the weight in newtons?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Gravitational field strengths are surface values rounded to one decimal place: Earth 10.0, the Moon 1.6, Mars 3.7 and Jupiter 24.8 N/kg. Earth’s true mean value is 9.81 N/kg and varies by about 0.5% between the poles and the equator; 10 is the figure used throughout KS3. Jupiter has no solid surface, so its figure is quoted at the top of the cloud layer. Deep space is treated as zero field, which is an idealisation — no point in the universe is entirely free of gravity.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The falling lift', short: 'HOOK' },
+  { id: 's-bench', label: 'Five places to stand', short: 'BENCH' },
+  { id: 's-formula', label: 'Triangle and five steps', short: 'CFIFA' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];;
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && s.touched;
+  if (id === 's-formula') return !!s.cfifaOpen;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const TABS = [
+  { label: 'Earth', name: 'Earth', g: 10.0 },
+  { label: 'The Moon', name: 'the Moon', g: 1.6 },
+  { label: 'Mars', name: 'Mars', g: 3.7 },
+  { label: 'Jupiter', name: 'Jupiter', g: 24.8 },
+  { label: 'Deep space', name: 'deep space', g: 0.0 }
+];
+const SLIDER = [1, 10, 50, 70, 100];
+const COVERS = { W: 'W = m × g', m: 'm = W ÷ g', g: 'g = W ÷ m' };
+const HOOK_OPTIONS = ["Your mass gets smaller as you go up","Your weight gets smaller, because gravity is weaker up there","Both get smaller by the same amount","Neither changes at all"];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Calculate',
+    question: 'A crate has a mass of 24 kg. What is its weight on Earth, where g = 10 N/kg?',
+    options: [
+      { text: '240 N', correct: true },
+      { text: '2.4 N — divide the mass by the field strength', correction: 'Cover W on the triangle and m sits beside g, so you multiply. Dividing gives you a mass back, not a force.' },
+      { text: '240 kg — the crate is what you weighed', correction: 'The number is right and the unit is wrong. Kilograms times newtons per kilogram leaves newtons, and weight is always a force.' },
+      { text: '24 N — weight and mass are the same number on Earth', correction: 'They are not. On Earth every kilogram is pulled with about 10 N, so the weight in newtons is about ten times the mass in kilograms.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'An astronaut floats inside the International Space Station. What is true of them?',
+    options: [
+      { text: 'Their mass is unchanged and gravity is still pulling on them — they are falling around the Earth together with the station, which is why nothing presses on the floor.', correct: true },
+      { text: 'There is no gravity that far out, so they have no weight and no mass.', correction: 'Gravity at that height is about 90% of its value at the surface. What is missing is not the pull but anything pushing back.' },
+      { text: 'Their mass has become zero, which is why they float.', correction: 'Mass never changes. Push an astronaut in orbit and they resist exactly as much as they would on the ground.' },
+      { text: 'They are beyond the Earth\u2019s field, so weight and mass no longer apply.', correction: 'The station is only about 400 km up — well inside the field. It is in orbit precisely because gravity is still pulling it.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A set of bathroom scales is marked in kilograms. Explain what it is actually measuring, and why the reading would be wrong if you took it to the Moon.',
+    fieldLabel: 'Your explanation', placeholder: 'The scales measure the force pressing down, so…',
+    criteria: [
+      'Says the scales measure a force — how hard you press down on them.',
+      'Says that force is your weight, in newtons.',
+      'Says the scale divides by 10 N/kg to display a mass in kilograms.',
+      'Says the division assumes Earth\u2019s field strength, which is built into the dial.',
+      'Says on the Moon the same person presses with about a sixth of the force, so the scales would show about a sixth of the mass — and be wrong, because the mass has not changed.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Jupiter\u2019s field strength is about 24.8 N/kg. Explain what would be hard about walking there, and what would be exactly as hard as on Earth.',
+    fieldLabel: 'Your answer', placeholder: 'Everything would weigh about two and a half times more, so…',
+    criteria: [
+      'Says every object would weigh about 2.5 times what it does on Earth.',
+      'Works out a specific weight — for example a 70 kg person at about 1740 N against 700 N.',
+      'Says legs and skeletons would have to support far more force, so standing and walking would be exhausting.',
+      'Says the mass of everything is unchanged.',
+      'Says that starting, stopping and changing direction sideways would take exactly the same force as on Earth, because that depends on mass rather than weight.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    active: 0, hookChoice: null, gate: null, tab: 0, sv: 2,
+    cover: 'W', cfifaOpen: false, touched: false,
+    answers: { r1: null, r2: null }, text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] }
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const ci = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === ci, isWrong: done && chosen !== ci,
+          feedbackClass: 'ks3-feedback ' + (chosen === ci ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === ci ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === ci ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isC = done && i === ci;
+            const isW = done && i === chosen && i !== ci;
+            let cls = 'ks3-option';
+            if (done) cls += isC ? ' is-correct' : (isW ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isC, isWrong: isW, showLetter: !isC && !isW, disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+
+  hookVals() {
+    const s = this.state;
+    return {
+      hookOptions: HOOK_OPTIONS.map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: "Your weight changes and your mass does not. Mass is how much matter there is in you, and carrying it up a mountain does not remove any. Weight is the force gravity pulls on that matter with, and gravity is very slightly weaker at the top of Everest — about 0.3% weaker, so a 70 kg climber weighs roughly 2 N less. Take the same climber to the Moon and the mass is still 70 kg while the weight falls from about 700 N to about 112 N."
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const T = TABS[s.tab];
+    const V = SLIDER.length ? SLIDER[s.sv] : null;
+    const W = T.g * V;
+    const sliderLabel = V + ' kg';
+    const bars = TABS.map((t) => ({
+      label: t.label, value: t.g.toFixed(1) + ' N/kg', pct: (t.g / 24.8) * 100,
+      tone: t === T ? 'var(--ks3-alert)' : 'var(--ks3-blue-light)',
+      sub: (t.g * V).toFixed(0) + ' N for ' + V + ' kg'
+    }));
+    const readouts = [
+      { label: 'Mass on the scales', value: V + ' kg', sub: 'the same everywhere' },
+      { label: 'Field strength here', value: T.g.toFixed(1) + ' N/kg', sub: 'newtons of pull for each kilogram' },
+      { label: 'So the weight is', value: W.toFixed(0) + ' N', sub: V + ' × ' + T.g.toFixed(1) },
+      { label: 'Compared with Earth', value: T.g === 0 ? 'nothing at all' : (T.g / 10).toFixed(2) + ' ×', sub: 'weight only, never mass' }
+    ];
+    const barsAlt = 'Bars of gravitational field strength: the Moon 1.6, Mars 3.7, Earth 10.0 and Jupiter 24.8 newtons per kilogram, with ' + T.name + ' highlighted.';
+    const note = T.g === 0
+      ? 'Far from any star or planet the field strength is effectively zero, so ' + V + ' kg of matter weighs nothing at all. It still has ' + V +
+        ' kg of mass: push it and it resists exactly as hard as it would on Earth, and it will hurt exactly as much if it drifts into you. Weightless does not mean massless, and that is the distinction the whole lesson turns on.'
+      : 'On ' + T.name + ' the gravitational field pulls with ' + T.g.toFixed(1) + ' N on every kilogram, so ' + V + ' kg weighs ' + W.toFixed(0) +
+        ' N. Move the mass slider and the weight moves with it, because weight is mass × field strength. Change where you are standing and the weight changes without the mass moving at all — the matter is untouched, and only the strength of the pull on it has altered.';
+  
+    return {
+      bEyebrow: "At the bench · one set of bathroom scales, five places to stand",
+      bHeading: "Same person. Same mass. Five different weights.",
+      bLead: "Choose where to stand and how much mass to put on the scales. The bars are the gravitational field strength at each place — and they are the only thing that changes.",
+      bProgress: s.touched ? 'Controls live' : 'Change a control to begin',
+      bGatePrompt: "Commit first. You take a 1 kg bag of sugar to the Moon. What happens to it?",
+      bGateOptions: ["Its mass and its weight both fall to a sixth","Its mass stays 1 kg and its weight falls to about a sixth","Its weight stays the same and its mass falls","Nothing changes — a kilogram is a kilogram everywhere"].map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      bOpen: s.gate !== null,
+      bTabsLabel: "Where you are standing",
+      bTabs: TABS.map((t, i) => ({
+        label: t.label, pressed: s.tab === i, style: this.seg(s.tab === i, true),
+        onClick: () => this.setState({ tab: i, touched: true })
+      })),
+      bSliderId: "p1201m",
+      bSliderLabel: "Mass on the scales",
+      bSliderValueLabel: sliderLabel,
+      bSliderMin: 0, bSliderMax: Math.max(0, SLIDER.length - 1), bSliderValue: s.sv,
+      bOnSlider: (e) => this.setState({ sv: Number(e.target.value), touched: true }),
+      bBarsCaption: "Gravitational field strength, in newtons for each kilogram",
+      bBarsAlt: barsAlt, bBars: bars, bReadouts: readouts, bNote: note
+    };
+  }
+
+  coverVals() {
+    const s = this.state;
+    return {
+      coverResult: COVERS[s.cover],
+      coverTop: s.cover === 'W',
+      coverLeft: s.cover === 'm',
+      coverRight: s.cover === 'g',
+      coverTabs: ["W","m","g"].map((c) => ({
+        label: 'Cover ' + c, pressed: s.cover === c,
+        style: 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid var(--ks3-ink);background:' +
+          (s.cover === c ? 'var(--ks3-ink)' : 'var(--ks3-card)') + ';color:' + (s.cover === c ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)') + ';',
+        onClick: () => this.setState({ cover: c })
+      })),
+      onCfifaOpen: () => this.setState({ cfifaOpen: true }),
+      cfifaExamples: [
+        { tab: 'Nothing to convert', head: 'What is the weight of a 6 kg toolbox on Earth?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '6 kg stays 6 kg · 10 N/kg stays 10 N/kg',
+              note: 'The mass is already in kilograms, which is what N/kg needs, so there is nothing to convert.' },
+            { letter: 'F', label: 'Formula', line: 'W = m × g', note: 'Cover W on the triangle: m sits beside g, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'W = 6 kg × 10 N/kg', note: 'The field strength on Earth is 10 newtons for each kilogram.' },
+            { letter: 'F', label: 'Fine-tune', line: '6 × 10 = 60', note: 'Kilograms times newtons per kilogram leaves newtons.' },
+            { letter: 'A', label: 'Answer', line: 'W = 60 N', note: 'Sixty newtons, downwards — weight is a force and always has a direction.' }
+          ] },
+        { tab: 'Convert first', head: 'What is the weight of a 450 g bag of flour on Earth?',
+          steps: [
+            { letter: 'C', label: 'Convert', line: '450 g ÷ 1000 = 0.450 kg',
+              note: '× 10 N/kg wants kilograms, and a gram is a thousandth of one, so divide by 1000.' },
+            { letter: 'F', label: 'Formula', line: 'W = m × g', note: 'Cover W on the triangle: m sits beside g, so you multiply.' },
+            { letter: 'I', label: 'Insert', line: 'W = 0.450 kg × 10 N/kg', note: 'The converted mass goes in. The 450 never does.' },
+            { letter: 'F', label: 'Fine-tune', line: '0.450 × 10 = 4.5', note: 'Kilograms times newtons per kilogram leaves newtons.' },
+            { letter: 'A', label: 'Answer', line: 'W = 4.5 N', note: 'Insert 450 instead of 0.450 and the bag comes out weighing 4500 N — about half a tonne.' }
+          ] }
+      ],
+      cfifaQuestions: (function (s, T, V) {
+        const W = T.g * V;
+        return [
+          { tab: 'Question 1', id: 'p1201q1',
+            blocked: T.g === 0,
+            lead: 'In deep space the field strength is zero, so every weight comes out as nothing. Stand somewhere with a field and the five lines come back.',
+            blockedProgress: 'No field to multiply by',
+            head: 'Your scales: ' + V + ' kg standing on ' + T.name + ', where g is ' + T.g.toFixed(1) + ' N/kg.',
+            steps: [
+              { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+                line: V + ' kg stays ' + V + ' kg · ' + T.g.toFixed(1) + ' N/kg stays ' + T.g.toFixed(1) + ' N/kg',
+                note: 'The mass is already in kilograms and the field strength already in newtons per kilogram, so there is nothing to convert.' },
+              { letter: 'F', label: 'Formula', line: 'W = m × g', note: 'Cover W on the triangle: m sits beside g, so you multiply.' },
+              { letter: 'I', label: 'Insert', line: 'W = ' + V + ' kg × ' + T.g.toFixed(1) + ' N/kg', note: 'The field strength is the one for ' + T.name + ', not for Earth.' },
+              { letter: 'F', label: 'Fine-tune', line: V + ' × ' + T.g.toFixed(1) + ' = ' + W.toFixed(0), note: 'Kilograms times newtons per kilogram leaves newtons.' },
+              { letter: 'A', label: 'Answer', line: 'W = ' + W.toFixed(0) + ' N', note: 'Downwards, towards the centre of ' + T.name + '.' }
+            ],
+            close: 'The five lines give ' + W.toFixed(0) + ' N on ' + T.name + '. The same ' + V + ' kg on Earth would weigh ' + (V * 10).toFixed(0) + ' N.' },
+          { tab: 'Question 2', id: 'p1201q2',
+            head: 'A rover of mass 185 kg is landed on Mars, where g is 3.7 N/kg. What does it weigh there?',
+            steps: [
+              { letter: 'C', label: 'Convert', placeholder: 'anything to convert?',
+                line: '185 kg stays 185 kg · 3.7 N/kg stays 3.7 N/kg',
+                note: 'Both quantities are already in the units the formula wants, so there is nothing to convert.' },
+              { letter: 'F', label: 'Formula', line: 'W = m × g', note: 'Cover W on the triangle: m sits beside g, so you multiply.' },
+              { letter: 'I', label: 'Insert', line: 'W = 185 kg × 3.7 N/kg', note: 'Use the Martian field strength, not the Earth one.' },
+              { letter: 'F', label: 'Fine-tune', line: '185 × 3.7 = 684.5', note: 'Kilograms times newtons per kilogram leaves newtons.' },
+              { letter: 'A', label: 'Answer', line: 'W = 685 N', note: 'Reach for 10 N/kg out of habit and the rover comes out weighing 1850 N — the mistake is using the wrong planet, not the wrong unit.' }
+            ],
+            close: 'The five lines give 685 N on Mars. On Earth the same rover would weigh 1850 N, which is why the landing legs could be built lighter.' }
+        ];
+      })(this.state, TABS[this.state.tab], SLIDER.length ? SLIDER[this.state.sv] : null)
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(), this.ladderVals(), this.hookVals(), this.benchVals(), this.coverVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

@@ -106,7 +106,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 
 | Prefix | Domain | Opened |
 |---|---|---|
-| `PART` | Particles, states and the particle model | 2026-07-26, by C1 (Phase 1 slice) |
+| `PART` | Particles, states and the particle model — and density as what the model explains | 2026-07-26, by C1 (Phase 1 slice); widened 25 Aug 2026 by P11 |
 | `LIFE` | What counts as living, and the life processes | 2026-08-09, by B1 |
 | `CELL` | Cells, microscopy and the organisation of living things | 2026-08-09, by B1 |
 | `BODY` | Body systems, and how they do mechanical work | 2026-08-16, by B2 |
@@ -128,6 +128,8 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `LIGHT` | Light — what travels, how fast, what a surface does to it, how an image forms, and what colour is | 2026-08-25, by P7 |
 | `CIRC` | Current and circuits — what a current is and what it is not, what a battery does, what happens at a junction, what a resistance is, and what a meter measures | 2026-08-25, by P8 |
 | `CHRG` | Electric charge — where charge comes from when things are rubbed, what a charged object does to another, and what an electric field is | 2026-08-25, by P9 |
+| `MAG` | Magnetism — what a magnet is and is not, where a field is, what the Earth's magnetism is, what makes an electromagnet, and what turns a motor | 2026-08-25, by P10 |
+| `SPACE` | Space — how far gravity reaches and what a weight reading means away from the ground, what the Sun and the stars are, why the seasons happen, and what a light year measures | 2026-08-25, by P12 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -202,6 +204,45 @@ before any of these freeze.
 | `PART-09` | Heating a gas makes the particles themselves get bigger, which is why the pressure rises. | `predict-heated-can` | `speed-not-size` | `gas-pressure` |
 | `PART-10` | Diffusion needs a draught, a current, or someone to waft it — something has to push the particles along. | `predict-still-room` | `random-walk-sim` | `diffusion` |
 | `PART-11` | Particles move in order to spread out — they 'want' to fill the space. | `why-spread` | `both-directions-sim` | `diffusion` |
+| `PART-14` | Heavy things are dense and light things are not. | `s-hook` | `think-heavy-is-not-dense` | `density` |
+| `PART-15` | Things float because they are light and sink because they are heavy. | — | `think-heavy-is-not-dense` | `density` |
+| `PART-16` | Cut a block in half and its density halves, because there is half as much of it. | `bench` | `bench` | `density` |
+| `PART-17` | The smoke specks are moving under their own power. | `s-hook` | `think-nothing-is-swimming` | `brownian-motion` |
+| `PART-18` | You are watching the air molecules hit the specks. | `s-ladder` | `think-nothing-is-swimming` | `brownian-motion` |
+| `PART-19` | Tiny air currents are blowing the specks about — something has to be moving the air for them to move. | `s-hook` | `bench` | `brownian-motion` |
+| `PART-20` | Ice floats because it is lighter than water. | `s-hook` | `think-water-is-the-odd-one` | `why-ice-floats` |
+| `PART-21` | Water expands when it freezes, so it must expand when it is heated too. | — | `think-water-is-the-odd-one` | `why-ice-floats` |
+| `PART-22` | Cold things float on warm things — it is being cold that makes ice sit on top. | `s-hook` | `s-ladder` | `why-ice-floats` |
+| `PART-03` | The particles themselves change — they melt, or get softer, or expand — when a substance changes state. | `s-ladder` | `s-ladder` | `why-ice-floats` |
+
+⊕ **`PART-14` … `PART-22` ADDED 25 Aug 2026 BY P11** (`density`,
+`brownian-motion`, `why-ice-floats`), and the family's domain line is widened to name
+density as what the particle model explains. Nine ids over three lessons: two from each
+page's own Think-again quotes, and one from a hook or gate distractor that carries a real
+wrong idea rather than a wrong guess — `PART-16` is the bench gate ("it halves, because
+there is half as much of it"), `PART-19` is the draught, `PART-22` is "cold things float".
+Design's pages cite no ids at all, so every one is minted from what her page actually says.
+
+⊕ **`PART-03` CARRIES A SECOND ROW, AND IT IS A REAPPEARANCE RATHER THAN A MINT.** The
+statement is identical, which is the shape `CELL-08` already uses and which
+`check_misconception_register` reads as one belief meeting a new lesson. The
+`reappears_in` list below predicted it in P11 `temperature-and-internal-energy`; it is
+`why-ice-floats` that actually confronts it, because that is the page where a student
+explaining a 9% expansion reaches for "the molecules got bigger", and rung 3's own success
+criteria are what take it apart (bigger GAPS, and the mass unchanged). The prediction is
+left standing and this note records where it landed — the register records fact, not intent.
+
+⊖ **`PART-09`'s PREDICTED REAPPEARANCE IN P11 `density` IS NOT TAKEN UP, DELIBERATELY.**
+The belief is that heating a gas makes the particles themselves bigger; nothing on the
+density page heats anything, and citing it there would put a join in the register that the
+page does not honour. It is left as a prediction.
+
+⚠️ **THREE MORE LESSONS PUT `#s-think` ON THE RAIL, AND `p9-01`'s OPEN FLAG IS NOT
+RE-RAISED.** `p9-01` is the first lesson in the key stage whose rail includes the
+confrontation, and its package note parks the design question for Mide. `p11-02`,
+`p11-03` and `p11-04` arrive at the same place from Design's own `DONE`
+(`s.answers.r1 !== null || s.hookChoice !== null`), so the count is now four. Recorded
+here, once, so one ruling covers all four rather than each unit asking again.
 
 ⊕ **`PART-12` and `PART-13` are gone from this table and are PERMANENT GAPS.** They were re-homed
 to `NOS-01` and `NOS-02` on 17 Aug 2026 by MRB-248; their rows now live in the `NOS` section below,
@@ -1363,6 +1404,22 @@ turn the MRB-244 gate red rather than quietly breaking the pointer.
 | `ENER-25` | A kilowatt-hour is a measure of power — it has kilowatt in the name. | `s-hook` | `kwh-rectangles` | `reading-a-fuel-bill` |
 | `ENER-26` | Switch everything off and the bill goes to zero. | `s-think` | `s-think` | `reading-a-fuel-bill` |
 | `ENER-27` | Renewable means clean, and non-renewable means polluting. | `s-hook` | `two-axis-grid` | `fuels-and-energy-resources` |
+| `ENER-28` | Temperature and heat are two words for the same thing. | `s-think` | `think-hot-is-not-a-lot` | `temperature-and-internal-energy` |
+| `ENER-29` | Adding energy to something always makes it hotter. | `s-think` | `think-hot-is-not-a-lot` | `temperature-and-internal-energy` |
+| `ENER-13` | Temperature and energy are the same thing — if something is hotter it must hold more energy. | `s-hook` | `bench` | `temperature-and-internal-energy` |
+
+⊕ **`ENER-28` AND `ENER-29` ADDED 25 Aug 2026 BY P11 `temperature-and-internal-energy`.**
+Both are minted from Design's own two Think-again quotes on that page. `ENER-28` sits
+beside `ENER-02` ("a thermometer measures how much energy something has") and is a
+DIFFERENT statement: `ENER-02` is about what the instrument reads, and `ENER-28` is about
+two words being interchangeable — a student can hold either without the other, and the
+second is the one that makes "the heat in this room" sound like a quantity an object
+contains. Minted rather than re-used, and said here so the closeness is on the record.
+
+⊕ **`ENER-13` CARRIES A SECOND ROW, AS A REAPPEARANCE.** Identical statement, new lesson.
+P1's `heating-and-thermal-equilibrium` opened it; this page's hook asks for it in terms (a
+spark at 1000 °C against a bath at 40 °C) and its bench takes it apart with four amounts of
+one substance on one thermometer. Nothing is re-minted.
 
 ⊕ **`ENER-09` ONWARD ARE PHYSICS, IN THE SAME FAMILY.** The prefix table's ruling is
 explicit — *"A physics lane meeting an energy misconception adds to `ENER`; it does not
@@ -1470,6 +1527,8 @@ DELIVERED page rather than taken from her proposed table: her `NOTES-P3.md` §4 
 | `FORCE-43` | An overstretched spring goes back to its natural length if you leave it long enough. | `s-ladder` | `s-ladder` | `springs-and-hookes-law` |
 | `FORCE-44` | A force needs something in between to carry it across. | `s-hook` | `s-think` | `non-contact-forces` |
 | `FORCE-45` | There is no gravity in space. | *(none — nothing on the page asks for this commitment)* | `s-think` | `non-contact-forces` |
+| `FORCE-45` | There is no gravity in space. | `s-ladder` | `think-no-gravity-in-space` | `gravity-and-weight` |
+| `FORCE-45` | There is no gravity in space. | *(none — nothing on the page asks for this commitment)* | `think-orbit-is-not-a-balance` | `gravity-earth-moon-and-sun` |
 | `FORCE-46` | Magnets attract all metals. | *(none — nothing on the page asks for this commitment)* | `three-forces` | `non-contact-forces` |
 
 ⊖ **ONE OF DESIGN'S PROPOSED ROWS MINTS NOTHING.** Her table names *"a steeper line means it went
@@ -1477,6 +1536,21 @@ further"* as a row of its own, attached to `p3-02`'s rung 2. The belief IS on th
 that rung's first distractor — but it is `FORCE-07` read from the other side: both are reading a
 gradient as something other than a speed. It takes no row, following `p1-08`'s precedent for a
 second quote that re-dresses an existing belief. `FORCE-08` takes the number instead.
+
+⊕ **`FORCE-45` REAPPEARS TWICE IN P12, 25 Aug 2026, AND HAS TWO EXTRA ROWS IN THE TABLE ABOVE.**
+*"There is no gravity in space"* is confronted again on `p12-01` — where Design's first Think-again
+quote is *"Astronauts float because there is no gravity in space"* and her rung 2 elicits it in as
+many words — and again on `p12-03`, where her second quote is the sentence itself. Both rows carry
+the IDENTICAL statement and the same number, which is what a reappearance means here (`CELL-08` is
+the precedent). No `SPACE` twin was minted: one belief with two ids is the silent broken join §5.3
+exists to prevent, and it would have been invisible to every gate in the build.
+
+⚠️ **`FORCE-22` MEETS ITS NEIGHBOUR IN P12 AND STAYS SEPARATE.** `SPACE-01` is *"Weight is measured
+in kilograms"*, which is not *"Weight in newtons is the same number as the mass in kilograms"*. A
+student holds the first before the units have landed and the second afterwards, and the two are
+taken apart by different arguments. `p12-01` rung 1's fourth option is `FORCE-22` appearing as a
+distractor and cites no id, because a distractor its own rung answers in place is not a second
+confrontation. Reasoning in full under `SPACE`.
 
 ⚠️ **`FORCE-04` IS THE ONE TO WATCH, AND DESIGN SAID SO FIRST.** Her notes: *"it is arguably the
 same wrong idea as `PART-05`-style 'the numbers do what they are told', i.e. a mathematics
@@ -2578,3 +2652,198 @@ same shape as any inverse-square belief and will reappear in P12's gravity lesso
 pre-allocates for P8 — is not opened here: P9 is another lane's neighbour, not its owner, and this register's
 standing rule is that a family is opened by the unit that mints into it. `p9-01` names insulators and conductors
 from nothing, with `p8-06` carried as an edge, and cites no `CIRC` id.
+
+
+---
+
+### `MAG` — magnetism: what a magnet is and is not, where a field is, what the Earth's is, what makes an electromagnet, and what turns a motor
+
+⊕ **OPENED 25 Aug 2026, BY P10.** `docs/ks3/design-reference/p10/NOTES-P10.md` §6 pre-allocated a range four per
+lesson in slot order and authored FIFTEEN entries, leaving the last of each four as a named spare, without citing
+one on any page — because her access was read-only and this register had no open family for magnetism. **Every id
+she wrote is minted here on the number she gave it, in her words.** The five spares are minted too, and each one
+is minted from REAL PAGE CONTENT rather than reserved, which is this register's own rule: an id is minted from
+what a page actually confronts, never against what one might.
+
+⚠️ **HER PREFIX IS KEPT.** Unlike P9 — where her `STAT` collided with the statutory ids `KS3.P.STAT.01` printed on
+the same page — `MAG` collides with nothing a student or a reader meets. The statutory strand these five lessons
+own is also spelt `MAG` (`KS3.P.MAG.01` … `.04`), but those are always written in full with the `KS3.P.` stem and
+a dotted number, and a misconception id is always `MAG-nn` with a hyphen. Checked against the prefix table above:
+no other family uses it.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `MAG-01` | All metals are magnetic. | `track` | `s-think` | `magnets-and-poles` |
+| `MAG-02` | It stuck to the magnet, so it must be a magnet. | `s-hook` | `s-think` | `magnets-and-poles` |
+| `MAG-03` | Turning a magnet round makes it stronger or weaker. | `s-hook` | `track` | `magnets-and-poles` |
+| `MAG-04` | A magnet only does anything to another magnet, so plain steel just sits there. | `track` | `track` | `magnets-and-poles` |
+| `MAG-05` | The field is only where the lines are drawn. In between the lines there is nothing. | `plot` | `s-think` | `magnetic-fields` |
+| `MAG-06` | The iron filings make the field. | `s-hook` | `s-think` | `magnetic-fields` |
+| `MAG-07` | Field lines can cross if the field is strong enough. | `s-ladder` | `rules` | `magnetic-fields` |
+| `MAG-08` | Where the lines are crowded there are more of them, because the magnet makes extra lines at its ends. | `s-ladder` | `rules` | `magnetic-fields` |
+| `MAG-09` | The Earth's North Pole is a magnetic north pole. | `s-ladder` | `s-think` | `the-earth-is-a-magnet` |
+| `MAG-10` | A compass points at the North Pole. | `s-hook` | `s-think` | `the-earth-is-a-magnet` |
+| `MAG-11` | There is a bar of iron inside the Earth. | `dip` | `no-bar-down-there` | `the-earth-is-a-magnet` |
+| `MAG-12` | A compass works better at the magnetic pole than anywhere else, because that is what it has been pointing at all along. | `dip` | `dip` | `the-earth-is-a-magnet` |
+| `MAG-13` | The iron core is what makes the magnetism. The coil just holds it. | `coil` | `s-think` | `electromagnets` |
+| `MAG-14` | Adding more turns makes it stronger because there is more wire, so more current. | `coil` | `s-think` | `electromagnets` |
+| `MAG-15` | Switching off leaves a weak field that drains away. | `coil` | `coil` | `electromagnets` |
+| `MAG-16` | Once the iron core has been magnetised it stays a magnet, so switching off changes nothing. | `coil` | `coil` | `electromagnets` |
+| `MAG-17` | The coil is pulled round because the magnets attract it. | `motor` | `s-think` | `how-a-motor-works` |
+| `MAG-18` | The split ring is what makes it turn. | `motor` | `s-think` | `how-a-motor-works` |
+| `MAG-19` | Reversing the current and the magnets reverses it twice over. | `motor` | `motor` | `how-a-motor-works` |
+| `MAG-20` | If the current and the field are both reversed they work against each other, so the coil stops. | `motor` | `motor` | `how-a-motor-works` |
+
+⚠️ **THE FIVE SPARES ARE MINTED, AND EACH ONE NAMES THE OPTION IT CAME FROM.** Her §6 reserves `MAG-04`, `-08`,
+`-12`, `-16` and `-20` as "the named spare" of each four. A reservation is not a minting, and this register does
+not hold ids against future need — so each of the five was tested against the page's own content and each one
+turned out to be there already, in a gate distractor or a rung distractor with its own correction. The test
+applied to all five is the one this register always applies: is it a genuinely SEPARATE belief, or the same one
+in other words?
+
+  * **`MAG-04` — a magnet only acts on another magnet.** `p10-01`'s commit gate, option D, which now states the
+    rule completely: *"It does nothing either time, because only a magnet can be pushed or pulled by another
+    magnet."* Separate from `MAG-01`, which is about WHICH MATERIALS respond, and from `MAG-02`, which is about
+    what attraction PROVES. A student can have both of those right and still predict that a steel nail sits
+    still — and the bench's twenty-four magnet-and-steel states exist to break exactly that.
+  * **`MAG-08` — crowding means there are MORE lines there.** `p10-02`'s rung 1, option B, with Design's own
+    correction: *"Every line that leaves the north pole arrives at the south pole, so the count is the same
+    everywhere. What differs is how much space they are spread over."* Separate from `MAG-05`: a student can
+    accept that the field fills the gaps between drawn lines and still believe a magnet grows extra lines at its
+    ends, and that belief is what turns a comparison into a count.
+  * **`MAG-12` — a compass works BEST at the pole.** `p10-03`'s commit gate, option C: *"It points more strongly
+    than anywhere else, because the pole is right there."* Separate from `MAG-10`: a student who has given up
+    "it points AT the pole" entirely can still expect the reading to be best where the pole is. It is the exact
+    opposite of what happens, the bench's at-the-pole state is what breaks it, and rung 4 asks for it.
+  * **`MAG-16` — the core STAYS magnetised.** `p10-04`'s commit gate, option A, and rung 2's. Separate from
+    `MAG-15`, and the two are opposite predictions rather than one belief: `MAG-15` expects the field to FADE,
+    this one expects it to persist for good. A student holding this one has understood that iron can be
+    magnetised and has not yet met the difference between soft iron and hardened steel.
+  * **`MAG-20` — current and field cancel to a standstill.** `p10-05`'s commit gate, option C, and rung 1's
+    option B. Separate from `MAG-19`, and it reaches a different wrong answer by a different route: `MAG-19`
+    treats two reversals as adding up to a double reversal, while this one treats current and field as two
+    forces along one line that can oppose each other. A student holding it has not met the idea that the push is
+    at right angles to both.
+
+⚠️ **ONE `confronted_by` NAMES AN EXPLAINER, AND THE EXPLAINER CARRIES AN `id` FOR THAT REASON.** `MAG-11` —
+*there is a bar of iron inside the Earth* — is confronted on `p10-03` in the paragraph that says the core is far
+too hot for a magnet to survive in, and nowhere else on the page. MRB-244 requires every `confronted_by` to name
+a real element on its own page, so that paragraph is authored with `id: "no-bar-down-there"`. It is an anchor and
+nothing else: no treatment changes, and Design's explainer stack is untouched. Its `elicited_by` is the BENCH,
+which is honest rather than convenient — the globe on that bench literally draws a bar magnet inside the Earth,
+and that drawing is what plants the belief the paragraph then takes away.
+
+⚠️ **EVERY `elicited_by` IS PRESENT ON THIS FAMILY**, which is unusual — `CHRG-02` and `CHRG-09` have none, and
+§5.3 allows that. Here all twenty beliefs are asked for somewhere: eight in a hook or a commit gate, six in a
+rung, six on a bench where the student has to choose a setting before the note appears.
+
+⚠️ **EXPECTED TO RESURFACE.** `MAG-05` — *the field is only where the lines are drawn* — is the magnetic twin of
+`CHRG-09`, and the two should be named together whenever a field is introduced a third time. `MAG-17` — *the
+magnets attract the coil* — will meet the induction motor at KS4 and is worth naming again there. `CHRG-10` —
+*the air in the gap must be carrying it* — was expected in P10 by P9's own note and did NOT need a new id: it is
+not confronted here, because these five pages never argue about what is in the gap. It stands where it is.
+
+⊖ **NOTHING IN P10 RE-CONFRONTS AN EXISTING FAMILY AND NOTHING IS RE-DECLARED.** `CHRG` is the nearest neighbour
+and no `CHRG` id is cited: `p10-02` introduces a field from nothing rather than borrowing the electric one, which
+is Design's §3 rule for the whole unit. `CIRC` is not cited either — `p10-04` and `p10-05` both restate that a
+current makes a magnetic field in a clause of their own, so neither depends on P8.
+
+### `SPACE` — space: how far gravity reaches, what a weight reading means, what the Sun and the stars are, why the seasons happen, and what a light year measures
+
+⊕ **OPENED 25 Aug 2026, BY P12 *Space*.** Every row below was checked against Design's DELIVERED
+page rather than taken from a proposed table — she proposes none for this unit. Each is drawn
+from one of her two Think-again quotes per page, from a hook option, from a bench-gate distractor
+or from a ladder distractor that carries a real wrong idea rather than a slip.
+
+⚖️ **WHY A NEW FAMILY AND NOT `FORCE`.** `FORCE` is declared as *forces and motion — what a speed
+is and what it is measured against; and what a force is, what it takes to make one, what is left
+over when they are added, and what that leftover does*. Weight is a force and the first two P12
+lessons are about it, so the case for putting these in `FORCE` is real and was considered. It
+fails on the other four lessons: what a galaxy is, why the seasons happen and what a light year
+measures are not beliefs about forces at all, and splitting one unit's twenty-two entries across
+two families to honour a boundary that holds for only a third of them is how a taxonomy stops
+being usable. `PRESS`, `WAVE`, `LIGHT` and `CHRG` were all opened on the same reasoning.
+
+| ID | Statement, as a student holds it | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `SPACE-01` | Weight is measured in kilograms. | `s-ladder` | `think-no-gravity-in-space` | `gravity-and-weight` |
+| `SPACE-02` | Where gravity is weaker you have less mass, because you are lighter there. | `s-hook` | `bench` | `gravity-and-weight` |
+| `SPACE-03` | A kilogram is a kilogram everywhere, so nothing about it changes on the Moon. | `bench` | `bench` | `gravity-and-weight` |
+| `SPACE-04` | In orbit things are weightless, so they have no mass. | `s-ladder` | `think-weightless-not-massless` | `mass-vs-weight` |
+| `SPACE-05` | Weight and mass are the same thing measured in different units, like metres and feet. | *(none — nothing on the page asks for this commitment)* | `think-weightless-not-massless` | `mass-vs-weight` |
+| `SPACE-06` | On the Moon everything is easier, so a hammer is easier to swing as well as easier to lift. | `s-hook` | `s-ladder` | `mass-vs-weight` |
+| `SPACE-07` | A spring balance reads a mass, so it gives the same answer wherever you take it. | `bench` | `bench` | `mass-vs-weight` |
+| `SPACE-08` | The Moon is held up by a balance between gravity pulling it in and a force flinging it out. | `s-hook` | `think-orbit-is-not-a-balance` | `gravity-earth-moon-and-sun` |
+| `SPACE-09` | The bigger body pulls harder, so the Sun pulls the Earth far more than the Earth pulls the Sun. | `bench` | `bench` | `gravity-earth-moon-and-sun` |
+| `SPACE-10` | Gravity falls in step with the distance, so twice as far apart means half the pull. | `s-ladder` | `bench` | `gravity-earth-moon-and-sun` |
+| `SPACE-11` | The Sun is not a star — stars are the small twinkling things at night. | `s-hook` | `think-the-sun-is-a-star` | `the-sun-stars-and-galaxies` |
+| `SPACE-12` | Stars are all about the same, and the brighter ones are the closer ones. | `s-ladder` | `think-the-sun-is-a-star` | `the-sun-stars-and-galaxies` |
+| `SPACE-13` | The stars you can see at night are part of our solar system. | `s-ladder` | `bench` | `the-sun-stars-and-galaxies` |
+| `SPACE-14` | A galaxy is something inside a solar system, because the solar system is the whole system. | `bench` | `bench` | `the-sun-stars-and-galaxies` |
+| `SPACE-15` | It is summer when the Earth is closer to the Sun. | `s-hook` | `think-not-the-distance` | `seasons-and-the-tilt` |
+| `SPACE-16` | The Earth’s tilt changes through the year, leaning towards the Sun in summer and away in winter. | *(none — nothing on the page asks for this commitment)* | `think-not-the-distance` | `seasons-and-the-tilt` |
+| `SPACE-17` | It is the same season everywhere on the Earth on the same date. | `bench` | `bench` | `seasons-and-the-tilt` |
+| `SPACE-18` | A high Sun warms the ground more because it is closer to it. | `s-ladder` | `bench` | `seasons-and-the-tilt` |
+| `SPACE-19` | A light year is a very long time. | `s-hook` | `think-a-year-that-is-a-distance` | `how-far-is-a-light-year` |
+| `SPACE-20` | Because light is so fast, we see distant things as they are now. | `bench` | `think-a-year-that-is-a-distance` | `how-far-is-a-light-year` |
+| `SPACE-21` | A light year measures how fast light travels. | `s-hook` | `bench` | `how-far-is-a-light-year` |
+| `SPACE-22` | A spacecraft that can reach a star four light years away would get there in about four years. | `s-ladder` | `s-ladder` | `how-far-is-a-light-year` |
+
+⚠️ **`FORCE-45` IS RE-CONFRONTED TWICE IN THIS UNIT AND IS NOT RE-MINTED.** *"There is no gravity
+in space"* is already `FORCE-45`, opened by `p4-09 non-contact-forces`. `p12-01`'s first
+Think-again quote is *"Astronauts float because there is no gravity in space"* and `p12-03`'s
+second is the sentence itself, word for word. Both take a row in the `FORCE` table above with the
+IDENTICAL statement and the same number — the `CELL-08` precedent, and the thing this register's
+law actually forbids is one id meaning two DIFFERENT things. Minting a `SPACE` twin would have
+been exactly that: one belief wearing two names, with no gate anywhere able to see the pair.
+
+⚠️ **`FORCE-22` IS ADJACENT TO `SPACE-01` AND THE TWO ARE NOT THE SAME BELIEF.** `FORCE-22` is
+*"Weight in newtons is the same number as the mass in kilograms"* — a student who has the units
+right and the arithmetic wrong. `SPACE-01` is *"Weight is measured in kilograms"* — a student who
+has not separated the two quantities at all. A class holds both, in different children, and often
+in sequence: `SPACE-01` first, then `FORCE-22` after the units have landed but before the ×10
+has. They are confronted differently too — `SPACE-01` by naming the newton, `FORCE-22` by doing
+the multiplication — so one row could not carry both `confronted_by` values honestly. `p12-01`
+rung 1's fourth option (*"24 N — weight and mass are the same number on Earth"*) is `FORCE-22`
+appearing as a distractor; it is answered by that rung's own correction and cites no id, because
+a distractor a page answers in place is not a second confrontation.
+
+⚠️ **`SPACE-10` IS `CHRG-07` IN GRAVITATIONAL CLOTHES, AND IT IS MINTED RATHER THAN REUSED.**
+The `CHRG` family's own closing note predicts the arrival: *"`CHRG-07` is the same shape as any
+inverse-square belief and will reappear in P12's gravity lessons."* It does — `p12-03` rung 1's
+first distractor is *"It has fallen to a third of what it was"* against a trebled separation.
+It is not reused, because `CHRG-07`'s statement names CHARGES (*"The force between two charges
+falls in step with the distance, so doubling the gap halves it"*) and that sentence is not true
+of gravity, while a re-used id must carry an IDENTICAL statement. This is the `ENER-03` /
+`PTAB-07` treatment exactly: two entries, elicited by different phenomena, with the edge recorded
+rather than the rows merged. A student can hold either without the other, and the commonest case
+in a real class is to hold it about gravity having never met electrostatics at all.
+
+⚠️ **`SPACE-05`, `SPACE-16` AND BOTH P12 `FORCE-45` ROWS HAVE NO `elicited_by`, WHICH §5.3
+ALLOWS.** Each is Design's SECOND Think-again quote, which sits under her amber rule as static
+markup with no gate in front of it; nothing on those pages asks the student to commit to them,
+and each is confronted because it sits underneath one that is. Recording the gap is the honest
+answer, as `CELL-13`'s row already establishes. (`p12-01`'s `FORCE-45` row DOES carry one, and it
+is her own: rung 2's second option is *"There is no gravity that far out…"*.)
+
+⚠️ **`#s-think` IS A CONFRONTATION ANCHOR ON ALL SIX PAGES AND A RAIL STOP ON THREE.** `p12-03`,
+`p12-04` and `p12-05` include it, because Design's `isDone()` gives it
+`s.answers.r1 !== null || s.hookChoice !== null`; `p12-01`, `p12-02` and `p12-06` put their third
+stop on `#s-formula` instead. That is a fact about the rail and not about the register — every
+`confronted_by` above resolves against its own built page either way.
+
+⊕ **THIS PARALLELS THE OPEN `p9-01` FLAG AND DOES NOT RE-RAISE IT.** P9 recorded *Think-again as a
+rail stop* as a new thing in the key stage, true of `p9-01` and of nothing before it. Three P12
+pages do the same on a DIFFERENT predicate — hers is satisfied by the hook or by ladder rung 1
+rather than by the bench's gate, so the section takes a wire function of its own instead of being
+marked by the bench through `band_anchor`. Noted here so the two are read as one pattern with two
+shapes; the flag itself stays where P9 left it.
+
+**Where these are expected to resurface** (`reappears_in`, filled as the units are authored):
+
+- `SPACE-04` (weightless means massless) → wherever KS4 meets inertia, where the same belief
+  makes `F = m × a` unreadable rather than merely wrong.
+- `SPACE-19` (a light year is a time) → every later meeting with an astronomical distance. It is
+  the single most durable belief in the unit, because ordinary English keeps reinforcing it.
+- `SPACE-20` (we see distant things as they are now) → KS4 astronomy, where red shift makes the
+  delay load-bearing rather than merely true.

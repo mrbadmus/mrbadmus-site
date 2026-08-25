@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnetic fields · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Magnetism and electromagnetism</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Magnetic fields</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Magnetism and electromagnetism · Investigation</p>
+        <h1>Magnetic fields</h1>
+        <p class="ks3-bigq">The space around a magnet is not empty. A compass needle finds a direction at every point in it, and joining those directions up is the whole of what a field line is.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Sprinkle iron filings on the paper and a pattern appears.</h2>
+        <p class="ks3-hook-prompt">A bar magnet sits under a sheet of paper. Scatter iron filings on top, tap the sheet once, and they arrange themselves into curved lines that loop from one end of the magnet round to the other. Nobody moved them into place.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Where did the lines come from?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A <strong>magnetic field</strong> is the region around a magnet where another magnet, or a piece of iron, steel, nickel or cobalt, would feel a force. It is there whether or not anything is in it to feel it, and it fills space in three dimensions — the filings only show you one flat slice of it.</p>
+        <p>We draw the field with <strong>field lines</strong>. A line shows the direction a compass needle's north-seeking end would point if you put it at that spot, and the rule is that lines run <strong>out of a north pole and into a south pole</strong> on the outside of a magnet. Where the lines are <strong>crowded together the field is strong</strong>; where they spread apart it is weak. Field lines never cross, because a compass at any one point can only point one way.</p>
+        <p>Plotting a field means doing exactly that, by hand: put a small compass down, mark the direction it settles to, move it along, mark again, and join up the marks. That is the measurement. The lines themselves are a drawing — useful, agreed on by everybody, and not something you would find if you went looking with a microscope.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a plotting compass on a field map</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Put the compass down and read it.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Choose what is laid out on the bench, then choose where on the paper the plotting compass goes. Bearings are measured clockwise from the top of the page.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. Two bar magnets are laid end to end with their north poles facing each other, a few centimetres apart. A compass is put down exactly half way between them. What does the needle do?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 460px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">On the paper</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ setupTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 300px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Where the compass goes</p>
+                <div style="display: grid; grid-template-columns: repeat(5, 44px); gap: 6px;">
+                  <sc-for list="{{ spotBtns }}" as="t" hint-placeholder-count="25">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" aria-label="{{ t.aria }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="{{ gridPath }}" style="fill: none; stroke: #6E6357; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;"></path>
+                  <path d="{{ magPath }}" style="fill: #2A241E; stroke: #C6B9A7; stroke-width: 5; stroke-linejoin: round;"></path>
+                  <path d="{{ northPath }}" style="fill: #8FB7FF; stroke: none;"></path>
+                  <circle cx="{{ cx }}" cy="{{ cy }}" r="30" style="fill: #15110C; stroke: #E9DCC8; stroke-width: 4;"></circle>
+                  <path d="{{ needlePath }}" style="{{ needleStyle }}"></path>
+                </svg>
+                <span style="{{ nLabelStyle }}">{{ nLabelText }}</span>
+                <span style="{{ sLabelStyle }}">{{ sLabelText }}</span>
+                <span style="{{ n2LabelStyle }}">{{ n2LabelText }}</span>
+                <span style="{{ s2LabelStyle }}">{{ s2LabelText }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The needle points</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ bearingLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ bearingSub }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Field strength here</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ strengthWord }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ strengthNum }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Lines near the compass</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ crowdWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-rules" class="ks3-block" style="background: var(--ks3-band); scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Four rules that let you draw any field</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">Every field map in physics obeys these four, and every one of them comes straight from what a plotting compass does.</p>
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 14px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <svg viewBox="0 0 240 110" role="img" aria-label="A bar magnet with a line leaving the north end and curving round into the south end." style="display: block; width: 100%; height: auto;">
+              <rect x="76" y="46" width="88" height="24" rx="4" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+              <path d="M164 58 C206 58 214 12 120 12 C26 12 34 58 76 58" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4;"></path>
+              <path d="M176 58 L164 51 L164 65 Z" style="fill: var(--ks3-accent);"></path>
+              <text x="88" y="66" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 17px; fill: var(--ks3-ink);">S</text>
+              <text x="146" y="66" style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 17px; fill: var(--ks3-ink);">N</text>
+              <text x="120" y="100" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: var(--ks3-ink-muted);">OUT OF N, INTO S</text>
+            </svg>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">Outside the magnet, every line leaves the north pole and arrives at the south pole. The arrow is the way a compass points.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <svg viewBox="0 0 240 110" role="img" aria-label="Lines packed tightly at one end of a diagram and spread widely at the other." style="display: block; width: 100%; height: auto;">
+              <path d="M20 20 H120 M20 32 H120 M20 44 H120 M20 56 H120 M20 68 H120" style="fill: none; stroke: var(--ks3-accent); stroke-width: 3;"></path>
+              <path d="M140 16 H228 M140 44 H228 M140 72 H228" style="fill: none; stroke: var(--ks3-accent); stroke-width: 3;"></path>
+              <text x="70" y="100" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: var(--ks3-ink-muted);">STRONG</text>
+              <text x="184" y="100" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: var(--ks3-ink-muted);">WEAK</text>
+            </svg>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">Crowded lines mean a strong field. Spread-out lines mean a weak one. That is why lines bunch at the poles.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <svg viewBox="0 0 240 110" role="img" aria-label="Two lines crossing, marked as impossible." style="display: block; width: 100%; height: auto;">
+              <path d="M40 20 L200 74 M40 74 L200 20" style="fill: none; stroke: var(--ks3-rule-strong); stroke-width: 3; stroke-dasharray: 8 7;"></path>
+              <circle cx="120" cy="47" r="21" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4;"></circle>
+              <path d="M106 33 L134 61" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4; stroke-linecap: round;"></path>
+              <text x="120" y="100" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: var(--ks3-ink-muted);">NEVER</text>
+            </svg>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">Lines never cross. A compass at a crossing point would have to face two ways at once, and it cannot.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+            <svg viewBox="0 0 240 110" role="img" aria-label="A curved line with three small compasses sitting along it, each aligned with the line." style="display: block; width: 100%; height: auto;">
+              <path d="M18 74 C70 12 170 12 222 74" style="fill: none; stroke: var(--ks3-rule-strong); stroke-width: 3;"></path>
+              <circle cx="52" cy="42" r="15" style="fill: var(--ks3-inset); stroke: var(--ks3-ink); stroke-width: 3;"></circle>
+              <path d="M42 50 L62 34" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4; stroke-linecap: round;"></path>
+              <circle cx="120" cy="24" r="15" style="fill: var(--ks3-inset); stroke: var(--ks3-ink); stroke-width: 3;"></circle>
+              <path d="M109 24 H131" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4; stroke-linecap: round;"></path>
+              <circle cx="188" cy="42" r="15" style="fill: var(--ks3-inset); stroke: var(--ks3-ink); stroke-width: 3;"></circle>
+              <path d="M178 34 L198 50" style="fill: none; stroke: var(--ks3-accent); stroke-width: 4; stroke-linecap: round;"></path>
+              <text x="120" y="100" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 14px; letter-spacing: .06em; fill: var(--ks3-ink-muted);">THE LINE IS THE READING</text>
+            </svg>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.5;">A line is nothing more than a row of compass readings joined up. The compass is the measurement; the line is the drawing.</p>
+          </div>
+        </div>
+      </section>
+
+      <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A magnetic field is the region where a magnet or a magnetic material would feel a force, and it is there whether or not anything is in it. Field lines show which way a compass needle points; outside a magnet they run from north pole to south pole, they are crowded where the field is strong, and they never cross.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;The field is only where the lines are drawn. In between the lines there is nothing.&rdquo;</p>
+        <p>The field is everywhere around the magnet, at full strength, in the gaps as much as on the lines. How many lines get drawn is a decision made by whoever is drawing: draw eight and the map looks sparse, draw eighty and it looks dense, and the magnet has not changed. What the spacing carries is a comparison — this part of the map is stronger than that part — not a count of anything real. Put your compass down between two drawn lines and it still swings to a definite direction, because there was a direction there all along.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;The filings make the field.&rdquo;</p>
+          <p>Reverse it. The field was there before the filings arrived and stays after you sweep them off. Each filing is a small piece of iron, so being in the field turns it into a tiny magnet, and a tiny magnet in a field turns until it lies along the direction of the field — exactly what a compass needle does, only there are thousands of them and they are free to touch. They line up end to end and the chains they make are what you see. The filings are the detector, not the cause.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>The field is the region around a magnet where a magnet or a magnetic material would feel a force, and it exists whether or not anything is there to feel it. You plot it with a small compass: the needle settles along the field at that point, and joining those directions up gives a field line. Outside the magnet the lines run out of the north pole and into the south. Where they crowd, the field is strong; where they spread, it is weak; and they never cross, because a compass cannot point two ways at once.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Put two north poles facing each other and somewhere between them is a point where the two fields cancel exactly. A compass there has nothing to turn it and will sit wherever you leave it. Iron filings show the same thing as a bare patch on the paper with lines curving away from it on both sides. It is called a neutral point, and it is worth noticing because it is a place where the field really is zero — which is a different claim from the field being weak, and one of very few places in physics where a quantity is exactly nothing rather than merely small.</p>
+          <p>The field lines drawn here stop at the ends of the magnet, but they do not really stop: inside the magnet they carry on from the south pole back round to the north, so every line is a closed loop with no beginning and no end. That is a genuine difference from an electric field, whose lines start on positive charges and finish on negative ones. It is the same fact as poles always coming in pairs, seen from another angle — you cannot have a loose end of a loop.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p10-01-magnets-and-poles.html">Magnets and poles<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p10-03-the-earth-is-a-magnet.html">The Earth is a magnet<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p10-04-electromagnets.html">Electromagnets<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p9-02-forces-between-charges.html">Forces between charges<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p8-01-current-and-circuits.html">Current and circuits<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Magnetic flux density measured in tesla, the field round a current-carrying wire and a solenoid, and field maps used to work out the force on a conductor.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Stuck on which way the arrows go on a field line?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Each bar magnet is treated as a pair of point poles at its two ends, which is the standard way of constructing a field map by hand and gives the right shape everywhere except very close to the metal, where a real magnet's field is set by the whole body rather than by its ends. The Earth's own field is left out, so the readings show only what the magnets on the paper do; a real plotting compass adds the Earth's field to them and points somewhere between. Strength is given as a relative figure with the strongest sampled point on this map set to 100, and no value in tesla is given because that unit is beyond this stage. Bearings are clockwise from the top of the page and are rounded to the nearest degree.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Filings on paper', short: 'FILINGS' },
+  { id: 's-bench', label: 'Plot it with a compass', short: 'BENCH' },
+  { id: 's-rules', label: 'Four rules', short: 'RULES' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && (s.touched.setup || s.touched.spot);
+  if (id === 's-rules') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+// Each magnet is a pair of point poles. q: +1 north, -1 south.
+const SETUPS = [
+  { label: 'One bar magnet', key: 'single',
+    bars: [{ x1: 390, x2: 610, y: 200, leftPole: 'S' }],
+    poles: [{ x: 400, y: 200, q: -1 }, { x: 600, y: 200, q: 1 }],
+    word: 'a single bar magnet lying across the middle of the paper' },
+  { label: 'Two magnets, N facing S', key: 'unlike',
+    bars: [{ x1: 130, x2: 350, y: 200, leftPole: 'S' }, { x1: 650, x2: 870, y: 200, leftPole: 'S' }],
+    poles: [{ x: 140, y: 200, q: -1 }, { x: 340, y: 200, q: 1 }, { x: 660, y: 200, q: -1 }, { x: 860, y: 200, q: 1 }],
+    word: 'two bar magnets end to end with a north pole facing a south pole across the gap' },
+  { label: 'Two magnets, N facing N', key: 'like',
+    bars: [{ x1: 130, x2: 350, y: 200, leftPole: 'S' }, { x1: 650, x2: 870, y: 200, leftPole: 'N' }],
+    poles: [{ x: 140, y: 200, q: -1 }, { x: 340, y: 200, q: 1 }, { x: 660, y: 200, q: 1 }, { x: 860, y: 200, q: -1 }],
+    word: 'two bar magnets end to end with their north poles facing each other across the gap' },
+  { label: 'A horseshoe magnet', key: 'horseshoe',
+    bars: [{ x1: 340, x2: 660, y: 96, leftPole: 'N', vertical: false }, { x1: 340, x2: 660, y: 304, leftPole: 'S', vertical: false }],
+    poles: [{ x: 420, y: 110, q: 1 }, { x: 580, y: 110, q: 1 }, { x: 420, y: 290, q: -1 }, { x: 580, y: 290, q: -1 }],
+    word: 'a horseshoe magnet with its north jaw above the gap and its south jaw below it' }
+];
+
+const SPOT_X = [180, 340, 500, 660, 820];
+const SPOT_Y = [56, 128, 200, 272, 344];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the map',
+    question: 'On a field map of one bar magnet, the lines near the ends are packed close together and the lines out at the sides are far apart. What does that tell you?',
+    options: [
+      { text: 'The field is stronger near the ends than out at the sides', correct: true },
+      { text: 'There are more field lines near the ends than out at the sides', correction: 'Every line that leaves the north pole arrives at the south pole, so the count is the same everywhere. What differs is how much space they are spread over.' },
+      { text: 'The field only exists near the ends, because that is where lines were drawn', correction: 'The field fills the whole region, including the gaps between drawn lines. Spacing compares strengths; it does not mark where the field stops.' },
+      { text: 'The field is stronger out at the sides, because it has spread further', correction: 'Spreading out is what a field does as it weakens. Crowded lines mean strong, not weak.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 Apply the rule',
+    question: 'A student draws a field map in which two lines meet and cross at a point. Why must the drawing be wrong?',
+    options: [
+      { text: 'A compass at that point would have to settle in two directions at once', correct: true },
+      { text: 'Lines are not allowed to cross because the field is too strong at a crossing point', correction: 'Field strength has nothing to do with it. The problem is direction: a compass settles to one direction and can only do that if one line passes through the point.' },
+      { text: 'Lines can cross, but only outside the magnet, and this crossing is inside it', correction: 'Lines never cross anywhere, inside or outside. There is no place where the field points two ways.' },
+      { text: 'The lines would cancel each other out where they cross, leaving a gap', correction: 'Fields do add and can cancel \u2014 a neutral point is exactly that \u2014 but the result is still one direction, or none. It is never two.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Explain how you would plot the field around a bar magnet using a plotting compass and a pencil, and say what each pencil mark actually records.',
+    fieldLabel: 'Your method',
+    placeholder: 'Put the magnet on the paper and draw round it, then\u2026',
+    criteria: [
+      'Puts the magnet on paper and draws round it, so the map can be repeated.',
+      'Places the small compass near one pole and waits for the needle to settle.',
+      'Says each mark records the direction the needle settled to at that spot.',
+      'Moves the compass along so it starts where the last mark ended, and repeats.',
+      'Joins the marks into a smooth line and adds an arrow running out of the north pole and into the south.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'Two bar magnets are laid end to end with their north poles facing each other, and iron filings are scattered over them. There is a small bare patch on the paper between the two magnets where no filings settle. Explain what is happening there, and say what a compass placed on that patch would do.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Each magnet has its own field, and between them\u2026',
+    criteria: [
+      'Says both magnets produce a field in the gap and the two fields point in opposite directions there.',
+      'Says at one particular point the two are equal in size, so they cancel exactly.',
+      'Says the total field at that point is zero, not merely weak.',
+      'Says a filing there has no field to line it up, which is why the patch is bare.',
+      'Says a compass there would not settle to any particular direction and would stay wherever it is left.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, setup: 0, sx: 3, sy: 1, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  fieldAt(poles, x, y) {
+    let fx = 0, fy = 0;
+    for (let i = 0; i < poles.length; i++) {
+      const p = poles[i];
+      const dx = x - p.x, dy = y - p.y;
+      const r2 = dx * dx + dy * dy;
+      if (r2 < 100) return { fx: 0, fy: 0, mag: -1 };
+      const r = Math.sqrt(r2);
+      const k = p.q / r2;
+      fx += k * dx / r;
+      fy += k * dy / r;
+    }
+    return { fx: fx, fy: fy, mag: Math.sqrt(fx * fx + fy * fy) };
+  }
+
+  lab(xPct, topPct, colour) {
+    return 'position:absolute;left:' + xPct.toFixed(2) + '%;top:' + topPct.toFixed(2) + '%;transform:translate(-50%,-50%);' +
+      'font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(11px,1.9vw,24px);color:' + colour + ';white-space:nowrap;pointer-events:none;';
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const S = SETUPS[s.setup];
+    const cx = SPOT_X[s.sx];
+    const cy = SPOT_Y[s.sy];
+
+    // lattice of arrows, one path
+    let gridPath = '';
+    let maxMag = 0;
+    const samples = [];
+    for (let ix = 0; ix < 13; ix++) {
+      for (let iy = 0; iy < 7; iy++) {
+        const x = 60 + ix * 73.3;
+        const y = 40 + iy * 53.3;
+        const f = this.fieldAt(S.poles, x, y);
+        samples.push({ x: x, y: y, f: f });
+        if (f.mag > maxMag) maxMag = f.mag;
+      }
+    }
+    samples.forEach((sm) => {
+      const f = sm.f;
+      if (f.mag <= 0) return;
+      const ux = f.fx / f.mag, uy = f.fy / f.mag;
+      const L = 10 + 16 * Math.min(1, Math.sqrt(f.mag / maxMag));
+      const x1 = sm.x - ux * L, y1 = sm.y - uy * L;
+      const x2 = sm.x + ux * L, y2 = sm.y + uy * L;
+      const hx = x2 - ux * 8, hy = y2 - uy * 8;
+      gridPath += 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' L' + x2.toFixed(1) + ' ' + y2.toFixed(1) +
+        ' M' + x2.toFixed(1) + ' ' + y2.toFixed(1) + ' L' + (hx - uy * 5).toFixed(1) + ' ' + (hy + ux * 5).toFixed(1) +
+        ' M' + x2.toFixed(1) + ' ' + y2.toFixed(1) + ' L' + (hx + uy * 5).toFixed(1) + ' ' + (hy - ux * 5).toFixed(1) + ' ';
+    });
+
+    // magnet bodies + north halves
+    let magPath = '', northPath = '';
+    S.bars.forEach((b) => {
+      const h = 34;
+      magPath += 'M' + b.x1 + ' ' + (b.y - h) + ' H' + b.x2 + ' V' + (b.y + h) + ' H' + b.x1 + ' Z ';
+      const mid = (b.x1 + b.x2) / 2;
+      if (b.leftPole === 'N') northPath += 'M' + (b.x1 + 3) + ' ' + (b.y - h + 3) + ' H' + mid + ' V' + (b.y + h - 3) + ' H' + (b.x1 + 3) + ' Z ';
+      else northPath += 'M' + mid + ' ' + (b.y - h + 3) + ' H' + (b.x2 - 3) + ' V' + (b.y + h - 3) + ' H' + mid + ' Z ';
+    });
+
+    const here = this.fieldAt(S.poles, cx, cy);
+    const onMagnet = here.mag < 0;
+    const rel = maxMag > 0 && here.mag > 0 ? 100 * here.mag / maxMag : 0;
+    const nullPoint = !onMagnet && rel < 0.6;
+
+    let bearing = 0;
+    if (!onMagnet && here.mag > 0) {
+      bearing = (Math.atan2(here.fx, -here.fy) * 180 / Math.PI + 360) % 360;
+    }
+    const compass = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'][Math.round(bearing / 45) % 8];
+
+    let needlePath = 'M' + cx + ' ' + cy, needleStyle = 'fill: none; stroke: transparent; stroke-width: 0;';
+    if (!onMagnet && !nullPoint) {
+      const ux = here.fx / here.mag, uy = here.fy / here.mag;
+      needlePath = 'M' + (cx - ux * 24).toFixed(1) + ' ' + (cy - uy * 24).toFixed(1) +
+        ' L' + (cx + ux * 24).toFixed(1) + ' ' + (cy + uy * 24).toFixed(1) +
+        ' M' + (cx + ux * 24).toFixed(1) + ' ' + (cy + uy * 24).toFixed(1) +
+        ' L' + (cx + ux * 12 - uy * 8).toFixed(1) + ' ' + (cy + uy * 12 + ux * 8).toFixed(1) +
+        ' M' + (cx + ux * 24).toFixed(1) + ' ' + (cy + uy * 24).toFixed(1) +
+        ' L' + (cx + ux * 12 + uy * 8).toFixed(1) + ' ' + (cy + uy * 12 - ux * 8).toFixed(1);
+      needleStyle = 'fill: none; stroke: #E4572E; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round;';
+    }
+
+    let strengthWord, strengthNum;
+    if (onMagnet) { strengthWord = 'no reading here'; strengthNum = 'the compass is on the metal'; }
+    else if (nullPoint) { strengthWord = 'nothing to turn it'; strengthNum = 'the two fields cancel here'; }
+    else if (rel >= 40) { strengthWord = 'very strong'; strengthNum = rel.toFixed(1) + ' where 100 is the strongest point on this map'; }
+    else if (rel >= 12) { strengthWord = 'strong'; strengthNum = rel.toFixed(1) + ' where 100 is the strongest point on this map'; }
+    else if (rel >= 4) { strengthWord = 'moderate'; strengthNum = rel.toFixed(1) + ' where 100 is the strongest point on this map'; }
+    else { strengthWord = 'weak'; strengthNum = rel.toFixed(1) + ' where 100 is the strongest point on this map'; }
+
+    const crowdWord = onMagnet ? 'not drawn inside the metal'
+      : nullPoint ? 'curving away on both sides'
+      : rel >= 40 ? 'packed tightly together'
+      : rel >= 12 ? 'fairly close together'
+      : rel >= 4 ? 'opening out' : 'far apart';
+
+    let note;
+    if (onMagnet) {
+      note = 'The compass is sitting on the magnet itself, so there is no reading to take. Field maps are drawn for the space around a magnet, not through the metal \u2014 and the lines you would draw inside run the other way, from the south pole back to the north, which is what makes every line a closed loop. Move the compass off the bar and the needle settles again.';
+    } else if (nullPoint) {
+      note = 'Here the needle has nothing to turn it. Both magnets reach this spot and their fields point in opposite directions with the same strength, so they cancel and the total is zero \u2014 not weak, zero. Leave the compass at any angle and it stays there. Scatter iron filings over this point and you get a bare patch with lines curving away on either side of it. This is called a neutral point.';
+    } else {
+      const bStr = bearing.toFixed(0);
+      note = 'At this spot the needle settles on a bearing of ' + bStr + '\u00b0, which is ' + compass +
+        ' on the page, and the field here reads ' + rel.toFixed(1) + ' against the strongest point on this map. ' +
+        (S.key === 'horseshoe'
+          ? 'Between the jaws of a horseshoe the arrows are close to parallel and close to the same length, which is what a nearly uniform field looks like \u2014 the reason a horseshoe is the shape chosen when a steady field is wanted in a gap.'
+          : S.key === 'unlike'
+            ? 'With a north pole facing a south pole the lines run straight across the gap from one to the other, which is why that gap is the strongest part of the whole map.'
+            : S.key === 'like'
+              ? 'With two north poles facing each other the lines refuse to cross the gap and turn away sideways instead, and somewhere on the centre line between them they cancel altogether.'
+              : 'Move out to the sides and the arrows get shorter and further apart; move back towards either end and they crowd in and lengthen. The map is the same shape whichever way up you draw it.') +
+        ' Drop the compass anywhere on the paper and it points along the arrow it lands on \u2014 that is all a field line ever was.';
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Each filing turns into a tiny magnet and lines up with a field that was already there' },
+        { letter: 'B', text: 'The magnet draws the lines onto the paper, and the filings fall into the grooves' },
+        { letter: 'C', text: 'The filings are pushed to wherever the field is strongest and pile up in ridges' },
+        { letter: 'D', text: 'Tapping the paper gives the filings a charge, and charged specks repel into rows' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'The field was there before the filings were. Each filing is a scrap of iron, so sitting in the field turns it into a small magnet, and a small magnet turns until it lies along the field \u2014 the same thing a compass needle does. Thousands of them do it at once and join up end to end, and the chains they make are the pattern you see. Sweep them off and the field is exactly as it was.',
+
+      benchProgress: (s.touched.setup || s.touched.spot) ? 'Two controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It settles pointing straight from one magnet to the other, along the gap' },
+        { letter: 'B', text: 'It spins continuously, because both magnets keep pulling it round' },
+        { letter: 'C', text: 'It does not settle anywhere in particular and stays wherever you leave it' },
+        { letter: 'D', text: 'It points at right angles to the magnets, towards the top of the page' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+
+      setupTabs: SETUPS.map((o, i) => ({
+        label: o.label, pressed: s.setup === i, style: this.seg(s.setup === i, true, false),
+        onClick: () => this.setState((st) => ({ setup: i, touched: Object.assign({}, st.touched, { setup: true }) }))
+      })),
+      spotBtns: SPOT_Y.map((yy, iy) => SPOT_X.map((xx, ix) => ({
+        label: '', aria: 'Column ' + (ix + 1) + ', row ' + (iy + 1),
+        pressed: s.sx === ix && s.sy === iy,
+        style: 'width:44px;height:44px;min-height:44px;border-radius:10px;cursor:pointer;border:2px solid ' +
+          (s.sx === ix && s.sy === iy ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+          ';background:' + (s.sx === ix && s.sy === iy ? 'var(--ks3-blue-light)' : 'transparent') + ';',
+        onClick: () => this.setState((st) => ({ sx: ix, sy: iy, touched: Object.assign({}, st.touched, { spot: true }) }))
+      }))).reduce((a, b) => a.concat(b), []),
+
+      gridPath: gridPath.trim() || 'M0 0',
+      magPath: magPath.trim() || 'M0 0',
+      northPath: northPath.trim() || 'M0 0',
+      cx: cx, cy: cy,
+      needlePath: needlePath, needleStyle: needleStyle,
+
+      nLabelText: S.bars[0] ? (S.bars[0].leftPole === 'N' ? 'N' : 'S') : '',
+      sLabelText: S.bars[0] ? (S.bars[0].leftPole === 'N' ? 'S' : 'N') : '',
+      n2LabelText: S.bars[1] ? (S.bars[1].leftPole === 'N' ? 'N' : 'S') : '',
+      s2LabelText: S.bars[1] ? (S.bars[1].leftPole === 'N' ? 'S' : 'N') : '',
+      nLabelStyle: S.bars[0] ? this.lab((S.bars[0].x1 + 30) / 10, S.bars[0].y / 4, '#C6B9A7') : 'display:none;',
+      sLabelStyle: S.bars[0] ? this.lab((S.bars[0].x2 - 30) / 10, S.bars[0].y / 4, '#15110C') : 'display:none;',
+      n2LabelStyle: S.bars[1] ? this.lab((S.bars[1].x1 + 30) / 10, S.bars[1].y / 4, S.bars[1].leftPole === 'N' ? '#15110C' : '#C6B9A7') : 'display:none;',
+      s2LabelStyle: S.bars[1] ? this.lab((S.bars[1].x2 - 30) / 10, S.bars[1].y / 4, S.bars[1].leftPole === 'N' ? '#C6B9A7' : '#15110C') : 'display:none;',
+
+      bearingLabel: onMagnet ? 'no reading' : nullPoint ? 'no settled direction' : bearing.toFixed(0) + '\u00b0',
+      bearingSub: onMagnet ? 'the compass is on the magnet' : nullPoint ? 'the field here is zero' : compass + ' on the page',
+      strengthWord: strengthWord, strengthNum: strengthNum,
+      crowdWord: crowdWord,
+      benchAlt: 'A field map of ' + S.word + ', drawn as a lattice of arrows, with a plotting compass placed on it. ' +
+        (onMagnet ? 'The compass is on the magnet and its needle is not drawn.'
+          : nullPoint ? 'The compass sits at a point where the fields cancel and its needle is not drawn.'
+            : 'The needle points on a bearing of ' + bearing.toFixed(0) + ' degrees.'),
+      benchNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+
+</script>
+</body>
+</html>

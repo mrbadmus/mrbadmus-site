@@ -218,3 +218,42 @@ Two things were checked and found sound rather than fixed:
   benches carry them and all five emit; the four that carry none use
   per-item `data-note` instead, which works. `p5-01` was the one bench in
   twenty-two that did not, and it is fixed in P5's own register.
+
+---
+
+## ⊕ Fixed 25 Aug 2026 (MRB-223) — the duplicated head row, on live pages
+
+Every bench, band figure and attempt panel in this unit printed its head row
+TWICE on the live page: `r_activity`'s `.ks3-blockhead` drew Design's row
+(eyebrow, `<h2>`, progress readout) from the activity's `eyebrow` / `heading`
+/ `progress`, and the unit's own `_head()` helper drew it again inside the
+instrument — first found on P9's first bench screenshot and recorded in
+`DEPARTURES-P9.md`. No gate saw it: two correct head rows are two correct
+head rows.
+
+**Fix, in this unit's own module and its own wiring block only:** `_head()`
+returns nothing; the band figures (`fband` / `wanat` / `wband`) no longer
+print their eyebrow and heading a second time; the CFIFA attempt passes
+`eyebrow=None` to the kit helper (P7's opt-out); and each bench's wiring now
+writes its readout into the shell's own `[data-count]`, so the words a
+student reads are unchanged — "Both controls live", "0 of 5 cases opened" —
+they are simply printed once. Nothing in any lesson record moved.
+
+**Measured on the built bytes, page by page (all 22 P4/P5/P6 lesson pages):**
+duplicated `<h2>` — one per page before, ZERO after; the second
+`.ks3-<hook>-head` row — present on every bench before, absent after (the
+only `-head` classes left are SVG arrowheads). The one eyebrow still printed
+twice on the twelve formula pages is Design's own: her two worked examples
+both carry *"Worked example · one step at a time"*.
+
+## ⊕ Fixed 25 Aug 2026 (MRB-223) — `p4-05`'s compare line was the wrong argument
+
+Found by `ks3_smoke.py physics/forces`, which was red on the committed tree
+before any of today's changes: `r_drag_lane` passed the authored `compare`
+template one positional slot early, so the live friction page printed the
+raw template — *"At {mass} kg the sliding reading is {slide} N…"* — as
+visible text inside the figure wrap, put the SVG fills where the readout
+tiles belong, and put the tiles' markup into the `<p>`'s `data-template`
+attribute. One argument moved to its slot; nothing authored changed.
+Measured after: `ks3_smoke.py physics/forces` green, the tiles render, the
+compare line fills.

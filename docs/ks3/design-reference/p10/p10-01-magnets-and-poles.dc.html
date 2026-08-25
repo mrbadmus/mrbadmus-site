@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnets and poles · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Magnetism and electromagnetism</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Magnets and poles</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Magnetism and electromagnetism · Contrast</p>
+        <h1>Magnets and poles</h1>
+        <p class="ks3-bigq">Every magnet has two ends that behave oppositely, and only one of the things a magnet does is proof that the other object is a magnet too.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two bar magnets. Same two magnets, two different answers.</h2>
+        <p class="ks3-hook-prompt">Slide two bar magnets towards each other along the bench and they snap together hard enough to click. Pick one up, turn it end for end, put it back and slide them together again — and now they fight you, and the harder you push the harder they push back.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Nothing about either magnet changed. What did?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A magnet has two <strong>poles</strong>, one at each end. They are named for what a hanging magnet does: the end that swings round to point towards the Earth's north is the <strong>north-seeking pole</strong>, written N, and the other end is the <strong>south-seeking pole</strong>, written S. The names are about direction, not about the material — both ends are the same steel.</p>
+        <p>The rule between two magnets is one line. <strong>Like poles repel; unlike poles attract.</strong> N against N pushes apart, S against S pushes apart, N against S pulls together. The two forces are always the same size and in opposite directions, whichever magnet is bigger, and they get rapidly weaker as the gap grows.</p>
+        <p>Poles always come in pairs. Snap a bar magnet in half and you do not get a north piece and a south piece: you get two shorter magnets, each with its own N and S. Nobody has ever found a single pole on its own.</p>
+        <p>Only some materials feel a magnet at all. <strong>Iron, steel, nickel and cobalt</strong> are magnetic materials; aluminium, copper, brass, gold, wood and plastic are not, and a magnet does nothing to them. A magnet <em>attracts</em> a piece of unmagnetised steel, either way round, because being near a magnet turns the steel into a weak magnet itself for as long as it stays there. That is why <strong>attraction proves nothing</strong> about the other object, and <strong>repulsion is the only proof</strong> that both objects are magnets.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · two objects on a low-friction track</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Put two things end to end.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Two objects sit on a track that lets them slide freely. Choose what each one is, choose which pole a magnet turns towards the gap, and set how far apart they start.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A bar magnet is brought near an ordinary steel nail, then turned end for end and brought near again. What happens?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 300px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">On the left</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ aTabs }}" as="t" hint-placeholder-count="5">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 300px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">On the right</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ bTabs }}" as="t" hint-placeholder-count="5">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 240px;">
+                <label for="p101d" style="display: block; margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Gap between them</label>
+                <input class="ks3-slider" type="range" id="p101d" min="0" max="5" step="1" value="{{ dValue }}" onChange="{{ onD }}" onInput="{{ onD }}">
+                <p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; font-weight: 500; color: var(--ks3-on-dark);">{{ sepLabel }}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M40 300 H960" style="fill: none; stroke: #4A4139; stroke-width: 6; stroke-linecap: round;"></path>
+                  <path d="{{ aBody }}" style="{{ aStyle }}"></path>
+                  <path d="{{ bBody }}" style="{{ bStyle }}"></path>
+                  <path d="{{ aPoleFill }}" style="fill: #8FB7FF; stroke: none;"></path>
+                  <path d="{{ bPoleFill }}" style="fill: #8FB7FF; stroke: none;"></path>
+                  <path d="{{ arrowPath }}" style="{{ arrowStyle }}"></path>
+                  <path d="{{ dimPath }}" style="fill: none; stroke: #8C8177; stroke-width: 3;"></path>
+                  <text x="500" y="392" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: #8C8177;">FREE TO SLIDE EITHER WAY</text>
+                </svg>
+                <span style="{{ aNameStyle }}">{{ aName }}</span>
+                <span style="{{ bNameStyle }}">{{ bName }}</span>
+                <span style="{{ aNearStyle }}">{{ aNear }}</span>
+                <span style="{{ aFarStyle }}">{{ aFar }}</span>
+                <span style="{{ bNearStyle }}">{{ bNear }}</span>
+                <span style="{{ bFarStyle }}">{{ bFar }}</span>
+                <span style="{{ sepStyle }}">{{ sepLabel }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">They</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ verdictWord }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ verdictSub }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How strong</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ strengthWord }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ strengthNum }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Gap</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ sepLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">face to face</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Does this prove both are magnets</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ proofWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-proof" class="ks3-block" style="background: var(--ks3-band); scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">One test settles it. The other two do not.</h2>
+        <p style="margin: 12px 0 0; max-width: 62ch;">You are handed a steel bar and told to find out whether it is a magnet. You have one magnet you trust. There are three things that can happen when you bring them together, and only one of them is an answer.</p>
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 14px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+            <svg viewBox="0 0 260 90" role="img" aria-label="Two bars pushing apart, with arrows pointing away from the gap." style="display: block; width: 100%; height: auto;">
+              <rect x="12" y="30" width="96" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+              <rect x="152" y="30" width="96" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+              <path d="M104 16 H62 M62 16 L74 8 M62 16 L74 24 M156 16 H198 M198 16 L186 8 M198 16 L186 24" style="fill: none; stroke: var(--ks3-accent); stroke-width: 5; stroke-linecap: round;"></path>
+              <text x="130" y="84" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">THEY PUSH APART</text>
+            </svg>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.2; letter-spacing: -.02em;">Proof</p>
+            <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55;">Only a magnet can be pushed away by a magnet. Nothing else does it, so the bar is a magnet.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <svg viewBox="0 0 260 90" role="img" aria-label="Two bars pulling together, with arrows pointing into the gap." style="display: block; width: 100%; height: auto;">
+              <rect x="12" y="30" width="96" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+              <rect x="152" y="30" width="96" height="34" rx="5" style="fill: var(--ks3-inset); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+              <path d="M62 16 H104 M104 16 L92 8 M104 16 L92 24 M198 16 H156 M156 16 L168 8 M156 16 L168 24" style="fill: none; stroke: var(--ks3-ink-muted); stroke-width: 5; stroke-linecap: round;"></path>
+              <text x="130" y="84" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">THEY PULL TOGETHER</text>
+            </svg>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.2; letter-spacing: -.02em;">No answer</p>
+            <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55;">A magnet pulls a magnet, and it pulls plain steel too. Both are still possible, so you have learnt nothing.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <svg viewBox="0 0 260 90" role="img" aria-label="Two bars sitting still with no arrows between them." style="display: block; width: 100%; height: auto;">
+              <rect x="12" y="30" width="96" height="34" rx="5" style="fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 3;"></rect>
+              <rect x="152" y="30" width="96" height="34" rx="5" style="fill: var(--ks3-inset); stroke: var(--ks3-ink); stroke-width: 3; stroke-dasharray: 7 6;"></rect>
+              <text x="130" y="84" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: var(--ks3-ink-muted);">NOTHING HAPPENS</text>
+            </svg>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px; line-height: 1.2; letter-spacing: -.02em;">Different answer</p>
+            <p style="margin: 6px 0 0; font-size: 18px; line-height: 1.55;">The bar is not a magnetic material at all. It is not steel — aluminium and brass both look like this.</p>
+          </div>
+        </div>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px;">
+          <div style="flex: 1 1 260px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">A magnet works on</p>
+            <p style="margin: 6px 0 0; font-size: 19px; font-weight: 700; line-height: 1.4;">iron · steel · nickel · cobalt</p>
+          </div>
+          <div style="flex: 1 1 260px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">A magnet does nothing to</p>
+            <p style="margin: 6px 0 0; font-size: 19px; font-weight: 700; line-height: 1.4;">aluminium · copper · brass · gold · wood · plastic</p>
+          </div>
+        </div>
+      </section>
+
+      <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Every magnet has a north-seeking and a south-seeking pole, and they always come as a pair. Like poles repel and unlike poles attract, with equal and opposite forces that weaken quickly with distance. A magnet also attracts unmagnetised iron, steel, nickel and cobalt either way round — so repulsion is the only proof that both objects are magnets.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;All metals are magnetic.&rdquo;</p>
+        <p>Most are not. Take a magnet to a handful of metal objects and the aluminium drinks can, the copper pipe, the brass key and the gold ring all ignore it completely. What responds is the iron in things: the steel tin, the fridge door, the paper clip, the nail. That is why a recycling plant can pull steel cans out of a moving stream of rubbish with an electromagnet and leave the aluminium ones behind — the separation is free, and it works because "metal" and "magnetic" were never the same word.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;It stuck to the magnet, so it must be a magnet.&rdquo;</p>
+          <p>A paper clip sticks to a magnet and a paper clip is not a magnet. Being close to a magnet lines up the iron inside the clip so that it becomes a weak magnet for as long as it stays there, with its near end always turning out opposite to the pole facing it — which is why it is pulled in whichever way round you hold the magnet. Turn the magnet end for end and the clip still comes. A real magnet would have pushed away one of those two times, and that push is the only thing that settles it.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A magnet has two poles, north-seeking and south-seeking, and they cannot be separated: break the magnet and each piece grows the pole it is missing. Like poles repel and unlike poles attract, always with equal and opposite forces, and the force falls away sharply as the gap opens. Only iron, steel, nickel and cobalt respond at all, and an unmagnetised piece of any of them is attracted whichever pole you offer it, because the magnet lines it up first. Attraction is therefore not evidence. Repulsion is.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Cut a magnet in half and you get two magnets. Cut those in half and you get four. Keep going and the pattern never breaks, because the magnetism is not stored in the ends — it comes from countless tiny magnetic regions inside the metal, all lined up the same way. In an unmagnetised piece of steel those regions point in every direction at once and cancel out; magnetising it is the act of lining them up, and dropping it hard or heating it in a flame knocks them out of line again. Nobody has ever isolated a single north pole, and physicists have looked hard: a lone pole would be a genuinely new object, and searches for one have been running for decades.</p>
+          <p>Magnets that are much stronger than the ones in a school lab are ordinary items now. The small silver discs in headphones, cordless-tool motors, wind turbines and fridge catches are usually neodymium, and a disc the size of a coin can pinch skin badly between two of them or shatter if two are allowed to snap together. The serious hazard is swallowing: two or more strong magnets that end up in different parts of the gut can pull towards each other through the wall between them, and that is a surgical emergency rather than something that passes. They are kept away from small children for exactly that reason.</p>
+        </div>
+      </section>
+
+      <aside style="margin: 26px 0 0; padding: 16px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-rule-strong);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">If a magnet has been swallowed, or you are worried about someone</p>
+        <p style="margin: 6px 0 0; font-size: 15px; line-height: 1.55; color: var(--ks3-ink-body);">Swallowing a strong magnet is treated urgently even when the person seems fine, so it is worth telling an adult straight away rather than waiting to see — a pharmacist, your GP or 111 will tell you what to do next, and at school the school nurse or any member of staff can start that. If you would rather talk to somebody outside all of that, <strong>Childline is free on 0800 1111</strong>, at any hour, and you do not have to give your name.</p>
+      </aside>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p9-03-electric-fields.html">Electric fields<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p10-02-magnetic-fields.html">Magnetic fields<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p10-03-the-earth-is-a-magnet.html">The Earth is a magnet<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p10-04-electromagnets.html">Electromagnets<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p9-02-forces-between-charges.html">Forces between charges<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Permanent and induced magnetism, magnetic flux density in tesla, and the field patterns that let a motor and a generator be explained rather than described.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure whether a test proves something is a magnet?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Strength is reported as a relative figure with the closest pair of magnets set to 100, and no force in newtons is given anywhere on this bench: the equation for the force between two magnets is well beyond this stage and any number in newtons here would be invented rather than measured. The relative figure falls as the fourth power of the gap, which is about right for two bar magnets end to end and is not the inverse-square law that applies to charges. The pull on unmagnetised steel is reported in relative words only, never as a figure, because how strongly a piece of steel magnetises depends on its shape, its carbon content and what has happened to it, and any coefficient chosen here would be a guess. Both magnets are treated as identical and equally strong, the track as frictionless, and the objects as staying where you put them.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Turn one round', short: 'MAGNETS' },
+  { id: 's-bench', label: 'Two on a track', short: 'BENCH' },
+  { id: 's-proof', label: 'What counts as proof', short: 'PROOF' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && (s.touched.a || s.touched.b || s.touched.d);
+  if (id === 's-proof') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+// kind: 'mag' (with a facing pole), 'ferro' (magnetic material, unmagnetised), 'non'
+const OBJS = [
+  { label: 'Magnet, N to the gap', short: 'BAR MAGNET', kind: 'mag', near: 'N', far: 'S', word: 'a bar magnet with its north pole facing the gap' },
+  { label: 'Magnet, S to the gap', short: 'BAR MAGNET', kind: 'mag', near: 'S', far: 'N', word: 'a bar magnet with its south pole facing the gap' },
+  { label: 'Steel bar', short: 'STEEL', kind: 'ferro', near: '', far: '', word: 'an unmagnetised steel bar' },
+  { label: 'Aluminium bar', short: 'ALUMINIUM', kind: 'non', near: '', far: '', word: 'an aluminium bar' },
+  { label: 'Wooden block', short: 'WOOD', kind: 'non', near: '', far: '', word: 'a wooden block' }
+];
+
+const GAPS = [2, 3, 4, 6, 8, 12];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Read the result',
+    question: 'You hold a bar magnet near an unlabelled steel bar and it is pulled towards you. You turn the magnet end for end and try again, and it is pulled towards you again. What do you now know about the bar?',
+    options: [
+      { text: 'It is a magnetic material, but whether it is a magnet is still open', correct: true },
+      { text: 'It is a magnet, because it was attracted both times', correction: 'Being attracted both times is exactly what a plain piece of steel does. A magnet would have been pushed away one of those two times.' },
+      { text: 'It is not a magnet, because a magnet would have been attracted only once', correction: 'A magnet would indeed have been repelled once \u2014 but it was not repelled, and it was not tested at every angle either. Attraction both ways is what unmagnetised steel does; it does not rule a weak magnet out on its own.' },
+      { text: 'It is not a magnetic material, because nothing was pushed away', correction: 'It moved, so it is certainly a magnetic material. A non-magnetic bar would have sat there.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 Apply the rule',
+    question: 'Two identical bar magnets repel each other across a 4 cm gap. They are then moved to a 2 cm gap, still the same way round. What happens to the force pushing them apart?',
+    options: [
+      { text: 'It grows a great deal \u2014 far more than doubling', correct: true },
+      { text: 'It doubles, because the gap halved', correction: 'The force does not simply track the gap. Halving the gap between two bar magnets multiplies the push several times over, which is why the last centimetre is the one you feel.' },
+      { text: 'It stays the same, because neither magnet has changed', correction: 'Neither magnet changed, but the force between two magnets depends on the gap as well as on the magnets.' },
+      { text: 'It falls, because they are being forced closer against the push', correction: 'Pushing them closer takes effort precisely because the force is getting bigger, not smaller.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'A paper clip hangs from the north pole of a magnet. It hangs just as well from the south pole. Explain why, using the idea of poles.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The clip is not a magnet to start with, so\u2026',
+    criteria: [
+      'Says the paper clip is made of steel, which is a magnetic material.',
+      'Says the clip is not a magnet before the magnet arrives.',
+      'Says being near the magnet turns the clip into a weak magnet while it is there.',
+      'Says the end of the clip nearest the magnet always becomes the opposite pole to the one facing it.',
+      'Concludes that unlike poles attract in both cases, so the clip is pulled in whichever end of the magnet is used.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A scrapyard sorts crushed drinks cans. Steel cans and aluminium cans go past on the same belt, and a magnet lifts one kind out. Say which kind is lifted, and explain how you would check that a can that was left behind really is aluminium rather than a steel one the magnet missed.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The magnet lifts the\u2026',
+    criteria: [
+      'Says the steel cans are lifted, because steel is a magnetic material and aluminium is not.',
+      'Says aluminium is a metal that a magnet does nothing to, so "metal" does not mean "magnetic".',
+      'Describes bringing a magnet to the can that was left behind and looking for any pull at all.',
+      'Says that any attraction at all means it is a magnetic material and so was missed, not aluminium.',
+      'Says that no movement either way round means it is not a magnetic material.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, a: 0, b: 0, d: 2, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  lab(xPct, topPct, size, colour, weight) {
+    return 'position:absolute;left:' + xPct.toFixed(2) + '%;top:' + topPct + '%;transform:translate(-50%,-50%);' +
+      'font-family:var(--ks3-font-mono);font-weight:' + weight + ';font-size:' + size +
+      ';letter-spacing:.06em;color:' + colour + ';white-space:nowrap;pointer-events:none;';
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const A = OBJS[s.a];
+    const B = OBJS[s.b];
+    const d = GAPS[s.d];
+
+    const bothMag = A.kind === 'mag' && B.kind === 'mag';
+    const magFerro = (A.kind === 'mag' && B.kind === 'ferro') || (A.kind === 'ferro' && B.kind === 'mag');
+    const repel = bothMag && A.near === B.near;
+    const attract = (bothMag && A.near !== B.near) || magFerro;
+    const acting = bothMag || magFerro;
+    const strength = bothMag ? 100 * Math.pow(2 / d, 4) : 0;
+
+    // geometry: blocks 200 wide, gap grows with d
+    const gapPx = d * 26;
+    const xA = 500 - gapPx / 2;
+    const xB = 500 + gapPx / 2;
+    const aBody = 'M' + (xA - 200) + ' 180 H' + xA + ' V260 H' + (xA - 200) + ' Z';
+    const bBody = 'M' + xB + ' 180 H' + (xB + 200) + ' V260 H' + xB + ' Z';
+    const boxStyle = 'fill: #2A241E; stroke: #C6B9A7; stroke-width: 5; stroke-linejoin: round;';
+    const dashStyle = 'fill: #2A241E; stroke: #C6B9A7; stroke-width: 5; stroke-linejoin: round; stroke-dasharray: 14 11;';
+
+    const aPoleFill = A.kind === 'mag' ? 'M' + (xA - 60) + ' 183 H' + (xA - 3) + ' V257 H' + (xA - 60) + ' Z' : 'M0 0';
+    const bPoleFill = B.kind === 'mag' ? 'M' + (xB + 3) + ' 183 H' + (xB + 60) + ' V257 H' + (xB + 3) + ' Z' : 'M0 0';
+
+    // force arrows at y = 140, length from strength (bounded) or a short one for induced pull
+    let arrowPath = 'M500 140', arrowStyle = 'fill: none; stroke: transparent; stroke-width: 0;';
+    if (acting) {
+      const L = bothMag ? Math.max(28, Math.min(150, 30 + Math.sqrt(strength) * 13)) : 46;
+      if (attract) {
+        arrowPath = 'M' + (xA - 110 - L) + ' 140 H' + (xA - 110) +
+          ' M' + (xA - 110) + ' 140 L' + (xA - 126) + ' 128 M' + (xA - 110) + ' 140 L' + (xA - 126) + ' 152' +
+          ' M' + (xB + 110 + L) + ' 140 H' + (xB + 110) +
+          ' M' + (xB + 110) + ' 140 L' + (xB + 126) + ' 128 M' + (xB + 110) + ' 140 L' + (xB + 126) + ' 152';
+      } else {
+        arrowPath = 'M' + (xA - 110) + ' 140 H' + (xA - 110 - L) +
+          ' M' + (xA - 110 - L) + ' 140 L' + (xA - 94 - L) + ' 128 M' + (xA - 110 - L) + ' 140 L' + (xA - 94 - L) + ' 152' +
+          ' M' + (xB + 110) + ' 140 H' + (xB + 110 + L) +
+          ' M' + (xB + 110 + L) + ' 140 L' + (xB + 94 + L) + ' 128 M' + (xB + 110 + L) + ' 140 L' + (xB + 94 + L) + ' 152';
+      }
+      arrowStyle = 'fill: none; stroke: #8FB7FF; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round;';
+    }
+
+    const dimPath = 'M' + xA + ' 274 V300 M' + xB + ' 274 V300 M' + xA + ' 287 H' + xB;
+
+    let strengthWord, strengthNum;
+    if (!acting) { strengthWord = 'nothing at all'; strengthNum = 'no force either way'; }
+    else if (magFerro) { strengthWord = 'a real pull, weaker than magnet on magnet'; strengthNum = 'reported in words, not on the scale'; }
+    else if (strength >= 50) { strengthWord = 'very strong'; strengthNum = strength.toFixed(1) + ' where 100 is the closest pair'; }
+    else if (strength >= 15) { strengthWord = 'strong'; strengthNum = strength.toFixed(1) + ' where 100 is the closest pair'; }
+    else if (strength >= 4) { strengthWord = 'moderate'; strengthNum = strength.toFixed(1) + ' where 100 is the closest pair'; }
+    else if (strength >= 1) { strengthWord = 'weak'; strengthNum = strength.toFixed(1) + ' where 100 is the closest pair'; }
+    else { strengthWord = 'far too weak to feel'; strengthNum = strength.toFixed(2) + ' where 100 is the closest pair'; }
+
+    let verdictWord, verdictSub, proofWord, note;
+    if (!acting) {
+      verdictWord = 'do nothing';
+      verdictSub = bothMag ? '' : 'no magnet acting on a magnetic material';
+      const why = (A.kind === 'non' && B.kind === 'non')
+        ? 'Neither object is a magnetic material, so a magnet would do nothing to either of them and they certainly do nothing to each other.'
+        : (A.kind === 'ferro' && B.kind === 'ferro')
+          ? 'Both are steel, and steel is a magnetic material \u2014 but neither of them is magnetised, so there is nothing to line the other one up. Two paper clips ignore each other.'
+          : 'One of these is ' + (A.kind === 'non' ? A.word : B.word) + ', and a magnet does nothing at all to aluminium, wood, copper or brass. There is no pull to weaken with distance because there was never any pull.';
+      note = 'Nothing moves at ' + d + ' cm, and nothing moves at any other setting either: try the gap and watch the arrows stay away. ' + why;
+      proofWord = 'no \u2014 nothing happened';
+    } else if (repel) {
+      verdictWord = 'push apart';
+      verdictSub = 'like poles: ' + A.near + ' facing ' + B.near;
+      note = 'Both magnets have their ' + (A.near === 'N' ? 'north' : 'south') + ' pole turned towards the gap. Like poles repel, so each is pushed away from the other with an equal and opposite force, and at ' + d +
+        ' cm the strength reads ' + strength.toFixed(1) + ' on this scale. Halve the gap and the push grows several times over; open it out and it collapses. This is the one result on the whole bench that proves both objects are magnets, because nothing else in the drawer can be pushed away by a magnet.';
+      proofWord = 'yes \u2014 repulsion proves it';
+    } else if (bothMag) {
+      verdictWord = 'pull together';
+      verdictSub = 'unlike poles: ' + A.near + ' facing ' + B.near;
+      note = 'One magnet offers its ' + (A.near === 'N' ? 'north' : 'south') + ' pole and the other its ' + (B.near === 'N' ? 'north' : 'south') +
+        '. Unlike poles attract, so each is pulled towards the other with an equal and opposite force, and at ' + d + ' cm the strength reads ' + strength.toFixed(1) +
+        ' on this scale \u2014 the same size as the push between two like poles at the same gap. Only the direction changed. Watching this alone you could not tell whether the far object was a magnet or a plain steel bar.';
+      proofWord = 'no \u2014 steel does this too';
+    } else {
+      const magSide = A.kind === 'mag' ? 'left' : 'right';
+      const magObj = A.kind === 'mag' ? A : B;
+      const steelSide = A.kind === 'mag' ? 'right' : 'left';
+      verdictWord = 'pull together';
+      verdictSub = 'the steel is being magnetised';
+      note = 'The ' + magSide + ' object is a magnet with its ' + (magObj.near === 'N' ? 'north' : 'south') + ' pole facing the gap, and the ' + steelSide +
+        ' one is steel that started with no magnetism of its own. Being near the magnet lines the steel up, so its near face becomes the opposite pole and the two are pulled together. Turn the magnet end for end and it happens again, because the steel simply lines up the other way. That is why this result settles nothing: put a magnet there instead and it would look exactly the same.';
+      proofWord = 'no \u2014 this is what steel does';
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'Which pole of each magnet is facing the gap' },
+        { letter: 'B', text: 'One of them lost its magnetism when it was picked up' },
+        { letter: 'C', text: 'Turning it round made it stronger, so it could push instead of pull' },
+        { letter: 'D', text: 'The bench pushed back the second time because of friction' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'Which poles were facing each other. Each magnet has a north-seeking end and a south-seeking end, and turning one magnet round swapped which end was in the gap. Unlike poles pull together; like poles push apart. Neither magnet gained or lost anything \u2014 the same two objects give opposite answers depending only on how they are turned.',
+
+      benchProgress: (s.touched.a || s.touched.b || s.touched.d) ? 'Three controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It is pulled in both times, because the magnet magnetises the nail whichever way round it is' },
+        { letter: 'B', text: 'It is pulled in once and pushed away once, like two magnets' },
+        { letter: 'C', text: 'It is pulled in once and does nothing the second time' },
+        { letter: 'D', text: 'It does nothing either time, because a nail is not a magnet' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+
+      aTabs: OBJS.map((o, i) => ({
+        label: o.label, pressed: s.a === i, style: this.seg(s.a === i, true, false),
+        onClick: () => this.setState((st) => ({ a: i, touched: Object.assign({}, st.touched, { a: true }) }))
+      })),
+      bTabs: OBJS.map((o, i) => ({
+        label: o.label, pressed: s.b === i, style: this.seg(s.b === i, true, false),
+        onClick: () => this.setState((st) => ({ b: i, touched: Object.assign({}, st.touched, { b: true }) }))
+      })),
+      dValue: s.d,
+      onD: (e) => this.setState((st) => ({ d: Number(e.target.value), touched: Object.assign({}, st.touched, { d: true }) })),
+
+      aBody: aBody, bBody: bBody,
+      aStyle: A.kind === 'non' ? dashStyle : boxStyle,
+      bStyle: B.kind === 'non' ? dashStyle : boxStyle,
+      aPoleFill: aPoleFill, bPoleFill: bPoleFill,
+      arrowPath: arrowPath, arrowStyle: arrowStyle,
+      dimPath: dimPath,
+
+      aName: A.short, bName: B.short,
+      aNameStyle: this.lab((xA - 100) / 10, 82, 'clamp(9px,1.3vw,15px)', '#8C8177', 500),
+      bNameStyle: this.lab((xB + 100) / 10, 82, 'clamp(9px,1.3vw,15px)', '#8C8177', 500),
+      aNear: A.near, aFar: A.far, bNear: B.near, bFar: B.far,
+      aNearStyle: this.lab((xA - 31) / 10, 55, 'clamp(11px,1.9vw,24px)', '#15110C', 700),
+      aFarStyle: this.lab((xA - 165) / 10, 55, 'clamp(11px,1.9vw,24px)', '#C6B9A7', 700),
+      bNearStyle: this.lab((xB + 31) / 10, 55, 'clamp(11px,1.9vw,24px)', '#15110C', 700),
+      bFarStyle: this.lab((xB + 165) / 10, 55, 'clamp(11px,1.9vw,24px)', '#C6B9A7', 700),
+      sepStyle: this.lab(50, 65, 'clamp(9px,1.3vw,15px)', '#8C8177', 500),
+      sepLabel: d + ' cm',
+
+      verdictWord: verdictWord, verdictSub: verdictSub,
+      strengthWord: strengthWord, strengthNum: strengthNum,
+      proofWord: proofWord,
+      benchAlt: 'Two objects ' + d + ' cm apart on a track. On the left, ' + A.word + '. On the right, ' + B.word + '. ' +
+        (!acting ? 'No force arrows are drawn.' : 'Arrows show them ' + (attract ? 'pulled together.' : 'pushed apart.')),
+      benchNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+
+</script>
+</body>
+</html>

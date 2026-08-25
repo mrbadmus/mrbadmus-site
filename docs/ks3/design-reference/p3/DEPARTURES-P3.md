@@ -69,3 +69,29 @@ She reported, without touching the file, that `b1-06` declares a `railLabels`
 prop its logic class never reads — a Tweaks control that does nothing.
 **Not actioned here, and deliberately: B1 is another lane's unit.** Recorded
 so it is not lost.
+
+---
+
+## ⊕ 25 Aug 2026 (MRB-223) — her three cards on `p3-01`, placed; and a finding
+
+### Changed — 1 row
+
+| | |
+|---|---|
+| **Where** | `p3-01` `#s-build`, the end of the section |
+| **What she drew** | *"Three words you have just used"* — a three-card vocabulary grid (Speed / Average speed / Metre per second, each with a definition and a note, hint *"Say it, then turn"*), inside `#s-build` underneath the CFIFA attempt. The ONLY vocabulary card grid on any physics page she delivered (all 70 swept for card markup; `p2-02`'s hit was stylesheet only). |
+| **What was built before** | Nothing. The three terms had been merged into one definition each in `vocabulary` and no `keyword` block was authored, so the grid rendered nowhere. |
+| **What is built now** | The engine's `keyword` block at the end of `#s-build`, with her eyebrow and lead verbatim and her three cards as `term` / `definition` / `note` byte for byte. Two engine-level differences, not authored: the block is its own `<section class="ks3-keywords">` rather than a `<div>` inside the CFIFA section, and the card hint is the engine's *"Say it, then tap"* (with its drawn arrow) where hers reads *"Say it, then turn"*. Not a rail stop — her rail has four and this sits inside the third. `mean` stays in `vocabulary` (it is not one of her cards) so the unit's word box and the flashcards keep it. |
+| **Rationale** | She drew it; the live page did not have it. |
+
+### Finding, not fixed here — `p3-01` has no CFIFA attempt panel
+
+Her `#s-build` mounts `Cfifa` with `cfifaQuestions`: Question 1 built live
+from the student's own run on the light-gate bench above (*"Run 1 from your
+table: … m in … s"*), five lines, a self-tick reveal. The live page carries
+her two worked examples and then the sentence *"Your turn on your own runs
+above."* — no attempt panel, no five boxes, no reveal. Her rail's third stop
+ticks on `!!s.buildOpen`, the attempt's own reveal. This is outside MRB-223's
+stated scope (P10–P12 plus two named live defects) and is recorded here for
+whoever owns it; the card grid above is placed at the end of `#s-build`,
+which is where it sits relative to the attempt once one exists.

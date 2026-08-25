@@ -4419,8 +4419,19 @@ def lesson_page(unit, lesson, registry, units_by_code, neighbours=None):
     # in the key stage have a non-empty `support[]`, and the ruled set is
     # eleven.
     if lesson.get("safeguarding_note"):
-        body.append('<p class="ks3-legal">%s</p>'
-                    % t(lesson["safeguarding_note"]))
+        sg = lesson["safeguarding_note"]
+        # ⊕ MRB-223, 25 Aug 2026 — the SAME slot, the SAME treatment, and
+        # Design's WORDS character for character. Her p10-01 block is an
+        # eyebrow line ("If a magnet has been swallowed, or you are worried
+        # about someone") over a body that bolds the helpline. Folding the
+        # eyebrow into the sentence and escaping the <strong> changed her
+        # characters; a dict form keeps them. Position and type are still
+        # the ruled foot line (audit 6.4) — only the text is hers verbatim.
+        if isinstance(sg, dict):
+            body.append('<p class="ks3-legal"><strong>%s</strong> %s</p>'
+                        % (t(sg["eyebrow"]), rich(sg["body"])))
+        else:
+            body.append('<p class="ks3-legal">%s</p>' % t(sg))
     # ⊕ §4.8.1 D — the lesson-specific safety line sits ALONGSIDE the standing
     # legal line, never instead of it. b1-01's is "Never light a candle to test
     # this at home without an adult with you."
