@@ -275,7 +275,7 @@ LESSON = {
                          "squashed and released over and over gets warm."},
          ]},
 
-        {"type": "key-fact", "id": "never-used-up"},
+        {"type": "key-fact", "ref": "never-used-up"},
 
         # ── #s-think — the sort, in the `misconception` shell.
         {"type": "store-pathway-sort", "id": "store-pathway-sort",

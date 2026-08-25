@@ -123,6 +123,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `ACID` | Acids, alkalis and the pH scale — what the words mean, what the scale measures, and what a catalyst does | 2026-08-21, by C6 |
 | `ENER` | Energy in a change: which way it travels, where it is stored, and what a thermometer is and is not measuring | 2026-08-21, by C7 |
 | `FORCE` | Forces and motion — what a speed is and what it is measured against; and what a force is, what it takes to make one, what is left over when they are added, and what that leftover does | 2026-08-24, by P3; widened 24 Aug 2026 by P4 |
+| `PRESS` | Pressure — what a force does to a surface, which way a fluid pushes, and what happens where there is nothing to push | 2026-08-25, by P5 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: ~~`FORCE` (forces and motion)~~
@@ -1615,6 +1616,76 @@ and confronts both whatever family they eventually sit in.
 
 
 ---
+
+
+### `PRESS` — pressure, and what a fluid is doing to everything in it
+
+Opened 25 Aug 2026 by P5 *Pressure*. Every row below was checked against Design's DELIVERED page
+rather than taken from her proposed table.
+
+⚖️ **WHY A NEW FAMILY AND NOT `FORCE`.** `FORCE` is declared as *forces and motion*, and this
+register's own rule is to discharge a reservation into the family that exists rather than open one
+beside it — that is how `ENER` absorbed `ENERGY` and how `FORCE` absorbed `MOT`. It does not
+reach here. Pressure is its own statutory strand (`KS3.P.PRES.*`), and the beliefs below are not
+about forces and motion at all: they are about what a fluid does to a surface, which direction it
+does it in, and what happens when there is nothing there to do it. Filing *"a vacuum sucks things
+in"* under a family whose description is *"what a speed is and what it is measured against"* would
+make the family name stop meaning anything.
+
+The pattern this follows is the chemistry one — `MIX` for C3, `REACT` for C4, `ACID` for C6,
+`ENER` for C7 — one family per strand of related beliefs, minted by the unit that first needs it.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `PRESS-01` | A sharp point pushes harder than a blunt one. | `s-hook` | `s-think` | `pressure-force-over-area` |
+| `PRESS-02` | Pressure only pushes downwards. | *(none — nothing on the page asks for this commitment)* | `s-think` | `pressure-force-over-area` |
+| `PRESS-03` | Pressure is a force, so it is measured in newtons. | `s-ladder` | `s-ladder` | `pressure-force-over-area` |
+| `PRESS-04` | More of the sole touching the floor means more pressure on it. | `s-ladder` | `sand` | `pressure-force-over-area` |
+| `PRESS-05` | More liquid in total means more pressure at the bottom. | `s-ladder` | `s-think` | `pressure-in-liquids` |
+| `PRESS-06` | Water is heavier, or packed tighter, deeper down. | `s-hook` | `s-think` | `pressure-in-liquids` |
+| `PRESS-07` | Pressure in a liquid acts downwards only. | *(none — nothing on the page asks for this commitment)* | `probe` | `pressure-in-liquids` |
+| `PRESS-08` | A narrow container concentrates the pressure, so its base takes more than a wide one at the same depth. | `s-ladder` | `s-ladder` | `pressure-in-liquids` |
+| `PRESS-09` | Heavy things sink and light things float. | `s-ladder` | `s-think` | `upthrust-floating-and-sinking` |
+| `PRESS-10` | Only things that float get upthrust. | *(none — nothing on the page asks for this commitment)* | `s-think` | `upthrust-floating-and-sinking` |
+| `PRESS-11` | Upthrust depends on how heavy the object is. | `tank` | `tank` | `upthrust-floating-and-sinking` |
+| `PRESS-12` | Being hollow is what makes something float. | `s-ladder` | `s-ladder` | `upthrust-floating-and-sinking` |
+| `PRESS-13` | A vacuum sucks things in. | `s-hook` | `s-think` | `atmospheric-pressure` |
+| `PRESS-14` | If air really pressed that hard, we would feel it. | *(none — nothing on the page asks for this commitment)* | `s-think` | `atmospheric-pressure` |
+| `PRESS-15` | A sealed bag swells at altitude because gravity is weaker up there. | `climb` | `s-ladder` | `atmospheric-pressure` |
+| `PRESS-16` | The air runs out at a definite height, and above it there is none at all. | `s-ladder` | `climb` | `atmospheric-pressure` |
+
+⚠️ **FOUR ROWS ARE NOT IN DESIGN'S PROPOSED TABLE**, and each arrived from a delivered distractor
+rather than from her §6 list. Each is a genuinely separate belief rather than a re-dressing of one
+already minted, which is the `p1-08` test this register applies:
+
+  * `PRESS-04` more of the sole touching the floor means MORE pressure on it (`p5-01` rung 2
+    option C). Separate from `PRESS-01`: a student can have given up "sharp pushes harder" and
+    still have the area the wrong way round.
+  * `PRESS-08` a NARROW container concentrates the pressure, so its base takes more than a wide
+    one at the same depth (`p5-02` rung 2 option B). It is `PRESS-05` from the other side — not
+    "more water" but "a narrower tube concentrates it" — and it is a `p5-01` idea being
+    misapplied one lesson later, which is exactly the kind of thing worth its own id.
+  * `PRESS-12` being HOLLOW is what makes something float (`p5-03` rung 2 option D), whose
+    correction is that a hollow object full of water sinks.
+  * `PRESS-16` the air runs out at a definite height and above it there is none at all. It
+    arrived with Design's own six-band stack, which thins upwards without ever reaching zero, and
+    with the bench readout that never gets to 0 per cent.
+
+⚠️ **`PRESS-02` AND `PRESS-14` HAVE NO `elicited_by`, WHICH §5.3 ALLOWS.** Nothing on either page
+asks the student to commit to them; each is confronted because it sits underneath one that is.
+
+⚠️ **EXPECTED TO RESURFACE.** `PRESS-13` — *a vacuum sucks* — in P11 (the particle model of a
+gas) and anywhere a syringe, a pipette or a pump is drawn. `PRESS-06` — *the stuff is heavier
+lower down* — is the same shape as `PART`'s compression beliefs and will meet them in P11.
+
+⊖ **`p5-01` RE-CONFRONTS `ENER-19` AND MINTS NOTHING.** Design's FLAG 9 records that the register
+routes a force-multiplication belief to a P5 `hydraulics` lesson that `structure.py` does not
+have, and resolves it by putting the hydraulic jack in `p5-01`'s *Going further* with the distance
+traded explicitly against the force. That resolution is kept. **The register was never pointing at
+nothing**: the entry she names is `ENERGY-11`, the `ENERGY` prefix was discharged into `ENER` on
+21 Aug, and the belief lives as `ENER-19` — *"a machine that multiplies force gives you energy
+for free"* — owned by `p1-08 simple-machines` and confronted by its lever bench. `p5-01` meets it
+in a second situation, which is what this register asks a lesson to do.
 
 ### `MATL` — metals and materials: what an order of reactivity is, what it predicts, and the words a material is judged by
 

@@ -246,7 +246,7 @@ LESSON = {
                   "and every one is low for the same reasons — which is "
                   "the difference between a systematic error and a scatter."},
 
-        {"type": "key-fact", "id": "energy-is-density-times-mass"},
+        {"type": "key-fact", "ref": "energy-is-density-times-mass"},
 
         # ── #s-worked · the formula, then CFIFA ─────────────────────────
         # ⚖️ MRB-204: a genuine product, so a triangle. Arrows here are SVG;
@@ -298,7 +298,7 @@ LESSON = {
         # ── #s-think · NOT a rail stop ──────────────────────────────────
         {"type": "misconception", "id": "think-burned-off", "anchor": "s-think"},
 
-        {"type": "key-fact", "id": "chemical-store-filled-and-emptied"},
+        {"type": "key-fact", "ref": "chemical-store-filled-and-emptied"},
 
         {"type": "quiz", "anchor": "s-ladder"},
         {"type": "summary"},

@@ -5831,6 +5831,39 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-ink-body);
 }
 
+/* ⊕ PHASE 3, 25 Aug 2026 · the beam's own two sentences.
+   `caption` sits above the drawing and says what it shows; `note` sits
+   below and says why the shape is a beam rather than a triangle. Both are
+   Design's, both were being dropped on the floor, and both are engine-level
+   rather than any one unit's — which is why they live here beside
+   `.ks3-formula-figure` and not inside a BEGIN P4 block. The flex switch is
+   scoped with `:has()` so a figure without them keeps the centred row it
+   has always had, byte for byte. */
+.ks3-formula-figure:has(.ks3-formula-figcaption),
+.ks3-formula-figure:has(.ks3-formula-fignote) {
+  flex-direction: column;
+  align-items: center;
+}
+.ks3-formula-figcaption {
+  margin: 0 0 14px;
+  max-width: 46ch;
+  text-align: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  color: var(--ks3-ink);
+}
+.ks3-formula-fignote {
+  margin: 16px 0 0;
+  max-width: 60ch;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+
 /* ── the part–whole bar with cover plates ── */
 .ks3-bar-block { margin-top: 30px; padding-top: 28px; border-top: 3px solid var(--ks3-ink); }
 .ks3-bar-head .ks3-eyebrow { color: var(--ks3-accent-text); }
@@ -26337,3 +26370,259 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 }
 
 /* ═══ END P4 ═══ */
+
+/* ═══ BEGIN P5 ═══════════════════════════════════════════════════════════
+   P5 — *Pressure*. One marked block per unit.
+
+   ⚠️ EVERY SELECTOR HERE IS P5-ONLY, and every shell stem was checked
+   against the whole registry before it was written.
+
+   ⚠️ EVERY FIGURE WRAPPER IS `position: relative`, for the reason the P4
+   block gives at length: every live value is an absolutely positioned HTML
+   span over the SVG, because a `{{ hole }}` inside an SVG `<text>` renders
+   nothing and fails silently — and without a positioned ancestor those
+   spans resolve against the page and widen the document on a phone.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── shared P5 shapes ───────────────────────────────────────────────── */
+
+.ks3-sand-gate, .ks3-dprobe-gate, .ks3-ftank-gate, .ks3-alt-gate {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+.ks3-sand-head, .ks3-dprobe-head, .ks3-ftank-head, .ks3-alt-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 20px;
+}
+.ks3-sand-head h2, .ks3-dprobe-head h2, .ks3-ftank-head h2,
+.ks3-alt-head h2 {
+  margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;
+  color: var(--ks3-on-dark);
+}
+.ks3-sand-progress, .ks3-dprobe-progress, .ks3-ftank-progress,
+.ks3-alt-progress {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 15px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+.ks3-sand-lead, .ks3-dprobe-lead, .ks3-ftank-lead, .ks3-alt-lead {
+  margin: 0 0 18px; font-size: 18px; line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+.ks3-sand-tiles, .ks3-dprobe-tiles, .ks3-ftank-tiles, .ks3-alt-tiles {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-sand-tile, .ks3-dprobe-tile, .ks3-ftank-tile, .ks3-alt-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .07);
+}
+.ks3-sand-tile-label, .ks3-dprobe-tile-label, .ks3-ftank-tile-label,
+.ks3-alt-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-sand-tile-value, .ks3-dprobe-tile-value, .ks3-ftank-tile-value,
+.ks3-alt-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 20px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+/* Design's second line on a tile — the working, not a second reading. */
+.ks3-sand-tile-sub, .ks3-dprobe-tile-sub, .ks3-ftank-tile-sub,
+.ks3-alt-tile-sub {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  color: var(--ks3-on-dark-muted);
+}
+
+.ks3-sand-note, .ks3-dprobe-note, .ks3-ftank-note, .ks3-alt-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: rgba(255, 255, 255, .07);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+
+.ks3-sand-figwrap, .ks3-dprobe-figwrap, .ks3-ftank-figwrap,
+.ks3-alt-figwrap { position: relative; margin-top: 20px; }
+.ks3-sand-svg, .ks3-dprobe-svg, .ks3-ftank-svg, .ks3-alt-svg {
+  display: block; width: 100%; height: auto;
+}
+.ks3-sand-fill, .ks3-dprobe-fill, .ks3-ftank-fill, .ks3-alt-fill {
+  position: absolute; font-family: var(--ks3-font-mono); font-weight: 500;
+  font-size: clamp(10px, 1.5vw, 19px); white-space: nowrap;
+  pointer-events: none;
+}
+
+.ks3-sand-pickerlabel, .ks3-dprobe-pickerlabel, .ks3-ftank-pickerlabel,
+.ks3-alt-pickerlabel {
+  margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-sand-tabrow, .ks3-dprobe-tabrow, .ks3-ftank-tabrow, .ks3-alt-tabrow {
+  display: flex; gap: 9px; flex-wrap: wrap;
+}
+.ks3-sand-controls, .ks3-dprobe-controls, .ks3-ftank-controls,
+.ks3-alt-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: 18px;
+}
+.ks3-sand-rowhead, .ks3-dprobe-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px;
+}
+.ks3-sand-rowhead label, .ks3-dprobe-rowhead label {
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-sand-reading, .ks3-dprobe-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 20px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+.ks3-sand-slider, .ks3-dprobe-slider {
+  width: 100%; margin-top: 8px; accent-color: var(--ks3-accent);
+  min-height: 44px;
+}
+
+/* ── p5-01 · the block on sand ──────────────────────────────────────── */
+
+.ks3-sand-grit { fill: none; stroke: #C6B9A7; stroke-width: 2;
+  stroke-dasharray: 4 14; opacity: .5; }
+.ks3-sand-line { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 5; stroke-linejoin: round; }
+/* The original sand level, dashed behind the trough, so the reader can see
+   how far it gave way. */
+.ks3-sand-was { fill: none; stroke: #C6B9A7; stroke-width: 2;
+  stroke-dasharray: 8 8; }
+.ks3-sand-block { fill: #15110C; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+.ks3-sand-shaft { fill: none; stroke: #8FB7FF; stroke-width: 8;
+  stroke-linecap: round; }
+.ks3-sand-head { fill: #8FB7FF; }
+.ks3-sand-dim { fill: none; stroke: #E9DCC8; stroke-width: 2; }
+.ks3-sand-verdict { letter-spacing: .08em;
+  font-size: clamp(10px, 1.4vw, 17px); }
+
+/* ── p5-02 · the probe in the tank ──────────────────────────────────── */
+
+.ks3-dprobe-tank { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 4; }
+.ks3-dprobe-liquid { fill: #1D2A3A; }
+/* The column ABOVE the probe face, shaded as its own band — the weight the
+   pressure is worked out from. */
+.ks3-dprobe-col { fill: #2F4A6B; }
+.ks3-dprobe-cable { fill: none; stroke: #C6B9A7; stroke-width: 3; }
+.ks3-dprobe-probe { fill: #15110C; stroke: #E9DCC8; stroke-width: 3; }
+/* Four arrows at the face. A liquid presses equally in every direction at
+   one depth, and the drawing says so whatever the depth. */
+.ks3-dprobe-rosette { fill: none; stroke: #8FB7FF; stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-dprobe-dim { fill: none; stroke: #E9DCC8; stroke-width: 2; }
+.ks3-dprobe-surfacelabel {
+  font-family: var(--ks3-font-mono); font-size: 17px; letter-spacing: .08em;
+  fill: #C6B9A7;
+}
+.ks3-dprobe-dir { letter-spacing: .08em;
+  font-size: clamp(10px, 1.4vw, 17px); }
+
+/* ── p5-03 · five blocks, one tank ──────────────────────────────────── */
+
+.ks3-ftank-tank { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 4; }
+.ks3-ftank-water { fill: #1D2A3A; }
+.ks3-ftank-surface { fill: none; stroke: #8FB7FF; stroke-width: 3; }
+.ks3-ftank-box { fill: #15110C; stroke: #E9DCC8; stroke-width: 3; }
+.ks3-ftank-shaft { fill: none; stroke: #E9DCC8; stroke-width: 8;
+  stroke-linecap: round; }
+.ks3-ftank-head { fill: #E9DCC8; }
+.ks3-ftank-up.ks3-ftank-shaft { stroke: #8FB7FF; }
+.ks3-ftank-up.ks3-ftank-head { fill: #8FB7FF; }
+/* ⊕ MRB-254 · was `.ks3-ftank-leftover`, an SVG <text> that shipped empty.
+   The caption is now an overlay span at the same place in the viewBox —
+   x 500/1000 and y 600/620 — and it is the only fill on this bench whose
+   position never changes, so it is placed here rather than from JS. */
+.ks3-ftank-fill.ks3-ftank-leftword {
+  left: 50%; top: 92.5%; transform: translateX(-50%);
+  letter-spacing: .08em; color: #FFC53D;
+}
+.ks3-ftank-hold { width: 100%; }
+
+/* ── p5-04 · up the mountain ────────────────────────────────────────── */
+
+.ks3-alt-shaft { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 3; }
+/* The air still ABOVE the marker. It is what presses, and it is the only
+   thing that changes as you climb. */
+.ks3-alt-air { fill: #2F4A6B; }
+.ks3-alt-ground { fill: none; stroke: var(--ks3-on-dark-muted);
+  stroke-width: 5; }
+.ks3-alt-marker { fill: #8FB7FF; }
+.ks3-alt-bag { fill: #15110C; stroke: #E9DCC8; stroke-width: 3; }
+.ks3-alt-bagseal { fill: none; stroke: #C6B9A7; stroke-width: 3;
+  stroke-dasharray: 8 6; }
+.ks3-alt-pan { fill: none; stroke: #E9DCC8; stroke-width: 4; }
+.ks3-alt-panwater { fill: #2F4A6B; }
+.ks3-alt-flame { fill: none; stroke: #FFC53D; stroke-width: 4;
+  stroke-linecap: round; }
+.ks3-alt-dial { fill: #15110C; stroke: #E9DCC8; stroke-width: 4; }
+/* An attribute-hole rotation, never a redrawn path — Design's own note. */
+.ks3-alt-needle { fill: none; stroke: #8FB7FF; stroke-width: 6;
+  stroke-linecap: round; }
+.ks3-alt-pin { fill: #E9DCC8; }
+
+/* ── the P5 formula figures ─────────────────────────────────────────── */
+/* ⚠️ NONE OF THESE IS A TRIANGLE. p5-01 is the unit's only product and it
+   takes the engine's own `.ks3-triangle`; the stack is a sum and the
+   opposed beam is a difference. Neither has cover buttons: covering a
+   layer of water, or one of two opposed arrows, asks nothing. */
+
+.ks3-p5fig { display: block; width: 100%; height: auto; }
+.ks3-p5fig-opposed { min-width: 480px; }
+.ks3-formula-figure:has(.ks3-p5fig) {
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.ks3-p5fig-layer { fill: var(--ks3-blue-tint); stroke: var(--ks3-ink);
+  stroke-width: 3; }
+.ks3-p5fig-layerlabel {
+  font-family: var(--ks3-font-mono); font-size: 18px;
+  fill: var(--ks3-ink);
+}
+/* The running total beside each boundary — the sum, made visible. */
+.ks3-p5fig-total {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px;
+  fill: var(--ks3-accent-text);
+}
+.ks3-p5fig-floor { fill: none; stroke: var(--ks3-ink); stroke-width: 5;
+  stroke-linecap: round; }
+.ks3-p5fig-footlabel {
+  font-family: var(--ks3-font-mono); font-size: 18px; letter-spacing: .08em;
+  fill: var(--ks3-ink-muted);
+}
+.ks3-p5fig-panel { fill: none; stroke: var(--ks3-ink); stroke-width: 3; }
+.ks3-p5fig-surface { fill: none; stroke: var(--ks3-accent-text);
+  stroke-width: 3; }
+.ks3-p5fig-box { fill: var(--ks3-blue-tint); stroke: var(--ks3-ink);
+  stroke-width: 3; }
+.ks3-p5fig-shaft { fill: none; stroke: var(--ks3-ink); stroke-width: 6;
+  stroke-linecap: round; }
+.ks3-p5fig-head { fill: var(--ks3-ink); }
+.ks3-p5fig-arrowlabel {
+  font-family: var(--ks3-font-mono); font-size: 18px; letter-spacing: .05em;
+  fill: var(--ks3-ink-muted);
+}
+.ks3-p5fig-over { fill: none; stroke: var(--ks3-accent-text);
+  stroke-width: 5; stroke-linecap: round; }
+.ks3-p5fig-overlabel {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px;
+  fill: var(--ks3-accent-text);
+}
+.ks3-p5fig-verdict {
+  font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px;
+  fill: var(--ks3-ink);
+}
+
+/* ═══ END P5 ═══ */

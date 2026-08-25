@@ -21,8 +21,23 @@ The register is expected to be SHORT. A long one means rewriting to taste.
 |---|---|
 | **Lesson** | `p4-08 springs-and-hookes-law` |
 | **What she wrote** | An amber callout block above the formula block, headed *"Before this one is done for real"*, with five bulleted lines: eye protection; a tray of sand or padded box under the load; nobody's hands, feet or knees under the hanger; the stand clamped or weighted; loading to destruction as a screened demonstration rather than a class activity. |
-| **What is built** | The same five requirements, in the same order and with the same content, in the engine's `safety_note` foot slot — which renders small, at the bottom edge, with `ks3-safety` treatment — recast from five bullets into one sentence with semicolons. |
-| **The defect in hers** | **None in the content, and this row exists only because the shape changed.** The engine has no amber-callout block type, and §5.1.1's vocabulary is closed — a new block type "needs an amendment to architecture.md, not a local addition". Inventing one for a single page is the MRB-205 failure in the other direction: rendering something Design did not draw, on one page, with nothing else in the key stage using it. |
+| **What is built** | The same five requirements, in the same order, in the engine's `safety_note` foot slot — which renders small, at the bottom edge, with `ks3-safety` treatment. Her five bullets become five sentences in one paragraph, because the slot takes one string. |
+| **The defect in hers** | **None in the content. This row exists because the shape changed.** The engine has no amber-callout block type, and §5.1.1's vocabulary is closed — a new block type "needs an amendment to architecture.md, not a local addition". Inventing one for a single page is the MRB-205 failure in the other direction: rendering something Design did not draw, on one page, with nothing else in the key stage using it. |
+
+⊖ **CORRECTED 25 Aug 2026, AND THE CORRECTION IS THE POINT OF THIS FILE.**
+This row used to read *"the same five requirements, in the same order and
+with the same content"*. **That was not true when it was written.** The
+recast had run her five bullets into one sentence with semicolons AND
+dropped her opening line — *"This is the one investigation in the unit that
+needs a risk assessment, because finding the limit of proportionality means
+loading a spring until it stops behaving"* — which is the sentence that says
+why any of it is needed. A register row asserting no content changed, on a
+row about a **safety** block, from which content had in fact been removed, is
+the worst kind of entry this file can carry.
+
+Phase 3 caught it by comparing the built page against her drawing rather
+than against the row. Every one of her sentences is now on the page, in her
+words; only the bulleting is gone, and only because the slot is one string.
 
 ⚠️ **THIS IS THE ONE ROW WHERE HER OWN FLAG ASKS FOR A DECISION AND THE
 DECISION IS NOT MINE.** Her flag 6: *"This is a deliberate departure from the
@@ -123,3 +138,48 @@ been ported, in P1, P2 and P3. The second half — the student's own five
 lines, on the numbers their own bench is showing — is now built. Her §3 makes
 it load-bearing: *"nothing independent is asked until all three have
 happened."*
+
+---
+
+## ⊖ Phase 3 reverts — 25 Aug 2026, added after P4 had already shipped
+
+P4 was committed, gated green and pushed as `d52c317f9` before this pass ran.
+Phase 3 then compared every built page against her drawing element for
+element, rather than against this register, and found content that had been
+replaced or dropped without ever reaching a row. **Every item below is a
+REVERT, not a departure**: in each case her version is restored, because in
+each case no defect could be named in it.
+
+They are recorded here rather than deleted, because the reason they happened
+is worth more than the fact that they are fixed: **each one was written by a
+pass that believed it was improving the page, and none of them was checked
+against her file afterwards.** The register cannot catch a change nobody
+thought was a change.
+
+| # | Lesson | What had been done | Now |
+|---|---|---|---|
+| R1 | `p4-09 non-contact-forces` | The key note was paraphrased, dropping what each force acts BETWEEN — the half a student needs to answer *"will it attract this?"* | Hers, verbatim |
+| R2 | `p4-09 non-contact-forces` | Both *Going further* items were replaced: a history of the field concept, and a compressed version of her own fridge-magnet point. Her second item, on machines that touch nothing — maglev, induction hobs, wireless charging, a disk head — had no counterpart at all | Hers, both, verbatim |
+| R3 | `p4-02 drawing-and-adding-forces` | The convention note was widened from *"The bars in the beam are drawn to one scale"* to *"Every arrow on the bench and every bar in the beam"* | Hers, verbatim |
+| R4 | `p4-08 springs-and-hookes-law` | The safety note dropped her opening sentence — see the correction to row 1 above | Hers, in full |
+| R5 | `p4-02`, `p4-03`, `p4-08` | **The beam figures shipped with no caption and no note.** Design writes one line above each beam saying what it shows, and one below saying why the shape is a beam and not a triangle. Both were dropped on the floor: the drawers took no such keys and `r_formula_figure` emitted only the SVG | Hers, all six sentences, and the renderer now has the slots |
+
+⚠️ **R5 IS THE SERIOUS ONE, AND IT IS AN MRB-204 LOSS.** The sentences that
+went missing are the ones that carry the ticket's own argument:
+
+> *"That is why this relationship gets a beam and not a triangle: nothing
+> here is being multiplied."* — `p4-02`
+>
+> *"Nothing here has a formula triangle, and putting one on it would teach a
+> relationship that does not exist."* — `p4-03`
+
+MRB-204 exists so that a sum is never drawn as a product. Three pages drew
+the sum correctly, as a beam, and then said nothing about why — which leaves
+a student with a shape and no reason, and leaves the next author free to
+"tidy" it into a triangle. The shape was right and the argument for it was
+absent, which is the failure that looks most like success.
+
+**The cause was a missing slot, not a decision.** `r_formula_figure`'s `art`
+branch returned the SVG and nothing else, so a `caption` or `note` in the
+payload would have been silently discarded even if one had been written. Both
+are now emitted, both are optional, and no existing figure moves a byte.

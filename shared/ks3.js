@@ -8379,9 +8379,27 @@
     return wrap.querySelector('[data-' + hook + '-out="' + id + '"]');
   }
 
+  /* ⊕ PHASE 3, 25 Aug 2026 · SETS EVERY ELEMENT THAT DECLARES THE OUTPUT,
+     not just the first.
+
+     ⚠️ FOUR TILES SHIPPED PERMANENTLY DEAD BECAUSE THIS SAID
+     `querySelector`. Where a bench names a slider and a readout tile with
+     the SAME id — `rbench` right and left, `span` force, `splot` load,
+     `dprobe` depth — the row-head reading matched first and the tile below
+     it never updated. It sat at the authored placeholder, an em dash,
+     while the identical value was displayed a few centimetres above it.
+
+     No gate could see it. `ks3_instrument_liveness` asserts the BLOCK's DOM
+     changed when a control is pressed, and it did — every other tile moved.
+     A single dead element inside a live block is invisible to it, which is
+     exactly the shape of failure that survives longest.
+
+     Two elements carrying `data-<hook>-out="X"` both mean "display output
+     X". Updating both is what the attribute already claimed. */
   function setOut(wrap, hook, id, text) {
-    var el = outEl(wrap, hook, id);
-    if (el) { el.textContent = text; }
+    var els = wrap.querySelectorAll(
+      '[data-' + hook + '-out="' + id + '"]');
+    for (var i = 0; i < els.length; i += 1) { els[i].textContent = text; }
   }
 
   /* A vertical arrow, Design's own head geometry. `len` in px of the
@@ -9894,6 +9912,818 @@
     paint();
   }
 /* ═══ END P4 wiring ═══ */
+
+/* ═══ BEGIN P5 wiring ═══════════════════════════════════════════════════
+   P5's instrument families — *Pressure*. Behaviour measured off Claude
+   Design's delivered pages in `docs/ks3/design-reference/p5/`.
+
+   ⚖️ EVERY P5 RAIL STOP SITS ON A BLOCK THAT CARRIES ITS OWN CONTROL, so
+   unlike P4 there is no band sibling to mark and no `markSibling` here. All
+   four pages are the same shape: hook, bench, formula-with-attempt, ladder.
+
+   ⚖️ EVERY LIVE VALUE IS AN HTML SPAN OVER A `position: relative` WRAPPER,
+   never an SVG `<text>`. MRB-254 gates the empty-`<text>` failure and caught
+   one in P4's sorter on the first run.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  /* P5's attempt panel is the same shared block as P4's, in its own
+     namespace so the two units' pages cannot reach each other's. */
+  function paintAttemptP5(wrap, vals, blocked) {
+    var qs = toArray(wrap.querySelectorAll("[data-p5cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }
+      var head = q.querySelector("[data-p5cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p5cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p5cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p5cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+      var block = q.querySelector("[data-p5cfa-blocked]");
+      var rows = q.querySelector(".ks3-cfa-rows");
+      var chk = q.querySelector("[data-p5cfa-check]");
+      if (block) { setHidden(block, !blocked); }
+      if (rows) { setHidden(rows, !!blocked); }
+      if (chk && blocked) { chk.setAttribute("disabled", ""); }
+    });
+  }
+
+  function publishLiveP5(sec, vals, blocked) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    each(toArray(host.querySelectorAll("[data-p5cfa]")), function (p) {
+      paintAttemptP5(p, vals, blocked);
+    });
+  }
+
+  function wireCfifaAttemptP5(sec) {
+    var wrap = sec.querySelector("[data-p5cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p5cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p5cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p5cfa-input]"));
+      var btn = q.querySelector("[data-p5cfa-check]");
+      var hint = q.querySelector("[data-p5cfa-hint]");
+      var reveal = q.querySelector("[data-p5cfa-reveal]");
+      var tally = q.querySelector("[data-p5cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p5cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p5cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p5cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+  /* Group a number the way Design does: `50000` → `50 000`, with the narrow
+     no-break space, and only from five digits up. */
+  function groupN(n) {
+    var s = String(Math.round(n));
+    if (s.length < 5) { return s; }
+    return s.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+
+  /* p5-01 `#s-bench` — the block on sand.
+
+     ⚖️ ONE SOLID, THREE FACES, AND THE AREA IS WHAT CHANGED. The weight is
+     recomputed from the mass every time and the pressure from the face, so
+     the two tiles cannot disagree with the hole in the sand.
+
+     ⚖️ THE BLOCK IS DRAWN TO SCALE IN METRES AND THE ARROW IN PX PER
+     NEWTON. Different quantities, so one scale for both would be
+     meaningless rather than more honest. */
+  function wireBlockOnSand(sec) {
+    var wrap = sec.querySelector("[data-sand]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-sand-gate]");
+    var body = wrap.querySelector("[data-sand-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-sand-gopt]"));
+    var faces = toArray(wrap.querySelectorAll("[data-sand-face]"));
+    var mass = wrap.querySelector("[data-sand-mass]");
+    var svg = wrap.querySelector("[data-sand-alt]");
+    var noteEl = wrap.querySelector("[data-sand-note]");
+    var LIMIT = parseFloat(wrap.getAttribute("data-limit")) || 6000;
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var SCALE = parseFloat(wrap.getAttribute("data-scale")) || 1400;
+    var WS = parseFloat(wrap.getAttribute("data-wscale")) || 1.6;
+    var GROUND = parseFloat(wrap.getAttribute("data-base-y")) || 470;
+    var CX = parseFloat(wrap.getAttribute("data-cx")) || 420;
+    var at = parseInt(wrap.getAttribute("data-start-face"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function face(i) { return faces[i === undefined ? at : i]; }
+    function areaOf(i) {
+      return parseFloat(face(i).getAttribute("data-area"));
+    }
+
+    function paint() {
+      var f = face();
+      var kg = mass ? Number(mass.value) : 0;
+      var W = kg * G;
+      var area = areaOf();
+      var P = Math.round(W / area);
+      var sinks = P >= LIMIT;
+
+      each(faces, function (b, i) {
+        b.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+
+      /* ⚠️ THE SIDE ELEVATION, NOT THE FOOTPRINT. `data-w`/`data-h` are
+         the face resting on the sand and their product is the area; what
+         the drawing needs is how the block looks from the side standing on
+         that face, which is `data-draww`/`data-drawh`. Drawing the
+         elevation with the footprint's numbers made the block change
+         volume every time the face was switched — on end it came out a
+         quarter of its real height — and that is the one thing this bench
+         must hold constant. */
+      var w = Math.round(parseFloat(f.getAttribute("data-draww")) * SCALE);
+      var h = Math.round(parseFloat(f.getAttribute("data-drawh")) * SCALE);
+      var x = CX - w / 2;
+      var sink = sinks ? 20 : 0;
+      var yTop = GROUND - h + sink;
+      var len = Math.max(34, Math.round(W * WS));
+      var tipY = yTop - 14;
+      var startY = tipY - len;
+
+      var block = wrap.querySelector("[data-sand-block]");
+      if (block) {
+        block.setAttribute("x", x); block.setAttribute("y", yTop);
+        block.setAttribute("width", w); block.setAttribute("height", h);
+      }
+      setPath(wrap, "[data-sand-line]", sinks
+        ? "M60 " + GROUND + " H" + (x - 46) + " L" + (x - 10) + " " +
+          (GROUND + 20) + " H" + (x + w + 10) + " L" + (x + w + 46) + " " +
+          GROUND + " H940"
+        : "M60 " + GROUND + " H940");
+      setPath(wrap, "[data-sand-was]", sinks
+        ? "M" + (x - 52) + " " + GROUND + " H" + (x + w + 52) : null);
+      setPath(wrap, "[data-sand-shaft]",
+              "M" + CX + " " + startY + " V" + Math.max(startY + 4, tipY - 22));
+      setPath(wrap, "[data-sand-head]",
+              "M" + CX + " " + tipY + " L" + (CX - 17) + " " + (tipY - 24) +
+              " L" + (CX + 17) + " " + (tipY - 24) + " Z");
+      setPath(wrap, "[data-sand-dim]",
+              "M" + x + " 514 V534 M" + (x + w) + " 514 V534 M" + x +
+              " 524 H" + (x + w));
+
+      fillSpan(wrap, "sand", "weight", groupN(W) + " N",
+               tagStyle((CX + 24) / 1000, (startY + len / 2) / 600,
+                        "#8FB7FF", "start"));
+      fillSpan(wrap, "sand", "area", f.getAttribute("data-arealabel"),
+               tagStyle((x + w + 14) / 1000, 524 / 600, "#E9DCC8", "start"));
+      fillSpan(wrap, "sand", "verdict",
+               sinks ? "OVER THE LIMIT — IT SINKS IN"
+                     : "UNDER THE LIMIT — IT HOLDS",
+               tagStyle(0.5, 0.06, "#C6B9A7"));
+
+      setOut(wrap, "sand", "mass", kg + " kg");
+      setOut(wrap, "sand", "weight", groupN(W) + " N");
+      setOut(wrap, "sand", "area", f.getAttribute("data-arealabel"));
+      setOut(wrap, "sand", "pressure", groupN(P) + " Pa");
+      setOut(wrap, "sand", "verdict", sinks ? "Sinks in" : "Holds");
+      var sub = wrap.querySelector('[data-sand-sub="weight"]');
+      if (sub) { sub.textContent = kg + " kg × 10 N/kg"; }
+      sub = wrap.querySelector('[data-sand-sub="area"]');
+      if (sub) {
+        sub.textContent = f.getAttribute("data-dims") + " face down";
+      }
+
+      /* The smallest face is the last tab — Design's own order. */
+      var small = faces.length - 1;
+      var onSmall = Math.round(W / areaOf(small));
+      var key, vals = {
+        weight: groupN(W) + " N", area: f.getAttribute("data-arealabel"),
+        pressure: groupN(P) + " Pa", limit: groupN(LIMIT) + " Pa",
+        smallestarea: faces[small].getAttribute("data-arealabel"),
+        smallestname: faces[small].getAttribute("data-name"),
+        onsmallest: groupN(onSmall) + " Pa",
+        needarea: Math.round((W / LIMIT) * 10000) / 10000,
+        holdmass: (Math.floor((LIMIT * area) / G) >= 1
+          ? Math.floor((LIMIT * area) / G) + " kg or less."
+          : "something under 1 kg, which is off the end of this slider."),
+        needmass: Math.ceil((LIMIT * area) / G) + " kg"
+      };
+      if (sinks) { key = "sinks"; }
+      else if (onSmall < LIMIT) { key = "holds_any"; }
+      else { key = "holds_for_now"; }
+      var bEl = wrap.querySelector('[data-sand-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A block drawn to scale standing on its " +
+          f.getAttribute("data-dims") + " face, with a weight of " + W +
+          " newtons pressing down on " + f.getAttribute("data-arealabel") +
+          " of sand, giving a pressure of " + P + " pascals" +
+          (sinks ? ", which is enough for the sand to give way and the block "
+                 + "to sink in." : ", which the sand surface holds."));
+      }
+
+      var prog = wrap.querySelector("[data-sand-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLiveP5(sec, {
+        weight: groupN(W) + " N", area: f.getAttribute("data-arealabel"),
+        pressure: groupN(P) + " Pa", mass: kg,
+        wnum: W, anum: f.getAttribute("data-arealabel").replace(" m²", ""),
+        pnum: groupN(P), dims: f.getAttribute("data-dims"),
+        verdictnote: sinks
+          ? "Over the " + groupN(LIMIT) + " Pa this sand gives way at, so " +
+            "the block sinks in."
+          : "Under the " + groupN(LIMIT) + " Pa this sand gives way at, so " +
+            "the surface holds."
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(faces, function (b, i) {
+      b.addEventListener("click", function () {
+        at = i; touched += 1; paint();
+      });
+    });
+    if (mass) {
+      ["input", "change"].forEach(function (ev) {
+        mass.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p5-02 `#s-bench` — the probe in the tank.
+
+     ⚖️ EVERY BRANCH NAMES THE SAME DEPTH IN ANOTHER LIQUID, so a student who
+     moves the probe AND swaps the liquid is never left with two variables
+     and no way to tell which did what.
+
+     ⚖️ THE WEIGHT ABOVE IS DERIVED FROM THE PRESSURE, so the tile and the
+     reading cannot disagree — and it comes out right physically: a 2 m
+     column over 0.02 m² is 0.04 m³, 40 kg, 400 N. */
+  function wireDepthProbe(sec) {
+    var wrap = sec.querySelector("[data-dprobe]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-dprobe-gate]");
+    var body = wrap.querySelector("[data-dprobe-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-dprobe-gopt]"));
+    var liquids = toArray(wrap.querySelectorAll("[data-dprobe-liquid]"));
+    var depth = wrap.querySelector("[data-dprobe-depth]");
+    var svg = wrap.querySelector("[data-dprobe-alt]");
+    var noteEl = wrap.querySelector("[data-dprobe-note]");
+    var FACE = parseFloat(wrap.getAttribute("data-face")) || 0.02;
+    var PX = parseFloat(wrap.getAttribute("data-px-per-m")) || 90;
+    var SURF = parseFloat(wrap.getAttribute("data-surface")) || 90;
+    var PER = parseFloat(wrap.getAttribute("data-per-step")) || 0.5;
+    var at = parseInt(wrap.getAttribute("data-start-liquid"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function liq(i) { return liquids[i === undefined ? at : i]; }
+    function rho(i) { return parseFloat(liq(i).getAttribute("data-rho")); }
+    function pressureAt(d, i) { return Math.round(rho(i) * 10 * d); }
+
+    function paint() {
+      var d = (depth ? Number(depth.value) : 0) * PER;
+      var P = pressureAt(d);
+      var W = Math.round(P * FACE * 10) / 10;
+
+      each(liquids, function (b, i) {
+        b.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+
+      var colH = Math.round(d * PX);
+      var probeTop = SURF + colH;
+      var cy = probeTop + 13;
+      var col = wrap.querySelector("[data-dprobe-col]");
+      if (col) { col.setAttribute("height", Math.max(1, colH)); }
+      var probe = wrap.querySelector("[data-dprobe-probe]");
+      if (probe) { probe.setAttribute("y", probeTop); }
+      setPath(wrap, "[data-dprobe-cable]", "M440 " + SURF + " V" + probeTop);
+      /* Four arrows at the face: a liquid presses equally in every
+         direction at one depth, whatever the depth. */
+      setPath(wrap, "[data-dprobe-rosette]",
+              "M440 " + (cy - 74) + " V" + (cy - 26) +
+              " M440 " + (cy + 74) + " V" + (cy + 26) +
+              " M318 " + cy + " H366 M562 " + cy + " H514");
+      setPath(wrap, "[data-dprobe-dim]",
+              "M248 " + SURF + " V" + probeTop +
+              " M236 " + SURF + " H260 M236 " + probeTop + " H260");
+
+      fillSpan(wrap, "dprobe", "depth", d.toFixed(1) + " m",
+               tagStyle(0.12, (SURF + colH / 2) / 600, "#E9DCC8", "end"));
+      fillSpan(wrap, "dprobe", "col", W + " N above",
+               tagStyle(0.52, (SURF + Math.max(24, colH / 2)) / 600,
+                        "#FBF3E6", "start"));
+      fillSpan(wrap, "dprobe", "dir", "THE SAME IN EVERY DIRECTION",
+               tagStyle(0.5, 0.94, "#C6B9A7"));
+
+      setOut(wrap, "dprobe", "depth", d.toFixed(1) + " m");
+      setOut(wrap, "dprobe", "weight", W + " N");
+      setOut(wrap, "dprobe", "pressure", groupN(P) + " Pa");
+      setOut(wrap, "dprobe", "same", "Same reading");
+      var sub = wrap.querySelector('[data-dprobe-sub="weight"]');
+      if (sub) { sub.textContent = liq().getAttribute("data-name"); }
+
+      /* The comparison liquid is the first one with a different density. */
+      var other = at;
+      for (var i = 0; i < liquids.length; i += 1) {
+        if (rho(i) !== rho()) { other = i; break; }
+      }
+      var key = d === 0 ? "surface" : (d <= 2 ? "shallow" : "deep");
+      var bEl = wrap.querySelector('[data-dprobe-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          name: liq().getAttribute("data-name"),
+          depth: d + " m", weight: W + " N",
+          pressure: groupN(P) + " Pa",
+          half: (d / 2) + " m",
+          halfp: groupN(pressureAt(d / 2)) + " Pa",
+          othername: liq(other).getAttribute("data-name"),
+          otherp: groupN(pressureAt(d, other)) + " Pa"
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A tank of " + liq().getAttribute("data-name") + " with a probe "
+          + "hanging " + d.toFixed(1) + " metres below the surface. The "
+          + "column of liquid above its face is shaded, weighs " + W +
+          " newtons, and presses on the face with " + P +
+          " pascals from every direction.");
+      }
+
+      var prog = wrap.querySelector("[data-dprobe-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLiveP5(sec, {
+        weight: W + " N", face: FACE + " m²", depth: d.toFixed(1) + " m",
+        name: liq().getAttribute("data-name"),
+        wnum: W, fnum: FACE, pnum: groupN(P),
+        pressure: groupN(P) + " Pa"
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(liquids, function (b, i) {
+      b.addEventListener("click", function () {
+        at = i; touched += 1; paint();
+      });
+    });
+    if (depth) {
+      ["input", "change"].forEach(function (ev) {
+        depth.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+
+    paint();
+  }
+
+  /* p5-03 `#s-bench` — five blocks, one tank.
+
+     ⚖️ EVERY BLOCK IS ONE LITRE, so a block pushed fully under can never get
+     more than one litre's worth of upthrust. That is what makes the commit
+     gate answerable: pine and steel get the SAME upthrust.
+
+     ⚖️ A FLOATER SITS AT `weight ÷ litre` OF ITS DEPTH — ice at 9.2 N of
+     10 N floats 92 per cent under, which is the real figure.
+
+     ⚖️ A SINKER STILL GETS ITS FULL UPTHRUST, and the balance tile says so:
+     weight minus upthrust, visibly less than the weight in air. */
+  function wireFloatTank(sec) {
+    var wrap = sec.querySelector("[data-ftank]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-ftank-gate]");
+    var body = wrap.querySelector("[data-ftank-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-ftank-gopt]"));
+    var blocks = toArray(wrap.querySelectorAll("[data-ftank-block]"));
+    var holdBtn = wrap.querySelector("[data-ftank-hold]");
+    var svg = wrap.querySelector("[data-ftank-alt]");
+    var noteEl = wrap.querySelector("[data-ftank-note]");
+    var LITRE = parseFloat(wrap.getAttribute("data-litre")) || 10;
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var WARR = parseFloat(wrap.getAttribute("data-warrow")) || 120;
+    var SURF = parseFloat(wrap.getAttribute("data-surface")) || 200;
+    var BOX = parseFloat(wrap.getAttribute("data-box")) || 120;
+    var at = parseInt(wrap.getAttribute("data-start-block"), 10) || 0;
+    var holding = false, committed = false, touched = 0;
+
+    function blk() { return blocks[at]; }
+    function weight() {
+      return Math.round(parseFloat(blk().getAttribute("data-mass")) * G * 10)
+        / 10;
+    }
+    function floats() { return weight() < LITRE; }
+    function under() { return holding || !floats(); }
+    function upthrust() { return under() ? LITRE : weight(); }
+
+    function paint() {
+      var W = weight();
+      var U = upthrust();
+      var R = Math.round((U - W) * 10) / 10;
+      var frac = under() ? 1 : W / LITRE;
+      var pct = Math.round(frac * 100);
+
+      each(blocks, function (b, i) {
+        b.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+      if (holdBtn) {
+        holdBtn.setAttribute("aria-pressed", holding ? "true" : "false");
+        /* The two labels are authored on the button, not written here.
+           They used to be these two literals, which made `hold_on` an
+           authored string nothing read. */
+        holdBtn.textContent = holding
+          ? (holdBtn.getAttribute("data-on") || "Let it go")
+          : (holdBtn.getAttribute("data-off") || "Hold it right under");
+      }
+
+      /* A sinker is drawn part-way down rather than on the floor, so both
+         arrows fit inside the tank. */
+      var top = under() ? SURF + 100 : SURF - BOX * (1 - frac);
+      var bottom = top + BOX;
+      var cx = 500;
+      var box = wrap.querySelector("[data-ftank-box]");
+      if (box) { box.setAttribute("y", top); }
+
+      var upLen = Math.max(40, Math.min(260, Math.round(WARR * (U / W))));
+      var uA = arrowV(cx, top, upLen, false, 24);
+      var wA = arrowV(cx, bottom, WARR, true, 24);
+      setPath(wrap, '[data-ftank-shaft="up"]', uA.shaft);
+      setPath(wrap, '[data-ftank-head="up"]', uA.head);
+      setPath(wrap, '[data-ftank-shaft="w"]', wA.shaft);
+      setPath(wrap, '[data-ftank-head="w"]', wA.head);
+
+      fillSpan(wrap, "ftank", "up", U + " N",
+               tagStyle(0.52, (top - upLen / 2) / 620, "#8FB7FF", "start"));
+      fillSpan(wrap, "ftank", "w", W + " N",
+               tagStyle(0.52, (bottom + WARR / 2) / 620, "#E9DCC8", "start"));
+      fillSpan(wrap, "ftank", "leftword",
+               R === 0 ? "NOTHING LEFT OVER"
+                 : (R > 0 ? R + " N LEFT OVER, UPWARDS"
+                          : Math.abs(R) + " N LEFT OVER, DOWNWARDS"));
+
+      setOut(wrap, "ftank", "weight", W + " N");
+      setOut(wrap, "ftank", "up", U + " N");
+      setOut(wrap, "ftank", "reading",
+             floats() && !holding ? "0 N — it holds itself up"
+                                  : (Math.round((W - U) * 10) / 10) + " N");
+      setOut(wrap, "ftank", "verdict",
+             floats() ? (holding ? "Pushes back up" : "Floats") : "Sinks");
+      var sub = wrap.querySelector('[data-ftank-sub="weight"]');
+      if (sub) {
+        sub.textContent = blk().getAttribute("data-mass") + " kg × 10 N/kg";
+      }
+      sub = wrap.querySelector('[data-ftank-sub="up"]');
+      if (sub) {
+        sub.textContent = under() ? "a full litre pushed aside"
+                                  : pct + "% of a litre pushed aside";
+      }
+
+      var key = floats() ? (holding ? "held_under" : "floating") : "sinking";
+      var bEl = wrap.querySelector('[data-ftank-branch="' + key + '"]');
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
+          name: blk().getAttribute("data-name"),
+          weight: W + " N", up: U + " N", over: Math.abs(R) + " N",
+          pct: pct + "%",
+          restpct: Math.round((W / LITRE) * 100) + "%",
+          reading: (Math.round((W - U) * 10) / 10) + " N"
+        });
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A one-litre block of " + blk().getAttribute("data-name") +
+          " in a tank of water, " +
+          (under() ? "held completely below the surface"
+                   : pct + " per cent below the surface") +
+          ", with a weight arrow of " + W +
+          " newtons down and an upthrust arrow of " + U + " newtons up.");
+      }
+
+      var prog = wrap.querySelector("[data-ftank-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLiveP5(sec, {
+        name: blk().getAttribute("data-name"),
+        weight: W + " N", up: U + " N",
+        wnum: W, unum: U, onum: Math.abs(R),
+        answer: R === 0 ? "nothing left over — it floats"
+          : Math.abs(R) + " N " + (R > 0 ? "upwards" : "downwards"),
+        finenote: R === 0
+          ? "They cancel exactly, which is what floating is."
+          : "The bigger arrow decides which way it goes.",
+        answernote: R === 0
+          ? "Upthrust and weight are equal, so nothing is left over."
+          : (R > 0
+            ? "Left over upwards, which is the push you feel in your hand."
+            : "Left over downwards, so it sinks.")
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(blocks, function (b, i) {
+      b.addEventListener("click", function () {
+        at = i; touched += 1; paint();
+      });
+    });
+    if (holdBtn) {
+      holdBtn.addEventListener("click", function () {
+        holding = !holding; touched += 1; paint();
+      });
+    }
+
+    paint();
+  }
+
+  /* p5-04 `#s-bench` — up the mountain.
+
+     ⚖️ SEA LEVEL IS ITS OWN BRANCH, because it is the state every other
+     height is compared with. Two branches × three objects covers all
+     eighteen states.
+
+     ⚠️ THE BAROMETER NEEDLE IS AN ATTRIBUTE-HOLE ROTATION, not a redrawn
+     path — Design's own note for the generator. */
+  function wireAltitudeColumn(sec) {
+    var wrap = sec.querySelector("[data-alt]");
+    if (!wrap) { return; }
+    var gate = wrap.querySelector("[data-alt-gate]");
+    var body = wrap.querySelector("[data-alt-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-alt-gopt]"));
+    var heights = toArray(wrap.querySelectorAll("[data-alt-height]"));
+    var cases = toArray(wrap.querySelectorAll("[data-alt-case]"));
+    var svg = wrap.querySelector("[data-alt-alt]");
+    var noteEl = wrap.querySelector("[data-alt-note]");
+    var SEA = parseFloat(wrap.getAttribute("data-sea")) || 101;
+    var PALM = parseFloat(wrap.getAttribute("data-palm")) || 0.01;
+    var GROUND = parseFloat(wrap.getAttribute("data-base-y")) || 560;
+    var TOP = parseFloat(wrap.getAttribute("data-top")) || 40;
+    var SPAN = parseFloat(wrap.getAttribute("data-span")) || 12000;
+    var at = parseInt(wrap.getAttribute("data-start-height"), 10) || 0;
+    var kase = parseInt(wrap.getAttribute("data-start-case"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function h() { return heights[at]; }
+    function c() { return cases[kase]; }
+    function kpa() { return parseFloat(h().getAttribute("data-kpa")); }
+
+    function paint() {
+      var m = parseFloat(h().getAttribute("data-m"));
+      var k = kpa();
+      var pa = k * 1000;
+      var share = Math.round((k / SEA) * 100);
+      var palmF = Math.round(pa * PALM);
+      var key = m === 0 ? "sea" : "above";
+      var kind = c().getAttribute("data-alt-case");
+
+      each(heights, function (b, i) {
+        b.setAttribute("aria-pressed", i === at ? "true" : "false");
+      });
+      each(cases, function (b, i) {
+        b.setAttribute("aria-pressed", i === kase ? "true" : "false");
+      });
+
+      var markY = Math.round(GROUND - (m / SPAN) * (GROUND - TOP));
+      var air = wrap.querySelector("[data-alt-air]");
+      if (air) { air.setAttribute("height", Math.max(2, markY - TOP)); }
+      setPath(wrap, "[data-alt-marker]",
+              "M300 " + markY + " L330 " + (markY - 14) +
+              " L330 " + (markY + 14) + " Z");
+
+      each(toArray(wrap.querySelectorAll("[data-alt-case-shape]")),
+        function (g) {
+          setHidden(g, g.getAttribute("data-alt-case-shape") !== kind);
+        });
+
+      var swell = Math.min(1.85, Math.sqrt(SEA / k));
+      var bagW = Math.round(210 * swell);
+      var bagH = Math.round(150 * swell);
+      var bag = wrap.querySelector("[data-alt-bag]");
+      if (bag) {
+        bag.setAttribute("x", 700 - Math.round(bagW / 2));
+        bag.setAttribute("y", 360 - Math.round(bagH / 2));
+        bag.setAttribute("width", bagW);
+        bag.setAttribute("height", bagH);
+      }
+      setPath(wrap, "[data-alt-bagseal]",
+              "M" + (700 - Math.round(bagW / 2)) + " " +
+              (360 - Math.round(bagH / 2) + 26) + " H" +
+              (700 + Math.round(bagW / 2)));
+      var water = wrap.querySelector("[data-alt-panwater]");
+      if (water) {
+        water.setAttribute("y", 430 - 96);
+        water.setAttribute("height", 96);
+      }
+      var needle = wrap.querySelector("[data-alt-needle]");
+      if (needle) {
+        needle.setAttribute("transform",
+          "rotate(" + Math.round(-120 + (k / 110) * 240) + " 700 360)");
+      }
+
+      fillSpan(wrap, "alt", "height", h().textContent,
+               tagStyle(0.09, markY / 620, "#8FB7FF", "end"));
+      var caseValue;
+      if (kind === "pan") {
+        caseValue = h().getAttribute("data-boil") + " °C";
+      } else if (kind === "baro") {
+        caseValue = k + " kPa";
+      } else {
+        caseValue = m === 0 ? "As sealed"
+          : "Swollen " + (Math.round((SEA / k) * 10) / 10) + "×";
+      }
+      /* The barometer's reading is on its own dial, so the overlay label
+         is suppressed there rather than printed twice. */
+      fillSpan(wrap, "alt", "case", kind === "baro" ? "" : caseValue,
+               tagStyle(0.70, 0.82, "#FBF3E6"));
+
+      setOut(wrap, "alt", "height", h().textContent);
+      setOut(wrap, "alt", "pressure", k + " kPa");
+      setOut(wrap, "alt", "share", share + "%");
+      setOut(wrap, "alt", "case", caseValue);
+      var lab = wrap.querySelector('[data-alt-label="case"]');
+      if (lab) { lab.textContent = c().getAttribute("data-tile"); }
+      var sub = wrap.querySelector('[data-alt-sub="height"]');
+      if (sub) { sub.textContent = h().getAttribute("data-name"); }
+      sub = wrap.querySelector('[data-alt-sub="pressure"]');
+      if (sub) { sub.textContent = groupN(pa) + " Pa"; }
+
+      var vals = {
+        kpa: k, pa: groupN(pa) + " Pa", sea: SEA,
+        palmforce: groupN(palmF) + " N", share: share + "%",
+        label: h().textContent, name: h().getAttribute("data-name"),
+        boil: h().getAttribute("data-boil"),
+        swell: Math.round((SEA / k) * 10) / 10
+      };
+      var bEl = wrap.querySelector('[data-alt-branch="' + key + '"]');
+      var clause = c().getAttribute(
+        key === "sea" ? "data-clause-sea" : "data-clause-above");
+      if (noteEl && bEl) {
+        noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), vals)
+          + fillTokens(clause, vals);
+      }
+
+      if (svg) {
+        svg.setAttribute("aria-label",
+          "A column showing the air above a marker set at " + h().textContent +
+          ", with " + share + " per cent of the atmosphere still overhead " +
+          "and a pressure of " + k + " kilopascals, beside the " +
+          c().textContent.toLowerCase() + " at that height.");
+      }
+
+      var prog = wrap.querySelector("[data-alt-progress]");
+      if (prog) {
+        prog.textContent = touched ? "Both controls live"
+                                   : "Change a control to begin";
+      }
+      publishLiveP5(sec, {
+        label: h().textContent, kpa: k, pa: groupN(pa) + " Pa",
+        panum: groupN(pa), fnum: groupN(palmF),
+        palmforce: groupN(palmF) + " N"
+      }, false);
+      markStage(sec, committed && touched > 0);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        committed = true;
+        setHidden(gate, true);
+        setHidden(body, false);
+        paint();
+      });
+    });
+    each(heights, function (b, i) {
+      b.addEventListener("click", function () {
+        at = i; touched += 1; paint();
+      });
+    });
+    each(cases, function (b, i) {
+      b.addEventListener("click", function () {
+        kase = i; touched += 1; paint();
+      });
+    });
+
+    paint();
+  }
+/* ═══ END P5 wiring ═══ */
 
 
 
@@ -27786,6 +28616,13 @@
     // run. `wireCfifaAttempt` only attaches listeners and paints the hint.
     each(root.querySelectorAll("[data-p4cfablock]"), wireCfifaAttempt);
     // ═══ END P4 wiring ═══
+    // ═══ BEGIN P5 wiring ═══
+    each(root.querySelectorAll("[data-sandblock]"), wireBlockOnSand);
+    each(root.querySelectorAll("[data-dprobeblock]"), wireDepthProbe);
+    each(root.querySelectorAll("[data-ftankblock]"), wireFloatTank);
+    each(root.querySelectorAll("[data-altblock]"), wireAltitudeColumn);
+    each(root.querySelectorAll("[data-p5cfablock]"), wireCfifaAttemptP5);
+    // ═══ END P5 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

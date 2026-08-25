@@ -251,7 +251,7 @@ LESSON = {
                   "enough — and the mean of the three times is what you "
                   "divide into."},
 
-        {"type": "key-fact", "id": "two-measurements-one-number"},
+        {"type": "key-fact", "ref": "two-measurements-one-number"},
 
         # ── #s-build · the formula, then CFIFA ─────────────────────────
         # ⚠️ NO ANCHOR ON THE FORMULA — MRB-208. See the note above.

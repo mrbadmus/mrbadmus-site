@@ -317,7 +317,7 @@ LESSON = {
                       "for it."},
          ]},
 
-        {"type": "key-fact", "id": "a-force-takes-two"},
+        {"type": "key-fact", "ref": "a-force-takes-two"},
 
         {"type": "misconception", "id": "think-force-in-it",
          "anchor": "s-think"},

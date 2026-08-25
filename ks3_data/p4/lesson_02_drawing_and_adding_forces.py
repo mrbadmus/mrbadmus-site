@@ -236,6 +236,17 @@ LESSON = {
          ],
          "figure": {
              "art": "p4-resultant-beam",
+             # ⊕ PHASE 3, 25 Aug 2026. Design writes one line above the beam
+             # and one below it, and both were being dropped: the drawer
+             # took no `caption` or `note` and `r_formula_figure` emitted
+             # only the SVG. The lower one is MRB-204's own argument — the
+             # page asserted a beam and never said why.
+             "caption": "Two pulls the opposite way: one cancels part of "
+                        "the other.",
+             "note": "The two lower bars fill the top one exactly, because "
+                     "25 N and 15 N make 40 N. That is why this "
+                     "relationship gets a beam and not a triangle: nothing "
+                     "here is being multiplied.",
              "aria_label": "Three bars, drawn to the same scale. The top bar "
                            "is a 40 newton pull to the right. Under it a 25 "
                            "newton bar points left and reaches only part of "
@@ -257,7 +268,7 @@ LESSON = {
         {"type": "check", "id": "your-turn-resultant",
          "anchor": "s-formula"},
 
-        {"type": "key-fact", "id": "arrow-length-is-the-size"},
+        {"type": "key-fact", "ref": "arrow-length-is-the-size"},
 
         {"type": "misconception", "id": "think-bigger-pull-wins",
          "anchor": "s-think"},
@@ -601,9 +612,9 @@ LESSON = {
 
     "convention_note": "The sledge on the bench is on ice: friction and air "
                        "resistance are left out so that only the two pulls "
-                       "you set are acting along the line. Every arrow on "
-                       "the bench and every bar in the beam is drawn to one "
-                       "scale, so equal lengths mean equal newtons.",
+                       "you set are acting along the line. The bars in the "
+                       "beam are drawn to one scale, so equal lengths mean "
+                       "equal newtons.",
 
     "ws": [],
 }

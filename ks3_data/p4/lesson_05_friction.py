@@ -267,7 +267,7 @@ LESSON = {
                         "A piston in an engine"]},
          ]},
 
-        {"type": "key-fact", "id": "friction-against-the-sliding"},
+        {"type": "key-fact", "ref": "friction-against-the-sliding"},
 
         {"type": "misconception", "id": "think-friction-when-moving",
          "anchor": "s-think"},

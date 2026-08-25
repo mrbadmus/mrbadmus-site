@@ -292,7 +292,7 @@ LESSON = {
                   "resultant changes the motion faster, and the direction it "
                   "points is the direction the change happens in."},
 
-        {"type": "key-fact", "id": "force-changes-motion"},
+        {"type": "key-fact", "ref": "force-changes-motion"},
 
         {"type": "misconception", "id": "think-moving-needs-a-push",
          "anchor": "s-think"},

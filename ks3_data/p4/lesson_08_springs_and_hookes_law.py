@@ -254,6 +254,17 @@ LESSON = {
          ],
          "figure": {
              "art": "p4-spring-beam",
+             # ⊕ PHASE 3, 25 Aug 2026 — Design's caption and note, restored.
+             "caption": "Each newton adds the same amount, until it does "
+                        "not.",
+             "note": "This is a beam and a graph rather than a triangle, "
+                     "because what is being taught is a proportionality "
+                     "read off a straight line: two quantities that keep "
+                     "the same ratio. The bars show it as a part\u2013whole "
+                     "\u2014 three newtons of extension is three equal "
+                     "helpings of one newton\u2019s worth \u2014 and the "
+                     "graph shows the same fact as a straight line through "
+                     "the origin, with the bend where the law gives out.",
              "aria_label": "Three bars drawn to one scale. One newton gives "
                            "a bar of twenty millimetres, two newtons gives a "
                            "bar of forty millimetres made of two equal "
@@ -277,7 +288,7 @@ LESSON = {
         {"type": "worked-example", "id": "cfifa-spring-convert"},
         {"type": "check", "id": "your-turn-spring", "anchor": "s-formula"},
 
-        {"type": "key-fact", "id": "extension-proportional-to-load"},
+        {"type": "key-fact", "ref": "extension-proportional-to-load"},
 
         {"type": "misconception", "id": "think-extension-is-length",
          "anchor": "s-think"},
@@ -656,17 +667,24 @@ LESSON = {
     # ⚖️ DESIGN'S FLAG 6 · THE UNIT'S ONLY RISK ASSESSMENT, KEPT WHOLE.
     # Five lines, in her order, in the engine's safety slot. See the module
     # docstring and `DEPARTURES-P4.md`.
-    "safety_note": "Before this one is done for real. Finding the limit of "
-                   "proportionality means loading a spring until it stops "
-                   "behaving, so: eye protection for everyone at the bench, "
-                   "because an overloaded spring can let go and it leaves at "
-                   "speed; a tray of sand or a padded box directly under the "
-                   "load, so a falling mass lands on something soft; "
-                   "nobody's hands, feet or knees under the hanger at any "
-                   "point; the stand clamped or its base weighted, so the "
-                   "whole set-up cannot topple towards anyone; and loading "
-                   "to destruction as a demonstration, done once, behind a "
-                   "safety screen — not a class activity.",
+    # ⊕ PHASE 3 CORRECTION, 25 Aug 2026. Her five items were run together
+    # into one sentence and her opening line — "this is the one
+    # investigation in the unit that needs a risk assessment" — was
+    # dropped. The slot takes one string, so the bulleting cannot survive;
+    # the SENTENCES can, and they are hers. `DEPARTURES-P4.md` row 1 used
+    # to claim no content changed. It did, and the row now says so.
+    "safety_note": "Before this one is done for real: this is the one "
+                   "investigation in the unit that needs a risk assessment, "
+                   "because finding the limit of proportionality means "
+                   "loading a spring until it stops behaving. Eye protection "
+                   "for everyone at the bench — an overloaded spring can let "
+                   "go, and it leaves at speed. A tray of sand or a padded "
+                   "box directly under the load, so a falling mass lands on "
+                   "something soft. Nobody's hands, feet or knees under the "
+                   "hanger at any point. The stand clamped or its base "
+                   "weighted, so the whole set-up cannot topple towards "
+                   "anyone. Loading to destruction is a demonstration, done "
+                   "once, behind a safety screen — not a class activity.",
 
     "convention_note": "The spring bench is a teaching model. This spring is "
                        "given 20 mm of extension for each newton, a limit of "

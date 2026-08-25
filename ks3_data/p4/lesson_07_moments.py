@@ -255,7 +255,7 @@ LESSON = {
         {"type": "worked-example", "id": "cfifa-moment-convert"},
         {"type": "check", "id": "your-turn-moment", "anchor": "s-formula"},
 
-        {"type": "key-fact", "id": "moment-is-force-times-distance"},
+        {"type": "key-fact", "ref": "moment-is-force-times-distance"},
 
         {"type": "misconception", "id": "think-longer-spanner",
          "anchor": "s-think"},

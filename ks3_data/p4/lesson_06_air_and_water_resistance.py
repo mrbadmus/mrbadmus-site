@@ -304,7 +304,7 @@ LESSON = {
                   "than a runner at four, and why boats are shaped the way "
                   "they are."},
 
-        {"type": "key-fact", "id": "resistance-grows-with-speed"},
+        {"type": "key-fact", "ref": "resistance-grows-with-speed"},
 
         {"type": "misconception", "id": "think-heavier-falls-faster",
          "anchor": "s-think"},

@@ -3615,7 +3615,21 @@ def r_formula_figure(fig):
                 "Known: %s. A declared drawing with no drawer renders an "
                 "empty block under the statement it is meant to draw."
                 % (art, ", ".join(sorted(SVG_ART))))
-        return ('<div class="ks3-formula-figure">%s</div>' % SVG_ART[art](fig))
+        # ⊕ PHASE 3, 25 Aug 2026 · `caption` AND `note` ARE PART OF THE
+        # FIGURE, and leaving them out lost the MRB-204 argument itself.
+        # Design writes one line above each beam saying what it shows —
+        # "Two pulls the opposite way: one cancels part of the other." —
+        # and one below saying why the shape is a beam: "That is why this
+        # relationship gets a beam and not a triangle: nothing here is
+        # being multiplied." Three P4 pages shipped the drawing with both
+        # sentences missing, so the page asserted a shape and never said
+        # why. Both are optional, so no existing figure moves a byte.
+        cap = ('<p class="ks3-formula-figcaption">%s</p>' % rich(fig["caption"])
+               ) if fig.get("caption") else ""
+        note = ('<p class="ks3-formula-fignote">%s</p>' % rich(fig["note"])
+                ) if fig.get("note") else ""
+        return ('<div class="ks3-formula-figure">%s%s%s</div>'
+                % (cap, SVG_ART[art](fig), note))
 
     shape = fig.get("shape")
     if shape != "balance":

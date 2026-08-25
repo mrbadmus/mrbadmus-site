@@ -290,7 +290,7 @@ LESSON = {
                   "up. <strong>Which is why the weakest of the three is the "
                   "one that shapes planets, stars and galaxies.</strong>"},
 
-        {"type": "key-fact", "id": "three-act-at-a-distance"},
+        {"type": "key-fact", "ref": "three-act-at-a-distance"},
 
         {"type": "misconception", "id": "think-something-in-between",
          "anchor": "s-think"},
@@ -452,41 +452,56 @@ LESSON = {
             "title": "Rung 4 · Take it somewhere new"},
     },
 
-    "key_note": "A contact force needs the two objects to be touching; a "
-                "non-contact force acts across a gap with nothing in "
-                "between. The three at Key Stage 3 are gravity, magnetism "
-                "and the electrostatic force. Gravity only ever attracts; "
-                "the other two can attract or repel. All are measured in "
-                "newtons and all change motion the same three ways.",
+    # ⊕ PHASE 3 REVERT, 25 Aug 2026 — Design's, verbatim. The replacement
+    # was a fair paraphrase and dropped what each force acts BETWEEN, which
+    # is the half a student needs to answer "will it attract this?".
+    "key_note": "Most forces need contact, but three do not. Gravity acts "
+                "between anything with mass and only ever attracts. "
+                "Magnetism acts between magnets and magnetic materials, and "
+                "can attract or repel. The electrostatic force acts between "
+                "electric charges, and can also do both. All three act "
+                "across a gap with nothing in between, all are measured in "
+                "newtons, and all change motion in exactly the same ways as "
+                "a contact push or pull.",
 
+    # ⊕ PHASE 3 REVERT, 25 Aug 2026. This block had been replaced with two
+    # items of its own — a history of the field concept, and a compressed
+    # version of Design's own fridge-magnet point. The field piece is good
+    # physics and it is not hers, and under Mide's standing ruling "a
+    # different example" is not a defect. Her two items are restored
+    # verbatim; the machines-that-touch-nothing paragraph she wrote has no
+    # counterpart in the replacement at all.
     "stretch": [
-        {"id": "the-field-answer",
+        {"id": "a-magnet-beats-a-planet",
          "type": "explainer",
-         "text": "Newton gave the arithmetic of gravity and refused to guess "
-                 "at the mechanism — <em>hypotheses non fingo</em>, I do "
-                 "not feign hypotheses — and that refusal stood for over a "
-                 "century. The answer, when it came, arrived from magnetism: "
-                 "Faraday, who had almost no mathematics, imagined lines "
-                 "filling the space around a magnet and insisted that the "
-                 "space itself was doing something. Maxwell then wrote the "
-                 "equations. A <strong>field</strong> is not a substance "
-                 "sitting in the gap; it is a property the space has, and "
-                 "the force is what an object feels for being in it. It also "
-                 "means the force is not instant: change the magnet and the "
-                 "change spreads outwards at the speed of light."},
-        {"id": "the-weakest-one-wins",
+         "text": "Here is a comparison worth sitting with. Hold a small "
+                 "fridge magnet above a steel paperclip lying on a table, "
+                 "and the paperclip jumps up to the magnet. In that moment a "
+                 "magnet you could hide under a stamp has beaten the "
+                 "gravitational pull of the entire planet Earth on the same "
+                 "object. Gravity is by far the weakest of the three "
+                 "non-contact forces — absurdly, almost embarrassingly weak "
+                 "— and yet it is the one that decides the shape of the "
+                 "universe. The reason is the thing you met in the cards "
+                 "above: electric charges come in two kinds that cancel, and "
+                 "magnets have two poles that cancel, so on any large scale "
+                 "their effects add up to almost nothing. Mass has no "
+                 "opposite. Every kilogram of the Earth pulls in the same "
+                 "direction as every other kilogram, so gravity is the only "
+                 "one of the three that keeps accumulating all the way up to "
+                 "a galaxy."},
+        {"id": "machines-that-touch-nothing",
          "type": "explainer",
-         "text": "Gravity is by far the weakest of the three — a fridge "
-                 "magnet a few centimetres across beats the entire Earth in "
-                 "a straight pull on a paperclip. What it has instead is "
-                 "that it never cancels. Every atom in a planet pulls every "
-                 "atom in you, always attracting, so the total adds up "
-                 "without limit; magnetism and electrostatic force are "
-                 "stronger but come in two signs, so on any large object "
-                 "they very nearly cancel themselves out. That is why the "
-                 "weakest of the three is the one that decides the shape of "
-                 "the universe, and the other two decide the shape of "
-                 "everything smaller than a mountain."},
+         "text": "Non-contact forces also make possible machines that touch "
+                 "nothing at all. A maglev train is held a centimetre clear "
+                 "of its track by magnetic repulsion and pushed along by "
+                 "magnetic attraction, so the only resistance left is the "
+                 "air — no wheels, no rails rubbing, no bearings, almost no "
+                 "friction. Induction hobs heat a pan across a gap; wireless "
+                 "chargers move energy into a phone without a plug; the read "
+                 "head of a hard disk flies above the surface without "
+                 "touching it. In each case the engineering payoff is the "
+                 "same: nothing that touches, nothing that wears out."},
     ],
 
     "support": [],

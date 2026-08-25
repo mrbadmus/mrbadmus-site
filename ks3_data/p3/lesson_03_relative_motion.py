@@ -227,7 +227,7 @@ LESSON = {
                   "one belongs to the viewpoint you are sitting in. Nothing "
                   "about either car changed to make it so."},
 
-        {"type": "key-fact", "id": "relative-to-what"},
+        {"type": "key-fact", "ref": "relative-to-what"},
 
         # ── #s-pass · four passes ────────────────────────────────────
         {"type": "passing-speeds",

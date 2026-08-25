@@ -232,6 +232,13 @@ LESSON = {
          ],
          "figure": {
              "art": "p4-balance-beam",
+             # ⊕ PHASE 3, 25 Aug 2026 — Design's caption and note, restored.
+             "caption": "Same length, opposite ways, nothing left over.",
+             "note": "This is a beam and not a triangle, because the two "
+                     "forces are being subtracted from one another, never "
+                     "multiplied. Nothing here has a formula triangle, and "
+                     "putting one on it would teach a relationship that "
+                     "does not exist.",
              "aria_label": "Two panels drawn to one scale. On the left, an "
                            "upward arrow of 30 newtons and a downward arrow "
                            "of 30 newtons are the same length, and the "
@@ -252,7 +259,7 @@ LESSON = {
         {"type": "worked-example", "id": "cfifa-support-convert"},
         {"type": "check", "id": "your-turn-support", "anchor": "s-formula"},
 
-        {"type": "key-fact", "id": "balanced-means-no-change"},
+        {"type": "key-fact", "ref": "balanced-means-no-change"},
 
         {"type": "misconception", "id": "think-not-moving-no-forces",
          "anchor": "s-think"},
