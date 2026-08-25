@@ -15377,6 +15377,858 @@
   }
   /* ═══ END P9 wiring ═══ */
 
+/* ═══ BEGIN P12 wiring ══════════════════════════════════════════════════
+     P12 — *Space*. Ported from Claude Design's delivered pages CONSTANT BY
+     CONSTANT rather than compared as markup: a `.dc.html` renders its rail,
+     hook, gate, bars and readouts from `{{ }}` holes, so an HTML-to-HTML
+     comparison sees holes on both sides and reports a match.
+
+     ⚖️ ONE SHELL, SIX MODELS. Design ships `Bench.dc.html` — one shared child
+     component mounted by all six pages — and the lesson supplies the physics.
+     So there is ONE `wireSpaceBench`, and `data-model` selects which of the
+     six `p12Model*` functions computes the numbers. Six copies of the paint
+     loop would be six chances for her layout to drift apart page by page.
+
+     ⚖️ NO SVG, AND THEREFORE NO OVERLAY SPANS. Design's own note for the
+     generator (`NOTES-P11-P12.md` §3): *"No SVG diagram carries a live label
+     anywhere in these ten lessons. Every varying figure is HTML text — a bar
+     label, a readout card or the note."* Measured and true. The bar is a
+     `<span>` whose width is a percentage, so the interpolated-text-in-`<text>`
+     trap that cost P4–P7 ten captions cannot arise here at all.
+
+     ⚖️ ARITHMETIC LIVES HERE; SENTENCES DO NOT. Every string a student reads
+     arrives from the lesson record through `data-spbench-branch` (a whole note
+     template) or `data-spbench-word` (a readout phrase) and is filled with
+     `fillTokens`. What is in this file is the physics and the formatting.
+
+     ⚖️ EVERY COMPARATIVE IS COMPUTED FROM THE VALUES (5A.1). p12-02's
+     "0.16 times its Earth value" and p12-05's season verdict are derived, so
+     they are true in every reachable state by construction — including the two
+     states Design's own page gets wrong, both registered in DEPARTURES-P12.md:
+     the equator, which her bench calls summer on all four dates, and Earth on
+     p12-02, whose tail sentence has no verb.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  function p12Word(wrap, key) {
+    var el = wrap.querySelector('[data-spbench-word="' + key + '"]');
+    return el ? (el.getAttribute("data-text") || "") : "";
+  }
+
+  function p12Note(wrap, key) {
+    var el = wrap.querySelector('[data-spbench-branch="' + key + '"]');
+    return el ? (el.getAttribute("data-note") || "") : "";
+  }
+
+  /* A row's model fields, off its `data-f-*` attributes. `ks3_art/p12.py`
+     constrains the names to lowercase letters and digits, because the DOM
+     lowercases attribute names and a key with a capital would arrive here
+     under a name nothing reads — silently. */
+  function p12Fields(el) {
+    var out = {}, i, at;
+    if (!el || !el.attributes) { return out; }
+    for (i = 0; i < el.attributes.length; i += 1) {
+      at = el.attributes[i];
+      if (at.name.indexOf("data-f-") === 0) {
+        out[at.name.slice(7)] = at.value;
+      }
+    }
+    if (el.getAttribute("data-label") !== null) {
+      out.label = el.getAttribute("data-label");
+    }
+    out.id = el.getAttribute("data-spbench-tab") ||
+             el.getAttribute("data-id") || "";
+    return out;
+  }
+
+  function p12Group(n, dp) {
+    return Number(n).toLocaleString("en-GB", {
+      minimumFractionDigits: dp || 0, maximumFractionDigits: dp || 0
+    });
+  }
+
+  /* `2.37 × 10^22`, and `1.28` where the exponent is zero.
+
+     ⚠️ DESIGN'S OWN VERSION PRINTS `1.28 × 10^0`. Her p12-06 question head
+     runs `T.t.toExponential(2).replace('e+', ' × 10^')` over every object
+     including the Moon, whose light takes 1.28 s — so the first thing a
+     student meets on that page is a power of ten that is not doing anything.
+     Registered in DEPARTURES-P12.md. Powers are typed `10^n` throughout, which
+     is her §5 convention: U+2070 and U+2074–U+2079 are not in the shipped font
+     subsets and fall back to a system face mid-number. */
+  function p12Sci(x, dp) {
+    var bits = Number(x).toExponential(dp === undefined ? 2 : dp).split("e");
+    var ex = Number(bits[1]);
+    return ex === 0 ? bits[0] : bits[0] + " × 10^" + ex;
+  }
+
+  /* Two significant figures, kept as a round number rather than a decimal —
+     for a galaxy width known to about ten per cent. */
+  function p12Sig2(x) {
+    if (!(x > 0)) { return 0; }
+    var m = Math.pow(10, Math.floor(Math.log10(x)) - 1);
+    return Math.round(x / m) * m;
+  }
+
+  /* Design's log placement, with her own constants off the payload. Used by
+     the two ladders that span eleven and fifteen orders of magnitude; there is
+     no other honest way to put the Moon and Andromeda on one axis. */
+  function p12LogPct(wrap, v) {
+    var off = parseFloat(wrap.getAttribute("data-log-offset"));
+    var span = parseFloat(wrap.getAttribute("data-log-span"));
+    var floor = parseFloat(wrap.getAttribute("data-min-pct"));
+    if (!(span > 0) || !(v > 0)) { return floor || 0; }
+    return Math.max(floor || 0,
+                    Math.min(100, ((Math.log10(v) + off) / span) * 100));
+  }
+
+  /* The list every bar panel's `aria-label` is composed from, so the label
+     names every bar that is DRAWN.
+
+     ⚠️ DESIGN'S p12-01 LABEL NAMES FOUR OF THE FIVE BARS SHE DRAWS, and the
+     one it leaves out is deep space at 0.0 N/kg — the state the whole second
+     half of that lesson turns on. A `<desc>` or an `aria-label` is the figure
+     to a reader who cannot see it, so it is derived here rather than typed.
+     Registered in DEPARTURES-P12.md. */
+  function p12List(bars, join) {
+    var words = bars.map(function (b) { return b.label + " " + b.value; });
+    if (words.length < 2) { return words.join(""); }
+    return words.slice(0, -1).join(", ") + " " + (join || "and") + " " +
+      words[words.length - 1];
+  }
+
+  /* The commit gate every P12 bench opens behind. Design hides the question
+     the moment it is answered (`gateShown: … && !p.open`), so the instrument
+     arrives in the space the question was occupying — gating by replacement.
+     On all six pages her `DONE` for `#s-bench` is `s.gate !== null &&
+     s.touched`, so the gate is half of what ticks the second rail stop. */
+  function p12Gate(wrap, onCommit) {
+    var gate = wrap.querySelector("[data-spbench-gate]");
+    var body = wrap.querySelector("[data-spbench-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-spbench-gopt]"));
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        setHidden(gate, true);
+        setHidden(body, false);
+        onCommit();
+      });
+    });
+  }
+
+  /* ── p12-01 · five places to stand, five masses on the scales ─────────
+
+     ⚖️ THE ZERO STATE IS A REAL STATE AND IT IS THE POINT OF THE LESSON.
+     Deep space is `g = 0`, so the weight is zero and the ratio to Earth has
+     no value at all — and the mass readout does not move. "Weightless does
+     not mean massless" is the sentence the whole bench exists to earn, and it
+     is only readable because the bench can be driven to a place where one
+     number goes to nothing and the other does not. */
+  function p12ModelField(wrap, ctx) {
+    var g = Number(ctx.tab.g), v = Number(ctx.sv.v);
+    var earthG = Number(wrap.getAttribute("data-earth-g"));
+    var w = g * v, gmax = 0;
+    each(ctx.tabs, function (row) {
+      gmax = Math.max(gmax, Number(p12Fields(row).g));
+    });
+    var bars = ctx.bars.map(function (id) {
+      var f = ctx.tabById[id] || {};
+      var bg = Number(f.g);
+      return {
+        id: id, label: f.label || "", value: bg.toFixed(1) + " N/kg",
+        pct: gmax > 0 ? (bg / gmax) * 100 : 0,
+        sub: fillTokens(p12Word(wrap, "bar_sub"),
+                        { w: (bg * v).toFixed(0), v: v }),
+        current: id === ctx.tab.id
+      };
+    });
+    return {
+      bars: bars,
+      outs: {
+        mass: v + " kg",
+        g: g.toFixed(1) + " N/kg",
+        weight: w.toFixed(0) + " N",
+        vsearth: g === 0 ? p12Word(wrap, "zero_ratio")
+                         : (g / earthG).toFixed(2) + " ×"
+      },
+      subs: {
+        mass: p12Word(wrap, "mass_sub"),
+        g: p12Word(wrap, "g_sub"),
+        weight: fillTokens(p12Word(wrap, "weight_sub"),
+                           { v: v, g: g.toFixed(1) }),
+        vsearth: p12Word(wrap, "ratio_sub")
+      },
+      branch: g === 0 ? "zero" : "field",
+      tokens: {
+        name: ctx.tab.name, v: v, g: g.toFixed(1), w: w.toFixed(0)
+      },
+      live: {
+        v: v, name: ctx.tab.name, g: g.toFixed(1), w: w.toFixed(0)
+      },
+      blocked: g === 0
+    };
+  }
+
+  /* ── p12-02 · one object, four places, two columns ────────────────────
+
+     ⚖️ THE COMPARISON WITH EARTH IS COMPUTED, AND THAT IS A FIX. Design's
+     note ends with a conditional tail whose third branch reads *"Take it to
+     Jupiter and the weight nearly two-and-a-half times over"* — a sentence
+     with no verb, shown on Earth and on Mars, which is two of her four
+     states. A ratio derived from the two field strengths is true in all four
+     and cannot go stale when a fifth place is added. Registered. */
+  function p12ModelPlaces(wrap, ctx) {
+    var m = Number(ctx.tab.m), g = Number(ctx.sv.g);
+    var earthG = Number(wrap.getAttribute("data-earth-g"));
+    var w = m * g, gmax = 0;
+    each(ctx.svs, function (row) {
+      gmax = Math.max(gmax, Number(p12Fields(row).g));
+    });
+    function fmtN(n) {
+      return n >= 10000 ? p12Group(Math.round(n)) + " N"
+                        : n.toFixed(n < 100 ? 1 : 0) + " N";
+    }
+    var bars = ctx.bars.map(function (id) {
+      var f = ctx.svById[id] || {};
+      var bg = Number(f.g);
+      return {
+        id: id, label: f.label || "", value: fmtN(m * bg),
+        pct: gmax > 0 ? (bg / gmax) * 100 : 0,
+        sub: fillTokens(p12Word(wrap, "bar_sub"), { m: m }),
+        current: id === ctx.sv.id
+      };
+    });
+    var ratio = earthG > 0 ? g / earthG : 0;
+    return {
+      bars: bars,
+      outs: {
+        mass: m + " kg",
+        g: g.toFixed(1) + " N/kg",
+        weight: fmtN(w),
+        measured: p12Word(wrap, "measured_value")
+      },
+      subs: {
+        mass: p12Word(wrap, "mass_sub"),
+        g: fillTokens(p12Word(wrap, "g_sub"), { place: ctx.sv.label }),
+        weight: fillTokens(p12Word(wrap, "weight_sub"),
+                           { m: m, g: g.toFixed(1) }),
+        measured: p12Word(wrap, "measured_sub")
+      },
+      branch: ratio === 1 ? "same" : (ratio < 1 ? "less" : "more"),
+      tokens: {
+        name: ctx.tab.name, place: ctx.sv.label, m: m, g: g.toFixed(1),
+        w: fmtN(w), ratio: ratio.toFixed(2)
+      },
+      live: {
+        name: ctx.tab.name, place: ctx.sv.label, m: m, g: g.toFixed(1),
+        w: (w >= 100 ? p12Group(Math.round(w)) : w.toFixed(1)),
+        fine: w.toFixed(1)
+      },
+      blocked: false
+    };
+  }
+
+  /* ── p12-03 · four gravitational pulls, and what distance does ────────
+
+     ⚖️ THE FALL-OFF IS THE REAL INVERSE SQUARE, and the bar geometry says so:
+     a bar at twice the separation is a quarter as long, not half. That is the
+     whole of `CHRG-07` in its gravitational clothes.
+
+     ⚠️ THE FRACTION IS A WORD AND THE WORD IS AUTHORED. Design's own code
+     builds it with `'a ' + (n * n) + 'th of full strength'`, which renders
+     "a 4th", "a 9th" and "a 16th" — while her `aria-label` for the same three
+     bars says "a quarter, a ninth and a sixteenth". Her note does it too, and
+     worse: "it does not fall to a 2th of its value". The words come off the
+     slider positions now. Registered. */
+  function p12ModelInverse(wrap, ctx) {
+    var F = Number(ctx.tab.f), n = Number(ctx.sv.n), n2 = n * n;
+    function sci(x) {
+      if (!(x > 0)) { return "0 N"; }
+      var ex = Math.floor(Math.log10(x));
+      return (x / Math.pow(10, ex)).toFixed(2) + " × 10^" + ex + " N";
+    }
+    var bars = ctx.bars.map(function (id) {
+      var f = ctx.svById[id] || {};
+      var k = Number(f.n);
+      return {
+        id: id, label: ctx.barLabels[id] || f.label || "",
+        value: sci(F / (k * k)), pct: 100 / (k * k),
+        sub: k === 1 ? p12Word(wrap, "bar_full")
+                     : fillTokens(p12Word(wrap, "bar_frac"),
+                                  { frac: f.frac || "" }),
+        current: id === ctx.sv.id
+      };
+    });
+    var name = ctx.tab.name || "";
+    return {
+      bars: bars,
+      outs: {
+        pull: p12Word(wrap, "pull_value"),
+        real: sci(F),
+        multiple: sci(F / n2),
+        partner: p12Word(wrap, "partner_value")
+      },
+      subs: {
+        pull: name,
+        real: p12Word(wrap, "real_sub"),
+        multiple: n === 1 ? p12Word(wrap, "multiple_sub_real")
+                          : fillTokens(p12Word(wrap, "multiple_sub"),
+                                       { n2: n2 }),
+        partner: p12Word(wrap, "partner_sub")
+      },
+      labels: { multiple: { n: n } },
+      branch: n === 1 ? "real" : "moved",
+      tokens: {
+        name: name,
+        Name: name.charAt(0).toUpperCase() + name.slice(1),
+        f: sci(F), partner: ctx.tab.partner || "",
+        n: n, n2: n2, frac: ctx.sv.frac || "", inv: ctx.sv.inv || ""
+      },
+      live: {},
+      blocked: false
+    };
+  }
+
+  /* ── p12-04 · five rungs of the distance ladder ───────────────────────
+
+     ⚠️ TWO OF DESIGN'S FORMATTERS PRINT NUMBERS NO STUDENT SHOULD BE SHOWN.
+     `fmtKm` sends anything under a million kilometres through the
+     million-kilometre branch, so Proxima Centauri — 210 000 km across —
+     reads "0.21 million km across"; and it prints a galaxy width to eight
+     significant figures, "100411 ly across", for a quantity known to about
+     ten per cent. Both are fixed here and registered; her VALUES are
+     untouched. */
+  function p12ModelLadder(wrap, ctx) {
+    function fmtLy(ly) {
+      if (ly < 0.001) { return (ly * 365.25 * 24 * 60).toFixed(1) + " light minutes"; }
+      if (ly < 1) { return (ly * 365.25 * 24).toFixed(1) + " light hours"; }
+      if (ly >= 1e6) { return (ly / 1e6).toFixed(1) + " million ly"; }
+      if (ly >= 1000) { return p12Group(ly / 1000) + " thousand ly"; }
+      return ly.toFixed(2) + " ly";
+    }
+    function fmtKm(km) {
+      if (km >= 1e12) {
+        return "about " + p12Group(p12Sig2(km / 9.461e12)) + " ly across";
+      }
+      if (km < 1e6) { return p12Group(km) + " km across"; }
+      return (km / 1e6).toFixed(km < 1e9 ? 2 : 0) + " million km across";
+    }
+    var bars = ctx.bars.map(function (id) {
+      var f = ctx.tabById[id] || {};
+      return {
+        id: id, label: f.label || "", value: fmtLy(Number(f.ly)),
+        pct: p12LogPct(wrap, Number(f.ly)), sub: f.count || "",
+        current: id === ctx.tab.id
+      };
+    });
+    var dist = fmtLy(Number(ctx.tab.ly));
+    var size = fmtKm(Number(ctx.tab.dia));
+    return {
+      bars: bars,
+      outs: {
+        what: ctx.tab.label, distance: dist, size: size,
+        stars: ctx.tab.count
+      },
+      subs: {
+        what: ctx.tab.kind,
+        distance: p12Word(wrap, "distance_sub"),
+        size: p12Word(wrap, "size_sub"),
+        stars: p12Word(wrap, "stars_sub")
+      },
+      branch: "rung",
+      tokens: {
+        name: ctx.tab.name, label: ctx.tab.label, kind: ctx.tab.kind,
+        dist: dist, size: size, count: ctx.tab.count, note: ctx.tab.note
+      },
+      live: {},
+      blocked: false
+    };
+  }
+
+  /* ── p12-05 · four dates in the orbit, three places on the Earth ──────
+
+     ⚖️ REAL ASTRONOMY, AND HER OWN. Solar declination is 0° at the equinoxes
+     and ±23.44° at the solstices; daylight comes from the standard sunrise
+     equation, noon altitude from `90 − |latitude − declination|`, and energy
+     per square metre from the sine of that altitude. London on 21 June falls
+     out at 16.5 hours and 61°, which is right, and both figures are asserted
+     in the unit's own content-truth check.
+
+     ⚠️ THE SEASON VERDICT IS DERIVED FROM THE ANNUAL SWING, WHICH IS A FIX.
+     Design's is `h > 13 || a > 60`, and at the equator the noon Sun clears 60°
+     on every one of her four dates — so her bench says "That is summer" at the
+     equator in March, June, September and December, contradicting her own
+     explainer three paragraphs above it: *"places on the equator … barely have
+     seasons at all"*. The swing between the two solstices at that latitude is
+     the quantity that actually decides it: 0.0 hours at the equator, 4.5 at
+     Sydney, 9.0 at London. Registered. */
+  function p12ModelSeasons(wrap, ctx) {
+    function rad(x) { return x * Math.PI / 180; }
+    function daylight(lat, dec) {
+      var c = -Math.tan(rad(lat)) * Math.tan(rad(dec));
+      if (c <= -1) { return 24; }
+      if (c >= 1) { return 0; }
+      return (2 * Math.acos(c) * 180 / Math.PI) / 15;
+    }
+    function noonAlt(lat, dec) { return 90 - Math.abs(lat - dec); }
+
+    var dec = Number(ctx.tab.dec), lat = Number(ctx.sv.lat);
+    var decMax = 0;
+    each(ctx.tabs, function (row) {
+      decMax = Math.max(decMax, Math.abs(Number(p12Fields(row).dec)));
+    });
+    var h = daylight(lat, dec);
+    var a = Math.max(0, noonAlt(lat, dec));
+    var i = Math.max(0, Math.sin(rad(a)));
+    var swing = Math.abs(daylight(lat, decMax) - daylight(lat, -decMax));
+
+    var bars = ctx.bars.map(function (id) {
+      var f = ctx.svById[id] || {};
+      var bl = Number(f.lat);
+      var bh = daylight(bl, dec);
+      return {
+        id: id, label: f.label || "",
+        value: fillTokens(p12Word(wrap, "bar_value"), { h: bh.toFixed(1) }),
+        pct: (bh / 24) * 100,
+        sub: fillTokens(p12Word(wrap, "bar_sub"),
+                        { a: Math.max(0, noonAlt(bl, dec)).toFixed(0) }),
+        current: id === ctx.sv.id
+      };
+    });
+
+    var verdict = swing < 1 ? "verdict_even"
+      : ((h > 13 || a > 60) ? "verdict_summer"
+        : (h < 11 ? "verdict_winter" : "verdict_between"));
+
+    return {
+      bars: bars,
+      outs: {
+        date: ctx.tab.name,
+        daylight: h.toFixed(1) + " hours",
+        noon: a.toFixed(0) + "° above the horizon",
+        energy: (i * 100).toFixed(0) + "%"
+      },
+      subs: {
+        date: ctx.tab.season,
+        daylight: p12Word(wrap, "daylight_sub"),
+        noon: p12Word(wrap, "noon_sub"),
+        energy: p12Word(wrap, "energy_sub")
+      },
+      branch: "season",
+      tokens: {
+        date: ctx.tab.name, place: ctx.sv.label, h: h.toFixed(1),
+        a: a.toFixed(0), pct: (i * 100).toFixed(0),
+        verdict: p12Word(wrap, verdict)
+      },
+      live: {},
+      blocked: false
+    };
+  }
+
+  /* ── p12-06 · five light journeys, one speed ──────────────────────────
+
+     ⚠️ DESIGN'S `fmtD` DIVIDES METRES BY 10^12 TO REACH "million km", WHICH IS
+     A THOUSAND TIMES OUT. Neptune's light-distance is 4.5 × 10^12 m — four and
+     a half thousand million kilometres, and her own p12-04 legal line says so
+     ("Neptune's orbit about 4.5 billion km from the Sun") — and the bar under
+     Neptune on her page reads "4.50 million km". The same function prints
+     Andromeda as "2501458.99 light years". Both fixed; her VALUES are
+     untouched. Registered. */
+  function p12ModelLight(wrap, ctx) {
+    var C = parseFloat(wrap.getAttribute("data-c"));
+    var LY = 9.461e15;
+    function fmtT(t) {
+      if (t < 60) { return t.toFixed(2) + " s"; }
+      if (t < 3600) { return (t / 60).toFixed(1) + " minutes"; }
+      if (t < 86400) { return (t / 3600).toFixed(1) + " hours"; }
+      if (t < 3.156e7) { return (t / 86400).toFixed(0) + " days"; }
+      var y = t / 3.156e7;
+      return y >= 1e6 ? (y / 1e6).toFixed(2) + " million years"
+                      : y.toFixed(2) + " years";
+    }
+    function fmtD(m) {
+      if (m >= LY) {
+        var ly = m / LY;
+        return ly >= 1e6 ? (ly / 1e6).toFixed(2) + " million light years"
+                         : ly.toFixed(2) + " light years";
+      }
+      var km = m / 1000;
+      if (km >= 1e6) {
+        var mk = km / 1e6;
+        return (mk < 1000 ? mk.toFixed(1) : p12Group(mk)) + " million km";
+      }
+      return p12Group(km) + " km";
+    }
+    var t = Number(ctx.tab.t), d = t * C;
+    var bars = ctx.bars.map(function (id) {
+      var f = ctx.tabById[id] || {};
+      var bt = Number(f.t);
+      return {
+        id: id, label: f.label || "", value: fmtT(bt),
+        pct: p12LogPct(wrap, bt), sub: fmtD(bt * C),
+        current: id === ctx.tab.id
+      };
+    });
+    var mant = t / Math.pow(10, Math.floor(Math.log10(t)));
+    return {
+      bars: bars,
+      outs: {
+        takes: fmtT(t), distance: fmtD(d),
+        metres: p12Sci(d) + " m",
+        seeing: fillTokens(p12Word(wrap, "seeing_value"), { time: fmtT(t) })
+      },
+      subs: {
+        takes: fillTokens(p12Word(wrap, "takes_sub"), { name: ctx.tab.name }),
+        distance: p12Word(wrap, "distance_sub"),
+        metres: p12Word(wrap, "metres_sub"),
+        seeing: p12Word(wrap, "seeing_sub")
+      },
+      branch: "journey",
+      tokens: { name: ctx.tab.name, time: fmtT(t), dist: fmtD(d) },
+      live: {
+        name: ctx.tab.name, texp: p12Sci(t), d: p12Sci(d),
+        mant: mant.toFixed(2), prod: (3.0 * mant).toFixed(2),
+        dist: fmtD(d)
+      },
+      blocked: false
+    };
+  }
+
+  var P12_MODELS = {
+    "field-strength": p12ModelField,
+    "weight-in-four-places": p12ModelPlaces,
+    "inverse-square": p12ModelInverse,
+    "distance-ladder": p12ModelLadder,
+    "seasons": p12ModelSeasons,
+    "light-time": p12ModelLight
+  };
+
+  function wireSpaceBench(sec) {
+    var wrap = sec.querySelector("[data-spbench]");
+    if (!wrap) { return; }
+    var model = P12_MODELS[wrap.getAttribute("data-model")];
+    if (!model) { return; }
+
+    var tabs = toArray(wrap.querySelectorAll("[data-spbench-tab]"));
+    var svs = toArray(wrap.querySelectorAll("[data-spbench-sv]"));
+    var sliderEl = wrap.querySelector("[data-spbench-slider]");
+    var noteEl = wrap.querySelector("[data-spbench-note]");
+    var barsEl = wrap.querySelector("[data-spbench-bars]");
+    var barIds = toArray(wrap.querySelectorAll("[data-spbench-bar]"))
+      .map(function (b) { return b.getAttribute("data-spbench-bar"); });
+    if (!tabs.length || !barIds.length) { return; }
+
+    /* Bar labels are AUTHORED per row on p12-03, where the row is a
+       separation rather than a tab or a slider position and the words are
+       hers ("The real separation", "2 × further apart"). Everywhere else the
+       label comes off the tab or slider position the bar stands for, so the
+       two can never disagree. */
+    var barLabels = {};
+    each(toArray(wrap.querySelectorAll("[data-spbench-bar]")), function (b) {
+      var lab = b.querySelector(".ks3-spbench-barlabel");
+      barLabels[b.getAttribute("data-spbench-bar")] =
+        lab ? (lab.textContent || "").trim() : "";
+    });
+
+    var tabById = {}, svById = {};
+    each(tabs, function (b) { tabById[b.getAttribute("data-spbench-tab")] = p12Fields(b); });
+    each(svs, function (s) { svById[s.getAttribute("data-id")] = p12Fields(s); });
+
+    var ti = parseInt(wrap.getAttribute("data-start-tab"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function paint() {
+      var si = sliderEl ? Number(sliderEl.value) : 0;
+      var ctx = {
+        tab: p12Fields(tabs[ti]),
+        sv: svs.length ? p12Fields(svs[si]) : {},
+        tabs: tabs, svs: svs, tabById: tabById, svById: svById,
+        bars: barIds, barLabels: barLabels
+      };
+      var out = model(wrap, ctx);
+
+      each(tabs, function (b, i) {
+        b.setAttribute("aria-pressed", i === ti ? "true" : "false");
+      });
+
+      each(out.bars, function (b) {
+        var v = wrap.querySelector('[data-spbench-barvalue="' + b.id + '"]');
+        var f = wrap.querySelector('[data-spbench-barfill="' + b.id + '"]');
+        var s = wrap.querySelector('[data-spbench-barsub="' + b.id + '"]');
+        var row = wrap.querySelector('[data-spbench-bar="' + b.id + '"]');
+        if (v) { v.textContent = b.value; }
+        if (s) { s.textContent = b.sub; }
+        if (f) {
+          f.style.width = Math.max(0, Math.min(100, b.pct)) + "%";
+        }
+        /* ⚖️ THE HIGHLIGHT IS A SELECTION, SO IT IS `--ks3-data` AND NOT
+           AMBER. Design paints the selected bar `var(--ks3-alert)` on all six
+           benches; 5A.2 reserves amber for a wrong IDEA being confronted and
+           sends category and selection to `--ks3-data`. Carried as an
+           attribute rather than an inline colour so the token lives in
+           shared/ks3.css and the stylesheet gate can see it. Registered. */
+        if (row) { row.setAttribute("data-current", b.current ? "1" : "0"); }
+      });
+
+      if (barsEl) {
+        /* ⚠️ THE LABEL TAKES THE MODEL'S WHOLE TOKEN MAP, not a hand-picked
+           three. Its templates name `{name}` on one page, `{place}` and
+           `{date}` on another and `{label}` on a third, and a fixed list left
+           two pages shipping a brace inside an `aria-label` — where no
+           sighted reader would ever have seen it. Found by driving the whole
+           state space and asserting on the label, which is the only way. */
+        var alt = { list: p12List(out.bars, p12Word(wrap, "list_join")) };
+        each(Object.keys(out.tokens), function (k) { alt[k] = out.tokens[k]; });
+        if (alt.label === undefined) { alt.label = alt.name || ""; }
+        barsEl.setAttribute("aria-label", fillTokens(
+          barsEl.getAttribute("data-template") || "", alt));
+      }
+
+      if (sliderEl) {
+        var read = wrap.querySelector('[data-spbench-out="slider"]');
+        if (read) {
+          read.textContent = fillTokens(read.getAttribute("data-template"),
+                                        ctx.sv);
+        }
+      }
+
+      each(Object.keys(out.outs), function (id) {
+        setOut(wrap, "spbench", id, out.outs[id]);
+      });
+      each(Object.keys(out.subs), function (id) {
+        var el = wrap.querySelector('[data-spbench-sub="' + id + '"]');
+        if (el) { el.textContent = out.subs[id]; }
+      });
+      each(Object.keys(out.labels || {}), function (id) {
+        var el = wrap.querySelector('[data-spbench-tlabel="' + id + '"]');
+        if (el) {
+          el.textContent = fillTokens(el.getAttribute("data-template"),
+                                      out.labels[id]);
+        }
+      });
+
+      if (noteEl) {
+        noteEl.textContent = fillTokens(p12Note(wrap, out.branch), out.tokens);
+      }
+
+      publishLiveP12(sec, out.live || {}, out.blocked);
+
+      /* The head-row readout is the SHELL's element, driven by the engine's
+         own `setCountState`. This unit draws no head row of its own — see the
+         note where `_head` is NOT, in `ks3_art/p12.py`. */
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+    }
+
+    p12Gate(wrap, function () { committed = true; paint(); });
+    each(tabs, function (b, i) {
+      b.addEventListener("click", function () {
+        ti = i; touched += 1; paint();
+      });
+    });
+    if (sliderEl) {
+      ["input", "change"].forEach(function (ev) {
+        sliderEl.addEventListener(ev, function () { touched += 1; paint(); });
+      });
+    }
+    paint();
+  }
+
+  /* ── #s-think on p12-03, p12-04 and p12-05 ────────────────────────────
+
+     ⚖️ HER PREDICATE, AND NOTHING NEAR IT.
+
+         if (id === 's-think') return s.answers.r1 !== null ||
+                                      s.hookChoice !== null;
+
+     The hook is ABOVE this section and the ladder is BELOW it, so a student
+     can complete this stop from either side without touching it — which is
+     exactly right for a confrontation whose job is to be READ. It is not a
+     `mirrors` (that expression is not the one `#s-bench` carries, so
+     `ks3_rail_manifest` derives no mirror and a declared one would fail
+     `check_rail_matches_design`), and it is not `band_anchor` (the bench does
+     not tick it).
+
+     `markStage` is a structural ratchet, so a second press is a no-op and the
+     stop can never go backwards. */
+  function wireSpaceThink(sec) {
+    var host = sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    var hook = host.querySelector(".ks3-hook-commit");
+    var rung1 = host.querySelector('.ks3-rung[data-rung="recall"]');
+    var sources = [];
+    if (hook) { sources = sources.concat(toArray(hook.querySelectorAll(".ks3-option"))); }
+    if (rung1) { sources = sources.concat(toArray(rung1.querySelectorAll(".ks3-option"))); }
+    if (!sources.length) { return; }
+    each(sources, function (b) {
+      b.addEventListener("click", function () { markStage(sec, true); });
+    });
+  }
+
+  /* ── the CFIFA attempt panel, P12's namespace ─────────────────────────
+
+     Identical in behaviour to P4's, P5's, P6's and P7's: question 1 is live on
+     the bench above, question 2 is fixed, the Check button refuses an empty
+     attempt, and the student ticks their own lines against the model.
+
+     ⚠️ QUESTION 1 CAN BE BLOCKED, ON p12-01 ONLY. Her Q1 carries
+     `blocked: T.g === 0`: in deep space every weight comes out as nothing, so
+     the five lines have nothing to say and she replaces them with one
+     sentence. The blocked paragraph is `blocked_lead` on the payload; the
+     little readout beside the Check button takes her `blockedProgress`
+     string, which travels as a span of this unit's own rather than as an edit
+     to `ks3_art/kit.py`, a file five units share.
+
+     ⚠️ AND UNBLOCKING RESTORES THE BUTTON. P4's version disables the Check
+     button when the question blocks and never re-enables it, so a student who
+     visits deep space and comes back finds the button dead until they happen
+     to touch a field. Repainted from what is actually written instead. */
+  function paintAttemptP12(wrap, vals, blocked) {
+    var qs = toArray(wrap.querySelectorAll("[data-p12cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }        /* Question 1 alone is live */
+      var head = q.querySelector("[data-p12cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p12cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p12cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p12cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+      var block = q.querySelector("[data-p12cfa-blocked]");
+      if (!block) { return; }
+      var rows = q.querySelector(".ks3-cfa-rows");
+      var chk = q.querySelector("[data-p12cfa-check]");
+      var hint = q.querySelector("[data-p12cfa-hint]");
+      var hintEl = wrap.parentNode
+        ? wrap.parentNode.querySelector("[data-p12cfa-blockhint]") : null;
+      setHidden(block, !blocked);
+      if (rows) { setHidden(rows, !!blocked); }
+      if (chk) {
+        if (blocked) { chk.setAttribute("disabled", ""); }
+        else if (q.getAttribute("data-marked") !== "1" && q.repaintBtn) {
+          q.repaintBtn();
+        }
+      }
+      if (hint && hintEl && blocked) {
+        hint.textContent = hintEl.getAttribute("data-text") || "";
+      }
+    });
+  }
+
+  function publishLiveP12(sec, vals, blocked) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    each(toArray(host.querySelectorAll("[data-p12cfa]")), function (p) {
+      paintAttemptP12(p, vals, blocked);
+    });
+  }
+
+  function wireCfifaAttemptP12(sec) {
+    var wrap = sec.querySelector("[data-p12cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p12cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p12cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p12cfa-input]"));
+      var btn = q.querySelector("[data-p12cfa-check]");
+      var hint = q.querySelector("[data-p12cfa-hint]");
+      var reveal = q.querySelector("[data-p12cfa-reveal]");
+      var tally = q.querySelector("[data-p12cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p12cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " lines written"
+            : "Write at least one line first";
+        }
+      }
+      /* Handed to `paintAttemptP12` so a question that stops being blocked
+         gets its button back without the student having to guess that
+         touching a field will do it. */
+      q.repaintBtn = repaintBtn;
+
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p12cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p12cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        q.setAttribute("data-marked", "1");
+        retally();
+        markStage(sec, true);          /* attempt_checked */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+  /* ═══ END P12 wiring ═══ */
+
 
 
 
@@ -33334,6 +34186,24 @@
     // to wire, and it would be the place a later pass added a control
     // Design did not draw.
     // ═══ END P9 wiring ═══
+
+// ═══ BEGIN P12 wiring ═══
+    each(root.querySelectorAll("[data-spbenchblock]"), wireSpaceBench);
+    // ⚠️ `data-spthink` DOES have a line here, and it is the one place P12
+    // differs from P8's `circ-think` and P9's `charge-think`. Those two are
+    // shell-only AND ticked by the bench beside them through `markSibling`;
+    // this one is ticked by Design's own predicate — the HOOK's options or
+    // ladder rung 1 — neither of which the bench can see. A section that is a
+    // rail stop and has no wiring is a stop that can never tick.
+    each(root.querySelectorAll("[data-spthink]"), wireSpaceThink);
+    // ⚠️ ORDER IS IMMATERIAL, for the reason the P4 and P8 blocks give at
+    // length: Question 1's `{token}` holes are filled by `publishLiveP12`,
+    // which the bench calls from its OWN `paint()` — it walks the DOM and
+    // reaches `paintAttemptP12` directly, so it does not depend on this line
+    // having run. `wireCfifaAttemptP12` only attaches listeners and paints
+    // the hint.
+    each(root.querySelectorAll("[data-p12cfablock]"), wireCfifaAttemptP12);
+    // ═══ END P12 wiring ═══
     // ═══ END C10 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);

@@ -28488,3 +28488,180 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    from every other one for a reason that is about the rail. */
 /* ═══ END P9 ═══ */
 
+/* ═══ BEGIN P12 ══════════════════════════════════════════════════════════
+   P12 — *Space*. ONE marked block, and ONE instrument inside it.
+
+   Design ships `Bench.dc.html` as a shared child component mounted by all
+   six pages, so the whole unit's bench styling is one set of selectors and
+   the six lessons cannot drift apart. Every number below is measured off
+   that component's own inline styles.
+
+   ⚠️ EVERY SELECTOR HERE IS P12-ONLY, and every shell stem was checked
+   against the whole registry before it was written. TWO obvious ones were
+   already taken — `ks3-sbench-` and `ks3-bbench-` — so this unit uses
+   `ks3-spbench-`, `ks3-spthink` and `ks3-p12cfa-`. That is the MRB-279
+   collision caught by the assertion rather than in a browser open on
+   somebody else's page.
+
+   ⚠️ NO FIGURE WRAPPER NEEDS `position: relative`, BECAUSE THERE IS NO
+   FIGURE. Design draws no SVG on any P12 bench: every varying value is a
+   bar label, a readout card or the note, all of them HTML text. Her own
+   §3 says so and the pages measure that way.
+
+   ⚖️ THE SELECTED BAR IS NOT AMBER, AND THE SUBSTITUTION IS NOT THE
+   OBVIOUS ONE. Design paints the current bar `var(--ks3-alert)` on all six
+   benches; 5A.2 reserves amber for a wrong IDEA being confronted and sends
+   category and selection to `--ks3-data`. But `--ks3-data` and
+   `--ks3-blue-light` are THE SAME VALUE (`#8FB7FF`, deliberately — see
+   `shared/tokens.css`), and the other bars are already painted with it, so
+   a straight swap would make the selected bar identical to the four beside
+   it. The selection therefore moves to a 2px `--ks3-accent` RING on the
+   track plus the row label at 700 — accent as a border rather than as
+   text, which the token annotation permits — and every readout card names
+   the current selection in words as well. Registered in DEPARTURES-P12.md.
+
+   ⚠️ NO `.ks3-spbench-head` RULE AND NO `-progress` RULE. This unit draws
+   no head row of its own: `r_activity`'s shell owns it, `.ks3-blockhead`
+   already styles it, and it is already Design's layout — eyebrow and
+   heading left, readout right. See the note where `_head` is NOT, in
+   `ks3_art/p12.py`.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ks3-spbench-gate {
+  padding: 20px 22px; border-radius: var(--ks3-r-panel);
+  background: rgba(255, 255, 255, .06);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+.ks3-spbench-lead {
+  margin: 0 0 18px; font-size: 19px; line-height: 1.65;
+  color: var(--ks3-on-dark-body); max-width: 58ch;
+}
+.ks3-spbench-body { margin-top: 22px; }
+
+.ks3-spbench-controls {
+  display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-start;
+}
+.ks3-spbench-picker { display: grid; gap: 9px; flex: 1 1 460px; }
+.ks3-spbench-row {
+  display: grid; gap: 8px; flex: 1 1 280px; min-width: 240px;
+}
+.ks3-spbench-pickerlabel {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-spbench-tabrow { display: flex; flex-wrap: wrap; gap: 9px; }
+.ks3-spbench-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-spbench-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 17px;
+  font-weight: 500; letter-spacing: 0; text-transform: none;
+  color: var(--ks3-blue-light); white-space: nowrap;
+}
+/* 44px of vertical target, which is the smallest a thumb should be asked to
+   find — the slider is one of only two controls on the bench. */
+.ks3-spbench-slider {
+  width: 100%; max-width: 22rem; min-height: 44px;
+  accent-color: var(--ks3-accent);
+}
+
+/* ── the bar panel · the comparison, on every page ───────────────────── */
+
+.ks3-spbench-panel {
+  margin-top: 18px; padding: 20px 22px;
+  border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);
+}
+.ks3-spbench-caption {
+  margin: 0 0 14px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-spbench-bars { display: flex; flex-direction: column; gap: 14px; }
+.ks3-spbench-barhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; margin-bottom: 6px;
+}
+.ks3-spbench-barlabel {
+  font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);
+}
+.ks3-spbench-barvalue {
+  font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500;
+  color: var(--ks3-blue-light); white-space: nowrap;
+}
+.ks3-spbench-track {
+  display: block; height: 22px; border-radius: 8px;
+  background: rgba(255, 255, 255, .07);
+  border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;
+}
+.ks3-spbench-fill {
+  display: block; height: 100%; width: 0;
+  background: var(--ks3-data);
+}
+/* The current row. See the header: a ring rather than a colour swap,
+   because the token 5A.2 sends a selection to is the colour the other bars
+   are already painted in. */
+.ks3-spbench-bar[data-current="1"] .ks3-spbench-track {
+  border-color: var(--ks3-accent);
+}
+.ks3-spbench-bar[data-current="1"] .ks3-spbench-barlabel {
+  font-weight: 700;
+}
+.ks3-spbench-barsub {
+  margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+
+/* ── the readout cards and the closing note ─────────────────────────── */
+
+.ks3-spbench-readouts {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-spbench-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-spbench-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-spbench-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+.ks3-spbench-tile-sub {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+.ks3-spbench-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+
+/* ── #s-think on p12-03, p12-04 and p12-05 ──────────────────────────────
+
+   ⚠️ NO RULES, AND THAT IS THE COMPONENT. `space-think` is a SHELL-ONLY
+   family: `r_space_think` draws nothing and the section's whole body is
+   Design's confrontation, rendered by `r_confrontation` from the block
+   type and already styled by `.ks3-misconception`. The class exists so the
+   section can declare `data-stage-done="0"` in the shipped bytes, which is
+   what `check_nothing_ticks_on_load` requires of a rail anchor. A rule
+   here would be a rule on a component with no markup of its own. */
+
+/* ── #s-formula's attempt panel on p12-01, p12-02 and p12-06 ───────────
+
+   ⚠️ NO RULES EITHER. The drawing is `ks3_art.kit.r_cfifa_attempt`, shared
+   with P4–P7, and `.ks3-cfa*` above already styles every part of it. The
+   family is P12's own so the registry's one-family-one-module rule holds
+   and the placement gates see it as this unit's; the shell class carries
+   the marker and nothing else. */
+
+/* ═══ END P12 ═══ */

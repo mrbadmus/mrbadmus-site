@@ -857,6 +857,41 @@ SUBSTATEMENTS = {
               "rubbed together: transfer of electrons.", "P9"),
         ("b", "Forces between charged objects.", "P9"),
     ],
+    # ── P12 · Space ─────────────────────────────────────────────────────
+    #
+    # P12 owns four statements over six slots (ratio 1.5) — the surplus case
+    # at its widest in physics, and the compound bullet is the one that has
+    # to give. `SPACE.02`, `.03` and `.04` are whole and take no sub-ID: the
+    # Sun/stars/galaxies, the seasons and the light year are one lesson's
+    # worth each and `p12-04`, `p12-05` and `p12-06` own all of them.
+    #
+    # The bullet reads:
+    #   "gravity force, weight = mass x gravitational field strength (g), on
+    #    Earth g=10 N/kg, different on other planets and stars; gravity forces
+    #    between Earth and Moon, and between Earth and sun (qualitative only)"
+    #
+    # THREE clauses, and they are three lessons in every scheme of work:
+    #
+    #   a  what weight IS and how it is calculated where you are standing;
+    #   b  that g — and so weight — travels while mass does not;
+    #   c  gravity between bodies nobody is standing on, qualitatively.
+    #
+    # Splitting them is not a convenience. A page that carried (a) and (b)
+    # together would have to introduce the mass/weight contrast as an aside,
+    # and that contrast IS `p12-02` — Design's own README calls the
+    # gram-to-kilogram trap "where the distinction between mass and weight is
+    # actually lost". And (c) is qualitative where the first two are
+    # quantitative, so it takes no formula block at all; folding it into
+    # either would put a calculation beside a statement the bullet marks
+    # "qualitative only".
+    "KS3.P.SPACE.01": [
+        ("a", "The force of gravity, and weight = mass × gravitational field "
+              "strength with g = 10 N/kg on Earth.", "P12"),
+        ("b", "g, and so weight, differs on other planets and stars while "
+              "mass does not.", "P12"),
+        ("c", "Gravity forces between Earth and Moon, and between Earth and "
+              "Sun, qualitatively.", "P12"),
+    ],
 }
 
 
