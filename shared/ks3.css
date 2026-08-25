@@ -23667,8 +23667,28 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 
    Kept from the MRB-223 run-1 authoring that has otherwise been stood down:
    this line is independent of that authoring, and it fixes a live page.
+
+   ⊕ 25 Aug 2026 (MRB-220 close-out). Two updates to the note above:
+   (1) "c2-06 is the only page in the key stage that draws a cover bar" is
+   STALE — p6-02 and p6-07 draw it too, which is how the defect surfaced.
+   (2) This rule alone flipped the failure from all-three-plates-painted to
+   all-three-plates-open, which leaks the covered answer pre-JS. The other
+   half of the fix is in `r_cover_bar` (build_ks3.py): the covered plate is
+   no longer emitted with `hidden`, so the pre-JS paint is the correct
+   one-plate-covered state and wireCoverBar's load-time show() is a no-op.
+
+   The rules below close the same cascade hole for every OTHER SVG group
+   the generators emit with `hidden`: `hidden` never closes an SVG element
+   (the UA rule is HTML-namespace only), so each family needs a companion
+   rule or it paints all its variants at once before ks3.js runs. These
+   four all intend all-hidden pre-JS (wiring shows one on load).
 */
 .ks3-bar .ks3-bar-cover[hidden] { display: none; }
+[data-iboard-arrow][hidden],
+[data-hrig-coil][hidden],
+[data-hrig-shape][hidden],
+[data-alt-case-shape][hidden],
+[data-wanat-mark][hidden] { display: none; }
 
 /* ═══ BEGIN P1 ═══════════════════════════════════════════════════════════
    P1's instrument styling — *Energy transfers*, the first physics unit.

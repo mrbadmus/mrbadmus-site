@@ -3689,12 +3689,19 @@ def r_cover_bar(cov):
     span = W - GAP * (len(parts) - 1)
 
     def plate(x, w, y, label, size, key):
-        return ('<g class="ks3-bar-cover" data-cover-plate="%s" hidden>'
+        # ⊕ MRB-220 fix (24 Aug 2026 run): the covered plate must ARRIVE
+        # covered. `hidden` was unconditional here, so before ks3.js ran the
+        # bar painted fully open — pressed button beside it, result sentence
+        # already filled in — handing the student the answer the block exists
+        # to withhold. Same conditional shape as the triangle's notes
+        # (r_formula_triangle). wireCoverBar's load-time show() is now a no-op.
+        return ('<g class="ks3-bar-cover" data-cover-plate="%s"%s>'
                 '<rect x="%.2f" y="%d" width="%.2f" height="%d" rx="%d" '
                 'class="ks3-bar-plate"></rect>'
                 '<text x="%.2f" y="%d" text-anchor="middle" '
                 'class="ks3-bar-ghost" style="font-size:%dpx">%s</text></g>'
-                % (e(key), x, y, w, H, R, x + w / 2.0, y + 36, size, t(label)))
+                % (e(key), "" if key == covered else " hidden",
+                   x, y, w, H, R, x + w / 2.0, y + 36, size, t(label)))
 
     cells = ['<rect x="%d" y="%d" width="%d" height="%d" rx="%d" '
              'class="ks3-bar-cell"></rect>'
