@@ -217,6 +217,66 @@ GATES = [
              "without it the gate SKIPS BY NAME rather than asserting half "
              "the contract."),
 
+    # ── ⊕ MRB-290 · the KS4 weekly leaderboard port ─────────────────────
+
+    dict(name="leaderboard_tells",
+         cmd=["python3", "leaderboard_tells.py"],
+         speed="fast",
+         why="no student Design invented reaches the live leaderboard. The "
+             "corpus is DERIVED from the vendored delivery on every run — "
+             "FIRST, LAST and VIEWER parsed out of its own source and "
+             "Design's roster formula re-run — because a typed list is how "
+             "student_page_drive passed while covering nothing. It pins the "
+             "61 EXACT handles rather than their shape: real usernames come "
+             "from the same generator vocabulary (FoxWave36 is a real "
+             "student, FoxWave21 is Design's), so a shape match would fire "
+             "on every real student on the board. Also asserts the "
+             "fabricators are gone, that no unbound 'AY' monogram survives, "
+             "and that hash/rng have exactly two callers each — the "
+             "declaration and Design's confetti."),
+
+    dict(name="leaderboard_seam",
+         cmd=["python3", "leaderboard_seam.py"],
+         speed="fast",
+         needs="shared/leaderboard-live.js",
+         why="the leaderboard's DATA LAYER, driven directly — 27 checks "
+             "against the real shared/leaderboard-live.js under Node with a "
+             "stubbed fetch and a stubbed Supabase client. ⚑ IT EXISTS "
+             "BECAUSE leaderboard_behaviour CANNOT REACH ANY OF THIS: all "
+             "eight of its fixtures replace the seam wholesale, which is "
+             "what lets them run with no network and no credential, so not "
+             "one line of load(), boot(), mapRow() or safeAvatar() was "
+             "executed by any gate. Covers the warm-up ping, the "
+             "error-key refetch (an error is the absence of an answer, not a "
+             "cached one), cache honouring, the row mapping including R21's "
+             "done-intersect-per guard against the literal 'null%' reaching "
+             "the copy, move null-vs-0 (NEW vs HELD), R25's reject-never-"
+             "escape URL rule, the profile-tier landing, the signed-out path "
+             "and the server-anchored clock. Mutation-tested: reverting each "
+             "of four behaviours turns it red. Skips BY NAME where node is "
+             "absent — such a machine cannot run build_leaderboard_port.py "
+             "either, so there is no built page for it to be silent about. "
+             "⚠️ fetch is stubbed: this proves the data layer maps and "
+             "caches correctly and NOTHING about the live endpoint's "
+             "contract."),
+
+    dict(name="leaderboard_behaviour",
+         cmd=["python3", "leaderboard_behaviour.py"],
+         speed="slow",
+         why="eight leaderboard fixtures driven headless, on load and again "
+             "after a reload: every control pressed (tier, four subjects, "
+             "the week rail's prev/next/This week and every chip, every row "
+             "expand), no press leaves the page blank, no computed value "
+             "(null%, NaN, undefined) reaches the copy, and the console "
+             "stays quiet. Five of the eight are states Design never drew — "
+             "an empty week (which was the LIVE state of Higher/Overall on "
+             "25 Aug 2026), one entrant, week one, a viewer below the cut, "
+             "and a failed fetch — plus the avatar fixture that holds R25's "
+             "never-both property. ⚠️ FIXTURE-DRIVEN: the live page "
+             "needs a Supabase session and a warm Render dyno, so this "
+             "proves everything between the data arriving and the pixels "
+             "and nothing about whether the seam asks for the right rows."),
+
     # ── ⊕ MRB-282 · THE FOUR THAT WERE OUTSIDE THE REGISTRY ────────────
 
     dict(name="gate_coverage",
@@ -333,6 +393,9 @@ EXCLUDED = {
         "the LIVE student page generator, gated by student_behaviour.",
     "build_teacher_port.py":
         "the LIVE teacher page generator, gated by teacher_behaviour.",
+    "build_leaderboard_port.py":
+        "the LIVE KS4 leaderboard generator, gated by leaderboard_tells "
+        "(fast) and leaderboard_behaviour (slow).",
     "generate_site_v5.py":
         "the KS4 generator.",
     "ks3_seed_sow.py":

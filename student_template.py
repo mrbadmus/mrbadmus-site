@@ -65,6 +65,7 @@ OUT = "student_templates.json"
 
 AMEND = os.path.join("docs", "ks3", "design-reference", "class-view-amendments")
 TEACHER = os.path.join("docs", "ks3", "design-reference", "teacher")
+LEADERBOARD = os.path.join("docs", "ks3", "design-reference", "leaderboard")
 
 # ⊕ 22 Aug 2026 — THE DONOR. Design's class-view amendments compile as a THIRD
 # page that is never emitted. Nothing renders it; `build_student_port.py` reads
@@ -84,6 +85,12 @@ PAGES = [
     # screen. No `standalone` key: this delivery ships none, and it needs
     # none, because `strip_brand_mark` removes its only `x-import`.
     dict(page="teacher", src="source/Teacher Dashboard.dc.html", ref=TEACHER),
+    # ⊕ MRB-290 — the KS4 weekly leaderboard. ONE screen, no `sc-if` fork.
+    # No `standalone` key, for the same reason the teacher row has none: this
+    # delivery ships none and needs none, because `strip_nav` below removes
+    # its only `x-import` along with Design's nav.
+    dict(page="leaderboard", src="source/KS4 Weekly Leaderboard.dc.html",
+         ref=LEADERBOARD),
 ]
 
 # The three constructs, plus interpolation, plus the one imported component.
@@ -335,6 +342,60 @@ def strip_brand_mark(tpl, where):
     return BRAND_IMPORT_RE.sub("", tpl, count=1), 1
 
 
+# ⊕ MRB-290 — Design's nav comes off the leaderboard whole, and this is
+# Mide's override rather than a rule already written down.
+#
+# Design drew a 1180px-inset nav carrying her own `MrBadmusDS.BrandMark` —
+# the STUDENT-surface chevron, which CLAUDE.md's four presentations forbid on
+# an external/public root page — plus a "My class" link the live nav has no
+# counterpart for. `/leaderboard.html` takes the LANDING PAGE's nav instead,
+# read out of index.html by build_leaderboard_port.live_nav() and emitted as
+# static page shell OUTSIDE the runtime's mount point.
+#
+# ⚠️ OUTSIDE THE MOUNT POINT IS THE STRUCTURAL HALF OF THE RULING, not a
+# tidiness preference. `student-runtime.draw()` does `host.textContent = ''`
+# and rebuilds from the template on every state change; `nav.js` binds its
+# drawer, its auth area and its outside-click handler exactly once at
+# DOMContentLoaded. Inside the host, all three would be detached by the first
+# tier press and the burger would silently stop opening.
+#
+# ⚠️ IT IS ALSO WHAT MAKES THIS PAGE COMPILE AT ALL, the same coincidence
+# `strip_brand_mark` records for the teacher delivery. `capture_imports`
+# reads an `x-import`'s rendered markup out of Design's STANDALONE, and this
+# delivery ships none. The one import is INSIDE this nav, so removing the nav
+# leaves nothing to capture — but the two facts are independent, and a future
+# delivery that added a second import must NOT have it quietly removed by
+# this. Hence both counts below, and the post-check.
+NAV_BLOCK_RE = re.compile(r'[ \t]*<nav\b.*?</nav>\n?', re.S)
+
+
+def strip_nav(tpl, where):
+    """Take Design's nav off the leaderboard, or refuse if it moved."""
+    if where != "leaderboard":
+        return tpl, 0
+    n_nav = len(NAV_BLOCK_RE.findall(tpl))
+    n_imp = tpl.count("<x-import")
+    if n_nav != 1 or n_imp != 1:
+        raise SystemExit(
+            "student_template.py: the leaderboard delivery carries %d "
+            "`<nav>` and %d `<x-import>`; this rewrite expects exactly one "
+            "of each.\n"
+            "  Mide's 25 Aug 2026 ruling replaces Design's nav wholesale "
+            "with the landing page's. If Design has restructured the nav or "
+            "added an import, that needs its own decision — and an import "
+            "needs a standalone to capture its markup from, which this "
+            "delivery does not ship. Do not widen the pattern to make this "
+            "pass." % (n_nav, n_imp))
+    out = NAV_BLOCK_RE.sub("", tpl, count=1)
+    if "<x-import" in out:
+        raise SystemExit(
+            "student_template.py: an `<x-import>` survives outside Design's "
+            "nav on the leaderboard. It needs its own decision AND a "
+            "standalone to capture its markup from, which this delivery does "
+            "not ship.")
+    return out, 1
+
+
 def kebab_svg_attrs(tpl, where):
     """Rewrite React-cased SVG attributes to their SVG names, or refuse."""
     seen = set(re.findall(r"\b([a-z]+[A-Z][A-Za-z]*)=", tpl))
@@ -503,6 +564,11 @@ def compile_page(cdp, spec):
     # every node that follows it, and the numbering is the whole contract
     # between this file and the rulings that index into it.
     tpl, brand_stripped = strip_brand_mark(tpl, spec["page"])
+    # ⚠️ ALSO BEFORE the browser compile, for the same reason the line above
+    # is: removing a node renumbers every node that follows it, and the
+    # numbering is the whole contract between this file and the rulings that
+    # index into it.
+    tpl, nav_stripped = strip_nav(tpl, spec["page"])
 
     server, port = cdp.serve(ref)
     try:
@@ -537,7 +603,7 @@ def compile_page(cdp, spec):
 
     return dict(nodes=got["n"], roots=got["roots"], logic=logic,
                 imports=imports, sheets=sheets, fbSplit=fb_split,
-                brandStripped=brand_stripped,
+                brandStripped=brand_stripped, navStripped=nav_stripped,
                 refs=n_ref, tplChars=len(tpl), logicChars=len(logic),
                 kebabbed=kebabbed)
 
