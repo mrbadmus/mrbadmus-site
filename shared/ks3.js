@@ -15377,6 +15377,592 @@
   }
   /* ═══ END P9 wiring ═══ */
 
+/* ═══ BEGIN P11 wiring ═══════════════════════════════════════════════════
+     P11 — *Matter and the particle model*. ONE bench, four models, ported
+     from Claude Design's `Bench.dc.html` and her four `benchVals()` bodies
+     CONSTANT BY CONSTANT rather than compared as markup.
+
+     ⚖️ NO SENTENCE IS COMPOSED HERE. Every bar label, bar value, bar
+     sub-line, readout, aria-label and note is an authored template with
+     `{token}` holes, living in the lesson record where a content gate and an
+     examiner can both see it. What IS in this file is ARITHMETIC: her
+     square-root-of-absolute-temperature scaling, her `mass = density ×
+     volume`, her `mass × 4200 × ΔT`, her log-scale bar widths, and the
+     comparatives derived from those values.
+
+     ⚖️ EVERY VARYING FIGURE IS HTML TEXT. Design's §3 in terms: *"No SVG
+     diagram carries a live label anywhere in these ten lessons."* There is
+     no SVG on any P11 bench, so the interpolated-text-in-`<text>` trap —
+     which fails silently — cannot arise here at all.
+
+     ⚖️ THE COMPARATIVE WORDS ARE DERIVED, NEVER AUTHORED BESIDE A CONTROL
+     (5A.1). `floats` / `sinks` / `stays put`, and which state of a substance
+     is the denser, come out of the values at paint time. That is what makes
+     them true in the EQUAL state — water at exactly 1.00 g/cm³ — by
+     construction rather than by somebody remembering.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* Design's `toLocaleString('en-GB')` on a whole number. */
+  function p11Group(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function p11Cap(s) {
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+  }
+
+  /* ⚠️ THE PAYLOAD'S KEY IS `v_mol`; THE ATTRIBUTE IS `data-v-mol`.
+     `_seg` in `ks3_art/p11.py` writes attribute names with hyphens, which is
+     the only spelling HTML has. Reading `data-v_mol` returns null and
+     `parseFloat(null)` is NaN — which shipped to the built page as
+     "moving at roughly NaN m/s". Caught by `ks3_smoke`'s AFTER-SWEEP, which
+     drives the controls first; the static scan of the served bytes cannot
+     see it, because the page opens on a tab where the note is not yet
+     painted. */
+  function p11Attr(el, name) {
+    if (!el) { return ""; }
+    return el.getAttribute("data-" + name.replace(/_/g, "-")) || "";
+  }
+
+  function p11AttrN(el, name) {
+    return parseFloat(p11Attr(el, name));
+  }
+
+  function p11Id(el) {
+    return el ? (el.getAttribute("data-mtbench-tab") || "") : "";
+  }
+
+  /* Her `fmt` for a mass: grams to one decimal until a kilogram, then
+     kilograms to two. The step is hers and it is what keeps "9650.0 g" off
+     the balance readout. */
+  function p11Mass(g) {
+    return g >= 1000 ? (g / 1000).toFixed(2) + " kg" : g.toFixed(1) + " g";
+  }
+
+  /* Her `fmtE`. Three bands, so four quantities spanning five orders of
+     magnitude are all readable in the tile they land in. */
+  function p11Energy(j) {
+    if (j >= 1e6) { return (j / 1e6).toFixed(2) + " MJ"; }
+    if (j >= 1000) { return (j / 1000).toFixed(1) + " kJ"; }
+    return Math.round(j) + " J";
+  }
+
+  /* `Math.log10` is ES2015; this file is ES5 throughout. */
+  function p11Log10(x) { return Math.log(x) / Math.LN10; }
+
+  function p11Merge(base, extra) {
+    var out = {}, k;
+    for (k in base) {
+      if (Object.prototype.hasOwnProperty.call(base, k)) { out[k] = base[k]; }
+    }
+    for (k in extra) {
+      if (Object.prototype.hasOwnProperty.call(extra, k)) { out[k] = extra[k]; }
+    }
+    return out;
+  }
+
+  /* ── the four models ──────────────────────────────────────────────────
+
+     Each takes the bench's state and returns three things and nothing else:
+     the TOKENS its templates need, the per-bar width and per-bar tokens, and
+     the BRANCH name whose authored note applies. `focus` names the bar the
+     control is pointing at, or null where the payload fixes it.
+
+     Every model is Design's own arithmetic. Where a constant of hers was a
+     literal that happened to equal something already in the payload — her
+     `19.30` for the density bar scale — it is DERIVED from the payload
+     instead, so a change to the deck cannot leave the scale behind. */
+
+  var P11_MODELS = {
+
+    /* p11-01. Six materials × six volumes. The bars are the league table
+       and they do NOT move with the volume, which is the whole lesson: the
+       mass and the volume change together and their ratio does not.
+
+       ⚖️ THREE BRANCHES, AND THE THIRD IS WATER. Design's verdict is
+       `d < 1.00`, which sends water — one of her own six tabs — to the
+       `sinks` branch and prints "over 1.00 g/cm³" beside a density of
+       exactly 1.00. The equal state is real, reachable and the most useful
+       state on the bench. See `ks3_art/p11.py`. */
+    "density": function (c) {
+      var T = c.tabs[c.tab];
+      var d = p11AttrN(T, "d");
+      var V = Number(c.values[c.sv]);
+      var m = d * V;
+      var top = 0, bars = {};
+      each(c.tabs, function (b) {
+        var bd = p11AttrN(b, "d");
+        if (bd > top) { top = bd; }
+      });
+      each(c.tabs, function (b) {
+        var bd = p11AttrN(b, "d");
+        bars[p11Id(b)] = {
+          pct: top > 0 ? (bd / top) * 100 : 0,
+          tokens: { label: p11Attr(b, "label"), name: p11Attr(b, "name"),
+                    d: bd.toFixed(2), mass: (bd * V).toFixed(1) }
+        };
+      });
+      var same = Math.abs(d - 1) < 1e-9;
+      var branch = same ? "same" : (d < 1 ? "floats" : "sinks");
+      var pick = same ? "same" : (d < 1 ? "float" : "sink");
+      return {
+        branch: branch,
+        focus: p11Id(T),
+        bars: bars,
+        tokens: {
+          v: String(V), label: p11Attr(T, "label"), name: p11Attr(T, "name"),
+          d: d.toFixed(2), mass: m.toFixed(1), mass_f: p11Mass(m),
+          verdict: c.words[pick + "_verdict"] || "",
+          verdict_sub: c.words[pick + "_sub"] || ""
+        }
+      };
+    },
+
+    /* p11-02. Four suspensions × five temperatures. Molecular speed scales
+       with the square root of ABSOLUTE temperature from her 20 °C figures,
+       and the visible jiggle scales with the same root — which is why the
+       jiggle bar is the only one of the three that a microscope could show
+       and the only one that is marked. */
+    "brownian": function (c) {
+      var T = c.tabs[c.tab];
+      var V = Number(c.values[c.sv]);
+      var k = Math.sqrt((V + 273) / 293);
+      var vmol = Math.round(p11AttrN(T, "v_mol") * k);
+      var jig = (2.5 * k).toFixed(1);
+      var ratio = p11AttrN(T, "ratio");
+      var speck = p11Attr(T, "speck");
+      var g = {
+        v: String(V), label: p11Attr(T, "label"), name: p11Attr(T, "name"),
+        hidden: p11Attr(T, "hidden"), speck: speck, Speck: p11Cap(speck),
+        speck_bare: speck.replace(/^a /, ""),
+        vmol: String(vmol), jig: jig, ratio: p11Group(ratio)
+      };
+      return {
+        branch: "always",
+        focus: null,                       /* the payload fixes it */
+        tokens: g,
+        bars: {
+          speed:  { pct: Math.min(100, (vmol / 800) * 100),        tokens: {} },
+          jiggle: { pct: Math.min(100, (Number(jig) / 4) * 100),   tokens: {} },
+          size:   { pct: Math.min(100, (p11Log10(ratio) / 5) * 100), tokens: {} }
+        }
+      };
+    },
+
+    /* p11-03. Four amounts of water × six temperatures, on a LOG scale so
+       that a teaspoon and a bathful can be read on one panel. Every figure
+       in the note is derived from the masses in the payload — including the
+       teaspoon-to-bathful ratio Design typed out as "sixteen thousand" —
+       so none of them can drift from the deck. */
+    "internal-energy": function (c) {
+      var T = c.tabs[c.tab];
+      var V = Number(c.values[c.sv]);
+      var m = p11AttrN(T, "m");
+      var maxM = 0, minM = Infinity, big = null, small = null;
+      each(c.tabs, function (b) {
+        var bm = p11AttrN(b, "m");
+        if (bm > maxM) { maxM = bm; big = b; }
+        if (bm < minM) { minM = bm; small = b; }
+      });
+      var bars = {};
+      each(c.tabs, function (b) {
+        var bm = p11AttrN(b, "m");
+        var be = bm * 4200 * V;
+        bars[p11Id(b)] = {
+          /* Her scale: a decade of energy per 8.6% of the track, floored at
+             2% so a bar is never invisible. `be` is always positive because
+             the drawer refuses a zero position on this model's slider. */
+          pct: Math.max(2, Math.min(100, ((p11Log10(be) + 1) / 8.6) * 100)),
+          tokens: { label: p11Attr(b, "label"), mlabel: p11Attr(b, "m_label"),
+                    energy: p11Energy(be) }
+        };
+      });
+      var isBig = m === maxM;
+      var g = {
+        v: String(V), label: p11Attr(T, "label"), name: p11Attr(T, "name"),
+        mlabel: p11Attr(T, "m_label"), energy: p11Energy(m * 4200 * V),
+        ratio: p11Group(Math.round(maxM / m)),
+        minratio: p11Group(Math.round(maxM / minM)),
+        biggest_label: p11Attr(big, "label"),
+        smallest_label: p11Attr(small, "label")
+      };
+      /* The readout word is authored and may itself carry a token, so it is
+         filled from the numbers before it joins them. */
+      g.holds = fillTokens(c.words[isBig ? "biggest_holds" : "rest_holds"], g);
+      return {
+        branch: isBig ? "biggest" : "rest",
+        focus: p11Id(T),
+        bars: bars,
+        tokens: g
+      };
+    },
+
+    /* p11-04. Four substances × two states. The third bar is liquid water
+       at 1.00, the line everything is judged against; it never moves and it
+       is deliberately recessive.
+
+       ⚖️ THE FRACTION ABOVE THE SURFACE IS DERIVED. Design's note says
+       "about a ninth", which is the figure for ice in SEAWATER; against
+       fresh water at 1.00 it is `1 − 0.92 ÷ 1.00` = 8%, which is what her
+       own rung 1 marks correct and what her own Think-again says. */
+    "ice": function (c) {
+      var T = c.tabs[c.tab];
+      var state = String(c.values[c.sv]);
+      var solid = p11AttrN(T, "solid");
+      var liquid = p11AttrN(T, "liquid");
+      var hi = Math.max(solid, liquid) * 1.06;
+      var cur = state === "solid" ? solid : liquid;
+      var odd = solid < liquid;
+      var change = ((solid - liquid) / liquid) * 100;
+      var g = {
+        sv: state, label: p11Attr(T, "label"), name: p11Attr(T, "name"),
+        mp: p11Attr(T, "mp"),
+        solid: solid.toFixed(2), liquid: liquid.toFixed(2),
+        cur: cur.toFixed(2),
+        change: change.toFixed(1) + "%",
+        change_abs: Math.abs(change).toFixed(1),
+        above: String(Math.round((1 - solid / liquid) * 100)),
+        verdict: c.words[odd ? "float_verdict" : "sink_verdict"] || "",
+        verdict_sub: c.words[odd ? "float_sub" : "sink_sub"] || "",
+        direction: c.words[odd ? "expands" : "contracts"] || ""
+      };
+      return {
+        branch: odd ? "odd" : "ordinary",
+        focus: state,                     /* the bar ids ARE the two states */
+        bars: {
+          solid:  { pct: (solid / hi) * 100,  tokens: {} },
+          liquid: { pct: (liquid / hi) * 100, tokens: {} },
+          water:  { pct: (1.00 / hi) * 100,   tokens: {} }
+        },
+        tokens: g
+      };
+    }
+  };
+
+  /* ── the bench itself ─────────────────────────────────────────────────
+
+     ⚖️ THE GATE IS NOT DECORATION. Design locks all four benches behind a
+     commitment and her own `DONE` for `#s-bench` is
+     `s.gate !== null && s.touched` — so the gate is half of what ticks the
+     second rail stop, and a bench read before a commitment confirms
+     whatever the student already believed. */
+  function wireMatterBench(sec) {
+    var wrap = sec.querySelector("[data-mtbench]");
+    if (!wrap) { return; }
+    var model = P11_MODELS[wrap.getAttribute("data-model")];
+    if (!model) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-mtbench-tab]"));
+    if (!tabs.length) { return; }
+
+    var slider = wrap.querySelector("[data-mtbench-slider]");
+    var valuesRaw = wrap.getAttribute("data-values") || "";
+    var values = valuesRaw ? valuesRaw.split("|") : [];
+    var valueLabel = wrap.getAttribute("data-value-label") || "";
+    var noteEl = wrap.querySelector("[data-mtbench-note]");
+    var altEl = wrap.querySelector("[data-mtbench-alt]");
+    var bars = toArray(wrap.querySelectorAll("[data-mtbench-bar]"));
+    var tiles = toArray(wrap.querySelectorAll(".ks3-mtbench-tile"));
+    var gateEl = wrap.querySelector("[data-mtbench-gate]");
+    var bodyEl = wrap.querySelector("[data-mtbench-body]");
+    var gopts = toArray(wrap.querySelectorAll("[data-mtbench-gopt]"));
+
+    var words = {};
+    each(toArray(wrap.querySelectorAll("[data-mtbench-word]")), function (el) {
+      words[el.getAttribute("data-mtbench-word")] =
+        el.getAttribute("data-text") || "";
+    });
+    var notes = {};
+    each(toArray(wrap.querySelectorAll("[data-mtbench-branch]")), function (el) {
+      notes[el.getAttribute("data-mtbench-branch")] =
+        el.getAttribute("data-note") || "";
+    });
+
+    var ti = parseInt(wrap.getAttribute("data-start-tab"), 10) || 0;
+    var committed = false, touched = 0;
+
+    function fillInto(el, attr, vals) {
+      if (!el) { return; }
+      el.textContent = fillTokens(attr, vals);
+    }
+
+    function paint() {
+      var out = model({
+        tabs: tabs, tab: ti, values: values,
+        sv: slider ? Number(slider.value) : 0, words: words
+      });
+      var g = out.tokens;
+
+      each(tabs, function (b, i) {
+        b.setAttribute("aria-pressed", i === ti ? "true" : "false");
+      });
+
+      if (slider && valueLabel) {
+        setOut(wrap, "mtbench", "sv", fillTokens(valueLabel, g));
+      }
+
+      each(bars, function (bar) {
+        var id = bar.getAttribute("data-mtbench-bar");
+        var spec = out.bars[id];
+        if (!spec) { return; }
+        var vals = p11Merge(g, spec.tokens);
+        var fill = bar.querySelector("[data-mtbench-barfill]");
+        if (fill) {
+          fill.style.width =
+            Math.max(0, Math.min(100, spec.pct)).toFixed(2) + "%";
+        }
+        fillInto(bar.querySelector("[data-mtbench-barlabel]"),
+                 bar.getAttribute("data-label"), vals);
+        fillInto(bar.querySelector("[data-mtbench-barvalue]"),
+                 bar.getAttribute("data-value"), vals);
+        fillInto(bar.querySelector("[data-mtbench-barsub]"),
+                 bar.getAttribute("data-sub"), vals);
+        /* ⚠️ A PAYLOAD MAY FIX THE FOCUS, and p11-02's does: its marked bar
+           is a CATEGORY claim ("this is the only part you can watch") that
+           is true whatever the controls say. The other three benches move
+           the focus with the control, and the panel's aria-label says which
+           bar it is on. */
+        if (!bar.getAttribute("data-fixed-focus")) {
+          if (out.focus !== null && id === out.focus) {
+            bar.setAttribute("data-focus", "1");
+          } else {
+            bar.removeAttribute("data-focus");
+          }
+        }
+      });
+
+      each(tiles, function (tile) {
+        fillInto(tile.querySelector("[data-mtbench-out]"),
+                 tile.getAttribute("data-value"), g);
+        fillInto(tile.querySelector("[data-mtbench-sub]"),
+                 tile.getAttribute("data-sub"), g);
+      });
+
+      if (noteEl) {
+        noteEl.textContent = fillTokens(notes[out.branch] || "", g);
+      }
+      if (altEl) {
+        altEl.setAttribute("aria-label",
+          fillTokens(altEl.getAttribute("data-alt") || "", g));
+      }
+
+      /* The head-row readout is the SHELL's element, driven by the engine's
+         own `setCountState`. This unit draws no head row of its own — see
+         the note where `_head` is NOT, in `ks3_art/p9.py`. */
+      setCountState(sec, touched ? "live" : "idle");
+      markStage(sec, committed && touched > 0);
+
+      /* p11-01's CFIFA question 1 is live on this bench. One direction
+         only: the panel never writes back. */
+      publishLiveP11(sec, g);
+    }
+
+    each(gopts, function (b) {
+      b.addEventListener("click", function () {
+        each(gopts, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        setHidden(gateEl, true);
+        setHidden(bodyEl, false);
+        committed = true;
+        paint();
+      });
+    });
+
+    each(tabs, function (b, i) {
+      b.addEventListener("click", function () {
+        ti = i;
+        touched += 1;
+        paint();
+      });
+    });
+
+    if (slider) {
+      each(["input", "change"], function (evt) {
+        slider.addEventListener(evt, function () {
+          touched += 1;
+          paint();
+        });
+      });
+    }
+
+    paint();
+  }
+
+  /* ── `#s-think` as a rail stop on p11-02, p11-03 and p11-04 ───────────
+
+     Design's `DONE` for it, verbatim:
+
+         if (id === 's-think') return s.answers.r1 !== null || s.hookChoice !== null;
+
+     — the hook committed, OR ladder rung 1 answered. Neither control is
+     inside this section, which is why `band_anchor` / `band_at` is the
+     wrong mechanism here (no bench owns it) and `mirrors` is refused
+     outright (`ks3_rail_manifest` derives the mirror map from her
+     `isDone()` and this expression matches no other stop's).
+
+     ⚠️ HER PREDICATE EXACTLY, AND NOTHING MORE. No load-time check is
+     needed and none is written: the ladder restores only the SELF rungs'
+     writing and ticks, marked rungs open fresh on every load, and the hook
+     keeps no state at all — so on load there is nothing to read, exactly as
+     on her own page. `markStage` is a ratchet, so the first of the two to
+     happen wins and the second is a no-op. */
+  function wireMatterThink(sec) {
+    var host = (sec.closest && sec.closest(".ks3-lesson")) || document;
+    var hook = host.querySelector("#s-hook");
+    var ladder = host.querySelector("#s-ladder");
+    var rung1 = ladder
+      ? ladder.querySelector('.ks3-rung[data-mode="marked"]')
+      : null;
+
+    function tick() { markStage(sec, true); }
+
+    if (hook) {
+      each(hook.querySelectorAll(".ks3-option"), function (b) {
+        b.addEventListener("click", tick);
+      });
+    }
+    if (rung1) {
+      each(rung1.querySelectorAll(".ks3-option"), function (b) {
+        b.addEventListener("click", tick);
+      });
+    }
+  }
+
+  /* ── the CFIFA attempt panel, P11's namespace ─────────────────────────
+
+     Identical in behaviour to P4's, P5's, P6's and P7's, because Design's
+     `Cfifa.dc.html` in this folder is byte-identical to P7's: question 1 is
+     live on the bench above, question 2 is fixed, the Check button refuses
+     an empty attempt, and the student ticks their own lines against the
+     model. Her `onOpen` fires from that Check button and from nowhere else,
+     which is why `s.cfifaOpen` and our `attempt_checked` are the same
+     moment. */
+  function paintAttemptP11(wrap, vals) {
+    var qs = toArray(wrap.querySelectorAll("[data-p11cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }            /* Question 1 alone is live */
+      var head = q.querySelector("[data-p11cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p11cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p11cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p11cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+    });
+  }
+
+  function publishLiveP11(sec, vals) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    each(toArray(host.querySelectorAll("[data-p11cfa]")), function (p) {
+      paintAttemptP11(p, vals);
+    });
+  }
+
+  function wireCfifaAttemptP11(sec) {
+    var wrap = sec.querySelector("[data-p11cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p11cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p11cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p11cfa-input]"));
+      var btn = q.querySelector("[data-p11cfa-check]");
+      var hint = q.querySelector("[data-p11cfa-hint]");
+      var reveal = q.querySelector("[data-p11cfa-reveal]");
+      var tally = q.querySelector("[data-p11cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p11cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " lines written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p11cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p11cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked — her `cfifaOpen` */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
+  }
+
+  /* ═══ END P11 wiring ═══ */
+
+
+
+
+
+
 /* ═══ BEGIN P12 wiring ══════════════════════════════════════════════════
      P12 — *Space*. Ported from Claude Design's delivered pages CONSTANT BY
      CONSTANT rather than compared as markup: a `.dc.html` renders its rail,
@@ -34186,6 +34772,21 @@
     // to wire, and it would be the place a later pass added a control
     // Design did not draw.
     // ═══ END P9 wiring ═══
+
+// ═══ BEGIN P11 wiring ═══
+    each(root.querySelectorAll("[data-mtbenchblock]"), wireMatterBench);
+    // ⚠️ ORDER IS IMMATERIAL HERE. Question 1's `{token}` holes are
+    // filled by `publishLiveP11`, which the bench calls from its OWN
+    // `paint()` — it walks the lesson and repaints every panel directly,
+    // so it does not depend on this next line having run.
+    each(root.querySelectorAll("[data-p11cfablock]"), wireCfifaAttemptP11);
+    // ⚠️ `data-mtthink` HAS A LINE, AND P9's `data-chthink` DOES NOT.
+    // The difference is Design's own: `p9-01`'s confrontation is ticked
+    // by the bench beside it through `markSibling`, and P11's three are
+    // ticked by a PAGE-LEVEL predicate — the hook, or ladder rung 1 —
+    // which no bench owns. `wireMatterThink` watches exactly those two.
+    each(root.querySelectorAll("[data-mtthink]"), wireMatterThink);
+    // ═══ END P11 wiring ═══
 
 // ═══ BEGIN P12 wiring ═══
     each(root.querySelectorAll("[data-spbenchblock]"), wireSpaceBench);

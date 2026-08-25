@@ -28488,6 +28488,204 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    from every other one for a reason that is about the rail. */
 /* ═══ END P9 ═══ */
 
+/* ═══ BEGIN P11 ═══════════════════════════════════════════════════════════
+   P11 — *Matter and the particle model*. ONE block, because Design drew one
+   component: `Bench.dc.html`, mounted on all four pages and on all six of
+   P12's. Everything below is measured off her inline styles in that file.
+
+   ⚠️ EVERY SELECTOR HERE IS P11-ONLY, and the shell stem was checked against
+   the whole registry before it was written (MRB-279). `ks3-mtbench-` is free;
+   so are `ks3-mtthink` and `ks3-p11cfa-`.
+
+   ⚠️ NO `.ks3-mtbench-head` RULE, AND NO `-progress` RULE. This unit draws no
+   head row of its own: `r_activity`'s shell owns it, `.ks3-blockhead` and
+   `.ks3-blockhead-count` already style it, and it is already Design's layout
+   — eyebrow and heading left, readout right. See the long note where `_head`
+   is NOT, in `ks3_art/p9.py`, and the live P4/P5/P6 pages that render both.
+
+   ⚠️ THE FOCUS BAR IS THE `--ks3-data` TOKEN **AND** A RING, AND ONE WITHOUT
+   THE OTHER WOULD BE WRONG.
+
+   Design fills the bar in focus with `var(--ks3-alert)`. MRB-252 reserves
+   amber for warning and confrontation and sends category and selection to
+   `--ks3-data` — but `--ks3-data` and `--ks3-blue-light` are the SAME VALUE
+   today (`#8FB7FF`, minted that way deliberately so the two roles can
+   separate later), and every other bar is `--ks3-blue-light`. The token
+   substitution ALONE would leave six identical bars and make the panel's own
+   aria-label ("…with gold highlighted") false.
+
+   So the focus bar takes the correct TOKEN, so the role is named and the two
+   colours can move apart, and a structural mark that works today: a 3px
+   `--ks3-on-dark` ring on its track and its label at 800. That is 5A.4's
+   ruled answer where no legal category hue is available — *"a figure that
+   carries no category hue carries the distinction on something else, and
+   says so"* — and the bar's own sub-line says so in words on every bench.
+   Registered in `DEPARTURES-P11.md`.
+
+   ⚠️ NO RULE FOR `.ks3-mtthink`. `#s-think` on p11-02/03/04 is styled by
+   `.ks3-misconception`, exactly as the other sixty are, and a rule here would
+   make three pages' wrong-idea block look different from every other one for
+   a reason that is about the rail.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── the lead, above the gate ────────────────────────────────────────── */
+
+.ks3-mtbench-lead {
+  margin: 14px 0 0; font-size: 19px; line-height: 1.65;
+  color: var(--ks3-on-dark-body); max-width: 58ch;
+}
+
+/* ── the commit gate ─────────────────────────────────────────────────
+   Design's gate is a bare block with a top margin — no panel, no border.
+   Measured: `<div style="margin-top: 20px;">` with `.ks3-commit` at
+   `margin: 0 0 4px` and her shared `.ks3-options` under it. */
+
+.ks3-mtbench-gate { margin-top: 20px; }
+.ks3-mtbench-gate .ks3-commit { margin: 0 0 4px; }
+
+/* ── the body, revealed once the gate is answered ────────────────────── */
+
+.ks3-mtbench-body { margin-top: 22px; }
+
+.ks3-mtbench-controls {
+  display: flex; flex-wrap: wrap; gap: 20px 30px; align-items: flex-start;
+}
+.ks3-mtbench-picker { flex: 1 1 460px; }
+.ks3-mtbench-pickerlabel,
+.ks3-mtbench-rowhead label {
+  margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mtbench-tabrow { display: flex; flex-wrap: wrap; gap: 9px; }
+
+.ks3-mtbench-row { flex: 1 1 280px; min-width: 240px; }
+.ks3-mtbench-rowhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px;
+}
+.ks3-mtbench-reading {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 17px;
+  font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;
+}
+
+/* Design's own range styling, ported. The 28px thumb is comfortably over the
+   44px-of-target floor once its hit area is counted, and the track carries a
+   border so it is visible against the panel it sits on. */
+.ks3-mtbench-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; max-width: 22rem; min-height: 44px; background: transparent;
+}
+.ks3-mtbench-slider::-webkit-slider-runnable-track {
+  height: 10px; border-radius: 99px; background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+.ks3-mtbench-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 28px; height: 28px; margin-top: -11px; border-radius: 50%;
+  background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-mtbench-slider::-moz-range-track {
+  height: 10px; border-radius: 99px; background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+.ks3-mtbench-slider::-moz-range-thumb {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink);
+  cursor: pointer;
+}
+
+/* ── the bar panel ───────────────────────────────────────────────────── */
+
+.ks3-mtbench-panel {
+  margin-top: 18px; padding: 20px 22px;
+  border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel);
+}
+.ks3-mtbench-barscaption {
+  margin: 0 0 14px; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mtbench-bars { display: flex; flex-direction: column; gap: 14px; }
+
+.ks3-mtbench-barhead {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; margin-bottom: 6px;
+}
+.ks3-mtbench-barlabel {
+  font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);
+}
+.ks3-mtbench-barvalue {
+  font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500;
+  color: var(--ks3-blue-light); white-space: nowrap;
+}
+.ks3-mtbench-bartrack {
+  display: block; height: 22px; border-radius: 8px;
+  background: rgba(255, 255, 255, .07);
+  border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;
+}
+/* The width is the only thing the wiring writes inline: it is the RATIO the
+   label beside it claims, and it comes from the same arithmetic that produced
+   the printed value. */
+.ks3-mtbench-barfill {
+  display: block; height: 100%; width: 0;
+  background: var(--ks3-blue-light);
+}
+.ks3-mtbench-barsub {
+  margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+
+/* THE BAR IN FOCUS — see the block header for the whole argument. */
+.ks3-mtbench-bar[data-focus] .ks3-mtbench-barfill {
+  background: var(--ks3-data);
+}
+.ks3-mtbench-bar[data-focus] .ks3-mtbench-bartrack {
+  border-width: 3px; border-color: var(--ks3-on-dark);
+}
+.ks3-mtbench-bar[data-focus] .ks3-mtbench-barlabel { font-weight: 800; }
+
+/* The reference line — p11-04's liquid water at 1.00. Deliberately recessive:
+   it is the thing the other two are judged against and not one of them. */
+.ks3-mtbench-bar[data-muted] .ks3-mtbench-barfill {
+  background: var(--ks3-on-dark-muted);
+}
+
+/* ── the readout cards ───────────────────────────────────────────────── */
+
+.ks3-mtbench-tiles {
+  margin-top: 16px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-mtbench-tile {
+  padding: 15px 17px; border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-mtbench-tile-label {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-mtbench-tile-value {
+  margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px;
+  font-weight: 500; color: var(--ks3-on-dark);
+}
+.ks3-mtbench-tile-sub {
+  margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px;
+  font-weight: 500; color: var(--ks3-on-dark-muted);
+}
+
+/* ── the closing note ────────────────────────────────────────────────── */
+
+.ks3-mtbench-note {
+  margin: 16px 0 0; padding: 16px 18px;
+  border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);
+  font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);
+}
+/* ═══ END P11 ═══ */
+
 /* ═══ BEGIN P12 ══════════════════════════════════════════════════════════
    P12 — *Space*. ONE marked block, and ONE instrument inside it.
 

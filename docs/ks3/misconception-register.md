@@ -106,7 +106,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 
 | Prefix | Domain | Opened |
 |---|---|---|
-| `PART` | Particles, states and the particle model | 2026-07-26, by C1 (Phase 1 slice) |
+| `PART` | Particles, states and the particle model — and density as what the model explains | 2026-07-26, by C1 (Phase 1 slice); widened 25 Aug 2026 by P11 |
 | `LIFE` | What counts as living, and the life processes | 2026-08-09, by B1 |
 | `CELL` | Cells, microscopy and the organisation of living things | 2026-08-09, by B1 |
 | `BODY` | Body systems, and how they do mechanical work | 2026-08-16, by B2 |
@@ -203,6 +203,45 @@ before any of these freeze.
 | `PART-09` | Heating a gas makes the particles themselves get bigger, which is why the pressure rises. | `predict-heated-can` | `speed-not-size` | `gas-pressure` |
 | `PART-10` | Diffusion needs a draught, a current, or someone to waft it — something has to push the particles along. | `predict-still-room` | `random-walk-sim` | `diffusion` |
 | `PART-11` | Particles move in order to spread out — they 'want' to fill the space. | `why-spread` | `both-directions-sim` | `diffusion` |
+| `PART-14` | Heavy things are dense and light things are not. | `s-hook` | `think-heavy-is-not-dense` | `density` |
+| `PART-15` | Things float because they are light and sink because they are heavy. | — | `think-heavy-is-not-dense` | `density` |
+| `PART-16` | Cut a block in half and its density halves, because there is half as much of it. | `bench` | `bench` | `density` |
+| `PART-17` | The smoke specks are moving under their own power. | `s-hook` | `think-nothing-is-swimming` | `brownian-motion` |
+| `PART-18` | You are watching the air molecules hit the specks. | `s-ladder` | `think-nothing-is-swimming` | `brownian-motion` |
+| `PART-19` | Tiny air currents are blowing the specks about — something has to be moving the air for them to move. | `s-hook` | `bench` | `brownian-motion` |
+| `PART-20` | Ice floats because it is lighter than water. | `s-hook` | `think-water-is-the-odd-one` | `why-ice-floats` |
+| `PART-21` | Water expands when it freezes, so it must expand when it is heated too. | — | `think-water-is-the-odd-one` | `why-ice-floats` |
+| `PART-22` | Cold things float on warm things — it is being cold that makes ice sit on top. | `s-hook` | `s-ladder` | `why-ice-floats` |
+| `PART-03` | The particles themselves change — they melt, or get softer, or expand — when a substance changes state. | `s-ladder` | `s-ladder` | `why-ice-floats` |
+
+⊕ **`PART-14` … `PART-22` ADDED 25 Aug 2026 BY P11** (`density`,
+`brownian-motion`, `why-ice-floats`), and the family's domain line is widened to name
+density as what the particle model explains. Nine ids over three lessons: two from each
+page's own Think-again quotes, and one from a hook or gate distractor that carries a real
+wrong idea rather than a wrong guess — `PART-16` is the bench gate ("it halves, because
+there is half as much of it"), `PART-19` is the draught, `PART-22` is "cold things float".
+Design's pages cite no ids at all, so every one is minted from what her page actually says.
+
+⊕ **`PART-03` CARRIES A SECOND ROW, AND IT IS A REAPPEARANCE RATHER THAN A MINT.** The
+statement is identical, which is the shape `CELL-08` already uses and which
+`check_misconception_register` reads as one belief meeting a new lesson. The
+`reappears_in` list below predicted it in P11 `temperature-and-internal-energy`; it is
+`why-ice-floats` that actually confronts it, because that is the page where a student
+explaining a 9% expansion reaches for "the molecules got bigger", and rung 3's own success
+criteria are what take it apart (bigger GAPS, and the mass unchanged). The prediction is
+left standing and this note records where it landed — the register records fact, not intent.
+
+⊖ **`PART-09`'s PREDICTED REAPPEARANCE IN P11 `density` IS NOT TAKEN UP, DELIBERATELY.**
+The belief is that heating a gas makes the particles themselves bigger; nothing on the
+density page heats anything, and citing it there would put a join in the register that the
+page does not honour. It is left as a prediction.
+
+⚠️ **THREE MORE LESSONS PUT `#s-think` ON THE RAIL, AND `p9-01`'s OPEN FLAG IS NOT
+RE-RAISED.** `p9-01` is the first lesson in the key stage whose rail includes the
+confrontation, and its package note parks the design question for Mide. `p11-02`,
+`p11-03` and `p11-04` arrive at the same place from Design's own `DONE`
+(`s.answers.r1 !== null || s.hookChoice !== null`), so the count is now four. Recorded
+here, once, so one ruling covers all four rather than each unit asking again.
 
 ⊕ **`PART-12` and `PART-13` are gone from this table and are PERMANENT GAPS.** They were re-homed
 to `NOS-01` and `NOS-02` on 17 Aug 2026 by MRB-248; their rows now live in the `NOS` section below,
@@ -1364,6 +1403,22 @@ turn the MRB-244 gate red rather than quietly breaking the pointer.
 | `ENER-25` | A kilowatt-hour is a measure of power — it has kilowatt in the name. | `s-hook` | `kwh-rectangles` | `reading-a-fuel-bill` |
 | `ENER-26` | Switch everything off and the bill goes to zero. | `s-think` | `s-think` | `reading-a-fuel-bill` |
 | `ENER-27` | Renewable means clean, and non-renewable means polluting. | `s-hook` | `two-axis-grid` | `fuels-and-energy-resources` |
+| `ENER-28` | Temperature and heat are two words for the same thing. | `s-think` | `think-hot-is-not-a-lot` | `temperature-and-internal-energy` |
+| `ENER-29` | Adding energy to something always makes it hotter. | `s-think` | `think-hot-is-not-a-lot` | `temperature-and-internal-energy` |
+| `ENER-13` | Temperature and energy are the same thing — if something is hotter it must hold more energy. | `s-hook` | `bench` | `temperature-and-internal-energy` |
+
+⊕ **`ENER-28` AND `ENER-29` ADDED 25 Aug 2026 BY P11 `temperature-and-internal-energy`.**
+Both are minted from Design's own two Think-again quotes on that page. `ENER-28` sits
+beside `ENER-02` ("a thermometer measures how much energy something has") and is a
+DIFFERENT statement: `ENER-02` is about what the instrument reads, and `ENER-28` is about
+two words being interchangeable — a student can hold either without the other, and the
+second is the one that makes "the heat in this room" sound like a quantity an object
+contains. Minted rather than re-used, and said here so the closeness is on the record.
+
+⊕ **`ENER-13` CARRIES A SECOND ROW, AS A REAPPEARANCE.** Identical statement, new lesson.
+P1's `heating-and-thermal-equilibrium` opened it; this page's hook asks for it in terms (a
+spark at 1000 °C against a bath at 40 °C) and its bench takes it apart with four amounts of
+one substance on one thermometer. Nothing is re-minted.
 
 ⊕ **`ENER-09` ONWARD ARE PHYSICS, IN THE SAME FAMILY.** The prefix table's ruling is
 explicit — *"A physics lane meeting an energy misconception adds to `ENER`; it does not
