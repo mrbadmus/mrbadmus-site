@@ -1663,10 +1663,22 @@ def _shape_weekone(p):
     return p
 
 
+# ⚠️ THE OUTSIDE FIXTURE'S VIEWER IS THIS PERSON, AND THE SPEC BELOW MUST SAY
+# SO TOO. `me` and the viewer are THE SAME PERSON by construction in the real
+# seam — `me` arrives on a payload keyed by the authenticated user, and the
+# viewer name comes from that same user's profile. The first version of this
+# fixture renamed the `me` row to TestViewer99 and left VIEWER as Design's
+# AmberYew12, so the page rendered TWO "YOU" chips: one on board row 09 via
+# `deco`'s `isYou`, and one on the pinned row. A state the product cannot
+# reach, shipped as the fixture that documents what the product looks like.
+# Found by LOOKING at the screenshot; no gate was watching. One now is.
+OUTSIDE_VIEWER = "TestViewer99"
+
+
 def _shape_outside(p):
     """A viewer below the cut: in `me`, absent from `board`."""
     me = _clone(p["board"][-1])
-    me["name"] = "TestViewer99"
+    me["name"] = OUTSIDE_VIEWER
     me["rank"] = 27
     me["pct"] = 41
     me["move"] = -6
@@ -1675,6 +1687,34 @@ def _shape_outside(p):
     p["me"] = me
     p["entries"] = 34
     return p
+
+
+def _post_outside(shaped, key):
+    """One viewer across the WHOLE fixture, not just its headline week.
+
+    ⚠️ THE SHAPE FUNCTION ONLY EVER SEES ONE PAYLOAD, and that was not
+    enough. Fixing the headline week left the other seventy-one carrying
+    Design's `me` (AmberYew12) while VIEWER said TestViewer99 — two
+    identities in one file. It happened not to render two YOU chips, because
+    AmberYew12 is inside the top ten on those weeks and so is never pinned —
+    but "happens not to" is not a property, and the drive presses every week
+    chip and every subject.
+
+    ⚑ DEEP-CLONED BEFORE MUTATION. `shaped` starts as a SHALLOW copy of the
+    shared payload map, so mutating a payload here would reach into every
+    OTHER fixture built afterwards. That is a cross-fixture corruption that
+    would show up as an unrelated gate failing later.
+    """
+    for k, p in list(shaped.items()):
+        if k == key or not p or not p.get("me"):
+            continue
+        q = _clone(p)
+        q["me"]["name"] = OUTSIDE_VIEWER
+        # Outside the top ten on every week, so the pinned row is the only
+        # place the viewer ever appears — which is what this fixture is for.
+        q["me"]["rank"] = max(int(q["me"].get("rank") or 1), 11) + 16
+        shaped[k] = q
+    return shaped
 
 
 def _shape_signedout(p):
@@ -1739,7 +1779,7 @@ FIXTURES = [
     dict(out="leaderboard-outside-fixture.html",
          js="leaderboard-fixture-outside.js",
          axis=("Higher", "Overall"), week="live", shape=_shape_outside,
-         status="ok",
+         status="ok", viewer=OUTSIDE_VIEWER, post=_post_outside,
          what="a viewer ranked below the cut — present in `me`, absent from "
               "`board`, so the sticky pinned row is the only place they "
               "appear"),
@@ -2083,6 +2123,8 @@ def build():
                 shaped = {}
         elif spec["shape"] is None and spec["status"] == "error":
             shaped = {}
+        if spec.get("post") and shaped:
+            shaped = spec["post"](shaped, key)
         tier, subject = spec["axis"]
         start = dict(tier=tier, subject=subject, week=key.split("|")[2])
         js = _FIXTURE_API % dict(

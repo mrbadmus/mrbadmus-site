@@ -199,6 +199,18 @@ _DRIVE_JS = r"""
   var first = snap();
   var firstAvatars = avatars();
 
+  /* ⊕ AT MOST ONE "YOU" CHIP, EVER — and this check exists because a fixture
+     shipped with two and no gate noticed. The outside-top-10 fixture renamed
+     its `me` row but left VIEWER as Design's AmberYew12, so board row 09 wore
+     a YOU badge via `deco`'s `isYou` AND the pinned row wore another. The
+     real seam cannot produce that: `me` arrives on a payload keyed by the
+     authenticated user and the viewer name comes from that same user's
+     profile, so they are one person by construction. Two chips means a
+     student is being shown someone else's standing as their own.
+     ⚠️ WORD-BOUNDED. A bare "YOU" substring also matches Design's own
+     "YOUR STANDING" heading, which is on every render. */
+  function youChips(t) { return ((t || '').match(/\bYOU\b/g) || []).length; }
+
   /* A rail with nothing to scroll makes its two scroll buttons genuinely
      inert. Measured rather than assumed, and reported rather than excused:
      on a fixture with one week there is no scrolling to do. */
@@ -275,6 +287,7 @@ _DRIVE_JS = r"""
   return {found: found, pressed: pressed, dead: dead, blanked: blanked,
           errors: errors, misses: s.misses, renders: s.renders,
           text: s.text, len: (s.text || '').trim().length,
+          youFirst: youChips(first.text), youLast: youChips(s.text),
           firstText: first.text, firstLen: (first.text || '').trim().length,
           faces: firstAvatars.faces, letters: firstAvatars.letters,
           both: firstAvatars.both, railScrollable: railScrollable};
@@ -345,6 +358,28 @@ def drive(pg, port, path, what, label):
                 "Badging a row as the viewer's when there is no viewer is "
                 "how a student is shown somebody else's standing as their "
                 "own." % (tag, never))
+
+    # ⊕ AT MOST ONE "YOU" CHIP, on every fixture, before and after the drive.
+    #
+    # ⚑ ADDED BECAUSE A FIXTURE SHIPPED WITH TWO AND EVERY GATE WAS GREEN.
+    # The outside-top-10 fixture renamed its `me` row to TestViewer99 and left
+    # VIEWER as Design's AmberYew12, so board row 09 wore a YOU badge through
+    # `deco`'s `isYou` and the pinned row wore a second one. Found by LOOKING
+    # at the screenshot. The real seam cannot reach that state — `me` arrives
+    # on a payload keyed by the authenticated user and the viewer name comes
+    # from that same user's profile — which is exactly why a fixture could
+    # drift there unchallenged: nothing downstream of the seam was asserting
+    # the invariant the seam happens to guarantee.
+    for when, n in (("on load", got.get("youFirst", 0)),
+                    ("after the drive", got.get("youLast", 0))):
+        if n > 1:
+            problems.append(
+                "%s: %d 'YOU' chips render %s, and a page has exactly one "
+                "viewer. Two means one of them is on somebody else's row — "
+                "a student shown another student's standing as their own. "
+                "The pinned row and the in-board row are the same person by "
+                "construction; if a fixture disagrees, the fixture is wrong."
+                % (tag, n, when))
 
     # ⊕ MRB-290 R25 — identity is frozen, and the avatar is half of it.
     if got.get("both"):
