@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How a motor works · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Magnetism and electromagnetism</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">How a motor works</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Magnetism and electromagnetism · System</p>
+        <h1>How a motor works</h1>
+        <p class="ks3-bigq">A wire carrying a current inside a magnetic field is pushed. Arrange for the push to keep going the same way round, and you have a motor.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Swap the two wires and the motor runs backwards.</h2>
+        <p class="ks3-hook-prompt">A small electric motor is connected to a battery and its shaft spins clockwise. Take both wires off, put them back the other way round, and the same motor spins anticlockwise at the same speed. Nothing inside it has been touched.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Why does swapping the wires reverse it?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Put a wire that is carrying a current into a magnetic field, and the wire is <strong>pushed sideways</strong> — at right angles both to the field and to the current. This is the one new fact the whole lesson rests on, and it is easy to show: a loose wire between the poles of a horseshoe magnet jumps the moment the current is switched on.</p>
+        <p>Which way it is pushed depends on <strong>two</strong> things: the direction of the current, and the direction of the field. Reverse the current and the push reverses. Reverse the magnets and the push reverses. Reverse both and it goes back to where it started.</p>
+        <p>Now bend the wire into a rectangular loop and hang it on an axle between the poles. The current runs one way along the left-hand side of the loop and the other way along the right-hand side, so the two sides are pushed in <strong>opposite</strong> directions — one up, one down. A pair of opposite pushes on either side of an axle is a turning effect, and the loop turns.</p>
+        <p>There is a catch. After half a turn the two sides have swapped places, and the pushes now fight the rotation instead of driving it. The fix is the <strong>split-ring commutator</strong>: the loop's two ends are joined to two half-rings that press against fixed contacts, so every half turn the connection swaps and the current through the loop reverses. The push therefore keeps driving the same way round, and the motor keeps going.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a coil on an axle between two magnets</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Reverse one thing at a time.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">The coil is drawn face on, with the field running across the page between the two magnets. Set which way the current goes round, which way round the magnets are, whether the split ring is fitted, and how much current flows.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A working motor has its battery leads swapped and its two magnets turned round, both at the same time. Which way does it now spin?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 300px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Current round the coil</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ dirTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 300px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The magnets</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ magTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 300px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">At the axle</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ commTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 240px;">
+                <label for="p105i" style="display: block; margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Current</label>
+                <input class="ks3-slider" type="range" id="p105i" min="0" max="3" step="1" value="{{ curValue }}" onChange="{{ onCur }}" onInput="{{ onCur }}">
+                <p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; font-weight: 500; color: var(--ks3-on-dark);">{{ curLabel }}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M60 96 H180 V304 H60 Z M820 96 H940 V304 H820 Z" style="fill: #2A241E; stroke: #C6B9A7; stroke-width: 5; stroke-linejoin: round;"></path>
+                  <path d="{{ polePath }}" style="fill: #8FB7FF; stroke: none;"></path>
+                  <path d="{{ fieldPath }}" style="fill: none; stroke: #6E6357; stroke-width: 3;"></path>
+                  <path d="M360 120 H640 V280 H360 Z" style="fill: none; stroke: #C6B9A7; stroke-width: 8; stroke-linejoin: round;"></path>
+                  <path d="M180 200 H360 M640 200 H820" style="fill: none; stroke: #4A4139; stroke-width: 3; stroke-dasharray: 10 8;"></path>
+                  <path d="{{ currentPath }}" style="{{ currentStyle }}"></path>
+                  <path d="{{ forcePath }}" style="{{ forceStyle }}"></path>
+                  <circle cx="500" cy="200" r="26" style="fill: #15110C; stroke: #C6B9A7; stroke-width: 4;"></circle>
+                  <path d="{{ commPath }}" style="{{ commStyle }}"></path>
+                  <path d="{{ spinPath }}" style="{{ spinStyle }}"></path>
+                </svg>
+                <span style="position: absolute; left: 4%; right: 4%; top: 91%; font-family: var(--ks3-font-mono); font-weight: 500; font-size: clamp(10px,1.4vw,17px); letter-spacing: .07em; color: #C6B9A7; text-align: center; white-space: normal; pointer-events: none;">{{ axleCaption }}</span>
+                <span style="{{ leftPoleStyle }}">{{ leftPoleText }}</span>
+                <span style="{{ rightPoleStyle }}">{{ rightPoleText }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The left-hand side is</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ leftForceWord }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ rightForceWord }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Turning effect</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ torqueNum }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">where 100 is the strongest setting here</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">It spins</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ spinWord }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Does it keep going</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ keepWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-parts" class="ks3-block" style="background: var(--ks3-band); scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Four parts, and what each one is for</h2>
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 14px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">The magnets</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">Provide a field across the gap. Turn them round and everything reverses.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">The coil</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">Carries current up one side and down the other, so the two sides are pushed opposite ways and the coil turns.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">The split ring</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">Swaps the connections every half turn, so the current through the coil reverses just as the coil passes upright. Without it the motor stops after half a turn.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">The brushes</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">Fixed contacts that press on the split ring, so current can reach a part that is spinning.</p>
+          </div>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">Reverse the current: it runs the other way. Reverse the magnets: it runs the other way. Reverse both: it runs exactly as it did. That last one is the test of whether you have understood the rule rather than memorised a picture.</p>
+      </section>
+
+      <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A wire carrying a current in a magnetic field is pushed sideways, and the direction of the push depends on both the current direction and the field direction. In a motor a coil on an axle has its two sides pushed opposite ways, which turns it, and a split-ring commutator reverses the current every half turn so the turning effect keeps driving the same way round.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;The coil is pulled round because the magnets attract it.&rdquo;</p>
+        <p>Switch the current off and the coil hangs there — the magnets do nothing to a coil of copper wire, because copper is not a magnetic material and there is nothing to attract. What acts is a force on the <em>moving charge</em> in the wire, and it appears only while a current flows. It is also at right angles to both the field and the current, which is not what attraction looks like: the coil is not pulled towards either magnet, it is pushed up on one side and down on the other.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;The split ring is what makes it turn.&rdquo;</p>
+          <p>It is what makes it <em>keep</em> turning. Remove the split ring and the coil still starts — you can see it kick on the bench — but only for half a turn, because after that the sides have changed places and the same pushes are now fighting the rotation. The split ring does not create the turning effect; it reverses the current at the moment the turning effect would otherwise start working against you.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A wire carrying a current in a magnetic field is pushed sideways, at right angles to both. Which way it is pushed depends on the current direction and on the field direction, so reversing either one reverses the push and reversing both changes nothing. A motor is a coil on an axle in a field: the current runs up one side and down the other, the two sides are pushed opposite ways, and the coil turns. After half a turn the sides have swapped and the pushes would fight the rotation, so a split-ring commutator reverses the current every half turn and the motor keeps going.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Real motors have more than one coil, set at angles to each other, and the commutator has a segment for each. That fixes two problems at once: the turning effect of a single coil drops to nothing twice per turn, when the coil is upright and the pushes are pulling it apart rather than round, and a single-coil motor therefore runs unevenly and will not start at all from that position. With several coils, one of them is always well placed, and the machine starts from wherever it happens to be sitting.</p>
+          <p>Run the same machine backwards and it becomes a generator. Turn the coil by hand instead of feeding it current and a voltage appears across its ends, because moving a wire through a field pushes the charge in it along. Almost every power station on Earth is doing that, on an enormous scale, with steam or water or wind turning the coil.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p10-04-electromagnets.html">Electromagnets<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next unit</h2>
+          <ul>
+            <li><a href="p11-01-density.html">Density<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p10-02-magnetic-fields.html">Magnetic fields<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p10-01-magnets-and-poles.html">Magnets and poles<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p9-02-forces-between-charges.html">Forces between charges<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Fleming's left-hand rule, the force on a conductor worked out from flux density, current and length, and the generator effect.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Want to check which way a coil will turn?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The coil is drawn face on and frozen in the horizontal position, where the turning effect is at its largest; a real coil's turning effect falls to nothing twice per turn as it passes upright, which is why real motors use several coils rather than one. The turning effect shown is a relative figure with the largest setting here set to 100, and it is taken as rising in proportion to the current; no value in newtons or newton metres is given, because the equation for the force on a conductor is beyond this stage. The magnets are treated as producing the same field whichever way round they are, the friction at the axle is treated as one fixed amount, and the coil is treated as one turn. A real motor without a split ring does not stop dead at the half turn but rocks to a halt over several swings.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Swap the wires', short: 'MOTOR' },
+  { id: 's-bench', label: 'Reverse one thing', short: 'BENCH' },
+  { id: 's-parts', label: 'Four parts', short: 'PARTS' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && (s.touched.dir || s.touched.mag || s.touched.comm || s.touched.cur);
+  if (id === 's-parts') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const DIRS = [
+  { label: 'Down the left side', sign: 1 },
+  { label: 'Up the left side', sign: -1 }
+];
+const MAGS = [
+  { label: 'North on the left', sign: 1 },
+  { label: 'South on the left', sign: -1 }
+];
+const COMMS = [
+  { label: 'Split ring fitted', key: 'split' },
+  { label: 'Plain rings instead', key: 'plain' }
+];
+const CURRENTS = [0.5, 1.0, 2.0, 4.0];
+const FRICTION = 15;
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Predict the reversal',
+    question: 'A motor is running clockwise. Its two magnets are turned round so the poles swap, and nothing else is changed. What happens?',
+    options: [
+      { text: 'It runs anticlockwise, at the same speed', correct: true },
+      { text: 'It runs clockwise still, because the current has not changed', correction: 'The push depends on the field as well as the current. Change either one on its own and the push reverses.' },
+      { text: 'It stops, because the two changes cancel out', correction: 'Only one thing was changed. Reversing the current as well would put it back to clockwise \u2014 that is the case where two changes cancel.' },
+      { text: 'It runs anticlockwise, but more slowly, because the field is now working against the current', correction: 'The direction reverses but the size does not change. The magnets are just as strong turned round.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 Diagnose the fault',
+    question: 'A student builds a motor but fits two plain rings instead of a split ring. What do they see when the current is switched on?',
+    options: [
+      { text: 'The coil turns about half a turn and then stops', correct: true },
+      { text: 'Nothing happens, because plain rings cannot carry a current', correction: 'Plain rings carry current perfectly well \u2014 the coil does start to turn. What they cannot do is swap the connections over.' },
+      { text: 'The coil spins normally, because the split ring only makes it faster', correction: 'It is not a speed part. Without the swap, the pushes start fighting the rotation after half a turn.' },
+      { text: 'The coil spins the wrong way round', correction: 'The direction it starts in is set by the current and the field, and plain rings do not change either. The problem is that it does not keep going.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Explain why a coil carrying a current between two magnets turns, rather than simply being pushed to one side.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'A wire carrying a current in a field is\u2026',
+    criteria: [
+      'Says a wire carrying a current in a magnetic field is pushed sideways.',
+      'Says the direction of the push depends on the current direction and the field direction.',
+      'Says the current runs in opposite directions along the two sides of the coil.',
+      'Says the two sides are therefore pushed in opposite directions, one up and one down.',
+      'Says two opposite pushes on either side of an axle give a turning effect rather than a sideways one.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'A cordless drill has a switch marked forward and reverse, and the motor inside has permanent magnets that cannot be moved. Explain what that switch must be doing, and explain why the drill still needs a split ring in both settings.',
+    fieldLabel: 'Your answer',
+    placeholder: 'The magnets cannot move, so the only thing left to change is\u2026',
+    criteria: [
+      'Says the direction of the push depends on the current and the field, and the field is fixed here.',
+      'Says the switch must therefore reverse the direction of the current through the motor.',
+      'Says reversing the current reverses the push on each side of the coil, so the coil turns the other way.',
+      'Says the split ring is what reverses the current every half turn so the coil keeps going round.',
+      'Says that job still has to be done whichever way the drill is running, so the split ring is needed in both settings.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, dir: 0, mag: 0, comm: 0, cur: 2, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  lab(xPct, topPct, colour) {
+    return 'position:absolute;left:' + xPct.toFixed(2) + '%;top:' + topPct.toFixed(2) + '%;transform:translate(-50%,-50%);' +
+      'font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(11px,2vw,26px);color:' + colour + ';white-space:nowrap;pointer-events:none;';
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const D = DIRS[s.dir];
+    const M = MAGS[s.mag];
+    const C = COMMS[s.comm];
+    const I = CURRENTS[s.cur];
+
+    const torque = 100 * I / 4;
+    const turns = torque >= FRICTION;
+    // left side force: +1 means downwards on the page
+    const leftDown = D.sign * M.sign > 0;
+    // the left-hand side is at nine o'clock, so pushing it DOWN turns the coil
+    // anticlockwise and pushing it UP turns it clockwise
+    const clockwise = !leftDown;
+
+    // magnet pole shading: the pole face nearest the coil
+    // the shaded face is the north pole, so it moves with the magnet control
+    const polePath = M.sign > 0
+      ? 'M144 99 H177 V301 H144 Z'
+      : 'M823 99 H856 V301 H823 Z';
+    const fieldPath = 'M200 140 H800 M200 200 H800 M200 260 H800 ' +
+      (M.sign > 0
+        ? 'M800 140 L780 130 M800 140 L780 150 M800 200 L780 190 M800 200 L780 210 M800 260 L780 250 M800 260 L780 270'
+        : 'M200 140 L220 130 M200 140 L220 150 M200 200 L220 190 M200 200 L220 210 M200 260 L220 250 M200 260 L220 270');
+
+    const cd = D.sign > 0 ? 1 : -1;
+    const currentPath = cd > 0
+      ? 'M360 150 V250 M360 250 L350 228 M360 250 L370 228 M640 250 V150 M640 150 L630 172 M640 150 L650 172'
+      : 'M360 250 V150 M360 150 L350 172 M360 150 L370 172 M640 150 V250 M640 250 L630 228 M640 250 L650 228';
+    const currentStyle = 'fill: none; stroke: #8FB7FF; stroke-width: ' + (4 + I).toFixed(1) + '; stroke-linecap: round;';
+
+    const fl = leftDown ? 1 : -1;
+    const armLen = 30 + torque * 0.55;
+    const forcePath =
+      'M360 200 v' + (fl * armLen).toFixed(0) + ' M360 ' + (200 + fl * armLen).toFixed(0) +
+      ' l-12 ' + (-fl * 14) + ' M360 ' + (200 + fl * armLen).toFixed(0) + ' l12 ' + (-fl * 14) +
+      ' M640 200 v' + (-fl * armLen).toFixed(0) + ' M640 ' + (200 - fl * armLen).toFixed(0) +
+      ' l-12 ' + (fl * 14) + ' M640 ' + (200 - fl * armLen).toFixed(0) + ' l12 ' + (fl * 14);
+    const forceStyle = 'fill: none; stroke: #E4572E; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round;';
+
+    const commPath = C.key === 'split'
+      ? 'M500 174 a26 26 0 0 1 0 52 M500 174 a26 26 0 0 0 0 52 M500 168 V232'
+      : 'M474 200 a26 26 0 0 1 52 0 a26 26 0 0 1 -52 0';
+    const commStyle = C.key === 'split'
+      ? 'fill: none; stroke: #E9DCC8; stroke-width: 5;'
+      : 'fill: none; stroke: #8C8177; stroke-width: 5; stroke-dasharray: 9 7;';
+
+    const spinR = 74;
+    const spinPath = turns
+      ? (clockwise
+        ? 'M' + (500 - spinR) + ' 200 A ' + spinR + ' ' + spinR + ' 0 0 1 500 ' + (200 - spinR) +
+          ' M500 ' + (200 - spinR) + ' l-16 -8 M500 ' + (200 - spinR) + ' l-2 18'
+        : 'M' + (500 + spinR) + ' 200 A ' + spinR + ' ' + spinR + ' 0 0 0 500 ' + (200 - spinR) +
+          ' M500 ' + (200 - spinR) + ' l16 -8 M500 ' + (200 - spinR) + ' l2 18')
+      : 'M0 0';
+    const spinStyle = 'fill: none; stroke: #E9DCC8; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;';
+
+    const spinWord = !turns ? 'not at all' : (clockwise ? 'clockwise' : 'anticlockwise');
+    const keepWord = !turns ? 'no \u2014 it never starts'
+      : C.key === 'split' ? 'yes \u2014 the split ring keeps it going'
+      : 'no \u2014 half a turn and it stops';
+
+    let note;
+    if (!turns) {
+      note = 'At ' + I.toFixed(1) + ' A the turning effect reads ' + torque.toFixed(0) +
+        ' on this scale, and the friction at the axle is worth about ' + FRICTION +
+        '. The pushes are there \u2014 the left-hand side is being pushed ' + (leftDown ? 'down' : 'up') +
+        ' and the right-hand side ' + (leftDown ? 'up' : 'down') +
+        ' \u2014 but they are not yet enough to move it. Turn the current up and it starts. Nothing about the direction has changed; only the size has.';
+    } else if (C.key === 'split') {
+      note = 'The current runs ' + D.label.toLowerCase() + ' and the field runs ' + (M.sign > 0 ? 'left to right' : 'right to left') +
+        ', so the left-hand side is pushed ' + (leftDown ? 'down' : 'up') + ' and the right-hand side ' + (leftDown ? 'up' : 'down') +
+        ' \u2014 two opposite pushes on either side of the axle, which is a turning effect, and the coil goes ' + (clockwise ? 'clockwise' : 'anticlockwise') +
+        ' with a strength of ' + torque.toFixed(0) + ' on this scale. The split ring swaps the connections every half turn, so as each side crosses to the other half of the field the current through it reverses too and the push keeps driving the same way round. Reverse the current on its own and it runs the other way; reverse the magnets on their own and it runs the other way; reverse both and you are back where you started.';
+    } else {
+      note = 'It starts. The left-hand side is pushed ' + (leftDown ? 'down' : 'up') + ' and the right-hand side ' + (leftDown ? 'up' : 'down') +
+        ', so the coil swings ' + (clockwise ? 'clockwise' : 'anticlockwise') + ' at a strength of ' + torque.toFixed(0) +
+        ' \u2014 and then it stops. With plain rings the current through the coil never changes direction, so once the two sides have swapped over at the half turn the same pushes are fighting the rotation instead of driving it. The coil settles upright. Fit the split ring instead and the current reverses at exactly that moment, which is the entire job that part does.';
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The current now runs the other way round the coil, so the push on each side reverses' },
+        { letter: 'B', text: 'The battery pushes rather than pulls when it is the other way round' },
+        { letter: 'C', text: 'The magnets inside are flipped over by the current arriving from the other side' },
+        { letter: 'D', text: 'The motor always alternates direction, and swapping the wires just resets it' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'The direction of the push on a current-carrying wire in a field depends on which way the current is going. Swapping the leads sends the current round the coil the other way, so both sides are pushed the opposite way and the coil turns the opposite way. The magnets inside have not moved, and they could not be flipped by a current \u2014 they are permanent magnets bonded to the case.',
+
+      benchProgress: (s.touched.dir || s.touched.mag || s.touched.comm || s.touched.cur) ? 'Four controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Exactly as it did before \u2014 two reversals cancel' },
+        { letter: 'B', text: 'The other way round, because two changes were made' },
+        { letter: 'C', text: 'It stops, because the current and the field now oppose each other' },
+        { letter: 'D', text: 'The other way round and more slowly, because the field is now fighting the current' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+
+      dirTabs: DIRS.map((o, i) => ({
+        label: o.label, pressed: s.dir === i, style: this.seg(s.dir === i, true, false),
+        onClick: () => this.setState((st) => ({ dir: i, touched: Object.assign({}, st.touched, { dir: true }) }))
+      })),
+      magTabs: MAGS.map((o, i) => ({
+        label: o.label, pressed: s.mag === i, style: this.seg(s.mag === i, true, false),
+        onClick: () => this.setState((st) => ({ mag: i, touched: Object.assign({}, st.touched, { mag: true }) }))
+      })),
+      commTabs: COMMS.map((o, i) => ({
+        label: o.label, pressed: s.comm === i, style: this.seg(s.comm === i, true, false),
+        onClick: () => this.setState((st) => ({ comm: i, touched: Object.assign({}, st.touched, { comm: true }) }))
+      })),
+      curValue: s.cur, curLabel: I.toFixed(1) + ' A',
+      onCur: (e) => this.setState((st) => ({ cur: Number(e.target.value), touched: Object.assign({}, st.touched, { cur: true }) })),
+
+      polePath: polePath,
+      fieldPath: fieldPath,
+      currentPath: currentPath, currentStyle: currentStyle,
+      forcePath: forcePath, forceStyle: forceStyle,
+      commPath: commPath, commStyle: commStyle,
+      spinPath: spinPath, spinStyle: spinStyle,
+      axleCaption: C.key === 'split' ? 'SPLIT RING AT THE AXLE' : 'PLAIN RINGS AT THE AXLE',
+      leftPoleStyle: this.lab(16, 50, '#15110C'),
+      leftPoleText: M.sign > 0 ? 'N' : 'S',
+      rightPoleStyle: this.lab(84, 50, '#15110C'),
+      rightPoleText: M.sign > 0 ? 'S' : 'N',
+
+      leftForceWord: 'pushed ' + (leftDown ? 'down' : 'up'),
+      rightForceWord: 'the right-hand side is pushed ' + (leftDown ? 'up' : 'down'),
+      torqueNum: torque.toFixed(0),
+      spinWord: spinWord,
+      keepWord: keepWord,
+      benchAlt: 'A coil on an axle between two magnets, ' + M.label.toLowerCase() + ', current ' + D.label.toLowerCase() +
+        ', ' + C.label.toLowerCase() + ', carrying ' + I.toFixed(1) + ' A. ' +
+        (turns ? 'The coil turns ' + spinWord + '.' : 'The coil does not turn.'),
+      benchNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+
+</script>
+</body>
+</html>

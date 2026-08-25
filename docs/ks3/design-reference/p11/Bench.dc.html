@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-on-dark); text-wrap: pretty;">
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+    <div>
+      <p class="ks3-eyebrow">{{ eyebrow }}</p>
+      <h2 style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">{{ heading }}</h2>
+    </div>
+    <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ progress }}</p>
+  </div>
+  <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">{{ lead }}</p>
+
+  <sc-if value="{{ gateShown }}">
+    <div style="margin-top: 20px;">
+      <p class="ks3-commit" style="margin: 0 0 4px;">{{ gatePrompt }}</p>
+      <ul class="ks3-options">
+        <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+          <li>
+            <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+              <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+              <span class="ks3-opt-label">{{ opt.text }}</span>
+            </button>
+          </li>
+        </sc-for>
+      </ul>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ open }}" hint-placeholder-val="{{ true }}">
+    <div data-arrive="1" style="margin-top: 22px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+        <div style="flex: 1 1 460px;">
+          <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ tabsLabel }}</p>
+          <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ hasSlider }}">
+          <div style="flex: 1 1 280px; min-width: 240px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px;">
+              <label for="{{ sliderId }}" style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ sliderLabel }}</label>
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ sliderValueLabel }}</p>
+            </div>
+            <input class="ks3-slider" type="range" id="{{ sliderId }}" min="{{ sliderMin }}" max="{{ sliderMax }}" step="1" value="{{ sliderValue }}" onChange="{{ onSlider }}" onInput="{{ onSlider }}">
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 20px 22px;">
+        <p style="margin: 0 0 14px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ barsCaption }}</p>
+        <div style="display: flex; flex-direction: column; gap: 14px;" role="img" aria-label="{{ barsAlt }}">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="3">
+            <div>
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px;">
+                <span style="font-size: 17px; font-weight: 600; color: var(--ks3-on-dark);">{{ b.label }}</span>
+                <span style="font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-blue-light); white-space: nowrap;">{{ b.value }}</span>
+              </div>
+              <span style="display: block; height: 22px; border-radius: 8px; background: rgba(255, 255, 255, .07); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;"><span style="{{ b.fillStyle }}"></span></span>
+              <p style="margin: 6px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ b.sub }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+        <sc-for list="{{ readouts }}" as="r" hint-placeholder-count="3">
+          <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">{{ r.label }}</p>
+            <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ r.value }}</p>
+            <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ r.sub }}</p>
+          </div>
+        </sc-for>
+      </div>
+
+      <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ note }}</p>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900},&quot;eyebrow&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;At the bench&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;heading&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Change one thing at a time&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;lead&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;progress&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;gatePrompt&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;gateOptions&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{letter:string,text:string,pressed:boolean,onClick:()=&gt;void}&gt;&quot;},&quot;open&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;tabsLabel&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;tabs&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{label:string,pressed:boolean,style:string,onClick:()=&gt;void}&gt;&quot;},&quot;sliderId&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;sliderLabel&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;sliderValueLabel&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;sliderMin&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;number&quot;},&quot;sliderMax&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;number&quot;},&quot;sliderValue&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;number&quot;},&quot;onSlider&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(e:Event)=&gt;void&quot;},&quot;barsCaption&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;barsAlt&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;bars&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{label:string,value:string,sub?:string,pct:number,tone?:string}&gt;&quot;},&quot;readouts&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{label:string,value:string,sub:string}&gt;&quot;},&quot;note&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    return {
+      eyebrow: p.eyebrow || '', heading: p.heading || '', lead: p.lead || '',
+      progress: p.progress || '',
+      gateShown: !!(p.gateOptions && p.gateOptions.length) && !p.open,
+      gatePrompt: p.gatePrompt || '',
+      gateOptions: p.gateOptions || [],
+      open: p.open !== false,
+      tabsLabel: p.tabsLabel || '', tabs: p.tabs || [],
+      hasSlider: !!p.sliderLabel,
+      sliderId: p.sliderId || 'bench-slider',
+      sliderLabel: p.sliderLabel || '', sliderValueLabel: p.sliderValueLabel || '',
+      sliderMin: p.sliderMin != null ? p.sliderMin : 0,
+      sliderMax: p.sliderMax != null ? p.sliderMax : 1,
+      sliderValue: p.sliderValue != null ? p.sliderValue : 0,
+      onSlider: p.onSlider || (() => {}),
+      barsCaption: p.barsCaption || '', barsAlt: p.barsAlt || '',
+      bars: (p.bars || []).map((b) => ({
+        label: b.label, value: b.value, sub: b.sub || '',
+        fillStyle: 'display:block;height:100%;width:' + Math.max(0, Math.min(100, b.pct)) + '%;background:' + (b.tone || 'var(--ks3-blue-light)') + ';'
+      })),
+      readouts: p.readouts || [],
+      note: p.note || ''
+    };
+  }
+}
+
+</script>
+</body>
+</html>

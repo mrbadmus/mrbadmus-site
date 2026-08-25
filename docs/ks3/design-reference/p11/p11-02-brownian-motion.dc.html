@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brownian motion · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Matter and the particle model</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Brownian motion</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Matter and the particle model · Model</p>
+        <h1>Brownian motion</h1>
+        <p class="ks3-bigq">Some specks in a drop of water refuse to settle. They jiggle, hour after hour, with nothing touching them and nothing alive inside them. Explaining that jiggle is how the world was talked into believing in atoms.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>The specks have been jiggling for an hour and they will not stop.</h2>
+        <p class="ks3-hook-prompt">A sealed cell of still air with a wisp of smoke in it, lit from the side and viewed under a microscope. The bright specks never settle. They jerk a short way, stop, jerk somewhere else — never in the same direction twice, and never coming to rest.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is moving them?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p><strong>Brownian motion</strong> is the constant random jiggling of small specks suspended in a fluid. It happens in air and in liquids, it never stops, and it has nothing to do with currents, with life or with the observer.</p>
+        <p>The explanation is entirely about size. A fluid is made of molecules in constant motion, and a suspended speck is being struck by enormous numbers of them at once — from the left, the right, above and below, all at the same instant. Those strikes almost cancel. What is left over is a small unbalanced push in a direction that nobody chose, and a moment later the leftover points somewhere else.</p>
+        <p>This is why the speck has to be the right size. Something as small as a molecule would be knocked clean across the cell; something as large as a grain of sand is struck so evenly that the imbalance is nothing against its weight. A smoke speck sits in the narrow band where the imbalance is big enough to shift it and the speck is big enough to see.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <dc-import name="Bench" eyebrow="{{ bEyebrow }}" heading="{{ bHeading }}" lead="{{ bLead }}" progress="{{ bProgress }}" gate-prompt="{{ bGatePrompt }}" gate-options="{{ bGateOptions }}" open="{{ bOpen }}" tabs-label="{{ bTabsLabel }}" tabs="{{ bTabs }}" slider-id="{{ bSliderId }}" slider-label="{{ bSliderLabel }}" slider-value-label="{{ bSliderValueLabel }}" slider-min="{{ bSliderMin }}" slider-max="{{ bSliderMax }}" slider-value="{{ bSliderValue }}" on-slider="{{ bOnSlider }}" bars-caption="{{ bBarsCaption }}" bars-alt="{{ bBarsAlt }}" bars="{{ bBars }}" readouts="{{ bReadouts }}" note="{{ bNote }}" hint-size="100%,760px"></dc-import>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">Brownian motion is the random jiggling of a visible speck caused by unbalanced strikes from the invisible molecules of the fluid around it. It never stops, it gets more violent as the temperature rises, and it is direct evidence that fluids are made of separate moving particles.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;The smoke specks are moving under their own power.&rdquo;</p>
+        <p>They have no power. A smoke speck is a fragment of burnt material with no store of energy it can use and no mechanism to use one; it moves only because it is pushed. Brown himself worried about exactly this, and settled it by finding the same jiggling in dust from a piece of window glass and in a fragment of the Sphinx — neither of which had ever been alive.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;You are watching the air molecules hit the specks.&rdquo;</p>
+          <p>You are watching one side of the collision only. A molecule is a few tenths of a nanometre across, thousands of times below what any light microscope can resolve, and no lens will ever show one. What the microscope shows is the effect: a speck you can see, moving in a way that only makes sense if something you cannot see is hitting it. That is the whole force of the argument, and it is why the experiment mattered so much.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Brownian motion is the random jiggling of small visible specks suspended in a fluid, caused by unbalanced collisions from the fluid’s own molecules. The strikes come from every direction and nearly cancel; the tiny leftover imbalance moves the speck, and changes direction constantly. Warming the fluid speeds the molecules up and makes the jiggling wilder. Nothing alive and no current is involved, and the molecules themselves are never seen — only their effect.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Einstein’s 1905 paper did not simply say that molecules were doing it. It predicted how far a speck of a given size should wander in a given time, at a given temperature, in a fluid of a given thickness — a number that could be measured. Jean Perrin spent four years measuring it, found the prediction held, and used it to work out how many molecules there are in a mole. Both men have Nobel prizes partly for this, and the atomic hypothesis stopped being a hypothesis.</p>
+          <p>The same mathematics turns up wherever something takes a large number of small random steps. It is used to model how a pollutant spreads through groundwater, how a share price wanders, and how proteins find their way about inside a cell. The name for the general case is a random walk, and the smoke cell is the cheapest place to see one.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p11-01-density.html">Density<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p11-03-temperature-and-internal-energy.html">Temperature, particle motion and internal energy<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="c1-05-diffusion.html">Diffusion<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="c1-02-solids-liquids-and-gases.html">Solids, liquids and gases<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p1-04-heating-and-thermal-equilibrium.html">Heating and thermal equilibrium<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The kinetic theory of gases, diffusion rates and Graham’s law, and Brownian motion as evidence for the particle model.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure why a speck you can see proves something you cannot?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. Molecular speeds are root-mean-square figures for the gas or liquid named, scaled with the square root of absolute temperature from 500 m/s for air and 590 m/s for water at 20 °C; real distributions are broad and no molecule holds one speed for long. The jiggle figure is an illustrative displacement rate, not a measurement, and is scaled with the same square root. Size ratios are order-of-magnitude comparisons between a typical speck and a typical molecule.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Specks that will not settle', short: 'HOOK' },
+  { id: 's-bench', label: 'The smoke cell', short: 'BENCH' },
+  { id: 's-think', label: 'What is pushing them', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];;
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && s.touched;
+  if (id === 's-think') return s.answers.r1 !== null || s.hookChoice !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const TABS = [
+  { label: 'Smoke in air', name: 'smoke in air', speck: 'a smoke speck', hidden: 'air molecules', vMol: 500, ratio: 5000 },
+  { label: 'Pollen in water', name: 'pollen in water', speck: 'a pollen grain', hidden: 'water molecules', vMol: 590, ratio: 100000 },
+  { label: 'Dust in a sunbeam', name: 'dust in a sunbeam', speck: 'a dust grain', hidden: 'air molecules', vMol: 500, ratio: 50000 },
+  { label: 'Fat droplets in milk', name: 'fat droplets in milk', speck: 'a fat droplet', hidden: 'water molecules', vMol: 590, ratio: 3000 }
+];
+const SLIDER = [0, 20, 40, 60, 80];
+
+const HOOK_OPTIONS = ["Tiny air currents are blowing them about","Something alive inside them is swimming","Invisible particles are hitting them from every side","The microscope lamp is heating one side of each speck"];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Read the model',
+    question: 'A student watches smoke specks jiggling and says the specks are being pushed by other smoke specks. What is wrong with that?',
+    options: [
+      { text: 'The pushes come from air molecules, which are far smaller and far more numerous than the smoke specks and cannot be seen at all.', correct: true },
+      { text: 'Nothing is wrong — smoke specks are the only particles present.', correction: 'The cell is full of air, and air is molecules. The smoke is only there to give you something big enough to see.' },
+      { text: 'The specks are pushed by light from the microscope lamp.', correction: 'Light does exert a tiny push, far too small to matter here — and the jiggling continues when the lamp is dimmed.' },
+      { text: 'The specks push each other, but only when the cell is warm.', correction: 'The jiggling happens at every temperature, and it happens when the specks are far apart from one another.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Why do we watch smoke specks rather than watching the air molecules themselves?',
+    options: [
+      { text: 'A molecule is thousands of times too small to see in any light microscope. The speck is big enough to see and small enough to be shifted by unbalanced molecular strikes.', correct: true },
+      { text: 'Air molecules move too slowly to notice.', correction: 'They move at hundreds of metres per second. Speed is not the problem; size is.' },
+      { text: 'Air molecules are transparent and smoke specks are not.', correction: 'Being transparent is not the issue — a molecule is far below the size any optical microscope can resolve, whatever it is made of.' },
+      { text: 'There are not enough air molecules in the cell to see.', correction: 'There are around 10^25 of them in a cubic metre. There are far too many to count and each is far too small to see.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Describe what you would see through the microscope in a smoke cell, and explain the movement in terms of particles.',
+    fieldLabel: 'Your explanation', placeholder: 'The bright specks appear to…',
+    criteria: [
+      'Says the visible specks are smoke, lit up against a dark background.',
+      'Describes the movement as random, jerky and in no fixed direction.',
+      'Says the specks are being hit by air molecules that are far too small to see.',
+      'Says the strikes come from all directions and very nearly cancel out.',
+      'Says the movement you see is the small leftover imbalance, which keeps changing direction.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Robert Brown first saw this in 1827 with pollen in water and could not explain it; Einstein explained it in 1905 and it was taken as proof that atoms are real. Explain why a jiggling speck counts as evidence for atoms.',
+    fieldLabel: 'Your answer', placeholder: 'If water were a smooth continuous fluid, then…',
+    criteria: [
+      'Says that if water were smooth and continuous, the pushes on a grain would be even and it would not move.',
+      'Says the jiggling means the water must be made of separate lumps arriving one at a time.',
+      'Says the lumps must be small enough that their strikes nearly cancel, and numerous enough that they arrive constantly.',
+      'Notes that the effect is visible without ever seeing an atom.',
+      'Says a prediction that matched measurement — the size of the jiggle — is what turned a plausible model into accepted evidence.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    active: 0, hookChoice: null, gate: null, tab: 0, sv: 1,
+    cover: null, cfifaOpen: false, touched: false,
+    answers: { r1: null, r2: null }, text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] }
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done, hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const ci = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question, answered: done,
+          isRight: done && chosen === ci, isWrong: done && chosen !== ci,
+          feedbackClass: 'ks3-feedback ' + (chosen === ci ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === ci ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === ci ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isC = done && i === ci;
+            const isW = done && i === chosen && i !== ci;
+            let cls = 'ks3-option';
+            if (done) cls += isC ? ' is-correct' : (isW ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isC, isWrong: isW, showLetter: !isC && !isW, disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: { r1: null, r2: null }, checked: { r3: false, r4: false }, ticks: { r3: [], r4: [] } })
+    };
+  }
+
+  hookVals() {
+    const s = this.state;
+    return {
+      hookOptions: HOOK_OPTIONS.map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: "Invisible particles, hitting them from every side. At any instant a smoke speck is being struck by billions of air molecules; the strikes very nearly cancel, and the small leftover imbalance shoves it a short way in a random direction. A moment later the imbalance points somewhere else. Nothing is alive, nothing is blowing and nothing has a plan — the jiggle is direct visible evidence that air is made of separate moving particles."
+    };
+  }
+
+  benchVals() {
+    const s = this.state;
+    const T = TABS[s.tab];
+    const V = SLIDER.length ? SLIDER[s.sv] : null;
+    const k = Math.sqrt((V + 273) / 293);
+    const vmol = Math.round(T.vMol * k);
+    const jig = (2.5 * k).toFixed(1);
+    const sliderLabel = V + ' °C';
+    const bars = [
+      { label: 'Speed of the ' + T.hidden, value: vmol + ' m/s', pct: Math.min(100, (vmol / 800) * 100),
+        tone: 'var(--ks3-blue-light)', sub: 'far too small and far too fast to see' },
+      { label: 'Jiggle of ' + T.speck, value: jig + ' µm each second', pct: Math.min(100, (Number(jig) / 4) * 100),
+        tone: 'var(--ks3-alert)', sub: 'this is the only part you can watch' },
+      { label: T.speck.charAt(0).toUpperCase() + T.speck.slice(1) + ' against one molecule', value: T.ratio.toLocaleString('en-GB') + ' × wider',
+        pct: Math.min(100, (Math.log10(T.ratio) / 5) * 100), tone: 'var(--ks3-blue-light)', sub: 'which is why the strikes almost cancel' }
+    ];
+    const readouts = [
+      { label: 'What you can see', value: T.speck.replace('a ', ''), sub: 'jiggling on a random path' },
+      { label: 'What you cannot see', value: T.hidden, sub: 'about ' + vmol + ' m/s at ' + V + ' °C' },
+      { label: 'Temperature', value: V + ' °C', sub: 'sets how fast they move' },
+      { label: 'Strikes each second', value: 'billions', sub: 'nearly, but never exactly, balanced' }
+    ];
+    const barsAlt = 'Three bars: molecule speed about ' + vmol + ' metres per second, visible jiggle ' + jig + ' micrometres per second, and the speck about ' + T.ratio + ' times wider than a molecule.';
+    const note = 'At ' + V + ' °C the ' + T.hidden + ' are moving at roughly ' + vmol + ' m/s — faster than a rifle bullet, in every direction at once. ' +
+      T.speck.charAt(0).toUpperCase() + T.speck.slice(1) + ' is about ' + T.ratio.toLocaleString('en-GB') +
+      ' times wider than one of them, so it is struck from all sides at once and almost all of those pushes cancel. Almost. The tiny leftover is what you see, and it changes direction constantly because the imbalance is random. Warm the cell and every molecule speeds up, so the leftover gets bigger and the path gets wilder — which is exactly what the microscope shows.';
+  
+    return {
+      bEyebrow: "At the bench · a smoke cell under a microscope",
+      bHeading: "You can see the specks. You cannot see what is hitting them.",
+      bLead: "Choose what is under the microscope and how warm it is. Only the second bar is anything you could actually watch — the other two are what the model says is going on underneath.",
+      bProgress: s.touched ? 'Controls live' : 'Change a control to begin',
+      bGatePrompt: "Commit first. You warm the cell from 20 °C to 80 °C. What happens to the jiggling?",
+      bGateOptions: ["Nothing — temperature has no effect on it","It slows down, because warm air is thinner","It gets faster and wilder, because the molecules are moving faster","It stops, because the smoke evaporates"].map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      bOpen: s.gate !== null,
+      bTabsLabel: "What is under the microscope",
+      bTabs: TABS.map((t, i) => ({
+        label: t.label, pressed: s.tab === i, style: this.seg(s.tab === i, true),
+        onClick: () => this.setState({ tab: i, touched: true })
+      })),
+      bSliderId: "p1102t",
+      bSliderLabel: "Temperature of the cell",
+      bSliderValueLabel: sliderLabel,
+      bSliderMin: 0, bSliderMax: Math.max(0, SLIDER.length - 1), bSliderValue: s.sv,
+      bOnSlider: (e) => this.setState({ sv: Number(e.target.value), touched: true }),
+      bBarsCaption: "Three quantities, one of them visible",
+      bBarsAlt: barsAlt, bBars: bars, bReadouts: readouts, bNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(), this.ladderVals(), this.hookVals(), this.benchVals()
+    );
+  }
+}
+</script>
+</body>
+</html>

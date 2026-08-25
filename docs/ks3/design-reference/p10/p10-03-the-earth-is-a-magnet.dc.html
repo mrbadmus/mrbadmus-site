@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Earth is a magnet · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks3-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks3-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  input[type="range"].ks3-slider { -webkit-appearance: none; appearance: none; width: 100%; max-width: 22rem; height: 40px; background: transparent; }
+  input[type="range"].ks3-slider::-webkit-slider-runnable-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; margin-top: -11px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+  input[type="range"].ks3-slider::-moz-range-track { height: 10px; border-radius: 99px; background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted); }
+  input[type="range"].ks3-slider::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--ks3-blue-light); border: 3px solid var(--ks3-ink); cursor: pointer; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Physics</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Magnetism and electromagnetism</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">The Earth is a magnet</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Magnetism and electromagnetism · System</p>
+        <h1>The Earth is a magnet</h1>
+        <p class="ks3-bigq">A compass works because it is one magnet finding another one, and the other one is the planet you are standing on.</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Nothing is near it. It still finds north.</h2>
+        <p class="ks3-hook-prompt">Put a compass on an empty table in the middle of an empty field. There is no magnet within a mile of it, and no metal. Spin it, and it settles pointing the same way every single time. Carry it a hundred kilometres and it still settles the same way.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What is the needle finding?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">{{ hookReveal }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>A compass needle is a small magnet, balanced so it can turn. A magnet turns until it lies along a magnetic field. Since the needle settles the same way everywhere on Earth, there must be a magnetic field covering the whole planet — and there is. <strong>The Earth behaves as though a huge bar magnet were buried inside it</strong>, tilted a little from the axis it spins on.</p>
+        <p>There is no actual bar of iron down there. The Earth's core is far too hot for that: above a few hundred degrees a magnet loses its magnetism altogether. What is down there is an ocean of liquid iron, and its slow churning carries electric currents, and moving charge makes a magnetic field. The buried-bar-magnet picture is a model of the field's shape, not a description of the rock.</p>
+        <p>Now the part that catches people out. The needle's <strong>north-seeking</strong> end points towards the Arctic. Unlike poles attract. So the magnetic pole up there must be a <strong>south</strong> pole, and the Earth's field runs from the far south, round through space, and back into the north. The naming is historical: the ends of the needle were named for where they pointed, centuries before anybody knew why.</p>
+        <p>The magnetic pole is also not in the same place as the geographic one, and it wanders — by tens of kilometres in a year. The angle between the way the needle points and true north is called the <strong>declination</strong>, it is different in different countries, and any map used for serious navigation prints the local value and the date it was measured.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · a compass free to swing in any direction</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Take the same compass somewhere else.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">This compass is hung at its centre so it can tip as well as turn. Choose how far north or south you take it, choose what is sitting on the bench beside it, and choose whether it is clamped flat or left free.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. A walker carries an ordinary compass to a point directly above the Earth's magnetic pole in the Arctic. What does it do?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div style="flex: 1 1 260px;">
+                <label for="p103lat" style="display: block; margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Where you are</label>
+                <input class="ks3-slider" type="range" id="p103lat" min="0" max="8" step="1" value="{{ latValue }}" onChange="{{ onLat }}" onInput="{{ onLat }}">
+                <p style="margin: 2px 0 0; font-family: var(--ks3-font-mono); font-size: 19px; font-weight: 500; color: var(--ks3-on-dark);">{{ latLabel }}</p>
+              </div>
+              <div style="flex: 1 1 320px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">On the bench beside it</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ nearTabs }}" as="t" hint-placeholder-count="3">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex: 1 1 240px;">
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">How it is mounted</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ mountTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; border-radius: var(--ks3-r-card); background: var(--ks3-dark-panel); padding: 18px;">
+              <div style="position: relative;">
+                <svg viewBox="0 0 1000 400" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;">
+                  <path d="M120 200 H420" style="fill: none; stroke: #6E6357; stroke-width: 4; stroke-dasharray: 12 10;"></path>
+                  <circle cx="270" cy="200" r="8" style="fill: #E9DCC8;"></circle>
+                  <path d="{{ needlePath }}" style="{{ needleStyle }}"></path>
+                  <path d="{{ dipArcPath }}" style="fill: none; stroke: #8FB7FF; stroke-width: 4;"></path>
+                  <circle cx="720" cy="200" r="128" style="fill: #221E1B; stroke: #C6B9A7; stroke-width: 5;"></circle>
+                  <path d="{{ earthFieldPath }}" style="fill: none; stroke: #6E6357; stroke-width: 3;"></path>
+                  <path d="{{ barPath }}" style="fill: #2A241E; stroke: #C6B9A7; stroke-width: 4;"></path>
+                  <path d="{{ barNorthPath }}" style="fill: #8FB7FF; stroke: none;"></path>
+                  <circle cx="{{ youX }}" cy="{{ youY }}" r="11" style="fill: #E4572E; stroke: #15110C; stroke-width: 3;"></circle>
+                  <text x="270" y="360" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: #8C8177;">SEEN FROM THE SIDE, LOOKING WEST</text>
+                  <text x="720" y="360" text-anchor="middle" style="font-family: var(--ks3-font-mono); font-weight: 500; font-size: 15px; letter-spacing: .07em; fill: #8C8177;">WHERE YOU ARE ON THE PLANET</text>
+                </svg>
+                <span style="{{ horizStyle }}">{{ horizLabel }}</span>
+                <span style="{{ dipStyle }}">{{ dipTag }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Which way it turns</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ turnWord }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ turnSub }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Angle of dip</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ dipLabel }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ dipSub }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Sideways pull to work with</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 22px; font-weight: 500; color: var(--ks3-on-dark);">{{ horizNum }}</p>
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; color: var(--ks3-on-dark-muted);">where 100 is the strongest here</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Can you navigate by it</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 700; color: var(--ks3-on-dark);">{{ navWord }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-earth" class="ks3-block" style="background: var(--ks3-band); scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The figure</p>
+        <h2 style="margin: 6px 0 0;">Three norths, and only one of them is a magnetic north</h2>
+        <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); gap: 14px;">
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">True north</p>
+            <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25; letter-spacing: -.02em;">The end of the spin axis</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">Where the lines of longitude meet. It is a fact about how the Earth turns and has nothing to do with magnetism. It does not move.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Magnetic north</p>
+            <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25; letter-spacing: -.02em;">Where the needle points</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">Hundreds of kilometres away from true north, and moving year by year. In magnetic terms this place is a <strong>south</strong> pole, because the needle's north end is attracted to it.</p>
+          </div>
+          <div style="padding: 20px 22px; border-radius: var(--ks3-r-card); background: var(--ks3-card); border: 3px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Grid north</p>
+            <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 22px; line-height: 1.25; letter-spacing: -.02em;">Straight up the map</p>
+            <p style="margin: 7px 0 0; font-size: 18px; line-height: 1.5;">The direction the squares on a printed map run. Flattening a curved planet onto paper bends things slightly, so this is a third answer again.</p>
+          </div>
+        </div>
+        <p style="margin: 16px 0 0; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); font-size: 19px; line-height: 1.6;">The angle between the needle and true north is the <strong>declination</strong>. Walking maps print it in the corner with the year it was measured and how fast it is changing, because a bearing taken from an old map and followed with a modern compass will put you in the wrong valley.</p>
+      </section>
+
+      <div data-key-fact="1" style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">The Earth has a magnetic field shaped as though a bar magnet were buried inside it, made by moving liquid iron in the core rather than by any solid magnet. A compass needle is a small magnet lining up with that field. The magnetic pole in the Arctic is a magnetic south pole, which is why the needle's north-seeking end turns towards it — and it sits some way from true north, and moves.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">&ldquo;The compass points north, so the Earth's North Pole is a magnetic north pole.&rdquo;</p>
+        <p>It cannot be. Unlike poles attract, and it is the north-seeking end of the needle that swings towards the Arctic — so whatever is up there has to be magnetically a <em>south</em> pole. The wording is the leftover of an old decision: the ends of a needle were named for the direction they pointed long before anybody knew a field was involved, and by the time the physics was understood the names were on every chart in Europe and were not going to be changed. Read "north pole of a magnet" as "the end that seeks north" and the contradiction disappears.</p>
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">&ldquo;A compass points at the North Pole.&rdquo;</p>
+          <p>It points along the Earth's field where you are standing, which is a different thing. In Britain that happens to be within a degree or so of true north at the moment, which makes the two easy to confuse; in parts of Canada and New Zealand the gap is more than twenty degrees, and following a compass bearing there without correcting for it puts you kilometres off over a day's walk. The needle is not aiming at a place. It is lying along a line, and the line only has to reach the pole eventually.</p>
+        </div>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="5">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A compass needle is a magnet, and a magnet lines up with whatever field it is in. The needle settles everywhere on Earth because the whole planet has a field, shaped like the field of a bar magnet buried inside it and tilted from the spin axis. Nothing solid down there is magnetised — the core is far too hot — and the field comes instead from currents carried by churning liquid iron. Because unlike poles attract, the magnetic pole in the Arctic is a magnetic south pole. It does not sit at true north and it moves, so a bearing worth trusting comes with a declination and a date.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The field has swapped ends many times. When lava cools, the iron minerals in it set with the field of the moment frozen into them, so a stack of old lava flows is a stack of dated compasses — and reading down a stack shows the direction flipping over and over, hundreds of times, at intervals of a few hundred thousand years. The last reversal was about 780,000 years ago. Nobody can predict the next one, and during a reversal the field does not vanish so much as become tangled, with several poles at once for a few thousand years.</p>
+          <p>Plenty of animals read the field. Robins, sea turtles and salmon all navigate by it, and some bacteria grow a chain of tiny magnetic crystals inside themselves that swings them into line like a compass needle, so that swimming forwards takes them down into the mud they need. It is worth being careful with the claim, though: exactly which organ does the sensing is still argued about for most of these species, and it is one of the genuinely unsettled questions in biology rather than a finished piece of textbook science.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="p10-02-magnetic-fields.html">Magnetic fields<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="p10-04-electromagnets.html">Electromagnets<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="p10-01-magnets-and-poles.html">Magnets and poles<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p9-02-forces-between-charges.html">Forces between charges<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="p8-01-current-and-circuits.html">Current and circuits<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The Earth's field as evidence for a dynamo in the core, and magnetic striping on the sea floor as evidence for plate tectonics.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Confused about why magnetic north is a south pole?</p>
+          <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+        </section>
+      </div>
+
+      <p class="ks3-legal">The bench is a teaching model. The Earth's field is treated as that of a single bar magnet at the centre, lined up with the spin axis, which is the standard first model: the angle of dip is then given by a fixed relationship between dip and latitude, and the sideways pull is what is left of the field once the tipping is taken out. A real field is not that tidy. The magnetic axis is tilted about eleven degrees from the spin axis, so magnetic latitude and geographic latitude are not the same and dip measured in the field differs from the figure here by several degrees in most places; the field also has large local variations from the rocks below, and the poles move by tens of kilometres a year. No value in tesla is given, because the unit is beyond this stage. Angles are rounded to the nearest degree and the sideways pull is a relative figure with the strongest value on this model set to 100.</p>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'It still finds north', short: 'COMPASS' },
+  { id: 's-bench', label: 'Take it somewhere else', short: 'BENCH' },
+  { id: 's-earth', label: 'Three norths', short: 'NORTHS' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+function DONE(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-bench') return s.gate !== null && (s.touched.lat || s.touched.near || s.touched.mount);
+  if (id === 's-earth') return s.gate !== null;
+  if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+  return false;
+}
+
+const LATS = [
+  { deg: -60, name: '60\u00b0 south \u2014 the Southern Ocean' },
+  { deg: -40, name: '40\u00b0 south \u2014 southern New Zealand' },
+  { deg: -20, name: '20\u00b0 south \u2014 northern Australia' },
+  { deg: 0, name: 'the equator' },
+  { deg: 20, name: '20\u00b0 north \u2014 southern Egypt' },
+  { deg: 40, name: '40\u00b0 north \u2014 Madrid' },
+  { deg: 52, name: '52\u00b0 north \u2014 southern England' },
+  { deg: 70, name: '70\u00b0 north \u2014 northern Norway' },
+  { deg: 90, name: '90\u00b0 north \u2014 the magnetic pole itself' }
+];
+
+const NEAR = [
+  { label: 'Nothing at all', key: 'none' },
+  { label: 'A steel clamp stand', key: 'steel' },
+  { label: 'A speaker magnet', key: 'magnet' }
+];
+
+const MOUNTS = [
+  { label: 'Clamped flat', key: 'flat' },
+  { label: 'Free to tip', key: 'free' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 \u00b7 Name the pole',
+    question: 'The north-seeking end of a compass needle turns towards the Arctic. What does that make the Earth\u2019s magnetic pole in the Arctic?',
+    options: [
+      { text: 'A magnetic south pole, because unlike poles attract', correct: true },
+      { text: 'A magnetic north pole, because it is at the north of the Earth', correction: 'Where it is on the map does not decide what kind of pole it is. Two north poles would repel, and the needle is clearly attracted, so it must be a south pole magnetically.' },
+      { text: 'A magnetic north pole, because like poles attract over long distances', correction: 'Like poles repel at every distance. There is no range at which the rule reverses.' },
+      { text: 'Neither \u2014 the Earth attracts the needle the way it attracts a falling ball', correction: 'Gravity pulls everything downwards, not northwards, and it does not care which end of a needle it is pulling. This is a magnetic effect on a magnet.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 \u00b7 Use the model',
+    question: 'A walker in Britain takes a bearing from a map printed forty years ago and follows it exactly with a modern compass. Why might they end up off course?',
+    options: [
+      { text: 'The magnetic pole has moved since the map was printed, so the declination on it is out of date', correct: true },
+      { text: 'The Earth\u2019s field has become weaker, so the needle points less accurately', correction: 'The field does change strength slowly, but a weaker field still points the same way. What has changed is the direction, not the reliability.' },
+      { text: 'Compasses made today are calibrated differently from compasses made then', correction: 'A compass is not calibrated at all \u2014 it is a magnet on a pivot. Any compass in the same place points the same way.' },
+      { text: 'The map\u2019s grid north has moved, because the squares are redrawn each edition', correction: 'Grid north is fixed by how the map projection is drawn and does not wander. It is magnetic north that moves.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 \u00b7 Explain',
+    question: 'Explain why a compass works at all, starting from what the needle is and ending with what it is lining up with.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The needle is\u2026',
+    criteria: [
+      'Says the needle is a small magnet, balanced so that it can turn freely.',
+      'Says a magnet turns until it lies along a magnetic field.',
+      'Says the Earth has a magnetic field covering the whole planet.',
+      'Says that field is shaped like the field of a bar magnet inside the Earth, tilted from the spin axis.',
+      'Says the needle settles along the Earth\u2019s field where it is, which is why it gives the same answer every time.'
+    ] },
+  { id: 'r4', title: 'Rung 4 \u00b7 Take it somewhere new',
+    question: 'Aircraft flying polar routes have used the same magnetic compass as everyone else, but crews are trained not to rely on it above a certain latitude. Explain what goes wrong with a compass close to the magnetic pole, and suggest what a crew could use instead.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Close to the pole the field\u2026',
+    criteria: [
+      'Says that close to the pole the Earth\u2019s field points steeply downwards rather than along the ground.',
+      'Says the sideways part of the field is what turns the needle to a direction, and it becomes very small there.',
+      'Says the needle therefore settles slowly, or not to any useful direction at all, and directly over the pole there is no horizontal direction to find.',
+      'Says the magnetic pole is not at true north anyway, so bearings near it are badly out even when the needle does settle.',
+      'Suggests something not magnetic \u2014 satellite positioning, a gyroscopic compass, or fixes from the Sun or stars.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = Object.assign({
+    active: 0,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] }
+  }, { hookChoice: null, gate: null, lat: 6, near: 0, mount: 1, touched: {} });
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-blue-light)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-blue-light)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  railVals() {
+    const s = this.state;
+    return {
+      rail: RAIL.map((r, i) => {
+        const done = DONE(r.id, s);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);'
+    };
+  }
+
+  ladderVals() {
+    const s = this.state;
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+    return {
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+
+  lab(xPct, topPct, colour) {
+    return 'position:absolute;left:' + xPct.toFixed(2) + '%;top:' + topPct.toFixed(2) + '%;transform:translate(-50%,-50%);' +
+      'font-family:var(--ks3-font-mono);font-weight:500;font-size:clamp(9px,1.3vw,15px);letter-spacing:.06em;color:' + colour + ';white-space:nowrap;pointer-events:none;';
+  }
+
+  lessonVals() {
+    const s = this.state;
+    const L = LATS[s.lat];
+    const N = NEAR[s.near];
+    const M = MOUNTS[s.mount];
+
+    const rad = L.deg * Math.PI / 180;
+    // dipole relationship: tan(dip) = 2 tan(latitude)
+    const dip = Math.atan(2 * Math.tan(rad)) * 180 / Math.PI;
+    const dipShown = M.key === 'flat' ? 0 : dip;
+    // For a centred dipole the sideways part of the field goes as cos(latitude),
+    // which is 100 at the equator and zero at the pole.
+    const horizRel = 100 * Math.cos(rad);
+    const captured = N.key === 'magnet' || (N.key === 'steel' && Math.abs(L.deg) >= 70);
+    const atPole = Math.abs(L.deg) >= 89;
+
+    // needle drawing, tilted by dipShown
+    const tilt = dipShown * Math.PI / 180;
+    const ux = Math.cos(tilt), uy = Math.sin(tilt);
+    let needleAngle = tilt;
+    if (captured) needleAngle = N.key === 'magnet' ? -0.55 : 0.9;
+    const nx = Math.cos(needleAngle), ny = Math.sin(needleAngle);
+    const needlePath = 'M' + (270 - nx * 92).toFixed(1) + ' ' + (200 - ny * 92).toFixed(1) +
+      ' L' + (270 + nx * 92).toFixed(1) + ' ' + (200 + ny * 92).toFixed(1) +
+      ' M' + (270 + nx * 92).toFixed(1) + ' ' + (200 + ny * 92).toFixed(1) +
+      ' L' + (270 + nx * 70 - ny * 15).toFixed(1) + ' ' + (200 + ny * 70 + nx * 15).toFixed(1) +
+      ' M' + (270 + nx * 92).toFixed(1) + ' ' + (200 + ny * 92).toFixed(1) +
+      ' L' + (270 + nx * 70 + ny * 15).toFixed(1) + ' ' + (200 + ny * 70 - nx * 15).toFixed(1);
+    const needleStyle = 'fill: none; stroke: ' + (captured ? '#E4572E' : '#8FB7FF') + '; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round;';
+
+    const arcR = 62;
+    const dipArcPath = (!captured && Math.abs(dipShown) > 1)
+      ? 'M' + (270 + arcR) + ' 200 A ' + arcR + ' ' + arcR + ' 0 0 ' + (dipShown > 0 ? '1' : '0') + ' ' +
+        (270 + arcR * Math.cos(tilt)).toFixed(1) + ' ' + (200 + arcR * Math.sin(tilt)).toFixed(1)
+      : 'M0 0';
+
+    // globe: tilted internal bar + a few field arcs
+    const barPath = 'M690 100 H750 V300 H690 Z';
+    const barNorthPath = 'M693 203 H747 V297 H693 Z';
+    const earthFieldPath = 'M720 72 C860 100 860 300 720 328 M720 72 C580 100 580 300 720 328 M720 72 C920 120 920 280 720 328 M720 72 C520 120 520 280 720 328';
+    const youAng = (90 - L.deg) * Math.PI / 180;
+    const youX = 720 + 128 * Math.sin(youAng);
+    const youY = 200 - 128 * Math.cos(youAng);
+
+    let turnWord, turnSub, navWord, note;
+    if (captured && N.key === 'magnet') {
+      turnWord = 'towards the speaker magnet';
+      turnSub = 'the Earth has been overruled';
+      navWord = 'no \u2014 it is reading the bench';
+      note = 'A speaker magnet a few centimetres away is enormously stronger, where the compass is sitting, than the whole Earth is. The needle lines up with the total field, and this close that total is almost entirely the speaker. It has not broken and it is not lying: it is doing exactly what it always does, which is why a compass has to be used away from loudspeakers, phones, car bodywork and steel railings. Take the magnet off the bench and the Earth is back in charge.';
+    } else if (captured) {
+      turnWord = 'pulled towards the clamp stand';
+      turnSub = 'steel nearby, weak field here';
+      navWord = 'no \u2014 the steel wins';
+      note = 'At ' + L.name + ' the sideways part of the Earth\u2019s field is down to ' + horizRel.toFixed(1) +
+        ' on this scale, and a steel clamp stand beside the compass has been magnetised by that same field into a small magnet of its own. Close up, the stand beats what is left of the Earth, and the needle goes to the stand. The same stand at the equator would lose, because there the Earth\u2019s sideways pull is at its strongest.';
+    } else if (M.key === 'flat') {
+      turnWord = 'settles to magnetic north';
+      turnSub = 'held level, so it cannot tip';
+      navWord = atPole ? 'no \u2014 no direction to find' : (horizRel < 12 ? 'barely \u2014 it is sluggish' : 'yes');
+      note = atPole
+        ? 'Clamping the compass flat stops it tipping, but at the magnetic pole the field points straight down and has no sideways part at all. There is no direction for the needle to find, so it drifts and settles nowhere. Every direction from here is south, and a compass has run out of anything to say.'
+        : 'Held flat, the needle can only turn, not tip, so it lines up with the sideways part of the Earth\u2019s field and settles on magnetic north. The angle of dip reads zero because the mounting is holding it there, not because the field is level \u2014 at ' + L.name + ' the field itself is running into the ground at ' + Math.abs(dip).toFixed(0) +
+          '\u00b0. What matters for navigation is the sideways pull, and here that is ' + horizRel.toFixed(1) + ' on this scale. This is why an ordinary walking compass is built flat.';
+    } else if (atPole) {
+      turnWord = 'stands straight up';
+      turnSub = 'the field is vertical here';
+      navWord = 'no \u2014 no direction to find';
+      note = 'Directly over the magnetic pole the field goes straight down into the ground, so a freely hung needle stands vertical: dip is 90\u00b0 and the sideways pull is zero. There is no horizontal direction for it to point in and nothing to navigate by. Polar crews are taught this and switch to satellite positioning or a gyroscopic compass well before they get here.';
+    } else {
+      const dirWord = L.deg >= 0 ? 'north-seeking end tips downwards' : 'north-seeking end tips upwards';
+      turnWord = 'settles to magnetic north and tips';
+      turnSub = dirWord;
+      navWord = horizRel < 12 ? 'barely \u2014 it is sluggish' : 'yes';
+      note = 'Hung freely at ' + L.name + ', the needle turns to lie along the Earth\u2019s field and tips over by ' + Math.abs(dip).toFixed(0) +
+        '\u00b0 from level, with its ' + (L.deg >= 0 ? 'north-seeking end down' : 'north-seeking end up') +
+        '. That happens because the field is not parallel to the ground: it comes out of the ground in the far south and goes into it in the far north, so the further from the equator you go the steeper it runs. Only the sideways part of it turns the needle to a bearing, and that reads ' + horizRel.toFixed(1) +
+        ' here against ' + (100).toFixed(0) + ' at the equator' + (horizRel < 12 ? ' \u2014 which is why the needle is so slow to settle this far north.' : '.') +
+        ' A walking compass avoids the tipping altogether by being built flat, with a counterweight under the card.';
+    }
+
+    return {
+      hookOptions: [
+        { letter: 'A', text: 'The Earth itself has a magnetic field, and the needle is a magnet lining up with it' },
+        { letter: 'B', text: 'The needle is attracted to the North Star, which is why it works outdoors' },
+        { letter: 'C', text: 'North is the direction the Earth spins towards, and the needle is dragged round with it' },
+        { letter: 'D', text: 'There is a mass of iron ore at the North Pole strong enough to pull the needle from anywhere' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.hookChoice === i, onClick: () => this.setState({ hookChoice: i }) })),
+      hookRevealed: s.hookChoice !== null,
+      hookReveal: 'The planet. The Earth has a magnetic field that reaches everywhere on its surface and out into space, and a compass needle is simply a small magnet free to turn, so it does what any magnet in a field does and lines up with it. Nothing has to be nearby, because the field is not made nearby \u2014 it is made in the Earth\u2019s core, thousands of kilometres down.',
+
+      benchProgress: (s.touched.lat || s.touched.near || s.touched.mount) ? 'Three controls live' : 'Change a control to begin',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It points down into the ground and gives no direction along the surface at all' },
+        { letter: 'B', text: 'It spins round and round, because every direction is south' },
+        { letter: 'C', text: 'It points more strongly than anywhere else, because the pole is right there' },
+        { letter: 'D', text: 'It reverses and points south, because it has passed the pole' }
+      ].map((op, i) => ({ letter: op.letter, text: op.text, pressed: s.gate === i, onClick: () => this.setState({ gate: i }) })),
+      benchOpen: s.gate !== null,
+
+      latValue: s.lat, latLabel: L.name,
+      onLat: (e) => this.setState((st) => ({ lat: Number(e.target.value), touched: Object.assign({}, st.touched, { lat: true }) })),
+      nearTabs: NEAR.map((o, i) => ({
+        label: o.label, pressed: s.near === i, style: this.seg(s.near === i, true, false),
+        onClick: () => this.setState((st) => ({ near: i, touched: Object.assign({}, st.touched, { near: true }) }))
+      })),
+      mountTabs: MOUNTS.map((o, i) => ({
+        label: o.label, pressed: s.mount === i, style: this.seg(s.mount === i, true, false),
+        onClick: () => this.setState((st) => ({ mount: i, touched: Object.assign({}, st.touched, { mount: true }) }))
+      })),
+
+      needlePath: needlePath, needleStyle: needleStyle,
+      dipArcPath: dipArcPath,
+      barPath: barPath, barNorthPath: barNorthPath, earthFieldPath: earthFieldPath,
+      youX: youX.toFixed(1), youY: youY.toFixed(1),
+      horizStyle: this.lab(27, 41, '#8C8177'),
+      horizLabel: 'LEVEL',
+      dipStyle: this.lab(38, 57, '#8FB7FF'),
+      dipTag: captured ? '' : (Math.abs(dipShown) < 1 ? '' : Math.abs(dipShown).toFixed(0) + '\u00b0 DIP'),
+
+      turnWord: turnWord, turnSub: turnSub,
+      dipLabel: captured ? 'not a field reading' : Math.abs(dipShown).toFixed(0) + '\u00b0',
+      dipSub: captured ? 'the needle is on the bench object' : (M.key === 'flat' ? 'the mounting is holding it level' : (L.deg >= 0 ? 'north end down' : 'north end up')),
+      horizNum: horizRel.toFixed(1),
+      navWord: navWord,
+      benchAlt: 'A compass at ' + L.name + ', ' + (M.key === 'flat' ? 'clamped flat' : 'hung freely') + ', with ' +
+        (N.key === 'none' ? 'nothing beside it' : N.label.toLowerCase() + ' beside it') + ', shown next to a globe with a tilted bar magnet drawn inside it and a marker where you are standing.',
+      benchNote: note
+    };
+  }
+
+  renderVals() {
+    return Object.assign(
+      { draftVisible: this.props.showDraft !== false },
+      this.railVals(),
+      this.ladderVals(),
+      this.lessonVals()
+    );
+  }
+}
+
+</script>
+</body>
+</html>
