@@ -380,12 +380,18 @@
     return weeks < 0 ? 1 : weeks + 1;
   }
 
+  /* ⊕ MRB-287, 26 Aug 2026 — EMPTY ON LIVE PRODUCTION, on purpose. Design's
+     v2 deleted the permanent PROD chip from the nav, and it was right to: a
+     badge that is always there warns of nothing. The badge's real job is the
+     other direction — TEST and LOCAL, where a teacher could be driving the
+     wrong database — so those still return a word and the ported nav renders
+     the chip behind an `if envBadge` that draws nothing on prod. */
   function envBadge() {
     var cfg = window.MrBadmusConfig || {};
     var env = String(cfg.environment || "");
     var h = String(window.location.hostname || "");
     var live = (h === "mrbadmus.com" || h === "www.mrbadmus.com");
-    if (live && env === "prod") { return "PROD"; }
+    if (live && env === "prod") { return ""; }
     return env ? env.toUpperCase() : "LOCAL";
   }
 

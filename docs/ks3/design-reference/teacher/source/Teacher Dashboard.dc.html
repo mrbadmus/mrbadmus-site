@@ -27,165 +27,145 @@
     @media print { .noprint { display: none !important; } }
   </style>
 </helmet>
-<div class="rd" data-mode="ks3" style="--rowpad:{{ rowPad }};min-height:100vh;background:var(--st-ground);font-family:var(--st-ui);color:var(--st-ink);font-size:16.5px;line-height:1.5">
+<div class="rd" data-mode="ks3" style="--rowpad:{{ rowPad }};min-height:100vh;background:var(--st-ground);font-family:var(--st-ui);color:var(--st-ink);font-size:18px;line-height:1.5">
 
-  <div class="noprint" style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;height:62px;padding:0 26px;background:var(--st-paper);border-bottom:1px solid var(--st-rule)">
+  <div class="noprint" style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:10px;height:62px;padding:0 22px;background:var(--st-paper);border-bottom:1px solid var(--st-rule)">
     <div style="display:flex;align-items:center;gap:9px;cursor:pointer;flex:none" onClick="{{ goClasses }}">
       <x-import component-from-global-scope="MrBadmusDS.BrandMark" size="19" hint-size="19px,19px"></x-import>
-      <span style="font:600 21px/1 var(--st-display);letter-spacing:-0.025em;color:var(--st-ink);white-space:nowrap">MrBadmusAI</span>
+      <span style="font:600 23px/1 var(--st-display);letter-spacing:-0.025em;color:var(--st-ink);white-space:nowrap">MrBadmusAI</span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;padding-left:14px;border-left:1px solid var(--st-rule-soft);white-space:nowrap;overflow:hidden">
-      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Teacher</span>
-      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-ink)">{{ crumb }}</span>
+    <div style="display:flex;align-items:center;gap:8px;padding-left:12px;border-left:1px solid var(--st-rule-soft);white-space:nowrap;flex:0 1 auto;min-width:0">
+      <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-ink)">{{ crumb }}</span>
     </div>
     <button type="button" onClick="{{ openSearch }}" style="margin-left:auto;flex:none;display:flex;align-items:center;gap:9px;height:34px;padding:0 11px;background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="4.2" stroke="currentColor" stroke-width="1.5"></circle><path d="M9.3 9.3L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
-      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Find a student</span>
-      <span style="padding:3px 5px;font:500 11.5px/1.2 var(--st-mono);color:var(--st-caption);background:var(--st-num-well);border:1px solid var(--st-rule-soft);border-radius:5px">/</span>
+      <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Find a student</span>
+      <span style="padding:3px 5px;font:500 12px/1.2 var(--st-mono);color:var(--st-caption);background:var(--st-num-well);border:1px solid var(--st-rule-soft);border-radius:5px">/</span>
     </button>
     <button type="button" onClick="{{ openInsights }}" aria-label="Charts" style="flex:none;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer;color:var(--st-ink)" style-hover="border-color:var(--st-edge);color:var(--st-accent-text)">
       <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="8" width="3" height="6" rx="1" fill="currentColor"></rect><rect x="6.5" y="4" width="3" height="10" rx="1" fill="currentColor"></rect><rect x="11" y="6" width="3" height="8" rx="1" fill="currentColor"></rect></svg>
     </button>
-    <span style="flex:none;padding:5px 8px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.16em;color:var(--st-caption);background:var(--st-num-well);border-radius:6px">PROD</span>
-    <span style="flex:none;font:600 14.5px/1.2 var(--st-ui);color:var(--st-ink)">{{ teacher }}</span>
-    <button type="button" style="flex:none;height:32px;padding:0 12px;font:600 14px/1.2 var(--st-ui);color:var(--st-muted);background:transparent;border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="color:var(--st-ink);border-color:var(--st-edge)">Sign out</button>
+    <span style="flex:none;font:600 16px/1.2 var(--st-ui);color:var(--st-ink)">{{ teacher }}</span>
+    <button type="button" style="flex:none;height:32px;padding:0 12px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-muted);background:transparent;border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="color:var(--st-ink);border-color:var(--st-edge)">Sign out</button>
   </div>
 
   <sc-if value="{{ isClasses }}" hint-placeholder-val="{{ true }}">
-  <div style="max-width:1340px;margin:0 auto;padding:26px 32px 48px">
+  <div style="max-width:1460px;margin:0 auto;padding:24px 40px 40px">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
       <div>
-        <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Autumn term · 2026–27</div>
-        <h1 style="margin:12px 0 0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">My classes</h1>
-        <div style="margin-top:10px;font:400 16.5px/1.5 var(--st-ui);color:var(--st-muted)">{{ classLine }}</div>
+        <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Autumn term · 2026–27</div>
+        <h1 style="margin:8px 0 0;font:600 52px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">My classes</h1>
+        <div style="margin-top:8px;font:400 18px/1.5 var(--st-ui);color:var(--st-muted)">{{ classLine }}</div>
       </div>
       <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
-        <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
-        <button type="button" onClick="{{ goDigest }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Weekly digest</button>
-        <button type="button" onClick="{{ goImport }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Import students</button>
+        <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 18px;font:600 17px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
+        <button type="button" onClick="{{ goDigest }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Weekly digest</button>
+        <button type="button" onClick="{{ goImport }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Import students</button>
       </div>
     </div>
 
-    <div style="display:flex;align-items:center;gap:14px;margin:22px 0 14px;padding-bottom:16px;border-bottom:1px solid var(--st-rule);flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:14px;margin:18px 0 14px;padding-bottom:14px;border-bottom:1px solid var(--st-rule);flex-wrap:wrap">
       <div style="display:flex;gap:3px;padding:3px;background:var(--st-seg-bg);border-radius:10px">
         <sc-for list="{{ ksTabs }}" as="t" hint-placeholder-count="3">
-          <button type="button" onClick="{{ t.pick }}" style="padding:7px 14px;font:500 12.5px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent;border-radius:8px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border-color:{{ t.bc }}">{{ t.label }}</button>
+          <button type="button" onClick="{{ t.pick }}" style="padding:7px 14px;font:500 13.5px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent;border-radius:8px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border-color:{{ t.bc }}">{{ t.label }}</button>
         </sc-for>
       </div>
-      <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ shownLine }}</div>
+      <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ shownLine }}</div>
       <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
-        <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Sort</span>
+        <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Sort</span>
         <sc-for list="{{ sortTabs }}" as="s" hint-placeholder-count="2">
-          <button type="button" onClick="{{ s.pick }}" style="padding:6px 10px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;background:transparent;border:1px solid transparent;border-radius:7px;cursor:pointer;color:{{ s.fg }};border-color:{{ s.bc }}">{{ s.label }}</button>
+          <button type="button" onClick="{{ s.pick }}" style="padding:6px 10px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;background:transparent;border:1px solid transparent;border-radius:7px;cursor:pointer;color:{{ s.fg }};border-color:{{ s.bc }}">{{ s.label }}</button>
         </sc-for>
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px">
       <sc-for list="{{ cards }}" as="c" hint-placeholder-count="9">
-        <div onClick="{{ c.open }}" style="display:flex;flex-direction:column;gap:14px;padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s" style-hover="border-color:var(--st-edge);transform:translateY(-2px);box-shadow:0 14px 30px -22px rgba(40,26,10,.6)">
+        <div onClick="{{ c.open }}" style="display:flex;flex-direction:column;gap:14px;padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s" style-hover="border-color:var(--st-edge);transform:translateY(-2px);box-shadow:0 14px 30px -22px rgba(40,26,10,.6)">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
             <div style="min-width:0">
-              <div style="font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ c.code }}</div>
-              <div style="margin-top:8px;font:400 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ c.meta }}</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;flex:none;padding:5px 8px;border:1px solid var(--st-rule);border-radius:9px">
-              <div style="display:flex;gap:2px;align-items:center">
-                <sc-for list="{{ c.dots }}" as="d" hint-placeholder-count="3">
-                  <div style="height:8px;border-radius:2px;width:{{ d.w }}px;background:{{ d.c }}"></div>
-                </sc-for>
-              </div>
-              <span style="font:500 11.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-ink);white-space:nowrap">{{ c.subject }}</span>
+              <div style="font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ c.code }}</div>
+              <div style="margin-top:8px;font:400 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ c.meta }}</div>
             </div>
           </div>
 
           <sc-if value="{{ c.live }}" hint-placeholder-val="{{ true }}">
             <div>
               <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
-                <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">This week</span>
-                <span style="font:500 14.5px/1.2 var(--st-mono);color:var(--st-ink);white-space:nowrap">{{ c.weekLabel }}</span>
+                <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">This week</span>
+                <span style="font:500 16px/1.2 var(--st-mono);color:var(--st-ink);white-space:nowrap">{{ c.weekLabel }}</span>
               </div>
               <sc-if value="{{ showMeter }}" hint-placeholder-val="{{ true }}">
                 <div style="margin-top:10px;height:5px;background:var(--st-num-well);border-radius:999px;overflow:hidden">
                   <div style="height:100%;border-radius:999px;background:var(--st-accent);width:{{ c.pct }}%"></div>
                 </div>
               </sc-if>
-              <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ c.weekSub }}</div>
+              <div style="margin-top:8px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ c.weekSub }}</div>
             </div>
           </sc-if>
 
           <sc-if value="{{ c.noWork }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px dashed var(--st-rule-strong);border-radius:10px;background:var(--st-note-bg)">
-              <span style="font:400 14.5px/1.3 var(--st-ui);color:var(--st-body)">{{ c.emptyLine }}</span>
-              <button type="button" onClick="{{ c.act }}" style="font:600 14px/1.2 var(--st-ui);color:var(--st-accent-text);background:transparent;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Set work</button>
+              <span style="font:400 16px/1.3 var(--st-ui);color:var(--st-body)">{{ c.emptyLine }}</span>
+              <button type="button" onClick="{{ c.act }}" style="font:600 15.5px/1.2 var(--st-ui);color:var(--st-accent-text);background:transparent;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Set work</button>
             </div>
           </sc-if>
 
           <sc-if value="{{ c.empty }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px dashed var(--st-rule-strong);border-radius:10px">
-              <span style="font:400 14.5px/1.3 var(--st-ui);color:var(--st-muted)">{{ c.emptyLine }}</span>
-              <button type="button" onClick="{{ c.act }}" style="font:600 14px/1.2 var(--st-ui);color:var(--st-accent-text);background:transparent;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Import</button>
+              <span style="font:400 16px/1.3 var(--st-ui);color:var(--st-muted)">{{ c.emptyLine }}</span>
+              <button type="button" onClick="{{ c.act }}" style="font:600 15.5px/1.2 var(--st-ui);color:var(--st-accent-text);background:transparent;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Import</button>
             </div>
           </sc-if>
 
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:12px;border-top:1px solid var(--st-rule-fact)">
-            <span style="font:400 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.activity }}</span>
+            <span style="font:400 13px/1.2 var(--st-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--st-ghost);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ c.activity }}</span>
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="flex:none;color:var(--st-rule-strong)"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
           </div>
         </div>
       </sc-for>
     </div>
 
-    <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--st-rule);display:flex;align-items:center;gap:8px">
-      <span style="font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-ghost)">Viewing 2026–27</span>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--st-rule);display:flex;align-items:center;gap:8px">
+      <span style="font:400 13px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-ghost)">Viewing 2026–27</span>
       <span style="color:var(--st-rule-strong)">·</span>
-      <button type="button" onClick="{{ pastYears }}" style="font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);background:none;border:none;padding:2px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Previous years</button>
+      <button type="button" onClick="{{ pastYears }}" style="font:400 13px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);background:none;border:none;padding:2px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Previous years</button>
     </div>
   </div>
   </sc-if>
 
   <sc-if value="{{ isClass }}" hint-placeholder-val="{{ false }}">
-  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
-    <button type="button" onClick="{{ goClasses }}" class="noprint" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
-      <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-      Back to my classes
-    </button>
-
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
-      <div>
-        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <h1 style="margin:0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ klass.code }}</h1>
-          <div style="display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--st-rule);border-radius:9px">
-            <div style="display:flex;gap:2px;align-items:center">
-              <sc-for list="{{ klass.dots }}" as="d" hint-placeholder-count="3">
-                <div style="height:8px;border-radius:2px;width:{{ d.w }}px;background:{{ d.c }}"></div>
-              </sc-for>
-            </div>
-            <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-ink);white-space:nowrap">{{ klass.subject }}</span>
-          </div>
-        </div>
-        <div style="margin-top:12px;font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ klass.longMeta }}</div>
-      </div>
-      <div class="noprint" style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
-        <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
-        <button type="button" onClick="{{ openBulk }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Shoutouts</button>
-        <button type="button" onClick="{{ openInsights }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Charts</button>
-        <button type="button" onClick="{{ goReport }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Print report</button>
+  <div style="max-width:1460px;margin:0 auto;padding:20px 40px 40px;animation:shin .18s ease-out">
+    <div class="noprint" style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+      <button type="button" onClick="{{ goClasses }}" style="display:flex;align-items:center;gap:6px;font:600 16px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        Back to my classes
+      </button>
+      <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+        <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 18px;font:600 17px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
+        <button type="button" onClick="{{ openBulk }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Shoutouts</button>
+        <button type="button" onClick="{{ openInsights }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Charts</button>
+        <button type="button" onClick="{{ goReport }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Print report</button>
       </div>
     </div>
 
+    <div style="padding-bottom:16px;border-bottom:1px solid var(--st-rule)">
+      <h1 style="margin:0;font:600 52px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ klass.code }}</h1>
+      <div style="margin-top:10px;font:400 13px/1.4 var(--st-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--st-caption)">{{ klass.longMeta }}</div>
+    </div>
+
     <sc-if value="{{ klass.hasWork }}" hint-placeholder-val="{{ true }}">
-      <div class="noprint" style="display:flex;align-items:center;gap:12px;margin-top:22px;padding:12px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:12px">
-        <span style="flex:none;padding-left:4px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Week</span>
+      <div class="noprint" style="display:flex;align-items:center;gap:12px;margin-top:18px;padding:12px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:12px">
+        <span style="flex:none;padding-left:4px;font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Week</span>
         <button type="button" onClick="{{ weekBack }}" aria-label="Previous week" style="flex:none;display:flex;align-items:center;justify-content:center;width:36px;height:52px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:9px;color:{{ weekBackColor }};cursor:{{ weekBackCursor }}" style-hover="border-color:var(--st-edge)">
           <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </button>
         <div data-rail="weeks" style="display:flex;align-items:stretch;overflow-x:auto;padding:1px;scrollbar-width:none">
           <sc-for list="{{ weekTabs }}" as="w" hint-placeholder-count="8">
             <button type="button" data-week="{{ w.idx }}" onClick="{{ w.pick }}" aria-pressed="{{ w.on }}" style="flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:52px;padding:8px 17px;background:{{ w.bg }};border:none;border-left:1px solid {{ w.divider }};box-shadow:{{ w.ring }};border-radius:9px;cursor:pointer" style-hover="background:var(--st-note-bg)">
-              <span style="font:500 16.5px/1.15 var(--st-mono);color:{{ w.dateColor }};white-space:nowrap">{{ w.range }}</span>
+              <span style="font:500 18px/1.15 var(--st-mono);color:{{ w.dateColor }};white-space:nowrap">{{ w.range }}</span>
               <sc-if value="{{ w.now }}" hint-placeholder-val="{{ false }}">
-                <span style="font:500 11px/1 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-accent-text);white-space:nowrap">This week</span>
+                <span style="font:500 11.5px/1 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-accent-text);white-space:nowrap">This week</span>
               </sc-if>
             </button>
           </sc-for>
@@ -194,36 +174,36 @@
           <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </button>
       </div>
-      <div style="margin-top:14px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ weekNote }}</div>
+      <div style="margin-top:14px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ weekNote }}</div>
     </sc-if>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:14px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:14px">
       <sc-for list="{{ klass.tiles }}" as="t" hint-placeholder-count="4">
-        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
-          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
-          <div style="margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
-          <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+        <div style="padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+          <div style="margin-top:10px;font:600 38px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+          <div style="margin-top:8px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
         </div>
       </sc-for>
     </div>
 
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px">
-      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Students</h2>
-      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ klass.rosterLine }}</span>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:22px 0 12px">
+      <h2 style="margin:0;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Students</h2>
+      <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ klass.rosterLine }}</span>
     </div>
     <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
-      <div style="display:grid;grid-template-columns:1.6fr 1.4fr 120px 150px 145px;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Student</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ rosterWeekCol }}</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Avg</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Last active</div>
-        <div style="padding:12px 16px"></div>
+      <div style="display:grid;grid-template-columns:1.7fr 1.3fr 130px 160px min-content;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Student</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ rosterWeekCol }}</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Avg</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Last active</div>
+        <div style="padding:12px 16px 12px 0"></div>
       </div>
       <sc-for list="{{ roster }}" as="s" hint-placeholder-count="8">
-        <div onClick="{{ s.open }}" style="display:grid;grid-template-columns:1.6fr 1.4fr 120px 150px 145px;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+        <div onClick="{{ s.open }}" style="display:grid;grid-template-columns:1.7fr 1.3fr 130px 160px min-content;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
           <div style="display:flex;align-items:center;gap:11px;padding:var(--rowpad,14px 16px);min-width:0">
-            <div style="flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 12.5px/1 var(--st-mono);color:var(--st-paper);background:{{ s.hue }}">{{ s.initials }}</div>
-            <span style="font:600 16px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.name }}</span>
+            <div style="flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 13.5px/1 var(--st-mono);color:var(--st-paper);background:{{ s.hue }}">{{ s.initials }}</div>
+            <span style="font:600 17.5px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.name }}</span>
           </div>
           <div style="padding:var(--rowpad,14px 16px)">
             <sc-if value="{{ s.hasWork }}" hint-placeholder-val="{{ true }}">
@@ -231,66 +211,66 @@
                 <div style="height:100%;border-radius:999px;background:var(--st-accent);width:{{ s.pct }}%"></div>
               </div>
             </sc-if>
-            <div style="margin-top:7px;font:400 12.5px/1.2 var(--st-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">{{ s.weekLabel }}</div>
+            <div style="margin-top:7px;font:400 13.5px/1.2 var(--st-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">{{ s.weekLabel }}</div>
           </div>
-          <div style="padding:var(--rowpad,14px 16px);font:500 16.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ s.avg }}</div>
-          <div style="padding:var(--rowpad,14px 16px);font:400 14px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ s.last }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 18px/1.2 var(--st-mono);color:var(--st-ink)">{{ s.avg }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:400 15.5px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ s.last }}</div>
           <div style="padding:var(--rowpad,14px 16px)">
             <sc-if value="{{ s.flag }}" hint-placeholder-val="{{ false }}">
-              <span style="display:inline-block;padding:5px 8px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:7px;white-space:nowrap">Needs a look</span>
+              <span style="display:inline-block;padding:5px 8px;font:500 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:7px;white-space:nowrap">Needs a look</span>
             </sc-if>
           </div>
         </div>
       </sc-for>
     </div>
 
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px">
-      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Assignments</h2>
-      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ klass.paperLine }}</span>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:22px 0 12px">
+      <h2 style="margin:0;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Assignments</h2>
+      <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ klass.paperLine }}</span>
     </div>
 
     <sc-if value="{{ klass.hasWork }}" hint-placeholder-val="{{ true }}">
-      <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption);margin-bottom:10px">{{ upcomingLabel }}</div>
+      <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption);margin-bottom:10px">{{ upcomingLabel }}</div>
       <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden;margin-bottom:16px">
         <div style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
-          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
-          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
-          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
-          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Class mean</div>
+          <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
+          <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
+          <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
+          <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Class mean</div>
         </div>
         <sc-for list="{{ upcoming }}" as="a" hint-placeholder-count="1">
           <div onClick="{{ a.open }}" style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
-            <div style="display:flex;align-items:center;gap:9px;padding:var(--rowpad,14px 16px);font:600 16px/1.3 var(--st-ui);color:var(--st-ink)">
+            <div style="display:flex;align-items:center;gap:9px;padding:var(--rowpad,14px 16px);font:600 17.5px/1.3 var(--st-ui);color:var(--st-ink)">
               {{ a.title }}
               <sc-if value="{{ a.sel }}" hint-placeholder-val="{{ false }}">
-                <span style="flex:none;padding:4px 7px;font:500 11px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:6px;white-space:nowrap">Viewing</span>
+                <span style="flex:none;padding:4px 7px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:6px;white-space:nowrap">Viewing</span>
               </sc-if>
             </div>
-            <div style="padding:var(--rowpad,14px 16px);font:400 14.5px/1.2 var(--st-ui);color:var(--st-accent-text);white-space:nowrap">{{ a.due }}</div>
-            <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.sub }}</div>
-            <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.mean }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:400 16px/1.2 var(--st-ui);color:var(--st-accent-text);white-space:nowrap">{{ a.due }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.sub }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.mean }}</div>
           </div>
         </sc-for>
       </div>
-      <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption);margin-bottom:10px">{{ markedLabel }}</div>
+      <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption);margin-bottom:10px">{{ markedLabel }}</div>
       <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
         <div style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
-          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
-          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
-          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
-          <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Class mean</div>
+          <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
+          <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
+          <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
+          <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Class mean</div>
         </div>
         <sc-for list="{{ marked }}" as="a" hint-placeholder-count="3">
           <div onClick="{{ a.open }}" style="display:grid;grid-template-columns:2.4fr 1fr 1fr 1fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
-            <div style="display:flex;align-items:center;gap:9px;padding:var(--rowpad,14px 16px);font:600 16px/1.3 var(--st-ui);color:var(--st-ink)">
+            <div style="display:flex;align-items:center;gap:9px;padding:var(--rowpad,14px 16px);font:600 17.5px/1.3 var(--st-ui);color:var(--st-ink)">
               {{ a.title }}
               <sc-if value="{{ a.sel }}" hint-placeholder-val="{{ false }}">
-                <span style="flex:none;padding:4px 7px;font:500 11px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:6px;white-space:nowrap">Viewing</span>
+                <span style="flex:none;padding:4px 7px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-accent-text);background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:6px;white-space:nowrap">Viewing</span>
               </sc-if>
             </div>
-            <div style="padding:var(--rowpad,14px 16px);font:400 14.5px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ a.due }}</div>
-            <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.sub }}</div>
-            <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.mean }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:400 16px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ a.due }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.sub }}</div>
+            <div style="padding:var(--rowpad,14px 16px);font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ a.mean }}</div>
           </div>
         </sc-for>
       </div>
@@ -299,49 +279,49 @@
     <sc-if value="{{ klass.noWork }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:26px;background:var(--st-note-bg);border:1px dashed var(--st-rule-strong);border-radius:11px">
         <div>
-          <div style="font:600 20px/1.3 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">No work set for this class</div>
-          <div style="margin-top:8px;font:400 15.5px/1.5 var(--st-ui);color:var(--st-body)">{{ klass.noWorkLine }}</div>
+          <div style="font:600 22px/1.3 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">No work set for this class</div>
+          <div style="margin-top:8px;font:400 17px/1.5 var(--st-ui);color:var(--st-body)">{{ klass.noWorkLine }}</div>
         </div>
-        <button type="button" onClick="{{ openSetWork }}" style="flex:none;height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
+        <button type="button" onClick="{{ openSetWork }}" style="flex:none;height:40px;padding:0 18px;font:600 17px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Set work</button>
       </div>
     </sc-if>
 
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px">
-      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Shoutouts</h2>
-      <button type="button" onClick="{{ openBulk }}" class="noprint" style="font:600 14px/1.2 var(--st-ui);color:var(--st-accent-text);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Send to several students</button>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:22px 0 12px">
+      <h2 style="margin:0;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Shoutouts</h2>
+      <button type="button" onClick="{{ openBulk }}" class="noprint" style="font:600 15.5px/1.2 var(--st-ui);color:var(--st-accent-text);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Send to several students</button>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(390px,1fr));gap:16px;align-items:start">
       <div style="padding:20px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
-        <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Send a shoutout to</div>
-        <select onChange="{{ pickRecipient }}" style="width:100%;margin-top:10px;height:42px;padding:0 12px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:10px">
+        <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Send a shoutout to</div>
+        <select onChange="{{ pickRecipient }}" style="width:100%;margin-top:10px;height:42px;padding:0 12px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:10px">
           <option value="">Select a student</option>
           <sc-for list="{{ roster }}" as="s" hint-placeholder-count="4">
             <option value="{{ s.name }}">{{ s.name }}</option>
           </sc-for>
         </select>
-        <div style="margin-top:18px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Pick a template</div>
+        <div style="margin-top:14px;font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Pick a template</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
           <sc-for list="{{ templates }}" as="t" hint-placeholder-count="6">
-            <button type="button" onClick="{{ t.pick }}" style="text-align:left;white-space:normal;padding:11px 12px;font:600 14.5px/1.25 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ t.fg }};background:{{ t.bg }};border:1px solid {{ t.bc }}">{{ t.label }}</button>
+            <button type="button" onClick="{{ t.pick }}" style="text-align:left;white-space:normal;padding:11px 12px;font:600 16px/1.25 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ t.fg }};background:{{ t.bg }};border:1px solid {{ t.bc }}">{{ t.label }}</button>
           </sc-for>
         </div>
-        <div style="margin-top:18px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Or write a message</div>
-        <textarea onChange="{{ setNote }}" placeholder="Something specific you want to recognise" style="width:100%;margin-top:10px;min-height:78px;padding:12px;font:400 15.5px/1.5 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:10px;resize:vertical"></textarea>
+        <div style="margin-top:14px;font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Or write a message</div>
+        <textarea onChange="{{ setNote }}" placeholder="Something specific you want to recognise" style="width:100%;margin-top:10px;min-height:78px;padding:12px;font:400 17px/1.5 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:10px;resize:vertical"></textarea>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px">
-          <span style="font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost)">{{ noteCount }}</span>
-          <button type="button" onClick="{{ sendShoutout }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Send shoutout</button>
+          <span style="font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost)">{{ noteCount }}</span>
+          <button type="button" onClick="{{ sendShoutout }}" style="height:40px;padding:0 18px;font:600 17px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Send shoutout</button>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:12px">
         <sc-for list="{{ feed }}" as="f" hint-placeholder-count="2">
           <div style="padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
             <div style="display:flex;align-items:center;gap:10px">
-              <div style="flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11.5px/1 var(--st-mono);color:var(--st-paper);background:{{ f.hue }}">{{ f.initials }}</div>
-              <span style="font:600 16px/1.2 var(--st-ui);color:var(--st-ink)">{{ f.name }}</span>
-              <span style="margin-left:auto;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">{{ f.when }}</span>
+              <div style="flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 12px/1 var(--st-mono);color:var(--st-paper);background:{{ f.hue }}">{{ f.initials }}</div>
+              <span style="font:600 17.5px/1.2 var(--st-ui);color:var(--st-ink)">{{ f.name }}</span>
+              <span style="margin-left:auto;font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">{{ f.when }}</span>
             </div>
-            <div style="margin-top:11px;font:500 15px/1.45 var(--st-ui);color:var(--st-accent-text)">{{ f.template }}</div>
-            <div style="margin-top:6px;font:400 15.5px/1.55 var(--st-ui);color:var(--st-body)">{{ f.body }}</div>
+            <div style="margin-top:11px;font:500 16.5px/1.45 var(--st-ui);color:var(--st-accent-text)">{{ f.template }}</div>
+            <div style="margin-top:6px;font:400 17px/1.55 var(--st-ui);color:var(--st-body)">{{ f.body }}</div>
           </div>
         </sc-for>
       </div>
@@ -350,48 +330,48 @@
   </sc-if>
 
   <sc-if value="{{ isStudent }}" hint-placeholder-val="{{ false }}">
-  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
-    <button type="button" onClick="{{ goClass }}" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+  <div style="max-width:1460px;margin:0 auto;padding:20px 40px 40px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goClass }}" style="display:flex;align-items:center;gap:6px;margin-bottom:14px;font:600 16px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       {{ backToClass }}
     </button>
-    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
-      <div style="flex:none;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 24px/1 var(--st-mono);color:var(--st-paper);background:{{ student.hue }}">{{ student.initials }}</div>
+    <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--st-rule)">
+      <div style="flex:none;width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 26px/1 var(--st-mono);color:var(--st-paper);background:{{ student.hue }}">{{ student.initials }}</div>
       <div>
-        <h1 style="margin:0;font:600 42px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ student.name }}</h1>
-        <div style="margin-top:10px;font:400 12px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ student.meta }}</div>
+        <h1 style="margin:0;font:600 46px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ student.name }}</h1>
+        <div style="margin-top:10px;font:400 13px/1.4 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ student.meta }}</div>
       </div>
-      <button type="button" onClick="{{ openBulk }}" style="margin-left:auto;height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Send shoutout</button>
+      <button type="button" onClick="{{ openBulk }}" style="margin-left:auto;height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Send shoutout</button>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:18px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:14px">
       <sc-for list="{{ student.tiles }}" as="t" hint-placeholder-count="4">
-        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
-          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
-          <div style="margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
-          <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+        <div style="padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+          <div style="margin-top:10px;font:600 38px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+          <div style="margin-top:8px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
         </div>
       </sc-for>
     </div>
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px">
-      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Submission history</h2>
-      <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ student.subLine }}</span>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:22px 0 12px">
+      <h2 style="margin:0;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Submission history</h2>
+      <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption);white-space:nowrap">{{ student.subLine }}</span>
     </div>
     <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
-      <div style="display:grid;grid-template-columns:2.2fr 1fr 1.1fr 1fr 1fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Score</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Status</div>
+      <div style="display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Title</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Due</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Score</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Status</div>
       </div>
       <sc-for list="{{ student.history }}" as="h" hint-placeholder-count="4">
-        <div onClick="{{ h.open }}" style="display:grid;grid-template-columns:2.2fr 1fr 1.1fr 1fr 1fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
-          <div style="padding:var(--rowpad,14px 16px);font:600 15.5px/1.3 var(--st-ui);color:var(--st-ink)">{{ h.title }}</div>
-          <div style="padding:var(--rowpad,14px 16px);font:400 14px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ h.due }}</div>
-          <div style="padding:var(--rowpad,14px 16px);font:400 14px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ h.submitted }}</div>
-          <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ h.score }}</div>
+        <div onClick="{{ h.open }}" style="display:grid;grid-template-columns:2.3fr 1fr 1.1fr 100px 1.05fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+          <div style="padding:var(--rowpad,14px 16px);font:600 17px/1.3 var(--st-ui);color:var(--st-ink)">{{ h.title }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:400 15.5px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ h.due }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:400 15.5px/1.2 var(--st-ui);color:var(--st-muted);white-space:nowrap">{{ h.submitted }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ h.score }}</div>
           <div style="padding:var(--rowpad,14px 16px)">
-            <span style="display:inline-flex;align-items:center;gap:5px;padding:5px 8px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;border-radius:7px;white-space:nowrap;color:{{ h.stFg }};background:{{ h.stBg }};border:1px solid {{ h.stBc }}">
+            <span style="display:inline-flex;align-items:center;gap:5px;padding:5px 8px;font:500 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;border-radius:7px;white-space:nowrap;color:{{ h.stFg }};background:{{ h.stBg }};border:1px solid {{ h.stBc }}">
               <span style="width:6px;height:6px;border-radius:{{ h.stDotR }};background:{{ h.stDot }}"></span>{{ h.status }}
             </span>
           </div>
@@ -402,77 +382,77 @@
   </sc-if>
 
   <sc-if value="{{ isMarking }}" hint-placeholder-val="{{ false }}">
-  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
-    <button type="button" onClick="{{ goClass }}" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+  <div style="max-width:1460px;margin:0 auto;padding:20px 40px 40px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goClass }}" style="display:flex;align-items:center;gap:6px;margin-bottom:14px;font:600 16px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       {{ backToClass }}
     </button>
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--st-rule)">
       <div>
-        <div style="font:500 12px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ paper.eyebrow }}</div>
-        <h1 style="margin:12px 0 0;font:600 42px/1.05 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink);max-width:22ch">{{ paper.title }}</h1>
+        <div style="font:500 13px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ paper.eyebrow }}</div>
+        <h1 style="margin:8px 0 0;font:600 46px/1.05 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink);max-width:22ch">{{ paper.title }}</h1>
       </div>
-      <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Reteach and reset</button>
+      <button type="button" onClick="{{ openSetWork }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Reteach and reset</button>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:18px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:14px">
       <sc-for list="{{ paper.tiles }}" as="t" hint-placeholder-count="4">
-        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
-          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
-          <div style="margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
-          <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+        <div style="padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+          <div style="margin-top:10px;font:600 38px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+          <div style="margin-top:8px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
         </div>
       </sc-for>
     </div>
 
-    <h2 style="margin:26px 0 12px;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Question breakdown</h2>
+    <h2 style="margin:22px 0 12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Question breakdown</h2>
     <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
       <sc-for list="{{ paper.questions }}" as="q" hint-placeholder-count="8">
-        <div style="display:grid;grid-template-columns:52px 1fr 170px 82px;align-items:center;gap:14px;padding:13px 18px;border-top:1px solid var(--st-rule-fact)">
-          <div style="font:500 13.5px/1.2 var(--st-mono);letter-spacing:.1em;color:var(--st-caption)">{{ q.id }}</div>
+        <div style="display:grid;grid-template-columns:56px 1fr 180px 90px;align-items:center;gap:14px;padding:13px 18px;border-top:1px solid var(--st-rule-fact)">
+          <div style="font:500 14.5px/1.2 var(--st-mono);letter-spacing:.1em;color:var(--st-caption)">{{ q.id }}</div>
           <div style="min-width:0">
-            <div style="font:600 15.5px/1.35 var(--st-ui);color:var(--st-ink)">{{ q.text }}</div>
+            <div style="font:600 17px/1.35 var(--st-ui);color:var(--st-ink)">{{ q.text }}</div>
             <sc-if value="{{ q.worst }}" hint-placeholder-val="{{ false }}">
-              <div style="margin-top:6px;font:500 11.5px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-accent-text)">Lowest scoring — worth reteaching</div>
+              <div style="margin-top:6px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-accent-text)">Reteach</div>
             </sc-if>
           </div>
           <div style="height:6px;background:var(--st-num-well);border-radius:999px;overflow:hidden">
             <div style="height:100%;border-radius:999px;width:{{ q.pct }}%;background:{{ q.fill }}"></div>
           </div>
-          <div style="text-align:right;font:500 16.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ q.label }}</div>
+          <div style="text-align:right;font:500 18px/1.2 var(--st-mono);color:var(--st-ink)">{{ q.label }}</div>
         </div>
       </sc-for>
     </div>
 
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:26px 0 12px">
-      <h2 style="margin:0;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Class by question</h2>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:22px 0 12px">
+      <h2 style="margin:0;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Class by question</h2>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <span style="display:flex;align-items:center;gap:6px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:9px;border-radius:50%;background:var(--ks3-ok)"></span>Correct</span>
-        <span style="display:flex;align-items:center;gap:6px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:9px;border-radius:50%;border:1.5px solid var(--st-rule-strong)"></span>Incorrect</span>
-        <span style="display:flex;align-items:center;gap:6px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:2px;background:var(--st-rule-strong)"></span>Not attempted</span>
+        <span style="display:flex;align-items:center;gap:6px;font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:9px;border-radius:50%;background:var(--ks3-ok)"></span>Correct</span>
+        <span style="display:flex;align-items:center;gap:6px;font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:9px;border-radius:50%;border:1.5px solid var(--st-rule-strong)"></span>Incorrect</span>
+        <span style="display:flex;align-items:center;gap:6px;font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:9px;height:2px;background:var(--st-rule-strong)"></span>Not attempted</span>
       </div>
     </div>
     <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
       <div style="overflow-x:auto">
-        <div style="min-width:720px">
-          <div style="display:grid;grid-template-columns:205px repeat(8,1fr) 84px;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
-            <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Student</div>
+        <div style="min-width:780px">
+          <div style="display:grid;grid-template-columns:225px repeat(8,1fr) 92px;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+            <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Student</div>
             <sc-for list="{{ paper.qids }}" as="q" hint-placeholder-count="8">
-              <div style="padding:12px 0;text-align:center;font:500 12px/1.2 var(--st-mono);letter-spacing:.08em;color:var(--st-caption)">{{ q.id }}</div>
+              <div style="padding:12px 0;text-align:center;font:500 13px/1.2 var(--st-mono);letter-spacing:.08em;color:var(--st-caption)">{{ q.id }}</div>
             </sc-for>
-            <div style="padding:12px 12px 12px 0;text-align:right;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Mark</div>
+            <div style="padding:12px 12px 12px 0;text-align:right;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Mark</div>
           </div>
           <sc-for list="{{ paper.grid }}" as="r" hint-placeholder-count="8">
-            <div onClick="{{ r.open }}" style="display:grid;grid-template-columns:205px repeat(8,1fr) 84px;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+            <div onClick="{{ r.open }}" style="display:grid;grid-template-columns:225px repeat(8,1fr) 92px;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
               <div style="display:flex;align-items:center;gap:10px;padding:11px 16px;min-width:0">
-                <div style="flex:none;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11px/1 var(--st-mono);color:var(--st-paper);background:{{ r.hue }}">{{ r.initials }}</div>
-                <span style="font:600 15px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
+                <div style="flex:none;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11.5px/1 var(--st-mono);color:var(--st-paper);background:{{ r.hue }}">{{ r.initials }}</div>
+                <span style="font:600 16.5px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
               </div>
               <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="8">
                 <div style="display:flex;align-items:center;justify-content:center;padding:11px 0">
                   <span style="display:block;width:{{ c.w }}px;height:{{ c.h }}px;border-radius:{{ c.r }};background:{{ c.bg }};border:{{ c.bd }}"></span>
                 </div>
               </sc-for>
-              <div style="padding:11px 12px 11px 0;text-align:right;font:500 15px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.score }}</div>
+              <div style="padding:11px 12px 11px 0;text-align:right;font:500 16.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.score }}</div>
             </div>
           </sc-for>
         </div>
@@ -482,47 +462,47 @@
   </sc-if>
 
   <sc-if value="{{ isDigest }}" hint-placeholder-val="{{ false }}">
-  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
-    <button type="button" onClick="{{ goBackFromDigest }}" class="noprint" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+  <div style="max-width:1460px;margin:0 auto;padding:20px 40px 40px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goBackFromDigest }}" class="noprint" style="display:flex;align-items:center;gap:6px;margin-bottom:14px;font:600 16px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       Back
     </button>
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--st-rule)">
       <div>
-        <div style="font:500 12px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Mon 17 – Fri 21 Aug 2026</div>
-        <h1 style="margin:12px 0 0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ digestTitle }}</h1>
-        <div style="margin-top:10px;font:400 16.5px/1.5 var(--st-ui);color:var(--st-muted)">{{ digestSub }}</div>
+        <div style="font:500 13px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Mon 17 – Fri 21 Aug 2026</div>
+        <h1 style="margin:8px 0 0;font:600 52px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">{{ digestTitle }}</h1>
+        <div style="margin-top:8px;font:400 18px/1.5 var(--st-ui);color:var(--st-muted)">{{ digestSub }}</div>
       </div>
-      <button type="button" onClick="{{ doPrint }}" class="noprint" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Print</button>
+      <button type="button" onClick="{{ doPrint }}" class="noprint" style="height:40px;padding:0 18px;font:600 17px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Print</button>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:18px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:14px">
       <sc-for list="{{ digestTiles }}" as="t" hint-placeholder-count="4">
-        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
-          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
-          <div style="margin-top:12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
-          <div style="margin-top:8px;font:400 14px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+        <div style="padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+          <div style="margin-top:10px;font:600 38px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+          <div style="margin-top:8px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
         </div>
       </sc-for>
     </div>
-    <h2 style="margin:26px 0 12px;font:600 29px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ digestTableTitle }}</h2>
+    <h2 style="margin:22px 0 12px;font:600 33px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ digestTableTitle }}</h2>
     <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
-      <div style="display:grid;grid-template-columns:1.7fr 1fr 105px 105px 1.4fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ digestColTitle }}</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Mean</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">On time</div>
-        <div style="padding:12px 16px;font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Needs a look</div>
+      <div style="display:grid;grid-template-columns:1.5fr 1fr 115px 115px 1.5fr;background:var(--st-num-well);border-bottom:1px solid var(--st-rule-soft)">
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ digestColTitle }}</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Submitted</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Mean</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">On time</div>
+        <div style="padding:12px 16px;font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">Needs a look</div>
       </div>
       <sc-for list="{{ digestRows }}" as="d" hint-placeholder-count="9">
-        <div onClick="{{ d.open }}" style="display:grid;grid-template-columns:1.7fr 1fr 105px 105px 1.4fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
+        <div onClick="{{ d.open }}" style="display:grid;grid-template-columns:1.5fr 1fr 115px 115px 1.5fr;align-items:center;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
           <div style="padding:var(--rowpad,14px 16px);display:flex;align-items:center;gap:9px;min-width:0">
-            <span style="font:600 16.5px/1.25 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);white-space:normal;text-wrap:pretty">{{ d.code }}</span>
-            <span style="flex:none;font:400 11.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-ghost)">{{ d.ks }}</span>
+            <span style="font:600 18px/1.25 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink);white-space:normal;text-wrap:pretty">{{ d.code }}</span>
+            <span style="flex:none;font:400 12px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-ghost)">{{ d.ks }}</span>
           </div>
-          <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.sub }}</div>
-          <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.mean }}</div>
-          <div style="padding:var(--rowpad,14px 16px);font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.ontime }}</div>
-          <div style="padding:var(--rowpad,14px 16px);font:400 14.5px/1.3 var(--st-ui);color:var(--st-body)">{{ d.needs }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.sub }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.mean }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ d.ontime }}</div>
+          <div style="padding:var(--rowpad,14px 16px);font:400 16px/1.3 var(--st-ui);color:var(--st-body)">{{ d.needs }}</div>
         </div>
       </sc-for>
     </div>
@@ -530,18 +510,18 @@
   </sc-if>
 
   <sc-if value="{{ isImport }}" hint-placeholder-val="{{ false }}">
-  <div style="max-width:1040px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
-    <button type="button" onClick="{{ goClasses }}" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+  <div style="max-width:1100px;margin:0 auto;padding:20px 40px 40px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goClasses }}" style="display:flex;align-items:center;gap:6px;margin-bottom:14px;font:600 16px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       Back to my classes
     </button>
-    <h1 style="margin:0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">Import students</h1>
+    <h1 style="margin:0;font:600 52px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">Import students</h1>
     <div style="display:flex;gap:8px;margin:20px 0 16px;flex-wrap:wrap">
       <sc-for list="{{ importSteps }}" as="s" hint-placeholder-count="3">
         <div style="flex:1;min-width:180px;padding:13px 15px;border-radius:10px;background:{{ s.bg }};border:1px solid {{ s.bc }}">
           <div style="display:flex;align-items:center;gap:9px">
-            <span style="flex:none;width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font:500 11.5px/1 var(--st-mono);color:{{ s.numFg }};background:{{ s.numBg }}">{{ s.n }}</span>
-            <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:{{ s.fg }}">{{ s.label }}</span>
+            <span style="flex:none;width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font:500 12px/1 var(--st-mono);color:{{ s.numFg }};background:{{ s.numBg }}">{{ s.n }}</span>
+            <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;color:{{ s.fg }}">{{ s.label }}</span>
           </div>
         </div>
       </sc-for>
@@ -549,11 +529,11 @@
 
     <sc-if value="{{ imp1 }}" hint-placeholder-val="{{ true }}">
       <div style="padding:34px 26px;text-align:center;background:var(--st-paper);border:1px dashed var(--st-rule-strong);border-radius:11px">
-        <div style="font:600 22px/1.3 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">Drop a CSV of your class list</div>
-        <div style="margin:10px auto 0;max-width:44ch;font:400 15.5px/1.55 var(--st-ui);color:var(--st-muted)">One row per student. First name, last name and email are required; year group and class code are matched if present.</div>
+        <div style="font:600 24px/1.3 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">Drop a CSV of your class list</div>
+        <div style="margin:10px auto 0;max-width:44ch;font:400 17px/1.55 var(--st-ui);color:var(--st-muted)">First name, last name and email required.</div>
         <div style="display:flex;justify-content:center;gap:9px;margin-top:20px;flex-wrap:wrap">
-          <button type="button" onClick="{{ impNext }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Choose file</button>
-          <button type="button" onClick="{{ sampleCsv }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Download template</button>
+          <button type="button" onClick="{{ impNext }}" style="height:40px;padding:0 18px;font:600 17px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Choose file</button>
+          <button type="button" onClick="{{ sampleCsv }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Download template</button>
         </div>
       </div>
     </sc-if>
@@ -561,98 +541,98 @@
     <sc-if value="{{ imp2 }}" hint-placeholder-val="{{ false }}">
       <div style="background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--st-rule-soft)">
-          <span style="font:600 16.5px/1.2 var(--st-ui);color:var(--st-ink)">year8-autumn.csv</span>
-          <span style="font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">27 rows · 5 columns</span>
+          <span style="font:600 18px/1.2 var(--st-ui);color:var(--st-ink)">year8-autumn.csv</span>
+          <span style="font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-ghost);white-space:nowrap">27 rows · 5 columns</span>
         </div>
         <sc-for list="{{ mapRows }}" as="m" hint-placeholder-count="5">
           <div style="display:grid;grid-template-columns:1fr 24px 1fr 1.2fr;align-items:center;gap:14px;padding:13px 18px;border-top:1px solid var(--st-rule-fact)">
-            <div style="font:500 14.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ m.col }}</div>
+            <div style="font:500 16px/1.2 var(--st-mono);color:var(--st-ink)">{{ m.col }}</div>
             <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true" style="color:var(--st-rule-strong)"><path d="M1 6h12M9.5 2.5L13 6l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            <div style="font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink)">{{ m.field }}</div>
-            <div style="font:400 14px/1.4 var(--st-ui);color:{{ m.noteFg }}">{{ m.note }}</div>
+            <div style="font:600 17px/1.2 var(--st-ui);color:var(--st-ink)">{{ m.field }}</div>
+            <div style="font:400 15.5px/1.4 var(--st-ui);color:{{ m.noteFg }}">{{ m.note }}</div>
           </div>
         </sc-for>
       </div>
-      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
-        <button type="button" onClick="{{ impBack }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">Back</button>
-        <button type="button" onClick="{{ impNext }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Check rows</button>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:14px">
+        <button type="button" onClick="{{ impBack }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">Back</button>
+        <button type="button" onClick="{{ impNext }}" style="height:40px;padding:0 18px;font:600 17px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Check rows</button>
       </div>
     </sc-if>
 
     <sc-if value="{{ imp3 }}" hint-placeholder-val="{{ false }}">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px">
-        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
-          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">New students</div>
-          <div style="margin-top:12px;font:600 33px/1 var(--st-display);color:var(--st-ink)">24</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px">
+        <div style="padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">New students</div>
+          <div style="margin-top:10px;font:600 38px/1 var(--st-display);color:var(--st-ink)">24</div>
         </div>
-        <div style="padding:18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
-          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Matched existing</div>
-          <div style="margin-top:12px;font:600 33px/1 var(--st-display);color:var(--st-ink)">2</div>
+        <div style="padding:16px 18px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
+          <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Matched existing</div>
+          <div style="margin-top:10px;font:600 38px/1 var(--st-display);color:var(--st-ink)">2</div>
         </div>
         <div style="padding:18px;background:var(--st-chip-tint);border:1px solid var(--st-chip-tint-border);border-radius:11px">
-          <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-accent-text)">Needs attention</div>
-          <div style="margin-top:12px;font:600 33px/1 var(--st-display);color:var(--st-ink)">1</div>
+          <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-accent-text)">Needs attention</div>
+          <div style="margin-top:10px;font:600 38px/1 var(--st-display);color:var(--st-ink)">1</div>
         </div>
       </div>
       <div style="margin-top:16px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px;overflow:hidden">
         <sc-for list="{{ previewRows }}" as="p" hint-placeholder-count="4">
           <div style="display:grid;grid-template-columns:1.2fr 1.6fr 90px 1.4fr;align-items:center;gap:12px;padding:13px 18px;border-top:1px solid var(--st-rule-fact)">
-            <div style="font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink)">{{ p.name }}</div>
-            <div style="font:400 14.5px/1.2 var(--st-ui);color:var(--st-muted);overflow:hidden;text-overflow:ellipsis">{{ p.email }}</div>
-            <div style="font:500 13.5px/1.2 var(--st-mono);color:var(--st-caption)">{{ p.klass }}</div>
-            <div style="font:500 13.5px/1.3 var(--st-mono);letter-spacing:.08em;text-transform:uppercase;color:{{ p.stFg }}">{{ p.status }}</div>
+            <div style="font:600 17px/1.2 var(--st-ui);color:var(--st-ink)">{{ p.name }}</div>
+            <div style="font:400 16px/1.2 var(--st-ui);color:var(--st-muted);overflow:hidden;text-overflow:ellipsis">{{ p.email }}</div>
+            <div style="font:500 14.5px/1.2 var(--st-mono);color:var(--st-caption)">{{ p.klass }}</div>
+            <div style="font:500 14.5px/1.3 var(--st-mono);letter-spacing:.08em;text-transform:uppercase;color:{{ p.stFg }}">{{ p.status }}</div>
           </div>
         </sc-for>
       </div>
-      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px">
-        <button type="button" onClick="{{ impBack }}" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">Back</button>
-        <button type="button" onClick="{{ impDone }}" style="height:40px;padding:0 18px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Import 26 students</button>
+      <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:14px">
+        <button type="button" onClick="{{ impBack }}" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">Back</button>
+        <button type="button" onClick="{{ impDone }}" style="height:40px;padding:0 18px;font:600 17px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Import 26 students</button>
       </div>
     </sc-if>
   </div>
   </sc-if>
 
   <sc-if value="{{ isInsights }}" hint-placeholder-val="{{ false }}">
-  <div style="max-width:1340px;margin:0 auto;padding:22px 32px 48px;animation:shin .18s ease-out">
-    <button type="button" onClick="{{ goBackFromInsights }}" class="noprint" style="display:flex;align-items:center;gap:6px;margin-bottom:20px;font:600 14.5px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
+  <div style="max-width:1460px;margin:0 auto;padding:20px 40px 40px;animation:shin .18s ease-out">
+    <button type="button" onClick="{{ goBackFromInsights }}" class="noprint" style="display:flex;align-items:center;gap:6px;margin-bottom:14px;font:600 16px/1.2 var(--st-ui);color:var(--st-muted);background:none;border:none;padding:0;cursor:pointer" style-hover="color:var(--st-ink)">
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       Back
     </button>
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--st-rule)">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--st-rule)">
       <div>
-        <div style="font:500 12px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Week of Mon 17 Aug 2026</div>
-        <h1 style="margin:12px 0 0;font:600 48px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">Charts</h1>
-        <div style="margin-top:10px;font:400 16.5px/1.5 var(--st-ui);color:var(--st-muted)">{{ insSub }}</div>
+        <div style="font:500 13px/1.4 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">Week of Mon 17 Aug 2026</div>
+        <h1 style="margin:8px 0 0;font:600 52px/1 var(--st-display);letter-spacing:-0.035em;color:var(--st-ink)">Charts</h1>
+        <div style="margin-top:8px;font:400 18px/1.5 var(--st-ui);color:var(--st-muted)">{{ insSub }}</div>
       </div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="noprint" style="display:flex;gap:3px;padding:3px;background:var(--st-seg-bg);border-radius:10px">
           <sc-for list="{{ insScopeTabs }}" as="t" hint-placeholder-count="2">
-            <button type="button" onClick="{{ t.pick }}" style="padding:7px 14px;font:500 12.5px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent;border-radius:8px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border-color:{{ t.bc }}">{{ t.label }}</button>
+            <button type="button" onClick="{{ t.pick }}" style="padding:7px 14px;font:500 13.5px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;border:1px solid transparent;border-radius:8px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border-color:{{ t.bc }}">{{ t.label }}</button>
           </sc-for>
         </div>
-        <button type="button" onClick="{{ doPrint }}" class="noprint" style="height:40px;padding:0 16px;font:600 15.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Print</button>
+        <button type="button" onClick="{{ doPrint }}" class="noprint" style="height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer" style-hover="border-color:var(--st-edge)">Print</button>
       </div>
     </div>
 
     <div class="noprint" style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 18px">
       <sc-for list="{{ insChips }}" as="c" hint-placeholder-count="6">
-        <button type="button" onClick="{{ c.pick }}" style="padding:9px 14px;font:600 14.5px/1.2 var(--st-ui);border-radius:999px;cursor:pointer;color:{{ c.fg }};background:{{ c.bg }};border:1px solid {{ c.bc }}">{{ c.label }}</button>
+        <button type="button" onClick="{{ c.pick }}" style="padding:9px 14px;font:600 16px/1.2 var(--st-ui);border-radius:999px;cursor:pointer;color:{{ c.fg }};background:{{ c.bg }};border:1px solid {{ c.bc }}">{{ c.label }}</button>
       </sc-for>
     </div>
 
     <div style="padding:24px;background:var(--st-paper);border:1px solid var(--st-rule-soft);border-radius:11px">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap">
-        <h2 style="margin:0;font:600 29px/1.15 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ chart.title }}</h2>
-        <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ chart.scopeLabel }}</span>
+        <h2 style="margin:0;font:600 33px/1.15 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ chart.title }}</h2>
+        <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--st-caption)">{{ chart.scopeLabel }}</span>
       </div>
-      <div style="margin-top:10px;font:400 16px/1.5 var(--st-ui);color:var(--st-body)">{{ chart.note }}</div>
+      <div style="margin-top:10px;font:400 17.5px/1.5 var(--st-ui);color:var(--st-body)">{{ chart.note }}</div>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin-top:20px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:20px">
         <sc-for list="{{ chart.tiles }}" as="t" hint-placeholder-count="3">
           <div style="padding:14px 16px;background:var(--st-num-well);border-radius:10px">
-            <div style="font:500 11.5px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
-            <div style="margin-top:9px;font:600 24px/1.1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
-            <div style="margin-top:6px;font:400 13.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
+            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">{{ t.label }}</div>
+            <div style="margin-top:9px;font:600 26px/1.1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">{{ t.value }}</div>
+            <div style="margin-top:6px;font:400 14.5px/1.4 var(--st-ui);color:var(--st-muted)">{{ t.sub }}</div>
           </div>
         </sc-for>
       </div>
@@ -662,13 +642,13 @@
           <sc-for list="{{ chart.rows }}" as="r" hint-placeholder-count="8">
             <div style="display:grid;grid-template-columns:220px 1fr 96px;align-items:center;gap:14px">
               <div style="min-width:0">
-                <div style="font:600 15.5px/1.25 var(--st-ui);color:var(--st-ink)">{{ r.label }}</div>
-                <div style="margin-top:5px;font:400 11.5px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ r.sub }}</div>
+                <div style="font:600 17px/1.25 var(--st-ui);color:var(--st-ink)">{{ r.label }}</div>
+                <div style="margin-top:5px;font:400 12px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ r.sub }}</div>
               </div>
               <div style="height:12px;background:var(--st-num-well);border-radius:999px;overflow:hidden">
                 <div style="height:100%;border-radius:999px;width:{{ r.pct }}%;background:{{ r.fill }}"></div>
               </div>
-              <div style="text-align:right;font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.value }}</div>
+              <div style="text-align:right;font:500 17px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.value }}</div>
             </div>
           </sc-for>
         </div>
@@ -678,7 +658,7 @@
         <div style="display:flex;align-items:flex-end;gap:14px;height:210px;margin-top:26px;padding-bottom:10px;border-bottom:1px solid var(--st-rule)">
           <sc-for list="{{ chart.cols }}" as="c" hint-placeholder-count="8">
             <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%">
-              <span style="font:500 14px/1.2 var(--st-mono);color:var(--st-ink)">{{ c.value }}</span>
+              <span style="font:500 15.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ c.value }}</span>
               <div style="flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center">
                 <div style="width:100%;max-width:54px;min-height:3px;border-radius:6px 6px 0 0;height:{{ c.pct }}%;background:{{ c.fill }}"></div>
               </div>
@@ -687,7 +667,7 @@
         </div>
         <div style="display:flex;gap:14px;margin-top:10px">
           <sc-for list="{{ chart.cols }}" as="c" hint-placeholder-count="8">
-            <div style="flex:1;text-align:center;font:400 12px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:{{ c.labelFg }}">{{ c.label }}</div>
+            <div style="flex:1;text-align:center;font:400 13px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:{{ c.labelFg }}">{{ c.label }}</div>
           </sc-for>
         </div>
       </sc-if>
@@ -697,15 +677,15 @@
           <sc-for list="{{ chart.stacks }}" as="k" hint-placeholder-count="8">
             <div style="display:grid;grid-template-columns:220px 1fr 165px;align-items:center;gap:14px">
               <div style="min-width:0">
-                <div style="font:600 15.5px/1.25 var(--st-ui);color:var(--st-ink)">{{ k.label }}</div>
-                <div style="margin-top:5px;font:400 11.5px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ k.sub }}</div>
+                <div style="font:600 17px/1.25 var(--st-ui);color:var(--st-ink)">{{ k.label }}</div>
+                <div style="margin-top:5px;font:400 12px/1.3 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ k.sub }}</div>
               </div>
               <div style="display:flex;height:14px;background:var(--st-num-well);border-radius:999px;overflow:hidden">
                 <sc-for list="{{ k.segs }}" as="g" hint-placeholder-count="2">
                   <div style="height:100%;width:{{ g.pct }}%;background:{{ g.fill }}"></div>
                 </sc-for>
               </div>
-              <div style="text-align:right;font:500 13.5px/1.3 var(--st-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink)">{{ k.right }}</div>
+              <div style="text-align:right;font:500 14.5px/1.3 var(--st-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--st-ink)">{{ k.right }}</div>
             </div>
           </sc-for>
         </div>
@@ -714,7 +694,7 @@
       <sc-if value="{{ chart.hasLegend }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;gap:16px;margin-top:20px;flex-wrap:wrap">
           <sc-for list="{{ chart.legend }}" as="l" hint-placeholder-count="3">
-            <span style="display:flex;align-items:center;gap:7px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:10px;height:10px;border-radius:3px;background:{{ l.fill }}"></span>{{ l.label }}</span>
+            <span style="display:flex;align-items:center;gap:7px;font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)"><span style="width:10px;height:10px;border-radius:3px;background:{{ l.fill }}"></span>{{ l.label }}</span>
           </sc-for>
         </div>
       </sc-if>
@@ -727,7 +707,7 @@
       <div onClick="{{ stop }}" style="width:720px;max-width:100%;max-height:86vh;overflow:auto;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:14px;box-shadow:var(--st-shadow-frame)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px;border-bottom:1px solid var(--st-rule-soft)">
           <div>
-            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ swEyebrow }}</div>
+            <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ swEyebrow }}</div>
             <div style="margin-top:9px;font:600 27px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Set work</div>
           </div>
           <button type="button" onClick="{{ closeModal }}" style="flex:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer;color:var(--st-muted)">
@@ -737,50 +717,50 @@
 
         <div style="padding:22px 24px">
           <sc-if value="{{ sw1 }}" hint-placeholder-val="{{ true }}">
-            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Pick a topic</div>
+            <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Pick a topic</div>
             <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
               <sc-for list="{{ topics }}" as="t" hint-placeholder-count="5">
                 <button type="button" onClick="{{ t.pick }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:14px 16px;border-radius:10px;cursor:pointer;background:{{ t.bg }};border:1px solid {{ t.bc }}">
                   <span>
-                    <span style="display:block;font:600 16.5px/1.25 var(--st-ui);color:var(--st-ink);white-space:normal">{{ t.name }}</span>
-                    <span style="display:block;margin-top:5px;font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)">{{ t.unit }}</span>
+                    <span style="display:block;font:600 18px/1.25 var(--st-ui);color:var(--st-ink);white-space:normal">{{ t.name }}</span>
+                    <span style="display:block;margin-top:5px;font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)">{{ t.unit }}</span>
                   </span>
-                  <span style="font:500 12.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:{{ t.tagFg }}">{{ t.tag }}</span>
+                  <span style="font:500 13.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:{{ t.tagFg }}">{{ t.tag }}</span>
                 </button>
               </sc-for>
             </div>
           </sc-if>
 
           <sc-if value="{{ sw2 }}" hint-placeholder-val="{{ false }}">
-            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Questions</div>
+            <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Questions</div>
             <div style="display:flex;gap:8px;margin-top:12px">
               <sc-for list="{{ swCounts }}" as="q" hint-placeholder-count="3">
-                <button type="button" onClick="{{ q.pick }}" style="flex:1;padding:14px;font:500 16.5px/1.2 var(--st-mono);border-radius:10px;cursor:pointer;color:{{ q.fg }};background:{{ q.bg }};border:1px solid {{ q.bc }}">{{ q.label }}</button>
+                <button type="button" onClick="{{ q.pick }}" style="flex:1;padding:14px;font:500 18px/1.2 var(--st-mono);border-radius:10px;cursor:pointer;color:{{ q.fg }};background:{{ q.bg }};border:1px solid {{ q.bc }}">{{ q.label }}</button>
               </sc-for>
             </div>
-            <div style="margin-top:22px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Due</div>
+            <div style="margin-top:22px;font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Due</div>
             <div style="display:flex;gap:8px;margin-top:12px">
               <sc-for list="{{ swDays }}" as="d" hint-placeholder-count="5">
-                <button type="button" onClick="{{ d.pick }}" style="flex:1;padding:13px 0;font:500 13.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;border-radius:10px;cursor:pointer;color:{{ d.fg }};background:{{ d.bg }};border:1px solid {{ d.bc }}">{{ d.label }}</button>
+                <button type="button" onClick="{{ d.pick }}" style="flex:1;padding:13px 0;font:500 14.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;border-radius:10px;cursor:pointer;color:{{ d.fg }};background:{{ d.bg }};border:1px solid {{ d.bc }}">{{ d.label }}</button>
               </sc-for>
             </div>
-            <div style="margin-top:22px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Release</div>
+            <div style="margin-top:22px;font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Release</div>
             <div style="display:flex;gap:8px;margin-top:12px">
               <sc-for list="{{ swRelease }}" as="r" hint-placeholder-count="2">
-                <button type="button" onClick="{{ r.pick }}" style="flex:1;padding:14px;font:600 15.5px/1.2 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ r.fg }};background:{{ r.bg }};border:1px solid {{ r.bc }}">{{ r.label }}</button>
+                <button type="button" onClick="{{ r.pick }}" style="flex:1;padding:14px;font:600 17px/1.2 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ r.fg }};background:{{ r.bg }};border:1px solid {{ r.bc }}">{{ r.label }}</button>
               </sc-for>
             </div>
           </sc-if>
 
           <sc-if value="{{ sw3 }}" hint-placeholder-val="{{ false }}">
-            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Set this to</div>
+            <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Set this to</div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:12px">
               <sc-for list="{{ swClassList }}" as="c" hint-placeholder-count="8">
                 <button type="button" onClick="{{ c.toggle }}" style="display:flex;align-items:center;gap:11px;text-align:left;padding:12px 14px;border-radius:10px;cursor:pointer;background:{{ c.bg }};border:1px solid {{ c.bc }}">
                   <span style="flex:none;width:16px;height:16px;border-radius:5px;background:{{ c.boxBg }};border:1.5px solid {{ c.boxBc }}"></span>
                   <span>
-                    <span style="display:block;font:600 16px/1.2 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">{{ c.code }}</span>
-                    <span style="display:block;margin-top:5px;font:400 11.5px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ c.sub }}</span>
+                    <span style="display:block;font:600 17.5px/1.2 var(--st-display);letter-spacing:-0.02em;color:var(--st-ink)">{{ c.code }}</span>
+                    <span style="display:block;margin-top:5px;font:400 12px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ c.sub }}</span>
                   </span>
                 </button>
               </sc-for>
@@ -789,10 +769,10 @@
         </div>
 
         <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 24px;border-top:1px solid var(--st-rule-soft);background:var(--st-crumb-bg)">
-          <div style="font:400 12.5px/1.4 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ swSummary }}</div>
+          <div style="font:400 13.5px/1.4 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ swSummary }}</div>
           <div style="display:flex;gap:9px;flex:none">
-            <button type="button" onClick="{{ swBack }}" style="height:38px;padding:0 15px;font:600 15px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">{{ swBackLabel }}</button>
-            <button type="button" onClick="{{ swNext }}" style="height:38px;padding:0 18px;font:600 15px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">{{ swNextLabel }}</button>
+            <button type="button" onClick="{{ swBack }}" style="height:38px;padding:0 15px;font:600 16.5px/1.2 var(--st-ui);color:var(--st-ink);background:var(--st-paper);border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer">{{ swBackLabel }}</button>
+            <button type="button" onClick="{{ swNext }}" style="height:38px;padding:0 18px;font:600 16.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">{{ swNextLabel }}</button>
           </div>
         </div>
       </div>
@@ -804,7 +784,7 @@
       <div onClick="{{ stop }}" style="width:720px;max-width:100%;max-height:86vh;overflow:auto;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:14px;box-shadow:var(--st-shadow-frame)">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px 24px;border-bottom:1px solid var(--st-rule-soft)">
           <div>
-            <div style="font:500 12px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ klass.code }} · Shoutouts</div>
+            <div style="font:500 13px/1.2 var(--st-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--st-caption)">{{ klass.code }} · Shoutouts</div>
             <div style="margin-top:9px;font:600 27px/1 var(--st-display);letter-spacing:-0.03em;color:var(--st-ink)">Send to several students</div>
           </div>
           <button type="button" onClick="{{ closeModal }}" style="flex:none;width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--st-btn-border);border-radius:9px;cursor:pointer;color:var(--st-muted)">
@@ -813,26 +793,26 @@
         </div>
         <div style="padding:22px 24px">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-            <span style="font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Students</span>
-            <button type="button" onClick="{{ bulkTop }}" style="font:600 14px/1.2 var(--st-ui);color:var(--st-accent-text);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Select all on time this week</button>
+            <span style="font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Students</span>
+            <button type="button" onClick="{{ bulkTop }}" style="font:600 15.5px/1.2 var(--st-ui);color:var(--st-accent-text);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Select all on time this week</button>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:12px">
             <sc-for list="{{ bulkStudents }}" as="s" hint-placeholder-count="12">
-              <button type="button" onClick="{{ s.toggle }}" style="display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;cursor:pointer;font:600 14.5px/1.2 var(--st-ui);color:{{ s.fg }};background:{{ s.bg }};border:1px solid {{ s.bc }}">
+              <button type="button" onClick="{{ s.toggle }}" style="display:flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;cursor:pointer;font:600 16px/1.2 var(--st-ui);color:{{ s.fg }};background:{{ s.bg }};border:1px solid {{ s.bc }}">
                 <span style="width:7px;height:7px;border-radius:50%;background:{{ s.dot }}"></span>{{ s.name }}
               </button>
             </sc-for>
           </div>
-          <div style="margin-top:22px;font:500 12px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Template</div>
+          <div style="margin-top:22px;font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--st-caption)">Template</div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin-top:12px">
             <sc-for list="{{ templates }}" as="t" hint-placeholder-count="6">
-              <button type="button" onClick="{{ t.pick }}" style="text-align:left;white-space:normal;padding:12px 13px;font:600 15px/1.25 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ t.fg }};background:{{ t.bg }};border:1px solid {{ t.bc }}">{{ t.label }}</button>
+              <button type="button" onClick="{{ t.pick }}" style="text-align:left;white-space:normal;padding:12px 13px;font:600 16.5px/1.25 var(--st-ui);border-radius:10px;cursor:pointer;color:{{ t.fg }};background:{{ t.bg }};border:1px solid {{ t.bc }}">{{ t.label }}</button>
             </sc-for>
           </div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 24px;border-top:1px solid var(--st-rule-soft);background:var(--st-crumb-bg)">
-          <div style="font:400 12.5px/1.4 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ bulkSummary }}</div>
-          <button type="button" onClick="{{ sendBulk }}" style="flex:none;height:38px;padding:0 18px;font:600 15px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Send shoutouts</button>
+          <div style="font:400 13.5px/1.4 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ bulkSummary }}</div>
+          <button type="button" onClick="{{ sendBulk }}" style="flex:none;height:38px;padding:0 18px;font:600 16.5px/1.2 var(--st-ui);color:var(--st-paper);background:var(--st-accent-text);border:none;border-radius:9px;cursor:pointer" style-hover="background:var(--st-accent-hover)">Send shoutouts</button>
         </div>
       </div>
     </div>
@@ -843,19 +823,19 @@
       <div onClick="{{ stop }}" style="width:620px;max-width:100%;background:var(--st-paper);border:1px solid var(--st-edge);border-radius:14px;box-shadow:var(--st-shadow-frame);overflow:hidden">
         <div style="display:flex;align-items:center;gap:11px;padding:16px 18px;border-bottom:1px solid var(--st-rule-soft)">
           <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true" style="flex:none;color:var(--st-caption)"><circle cx="6" cy="6" r="4.2" stroke="currentColor" stroke-width="1.5"></circle><path d="M9.3 9.3L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
-          <input onChange="{{ setSearch }}" placeholder="Search students across all 12 classes" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font:400 17.5px/1.2 var(--st-ui);color:var(--st-ink)">
+          <input onChange="{{ setSearch }}" placeholder="Search students across all 12 classes" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font:400 19px/1.2 var(--st-ui);color:var(--st-ink)">
         </div>
         <div style="max-height:340px;overflow:auto">
           <sc-for list="{{ searchResults }}" as="r" hint-placeholder-count="5">
             <div onClick="{{ r.open }}" style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-top:1px solid var(--st-rule-fact);cursor:pointer" style-hover="background:var(--st-note-bg)">
-              <div style="flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 11.5px/1 var(--st-mono);color:var(--st-paper);background:{{ r.hue }}">{{ r.initials }}</div>
-              <span style="font:600 16px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
-              <span style="flex:none;font:500 12px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ r.klass }}</span>
-              <span style="margin-left:auto;flex:none;font:500 14.5px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.avg }}</span>
+              <div style="flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 12px/1 var(--st-mono);color:var(--st-paper);background:{{ r.hue }}">{{ r.initials }}</div>
+              <span style="font:600 17.5px/1.2 var(--st-ui);color:var(--st-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
+              <span style="flex:none;font:500 13px/1.2 var(--st-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--st-caption)">{{ r.klass }}</span>
+              <span style="margin-left:auto;flex:none;font:500 16px/1.2 var(--st-mono);color:var(--st-ink)">{{ r.avg }}</span>
             </div>
           </sc-for>
         </div>
-        <div style="padding:11px 18px;border-top:1px solid var(--st-rule-soft);background:var(--st-crumb-bg);font:400 12px/1.4 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)">{{ searchFoot }}</div>
+        <div style="padding:11px 18px;border-top:1px solid var(--st-rule-soft);background:var(--st-crumb-bg);font:400 13px/1.4 var(--st-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--st-caption)">{{ searchFoot }}</div>
       </div>
     </div>
   </sc-if>
@@ -863,7 +843,7 @@
   <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
     <div style="position:fixed;left:50%;bottom:28px;z-index:80;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:13px 18px;background:var(--st-ink);border-radius:11px;box-shadow:var(--st-shadow-pop);animation:tin .2s ease-out">
       <span style="flex:none;width:7px;height:7px;border-radius:50%;background:var(--ks3-ok)"></span>
-      <span style="font:500 14.5px/1.3 var(--st-ui);color:var(--st-cream)">{{ toast }}</span>
+      <span style="font:500 16px/1.3 var(--st-ui);color:var(--st-cream)">{{ toast }}</span>
     </div>
   </sc-if>
 </div>
@@ -1407,7 +1387,7 @@ class Component extends DCLogic {
       code: c.code,
       subject: c.subject,
       dots: this.dotsFor(c.subject),
-      meta: 'Year ' + c.year + ' · ' + c.ks + ' · 2026–27',
+      meta: c.n ? c.n + ' students' : 'No students yet',
       live: c.state === 'live',
       noWork: c.state === 'nowork',
       empty: c.state === 'empty',
@@ -1600,7 +1580,7 @@ class Component extends DCLogic {
 
     return {
       teacher,
-      rowPad: compact ? '10px 18px' : '13px 18px',
+      rowPad: compact ? '10px 18px' : '14px 18px',
       showMeter: meter,
       crumb: s.screen === 'classes' ? 'My classes' : (s.screen === 'import' ? 'Import' : (s.screen === 'digest' ? 'Digest' : (s.screen === 'insights' ? 'Insights' : k.code))),
       isClasses: s.screen === 'classes',
@@ -1623,7 +1603,7 @@ class Component extends DCLogic {
         code: k.code,
         subject: k.subject,
         dots: this.dotsFor(k.subject),
-        longMeta: 'Year ' + k.year + ' · ' + k.ks + ' · 2026–27 · ' + k.n + ' students · ' + (kPapers.length ? kPapers.length + ' assignments' : 'no assignments'),
+        longMeta: k.n + ' students · ' + (kPapers.length ? kPapers.length + ' assignments' : 'no assignments'),
         rosterLine: k.n + ' active members',
         paperLine: kPapers.length ? kPapers.length + ' assignments' : 'None set',
         hasWork: kPapers.length > 0,
@@ -1687,7 +1667,7 @@ class Component extends DCLogic {
         name: st ? st.name : '—',
         initials: st ? this.initials(st.name) : '',
         hue: st ? this.hueFor(st.name) : 'var(--st-rule-strong)',
-        meta: k.code + ' · ' + k.subject + ' · Year ' + k.year + ' · ' + k.ks,
+        meta: k.code,
         subLine: stHistory.length + ' assignments',
         tiles: [
           { label: 'Submissions', value: String(stMarked.length), sub: 'Of ' + kPapers.length + ' set this term' },

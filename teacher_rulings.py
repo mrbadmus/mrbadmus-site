@@ -73,13 +73,13 @@ page.
 # an `<if>` as a BRANCH and never as an element — an attribute set on the `if`
 # would be dropped, silently, and the gate anchoring on it would find nothing.
 SCREENS = {
-    "classes":  30,
-    "class":    87,
-    "student":  222,
-    "marking":  258,
-    "digest":   312,
-    "import":   346,
-    "insights": 401,
+    "classes":  28,
+    "class":    80,
+    "student":  209,
+    "marking":  245,
+    "digest":   299,
+    "import":   333,
+    "insights": 388,
 }
 
 # ── the four overlays ────────────────────────────────────────────────────
@@ -88,10 +88,10 @@ SCREENS = {
 # page rather than by an index typed in seven places. It is kept by none of
 # them; see `DEAD`.
 OVERLAYS = {
-    "setWorkOpen": 466,
-    "bulkOpen":    513,
-    "searchOpen":  538,
-    "hasToast":    554,
+    "setWorkOpen": 453,
+    "bulkOpen":    500,
+    "searchOpen":  525,
+    "hasToast":    541,
 }
 
 # ── ⊕ RULED, MRB-287 · THE IMPORT WIZARD IS NOT PORTED ───────────────────
@@ -165,7 +165,7 @@ OVERLAYS = {
 IMPORT_NOT_PORTED = dict(
     page="teacher/import.html",
     restored_from="docs/ks3/retired/teacher-import-2026-08-24-retired.html",
-    screen_node=346,
+    screen_node=333,
     why="Design's import screen is a mock — its own README lists real CSV "
         "parsing as not built — and it draws no counterpart for the "
         "per-class settings the import needs. The hand-written wizard is the "
@@ -211,15 +211,15 @@ IMPORT_NOT_PORTED = dict(
 # in `NAV`, under the key `c.act`, because it is a loop-scoped closure and
 # `METHODS` cannot reach one.
 DEAD = (
-    (466, "the Set-work sheet itself. Three steps, a summary line and a "
+    (453, "the Set-work sheet itself. Three steps, a summary line and a "
           "confirm button, in front of a write path that does not exist."),
-    (38,  "\"Set work\" — the primary action on the classes screen."),
-    (103, "\"Set work\" — the primary action on the class screen."),
-    (193, "\"Set work\" — the empty-state prompt on a class with no "
+    (36,  "\"Set work\" — the primary action on the classes screen."),
+    (87, "\"Set work\" — the primary action on the class screen."),
+    (180, "\"Set work\" — the empty-state prompt on a class with no "
           "assignments. The emptiest possible dead control: it is the only "
           "thing on screen and it does nothing."),
-    (267, "\"Set work\" — the marking screen's header action."),
-    (74,  "\"Set work\" on a class card that has students but no work set. "
+    (254, "\"Set work\" — the marking screen's header action."),
+    (67,  "\"Set work\" on a class card that has students but no work set. "
           "See the note above for why its twin at node 78 survives."),
 )
 
@@ -243,7 +243,7 @@ DEAD = (
 # one working control's behaviour for another's, and the page would still look
 # and gate exactly right.
 SET_ON = {
-    29: "signOut",
+    27: "signOut",
 }
 
 
@@ -334,7 +334,7 @@ NAV = {
         # which refuses a NAV node that was never checked on ANY page —
         # refused it. The handler rewrite itself is unaffected: 11 and 89
         # still carry it and are still asserted.
-        nodes=(11, 89),
+        nodes=(11, 83),
         frm="      goClasses: () => this.setState({ screen: 'classes', "
             "modal: null }),",
         to="      goClasses: () => MRB_GO('classes', "
@@ -343,7 +343,7 @@ NAV = {
             "(89). Design's node 348 — the import screen's Back — is drawn by "
             "the same handler and is not emitted; see the note above."),
     "goClass": dict(
-        nodes=(224, 260),
+        nodes=(211, 247),
         frm="      goClass: () => this.setState({ screen: 'class', modal: "
             "null }, () => this.snapWeekRail()),",
         to="      goClass: () => MRB_GO('class', { 'class': k && k.id }),",
@@ -351,7 +351,7 @@ NAV = {
             "(260). `snapWeekRail` was a scroll fix for a rail that had never "
             "left the DOM; there is no rail to restore across a navigation."),
     "goDigest": dict(
-        nodes=(39,),
+        nodes=(37,),
         frm="      goDigest: () => this.setState({ screen: 'digest', "
             "digestScope: 'all' }),",
         to="      goDigest: () => MRB_GO('digest', {}),",
@@ -359,7 +359,7 @@ NAV = {
             "— see the state initialiser, which derives the scope from the "
             "presence of the parameter so a reload cannot lose it."),
     "goReport": dict(
-        nodes=(106,),
+        nodes=(90,),
         frm="      goReport: () => this.setState({ screen: 'digest', "
             "digestScope: 'class' }),",
         to="      goReport: () => MRB_GO('digest', { 'class': k && k.id }),",
@@ -367,13 +367,13 @@ NAV = {
             "class, which is what `digestScope: 'class'` meant in the "
             "prototype."),
     "goImport": dict(
-        nodes=(40,),
+        nodes=(38,),
         frm="      goImport: () => this.setState({ screen: 'import', "
             "importStep: 1 }),",
         to="      goImport: () => MRB_GO('import', {}),",
         why="\"Import students\" on the classes screen."),
     "openInsights": dict(
-        nodes=(22, 105),
+        nodes=(21, 89),
         frm="      openInsights: () => this.setState({\n"
             "        screen: 'insights',\n"
             "        insFrom: s.screen === 'class' ? 'class' : 'classes',\n"
@@ -388,7 +388,7 @@ NAV = {
             "of `?class=`. `insFrom` goes: the browser's history is the back "
             "stack now."),
     "goBackFromDigest": dict(
-        nodes=(314,),
+        nodes=(301,),
         frm="      goBackFromDigest: () => this.setState({ screen: "
             "s.digestScope === 'class' ? 'class' : 'classes' }, () => { if "
             "(s.digestScope === 'class') this.snapWeekRail(); }),",
@@ -399,7 +399,7 @@ NAV = {
             "through to the class list when there is no history, so it is "
             "never a dead press."),
     "goBackFromInsights": dict(
-        nodes=(403,),
+        nodes=(390,),
         frm="      goBackFromInsights: () => this.setState({ screen: "
             "s.insFrom || 'classes' }, () => { if ((s.insFrom || 'classes') "
             "=== 'class') this.snapWeekRail(); }),",
@@ -408,7 +408,7 @@ NAV = {
 
     # ── the loop-scoped six ─────────────────────────────────────────────
     "c.open": dict(
-        nodes=(52,),
+        nodes=(50,),
         frm="      open: () => c.n > 0\n"
             "        ? this.openClass({ classId: c.id })\n"
             "        : this.setState({ screen: 'import', importStep: 1 }),",
@@ -421,7 +421,7 @@ NAV = {
             "have sent a teacher with an empty class to a page with nothing "
             "on it."),
     "s.open": dict(
-        nodes=(140,),
+        nodes=(127,),
         frm="        open: () => this.setState({ screen: 'student', "
             "studentId: r.id })\n      };\n    });\n\n    const paperRow",
         to="        open: () => MRB_GO('student', { student: r.id, 'class': "
@@ -431,7 +431,7 @@ NAV = {
             "to the marking grid's at node 304, and an exactly-once "
             "replacement would refuse the build on a count of two."),
     "a.open": dict(
-        nodes=(166, 181),
+        nodes=(153, 168),
         frm="      open: () => this.setState({ screen: 'marking', paperId: "
             "p.id })\n    });\n\n    const flagged",
         to="      open: () => MRB_GO('marking', { 'class': k && k.id, paper: "
@@ -440,7 +440,7 @@ NAV = {
             "drawn by the one `paperRow` closure, so one rewrite serves both "
             "nodes — which is why both are asserted here."),
     "h.open": dict(
-        nodes=(250,),
+        nodes=(237,),
         frm="        open: () => this.setState({ screen: 'marking', paperId: "
             "p.id })\n      };\n    }) : [];",
         to="        open: () => MRB_GO('marking', { 'class': k && k.id, "
@@ -448,14 +448,14 @@ NAV = {
         why="a row of the student's assignment history. Anchored on its "
             "trailing `}) : [];` for the same reason `s.open` is."),
     "r.open (marking grid)": dict(
-        nodes=(304,),
+        nodes=(291,),
         frm="      open: () => this.setState({ screen: 'student', studentId: "
             "r.id })\n    })) : [];",
         to="      open: () => MRB_GO('student', { student: r.id, 'class': "
            "k && k.id })\n    })) : [];",
         why="a row of the marking screen's question grid — NOT a digest row."),
     "d.open": dict(
-        nodes=(338,),
+        nodes=(325,),
         frm="        open: () => c.n > 0 ? this.openClass({ classId: c.id, "
             "digestScope: 'all' }) : this.ping('No students in ' + c.code + "
             "' yet')",
@@ -484,7 +484,7 @@ NAV = {
     # never present on ANY page — 74 would fail it. That node's existence is
     # asserted by `DEAD` instead, which is the right owner.
     "c.act": dict(
-        nodes=(78,),
+        nodes=(71,),
         frm="      act: (e) => {\n"
             "        e.stopPropagation();\n"
             "        if (c.state === 'empty') this.setState({ screen: "
@@ -499,7 +499,7 @@ NAV = {
             "blank page."),
 
     "r.open (search)": dict(
-        nodes=(548,),
+        nodes=(535,),
         frm="      open: () => this.setState({ screen: 'student', classId: "
             "p.classId, studentId: p.id, modal: null })",
         to="      open: () => MRB_GO('student', { student: p.id, 'class': "
@@ -524,24 +524,24 @@ NAV = {
 # `data-import-slot` is the same idea for a different job: see `RETEXT_AT`.
 SET_ATTR = {
     10:  {"data-port-region": "topbar"},
-    31:  {"data-port-region": "classes"},
-    88:  {"data-port-region": "class"},
-    223: {"data-port-region": "student"},
-    259: {"data-port-region": "marking"},
-    313: {"data-port-region": "digest"},
-    347: {"data-port-region": "import"},
-    402: {"data-port-region": "insights"},
-    514: {"data-port-region": "overlay-bulk"},
-    539: {"data-port-region": "overlay-search"},
-    555: {"data-port-region": "toast"},
+    29:  {"data-port-region": "classes"},
+    81:  {"data-port-region": "class"},
+    210: {"data-port-region": "student"},
+    246: {"data-port-region": "marking"},
+    300: {"data-port-region": "digest"},
+    334: {"data-port-region": "import"},
+    389: {"data-port-region": "insights"},
+    501: {"data-port-region": "overlay-bulk"},
+    526: {"data-port-region": "overlay-search"},
+    542: {"data-port-region": "toast"},
     # ⊕ THE TWO COMPOSER FIELDS, so the send can CLEAR them. Design's select
     # and textarea are uncontrolled — neither carries a `value` — and
     # `student-runtime` deliberately carries field values across a redraw, so
     # clearing `s.recipient` and `s.note` clears the state and leaves the
     # typed text on screen. `MRB_COMPOSE_RESET` empties the DOM first, and
     # this is how it finds them without an id Design did not write.
-    200: {"data-compose-field": "recipient"},
-    209: {"data-compose-field": "note"},
+    187: {"data-compose-field": "recipient"},
+    196: {"data-compose-field": "note"},
 
     # ⚠️ THE FIVE `data-import-slot` ROWS BELOW APPLY TO NO EMITTED PAGE. They
     # are the import screen's nodes and the import screen is not ported (see
@@ -550,12 +550,12 @@ SET_ATTR = {
     # work a future re-port would otherwise redo — and said out loud here,
     # because a ruling that quietly applies to nothing is the drift this file
     # exists to stop.
-    368: {"data-import-slot": "fileName"},
-    369: {"data-import-slot": "fileSummary"},
-    384: {"data-import-slot": "newCount"},
-    387: {"data-import-slot": "matchedCount"},
-    390: {"data-import-slot": "attentionCount"},
-    400: {"data-import-slot": "confirm"},
+    355: {"data-import-slot": "fileName"},
+    356: {"data-import-slot": "fileSummary"},
+    371: {"data-import-slot": "newCount"},
+    374: {"data-import-slot": "matchedCount"},
+    377: {"data-import-slot": "attentionCount"},
+    387: {"data-import-slot": "confirm"},
 }
 
 
@@ -587,13 +587,13 @@ BIND_ATTR = {
     # ⚠️ THIS IS AN ATTRIBUTE AND NOT A TEXT NODE, so `BINDINGS_AT` cannot
     # reach it — the same reason the search placeholder is here. The visible
     # LABEL stays `s.name`; only the value changes.
-    203: ("value",
+    190: ("value",
           {"parts": [{"e": "s.name"}]},
           {"parts": [{"e": "s.id"}]},
           "the shoutout recipient. Design's option value is the child's "
           "NAME; the write path needs the id, and the id is what identifies "
           "a child."),
-    545: ("placeholder",
+    532: ("placeholder",
           "Search students across all 12 classes",
           {"parts": [{"e": "searchPlaceholder"}]},
           "the 12 is this teacher's real class count. Design drew a teacher "
@@ -626,24 +626,32 @@ BINDINGS_AT = {
     # and the four hand-written teacher pages ALREADY carry this badge, PROD
     # included, styled `.pill.env-prod` — it is the thing that stops somebody
     # driving the wrong database.
-    27:  ("PROD", "envBadge"),
+    #
+    # ⊕ MOVED, 26 Aug 2026 — Design's v2 REMOVED the badge node, so this
+    # binding has nothing to bind. The safety rationale above still stands,
+    # and both are honoured at once: `envBadge()` now returns "" on the live
+    # production origin (so prod looks exactly as v2 draws it), and the badge
+    # markup returns as a conditional insertion — INSERT_AT node 10 — that
+    # renders only when there is something to warn about (TEST, LOCAL). The
+    # sandbox warning survives; the permanent "PROD" chip Design deleted does
+    # not come back.
 
     # ── the classes screen ──────────────────────────────────────────────
-    34:  ("Autumn term · 2026–27", "termLabel"),
-    84:  ("Viewing 2026–27", "viewingYearLabel"),
+    32:  ("Autumn term · 2026–27", "termLabel"),
+    77:  ("Viewing 2026–27", "viewingYearLabel"),
     # ⊕ MRB-287 E1 — the year toggle's own label. "Previous years" is right
     # only while the WORKING year is in view; opened FROM a past year the same
     # list leads forward as well, and the retired hand-written page said
     # "other years" for exactly that case
     # (teacher-classes-2026-08-24-retired.html:677). It is `pastYearsLabel`,
     # computed in the seam, and it is the reason that key is no longer dead.
-    86:  ("Previous years", "pastYearsLabel"),
+    79:  ("Previous years", "pastYearsLabel"),
 
     # ── the digest ──────────────────────────────────────────────────────
-    319: ("Mon 17 – Fri 21 Aug 2026", "weekRangeLabel"),
+    306: ("Mon 17 – Fri 21 Aug 2026", "weekRangeLabel"),
 
     # ── the charts screen ───────────────────────────────────────────────
-    408: ("Week of Mon 17 Aug 2026", "weekOfLabel"),
+    395: ("Week of Mon 17 Aug 2026", "weekOfLabel"),
 }
 
 
@@ -672,17 +680,17 @@ BINDINGS_AT = {
 #
 # `{node: (exact literal, replacement text, why)}`.
 RETEXT_AT = {
-    368: ("year8-autumn.csv", "",
+    355: ("year8-autumn.csv", "",
           "a file nobody uploaded."),
-    369: ("27 rows · 5 columns", "",
+    356: ("27 rows · 5 columns", "",
           "counts of a file nobody parsed."),
-    384: ("24", "",
+    371: ("24", "",
           "\"New students\" — a dry-run nobody ran."),
-    387: ("2", "",
+    374: ("2", "",
           "\"Matched existing\" — same."),
-    390: ("1", "",
+    377: ("1", "",
           "\"Needs attention\" — same, and the one a teacher would act on."),
-    400: ("Import 26 students", "Import students",
+    387: ("Import 26 students", "Import students",
           "the button. 26 is fiction; \"Import\" is not. An empty button is "
           "an unpressable rectangle, so the count goes and the verb stays."),
 }
@@ -834,6 +842,29 @@ _DEL_PRIMARY = ("flex:none;height:38px;padding:0 18px;"
                 "border-radius:9px;cursor:pointer")
 
 INSERT_AT = {
+    # ── the environment badge, conditional now ──────────────────────────
+    #
+    # ⊕ MRB-287, 26 Aug 2026 — Design's v2 deleted the nav's `PROD` chip, so
+    # the old `BINDINGS_AT` row (26: "PROD" → envBadge) lost its node. The
+    # chip's reason to exist was never "say PROD on prod": it is the thing
+    # that stops somebody driving the wrong database. Both rulings hold at
+    # once by making it conditional — `envBadge()` returns "" on the live
+    # production origin, so this `if` renders nothing there (v2's exact
+    # drawing) and renders TEST / LOCAL anywhere it would matter. Styling is
+    # v1's own chip, at v2's 12px nav scale.
+    10: (21, {
+        "t": "if", "e": "envBadge",
+        "c": [{
+            "t": "span",
+            "a": {"style": "flex:none;padding:5px 8px;"
+                           "font:500 12px/1.2 var(--st-mono);"
+                           "letter-spacing:.16em;color:var(--st-caption);"
+                           "background:var(--st-num-well);border-radius:6px"},
+            "c": [{"t": "#", "v": {"parts": [{"e": "envBadge"}]}}],
+        }]},
+        "the environment badge, off the page on production and on it "
+        "anywhere a teacher could be driving the wrong database."),
+
     # ── the fourth glyph gets a name ────────────────────────────────────
     #
     # ⛔ THE GRID DRAWS FOUR STATES AND THE LEGEND NAMED THREE. `cellStyle(3)`
@@ -850,7 +881,7 @@ INSERT_AT = {
     # "Self-marked or written" — the two things the state actually is, in
     # Design's own uppercase mono, in the register of the three keys beside
     # it.
-    288: (293, {
+    275: (280, {
         "t": "span", "a": {"style": _LEGEND_KEY},
         "c": [
             {"t": "span", "a": {"style": "width:9px;height:9px;"
@@ -876,7 +907,7 @@ INSERT_AT = {
     # `teacher-live.js` throws before mount (`SAY.noClasses`) so that the
     # truly-empty case never reaches this grid at all. Two sentences for one
     # condition is how a page ends up disagreeing with itself.
-    31: (50, {
+    29: (48, {
         "t": "if", "e": "noneShown",
         "c": [{
             "t": "div",
@@ -925,7 +956,7 @@ INSERT_AT = {
     # eight pixels from node 84, which already says it. The statement rides
     # on `viewingYearLabel` instead — "Viewing 2025–26 · read-only" — one
     # binding, one sentence, and no literal year anywhere near it.
-    83: (86, {
+    76: (79, {
         "t": "if", "e": "yearsOpen",
         "c": [{
             "t": "span",
@@ -965,7 +996,7 @@ INSERT_AT = {
     # class code and the subject-dots pill and is `flex-wrap`ped for exactly
     # this. Not to node 92: that row is `justify-content:space-between` and
     # a third child there would push the header actions off their edge.
-    94: (None, {
+    91: (None, {
         "t": "if", "e": "readOnlyLine",
         "c": [{
             "t": "span",
@@ -1000,7 +1031,7 @@ INSERT_AT = {
     # leaves the feed for EVERYONE, the author included. What a teacher sees
     # is a real removal, which is what the word says; "delete" would promise
     # something about the database that the database does not do.
-    216: (219, {
+    203: (206, {
         "t": "if", "e": "f.canDelete",
         "c": [{
             "t": "button",
@@ -1036,7 +1067,7 @@ INSERT_AT = {
     # with a feed. An inert overlay on five pages that can never open it is
     # markup a teacher can never reach, which is what LIVE_REGIONS just had
     # one of removed for.
-    88: (None, {
+    81: (None, {
         "t": "if", "e": "delOpen",
         "c": [{
             "t": "div", "a": {"style": _DEL_SCRIM}, "on": "cancelDelete",
@@ -1144,15 +1175,15 @@ WRAP = {
         # year has no other year to reach, and Design's unconditional button
         # would answer "there are none" — which is a control that exists to
         # tell you it should not.
-        85: "hasOtherYears",
-        86: "hasOtherYears",
+        78: "hasOtherYears",
+        79: "hasOtherYears",
         # The two import routes. `roster-import` is one of only three write
         # paths on the whole teacher surface, and importing children into a
         # class that finished in July is not an action worth offering.
         # Node 40 is the header action; node 78 is the same route from an
         # empty class card (the one node 74's pruning deliberately spared).
-        40: "canWrite",
-        78: "canWrite",
+        38: "canWrite",
+        71: "canWrite",
     },
     "class-detail.html": {
         # The bulk sheet's opener and the composer card. Node 198 is the
@@ -1164,8 +1195,8 @@ WRAP = {
         # ⚠️ NODE 213, THE FEED, STAYS. A past year is READ-only, not
         # invisible: what a teacher wrote about a child last year is exactly
         # the record MRB-261 exists to keep reachable.
-        196: "canWrite",
-        198: "canWrite",
+        183: "canWrite",
+        185: "canWrite",
     },
 }
 
@@ -1215,7 +1246,7 @@ AMENDED_ADDITIONS = (
     # and the thing that opens it is node 86, one of Design's own. Without the
     # opener the marker is reported unreachable — correctly, because it would
     # be, to that gate.
-    dict(marker="year-open", page="classes.html", node=83, opener_tpl=86,
+    dict(marker="year-open", page="classes.html", node=76, opener_tpl=79,
          label="<the year's name>",
          # ⚠️ WHERE IT GOES, NOT JUST THAT IT MOVES. A control whose entire
          # job is to navigate proves nothing by re-rendering, and `MRB_GO`
@@ -1229,7 +1260,7 @@ AMENDED_ADDITIONS = (
              "year and cannot open it. MRB-261 is explicit that the history "
              "stays reachable; this is what makes the strip a control "
              "instead of a caption."),
-    dict(marker="shoutout-delete", page="class-detail.html", node=216,
+    dict(marker="shoutout-delete", page="class-detail.html", node=203,
          label="Remove", needs_data=True,
          why="Mide, 24 Aug 2026: \"A teacher who can post a shoutout can "
              "remove one.\" Design's feed card has no delete affordance. "
@@ -1237,15 +1268,15 @@ AMENDED_ADDITIONS = (
              "signed-in teacher's — because the RLS UPDATE policy is "
              "author-only and a control that fails RLS is a control that "
              "lied."),
-    dict(marker="shoutout-delete-close", page="class-detail.html", node=88,
+    dict(marker="shoutout-delete-close", page="class-detail.html", node=81,
          label="Keep the shoutout", needs_data=True,
          why="the confirm sheet's close X, off Design's node 520."),
-    dict(marker="shoutout-delete-cancel", page="class-detail.html", node=88,
+    dict(marker="shoutout-delete-cancel", page="class-detail.html", node=81,
          label="Keep it", needs_data=True,
          why="the confirm sheet's decline. The wording is the SAFE choice "
              "stated as an action, so the two footer buttons read as a "
              "choice rather than as one button and an escape hatch."),
-    dict(marker="shoutout-delete-confirm", page="class-detail.html", node=88,
+    dict(marker="shoutout-delete-confirm", page="class-detail.html", node=81,
          label="Remove shoutout", needs_data=True,
          why="the press that actually writes. `confirmDelete` calls "
              "`MRB_DELETE_SHOUTOUT`, which is "
@@ -1603,6 +1634,20 @@ LOGIC = (
      "ported page — the mount emits it empty — so the `??` fallback was not a "
      "default, it was the value, and every teacher was greeted as Ayomide."),
 
+    # ⊕ MRB-287, 26 Aug 2026 — the environment badge's key, INTO THE RENDER
+    # SCOPE. The INSERT_AT chip at nav node 10 hangs on `if envBadge`, and an
+    # `if` resolves through `renderVals` — not through `__MRB_BIND__`, which
+    # is where v1's badge got its text. A key the scope does not name never
+    # fires and never errors (the student pages' documented seam trap), which
+    # is exactly what the first local drive showed: chip in the template,
+    # nothing on screen.
+    ("      isClasses: s.screen === 'classes',",
+     "      envBadge: MRB_DATA('envBadge'),\n"
+     "      isClasses: s.screen === 'classes',",
+     "the environment badge, exposed where the inserted `if` can see it. "
+     "Empty on live production, so the chip renders only where the warning "
+     "means something."),
+
     # ══ THE ACADEMIC YEAR, WELDED INTO TWO COMPUTED STRINGS ═════════════
     #
     # Not a text node, so no binding reaches it: `2026–27` is concatenated
@@ -1628,12 +1673,20 @@ LOGIC = (
     # `academic_year_name` can be null on a year nobody named; the retired
     # page's `buildMetaLine` filtered for exactly that reason. Blanks over
     # invented values — "Year null · KS3 · undefined" is worse than "KS3".
-    ("      meta: 'Year ' + c.year + ' · ' + c.ks + ' · 2026–27',",
-     "      meta: [c.year == null ? '' : 'Year ' + c.year, c.ks, c.yearName]\n"
+    # ⊕ RE-ANCHORED FOR DESIGN'S v2, 26 Aug 2026. v1 drew the meta as
+    # `'Year ' + c.year + ' · ' + c.ks + ' · 2026–27'`; v2 redraws it as the
+    # student count alone (`c.n ? c.n + ' students' : 'No students yet'`) and
+    # states the year group nowhere but the class code itself. The count is
+    # Design's v2 presentation and stays; the academic year is Mide's E1
+    # ruling and stays too — appended, dropped when the school has not named
+    # the year. Year group and key stage do NOT come back: they were v1's
+    # drawing, not part of the ruling, and v2's KS filter tabs already answer
+    # the key-stage question.
+    ("      meta: c.n ? c.n + ' students' : 'No students yet',",
+     "      meta: [c.n ? c.n + ' students' : 'No students yet', c.yearName]\n"
      "        .filter(Boolean).join(' · '),",
-     "the class card's meta line — the card's OWN academic year, not the "
-     "dashboard's. See the block comment: the first port bound this to the "
-     "working year, which is a different question."),
+     "the class card's meta line — v2's student count, plus the card's OWN "
+     "academic year (Mide's E1 ruling), not the dashboard's."),
 
     # ══ THE ROSTER ROW: /8, AND \"on time\" FOR AN UNKNOWN ══════════════
     #
@@ -1857,11 +1910,15 @@ LOGIC = (
      "than by everyone who submitted, which is the same correction "
      "`markedPct` already carries in the seam."),
 
-    ("        longMeta: 'Year ' + k.year + ' · ' + k.ks + ' · 2026–27 · ' + "
-     "k.n + ' students · ' + (kPapers.length ? kPapers.length + "
-     "' assignments' : 'no assignments'),",
-     "        longMeta: [k.year == null ? '' : 'Year ' + k.year, k.ks, "
-     "k.yearName,\n"
+    # ⊕ RE-ANCHORED FOR DESIGN'S v2, 26 Aug 2026. v1 drew `'Year ' + k.year +
+    # ' · ' + k.ks + ' · 2026–27 · '` ahead of the counts; v2 draws the counts
+    # alone. Year group and key stage were v1's drawing and follow it out; the
+    # class's OWN academic year is Mide's E1 ruling and stays, leading, so
+    # 10h/Ph1 and 11h/Ph1 — the same 17 students a year apart — never share a
+    # header. The singular fix ("1 assignment") survives the redraw.
+    ("        longMeta: k.n + ' students · ' + (kPapers.length ? "
+     "kPapers.length + ' assignments' : 'no assignments'),",
+     "        longMeta: [k.yearName,\n"
      "          k.n + ' students',\n"
      "          kPapers.length ? kPapers.length + (kPapers.length === 1 ? "
      "' assignment' : ' assignments') : 'no assignments'\n"

@@ -92,3 +92,57 @@ Nothing was dropped. The delivery's five `uploads/*.png` are screenshots of
 the *existing* teacher UI that Design worked from, not assets the redesign
 uses; they are kept because they are the before-picture this port is measured
 against.
+
+---
+
+# Re-vendoring record — Design's v2 (MRB-287, 26 Aug 2026)
+
+Mide dropped a corrected delivery at the repo root as `teacher dashboard
+redesign` — lowercase t, **no** trailing space, so it sat beside the old
+folder rather than merging into it. Its contents are the 24 Aug delivery
+re-shipped **byte-identical** (README, github.md, support.js, `_ds`, uploads —
+all MD5-equal) **plus one new file: `Teacher Dashboard v2.dc.html`**. That
+file is the corrected design and now replaces `source/Teacher Dashboard.dc.html`
+here, under the same filename so the compiler's `src` needs no change.
+
+⚠️ THIS REVERSES THE PHASE-0 RULE, ON MIDE'S INSTRUCTION. "Vendored copy
+wins" exists because the vendored copy may carry fixes; this time the fresh
+drop IS the fixes — Mide's corrections with Design are the point of the run.
+The rule reversal covers the `.dc.html` only: `_ds` was not re-vendored
+(the drop's copy is identical to the unreconciled v1 export, so re-vendoring
+it would have UNDONE reconciliation #1's relative font URLs).
+
+## What v2 changed vs v1 (and what the port did about it)
+
+Presentation, wholesale: body 16.5→18px, container 1340→1460px, padding
+32→40px, headings +4px, cards `minmax(310px,1fr)`, and equivalent bumps on
+every screen. All flow through the compiled template untouched.
+
+Structure and logic, specifically:
+
+- **Nav**: the `Teacher` crumb label and the permanent `PROD` chip are gone.
+  The crumb follows v2. The env chip is reinstated as a CONDITIONAL insertion
+  (`teacher_rulings.INSERT_AT` node 10) because its job was never "say PROD
+  on prod" — `envBadge()` now returns "" on the live production origin, so
+  prod renders exactly v2's drawing and TEST/LOCAL still warn.
+- **Class cards**: the subject badge (dots + name) is gone, and the card meta
+  is now `c.n ? c.n + ' students' : 'No students yet'` — v1's
+  `Year N · KS · <year>` line is gone with it. Mide's E1 ruling (every card
+  states ITS OWN academic year) survives the redraw: the year name is
+  appended to v2's count. Year group and key stage were v1's drawing and
+  follow it out.
+- **Class header**: `longMeta` likewise lost its `Year N · KS · <year>`
+  prefix; the ruled year name now leads v2's counts. The read-only chip's
+  insertion point moved to v2's header identity block (template node 91).
+- **Marking screen**: "Lowest scoring — worth reteaching" → "Reteach"; a
+  Correct / Incorrect / Not attempted legend is new (the ruled fourth key,
+  "Self-marked or written", inserts after it); the score column is fixed
+  100px.
+- **Node indices**: v2 renumbers essentially the whole tree. Every index in
+  `teacher_rulings` (~75 across SCREENS / OVERLAYS / INSERT_AT / DEAD /
+  BINDINGS_AT / BIND_ATTR / RETEXT_AT / SET_ATTR / SET_ON / WRAP / NAV /
+  AMENDED_ADDITIONS / IMPORT_NOT_PORTED) was remapped by structural diff of
+  the two compiled trees and each landing verified same-tag same-handler.
+
+No new sample data: v2's fixture values are v1's, so `teacher_tells` needed
+no new tells.
