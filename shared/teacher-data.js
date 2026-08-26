@@ -861,6 +861,23 @@ window.MrBadmusTeacherData = (function () {
     // one year has that year as the working one, so nothing is ever falsely
     // read-only. A failed years read leaves the page writable (fail-open on a
     // presentation rule; the DB is the actual gate).
+    //
+    // ⊕ MRB-291, 26 Aug 2026 — READ BY NOTHING, AND THAT IS THE SETTLED
+    // ANSWER, NOT AN OVERSIGHT. MRB-287's report already listed this under
+    // "found and NOT fixed, deliberately"; MRB-291 re-checked every caller
+    // and confirms it. The generated teacher pages do not read it. They take
+    // the YEARS-LIST path: shared/teacher-live.js derives `viewingIsPast`
+    // from the viewed year's own `is_past` and exports `canWrite` and
+    // `readOnlyLine` from that one derivation, and every read-only ruling on
+    // those pages (the WRAP that lifts the composer, the header's read-only
+    // line, the shoutout `canDelete`) reads THOSE keys. That is the live
+    // path.
+    // ⚠️ DO NOT "FIX" THIS BY WIRING IT IN. A second derivation of "is this
+    // year history" is how one page ends up with two answers — the drift
+    // MRB-267 removed from `workingAcademicYear`. Kept rather than deleted
+    // because `loadClassDetail` is a shared read that hand-written teacher
+    // surfaces also call, and because deleting a field is how the reasoning
+    // gets lost and the field comes back.
     let isPastYear = false;
     try {
       const y = await loadAcademicYears();
@@ -883,6 +900,9 @@ window.MrBadmusTeacherData = (function () {
         // MRB-261 — a past year is read-only. Computed here rather than on the
         // page so both the grid and the detail screen agree on what "past"
         // means, and so the answer travels with the class it describes.
+        // ⊕ MRB-291 — no current reader. The generated pages use
+        // teacher-live's `canWrite` / `readOnlyLine` instead; see the long
+        // note at `isPastYear` above before wiring this to anything.
         is_past_year: isPastYear,
         pill_label: pill.pill_label,
         pill_colour_var: pill.pill_colour_var,

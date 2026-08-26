@@ -961,6 +961,20 @@ INSERT_AT = {
     # on purpose, because a page that suppresses a control and does not say
     # why reads as broken rather than as read-only.
     #
+    # ⊕ MRB-291, 26 Aug 2026 — `is_past_year` IS STILL DEAD, AND STAYS DEAD.
+    # The paragraph above reads as an argument for wiring it up. It is not.
+    # MRB-291 re-checked every reader and confirmed `teacher-data.js`'s
+    # `is_past_year` (loadClassDetail) is consumed by nothing: the ported
+    # pages take the YEARS-LIST path instead — `teacher-live.js` derives
+    # `viewingIsPast` from `viewing.is_past` and exports `canWrite` /
+    # `readOnlyLine` from it, and every ruling on this page reads THOSE. That
+    # is the live path and the only one. Wiring the second computation in
+    # would give one page two answers to "is this year history", which is the
+    # exact shape of the drift MRB-267 removed from `workingAcademicYear`.
+    # The note is recorded rather than the field deleted — `loadClassDetail`
+    # is also called from hand-written teacher surfaces. See the matching
+    # supersede note at the field in `shared/teacher-data.js`.
+    #
     # ⚠️ APPENDED TO NODE 94 — Design's `<h1>` row, which already holds the
     # class code and the subject-dots pill and is `flex-wrap`ped for exactly
     # this. Not to node 92: that row is `justify-content:space-between` and

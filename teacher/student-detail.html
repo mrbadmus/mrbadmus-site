@@ -356,6 +356,14 @@ function MRB_DELETE_WHY(e){
   if(/no data layer|not signed in/i.test(m))
     return "Couldn't remove it — this page is not signed in. Reload and try " +
            "again.";
+  /* ⊕ MRB-291 — the belt in MRB_DELETE_SHOUTOUT has a sentence too. A
+     teacher should never reach it (the control is not drawn on a past year),
+     but a refusal with no words is the thing this whole function exists to
+     stop. It names the RULE rather than the year: the year is in the header
+     pill, and `teacher_tells` fails the build on a typed academic year. */
+  if(/read-only/i.test(m))
+    return "Couldn't remove it — you are viewing a past year, which is " +
+           "read-only.";
   return "Couldn't remove the shoutout. Try again.";}
 
 /* The removal itself. `MrBadmusTeacherData.softDeleteClassShoutout` has
@@ -371,6 +379,24 @@ function MRB_DELETE_WHY(e){
 function MRB_DELETE_SHOUTOUT(shoutoutId){
   var no=function(e){return Promise.resolve({ok:false,error:e});};
   if(!shoutoutId){return no(new Error('teacher page: no shoutout'));}
+  /* ⊕ MRB-291 — MRB-261's READ-ONLY RULE, AT THE WRITE. The Remove control
+     is already gated: `canDelete` folds `MRB_DATA('canWrite')` in, so on a
+     past year it is never drawn and this sheet can never open. This is the
+     second half, put where the write actually leaves the page, so a removal
+     cannot reach the database against a year the seam has called history
+     however the control above it is later changed.
+     ⚠️ THE FEED ITSELF STAYS READABLE. MRB-261 makes a finished year
+     read-only, not invisible — what a teacher wrote about a child last year
+     is exactly the record the rule exists to keep reachable. Only the write
+     stops here.
+     ⚠️ `=== false`, NOT FALSY, and that is deliberate. The rule is "the seam
+     said this year is read-only", never "the seam said nothing" — a page or
+     fixture that fed no `canWrite` at all must not become silently
+     un-writable, which is the failure mode that looks like a bug in the
+     button. `canWrite` is read off `__MRB_DATA__` directly rather than
+     through `MRB_DATA`, which THROWS on an absent key. */
+  if(window.__MRB_DATA__&&window.__MRB_DATA__.canWrite===false){
+    return no(new Error('teacher page: this year is read-only'));}
   var TD=window.MrBadmusTeacherData;
   if(!TD||!TD.softDeleteClassShoutout){
     return no(new Error('teacher page: no data layer'));}
@@ -1339,7 +1365,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","config.js":"06f24811","shoutouts.js":"23393220","teacher-data.js":"cff2f131","teacher-guard.js":"bbc08e89","teacher-live.js":"e4b01152"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"8be18391","config.js":"06f24811","shoutouts.js":"23393220","teacher-data.js":"869993bf","teacher-guard.js":"bbc08e89","teacher-live.js":"e4b01152"};</script>
 <script src="/shared/teacher-live.js?v=e4b01152"></script>
 </body>
 </html>

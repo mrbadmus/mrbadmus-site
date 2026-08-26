@@ -230,6 +230,23 @@ def asset_hash(text):
 # not a feature in waiting; it is weight and a false positive for anybody
 # reading the page. The other two pages keep it because they can open it.
 #
+# ⊕ MRB-291, 26 Aug 2026 — `searchOpen` IS NOW ON ALL SIX. It used to be kept
+# by four, and digest and insights therefore shipped Design's top bar — node
+# 16, `on: "openSearch"` — over a pruned overlay. The button was pressable, it
+# set `searchOpen`, and nothing on the page was listening: a dead control in
+# the one place a teacher looks first, on two of the six pages.
+#
+# ⚠️ WIRED, NOT REMOVED, AND THE DATA IS WHY. MRB-205's test is whether the
+# control can be honoured, and here it can: `buildSearchPool` in
+# teacher-live.js is built from `c.CLASSES` and `c.ROSTER`, which `base()`
+# populates for EVERY screen — the pool is not class-scoped the way `FEED` is
+# — so `searchPool`, `searchPoolCount` and `searchPlaceholder` are already in
+# the payload these two pages load, and `searchResults` / `searchFoot` are
+# already computed in their `renderVals`. Only the markup was missing. Removing
+# the button instead would have taken a working cross-class search off the two
+# whole-cohort screens, which are the screens most likely to raise "which child
+# was that?" in the first place.
+#
 # `retire` names the hand-written original this page replaces. Three of the
 # six have one; `assignment.html`, `digest.html` and `insights.html` are new
 # surfaces with no hand-written predecessor at all.
@@ -275,7 +292,9 @@ PAGES = [
          empty_out="digest-empty-fixture.html",
          empty_js="teacher-fixture-digest-empty.js",
          title="Weekly digest \u00b7 MrBadmusAI",
-         overlays=("hasToast",),
+         # \u2295 MRB-291 \u2014 `searchOpen` added. See the note above the list: the
+         # top bar's search button was on this page and its overlay was not.
+         overlays=("searchOpen", "hasToast"),
          retire=None),
     # ⛔ THERE IS NO `import` ROW HERE, AND ITS ABSENCE IS A RULING.
     # See `IMPORT_NOT_PORTED` in teacher_rulings.py: `teacher/import.html` is
@@ -288,7 +307,8 @@ PAGES = [
          empty_out="insights-empty-fixture.html",
          empty_js="teacher-fixture-insights-empty.js",
          title="Charts \u00b7 MrBadmusAI",
-         overlays=("hasToast",),
+         # \u2295 MRB-291 \u2014 `searchOpen` added, for the same reason as digest's.
+         overlays=("searchOpen", "hasToast"),
          retire=None),
 ]
 
@@ -2100,6 +2120,14 @@ function MRB_DELETE_WHY(e){
   if(/no data layer|not signed in/i.test(m))
     return "Couldn't remove it — this page is not signed in. Reload and try " +
            "again.";
+  /* ⊕ MRB-291 — the belt in MRB_DELETE_SHOUTOUT has a sentence too. A
+     teacher should never reach it (the control is not drawn on a past year),
+     but a refusal with no words is the thing this whole function exists to
+     stop. It names the RULE rather than the year: the year is in the header
+     pill, and `teacher_tells` fails the build on a typed academic year. */
+  if(/read-only/i.test(m))
+    return "Couldn't remove it — you are viewing a past year, which is " +
+           "read-only.";
   return "Couldn't remove the shoutout. Try again.";}
 
 /* The removal itself. `MrBadmusTeacherData.softDeleteClassShoutout` has
@@ -2115,6 +2143,24 @@ function MRB_DELETE_WHY(e){
 function MRB_DELETE_SHOUTOUT(shoutoutId){
   var no=function(e){return Promise.resolve({ok:false,error:e});};
   if(!shoutoutId){return no(new Error('teacher page: no shoutout'));}
+  /* ⊕ MRB-291 — MRB-261's READ-ONLY RULE, AT THE WRITE. The Remove control
+     is already gated: `canDelete` folds `MRB_DATA('canWrite')` in, so on a
+     past year it is never drawn and this sheet can never open. This is the
+     second half, put where the write actually leaves the page, so a removal
+     cannot reach the database against a year the seam has called history
+     however the control above it is later changed.
+     ⚠️ THE FEED ITSELF STAYS READABLE. MRB-261 makes a finished year
+     read-only, not invisible — what a teacher wrote about a child last year
+     is exactly the record the rule exists to keep reachable. Only the write
+     stops here.
+     ⚠️ `=== false`, NOT FALSY, and that is deliberate. The rule is "the seam
+     said this year is read-only", never "the seam said nothing" — a page or
+     fixture that fed no `canWrite` at all must not become silently
+     un-writable, which is the failure mode that looks like a bug in the
+     button. `canWrite` is read off `__MRB_DATA__` directly rather than
+     through `MRB_DATA`, which THROWS on an absent key. */
+  if(window.__MRB_DATA__&&window.__MRB_DATA__.canWrite===false){
+    return no(new Error('teacher page: this year is read-only'));}
   var TD=window.MrBadmusTeacherData;
   if(!TD||!TD.softDeleteClassShoutout){
     return no(new Error('teacher page: no data layer'));}

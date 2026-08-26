@@ -482,12 +482,14 @@ def _wired_handlers(path):
 
 # ── ⊕ MRB-287 · the three nodes the search-truncation probe needs ────────
 #
-# ⚑ DERIVED FROM THE SHIPPED TEMPLATE, NOT TYPED. Design's search overlay is
-# kept on four of the six pages and pruned on the other two, and the node
-# numbers are hers — a table of them here would be a fifth place they are
-# written down and the first one to go stale. The probe asks the page which
-# element opens the search, which one takes the typing, and which one carries
-# the caption, and skips the page entirely if any is absent.
+# ⚑ DERIVED FROM THE SHIPPED TEMPLATE, NOT TYPED. The node numbers are
+# Design's — a table of them here would be a fifth place they are written down
+# and the first one to go stale. The probe asks the page which element opens
+# the search, which one takes the typing, and which one carries the caption.
+# ⊕ MRB-291 — this used to add "kept on four of the six pages and pruned on
+# the other two, and skips the page entirely if any is absent". Since MRB-291
+# the overlay is kept on ALL SIX, and an absent node is reported rather than
+# skipped; see the note at the call site.
 def _search_nodes(path):
     body = open(path, encoding="utf-8").read()
     m = re.search(r"window\.__MRB_TPL__=(\{.*?\});", body, re.S)
@@ -693,7 +695,8 @@ def drive(page, path, is_empty, cdp, port, shots=None):
     # by an earlier addition. See the probe's note beside OPENERS.
     openers = {a["marker"]: a["opener_tpl"] for a in R.AMENDED_ADDITIONS
                if a.get("opener_tpl") is not None}
-    # ⊕ MRB-287 — the search overlay's three nodes, if this page keeps it.
+    # ⊕ MRB-287 — the search overlay's four nodes. ⊕ MRB-291: every page
+    # keeps it now, so "if this page keeps it" no longer qualifies anything.
     search_nodes = _search_nodes(os.path.join(PAGE_DIR, path))
     with cdp.Browser() as b:
         pg = b.attach()
@@ -889,30 +892,38 @@ def drive(page, path, is_empty, cdp, port, shots=None):
             #     Driven here rather than by the sweep above: the sweep types
             #     a fixed `zz` into every text field, which is the ONE case
             #     that can never truncate. A cap only lies when it bites.
-            # ⚠️ A SKIP IS RECORDED, NEVER SWALLOWED. Two of the six pages
-            #    prune the search overlay (`searchOpen` is not in their
-            #    `overlays`), so "not here" is legitimate — but a probe that
-            #    quietly does nothing on a page that DOES have the overlay is
-            #    exactly the overstated coverage this file keeps catching. The
-            #    tally below is printed, and a skip on a page whose template
-            #    still wires `openSearch` is a problem.
-            have = all(search_nodes.get(k) is not None
-                       for k in ("opener", "input", "foot", "row"))
-            if not have:
-                # The legitimate absence is the WHOLE overlay being pruned —
-                # `searchOpen` is not in digest's or insights' `overlays`, so
-                # only the top-bar opener survives there. The absence that is
-                # NOT legitimate is the overlay being present with its caption
-                # or its result row missing: the probe would then run on
-                # nothing and this fixture would report a clean sweep.
-                if search_nodes.get("input") is not None:
-                    problems.append(
-                        "%s: this page keeps the search overlay (the input is "
-                        "in its template) and %s is not, so the cap check "
-                        "measured nothing."
-                        % (what, " and ".join(
-                            k for k in ("foot", "row")
-                            if search_nodes.get(k) is None) or "its opener"))
+            # ⚠️ A SKIP IS RECORDED, NEVER SWALLOWED. A probe that quietly
+            #    does nothing is exactly the overstated coverage this file
+            #    keeps catching. The tally below is printed.
+            #
+            # ⊕ MRB-291, 26 Aug 2026 — THERE IS NO LEGITIMATE ABSENCE ANY
+            #    MORE, and the expectation moved WITH the fix instead of going
+            #    on describing the defect it was excusing. This block used to
+            #    read: "Two of the six pages prune the search overlay
+            #    (`searchOpen` is not in their `overlays`), so 'not here' is
+            #    legitimate." That was an accurate description of a bug.
+            #    Design drew the top bar — node 16, `on: "openSearch"` — on
+            #    every screen, so digest and insights shipped a pressable
+            #    search button over a pruned overlay: the first control a
+            #    teacher reaches for, doing nothing, on two of six pages.
+            #    `searchOpen` is now in all six pages' `overlays` (see
+            #    `build_teacher_port.PAGES`), so all four nodes must be on
+            #    every page in every state, and a missing one is red.
+            #
+            # ⚠️ NOTHING BELOW IS WEAKENED. The probe still runs on every page
+            #    that has the nodes, a `skip` coming back from it is still a
+            #    problem, and `_search_problems`' cap properties are
+            #    untouched. What went is the exemption, not an assertion.
+            missing = [k for k in ("opener", "input", "foot", "row")
+                       if search_nodes.get(k) is None]
+            if missing:
+                problems.append(
+                    "%s: the search overlay is kept on EVERY page since "
+                    "MRB-291, and this page's template has no %s — so the cap "
+                    "check measured nothing. Either the node moved in "
+                    "Design's delivery, or `searchOpen` has been dropped from "
+                    "this page's `overlays` in build_teacher_port.PAGES."
+                    % (what, " and no ".join(missing)))
             else:
                 got_s = json.loads(pg.eval(
                     _SEARCH_JS.replace("__NODES__",
