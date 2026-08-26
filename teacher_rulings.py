@@ -220,7 +220,7 @@ DEAD = (
           "thing on screen and it does nothing."),
     (254, "\"Set work\" — the marking screen's header action."),
     (67,  "\"Set work\" on a class card that has students but no work set. "
-          "See the note above for why its twin at node 78 survives."),
+          "See the note above for why its twin at node 71 survives."),
 )
 
 
@@ -340,15 +340,15 @@ NAV = {
         to="      goClasses: () => MRB_GO('classes', "
            "{ year: MRB_DATA('yearParam') }),",
         why="the brand mark in the top bar (11) and the class screen's Back "
-            "(89). Design's node 348 — the import screen's Back — is drawn by "
+            "(83). Design's node 348 — the import screen's Back — is drawn by "
             "the same handler and is not emitted; see the note above."),
     "goClass": dict(
         nodes=(211, 247),
         frm="      goClass: () => this.setState({ screen: 'class', modal: "
             "null }, () => this.snapWeekRail()),",
         to="      goClass: () => MRB_GO('class', { 'class': k && k.id }),",
-        why="the student screen's Back (224) and the marking screen's Back "
-            "(260). `snapWeekRail` was a scroll fix for a rail that had never "
+        why="the student screen's Back (211) and the marking screen's Back "
+            "(247). `snapWeekRail` was a scroll fix for a rail that had never "
             "left the DOM; there is no rail to restore across a navigation."),
     "goDigest": dict(
         nodes=(37,),
@@ -992,10 +992,14 @@ INSERT_AT = {
     # on purpose, because a page that suppresses a control and does not say
     # why reads as broken rather than as read-only.
     #
-    # ⚠️ APPENDED TO NODE 94 — Design's `<h1>` row, which already holds the
-    # class code and the subject-dots pill and is `flex-wrap`ped for exactly
-    # this. Not to node 92: that row is `justify-content:space-between` and
-    # a third child there would push the header actions off their edge.
+    # ⚠️ APPENDED TO NODE 91 — v2's header identity block, the bordered
+    # `padding-bottom` div holding the class-code `<h1>` (92) and the
+    # `longMeta` line (93). v1 tucked this chip beside a subject-dots pill in
+    # a flex-wrapped h1 row; v2 deleted that pill and flattened the header,
+    # so the chip now lands as a full-width band under the meta line — which
+    # reads MORE loudly, and read-only is a state worth reading loudly.
+    # Not into node 82's action row: that is `space-between` and a third
+    # child there would push the header actions off their edge.
     91: (None, {
         "t": "if", "e": "readOnlyLine",
         "c": [{
@@ -1180,19 +1184,19 @@ WRAP = {
         # The two import routes. `roster-import` is one of only three write
         # paths on the whole teacher surface, and importing children into a
         # class that finished in July is not an action worth offering.
-        # Node 40 is the header action; node 78 is the same route from an
+        # Node 38 is the header action; node 71 is the same route from an
         # empty class card (the one node 74's pruning deliberately spared).
         38: "canWrite",
         71: "canWrite",
     },
     "class-detail.html": {
-        # The bulk sheet's opener and the composer card. Node 198 is the
+        # The bulk sheet's opener and the composer card. Node 185 is the
         # WHOLE composer — its label (199), the recipient select (200), the
         # six template buttons (206/207), the textarea (209) and the footer
         # holding "Send shoutout" (212) are all inside it — so one wrap takes
         # the write surface off the page without touching Design's grid.
         #
-        # ⚠️ NODE 213, THE FEED, STAYS. A past year is READ-only, not
+        # ⚠️ NODE 200, THE FEED, STAYS. A past year is READ-only, not
         # invisible: what a teacher wrote about a child last year is exactly
         # the record MRB-261 exists to keep reachable.
         183: "canWrite",
