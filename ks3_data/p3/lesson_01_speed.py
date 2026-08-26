@@ -79,6 +79,17 @@ Design draws the statement, the triangle and the CFIFA inside one
 become true. The id goes on the worked example — which is what the
 stop's own label, "Your own five steps", names.
 
+⊕ **Superseded 26 Aug 2026 (MRB-291 item 4).** The id now goes on the
+ATTEMPT PANEL, and the paragraph above is kept rather than deleted because
+its reasoning is still the rule — only its conclusion moved. It was written
+when the section held no block that could tick except a worked example;
+`DEPARTURES-P3.md` recorded the missing panel as a finding, and mounting it
+gives the section the block Design's own predicate names. Hers is
+`isDone('s-build') === !!s.buildOpen`, which her `Cfifa` sets from the
+attempt's Check button and from nowhere else. So the stop is
+`attempt_checked`, the same seam as `p11-01` and `p7-01`, and the count of
+rail stops is unchanged at four.
+
 ── ⚖️ THE `FORCE` FAMILY OPENS HERE ─────────────────────────────────
 
 See `ks3_data/p3/__init__.py` for the ruling. `FORCE-01`..`FORCE-05` are
@@ -132,9 +143,13 @@ LESSON = {
          "label": "Fly or plane",          "done_when": "committed"},
         {"anchor": "s-track", "short": "GATES",
          "label": "Two light gates",       "done_when": "three_runs_recorded"},
+        # ⊕ MRB-291 item 4 — `attempt_checked`, not `both_attempts_opened`.
+        # Her `isDone('s-build')` is `!!s.buildOpen`, which her `Cfifa`
+        # fires from the attempt's Check button and from nowhere else. The
+        # old value described the two WORKED EXAMPLES, which was the only
+        # thing in the section that could tick while the panel was missing.
         {"anchor": "s-build", "short": "CFIFA",
-         "label": "Your own five steps",   "done_when":
-         "both_attempts_opened"},
+         "label": "Your own five steps",   "done_when": "attempt_checked"},
         {"anchor": "s-ladder", "short": "LADDER",
          "label": "Mastery ladder",        "done_when": "ladder_complete"},
     ],
@@ -243,6 +258,27 @@ LESSON = {
          ],
          "release_label": "Release the trolley",
          "record_label": "Record this run",
+         # ⚖️ THE WORDS THE CFIFA PANEL BELOW READS OFF THIS BENCH.
+         # Design computes question 1 from `s.runs[0]`, so the head changes
+         # wording the moment a run exists and the closing line grows a
+         # sentence about the MEAN once there are two or more. Her words,
+         # authored here because the bench is what knows which branch is
+         # true; `wireLightGates` publishes them into the panel's
+         # `{opening}` and `{meannote}` holes. `{n}`, `{mt}` and `{ms}` are
+         # filled by the bench before it publishes — the run count, the
+         # mean time and the speed that mean gives.
+         # ⚠️ The NO-RUNS wording is not here. It is the panel's resting
+         # text — `your-turn-speed`'s `rest.opening` — because that is the
+         # branch a crawler and a JavaScript-off reader get, and a second
+         # copy of it on this bench would be read by nothing.
+         "attempt_live": {
+             "opening_own": "Run 1 from your table: ",
+             "mean_same": " Across your {n} runs the mean time was {mt} s, "
+                          "which gives {ms} m/s — that is the number a "
+                          "physicist would report.",
+             "mean_mixed": " Your runs used different distances, so each one "
+                           "needs its own division.",
+         },
          "alt": "A trolley released from a ramp rolls along a runway and "
                 "breaks two light beams 1.20 metres apart. The timer runs "
                 "only while the trolley is between the beams.",
@@ -288,9 +324,17 @@ LESSON = {
                       "over another means divide.",
          }},
 
-        {"type": "worked-example", "id": "cfifa-speed-plain",
-         "anchor": "s-build"},
+        {"type": "worked-example", "id": "cfifa-speed-plain"},
         {"type": "worked-example", "id": "cfifa-speed-convert"},
+        # ⊕ MRB-291 item 4 — HER ATTEMPT PANEL, and the `s-build` anchor
+        # with it. Design's `#s-build` mounts one `Cfifa`: two worked
+        # examples AND the student's own five lines, and her own
+        # `isDone('s-build')` is `!!s.buildOpen` — the attempt's Check and
+        # nothing else. The anchor used to sit on the first worked example
+        # because there was no block below it that could tick; MRB-208 puts
+        # the stop on the block that CAN, which is now this one. Same seam
+        # as `p11-01` and `p7-01`.
+        {"type": "check", "id": "your-turn-speed", "anchor": "s-build"},
         # ⊕ MRB-223 — HER CARD GRID, at the end of #s-build where she drew it
         # (under the attempt; see the vocabulary note). Eyebrow and lead are
         # hers verbatim. NOT a rail stop — her RAIL has four stops and this is
@@ -431,8 +475,14 @@ LESSON = {
          "buttons": {"first": "Show the first step",
                      "next": "Show the next step",
                      "done": "All five shown",
+                     # ⊕ MRB-291 item 4 — HER SENTENCE IS BACK. This read
+                     # "Your turn on your own runs above." for as long as
+                     # there was no attempt panel to point down at; her own
+                     # `next` on this example (`CFIFA_EX[1]`) is the line
+                     # below, and it is true again now the panel is mounted
+                     # directly underneath.
                      "done_note": "Convert first, then the same four lines. "
-                                  "Your turn on your own runs above."},
+                                  "Your turn below."},
          "staged": True,
          "fifa": [
              {"letter": "C", "label": "Convert",
@@ -452,8 +502,90 @@ LESSON = {
               "note": "Metres divided by seconds leaves metres per second."},
              {"letter": "A", "label": "Answer",
               "line": "s = 20 m/s",
-              "note": "Insert 1.8 instead of 1800 and the answer comes out a "
-                      "thousand times too small."},
+              # ⊕ MRB-291 — was "a thousand"; her CFIFA_EX line 553 reads
+              # "1000", and lifted strings are byte-identical (§3).
+              "note": "Insert 1.8 instead of 1800 and the answer comes out "
+                      "1000 times too small."},
+         ]},
+
+        # ⚖️ QUESTION 1 IS LIVE ON THE LIGHT GATES ABOVE. `{opening}`,
+        # `{d}`, `{t}`, `{long}`, `{expect}` and `{meannote}` are filled by
+        # `wireLightGates` from the runs the student has recorded, so the
+        # five lines can never contradict the table they came from.
+        # `{opening}` and `{meannote}` are Design's own branch wordings and
+        # are authored on the BENCH, which is the thing that knows which
+        # branch is true — see its `attempt_live`.
+        {"id": "your-turn-speed",
+         "kind": "p3-attempt",
+         "demand": "calculate",
+         "eyebrow": "Your turn · the same five steps",
+         "check_label": "Check your working",
+         "reveal_label": "The five lines · tick what you had",
+         # The bench's opening state, and it is REAL: Design's own no-runs
+         # fallback is a 1.60 m gap timed at 1.05 s, which divides to
+         # 1.5238… and rounds to 1.52 m/s. These are the bytes a crawler
+         # and a JavaScript-off reader get, and until a run is recorded
+         # they are also what a student reads.
+         "rest": {"opening": "A run of ", "d": "1.60", "t": "1.05",
+                  "long": "1.5238", "expect": "1.52", "meannote": ""},
+         "questions": [
+             {"id": "p31q1", "tab": "Question 1",
+              "head": "{opening}{d} m in {t} s.",
+              "lead": "Write each line out yourself — starting by deciding "
+                      "whether anything needs converting. Then check your "
+                      "working and tick the lines you had.",
+              "steps": [
+                  {"letter": "C", "label": "Convert",
+                   "placeholder": "anything to convert?",
+                   "line": "{d} m stays {d} m · {t} s stays {t} s",
+                   "note": "Both measurements already came off the equipment "
+                           "in the units the formula wants."},
+                  {"letter": "F", "label": "Formula",
+                   "line": "s = d ÷ t",
+                   "note": "Speed is what you want, so cover s."},
+                  {"letter": "I", "label": "Insert",
+                   "line": "s = {d} m ÷ {t} s",
+                   "note": "Distance on top. The unit of each measurement "
+                           "travels with it."},
+                  {"letter": "F", "label": "Fine-tune",
+                   "line": "{d} ÷ {t} = {long}…",
+                   "note": "Metres divided by seconds. Round at the end, not "
+                           "before."},
+                  {"letter": "A", "label": "Answer",
+                   "placeholder": "remember the unit",
+                   "line": "s = {expect} m/s",
+                   "note": "Two decimal places, and the unit."},
+              ],
+              "close": "The five lines give {expect} m/s.{meannote}"},
+             {"id": "p31q2", "tab": "Question 2",
+              "head": "A cyclist covers 750 m in 2.5 minutes.",
+              "lead": "Write each line out yourself — starting by deciding "
+                      "whether anything needs converting. Then check your "
+                      "working and tick the lines you had.",
+              "steps": [
+                  {"letter": "C", "label": "Convert",
+                   "placeholder": "anything to convert?",
+                   "line": "2.5 min × 60 = 150 s",
+                   "note": "The formula wants seconds, and there are 60 in a "
+                           "minute, so multiply by 60."},
+                  {"letter": "F", "label": "Formula",
+                   "line": "s = d ÷ t",
+                   "note": "Speed is what you want, so cover s."},
+                  {"letter": "I", "label": "Insert",
+                   "line": "s = 750 m ÷ 150 s",
+                   "note": "The converted time goes in. The 2.5 never does."},
+                  {"letter": "F", "label": "Fine-tune",
+                   "line": "750 ÷ 150 = 5",
+                   "note": "Metres divided by seconds leaves metres per "
+                           "second."},
+                  {"letter": "A", "label": "Answer",
+                   "placeholder": "remember the unit",
+                   "line": "s = 5.00 m/s",
+                   "note": "Divide by 2.5 instead of 150 and the answer comes "
+                           "out 60 times too big."},
+              ],
+              "close": "The five lines give 5.00 m/s. The whole question "
+                       "turned on the first one."},
          ]},
     ],
 

@@ -86,6 +86,14 @@ so it is not lost.
 
 ### Finding, not fixed here — `p3-01` has no CFIFA attempt panel
 
+> ⊕ **CLOSED under MRB-291, 26 Aug 2026.** The attempt panel is mounted as
+> she drew it: `p3-attempt` (`ks3_art.kit.r_cfifa_attempt`, ns `p3cfa`) on a
+> `check` block at the end of `#s-build`, ahead of the card grid, Question 1
+> live from the light-gate bench's first RECORDED run with her `meanNote`
+> branches, Question 2 static byte-identical. The rail's third stop now ticks
+> on the attempt's Check, per her `!!s.buildOpen`. The paragraph below is the
+> original finding, kept as the record.
+
 Her `#s-build` mounts `Cfifa` with `cfifaQuestions`: Question 1 built live
 from the student's own run on the light-gate bench above (*"Run 1 from your
 table: … m in … s"*), five lines, a self-tick reveal. The live page carries

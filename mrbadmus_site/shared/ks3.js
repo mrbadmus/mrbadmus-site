@@ -7741,6 +7741,56 @@
     var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
     var ramp = 0, runs = 0, released = 0, lastT = null, timer = null;
 
+    /* p3-01's CFIFA question 1 is live on this bench — Design's `run` is
+       `s.runs[0]` and her closing line grows a sentence about the MEAN once
+       there are two runs or more. One direction only: the panel never
+       writes back, so a scaffold can never move the instrument that feeds
+       it.
+
+       ⚠️ NOTHING IS PUBLISHED UNTIL A RUN HAS BEEN RECORDED. The resting
+       bytes the renderer wrote ARE her no-runs fallback — a 1.60 m gap
+       timed at 1.05 s — so a bench with an empty table has nothing to say
+       that the page does not already show, and publishing a second copy of
+       those numbers from here would be one more place for them to drift.
+
+       The two branch WORDINGS are Design's and are authored in `ks3_data`,
+       on this bench, because this is the code that knows which branch is
+       true. A page with no attempt panel authors none and this publishes
+       nothing at all. */
+    var recorded = [];
+    var OPEN_OWN = wrap.getAttribute("data-lgate-open-own");
+    var MEAN_SAME = wrap.getAttribute("data-lgate-mean-same");
+    var MEAN_MIXED = wrap.getAttribute("data-lgate-mean-mixed");
+
+    function meanNote() {
+      if (recorded.length < 2) { return ""; }
+      var same = true, sum = 0, i;
+      for (i = 0; i < recorded.length; i += 1) {
+        if (Math.abs(recorded[i].d - recorded[0].d) >= 0.001) { same = false; }
+        sum += recorded[i].t;
+      }
+      if (!same) { return MEAN_MIXED || ""; }
+      var mt = sum / recorded.length;
+      return fillTokens(MEAN_SAME || "", {
+        n: recorded.length,
+        mt: mt.toFixed(2),
+        ms: (recorded[0].d / mt).toFixed(2)
+      });
+    }
+
+    function publishRun() {
+      if (!recorded.length || OPEN_OWN === null) { return; }
+      var run = recorded[0];
+      publishLiveP3(sec, {
+        opening: OPEN_OWN,
+        d: run.d.toFixed(2),
+        t: run.t.toFixed(2),
+        long: (run.d / run.t).toFixed(4),
+        expect: (run.d / run.t).toFixed(2),
+        meannote: meanNote()
+      });
+    }
+
     each(ramps, function (b, i) {
       if (b.getAttribute("aria-pressed") === "true") { ramp = i; }
     });
@@ -7774,6 +7824,7 @@
       if (close) { setHidden(close, runs < TARGET); }
       setCount(sec, runs);
       markStage(sec, runs >= TARGET);      /* three_runs_recorded */
+      publishRun();
     }
 
     each(gopts, function (btn) {
@@ -7823,6 +7874,9 @@
     if (recordBtn) {
       recordBtn.addEventListener("click", function () {
         if (lastT === null) { return; }
+        /* The row and the CFIFA panel take the SAME two numbers, so the
+           five lines can never contradict the table they came from. */
+        recorded.push({ d: gap(), t: lastT });
         var tr = document.createElement("tr");
         tr.innerHTML =
           "<th scope=\"row\">" + (runs + 1) + "</th>" +
@@ -8306,6 +8360,140 @@
     });
 
     paint();
+  }
+
+  /* ── the CFIFA attempt panel, P3's namespace ──────────────────────────
+
+     ⊕ MRB-291 item 4, 26 Aug 2026. `p3-01` shipped Design's two worked
+     examples and then a stand-in sentence where her `#s-build` mounts
+     `Cfifa` with two `cfifaQuestions` — so a student read five lines twice
+     and never wrote one. `DEPARTURES-P3.md` recorded it as a finding; this
+     is the behaviour half of the fix.
+
+     Identical to P4's, P5's, P6's, P7's and P11's, because her
+     `Cfifa.dc.html` in the P3 folder is the same component: question 1 is
+     live on the bench above, question 2 is fixed, the Check button refuses
+     an empty attempt, and the student ticks their own lines against the
+     model. Her `onOpen` fires from that Check button and from nowhere else,
+     which is why `s.buildOpen` — her own `DONE` for `#s-build` — and our
+     `attempt_checked` are the same moment. */
+  function paintAttemptP3(wrap, vals) {
+    var qs = toArray(wrap.querySelectorAll("[data-p3cfa-q]"));
+    each(qs, function (q, qi) {
+      if (qi !== 0) { return; }            /* Question 1 alone is live */
+      var head = q.querySelector("[data-p3cfa-head]");
+      if (head) {
+        head.textContent = fillTokens(head.getAttribute("data-template"),
+                                      vals);
+      }
+      each(toArray(q.querySelectorAll("[data-p3cfa-line]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      each(toArray(q.querySelectorAll("[data-p3cfa-note]")), function (el) {
+        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      });
+      var close = q.querySelector("[data-p3cfa-close]");
+      if (close) {
+        close.textContent = fillTokens(close.getAttribute("data-template"),
+                                       vals);
+      }
+    });
+  }
+
+  function publishLiveP3(sec, vals) {
+    var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
+    if (!host) { host = document; }
+    each(toArray(host.querySelectorAll("[data-p3cfa]")), function (p) {
+      paintAttemptP3(p, vals);
+    });
+  }
+
+  function wireCfifaAttemptP3(sec) {
+    var wrap = sec.querySelector("[data-p3cfa]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll("[data-p3cfa-tab]"));
+    var qs = toArray(wrap.querySelectorAll("[data-p3cfa-q]"));
+
+    each(tabs, function (t, i) {
+      t.addEventListener("click", function () {
+        each(tabs, function (o, j) {
+          o.setAttribute("aria-pressed", i === j ? "true" : "false");
+        });
+        each(qs, function (q, j) { setHidden(q, i !== j); });
+      });
+    });
+
+    each(qs, function (q) {
+      var inputs = toArray(q.querySelectorAll("[data-p3cfa-input]"));
+      var btn = q.querySelector("[data-p3cfa-check]");
+      var hint = q.querySelector("[data-p3cfa-hint]");
+      var reveal = q.querySelector("[data-p3cfa-reveal]");
+      var tally = q.querySelector("[data-p3cfa-tally]");
+      var ticks = toArray(q.querySelectorAll("[data-p3cfa-tick]"));
+      if (!btn) { return; }
+
+      function written() {
+        var n = 0;
+        each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+        return n;
+      }
+      function repaintBtn() {
+        var n = written();
+        if (n) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+        if (hint) {
+          hint.textContent = n
+            ? n + " of " + inputs.length + " lines written"
+            : "Write at least one line first";
+        }
+      }
+      function retally() {
+        var got = 0;
+        each(ticks, function (t) {
+          if (t.getAttribute("aria-pressed") === "true") { got += 1; }
+        });
+        if (tally) {
+          tally.textContent = got + " of " + ticks.length +
+            " lines you had. " + (got === ticks.length
+              ? "All five, in order."
+              : "Rewrite the ones you missed before moving on.");
+        }
+      }
+
+      each(inputs, function (i) {
+        i.addEventListener("input", repaintBtn);
+        i.addEventListener("change", repaintBtn);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        each(inputs, function (i, k) {
+          var yours = q.querySelector('[data-p3cfa-yours="' + k + '"]');
+          var line = q.querySelector('[data-p3cfa-yourline="' + k + '"]');
+          if (line) {
+            line.textContent = i.value.trim()
+              ? "You wrote: " + i.value.trim()
+              : "You left this line blank.";
+          }
+          if (yours) { setHidden(yours, false); }
+        });
+        setHidden(reveal, false);
+        btn.setAttribute("disabled", "");
+        btn.textContent = "Marked";
+        retally();
+        markStage(sec, true);          /* attempt_checked — her `buildOpen` */
+      });
+
+      each(ticks, function (t) {
+        t.addEventListener("click", function () {
+          t.setAttribute("aria-pressed",
+            t.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          retally();
+        });
+      });
+
+      repaintBtn();
+    });
   }
 /* ═══ END P3 wiring ═══ */
 
@@ -35840,6 +36028,13 @@
     each(root.querySelectorAll("[data-jwalkblock]"), wireJourneyWalk);
     each(root.querySelectorAll("[data-rframeblock]"), wireRelativeFrames);
     each(root.querySelectorAll("[data-passblock]"), wirePassingSpeeds);
+    // ⚠️ ORDER IS IMMATERIAL HERE, for the reason the P4 block gives at
+    // length: question 1's `{token}` holes are filled by `publishLiveP3`,
+    // which the light-gate bench calls from its OWN `paint()` — it walks
+    // the lesson and repaints every panel directly, so it does not depend
+    // on this next line having run. `wireCfifaAttemptP3` only attaches
+    // listeners and paints the hint.
+    each(root.querySelectorAll("[data-p3cfablock]"), wireCfifaAttemptP3);
     // ═══ END P3 wiring ═══
     // ═══ BEGIN P4 wiring ═══
     each(root.querySelectorAll("[data-iboardblock]"), wireInteractionBoard);

@@ -91,6 +91,10 @@ _INSTRUMENT_SEGMENTS = {
     "relative-frames": "practical",
     "passing-speeds":  "check",
 }
+# ⚠️ `p3-attempt` is deliberately NOT in this map, for the P7/P11/P12 reason:
+# its core block is authored as a `check` directly (⊕ MRB-291 — the attempt
+# panel Design drew in `#s-build`, mounted late). Adding it here would be a
+# second segment decision for a block that already made one.
 
 _BLOCK_KEYS = ("type", "anchor", "id")
 

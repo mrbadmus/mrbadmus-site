@@ -58,7 +58,7 @@ matcher renders into `ks3-jwalk-block`.
 Full words — `easier`, `standard`, `harder`. Never `s` or `h`.
 """
 
-from ks3_art.kit import e, rich, t
+from ks3_art.kit import e, r_cfifa_attempt, rich, t
 
 
 # ═══ shared P3 primitives ════════════════════════════════════════════════
@@ -125,7 +125,24 @@ def r_light_gates(a, act_id):
     for the MEAN of three times, which only makes sense if they can fall
     either side.
 
-    HOOKS: `data-lgate` (wrapper, `data-scatter`, `data-target`) ·
+    ⚖️ **THE BENCH PUBLISHES THE WORDS ITS OWN ATTEMPT PANEL READS.**
+    Design's CFIFA question 1 is computed from `s.runs[0]` — the head
+    changes wording once a run exists (*"Run 1 from your table: …"* rather
+    than the panel's own resting *"A run of …"*), and her closing line
+    grows a sentence about the MEAN once there are two runs or more. Only
+    the branches the bench can reach are authored here; the NO-RUNS
+    wording is the panel's resting text and lives in its `rest`, because
+    that is what a crawler and a JavaScript-off reader get. Those are her
+    words, so they are
+    authored in `ks3_data` and carried here as attributes on the bench that
+    computes the branch, exactly as `p4-03`'s support rig carries the word
+    its own `{supportword}` token is filled from. `attempt_live` is
+    OPTIONAL: a light-gates bench with no attempt panel beside it publishes
+    nothing and the panel's resting bytes stand.
+
+    HOOKS: `data-lgate` (wrapper, `data-scatter`, `data-target`, and —
+    when `attempt_live` is authored — `data-lgate-open-own`,
+    `data-lgate-mean-same`, `data-lgate-mean-mixed`) ·
     `data-lgate-gate` · `data-lgate-gopt` · `data-lgate-bench` ·
     `data-lgate-ramp` (valued with the ramp index, carrying `data-v`) ·
     `data-lgate-gap` (the slider) · `data-lgate-release` ·
@@ -176,6 +193,33 @@ def r_light_gates(a, act_id):
             "light-gates %r has an unusable gate separation range "
             "%r..%r step %r start %r." % (act_id, lo, hi, step, start))
 
+    # ⚖️ THE WORDS THE ATTEMPT PANEL READS. See the ruling in the docstring.
+    # All four or none: a half-authored set would publish an undefined
+    # opening into the head of question 1, which reads as the word
+    # "undefined" to a student and turns no gate red.
+    live = a.get("attempt_live") or {}
+    live_keys = ("opening_own", "mean_same", "mean_mixed")
+    live_attrs = ""
+    if live:
+        missing = [k for k in live_keys if not live.get(k)]
+        if missing:
+            raise ValueError(
+                "light-gates %r authors `attempt_live` without %s. Question 1 "
+                "of the CFIFA panel beside this bench is live on it, and a "
+                "branch with no words publishes an empty sentence — or the "
+                "word 'undefined' — into a student's own worked answer."
+                % (act_id, sorted(missing)))
+        if "{n}" not in live["mean_same"]:
+            raise ValueError(
+                "light-gates %r gives `mean_same` no {n} hole. Design's "
+                "sentence counts the runs — *\"Across your 3 runs…\"* — and "
+                "a fixed number there would contradict the table above it."
+                % act_id)
+        live_attrs = (' data-lgate-open-own="%s"'
+                      ' data-lgate-mean-same="%s" data-lgate-mean-mixed="%s"'
+                      % (e(live["opening_own"]),
+                         e(live["mean_same"]), e(live["mean_mixed"])))
+
     picks = "".join(
         _p3_seg("ks3-seg-btn", r["label"],
                 pressed=(i == int(a.get("start_ramp") or 0)),
@@ -193,7 +237,7 @@ def r_light_gates(a, act_id):
     heads = "".join('<th scope="col">%s</th>' % t(c) for c in cols)
 
     return ('<div class="ks3-lgate" data-lgate data-scatter="%s" '
-            'data-target="%d">%s'
+            'data-target="%d"%s>%s'
             '<div class="ks3-lgate-bench" data-lgate-bench hidden>'
             '<div class="ks3-lgate-ramps" role="group" '
             'aria-label="Ramp height">%s</div>'
@@ -220,13 +264,46 @@ def r_light_gates(a, act_id):
             '<p class="ks3-lgate-close" data-lgate-close hidden>%s</p>'
             '</div></div>'
             % (float(a.get("scatter_pct") or 3),
-               int(a.get("runs_to_record") or 3),
+               int(a.get("runs_to_record") or 3), live_attrs,
                _gate(act_id, "light-gates", a.get("gate") or {}, "lgate"),
                picks, e(a.get("alt", "")), e(act_id), e(act_id),
                lo, hi, step, start, outs,
                t(a.get("release_label") or "Release the trolley"),
                t(a.get("record_label") or "Record this run"),
                heads, rich(a.get("close") or "")))
+
+
+# ═══ p3-01 · #s-build · the CFIFA attempt ════════════════════════════════
+
+def r_p3_attempt(a, act_id):
+    """⊕ P3's half of Design's `Cfifa`: the student's own five lines.
+
+    ⊕ MRB-291 item 4, 26 Aug 2026. `DEPARTURES-P3.md` recorded this as a
+    finding rather than a choice: her `#s-build` mounts `Cfifa` with two
+    `cfifaQuestions` and the built page carried the two worked examples and
+    a stand-in sentence, so a student read five lines twice and never wrote
+    one. Under MRB-205 her page wins, and this mounts what she drew.
+
+    Her `Cfifa.dc.html` in `docs/ks3/design-reference/p3/` is the same
+    component P4–P8, P11 and P12 already render, so the drawing is
+    `ks3_art.kit.r_cfifa_attempt` and nothing is re-typed. The FAMILY is
+    P3's own, so `ks3_art.load()`'s one-family-one-module rule holds and the
+    placement gates see it as this unit's.
+
+    ⊕ ONE EYEBROW, NOT TWO. The `check` shell already prints this activity's
+    eyebrow in Design's `.ks3-blockhead`; the kit helper prints it again
+    unless told not to. P7, P11 and P12 opt out by passing `None`, and so
+    does this.
+
+    ⚖️ QUESTION 1 IS LIVE ON THE LIGHT GATES ABOVE. Her `run` is
+    `s.runs[0]`, so `{opening}`, `{d}`, `{t}`, `{long}`, `{expect}` and
+    `{meannote}` are filled by `wireLightGates` from the runs the student
+    has actually recorded. Until one is recorded the bench publishes
+    nothing and the RESTING bytes stand — which is exactly her no-runs
+    fallback of 1.60 m in 1.05 s, and is why they have to be authored in
+    `rest` rather than left to JavaScript.
+    """
+    return r_cfifa_attempt(dict(a, eyebrow=None), act_id, "p3cfa")
 
 
 # ═══ p3-01 · #s-compare · three pairs ════════════════════════════════════
@@ -726,6 +803,12 @@ KIND_SHELL = {
     'passing-speeds':  ("ks3-pass-block",
                         ' data-instrument data-passblock '
                         'data-stage-done="0"'),
+    # ⊕ MRB-291 item 4 — `ks3-p3cfa-` and `data-p3cfablock` were checked
+    # against the whole registry (and against shared/ks3.js and
+    # shared/ks3.css) before being written; both were free.
+    'p3-attempt':      ("ks3-p3cfa-block",
+                        ' data-instrument data-p3cfablock '
+                        'data-stage-done="0"'),
 }
 
 KIND_FN = {
@@ -735,4 +818,5 @@ KIND_FN = {
     'journey-match':   r_journey_match,
     'relative-frames': r_relative_frames,
     'passing-speeds':  r_passing_speeds,
+    'p3-attempt':      r_p3_attempt,
 }
