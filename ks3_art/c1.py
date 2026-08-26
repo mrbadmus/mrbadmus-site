@@ -1354,10 +1354,11 @@ def r_prediction_stack(a, act_id):
 
     panels = []
     for p in preds:
-        # `.ks3-sim-seg-btn` on the dark ground gives Design's own `segDark`
-        # pair: the lit state is the alert yellow with ink text, the resting
-        # state transparent on the muted rule. A private control here would be
-        # a second copy of a ruled one.
+        # `.ks3-sim-seg-btn` on the dark ground: the lit state is `--ks3-data`
+        # with ink text (⊕ MRB-291 applying MRB-252 — Design's segDark drew it
+        # alert yellow, but amber is warning/loss only, never selection), the
+        # resting state transparent on the muted rule. A private control here
+        # would be a second copy of a ruled one.
         btns = "".join(
             '<button type="button" class="ks3-sim-seg-btn ks3-predict-btn" '
             'data-i="%d" aria-pressed="false">%s</button>'

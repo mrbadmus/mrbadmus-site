@@ -1353,9 +1353,12 @@ body.rd[data-mode="ks3"] {
   border-color: var(--ks3-accent);
   color: var(--ks3-accent-text);
 }
-/* On the ink-dark practical block, Design's own pair: the lit state is the
-   alert yellow with ink text, the resting state transparent on the muted
-   rule.
+/* On the ink-dark practical block: the resting state transparent on the
+   muted rule; the lit state carries `--ks3-data` with ink text (8.2:1).
+   ⊕ MRB-291, applying MRB-252 — this used to be Design's alert amber, and
+   P9's DEPARTURES records the same flag on p9-03's test point: amber is
+   warning and loss ONLY, never a selection colour. Selection goes to
+   `--ks3-data`, which is on-ink-only, and this branch is the ink one.
    ⊕ MRB-242 — `.ks3-seg-btn` was missing from BOTH of these, so the ruling
    three comments up ("one segmented control, two class names, one set of
    values") held for the light branch and broke for the dark one. Every
@@ -1371,8 +1374,8 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-dark .ks3-seg-btn[aria-pressed="true"],
 .ks3-dark .ks3-sim-seg-btn[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
+  background: var(--ks3-data);
+  border-color: var(--ks3-data);
   color: var(--ks3-ink);
 }
 

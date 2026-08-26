@@ -2018,15 +2018,20 @@ COMPONENTS = [
          on=C1_MODEL, drive="gap-answered", sel=".ks3-gap-test",
          props={"color": "#FBF3E6", "border-top-color": "#C6B9A7",
                 "border-top-width": "2px", "min-height": "44px"}),
-    # ⚖️ The RUNNING test is the alert amber with ink on it — the shipped dark
-    # pressed state, measured in the state through the rig's own controls.
-    # Amber here is not a verdict on the student: it marks which test is on the
-    # bench, and the outcome paragraph is one tone whichever answer they gave.
-    dict(name="the running gap test is alert amber with ink on it",
+    # ⚖️ The RUNNING test carries the data blue with ink on it — the shared
+    # dark pressed state, measured in the state through the rig's own
+    # controls. This marks which test is on the bench, and the outcome
+    # paragraph is one tone whichever answer they gave.
+    # ⊕ MRB-291, applying MRB-252 — this row used to pin Design's alert amber
+    # (#FFC53D). Its own reasoning ("it marks which test is on the bench") is
+    # a SELECTION use, which MRB-252 routes to `--ks3-data`; amber is warning
+    # and loss only. The shared `.ks3-dark .ks3-seg-btn[aria-pressed="true"]`
+    # rule moved with the ruling and this row moves with the rule.
+    dict(name="the running gap test is the data blue with ink on it",
          on=C1_MODEL, drive="gap-tested",
          sel='.ks3-gap-test[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "border-top-color": "#FFC53D"}),
+         props={"background-color": "#8FB7FF", "color": "#221E1B",
+                "border-top-color": "#8FB7FF"}),
 # ks3_parity.py — halving-bench (c1-01 #s-cut)
 #
 # 1. PAGE CONSTANT — add beside C2_ATOM / C2_ELEM (~line 357):

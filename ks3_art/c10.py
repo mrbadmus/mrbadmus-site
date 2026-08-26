@@ -82,10 +82,11 @@ stage already wears, and neither is a shape she did not draw.
 
 ⚑ **AND ONE MORE, FOR THE SAME REASON.** Design's `seg(on, dark)` paints the
 lit segmented button `--ks3-accent` with `--ks3-on-dark` text. The shared
-`.ks3-dark .ks3-seg-btn[aria-pressed="true"]` paints it `--ks3-alert` with ink
-text, which is MRB-242 — a recorded correction applied to sixteen buttons
-across three B1 pages after they fell through to the light branch at 1.35:1.
-The house control is used unchanged rather than overridden for one unit.
+`.ks3-dark .ks3-seg-btn[aria-pressed="true"]` paints it `--ks3-data` with ink
+text (⊕ MRB-291 applying MRB-252 — it was `--ks3-alert` until 26 Aug 2026;
+the MRB-242 correction that routed these sixteen B1 buttons onto the shared
+dark branch at all is unchanged). The house control is used unchanged rather
+than overridden for one unit.
 
 ═══════════════════════════════════════════════════════════════════════════
 WHAT THIS FILE IS RESPONSIBLE FOR, AND WHAT IT IS NOT
