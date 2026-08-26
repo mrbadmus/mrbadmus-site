@@ -56,6 +56,36 @@ import ks3_data
 WIDTHS = (390, 768, 1440)
 MIN_LABEL_PX = 13.0
 
+# ── ⊕ MRB-291 · TWO CONSOLE LINES THAT ARE NOT THIS GATE'S BUSINESS ──────────
+#
+# `shared/mrbadmus.v2.js` pings `mrbadmus-backend.onrender.com/api/health` two
+# seconds after every page load (and every ten minutes after that) purely to
+# keep Render warm. It is `.catch()`-ed in JS, but the browser logs the failure
+# anyway, and from a localhost origin it fails CORS outright — so whether this
+# gate went red depended on whether the 2s timer fired before the sweep read
+# the log on that particular page at that particular width. `ks3_parity.py`
+# reached the same conclusion first and put it plainly: **"a green run was
+# luck."** A gate that fails at random teaches people to ignore gates, which
+# costs far more than the liveness signal is worth; liveness belongs in
+# `check_ks3_live.sh`, against the real origin, where a red result means
+# something.
+#
+# The favicon 404 is the other one — `ks3_browser.py`'s own docstring
+# documents it as the noise "a bare local page always produces" and tells the
+# caller to filter it.
+#
+# ⚠️ THESE TWO AND NOTHING ELSE. Every other console error on a figure page is
+# this gate's business and still reds it.
+BACKEND_HOST = "mrbadmus-backend.onrender.com"
+
+
+def _real_console_errors(page):
+    """The page's console errors, minus the two documented non-signals."""
+    if not hasattr(page, "console_errors"):
+        return []
+    return [m for m in page.console_errors()
+            if "favicon" not in m.lower() and BACKEND_HOST not in m]
+
 PROBE = r"""
 new Promise(function (res) {
   requestAnimationFrame(function () { requestAnimationFrame(function () {
@@ -250,9 +280,7 @@ def sweep(site_root="mrbadmus_site", prefix="ks3", widths=WIDTHS):
                                   % (port, prefix, rel))
                     page.set_viewport(w, 900)
                     got = page.eval(PROBE)
-                    logs = [m for m in (page.console_errors()
-                                        if hasattr(page, "console_errors")
-                                        else [])]
+                    logs = _real_console_errors(page)
                     figs = got["figures"]
                     if len(figs) != len(ids):
                         problems.append(

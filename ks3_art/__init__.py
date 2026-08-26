@@ -72,6 +72,7 @@ THE GATES, AND WHAT EACH ONE IS FOR
 import collections
 import importlib
 import pkgutil
+import re
 
 TABLES = ("ART", "KIND_SHELL", "KIND_FN",
           "KIND_HEAD_START", "KIND_HEAD_TOTAL", "KIND_HEAD_FROM")
@@ -86,6 +87,37 @@ _ATTR = {"ART": "art", "KIND_SHELL": "kind_shell", "KIND_FN": "kind_fn",
          "KIND_HEAD_START": "kind_head_start",
          "KIND_HEAD_TOTAL": "kind_head_total",
          "KIND_HEAD_FROM": "kind_head_from"}
+
+# ── THE DISPATCH MARKER, DEFINED ONCE ────────────────────────────────────────
+#
+# A `KIND_SHELL` value is `(shell class, marker attributes)`, where the marker
+# attributes are the verbatim string the generator writes into the block tag —
+# e.g. `data-instrument data-pairs data-stage-done="0"`. The MARKER is the one
+# `data-` attribute in there that is neither the generic `data-instrument`
+# dispatch flag nor the `data-stage-done` counter; it is the selector
+# `wireInstruments()` finds the block by.
+#
+# ⚠️ This lived in `ks3_instrument_liveness.families()` and nowhere else, which
+# meant the build had no idea what a marker was and could not check one. It is
+# here now because `load()` below asserts on markers; `ks3_instrument_liveness`
+# imports these two functions rather than keeping its own copy, so the two
+# definitions cannot drift apart and disagree about what a marker is.
+_MARKER_RE = re.compile(r"data-[a-z0-9-]+")
+NOT_A_MARKER = ("data-instrument", "data-stage-done")
+
+
+def shell_marker_attrs(value):
+    """The marker-attribute STRING out of a `KIND_SHELL` value ('' if none)."""
+    attrs = value[1] if isinstance(value, (tuple, list)) and len(value) > 1 \
+        else ""
+    return attrs or ""
+
+
+def shell_marker(value):
+    """The one dispatch marker in a `KIND_SHELL` value, or ``None``."""
+    marks = [m for m in _MARKER_RE.findall(shell_marker_attrs(value))
+             if m not in NOT_A_MARKER]
+    return marks[0] if marks else None
 
 
 class Registry(object):
@@ -193,6 +225,61 @@ def load():
             % (len(shell_clashes), "\n".join(
                 "   %-22s %s (ks3_art/%s.py) AND %s (ks3_art/%s.py)" % c
                 for c in shell_clashes)))
+
+    # ── ⊕ MRB-291, 26 Aug 2026 · ONE MARKER MAY NOT CROSS A MODULE BOUNDARY ──
+    #
+    # The check above compares the shell CLASS — what the block LOOKS like.
+    # This one compares the shell MARKER — what the block is WIRED by, and
+    # nothing was looking at that either.
+    #
+    # `wireInstruments()` finds a block by its marker: every element carrying
+    # `data-pairs` is handed to the `data-pairs` wire function. So when two
+    # modules pick the same marker, ONE UNIT'S WIREUP CAPTURES THE OTHER
+    # UNIT'S INSTRUMENTS. The other unit's blocks are then driven by a
+    # function that was written against a different DOM, and it fails the way
+    # this whole package exists to prevent: silently. Both pages build, both
+    # ship, and the only witness is a browser open on the page nobody in that
+    # lane was looking at. P8/P9's `data-cthink`-era collisions and C9's
+    # `data-pairs` against B1's were all caught downstream by
+    # `ks3_instrument_liveness.py` — in a browser, long after the build said
+    # yes. This moves that finding to the build, where it is free.
+    #
+    # ⚠️ WITHIN ONE MODULE, A SHARED MARKER IS LEGAL AND DELIBERATE, and this
+    # check must never be "tightened" into forbidding it. `ks3_art/b5.py`
+    # gives `data-b5cblock` to five families and `data-cmpblock` to two,
+    # because one wire function deliberately serves a set of siblings that a
+    # single unit's author wrote together and maintains together. That is the
+    # asymmetry: sharing a marker inside a module is one author's choice about
+    # their own instruments; sharing one ACROSS modules is two authors
+    # reaching for the same string without knowing the other did, which is
+    # never a choice anyone made. Only the second is the defect.
+    markers, marker_clashes = {}, []
+    for fam, value in getattr(reg, _ATTR["KIND_SHELL"]).items():
+        mark = shell_marker(value)
+        if not mark:
+            continue
+        mod = reg.source.get(("KIND_SHELL", fam), "?")
+        if mark in markers:
+            other, other_mod = markers[mark]
+            if other_mod != mod:          # same module → deliberate, leave it
+                marker_clashes.append((mark, other, other_mod, fam, mod))
+        else:
+            markers[mark] = (fam, mod)
+
+    if marker_clashes:
+        raise SystemExit(
+            "ks3_art: %d shell marker(s) claimed by families in TWO "
+            "MODULES:\n%s\n"
+            "One marker, one module. `wireInstruments()` dispatches on the "
+            "marker, so a shared one hands one unit's blocks to another "
+            "unit's wire function — silently: both units build, both ship, "
+            "and only a browser open on the other unit's page would show it. "
+            "Rename one module's marker. (Sharing a marker WITHIN one module "
+            "is legal and deliberate — one wire function serving siblings the "
+            "same author wrote — and is not reported here.)"
+            % (len(marker_clashes), "\n".join(
+                "   %-22s %s (ks3_art/%s.py) AND %s (ks3_art/%s.py)" % c
+                for c in marker_clashes)))
     return reg
 
 

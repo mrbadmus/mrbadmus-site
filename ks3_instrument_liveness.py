@@ -120,14 +120,11 @@ def units(only=None):
     return found, soon, missing
 
 
-_MARKER = re.compile(r"data-[a-z0-9-]+")
-
 # family -> the verbatim attribute string the generator writes into the shell
 # tag, e.g. `data-instrument data-pairs data-stage-done="0"`. Filled by
 # families(). Page selection matches on THIS rather than on the marker alone:
 # see the note in main().
 SIGNATURE = {}
-_NOT_A_MARKER = ("data-instrument", "data-stage-done")
 
 
 def families():
@@ -137,16 +134,22 @@ def families():
     marker attributes are the string the generator writes into the block tag.
     The marker is the one `data-` attribute in there that is not the generic
     `data-instrument` flag or the `data-stage-done` counter.
+
+    ⊕ MRB-291. That last sentence used to be implemented HERE, in a regex and
+    a tuple this file owned. `ks3_art.load()` now asserts that no two modules
+    claim one marker, so the build needs the same definition — and two copies
+    of "what a marker is" that can disagree is exactly the drift a gate is
+    supposed to catch, not create. The definition lives in `ks3_art`
+    (`shell_marker` / `shell_marker_attrs`) and this reads it from there.
     """
     import ks3_art
     reg = ks3_art.load()
     out, static, broken = {}, [], []
     for fam, value in sorted(reg.kind_shell.items()):
-        attrs = value[1] if isinstance(value, (tuple, list)) and len(value) > 1 else ""
-        attrs = attrs or ""
-        marks = [m for m in _MARKER.findall(attrs) if m not in _NOT_A_MARKER]
-        if marks:
-            out[fam] = marks[0]
+        attrs = ks3_art.shell_marker_attrs(value)
+        mark = ks3_art.shell_marker(value)
+        if mark:
+            out[fam] = mark
             SIGNATURE[fam] = attrs.strip()
         elif "data-instrument" in attrs:
             # Flagged for dispatch and carrying nothing to dispatch ON. This
