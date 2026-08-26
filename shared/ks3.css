@@ -28180,6 +28180,31 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-xfer-svg, .ks3-chpair-svg, .ks3-fgrid-svg {
   display: block; width: 100%; height: auto;
 }
+/* ⊕ MRB-291 — THE READABLE FLOOR (§5A.4's rule, applied to the benches).
+   These drawings are 1000 units wide with 15px captions, and they used to
+   scale freely: at a 360px viewport the whole drawing sat at ~29% and every
+   fixed caption landed near 4px. The kit's figures already ruled the answer —
+   the drawing keeps a floor and the narrow reader scrolls (`_svg_open` +
+   `.ks3-figure-scroll`) — so each bench figure now sits inside a
+   `.ks3-figure-scroll` with this inner `-fig` element as BOTH the floor and
+   the positioned ancestor.
+
+   860 rather than the drawn 1000, deliberately: the lesson column caps at
+   `--ks3-wide`, so a desktop reader has always seen these at ~870px (captions
+   ~13px). A 1000px floor would make DESKTOP scroll — a layout change this
+   ticket forbids. 860 keeps every viewport ≥ the width desktop already
+   renders, and lifts the 360px caption from ~4px to ~12.9px.
+
+   ⚠️ The inner `-fig` is the positioned ancestor ON PURPOSE (the p10-05 `N`
+   lesson, recorded on the P10 block below): live fills are `left: X%` read
+   straight off the viewBox, so the box they resolve against must be the
+   SVG's own box, never the padded figwrap — which is also why the scroll
+   container sits BETWEEN the two. On P9 this correction is new: its fills
+   used to resolve against the 18px-padded figwrap, off by up to 18px at the
+   edges, nothing at the centre. */
+.ks3-xfer-fig, .ks3-chpair-fig, .ks3-fgrid-fig {
+  position: relative; min-width: 860px;
+}
 .ks3-xfer-fill, .ks3-chpair-fill, .ks3-fgrid-fill {
   position: absolute; font-family: var(--ks3-font-mono); font-weight: 500;
   white-space: nowrap; pointer-events: none;
@@ -28606,7 +28631,13 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    at the centre and eighteen pixels at either edge — which is how `p10-05`'s
    `N` ended up half off the pole face it names. */
 .ks3-tpair-fig, .ks3-cplot-fig, .ks3-dipc-fig, .ks3-solen-fig,
-.ks3-mcoil-fig { position: relative; }
+.ks3-mcoil-fig {
+  position: relative;
+  /* ⊕ MRB-291 — the readable floor; derivation on the P9 block above. The
+     figwrap now carries a `.ks3-figure-scroll` between itself and this
+     element, so the floor scrolls instead of squashing. */
+  min-width: 860px;
+}
 .ks3-tpair-svg, .ks3-cplot-svg, .ks3-dipc-svg, .ks3-solen-svg,
 .ks3-mcoil-svg {
   display: block; width: 100%; height: auto;

@@ -503,7 +503,8 @@ def r_transfer_pair(a, act_id):
             '<div class="ks3-xfer-picker">'
             '<p class="ks3-xfer-pickerlabel">%s</p>'
             '<div class="ks3-xfer-tabrow">%s</div></div>%s</div>'
-            '<div class="ks3-xfer-figwrap">%s%s</div>%s'
+            '<div class="ks3-xfer-figwrap"><div class="ks3-figure-scroll">'
+            '<div class="ks3-xfer-fig">%s%s</div></div></div>%s'
             '<p class="ks3-xfer-note" data-xfer-note></p>%s%s</div></div>'
             % (e(per), e(tau), e(ceil),
                e(a.get("start_a", 0)), e(a.get("start_b", 0)), _sibling(a),
@@ -677,7 +678,8 @@ def r_charge_pair(a, act_id):
             '<div class="ks3-chpair-picker">'
             '<p class="ks3-chpair-pickerlabel">%s</p>'
             '<div class="ks3-chpair-tabrow">%s</div></div>%s</div>'
-            '<div class="ks3-chpair-figwrap">%s%s</div>%s'
+            '<div class="ks3-chpair-figwrap"><div class="ks3-figure-scroll">'
+            '<div class="ks3-chpair-fig">%s%s</div></div></div>%s'
             '<p class="ks3-chpair-note" data-chpair-note></p>%s%s%s'
             '</div></div>'
             % (e(k), e(ind_k), e(ref_d),
@@ -850,7 +852,8 @@ def r_field_grid(a, act_id):
             '<div class="ks3-fgrid-picker">'
             '<p class="ks3-fgrid-pickerlabel">%s</p>'
             '<div class="ks3-fgrid-tabrow">%s</div></div>%s</div>'
-            '<div class="ks3-fgrid-figwrap">%s%s</div>%s'
+            '<div class="ks3-fgrid-figwrap"><div class="ks3-figure-scroll">'
+            '<div class="ks3-fgrid-fig">%s%s</div></div></div>%s'
             '<p class="ks3-fgrid-note" data-fgrid-note></p>%s%s%s'
             '</div></div>'
             % (e(a.get("eref", 2.5e-4)), e(x0), e(dx), e(near),

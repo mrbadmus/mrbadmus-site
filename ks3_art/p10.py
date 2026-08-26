@@ -377,8 +377,9 @@ def _wrap(hook, act_id, a, attrs, controls, svg, fills, tiles, extras):
     return ('<div class="ks3-%s" data-%s%s%s>%s%s'
             '<div class="ks3-%s-body" data-%s-body hidden>'
             '<div class="ks3-%s-controls">%s</div>'
-            '<div class="ks3-%s-figwrap"><div class="ks3-%s-fig">%s%s'
-            '</div></div>%s'
+            '<div class="ks3-%s-figwrap"><div class="ks3-figure-scroll">'
+            '<div class="ks3-%s-fig">%s%s'
+            '</div></div></div>%s'
             '<p class="ks3-%s-note" data-%s-note></p>%s</div></div>'
             % (hook, hook, attr_s, _sibling(a), lead,
                _gate(act_id, hook, a.get("gate") or {}, hook),
