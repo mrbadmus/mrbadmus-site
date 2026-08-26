@@ -505,8 +505,9 @@ class Component extends DCLogic {
      the row marks, the question percentages and the paper mean all agree. */
   gridFor(k, pIdx) {
     if (!k || !k.id) return null;
-    var g = MRB_PICK('GRID', k.id + ':' + pIdx);
-    return g || null;
+    var m = MRB_DATA('GRID');
+    var key = k.id + ':' + pIdx;
+    return (m && (key in m)) ? (m[key] || null) : null;
   }
 
   BANDS = [

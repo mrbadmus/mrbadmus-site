@@ -1374,15 +1374,29 @@ METHODS = {
         "now a consequence of the data rather than a special case."),
     "gridFor": (
         "    if (!k || !k.id) return null;\n"
-        "    var g = MRB_PICK('GRID', k.id + ':' + pIdx);\n"
-        "    return g || null;",
+        "    var m = MRB_DATA('GRID');\n"
+        "    var key = k.id + ':' + pIdx;\n"
+        "    return (m && (key in m)) ? (m[key] || null) : null;",
         "the per-paper question grid, from what each student actually "
         "answered rather than from a hash of their total. ⚠️ IT CAN BE NULL, "
         "DELIBERATELY: `teacher-live.js` prefetches only the grids a screen "
         "will draw, and a key that is present and null means NOT FETCHED "
         "YET. Design's `renderVals` already writes `pGrid ? … : []` "
         "everywhere it reads it, so a null renders an empty grid rather than "
-        "a grid of zeros — which is the one thing it must never be."),
+        "a grid of zeros — which is the one thing it must never be.\n"
+        "\n"
+        "        ⊕ MRB-287 — AND A MISSING KEY IS THE SAME ANSWER, NOT A "
+        "THROW. The first body read `MRB_PICK('GRID', key)`, which throws on "
+        "an absent key — but an absent key IS the not-fetched-yet state this "
+        "comment already promised to survive: `renderVals` computes the "
+        "marking screen's `paper` block on EVERY screen, so opening "
+        "class-detail on any class with an assignment asked for a grid only "
+        "`assignment.html` prefetches, threw mid-mount, and landed on the "
+        "generic error card. The one class a teacher had set work on was the "
+        "one class that could not be opened — live, 26 Aug 2026. "
+        "`MRB_DATA('GRID')` still throws when the payload carries no GRID "
+        "map at all, so a page fed nothing stays loud; only the per-key miss "
+        "is the documented null."),
     "klass": (
         "    const found = this.klassById(this.state.classId);\n"
         "    if (found) return found;\n"
