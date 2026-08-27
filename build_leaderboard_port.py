@@ -365,6 +365,44 @@ rule("R31", "The body container's `max-width: 1180px` is removed. The "
       "deliberately, so if anyone ever reinstates a cap the block still "
       "centres rather than sticking to the left edge."),
 
+rule("R34", "The PODIUM FRAME ALONE is capped at 1140px and centred "
+            "(`max-width` + `margin-left/right: auto` on the element R31's "
+            "cap used to sit above), and the type inside it scales up ~1.25x: "
+            "rank numerals 86/56/48 → 108/70/60, percentages 32/24 → 40/30, "
+            "marks lines 15/14 → 17/16, names 30/22 → 32/24, step min-heights "
+            "212/148/116 → 265/185/145. Nothing outside the frame is touched: "
+            "the stats grid, the week rail and the ranked table keep R31's "
+            "full-bleed width.",
+      "MIDE'S RULING, 27 AUG 2026, AND IT RULES BOTH PREVIOUS STATES WRONG. "
+      "Design centred the WHOLE page at 1180px with small type; R31 removed "
+      "that cap outright on his instruction to fill the screen. Both readings "
+      "were right about the table and wrong about the podium. The table wants "
+      "the width — nine columns of rank, name, papers, move, score, marks and "
+      "time are what got squeezed at 1180px and what R31 was for. The podium "
+      "does not: it is three columns of one number each, so on a 2560px "
+      "monitor R31 stretched a champion's step to nearly a metre of empty "
+      "gradient with 86px of numeral marooned in the middle of it. A frame "
+      "is a frame — it should look like an object on the page, not like the "
+      "page. ⚠️ R31 IS NOT REVERSED AND MUST NOT BE. The cap added here is on "
+      "the podium's own border-radius frame (source line 137), which is "
+      "INSIDE the body container R31 uncapped; re-capping the body would "
+      "squeeze the table again and this ruling would have traded one of "
+      "Mide's complaints for the other. "
+      "⊕ The type is the second half of one ruling, not a separate one. "
+      "Design's sizes were drawn for a 1180px page and read small; capping "
+      "the frame without enlarging them would have left the same small type "
+      "in a narrower box, which is Design's original state with extra steps. "
+      "1.25x is the factor at which the champion's numeral reads at arm's "
+      "length from a classroom board without the three steps crowding. "
+      "⊕ THE STEP HEIGHTS ARE SCALED BY THE SAME FACTOR, and that is "
+      "load-bearing rather than taste: `min-height` is a MINIMUM, so the "
+      "enlarged content overflows it — place 2's contents measure ~152px "
+      "against Design's 148 and place 3's ~139 against her 116. Left alone, "
+      "the steps would have re-sorted themselves to their content and "
+      "Design's deliberate 1-2-3 staircase would have flattened to 212/152/"
+      "139. Scaling all three keeps her ratio exactly, and it is her ratio "
+      "that says which place won."),
+
 rule("R32", "When a podium student is the viewer, Design's OWN `YOU` chip "
             "is cloned out of her table row and inserted after the podium "
             "name, guarded by that place's `isYou`. Three insertions, one "
@@ -1254,6 +1292,123 @@ def unwidth(roots):
 
 
 WIDTH_CAPS_EXPECTED = 1
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  R34 — the podium is an object on the page, and its numbers are readable
+# ══════════════════════════════════════════════════════════════════════════
+
+# The podium's outer frame: Design's source line 137, the element carrying the
+# border-radius, the gradient and the drop shadow. Anchored on the HEAD of its
+# style string rather than the whole of it, so that a change to her gradient
+# or her shadow does not silently un-anchor the cap.
+PODIUM_FRAME_HEAD = ("margin-top: 24px; position: relative; "
+                     "border-radius: var(--st-r-frame); overflow: hidden;")
+
+# ⚠️ PREPENDED, NOT APPENDED. Design's own string ends with `box-shadow: …;`
+# and her `margin-top: 24px` opens it — putting the cap first keeps her
+# declarations in the order she wrote them and keeps `margin-top` next to the
+# two margin declarations added here, where anyone reading the built page can
+# see all three at once. `margin-left/right` and not the `margin` shorthand,
+# which would silently reset her top margin to zero.
+PODIUM_CAP = "max-width: 1140px; margin-left: auto; margin-right: auto; "
+
+# Every type size inside the frame, as (what it is, Design's fragment, the
+# ported fragment, how many times it must occur INSIDE THE PODIUM SUBTREE).
+#
+# ⚑ FRAGMENTS, NOT WHOLE STYLE STRINGS, AND SCOPED TO THE FRAME. Two of these
+# fragments are genuinely shared by places 2 and 3 — Design drew both silver
+# and bronze at 24px percentages and 14px marks — so a whole-string match
+# would need two identical entries and a count of one each, which is a lie
+# about the drawing. And `font: 600 24px/1 var(--st-display)` occurs elsewhere
+# on the page outside the podium, which is exactly why the walk starts at the
+# frame rather than at the roots.
+PODIUM_TYPE = (
+    ("place 1 numeral", "font: 600 86px/0.95", "font: 600 108px/0.95", 1),
+    ("place 2 numeral", "font: 600 56px/1 ", "font: 600 70px/1 ", 1),
+    ("place 3 numeral", "font: 600 48px/1 ", "font: 600 60px/1 ", 1),
+    ("place 1 percentage", "font: 600 32px/1 var(--st-display)",
+     "font: 600 40px/1 var(--st-display)", 1),
+    ("place 2/3 percentage", "font: 600 24px/1 var(--st-display)",
+     "font: 600 30px/1 var(--st-display)", 2),
+    ("place 1 marks line", "font: 400 15px/1 var(--st-mono)",
+     "font: 400 17px/1 var(--st-mono)", 1),
+    ("place 2/3 marks line", "font: 400 14px/1 var(--st-mono)",
+     "font: 400 16px/1 var(--st-mono)", 2),
+    ("place 1 name", "font: 600 30px/1.08", "font: 600 32px/1.08", 1),
+    ("place 2/3 name", "font: 600 22px/1.15", "font: 600 24px/1.15", 2),
+    ("place 1 step height", "min-height: 212px", "min-height: 265px", 1),
+    ("place 2 step height", "min-height: 148px", "min-height: 185px", 1),
+    ("place 3 step height", "min-height: 116px", "min-height: 145px", 1),
+)
+
+
+def repodium(roots):
+    """Cap the podium frame and scale the type inside it. R34.
+
+    ⚠️ THE STEP HEIGHTS LIVE IN AN INTERPOLATED STYLE and the numerals do
+    not. Design binds `animation: {{ riseA }}` into the same attribute as
+    `min-height: 212px`, so that one attribute compiles to a `{"parts": […]}`
+    object while the numeral's compiles to a plain string. A rewrite that
+    tested `isinstance(style, str)` would find every font size and silently
+    miss all three heights — the repo's known compiled-`parts` gotcha, and the
+    one that would have flattened Design's staircase while reporting success.
+    Both forms are rewritten here, and the counts below are what proves it.
+
+    Returns (roots, hits) where `hits` is keyed by the labels in
+    `PODIUM_TYPE`. The caller asserts every one against its expected count.
+    """
+    out = json.loads(json.dumps(roots))
+    frames = []
+
+    def find(n):
+        if not isinstance(n, dict):
+            return
+        st = (n.get("a") or {}).get("style")
+        if isinstance(st, str) and st.startswith(PODIUM_FRAME_HEAD):
+            frames.append(n)
+        for c in (n.get("c") or []):
+            find(c)
+
+    for r in out:
+        find(r)
+    if len(frames) != 1:
+        raise SystemExit(
+            "build_leaderboard_port.py: R34 caps Design's podium frame — the "
+            "element at source line 137 — and the tree holds %d element(s) "
+            "whose style opens with it rather than one.\n"
+            "  Mide ruled the podium is capped and centred while the table "
+            "stays full-bleed; capping the wrong element would either squeeze "
+            "the table again (R31's complaint) or do nothing at all."
+            % len(frames))
+
+    frame = frames[0]
+    frame.setdefault("a", {})["style"] = PODIUM_CAP + frame["a"]["style"]
+
+    hits = {label: 0 for label, _, _, _ in PODIUM_TYPE}
+
+    def rewrite(text):
+        for label, old, new, _ in PODIUM_TYPE:
+            if old in text:
+                hits[label] += text.count(old)
+                text = text.replace(old, new)
+        return text
+
+    def walk(n):
+        if not isinstance(n, dict):
+            return
+        a = n.get("a") or {}
+        st = a.get("style")
+        if isinstance(st, str):
+            a["style"] = rewrite(st)
+        elif isinstance(st, dict) and "parts" in st:
+            a["style"] = {"parts": [rewrite(p) if isinstance(p, str) else p
+                                    for p in st["parts"]]}
+        for c in (n.get("c") or []):
+            walk(c)
+
+    walk(frame)
+    return out, hits
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -2338,6 +2493,28 @@ def build():
             "decision, not a silent widening."
             % (WIDTH_CAPS_EXPECTED, n_cap))
 
+    # ⚠️ BEFORE R32, DELIBERATELY. `bind_podium_you` deep-copies Design's own
+    # YOU chip out of her table row, and R32's whole point is that the two
+    # chips are literally the same bytes. Run after this, the clone would be
+    # taken from a subtree this walk had already been over — and any future
+    # fragment added to PODIUM_TYPE that matched the chip would rewrite the
+    # podium's copy and not the table's, which is the drift R32 forbids.
+    roots, pod_hits = repodium(roots)
+    wrong = [(label, exp, pod_hits[label])
+             for label, _, _, exp in PODIUM_TYPE if pod_hits[label] != exp]
+    if wrong:
+        raise SystemExit(
+            "build_leaderboard_port.py: R34 rescales the podium's type and "
+            "these size(s) did not occur the expected number of times inside "
+            "the podium frame:\n%s\n"
+            "  Too few means Design has redrawn that element and the size is "
+            "no longer being scaled — the podium would ship half-enlarged, "
+            "which looks like a design decision and is not one. Too many "
+            "means the fragment now matches something else in the frame. "
+            "Re-anchor against her source rather than relaxing the count."
+            % "\n".join("    %-22s expected %d, rewrote %d" % (l, e, g)
+                        for l, e, g in wrong))
+
     roots, n_you = bind_podium_you(roots)
     if n_you != PODIUM_YOU_EXPECTED:
         raise SystemExit(
@@ -2352,7 +2529,9 @@ def build():
     print("     ⊕ tree:  %d monogram(s) bound to me.initials, "
           "%d disc(s) given a bound avatar,\n"
           "              %d width cap removed (R31), %d podium place(s) can "
-          "wear YOU (R32)" % (n_ay, n_av, n_cap, n_you))
+          "wear YOU (R32),\n              podium frame capped + %d type "
+          "size(s) rescaled (R34)"
+          % (n_ay, n_av, n_cap, n_you, sum(pod_hits.values())))
 
     # ── the nav, read from the landing page ──────────────────────────────
     nav = live_nav()
