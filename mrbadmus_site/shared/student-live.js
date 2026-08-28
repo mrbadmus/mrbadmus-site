@@ -2966,10 +2966,30 @@
        A failure here is not fatal: an unresumed page shows an empty assignment
        whose answers still save, which is a bad morning rather than a lost
        week. It is logged rather than swallowed. */
-    try {
-      progress = await api("/api/assignment/progress?assignment_id=" + a.id, token);
-    } catch (err) {
-      console.error("[student-live] could not read progress", err);
+    /* ⊕ MRB-292, 28 Aug 2026 — AND USUALLY WITHOUT A SECOND ROUND TRIP.
+       `/api/class/current-assignment` already ran this exact read on the
+       server — `withProgress` fetches the submissions and every answer row to
+       publish `progress.answered`, and used to drop the rows. It now hands
+       them back as `resume`, so the common path costs nothing at all here.
+
+       That matters more than one saved request: this call is keyed on
+       `a.id`, which only exists once the call above has ANSWERED, so it could
+       never be started alongside it. It was strictly serial — roughly 900ms
+       of a student's wait, spent re-asking a question the server had already
+       answered.
+
+       ⚠️ THE FALLBACK STAYS, AND IT IS NOT DEAD CODE. It is what makes the
+       two repos deployable in either order: a page newer than the backend
+       finds no `resume` and asks the way it always did. Remove it only once
+       no server without `resume` can still be answering. */
+    if (current.resume) {
+      progress = current.resume;
+    } else {
+      try {
+        progress = await api("/api/assignment/progress?assignment_id=" + a.id, token);
+      } catch (err) {
+        console.error("[student-live] could not read progress", err);
+      }
     }
 
     var questions = [];
