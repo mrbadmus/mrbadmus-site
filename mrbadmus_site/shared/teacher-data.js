@@ -641,8 +641,50 @@ window.MrBadmusTeacherData = (function () {
     }
 
     // Driver query: every (teacher, class, subject) link this teacher still
-    // holds, with the class + subject embedded by FK. RLS filters to the
-    // current teacher automatically. The .is('deleted_at', null) below is
+    // holds, with the class + subject embedded by FK.
+    //
+    // ⊕ MRB-293, 28 Aug 2026 — THIS USED TO SAY "RLS filters to the current
+    // teacher automatically", AND THAT WAS THE BUG. It is true only of a
+    // plain teacher. `class_teachers` carries SEVEN permissive read
+    // policies, OR'd together: `class_teachers_self_read`
+    // (teacher_id = auth_user_id()) is only one of them, and
+    // `class_teachers_admin_read` grants the whole school to anyone holding
+    // the `school_admin` or `slt` scope. Mide holds `school_admin`. So the
+    // moment a SECOND teacher's links exist — i.e. the moment Rich claims
+    // his seeded account and presses "Login with Microsoft" — this query
+    // starts returning the entire science department's links, and "My
+    // classes" silently becomes "everyone's classes". It was latent, not
+    // absent: with one teacher in the table, all_links == mide_links == 15
+    // and nothing looked wrong.
+    //
+    // A permission is not a filter. RLS says what you MAY see; the landing
+    // must say what it WANTS to see, and what it wants is the signed-in
+    // user's own teaching links. School-wide visibility is the admin view's
+    // job, not this one's.
+    //
+    // Co-teaching is unaffected, and that is the point of filtering on the
+    // LINK rather than on the class: a class taught by two teachers has two
+    // rows here, one per teacher, so each teacher still matches their own
+    // and the class still appears on BOTH landings.
+    //
+    // The id comes from getSession() — the SDK's own persisted session, read
+    // locally — and NOT from getUser(), which is a round trip. The guard has
+    // already validated this JWT against Supabase before any page can reach
+    // this function (`base()` is only ever called inside `onAllowed`), so
+    // re-validating would buy nothing and re-spend the latency MRB-292 just
+    // deleted.
+    //
+    // ⚠️ AND NOT THREADED IN AS AN ARGUMENT EITHER, though teacher-live.js
+    // already holds exactly this id in `viewerId` and MRB-287's note there
+    // says asking again is "a second answer to a question already answered".
+    // That note is about a network read; this one is local. The reason to
+    // source it HERE rather than accept it from the caller is fail-closed:
+    // an id that arrives as a parameter can be forgotten by the next caller,
+    // and a forgotten scope on THIS query is the whole of MRB-293 happening
+    // a second time — silently, and only once a second teacher exists. A
+    // function that cannot be called without scoping itself cannot leak.
+    //
+    // The .is('deleted_at', null) below is
     // the LINK row's own soft-delete column — i.e. we drop links that have
     // been retired. The class's own deleted_at is filtered in JS below
     // (PostgREST can't filter on embedded resources cleanly).
@@ -658,6 +700,18 @@ window.MrBadmusTeacherData = (function () {
       yearId = y.working ? y.working.id : null;
     }
 
+    // Fail closed: no session id means we cannot prove whose links these are,
+    // and the honest answer is an error, never an unfiltered list.
+    const { data: sessionData } = await sb.auth.getSession();
+    const selfId = sessionData && sessionData.session && sessionData.session.user
+      ? sessionData.session.user.id
+      : null;
+    if (!selfId) {
+      const e = new Error('[teacher-data] no signed-in user — cannot scope "My classes"');
+      e.code = 'no_session';
+      throw e;
+    }
+
     const { data: links, error } = await sb
       .from('class_teachers')
       .select(
@@ -666,6 +720,7 @@ window.MrBadmusTeacherData = (function () {
         'class:class_id ( id, name, key_stage, year_group, tier, science_pathway, deleted_at, ' +
                          'academic_year_id, academic_year:academic_year_id ( id, name ) )'
       )
+      .eq('teacher_id', selfId)
       .is('deleted_at', null)
       .is('ended_at', null);
 

@@ -524,6 +524,13 @@ EXCLUDED = {
     "student_page_drive.py":
         "drives the wired student pages against production data. Same "
         "reason.",
+    "teacher_landing_drive.py":
+        "drives the teacher landing as three real signed-in teachers against "
+        "the TEST project, to prove MRB-293's self-filter: a teacher holding "
+        "a school-wide read scope sees only their OWN classes, and a "
+        "CO-TAUGHT class still shows for BOTH its teachers. Needs the "
+        "network, real sign-ins and a browser; a push must not depend on "
+        "any of the three.",
     "student_submit_drive.py":
         "drives POST /api/assignment-submit against production. Same "
         "reason, and it WRITES rows.",
