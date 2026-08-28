@@ -25,6 +25,23 @@
   var SDK_URL =
     "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js";
 
+  /* ⊕ 27 Aug 2026 — WAKE THE BACKEND HERE, on the first line that runs, before
+     the SDK is even asked for. Render's instance carries a measured ~2.2s cold
+     penalty after roughly twenty minutes idle, and both of this page's backend
+     calls sit at the END of the load — behind the guard, behind the class
+     read — so the dyno's wake-up was being paid in series after several
+     seconds of Supabase work rather than during it. Nothing waits on this and
+     nothing reads its answer: it exists only so the instance is already awake
+     by the time `api()` needs it.
+
+     Fire and forget, deliberately: no retry, no logging, no deadline. A ping
+     that fails tells us nothing the real request will not tell us properly a
+     moment later, and a console line here would be noise on every page a
+     student opens. */
+  try {
+    fetch("https://mrbadmus-backend.onrender.com/api/health").catch(function () {});
+  } catch (e) {}
+
   /* The four helpers, in the ONE order that works. `student-data.js` delegates
      `workingAcademicYear()` to `class-entry.js` and throws a named error if it
      is not already on the page (CLAUDE.md, MRB-267), and `student-guard.js`
@@ -138,11 +155,137 @@
     "assignment": "Your work"
   };
 
+  /* ── the skeleton under it ─────────────────────────────────────────────
+     ⊕ 27 Aug 2026, the load-performance pass.
+
+     The two words above answer "is this page broken?". They do not answer "is
+     anything still happening?", and on a cold load — measured at 7.6 seconds
+     on the class page — a static line is indistinguishable from a dead one. A
+     student cannot wait for something that is not visibly happening, which is
+     the sentence this file already wrote about the white page the boot line
+     replaced; the boot line is the same problem one step quieter.
+
+     ⚠️ NOT ONE WORD IS ADDED, AND THAT IS §8.10, NOT TASTE. The KS3 copy rule
+     forbids the page explaining itself to a student, so "Loading…", "One
+     moment", "Fetching your work" and every caption of that family are out —
+     exactly as they are out for the boot line, and for the same reason. What
+     is left is shape, and shape is not a sentence. These blocks say only that
+     something is coming and that it has not come yet.
+
+     ⚠️ AND THEY INVENT NOTHING. This file's own rule is that it may not put a
+     student-visible value on screen that the product does not hold, and a
+     skeleton is the one drawing that cannot break it: neutral ink-tinted
+     rectangles, no counts, no names, no ghost scores. There is no honest
+     number to show at boot, so none is shown.
+
+     ⚠️ IT CANNOT SURVIVE THE MOUNT OR AN ERROR, structurally. It is a child of
+     the same host the boot line is, and both exits empty the host first —
+     `student-runtime.js`'s `draw()` opens with `host.textContent = ""`, and
+     `say()` above does the same. So there is no path on which a student sees a
+     shimmer beside their real work, and none on which one shimmers under a
+     sentence telling them the class did not load, which would be the worst of
+     the three states to leave someone in.
+
+     Every token carries a literal fallback for the reason `panel()` gives:
+     `--pg-*` and the rest live in the compiled template's `:root` and do not
+     exist until the page mounts. `--ks3-ink` comes from
+     `/shared/student-ds.css`, a real `<link>`, so it IS there at boot. */
+  var SKEL_STYLE_ID = "mrb-skel-css";
+
+  function skelStyle() {
+    if (document.getElementById(SKEL_STYLE_ID)) { return; }
+    var s = document.createElement("style");
+    s.id = SKEL_STYLE_ID;
+    /* A slow opacity breath rather than a travelling gradient sweep: one
+       property, no banding on a school projector, and it becomes a plain still
+       block for a student who has asked their device for less motion — stated
+       explicitly rather than left to chance. */
+    s.textContent =
+      "@keyframes mrbSkelPulse{0%,100%{opacity:.30}50%{opacity:.11}}" +
+      ".mrb-skel{background:var(--ks3-ink,#2A2018);border-radius:12px;" +
+      "animation:mrbSkelPulse 1.5s ease-in-out infinite}" +
+      "@media (prefers-reduced-motion:reduce){" +
+      ".mrb-skel{animation:none;opacity:.16}}";
+    document.head.appendChild(s);
+  }
+
+  function skelBar(h, w, mt) {
+    var d = document.createElement("div");
+    d.className = "mrb-skel";
+    d.style.cssText = "height:" + h + "px;width:" + w + ";" +
+                      (mt ? "margin-top:" + mt + "px;" : "");
+    return d;
+  }
+
+  function skelBox(h) {
+    var c = document.createElement("div");
+    c.style.cssText =
+      "border:1px solid var(--ks3-rule,rgba(42,32,24,.14));border-radius:16px;" +
+      "padding:18px;box-sizing:border-box;";
+    c.appendChild(skelBar(14, "46%", 0));
+    c.appendChild(skelBar(9, "78%", 14));
+    if (h) { c.appendChild(skelBar(h, "100%", 16)); }
+    return c;
+  }
+
+  function skeleton(page) {
+    var wrap = document.createElement("div");
+    wrap.setAttribute("data-mrb-skeleton", "1");
+    wrap.setAttribute("aria-hidden", "true");   // decorative; the heading above
+                                                // is the only thing announced
+    wrap.style.cssText = "width:100%;max-width:760px;margin:0 auto;";
+
+    if (page === "assignment") {
+      /* "Your work" — a title band, then the questions. Three question-shaped
+         boxes, not the real count: the number of questions in this week's
+         assignment is a VALUE, and putting the right one here would mean
+         knowing it, while putting a wrong one here would be inventing it. */
+      wrap.appendChild(skelBar(52, "100%", 0));
+      var qs = document.createElement("div");
+      qs.style.cssText = "margin-top:20px;display:flex;flex-direction:column;gap:14px;";
+      for (var i = 0; i < 3; i++) { qs.appendChild(skelBox(64)); }
+      wrap.appendChild(qs);
+      return wrap;
+    }
+
+    // The class view — the welcome band, the week's work, then the cards below
+    // it. The shape of the page, nothing about its contents.
+    wrap.appendChild(skelBar(46, "100%", 0));
+    var work = skelBox(78);
+    work.style.marginTop = "20px";
+    wrap.appendChild(work);
+
+    var cards = document.createElement("div");
+    cards.style.cssText =
+      "margin-top:16px;display:grid;gap:14px;" +
+      "grid-template-columns:repeat(auto-fill,minmax(210px,1fr));";
+    for (var j = 0; j < 4; j++) { cards.appendChild(skelBox(0)); }
+    wrap.appendChild(cards);
+    return wrap;
+  }
+
   function boot(page) {
     var el = host();
     if (!el || el.firstChild) { return; }   // never over the top of anything
-    el.appendChild(panel(BOOT[page] || BOOT["class"], "boot",
-                         "var(--ks3-ink-muted,#5F564F)"));
+
+    /* One wrapper, so the boot line and the skeleton are a single child of the
+       host and cannot become separable. `data-mrb-state="boot"` stays on it:
+       that attribute names the state, and it must go on the whole of it. */
+    var wrap = document.createElement("div");
+    wrap.setAttribute("data-mrb-state", "boot");
+    wrap.style.cssText = "padding:40px 24px;box-sizing:border-box;";
+
+    var p = document.createElement("p");
+    p.style.cssText =
+      "margin:0 0 26px;text-align:center;font:400 17px/1.55 " +
+      "'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;" +
+      "color:var(--ks3-ink-muted,#5F564F);";
+    p.textContent = BOOT[page] || BOOT["class"];
+    wrap.appendChild(p);
+
+    skelStyle();
+    wrap.appendChild(skeleton(page));
+    el.appendChild(wrap);
   }
 
   /* ── which page am I on? ────────────────────────────────────────────────
@@ -880,11 +1023,30 @@
         setTimeout(function () {
           var e = new Error("no answer within " + Math.round(ms / 1000) + "s");
           e.code = "db_timeout";
+          /* ⊕ 27 Aug 2026 — AND IT NOW CARRIES THE TIMEOUT SENTENCE. Without
+             this a database read that never answered fell through to
+             `generic` — "try again in a moment" — which is the wrong thing to
+             say about a read we waited twenty-five seconds for and never got.
+             `slow` is the sentence written for exactly this shape of failure
+             and `withDeadline` has attached it to the backend's version of it
+             since 23 Aug; a student cannot tell the two apart and should not
+             be told two different things about them. */
+          e.mrbSay = SAY.slow;
           reject(e);
         }, ms);
       })
     ]);
   }
+
+  /* The ceiling on the reads that happen BEFORE the page's own machinery takes
+     over — the guard's two, and the class list. Thirty seconds, matching the
+     umbrella `teacher-live.js` puts over the whole teacher read, and chosen on
+     the same grounds: these are Supabase reads, not Render's, so they carry no
+     cold-start penalty to be generous about (the measured cold stall is a
+     connection warm-up of about three seconds and the queries themselves are
+     single-digit milliseconds). Long enough that school wifi at 8:40am is not
+     mistaken for a failure; short enough that a student gets a sentence. */
+  var DB_MS = 30000;
 
   async function api(path, token) {
     var cfg = window.MrBadmusConfig || {};
@@ -2920,16 +3082,104 @@
     boot(page);                     // ← before the first byte is asked for
     await loadDeps();
 
+    /* ⊕ 27 Aug 2026 — THE CLASS LIST STARTS ALONGSIDE THE GUARD.
+
+       It used to run as a third serial wave: the guard's `getUser()`, then the
+       guard's profile read, then the session read, then `loadStudentClasses`.
+       Measured cold, those waves together were 3.7 seconds — and the queries
+       inside them take single-digit milliseconds. What is being paid is the
+       WAIT, once per wave, so the fix is to have fewer waves rather than
+       faster queries.
+
+       `loadStudentClasses` needs a student id and the client's persisted
+       token. It does not need `getUser()`'s answer: RLS scopes `class_members`
+       to the viewer's own rows under that same token, so a read started early
+       either returns the viewer's own classes or returns nothing, exactly as
+       it would have later. The stored session's id is used to start it, and
+       the result is used ONLY if the guard then confirms the same person —
+       otherwise it is dropped unread and the read is done properly.
+
+       The prefetch resolves to a BOX, never a rejection, so a failed early
+       read cannot become an unhandled rejection while the guard is still
+       working; the error is re-thrown below at the point where the catch can
+       turn it into a sentence. */
+    var pre = (function () {
+      try {
+        var sb0 = window.MrBadmusStudentGuard.getClient();
+        if (!sb0) { return null; }
+        return sb0.auth.getSession().then(function (s) {
+          try {
+            var sess = s && s.data ? s.data.session : null;
+            if (!sess || !sess.user || !sess.user.id) { return null; }
+            return {
+              uid: sess.user.id,
+              token: sess.access_token || null,
+              classes: window.MrBadmusStudentData
+                .loadStudentClasses(sess.user.id)
+                .then(function (v) { return { ok: true, v: v }; },
+                      function (e) { return { ok: false, e: e }; })
+            };
+          } catch (e) {
+            // An optimisation may NEVER be the reason a page fails. Anything
+            // unexpected here drops back to the read the guard's own path
+            // does, which is the behaviour that shipped before this existed.
+            return null;
+          }
+        }, function () { return null; });
+      } catch (e) { return null; }
+    })();
+
+    /* ⊕ 27 Aug 2026 — THE GUARD'S OWN READS GET A CEILING TOO, and this is the
+       last unbounded wait on the page. `requireStudentRole` makes two network
+       reads before it calls anything back; neither has ever had a deadline, so
+       a stalled one meant `onAllowed` was never reached, nothing after this
+       line ever ran, and the boot line stayed up for ever with no way to tell
+       it from a slow load. Every OTHER wait on this page is now bounded, which
+       would have left exactly one shape of hang still able to produce a page
+       that waits silently and never resolves.
+
+       A flag rather than a race, because the guard's other exits are
+       REDIRECTS: a denied viewer navigates away and this timer goes with the
+       page. It only ever fires when the guard neither called back nor
+       bounced. */
+    var guardStarted = false;
+    var guardTimer = setTimeout(function () {
+      if (!guardStarted) { say(SAY.slow); }
+    }, DB_MS);
+
     window.MrBadmusStudentGuard.requireStudentRole({
       onAllowed: async function (ctx) {
+        guardStarted = true;
+        clearTimeout(guardTimer);
         try {
           var sb = window.MrBadmusStudentGuard.getClient();
-          var session = await sb.auth.getSession();
-          var token = session && session.data && session.data.session
-            ? session.data.session.access_token : null;
+          var early = pre ? await pre : null;
+          if (early && early.uid !== ctx.user.id) { early = null; }
+
+          var token = early && early.token ? early.token : null;
+          if (!token) {
+            var session = await sb.auth.getSession();
+            token = session && session.data && session.data.session
+              ? session.data.session.access_token : null;
+          }
           if (!token) { throw new Error("no access token on the session"); }
 
-          var classes = await window.MrBadmusStudentData.loadStudentClasses(ctx.user.id);
+          /* ⊕ 27 Aug 2026 — AND IT IS BOUNDED. This await sat outside every
+             deadline this file has: `withDeadline` covers the backend calls
+             and `withDbDeadline` covers the reads inside `buildClass`, but the
+             class list came before both. A stalled connection here left the
+             boot line up with no end and nothing to say — the same failure
+             `withDeadline` was written for in August, one wave earlier than it
+             was watching. */
+          var classes;
+          if (early) {
+            var box = await withDbDeadline(DB_MS, early.classes);
+            if (!box.ok) { throw box.e; }
+            classes = box.v;
+          } else {
+            classes = await withDbDeadline(DB_MS,
+              window.MrBadmusStudentData.loadStudentClasses(ctx.user.id));
+          }
           var klass = pickClass(classes);
           if (!klass) { return say(SAY.noClass); }
           correctAddress(klass);

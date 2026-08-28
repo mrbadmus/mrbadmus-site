@@ -106,6 +106,36 @@ window.MrBadmusStudentData = (function () {
     return mod.workingAcademicYear(years);
   }
 
+  /* ⊕ 27 Aug 2026 — THE YEAR ROWS, read once per page instead of once per
+     caller. `class-entry.js` asks for this same list on every page load to
+     year-scope the nav entry; both reads below then asked for it AGAIN, so a
+     student's class page paid for `academic_years` twice.
+
+     Returns the ROWS, not the working year, because the two callers want
+     different things done with them. Falls back to its own query whenever the
+     shared read cannot answer — and `academicYears()` answers null for "I do
+     not know" (signed out, request failed), never as a way of saying "no
+     years". Reading null as an empty list would drop the year filter, which
+     is how a Year 11 gets offered the class they left in July (MRB-261). */
+  async function yearRows(sb) {
+    const mod = window.MRBClassEntry;
+    if (mod && mod.academicYears) {
+      try {
+        const shared = await mod.academicYears();
+        if (shared && shared.length) return shared;
+      } catch (e) { /* fall through to our own read */ }
+    }
+    const res = await sb
+      .from('academic_years')
+      .select('id, name, start_date, end_date')
+      .is('deleted_at', null);
+    if (res.error) {
+      console.error('[student-data] academic years query failed', res.error);
+      throw res.error;
+    }
+    return res.data || [];
+  }
+
   /* Student-side pill derivation.
 
      ⊕ MRB-265 (Mide, 19 Aug 2026) — THE NAME-PARSE IS GONE. This used to
@@ -344,15 +374,7 @@ window.MrBadmusStudentData = (function () {
        A past class is UNAVAILABLE, not missing and not forbidden: the
        student was in it, and saying "you're not in this class" would be a
        lie. Its own code, so the page can say the true thing. */
-    const yearRes = await sb
-      .from('academic_years')
-      .select('id, name, start_date, end_date')
-      .is('deleted_at', null);
-    if (yearRes.error) {
-      console.error('[student-data] academic years query failed', yearRes.error);
-      throw yearRes.error;
-    }
-    const workingYear = workingAcademicYear(yearRes.data);
+    const workingYear = workingAcademicYear(await yearRows(sb));
     // No readable years at all (a self-serve visitor with no school) — show
     // the class rather than hiding it, matching the listing's own fallback.
     if (workingYear && klass.academic_year_id &&
@@ -659,12 +681,20 @@ window.MrBadmusStudentData = (function () {
       throw new Error('[student-data] Supabase client unavailable — getClient() returned null');
     }
 
-    const memberRes = await sb
-      .from('class_members')
-      .select('class_id')
-      .eq('student_id', viewingStudentId)
-      .is('left_at', null)
-      .is('deleted_at', null);
+    /* ⊕ 27 Aug 2026 — THE MEMBERSHIPS AND THE YEARS GO TOGETHER. They were
+       two serial round trips and neither feeds the other: the membership read
+       is keyed on the student id we were handed, and the year list is keyed on
+       nothing at all. Only the `classes` read below needs both, so only it
+       waits. On a cold Supabase connection — the 3.7s wave this page opened
+       with — collapsing two waits into one is the whole saving. */
+    const [memberRes, years] = await Promise.all([
+      sb.from('class_members')
+        .select('class_id')
+        .eq('student_id', viewingStudentId)
+        .is('left_at', null)
+        .is('deleted_at', null),
+      yearRows(sb),
+    ]);
     if (memberRes.error) {
       console.error('[student-data] memberships query failed', memberRes.error);
       throw memberRes.error;
@@ -681,15 +711,7 @@ window.MrBadmusStudentData = (function () {
     // live and both were being listed — a student was offered this year's
     // class and the one they left in July. The data is right; the view was
     // not. Filtering here, not on `is_current` — see workingAcademicYear.
-    const yearRes = await sb
-      .from('academic_years')
-      .select('id, name, start_date, end_date')
-      .is('deleted_at', null);
-    if (yearRes.error) {
-      console.error('[student-data] academic years query failed', yearRes.error);
-      throw yearRes.error;
-    }
-    const workingYear = workingAcademicYear(yearRes.data);
+    const workingYear = workingAcademicYear(years);
 
     let classQuery = sb
       .from('classes')

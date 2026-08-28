@@ -91,6 +91,40 @@ window.MrBadmusStudentGuard = (function () {
       return;
     }
 
+    /* ⊕ 27 Aug 2026 — THE TWO READS GO TOGETHER. Identical change to the one
+       in shared/teacher-guard.js, made for the same measurement and carrying
+       the same rule; the full reasoning lives there.
+
+       In short: the profile read never needed `getUser()`'s ANSWER, only a
+       user id and the client's persisted token, so it is started against the
+       stored session's id in parallel. If `getUser()` then reports no session
+       we bounce as before, and if it reports a DIFFERENT user the prefetched
+       row is discarded unread and the real query runs. The row still comes
+       back through RLS under the viewer's own token — what moved is when the
+       request leaves, not who may read what. */
+    let prefetchId = null;
+    let prefetched = null;
+    try {
+      const stored = await sb.auth.getSession();
+      const storedUser = stored && stored.data && stored.data.session
+        ? stored.data.session.user : null;
+      if (storedUser && storedUser.id) {
+        prefetchId = storedUser.id;
+        // `.then()` forces the lazy PostgREST builder to fire NOW rather than
+        // at the await below, which is the whole point.
+        prefetched = sb
+          .from('profiles')
+          .select('first_name, last_name, role, school_id, avatar_url')
+          .eq('id', prefetchId)
+          .single()
+          .then(function (r) { return r; },
+                function (e) { return { data: null, error: e }; });
+      }
+    } catch (e) {
+      prefetchId = null;
+      prefetched = null;
+    }
+
     // 1. Session check via getUser() — round-trips to validate the JWT,
     // unlike getSession() which only reads localStorage.
     const { data: { user }, error: userError } = await sb.auth.getUser();
@@ -99,12 +133,15 @@ window.MrBadmusStudentGuard = (function () {
       return bounceToLogin();
     }
 
-    // 2. Role check.
-    const { data: profile, error } = await sb
-      .from('profiles')
-      .select('first_name, last_name, role, school_id, avatar_url')
-      .eq('id', user.id)
-      .single();
+    // 2. Role check — the row already in flight, but only if it was asked for
+    // about this same person.
+    const { data: profile, error } = (prefetched && prefetchId === user.id)
+      ? await prefetched
+      : await sb
+          .from('profiles')
+          .select('first_name, last_name, role, school_id, avatar_url')
+          .eq('id', user.id)
+          .single();
 
     if (error && error.code !== 'PGRST116') {
       // A real query failure (network blip, RLS timeout) is NOT a denial —

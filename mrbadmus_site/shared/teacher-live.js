@@ -130,10 +130,131 @@
      and `say()` above does the same — so there is no path where a teacher
      sees this line beside real content, including a mount that throws
      half-way, which lands in the catch and calls `say()`. */
+  /* ── the skeleton under it ─────────────────────────────────────────────
+     ⊕ 27 Aug 2026, the load-performance pass.
+
+     The boot line above solved "is this page broken?" and left "is anything
+     still happening?" unanswered: two static words for four and a half seconds
+     on a cold load look identical whether the read is in flight or dead. These
+     blocks answer the second question the only honest way a page can before it
+     has any data — by MOVING.
+
+     ⚠️ IT IS VISUAL, AND IT SAYS NOTHING. Not one word is added. The teacher
+     surface's own copy rule is Design's — "terse and functional, no
+     reassurance copy, no platform meta-text" — and a skeleton captioned
+     "Loading your classes…" would break it just as a spinner's caption would.
+     What is drawn is the SHAPE of what is coming, which is true before the
+     data arrives because it is a property of the screen and not of the rows.
+
+     ⚠️ AND IT IS HONEST ABOUT BEING EMPTY. Every block is a neutral rule-ruled
+     rectangle in the page's own ink at low opacity — no invented counts, no
+     placeholder names, no ghost numbers. A teacher can tell at a glance that
+     nothing has arrived yet. The instant something has, this is gone: it is a
+     child of the same host the boot line is, and both exits (`__MRB_MOUNT__`'s
+     `textContent = ""` and `say()`'s) empty the host before they write. There
+     is no path on which a shimmer survives beside real content, and none on
+     which it survives beside an error — which matters more, because a page
+     that shimmers under a sentence saying it failed is worse than either.
+
+     Every token carries a literal fallback for the same reason `panel()`'s do:
+     the `--st-*` tokens live in the compiled template's `:root` and do not
+     exist until the page mounts. */
+  var SKEL_STYLE_ID = "mrb-skel-css";
+
+  function skelStyle() {
+    if (document.getElementById(SKEL_STYLE_ID)) { return; }
+    var s = document.createElement("style");
+    s.id = SKEL_STYLE_ID;
+    /* A slow opacity breath rather than a travelling gradient sweep: it is one
+       property, it cannot band on a low-colour projector, and it degrades to a
+       plain static block when a teacher has asked for less motion — which the
+       media query does explicitly rather than leaving to chance. */
+    s.textContent =
+      "@keyframes mrbSkelPulse{0%,100%{opacity:.34}50%{opacity:.13}}" +
+      ".mrb-skel{background:var(--st-ink,#2A2018);border-radius:10px;" +
+      "animation:mrbSkelPulse 1.5s ease-in-out infinite}" +
+      "@media (prefers-reduced-motion:reduce){" +
+      ".mrb-skel{animation:none;opacity:.18}}";
+    document.head.appendChild(s);
+  }
+
+  function skelBar(h, w, mt) {
+    var d = document.createElement("div");
+    d.className = "mrb-skel";
+    d.style.cssText = "height:" + h + "px;width:" + w + ";" +
+                      (mt ? "margin-top:" + mt + "px;" : "");
+    return d;
+  }
+
+  /* One class card's worth of blocks: the code, the subject pill's line, and
+     the two-line footing every card carries. */
+  function skelCard() {
+    var c = document.createElement("div");
+    c.style.cssText =
+      "border:1px solid var(--st-rule,rgba(42,32,24,.14));border-radius:14px;" +
+      "padding:18px;box-sizing:border-box;";
+    c.appendChild(skelBar(15, "52%", 0));
+    c.appendChild(skelBar(10, "34%", 12));
+    c.appendChild(skelBar(8, "100%", 22));
+    c.appendChild(skelBar(8, "72%", 8));
+    return c;
+  }
+
+  function skeleton(screen) {
+    var wrap = document.createElement("div");
+    wrap.setAttribute("data-mrb-skeleton", "1");
+    wrap.setAttribute("aria-hidden", "true");   // decorative; the heading above
+                                                // is the only thing announced
+    wrap.style.cssText = "width:100%;max-width:1180px;margin:0 auto;";
+
+    if (screen === "classes") {
+      // The landing grid. Six cards, not twelve: enough to read as a grid,
+      // never so many that the count itself looks like a claim about how many
+      // classes this teacher has.
+      var grid = document.createElement("div");
+      grid.style.cssText =
+        "display:grid;gap:16px;" +
+        "grid-template-columns:repeat(auto-fill,minmax(240px,1fr));";
+      for (var i = 0; i < 6; i++) { grid.appendChild(skelCard()); }
+      wrap.appendChild(grid);
+      return wrap;
+    }
+
+    // Every other screen — class detail, marking, a student, the digest, the
+    // charts — opens with a header band over a list of rows. One shape covers
+    // them because that IS the shape they share.
+    wrap.appendChild(skelBar(58, "100%", 0));
+    var rows = document.createElement("div");
+    rows.style.cssText = "margin-top:20px;display:flex;flex-direction:column;gap:10px;";
+    var widths = ["100%", "94%", "97%", "88%", "92%", "85%"];
+    widths.forEach(function (w) { rows.appendChild(skelBar(30, w, 0)); });
+    wrap.appendChild(rows);
+    return wrap;
+  }
+
   function boot() {
     var el = host();
     if (!el || el.firstChild) { return; }   // never over the top of anything
-    el.appendChild(panel("My classes", "boot", "var(--st-caption,#7A6E63)"));
+
+    /* One wrapper, so the boot line and the skeleton are a single child of the
+       host and cannot be separated. `data-mrb-state="boot"` stays on it — that
+       is the attribute the state is read by, and it must keep naming the whole
+       boot state rather than half of it. */
+    var wrap = document.createElement("div");
+    wrap.setAttribute("data-mrb-state", "boot");
+    wrap.style.cssText = "padding:40px 32px;box-sizing:border-box;";
+
+    var p = document.createElement("p");
+    p.style.cssText =
+      "margin:0 0 28px;text-align:center;font:400 17px/1.55 " +
+      "'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;" +
+      "color:var(--st-caption,#7A6E63);";
+    p.textContent = "My classes";
+    wrap.appendChild(p);
+
+    skelStyle();
+    wrap.appendChild(skeleton(screenFromLocation()));
+    el.appendChild(wrap);
   }
 
   // ── loading the helpers ───────────────────────────────────────────────
@@ -1191,10 +1312,20 @@
      when the selection changes, and asking Supabase again for a list that
      cannot have moved inside one page load is a second answer to a settled
      question. */
+  /* ⊕ 27 Aug 2026 — THE PROMISE IS CACHED, NOT THE RESULT. It used to be
+     `yearsCache = await ...`, which dedupes two SEQUENTIAL callers and not two
+     CONCURRENT ones: both would find the local still null and both would fire
+     the query. `run()` now starts this read alongside the guard rather than
+     after it, so concurrent callers are the normal case and not the exception.
+
+     A rejection is not cached. The local is cleared on the way out, so a read
+     that failed while the guard was still validating does not become the
+     answer `base()` gets handed a second later — it simply asks again. */
   var yearsCache = null;
-  async function yearIndex() {
+  function yearIndex() {
     if (!yearsCache) {
-      yearsCache = await window.MrBadmusTeacherData.loadAcademicYears();
+      yearsCache = window.MrBadmusTeacherData.loadAcademicYears()
+        .catch(function (e) { yearsCache = null; throw e; });
     }
     return yearsCache;
   }
@@ -1230,13 +1361,54 @@
     var viewing = pickYear(years, selectedYearId);
     selectedYearId = viewing ? viewing.id : null;
 
-    // The authorised, year-scoped class list. Reused rather than re-queried:
-    // this is the one function that knows which classes a teacher holds in a
-    // given year, and a second implementation of that is a second answer.
-    var classRows = await TD.loadTeacherClasses(selectedYearId);
+    /* The authorised, year-scoped class list. Reused rather than re-queried:
+       this is the one function that knows which classes a teacher holds in a
+       given year, and a second implementation of that is a second answer.
+
+       ⊕ 27 Aug 2026 — `{ metrics: false }`, AND IT IS THE N+1 THIS PAGE WAS
+       PAYING FOR NOTHING. `loadTeacherClasses` used to fan out four requests
+       per class — a `class_members` count, an `assignments` list, a
+       submissions count and a submissions max — and on a teacher with twelve
+       classes that is up to forty-eight, in one serial wave, before the line
+       below has asked for anything.
+
+       Not one of the five numbers they produced was ever read. Look at the
+       map below: every field this function takes off `c` is an identity
+       (`name`, `year_group`, `key_stage`, `tier`, `pill_label`, the year), and
+       every COUNT it publishes comes from `pack` — `pack.members.length`,
+       `papers.length`, the roster's own `lastIso`. `loadClassMatrices` on the
+       next line re-reads the same members, assignments and submissions IN
+       BULK, four chunked requests for all twelve classes together, because
+       that is what every screen in the redesign derives from.
+
+       So the fan-out was forty-eight requests to compute five numbers that
+       were then overwritten by better ones. They are filled back in below
+       from the bulk data, so `cache.classRows` — which is exposed — still
+       carries real values rather than the nulls the opt-out hands back. */
+    var classRows = await TD.loadTeacherClasses(selectedYearId, { metrics: false });
     var classIds = classRows.map(function (c) { return c.id; });
 
     var packs = classIds.length ? await TD.loadClassMatrices(classIds) : {};
+
+    /* The five deferred numbers, from the bulk read that superseded them. Done
+       before anything reads `classRows` so no consumer — here, a ruling, or a
+       future screen — can meet a `metrics_deferred` null. */
+    classRows.forEach(function (c) {
+      if (!c.metrics_deferred) { return; }
+      // No pack means no data to derive from, and `loadClassMatrices` throws
+      // rather than omitting a class, so this cannot happen. If it ever did,
+      // the flag STAYS — a reader must keep being able to tell "not fetched"
+      // from "genuinely zero", and clearing it here would erase exactly that.
+      var pack = packs[c.id];
+      if (!pack) { return; }
+      var m = TD.deriveClassMetrics(pack);
+      c.student_count = m.student_count;
+      c.assignment_count = m.assignment_count;
+      c.submission_count = m.submission_count;
+      c.completion_pct = m.completion_pct;
+      c.last_activity_at = m.last_activity_at;
+      delete c.metrics_deferred;
+    });
 
     var now = Date.now();
     var CLASSES = [], MATRIX = {}, ROSTER = {}, PAPERS = {}, WEEKS = {};
@@ -1717,8 +1889,41 @@
     boot();                        // ← before the first byte is asked for
     await loadDeps();
 
+    /* ⊕ 27 Aug 2026 — THE YEAR LIST STARTS NOW, NOT AFTER THE GUARD.
+       `base()` opens by awaiting `yearIndex()`, and `base()` cannot be called
+       until the guard has finished validating — so this read used to be a
+       serial wave of its own, waiting behind a round trip whose answer it does
+       not use. It needs the client and the persisted token, both of which
+       exist the moment the deps are loaded; it does not need to know the
+       viewer is a teacher, because RLS decides that and would refuse the rows
+       either way.
+
+       `yearIndex()` caches the PROMISE, so `base()` a moment later joins this
+       one rather than starting a second. The `.catch` here is only to keep an
+       early failure from surfacing as an unhandled rejection — the same
+       promise is awaited properly inside `base()`, where the failure belongs
+       and where `say()` can act on it. */
+    try { yearIndex().catch(function () {}); } catch (e) {}
+
+    /* ⊕ 27 Aug 2026 — A CEILING ON THE GUARD ITSELF. `withDeadline` below has
+       covered everything from `base()` onwards since MRB-287, but
+       `requireTeacherRole` makes two network reads BEFORE it calls back and
+       neither was ever bounded. A stalled one meant `onAllowed` never ran, the
+       30-second umbrella was never even opened, and the boot line stayed up
+       indefinitely — the one hang the umbrella could not see.
+
+       A flag rather than a race, because the guard's other exits are
+       REDIRECTS; a denied teacher navigates away and the timer leaves with the
+       page. It fires only when the guard neither called back nor bounced. */
+    var guardStarted = false;
+    var guardTimer = setTimeout(function () {
+      if (!guardStarted) { say(SAY.slow); }
+    }, 30000);
+
     window.MrBadmusTeacherGuard.requireTeacherRole({
       onAllowed: async function (ctx) {
+        guardStarted = true;
+        clearTimeout(guardTimer);
         try {
           var data = await withDeadline(30000, async function () {
             // The teacher's own name, from the profile the guard already
@@ -1808,6 +2013,18 @@
     hueFor: hueFor,
     SAY: SAY
   };
+
+  /* ⊕ 27 Aug 2026 — WAKE THE BACKEND, at the top of the file, before anything
+     is awaited. Nothing on a teacher screen calls Render today, so this buys
+     the teacher nothing directly — it is fired because a teacher opening the
+     dashboard at 8:40 is the reliable signal that a school is about to start,
+     and the instance carries a measured ~2.2s cold penalty after ~20 minutes
+     idle which their students would otherwise each pay in full. Fire and
+     forget: no retry, no logging, no await, and a failure is not a fact about
+     this page. */
+  try {
+    fetch("https://mrbadmus-backend.onrender.com/api/health").catch(function () {});
+  } catch (e) {}
 
   run().catch(function (err) {
     console.error("[teacher-live]", err);

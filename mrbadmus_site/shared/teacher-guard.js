@@ -77,6 +77,63 @@ window.MrBadmusTeacherGuard = (function () {
       return;
     }
 
+    /* ⊕ 27 Aug 2026 — THE TWO READS NOW GO TOGETHER, and the gate is not
+       weakened by it.
+
+       They used to be strictly serial: validate the JWT, THEN ask for the
+       profile. Two round trips one after the other, and on a cold Supabase
+       connection the first of them was the one the whole page queued behind —
+       measured at 2.9 seconds on the teacher landing, with the queries
+       themselves taking 3–17ms.
+
+       The second read never needed the FIRST READ'S ANSWER. It needs a user
+       id, and it needs the client's token — and the token is the persisted
+       session, which is attached to every PostgREST request by the client
+       itself whether or not `getUser()` has come back. So the profile read is
+       started against the STORED session's user id, in parallel, and then:
+
+         · if `getUser()` says no session, we bounce exactly as before and the
+           prefetched row is dropped unread;
+         · if `getUser()` returns a DIFFERENT user than the one the prefetch
+           was keyed on — a session swapped mid-flight, a refresh landing on
+           another account — the prefetch is discarded and the real query runs.
+           Never reconciled, never trusted: a profile fetched for the wrong id
+           is thrown away.
+
+       ⚠️ THIS IS NOT THE SECURITY GATE AND MUST NOT BE MISREAD AS ONE. The
+       row comes back through RLS under the viewer's own token, so a viewer
+       cannot prefetch somebody else's profile in the first place; the real
+       gates are the backend and the database's policies, as the header says.
+       What changes here is only WHEN the request leaves, never who may read
+       what.
+
+       `getSession()` is a localStorage read, not a round trip (it refreshes
+       only an expired token, which the request after it would have had to wait
+       for anyway). */
+    let prefetchId = null;
+    let prefetched = null;
+    try {
+      const stored = await sb.auth.getSession();
+      const storedUser = stored && stored.data && stored.data.session
+        ? stored.data.session.user : null;
+      if (storedUser && storedUser.id) {
+        prefetchId = storedUser.id;
+        // `.then()` FORCES IT TO LEAVE NOW. A PostgREST builder is lazy — it
+        // is a thenable that fires on await — so holding the builder in a
+        // local would run it serially after `getUser()` and change nothing.
+        prefetched = sb
+          .from('profiles')
+          .select('first_name, role, school_id')
+          .eq('id', prefetchId)
+          .single()
+          .then(function (r) { return r; },
+                function (e) { return { data: null, error: e }; });
+      }
+    } catch (e) {
+      prefetchId = null;
+      prefetched = null;
+    }
+
     // 1. Session check — getUser() actually validates the JWT with Supabase
     // (round-trip), unlike getSession() which just reads localStorage. This
     // file is layer 2 of defence-in-depth (UX gate); the real security gates
@@ -87,12 +144,15 @@ window.MrBadmusTeacherGuard = (function () {
       return bounceToLogin();
     }
 
-    // 2. Role check.
-    const { data: profile, error } = await sb
-      .from('profiles')
-      .select('first_name, role, school_id')
-      .eq('id', user.id)
-      .single();
+    // 2. Role check — the row we already asked for, but ONLY if it was asked
+    // for about this same person. Otherwise ask again, properly.
+    const { data: profile, error } = (prefetched && prefetchId === user.id)
+      ? await prefetched
+      : await sb
+          .from('profiles')
+          .select('first_name, role, school_id')
+          .eq('id', user.id)
+          .single();
 
     if (error && error.code !== 'PGRST116') {
       // A real query failure (network blip, RLS timeout) is NOT a denial —

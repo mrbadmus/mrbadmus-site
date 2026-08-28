@@ -66,10 +66,22 @@
   var PROD_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
 
   var CACHE_PREFIX = 'mrb-class-entry:v2:';   // v2: year-scoped (MRB-261)
-  var CACHE_TTL_MS = 10 * 60 * 1000;   // 10 min: long enough that walking the
-                                       // 294 KS3 pages costs one round trip,
-                                       // short enough that a mid-session
-                                       // enrolment shows up the same lesson.
+  /* 30 min. It was 10, and the entry it caches answers ONE question — which
+     class page to link to — which changes only when a teacher enrols or
+     removes somebody. A lesson is an hour, so 30 minutes still surfaces a
+     mid-session enrolment inside the same lesson (the property the 10 was
+     chosen for) while cutting the re-resolve from six round trips an hour to
+     two on a student walking the 294 KS3 pages. */
+  var CACHE_TTL_MS = 30 * 60 * 1000;
+
+  var YEARS_CACHE_PREFIX = 'mrb-academic-years:v1:';
+  /* The same 30 minutes, for a list that moves once a year. It is scoped to
+     the SCHOOL rather than the viewer because `academic_years` is readable by
+     any member of the school and the rows are identical for all of them — but
+     it is keyed on the viewer anyway, because a shared browser signing a
+     second student in must not read the first one's answer through RLS's
+     back. Session-scoped storage, so it dies with the tab either way. */
+  var YEARS_TTL_MS = 30 * 60 * 1000;
 
   /* ── The working academic year (MRB-261) ────────────────────────────────
      Which year's classes are the ones that matter right now.
@@ -195,13 +207,13 @@
       .catch(function () { return null; });
   }
 
-  function cacheGet(key) {
+  function cacheGet(key, ttl) {
     try {
       var raw = sessionStorage.getItem(key);
       if (!raw) return null;
       var box = JSON.parse(raw);
       if (!box || typeof box.t !== 'number') return null;
-      if (Date.now() - box.t > CACHE_TTL_MS) return null;
+      if (Date.now() - box.t > (ttl || CACHE_TTL_MS)) return null;
       return box.v;                      // may legitimately be null ("nothing
                                          // to show"), which is worth caching
                                          // just as much as a positive answer.
@@ -214,9 +226,71 @@
     } catch (e) {}
   }
 
-  // ── Resolution ──────────────────────────────────────────────────────────
-  // Returns a promise for { href, label, title } or null (render nothing).
+  /* ── The academic years, read ONCE per page ─────────────────────────────
+     ⊕ 27 Aug 2026 — the load-performance pass.
+
+     `academic_years` was being read TWICE on every dashboard load, ~200ms
+     apart and in two different waves: once here, to year-scope the nav entry,
+     and once again by `teacher-data.loadAcademicYears()` / the equivalent read
+     inside `student-data.loadStudentClasses()`. Two answers to a settled
+     question, and the second one arrives after the first has already been
+     used, so it can only ever agree or be a bug.
+
+     This file already owns the ONE `workingAcademicYear` predicate (MRB-267),
+     for exactly the reason that three hand-synced copies of a date rule is a
+     bug waiting for the 1st of September. It should equally own the ONE read
+     the predicate is applied to. The dependency still runs one way only: the
+     data layers reach for `window.MRBClassEntry` at CALL time and this file
+     imports nothing.
+
+     ⚠️ IT RESOLVES TO NULL RATHER THAN THROWING, and callers must treat null
+     as "I do not know" and NOT as "there are no years". `rest()` swallows a
+     network failure into null, and a caller that read null as an empty list
+     would drop the year filter entirely — which shows a Year 11 the class
+     they left in July, the precise bug MRB-261 fixed. Both data layers fall
+     back to their own query on null. */
+  var _yearsInflight = null;
+
+  function academicYears() {
+    if (_yearsInflight) return _yearsInflight;
+    _yearsInflight = (function () {
+      var conf = cfg();
+      var ref = projectRef(conf.url);
+      if (!ref) return Promise.resolve(null);
+      var session = readSession(ref);
+      if (!session) return Promise.resolve(null);   // signed out → no read
+
+      var key = YEARS_CACHE_PREFIX + conf.env + ':' + session.user.id;
+      var hit = cacheGet(key, YEARS_TTL_MS);
+      if (hit) return Promise.resolve(hit);
+
+      return rest(conf, session,
+                  'academic_years?deleted_at=is.null' +
+                  '&select=id,name,start_date,end_date&order=start_date.asc')
+        .then(function (rows) {
+          // Only a POSITIVE answer is cached. An empty array from a school
+          // with no years yet is indistinguishable here from a query that was
+          // refused, and caching the second for half an hour would pin a
+          // dashboard to the wrong scope for the rest of the session.
+          if (rows && rows.length) { cacheSet(key, rows); }
+          return rows;
+        });
+    })();
+    return _yearsInflight;
+  }
+
+  /* ── Resolution ──────────────────────────────────────────────────────────
+     Returns a promise for { href, label, title } or null (render nothing). */
   var _inflight = null;
+
+  /* Staff surfaces, where the viewer CANNOT be a student — every one of these
+     pages opens with a role guard that sends a student home. See below. */
+  function onStaffSurface() {
+    var p = window.location.pathname || '';
+    return p.indexOf('/teacher/') === 0 ||
+           p.indexOf('/admin/') === 0 ||
+           p.indexOf('/hod/') === 0;
+  }
 
   function resolve() {
     if (_inflight) return _inflight;
@@ -234,19 +308,36 @@
 
       var uid = encodeURIComponent(session.user.id);
 
-      // Role, membership and the school's academic years in parallel. A
-      // teacher is never a class_member, so the first two answers can't both
-      // be positive; asking for all three at once still costs one round trip.
-      // academic_years is readable by any member of the school
-      // (academic_years_member_read), so this needs no new grant.
+      /* Role, membership and the school's academic years in parallel. A
+         teacher is never a class_member, so the first two answers can't both
+         be positive; asking for all three at once still costs one round trip.
+         academic_years is readable by any member of the school
+         (academic_years_member_read), so this needs no new grant — and since
+         27 Aug it goes through `academicYears()` above, so the dashboards read
+         that list once rather than twice.
+
+         ⊕ 27 Aug 2026 — THE MEMBERSHIP QUERY IS SKIPPED ON STAFF SURFACES.
+         `class_members?student_id=eq.<uuid>` with a TEACHER's uuid in it can
+         never match a row: `student_id` references a student and a teacher is
+         linked through `class_teachers`. It was firing on every teacher
+         dashboard load anyway, inside the cold-connection wave the whole page
+         was queuing behind, to answer a question whose answer was structurally
+         empty. It is skipped by SURFACE rather than by role because role only
+         arrives with the first response — and every `/teacher/*`, `/admin/*`
+         and `/hod/*` page opens with a guard that sends a student home, so a
+         viewer who reaches one either is staff or is about to be redirected.
+         Everywhere else — KS3, KS4, the public pages, `/student/*` — the
+         question is real and all three still go together. */
+      var wantMembership = !onStaffSurface();
+
       return Promise.all([
         rest(conf, session, 'profiles?id=eq.' + uid + '&select=role'),
-        rest(conf, session,
-             'class_members?student_id=eq.' + uid +
-             '&left_at=is.null&deleted_at=is.null&select=class_id'),
-        rest(conf, session,
-             'academic_years?deleted_at=is.null' +
-             '&select=id,name,start_date,end_date&order=start_date.asc')
+        wantMembership
+          ? rest(conf, session,
+                 'class_members?student_id=eq.' + uid +
+                 '&left_at=is.null&deleted_at=is.null&select=class_id')
+          : Promise.resolve([]),
+        academicYears()
       ]).then(function (res) {
         var roleRows = res[0], memberRows = res[1], yearRows = res[2];
         var role = (roleRows && roleRows[0] && roleRows[0].role) || null;
@@ -260,6 +351,14 @@
           cacheSet(cacheKey, staff);
           return staff;
         }
+
+        /* We are on a staff surface and the viewer is a student — so we
+           deliberately did not ask about their membership, and we do not know
+           it. Render nothing (the guard on this page is about to send them
+           home anyway) and CACHE NOTHING: writing a null here would answer
+           "no class" for the next half hour on the KS3 lesson pages too,
+           which is the entry disappearing from the one place it matters. */
+        if (!wantMembership) { return null; }
 
         var ids = (memberRows || []).map(function (r) { return r.class_id; })
                                     .filter(Boolean);
@@ -422,6 +521,11 @@
     resolve: resolve,
     mount: mount,
     workingAcademicYear: workingAcademicYear,
+    /* ⊕ 27 Aug 2026 — the ROWS the predicate above is applied to, read once
+       per page and shared with both data layers. Resolves to null when it
+       cannot know (signed out, or the read failed); a caller must fall back
+       to its own query rather than reading null as "no years". */
+    academicYears: academicYears,
   };
 
   if (document.readyState === 'loading') {

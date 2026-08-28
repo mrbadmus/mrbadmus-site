@@ -114,17 +114,48 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
-    const { data, error } = await sb
-      .from('academic_years')
-      .select('id, name, start_date, end_date')
-      .is('deleted_at', null)
-      .order('start_date', { ascending: false });
-    if (error) {
-      console.error('[teacher-data] academic years query failed', error);
-      throw error;
+    /* ⊕ 27 Aug 2026 — THE SHARED READ FIRST. `class-entry.js` has already
+       asked for this list to year-scope the nav entry, on this same page load,
+       and it holds the answer. Reading it again here was the duplicate
+       `academic_years` request the load-performance pass measured as its own
+       serial wave.
+
+       It answers null when it does not KNOW (signed out, or the request
+       failed) — never as a way of saying "no years" — so null falls through to
+       the query below rather than being treated as an empty school. That
+       distinction is load-bearing: an empty list drops the year filter in
+       `loadTeacherClasses`, which would put last year's classes back on the
+       dashboard (MRB-261). */
+    let rows = null;
+    const entry = window.MRBClassEntry;
+    if (entry && entry.academicYears) {
+      try {
+        const shared = await entry.academicYears();
+        if (shared && shared.length) { rows = shared.slice(); }
+      } catch (e) { rows = null; }
     }
 
-    const rows = data || [];
+    if (!rows) {
+      const { data, error } = await sb
+        .from('academic_years')
+        .select('id, name, start_date, end_date')
+        .is('deleted_at', null)
+        .order('start_date', { ascending: false });
+      if (error) {
+        console.error('[teacher-data] academic years query failed', error);
+        throw error;
+      }
+      rows = data || [];
+    }
+
+    // The shared read orders start_date ASC; this function has always handed
+    // back DESC and the year strip is built straight off it. Sorted here so
+    // the order is a property of this function rather than of whichever read
+    // happened to answer.
+    rows.sort(function (a, b) {
+      return String(b.start_date || '').localeCompare(String(a.start_date || ''));
+    });
+
     const working = workingAcademicYear(rows);
     const years = rows.map(function (y) {
       return {
@@ -535,7 +566,74 @@ window.MrBadmusTeacherData = (function () {
   // no part of the rule held here that the RPC does not also hold, and two
   // copies of an eligibility rule is precisely how the two drift apart.
 
-  async function loadTeacherClasses(academicYearId) {
+  /* ⊕ 27 Aug 2026 — what `{ metrics: false }` hands back instead of four
+     requests per class. Every key the full shape carries is present, so a
+     reader never meets an undefined; every VALUE is null, so a reader never
+     meets a fabricated zero; and `metrics_deferred` says which of the two
+     kinds of null this is. `metrics_failed` means "we asked and it went
+     wrong"; this means "we did not ask". */
+  const DEFERRED_METRICS = {
+    student_count: null,
+    assignment_count: null,
+    submission_count: null,
+    completion_pct: null,
+    last_activity_at: null,
+    metrics_deferred: true,
+  };
+
+  /* The same five numbers, out of a `loadClassMatrices` pack — no requests at
+     all, because the pack already holds every row they are counted from.
+     This is the replacement for the per-class fan-out, not an addition to it.
+
+     ⚠️ `submission_count` IS FIRST-ATTEMPT FILTERED HERE AND WAS NOT BEFORE.
+     `loadClassMetrics` ran a bare `count` over `assignment_submissions`, so a
+     class where students retook work counted the retakes — which could and did
+     push `completion_pct` past 100. A pack's `submissions` array has already
+     been through `pickFirstAttempts`, which is the rule every other number on
+     the dashboard is computed under. So the count now AGREES with the roster,
+     the week bar and the grid instead of quietly disagreeing with all three.
+     That is a correction, and it is the only behavioural difference between
+     these five values and the ones the fan-out produced. */
+  function deriveClassMetrics(pack) {
+    if (!pack) return Object.assign({}, DEFERRED_METRICS);
+    const members = pack.members || [];
+    const assignments = pack.assignments || [];
+    const handedIn = (pack.submissions || []).filter(function (s) {
+      return !!s.submitted_at;
+    });
+
+    let last = null;
+    handedIn.forEach(function (s) {
+      if (last == null || s.submitted_at > last) { last = s.submitted_at; }
+    });
+
+    const denom = members.length * assignments.length;
+    return {
+      student_count: members.length,
+      assignment_count: assignments.length,
+      submission_count: handedIn.length,
+      // Null rather than 0 or NaN when nothing was asked of anybody — an
+      // honest dash, same rule loadClassMetrics applied.
+      completion_pct: denom === 0 ? null
+                                  : Math.round((handedIn.length / denom) * 100),
+      last_activity_at: last,
+    };
+  }
+
+  /**
+   * loadTeacherClasses(academicYearId, opts)
+   *
+   * opts.metrics — default TRUE, which is the shape every existing caller
+   * was written against. Pass FALSE when you are about to call
+   * `loadClassMatrices` over the same ids: the matrices carry every row the
+   * metrics are counted from, so fetching them here first is four requests
+   * per class for numbers that are about to be superseded. On a teacher with
+   * twelve classes that was forty-eight requests, in a serial wave, for data
+   * `base()` in teacher-live.js then discarded without reading a single field
+   * of. Derive them instead with `deriveClassMetrics(pack)`.
+   */
+  async function loadTeacherClasses(academicYearId, opts) {
+    const wantMetrics = !(opts && opts.metrics === false);
     const guard = window.MrBadmusTeacherGuard;
     const sb = guard && guard.getClient ? guard.getClient() : null;
     if (!sb) {
@@ -598,7 +696,7 @@ window.MrBadmusTeacherData = (function () {
       const entry = byClassId.get(id);
       const klass = entry.klass;
       const pill = derivePill(klass, entry.rows);
-      const metrics = await loadClassMetrics(sb, id);
+      const metrics = wantMetrics ? await loadClassMetrics(sb, id) : DEFERRED_METRICS;
       return {
         id: klass.id,
         name: klass.name,
@@ -615,6 +713,9 @@ window.MrBadmusTeacherData = (function () {
         submission_count: metrics.submission_count,
         completion_pct: metrics.completion_pct,
         last_activity_at: metrics.last_activity_at,
+        // Present ONLY when the five above were not fetched, so a reader
+        // cannot mistake a deferred null for a real zero. See DEFERRED_METRICS.
+        metrics_deferred: metrics.metrics_deferred || undefined,
       };
     }));
 
@@ -1923,5 +2024,8 @@ window.MrBadmusTeacherData = (function () {
     // above changed, and no existing caller sees a difference.
     loadClassMatrices,
     loadPaperQuestions,
+    // ⊕ 27 Aug 2026 — the five per-class numbers, derived from a matrices
+    // pack instead of re-fetched per class. See loadTeacherClasses(opts).
+    deriveClassMetrics,
   };
 })();
