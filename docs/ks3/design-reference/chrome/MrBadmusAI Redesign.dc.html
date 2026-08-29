@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg"><rect width="240" height="240" fill="#FBF3E6"/><rect x="34" y="34" width="172" height="172" rx="26" fill="#E4572E"/><g fill="none" stroke="#FFFDF8" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"><path d="M96 96l24 24-24 24"/><path d="M132 96l24 24-24 24"/></g></svg>
+</template>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<script src="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: #FBF3E6; color: #1A1714; font-family: 'Instrument Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; text-wrap: pretty; }
+  button { font: inherit; color: inherit; }
+  a { color: #A93411; text-decoration: none; }
+  a:hover { color: #7F2408; text-decoration: underline; }
+  ::selection { background: #FCE7DE; }
+  :focus-visible { outline: 3px solid #E4572E; outline-offset: 2px; border-radius: 6px; }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#FBF3E6">
+
+  <header style="position:sticky;top:0;z-index:20;background:#FBF3E6;border-bottom:2px solid #1A1714">
+    <div style="max-width:1400px;margin:0 auto;padding:10px 24px;min-height:66px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <button type="button" onClick="{{ goHome }}" style="display:flex;align-items:center;gap:9px;background:none;border:0;padding:6px 4px;cursor:pointer">
+        <x-import component-from-global-scope="MrBadmusDS.BrandMark" size="{{ brandSize }}" hint-size="21px,21px"></x-import>
+        <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.02em;color:#1A1714">MrBadmusAI</span>
+      </button>
+
+      <nav style="margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <a href="#" style="display:none;padding:0">3D</a>
+        <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A6E5F;padding:0 6px">3D Studio</span>
+        <button type="button" style="display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;background:#A93411;color:#FFFDF8;border:0;cursor:pointer;font-weight:700;font-size:16px" style-hover="background:#7F2408">
+          <svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"></path></svg>
+          Challenge
+        </button>
+        <button type="button" aria-label="Leaderboard" style="width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#F4E9D8;border:1.5px solid #E0D2B9;color:#3D352C;cursor:pointer" style-hover="border-color:#1A1714">
+          <svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h7v4.5a3.5 3.5 0 01-7 0V3zM6.5 4.2H4v1.3a2.4 2.4 0 002.4 2.4M13.5 4.2H16v1.3a2.4 2.4 0 01-2.4 2.4M10 11v3M7 17h6l-.7-2.4h-4.6L7 17z"></path></svg>
+        </button>
+        <button type="button" aria-label="Search topics" style="width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:#F4E9D8;border:1.5px solid #E0D2B9;color:#3D352C;cursor:pointer" style-hover="border-color:#1A1714">
+          <svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.6"></circle><path d="M13.2 13.2L17 17"></path></svg>
+        </button>
+        <span style="display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 16px 0 8px;border-radius:999px;background:#FFFDF8;border:1.5px solid #E0D2B9">
+          <span style="width:28px;height:28px;border-radius:999px;background:#A93411;color:#FFFDF8;display:grid;place-items:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px">A</span>
+          <span style="font-weight:600;font-size:16px;color:#3D352C">Anifat</span>
+        </span>
+        <button type="button" aria-label="Open menu" aria-expanded="false" style="width:44px;height:44px;display:grid;place-items:center;gap:5px;border-radius:12px;background:#F4E9D8;border:1.5px solid #E0D2B9;cursor:pointer" style-hover="border-color:#1A1714">
+          <span style="width:20px;height:2.4px;border-radius:2px;background:#1A1714"></span>
+          <span style="width:20px;height:2.4px;border-radius:2px;background:#1A1714"></span>
+          <span style="width:20px;height:2.4px;border-radius:2px;background:#1A1714"></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <main data-screen-label="Landing" style="flex:1;max-width:1400px;width:100%;margin:0 auto;padding:40px 28px 48px;display:flex;flex-direction:column;gap:26px;animation:fade .3s both">
+
+    <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+      <div style="flex:1 1 480px;min-width:0;animation:rise .5s both">
+        
+        <h1 style="margin:16px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(46px,5.4vw,80px);line-height:.94;letter-spacing:-.035em;color:#1A1714">Revision that<br>keeps score.</h1>
+        
+      </div>
+
+      <div style="flex:1 1 340px;max-width:440px;animation:rise .5s .08s both">
+        <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+        <div style="background:#1A1714;border-radius:18px;padding:26px 26px 24px;box-shadow:4px 4px 0 #E4572E">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#F2946E">Jump back in</span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.1em;color:#8E8272">2 days ago</span>
+          </div>
+          <p style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:31px;line-height:1.08;letter-spacing:-.025em;color:#FBF3E6">Efficiency</p>
+          <p style="margin:7px 0 0;font-size:17px;color:#C6B9A7">Energy · Physics · Combined Foundation</p>
+          <div style="margin-top:20px;display:flex;align-items:center;gap:12px">
+            <span style="flex:1;height:8px;border-radius:999px;background:#3E362C;overflow:hidden"><span style="display:block;width:57%;height:100%;background:#E4572E"></span></span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;color:#B7AA98">4/7</span>
+          </div>
+          <button type="button" onClick="{{ goEnergy }}" style="margin-top:20px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;border-radius:13px;background:#E4572E;color:#1A1714;border:0;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px" style-hover="background:#F2946E">
+            Carry on
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+        </div>
+        </sc-if>
+      </div>
+    </section>
+
+    <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:24px;flex:1;align-items:stretch">
+      <button type="button" onClick="{{ goKs3 }}" data-comment-anchor="door-ks3" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:34px 34px 30px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:18px;transition:transform .16s,box-shadow .16s;animation:rise .55s .12s both" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #E4572E">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="width:16px;height:16px;border-radius:999px;background:#E4572E;border:2px solid #1A1714"></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Years 7 to 9</span>
+        </div>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(38px,3.6vw,52px);line-height:1;letter-spacing:-.03em;color:#1A1714">KS3 Science</h2>
+        
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span style="padding:8px 15px;border-radius:999px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-weight:600;font-size:15px;color:#3D352C">Year 7</span>
+          <span style="padding:8px 15px;border-radius:999px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-weight:600;font-size:15px;color:#3D352C">Year 8</span>
+          <span style="padding:8px 15px;border-radius:999px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-weight:600;font-size:15px;color:#3D352C">Year 9</span>
+        </div>
+        <div style="margin-top:auto;padding-top:22px;border-top:1.5px solid #E0D2B9;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          
+          <span style="display:inline-flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;color:#A93411">
+            Start KS3
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </span>
+        </div>
+      </button>
+
+      <button type="button" onClick="{{ goGcse }}" data-comment-anchor="door-gcse" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:34px 34px 30px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:18px;transition:transform .16s,box-shadow .16s;animation:rise .55s .18s both" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #1D6FB8">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="width:16px;height:16px;border-radius:999px;background:#1D6FB8;border:2px solid #1A1714"></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Years 10 and 11</span>
+        </div>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(38px,3.6vw,52px);line-height:1;letter-spacing:-.03em;color:#1A1714">GCSE Science</h2>
+        
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span style="padding:8px 15px;border-radius:999px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-weight:600;font-size:15px;color:#3D352C">Combined</span>
+          <span style="padding:8px 15px;border-radius:999px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-weight:600;font-size:15px;color:#3D352C">Triple</span>
+          <span style="padding:8px 15px;border-radius:999px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-weight:600;font-size:15px;color:#3D352C">Foundation</span>
+          <span style="padding:8px 15px;border-radius:999px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-weight:600;font-size:15px;color:#3D352C">Higher</span>
+        </div>
+        <div style="margin-top:auto;padding-top:22px;border-top:1.5px solid #E0D2B9;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          
+          <span style="display:inline-flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;color:#A93411">
+            Start GCSE
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </span>
+        </div>
+      </button>
+    </section>
+
+    <sc-if value="{{ showChallenge }}" hint-placeholder-val="{{ true }}">
+    <section style="background:#F4E9D8;border:1.5px solid #E0D2B9;border-radius:18px;padding:22px 26px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;align-items:center;animation:rise .6s .24s both">
+      <div style="flex:1 1 460px;min-width:0">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#A93411">This week's challenge</div>
+        <p style="margin:9px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:25px;letter-spacing:-.02em;color:#1A1714">Energy transfers</p>
+        <p style="margin:5px 0 0;font-size:16px;color:#6E655D">10 questions · closes Sunday</p>
+      </div>
+      <div style="border-left:1.5px solid #E0D2B9;padding-left:22px">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Your best</div>
+        <p style="margin:9px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:25px;color:#1A1714">68%</p>
+        <p style="margin:5px 0 0;font-size:16px;color:#6E655D">Beat it and you move up 4 places</p>
+      </div>
+      <div style="border-left:1.5px solid #E0D2B9;padding-left:22px">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Your rank</div>
+        <p style="margin:9px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:25px;color:#1A1714">14th of 212</p>
+        <p style="margin:5px 0 0;font-size:16px;color:#6E655D">Leader: CoralTrail56 · 80%</p>
+      </div>
+      <div style="display:flex;justify-content:flex-end">
+        <button type="button" style="display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 24px;border-radius:13px;background:#A93411;color:#FFFDF8;border:0;cursor:pointer;font-weight:700;font-size:17px" style-hover="background:#7F2408">
+          Take the challenge
+          <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+        </button>
+      </div>
+    </section>
+    </sc-if>
+
+    <p style="margin:0;font-size:16px;color:#6E655D">Not sure which one? Years 7, 8 and 9 are <strong style="color:#1A1714">KS3</strong>. Years 10 and 11 are <strong style="color:#1A1714">GCSE</strong>.</p>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isKs3 }}">
+  <main data-screen-label="KS3 hub" style="flex:1;max-width:1400px;width:100%;margin:0 auto;padding:26px 28px 60px;animation:fade .3s both">
+    <div style="display:flex;align-items:center;gap:10px;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A6E5F;margin-bottom:26px">
+      <button type="button" onClick="{{ goHome }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">All courses</button>
+      <span style="color:#C3B191">›</span>
+      <span>KS3 Science</span>
+    </div>
+
+    <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:center">
+      <div style="flex:1 1 460px;min-width:0">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Key Stage 3 · Years 7 to 9</div>
+        <h1 style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(44px,5.2vw,74px);line-height:.95;letter-spacing:-.035em">KS3 Science</h1>
+        <p style="margin:20px 0 0;font-size:21px;line-height:1.55;color:#3D352C;max-width:54ch">Three years, three sciences, all running side by side. Pick the year you are in — or follow one science all the way through.</p>
+      </div>
+      <div style="flex:1 1 320px;max-width:420px;background:#FFFDF8;border:1.5px solid #E0D2B9;border-radius:16px;padding:22px 24px">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Where you are</div>
+        <p style="margin:12px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em">Year 8 · Autumn 2</p>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:12px">
+          <span style="flex:1;height:8px;border-radius:999px;background:#F0E4CE;overflow:hidden"><span style="display:block;width:34%;height:100%;background:#E4572E"></span></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;color:#6E655D">21/62</span>
+        </div>
+        <p style="margin:12px 0 0;font-size:16px;color:#6E655D">Lessons done this year</p>
+      </div>
+    </section>
+
+    <section style="margin-top:52px">
+      <div style="display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:22px;flex-wrap:wrap">
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:36px;letter-spacing:-.03em">Pick your year</h2>
+        <p style="margin:0;font-size:18px;color:#6E655D;max-width:46ch">Each year runs across the six half terms of the school year, with all three sciences going at once.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+        <button type="button" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:18px;padding:26px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:14px;transition:transform .16s" style-hover="transform:translate(-3px,-3px)">
+          <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34px;letter-spacing:-.03em">Year 7</h3>
+          <p style="margin:0;font-size:18px;line-height:1.5;color:#3D352C">Starting secondary science: cells, particles, forces and how to work like a scientist.</p>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:4px">
+            <span style="height:9px;border-radius:4px;background:#E4572E;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#E4572E;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#12A150;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#12A150;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#2F5CE0;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#2F5CE0;border:1px solid #1A1714"></span>
+          </div>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:#7A6E5F">Six half terms · Autumn to Summer</span>
+        </button>
+        <button type="button" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:18px;padding:26px;box-shadow:4px 4px 0 #E4572E;display:flex;flex-direction:column;gap:14px;transition:transform .16s" style-hover="transform:translate(-3px,-3px)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34px;letter-spacing:-.03em">Year 8</h3>
+            <span style="padding:6px 13px;border-radius:999px;background:#FCE7DE;border:1.5px solid #E4572E;font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#A93411">You are here</span>
+          </div>
+          <p style="margin:0;font-size:18px;line-height:1.5;color:#3D352C">Digestion, the periodic table, electricity and energy — the year the ideas start stacking up.</p>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:4px">
+            <span style="height:9px;border-radius:4px;background:#E4572E;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#E4572E;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#12A150;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#12A150;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#2F5CE0;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#2F5CE0;border:1px solid #1A1714"></span>
+          </div>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:#7A6E5F">Six half terms · Autumn to Summer</span>
+        </button>
+        <button type="button" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:18px;padding:26px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:14px;transition:transform .16s" style-hover="transform:translate(-3px,-3px)">
+          <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34px;letter-spacing:-.03em">Year 9</h3>
+          <p style="margin:0;font-size:18px;line-height:1.5;color:#3D352C">Inheritance, reactions, waves and space — the bridge straight into GCSE content.</p>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-top:4px">
+            <span style="height:9px;border-radius:4px;background:#E4572E;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#E4572E;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#12A150;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#12A150;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#2F5CE0;border:1px solid #1A1714"></span>
+            <span style="height:9px;border-radius:4px;background:#2F5CE0;border:1px solid #1A1714"></span>
+          </div>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:#7A6E5F">Six half terms · Autumn to Summer</span>
+        </button>
+      </div>
+    </section>
+
+    <section style="margin-top:52px">
+      <div style="display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:22px;flex-wrap:wrap">
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:36px;letter-spacing:-.03em">Or go by subject</h2>
+        <p style="margin:0;font-size:18px;color:#6E655D;max-width:46ch">Same lessons, ordered by how the science builds instead of by school term.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+        <button type="button" style="text-align:left;cursor:pointer;background:#FFFDF8;border:1.5px solid #E0D2B9;border-radius:16px;padding:24px;box-shadow:3px 3px 0 #12A150;display:flex;flex-direction:column;gap:12px;transition:transform .16s" style-hover="transform:translate(-3px,-3px)">
+          <div style="display:flex;align-items:center;gap:11px">
+            <span style="width:15px;height:15px;border-radius:999px;background:#12A150;border:2px solid #1A1714"></span>
+            <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;letter-spacing:-.02em">Biology</h3>
+          </div>
+          <p style="margin:0;font-size:17px;line-height:1.5;color:#3D352C">Cells, bodies, plants, ecosystems, inheritance and evolution.</p>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:#7A6E5F">11 units</span>
+        </button>
+        <button type="button" style="text-align:left;cursor:pointer;background:#FFFDF8;border:1.5px solid #E0D2B9;border-radius:16px;padding:24px;box-shadow:3px 3px 0 #E4572E;display:flex;flex-direction:column;gap:12px;transition:transform .16s" style-hover="transform:translate(-3px,-3px)">
+          <div style="display:flex;align-items:center;gap:11px">
+            <span style="width:15px;height:15px;border-radius:999px;background:#E4572E;border:2px solid #1A1714"></span>
+            <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;letter-spacing:-.02em">Chemistry</h3>
+          </div>
+          <p style="margin:0;font-size:17px;line-height:1.5;color:#3D352C">Particles, atoms, mixtures, reactions, acids and the Earth.</p>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:#7A6E5F">10 units</span>
+        </button>
+        <button type="button" style="text-align:left;cursor:pointer;background:#FFFDF8;border:1.5px solid #E0D2B9;border-radius:16px;padding:24px;box-shadow:3px 3px 0 #2F5CE0;display:flex;flex-direction:column;gap:12px;transition:transform .16s" style-hover="transform:translate(-3px,-3px)">
+          <div style="display:flex;align-items:center;gap:11px">
+            <span style="width:15px;height:15px;border-radius:999px;background:#2F5CE0;border:2px solid #1A1714"></span>
+            <h3 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;letter-spacing:-.02em">Physics</h3>
+          </div>
+          <p style="margin:0;font-size:17px;line-height:1.5;color:#3D352C">Forces, energy, electricity, waves, magnets and space.</p>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:#7A6E5F">Follow the chain</span>
+        </button>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isGcse }}">
+  <main data-screen-label="GCSE hub" style="flex:1;max-width:1400px;width:100%;margin:0 auto;padding:26px 28px 60px;animation:fade .3s both">
+    <div style="display:flex;align-items:center;gap:10px;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A6E5F;margin-bottom:26px">
+      <button type="button" onClick="{{ goHome }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">All courses</button>
+      <span style="color:#C3B191">›</span>
+      <span>GCSE Science</span>
+    </div>
+
+    <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;margin-bottom:34px">
+      <div style="flex:1 1 460px;min-width:0">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Key Stage 4 · Years 10 and 11</div>
+        <h1 style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(44px,5.2vw,74px);line-height:.95;letter-spacing:-.035em">GCSE Science</h1>
+        
+      </div>
+      <div style="flex:1 1 320px;max-width:420px;background:#F4E9D8;border:1.5px solid #E0D2B9;border-radius:16px;padding:22px 24px">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Not sure which?</div>
+        <p style="margin:12px 0 0;font-size:18px;line-height:1.55;color:#3D352C">Combined gives you two GCSEs in science. Triple gives you three separate ones. Your timetable will say which.</p>
+      </div>
+    </section>
+
+    <section style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <div style="flex:1 1 560px;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;align-items:start">
+        <button type="button" onClick="{{ goCombined }}" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:30px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:16px;transition:transform .16s,box-shadow .16s" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #1D6FB8">
+          <div style="display:flex;align-items:center;gap:11px">
+            <span style="width:15px;height:15px;border-radius:999px;background:#1D6FB8;border:2px solid #1A1714"></span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Two GCSEs</span>
+          </div>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,3vw,42px);line-height:1.02;letter-spacing:-.03em">Combined Science</h2>
+          <p style="margin:0;font-size:19px;line-height:1.5;color:#3D352C;text-wrap:pretty">Biology, chemistry and physics in one course. Six exams, two grades.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span style="padding:7px 14px;border-radius:999px;background:#EAF3EC;border:1.5px solid #B9D6C1;font-weight:600;font-size:15px;color:#1B5E30">Foundation</span>
+            <span style="padding:7px 14px;border-radius:999px;background:#F6EFD6;border:1.5px solid #D9C58A;font-weight:600;font-size:15px;color:#5F4A00">Higher</span>
+          </div>
+          <div style="margin-top:auto;padding-top:20px;border-top:1.5px solid #E0D2B9;display:inline-flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;color:#A93411">
+            Open Combined
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </div>
+        </button>
+
+        <button type="button" onClick="{{ goTriple }}" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:30px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:16px;transition:transform .16s,box-shadow .16s" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #B02342">
+          <div style="display:flex;align-items:center;gap:11px">
+            <span style="width:15px;height:15px;border-radius:999px;background:#B02342;border:2px solid #1A1714"></span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Three GCSEs</span>
+          </div>
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,3vw,42px);line-height:1.02;letter-spacing:-.03em">Triple Science</h2>
+          <p style="margin:0;font-size:19px;line-height:1.5;color:#3D352C;text-wrap:pretty">Each science graded on its own. More content, six exams, three grades.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <span style="padding:7px 14px;border-radius:999px;background:#EAF3EC;border:1.5px solid #B9D6C1;font-weight:600;font-size:15px;color:#1B5E30">Foundation</span>
+            <span style="padding:7px 14px;border-radius:999px;background:#F6EFD6;border:1.5px solid #D9C58A;font-weight:600;font-size:15px;color:#5F4A00">Higher</span>
+          </div>
+          <div style="margin-top:auto;padding-top:20px;border-top:1.5px solid #E0D2B9;display:inline-flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:18px;color:#A93411">
+            Open Triple
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </div>
+        </button>
+      </div>
+
+      <aside style="flex:1 1 320px;max-width:420px;background:#1A1714;border-radius:20px;padding:26px;box-shadow:4px 4px 0 #7A5F00;display:flex;flex-direction:column;gap:18px">
+        <div>
+          <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#F2946E">Top stars</div>
+          <p style="margin:8px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:27px;letter-spacing:-.02em;color:#FBF3E6">This week's leaders</p>
+        </div>
+        <div style="background:#2A2119;border-radius:14px;padding:16px 18px">
+          <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#C9BDAC">Champion of the week</div>
+          <div style="margin-top:9px;display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;color:#FBF3E6">CoralTrail56</span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:19px;color:#F2946E">80%</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:11.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#8E8272">Foundation</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:11px;border-bottom:1px solid #3E362C">
+            <span style="display:flex;align-items:center;gap:11px;color:#FBF3E6;font-size:17px;font-weight:600"><span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;color:#8E8272">01</span>CoralTrail56</span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:15px;color:#B7AA98">80%</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:11px;border-bottom:1px solid #3E362C">
+            <span style="display:flex;align-items:center;gap:11px;color:#FBF3E6;font-size:17px;font-weight:600"><span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;color:#8E8272">02</span>SlateHarrier9</span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:15px;color:#B7AA98">76%</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <span style="display:flex;align-items:center;gap:11px;color:#F2946E;font-size:17px;font-weight:700"><span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;color:#8E8272">14</span>You</span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:15px;color:#F2946E">68%</span>
+          </div>
+        </div>
+        <button type="button" style="margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;border-radius:13px;background:#FBF3E6;color:#1A1714;border:0;cursor:pointer;font-weight:700;font-size:17px" style-hover="background:#FFFDF8">
+          Full leaderboard
+          <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+        </button>
+      </aside>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isTier }}">
+  <main data-screen-label="Tier choice" style="flex:1;max-width:1400px;width:100%;margin:0 auto;padding:26px 28px 60px;animation:fade .3s both">
+    <div style="display:flex;align-items:center;gap:10px;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A6E5F;margin-bottom:26px;flex-wrap:wrap">
+      <button type="button" onClick="{{ goHome }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">All courses</button>
+      <span style="color:#C3B191">›</span>
+      <button type="button" onClick="{{ goGcse }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">GCSE Science</button>
+      <span style="color:#C3B191">›</span>
+      <span>{{ pathway }}</span>
+    </div>
+
+    <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;margin-bottom:34px">
+      <div style="flex:1 1 460px;min-width:0">
+        <sc-if value="{{ isCombined }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="width:16px;height:16px;border-radius:999px;background:#1D6FB8;border:2px solid #1A1714"></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Two GCSEs · 24 topics</span>
+        </div>
+        <h1 style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(42px,5vw,72px);line-height:.95;letter-spacing:-.035em">Combined Science</h1>
+        
+        </sc-if>
+        <sc-if value="{{ isTriple }}">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="width:16px;height:16px;border-radius:999px;background:#B02342;border:2px solid #1A1714"></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Three GCSEs · extended content</span>
+        </div>
+        <h1 style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(42px,5vw,72px);line-height:.95;letter-spacing:-.035em">Triple Science</h1>
+        
+        </sc-if>
+      </div>
+      <div style="flex:1 1 320px;max-width:420px;background:#F4E9D8;border:1.5px solid #E0D2B9;border-radius:16px;padding:22px 24px">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Which tier am I?</div>
+        <p style="margin:12px 0 0;font-size:18px;line-height:1.55;color:#3D352C">Your school enters you for one of them. If nobody has told you yet, ask your teacher.</p>
+      </div>
+    </section>
+
+    <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px">
+      <button type="button" onClick="{{ goFoundation }}" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:32px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:18px;transition:transform .16s,box-shadow .16s" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #237A3B">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:11px">
+            <span style="width:15px;height:15px;border-radius:999px;background:#237A3B;border:2px solid #1A1714"></span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Grades 1 to 5</span>
+          </div>
+          <span style="padding:6px 13px;border-radius:999px;background:#EAF3EC;border:1.5px solid #B9D6C1;font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#1B5E30">Your tier</span>
+        </div>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(34px,3.2vw,46px);line-height:1;letter-spacing:-.03em">Foundation</h2>
+        
+        <div style="margin-top:auto;padding-top:20px;border-top:1.5px solid #E0D2B9;display:inline-flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;color:#A93411">
+          Open Foundation
+          <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+        </div>
+      </button>
+
+      <button type="button" onClick="{{ goFoundation }}" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:32px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:18px;transition:transform .16s,box-shadow .16s" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #7A5F00">
+        <div style="display:flex;align-items:center;gap:11px">
+          <span style="width:15px;height:15px;border-radius:999px;background:#7A5F00;border:2px solid #1A1714"></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Grades 4 to 9</span>
+        </div>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(34px,3.2vw,46px);line-height:1;letter-spacing:-.03em">Higher</h2>
+        
+        <div style="margin-top:auto;padding-top:20px;border-top:1.5px solid #E0D2B9;display:inline-flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;color:#A93411">
+          Open Higher
+          <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+        </div>
+      </button>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isSubjects }}">
+  <main data-screen-label="Foundation subjects" style="flex:1;max-width:1400px;width:100%;margin:0 auto;padding:26px 28px 60px;animation:fade .3s both">
+    <div style="display:flex;align-items:center;gap:10px;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A6E5F;margin-bottom:26px;flex-wrap:wrap">
+      <button type="button" onClick="{{ goHome }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">All courses</button>
+      <span style="color:#C3B191">›</span>
+      <button type="button" onClick="{{ goGcse }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">GCSE Science</button>
+      <span style="color:#C3B191">›</span>
+      <button type="button" onClick="{{ goCombined }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">Combined</button>
+      <span style="color:#C3B191">›</span>
+      <span>Foundation</span>
+    </div>
+
+    <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;margin-bottom:34px">
+      <div style="flex:1 1 460px;min-width:0">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="width:16px;height:16px;border-radius:999px;background:#237A3B;border:2px solid #1A1714"></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Combined Science · Foundation</span>
+        </div>
+        <h1 style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(44px,5.2vw,74px);line-height:.95;letter-spacing:-.035em">Pick a science</h1>
+        
+      </div>
+      <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1 1 320px;max-width:420px;background:#FFFDF8;border:1.5px solid #E0D2B9;border-radius:16px;padding:22px 24px">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Your tier so far</div>
+        <p style="margin:12px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.02em">6 of 24 topics</p>
+        <div style="margin-top:14px;height:8px;border-radius:999px;background:#F0E4CE;overflow:hidden"><span style="display:block;width:25%;height:100%;background:#237A3B"></span></div>
+        <p style="margin:12px 0 0;font-size:16px;color:#6E655D">Last opened: Physics · Energy.</p>
+      </div>
+      </sc-if>
+    </section>
+
+    <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px">
+      <button type="button" onClick="{{ goPhysics }}" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:30px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:16px;transition:transform .16s,box-shadow .16s" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #1D6FB8">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px">
+          <span style="width:48px;height:48px;border-radius:14px;background:#EAF2FA;border:2px solid #1A1714;display:grid;place-items:center;color:#1D6FB8">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 2.5L5 13.5h5.5L9.5 21.5 18 10.5h-5.5l1-8z"></path></svg>
+          </span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;color:#7A6E5F">7 topics</span>
+        </div>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:36px;line-height:1;letter-spacing:-.03em;color:#1D6FB8">Physics</h2>
+        <p style="margin:0;font-size:18px;line-height:1.5;color:#3D352C">Energy, electricity, particles, atoms, forces, waves, magnetism.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">Paper 1 · 4</span>
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">Paper 2 · 3</span>
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">11 RP</span>
+        </div>
+        <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:auto;padding-top:20px;border-top:1.5px solid #E0D2B9">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="flex:1;height:7px;border-radius:999px;background:#F0E4CE;overflow:hidden"><span style="display:block;width:29%;height:100%;background:#1D6FB8"></span></span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;color:#6E655D">2/7</span>
+          </div>
+        </div>
+        </sc-if>
+      </button>
+
+      <button type="button" onClick="{{ goChemistry }}" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:30px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:16px;transition:transform .16s,box-shadow .16s" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #B02342">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px">
+          <span style="width:48px;height:48px;border-radius:14px;background:#FAEDF0;border:2px solid #1A1714;display:grid;place-items:center;color:#B02342">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3h5M10.5 3v6.2L5.8 18a2.6 2.6 0 002.3 3.8h7.8a2.6 2.6 0 002.3-3.8L13.5 9.2V3M7.4 15h9.2"></path></svg>
+          </span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;color:#7A6E5F">10 topics</span>
+        </div>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:36px;line-height:1;letter-spacing:-.03em;color:#B02342">Chemistry</h2>
+        <p style="margin:0;font-size:18px;line-height:1.5;color:#3D352C">Atoms and bonding through to the atmosphere and using resources.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">Paper 1 · 5</span>
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">Paper 2 · 5</span>
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">8 RP</span>
+        </div>
+        <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:auto;padding-top:20px;border-top:1.5px solid #E0D2B9">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="flex:1;height:7px;border-radius:999px;background:#F0E4CE;overflow:hidden"><span style="display:block;width:30%;height:100%;background:#B02342"></span></span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;color:#6E655D">3/10</span>
+          </div>
+        </div>
+        </sc-if>
+      </button>
+
+      <button type="button" onClick="{{ goBiology }}" style="text-align:left;cursor:pointer;background:#FFFDF8;border:2px solid #1A1714;border-radius:20px;padding:30px;box-shadow:4px 4px 0 #1A1714;display:flex;flex-direction:column;gap:16px;transition:transform .16s,box-shadow .16s" style-hover="transform:translate(-3px,-3px);box-shadow:7px 7px 0 #237A3B">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px">
+          <span style="width:48px;height:48px;border-radius:14px;background:#EAF3EC;border:2px solid #1A1714;display:grid;place-items:center;color:#237A3B">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20c0-8 5.5-14 14-14 0 8-5.5 14-14 14zM5 20c2.4-3.6 5.4-6.2 9-8"></path></svg>
+          </span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;color:#7A6E5F">7 topics</span>
+        </div>
+        <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:36px;line-height:1;letter-spacing:-.03em;color:#237A3B">Biology</h2>
+        <p style="margin:0;font-size:18px;line-height:1.5;color:#3D352C">Cells and organisation through to inheritance and ecology.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">Paper 1 · 4</span>
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">Paper 2 · 3</span>
+          <span style="padding:6px 13px;border-radius:8px;background:#F4E9D8;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">8 RP</span>
+        </div>
+        <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:auto;padding-top:20px;border-top:1.5px solid #E0D2B9">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="flex:1;height:7px;border-radius:999px;background:#F0E4CE;overflow:hidden"><span style="display:block;width:14%;height:100%;background:#237A3B"></span></span>
+            <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;color:#6E655D">1/7</span>
+          </div>
+        </div>
+        </sc-if>
+      </button>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isTopics }}">
+  <main data-screen-label="Topic list" style="flex:1;max-width:1400px;width:100%;margin:0 auto;padding:26px 28px 60px;animation:fade .3s both">
+    <div style="display:flex;align-items:center;gap:10px;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A6E5F;margin-bottom:26px;flex-wrap:wrap">
+      <button type="button" onClick="{{ goGcse }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">GCSE Science</button>
+      <span style="color:#C3B191">›</span>
+      <button type="button" onClick="{{ goCombined }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">Combined</button>
+      <span style="color:#C3B191">›</span>
+      <button type="button" onClick="{{ goFoundation }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">Foundation</button>
+      <span style="color:#C3B191">›</span>
+      <span>{{ subjectName }}</span>
+    </div>
+
+    <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;margin-bottom:36px">
+      <div style="flex:1 1 460px;min-width:0">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="width:16px;height:16px;border-radius:999px;border:2px solid #1A1714;background:{{ subjectHue }}"></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Combined Science · Foundation</span>
+        </div>
+        <h1 style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(44px,5.2vw,74px);line-height:.95;letter-spacing:-.035em">{{ subjectName }}</h1>
+        <p style="margin:20px 0 0;font-size:21px;line-height:1.55;color:#3D352C;max-width:54ch">{{ subjectBlurb }}</p>
+      </div>
+      <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1 1 320px;max-width:420px;background:#FFFDF8;border:1.5px solid #E0D2B9;border-radius:16px;padding:22px 24px">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">This subject</div>
+        <p style="margin:12px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.02em">{{ subjectDoneLabel }}</p>
+        <div style="margin-top:14px;height:8px;border-radius:999px;background:#F0E4CE;overflow:hidden"><span style="display:block;height:100%;width:{{ subjectPct }};background:{{ subjectHue }}"></span></div>
+        <p style="margin:12px 0 0;font-size:16px;color:#6E655D">{{ subjectNextLabel }}</p>
+      </div>
+      </sc-if>
+    </section>
+
+    <section>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Paper 1</span>
+        <span style="flex:1;height:2px;background:#E0D2B9"></span>
+      </div>
+      <div style="border:2px solid #1A1714;border-radius:18px;overflow:hidden;background:#FFFDF8;box-shadow:4px 4px 0 #E0D2B9">
+        <sc-for list="{{ paper1 }}" as="t" hint-placeholder-count="4">
+        <button type="button" onClick="{{ t.open }}" style="width:100%;text-align:left;cursor:pointer;background:none;border:0;border-bottom:1.5px solid #F0E4CE;padding:20px 24px;display:flex;align-items:center;gap:20px;transition:background-color .14s" style-hover="background:#F7EFE1">
+          <span style="flex:0 0 46px;height:46px;border-radius:12px;display:grid;place-items:center;font-family:'DM Mono',ui-monospace,monospace;font-size:15px;font-weight:500;color:#3D352C;background:#F4E9D8;border:1.5px solid #E0D2B9">{{ t.num }}</span>
+          <span style="flex:1;min-width:0">
+            <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em;color:#1A1714">{{ t.name }}</span>
+            <span style="display:block;margin-top:5px;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:#7A6E5F">{{ t.meta }}</span>
+          </span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#6E655D;white-space:nowrap">{{ t.state }}</span>
+          <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+        </button>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;margin:36px 0 16px">
+        <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Paper 2</span>
+        <span style="flex:1;height:2px;background:#E0D2B9"></span>
+      </div>
+      <div style="border:2px solid #1A1714;border-radius:18px;overflow:hidden;background:#FFFDF8;box-shadow:4px 4px 0 #E0D2B9">
+        <sc-for list="{{ paper2 }}" as="t" hint-placeholder-count="3">
+        <button type="button" onClick="{{ t.open }}" style="width:100%;text-align:left;cursor:pointer;background:none;border:0;border-bottom:1.5px solid #F0E4CE;padding:20px 24px;display:flex;align-items:center;gap:20px;transition:background-color .14s" style-hover="background:#F7EFE1">
+          <span style="flex:0 0 46px;height:46px;border-radius:12px;display:grid;place-items:center;font-family:'DM Mono',ui-monospace,monospace;font-size:15px;font-weight:500;color:#3D352C;background:#F4E9D8;border:1.5px solid #E0D2B9">{{ t.num }}</span>
+          <span style="flex:1;min-width:0">
+            <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.02em;color:#1A1714">{{ t.name }}</span>
+            <span style="display:block;margin-top:5px;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.06em;color:#7A6E5F">{{ t.meta }}</span>
+          </span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#6E655D;white-space:nowrap">{{ t.state }}</span>
+          <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+        </button>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ isTopic }}">
+  <main data-screen-label="Energy topic" style="flex:1;max-width:1400px;width:100%;margin:0 auto;padding:26px 28px 60px;animation:fade .3s both">
+    <div style="display:flex;align-items:center;gap:10px;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A6E5F;margin-bottom:26px;flex-wrap:wrap">
+      <button type="button" onClick="{{ goCombined }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">Combined</button>
+      <span style="color:#C3B191">›</span>
+      <button type="button" onClick="{{ goFoundation }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">Foundation</button>
+      <span style="color:#C3B191">›</span>
+      <button type="button" onClick="{{ goPhysics }}" style="background:none;border:0;padding:0;cursor:pointer;color:#A93411;font:inherit" style-hover="color:#7F2408">Physics</button>
+      <span style="color:#C3B191">›</span>
+      <span>Energy</span>
+    </div>
+
+    <section style="display:flex;flex-wrap:wrap;gap:40px;align-items:center;margin-bottom:36px">
+      <div style="flex:1 1 460px;min-width:0">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="width:16px;height:16px;border-radius:999px;background:#1D6FB8;border:2px solid #1A1714"></span>
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7A6E5F">Physics · Combined Foundation</span>
+        </div>
+        <h1 style="margin:14px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(48px,6vw,86px);line-height:.93;letter-spacing:-.035em">Energy</h1>
+        <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:9px">
+          <span style="padding:8px 15px;border-radius:8px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">Spec 4.1</span>
+          <span style="padding:8px 15px;border-radius:8px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">Paper 1</span>
+          <span style="padding:8px 15px;border-radius:8px;background:#EAF2FA;border:1.5px solid #B9CFE6;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#15558F">2 required practicals</span>
+          <span style="padding:8px 15px;border-radius:8px;background:#F4E9D8;border:1.5px solid #E0D2B9;font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#3D352C">7 subtopics</span>
+        </div>
+      </div>
+      <sc-if value="{{ showProgress }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1 1 320px;max-width:420px;background:#1A1714;border-radius:18px;padding:24px;box-shadow:4px 4px 0 #1D6FB8">
+        <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#F2946E">Your progress here</div>
+        <p style="margin:12px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:30px;letter-spacing:-.02em;color:#FBF3E6">3 of 7 done</p>
+        <div style="margin-top:14px;height:8px;border-radius:999px;background:#3E362C;overflow:hidden"><span style="display:block;width:43%;height:100%;background:#E4572E"></span></div>
+        <p style="margin:12px 0 0;font-size:16px;color:#C6B9A7">Next up: Efficiency — you left it half finished.</p>
+      </div>
+      </sc-if>
+    </section>
+
+    <section style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+      <div style="flex:1 1 560px;min-width:0">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+          <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Subtopics</span>
+          <span style="flex:1;height:2px;background:#E0D2B9"></span>
+        </div>
+        <div style="border:2px solid #1A1714;border-radius:18px;overflow:hidden;background:#FFFDF8;box-shadow:4px 4px 0 #E0D2B9">
+          <button type="button" style="width:100%;text-align:left;cursor:pointer;background:none;border:0;border-bottom:1.5px solid #F0E4CE;padding:20px 24px;display:flex;align-items:flex-start;gap:18px" style-hover="background:#F7EFE1">
+            <span style="flex:0 0 26px;height:26px;margin-top:3px;border-radius:8px;display:grid;place-items:center;background:#E4F7EB;border:1.5px solid #12A150;color:#0A6B36"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.6l3.1 3.1L13 4.6"></path></svg></span>
+            <span style="flex:1;min-width:0">
+              <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em">Energy Stores and Systems</span>
+              <span style="display:block;margin-top:6px;font-size:17px;line-height:1.5;color:#3D352C">Describe energy stores and identify how energy moves between them in different systems.</span>
+              <span style="display:block;margin-top:8px;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;color:#7A6E5F">Spec 6.1.1.1 · Done</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:9px"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+          <button type="button" style="width:100%;text-align:left;cursor:pointer;background:none;border:0;border-bottom:1.5px solid #F0E4CE;padding:20px 24px;display:flex;align-items:flex-start;gap:18px" style-hover="background:#F7EFE1">
+            <span style="flex:0 0 26px;height:26px;margin-top:3px;border-radius:8px;display:grid;place-items:center;background:#E4F7EB;border:1.5px solid #12A150;color:#0A6B36"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.6l3.1 3.1L13 4.6"></path></svg></span>
+            <span style="flex:1;min-width:0">
+              <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em">Changes in Energy</span>
+              <span style="display:block;margin-top:6px;font-size:17px;line-height:1.5;color:#3D352C">Calculate kinetic, gravitational potential and elastic potential energy.</span>
+              <span style="display:block;margin-top:8px;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;color:#7A6E5F">Spec 6.1.1.2 · Done</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:9px"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+          <button type="button" style="width:100%;text-align:left;cursor:pointer;background:none;border:0;border-bottom:1.5px solid #F0E4CE;padding:20px 24px;display:flex;align-items:flex-start;gap:18px" style-hover="background:#F7EFE1">
+            <span style="flex:0 0 26px;height:26px;margin-top:3px;border-radius:8px;display:grid;place-items:center;background:#E4F7EB;border:1.5px solid #12A150;color:#0A6B36"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.6l3.1 3.1L13 4.6"></path></svg></span>
+            <span style="flex:1;min-width:0">
+              <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em">Energy Changes in Systems</span>
+              <span style="display:block;margin-top:6px;font-size:17px;line-height:1.5;color:#3D352C">Use specific heat capacity to work out energy changes when something heats or cools.</span>
+              <span style="display:block;margin-top:8px;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;color:#7A6E5F">Spec 6.1.1.3 · Done</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:9px"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+          <button type="button" style="width:100%;text-align:left;cursor:pointer;background:#FCE7DE;border:0;border-bottom:1.5px solid #F0E4CE;padding:20px 24px;display:flex;align-items:flex-start;gap:18px" style-hover="background:#FADACE">
+            <span style="flex:0 0 26px;height:26px;margin-top:3px;border-radius:8px;display:grid;place-items:center;background:#E4572E;border:1.5px solid #1A1714;color:#1A1714;font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500">4</span>
+            <span style="flex:1;min-width:0">
+              <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em">Power</span>
+              <span style="display:block;margin-top:6px;font-size:17px;line-height:1.5;color:#3D352C">Define power as the rate of energy transfer and calculate it from energy and time.</span>
+              <span style="display:block;margin-top:8px;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;color:#A93411">Spec 6.1.1.4 · Half finished — pick it up here</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:9px"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+          <button type="button" style="width:100%;text-align:left;cursor:pointer;background:none;border:0;border-bottom:1.5px solid #F0E4CE;padding:20px 24px;display:flex;align-items:flex-start;gap:18px" style-hover="background:#F7EFE1">
+            <span style="flex:0 0 26px;height:26px;margin-top:3px;border-radius:8px;display:grid;place-items:center;background:#F4E9D8;border:1.5px solid #E0D2B9;color:#6E655D;font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500">5</span>
+            <span style="flex:1;min-width:0">
+              <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em">Energy Transfers in a System</span>
+              <span style="display:block;margin-top:6px;font-size:17px;line-height:1.5;color:#3D352C">How energy is conserved, how it dissipates, and how to cut the unwanted transfers.</span>
+              <span style="display:block;margin-top:8px;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;color:#7A6E5F">Spec 6.1.2.1 · Not started</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:9px"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+          <button type="button" style="width:100%;text-align:left;cursor:pointer;background:none;border:0;border-bottom:1.5px solid #F0E4CE;padding:20px 24px;display:flex;align-items:flex-start;gap:18px" style-hover="background:#F7EFE1">
+            <span style="flex:0 0 26px;height:26px;margin-top:3px;border-radius:8px;display:grid;place-items:center;background:#F4E9D8;border:1.5px solid #E0D2B9;color:#6E655D;font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500">6</span>
+            <span style="flex:1;min-width:0">
+              <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em">Efficiency</span>
+              <span style="display:block;margin-top:6px;font-size:17px;line-height:1.5;color:#3D352C">Calculate efficiency as a decimal or a percentage and read Sankey diagrams.</span>
+              <span style="display:block;margin-top:8px;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;color:#7A6E5F">Spec 6.1.2.2 · Not started</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:9px"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+          <button type="button" style="width:100%;text-align:left;cursor:pointer;background:none;border:0;padding:20px 24px;display:flex;align-items:flex-start;gap:18px" style-hover="background:#F7EFE1">
+            <span style="flex:0 0 26px;height:26px;margin-top:3px;border-radius:8px;display:grid;place-items:center;background:#F4E9D8;border:1.5px solid #E0D2B9;color:#6E655D;font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500">7</span>
+            <span style="flex:1;min-width:0">
+              <span style="display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.02em">Energy Resources</span>
+              <span style="display:block;margin-top:6px;font-size:17px;line-height:1.5;color:#3D352C">Compare renewable and non-renewable resources, what they are used for and what they cost the planet.</span>
+              <span style="display:block;margin-top:8px;font-family:'DM Mono',ui-monospace,monospace;font-size:12.5px;letter-spacing:.08em;color:#7A6E5F">Spec 6.1.3 · Not started</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:9px"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+        </div>
+
+        <div style="margin-top:24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:22px 24px;border-radius:16px;background:#F4E9D8;border:1.5px solid #E0D2B9">
+          <div>
+            <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Next topic</div>
+            <p style="margin:8px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em">Electricity</p>
+          </div>
+          <button type="button" style="display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 22px;border-radius:13px;background:#FFFDF8;border:2px solid #1A1714;cursor:pointer;font-weight:700;font-size:17px;color:#1A1714" style-hover="background:#FBF3E6">
+            Spec 4.2 · Paper 1
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <aside style="flex:1 1 320px;max-width:440px;display:flex;flex-direction:column;gap:20px">
+        <div style="background:#FFFDF8;border:2px solid #1A1714;border-radius:18px;padding:24px;box-shadow:4px 4px 0 #E0D2B9">
+          <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Equations you need</div>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+            <span style="padding:14px 16px;border-radius:12px;background:#F7EFE1;border:1.5px solid #E0D2B9;font-family:'DM Mono',ui-monospace,monospace;font-size:18px;color:#1A1714">KE = ½mv²</span>
+            <span style="padding:14px 16px;border-radius:12px;background:#F7EFE1;border:1.5px solid #E0D2B9;font-family:'DM Mono',ui-monospace,monospace;font-size:18px;color:#1A1714">GPE = mgh</span>
+            <span style="padding:14px 16px;border-radius:12px;background:#F7EFE1;border:1.5px solid #E0D2B9;font-family:'DM Mono',ui-monospace,monospace;font-size:18px;color:#1A1714">E = mcΔθ</span>
+            <span style="padding:14px 16px;border-radius:12px;background:#F7EFE1;border:1.5px solid #E0D2B9;font-family:'DM Mono',ui-monospace,monospace;font-size:16px;line-height:1.4;color:#1A1714">Efficiency = useful output ÷ total input</span>
+          </div>
+        </div>
+
+        <div style="background:#1A1714;border-radius:18px;padding:24px;box-shadow:4px 4px 0 #E4572E">
+          <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#F2946E">Stuck on something</div>
+          <p style="margin:12px 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1.1;letter-spacing:-.02em;color:#FBF3E6">Ask about Energy</p>
+          <p style="margin:12px 0 0;font-size:17px;line-height:1.55;color:#C6B9A7">Calculations get worked through with FIFA, and anything Higher or Triple is flagged before you learn it by mistake.</p>
+          <button type="button" style="margin-top:18px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;border-radius:13px;background:#E4572E;color:#1A1714;border:0;cursor:pointer;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px" style-hover="background:#F2946E">
+            Ask MrBadmusAI
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"></path></svg>
+          </button>
+        </div>
+
+        <div style="background:#FFFDF8;border:1.5px solid #E0D2B9;border-radius:18px;padding:24px">
+          <div style="font-family:'DM Mono',ui-monospace,monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#7A6E5F">Required practicals</div>
+          <p style="margin:12px 0 0;font-size:17px;line-height:1.55;color:#3D352C">Two of them sit inside this topic — specific heat capacity and thermal insulation. Both are fair game in Paper 1.</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+  </sc-if>
+
+  <footer style="border-top:2px solid #1A1714;background:#F4E9D8">
+    <div style="max-width:1400px;margin:0 auto;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
+      <span style="font-family:'DM Mono',ui-monospace,monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#7A6E5F">MrBadmusAI · Science revision for Years 7 to 11</span>
+      <span style="display:flex;gap:20px;font-size:16px;font-weight:600">
+        <a href="#">Leaderboard</a>
+        <a href="#">Past papers</a>
+        <a href="#">3D Studio</a>
+      </span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;ks3&quot;,&quot;gcse&quot;,&quot;tier&quot;,&quot;subjects&quot;,&quot;topics&quot;,&quot;topic&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Preview&quot;},&quot;showProgress&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;showChallenge&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+const SUBJECTS = {
+  physics: {
+    name: 'Physics', hue: '#1D6FB8', done: 2,
+    blurb: 'Seven topics, four on Paper 1 and three on Paper 2. Eleven required practicals across them.',
+    next: 'Carry on with Energy — 3 of 7 subtopics done.',
+    topics: [
+      { num: '01', name: 'Energy', spec: '4.1', paper: 1, rp: 2, state: 'In progress', energy: true },
+      { num: '02', name: 'Electricity', spec: '4.2', paper: 1, rp: 2, state: 'Not started' },
+      { num: '03', name: 'Particle Model of Matter', spec: '4.3', paper: 1, rp: 1, state: 'Done' },
+      { num: '04', name: 'Atomic Structure', spec: '4.4', paper: 1, rp: 1, state: 'Not started' },
+      { num: '05', name: 'Forces', spec: '4.5', paper: 2, rp: 2, state: 'Not started' },
+      { num: '06', name: 'Waves', spec: '4.6', paper: 2, rp: 2, state: 'Done' },
+      { num: '07', name: 'Magnetism and Electromagnetism', spec: '4.7', paper: 2, rp: 1, state: 'Not started' }
+    ]
+  },
+  chemistry: {
+    name: 'Chemistry', hue: '#B02342', done: 3,
+    blurb: 'Ten topics, five on each paper. Eight required practicals, and the equations you are given versus the ones you memorise are marked.',
+    next: 'Chemical Changes is the one your class is on.',
+    topics: [
+      { num: '01', name: 'Atomic Structure and the Periodic Table', spec: '4.1', paper: 1, rp: 0, state: 'Done' },
+      { num: '02', name: 'Bonding, Structure and Properties of Matter', spec: '4.2', paper: 1, rp: 0, state: 'Done' },
+      { num: '03', name: 'Quantitative Chemistry', spec: '4.3', paper: 1, rp: 0, state: 'Done' },
+      { num: '04', name: 'Chemical Changes', spec: '4.4', paper: 1, rp: 2, state: 'In progress' },
+      { num: '05', name: 'Energy Changes', spec: '4.5', paper: 1, rp: 1, state: 'Not started' },
+      { num: '06', name: 'Rate and Extent of Chemical Change', spec: '4.6', paper: 2, rp: 2, state: 'Not started' },
+      { num: '07', name: 'Organic Chemistry', spec: '4.7', paper: 2, rp: 0, state: 'Not started' },
+      { num: '08', name: 'Chemical Analysis', spec: '4.8', paper: 2, rp: 2, state: 'Not started' },
+      { num: '09', name: 'Chemistry of the Atmosphere', spec: '4.9', paper: 2, rp: 0, state: 'Not started' },
+      { num: '10', name: 'Using Resources', spec: '4.10', paper: 2, rp: 1, state: 'Not started' }
+    ]
+  },
+  biology: {
+    name: 'Biology', hue: '#237A3B', done: 1,
+    blurb: 'Seven topics, four on Paper 1 and three on Paper 2. Eight required practicals across them.',
+    next: 'Organisation is next in the spec order.',
+    topics: [
+      { num: '01', name: 'Cell Biology', spec: '4.1', paper: 1, rp: 2, state: 'Done' },
+      { num: '02', name: 'Organisation', spec: '4.2', paper: 1, rp: 2, state: 'Not started' },
+      { num: '03', name: 'Infection and Response', spec: '4.3', paper: 1, rp: 0, state: 'Not started' },
+      { num: '04', name: 'Bioenergetics', spec: '4.4', paper: 1, rp: 2, state: 'Not started' },
+      { num: '05', name: 'Homeostasis and Response', spec: '4.5', paper: 2, rp: 1, state: 'Not started' },
+      { num: '06', name: 'Inheritance, Variation and Evolution', spec: '4.6', paper: 2, rp: 0, state: 'Not started' },
+      { num: '07', name: 'Ecology', spec: '4.7', paper: 2, rp: 1, state: 'Not started' }
+    ]
+  }
+};
+
+class Component extends DCLogic {
+  state = { screen: null, pathway: 'Combined', subject: 'physics' };
+
+  go(screen, extra) {
+    this.setState(Object.assign({ screen: screen }, extra || {}));
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+
+  renderVals() {
+    const screen = this.state.screen || this.props.startScreen || 'home';
+    const subj = SUBJECTS[this.state.subject] || SUBJECTS.physics;
+    const total = subj.topics.length;
+    const row = (t) => ({
+      num: t.num,
+      name: t.name,
+      state: t.state,
+      meta: 'Spec ' + t.spec + (t.rp ? '  ·  ' + t.rp + ' required practical' + (t.rp > 1 ? 's' : '') : ''),
+      open: t.energy ? () => this.go('topic') : undefined
+    });
+    return {
+      isHome: screen === 'home',
+      isKs3: screen === 'ks3',
+      isGcse: screen === 'gcse',
+      isTier: screen === 'tier',
+      isSubjects: screen === 'subjects',
+      isTopics: screen === 'topics',
+      isTopic: screen === 'topic',
+      isCombined: this.state.pathway === 'Combined',
+      isTriple: this.state.pathway === 'Triple',
+      pathway: this.state.pathway,
+      showProgress: this.props.showProgress ?? true,
+      showChallenge: this.props.showChallenge ?? true,
+      brandSize: 21,
+      subjectName: subj.name,
+      subjectHue: subj.hue,
+      subjectBlurb: subj.blurb,
+      subjectNextLabel: subj.next,
+      subjectDoneLabel: subj.done + ' of ' + total + ' done',
+      subjectPct: Math.round((subj.done / total) * 100) + '%',
+      paper1: subj.topics.filter(t => t.paper === 1).map(row),
+      paper2: subj.topics.filter(t => t.paper === 2).map(row),
+      goHome: () => this.go('home'),
+      goKs3: () => this.go('ks3'),
+      goGcse: () => this.go('gcse'),
+      goCombined: () => this.go('tier', { pathway: 'Combined' }),
+      goTriple: () => this.go('tier', { pathway: 'Triple' }),
+      goFoundation: () => this.go('subjects'),
+      goPhysics: () => this.go('topics', { subject: 'physics' }),
+      goChemistry: () => this.go('topics', { subject: 'chemistry' }),
+      goBiology: () => this.go('topics', { subject: 'biology' }),
+      goEnergy: () => this.go('topic')
+    };
+  }
+}
+</script>
+</body>
+</html>

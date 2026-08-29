@@ -109,12 +109,52 @@ The site has FOUR brand presentations. Always check which applies before adding 
 
 | Surface | Brand markup |
 |---|---|
-| **External / public pages (KS4 + root)** | Gold-to-rust two-chevron SVG **+** "MrBadmusAI" text. Uses `nav-brand` + `brand-logo` classes from `shared/styles.css`. Applies to: `index.html`, `auth.html`, `combined/index.html`, `triple/index.html`, all generator-output KS4 topic pages, and any future external/public page **outside KS3**. |
+| **KS4 CHROME pages** ⊕ | Claude Design's `BrandMark`: a right-pointing **double** chevron in `#E4572E` (second chevron at `stroke-opacity="0.34"`, stroke-width 3.4, viewBox `0 0 22 22`) **+** "MrBadmusAI" in Bricolage Grotesque 800. Emitted by `nav_html(chrome=True)` in `generate_site_v5.py`, styled by `shared/ks4-chrome.css`. Applies to the seven pages of the front-door journey: `index.html`, `ks4.html`, `{combined,triple}/index.html`, the four tier pages, the twelve subject hubs and all 98 topic pages. |
+| **Other external / public pages (KS4 + root)** | Gold-to-rust two-chevron SVG **+** "MrBadmusAI" text. Uses `nav-brand` + `brand-logo` classes from `shared/styles.css`. Applies to: `auth.html`, `leaderboard.html`, `past-papers.html`, `weekly-challenge.html`, `my-challenges.html`, `revision.html`, every KS4 **lesson** (subtopic) page, and any future external/public page **outside KS3** that is not part of the KS4 chrome. |
 | **KS3 pages** | Claude Design's mark: a single bold `#E4572E` chevron + "MrBadmusAI" wordmark in Bricolage Grotesque 800, exactly as drawn in the frozen reference (`docs/ks3/design-reference/`). Emitted by `build_ks3.py` (`NAV_BRAND`), styled by `.ks3-brand` in `shared/ks3.css`. Never hand-copy it onto a page — KS3 pages are generated. |
 | **Student surfaces** | Claude Design's `BrandMark`: a right-pointing **double** chevron in `#E4572E` (the second chevron at `stroke-opacity="0.34"`) **+** "MrBadmusAI" in Bricolage Grotesque 600. Drawn by Design in the 19 Aug 2026 student delivery; emitted by `build_student.py` from that delivery. Applies to: `student/class.html`, `student/assignment.html` and every future student-facing page. ⚠️ This is NOT the same drawing as the KS3 lessons' mark — that one is a single *upward* chevron at stroke-width 4.6. Both are Design's, both `#E4572E`, both carry the wordmark; they are not interchangeable, and neither is hand-copied (both are generated). |
 | **Staff / school-operations pages** | Plain white text "MrBadmusAI", **no logo asset**, with the exact styling pinned below. Applies to: all `/teacher/*`, `/admin/*` and `/hod/*` pages, and all current/future HoD / SLT / admin dashboards. |
 
-### Canonical external chevron markup (KS4 + root — NOT KS3)
+### ⊕ MRB-301, 29 Aug 2026 — the external row SPLIT in two
+
+There used to be one external row, and it read: *"Gold-to-rust two-chevron
+SVG + 'MrBadmusAI' text … Applies to: `index.html`, `auth.html`,
+`combined/index.html`, `triple/index.html`, all generator-output KS4 topic
+pages, and any future external/public page outside KS3."*
+
+It is kept here rather than deleted because it named `index.html` and the KS4
+topic pages explicitly, and following it on one of those pages now would
+UNDO the port.
+
+**What changed.** MRB-301 landed Claude Design's chrome redesign on the front
+door and the whole KS4 navigation journey — landing, GCSE hub, pathway, tier,
+subject picker, topic list, topic page. Design drew those with her own
+`BrandMark`, the same double chevron the student surfaces have carried since
+MRB-197, and Mide's instruction for the run was to keep it.
+
+**What did NOT change, and why the row had to split rather than move.** The
+KS4 **lesson** pages are a separate run. They still load `shared/nav.css` and
+still render `nav_html()`'s default branch, so they still wear the gold-to-rust
+chevron — as do `auth.html`, `leaderboard.html` and the other hand-written
+root pages, none of which MRB-301 was allowed to touch. Rewriting the single
+row in place would have declared those pages non-conformant overnight.
+
+So the site currently has TWO external marks, deliberately, for the length of
+one run. When the lesson pages are ported, the two rows collapse back into one
+and the gold-to-rust chevron retires with them. ⚠️ Until then, do not "fix"
+a lesson page's brand to match the chrome: that is the seam, not drift.
+
+⚠️ `build_leaderboard_port.py` used to lift its nav out of `index.html`
+verbatim (Mide's MRB-290 R1). It now reads `generate_site_v5.nav_html()`
+instead, so the leaderboard keeps the classic nav while the chrome wears
+Design's. That is an OPEN item on Mide, written up in the MRB-301 report.
+
+### Canonical KS4-chrome brand markup
+
+This one is GENERATED — `nav_html(chrome=True)`. Never hand-copy it onto a
+page; a chrome page is a generator output, exactly like a KS3 page.
+
+### Canonical external chevron markup (KS4 lesson + root — NOT KS3, NOT KS4 chrome)
 
 Copy this verbatim into the nav of any external page outside KS3:
 

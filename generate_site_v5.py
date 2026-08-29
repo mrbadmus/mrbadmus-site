@@ -662,10 +662,43 @@ THEME_COLOR = "#F7F1E5"  # pre-paint browser chrome tint — matches --bg (light
 #  UPDATED NAV — includes pathway context
 # ─────────────────────────────────────────────
 
-def nav_html(active_subject="", pathway="", tier=""):
+
+def nav_html(active_subject="", pathway="", tier="", chrome=False):
     """Canonical public top-nav (MRB-109). Styling lives in shared/nav.css;
     behaviour — the auth chip and the accessible hamburger drawer — lives in
-    shared/nav.js. This returns markup only."""
+    shared/nav.js. This returns markup only.
+
+    ⊕ MRB-301 · `chrome=True` returns Claude Design's header instead.
+
+    The default (`chrome=False`) branch is UNCHANGED and must stay so: it is
+    what every one of the ~1,000 KS4 LESSON pages renders, and MRB-301's scope
+    wall is that a lesson page comes out of this run byte-for-byte identical.
+    Only the seven chrome makers pass `chrome=True`.
+
+    The chrome branch keeps the two hooks shared/nav.js binds to —
+    `.nav-burger` and `#nav-auth-area` — so the sign-in chip, the "My class"
+    chip and the whole drawer keep working with no change to nav.js at all.
+    What changes is the drawing: Design replaced the emoji (⚡🏆🔍) with drawn
+    marks, which is why this is new markup rather than new CSS over the old.
+
+    The header crumbs are deliberately absent here: Design moved the trail
+    into the page body (`k4_crumbs`), and `.nav-crumbs` is display:none in
+    ks4-chrome.css so the two cannot double up."""
+    if chrome:
+        return f"""<nav class="nav">
+  <div class="k4-navbar">
+    <a class="nav-brand" href="/index.html">{K4_BRANDMARK} MrBadmusAI</a>
+    <div class="nav-cluster">
+      <a href="/3d/" class="nav-text-link">3D Studio</a>
+      <a href="/weekly-challenge.html" class="challenge-chip"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
+      <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h7v4.5a3.5 3.5 0 01-7 0V3zM6.5 4.2H4v1.3a2.4 2.4 0 002.4 2.4M13.5 4.2H16v1.3a2.4 2.4 0 01-2.4 2.4M10 11v3M7 17h6l-.7-2.4h-4.6L7 17z"/></svg></a>
+      <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2L17 17"/></svg></a>
+      <span id="nav-auth-area"></span>
+      <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>"""
+
     crumbs = ""
     if pathway and tier:
         pc = PATHWAY_COLORS.get(pathway, "#1D6FB8")
@@ -704,9 +737,174 @@ def nav_html(active_subject="", pathway="", tier=""):
 </nav>"""
 
 
-# ─────────────────────────────────────────────
-#  UPDATED CHAT — with Talk feature (voice in + TTS)
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────
+#  MRB-301 · THE KS4 CHROME — Claude Design's 23 Aug 2026 delivery
+# ─────────────────────────────────────────────────────────────────────────
+#
+# Source of truth: docs/ks3/design-reference/chrome/. Seven screens were
+# delivered; SIX of them are ported below (landing, GCSE hub, tier choice,
+# science picker, topic list, topic page). The seventh — Design's KS3 hub,
+# with its year picker and subject picker — is VENDORED AND PARKED, not
+# applied: MRB-301's scope wall puts every KS3 page out of reach, and that
+# wall does not bend for a view Design happened to draw.
+#
+# ── THE DELIVERY IS A SAMPLE, AND WHAT THAT COST ────────────────────────
+#
+# Design's file is a click-through with placeholder links ("#"), directive
+# attributes ({{ goHome }}, {{ isKs3 }}, {{ subjectName }}) and INVENTED
+# numbers — 68%, 80%, 76%, "7 topics", "10 topics", "14th of 212",
+# "3 of 7 done", "CoralTrail56". Every one of those is plausible, which is
+# what makes them dangerous: nobody can tell a made-up percentage from a
+# real one by looking at it. `ks4_chrome_tells.py` derives its corpus from
+# the vendored delivery on every run and fails the build if any of them
+# reaches a built page.
+#
+# So: LIVE LOGIC WINS, DESIGN'S PRESENTATION WINS. Every count below is
+# computed from SITE_DATA / PATHWAY_TOPIC_MAP / the subtopic modules, or it
+# is not rendered at all.
+#
+# ── THE PROGRESS SURFACES ARE NOT HERE, AND THAT IS THE HONEST PORT ─────
+#
+# Design drew a per-student progress system across five of the six screens:
+# a "Jump back in" card, "6 of 24 topics", "3 of 7 done", per-topic
+# Done/In progress/Not started, "Last opened: Physics · Energy". She wired
+# it to a `showProgress` prop, so the switch is hers.
+#
+# THERE IS NO KS4 PROGRESS MODEL. Not a table, not an endpoint, not a
+# client store — checked, not assumed: the backend serves
+# /api/assignment/progress and /api/class/progress, both KS3, and nothing
+# records that a KS4 student opened a subtopic. So `showProgress` is FALSE
+# on every page here, and none of those surfaces is emitted.
+#
+# Faking them was the one thing that could not happen. A signed-out
+# visitor showing "3 of 7 done" is a lie about a student's own work, and it
+# is the exact failure `ks4_chrome_tells` exists to make impossible.
+# Building the model instead is a schema change, which MRB-301 does not
+# authorise. It is written up in the report as the largest thing Design
+# drew that the data cannot power.
+#
+# What IS live: the weekly challenge and the leaderboard, both of which
+# have real endpoints, both wired below.
+
+# Design's BrandMark — a right-pointing DOUBLE chevron, the second at 0.34
+# opacity. Lifted from her _ds bundle (components/general/BrandMark), not
+# redrawn. ⚠️ This is NOT the KS3 lessons' mark (a single UPWARD chevron at
+# stroke-width 4.6) and the two are not interchangeable; see CLAUDE.md's
+# four brand presentations.
+K4_BRANDMARK = ('<svg width="21" height="21" viewBox="0 0 22 22" aria-hidden="true">'
+                '<path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" '
+                'fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+                '<path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" '
+                'stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+                '</svg>')
+
+# The one arrow in the delivery, used on every forward affordance.
+K4_ARROW = ('<svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" '
+            'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+            '<path d="M1 6h16M12.5 1l5 5-5 5"/></svg>')
+
+K4_ARROW_ACCENT = K4_ARROW.replace('stroke="currentColor"', 'stroke="#A93411"').replace(
+    'aria-hidden="true">', 'aria-hidden="true" class="k4-row-arrow">')
+
+# Design's drawn subject marks, replacing the ⚡🧪🌿 emoji the live pages use.
+K4_SUBJECT_MARK = {
+    "physics": '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 2.5L5 13.5h5.5L9.5 21.5 18 10.5h-5.5l1-8z"/></svg>',
+    "chemistry": '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3h5M10.5 3v6.2L5.8 18a2.6 2.6 0 002.3 3.8h7.8a2.6 2.6 0 002.3-3.8L13.5 9.2V3M7.4 15h9.2"/></svg>',
+    "biology": '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20c0-8 5.5-14 14-14 0 8-5.5 14-14 14zM5 20c2.4-3.6 5.4-6.2 9-8"/></svg>',
+}
+
+# Design's per-subject soft grounds for the mark tile.
+K4_SUBJECT_SOFT = {"physics": "#EAF2FA", "chemistry": "#FAEDF0", "biology": "#EAF3EC"}
+
+# Design writes small counts as words ("Seven topics, four on Paper 1").
+# Keeping her voice costs three lines; everything above twenty falls back
+# to the digit, which no count on these pages reaches.
+_K4_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+             "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+             "sixteen", "seventeen", "eighteen", "nineteen", "twenty"]
+
+
+def k4_word(n, cap=False):
+    w = _K4_WORDS[n] if 0 <= n < len(_K4_WORDS) else str(n)
+    return w[:1].upper() + w[1:] if cap else w
+
+
+def k4_topics_for(pathway, tier, subject):
+    """The topics this pathway+tier actually serves, in spec order."""
+    ids = PATHWAY_TOPIC_MAP[(pathway, tier)][subject]
+    return [t for t in SITE_DATA[subject]["topics"] if t["id"] in ids]
+
+
+def k4_subject_counts(pathway, tier, subject):
+    """Every number the science picker and topic list render, derived.
+
+    Nothing here is authored. `total` is how many topics this pathway+tier
+    serves (Combined physics 7, Triple physics 8 — the Space topic is the
+    difference, and it appears because the map says so, not because a
+    number was typed twice)."""
+    topics = k4_topics_for(pathway, tier, subject)
+    p1 = [t for t in topics if t.get("paper") == 1]
+    p2 = [t for t in topics if t.get("paper") == 2]
+    rp = sum(len(t.get("rp") or []) for t in topics)
+    return dict(topics=topics, total=len(topics), p1=p1, p2=p2, rp=rp)
+
+
+def k4_crumbs(items):
+    """Design's uppercase mono trail. `items` is [(label, href_or_None)];
+    the last entry is the current page and never a link."""
+    parts = []
+    for i, (label, href) in enumerate(items):
+        if i:
+            parts.append('<span class="k4-sep">›</span>')
+        if href:
+            parts.append(f'<a href="{href}">{label}</a>')
+        else:
+            parts.append(f'<span>{label}</span>')
+    return '<div class="k4-crumbs">' + "".join(parts) + "</div>"
+
+
+def k4_footer():
+    """Design's footer. Every link is a real route — the delivery's were
+    all `href="#"`, which is precisely the kind of placeholder that ships
+    if nobody looks."""
+    return f"""
+<footer class="k4-footer">
+  <div class="k4-footer-inner">
+    <span class="k4-footer-mark">MrBadmusAI · Science revision for Years 7 to 11</span>
+    <span class="k4-footer-links">
+      <a href="/leaderboard.html">Leaderboard</a>
+      <a href="/past-papers.html">Past papers</a>
+      <a href="/3d/">3D Studio</a>
+    </span>
+  </div>
+</footer>"""
+
+
+def k4_page(title, body, description="", subject="physics", pathway="", tier="",
+            topic_title="", extra_head=""):
+    """The chrome shell. `data-chrome="ks4"` is the ONLY thing that lets
+    shared/ks4-chrome.css apply, and no lesson page sets it."""
+    desc = f'\n  <meta name="description" content="{description}"/>' if description else ""
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#FBF3E6"/>
+  <title>{title}</title>{desc}
+  {HEAD_ASSETS}
+  <link rel="stylesheet" href="/shared/ks4-chrome.css"/>{extra_head}
+</head>
+<body data-chrome="ks4">
+  {nav_html(subject, pathway, tier, chrome=True)}
+  {body}
+  {k4_footer()}
+  {chat_html()}
+  <script src="/shared/mrbadmus.v2.js"></script>
+  <script>MrBadmus.init({{ subject: '{subject}', topic: '{topic_title}' }});</script>
+</body>
+</html>"""
+
 
 def chat_html():
     return """<button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
@@ -754,6 +952,21 @@ SHARED_JS_PATCHED = SHARED_JS  # no voice patch
 #  PAGE SHELL — uses SHARED_CSS_PATCHED
 # ─────────────────────────────────────────────
 
+# ⊕ MRB-301 — UNREACHED AS OF 29 Aug 2026, and left standing on purpose.
+#
+# `page_shell` had exactly two callers: `make_pathway_hub` and
+# `make_pathway_topic_page`. The hub moved to `k4_page` in the chrome port,
+# and `make_pathway_topic_page` builds ZERO pages — measured, not assumed:
+# every one of the 98 (pathway, tier, subject, topic) combinations the
+# PATHWAY_TOPIC_MAP serves has subtopic data, so build_site() always takes
+# the `make_pathway_topic_page_with_subtopics` branch.
+#
+# Neither is deleted here. `make_pathway_topic_page` is the only thing that
+# still wires `make_fifa_example` and `make_quiz` into a topic page, and
+# removing 200 lines of working code in a run whose whole discipline is
+# "touch the chrome and nothing else" would be exactly the kind of tidying
+# that turns a scoped diff into an unreviewable one. If the lesson-page run
+# decides they are dead, that run can bury them.
 def page_shell(title, subject, body_html, topic_id="", topic_title="", pathway="", tier=""):
     color = SITE_DATA[subject]["color"] if subject else "#1D6FB8"
     return f"""<!DOCTYPE html>
@@ -822,580 +1035,460 @@ def page_shell(title, subject, body_html, topic_id="", topic_title="", pathway="
 # verbatim by `make_ks4_landing()` below. It is In Review and is reconciled
 # behind the card, not re-implemented.
 
+
 def make_landing():
-    """The key-stage chooser. Two cards, and nothing else to decide."""
-    body = """
-<section class="hero">
-  <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
-  <p>Free science revision for Years 7 to 11 — Biology, Chemistry and Physics, with an AI tutor that never tires of the same question. Start by picking where you are.</p>
-</section>
+    """The key-stage chooser — Claude Design's landing (MRB-301).
 
-<div class="pathway-grid keystage-grid">
-  <a class="pathway-card keystage-card" href="/ks3/index.html" style="border-top:3px solid var(--accent);">
-    <div class="pathway-icon">🌱</div>
-    <h2 style="color:var(--accent)">KS3 Science</h2>
-    <p>Years 7 to 9. Biology, Chemistry and Physics across the whole national curriculum programme of study — the science everything at GCSE is built on.</p>
-    <div class="pathway-badge-row">
-      <span class="keystage-badge">Year 7</span>
-      <span class="keystage-badge">Year 8</span>
-      <span class="keystage-badge">Year 9</span>
+    Two doors and one live strip. The chooser itself is unchanged in
+    FUNCTION from MRB-176: a Year 7 still cannot be asked a GCSE pathway
+    question, so the first decision is still KS3 or GCSE.
+
+    ⚠️ The KS3 door routes into the EXISTING, UNTOUCHED KS3 estate at
+    /ks3/index.html. MRB-301 restyles the door, never what is behind it."""
+    body = f"""
+<main class="k4-main k4-home">
+
+  <section class="k4-band">
+    <div class="k4-band-copy" style="flex:1 1 480px;animation:k4-rise .5s both">
+      <h1 class="k4-h1 k4-h1-hero">Revision that<br>keeps score.</h1>
+      <p class="k4-lede">Free science for Years 7 to 11 — biology, chemistry and physics,
+      with an AI tutor that never tires of the same question.</p>
     </div>
-    <div><span class="pathway-go" style="background:var(--accent);">Start KS3 Science →</span></div>
-  </a>
+  </section>
 
-  <a class="pathway-card keystage-card" href="/ks4.html" style="border-top:3px solid var(--combined);">
-    <div class="pathway-icon">🎓</div>
-    <h2 style="color:var(--combined)">GCSE Science</h2>
-    <p>Years 10 and 11. Combined Science and Triple Science, Foundation and Higher — full topic notes, worked examples, quizzes, past papers and the weekly challenge.</p>
-    <div class="pathway-badge-row">
-      <span class="keystage-badge">Combined</span>
-      <span class="keystage-badge">Triple</span>
+  <section class="k4-doors">
+    <a class="k4-door" href="/ks3/index.html" style="--k4-door-hue:#E4572E">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:#E4572E"></span>Years 7 to 9</div>
+      <h2>KS3 Science</h2>
+      <p>The whole national curriculum programme of study, across all three sciences — the science everything at GCSE is built on.</p>
+      <div class="k4-pills">
+        <span class="k4-pill">Year 7</span>
+        <span class="k4-pill">Year 8</span>
+        <span class="k4-pill">Year 9</span>
+      </div>
+      <span class="k4-door-foot">Start KS3 {K4_ARROW}</span>
+    </a>
+
+    <a class="k4-door" href="/ks4.html" style="--k4-door-hue:#1D6FB8;animation-delay:.06s">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:#1D6FB8"></span>Years 10 and 11</div>
+      <h2>GCSE Science</h2>
+      <p>Combined and Triple Science, Foundation and Higher — full topic notes, worked examples, quizzes, past papers and the weekly challenge.</p>
+      <div class="k4-pills">
+        <span class="k4-pill">Combined</span>
+        <span class="k4-pill">Triple</span>
+        <span class="k4-pill">Foundation</span>
+        <span class="k4-pill">Higher</span>
+      </div>
+      <span class="k4-door-foot">Start GCSE {K4_ARROW}</span>
+    </a>
+  </section>
+
+  {k4_challenge_strip()}
+
+  <p class="k4-help">Not sure which one? Years 7, 8 and 9 are <strong>KS3</strong>. Years 10 and 11 are <strong>GCSE</strong>.</p>
+</main>"""
+
+    return k4_page(
+        "MrBadmusAI — Free KS3 &amp; GCSE Science Revision",
+        body,
+        description="Free science revision for Years 7 to 11. KS3 Science for Years 7–9 and GCSE Combined and Triple Science for Years 10–11, with an AI tutor, quizzes and full topic notes.",
+        extra_head='\n  <script src="/shared/ks4-chrome.js" defer></script>')
+
+
+def k4_challenge_strip():
+    """Design's "This week's challenge" strip, with nothing invented in it.
+
+    Server-rendered: the kicker, the true copy, and the call to action —
+    all three are facts about the product, not about a student.
+
+    Client-filled (shared/ks4-chrome.js, one public GET): the two tier
+    leaders. Each cell ships `hidden` and is REMOVED if its tier has no
+    entrant this week, so an empty week renders as an empty week.
+
+    ⚠️ Design's drawn cells were "Your best 68%", "Beat it and you move up
+    4 places" and "Your rank 14th of 212". All three are per-student
+    numbers behind an authenticated read, and all three were invented in
+    the delivery. They are not here; /leaderboard.html is where a student's
+    own position lives."""
+    return f"""
+  <section class="k4-challenge" id="k4-challenge">
+    <div class="k4-challenge-cell">
+      <div class="k4-kicker k4-kicker-accent">This week's challenge</div>
+      <p class="k4-challenge-head">Ten minutes, one science</p>
+      <p class="k4-challenge-sub">New questions every Friday — biology, chemistry and physics, at your own tier.</p>
     </div>
-    <div><span class="pathway-go" style="background:var(--combined);">Start GCSE Science →</span></div>
-  </a>
-</div>
-
-<p class="keystage-help">Not sure which one? Years 7, 8 and 9 are <strong>KS3</strong>. Years 10 and 11 are <strong>GCSE</strong>.</p>
-
-<style>
-/* Chooser cards. Deliberately thin: everything structural is reused from
-   .pathway-grid / .pathway-card in shared/styles.css, so the chooser and the
-   GCSE landing behind it stay one design rather than two.
-
-   Contrast measured, not eyeballed (grounds: --bg #F7F1E5, --card #FFFFFF,
-   --sunken #EFE7D6):
-     --accent   #A63C12 on white card   6.41  AA
-     --combined #1D6FB8 on white card   5.23  AA
-     white on --accent fill             6.41  AA
-     white on --combined fill           5.23  AA
-     --text     #241C14 on --sunken    13.64  AA
-     --muted    #6B5F51 on --bg         5.52  AA                            */
-.keystage-grid { max-width: 900px; }
-/* Equal-height cards: the grid stretches both to the tallest, each card is a
-   flex column, and the description absorbs the slack — so the badge rows and
-   the Start buttons pin to the same baseline whatever the copy length. Same
-   technique as .courses-col on the GCSE landing. */
-.keystage-card { display: flex; flex-direction: column; }
-.keystage-card p { flex: 1 0 auto; }
-.keystage-badge {
-  padding: 4px 12px; border-radius: 999px;
-  font-size: var(--fs-label); font-weight: 600;
-  background: var(--sunken); color: var(--text);
-}
-.keystage-help {
-  max-width: 640px; margin: 0 auto var(--sp-8); padding: 0 var(--sp-5);
-  text-align: center; color: var(--muted); font-size: var(--fs-small);
-}
-.keystage-help strong { color: var(--text); }
-</style>
-"""
-
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="{THEME_COLOR}"/>
-  <title>MrBadmusAI — Free KS3 &amp; GCSE Science Revision</title>
-  <meta name="description" content="Free science revision for Years 7 to 11. KS3 Science for Years 7–9 and GCSE Combined and Triple Science for Years 10–11, with an AI tutor, quizzes and full topic notes."/>
-  {HEAD_ASSETS}
-</head>
-<body>
-  {nav_html()}
-  {body}
-  {chat_html()}
-  <script src="/shared/mrbadmus.v2.js"></script>
-  <script>MrBadmus.init({{ subject: 'physics' }});</script>
-</body>
-</html>"""
+    <div class="k4-challenge-cell" id="k4-lead-foundation" hidden>
+      <div class="k4-kicker">Leading · Foundation</div>
+      <p class="k4-challenge-head" data-k4-name></p>
+      <p class="k4-challenge-sub"><span data-k4-pct></span> so far this week</p>
+    </div>
+    <div class="k4-challenge-cell" id="k4-lead-higher" hidden>
+      <div class="k4-kicker">Leading · Higher</div>
+      <p class="k4-challenge-head" data-k4-name></p>
+      <p class="k4-challenge-sub"><span data-k4-pct></span> so far this week</p>
+    </div>
+    <div class="k4-challenge-cell k4-challenge-go">
+      <a class="k4-cta-solid" href="/weekly-challenge.html">Take the challenge {K4_ARROW}</a>
+    </div>
+  </section>"""
 
 
-# ─────────────────────────────────────────────
-#  GCSE LANDING — /ks4.html
-# ─────────────────────────────────────────────
-#
-# This was `/index.html` until MRB-176 ruling 1. **The experience is unchanged**
-# — MRB-137's hero, the `landing-band` two-column layout, the Combined/Triple
-# pathway cards, the Top Stars rail and all its leaderboard JS moved here
-# verbatim. The only addition is the breadcrumb back to the chooser.
 
 def make_ks4_landing():
-    body = """
-<div class="ks4-back-row"><a class="back-link" href="/index.html">← All courses</a></div>
+    """The GCSE hub at /ks4.html — Claude Design's "GCSE hub" (MRB-301).
 
-<section class="hero">
-  <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
-  <p>Your GCSE Science revision hub — Physics, Chemistry &amp; Biology. Choose your course below.</p>
-</section>
+    Two pathway doors and the Top Stars rail. MRB-137's rail is not
+    re-implemented: it is the SAME endpoint, the same percentage rule, the
+    same Foundation/Higher crossfade and the same both-tiers-iterated fix,
+    moved into shared/ks4-chrome.js and dressed in Design's dark card."""
+    body = f"""
+<main class="k4-main">
+  {k4_crumbs([("All courses", "/index.html"), ("GCSE Science", None)])}
 
-<!-- ── LANDING BAND: courses (left) + Top Stars rail (right) ─────────────── -->
-<section class="landing-band">
+  <section class="k4-band" style="margin-bottom:34px">
+    <div class="k4-band-copy">
+      <div class="k4-eyebrow">Key Stage 4 · Years 10 and 11</div>
+      <h1 class="k4-h1">GCSE Science</h1>
+    </div>
+    <div class="k4-band-side k4-note">
+      <div class="k4-kicker">Not sure which?</div>
+      <p>Combined gives you two GCSEs in science. Triple gives you three separate ones. Your timetable will say which.</p>
+    </div>
+  </section>
 
-  <!-- LEFT: course cards (visible on first paint) -->
-  <div class="courses-col">
-    <a class="pathway-card combined" href="/combined/index.html">
-      <div class="pathway-icon">🔬</div>
-      <h2 style="color:var(--combined)">Combined Science</h2>
-      <p>Covers Biology, Chemistry and Physics for the Combined Science qualification. Includes Foundation and Higher tiers.</p>
-      <div class="pathway-badge-row">
-        <span class="pathway-badge foundation">Foundation</span>
-        <span class="pathway-badge higher">Higher</span>
-      </div>
-      <div><span class="pathway-go" style="background:var(--combined);">Start Combined Science →</span></div>
-    </a>
+  <section class="k4-split">
+    <div class="k4-split-main" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;align-items:start">
+      <a class="k4-door k4-door-sm" href="/combined/index.html" style="--k4-door-hue:#1D6FB8">
+        <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:#1D6FB8"></span>Two GCSEs</div>
+        <h2>Combined Science</h2>
+        <p>Biology, chemistry and physics in one course. Six exams, two grades.</p>
+        <div class="k4-pills">
+          <span class="k4-pill k4-pill-foundation">Foundation</span>
+          <span class="k4-pill k4-pill-higher">Higher</span>
+        </div>
+        <span class="k4-door-foot">Open Combined {K4_ARROW}</span>
+      </a>
 
-    <a class="pathway-card triple" href="/triple/index.html">
-      <div class="pathway-icon">🧪</div>
-      <h2 style="color:var(--triple)">Triple Science</h2>
-      <p>Separate Biology, Chemistry and Physics qualifications with extended content. Foundation and Higher tiers.</p>
-      <div class="pathway-badge-row">
-        <span class="pathway-badge foundation">Foundation</span>
-        <span class="pathway-badge higher">Higher</span>
-      </div>
-      <div><span class="pathway-go" style="background:var(--triple);">Start Triple Science →</span></div>
-    </a>
-  </div>
-
-  <!-- RIGHT: Top Stars rail -->
-  <aside class="stars-rail" id="stars-rail" aria-label="Top stars of the week">
-    <div class="rail-head">
-      <h2 class="rail-title">⭐ Top Stars</h2>
-      <p class="rail-sub">This week's weekly-quiz leaders</p>
+      <a class="k4-door k4-door-sm" href="/triple/index.html" style="--k4-door-hue:#B02342">
+        <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:#B02342"></span>Three GCSEs</div>
+        <h2>Triple Science</h2>
+        <p>Each science graded on its own. More content, six exams, three grades.</p>
+        <div class="k4-pills">
+          <span class="k4-pill k4-pill-foundation">Foundation</span>
+          <span class="k4-pill k4-pill-higher">Higher</span>
+        </div>
+        <span class="k4-door-foot">Open Triple {K4_ARROW}</span>
+      </a>
     </div>
 
-    <div class="rail-champ" id="rail-champ" style="display:none;">
-      <span class="rail-champ-crown">👑</span>
-      <div class="rail-champ-av" id="rail-champ-av"></div>
-      <div class="rail-champ-info">
-        <div class="rail-champ-kicker">Champion of the Week</div>
-        <div class="rail-champ-name" id="rail-champ-name"></div>
+    {k4_stars_rail()}
+  </section>
+</main>"""
+
+    return k4_page(
+        "MrBadmusAI — GCSE Science Revision",
+        body,
+        description="Free GCSE Science revision with AI tutor, FIFA worked examples, quizzes and full topic notes. Physics, Chemistry, Biology.",
+        extra_head='\n  <script src="/shared/ks4-chrome.js" defer></script>')
+
+
+def k4_stars_rail():
+    """Design's "Top stars" aside. Every row is filled by
+    shared/ks4-chrome.js from /api/weekly-leaderboard/landing.
+
+    Ships EMPTY on purpose. The server has no idea who is on the board, so
+    rendering a placeholder row would mean a real name replacing a fake one
+    after paint — and if the fetch failed, the fake one would simply stay.
+    The no-data state is the honest first frame: "No stars yet".
+
+    ⚠️ Design drew a third row reading "14 · You · 68%". A viewer's own
+    position needs an authenticated /board read with their tier; it is not
+    rendered here and is not invented. /leaderboard.html has it."""
+    return f"""
+    <aside class="k4-stars" id="k4-stars" aria-label="Top stars of the week">
+      <div>
+        <div class="k4-kicker k4-kicker-ondark">Top stars</div>
+        <p class="k4-stars-title">This week's leaders</p>
       </div>
-      <div class="rail-champ-pct" id="rail-champ-pct"></div>
-    </div>
 
-    <div class="rail-slides" id="rail-slides">
-      <div class="rail-slide active" data-tier="foundation" id="slide-foundation" role="tabpanel" aria-label="Foundation top stars">
-        <div class="rail-slide-head" style="color:var(--foundation);">🌱 Foundation</div>
-        <div class="rail-rows" id="rows-foundation"></div>
+      <div class="k4-champ" id="k4-champ" hidden>
+        <div class="k4-champ-kicker">Champion of the week</div>
+        <div class="k4-champ-row">
+          <span class="k4-champ-name" data-k4-champ-name></span>
+          <span class="k4-champ-pct" data-k4-champ-pct></span>
+        </div>
       </div>
-      <div class="rail-slide" data-tier="higher" id="slide-higher" role="tabpanel" aria-label="Higher top stars" aria-hidden="true">
-        <div class="rail-slide-head" style="color:var(--higher);">⭐ Higher</div>
-        <div class="rail-rows" id="rows-higher"></div>
+
+      <div class="k4-stars-slides" id="k4-stars-slides">
+        <div class="k4-stars-slide" data-k4-slide="foundation" role="tabpanel" aria-label="Foundation top stars" aria-hidden="true">
+          <div class="k4-stars-slide-head">Foundation</div>
+          <div data-k4-rows="foundation"><p class="k4-stars-empty">No stars yet — be the first.</p></div>
+        </div>
+        <div class="k4-stars-slide" data-k4-slide="higher" role="tabpanel" aria-label="Higher top stars" aria-hidden="true">
+          <div class="k4-stars-slide-head">Higher</div>
+          <div data-k4-rows="higher"><p class="k4-stars-empty">No stars yet — be the first.</p></div>
+        </div>
       </div>
-    </div>
 
-    <div class="rail-empty" id="rail-empty" style="display:none;">No stars yet — be the first!</div>
-
-    <div class="rail-foot">
-      <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Choose tier" style="display:none;">
-        <button class="rail-dot active" type="button" role="tab" data-tier="foundation" aria-selected="true" aria-controls="slide-foundation" aria-label="Show Foundation stars"></button>
-        <button class="rail-dot" type="button" role="tab" data-tier="higher" aria-selected="false" aria-controls="slide-higher" aria-label="Show Higher stars"></button>
+      <div class="k4-stars-foot">
+        <div class="k4-stars-dots" id="k4-stars-dots" role="tablist" aria-label="Choose tier" hidden>
+          <button class="k4-stars-dot" type="button" role="tab" data-tier="foundation" aria-selected="false" aria-label="Show Foundation stars"></button>
+          <button class="k4-stars-dot" type="button" role="tab" data-tier="higher" aria-selected="false" aria-label="Show Higher stars"></button>
+        </div>
+        <a class="k4-cta-light" href="/leaderboard.html">Full leaderboard {K4_ARROW}</a>
       </div>
-      <a class="rail-full" href="/leaderboard.html">Full leaderboard →</a>
-    </div>
-  </aside>
-
-</section>
-
-<style>
-/* ── Back to the key-stage chooser (MRB-176) ─────────────────────────── */
-/* Same max-width and gutter as .landing-band below, so the affordance lines
-   up with the left edge of the course cards rather than floating. */
-.ks4-back-row { max-width: 1240px; margin: 0 auto; padding: var(--sp-4) var(--sp-5) 0; }
-
-/* ── Landing band layout ─────────────────────────────────────────────── */
-.landing-band {
-  display: grid;
-  grid-template-columns: minmax(0, 72fr) minmax(0, 28fr);
-  gap: var(--sp-5);
-  max-width: 1240px;
-  margin: var(--sp-5) auto var(--sp-8);
-  padding: 0 var(--sp-5);
-  align-items: start;
-}
-.courses-col { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-5); }
-/* Equal-height cards: grid stretches both to the tallest; each card is a flex
-   column and its description absorbs the slack, so the badge rows and the Start
-   buttons pin to the same baseline on both cards regardless of description length. */
-.courses-col .pathway-card { margin: 0; display: flex; flex-direction: column; }
-.courses-col .pathway-card p { flex: 1 0 auto; }
-
-/* ── Top Stars rail ──────────────────────────────────────────────────── */
-.stars-rail {
-  background: var(--card); border: 1px solid var(--border);
-  border-top: 3px solid var(--higher);
-  border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
-  padding: 16px 16px 12px; position: sticky; top: 76px;
-  display: flex; flex-direction: column;
-}
-.rail-head { margin-bottom: 12px; }
-.rail-title { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; font-size: 1.15rem; color: var(--text); }
-.rail-sub { color: var(--muted); font-size: 0.76rem; margin-top: 2px; }
-
-.rail-champ {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--higher-soft); border-radius: var(--radius);
-  padding: 10px 12px; margin-bottom: 12px;
-}
-.rail-champ-crown { font-size: 1.2rem; flex-shrink: 0; }
-.rail-champ-av {
-  width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
-  border: 2px solid var(--higher); background: var(--sunken);
-  display: flex; align-items: center; justify-content: center; font-size: 1rem;
-}
-.rail-champ-av img { width: 100%; height: 100%; object-fit: cover; }
-.rail-champ-info { flex: 1; min-width: 0; }
-.rail-champ-kicker { font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--higher); }
-.rail-champ-name { font-weight: 800; font-size: 0.9rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rail-champ-pct { font-weight: 800; font-size: 1.05rem; color: var(--higher); font-variant-numeric: tabular-nums; flex-shrink: 0; }
-
-/* crossfade: both slides share one grid cell → track grows to the taller one */
-.rail-slides { display: grid; flex: 1; }
-.rail-slide { grid-area: 1 / 1; opacity: 0; transition: opacity 0.55s ease; pointer-events: none; }
-.rail-slide.active { opacity: 1; pointer-events: auto; }
-.rail-slide-head { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-
-.rail-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
-.rail-row:last-child { border-bottom: none; }
-.rail-rank { width: 20px; text-align: center; flex-shrink: 0; font-weight: 700; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-.rail-av { width: 26px; height: 26px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--sunken); border: 1.5px solid var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; }
-.rail-av img { width: 100%; height: 100%; object-fit: cover; }
-.rail-name { flex: 1; min-width: 0; font-weight: 700; font-size: 0.82rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rail-pct { flex-shrink: 0; font-weight: 700; font-size: 0.85rem; color: var(--text); font-variant-numeric: tabular-nums; }
-.rail-row-empty { color: var(--muted); font-size: 0.8rem; font-style: italic; padding: 10px 0; text-align: center; }
-.rail-empty { color: var(--muted); font-size: 0.85rem; font-style: italic; text-align: center; padding: 18px 0; }
-
-.rail-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
-.rail-dots { display: flex; gap: 7px; }
-.rail-dot { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: var(--border-strong); transition: background 0.2s, transform 0.2s; }
-.rail-dot.active { background: var(--higher); transform: scale(1.15); }
-.rail-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.rail-full { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-decoration: none; white-space: nowrap; }
-.rail-full:hover { text-decoration: underline; }
-.rail-loading { color: var(--muted); font-size: 0.82rem; text-align: center; padding: 14px 0; }
-
-@media (prefers-reduced-motion: reduce) {
-  .rail-slide { transition: none; }
-  .rail-dot { transition: none; }
-}
-
-/* Below 900px: single column, COURSES FIRST, rail as a compact card below */
-@media (max-width: 900px) {
-  .landing-band { grid-template-columns: 1fr; }
-  .courses-col { order: 1; }
-  .stars-rail { order: 2; position: static; top: auto; }
-}
-@media (max-width: 560px) {
-  .courses-col { grid-template-columns: 1fr; }
-}
-</style>
-
-<script>
-(function() {
-  var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
-
-  // Display seam (MRB-138): every public name render goes through here, so
-  // handles appear automatically once the backend adds `username` to the
-  // leaderboard payload. Falls back to first name until then.
-  function displayName(u) { return (u && (u.username || u.name || u.first_name)) || 'Student'; }
-  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
-  function pct(e) {
-    if (typeof e.percentage === 'number') return Math.round(e.percentage);
-    if (e.max_score) return Math.round(100 * e.score / e.max_score);
-    return 0;
-  }
-  var rankMarks = ['🥇', '🥈', '🥉'];
-
-  function rowsHtml(entries) {
-    if (!entries || !entries.length) return '<div class="rail-row-empty">No stars yet — be the first!</div>';
-    // Rank fairly by percentage (compares /30 and /45 totals); show up to 5.
-    var list = entries.slice().sort(function(a, b) { return pct(b) - pct(a); }).slice(0, 5);
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-      var e = list[i];
-      var av = e.avatar_url ? '<img src="' + esc(e.avatar_url) + '" alt=""/>' : '🧑‍🎓';
-      html += '<div class="rail-row">' +
-        '<span class="rail-rank">' + (rankMarks[i] || (i + 1)) + '</span>' +
-        '<span class="rail-av">' + av + '</span>' +
-        '<span class="rail-name">' + esc(displayName(e)) + '</span>' +
-        '<span class="rail-pct">' + pct(e) + '%</span>' +
-      '</div>';
-    }
-    return html;
-  }
-
-  var rail = document.getElementById('stars-rail');
-  var slides = { foundation: document.getElementById('slide-foundation'), higher: document.getElementById('slide-higher') };
-  var dotsWrap = document.getElementById('rail-dots');
-  var dots = dotsWrap.querySelectorAll('.rail-dot');
-
-  document.getElementById('rows-foundation').innerHTML = '<div class="rail-loading">Loading…</div>';
-
-  var available = ['foundation', 'higher'];
-  var order = ['foundation', 'higher'];
-  var idx = 0, timer = null, paused = false;
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function show(tier) {
-    idx = order.indexOf(tier);
-    // Iterate ALL tiers (not just `order`): a tier that's empty this week is
-    // excluded from `order`, so iterating `order` would leave its slide with the
-    // `active` class from the initial HTML — both slides visible, overlapping.
-    available.forEach(function(t) {
-      var on = t === tier;
-      slides[t].classList.toggle('active', on);
-      slides[t].setAttribute('aria-hidden', on ? 'false' : 'true');
-    });
-    dots.forEach(function(d) {
-      var on = d.getAttribute('data-tier') === tier;
-      d.classList.toggle('active', on);
-      d.setAttribute('aria-selected', on ? 'true' : 'false');
-    });
-  }
-  function next() { if (order.length > 1) show(order[(idx + 1) % order.length]); }
-  function start() { if (reduce || timer || order.length < 2) return; timer = setInterval(function() { if (!paused) next(); }, 6000); }
-
-  rail.addEventListener('mouseenter', function() { paused = true; });
-  rail.addEventListener('mouseleave', function() { paused = false; });
-  rail.addEventListener('focusin', function() { paused = true; });
-  rail.addEventListener('focusout', function() { paused = false; });
-  dots.forEach(function(d) {
-    d.addEventListener('click', function() { show(d.getAttribute('data-tier')); });
-  });
-
-  fetch(RENDER_URL + '/api/weekly-leaderboard/landing')
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(data) {
-      if (!data) { throw new Error('no data'); }
-      var f = data.foundation_top3 || [], h = data.higher_top3 || [];
-      var hasF = f.length > 0, hasH = h.length > 0;
-
-      document.getElementById('rows-foundation').innerHTML = rowsHtml(f);
-      document.getElementById('rows-higher').innerHTML = rowsHtml(h);
-
-      if (data.champion) {
-        var c = data.champion;
-        document.getElementById('rail-champ-name').textContent = displayName(c);
-        document.getElementById('rail-champ-pct').textContent = pct(c) + '%';
-        document.getElementById('rail-champ-av').innerHTML = c.avatar_url ? '<img src="' + esc(c.avatar_url) + '" alt=""/>' : '👑';
-        document.getElementById('rail-champ').style.display = 'flex';
-      }
-
-      if (!hasF && !hasH && !data.champion) {
-        document.getElementById('rail-slides').style.display = 'none';
-        document.getElementById('rail-empty').style.display = 'block';
-        return;
-      }
-
-      order = [];
-      if (hasF) order.push('foundation');
-      if (hasH) order.push('higher');
-      if (order.length === 0) order = ['foundation']; // champion only
-
-      if (order.length === 2) {
-        dotsWrap.style.display = 'flex';
-      }
-      show(order[0]);
-      start();
-    })
-    .catch(function() {
-      document.getElementById('rail-slides').style.display = 'none';
-      document.getElementById('rail-empty').style.display = 'block';
-    });
-})();
-</script>
-"""
-
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="{THEME_COLOR}"/>
-  <title>MrBadmusAI — GCSE Science Revision</title>
-  <meta name="description" content="Free GCSE Science revision with AI tutor, FIFA worked examples, quizzes and full topic notes. Physics, Chemistry, Biology."/>
-  {HEAD_ASSETS}
-</head>
-<body>
-  {nav_html()}
-  {body}
-  {chat_html()}
-  <script src="/shared/mrbadmus.v2.js"></script>
-  <script>MrBadmus.init({{ subject: 'physics' }});</script>
-</body>
-</html>"""
+    </aside>"""
 
 
-# ─────────────────────────────────────────────
-#  PATHWAY PAGE — /combined/index.html etc
-# ─────────────────────────────────────────────
 
 def make_pathway_page(pathway):
-    """Combined Science or Triple Science landing — choose Foundation or Higher."""
-    pc = PATHWAY_COLORS[pathway]
+    """Combined or Triple → choose a tier. Design's "Tier choice" screen.
+
+    ⚠️ In the delivery BOTH tier cards called `goFoundation` — a
+    click-through convenience that would have shipped as a Higher card
+    that opens Foundation. Each card routes to its own tier here.
+
+    "Two GCSEs · N topics" is derived across the three sciences for THIS
+    pathway, so Combined reads 24 and Triple reads 25 (the Space topic).
+    Design's drawing said 24 for both."""
     label = "Combined Science" if pathway == "combined" else "Triple Science"
-    emoji = "🔬" if pathway == "combined" else "🧪"
-    description = {
-        "combined": "The Combined Science qualification covers all three sciences in one course. Choose your tier below.",
-        "triple":   "Triple Science covers separate Biology, Chemistry and Physics qualifications with extended content. Choose your tier below.",
-    }[pathway]
+    hue = PATHWAY_COLORS[pathway]
+
+    # The topic count is identical at both tiers (the tier changes the
+    # depth, not which topics are served), so Foundation's map answers for
+    # the pathway. Asserted rather than assumed — see below.
+    total = sum(len(PATHWAY_TOPIC_MAP[(pathway, "foundation")][s])
+                for s in ["physics", "chemistry", "biology"])
+    total_h = sum(len(PATHWAY_TOPIC_MAP[(pathway, "higher")][s])
+                  for s in ["physics", "chemistry", "biology"])
+    if total != total_h:
+        # If the two tiers ever diverge, the single headline number stops
+        # being true and a silent wrong count is worse than a loud build.
+        raise SystemExit(
+            f"generate_site_v5: {pathway} serves {total} topics at Foundation "
+            f"and {total_h} at Higher — the tier-choice headline can no longer "
+            f"be one number. Split it before shipping.")
+
+    eyebrow = (f"Two GCSEs · {total} topics" if pathway == "combined"
+               else f"Three GCSEs · {total} topics · extended content")
+    blurb = ("Biology, chemistry and physics in one course. Six exams, two grades."
+             if pathway == "combined"
+             else "Each science graded on its own. More content, six exams, three grades.")
+
+    tiers = ""
+    for tier, tier_hue, grades, note in [
+        ("foundation", "#237A3B", "Grades 1 to 5",
+         "Every idea on the specification, at the depth Foundation papers ask for."),
+        ("higher", "#7A5F00", "Grades 4 to 9",
+         "Everything at Foundation plus the Higher-only material — more equations, more depth."),
+    ]:
+        tiers += f"""
+    <a class="k4-door" href="/{pathway}/{tier}/index.html" style="--k4-door-hue:{tier_hue}">
+      <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:{tier_hue}"></span>{grades}</div>
+      <h2>{tier.title()}</h2>
+      <p>{note}</p>
+      <span class="k4-door-foot">Open {tier.title()} {K4_ARROW}</span>
+    </a>"""
 
     body = f"""
-<div class="hub-header">
-  <!-- MRB-176: this page's parent is the GCSE landing, which moved to
-       /ks4.html when /index.html became the key-stage chooser. Pointing it at
-       / would skip a level and drop a GCSE student back out to "KS3 or GCSE?". -->
-  <a class="back-link" href="/ks4.html">← Back to GCSE Science</a>
-  <h1 style="color:{pc}">{emoji} {label}</h1>
-  <p>{description}</p>
-</div>
+<main class="k4-main">
+  {k4_crumbs([("All courses", "/index.html"), ("GCSE Science", "/ks4.html"), (label.split()[0], None)])}
 
-<div class="tier-grid">
-  <a class="tier-card foundation" href="/{pathway}/foundation/index.html">
-    <div style="font-size:2.5rem;margin-bottom:12px;">📗</div>
-    <h2 style="color:var(--foundation);margin-bottom:10px;">Foundation Tier</h2>
-    <p style="color:var(--muted);font-size:0.88rem;line-height:1.6;">Core content for grades 1–5. All the key facts, equations and required practicals you need.</p>
-    <div style="margin-top:20px;">
-      <span class="pathway-go" style="background:var(--foundation);">Foundation →</span>
+  <section class="k4-band" style="margin-bottom:34px">
+    <div class="k4-band-copy">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:{hue}"></span>{eyebrow}</div>
+      <h1 class="k4-h1">{label}</h1>
+      <p class="k4-lede">{blurb}</p>
     </div>
-  </a>
-
-  <a class="tier-card higher" href="/{pathway}/higher/index.html">
-    <div style="font-size:2.5rem;margin-bottom:12px;">📙</div>
-    <h2 style="color:var(--higher);margin-bottom:10px;">Higher Tier</h2>
-    <p style="color:var(--muted);font-size:0.88rem;line-height:1.6;">Foundation content plus Higher-only material for grades 4–9. More equations, more depth.</p>
-    <div style="margin-top:20px;">
-      <span class="pathway-go" style="background:var(--higher);">Higher →</span>
+    <div class="k4-band-side k4-note">
+      <div class="k4-kicker">Which tier am I?</div>
+      <p>Your school enters you for one of them. If nobody has told you yet, ask your teacher.</p>
     </div>
-  </a>
-</div>"""
+  </section>
 
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="{THEME_COLOR}"/>
-  <title>{label} | MrBadmusAI</title>
-  {HEAD_ASSETS}
-</head>
-<body>
-  {nav_html(pathway=pathway)}
-  {body}
-  {chat_html()}
-  <script src="/shared/mrbadmus.v2.js"></script>
-  <script>MrBadmus.init({{ subject: 'physics' }});</script>
-</body>
-</html>"""
+  <section class="k4-grid-2">{tiers}
+  </section>
+</main>"""
+
+    return k4_page(f"{label} | MrBadmusAI", body, pathway=pathway)
 
 
-# ─────────────────────────────────────────────
-#  TIER PAGE — /combined/foundation/index.html
-# ─────────────────────────────────────────────
 
 def make_tier_page(pathway, tier):
-    """Choose Physics / Chemistry / Biology within a pathway+tier."""
-    pc = PATHWAY_COLORS[pathway]
-    tc = TIER_COLORS[tier]
+    """The science picker — Design's "Foundation subjects" screen, at both
+    tiers and both pathways.
+
+    Every number on the three cards is derived: how many topics this
+    pathway+tier serves, how they split across the two papers, and how
+    many required practicals sit inside them. Design's drawing said
+    "7 topics / Paper 1 · 4 / Paper 2 · 3 / 11 RP" for physics; those
+    happen to be right for Combined, and wrong the moment you look at
+    Triple — which is exactly why they are computed here.
+
+    ⚠️ Design's "Your tier so far — 6 of 24 topics" card is absent. There
+    is no KS4 progress model to fill it (see the MRB-301 banner above
+    K4_BRANDMARK), and a signed-out visitor being shown someone's progress
+    is the failure this port is built to avoid."""
     pathway_label = "Combined Science" if pathway == "combined" else "Triple Science"
-
-    subject_cards = ""
-    for subj in ["physics", "chemistry", "biology"]:
-        data = SITE_DATA[subj]
-        topic_ids = PATHWAY_TOPIC_MAP[(pathway, tier)][subj]
-        topic_count = len(topic_ids)
-        sc = data["color"]
-        subject_cards += f"""
-<a class="subject-card {subj[:3]}" href="/{pathway}/{tier}/{subj}/index.html" style="border-top:3px solid {sc};">
-  <span class="subject-icon">{data['emoji']}</span>
-  <h2 style="color:{sc}">{data['label']}</h2>
-  <p>{tier.title()} tier — {topic_count} topic{'s' if topic_count!=1 else ''}</p>
-  <span class="btn" style="background:{sc};">Explore {data['label']} →</span>
-</a>"""
-
-    body = f"""
-<div class="hub-header">
-  <a class="back-link" href="/{pathway}/index.html">← Back to {pathway_label}</a>
-  <h1 style="color:{tc}">{'📗' if tier=='foundation' else '📙'} {tier.title()} Tier</h1>
-  <p style="color:var(--muted);">{pathway_label} — select a subject</p>
-</div>
-<div class="subject-grid">
-  {subject_cards}
-</div>"""
-
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="{THEME_COLOR}"/>
-  <title>{pathway_label} {tier.title()} | MrBadmusAI</title>
-  {HEAD_ASSETS}
-</head>
-<body>
-  {nav_html(pathway=pathway, tier=tier)}
-  {body}
-  {chat_html()}
-  <script src="/shared/mrbadmus.v2.js"></script>
-  <script>MrBadmus.init({{ subject: 'physics' }});</script>
-</body>
-</html>"""
-
-
-
-# ─────────────────────────────────────────────
-#  SUBJECT HUB — /combined/foundation/physics/index.html
-# ─────────────────────────────────────────────
-
-def make_pathway_hub(pathway, tier, subject):
-    """Subject topic list within a pathway/tier."""
-    data = SITE_DATA[subject]
-    color = data["color"]
-    emoji = data["emoji"]
-    label = data["label"]
-    pathway_label = "Combined Science" if pathway == "combined" else "Triple Science"
-
-    topic_ids = PATHWAY_TOPIC_MAP[(pathway, tier)][subject]
-    topics = [t for t in data["topics"] if t["id"] in topic_ids]
+    tier_hue = TIER_COLORS[tier]
 
     cards = ""
-    for t in topics:
-        badges = ""
-        if t.get("rp"): badges += f'<span class="badge badge-rp">📋 {len(t["rp"])} RP</span>'
-        if t.get("higher") and tier == "higher": badges += f'<span class="badge badge-h">⭐ Higher</span>'
-        if t.get("triple_only") and pathway == "triple": badges += f'<span class="badge badge-t">🔬 Triple</span>'
-
+    for subj in ["physics", "chemistry", "biology"]:
+        data = SITE_DATA[subj]
+        c = k4_subject_counts(pathway, tier, subj)
+        hue = data["color"]
+        first = c["topics"][0]["title"] if c["topics"] else ""
+        last = c["topics"][-1]["title"] if c["topics"] else ""
+        # Design's own blurbs are first-topic-through-to-last-topic
+        # summaries ("Atoms and bonding through to the atmosphere and
+        # using resources"), so this keeps her sentence shape and lets the
+        # spec write it.
+        blurb = f"{first} through to {last}." if first and last else ""
+        rp_tag = (f'<span class="k4-tag">{c["rp"]} RP</span>' if c["rp"] else "")
         cards += f"""
-<a class="topic-card" href="/{pathway}/{tier}/{subject}/{t['id']}.html">
-  <div class="topic-card-head">
-    <h3>{t['title']}</h3>
-  </div>
-  <div class="topic-card-meta">Spec {t['spec']} &nbsp;·&nbsp; Paper {t['paper']}</div>
-  <div>{badges}</div>
-  <div class="topic-card-footer">
-    <span class="go-btn">Study this topic →</span>
-  </div>
-</a>"""
+    <a class="k4-door k4-door-sm k4-subject" href="/{pathway}/{tier}/{subj}/index.html" style="--k4-door-hue:{hue}">
+      <div class="k4-subject-top">
+        <span class="k4-subject-mark" style="background:{K4_SUBJECT_SOFT[subj]};color:{hue}">{K4_SUBJECT_MARK[subj]}</span>
+        <span class="k4-count">{c["total"]} topic{"s" if c["total"] != 1 else ""}</span>
+      </div>
+      <h2>{data["label"]}</h2>
+      <p>{blurb}</p>
+      <div class="k4-pills">
+        <span class="k4-tag">Paper 1 · {len(c["p1"])}</span>
+        <span class="k4-tag">Paper 2 · {len(c["p2"])}</span>
+        {rp_tag}
+      </div>
+      <span class="k4-door-foot">Open {data["label"]} {K4_ARROW}</span>
+    </a>"""
 
     body = f"""
-<div class="hub-header">
-  <a class="back-link" href="/{pathway}/{tier}/index.html">← Back to {tier.title()} Tier</a>
-  <h1 style="color:{color}">{emoji} {label}</h1>
-  <p>{pathway_label} — {tier.title()} Tier — {len(topics)} topics</p>
-</div>
-<div class="topic-grid">
-  {cards}
-</div>"""
+<main class="k4-main">
+  {k4_crumbs([("All courses", "/index.html"),
+              ("GCSE Science", "/ks4.html"),
+              (pathway.title(), f"/{pathway}/index.html"),
+              (tier.title(), None)])}
 
-    return page_shell(f"{label} | {tier.title()} | {pathway_label}",
-                      subject, body, pathway=pathway, tier=tier)
+  <section class="k4-band" style="margin-bottom:34px">
+    <div class="k4-band-copy">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:{tier_hue}"></span>{pathway_label} · {tier.title()}</div>
+      <h1 class="k4-h1">Pick a science</h1>
+    </div>
+  </section>
+
+  <section class="k4-grid-3">{cards}
+  </section>
+</main>"""
+
+    return k4_page(f"{pathway_label} {tier.title()} | MrBadmusAI", body,
+                   pathway=pathway, tier=tier)
 
 
-# ─────────────────────────────────────────────
-#  TOPIC PAGE — /combined/foundation/physics/energy.html
-# ─────────────────────────────────────────────
+
+def make_pathway_hub(pathway, tier, subject):
+    """The topic list — Design's "Topic list" screen, the one she shipped
+    as a template ({{ subjectName }}, {{ paper1 }}, {{ paper2 }}).
+
+    This is the LAST page MRB-301 touches. Every row opens a topic page;
+    the lesson pages behind those are the next run and are untouched.
+
+    ⚠️ Design's rows each carried a `state` — DONE / IN PROGRESS / NOT
+    STARTED — and a "This subject · 2 of 7 done" card. Both need a KS4
+    progress model that does not exist, so neither is emitted."""
+    data = SITE_DATA[subject]
+    hue = data["color"]
+    label = data["label"]
+    pathway_label = "Combined Science" if pathway == "combined" else "Triple Science"
+    c = k4_subject_counts(pathway, tier, subject)
+
+    # Design's lede is a sentence made entirely of counts. Written from the
+    # spec rather than typed, so Triple's eighth physics topic changes it.
+    rp_sentence = (f" {k4_word(c['rp'], cap=True)} required practical"
+                   f"{'s' if c['rp'] != 1 else ''} across them."
+                   if c["rp"] else "")
+    lede = (f"{k4_word(c['total'], cap=True)} topic{'s' if c['total'] != 1 else ''}, "
+            f"{k4_word(len(c['p1']))} on Paper 1 and {k4_word(len(c['p2']))} on Paper 2."
+            f"{rp_sentence}")
+
+    def rows(topic_list, offset):
+        if not topic_list:
+            return ""
+        out = ""
+        for i, t in enumerate(topic_list):
+            n_rp = len(t.get("rp") or [])
+            meta = f"Spec {t['spec']}"
+            if n_rp:
+                meta += f" &nbsp;·&nbsp; {n_rp} required practical{'s' if n_rp > 1 else ''}"
+            badges = ""
+            if t.get("higher") and tier == "higher":
+                badges += '<span class="k4-tag">Higher</span>'
+            if t.get("triple_only") and pathway == "triple":
+                badges += '<span class="k4-tag">Triple</span>'
+            out += f"""
+        <a class="k4-row" href="/{pathway}/{tier}/{subject}/{t['id']}.html">
+          <span class="k4-row-num">{str(offset + i + 1).zfill(2)}</span>
+          <span class="k4-row-body">
+            <span class="k4-row-title">{t['title']}</span>
+            <span class="k4-row-meta">{meta}</span>
+          </span>
+          {badges}
+          {K4_ARROW_ACCENT}
+        </a>"""
+        return out
+
+    sections = ""
+    n = 0
+    for paper_label, group in [("Paper 1", c["p1"]), ("Paper 2", c["p2"])]:
+        if not group:
+            continue
+        sections += f"""
+      <div class="k4-section-head"{' style="margin-top:36px"' if sections else ''}>
+        <span class="k4-section-label">{paper_label}</span>
+        <span class="k4-rule"></span>
+      </div>
+      <div class="k4-list">{rows(group, n)}
+      </div>"""
+        n += len(group)
+
+    # A topic that names neither paper would otherwise vanish from the only
+    # page that lists it. Nothing in the spec data does today; if that ever
+    # changes, it shows up here rather than disappearing.
+    stray = [t for t in c["topics"] if t.get("paper") not in (1, 2)]
+    if stray:
+        sections += f"""
+      <div class="k4-section-head" style="margin-top:36px">
+        <span class="k4-section-label">Also on this course</span>
+        <span class="k4-rule"></span>
+      </div>
+      <div class="k4-list">{rows(stray, n)}
+      </div>"""
+
+    body = f"""
+<main class="k4-main">
+  {k4_crumbs([("GCSE Science", "/ks4.html"),
+              (pathway.title(), f"/{pathway}/index.html"),
+              (tier.title(), f"/{pathway}/{tier}/index.html"),
+              (label, None)])}
+
+  <section class="k4-band" style="margin-bottom:36px">
+    <div class="k4-band-copy">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:{hue}"></span>{pathway_label} · {tier.title()}</div>
+      <h1 class="k4-h1">{label}</h1>
+      <p class="k4-lede">{lede}</p>
+    </div>
+  </section>
+
+  <section>{sections}
+  </section>
+</main>"""
+
+    return k4_page(f"{label} | {tier.title()} | {pathway_label} | MrBadmusAI",
+                   body, subject=subject, pathway=pathway, tier=tier)
+
 
 def make_pathway_topic_page(pathway, tier, subject, topic):
+    # ⊕ MRB-301 — UNREACHED. See the note above `page_shell`. Deliberately
+    # NOT ported to the new chrome: it builds no pages, and porting a page
+    # nobody can reach would have been untestable work inside a scope wall.
     data = SITE_DATA[subject]
     color = data["color"]
     emoji = data["emoji"]
@@ -4935,146 +5028,180 @@ html {{ background: var(--bg); }}
 #  Used for topics that have detailed subtopic data
 # ─────────────────────────────────────────────
 
+
 def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtopics_list):
-    """
-    Topic page where each subtopic row has a + button that LINKS to the full subtopic page
-    (rather than expanding inline). Used when subtopic detail pages exist.
-    """
+    """The topic page — Design's "Energy topic" screen (MRB-301).
+
+    THE LAST PAGE OF THE JOURNEY. Every subtopic row here opens a LESSON
+    page, and lesson pages are the next run: nothing below writes one, and
+    `make_pathway_subtopic_page` is not touched by MRB-301 at all.
+
+    ── WHAT DESIGN DREW, AND WHAT LIVE LOGIC KEPT ─────────────────────────
+
+    Kept from Design: the hero with its derived tag row, the bordered
+    subtopic list, the equations panel, the "Ask about X" card and the
+    required-practicals panel.
+
+    Kept from the LIVE page because Design did not draw them and dropping
+    them would lose real content or real navigation:
+
+      · the ⭐ Higher and 🔬 Triple sections — teaching that only appears
+        on this page, and only at the tier/pathway that gets it;
+      · the PREVIOUS topic link. Design drew "Next topic" alone; a
+        one-way spine is a navigation regression, so both ends render;
+      · the "GCSE Science" rung of the trail. Design's deepest screen
+        starts at "Combined", which leaves no route back to /ks4.html
+        from here other than the brand.
+
+    Dropped from Design, and reported: the per-subtopic DONE / HALF
+    FINISHED / NOT STARTED states, the tick glyphs that encode them, and
+    the "Your progress here — 3 of 7 done" card. No KS4 progress model
+    exists to fill any of it."""
     data = SITE_DATA[subject]
-    color = data["color"]
-    emoji = data["emoji"]
+    hue = data["color"]
+    label = data["label"]
     pathway_label = "Combined Science" if pathway == "combined" else "Triple Science"
 
-    # Build subtopic cards — two-column grid, whole card is the link,
-    # decorative "+" affordance, optional one-line summary slot
-    subtopic_rows = ""
-    for st in subtopics_list:
+    n_rp = len(topic.get("rp") or [])
+    n_st = len(subtopics_list)
+
+    tags = f'<span class="k4-tag k4-tag-lg">Spec {topic["spec"]}</span>'
+    tags += f'<span class="k4-tag k4-tag-lg">Paper {topic["paper"]}</span>'
+    if n_rp:
+        tags += (f'<span class="k4-tag k4-tag-lg k4-tag-rp">{n_rp} required '
+                 f'practical{"s" if n_rp > 1 else ""}</span>')
+    tags += (f'<span class="k4-tag k4-tag-lg">{n_st} subtopic'
+             f'{"s" if n_st != 1 else ""}</span>')
+
+    # ── Subtopic rows. Each opens a lesson page; none is restyled. ──
+    rows = ""
+    for i, st in enumerate(subtopics_list):
         st_url = f"/{pathway}/{tier}/{subject}/{topic['id']}/{st['id']}.html"
-        desc = f'<span class="st-desc">{st["summary"]}</span>' if st.get("summary") else ""
-        subtopic_rows += f"""
-<a class="subtopic-card" id="row-{st['id']}" href="{st_url}">
-  <span><span class="st-title">{st['title']}</span><span class="st-spec">Spec {st['spec']}</span>{desc}</span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>"""
+        desc = (f'<span class="k4-row-desc">{st["summary"]}</span>'
+                if st.get("summary") else "")
+        rows += f"""
+          <a class="k4-row k4-row-st" id="row-{st['id']}" href="{st_url}">
+            <span class="k4-row-num">{i + 1}</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">{st['title']}</span>
+              {desc}
+              <span class="k4-row-meta">Spec {st['spec']}</span>
+            </span>
+            {K4_ARROW_ACCENT}
+          </a>"""
 
-    # Equations
-    formula_pills = ""
-    if topic.get("equations"):
-        for eq in topic["equations"]:
-            if "(Higher)" in eq and tier == "foundation":
-                continue
-            formula_pills += f'<div class="formula-pill">{eq}</div>\n'
-    if not formula_pills:
-        formula_pills = '<p style="color:var(--muted);font-size:0.9rem;">See individual subtopic pages for equations.</p>'
+    # ── Equations. The Foundation filter is the live rule, unchanged. ──
+    formulae = ""
+    for eq in topic.get("equations") or []:
+        if "(Higher)" in eq and tier == "foundation":
+            continue
+        long_cls = " k4-formula-long" if len(eq) > 26 else ""
+        formulae += f'<span class="k4-formula{long_cls}">{eq}</span>'
+    equations_panel = ""
+    if formulae:
+        equations_panel = f"""
+        <div class="k4-panel">
+          <div class="k4-kicker">Equations you need</div>
+          <div class="k4-formulae">{formulae}</div>
+        </div>"""
 
-    # Next/Prev topic navigation
-    topic_ids = PATHWAY_TOPIC_MAP[(pathway, tier)][subject]
-    topics_in_path = [t for t in data["topics"] if t["id"] in topic_ids]
-    curr_idx = next((i for i, t in enumerate(topics_in_path) if t["id"] == topic["id"]), None)
+    # ── Required practicals. Design wrote hers as a sentence naming the
+    #    two in Energy; the names come out of the spec data instead, so a
+    #    topic with three, or none, says so by itself. ──
+    rp_panel = ""
+    if n_rp:
+        items = "".join(f'<span class="k4-formula k4-formula-long">{rp}</span>'
+                        for rp in topic["rp"])
+        rp_panel = f"""
+        <div class="k4-panel k4-panel-soft">
+          <div class="k4-kicker">Required practicals</div>
+          <p>{k4_word(n_rp, cap=True)} sit{"s" if n_rp == 1 else ""} inside this topic, and {"it is" if n_rp == 1 else "they are"} fair game in Paper {topic["paper"]}.</p>
+          <div class="k4-formulae">{items}</div>
+        </div>"""
 
-    nav_prev = nav_next = ""
-    if curr_idx is not None:
-        if curr_idx > 0:
-            prev_t = topics_in_path[curr_idx - 1]
-            nav_prev = f'<a class="nav-arrow prev" href="/{pathway}/{tier}/{subject}/{prev_t["id"]}.html"><span><div class="nav-arrow-label">Previous Topic</div><div class="nav-arrow-title">{prev_t["title"]}</div></span></a>'
-        else:
-            nav_prev = '<span></span>'
-        if curr_idx < len(topics_in_path) - 1:
-            next_t = topics_in_path[curr_idx + 1]
-            nav_next = f'<a class="nav-arrow next" href="/{pathway}/{tier}/{subject}/{next_t["id"]}.html"><span><div class="nav-arrow-label">Next Topic</div><div class="nav-arrow-title">{next_t["title"]}</div></span></a>'
-        else:
-            nav_next = '<span></span>'
-
-    topic_nav_html = f"""<div class="subtopic-nav" style="margin-top:32px;">
-  {nav_prev}
-  <a href="/{pathway}/{tier}/{subject}/index.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;">📋 All {data['label']} Topics</a>
-  {nav_next}
-</div>"""
-
-    # Higher and triple sections
-    higher_html = ""
+    # ── Higher / Triple content — live only, Design drew neither. ──
+    extra = ""
     if tier == "higher" and topic.get("higher"):
-        items = "".join(f'<div class="higher-box"><p>{h}</p></div>' for h in topic["higher"])
-        higher_html = f'<div class="section"><div class="section-title">⭐ Higher Tier Content</div>{items}</div>'
-
-    triple_html = ""
+        items = "".join(f"<p>{h}</p>" for h in topic["higher"])
+        extra += f"""
+        <div class="k4-panel k4-panel-soft" style="margin-top:24px">
+          <div class="k4-kicker">Higher tier only</div>
+          {items}
+        </div>"""
     if pathway == "triple" and topic.get("triple_only"):
-        items = "".join(f'<div class="triple-box"><p>{tr}</p></div>' for tr in topic["triple_only"])
-        triple_html = f'<div class="section"><div class="section-title">🔬 Triple Science Extensions</div>{items}</div>'
+        items = "".join(f"<p>{tr}</p>" for tr in topic["triple_only"])
+        extra += f"""
+        <div class="k4-panel k4-panel-soft" style="margin-top:24px">
+          <div class="k4-kicker">Triple science extension</div>
+          {items}
+        </div>"""
 
-    tier_badge = '📗 Foundation' if tier == 'foundation' else '📙 Higher'
+    # ── Previous / next along the spec spine. ──
+    topics_in_path = k4_topics_for(pathway, tier, subject)
+    curr = next((i for i, t in enumerate(topics_in_path) if t["id"] == topic["id"]), None)
+    prev_t = topics_in_path[curr - 1] if curr not in (None, 0) else None
+    next_t = (topics_in_path[curr + 1]
+              if curr is not None and curr < len(topics_in_path) - 1 else None)
 
-    extra_css = f"""<style>
-html {{ background: var(--bg); }}
-:root {{ --subject: {color}; }}
-</style>"""
+    spine = ""
+    for kicker, t in [("Previous topic", prev_t), ("Next topic", next_t)]:
+        if not t:
+            continue
+        spine += f"""
+        <div class="k4-nextrow">
+          <div>
+            <div class="k4-kicker">{kicker}</div>
+            <p class="k4-nextrow-title">{t['title']}</p>
+          </div>
+          <a class="k4-cta-quiet" href="/{pathway}/{tier}/{subject}/{t['id']}.html">Spec {t['spec']} · Paper {t['paper']} {K4_ARROW}</a>
+        </div>"""
 
     body = f"""
-<div class="topic-header">
-  <a class="back-link" href="/{pathway}/{tier}/{subject}/index.html">← Back to {data['label']}</a>
-  <div class="topic-kicker">{data['label']} · {pathway_label}</div>
-  <h1>{topic['title']}</h1>
-  <div class="meta-row">
-    <span class="spec-pill">Spec {topic['spec']}</span>
-    <span class="paper-pill">Paper {topic['paper']}</span>
-    <span class="tier-pill">{tier_badge}</span>
-  </div>
-</div>
+<main class="k4-main">
+  {k4_crumbs([("GCSE Science", "/ks4.html"),
+              (pathway.title(), f"/{pathway}/index.html"),
+              (tier.title(), f"/{pathway}/{tier}/index.html"),
+              (label, f"/{pathway}/{tier}/{subject}/index.html"),
+              (topic["title"], None)])}
 
-<div class="content-area">
-
-  <div class="section">
-    <div class="section-title">Subtopics</div>
-    <div class="subtopic-grid">{subtopic_rows}
+  <section class="k4-band" style="margin-bottom:36px">
+    <div class="k4-band-copy">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:{hue}"></span>{label} · {pathway_label} {tier.title()}</div>
+      <h1 class="k4-h1 k4-h1-topic">{topic['title']}</h1>
+      <div class="k4-pills" style="margin-top:20px;gap:9px">{tags}</div>
     </div>
-    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
-  </div>
+  </section>
 
-  <div class="section">
-    <div class="section-title">Key Equations</div>
-    <div class="formula-grid">{formula_pills}</div>
-  </div>
-
-  {higher_html}
-  {triple_html}
-
-  <div class="section">
-    <div class="section-title">Ask Mr Badmus AI</div>
-    <div class="card ask-card">
-      <p class="ask-lede">Got a question about {topic['title']}?</p>
-      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
-      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
+  <section class="k4-split">
+    <div class="k4-split-main">
+      <div class="k4-section-head">
+        <span class="k4-section-label">Subtopics</span>
+        <span class="k4-rule"></span>
+      </div>
+      <div class="k4-list">{rows}
+      </div>
+      {extra}
+      {spine}
+      <p style="margin-top:24px"><a href="/{pathway}/{tier}/{subject}/index.html">All {label} topics</a></p>
     </div>
-  </div>
 
-  {topic_nav_html}
+    <aside class="k4-split-side">{equations_panel}
 
-</div>"""
+      <div class="k4-dark">
+        <div class="k4-kicker k4-kicker-ondark">Stuck on something</div>
+        <p class="k4-dark-title">Ask about {topic['title']}</p>
+        <p>Calculations get worked through with FIFA, and anything Higher or Triple is flagged before you learn it by mistake.</p>
+        <button type="button" data-open-chat class="k4-cta">Ask MrBadmusAI {K4_ARROW}</button>
+      </div>
+{rp_panel}
+    </aside>
+  </section>
+</main>"""
 
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="{THEME_COLOR}"/>
-  <title>{topic['title']} | {data['label']} | MrBadmusAI</title>
-  {HEAD_ASSETS}
-  {extra_css}
-</head>
-<body>
-  {nav_html(subject, pathway, tier)}
-  {body}
-  {chat_html()}
-  <script src="/shared/mrbadmus.v2.js"></script>
-  <script>MrBadmus.init({{subject:'{subject}',topic:'{topic["title"]} ({topic["spec"]})'}});</script>
-</body>
-</html>"""
+    return k4_page(f"{topic['title']} | {label} | MrBadmusAI", body,
+                   subject=subject, pathway=pathway, tier=tier,
+                   topic_title=f"{topic['title']} ({topic['spec']})")
 
-
-
-# ─────────────────────────────────────────────
-#  BUILD FUNCTION — v5 new structure
-# ─────────────────────────────────────────────
 
 def build_site(output_dir="mrbadmus_site"):
     import sys, os, shutil

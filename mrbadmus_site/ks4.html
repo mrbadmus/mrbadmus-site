@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#F7F1E5"/>
+  <meta name="theme-color" content="#FBF3E6"/>
   <title>MrBadmusAI — GCSE Science Revision</title>
   <meta name="description" content="Free GCSE Science revision with AI tutor, FIFA worked examples, quizzes and full topic notes. Physics, Chemistry, Biology."/>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -15,305 +15,110 @@
   <script src="/shared/search.js?v=d011978d" defer></script>
   <script src="/shared/nav.js?v=f23df349" defer></script>
   <script src="/shared/class-entry.js?v=d0013a54" defer></script>
+  <link rel="stylesheet" href="/shared/ks4-chrome.css?v=15b9111f"/>
+  <script src="/shared/ks4-chrome.js?v=347675ba" defer></script>
 </head>
-<body>
+<body data-chrome="ks4">
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
-  
-  <div class="nav-cluster">
-    <a href="/3d/" class="nav-text-link">3D Studio</a>
-    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
-    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
-    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
-    <span id="nav-auth-area"></span>
-    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+  <div class="k4-navbar">
+    <a class="nav-brand" href="/index.html"><svg width="21" height="21" viewBox="0 0 22 22" aria-hidden="true"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> MrBadmusAI</a>
+    <div class="nav-cluster">
+      <a href="/3d/" class="nav-text-link">3D Studio</a>
+      <a href="/weekly-challenge.html" class="challenge-chip"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
+      <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h7v4.5a3.5 3.5 0 01-7 0V3zM6.5 4.2H4v1.3a2.4 2.4 0 002.4 2.4M13.5 4.2H16v1.3a2.4 2.4 0 01-2.4 2.4M10 11v3M7 17h6l-.7-2.4h-4.6L7 17z"/></svg></a>
+      <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2L17 17"/></svg></a>
+      <span id="nav-auth-area"></span>
+      <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+    </div>
   </div>
 </nav>
   
-<div class="ks4-back-row"><a class="back-link" href="/index.html">← All courses</a></div>
+<main class="k4-main">
+  <div class="k4-crumbs"><a href="/index.html">All courses</a><span class="k4-sep">›</span><span>GCSE Science</span></div>
 
-<section class="hero">
-  <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
-  <p>Your GCSE Science revision hub — Physics, Chemistry &amp; Biology. Choose your course below.</p>
-</section>
+  <section class="k4-band" style="margin-bottom:34px">
+    <div class="k4-band-copy">
+      <div class="k4-eyebrow">Key Stage 4 · Years 10 and 11</div>
+      <h1 class="k4-h1">GCSE Science</h1>
+    </div>
+    <div class="k4-band-side k4-note">
+      <div class="k4-kicker">Not sure which?</div>
+      <p>Combined gives you two GCSEs in science. Triple gives you three separate ones. Your timetable will say which.</p>
+    </div>
+  </section>
 
-<!-- ── LANDING BAND: courses (left) + Top Stars rail (right) ─────────────── -->
-<section class="landing-band">
+  <section class="k4-split">
+    <div class="k4-split-main" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;align-items:start">
+      <a class="k4-door k4-door-sm" href="/combined/index.html" style="--k4-door-hue:#1D6FB8">
+        <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:#1D6FB8"></span>Two GCSEs</div>
+        <h2>Combined Science</h2>
+        <p>Biology, chemistry and physics in one course. Six exams, two grades.</p>
+        <div class="k4-pills">
+          <span class="k4-pill k4-pill-foundation">Foundation</span>
+          <span class="k4-pill k4-pill-higher">Higher</span>
+        </div>
+        <span class="k4-door-foot">Open Combined <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></span>
+      </a>
 
-  <!-- LEFT: course cards (visible on first paint) -->
-  <div class="courses-col">
-    <a class="pathway-card combined" href="/combined/index.html">
-      <div class="pathway-icon">🔬</div>
-      <h2 style="color:var(--combined)">Combined Science</h2>
-      <p>Covers Biology, Chemistry and Physics for the Combined Science qualification. Includes Foundation and Higher tiers.</p>
-      <div class="pathway-badge-row">
-        <span class="pathway-badge foundation">Foundation</span>
-        <span class="pathway-badge higher">Higher</span>
+      <a class="k4-door k4-door-sm" href="/triple/index.html" style="--k4-door-hue:#B02342">
+        <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:#B02342"></span>Three GCSEs</div>
+        <h2>Triple Science</h2>
+        <p>Each science graded on its own. More content, six exams, three grades.</p>
+        <div class="k4-pills">
+          <span class="k4-pill k4-pill-foundation">Foundation</span>
+          <span class="k4-pill k4-pill-higher">Higher</span>
+        </div>
+        <span class="k4-door-foot">Open Triple <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></span>
+      </a>
+    </div>
+
+    
+    <aside class="k4-stars" id="k4-stars" aria-label="Top stars of the week">
+      <div>
+        <div class="k4-kicker k4-kicker-ondark">Top stars</div>
+        <p class="k4-stars-title">This week's leaders</p>
       </div>
-      <div><span class="pathway-go" style="background:var(--combined);">Start Combined Science →</span></div>
-    </a>
 
-    <a class="pathway-card triple" href="/triple/index.html">
-      <div class="pathway-icon">🧪</div>
-      <h2 style="color:var(--triple)">Triple Science</h2>
-      <p>Separate Biology, Chemistry and Physics qualifications with extended content. Foundation and Higher tiers.</p>
-      <div class="pathway-badge-row">
-        <span class="pathway-badge foundation">Foundation</span>
-        <span class="pathway-badge higher">Higher</span>
+      <div class="k4-champ" id="k4-champ" hidden>
+        <div class="k4-champ-kicker">Champion of the week</div>
+        <div class="k4-champ-row">
+          <span class="k4-champ-name" data-k4-champ-name></span>
+          <span class="k4-champ-pct" data-k4-champ-pct></span>
+        </div>
       </div>
-      <div><span class="pathway-go" style="background:var(--triple);">Start Triple Science →</span></div>
-    </a>
+
+      <div class="k4-stars-slides" id="k4-stars-slides">
+        <div class="k4-stars-slide" data-k4-slide="foundation" role="tabpanel" aria-label="Foundation top stars" aria-hidden="true">
+          <div class="k4-stars-slide-head">Foundation</div>
+          <div data-k4-rows="foundation"><p class="k4-stars-empty">No stars yet — be the first.</p></div>
+        </div>
+        <div class="k4-stars-slide" data-k4-slide="higher" role="tabpanel" aria-label="Higher top stars" aria-hidden="true">
+          <div class="k4-stars-slide-head">Higher</div>
+          <div data-k4-rows="higher"><p class="k4-stars-empty">No stars yet — be the first.</p></div>
+        </div>
+      </div>
+
+      <div class="k4-stars-foot">
+        <div class="k4-stars-dots" id="k4-stars-dots" role="tablist" aria-label="Choose tier" hidden>
+          <button class="k4-stars-dot" type="button" role="tab" data-tier="foundation" aria-selected="false" aria-label="Show Foundation stars"></button>
+          <button class="k4-stars-dot" type="button" role="tab" data-tier="higher" aria-selected="false" aria-label="Show Higher stars"></button>
+        </div>
+        <a class="k4-cta-light" href="/leaderboard.html">Full leaderboard <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></a>
+      </div>
+    </aside>
+  </section>
+</main>
+  
+<footer class="k4-footer">
+  <div class="k4-footer-inner">
+    <span class="k4-footer-mark">MrBadmusAI · Science revision for Years 7 to 11</span>
+    <span class="k4-footer-links">
+      <a href="/leaderboard.html">Leaderboard</a>
+      <a href="/past-papers.html">Past papers</a>
+      <a href="/3d/">3D Studio</a>
+    </span>
   </div>
-
-  <!-- RIGHT: Top Stars rail -->
-  <aside class="stars-rail" id="stars-rail" aria-label="Top stars of the week">
-    <div class="rail-head">
-      <h2 class="rail-title">⭐ Top Stars</h2>
-      <p class="rail-sub">This week's weekly-quiz leaders</p>
-    </div>
-
-    <div class="rail-champ" id="rail-champ" style="display:none;">
-      <span class="rail-champ-crown">👑</span>
-      <div class="rail-champ-av" id="rail-champ-av"></div>
-      <div class="rail-champ-info">
-        <div class="rail-champ-kicker">Champion of the Week</div>
-        <div class="rail-champ-name" id="rail-champ-name"></div>
-      </div>
-      <div class="rail-champ-pct" id="rail-champ-pct"></div>
-    </div>
-
-    <div class="rail-slides" id="rail-slides">
-      <div class="rail-slide active" data-tier="foundation" id="slide-foundation" role="tabpanel" aria-label="Foundation top stars">
-        <div class="rail-slide-head" style="color:var(--foundation);">🌱 Foundation</div>
-        <div class="rail-rows" id="rows-foundation"></div>
-      </div>
-      <div class="rail-slide" data-tier="higher" id="slide-higher" role="tabpanel" aria-label="Higher top stars" aria-hidden="true">
-        <div class="rail-slide-head" style="color:var(--higher);">⭐ Higher</div>
-        <div class="rail-rows" id="rows-higher"></div>
-      </div>
-    </div>
-
-    <div class="rail-empty" id="rail-empty" style="display:none;">No stars yet — be the first!</div>
-
-    <div class="rail-foot">
-      <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Choose tier" style="display:none;">
-        <button class="rail-dot active" type="button" role="tab" data-tier="foundation" aria-selected="true" aria-controls="slide-foundation" aria-label="Show Foundation stars"></button>
-        <button class="rail-dot" type="button" role="tab" data-tier="higher" aria-selected="false" aria-controls="slide-higher" aria-label="Show Higher stars"></button>
-      </div>
-      <a class="rail-full" href="/leaderboard.html">Full leaderboard →</a>
-    </div>
-  </aside>
-
-</section>
-
-<style>
-/* ── Back to the key-stage chooser (MRB-176) ─────────────────────────── */
-/* Same max-width and gutter as .landing-band below, so the affordance lines
-   up with the left edge of the course cards rather than floating. */
-.ks4-back-row { max-width: 1240px; margin: 0 auto; padding: var(--sp-4) var(--sp-5) 0; }
-
-/* ── Landing band layout ─────────────────────────────────────────────── */
-.landing-band {
-  display: grid;
-  grid-template-columns: minmax(0, 72fr) minmax(0, 28fr);
-  gap: var(--sp-5);
-  max-width: 1240px;
-  margin: var(--sp-5) auto var(--sp-8);
-  padding: 0 var(--sp-5);
-  align-items: start;
-}
-.courses-col { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-5); }
-/* Equal-height cards: grid stretches both to the tallest; each card is a flex
-   column and its description absorbs the slack, so the badge rows and the Start
-   buttons pin to the same baseline on both cards regardless of description length. */
-.courses-col .pathway-card { margin: 0; display: flex; flex-direction: column; }
-.courses-col .pathway-card p { flex: 1 0 auto; }
-
-/* ── Top Stars rail ──────────────────────────────────────────────────── */
-.stars-rail {
-  background: var(--card); border: 1px solid var(--border);
-  border-top: 3px solid var(--higher);
-  border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
-  padding: 16px 16px 12px; position: sticky; top: 76px;
-  display: flex; flex-direction: column;
-}
-.rail-head { margin-bottom: 12px; }
-.rail-title { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; font-size: 1.15rem; color: var(--text); }
-.rail-sub { color: var(--muted); font-size: 0.76rem; margin-top: 2px; }
-
-.rail-champ {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--higher-soft); border-radius: var(--radius);
-  padding: 10px 12px; margin-bottom: 12px;
-}
-.rail-champ-crown { font-size: 1.2rem; flex-shrink: 0; }
-.rail-champ-av {
-  width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
-  border: 2px solid var(--higher); background: var(--sunken);
-  display: flex; align-items: center; justify-content: center; font-size: 1rem;
-}
-.rail-champ-av img { width: 100%; height: 100%; object-fit: cover; }
-.rail-champ-info { flex: 1; min-width: 0; }
-.rail-champ-kicker { font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--higher); }
-.rail-champ-name { font-weight: 800; font-size: 0.9rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rail-champ-pct { font-weight: 800; font-size: 1.05rem; color: var(--higher); font-variant-numeric: tabular-nums; flex-shrink: 0; }
-
-/* crossfade: both slides share one grid cell → track grows to the taller one */
-.rail-slides { display: grid; flex: 1; }
-.rail-slide { grid-area: 1 / 1; opacity: 0; transition: opacity 0.55s ease; pointer-events: none; }
-.rail-slide.active { opacity: 1; pointer-events: auto; }
-.rail-slide-head { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-
-.rail-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
-.rail-row:last-child { border-bottom: none; }
-.rail-rank { width: 20px; text-align: center; flex-shrink: 0; font-weight: 700; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-.rail-av { width: 26px; height: 26px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--sunken); border: 1.5px solid var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; }
-.rail-av img { width: 100%; height: 100%; object-fit: cover; }
-.rail-name { flex: 1; min-width: 0; font-weight: 700; font-size: 0.82rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.rail-pct { flex-shrink: 0; font-weight: 700; font-size: 0.85rem; color: var(--text); font-variant-numeric: tabular-nums; }
-.rail-row-empty { color: var(--muted); font-size: 0.8rem; font-style: italic; padding: 10px 0; text-align: center; }
-.rail-empty { color: var(--muted); font-size: 0.85rem; font-style: italic; text-align: center; padding: 18px 0; }
-
-.rail-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
-.rail-dots { display: flex; gap: 7px; }
-.rail-dot { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: var(--border-strong); transition: background 0.2s, transform 0.2s; }
-.rail-dot.active { background: var(--higher); transform: scale(1.15); }
-.rail-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.rail-full { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-decoration: none; white-space: nowrap; }
-.rail-full:hover { text-decoration: underline; }
-.rail-loading { color: var(--muted); font-size: 0.82rem; text-align: center; padding: 14px 0; }
-
-@media (prefers-reduced-motion: reduce) {
-  .rail-slide { transition: none; }
-  .rail-dot { transition: none; }
-}
-
-/* Below 900px: single column, COURSES FIRST, rail as a compact card below */
-@media (max-width: 900px) {
-  .landing-band { grid-template-columns: 1fr; }
-  .courses-col { order: 1; }
-  .stars-rail { order: 2; position: static; top: auto; }
-}
-@media (max-width: 560px) {
-  .courses-col { grid-template-columns: 1fr; }
-}
-</style>
-
-<script>
-(function() {
-  var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
-
-  // Display seam (MRB-138): every public name render goes through here, so
-  // handles appear automatically once the backend adds `username` to the
-  // leaderboard payload. Falls back to first name until then.
-  function displayName(u) { return (u && (u.username || u.name || u.first_name)) || 'Student'; }
-  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
-  function pct(e) {
-    if (typeof e.percentage === 'number') return Math.round(e.percentage);
-    if (e.max_score) return Math.round(100 * e.score / e.max_score);
-    return 0;
-  }
-  var rankMarks = ['🥇', '🥈', '🥉'];
-
-  function rowsHtml(entries) {
-    if (!entries || !entries.length) return '<div class="rail-row-empty">No stars yet — be the first!</div>';
-    // Rank fairly by percentage (compares /30 and /45 totals); show up to 5.
-    var list = entries.slice().sort(function(a, b) { return pct(b) - pct(a); }).slice(0, 5);
-    var html = '';
-    for (var i = 0; i < list.length; i++) {
-      var e = list[i];
-      var av = e.avatar_url ? '<img src="' + esc(e.avatar_url) + '" alt=""/>' : '🧑‍🎓';
-      html += '<div class="rail-row">' +
-        '<span class="rail-rank">' + (rankMarks[i] || (i + 1)) + '</span>' +
-        '<span class="rail-av">' + av + '</span>' +
-        '<span class="rail-name">' + esc(displayName(e)) + '</span>' +
-        '<span class="rail-pct">' + pct(e) + '%</span>' +
-      '</div>';
-    }
-    return html;
-  }
-
-  var rail = document.getElementById('stars-rail');
-  var slides = { foundation: document.getElementById('slide-foundation'), higher: document.getElementById('slide-higher') };
-  var dotsWrap = document.getElementById('rail-dots');
-  var dots = dotsWrap.querySelectorAll('.rail-dot');
-
-  document.getElementById('rows-foundation').innerHTML = '<div class="rail-loading">Loading…</div>';
-
-  var available = ['foundation', 'higher'];
-  var order = ['foundation', 'higher'];
-  var idx = 0, timer = null, paused = false;
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function show(tier) {
-    idx = order.indexOf(tier);
-    // Iterate ALL tiers (not just `order`): a tier that's empty this week is
-    // excluded from `order`, so iterating `order` would leave its slide with the
-    // `active` class from the initial HTML — both slides visible, overlapping.
-    available.forEach(function(t) {
-      var on = t === tier;
-      slides[t].classList.toggle('active', on);
-      slides[t].setAttribute('aria-hidden', on ? 'false' : 'true');
-    });
-    dots.forEach(function(d) {
-      var on = d.getAttribute('data-tier') === tier;
-      d.classList.toggle('active', on);
-      d.setAttribute('aria-selected', on ? 'true' : 'false');
-    });
-  }
-  function next() { if (order.length > 1) show(order[(idx + 1) % order.length]); }
-  function start() { if (reduce || timer || order.length < 2) return; timer = setInterval(function() { if (!paused) next(); }, 6000); }
-
-  rail.addEventListener('mouseenter', function() { paused = true; });
-  rail.addEventListener('mouseleave', function() { paused = false; });
-  rail.addEventListener('focusin', function() { paused = true; });
-  rail.addEventListener('focusout', function() { paused = false; });
-  dots.forEach(function(d) {
-    d.addEventListener('click', function() { show(d.getAttribute('data-tier')); });
-  });
-
-  fetch(RENDER_URL + '/api/weekly-leaderboard/landing')
-    .then(function(r) { return r.ok ? r.json() : null; })
-    .then(function(data) {
-      if (!data) { throw new Error('no data'); }
-      var f = data.foundation_top3 || [], h = data.higher_top3 || [];
-      var hasF = f.length > 0, hasH = h.length > 0;
-
-      document.getElementById('rows-foundation').innerHTML = rowsHtml(f);
-      document.getElementById('rows-higher').innerHTML = rowsHtml(h);
-
-      if (data.champion) {
-        var c = data.champion;
-        document.getElementById('rail-champ-name').textContent = displayName(c);
-        document.getElementById('rail-champ-pct').textContent = pct(c) + '%';
-        document.getElementById('rail-champ-av').innerHTML = c.avatar_url ? '<img src="' + esc(c.avatar_url) + '" alt=""/>' : '👑';
-        document.getElementById('rail-champ').style.display = 'flex';
-      }
-
-      if (!hasF && !hasH && !data.champion) {
-        document.getElementById('rail-slides').style.display = 'none';
-        document.getElementById('rail-empty').style.display = 'block';
-        return;
-      }
-
-      order = [];
-      if (hasF) order.push('foundation');
-      if (hasH) order.push('higher');
-      if (order.length === 0) order = ['foundation']; // champion only
-
-      if (order.length === 2) {
-        dotsWrap.style.display = 'flex';
-      }
-      show(order[0]);
-      start();
-    })
-    .catch(function() {
-      document.getElementById('rail-slides').style.display = 'none';
-      document.getElementById('rail-empty').style.display = 'block';
-    });
-})();
-</script>
-
+</footer>
   <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
@@ -340,6 +145,6 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js?v=6cb18763"></script>
-  <script>MrBadmus.init({ subject: 'physics' });</script>
+  <script>MrBadmus.init({ subject: 'physics', topic: '' });</script>
 </body>
 </html>

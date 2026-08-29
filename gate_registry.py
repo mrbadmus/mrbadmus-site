@@ -288,6 +288,35 @@ GATES = [
              "proves everything between the data arriving and the pixels "
              "and nothing about whether the seam asks for the right rows."),
 
+    # ── ⊕ MRB-301 · the KS4 chrome port ─────────────────────────────────
+
+    dict(name="ks4_chrome_tells",
+         cmd=["python3", "ks4_chrome_tells.py"],
+         speed="fast",
+         needs="docs/ks3/design-reference/chrome/MrBadmusAI Redesign.dc.html",
+         why="Design's click-through must not reach a student. The chrome "
+             "delivery is a SAMPLE in the same way the teacher and "
+             "leaderboard deliveries were: template tokens ({{ subjectName }}, "
+             "{{ goHome }}), directive elements (<sc-if>, <sc-for>, "
+             "<x-import>, style-hover=, onClick=), every href a bare '#', and "
+             "invented numbers — 68%, 80%, 76%, '14th of 212', '3 of 7 done', "
+             "'21/62' — plus two students who do not exist. The numbers are "
+             "the dangerous half: an unsubstituted token is visible to anyone "
+             "who looks, and 'Your best 68%' is not. Its corpus is DERIVED "
+             "from the vendored delivery on every run rather than typed, for "
+             "the reason student_page_drive records about its own list. CSS "
+             "is excluded from both sides — the first run failed all 118 "
+             "pages on `width:100%`, and a gate that cries wolf gets switched "
+             "off. It also resolves EVERY internal href on every chrome page "
+             "against the built tree (Design's controls all pointed at '#', "
+             "so 'no dead controls' has to be measured, not asserted), and "
+             "polices the scope wall in both directions: every chrome page "
+             "wears data-chrome=\"ks4\", and NOTHING else in the built tree "
+             "does — which is what keeps the ~865 lesson pages out. "
+             "Mutation-tested: five separate probes each turn it red. "
+             "`needs` the vendored delivery, because a gate whose corpus is "
+             "missing would pass everything, which is worse than no gate."),
+
     # ── ⊕ MRB-282 · THE FOUR THAT WERE OUTSIDE THE REGISTRY ────────────
 
     dict(name="gate_coverage",

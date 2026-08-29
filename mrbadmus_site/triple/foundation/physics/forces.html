@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#F7F1E5"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#FBF3E6"/>
   <title>Forces | Physics | MrBadmusAI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -14,136 +14,214 @@
   <script src="/shared/search.js?v=d011978d" defer></script>
   <script src="/shared/nav.js?v=f23df349" defer></script>
   <script src="/shared/class-entry.js?v=d0013a54" defer></script>
-  <style>
-html { background: var(--bg); }
-:root { --subject: #1D6FB8; }
-</style>
+  <link rel="stylesheet" href="/shared/ks4-chrome.css?v=15b9111f"/>
 </head>
-<body>
+<body data-chrome="ks4">
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div class="nav-crumbs">
-    <span class="crumb-sep">›</span>
-    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
-    <span class="crumb-sep">›</span>
-    <a href="/triple/foundation/index.html" class="crumb" style="color:#237A3B;">Foundation</a>
-    <span class="crumb-sep">›</span>
-    <a href="/triple/foundation/physics/index.html" class="crumb" style="color:#1D6FB8;">⚡ Physics</a></div>
-  <div class="nav-cluster">
-    <a href="/3d/" class="nav-text-link">3D Studio</a>
-    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
-    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
-    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
-    <span id="nav-auth-area"></span>
-    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+  <div class="k4-navbar">
+    <a class="nav-brand" href="/index.html"><svg width="21" height="21" viewBox="0 0 22 22" aria-hidden="true"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> MrBadmusAI</a>
+    <div class="nav-cluster">
+      <a href="/3d/" class="nav-text-link">3D Studio</a>
+      <a href="/weekly-challenge.html" class="challenge-chip"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
+      <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h7v4.5a3.5 3.5 0 01-7 0V3zM6.5 4.2H4v1.3a2.4 2.4 0 002.4 2.4M13.5 4.2H16v1.3a2.4 2.4 0 01-2.4 2.4M10 11v3M7 17h6l-.7-2.4h-4.6L7 17z"/></svg></a>
+      <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2L17 17"/></svg></a>
+      <span id="nav-auth-area"></span>
+      <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+    </div>
   </div>
 </nav>
   
-<div class="topic-header">
-  <a class="back-link" href="/triple/foundation/physics/index.html">← Back to Physics</a>
-  <div class="topic-kicker">Physics · Triple Science</div>
-  <h1>Forces</h1>
-  <div class="meta-row">
-    <span class="spec-pill">Spec 4.5</span>
-    <span class="paper-pill">Paper 2</span>
-    <span class="tier-pill">📗 Foundation</span>
-  </div>
-</div>
+<main class="k4-main">
+  <div class="k4-crumbs"><a href="/ks4.html">GCSE Science</a><span class="k4-sep">›</span><a href="/triple/index.html">Triple</a><span class="k4-sep">›</span><a href="/triple/foundation/index.html">Foundation</a><span class="k4-sep">›</span><a href="/triple/foundation/physics/index.html">Physics</a><span class="k4-sep">›</span><span>Forces</span></div>
 
-<div class="content-area">
-
-  <div class="section">
-    <div class="section-title">Subtopics</div>
-    <div class="subtopic-grid">
-<a class="subtopic-card" id="row-scalar-vector-quantities" href="/triple/foundation/physics/forces/scalar-vector-quantities.html">
-  <span><span class="st-title">Scalar and Vector Quantities</span><span class="st-spec">Spec 6.5.1.1</span><span class="st-desc">Distinguish scalar and vector quantities and represent vectors with arrows.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-contact-noncontact-forces" href="/triple/foundation/physics/forces/contact-noncontact-forces.html">
-  <span><span class="st-title">Contact and Non-Contact Forces</span><span class="st-spec">Spec 6.5.1.2</span><span class="st-desc">Classify forces as contact or non-contact and give examples of each.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-gravity" href="/triple/foundation/physics/forces/gravity.html">
-  <span><span class="st-title">Gravity</span><span class="st-spec">Spec 6.5.1.3</span><span class="st-desc">Explain weight as gravitational force, distinguish mass from weight, and calculate using W = mg.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-resultant-forces" href="/triple/foundation/physics/forces/resultant-forces.html">
-  <span><span class="st-title">Resultant Forces</span><span class="st-spec">Spec 6.5.1.4</span><span class="st-desc">Find the resultant of forces and relate it to the motion of an object.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-work-done-energy-transfer" href="/triple/foundation/physics/forces/work-done-energy-transfer.html">
-  <span><span class="st-title">Work Done and Energy Transfer</span><span class="st-spec">Spec 6.5.2</span><span class="st-desc">Calculate work done by a force and understand it as energy transferred.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-forces-elasticity" href="/triple/foundation/physics/forces/forces-elasticity.html">
-  <span><span class="st-title">Forces and Elasticity</span><span class="st-spec">Spec 6.5.3</span><span class="st-desc">Apply Hooke's Law to springs and distinguish elastic from inelastic deformation.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-moments-levers-gears" href="/triple/foundation/physics/forces/moments-levers-gears.html">
-  <span><span class="st-title">Moments, Levers and Gears</span><span class="st-spec">Spec 6.5.3 (physics only)</span><span class="st-desc">Calculate moments, apply the principle of moments and describe levers and gears as force multipliers.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-pressure-in-a-fluid" href="/triple/foundation/physics/forces/pressure-in-a-fluid.html">
-  <span><span class="st-title">Pressure in a Fluid</span><span class="st-spec">Spec 6.5.5 (physics only)</span><span class="st-desc">Calculate pressure in fluids, explain atmospheric pressure and describe pressure-depth relationships.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-distance-speed-velocity" href="/triple/foundation/physics/forces/distance-speed-velocity.html">
-  <span><span class="st-title">Distance, Speed and Velocity</span><span class="st-spec">Spec 6.5.4.1.1–6.5.4.1.3</span><span class="st-desc">Define and calculate distance, displacement, speed and velocity.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-distance-time-graphs" href="/triple/foundation/physics/forces/distance-time-graphs.html">
-  <span><span class="st-title">Distance–Time Graphs</span><span class="st-spec">Spec 6.5.4.1.4</span><span class="st-desc">Interpret distance–time graphs and calculate speed from the gradient.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-acceleration" href="/triple/foundation/physics/forces/acceleration.html">
-  <span><span class="st-title">Acceleration</span><span class="st-spec">Spec 6.5.4.1.5</span><span class="st-desc">Calculate acceleration and use velocity–time graphs to describe and analyse motion.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-newtons-laws" href="/triple/foundation/physics/forces/newtons-laws.html">
-  <span><span class="st-title">Newton's Laws of Motion</span><span class="st-spec">Spec 6.5.4.2.1–6.5.4.2.3</span><span class="st-desc">State and apply Newton's three laws of motion.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-stopping-distance-braking" href="/triple/foundation/physics/forces/stopping-distance-braking.html">
-  <span><span class="st-title">Stopping Distance and Braking</span><span class="st-spec">Spec 6.5.4.3</span><span class="st-desc">Define stopping distance and explain factors affecting thinking distance and braking distance.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
+  <section class="k4-band" style="margin-bottom:36px">
+    <div class="k4-band-copy">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:#1D6FB8"></span>Physics · Triple Science Foundation</div>
+      <h1 class="k4-h1 k4-h1-topic">Forces</h1>
+      <div class="k4-pills" style="margin-top:20px;gap:9px"><span class="k4-tag k4-tag-lg">Spec 4.5</span><span class="k4-tag k4-tag-lg">Paper 2</span><span class="k4-tag k4-tag-lg k4-tag-rp">2 required practicals</span><span class="k4-tag k4-tag-lg">13 subtopics</span></div>
     </div>
-    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
-  </div>
+  </section>
 
-  <div class="section">
-    <div class="section-title">Key Equations</div>
-    <div class="formula-grid"><div class="formula-pill">W = mg</div>
-<div class="formula-pill">W = Fs</div>
-<div class="formula-pill">F = ke</div>
-<div class="formula-pill">Moment = Fd</div>
-<div class="formula-pill">p = F/A</div>
-<div class="formula-pill">s = vt</div>
-<div class="formula-pill">a = Δv/t</div>
-<div class="formula-pill">F = ma</div>
-<div class="formula-pill">p = mv</div>
-</div>
-  </div>
+  <section class="k4-split">
+    <div class="k4-split-main">
+      <div class="k4-section-head">
+        <span class="k4-section-label">Subtopics</span>
+        <span class="k4-rule"></span>
+      </div>
+      <div class="k4-list">
+          <a class="k4-row k4-row-st" id="row-scalar-vector-quantities" href="/triple/foundation/physics/forces/scalar-vector-quantities.html">
+            <span class="k4-row-num">1</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Scalar and Vector Quantities</span>
+              <span class="k4-row-desc">Distinguish scalar and vector quantities and represent vectors with arrows.</span>
+              <span class="k4-row-meta">Spec 6.5.1.1</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-contact-noncontact-forces" href="/triple/foundation/physics/forces/contact-noncontact-forces.html">
+            <span class="k4-row-num">2</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Contact and Non-Contact Forces</span>
+              <span class="k4-row-desc">Classify forces as contact or non-contact and give examples of each.</span>
+              <span class="k4-row-meta">Spec 6.5.1.2</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-gravity" href="/triple/foundation/physics/forces/gravity.html">
+            <span class="k4-row-num">3</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Gravity</span>
+              <span class="k4-row-desc">Explain weight as gravitational force, distinguish mass from weight, and calculate using W = mg.</span>
+              <span class="k4-row-meta">Spec 6.5.1.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-resultant-forces" href="/triple/foundation/physics/forces/resultant-forces.html">
+            <span class="k4-row-num">4</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Resultant Forces</span>
+              <span class="k4-row-desc">Find the resultant of forces and relate it to the motion of an object.</span>
+              <span class="k4-row-meta">Spec 6.5.1.4</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-work-done-energy-transfer" href="/triple/foundation/physics/forces/work-done-energy-transfer.html">
+            <span class="k4-row-num">5</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Work Done and Energy Transfer</span>
+              <span class="k4-row-desc">Calculate work done by a force and understand it as energy transferred.</span>
+              <span class="k4-row-meta">Spec 6.5.2</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-forces-elasticity" href="/triple/foundation/physics/forces/forces-elasticity.html">
+            <span class="k4-row-num">6</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Forces and Elasticity</span>
+              <span class="k4-row-desc">Apply Hooke's Law to springs and distinguish elastic from inelastic deformation.</span>
+              <span class="k4-row-meta">Spec 6.5.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-moments-levers-gears" href="/triple/foundation/physics/forces/moments-levers-gears.html">
+            <span class="k4-row-num">7</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Moments, Levers and Gears</span>
+              <span class="k4-row-desc">Calculate moments, apply the principle of moments and describe levers and gears as force multipliers.</span>
+              <span class="k4-row-meta">Spec 6.5.3 (physics only)</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-pressure-in-a-fluid" href="/triple/foundation/physics/forces/pressure-in-a-fluid.html">
+            <span class="k4-row-num">8</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Pressure in a Fluid</span>
+              <span class="k4-row-desc">Calculate pressure in fluids, explain atmospheric pressure and describe pressure-depth relationships.</span>
+              <span class="k4-row-meta">Spec 6.5.5 (physics only)</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-distance-speed-velocity" href="/triple/foundation/physics/forces/distance-speed-velocity.html">
+            <span class="k4-row-num">9</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Distance, Speed and Velocity</span>
+              <span class="k4-row-desc">Define and calculate distance, displacement, speed and velocity.</span>
+              <span class="k4-row-meta">Spec 6.5.4.1.1–6.5.4.1.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-distance-time-graphs" href="/triple/foundation/physics/forces/distance-time-graphs.html">
+            <span class="k4-row-num">10</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Distance–Time Graphs</span>
+              <span class="k4-row-desc">Interpret distance–time graphs and calculate speed from the gradient.</span>
+              <span class="k4-row-meta">Spec 6.5.4.1.4</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-acceleration" href="/triple/foundation/physics/forces/acceleration.html">
+            <span class="k4-row-num">11</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Acceleration</span>
+              <span class="k4-row-desc">Calculate acceleration and use velocity–time graphs to describe and analyse motion.</span>
+              <span class="k4-row-meta">Spec 6.5.4.1.5</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-newtons-laws" href="/triple/foundation/physics/forces/newtons-laws.html">
+            <span class="k4-row-num">12</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Newton's Laws of Motion</span>
+              <span class="k4-row-desc">State and apply Newton's three laws of motion.</span>
+              <span class="k4-row-meta">Spec 6.5.4.2.1–6.5.4.2.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-stopping-distance-braking" href="/triple/foundation/physics/forces/stopping-distance-braking.html">
+            <span class="k4-row-num">13</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Stopping Distance and Braking</span>
+              <span class="k4-row-desc">Define stopping distance and explain factors affecting thinking distance and braking distance.</span>
+              <span class="k4-row-meta">Spec 6.5.4.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+      </div>
+      
+        <div class="k4-panel k4-panel-soft" style="margin-top:24px">
+          <div class="k4-kicker">Triple science extension</div>
+          <p>Moments, levers and gears</p><p>Pressure in fluids and upthrust</p>
+        </div>
+      
+        <div class="k4-nextrow">
+          <div>
+            <div class="k4-kicker">Previous topic</div>
+            <p class="k4-nextrow-title">Atomic Structure</p>
+          </div>
+          <a class="k4-cta-quiet" href="/triple/foundation/physics/atomic-structure.html">Spec 4.4 · Paper 1 <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></a>
+        </div>
+        <div class="k4-nextrow">
+          <div>
+            <div class="k4-kicker">Next topic</div>
+            <p class="k4-nextrow-title">Waves</p>
+          </div>
+          <a class="k4-cta-quiet" href="/triple/foundation/physics/waves.html">Spec 4.6 · Paper 2 <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></a>
+        </div>
+      <p style="margin-top:24px"><a href="/triple/foundation/physics/index.html">All Physics topics</a></p>
+    </div>
 
+    <aside class="k4-split-side">
+        <div class="k4-panel">
+          <div class="k4-kicker">Equations you need</div>
+          <div class="k4-formulae"><span class="k4-formula">W = mg</span><span class="k4-formula">W = Fs</span><span class="k4-formula">F = ke</span><span class="k4-formula">Moment = Fd</span><span class="k4-formula">p = F/A</span><span class="k4-formula">s = vt</span><span class="k4-formula">a = Δv/t</span><span class="k4-formula">F = ma</span><span class="k4-formula">p = mv</span></div>
+        </div>
+
+      <div class="k4-dark">
+        <div class="k4-kicker k4-kicker-ondark">Stuck on something</div>
+        <p class="k4-dark-title">Ask about Forces</p>
+        <p>Calculations get worked through with FIFA, and anything Higher or Triple is flagged before you learn it by mistake.</p>
+        <button type="button" data-open-chat class="k4-cta">Ask MrBadmusAI <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></button>
+      </div>
+
+        <div class="k4-panel k4-panel-soft">
+          <div class="k4-kicker">Required practicals</div>
+          <p>Two sit inside this topic, and they are fair game in Paper 2.</p>
+          <div class="k4-formulae"><span class="k4-formula k4-formula-long">RP7 — Acceleration on a ramp</span><span class="k4-formula k4-formula-long">RP8 — Force and extension (spring)</span></div>
+        </div>
+    </aside>
+  </section>
+</main>
   
-  <div class="section"><div class="section-title">🔬 Triple Science Extensions</div><div class="triple-box"><p>Moments, levers and gears</p></div><div class="triple-box"><p>Pressure in fluids and upthrust</p></div></div>
-
-  <div class="section">
-    <div class="section-title">Ask Mr Badmus AI</div>
-    <div class="card ask-card">
-      <p class="ask-lede">Got a question about Forces?</p>
-      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
-      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
-    </div>
+<footer class="k4-footer">
+  <div class="k4-footer-inner">
+    <span class="k4-footer-mark">MrBadmusAI · Science revision for Years 7 to 11</span>
+    <span class="k4-footer-links">
+      <a href="/leaderboard.html">Leaderboard</a>
+      <a href="/past-papers.html">Past papers</a>
+      <a href="/3d/">3D Studio</a>
+    </span>
   </div>
-
-  <div class="subtopic-nav" style="margin-top:32px;">
-  <a class="nav-arrow prev" href="/triple/foundation/physics/atomic-structure.html"><span><div class="nav-arrow-label">Previous Topic</div><div class="nav-arrow-title">Atomic Structure</div></span></a>
-  <a href="/triple/foundation/physics/index.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;">📋 All Physics Topics</a>
-  <a class="nav-arrow next" href="/triple/foundation/physics/waves.html"><span><div class="nav-arrow-label">Next Topic</div><div class="nav-arrow-title">Waves</div></span></a>
-</div>
-
-</div>
+</footer>
   <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
@@ -170,6 +248,6 @@ html { background: var(--bg); }
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js?v=6cb18763"></script>
-  <script>MrBadmus.init({subject:'physics',topic:'Forces (4.5)'});</script>
+  <script>MrBadmus.init({ subject: 'physics', topic: 'Forces (4.5)' });</script>
 </body>
 </html>

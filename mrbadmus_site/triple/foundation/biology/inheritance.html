@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#F7F1E5"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#FBF3E6"/>
   <title>Inheritance, Variation and Evolution | Biology | MrBadmusAI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -14,151 +14,259 @@
   <script src="/shared/search.js?v=d011978d" defer></script>
   <script src="/shared/nav.js?v=f23df349" defer></script>
   <script src="/shared/class-entry.js?v=d0013a54" defer></script>
-  <style>
-html { background: var(--bg); }
-:root { --subject: #237A3B; }
-</style>
+  <link rel="stylesheet" href="/shared/ks4-chrome.css?v=15b9111f"/>
 </head>
-<body>
+<body data-chrome="ks4">
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div class="nav-crumbs">
-    <span class="crumb-sep">›</span>
-    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
-    <span class="crumb-sep">›</span>
-    <a href="/triple/foundation/index.html" class="crumb" style="color:#237A3B;">Foundation</a>
-    <span class="crumb-sep">›</span>
-    <a href="/triple/foundation/biology/index.html" class="crumb" style="color:#237A3B;">🌿 Biology</a></div>
-  <div class="nav-cluster">
-    <a href="/3d/" class="nav-text-link">3D Studio</a>
-    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
-    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
-    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
-    <span id="nav-auth-area"></span>
-    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+  <div class="k4-navbar">
+    <a class="nav-brand" href="/index.html"><svg width="21" height="21" viewBox="0 0 22 22" aria-hidden="true"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> MrBadmusAI</a>
+    <div class="nav-cluster">
+      <a href="/3d/" class="nav-text-link">3D Studio</a>
+      <a href="/weekly-challenge.html" class="challenge-chip"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
+      <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h7v4.5a3.5 3.5 0 01-7 0V3zM6.5 4.2H4v1.3a2.4 2.4 0 002.4 2.4M13.5 4.2H16v1.3a2.4 2.4 0 01-2.4 2.4M10 11v3M7 17h6l-.7-2.4h-4.6L7 17z"/></svg></a>
+      <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2L17 17"/></svg></a>
+      <span id="nav-auth-area"></span>
+      <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+    </div>
   </div>
 </nav>
   
-<div class="topic-header">
-  <a class="back-link" href="/triple/foundation/biology/index.html">← Back to Biology</a>
-  <div class="topic-kicker">Biology · Triple Science</div>
-  <h1>Inheritance, Variation and Evolution</h1>
-  <div class="meta-row">
-    <span class="spec-pill">Spec 4.6</span>
-    <span class="paper-pill">Paper 2</span>
-    <span class="tier-pill">📗 Foundation</span>
-  </div>
-</div>
+<main class="k4-main">
+  <div class="k4-crumbs"><a href="/ks4.html">GCSE Science</a><span class="k4-sep">›</span><a href="/triple/index.html">Triple</a><span class="k4-sep">›</span><a href="/triple/foundation/index.html">Foundation</a><span class="k4-sep">›</span><a href="/triple/foundation/biology/index.html">Biology</a><span class="k4-sep">›</span><span>Inheritance, Variation and Evolution</span></div>
 
-<div class="content-area">
-
-  <div class="section">
-    <div class="section-title">Subtopics</div>
-    <div class="subtopic-grid">
-<a class="subtopic-card" id="row-sexual-asexual-reproduction" href="/triple/foundation/biology/inheritance/sexual-asexual-reproduction.html">
-  <span><span class="st-title">Sexual and Asexual Reproduction</span><span class="st-spec">Spec 4.6.1</span><span class="st-desc">Compare sexual and asexual reproduction and explain the role of meiosis in sexual reproduction.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-meiosis" href="/triple/foundation/biology/inheritance/meiosis.html">
-  <span><span class="st-title">Meiosis</span><span class="st-spec">Spec 4.6.1.2</span><span class="st-desc">Describe meiosis, explain how it produces genetically varied gametes and why variation is important.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-advantages-sexual-asexual" href="/triple/foundation/biology/inheritance/advantages-sexual-asexual.html">
-  <span><span class="st-title">Advantages and Disadvantages of Sexual and Asexual Reproduction</span><span class="st-spec">Spec 4.6.1.3</span><span class="st-desc">Compare sexual and asexual reproduction in terms of genetic variation, speed and energy cost.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-dna-genome" href="/triple/foundation/biology/inheritance/dna-genome.html">
-  <span><span class="st-title">DNA and the Genome</span><span class="st-spec">Spec 4.6.2</span><span class="st-desc">Describe the structure of DNA, what genes are, and what the human genome project achieved.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-dna-structure" href="/triple/foundation/biology/inheritance/dna-structure.html">
-  <span><span class="st-title">DNA Structure</span><span class="st-spec">Spec 4.6.2.1</span><span class="st-desc">Describe the structure of DNA including the double helix, bases, and the complementary base pairing rule.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-genetic-inheritance" href="/triple/foundation/biology/inheritance/genetic-inheritance.html">
-  <span><span class="st-title">Genetic Inheritance</span><span class="st-spec">Spec 4.6.3</span><span class="st-desc">Explain dominant and recessive inheritance and use Punnett squares to predict offspring ratios.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-inherited-disorders" href="/triple/foundation/biology/inheritance/inherited-disorders.html">
-  <span><span class="st-title">Inherited Disorders</span><span class="st-spec">Spec 4.6.3.2</span><span class="st-desc">Describe cystic fibrosis and polydactyly as examples of inherited genetic disorders.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-sex-determination" href="/triple/foundation/biology/inheritance/sex-determination.html">
-  <span><span class="st-title">Sex Determination</span><span class="st-spec">Spec 4.6.3.3</span><span class="st-desc">Explain how biological sex is determined by the X and Y chromosomes.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-variation" href="/triple/foundation/biology/inheritance/variation.html">
-  <span><span class="st-title">Variation</span><span class="st-spec">Spec 4.6.4</span><span class="st-desc">Describe the causes of variation and distinguish between genetic, environmental and combination variation.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-evolution-natural-selection" href="/triple/foundation/biology/inheritance/evolution-natural-selection.html">
-  <span><span class="st-title">Evolution and Natural Selection</span><span class="st-spec">Spec 4.6.5</span><span class="st-desc">Describe Darwin's theory of evolution by natural selection and explain how populations change over time.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-theory-of-evolution" href="/triple/foundation/biology/inheritance/theory-of-evolution.html">
-  <span><span class="st-title">Theory of Evolution</span><span class="st-spec">Spec 4.6.3.3</span><span class="st-desc">Describe Darwin's theory of evolution by natural selection and the role of Wallace.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-selective-breeding" href="/triple/foundation/biology/inheritance/selective-breeding.html">
-  <span><span class="st-title">Selective Breeding</span><span class="st-spec">Spec 4.6.6</span><span class="st-desc">Describe how selective breeding works and its applications and disadvantages.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-genetic-engineering" href="/triple/foundation/biology/inheritance/genetic-engineering.html">
-  <span><span class="st-title">Genetic Engineering</span><span class="st-spec">Spec 4.6.7</span><span class="st-desc">Describe genetic engineering — how it works, examples and ethical considerations.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-cloning" href="/triple/foundation/biology/inheritance/cloning.html">
-  <span><span class="st-title">Cloning</span><span class="st-spec">Spec 4.6.4</span><span class="st-desc">Describe cloning methods in plants and animals and evaluate their advantages and disadvantages.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-evidence-for-evolution" href="/triple/foundation/biology/inheritance/evidence-for-evolution.html">
-  <span><span class="st-title">Evidence for Evolution</span><span class="st-spec">Spec 4.6.5</span><span class="st-desc">Describe the main types of evidence that support the theory of evolution.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-understanding-genetics" href="/triple/foundation/biology/inheritance/understanding-genetics.html">
-  <span><span class="st-title">Mendel and the Development of Genetics</span><span class="st-spec">Spec 4.6.3.4</span><span class="st-desc">Describe Mendel's work on inheritance and explain why his ideas were not accepted during his lifetime.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-fossils-extinction" href="/triple/foundation/biology/inheritance/fossils-extinction.html">
-  <span><span class="st-title">Fossils and Extinction</span><span class="st-spec">Spec 4.6.5</span><span class="st-desc">Describe how fossils form and explain why species become extinct.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-resistant-bacteria" href="/triple/foundation/biology/inheritance/resistant-bacteria.html">
-  <span><span class="st-title">Resistant Bacteria</span><span class="st-spec">Spec 4.6.5</span><span class="st-desc">Explain how antibiotic resistance develops through natural selection and why it is a global health threat.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
-<a class="subtopic-card" id="row-classification-living-organisms" href="/triple/foundation/biology/inheritance/classification-living-organisms.html">
-  <span><span class="st-title">Classification of Living Organisms</span><span class="st-spec">Spec 4.6.5</span><span class="st-desc">Describe the Linnaean classification system and the three-domain system, and explain how evolutionary trees show relationships.</span></span>
-  <span class="expand-btn" title="Open full notes">+</span>
-</a>
+  <section class="k4-band" style="margin-bottom:36px">
+    <div class="k4-band-copy">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:#237A3B"></span>Biology · Triple Science Foundation</div>
+      <h1 class="k4-h1 k4-h1-topic">Inheritance, Variation and Evolution</h1>
+      <div class="k4-pills" style="margin-top:20px;gap:9px"><span class="k4-tag k4-tag-lg">Spec 4.6</span><span class="k4-tag k4-tag-lg">Paper 2</span><span class="k4-tag k4-tag-lg">19 subtopics</span></div>
     </div>
-    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
-  </div>
+  </section>
 
-  <div class="section">
-    <div class="section-title">Key Equations</div>
-    <div class="formula-grid"><p style="color:var(--muted);font-size:0.9rem;">See individual subtopic pages for equations.</p></div>
-  </div>
+  <section class="k4-split">
+    <div class="k4-split-main">
+      <div class="k4-section-head">
+        <span class="k4-section-label">Subtopics</span>
+        <span class="k4-rule"></span>
+      </div>
+      <div class="k4-list">
+          <a class="k4-row k4-row-st" id="row-sexual-asexual-reproduction" href="/triple/foundation/biology/inheritance/sexual-asexual-reproduction.html">
+            <span class="k4-row-num">1</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Sexual and Asexual Reproduction</span>
+              <span class="k4-row-desc">Compare sexual and asexual reproduction and explain the role of meiosis in sexual reproduction.</span>
+              <span class="k4-row-meta">Spec 4.6.1</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-meiosis" href="/triple/foundation/biology/inheritance/meiosis.html">
+            <span class="k4-row-num">2</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Meiosis</span>
+              <span class="k4-row-desc">Describe meiosis, explain how it produces genetically varied gametes and why variation is important.</span>
+              <span class="k4-row-meta">Spec 4.6.1.2</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-advantages-sexual-asexual" href="/triple/foundation/biology/inheritance/advantages-sexual-asexual.html">
+            <span class="k4-row-num">3</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Advantages and Disadvantages of Sexual and Asexual Reproduction</span>
+              <span class="k4-row-desc">Compare sexual and asexual reproduction in terms of genetic variation, speed and energy cost.</span>
+              <span class="k4-row-meta">Spec 4.6.1.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-dna-genome" href="/triple/foundation/biology/inheritance/dna-genome.html">
+            <span class="k4-row-num">4</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">DNA and the Genome</span>
+              <span class="k4-row-desc">Describe the structure of DNA, what genes are, and what the human genome project achieved.</span>
+              <span class="k4-row-meta">Spec 4.6.2</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-dna-structure" href="/triple/foundation/biology/inheritance/dna-structure.html">
+            <span class="k4-row-num">5</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">DNA Structure</span>
+              <span class="k4-row-desc">Describe the structure of DNA including the double helix, bases, and the complementary base pairing rule.</span>
+              <span class="k4-row-meta">Spec 4.6.2.1</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-genetic-inheritance" href="/triple/foundation/biology/inheritance/genetic-inheritance.html">
+            <span class="k4-row-num">6</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Genetic Inheritance</span>
+              <span class="k4-row-desc">Explain dominant and recessive inheritance and use Punnett squares to predict offspring ratios.</span>
+              <span class="k4-row-meta">Spec 4.6.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-inherited-disorders" href="/triple/foundation/biology/inheritance/inherited-disorders.html">
+            <span class="k4-row-num">7</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Inherited Disorders</span>
+              <span class="k4-row-desc">Describe cystic fibrosis and polydactyly as examples of inherited genetic disorders.</span>
+              <span class="k4-row-meta">Spec 4.6.3.2</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-sex-determination" href="/triple/foundation/biology/inheritance/sex-determination.html">
+            <span class="k4-row-num">8</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Sex Determination</span>
+              <span class="k4-row-desc">Explain how biological sex is determined by the X and Y chromosomes.</span>
+              <span class="k4-row-meta">Spec 4.6.3.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-variation" href="/triple/foundation/biology/inheritance/variation.html">
+            <span class="k4-row-num">9</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Variation</span>
+              <span class="k4-row-desc">Describe the causes of variation and distinguish between genetic, environmental and combination variation.</span>
+              <span class="k4-row-meta">Spec 4.6.4</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-evolution-natural-selection" href="/triple/foundation/biology/inheritance/evolution-natural-selection.html">
+            <span class="k4-row-num">10</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Evolution and Natural Selection</span>
+              <span class="k4-row-desc">Describe Darwin's theory of evolution by natural selection and explain how populations change over time.</span>
+              <span class="k4-row-meta">Spec 4.6.5</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-theory-of-evolution" href="/triple/foundation/biology/inheritance/theory-of-evolution.html">
+            <span class="k4-row-num">11</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Theory of Evolution</span>
+              <span class="k4-row-desc">Describe Darwin's theory of evolution by natural selection and the role of Wallace.</span>
+              <span class="k4-row-meta">Spec 4.6.3.3</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-selective-breeding" href="/triple/foundation/biology/inheritance/selective-breeding.html">
+            <span class="k4-row-num">12</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Selective Breeding</span>
+              <span class="k4-row-desc">Describe how selective breeding works and its applications and disadvantages.</span>
+              <span class="k4-row-meta">Spec 4.6.6</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-genetic-engineering" href="/triple/foundation/biology/inheritance/genetic-engineering.html">
+            <span class="k4-row-num">13</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Genetic Engineering</span>
+              <span class="k4-row-desc">Describe genetic engineering — how it works, examples and ethical considerations.</span>
+              <span class="k4-row-meta">Spec 4.6.7</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-cloning" href="/triple/foundation/biology/inheritance/cloning.html">
+            <span class="k4-row-num">14</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Cloning</span>
+              <span class="k4-row-desc">Describe cloning methods in plants and animals and evaluate their advantages and disadvantages.</span>
+              <span class="k4-row-meta">Spec 4.6.4</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-evidence-for-evolution" href="/triple/foundation/biology/inheritance/evidence-for-evolution.html">
+            <span class="k4-row-num">15</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Evidence for Evolution</span>
+              <span class="k4-row-desc">Describe the main types of evidence that support the theory of evolution.</span>
+              <span class="k4-row-meta">Spec 4.6.5</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-understanding-genetics" href="/triple/foundation/biology/inheritance/understanding-genetics.html">
+            <span class="k4-row-num">16</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Mendel and the Development of Genetics</span>
+              <span class="k4-row-desc">Describe Mendel's work on inheritance and explain why his ideas were not accepted during his lifetime.</span>
+              <span class="k4-row-meta">Spec 4.6.3.4</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-fossils-extinction" href="/triple/foundation/biology/inheritance/fossils-extinction.html">
+            <span class="k4-row-num">17</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Fossils and Extinction</span>
+              <span class="k4-row-desc">Describe how fossils form and explain why species become extinct.</span>
+              <span class="k4-row-meta">Spec 4.6.5</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-resistant-bacteria" href="/triple/foundation/biology/inheritance/resistant-bacteria.html">
+            <span class="k4-row-num">18</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Resistant Bacteria</span>
+              <span class="k4-row-desc">Explain how antibiotic resistance develops through natural selection and why it is a global health threat.</span>
+              <span class="k4-row-meta">Spec 4.6.5</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+          <a class="k4-row k4-row-st" id="row-classification-living-organisms" href="/triple/foundation/biology/inheritance/classification-living-organisms.html">
+            <span class="k4-row-num">19</span>
+            <span class="k4-row-body">
+              <span class="k4-row-title">Classification of Living Organisms</span>
+              <span class="k4-row-desc">Describe the Linnaean classification system and the three-domain system, and explain how evolutionary trees show relationships.</span>
+              <span class="k4-row-meta">Spec 4.6.5</span>
+            </span>
+            <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="#A93411" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="k4-row-arrow"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg>
+          </a>
+      </div>
+      
+        <div class="k4-panel k4-panel-soft" style="margin-top:24px">
+          <div class="k4-kicker">Triple science extension</div>
+          <p>Protein synthesis — transcription and translation</p><p>Selective breeding</p>
+        </div>
+      
+        <div class="k4-nextrow">
+          <div>
+            <div class="k4-kicker">Previous topic</div>
+            <p class="k4-nextrow-title">Homeostasis and Response</p>
+          </div>
+          <a class="k4-cta-quiet" href="/triple/foundation/biology/homeostasis.html">Spec 4.5 · Paper 2 <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></a>
+        </div>
+        <div class="k4-nextrow">
+          <div>
+            <div class="k4-kicker">Next topic</div>
+            <p class="k4-nextrow-title">Ecology</p>
+          </div>
+          <a class="k4-cta-quiet" href="/triple/foundation/biology/ecology.html">Spec 4.7 · Paper 2 <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></a>
+        </div>
+      <p style="margin-top:24px"><a href="/triple/foundation/biology/index.html">All Biology topics</a></p>
+    </div>
 
+    <aside class="k4-split-side">
+
+      <div class="k4-dark">
+        <div class="k4-kicker k4-kicker-ondark">Stuck on something</div>
+        <p class="k4-dark-title">Ask about Inheritance, Variation and Evolution</p>
+        <p>Calculations get worked through with FIFA, and anything Higher or Triple is flagged before you learn it by mistake.</p>
+        <button type="button" data-open-chat class="k4-cta">Ask MrBadmusAI <svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h16M12.5 1l5 5-5 5"/></svg></button>
+      </div>
+
+    </aside>
+  </section>
+</main>
   
-  <div class="section"><div class="section-title">🔬 Triple Science Extensions</div><div class="triple-box"><p>Protein synthesis — transcription and translation</p></div><div class="triple-box"><p>Selective breeding</p></div></div>
-
-  <div class="section">
-    <div class="section-title">Ask Mr Badmus AI</div>
-    <div class="card ask-card">
-      <p class="ask-lede">Got a question about Inheritance, Variation and Evolution?</p>
-      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
-      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
-    </div>
+<footer class="k4-footer">
+  <div class="k4-footer-inner">
+    <span class="k4-footer-mark">MrBadmusAI · Science revision for Years 7 to 11</span>
+    <span class="k4-footer-links">
+      <a href="/leaderboard.html">Leaderboard</a>
+      <a href="/past-papers.html">Past papers</a>
+      <a href="/3d/">3D Studio</a>
+    </span>
   </div>
-
-  <div class="subtopic-nav" style="margin-top:32px;">
-  <a class="nav-arrow prev" href="/triple/foundation/biology/homeostasis.html"><span><div class="nav-arrow-label">Previous Topic</div><div class="nav-arrow-title">Homeostasis and Response</div></span></a>
-  <a href="/triple/foundation/biology/index.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;">📋 All Biology Topics</a>
-  <a class="nav-arrow next" href="/triple/foundation/biology/ecology.html"><span><div class="nav-arrow-label">Next Topic</div><div class="nav-arrow-title">Ecology</div></span></a>
-</div>
-
-</div>
+</footer>
   <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
@@ -185,6 +293,6 @@ html { background: var(--bg); }
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js?v=6cb18763"></script>
-  <script>MrBadmus.init({subject:'biology',topic:'Inheritance, Variation and Evolution (4.6)'});</script>
+  <script>MrBadmus.init({ subject: 'biology', topic: 'Inheritance, Variation and Evolution (4.6)' });</script>
 </body>
 </html>

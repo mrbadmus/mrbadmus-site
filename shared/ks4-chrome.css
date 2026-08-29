@@ -1,0 +1,698 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ks4-chrome.css — the KS4 navigation chrome (MRB-301)
+
+   Claude Design's 23 Aug 2026 delivery ("MrBadmusAI Redesign"), ported.
+   Source of truth: docs/ks3/design-reference/chrome/.
+
+   ── WHY THIS IS A SEPARATE FILE, AND WHY EVERYTHING IS SCOPED ──────────
+
+   Every KS4 page — the six chrome pages this file dresses AND the ~1,000
+   LESSON pages behind them — loads /shared/tokens.css, /shared/styles.css
+   and /shared/nav.css. Those three are shared, and MRB-301 covers the
+   chrome only: the lesson pages are the next run, and this one had to
+   leave them BYTE-IDENTICAL.
+
+   Editing any of those three would have changed the rendered bytes of
+   every lesson page (and its cache-bust stamp with them), which is exactly
+   the outcome the scope wall forbids. So:
+
+     · nothing here lives in tokens.css / styles.css / nav.css;
+     · every rule is scoped under `body[data-chrome="ks4"]`;
+     · only the seven chrome makers in generate_site_v5.py emit that
+       attribute and link this file.
+
+   A lesson page never sees this stylesheet and never sets the attribute,
+   so it cannot be reached by anything below even by accident. The same
+   technique KS3 already uses for `[data-mode="ks3"]` in tokens.css.
+
+   ⚠️ The consequence, and it is deliberate: the chrome and the lesson
+   pages behind it are two visual worlds until the lesson-page run lands.
+   That seam is the scope wall, not drift.
+
+   ── THE MARKUP IT DRESSES ──────────────────────────────────────────────
+
+   `nav_html(chrome=True)` emits Design's header. It keeps the two hooks
+   shared/nav.js binds to — `.nav-burger` and `#nav-auth-area` — so the
+   auth chip, the "My class" chip and the whole accessible drawer keep
+   working with ZERO change to nav.js. The drawer is restyled at the
+   bottom of this file rather than re-implemented.
+
+   ── FONTS ──────────────────────────────────────────────────────────────
+
+   Bricolage Grotesque / Instrument Sans / DM Mono are already declared
+   as @font-face in shared/tokens.css and already self-hosted in
+   shared/fonts/ (KS3 and the student pages brought them in). Nothing new
+   is fetched and no Google CDN is involved.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+body[data-chrome="ks4"] {
+  /* Design's palette, lifted from the delivery. The subject, pathway and
+     tier hues are NOT new — Design read them off the live site, so they
+     are the same constants generate_site_v5.py already holds
+     (PATHWAY_COLORS, TIER_COLORS, SITE_DATA[*]["color"]). */
+  --k4-ground:      #FBF3E6;
+  --k4-card:        #FFFDF8;
+  --k4-sunken:      #F4E9D8;
+  --k4-sunken-2:    #F7EFE1;
+  --k4-track:       #F0E4CE;
+  --k4-border:      #E0D2B9;
+  --k4-border-2:    #C3B191;
+
+  --k4-ink:         #1A1714;
+  --k4-ink-2:       #3D352C;
+  --k4-muted:       #6E655D;
+  --k4-muted-2:     #7A6E5F;
+
+  --k4-accent:      #E4572E;
+  --k4-accent-deep: #A93411;
+  --k4-accent-dark: #7F2408;
+  --k4-accent-soft: #FCE7DE;
+  --k4-accent-lift: #F2946E;
+
+  --k4-dark:        #1A1714;
+  --k4-dark-2:      #2A2119;
+  --k4-dark-3:      #3E362C;
+  --k4-on-dark:     #FBF3E6;
+  --k4-on-dark-2:   #C6B9A7;
+  --k4-on-dark-3:   #B7AA98;
+  --k4-on-dark-4:   #8E8272;
+
+  --k4-combined:      #1D6FB8;
+  --k4-combined-soft: #EAF2FA;
+  --k4-combined-line: #B9CFE6;
+  --k4-combined-deep: #15558F;
+
+  --k4-triple:        #B02342;
+  --k4-triple-soft:   #FAEDF0;
+
+  --k4-foundation:      #237A3B;
+  --k4-foundation-soft: #EAF3EC;
+  --k4-foundation-line: #B9D6C1;
+  --k4-foundation-deep: #1B5E30;
+  --k4-done:            #12A150;
+  --k4-done-soft:       #E4F7EB;
+  --k4-done-deep:       #0A6B36;
+
+  --k4-higher:      #7A5F00;
+  --k4-higher-soft: #F6EFD6;
+  --k4-higher-line: #D9C58A;
+  --k4-higher-deep: #5F4A00;
+
+  --k4-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --k4-body:    'Instrument Sans', system-ui, sans-serif;
+  --k4-mono:    'DM Mono', ui-monospace, monospace;
+
+  --k4-shell: 1400px;
+
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--k4-ground);
+  color: var(--k4-ink);
+  font-family: var(--k4-body);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+body[data-chrome="ks4"] *,
+body[data-chrome="ks4"] *::before,
+body[data-chrome="ks4"] *::after { box-sizing: border-box; }
+
+body[data-chrome="ks4"] a { color: var(--k4-accent-deep); text-decoration: none; }
+body[data-chrome="ks4"] a:hover { color: var(--k4-accent-dark); text-decoration: underline; }
+body[data-chrome="ks4"] button { font: inherit; color: inherit; }
+body[data-chrome="ks4"] ::selection { background: var(--k4-accent-soft); }
+body[data-chrome="ks4"] :focus-visible {
+  outline: 3px solid var(--k4-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@keyframes k4-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes k4-fade { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-chrome="ks4"] *,
+  body[data-chrome="ks4"] *::before,
+  body[data-chrome="ks4"] *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* ── HEADER ─────────────────────────────────────────────────────────────
+   Design's header, dressing the SAME element tree nav.js already binds.  */
+
+body[data-chrome="ks4"] .nav {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--k4-ground);
+  border-bottom: 2px solid var(--k4-ink);
+  /* nav.css sets a grid/flex on .nav; this wins by specificity and the
+     inner .k4-navbar does the actual layout. */
+  display: block; padding: 0; margin: 0; box-shadow: none; border-radius: 0;
+  height: auto;   /* nav.css pins .nav to 62px; Design's bar is 66px min */
+}
+body[data-chrome="ks4"] .k4-navbar {
+  max-width: var(--k4-shell); margin: 0 auto;
+  padding: 10px 24px; min-height: 66px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+body[data-chrome="ks4"] .nav-brand {
+  display: flex; align-items: center; gap: 9px;
+  padding: 6px 4px; background: none; border: 0;
+  font-family: var(--k4-display); font-weight: 800; font-size: 21px;
+  letter-spacing: -.02em; color: var(--k4-ink); text-decoration: none;
+}
+body[data-chrome="ks4"] .nav-brand:hover { color: var(--k4-ink); text-decoration: none; }
+body[data-chrome="ks4"] .nav-brand svg { flex: 0 0 auto; }
+
+body[data-chrome="ks4"] .nav-cluster {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+body[data-chrome="ks4"] .nav-text-link {
+  font-family: var(--k4-mono); font-size: 13px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--k4-muted-2);
+  padding: 0 6px; text-decoration: none;
+}
+body[data-chrome="ks4"] .nav-text-link:hover { color: var(--k4-ink); text-decoration: none; }
+
+body[data-chrome="ks4"] .challenge-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 18px; border-radius: 999px;
+  background: var(--k4-accent-deep); color: var(--k4-on-dark);
+  border: 0; font-weight: 700; font-size: 16px; text-decoration: none;
+}
+body[data-chrome="ks4"] .challenge-chip:hover { background: var(--k4-accent-dark); color: var(--k4-on-dark); text-decoration: none; }
+
+body[data-chrome="ks4"] .nav-icon-link {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border-radius: 12px; background: var(--k4-sunken);
+  border: 1.5px solid var(--k4-border); color: var(--k4-ink-2);
+  text-decoration: none;
+}
+body[data-chrome="ks4"] .nav-icon-link:hover { border-color: var(--k4-ink); color: var(--k4-ink-2); text-decoration: none; }
+
+body[data-chrome="ks4"] .nav-burger {
+  width: 44px; height: 44px; display: grid; place-items: center; gap: 5px;
+  border-radius: 12px; background: var(--k4-sunken);
+  border: 1.5px solid var(--k4-border); cursor: pointer;
+}
+body[data-chrome="ks4"] .nav-burger:hover { border-color: var(--k4-ink); }
+body[data-chrome="ks4"] .nav-burger span {
+  width: 20px; height: 2.4px; border-radius: 2px; background: var(--k4-ink); display: block;
+}
+
+/* The auth area is rendered by shared/nav.js. Its three states — signed
+   out (two buttons), signed in (a name pill), and the class chip — are
+   restyled here rather than re-emitted, so nav.js stays untouched. */
+body[data-chrome="ks4"] #nav-auth-area {
+  display: inline-flex; align-items: center; gap: 8px;
+}
+body[data-chrome="ks4"] #nav-auth-area a,
+body[data-chrome="ks4"] #nav-auth-area > span {
+  display: inline-flex; align-items: center; gap: 9px;
+  height: 44px; padding: 0 16px; border-radius: 999px;
+  font-weight: 600; font-size: 16px; text-decoration: none;
+  background: var(--k4-card); border: 1.5px solid var(--k4-border);
+  color: var(--k4-ink-2);
+}
+body[data-chrome="ks4"] #nav-auth-area a:hover { border-color: var(--k4-ink); color: var(--k4-ink-2); text-decoration: none; }
+body[data-chrome="ks4"] #nav-auth-area .btn-signup {
+  background: var(--k4-accent-deep); color: var(--k4-on-dark); border-color: var(--k4-accent-deep);
+}
+body[data-chrome="ks4"] #nav-auth-area .btn-signup:hover { background: var(--k4-accent-dark); border-color: var(--k4-accent-dark); color: var(--k4-on-dark); }
+body[data-chrome="ks4"] #nav-auth-area img {
+  width: 28px; height: 28px; border-radius: 999px; object-fit: cover;
+}
+
+/* Breadcrumbs live in the page body on this design, not in the header —
+   nav.css's .nav-crumbs is suppressed so the two do not double up. */
+body[data-chrome="ks4"] .nav-crumbs { display: none; }
+
+/* ── SHELL ──────────────────────────────────────────────────────────── */
+
+body[data-chrome="ks4"] .k4-main {
+  flex: 1; width: 100%; max-width: var(--k4-shell); margin: 0 auto;
+  padding: 26px 28px 60px; animation: k4-fade .3s both;
+}
+body[data-chrome="ks4"] .k4-main.k4-home {
+  padding: 40px 28px 48px;
+  display: flex; flex-direction: column; gap: 26px;
+}
+
+body[data-chrome="ks4"] .k4-crumbs {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-family: var(--k4-mono); font-size: 13px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--k4-muted-2); margin-bottom: 26px;
+}
+body[data-chrome="ks4"] .k4-crumbs a { color: var(--k4-accent-deep); text-decoration: none; }
+body[data-chrome="ks4"] .k4-crumbs a:hover { color: var(--k4-accent-dark); text-decoration: underline; }
+body[data-chrome="ks4"] .k4-crumbs .k4-sep { color: var(--k4-border-2); }
+
+body[data-chrome="ks4"] .k4-eyebrow {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--k4-mono); font-size: 13px; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--k4-muted-2);
+}
+body[data-chrome="ks4"] .k4-dot {
+  width: 16px; height: 16px; border-radius: 999px;
+  border: 2px solid var(--k4-ink); flex: 0 0 auto;
+}
+body[data-chrome="ks4"] .k4-dot.k4-dot-sm { width: 15px; height: 15px; }
+
+body[data-chrome="ks4"] .k4-h1 {
+  margin: 14px 0 0; font-family: var(--k4-display); font-weight: 800;
+  font-size: clamp(44px, 5.2vw, 74px); line-height: .95; letter-spacing: -.035em;
+  color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .k4-h1.k4-h1-hero {
+  margin: 0; font-size: clamp(46px, 5.4vw, 80px); line-height: .94;
+}
+body[data-chrome="ks4"] .k4-h1.k4-h1-topic { font-size: clamp(48px, 6vw, 86px); line-height: .93; }
+body[data-chrome="ks4"] .k4-lede {
+  margin: 20px 0 0; font-size: 21px; line-height: 1.55;
+  color: var(--k4-ink-2); max-width: 54ch;
+}
+
+body[data-chrome="ks4"] .k4-band {
+  display: flex; flex-wrap: wrap; gap: 40px; align-items: center;
+}
+body[data-chrome="ks4"] .k4-band-copy { flex: 1 1 460px; min-width: 0; }
+body[data-chrome="ks4"] .k4-band-side { flex: 1 1 320px; max-width: 420px; }
+
+body[data-chrome="ks4"] .k4-section-head {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+}
+body[data-chrome="ks4"] .k4-section-label {
+  font-family: var(--k4-mono); font-size: 12.5px; font-weight: 500;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--k4-muted-2);
+}
+body[data-chrome="ks4"] .k4-rule { flex: 1; height: 2px; background: var(--k4-border); }
+
+body[data-chrome="ks4"] .k4-kicker {
+  font-family: var(--k4-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--k4-muted-2);
+}
+body[data-chrome="ks4"] .k4-kicker.k4-kicker-accent { color: var(--k4-accent-deep); }
+body[data-chrome="ks4"] .k4-kicker.k4-kicker-ondark { color: var(--k4-accent-lift); }
+
+/* ── DOOR CARDS (landing, GCSE hub, tier, subject) ──────────────────── */
+
+body[data-chrome="ks4"] .k4-doors {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 24px; flex: 1; align-items: stretch;
+}
+body[data-chrome="ks4"] .k4-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
+body[data-chrome="ks4"] .k4-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+
+body[data-chrome="ks4"] .k4-door {
+  text-align: left; display: flex; flex-direction: column; gap: 18px;
+  background: var(--k4-card); border: 2px solid var(--k4-ink);
+  border-radius: 20px; padding: 34px 34px 30px;
+  box-shadow: 4px 4px 0 var(--k4-ink);
+  transition: transform .16s, box-shadow .16s;
+  color: var(--k4-ink); text-decoration: none;
+  animation: k4-rise .55s both;
+}
+body[data-chrome="ks4"] .k4-door:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 7px 7px 0 var(--k4-door-hue, var(--k4-accent));
+  color: var(--k4-ink); text-decoration: none;
+}
+body[data-chrome="ks4"] .k4-door.k4-door-sm { padding: 30px; gap: 16px; }
+body[data-chrome="ks4"] .k4-door h2 {
+  margin: 0; font-family: var(--k4-display); font-weight: 800;
+  font-size: clamp(38px, 3.6vw, 52px); line-height: 1;
+  letter-spacing: -.03em; color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .k4-door.k4-door-sm h2 { font-size: clamp(32px, 3vw, 42px); line-height: 1.02; }
+body[data-chrome="ks4"] .k4-door p {
+  margin: 0; font-size: 19px; line-height: 1.5; color: var(--k4-ink-2);
+}
+body[data-chrome="ks4"] .k4-door-foot {
+  margin-top: auto; padding-top: 22px; border-top: 1.5px solid var(--k4-border);
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--k4-display); font-weight: 800; font-size: 19px;
+  color: var(--k4-accent-deep);
+}
+
+body[data-chrome="ks4"] .k4-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+body[data-chrome="ks4"] .k4-pill {
+  padding: 8px 15px; border-radius: 999px;
+  background: var(--k4-sunken); border: 1.5px solid var(--k4-border);
+  font-weight: 600; font-size: 15px; color: var(--k4-ink-2);
+}
+body[data-chrome="ks4"] .k4-pill-foundation {
+  padding: 7px 14px; background: var(--k4-foundation-soft);
+  border-color: var(--k4-foundation-line); color: var(--k4-foundation-deep);
+}
+body[data-chrome="ks4"] .k4-pill-higher {
+  padding: 7px 14px; background: var(--k4-higher-soft);
+  border-color: var(--k4-higher-line); color: var(--k4-higher-deep);
+}
+body[data-chrome="ks4"] .k4-tag {
+  padding: 6px 13px; border-radius: 8px; background: var(--k4-sunken);
+  font-family: var(--k4-mono); font-size: 12.5px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--k4-ink-2);
+}
+body[data-chrome="ks4"] .k4-tag-rp {
+  background: var(--k4-combined-soft); border: 1.5px solid var(--k4-combined-line);
+  color: var(--k4-combined-deep);
+}
+body[data-chrome="ks4"] .k4-tag-lg {
+  padding: 8px 15px; border: 1.5px solid var(--k4-border); font-size: 13px;
+}
+
+/* ── NOTE CARD (the "not sure which?" / "which tier?" asides) ───────── */
+
+body[data-chrome="ks4"] .k4-note {
+  background: var(--k4-sunken); border: 1.5px solid var(--k4-border);
+  border-radius: 16px; padding: 22px 24px;
+}
+body[data-chrome="ks4"] .k4-note.k4-note-plain { background: var(--k4-card); }
+body[data-chrome="ks4"] .k4-note p {
+  margin: 12px 0 0; font-size: 18px; line-height: 1.55; color: var(--k4-ink-2);
+}
+
+/* ── SUBJECT CARD (the science picker) ──────────────────────────────── */
+
+body[data-chrome="ks4"] .k4-subject-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+}
+body[data-chrome="ks4"] .k4-subject-mark {
+  width: 48px; height: 48px; border-radius: 14px;
+  border: 2px solid var(--k4-ink); display: grid; place-items: center;
+}
+body[data-chrome="ks4"] .k4-count {
+  font-family: var(--k4-mono); font-size: 13px; letter-spacing: .08em; color: var(--k4-muted-2);
+}
+body[data-chrome="ks4"] .k4-door.k4-subject h2 {
+  font-size: 36px; line-height: 1; color: var(--k4-door-hue, var(--k4-ink));
+}
+body[data-chrome="ks4"] .k4-door.k4-subject p { font-size: 18px; }
+
+/* ── TOPIC LIST (subject page) ──────────────────────────────────────── */
+
+body[data-chrome="ks4"] .k4-list {
+  border: 2px solid var(--k4-ink); border-radius: 18px; overflow: hidden;
+  background: var(--k4-card); box-shadow: 4px 4px 0 var(--k4-border);
+}
+body[data-chrome="ks4"] .k4-row {
+  width: 100%; text-align: left; text-decoration: none;
+  background: none; border: 0; border-bottom: 1.5px solid var(--k4-track);
+  padding: 20px 24px; display: flex; align-items: center; gap: 20px;
+  transition: background-color .14s; color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .k4-row:last-child { border-bottom: 0; }
+body[data-chrome="ks4"] .k4-row:hover { background: var(--k4-sunken-2); color: var(--k4-ink); text-decoration: none; }
+body[data-chrome="ks4"] .k4-row-num {
+  flex: 0 0 46px; height: 46px; border-radius: 12px;
+  display: grid; place-items: center;
+  font-family: var(--k4-mono); font-size: 15px; font-weight: 500;
+  color: var(--k4-ink-2); background: var(--k4-sunken);
+  border: 1.5px solid var(--k4-border);
+}
+body[data-chrome="ks4"] .k4-row-body { flex: 1; min-width: 0; }
+body[data-chrome="ks4"] .k4-row-title {
+  display: block; font-family: var(--k4-display); font-weight: 800;
+  font-size: 24px; letter-spacing: -.02em; color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .k4-row-meta {
+  display: block; margin-top: 5px; font-family: var(--k4-mono);
+  font-size: 13px; letter-spacing: .06em; color: var(--k4-muted-2);
+}
+body[data-chrome="ks4"] .k4-row-arrow { flex: 0 0 auto; }
+
+/* Subtopic rows on the topic page sit a little taller and top-align. */
+body[data-chrome="ks4"] .k4-row.k4-row-st { align-items: flex-start; gap: 18px; }
+body[data-chrome="ks4"] .k4-row.k4-row-st .k4-row-num {
+  flex: 0 0 26px; height: 26px; margin-top: 3px; border-radius: 8px;
+  font-size: 12px;
+}
+body[data-chrome="ks4"] .k4-row.k4-row-st .k4-row-title { font-size: 23px; }
+body[data-chrome="ks4"] .k4-row-desc {
+  display: block; margin-top: 6px; font-size: 17px; line-height: 1.5; color: var(--k4-ink-2);
+}
+body[data-chrome="ks4"] .k4-row.k4-row-st .k4-row-meta { margin-top: 8px; font-size: 12.5px; }
+body[data-chrome="ks4"] .k4-row.k4-row-st .k4-row-arrow { margin-top: 9px; }
+
+/* ── TOPIC PAGE: two-column body + sidebar ──────────────────────────── */
+
+body[data-chrome="ks4"] .k4-split {
+  display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;
+}
+body[data-chrome="ks4"] .k4-split-main { flex: 1 1 560px; min-width: 0; }
+body[data-chrome="ks4"] .k4-split-side {
+  flex: 1 1 320px; max-width: 440px; display: flex; flex-direction: column; gap: 20px;
+}
+
+body[data-chrome="ks4"] .k4-panel {
+  background: var(--k4-card); border: 2px solid var(--k4-ink);
+  border-radius: 18px; padding: 24px; box-shadow: 4px 4px 0 var(--k4-border);
+}
+body[data-chrome="ks4"] .k4-panel.k4-panel-soft {
+  border: 1.5px solid var(--k4-border); box-shadow: none;
+}
+body[data-chrome="ks4"] .k4-panel p {
+  margin: 12px 0 0; font-size: 17px; line-height: 1.55; color: var(--k4-ink-2);
+}
+body[data-chrome="ks4"] .k4-formulae { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+body[data-chrome="ks4"] .k4-formula {
+  padding: 14px 16px; border-radius: 12px; background: var(--k4-sunken-2);
+  border: 1.5px solid var(--k4-border); font-family: var(--k4-mono);
+  font-size: 18px; line-height: 1.4; color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .k4-formula.k4-formula-long { font-size: 16px; }
+
+body[data-chrome="ks4"] .k4-dark {
+  background: var(--k4-dark); border-radius: 18px; padding: 24px;
+  box-shadow: 4px 4px 0 var(--k4-dark-hue, var(--k4-accent));
+  color: var(--k4-on-dark);
+}
+body[data-chrome="ks4"] .k4-dark h2,
+body[data-chrome="ks4"] .k4-dark .k4-dark-title {
+  margin: 12px 0 0; font-family: var(--k4-display); font-weight: 800;
+  font-size: 26px; line-height: 1.1; letter-spacing: -.02em; color: var(--k4-on-dark);
+}
+body[data-chrome="ks4"] .k4-dark p { margin: 12px 0 0; font-size: 17px; line-height: 1.55; color: var(--k4-on-dark-2); }
+
+body[data-chrome="ks4"] .k4-cta {
+  margin-top: 18px; width: 100%;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 52px; border-radius: 13px; background: var(--k4-accent);
+  color: var(--k4-ink); border: 0; cursor: pointer;
+  font-family: var(--k4-display); font-weight: 800; font-size: 19px;
+  text-decoration: none;
+}
+body[data-chrome="ks4"] .k4-cta:hover { background: var(--k4-accent-lift); color: var(--k4-ink); text-decoration: none; }
+body[data-chrome="ks4"] .k4-cta-solid {
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 52px; padding: 0 24px; border-radius: 13px;
+  background: var(--k4-accent-deep); color: var(--k4-on-dark); border: 0;
+  cursor: pointer; font-weight: 700; font-size: 17px; text-decoration: none;
+  white-space: nowrap;
+}
+body[data-chrome="ks4"] .k4-cta-solid:hover { background: var(--k4-accent-dark); color: var(--k4-on-dark); text-decoration: none; }
+body[data-chrome="ks4"] .k4-cta-quiet {
+  display: inline-flex; align-items: center; gap: 10px;
+  height: 50px; padding: 0 22px; border-radius: 13px;
+  background: var(--k4-card); border: 2px solid var(--k4-ink);
+  cursor: pointer; font-weight: 700; font-size: 17px; color: var(--k4-ink);
+  text-decoration: none;
+}
+body[data-chrome="ks4"] .k4-cta-quiet:hover { background: var(--k4-ground); color: var(--k4-ink); text-decoration: none; }
+body[data-chrome="ks4"] .k4-cta-light {
+  margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 50px; border-radius: 13px; background: var(--k4-on-dark);
+  color: var(--k4-ink); border: 0; cursor: pointer; font-weight: 700; font-size: 17px;
+  text-decoration: none;
+}
+body[data-chrome="ks4"] .k4-cta-light:hover { background: var(--k4-card); color: var(--k4-ink); text-decoration: none; }
+
+body[data-chrome="ks4"] .k4-nextrow {
+  margin-top: 24px; display: flex; align-items: center; justify-content: space-between;
+  gap: 18px; flex-wrap: wrap; padding: 22px 24px; border-radius: 16px;
+  background: var(--k4-sunken); border: 1.5px solid var(--k4-border);
+}
+body[data-chrome="ks4"] .k4-nextrow-title {
+  margin: 8px 0 0; font-family: var(--k4-display); font-weight: 800;
+  font-size: 26px; letter-spacing: -.02em; color: var(--k4-ink);
+}
+
+/* ── THIS WEEK'S CHALLENGE STRIP (landing) ──────────────────────────── */
+
+body[data-chrome="ks4"] .k4-challenge {
+  background: var(--k4-sunken); border: 1.5px solid var(--k4-border);
+  border-radius: 18px; padding: 22px 26px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px; align-items: center; animation: k4-rise .6s .24s both;
+}
+body[data-chrome="ks4"] .k4-challenge-cell + .k4-challenge-cell {
+  border-left: 1.5px solid var(--k4-border); padding-left: 22px;
+}
+body[data-chrome="ks4"] .k4-challenge-head {
+  margin: 9px 0 0; font-family: var(--k4-display); font-weight: 800;
+  font-size: 25px; letter-spacing: -.02em; color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .k4-challenge-sub { margin: 5px 0 0; font-size: 16px; color: var(--k4-muted); }
+body[data-chrome="ks4"] .k4-challenge-go { display: flex; justify-content: flex-end; }
+body[data-chrome="ks4"] .k4-challenge-go.k4-challenge-cell { border-left: 0; padding-left: 0; }
+
+body[data-chrome="ks4"] .k4-help { margin: 0; font-size: 16px; color: var(--k4-muted); }
+body[data-chrome="ks4"] .k4-help strong { color: var(--k4-ink); }
+
+/* ── TOP STARS RAIL (GCSE hub) ──────────────────────────────────────── */
+
+body[data-chrome="ks4"] .k4-stars {
+  flex: 1 1 320px; max-width: 420px; background: var(--k4-dark);
+  border-radius: 20px; padding: 26px; box-shadow: 4px 4px 0 var(--k4-higher);
+  display: flex; flex-direction: column; gap: 18px;
+}
+body[data-chrome="ks4"] .k4-stars-title {
+  margin: 8px 0 0; font-family: var(--k4-display); font-weight: 800;
+  font-size: 27px; letter-spacing: -.02em; color: var(--k4-on-dark);
+}
+body[data-chrome="ks4"] .k4-champ {
+  background: var(--k4-dark-2); border-radius: 14px; padding: 16px 18px;
+}
+body[data-chrome="ks4"] .k4-champ-kicker {
+  font-family: var(--k4-mono); font-size: 11.5px; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase; color: #C9BDAC;
+}
+body[data-chrome="ks4"] .k4-champ-row {
+  margin-top: 9px; display: flex; align-items: baseline;
+  justify-content: space-between; gap: 12px;
+}
+body[data-chrome="ks4"] .k4-champ-name {
+  font-family: var(--k4-display); font-weight: 800; font-size: 23px;
+  color: var(--k4-on-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body[data-chrome="ks4"] .k4-champ-pct {
+  font-family: var(--k4-mono); font-size: 19px; color: var(--k4-accent-lift); flex-shrink: 0;
+}
+body[data-chrome="ks4"] .k4-stars-slides { display: grid; flex: 1; }
+body[data-chrome="ks4"] .k4-stars-slide {
+  grid-area: 1 / 1; opacity: 0; transition: opacity .55s ease; pointer-events: none;
+  display: flex; flex-direction: column; gap: 12px;
+}
+body[data-chrome="ks4"] .k4-stars-slide.k4-on { opacity: 1; pointer-events: auto; }
+body[data-chrome="ks4"] .k4-stars-slide-head {
+  font-family: var(--k4-mono); font-size: 11.5px; font-weight: 500;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--k4-on-dark-4);
+}
+body[data-chrome="ks4"] .k4-star-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding-bottom: 11px; border-bottom: 1px solid var(--k4-dark-3);
+}
+body[data-chrome="ks4"] .k4-star-row:last-child { border-bottom: 0; padding-bottom: 0; }
+body[data-chrome="ks4"] .k4-star-who {
+  display: flex; align-items: center; gap: 11px;
+  color: var(--k4-on-dark); font-size: 17px; font-weight: 600;
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body[data-chrome="ks4"] .k4-star-rank {
+  font-family: var(--k4-mono); font-size: 13px; color: var(--k4-on-dark-4); flex-shrink: 0;
+}
+body[data-chrome="ks4"] .k4-star-pct {
+  font-family: var(--k4-mono); font-size: 15px; color: var(--k4-on-dark-3); flex-shrink: 0;
+}
+body[data-chrome="ks4"] .k4-stars-empty {
+  color: var(--k4-on-dark-3); font-size: 16px; font-style: italic; padding: 8px 0;
+}
+body[data-chrome="ks4"] .k4-stars-dots { display: flex; gap: 7px; }
+body[data-chrome="ks4"] .k4-stars-dot {
+  width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0;
+  cursor: pointer; background: var(--k4-dark-3); transition: background .2s, transform .2s;
+}
+body[data-chrome="ks4"] .k4-stars-dot.k4-on { background: var(--k4-accent); transform: scale(1.15); }
+body[data-chrome="ks4"] .k4-stars-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────────────────── */
+
+body[data-chrome="ks4"] .k4-footer {
+  border-top: 2px solid var(--k4-ink); background: var(--k4-sunken); margin-top: auto;
+}
+body[data-chrome="ks4"] .k4-footer-inner {
+  max-width: var(--k4-shell); margin: 0 auto; padding: 22px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 18px; flex-wrap: wrap;
+}
+body[data-chrome="ks4"] .k4-footer-mark {
+  font-family: var(--k4-mono); font-size: 13px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--k4-muted-2);
+}
+body[data-chrome="ks4"] .k4-footer-links { display: flex; gap: 20px; flex-wrap: wrap; font-size: 16px; font-weight: 600; }
+
+/* ── DRAWER (injected by shared/nav.js — restyled, never re-emitted) ─── */
+
+body[data-chrome="ks4"] .nav-drawer {
+  background: var(--k4-ground); border-left: 2px solid var(--k4-ink); color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .nav-drawer-title {
+  font-family: var(--k4-display); font-weight: 800; letter-spacing: -.02em; color: var(--k4-ink);
+}
+body[data-chrome="ks4"] .nav-drawer-head { border-bottom: 1.5px solid var(--k4-border); }
+body[data-chrome="ks4"] .nav-drawer-menu a,
+body[data-chrome="ks4"] .nav-drawer-menu .nav-drawer-link {
+  color: var(--k4-ink); font-weight: 600; border-bottom: 1.5px solid var(--k4-track);
+  background: none; text-decoration: none;
+}
+body[data-chrome="ks4"] .nav-drawer-menu a:hover,
+body[data-chrome="ks4"] .nav-drawer-menu .nav-drawer-link:hover {
+  background: var(--k4-sunken-2); color: var(--k4-ink); text-decoration: none;
+}
+body[data-chrome="ks4"] .nav-drawer-auth { border-top: 1.5px solid var(--k4-border); }
+body[data-chrome="ks4"] .nav-drawer-close { color: var(--k4-ink); }
+
+/* ── THE MOBILE PASS ────────────────────────────────────────────────────
+   The header-overflow defect class: at 390px the nav cluster used to push
+   the shell wider than the viewport and the whole page scrolled sideways.
+   Nothing here may exceed 100vw, so the cluster wraps and the two icon
+   buttons that duplicate a drawer row stand down below 560px.           */
+
+@media (max-width: 900px) {
+  body[data-chrome="ks4"] .k4-main { padding: 20px 18px 48px; }
+  body[data-chrome="ks4"] .k4-main.k4-home { padding: 26px 18px 40px; }
+  body[data-chrome="ks4"] .k4-navbar { padding: 8px 16px; gap: 10px; }
+  body[data-chrome="ks4"] .k4-band { gap: 24px; }
+  body[data-chrome="ks4"] .k4-doors { grid-template-columns: 1fr; }
+  body[data-chrome="ks4"] .k4-challenge-cell + .k4-challenge-cell {
+    border-left: 0; padding-left: 0; border-top: 1.5px solid var(--k4-border); padding-top: 16px;
+  }
+  body[data-chrome="ks4"] .k4-challenge-go { justify-content: flex-start; }
+}
+
+@media (max-width: 560px) {
+  /* Both of these have a labelled row in the drawer, so hiding the icon
+     costs nothing and buys the header its width back. The Challenge chip
+     stays: it is the one action the site is asking for. */
+  body[data-chrome="ks4"] .nav-icon-link,
+  body[data-chrome="ks4"] .nav-text-link { display: none; }
+  body[data-chrome="ks4"] .k4-navbar { padding: 8px 14px; gap: 8px; min-height: 58px; }
+  body[data-chrome="ks4"] .nav-brand { font-size: 18px; gap: 7px; }
+  body[data-chrome="ks4"] .challenge-chip { height: 40px; padding: 0 14px; font-size: 15px; }
+  body[data-chrome="ks4"] .nav-icon-link,
+  body[data-chrome="ks4"] .nav-burger { width: 40px; height: 40px; }
+  body[data-chrome="ks4"] #nav-auth-area a,
+  body[data-chrome="ks4"] #nav-auth-area > span { height: 40px; padding: 0 12px; font-size: 15px; }
+
+  body[data-chrome="ks4"] .k4-door { padding: 24px 22px 22px; }
+  body[data-chrome="ks4"] .k4-door.k4-door-sm { padding: 22px; }
+  body[data-chrome="ks4"] .k4-row { padding: 16px 16px; gap: 14px; }
+  body[data-chrome="ks4"] .k4-row-title { font-size: 20px; }
+  body[data-chrome="ks4"] .k4-row.k4-row-st .k4-row-title { font-size: 19px; }
+  body[data-chrome="ks4"] .k4-panel, body[data-chrome="ks4"] .k4-dark { padding: 20px; }
+  body[data-chrome="ks4"] .k4-stars { padding: 20px; }
+  body[data-chrome="ks4"] .k4-nextrow { padding: 18px; }
+  body[data-chrome="ks4"] .k4-lede { font-size: 18px; }
+  body[data-chrome="ks4"] .k4-crumbs { font-size: 12px; gap: 7px; }
+}
+
+/* Long topic titles are the only strings on these pages that can be wider
+   than a 360px viewport on their own. */
+body[data-chrome="ks4"] .k4-row-title,
+body[data-chrome="ks4"] .k4-h1 { overflow-wrap: break-word; }

@@ -1510,29 +1510,64 @@ PODIUM_YOU_EXPECTED = 3
 # ══════════════════════════════════════════════════════════════════════════
 
 def live_nav():
-    """The landing page's own `<nav class="nav">…</nav>`, lifted verbatim.
+    """The site's canonical public nav, from the ONE function that writes it.
 
     ⚑ READ, NOT COPIED, for the same reason `capture_imports` reads the brand
     SVG out of Design's standalone rather than retyping it: hand-copying
     twenty lines of markup with a gradient definition in the middle of it is
     exactly the transcription that goes wrong quietly and is then defended as
-    "it looks the same". Read from `index.html`, the nav on this page IS the
-    nav on the landing page, permanently, including the day somebody adds a
-    link to it.
+    "it looks the same".
+
+    ── ⊕ MRB-301, 29 Aug 2026 · WHERE IT IS READ FROM CHANGED, AND WHY ─────
+
+    This used to `re.search` the nav out of `index.html`, under Mide's 25 Aug
+    ruling (R1) that this page carries the LANDING PAGE's nav "permanently,
+    including the day somebody adds a link to it".
+
+    That day came four days later and it was not a link. MRB-301 redesigned
+    the landing, so `index.html` now carries Claude Design's header — new
+    markup, drawn SVG marks instead of the emoji, and a `.k4-navbar` wrapper
+    that only means anything to `shared/ks4-chrome.css`. Lifting it landed
+    that markup on THIS page, which does not load that stylesheet and does
+    not set `data-chrome="ks4"`: the icons came through unstyled and the
+    right-hand cluster stopped being pushed right, because `.nav`'s
+    space-between suddenly had one child instead of three. A just-shipped
+    page, broken by a build of a different page, silently.
+
+    MRB-301's scope wall forbids restyling the leaderboard, so the fix is
+    not to give this page the new stylesheet. It is to read the nav from
+    `generate_site_v5.nav_html()` — the single function that has always
+    WRITTEN what index.html displayed, and which still emits the classic
+    gold-to-rust nav by default. No transcription, no regex over another
+    page's HTML, and R1's actual intent (the two never drift by hand) is
+    better served than by parsing a file.
+
+    ⚠️ OPEN, ON MIDE. This page is now pinned to the CLASSIC nav while the
+    KS4 chrome wears Design's. That is a deliberate, reported inconsistency
+    for the length of one run — the leaderboard shipped its own redesign on
+    25 Aug and MRB-301 was told not to touch it. When the leaderboard is
+    brought into the new chrome, this should go back to tracking whatever
+    the landing wears, which is one word: `nav_html(chrome=True)`.
     """
-    src = open("index.html", encoding="utf-8").read()
-    m = re.search(r'<nav class="nav">.*?</nav>', src, re.S)
-    if not m:
+    try:
+        from generate_site_v5 import nav_html
+    except ImportError as e:                                # pragma: no cover
         raise SystemExit(
-            "build_leaderboard_port.py: index.html has no "
-            "`<nav class=\"nav\">…</nav>` to lift.\n"
+            "build_leaderboard_port.py: cannot import nav_html from "
+            "generate_site_v5.py (%s).\n"
             "  Mide's 25 Aug 2026 ruling (R1) is that this page carries the "
-            "LANDING PAGE's nav, so that is where it is read from. Retyping "
-            "it here would make the two drift the first time either changed.")
-    nav = m.group(0)
+            "site's public nav, and that function is the only thing that "
+            "writes it. Retyping it here would make the two drift the first "
+            "time either changed." % e)
+    nav = nav_html()
     for want, why in (
             ('class="nav-brand"', "the gold-to-rust two-chevron + wordmark "
                                   "CLAUDE.md requires on an external root page"),
+            ('class="brand-logo"', "the CLASSIC chevron's own class. Without "
+                                   "this check the assertion above passes on "
+                                   "MRB-301's chrome nav too — it also has a "
+                                   "`.nav-brand` — which is exactly how the "
+                                   "new header reached this page unnoticed"),
             ('id="nav-auth-area"', "nav.js's sign-in slot"),
             ('class="nav-burger"', "the drawer trigger"),
             ('class="nav-cluster"', "the right-hand cluster")):
