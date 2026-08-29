@@ -123,6 +123,14 @@ body[data-chrome="ks4"] a { color: var(--k4-accent-deep); text-decoration: none;
 body[data-chrome="ks4"] a:hover { color: var(--k4-accent-dark); text-decoration: underline; }
 body[data-chrome="ks4"] button { font: inherit; color: inherit; }
 body[data-chrome="ks4"] ::selection { background: var(--k4-accent-soft); }
+/* ⚠️ `hidden` HAS TO WIN. The empty states below ship with the `hidden`
+   attribute and are revealed by shared/ks4-chrome.js only when real data
+   arrives. But `[hidden]`'s `display:none` comes from the UA sheet, and any
+   author rule with a `display` beats it — which is how the Top Stars rail's
+   two crossfade dots appeared under "No stars yet" in the first screenshot,
+   offering a tier toggle for tiers that had nobody in them. */
+body[data-chrome="ks4"] [hidden] { display: none !important; }
+
 body[data-chrome="ks4"] :focus-visible {
   outline: 3px solid var(--k4-accent);
   outline-offset: 2px;
@@ -505,9 +513,9 @@ body[data-chrome="ks4"] .k4-cta-quiet {
 body[data-chrome="ks4"] .k4-cta-quiet:hover { background: var(--k4-ground); color: var(--k4-ink); text-decoration: none; }
 body[data-chrome="ks4"] .k4-cta-light {
   margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  height: 50px; border-radius: 13px; background: var(--k4-on-dark);
+  height: 50px; padding: 0 22px; border-radius: 13px; background: var(--k4-on-dark);
   color: var(--k4-ink); border: 0; cursor: pointer; font-weight: 700; font-size: 17px;
-  text-decoration: none;
+  text-decoration: none; white-space: nowrap;
 }
 body[data-chrome="ks4"] .k4-cta-light:hover { background: var(--k4-card); color: var(--k4-ink); text-decoration: none; }
 
@@ -604,7 +612,10 @@ body[data-chrome="ks4"] .k4-stars-empty {
 body[data-chrome="ks4"] .k4-stars-dots { display: flex; gap: 7px; }
 body[data-chrome="ks4"] .k4-stars-dot {
   width: 9px; height: 9px; border-radius: 50%; border: 0; padding: 0;
-  cursor: pointer; background: var(--k4-dark-3); transition: background .2s, transform .2s;
+  /* NOT --k4-dark-3 (#3E362C): against the #1A1714 card the inactive dot was
+     invisible in the populated screenshot, so the rail looked like it had one
+     tier and no way to reach the other. */
+  cursor: pointer; background: #6A6055; transition: background .2s, transform .2s;
 }
 body[data-chrome="ks4"] .k4-stars-dot.k4-on { background: var(--k4-accent); transform: scale(1.15); }
 body[data-chrome="ks4"] .k4-stars-foot {
@@ -626,6 +637,76 @@ body[data-chrome="ks4"] .k4-footer-mark {
   text-transform: uppercase; color: var(--k4-muted-2);
 }
 body[data-chrome="ks4"] .k4-footer-links { display: flex; gap: 20px; flex-wrap: wrap; font-size: 16px; font-weight: 600; }
+
+/* ── THE FLOATING TUTOR BUTTON HAS TO HAVE SOMEWHERE TO SIT ───────────────
+   `.chat-fab` is `position:fixed; bottom:28px; right:28px; height:54px` from
+   shared/styles.css, and it is an ENTRY POINT that survives this run — the
+   chat is reachable from these pages today and still is.
+
+   But a fixed button in the bottom-right corner lands on whatever is in the
+   bottom-right corner, and on Design's layouts that was the landing's "Take
+   the challenge" CTA and the footer's own links. Seen in the 1440 screenshot,
+   not reasoned about. Mid-scroll overlap is unavoidable with any fixed button
+   and is what every page on this site already does; what is fixable is the
+   page AT REST, so the last content row and the footer links both get out of
+   its lane.                                                                */
+body[data-chrome="ks4"] .k4-main { padding-bottom: 118px; }
+body[data-chrome="ks4"] .k4-main.k4-home { padding-bottom: 108px; }
+
+/* The landing's challenge strip is the one place where a PRIMARY control sat
+   in the corner at rest — "Take the challenge", right-aligned in the last
+   cell, with the FAB drawn straight across it. Reserving the FAB's lane keeps
+   Design's right alignment and moves the button out from under it. The strip
+   is an auto-fit grid, so it simply reflows into the narrower track.       */
+@media (min-width: 901px) {
+  body[data-chrome="ks4"] .k4-challenge { padding-right: 250px; }
+}
+
+@media (min-width: 561px) {
+  body[data-chrome="ks4"] .k4-footer-inner { padding-right: 250px; }
+}
+@media (max-width: 560px) {
+  /* Narrow, the footer stacks and the FAB shrinks to its icon, so the lane
+     it needs is vertical rather than horizontal. */
+  body[data-chrome="ks4"] .k4-footer-inner { padding-bottom: 76px; }
+}
+
+/* ── THE SIGNED-IN CHIP ───────────────────────────────────────────────────
+   shared/nav.js writes this chip with INLINE styles — `background:
+   var(--accent-soft); border:1px solid var(--accent-border); padding:5px 12px;
+   font-size:0.82rem` — which is the classic nav's pill and is correct
+   everywhere else on the site.
+
+   Inline styles beat any selector, so it arrived inside Design's 44px header
+   as a small pink lozenge (visible in the first 390px screenshot). The fix
+   has to be `!important` and it has to be CSS: nav.js is loaded by all ~865
+   LESSON pages, so editing it would change their bytes and their cache-bust
+   stamps, which is the one thing this run may not do.                      */
+body[data-chrome="ks4"] #nav-auth-area > a {
+  background: var(--k4-card) !important;
+  border: 1.5px solid var(--k4-border) !important;
+  color: var(--k4-ink-2) !important;
+  height: 44px !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+  font-family: var(--k4-body) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  white-space: nowrap;
+}
+body[data-chrome="ks4"] #nav-auth-area > a:hover { border-color: var(--k4-ink) !important; }
+body[data-chrome="ks4"] #nav-auth-area > a span {
+  color: var(--k4-ink-2) !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+body[data-chrome="ks4"] #nav-auth-area > a img {
+  width: 28px !important; height: 28px !important;
+  border: 1.5px solid var(--k4-border) !important;
+}
 
 /* ── DRAWER (injected by shared/nav.js — restyled, never re-emitted) ─── */
 

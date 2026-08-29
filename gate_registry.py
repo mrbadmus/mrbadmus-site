@@ -317,6 +317,37 @@ GATES = [
              "`needs` the vendored delivery, because a gate whose corpus is "
              "missing would pass everything, which is worse than no gate."),
 
+    dict(name="ks4_chrome_drive",
+         cmd=["python3", "ks4_chrome_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site/ks4.html",
+         why="the KS4 chrome DRIVEN, and the twin of ks4_chrome_tells the way "
+             "teacher_behaviour is the twin of teacher_tells: `tells` reads "
+             "the built bytes and would pass just as happily on a page that "
+             "renders blank. This walks the whole journey — landing, KS3 "
+             "entry, GCSE hub, both pathways, both tiers, all three sciences, "
+             "a topic page and the LESSON behind it — at 1440/820/390/360, "
+             "signed out AND signed in, on load and again after a reload. It "
+             "asserts every view mounts wearing Design's DOUBLE-chevron mark "
+             "in Bricolage; that nothing scrolls sideways (the "
+             "header-overflow class, and it names the widest element when it "
+             "does); that the console stays quiet apart from the backend "
+             "calls a static harness cannot serve; that no progress is "
+             "CLAIMED IN RENDERED TEXT — which is where `tells` cannot look, "
+             "because a string assembled by JS never appears in the built "
+             "bytes; and that KS3 and the lesson page still carry the CLASSIC "
+             "nav and never `data-chrome`, which is the scope wall driven "
+             "rather than remembered. Signed-in is a seeded localStorage "
+             "session; ⚠️ its access_token has to be a properly encoded JWT, "
+             "because every page loads the Supabase SDK and the SDK DELETES a "
+             "stored session whose token it cannot decode — that cost a round "
+             "of 88 identical failures misdiagnosed as localStorage not "
+             "persisting. Also writes the review screenshots. ⚠️ It proves "
+             "nothing about the live endpoints: the harness serves static "
+             "files, so the two leaderboard surfaces are exercised in their "
+             "EMPTY state here and their populated state was driven by hand "
+             "with a stubbed fetch."),
+
     # ── ⊕ MRB-282 · THE FOUR THAT WERE OUTSIDE THE REGISTRY ────────────
 
     dict(name="gate_coverage",
