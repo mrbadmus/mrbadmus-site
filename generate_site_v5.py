@@ -1090,8 +1090,6 @@ def make_landing():
   </section>
 
   {k4_challenge_strip()}
-
-  <p class="k4-help">Not sure which one? Years 7, 8 and 9 are <strong>KS3</strong>. Years 10 and 11 are <strong>GCSE</strong>.</p>
 </main>"""
 
     return k4_page(
