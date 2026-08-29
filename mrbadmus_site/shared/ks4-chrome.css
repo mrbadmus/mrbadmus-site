@@ -357,6 +357,12 @@ body[data-chrome="ks4"] .k4-door h2 {
 body[data-chrome="ks4"] .k4-door.k4-door-sm h2 { font-size: clamp(32px, 3vw, 42px); line-height: 1.02; }
 body[data-chrome="ks4"] .k4-door p {
   margin: 0; font-size: 19px; line-height: 1.5; color: var(--k4-ink-2);
+  /* The description absorbs the slack, so the pill rows and the "Open X"
+     footers pin to the same baseline across a row of cards whatever the copy
+     length. Without it Biology's one-line blurb rode its pills 27px above
+     Physics's two-line one — visible in the science-picker screenshot. The
+     old site solved this the same way (.courses-col .pathway-card p). */
+  flex: 1 0 auto;
 }
 body[data-chrome="ks4"] .k4-door-foot {
   margin-top: auto; padding-top: 22px; border-top: 1.5px solid var(--k4-border);
