@@ -250,8 +250,21 @@ def walk_links(page, label, want):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--shots", default=os.path.join(ROOT, "docs", "redesign",
-                                                    "mrb-301-shots"))
+    # ⚠️ DEFAULTS OUTSIDE THE REPO, and that is not tidiness.
+    #
+    # This wrote into `docs/redesign/mrb-301-shots/` at first. Those PNGs are
+    # committed, and a screenshot is not byte-deterministic — font rasterising
+    # and layout timing move a few bytes between runs. So recording this
+    # gate's own receipt DIRTIED THE TREE, and prepush_gate correctly refused
+    # to record the eight gates behind it: "a receipt attests a gate against a
+    # TREE; with the tree moving under it, it would attest nothing."
+    #
+    # A gate must not modify what it is attesting. The reviewed screenshots
+    # stay committed under docs/; a plain run writes to scratch and leaves the
+    # tree exactly as it found it. Pass --shots to refresh the committed set
+    # deliberately.
+    ap.add_argument("--shots", default=os.path.join(
+        os.environ.get("KS3_GATE_TMP") or "/tmp", "mrb-301-shots"))
     args = ap.parse_args()
     os.makedirs(args.shots, exist_ok=True)
 
