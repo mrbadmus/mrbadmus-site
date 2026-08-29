@@ -587,9 +587,6 @@ body[data-chrome="ks4"] .k4-challenge-sub { margin: 5px 0 0; font-size: 16px; co
 body[data-chrome="ks4"] .k4-challenge-go { display: flex; justify-content: flex-end; }
 body[data-chrome="ks4"] .k4-challenge-go.k4-challenge-cell { border-left: 0; padding-left: 0; }
 
-body[data-chrome="ks4"] .k4-help { margin: 0; font-size: 16px; color: var(--k4-muted); }
-body[data-chrome="ks4"] .k4-help strong { color: var(--k4-ink); }
-
 /* ── TOP STARS RAIL (GCSE hub) ──────────────────────────────────────── */
 
 body[data-chrome="ks4"] .k4-stars {
