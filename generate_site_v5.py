@@ -806,6 +806,12 @@ K4_ARROW = ('<svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke=
 K4_ARROW_ACCENT = K4_ARROW.replace('stroke="currentColor"', 'stroke="#A93411"').replace(
     'aria-hidden="true">', 'aria-hidden="true" class="k4-row-arrow">')
 
+# AQA's official equation sheets (follow-up to MRB-301). Combined Science
+# shares one sheet across all three subjects; Triple Physics gets its own,
+# larger sheet — the split AQA itself publishes, not one this site invented.
+AQA_EQUATION_SHEET_COMBINED = "https://www.aqa.org.uk/files/fHDU1dLPgDwvQhfFoL805J/83b24f0c972f309cb452cdc82e3800aef7a0b2b8.pdf"
+AQA_EQUATION_SHEET_TRIPLE = "https://www.aqa.org.uk/files/fHDU1dLPgDwvQhfFoL5D2R/1c3e60b181036bcbc2e37485aaaf446ba5f34d9f.pdf"
+
 # Design's drawn subject marks, replacing the ⚡🧪🌿 emoji the live pages use.
 K4_SUBJECT_MARK = {
     "physics": '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 2.5L5 13.5h5.5L9.5 21.5 18 10.5h-5.5l1-8z"/></svg>',
@@ -5103,6 +5109,11 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
         <div class="k4-panel">
           <div class="k4-kicker">Equations you need</div>
           <div class="k4-formulae">{formulae}</div>
+          <div class="k4-formulae-footer">
+            <p class="k4-formulae-footer-label">View the full equation sheet:</p>
+            <a class="k4-formulae-footer-link" href="{AQA_EQUATION_SHEET_COMBINED}" target="_blank" rel="noopener">Combined Science {K4_ARROW}</a>
+            <a class="k4-formulae-footer-link" href="{AQA_EQUATION_SHEET_TRIPLE}" target="_blank" rel="noopener">Triple Science (Physics) {K4_ARROW}</a>
+          </div>
         </div>"""
 
     # ── Required practicals. Design wrote hers as a sentence naming the
