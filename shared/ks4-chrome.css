@@ -235,6 +235,25 @@ body[data-chrome="ks4"] #nav-auth-area img {
   width: 28px; height: 28px; border-radius: 999px; object-fit: cover;
 }
 
+/* The "My class" chip. shared/class-entry.js inserts `.nav-class-link` into
+   `.nav-cluster` immediately before `#nav-auth-area` — an entry point that
+   MRB-301 keeps, and keeps working, because the chrome header preserves both
+   of those hooks. Design never drew it (she had no class entry in her
+   header), so it is dressed here as the sibling of the auth chip it sits
+   next to. ⚠️ Not reachable from a static harness: it needs a signed-in
+   student with a class, so its markup hooks are asserted rather than its
+   pixels. */
+body[data-chrome="ks4"] .nav-class-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 44px; padding: 0 16px; border-radius: 999px;
+  background: var(--k4-accent-soft); border: 1.5px solid var(--k4-accent);
+  color: var(--k4-accent-deep); font-weight: 700; font-size: 16px;
+  text-decoration: none; white-space: nowrap;
+}
+body[data-chrome="ks4"] .nav-class-link:hover {
+  background: var(--k4-accent); color: var(--k4-ink); text-decoration: none;
+}
+
 /* Breadcrumbs live in the page body on this design, not in the header —
    nav.css's .nav-crumbs is suppressed so the two do not double up. */
 body[data-chrome="ks4"] .nav-crumbs { display: none; }
