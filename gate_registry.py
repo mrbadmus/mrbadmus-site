@@ -588,6 +588,15 @@ EXCLUDED = {
     "student_page_drive.py":
         "drives the wired student pages against production data. Same "
         "reason.",
+    "admin_view_drive.py":
+        "drives MRB-303 J2's read-only school view (teacher/admin.html). Two "
+        "halves, and BOTH are unsuitable for a push gate. The negative half "
+        "signs in as real TEST teachers over the network to prove hod and a "
+        "plain teacher get no Admin entry and an honest refusal; the "
+        "positive half stubs the client, because hz_admin/hz_slt carry NO "
+        "PASSWORD on the TEST project and MRB-303 bans setting one. Needs "
+        "the network, real sign-ins and a browser; a push must not depend on "
+        "any of the three. Run it by hand when the admin view changes.",
     "teacher_landing_drive.py":
         "drives the teacher landing as three real signed-in teachers against "
         "the TEST project, to prove MRB-293's self-filter: a teacher holding "

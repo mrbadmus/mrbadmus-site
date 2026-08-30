@@ -144,6 +144,9 @@ RUNTIME_JS_NAME = "student-runtime.js"
 LIVE_JS_NAME = "teacher-live.js"
 LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 
+# ⊕ MRB-303 J2 — the scope-gated Admin entry. See `admin_nav` in page_html.
+ADMIN_NAV_JS_NAME = "teacher-admin-nav.js"
+
 # ── pages this build REFUSES to write ────────────────────────────────────
 #
 # ⚠️ NOT A CONVENTION — A GUARD, and it is the same one `build_student_port`
@@ -193,8 +196,17 @@ _REFUSED = {"import.html"}
 # and it closes the case where the runtime reaches for its own version — the
 # map is the one place a bare name resolves, and a name missing from it
 # resolves to nothing rather than to an error.
+# ⊕ MRB-303 J2 — `teacher-admin-nav.js` IS IN THIS TUPLE BUT IS NOT ONE OF
+# THE FIVE. The other entries are loaded by `teacher-live.js`'s `loadDeps()`
+# and are here so the RUNTIME can resolve their hash; this one is linked by a
+# real `<script>` tag that `page_html` emits (see `admin_nav` on the specs
+# below), so `stamp_versions` would stamp it either way. It is listed anyway
+# for the OTHER half of what this tuple buys: `_verify_stamps` re-hashes every
+# name in it from disk, in both published trees, and refuses to finish if a
+# stamp names bytes that are not what will be served. A tag that is stamped
+# but never verified is exactly the asset that goes stale quietly.
 STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
-                "teacher-data.js", "shoutouts.js")
+                "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js")
 
 
 def asset_hash(text):
@@ -234,7 +246,7 @@ def asset_hash(text):
 # six have one; `assignment.html`, `digest.html` and `insights.html` are new
 # surfaces with no hand-written predecessor at all.
 PAGES = [
-    dict(screen="classes", node=30, out="classes.html",
+    dict(screen="classes", node=30, out="classes.html", admin_nav=True,
          fixture_out="classes-fixture.html",
          fixture_js="teacher-fixture-classes.js",
          empty_out="classes-empty-fixture.html",
@@ -245,7 +257,7 @@ PAGES = [
          # screen, so on this page the sheet was markup that could never open.
          overlays=("searchOpen", "hasToast"),
          retire="classes.html"),
-    dict(screen="class", node=87, out="class-detail.html",
+    dict(screen="class", node=87, out="class-detail.html", admin_nav=False,
          fixture_out="class-detail-fixture.html",
          fixture_js="teacher-fixture-class-detail.js",
          empty_out="class-detail-empty-fixture.html",
@@ -253,7 +265,7 @@ PAGES = [
          title="Class \u00b7 MrBadmusAI",
          overlays=("searchOpen", "bulkOpen", "hasToast"),
          retire="class-detail.html"),
-    dict(screen="student", node=222, out="student-detail.html",
+    dict(screen="student", node=222, out="student-detail.html", admin_nav=True,
          fixture_out="student-detail-fixture.html",
          fixture_js="teacher-fixture-student-detail.js",
          empty_out="student-detail-empty-fixture.html",
@@ -261,7 +273,7 @@ PAGES = [
          title="Student \u00b7 MrBadmusAI",
          overlays=("searchOpen", "bulkOpen", "hasToast"),
          retire="student-detail.html"),
-    dict(screen="marking", node=258, out="assignment.html",
+    dict(screen="marking", node=258, out="assignment.html", admin_nav=True,
          fixture_out="assignment-fixture.html",
          fixture_js="teacher-fixture-assignment.js",
          empty_out="assignment-empty-fixture.html",
@@ -269,7 +281,7 @@ PAGES = [
          title="Assignment \u00b7 MrBadmusAI",
          overlays=("searchOpen", "hasToast"),
          retire=None),
-    dict(screen="digest", node=312, out="digest.html",
+    dict(screen="digest", node=312, out="digest.html", admin_nav=True,
          fixture_out="digest-fixture.html",
          fixture_js="teacher-fixture-digest.js",
          empty_out="digest-empty-fixture.html",
@@ -282,7 +294,7 @@ PAGES = [
     # the hand-written CSV/Excel wizard and stays hand-written. Design's
     # import screen (node 346) is still in `SCREENS`, because every OTHER page
     # has to PRUNE it — it is simply never the screen a page keeps.
-    dict(screen="insights", node=401, out="insights.html",
+    dict(screen="insights", node=401, out="insights.html", admin_nav=True,
          fixture_out="insights-fixture.html",
          fixture_js="teacher-fixture-insights.js",
          empty_out="insights-empty-fixture.html",
@@ -2156,6 +2168,30 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
     ) if fixture else (
         "<script src=\"%s\"></script>\n" % LIVE_JS_URL
     )
+
+    # ⊕ MRB-303 J2 — the Admin entry, on FIVE of the six.
+    #
+    # ⚠️ A PLAIN <script> TAG, AND IT TOUCHES NEITHER `__MRB_TPL__` NOR
+    # `teacher_rulings.py`. The script appends one link to
+    # `[data-port-region="topbar"]` after the runtime has drawn, and re-appends
+    # it after every redraw. Design's compiled tree is not edited, so this
+    # carries none of the risk that editing a `parts` attribute would.
+    #
+    # ⛔ `class-detail.html` IS DELIBERATELY EXCLUDED — `admin_nav` is False on
+    # its spec. MRB-303's brief is explicit that the class detail page is not
+    # modified by this run: it is what Admin LINKS TO, and nothing more. A user
+    # on that page reaches Admin via the brand mark or the browser's back
+    # button, which is an accepted, named gap rather than an oversight.
+    #
+    # Emitted on the FIXTURE as well as the live page, on purpose: the gates
+    # describe the fixture as "the same bytes apart from its banner and its
+    # last two script tags", and that sentence is what lets them measure the
+    # fixture and report on the production page. On a fixture there is no
+    # config.js, no SDK and no session, so the script waits for a client that
+    # never arrives and adds nothing — which is the correct outcome, not a
+    # failure.
+    admin_nav = ("<script src=\"/shared/%s\"></script>\n" % ADMIN_NAV_JS_NAME
+                 if spec.get("admin_nav") else "")
     # ⚠️ EMITTED ON BOTH PAGES, including the fixture, which never reads it.
     # The gates document the fixture as "the same bytes apart from its banner
     # and its last two script tags", and that sentence is what lets them
@@ -2229,7 +2265,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            "    props: {}\n"
            "  });\n"
            "};",
-           dep_map,
+           dep_map + admin_nav,
            tail)),
         versions)
 

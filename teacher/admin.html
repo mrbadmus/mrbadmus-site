@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>School — Mr Badmus AI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=21ae3356"/>
+  <style>
+    html { background: var(--bg); }
+    :root {
+      --darker: var(--bg);
+      --dark:   var(--sunken);
+      --card2:  var(--sunken);
+      --shadow: var(--shadow-card);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--darker);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 80px 20px 60px;
+      /* Hidden until the guard's onAllowed fires AND the admin-scope check
+         answers. Fail-closed: if the guard bounces, the scope check refuses,
+         or JS fails outright, the page never reveals school-wide staff data.
+         The refusal state reveals the body too — see `notice()` — so a
+         legitimate teacher who lands here gets a sentence, never a page that
+         stays blank and looks broken. */
+      display: none;
+    }
+
+    nav.top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
+    .pill.env-prod { background: var(--sunken); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    .container { max-width: 980px; margin: 0 auto; }
+    .page-header { margin-bottom: 10px; }
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      font-size: 1.7rem;
+    }
+    .page-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .page-sub .sep { padding: 0 6px; opacity: 0.6; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 30px;
+      margin-bottom: 22px;
+    }
+    .card h2 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* At a glance */
+    .stats { display: flex; flex-wrap: wrap; gap: 12px; }
+    .stat {
+      flex: 1 1 150px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .stat .n { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+    .stat .l {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* A row — used for both teachers and classes. Flex, not a table, so it
+       reflows at 390px instead of scrolling sideways. */
+    .row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px 14px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+    .row:first-of-type { border-top: none; }
+    .row .name { font-weight: 700; font-size: 1rem; }
+    .row .meta { color: var(--muted); font-size: 0.84rem; }
+    .row .right { margin-left: auto; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    @media (max-width: 560px) {
+      body { padding: 76px 14px 50px; }
+      .card { padding: 20px 16px; }
+      .row .right { margin-left: 0; width: 100%; }
+      /* At 390px the nav has no room to be generous. Without these three the
+         wordmark and "My classes" run into each other with no gap at all, and
+         "Sign out" wraps onto a second line — which makes the bar two rows
+         tall and tucks the page heading underneath the fixed nav. The
+         `gap` separates them, `nowrap` keeps each control on one line. */
+      nav.top-nav { padding: 10px 14px; gap: 12px; }
+      nav.top-nav > a { white-space: nowrap; }
+      .nav-right { gap: 8px; }
+      .nav-right a, .signout-btn { white-space: nowrap; }
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--sunken);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .tag.pending { background: var(--higher-soft); color: var(--higher); border-color: transparent; }
+    .tag.you     { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+
+    .classlist { color: var(--muted); font-size: 0.84rem; }
+    .count { font-variant-numeric: tabular-nums; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .empty { color: var(--muted); font-size: 0.9rem; }
+
+    a.classlink { color: var(--text); text-decoration: none; font-weight: 700; }
+    a.classlink:hover { color: var(--accent); text-decoration: underline; }
+
+    /* The refusal, and the honest-failure state. Plain words, no codes. */
+    .notice { max-width: 620px; margin: 40px auto; text-align: center; }
+    .notice h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .notice p { color: var(--muted); font-size: 1rem; line-height: 1.6; }
+    .notice a { color: var(--accent); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/index.html" style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:-0.01em;">MrBadmusAI</a>
+  <div class="nav-right">
+    <a href="/teacher/classes.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">My classes</a>
+    <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
+    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<div class="container" id="main" style="display:none;">
+  <div class="page-header"><h1>School</h1></div>
+  <div class="page-sub" id="school-line">…</div>
+
+  <div class="card">
+    <h2>At a glance</h2>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="card">
+    <h2>Teachers</h2>
+    <div id="teachers"></div>
+    <div class="empty" id="teachers-empty" style="display:none;">No teachers on record for this school yet.</div>
+  </div>
+
+  <div class="card">
+    <h2>Classes</h2>
+    <div id="classes"></div>
+    <div class="empty" id="classes-empty" style="display:none;">No classes set up for this year yet.</div>
+  </div>
+</div>
+
+<div class="container" id="notice" style="display:none;">
+  <div class="notice">
+    <h1 id="notice-title"></h1>
+    <p id="notice-body"></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js?v=06f24811"></script>
+<!-- ⚠️ NOT `defer`, AND IT MUST COME BEFORE `teacher-data.js`. CLAUDE.md's
+     MRB-267 note says this in words — "load order is now load-bearing:
+     class-entry.js must come before student-data.js / teacher-data.js on any
+     page that uses either" — and a `defer`red tag breaks it SILENTLY, because
+     a deferred script runs after every non-deferred one. `class-entry.js`
+     owns the single `workingAcademicYear()` implementation and
+     `teacher-data.js` delegates to it, so with `defer` the first read this
+     page makes threw:
+        [teacher-data] shared/class-entry.js is not loaded, and it owns
+        workingAcademicYear(). Add it to this page BEFORE this file.
+     `teacher-profile.html` and `import.html` can defer it because neither
+     calls into `teacher-data.js`; this page does, on its very first read.
+     Caught by admin_view_drive.py, which is the reason the drive exists. -->
+<script src="/shared/class-entry.js?v=d47329ae"></script>
+<script src="/shared/teacher-guard.js?v=1f4db0b2"></script>
+<script src="/shared/teacher-data.js?v=a68b6062"></script>
+<script src="/shared/teacher-admin-nav.js?v=b659f4d2"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   MRB-303 Job 2 — Admin v1: the READ-ONLY school view.
+
+   Who reaches it: a teacher whose account carries the `school_admin` or
+   `slt` scope (or the legacy `profiles.role = 'admin'` path). The predicate
+   is NOT written here — it is `MrBadmusAdminScope.isAdmin`, the same
+   function that decides whether the Admin link appears in the nav, so the
+   link and the page cannot disagree.
+
+   ⛔ THIS PAGE WRITES NOTHING. No form, no button that mutates, no RPC.
+   Every control is a link. That is the whole of "v1", and it is why the
+   page can be shipped against production data on the strength of RLS
+   alone.
+
+   ⚠️ WHERE THE NUMBERS COME FROM, and why none of them is computed here.
+   `shared/teacher-data.js` already owns the reads the teacher dashboard
+   derives from, and a second implementation of "how many students are in
+   this class" is a second answer that will drift from the first:
+
+     · the academic year   → `TD.loadAcademicYears()`, which applies
+       `workingAcademicYear` from class-entry.js. NEVER `is_current`: that
+       flag is moved by hand on 1 September and on 30 Aug 2026 it still
+       pointed at 2025-26 on production. Never a literal year string either.
+     · roster counts + the subject pill → `TD.loadClassMatrices()`, exactly
+       as `teacher-live.js`'s `base()` does it (`pack.members.length`,
+       `pack.class.pill_label`).
+
+   ⚠️ AND WHERE ONE NUMBER CANNOT: `loadClassMatrices` DRIVES OFF
+   `class_teachers` AND THROWS `not_authorised` FOR ANY CLASS THAT RETURNS
+   NO DRIVER ROW. That is right for a teacher — a class they do not teach
+   should not silently vanish — but a school-wide view legitimately contains
+   classes NOBODY has been assigned to yet. On production today that is 57
+   of 69 classes for 2026-27, because the teachers those classes belong to
+   have not claimed their accounts. Handing all 69 ids to it throws and the
+   page renders nothing.
+
+   So the ids are SPLIT: classes with a live `class_teachers` row go through
+   `loadClassMatrices` and get the dashboard's own numbers; the remainder
+   get their roster count from `countMembers()` below, which is a deliberate
+   mirror of that function's member stage (same table, same
+   `deleted_at`/`left_at` filters, same "skip a soft-deleted student"
+   defence) and is commented as such. Two code paths, one definition.
+
+   ⚠️ NO `subjectFromCode` HERE, ON PURPOSE. It lives in `teacher-live.js`,
+   which cannot be loaded on this page — that file self-runs a full
+   dashboard boot on load (its own guard, its own mount into `#mrb-teacher`)
+   — and copying it would be the second answer this file exists to avoid.
+   The subject shown is `pill_label`, which `loadClassMatrices` derives from
+   `class_teachers.subject_id` and hands over ready-made. A class with no
+   teacher has no pill, which is honest rather than guessed.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+var sb = null, uid = null;
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
+// Keep the environment on every hop, exactly as the ported pages' MRB_GO
+// does — a tester on TEST must not be dropped onto production data.
+function envQ() {
+  return (window.MrBadmusConfig && window.MrBadmusConfig.environment === 'test')
+    ? 'env=test' : '';
+}
+function classHref(id) {
+  var q = ['class=' + encodeURIComponent(id)];
+  if (envQ()) { q.push(envQ()); }
+  return '/teacher/class-detail.html?' + q.join('&');
+}
+
+/* Reveal the page with a sentence instead of data. Used for the scope
+   refusal AND for "no school on your account" — never a blank page, never a
+   silent redirect, and never a status code or the word RLS. */
+function notice(title, body) {
+  document.getElementById('notice-title').textContent = title;
+  document.getElementById('notice-body').textContent = body;
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('notice').style.display = 'block';
+  document.body.style.display = 'block';
+}
+
+// PostgREST takes the id list in the URL, so long lists are chunked. Same
+// reason and same shape as teacher-data.js's own `inChunks`.
+async function inChunks(ids, fn, size) {
+  var out = [];
+  for (var i = 0; i < ids.length; i += (size || 40)) {
+    out = out.concat(await fn(ids.slice(i, i + (size || 40))) || []);
+  }
+  return out;
+}
+
+/* The mirror named in the header comment. Only ever called for classes that
+   have NO `class_teachers` row, which is exactly the set `loadClassMatrices`
+   refuses to answer for. Filters copied from its member stage so the two
+   cannot mean different things by "a student in this class". */
+async function countMembers(classIds) {
+  var counts = {};
+  classIds.forEach(function (id) { counts[id] = 0; });
+  // One shape on every path — an early return of a bare map would make
+  // `fallback.counts` undefined and silently zero every roster.
+  if (!classIds.length) { return { counts: counts, rows: [] }; }
+  var rows = await inChunks(classIds, async function (chunk) {
+    var r = await sb.from('class_members')
+      .select('class_id, student_id, left_at, student:student_id ( id, deleted_at )')
+      .in('class_id', chunk)
+      .is('deleted_at', null);
+    if (r.error) { throw r.error; }
+    return r.data || [];
+  });
+  rows.forEach(function (m) {
+    if (!m.student || m.student.deleted_at) { return; }   // same defence
+    if (m.left_at != null) { return; }                    // active only
+    counts[m.class_id] = (counts[m.class_id] || 0) + 1;
+  });
+  return { counts: counts, rows: rows };
+}
+
+/* Access in plain words — the same vocabulary teacher-profile.html uses, and
+   never the word "scope". */
+function accessLabels(scopeRows, nowIso) {
+  var labels = [];
+  (scopeRows || []).forEach(function (g) {
+    var live = !g.deleted_at && g.started_at <= nowIso &&
+               (!g.ended_at || g.ended_at > nowIso);
+    if (!live) { return; }
+    if (g.scope === 'hod') { labels.push('Head of ' + (g.department || 'department')); }
+    else if (g.scope === 'slt') { labels.push('Senior leadership'); }
+    else if (g.scope === 'school_admin') { labels.push('School admin'); }
+  });
+  return labels;
+}
+
+function fullName(p) {
+  var n = ((p.first_name || '') + ' ' + (p.last_name || '')).trim();
+  return n || p.display_name || 'Unnamed';
+}
+
+function dateLabel(iso) {
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) { return ''; }
+  var M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d.getDate() + ' ' + M[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+async function render(ctx) {
+  var TD = window.MrBadmusTeacherData;
+  var schoolId = ctx.profile.school_id;
+
+  if (!schoolId) {
+    /* Real and reachable: production has an `admin` profile with a null
+       school. Every read below is school-scoped, so there is nothing to
+       show and saying so is better than an empty page of headings. */
+    notice('No school linked to your account',
+           'Your account isn’t attached to a school yet, so there’s ' +
+           'nothing to show here. Once a school is linked this page will ' +
+           'list its teachers and classes.');
+    return;
+  }
+
+  // ── the year, and the school's name ────────────────────────────────────
+  var schoolRes, yearIdx;
+  var pair = await Promise.all([
+    sb.from('schools').select('name').eq('id', schoolId).single(),
+    TD.loadAcademicYears(),
+  ]);
+  schoolRes = pair[0]; yearIdx = pair[1];
+
+  var working = yearIdx.working;
+  var schoolName = (schoolRes.data && schoolRes.data.name) || 'Your school';
+  document.getElementById('school-line').innerHTML =
+    escapeHtml(schoolName) +
+    (working ? '<span class="sep">·</span>' + escapeHtml(working.name || '') : '');
+
+  if (!working) {
+    notice('No academic year set up',
+           'This school has no academic year on record, so there are no ' +
+           'classes to show yet.');
+    return;
+  }
+
+  // ── classes in the school, for the working year ────────────────────────
+  var clsRes = await sb.from('classes')
+    .select('id, name, key_stage, year_group, academic_year_id')
+    .eq('school_id', schoolId)
+    .eq('academic_year_id', working.id)
+    .is('deleted_at', null);
+  if (clsRes.error) { throw clsRes.error; }
+  var classes = clsRes.data || [];
+  var classIds = classes.map(function (c) { return c.id; });
+
+  // ── who teaches what, school-wide (RLS: class_teachers_admin_read) ─────
+  var links = classIds.length ? await inChunks(classIds, async function (chunk) {
+    var r = await sb.from('class_teachers')
+      .select('class_id, teacher_id')
+      .in('class_id', chunk)
+      .is('deleted_at', null)
+      .is('ended_at', null);
+    if (r.error) { throw r.error; }
+    return r.data || [];
+  }) : [];
+
+  /* A teacher can hold two links to one class (one per subject) — production
+     and the TEST fixtures both contain that shape — so the pairs are made
+     unique before anything counts them. Counting rows would have reported
+     "Mide Badmus, 2 classes" for one class taught twice. */
+  var teacherOf = {};                 // classId -> [teacherId]
+  var classesOf = {};                 // teacherId -> [classId]
+  links.forEach(function (l) {
+    if (!l.class_id || !l.teacher_id) { return; }
+    teacherOf[l.class_id] = teacherOf[l.class_id] || [];
+    classesOf[l.teacher_id] = classesOf[l.teacher_id] || [];
+    if (teacherOf[l.class_id].indexOf(l.teacher_id) === -1) {
+      teacherOf[l.class_id].push(l.teacher_id);
+    }
+    if (classesOf[l.teacher_id].indexOf(l.class_id) === -1) {
+      classesOf[l.teacher_id].push(l.class_id);
+    }
+  });
+
+  // ── the split described in the header comment ──────────────────────────
+  var linked = classIds.filter(function (id) { return teacherOf[id]; });
+  var unlinked = classIds.filter(function (id) { return !teacherOf[id]; });
+
+  var packs = linked.length ? await TD.loadClassMatrices(linked) : {};
+  var fallback = await countMembers(unlinked);
+
+  var rosterOf = {}, pillOf = {};
+  var students = {};                              // distinct student ids
+  linked.forEach(function (id) {
+    var pack = packs[id];
+    if (!pack) { return; }
+    rosterOf[id] = pack.members.length;           // base()'s own `n`
+    pillOf[id] = pack.class.pill_label || '';
+    pack.members.forEach(function (m) { students[m.student_id] = 1; });
+  });
+  unlinked.forEach(function (id) { rosterOf[id] = fallback.counts[id] || 0; });
+  (fallback.rows || []).forEach(function (m) {
+    if (m.student && !m.student.deleted_at && m.left_at == null) {
+      students[m.student_id] = 1;
+    }
+  });
+
+  // ── the people ─────────────────────────────────────────────────────────
+  var peopleRes = await Promise.all([
+    sb.from('profiles')
+      .select('id, first_name, last_name, display_name, role')
+      .eq('school_id', schoolId)
+      .in('role', ['teacher', 'hod', 'admin'])
+      .is('deleted_at', null),
+    sb.from('staff_scopes')
+      .select('profile_id, scope, department, started_at, ended_at, deleted_at')
+      .eq('school_id', schoolId),
+    /* ⚠️ AN EMPTY LIST HERE IS NOT AN ERROR. `pending_staff` RLS is
+       `school_admin` ONLY — slt is deliberately not on it — so an
+       slt-scoped viewer is handed zero rows by the database and the
+       "Invited" section correctly shows nothing. That is the policy doing
+       its job, and it must degrade to silence rather than to a failure. */
+    sb.from('pending_staff')
+      .select('id, first_name, last_name, email, profile_role, claimed_at, claimed_profile_id')
+      .eq('school_id', schoolId)
+      .is('deleted_at', null),
+  ]);
+  var profiles = peopleRes[0].data || [];
+  var scopeRows = peopleRes[1].data || [];
+  var pending = peopleRes[2].data || [];
+
+  var scopesBy = {};
+  scopeRows.forEach(function (s) {
+    (scopesBy[s.profile_id] = scopesBy[s.profile_id] || []).push(s);
+  });
+
+  /* A claimed invitation is NOT a second person. The claim carries
+     `claimed_profile_id`, so it becomes an annotation on that teacher's live
+     row and never a row of its own — otherwise every teacher who has signed
+     in would appear twice, once as themselves and once as their own
+     invitation. */
+  var claimedOn = {};
+  pending.forEach(function (p) {
+    if (p.claimed_at && p.claimed_profile_id) { claimedOn[p.claimed_profile_id] = p.claimed_at; }
+  });
+  var unclaimed = pending.filter(function (p) { return !p.claimed_at; });
+
+  var nowIso = new Date().toISOString();
+  var nameById = {};
+  profiles.forEach(function (p) { nameById[p.id] = fullName(p); });
+
+  // ── at a glance ────────────────────────────────────────────────────────
+  var stats = [
+    [classes.length, classes.length === 1 ? 'Class' : 'Classes'],
+    [Object.keys(students).length, 'Students'],
+    [profiles.length, profiles.length === 1 ? 'Teacher' : 'Teachers'],
+    [unclaimed.length, 'Invited, not joined'],
+  ];
+  document.getElementById('stats').innerHTML = stats.map(function (s) {
+    return '<div class="stat"><div class="n">' + s[0] + '</div>' +
+           '<div class="l">' + escapeHtml(s[1]) + '</div></div>';
+  }).join('');
+
+  // ── teachers ───────────────────────────────────────────────────────────
+  profiles.sort(function (a, b) {
+    return fullName(a).localeCompare(fullName(b), undefined, { numeric: true });
+  });
+
+  var rows = profiles.map(function (p) {
+    var mine = (classesOf[p.id] || []).map(function (id) {
+      var c = classes.filter(function (x) { return x.id === id; })[0];
+      return c ? c.name : null;
+    }).filter(Boolean).sort(function (a, b) {
+      return String(a).localeCompare(String(b), undefined, { numeric: true });
+    });
+
+    var labels = accessLabels(scopesBy[p.id], nowIso);
+    // The legacy dual-read path is real access and is shown as such, so an
+    // admin reading this list is not told something the database disagrees
+    // with. See the note in teacher-admin-nav.js.
+    if (!labels.length && p.role === 'admin') { labels.push('School admin'); }
+
+    var bits = [];
+    bits.push('<span class="name">' + escapeHtml(fullName(p)) + '</span>');
+    if (p.id === uid) { bits.push('<span class="tag you">You</span>'); }
+    labels.forEach(function (l) { bits.push('<span class="tag">' + escapeHtml(l) + '</span>'); });
+    if (claimedOn[p.id]) {
+      bits.push('<span class="meta">Joined ' + escapeHtml(dateLabel(claimedOn[p.id])) + '</span>');
+    }
+
+    /* An honest zero. A teacher with no classes this year shows "0 classes",
+       never a blank — a blank reads as "we could not find out", and this
+       page must never say that when it knows. */
+    var right = '<span class="count">' + mine.length + '</span> ' +
+                '<span class="meta">' + (mine.length === 1 ? 'class' : 'classes') + '</span>';
+    if (mine.length) {
+      right += '<span class="classlist">' + escapeHtml(mine.join(', ')) + '</span>';
+    }
+
+    return '<div class="row">' + bits.join(' ') +
+           '<span class="right">' + right + '</span></div>';
+  });
+
+  unclaimed.sort(function (a, b) {
+    return String((a.last_name || '') + a.first_name)
+      .localeCompare(String((b.last_name || '') + b.first_name), undefined, { numeric: true });
+  });
+  unclaimed.forEach(function (p) {
+    /* The seeded name is the fallback display name and the email is the
+       identity — the claim matches on email only, never on a name. */
+    var nm = ((p.first_name || '') + ' ' + (p.last_name || '')).trim() || p.email;
+    rows.push('<div class="row">' +
+      '<span class="name muted">' + escapeHtml(nm) + '</span> ' +
+      '<span class="tag pending">Invited</span> ' +
+      '<span class="meta">' + escapeHtml(p.email || '') + '</span>' +
+      '<span class="right"><span class="meta">Hasn’t signed in yet</span></span>' +
+      '</div>');
+  });
+
+  if (!rows.length) {
+    document.getElementById('teachers-empty').style.display = 'block';
+  } else {
+    document.getElementById('teachers').innerHTML = rows.join('');
+  }
+
+  // ── classes ────────────────────────────────────────────────────────────
+  classes.sort(function (a, b) {
+    return String(a.name).localeCompare(String(b.name), undefined, { numeric: true });
+  });
+
+  var crows = classes.map(function (c) {
+    var who = (teacherOf[c.id] || []).map(function (id) {
+      return nameById[id] || 'Another teacher';
+    }).sort();
+    var n = rosterOf[c.id];
+
+    var left = '<a class="classlink" href="' + escapeHtml(classHref(c.id)) + '">' +
+               escapeHtml(c.name) + '</a>';
+    if (c.key_stage) { left += ' <span class="tag">' + escapeHtml(c.key_stage) + '</span>'; }
+    if (pillOf[c.id]) { left += ' <span class="meta">' + escapeHtml(pillOf[c.id]) + '</span>'; }
+
+    var right = '<span class="count">' + (n == null ? 0 : n) + '</span> ' +
+                '<span class="meta">' + (n === 1 ? 'student' : 'students') + '</span>' +
+                '<span class="classlist">' +
+                (who.length ? escapeHtml(who.join(', ')) : 'No teacher assigned') +
+                '</span>';
+
+    return '<div class="row">' + left +
+           '<span class="right">' + right + '</span></div>';
+  });
+
+  if (!crows.length) {
+    document.getElementById('classes-empty').style.display = 'block';
+  } else {
+    document.getElementById('classes').innerHTML = crows.join('');
+  }
+
+  document.getElementById('main').style.display = 'block';
+  document.body.style.display = 'block';
+}
+
+MrBadmusTeacherGuard.requireTeacherRole({
+  onAllowed: async function (ctx) {
+    sb = MrBadmusTeacherGuard.getClient();
+    uid = ctx.user.id;
+
+    if (window.MrBadmusConfig.environment === 'test') {
+      var pill = document.getElementById('env-pill');
+      pill.className = 'pill env-test';
+      pill.style.display = 'inline-block';
+    }
+
+    /* THE GUARD ABOVE ONLY PROVED "a teacher". This is the admin gate, and
+       it is the same predicate the nav link uses. Fail-closed: any error
+       inside `isAdmin` returns false, so a network blip refuses rather than
+       admits. */
+    var ok = false;
+    try { ok = await window.MrBadmusAdminScope.isAdmin(sb, uid); }
+    catch (e) { ok = false; }
+
+    if (!ok) {
+      notice('This page is for school admins',
+             'Your account doesn’t have school admin access, so there’s ' +
+             'nothing for you here. Your own classes are on the My classes page.');
+      return;
+    }
+
+    try {
+      await render(ctx);
+    } catch (e) {
+      console.error('[admin]', e);
+      /* An honest failure, in the same plain voice as the refusal. It must
+         not be mistaken for "you have no access" — that would send an admin
+         to ask for a permission they already hold. */
+      notice('We couldn’t load the school right now',
+             'Something went wrong fetching your school’s teachers and ' +
+             'classes. Please refresh the page in a moment.');
+    }
+  },
+});
+</script>
+</body>
+</html>
