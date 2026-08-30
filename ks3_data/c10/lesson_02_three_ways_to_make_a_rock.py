@@ -428,9 +428,15 @@ LESSON = {
                      "creatures. Same compound as sample 4, different group."},
              {"id": "s6", "code": "Sample 6", "found": "roof of an old house",
               "answer": "metamorphic",
+              # ⚠️ The third bullet used to read "Was originally mudstone"
+              # (C10-04, chem audit 25 Aug 2026) — half the answer stated as
+              # evidence, and not something anyone can observe on a hand
+              # sample. Replaced with the observable clue that points the
+              # same way, which is also what the stretch paragraph teaches.
               "facts": ["Dark grey and splits cleanly into thin flat sheets",
                         "Grains far too small to see",
-                        "Was originally mudstone"],
+                        "The sheets it splits into cut across the faint "
+                        "traces of the original layers"],
               "why": "Slate. Mudstone put under pressure has its flat grains "
                      "rotated until they all point the same way, and the rock "
                      "then splits along that direction. It never melted — "

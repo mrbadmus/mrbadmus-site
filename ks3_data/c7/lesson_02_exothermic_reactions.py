@@ -214,9 +214,13 @@ LESSON = {
     "ks4_links":   [],
 
     # ── framing ─────────────────────────────────────────────────────────────
-    "big_question": "Every fire you have ever seen is one reaction giving out "
-                    "more energy than it took to start it. Nothing was added "
-                    "— so where does the heat come from?",
+    # ⚠️ "Nothing was added" was FALSE for a fire — oxygen is added
+    # continuously, which is exactly what C5's oxidation lesson teaches
+    # (C7-05, chem audit 25 Aug 2026). The puzzle is kept; the false clause
+    # is replaced with the true one about ENERGY not being fed in.
+    "big_question": "Every fire you have ever seen gave out far more energy "
+                    "than the match that started it. Nobody keeps feeding it "
+                    "energy — so where does the heat come from?",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
     # Five stops, Design's `RAIL`, matching `docs/ks3/rail-manifest.md` stop
@@ -586,7 +590,7 @@ LESSON = {
                  "through a frost, and a large enough badly-managed pile of "
                  "hay can reach the point of catching fire on its own. "
                  "Farmers have lost barns to it. The energy is coming out of "
-                 "the chemical bonds in the plant material, and it makes no "
+                 "the chemical store in the plant material, and it makes no "
                  "difference to the arithmetic that the reaction is being run "
                  "by bacteria rather than a Bunsen."},
     ],

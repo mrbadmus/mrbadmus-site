@@ -278,7 +278,7 @@ QUESTIONS = [
     {
         "id": "c7-01-h02",
         "band": "harder",
-        "text": "Two identical blocks of metal are at 20 °C. One has twice "
+        "text": "Two blocks of the same metal are at 20 °C. One has twice "
                 "the mass of the other. What can you say about the energy "
                 "each one holds?",
         "options": [

@@ -304,8 +304,9 @@ LESSON = {
 
         {"type": "explainer",
          "text": "<strong>Neutralisation</strong> is the reaction between an "
-                 "acid and a base. The products are always the same two "
-                 "things, whichever acid and whichever base you started with."},
+                 "acid and a base. With an alkali the products are always the "
+                 "same two things, whichever acid and whichever alkali you "
+                 "started with."},
 
         # ⭐ THE WORD EQUATION, DRAWN. Design sets it as a 24px display line
         # with an inline SVG arrow between two spans (page line 106). An
@@ -325,7 +326,7 @@ LESSON = {
         # photosynthesis.
         {"type": "rule", "id": "the-two-products",
          "eyebrow": "The rule",
-         "statement": "An acid and a base always make the same two things.",
+         "statement": "An acid and an alkali always make the same two things.",
          "equation": {"reactants": "acid + alkali",
                       "arrow": "makes",
                       "products": "salt + water",
@@ -337,9 +338,9 @@ LESSON = {
                       "condition": "the salt takes its metal from the alkali "
                                    "and its family name from the acid"},
          "close": "“Salt” here does not only mean the stuff on chips. It "
-                  "means the whole family of compounds made when an acid "
-                  "loses its hydrogen to a metal — sodium chloride is one of "
-                  "thousands. Which salt you get depends on which acid and "
+                  "means the whole family of compounds made when the hydrogen "
+                  "in an acid is swapped for a metal — sodium chloride is one "
+                  "of thousands. Which salt you get depends on which acid and "
                   "which alkali you started with, and that is a lesson of its "
                   "own."},
 
@@ -587,11 +588,12 @@ LESSON = {
     # ── vocabulary (§10.2) ──────────────────────────────────────────────────
     "vocabulary": [
         {"term": "Neutralisation",
-         "definition": "The reaction between an acid and a base. It always "
-                       "makes a salt and water."},
+         "definition": "The reaction between an acid and a base. With an "
+                       "alkali it makes a salt and water."},
         {"term": "Salt",
-         "definition": "The compound left when an acid loses its hydrogen to "
-                       "a metal. Sodium chloride is one of thousands.",
+         "definition": "The compound left when the hydrogen in an acid is "
+                       "swapped for a metal. Sodium chloride is one of "
+                       "thousands.",
          "note": "Not only the stuff on chips."},
         {"term": "Base",
          "definition": "Any substance that neutralises an acid. The ones that "

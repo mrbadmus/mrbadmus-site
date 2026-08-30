@@ -566,9 +566,10 @@ LESSON = {
              {"id": "isotopes", "tag": "the chemical fingerprint",
               "establishes": "source",
               "q": "Carbon from fossil fuels has a slightly different mix of "
-                   "carbon isotopes from carbon released by volcanoes or by "
-                   "the oceans. The extra carbon dioxide in the air carries "
-                   "the fossil fingerprint.",
+                   "carbon isotopes — atoms of carbon that weigh slightly "
+                   "different amounts — from carbon released by volcanoes or "
+                   "by the oceans. The extra carbon dioxide in the air "
+                   "carries the fossil fingerprint.",
               "choices": [
                   {"id": "where",
                    "label": "Identifies where the extra carbon came from"},

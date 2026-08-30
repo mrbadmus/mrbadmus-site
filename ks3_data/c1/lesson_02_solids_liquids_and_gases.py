@@ -553,7 +553,7 @@ LESSON = {
         "apply": {
             "title": "Rung 2 · The one that catches people",
             "q": "A gas can be squashed into a fifth of its volume. A liquid "
-                 "cannot be squashed at all. Why not?",
+                 "hardly squashes at all. Why not?",
             # ⚖️ **CORRECTED FROM DESIGN — the distractors were too short
             # (MRB-177 length parity, measured under MRB-228).**
             #

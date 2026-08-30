@@ -555,9 +555,9 @@ LESSON = {
             ],
             "answer": 0,
             "feedback": {
-                1: "The flask is insulated and the energy is going in at the "
-                   "same rate as before. It is doing a job, just not a job "
-                   "the thermometer can see.",
+                1: "Heat is being lost to the room the whole time, before and "
+                   "after the plateau too — yet the climb only stops while "
+                   "ice remains. The ice is what is absorbing it.",
                 2: "Use a different beaker and the plateau still lasts the "
                    "same time. It is the ice that is absorbing it.",
                 3: "Particles never change size. This is the misconception "

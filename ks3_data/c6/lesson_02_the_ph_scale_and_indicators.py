@@ -91,7 +91,7 @@ _SAMPLES = [
      "setup": "A few drops from a car battery, handled with gloves and a face "
               "shield.",
      "why": "Sulfuric acid, and about as far down the scale as anything you "
-            "will ever meet. It is a hundred thousand times more acidic than "
+            "will ever meet. It is about a thousand times more acidic than "
             "the vinegar on a chip shop counter."},
     {"id": "s2", "label": "Lemon juice", "ph": 2, "band": "strong-acid",
      "litmus": "red",

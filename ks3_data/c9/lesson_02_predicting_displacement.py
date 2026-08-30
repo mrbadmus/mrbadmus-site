@@ -174,6 +174,15 @@ LESSON = {
          # ⚖️ DERIVED, NEVER STORED. Five of the eight resolve to a reaction
          # and the renderer checks that count against this claim.
          "happens_claim": 5,
+         # ⚠️ CARBON SITS ABOVE ZINC. It used to be ranked 3, below iron
+         # (C9-5, chem audit 25 Aug 2026) — which contradicted lesson 1's
+         # own series ("below aluminium and above zinc") and made lesson 3's
+         # extraction bench impossible, since smelting iron and zinc oxides
+         # with carbon REQUIRES carbon above them both. No card in the deck
+         # could expose it (the only carbon card pits it against copper,
+         # below it either way), so every derived outcome stayed green
+         # around the wrong model. Re-ranked; no observation, count or
+         # equation changes.
          "strip": [
              {
                  "name": "Magnesium",
@@ -181,19 +190,19 @@ LESSON = {
                  "tag": "",
              },
              {
-                 "name": "Zinc",
+                 "name": "Carbon",
                  "rank": 1,
-                 "tag": "",
+                 "tag": "non-metal",
              },
              {
-                 "name": "Iron",
+                 "name": "Zinc",
                  "rank": 2,
                  "tag": "",
              },
              {
-                 "name": "Carbon",
+                 "name": "Iron",
                  "rank": 3,
-                 "tag": "non-metal",
+                 "tag": "",
              },
              {
                  "name": "Copper",

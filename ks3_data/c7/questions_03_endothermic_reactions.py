@@ -314,9 +314,8 @@ QUESTIONS = [
                     "what they have in common."},
             {"text": "They all break something apart, which is why they never "
                      "make new substances", "correct": False,
-             "why": "Breaking apart is common among them, but photosynthesis "
-                    "builds glucose — and every one of them makes something "
-                    "new."},
+             "why": "Breaking apart is common among them but not universal — "
+                    "photosynthesis, the biggest of them, builds glucose."},
         ],
         "figure": None,
     },

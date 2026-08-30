@@ -325,7 +325,8 @@ LESSON = {
         {"type": "explainer",
          "text": "Everything else is <strong>neutral</strong> — pH exactly 7, "
                  "neither one nor the other. Pure water is the obvious "
-                 "example, and so is most of what you drink."},
+                 "example; most of what you drink sits just on the acid side "
+                 "of it, which is the next lesson's scale."},
 
         # #s-bench — the flagship. Light `ks3-block` → `check`.
         #

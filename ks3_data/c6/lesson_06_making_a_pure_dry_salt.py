@@ -200,7 +200,15 @@ _MIXES = [
      "answer": 1,
      "eq_left": "sulfuric acid + calcium carbonate",
      "eq_right": "calcium sulfate + water + carbon dioxide",
-     "note": _FIZZES + _insoluble("Calcium carbonate")},
+     # ⚠️ The generic excess-and-filter note is FALSE for this one mix
+     # (C6-10, chem audit 25 Aug 2026): calcium sulfate is itself nearly
+     # insoluble, so filtering would take the product out with the excess,
+     # and in a real beaker the product coats the chips and stops the
+     # reaction. Named by the rule, not makeable by this method.
+     "note": _FIZZES + ("Calcium sulfate barely dissolves either, so it "
+                        "coats the chips and the reaction stops almost at "
+                        "once. This is a salt you can name by the rule but "
+                        "not make by this method.")},
 
     {"id": "hno3:cuo", "title": "Nitric acid + copper oxide",
      "salt": "copper nitrate",
@@ -244,7 +252,7 @@ _METHOD = [
             "drive acid off before it has reacted with anything."},
     {"id": "m2",
      "text": "Add the copper oxide a spatula at a time, stirring, until no "
-             "more will dissolve.",
+             "more will react.",
      "why": "Excess is deliberate. The black powder settling out means every "
             "last bit of acid has been used up, which is the only way to be "
             "sure none is left in your product."},
@@ -356,7 +364,7 @@ LESSON = {
             "It makes no difference how much you add",
         ],
         "reveal": "More than you need, and then stop when no more will "
-                  "dissolve. Copper oxide is a base that does not dissolve in "
+                  "react. Copper oxide is a base that does not dissolve in "
                   "water, so the excess just sits on the bottom where you can "
                   "<strong>filter it off</strong>. Leftover acid could not be "
                   "removed like that — it would be dissolved in with your "

@@ -435,9 +435,10 @@ LESSON = {
               "label": "Put a big 2 in front of the water",
               "coeff": "2",
               "product": [{"sym": "H", "sub": "2"}, {"sym": "O", "sub": ""}],
-              "text": "Two hydrogens and two oxygens on each side — with "
-                      "hydrogen now needing a 2 as well, giving 2H<sub>2</sub>"
-                      " + O<sub>2</sub> makes 2H<sub>2</sub>O. The substances "
+              "text": "The oxygens now match — and the hydrogens do not, "
+                      "until hydrogen gets a 2 as well: 2H<sub>2</sub>"
+                      " + O<sub>2</sub> makes 2H<sub>2</sub>O, four hydrogens "
+                      "and two oxygens on each side. The substances "
                       "are untouched: water is still water, and all you have "
                       "changed is how many of each particle take part. That "
                       "is the only kind of change balancing is allowed to "

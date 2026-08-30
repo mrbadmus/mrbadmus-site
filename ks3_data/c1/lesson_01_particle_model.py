@@ -285,7 +285,9 @@ LESSON = {
                          "blunt and your hand has not got tired. There is "
                          "simply no piece of sugar smaller than this one, "
                          "because this one is a single particle, and halving "
-                         "matter runs out.",
+                         "matter runs out. 0.6 nm is about a millionth of a "
+                         "millimetre: a human hair is a hundred thousand "
+                         "times wider.",
              "near_floor": "The edge has stopped being smooth. What looked "
                            "like a solid block four cuts ago is a countable "
                            "number of particles, and you can see the end "
@@ -529,8 +531,9 @@ LESSON = {
                 "Says the gaps genuinely contain nothing.",
                 "Uses evidence: a gas can be squashed, which would be "
                 "impossible if the space were already full.",
-                "Notes that this is not the same as a vacuum you could stand "
-                "in — the space is smaller than a particle.",
+                "Notes that this is not a vacuum you could stand in — each "
+                "empty space is far too small for anything to be 'in', "
+                "millions of times thinner than a hair.",
             ]},
     },
 

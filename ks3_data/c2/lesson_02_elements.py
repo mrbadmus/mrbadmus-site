@@ -423,9 +423,10 @@ LESSON = {
                  "remaining one per cent includes iron you cannot carry oxygen "
                  "without, and iodine you cannot grow properly without. Fewer "
                  "than thirty of the hundred are known to be needed by living "
-                 "things at all, and every one of the atoms in you was made "
-                 "inside a star or in the collision of two of them. There is "
-                 "no such thing as a fresh atom."},
+                 "things at all, and every one of the atoms in you — except "
+                 "the hydrogen, which is as old as the universe itself — was "
+                 "made inside a star or in the collision of two of them. "
+                 "There is no such thing as a fresh atom."},
     ],
 
     # Present and empty — §5.6's ruling: may be empty, never absent.

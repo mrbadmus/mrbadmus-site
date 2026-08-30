@@ -324,8 +324,8 @@ LESSON = {
               "note": "Hotter than the liquid layer above it and solid "
                       "anyway, because the pressure at the centre of the "
                       "Earth is too great to let the atoms move apart. A "
-                      "ball of iron roughly the size of the Moon, as hot as "
-                      "the surface of the Sun."},
+                      "ball of iron about two-thirds the width of the Moon, "
+                      "as hot as the surface of the Sun."},
          ],
 
          # The panel that opens once all four have been read. `{crust_share}`,
