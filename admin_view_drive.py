@@ -381,13 +381,16 @@ def main():
                   function t(el){ return el ? el.textContent.trim() : ''; }
                   var main = document.getElementById('main');
                   var vis = main && main.style.display !== 'none';
+                  // ⊕ Mide's UI change (30 Aug 2026): a teacher row no
+                  // longer carries a .classlist span (the inline class-name
+                  // list was dropped) — nothing here reads a "classes" field
+                  // off it any more, only .count.
                   var rows = [].slice.call(document.querySelectorAll('#teachers .row'))
                     .map(function(r){
                       return {name: t(r.querySelector('.name')),
                               count: t(r.querySelector('.count')),
                               tags: [].slice.call(r.querySelectorAll('.tag')).map(t),
-                              metas: [].slice.call(r.querySelectorAll('.meta')).map(t),
-                              classes: t(r.querySelector('.classlist'))};
+                              metas: [].slice.call(r.querySelectorAll('.meta')).map(t)};
                     });
                   var cls = [].slice.call(document.querySelectorAll('#classes .row'))
                     .map(function(r){
@@ -398,11 +401,21 @@ def main():
                               tags: [].slice.call(r.querySelectorAll('.tag')).map(t),
                               who: t(r.querySelector('.classlist'))};
                     });
+                  // ⊕ Mide's UI change (30 Aug 2026): classes are now
+                  // grouped under a "Year N" heading per .year-group. Read
+                  // the headings in DOM order, each with the class names
+                  // nested under it, so ordering AND bucketing can both be
+                  // asserted.
+                  var yearGroups = [].slice.call(document.querySelectorAll('#classes .year-group'))
+                    .map(function(g){
+                      return {heading: t(g.querySelector('.year-heading')),
+                              codes: [].slice.call(g.querySelectorAll('a.classlink')).map(t)};
+                    });
                   return {vis: !!vis,
                           body: document.body.style.display,
                           sub: t(document.getElementById('school-line')),
                           stats: t(document.getElementById('stats')),
-                          teachers: rows, classes: cls,
+                          teachers: rows, classes: cls, yearGroups: yearGroups,
                           notice: (document.getElementById('notice')||{style:{}}).style.display,
                           at: location.pathname,
                           title: t(document.getElementById('notice-title'))};
@@ -423,10 +436,17 @@ def main():
                       "a CLAIMED invitation annotates the live row, no duplicate",
                       "Ben Hough x%d" % names.count("Ben Hough"))
 
-                # Co-teaching: one class, listed under both its teachers.
-                check("10h/Sc1" in T.get("Amy Barlow", {}).get("classes", "")
-                      and "10h/Sc1" in T.get("Ben Hough", {}).get("classes", ""),
-                      "a co-taught class shows under BOTH teachers")
+                # Co-teaching: one class, its "who" line naming both teachers.
+                # ⊕ Mide's UI change (30 Aug 2026) dropped the per-teacher
+                # classlist span, so this used to read from
+                # T[name]["classes"]. The count-per-teacher check right below
+                # already proves each teacher's OWN tally is right; this one
+                # is only about the class row's "who teaches this" line, so
+                # it now reads that instead — same property, surviving
+                # element.
+                who = C.get("10h/Sc1", {}).get("who", "")
+                check("Amy Barlow" in who and "Ben Hough" in who,
+                      "a co-taught class's row names BOTH teachers", who)
 
                 # The de-dup: Ada holds TWO subject links to 8r/Sc1.
                 check(T.get("Ada Nwosu", {}).get("count") == "1",
@@ -472,6 +492,23 @@ def main():
                 check(len(got["classes"]) == 4,
                       "every class in the school-year is listed",
                       "%d row(s)" % len(got["classes"]))
+
+                # Year grouping: 8r/Sc1=8, 9r/Sc4=9, 10h/Ph1 & 10h/Sc1=10 —
+                # three headings, ascending, each bucket right, and 10h/Ph1
+                # before 10h/Sc1 within the tied year (name sort survives
+                # the regrouping).
+                yg = got["yearGroups"]
+                check([g["heading"] for g in yg] == ["Year 8", "Year 9", "Year 10"],
+                      "year headings appear once each, ascending",
+                      repr([g["heading"] for g in yg]))
+                by_heading = {g["heading"]: g["codes"] for g in yg}
+                check(by_heading.get("Year 8") == ["8r/Sc1"],
+                      "Year 8 bucket holds exactly its class", repr(by_heading.get("Year 8")))
+                check(by_heading.get("Year 9") == ["9r/Sc4"],
+                      "Year 9 bucket holds exactly its class", repr(by_heading.get("Year 9")))
+                check(by_heading.get("Year 10") == ["10h/Ph1", "10h/Sc1"],
+                      "Year 10 bucket holds both classes, name-sorted",
+                      repr(by_heading.get("Year 10")))
 
                 # The pending half, and the slt degradation.
                 invited = [r for r in got["teachers"] if "Invited" in r["tags"]]

@@ -133,6 +133,21 @@
     .row .name { font-weight: 700; font-size: 1rem; }
     .row .meta { color: var(--muted); font-size: 0.84rem; }
     .row .right { margin-left: auto; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+
+    /* Classes card: one heading per year group, each a fresh "table" of
+       rows — the first row under a heading gets no top border of its own
+       (`.row:first-of-type` is scoped per parent), so the heading is the
+       only divider between one year and the next. */
+    .year-heading {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 14px 0 6px;
+      border-top: 1px solid var(--border);
+    }
+    .year-group:first-child .year-heading { border-top: none; padding-top: 0; }
     @media (max-width: 560px) {
       body { padding: 76px 14px 50px; }
       .card { padding: 20px 16px; }
@@ -576,9 +591,6 @@ async function render(ctx) {
        page must never say that when it knows. */
     var right = '<span class="count">' + mine.length + '</span> ' +
                 '<span class="meta">' + (mine.length === 1 ? 'class' : 'classes') + '</span>';
-    if (mine.length) {
-      right += '<span class="classlist">' + escapeHtml(mine.join(', ')) + '</span>';
-    }
 
     return '<div class="row">' + bits.join(' ') +
            '<span class="right">' + right + '</span></div>';
@@ -606,36 +618,54 @@ async function render(ctx) {
     document.getElementById('teachers').innerHTML = rows.join('');
   }
 
-  // ── classes ────────────────────────────────────────────────────────────
-  classes.sort(function (a, b) {
-    return String(a.name).localeCompare(String(b.name), undefined, { numeric: true });
+  // ── classes, grouped by year group ──────────────────────────────────────
+  var byYear = {};
+  classes.forEach(function (c) {
+    var y = c.year_group == null ? 'Other' : String(c.year_group);
+    (byYear[y] = byYear[y] || []).push(c);
+  });
+  var years = Object.keys(byYear).sort(function (a, b) {
+    if (a === 'Other') { return 1; }
+    if (b === 'Other') { return -1; }
+    return Number(a) - Number(b);
   });
 
-  var crows = classes.map(function (c) {
-    var who = (teacherOf[c.id] || []).map(function (id) {
-      return nameById[id] || 'Another teacher';
-    }).sort();
-    var n = rosterOf[c.id];
+  var yearGroupsHtml = years.map(function (y) {
+    var group = byYear[y].slice().sort(function (a, b) {
+      return String(a.name).localeCompare(String(b.name), undefined, { numeric: true });
+    });
 
-    var left = '<a class="classlink" href="' + escapeHtml(classHref(c.id)) + '">' +
-               escapeHtml(c.name) + '</a>';
-    if (c.key_stage) { left += ' <span class="tag">' + escapeHtml(c.key_stage) + '</span>'; }
-    if (pillOf[c.id]) { left += ' <span class="meta">' + escapeHtml(pillOf[c.id]) + '</span>'; }
+    var crows = group.map(function (c) {
+      var who = (teacherOf[c.id] || []).map(function (id) {
+        return nameById[id] || 'Another teacher';
+      }).sort();
+      var n = rosterOf[c.id];
 
-    var right = '<span class="count">' + (n == null ? 0 : n) + '</span> ' +
-                '<span class="meta">' + (n === 1 ? 'student' : 'students') + '</span>' +
-                '<span class="classlist">' +
-                (who.length ? escapeHtml(who.join(', ')) : 'No teacher assigned') +
-                '</span>';
+      var left = '<a class="classlink" href="' + escapeHtml(classHref(c.id)) + '">' +
+                 escapeHtml(c.name) + '</a>';
+      if (c.key_stage) { left += ' <span class="tag">' + escapeHtml(c.key_stage) + '</span>'; }
+      if (pillOf[c.id]) { left += ' <span class="meta">' + escapeHtml(pillOf[c.id]) + '</span>'; }
 
-    return '<div class="row">' + left +
-           '<span class="right">' + right + '</span></div>';
+      var right = '<span class="count">' + (n == null ? 0 : n) + '</span> ' +
+                  '<span class="meta">' + (n === 1 ? 'student' : 'students') + '</span>' +
+                  '<span class="classlist">' +
+                  (who.length ? escapeHtml(who.join(', ')) : 'No teacher assigned') +
+                  '</span>';
+
+      return '<div class="row">' + left +
+             '<span class="right">' + right + '</span></div>';
+    });
+
+    return '<div class="year-group">' +
+           '<div class="year-heading">' +
+           (y === 'Other' ? 'Other' : 'Year ' + escapeHtml(y)) +
+           '</div>' + crows.join('') + '</div>';
   });
 
-  if (!crows.length) {
+  if (!classes.length) {
     document.getElementById('classes-empty').style.display = 'block';
   } else {
-    document.getElementById('classes').innerHTML = crows.join('');
+    document.getElementById('classes').innerHTML = yearGroupsHtml.join('');
   }
 
   document.getElementById('main').style.display = 'block';
