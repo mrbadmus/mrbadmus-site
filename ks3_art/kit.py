@@ -110,9 +110,145 @@ def t(s):
 # any page already built.
 _RICH_OK = ("em", "strong", "sub")
 _RICH_RE = re.compile(r"&lt;(/?)(%s)&gt;" % "|".join(_RICH_OK))
+
+
+# ── every chemical formula a student sees renders as a real subscript ─────
+#
+# ⊕ RULED 28 Aug 2026 (MRB-302). This REVERSES the standing flat-formulae
+# ruling. Every chemical formula a student sees renders with a proper
+# subscript: CO2 becomes CO with a subscript 2.
+#
+# **STORE FLAT, RENDER SUBSCRIPT.** The authored strings and both question
+# pools stay FLAT, byte for byte. Nothing about storage changes, so marking,
+# comparison, the question mirror and search all keep working — every answer
+# comparison in the estate runs on data attributes and option indices, never
+# on rendered text, so a display-time change cannot reach any of them. The
+# subscript is applied HERE, at display time, and nowhere else.
+#
+# What forced it: the two lessons that TEACH the difference between a big
+# number and a small one were the two the flat ruling hurt most. c2-05's
+# ladder asks "What is the difference between 2CO2 and C2O4?" with every
+# character the same size, and c4-05 prints coefficient and subscript
+# identically on the page whose whole argument is that they differ. The
+# audits filed both as ruled-items-causing-observed-harm rather than defects,
+# because the ruling was Mide's. It has now been reversed.
+#
+# ⚠️ **WHY THIS IS NOT A REGEX OVER LETTER-THEN-DIGIT.** The obvious pattern
+# `([A-Z][a-z]?)(\d+)` destroys the estate. It subscripts the unit codes this
+# course is BUILT on — C1, C6, P1, P11, B2 are all a real element symbol
+# followed by a number — and it would silently rewrite them wherever they
+# appear in student-facing text. So a token is converted only when ALL of
+# these hold:
+#
+#   1. every symbol in it is a real element symbol;
+#   2. it contains at least one digit in a subscript position;
+#   3. EITHER it contains two or more element groups (CO2, H2O, CaCO3),
+#      OR the whole token is one of the handful of single-element species
+#      that genuinely carry a subscript (O2, H2, N2, Cl2, S8, ...).
+#
+# Rule 3 is the one that saves the unit codes: C1 and P11 are a single
+# element followed by a number and are not in that set, so they are left
+# exactly as they are. It is deliberately conservative — a formula this
+# refuses to subscript merely stays as legible as it is today, whereas a
+# false positive silently corrupts a lesson code in front of a child.
+#
+# A LEADING COEFFICIENT IS NOT A SUBSCRIPT. In `2CO2` the first 2 is a count
+# of molecules and stays full size; only the second drops. That distinction
+# is the entire point of c4-05, so getting it backwards here would break the
+# lesson this change exists to serve.
+#
+# Text already inside a tag is never touched, so a hand-authored
+# `H<sub>2</sub>O` (C3's Rf convention, C4's `parts` renderer) passes through
+# untouched and is never double-processed.
+_ELEMENTS = frozenset("""
+ H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni
+ Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe
+ Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au
+ Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm
+""".split())
+
+# The single-element species that really are spelled with a subscript. A
+# one-element token outside this set is assumed to be a unit code, a lesson
+# code or an ordinary label, and is left alone.
+_SINGLE_WITH_SUB = frozenset((
+    "H2", "O2", "N2", "F2", "Cl2", "Br2", "I2", "O3", "S8", "P4",
+))
+
+# ⚠️ TOKENS THAT PARSE AS A FORMULA AND ARE NOT ONE.
+#
+# The three rules above kill the single-element codes (C1, P11, B2), but they
+# cannot kill a token that happens to spell two real symbols and a number.
+# `KS3` is exactly that: potassium, sulfur, three. It was caught by auditing
+# every conversion in the built estate rather than by reasoning, which is why
+# the audit command is written down in the run report — a future collision
+# will be found the same way, not predicted.
+#
+# This list is deliberately tiny and explicit. Anything added here should be
+# something a human has SEEN mis-rendered, not something imagined.
+_NOT_FORMULAE = frozenset(("KS3", "KS4"))
+
+# A run of element-and-optional-digits, optionally preceded by a coefficient.
+# The boundaries stop it biting into an ordinary word.
+_FORMULA_RE = re.compile(
+    r"(?<![0-9A-Za-z<&/])(\d*)((?:[A-Z][a-z]?\d*)+)(?![0-9A-Za-z;])")
+_GROUP_RE = re.compile(r"([A-Z][a-z]?)(\d*)")
+# Everything between < and > is markup, and is skipped whole.
+_TAG_RE = re.compile(r"<[^>]*>")
+
+
+def _formula_sub(m):
+    coeff, body = m.group(1), m.group(2)
+    if body in _NOT_FORMULAE:
+        return m.group(0)
+    groups = _GROUP_RE.findall(body)
+    if not groups:
+        return m.group(0)
+    if any(sym not in _ELEMENTS for sym, _d in groups):
+        return m.group(0)
+    if not any(d for _s, d in groups):
+        return m.group(0)                      # no subscript to draw
+    if len(groups) < 2 and body not in _SINGLE_WITH_SUB:
+        return m.group(0)                      # C1, P11, B2 — a code, not a formula
+    out = "".join(s + ("<sub>%s</sub>" % d if d else "")
+                  for s, d in groups)
+    return coeff + out
+
+
+def formulae(s):
+    """Render flat chemical formulae with real `<sub>` subscripts.
+
+    Display time only. The stored string is never changed, and text inside a
+    tag is never touched.
+    """
+    if not s or "<" not in s:
+        return _FORMULA_RE.sub(_formula_sub, s or "")
+    out, last = [], 0
+    for m in _TAG_RE.finditer(s):
+        out.append(_FORMULA_RE.sub(_formula_sub, s[last:m.start()]))
+        out.append(m.group(0))
+        last = m.end()
+    out.append(_FORMULA_RE.sub(_formula_sub, s[last:]))
+    return "".join(out)
+
+
 def rich(s):
-    """`t()` plus `<em>`, `<strong>` and `<sub>`, and nothing else."""
-    return _RICH_RE.sub(r"<\1\2>", t(s))
+    """`t()` plus `<em>`, `<strong>` and `<sub>`, and nothing else.
+
+    Formulae are subscripted last, after the allowed tags are real, so an
+    authored `<sub>` is already markup and is skipped rather than reprocessed.
+    """
+    return formulae(_RICH_RE.sub(r"<\1\2>", t(s)))
+
+
+def sci(s):
+    """`t()` for a surface that carries formulae but no other markup.
+
+    The ladder's stems and every option button escape their text (R3 —
+    options are data, and a general HTML pass-through on a marked control is
+    an injection hole). They still have to spell CO2 correctly, so they get
+    escaping plus the formula pass and nothing else.
+    """
+    return formulae(t(s))
 # ⚠️ ← (U+2190) is absent from the same subsets, and the browse layer used to
 # open three back-links with one. Design's system has no left-arrow mark to
 # draw instead, so those links now say "Back to …" in words — which is what R2
@@ -452,10 +588,15 @@ def _option_li(i, text, extra=""):
     if `data-correct` ever appears on an activity option, the student reads the
     whole page as a test and committing before revealing loses its point.
     """
+    # MRB-302 — `sci()` not `t()`. The label is still escaped (R3: an option
+    # is data, and a marked control is no place for an HTML pass-through);
+    # `sci` adds the formula subscripts and nothing else. The option's
+    # STORED text is untouched, and `data-correct` / `data-i` are what the
+    # marking reads, so this cannot move an answer.
     return ('<li><button type="button" class="ks3-option" data-i="%d"%s>'
             '<span class="ks3-opt-mark" aria-hidden="true">%s</span>'
             '<span class="ks3-opt-label">%s</span></button></li>'
-            % (i, extra, option_letter(i), t(text)))
+            % (i, extra, option_letter(i), sci(text)))
 def r_activity_options(options):
     """R3: chosen, never correct. No data-correct, no green, never disabled."""
     return ('<ul class="ks3-options" role="list">%s</ul>'
@@ -473,7 +614,7 @@ def r_bench_gate(gate):
         return "", ""
     return ('<div class="ks3-benchgate" data-benchgate>'
             '<p class="ks3-commit">%s</p>%s</div>'
-            % (t(gate.get("prompt", "")),
+            % (sci(gate.get("prompt", "")),
                r_activity_options(gate.get("options") or [])),
             ' hidden data-benchbody')
 # ═══ C2 · Atoms, elements and compounds (⊕ MRB-220) ══════════════════════

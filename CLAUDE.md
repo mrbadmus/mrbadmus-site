@@ -509,6 +509,34 @@ If the backend is unreachable, the chat falls back to a static message.
   `var(--chemistry)` — that's a known limitation, not a desired
   state. Route to `var(--danger)` when you next touch each surface.
 - **Tier colours:** Foundation green, Higher yellow (`#FFD93D`)
+- **Chemical formulae: STORE FLAT, RENDER SUBSCRIPT** ⊕ (MRB-302, ruled by
+  Mide 28 Aug 2026 — this REVERSES the standing flat-formulae ruling).
+  Every chemical formula a student sees renders with a real subscript: `CO2`
+  displays as CO₂. **The authored strings and both question pools stay FLAT,
+  byte for byte** — marking, comparison, the question mirror and search all
+  read the stored string, and every answer comparison in the estate runs on
+  data attributes and option indices rather than on rendered text, so a
+  display-time change cannot reach any of them.
+  The conversion lives in **one place**: `formulae()` in `ks3_art/kit.py`.
+  `rich()` applies it for prose; `sci()` is `t()` plus the same pass, for the
+  escaped surfaces (options, ladder stems, keyword cards, instrument chips).
+  ⚠️ **Never do this with a plain letter-then-digit regex.** `C1`, `C6`,
+  `P11`, `B2` are all a real element symbol followed by a number, and a naive
+  pass subscripts every unit code in the course. `formulae()` converts a
+  token only when every symbol is a real element AND there are two or more
+  element groups (or the token is one of a short list of genuinely
+  subscripted single-element species like O2). `KS3`/`KS4` need an explicit
+  denylist because K+S+3 parses as a formula.
+  ⚠️ **KS4 is deliberately NOT wired to this** — see the MRB-295 report. On
+  KS4, `N2` means Newton's second law and `F2` means the second filial
+  generation, and its only genuine formulae sit inside the eight frozen
+  content fields.
+- **Core quantities are defined ONCE** ⊕ (MRB-298/XU-1, 28 Aug 2026). The
+  estate held four definitions of temperature across two subjects and three
+  were wrong, two of them in marking criteria. The definition now lives in
+  `ks3_data/quantities.py` and is imported, never retyped. If you are about
+  to write a definition of a core quantity in a lesson file, check there
+  first.
 - **Backend URL is hardcoded** as `https://mrbadmus-backend.onrender.com` in `mrbadmus.v2.js`. No environment variables on the frontend (no build step).
 - **Supabase anon key is hardcoded** in pages that need it (e.g. leaderboard.html for profile reads). Anon keys are designed to be public — safe to commit.
 - **Cloudflare `_redirects` proxy is broken** — all API calls point directly at the Render URL, not through the frontend domain.

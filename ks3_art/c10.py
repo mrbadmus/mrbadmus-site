@@ -118,7 +118,7 @@ mono control-group labels on this bench are `--ks3-on-dark-muted`.
 
 import re
 
-from ks3_art.kit import e, rich, t
+from ks3_art.kit import e, rich, sci, t
 
 
 # ═══ shared inside C10 ═══════════════════════════════════════════════════
@@ -1796,7 +1796,7 @@ def r_air_mix(a, act_id):
                e(g["id"]),
                "true" if pressed else "false",
                e("%s, %s %s" % (g["name"], shown, suffix)),
-               pct, t(g["label"])))
+               pct, sci(g["label"])))
 
         outs.append(
             '<div class="ks3-amix-one" data-amix-out="%s"%s>'

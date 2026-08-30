@@ -13,6 +13,7 @@ from ks3_art.kit import (
     e,
     r_bench_gate,
     rich,
+    sci,
     t,
 )
 
@@ -398,7 +399,7 @@ def r_formula_builder(a, act_id):
               % e(_fb_alt(a, found0)))
     foot = ('<p class="ks3-fb-name" data-fb-name>%s</p>'
             '<p class="ks3-fb-note" data-fb-note>%s</p>'
-            % (t(_fb_name(p0, a0, b0, found0, nf)),
+            % (sci(_fb_name(p0, a0, b0, found0, nf)),
                rich((found0 or {}).get("note") or nf.get("note", ""))))
     return (gate_html
             + '<div class="ks3-fb" data-fb%s data-total="%d" data-done-at="%d" '
@@ -475,7 +476,7 @@ def r_model_limit(a, act_id):
                 '<div class="ks3-limit-card" data-ground="%s">'
                 '<p class="ks3-limit-caption">%s</p>'
                 '<p class="ks3-limit-body">%s</p></div>'
-                % (e(c.get("ground", "card")), t(c.get("caption", "")),
+                % (e(c.get("ground", "card")), sci(c.get("caption", "")),
                    rich(c.get("text", "")))
                 for c in cards), commit))
 def r_balance_bench(a, act_id):
