@@ -187,10 +187,17 @@ _DRIVE_JS = r"""
      put. A press that reaches MRB_GO is alive by definition. */
   var navs = [];
   var realGo = window.MRB_GO, realBack = window.MRB_BACK;
+  var realHome = window.MRB_HOME;
   window.MRB_GO = function (screen, params) {
     navs.push({screen: screen, params: params || null});
   };
   window.MRB_BACK = function () { navs.push({screen: '<back>', params: null}); };
+  /* ⊕ MRB-304 — the brand mark leaves the teacher portal for /index.html.
+     Stubbed for exactly the reason MRB_GO is: unstubbed, the very first
+     press of the top bar would navigate this fixture to the public homepage
+     and take every remaining control on the page with it. The press still
+     runs the real handler, so it still proves the control is wired. */
+  window.MRB_HOME = function () { navs.push({screen: '<home>', params: null}); };
 
   function snap() {
     return {
@@ -424,6 +431,7 @@ _DRIVE_JS = r"""
 
   window.MRB_GO = realGo;
   window.MRB_BACK = realBack;
+  window.MRB_HOME = realHome;
 
   return JSON.stringify({
     error: '',
@@ -678,7 +686,9 @@ def drive(page, path, is_empty, cdp, port, shots=None):
     # ⊕ MRB-287 — the controls THIS PORT added to Design's delivery, on this
     # page, in the order they are registered. Read from the register rather
     # than listed here, so an addition cannot be made without this gate
-    # pressing it. `page` is the screen name; the register names the page.
+    # pressing it. `page` is the screen name; the register's `pages` names the
+    # emitted filenames — ⊕ MRB-304, always a tuple, because the "My classes"
+    # link in the top bar is chrome and is on all six.
     # ⚠️ AND `needs_data` ADDITIONS ARE NOT EXPECTED ON THE EMPTY FIXTURE.
     # The four shoutout-delete controls hang off a feed row; the empty
     # class-detail shape is a class with no roster and `FEED[cid] == []`, so
@@ -686,7 +696,7 @@ def drive(page, path, is_empty, cdp, port, shots=None):
     # them there would be demanding a delete button on an empty feed. They
     # are still pressed, by name, on the populated fixture.
     added_here = [a["marker"] for a in R.AMENDED_ADDITIONS
-                  if a["page"] == page + ".html"
+                  if page + ".html" in a["pages"]
                   and not (is_empty and a.get("needs_data"))]
     added_why = {a["marker"]: a for a in R.AMENDED_ADDITIONS}
     # ⊕ MRB-287 E1 — additions revealed by one of DESIGN'S nodes rather than

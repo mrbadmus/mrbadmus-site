@@ -787,16 +787,18 @@ def apply_rulings(spec, roots, logic):
                 "has redrawn the file; re-anchor teacher_rulings.SCREENS / "
                 ".OVERLAYS. Guessing would emit a page with two screens on "
                 "it." % (flag, node))
-    for node, (_after, _sub, why) in R.INSERT_AT.items():
-        if node not in full:
+    for (node, after), (_sub, why) in R.INSERT_AT.items():
+        for which, n in (("into", node), ("after", after)):
+            if n is None or n in full:
+                continue
             raise SystemExit(
                 "build_teacher_port.py: the MRB-287 ruling inserts markup "
-                "into template node %s — %s — and that node is not in "
+                "%s template node %s — %s — and that node is not in "
                 "Design's delivery.\n"
                 "  Design has redrawn it. Re-anchor teacher_rulings."
                 "INSERT_AT: an insertion that silently went nowhere is a "
                 "state a teacher never sees, on a page that still builds."
-                % (node, why.split(".")[0]))
+                % (which, n, why.split(".")[0]))
     for node, why in R.DEAD:
         if node not in full:
             raise SystemExit(
@@ -878,8 +880,16 @@ def apply_rulings(spec, roots, logic):
     # `bindings_for` computes its child-index paths over the tree that will
     # actually ship. Nothing inserted carries an `i`, so Design's numbering —
     # which every other ruling in this file is anchored on — does not move.
+    # ⊕ MRB-304 — keyed by (parent, after) rather than by parent alone,
+    # because node 10 (the sticky top bar) now takes two insertions and a
+    # parent-keyed dict would have kept one and dropped the other in silence.
+    # `after` is sorted with None first so the ordering is total; the
+    # positions themselves do not depend on it, because an inserted node
+    # carries no `i` and cannot be the anchor of a later insertion.
     inserted = 0
-    for parent, (after_node, subtree, why) in sorted(R.INSERT_AT.items()):
+    for (parent, after_node), (subtree, why) in sorted(
+            R.INSERT_AT.items(), key=lambda kv: (kv[0][0], kv[0][1] is not None,
+                                                 kv[0][1] or 0)):
         if parent not in here:
             continue
         kids = here[parent].setdefault("c", [])
@@ -979,6 +989,55 @@ def apply_rulings(spec, roots, logic):
                 % (handler, node, here[node]["on"]))
         here[node]["on"] = handler
         wired += 1
+
+    # ── 4b. ⊕ MRB-304 · a node moved from one of Design's handlers to
+    #        another ────────────────────────────────────────────────────
+    #
+    # ⚑ THE CASE `NAV` STRUCTURALLY CANNOT SERVE. `NAV` redefines a handler by
+    # NAME, once, in the logic — every node carrying that name gets the new
+    # behaviour, and there is no per-node arm. Design shares `goClasses`
+    # between the brand mark (11) and the class screen's Back (83), and those
+    # two now want different destinations. Rewriting `goClasses` would take
+    # the Back button to the homepage with it.
+    #
+    # ⚠️ THE HANDLER IT IS MOVING OFF IS ASSERTED. That is the property
+    # `SET_ON` gives for free and a bare `here[node]["on"] = …` would lose: if
+    # Design redraws the top bar and node 11 becomes some other control, this
+    # stops the build instead of silently pointing that control at the
+    # homepage — which would look and gate exactly right.
+    #
+    # ⚠️ AND THE HANDLER IT MOVES ONTO MUST EXIST IN THE EMITTED LOGIC. The
+    # runtime looks a node's `on` up through the miss recorder, so a typo here
+    # is a control wired to nothing — caught by `teacher_behaviour`'s
+    # `data-mrb-misses` check, but only after the page had been written. This
+    # is the same guard step 6 makes for `WRAP`, for the same reason.
+    retargeted = 0
+    for node, (expect, handler, why) in R.RETARGET_ON.items():
+        if node not in here:
+            continue
+        on = here[node].get("on")
+        if on != expect:
+            raise SystemExit(
+                "build_teacher_port.py: the MRB-304 ruling moves template "
+                "node %s from %r to %r, and that node carries %r.\n"
+                "  Design has redrawn it, or the index now names a different "
+                "control. Re-anchor teacher_rulings.RETARGET_ON: applied to "
+                "the wrong node this repoints one of Design's own controls at "
+                "somewhere it was never meant to go, and the page still "
+                "builds. (%s)"
+                % (node, expect, handler, on or "no handler at all",
+                   why.split(".")[0]))
+        if not re.search(r"\b%s\b\s*:" % re.escape(handler), logic):
+            raise SystemExit(
+                "build_teacher_port.py: the MRB-304 ruling moves template "
+                "node %s onto the handler %r, and no `renderVals` key of that "
+                "name is anywhere in the emitted logic.\n"
+                "  Add it in teacher_rulings.LOGIC, or fix the spelling. "
+                "Unchecked, this ships a control that resolves to nothing — a "
+                "brand mark a teacher presses and nothing happens. (%s)"
+                % (node, handler, why.split(".")[0]))
+        here[node]["on"] = handler
+        retargeted += 1
 
     # ── 5. the navigation rewires, asserted at their NODES ───────────────
     #
@@ -1086,7 +1145,7 @@ def apply_rulings(spec, roots, logic):
     return roots, dict(pruned=removed[0], attred=attred, wired=wired,
                        attr_bound=attr_bound, nav_checked=checked,
                        retexted=retexted, inserted=inserted,
-                       wrapped=wrapped[0])
+                       wrapped=wrapped[0], retargeted=retargeted)
 
 
 # ── the binding table: text nodes Design typed that are sample data ──────
@@ -1873,6 +1932,16 @@ function MRB_GO(screen, params){
     q.push(encodeURIComponent(k)+'='+encodeURIComponent(params[k])); }
   if(env)q.push('env='+env);
   window.location.href = '/teacher/'+f+(q.length?('?'+q.join('&')):'');}
+/* ⊕ MRB-304 — the wordmark leaves the teacher portal entirely. Design hung
+   `goClasses` on the brand mark, which on classes.html was a press that
+   reloaded the page the teacher was already on; Mide's ruling is that
+   "MrBadmusAI" is the site's name and goes to the site's front door, from
+   every teacher page, unconditionally. A NAMED helper rather than an inline
+   `location.href`, like every other navigation here, so `teacher_behaviour`
+   can stub it and press the control for real without navigating the fixture
+   away mid-sweep. No `env` thread and no query string: the homepage is public
+   and has no teacher state to carry. */
+function MRB_HOME(){window.location.href = '/index.html';}
 /* Design's Back buttons chose between two screens from state. Six URLs later
    the browser knows the real answer — and a page opened from a bookmark has no
    state to consult. Falls through to the class list rather than being a dead
@@ -2518,6 +2587,7 @@ def build():
 
     stamped = dict(versions)
     nav_nodes_seen = set()
+    retarget_seen = set()
     region_report = {}
     empty_report = {}
 
@@ -2649,9 +2719,13 @@ def build():
         # `"data-mrb-added":"…"` inside the serialised roots. Looking for the
         # HTML spelling finds nothing on a page that carries the control
         # perfectly well, which is what the first version of this check did.
+        # ⊕ MRB-304 — `pages` is a tuple, always. The "My classes" link is on
+        # all six; every other addition names exactly one. Both halves of the
+        # check are unchanged by that: present on every page it names, absent
+        # on every page it does not.
         for add in R.AMENDED_ADDITIONS:
             tag = '"data-mrb-added":"%s"' % add["marker"]
-            if add["page"] == spec["out"]:
+            if spec["out"] in add["pages"]:
                 if tag not in body:
                     raise SystemExit(
                         "build_teacher_port.py: %s — teacher_rulings."
@@ -2669,7 +2743,8 @@ def build():
                     "onto %s and it is in THIS page too. An addition on a "
                     "screen it was not ruled onto is markup a teacher can "
                     "reach by accident, or cannot reach at all."
-                    % (spec["out"], add["marker"], add["page"]))
+                    % (spec["out"], add["marker"],
+                       ", ".join(add["pages"])))
 
         # ── ⊕ MRB-287 E1 · EVERY CLASS STATES ITS OWN ACADEMIC YEAR ──────
         #
@@ -2732,13 +2807,14 @@ def build():
         here, _ = index_tree(roots)
         for handler, nav in R.NAV.items():
             nav_nodes_seen |= {n for n in nav["nodes"] if n in here}
+        retarget_seen |= {n for n in R.RETARGET_ON if n in here}
 
         print("     ✅ %-24s %7d bytes  (%d node(s) pruned, %d inserted, "
-              "%d wrapped, %d binding(s), %d retext(s), %d region(s) named, "
-              "%d live region(s) carried)"
+              "%d wrapped, %d retargeted, %d binding(s), %d retext(s), "
+              "%d region(s) named, %d live region(s) carried)"
               % (spec["out"], len(body), stats["pruned"], stats["inserted"],
-                 stats["wrapped"], len(table), stats["retexted"],
-                 stats["attred"], len(region_ids)))
+                 stats["wrapped"], stats["retargeted"], len(table),
+                 stats["retexted"], stats["attred"], len(region_ids)))
         print("        %-26s %7d  ·  %-26s %7d"
               % (spec["fixture_out"], len(fix), spec["empty_out"], len(mt)))
 
@@ -2754,6 +2830,19 @@ def build():
             "on ANY of the six pages, so the ruling anchored on them was "
             "never checked. Design has removed those controls; re-anchor "
             "teacher_rulings.NAV." % missed)
+
+    # ⊕ MRB-304 — and the same sweep for the retargets, for the same reason.
+    # `apply_rulings` skips a node that is not on the page it is building, so
+    # a node Design DELETED would be skipped on all six and the ruling never
+    # checked anywhere. The brand mark is in the top bar on every page, so
+    # this is only ever red if the top bar itself has been redrawn.
+    missed = sorted(set(R.RETARGET_ON) - retarget_seen)
+    if missed:
+        raise SystemExit(
+            "build_teacher_port.py: retarget node(s) %s were never present "
+            "on ANY of the six pages, so the ruling anchored on them was "
+            "never checked. Design has removed those controls; re-anchor "
+            "teacher_rulings.RETARGET_ON." % missed)
 
     _verify_stamps(stamped)
 

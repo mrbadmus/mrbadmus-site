@@ -144,10 +144,11 @@
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--muted);
-      padding: 14px 0 6px;
-      border-top: 1px solid var(--border);
+      margin-top: 22px;
+      padding: 16px 0 8px;
+      border-top: 2px solid var(--text);
     }
-    .year-group:first-child .year-heading { border-top: none; padding-top: 0; }
+    .year-group:first-child .year-heading { border-top: none; margin-top: 0; padding-top: 0; }
     @media (max-width: 560px) {
       body { padding: 76px 14px 50px; }
       .card { padding: 20px 16px; }
@@ -643,8 +644,6 @@ async function render(ctx) {
 
       var left = '<a class="classlink" href="' + escapeHtml(classHref(c.id)) + '">' +
                  escapeHtml(c.name) + '</a>';
-      if (c.key_stage) { left += ' <span class="tag">' + escapeHtml(c.key_stage) + '</span>'; }
-      if (pillOf[c.id]) { left += ' <span class="meta">' + escapeHtml(pillOf[c.id]) + '</span>'; }
 
       var right = '<span class="count">' + (n == null ? 0 : n) + '</span> ' +
                   '<span class="meta">' + (n === 1 ? 'student' : 'students') + '</span>' +

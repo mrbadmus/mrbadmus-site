@@ -43,6 +43,11 @@ So the rulings do three separable things:
                       Every page keeps its own and prunes the rest.
     DEAD              controls pruned on EVERY page, with the reason.
     SET_ON            a handler attached to a node Design left inert.
+    RETARGET_ON       a node moved from one of Design's handlers to ANOTHER,
+                      asserting the one it is moving off. The mechanism for
+                      the case `NAV` structurally cannot serve: two nodes
+                      sharing one handler name, where only one of them should
+                      still go where that handler goes.
     NAV               a handler Design DID write, redefined to navigate, and
                       anchored on the nodes that carry it so a redraw stops
                       the build.
@@ -247,6 +252,65 @@ SET_ON = {
 }
 
 
+# ── ⊕ RULED, MRB-304 · THE BRAND MARK GOES HOME ──────────────────────────
+#
+# ⛔ THE DEFECT. Design's top bar hangs `goClasses` on the brand mark (node
+# 11), and `NAV["goClasses"]` rewires that handler to `MRB_GO('classes', …)`.
+# On five of the six pages that reads as "the brand takes me to my classes",
+# which is at least a destination. On `teacher/classes.html` — the page a
+# teacher lands on and spends most of their time on — pressing "MrBadmusAI"
+# navigates to the page they are already on. It looks like a broken refresh,
+# and that is what Mide reported, with a screenshot.
+#
+# ⚑ MIDE'S INSTRUCTION, 31 Aug 2026: the wordmark goes to the PUBLIC HOMEPAGE
+# from every teacher page, unconditionally, and there is a separate, always
+# visible way back to the class list. That is what the two hand-written
+# teacher pages (`import.html`, `admin.html`) have always done — a brand
+# anchor to `/index.html` plus a "My classes" link beside it — so this is the
+# ported pages catching up with the hand-written ones rather than a new idea.
+# The second half is `INSERT_AT[(10, 13)]` / `AMENDED_ADDITIONS["nav-classes"]`.
+#
+# ── WHY THIS IS A NEW MECHANISM AND NOT A NAV ENTRY ─────────────────────
+#
+# ⚠️ `NAV` REDEFINES A HANDLER BY NAME, ONCE, IN THE LOGIC. Every node that
+# carries that name gets the new behaviour — there is no per-node arm. And
+# `goClasses` is carried by TWO nodes that want DIFFERENT destinations now:
+#
+#     node 11   the brand mark, on all six pages   → the public homepage
+#     node 83   the class screen's "Back"          → the class list  ⟵ correct
+#
+# Node 83 is right as it stands and must not move: it is the only way out of a
+# class detail page, and MRB-287 E1 threads `year` through it so a teacher
+# browsing 2025–26 comes back to 2025–26. Rewriting `goClasses` itself would
+# take that Back button to the homepage.
+#
+# `BIND_ATTR` cannot reach this either, and that was checked rather than
+# assumed: `student_template` lifts `onClick` OUT of the attribute bag into
+# the node's own `on` key (`if (name === 'onclick') { out.on = …; continue; }`),
+# so there is no `onClick` attribute for an attribute rewrite to replace.
+# `SET_ON` is the right shape and refuses on purpose — it exists to stop a
+# ruling silently overwriting a handler Design drew.
+#
+# So: `{node: (the handler it must be carrying, the handler it moves to,
+# why)}`. The `expect` half is the whole safety property. It is the same
+# assertion `SET_ON` makes for free, kept rather than dropped: if Design
+# redraws the top bar and node 11 becomes something else, the build stops
+# instead of pointing an unrelated control at the homepage.
+#
+# ⚠️ `goHome` IS ADDED IN `LOGIC`, beside the handler it is replacing, and the
+# build asserts the name exists in the emitted logic before it will retarget
+# anything onto it. Without that check a typo here would leave node 11 calling
+# a key `renderVals` does not have — which `student-runtime` records as a
+# missed binding, so `teacher_behaviour` would catch it, but only after a page
+# had shipped with a brand mark that did nothing.
+RETARGET_ON = {
+    11: ("goClasses", "goHome",
+         "the brand mark in the sticky top bar, on all six pages. Design "
+         "shares `goClasses` between it and the class screen's Back (83); "
+         "only the brand moves. \"MrBadmusAI\" is the site's name, not the "
+         "dashboard's, and on classes.html it was a press that reloaded the "
+         "page a teacher was already on."),
+}
 
 
 # ── ⊕ RULED, MRB-287 · SEVEN URLS, SO EVERY SCREEN CHANGE IS A NAVIGATION ─
@@ -334,14 +398,25 @@ NAV = {
         # which refuses a NAV node that was never checked on ANY page —
         # refused it. The handler rewrite itself is unaffected: 11 and 89
         # still carry it and are still asserted.
-        nodes=(11, 83),
+        # ⊕ NODE 11 WAS HERE AND MOVED OUT, 31 Aug 2026 (MRB-304). It is the
+        # BRAND MARK, and Mide's ruling is that the wordmark goes to the
+        # public homepage from every teacher page. It is not deleted from the
+        # rulings — it is asserted in `RETARGET_ON`, which checks it is still
+        # carrying `goClasses` BEFORE moving it onto `goHome`, so the
+        # anchoring this row used to provide is not lost. Removing it from
+        # this tuple without that entry would drop the assertion silently.
+        # `goClasses` itself is unchanged: node 83, the class screen's Back,
+        # still goes to the class list carrying its academic year.
+        nodes=(83,),
         frm="      goClasses: () => this.setState({ screen: 'classes', "
             "modal: null }),",
         to="      goClasses: () => MRB_GO('classes', "
            "{ year: MRB_DATA('yearParam') }),",
-        why="the brand mark in the top bar (11) and the class screen's Back "
-            "(83). Design's node 348 — the import screen's Back — is drawn by "
-            "the same handler and is not emitted; see the note above."),
+        why="the class screen's Back (83), and the \"My classes\" link this "
+            "port adds to the top bar (`INSERT_AT[(10, 13)]`). Design's node 348 — "
+            "the import screen's Back — is drawn by the same handler and is "
+            "not emitted; see the note above. Node 11, the brand mark, used "
+            "to be on this list and is now in `RETARGET_ON`."),
     "goClass": dict(
         nodes=(211, 247),
         frm="      goClass: () => this.setState({ screen: 'class', modal: "
@@ -715,9 +790,18 @@ RETEXT_AT = {
 # siblings inside node 288. If Design redraws either, the copy here will look
 # wrong before it reads wrong, which is the failure mode to want.
 #
-# `{parent node: (insert after this child node or None to append, subtree,
-#   why)}`. Nothing inserted carries an `i`: Design's numbering is what every
-# other ruling in this file is anchored on and it must not move.
+# `{(parent node, insert after this child node — or None to append):
+#   (subtree, why)}`. Nothing inserted carries an `i`: Design's numbering is
+# what every other ruling in this file is anchored on and it must not move.
+#
+# ⊕ THE KEY USED TO BE THE PARENT NODE ALONE, 31 Aug 2026 (MRB-304). It could
+# not stay that way: node 10 — the sticky top bar — now takes TWO insertions,
+# the environment badge and the "My classes" link, and a dict keyed by parent
+# would have silently kept the LAST one written and dropped the other. A
+# ruling that vanishes because two entries share a key is precisely the
+# quiet failure every mechanism in this file refuses loudly, so the key
+# became the pair that actually identifies an insertion: where it goes, and
+# what it goes after.
 
 _LEGEND_KEY = ("display:flex;align-items:center;gap:6px;"
                "font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;"
@@ -841,7 +925,79 @@ _DEL_PRIMARY = ("flex:none;height:38px;padding:0 18px;"
                 "background:var(--st-accent-text);border:none;"
                 "border-radius:9px;cursor:pointer")
 
+# ── ⊕ MRB-304 · the top bar's way back to the class list ─────────────────
+#
+# Design's own low-emphasis text button, and not a new register: it is the
+# `_DEL_TEXT_BTN` string above, which is itself node 213's "Back to <class>"
+# treatment copied verbatim — `font:600 14.5px/1.2 var(--st-ui)` in
+# `--st-muted`, no border, no ground, hovering to `--st-ink`. That is the
+# treatment Design uses for every in-chrome text navigation in this delivery,
+# and the top bar already holds two controls in exactly that weight class.
+#
+# ⚠️ IT DOES NOT COPY THE CRUMB'S REGISTER, and the difference is deliberate.
+# Node 14 is a 13px uppercase mono CAPTION — it says where you are. This says
+# where you can go. Painting them the same would make a label look pressable
+# and a control look like a label, eight pixels apart.
+_NAV_BACK_BTN = _DEL_TEXT_BTN
+
+
 INSERT_AT = {
+    # ── ⊕ RULED, MRB-304 · A PERSISTENT WAY BACK TO THE CLASS LIST ──────
+    #
+    # ⛔ THE BRAND MARK WAS DOING THIS JOB AND HAS STOPPED. See `RETARGET_ON`:
+    # node 11 now goes to the public homepage, on Mide's instruction, which
+    # takes the only always-on route to `teacher/classes.html` off five of the
+    # six screens. A brand that goes home and no other way back would be a
+    # regression dressed as a fix.
+    #
+    # ⚑ MIDE'S INSTRUCTION, 31 Aug 2026: "every page in the teacher portal
+    # should present the same header affordances — brand to home, and a
+    # separate My classes control to the dashboard, present and working
+    # identically everywhere." The two hand-written teacher pages already do
+    # exactly this, and their markup is the pattern being mirrored:
+    #
+    #     <a href="/index.html" …>MrBadmusAI</a>
+    #     <div class="nav-right">
+    #       <a href="/teacher/classes.html" …>My classes</a>
+    #
+    # So this is an AMENDED ADDITION against Design's delivery — registered in
+    # `AMENDED_ADDITIONS`, which is how it becomes visible to the drive gate —
+    # and not a correction of it. Design drew one file with one screen at a
+    # time and a brand mark that switched between them; the six-URL port is
+    # what makes a second control necessary, and the port is this file's doing
+    # rather than hers.
+    #
+    # ⚠️ IT REUSES `goClasses` RATHER THAN INVENTING A HANDLER. That is the
+    # handler node 11 has just stopped calling and node 83 still does — it
+    # carries `year: MRB_DATA('yearParam')`, so a teacher browsing 2025–26
+    # comes back to 2025–26 from any of the six screens rather than being
+    # silently returned to the working year. A fresh `goClassList` would have
+    # been a second answer to a question MRB-287 E1 already answered.
+    #
+    # ⚠️ IT IS ON ALL SIX PAGES INCLUDING classes.html, where it re-enters the
+    # page it is on. That is deliberate and it is what the hand-written pages
+    # do: the header is chrome, chrome is identical everywhere, and a control
+    # that appears and disappears depending on which screen you are on is a
+    # harder thing for a teacher to learn than one that is always there.
+    #
+    # Placed AFTER node 13 — Design's crumb block, with its own left rule —
+    # and before node 15, the search button that carries `margin-left:auto`.
+    # So it sits in the left-hand group with the brand and the crumb, and the
+    # right-hand group Design drew is untouched.
+    (10, 13): ({
+        "t": "button",
+        "a": {"type": "button",
+              "data-mrb-added": "nav-classes",
+              "style": _NAV_BACK_BTN},
+        "hov": "color:var(--st-ink)",
+        "on": "goClasses",
+        "c": [{"t": "#", "v": "My classes"}]},
+        "the top bar's way back to the class list, on every one of the six "
+        "screens. The brand mark used to be it and now goes to the public "
+        "homepage (RETARGET_ON node 11), and `teacher/import.html` and "
+        "`teacher/admin.html` — the two hand-written teacher pages — have "
+        "carried exactly this pair since they were written."),
+
     # ── the environment badge, conditional now ──────────────────────────
     #
     # ⊕ MRB-287, 26 Aug 2026 — Design's v2 deleted the nav's `PROD` chip, so
@@ -852,7 +1008,7 @@ INSERT_AT = {
     # production origin, so this `if` renders nothing there (v2's exact
     # drawing) and renders TEST / LOCAL anywhere it would matter. Styling is
     # v1's own chip, at v2's 12px nav scale.
-    10: (21, {
+    (10, 21): ({
         "t": "if", "e": "envBadge",
         "c": [{
             "t": "span",
@@ -881,7 +1037,7 @@ INSERT_AT = {
     # "Self-marked or written" — the two things the state actually is, in
     # Design's own uppercase mono, in the register of the three keys beside
     # it.
-    275: (280, {
+    (275, 280): ({
         "t": "span", "a": {"style": _LEGEND_KEY},
         "c": [
             {"t": "span", "a": {"style": "width:9px;height:9px;"
@@ -907,7 +1063,7 @@ INSERT_AT = {
     # `teacher-live.js` throws before mount (`SAY.noClasses`) so that the
     # truly-empty case never reaches this grid at all. Two sentences for one
     # condition is how a page ends up disagreeing with itself.
-    29: (48, {
+    (29, 48): ({
         "t": "if", "e": "noneShown",
         "c": [{
             "t": "div",
@@ -956,7 +1112,7 @@ INSERT_AT = {
     # eight pixels from node 84, which already says it. The statement rides
     # on `viewingYearLabel` instead — "Viewing 2025–26 · read-only" — one
     # binding, one sentence, and no literal year anywhere near it.
-    76: (79, {
+    (76, 79): ({
         "t": "if", "e": "yearsOpen",
         "c": [{
             "t": "span",
@@ -1000,7 +1156,7 @@ INSERT_AT = {
     # reads MORE loudly, and read-only is a state worth reading loudly.
     # Not into node 82's action row: that is `space-between` and a third
     # child there would push the header actions off their edge.
-    91: (None, {
+    (91, None): ({
         "t": "if", "e": "readOnlyLine",
         "c": [{
             "t": "span",
@@ -1035,7 +1191,7 @@ INSERT_AT = {
     # leaves the feed for EVERYONE, the author included. What a teacher sees
     # is a real removal, which is what the word says; "delete" would promise
     # something about the database that the database does not do.
-    203: (206, {
+    (203, 206): ({
         "t": "if", "e": "f.canDelete",
         "c": [{
             "t": "button",
@@ -1071,7 +1227,7 @@ INSERT_AT = {
     # with a feed. An inert overlay on five pages that can never open it is
     # markup a teacher can never reach, which is what LIVE_REGIONS just had
     # one of removed for.
-    81: (None, {
+    (81, None): ({
         "t": "if", "e": "delOpen",
         "c": [{
             "t": "div", "a": {"style": _DEL_SCRIM}, "on": "cancelDelete",
@@ -1235,7 +1391,52 @@ WRAP = {
 # something. ⛔ A future addition that is pure chrome must NOT carry this flag
 # — chrome is on screen in every state, and claiming otherwise would excuse it
 # from the only gate that presses it.
+#
+# ⊕ 31 Aug 2026 (MRB-304) — THE FIELD IS `pages` AND IT IS ALWAYS A TUPLE. It
+# used to be `page`, one filename, because every addition so far lived on one
+# screen. The "My classes" link is CHROME in the strictest sense: Mide's
+# instruction is that the header presents the same affordances on every
+# teacher page, so it is on all six.
+#
+# ⚠️ THE PLURAL IS THE POINT, AND SO IS THE UNIFORM SHAPE. Naming one page and
+# letting the other five carry it anyway would have tripped the build's own
+# absent-elsewhere check — and softening THAT check to let it through would
+# have retired the register's best property, which is that an addition cannot
+# drift onto a screen it was never ruled onto. Both halves still hold exactly
+# as written: present on every page it names, absent on every page it does
+# not. A single-page addition is a one-tuple, so there is no second shape for
+# a reader — or a consumer — to remember.
 AMENDED_ADDITIONS = (
+    # ⊕ RULED, MRB-304 — the top bar's way back to the class list.
+    #
+    # ⚠️ `needs_data` IS DELIBERATELY NOT SET. This is chrome in the strictest
+    # sense: it is in the sticky top bar, on all six screens, in every state
+    # including the empty ones. The warning above applies exactly — a chrome
+    # control that claimed `needs_data` would be excusing itself from the only
+    # gate that presses it.
+    #
+    # ⚠️ NO `opener_tpl`. Nothing reveals it, because nothing hides it; the
+    # reveal loop is for controls behind a sheet or a toggle, and this one is
+    # on screen the moment the page mounts.
+    #
+    # `expect_nav` names the destination and NOT a parameter. `goClasses`
+    # carries `year: MRB_DATA('yearParam')`, and `yearParam` is EMPTY on the
+    # working year by design — `MRB_GO` drops an empty param so the ordinary
+    # URL stays byte-identical — so demanding a value there would fail on
+    # every fixture that is in the year it is supposed to be in.
+    dict(marker="nav-classes",
+         pages=("classes.html", "class-detail.html", "student-detail.html",
+                "assignment.html", "digest.html", "insights.html"),
+         node=10, label="My classes",
+         expect_nav=dict(screen="classes"),
+         why="Mide, 31 Aug 2026: the brand mark goes to the public homepage "
+             "from every teacher page, and there is a separate, always "
+             "visible way back to the class list. Design's top bar hung both "
+             "jobs on the wordmark, which on classes.html was a press that "
+             "reloaded the page the teacher was already on. The two "
+             "hand-written teacher pages have carried this exact pair — "
+             "brand to /index.html, \"My classes\" beside it — since they "
+             "were written; this is the ported six catching up with them."),
     # ⊕ MRB-287 E1 — the academic year a teacher is switching TO.
     #
     # ⚠️ `needs_data` IS DELIBERATELY NOT SET, per the warning above. This is
@@ -1250,7 +1451,7 @@ AMENDED_ADDITIONS = (
     # and the thing that opens it is node 86, one of Design's own. Without the
     # opener the marker is reported unreachable — correctly, because it would
     # be, to that gate.
-    dict(marker="year-open", page="classes.html", node=76, opener_tpl=79,
+    dict(marker="year-open", pages=("classes.html",), node=76, opener_tpl=79,
          label="<the year's name>",
          # ⚠️ WHERE IT GOES, NOT JUST THAT IT MOVES. A control whose entire
          # job is to navigate proves nothing by re-rendering, and `MRB_GO`
@@ -1264,7 +1465,7 @@ AMENDED_ADDITIONS = (
              "year and cannot open it. MRB-261 is explicit that the history "
              "stays reachable; this is what makes the strip a control "
              "instead of a caption."),
-    dict(marker="shoutout-delete", page="class-detail.html", node=203,
+    dict(marker="shoutout-delete", pages=("class-detail.html",), node=203,
          label="Remove", needs_data=True,
          why="Mide, 24 Aug 2026: \"A teacher who can post a shoutout can "
              "remove one.\" Design's feed card has no delete affordance. "
@@ -1272,15 +1473,18 @@ AMENDED_ADDITIONS = (
              "signed-in teacher's — because the RLS UPDATE policy is "
              "author-only and a control that fails RLS is a control that "
              "lied."),
-    dict(marker="shoutout-delete-close", page="class-detail.html", node=81,
+    dict(marker="shoutout-delete-close", pages=("class-detail.html",),
+         node=81,
          label="Keep the shoutout", needs_data=True,
          why="the confirm sheet's close X, off Design's node 520."),
-    dict(marker="shoutout-delete-cancel", page="class-detail.html", node=81,
+    dict(marker="shoutout-delete-cancel", pages=("class-detail.html",),
+         node=81,
          label="Keep it", needs_data=True,
          why="the confirm sheet's decline. The wording is the SAFE choice "
              "stated as an action, so the two footer buttons read as a "
              "choice rather than as one button and an escape hatch."),
-    dict(marker="shoutout-delete-confirm", page="class-detail.html", node=81,
+    dict(marker="shoutout-delete-confirm", pages=("class-detail.html",),
+         node=81,
          label="Remove shoutout", needs_data=True,
          why="the press that actually writes. `confirmDelete` calls "
              "`MRB_DELETE_SHOUTOUT`, which is "
@@ -2736,6 +2940,39 @@ LOGIC = (
      "",
      "`sw2` and `sw3`, on the same physical line as `sw1`, so `DROP_KEYS` — "
      "which works one balanced key at a time — cannot take them."),
+
+    # ══ ⊕ MRB-304 · the handler the brand mark moves ONTO ════════════════
+    #
+    # ⚠️ THE ANCHOR IS `NAV`'s OUTPUT, NOT DESIGN'S SOURCE, AND THAT IS
+    # DELIBERATE RATHER THAN INCIDENTAL. `seam_logic` runs `NAV` first and
+    # `LOGIC` second — it says so, and the order is already load-bearing for
+    # three other entries. Anchoring on the REWRITTEN line means this ruling
+    # cannot land unless the navigation rewire it sits beside landed first:
+    # if `NAV["goClasses"]` is ever re-anchored or removed, this refuses on
+    # "appears 0 times" instead of quietly defining a method beside a handler
+    # that no longer exists.
+    #
+    # ⚠️ IT IS A SIBLING KEY IN `renderVals`, WHICH IS WHERE IT HAS TO BE.
+    # `student-runtime` resolves a node's `on` against the object `renderVals`
+    # returns — that is the page's whole render scope — so a method defined
+    # anywhere else on the class would be looked up, missed, and recorded in
+    # `data-mrb-misses` as a control wired to nothing.
+    #
+    # `MRB_HOME` is one line in the seam (`build_teacher_port._SEAM`) and not
+    # an inline `window.location.href` here, for the reason every other
+    # navigation in this port goes through a named helper: `teacher_behaviour`
+    # STUBS the helpers so a swept press computes its destination without
+    # tearing the page down mid-sweep. An inline assignment would navigate the
+    # gate's browser away from the fixture on the first press of the brand.
+    ("      goClasses: () => MRB_GO('classes', "
+     "{ year: MRB_DATA('yearParam') }),",
+     "      goClasses: () => MRB_GO('classes', "
+     "{ year: MRB_DATA('yearParam') }),\n"
+     "      goHome: () => MRB_HOME(),",
+     "`goHome` — the public homepage, which is where the MrBadmusAI wordmark "
+     "goes from every teacher page (Mide, 31 Aug 2026). Defined next to the "
+     "handler node 11 has just stopped calling, so the pair reads as one "
+     "decision. See `RETARGET_ON`."),
 )
 
 
