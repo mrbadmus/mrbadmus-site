@@ -95,17 +95,25 @@ written.
 # verdict grounds the panel takes and which of the two mono labels it carries.
 CASES = [
     {"id": "k1", "tag": "Observation 1",
+     # Second touch-point of c1-09 — the same overstatement the rung-2 stem
+     # in lesson 02 carried. The unit's own matrix says "almost not at all".
      "text": "A gas can be squashed into a fraction of its volume; a liquid "
-             "cannot be squashed at all.",
+             "hardly squashes at all.",
      "ok": True,
      "verdict": "Handled completely. A gas is mostly empty space and a liquid "
                 "is not. Nothing else needs to be added to the model to get "
                 "this right."},
+    # ⚠️ Fifth touch-point of c1-14 (chem audit 25 Aug 2026) — this used to
+    # read "crosses a completely still room in about two minutes", the same
+    # order-of-magnitude error as the diffusion lesson's own four sites.
+    # Ruled wording carried here identically so the two lessons cannot drift.
     {"id": "k2", "tag": "Observation 2",
-     "text": "A smell crosses a completely still room in about two minutes.",
+     "text": "A smell spreads through a room. Draughts and convection carry "
+             "it most of the way; diffusion covers the last stretch.",
      "ok": True,
      "verdict": "Handled completely. Random movement plus collisions gives "
-                "both the spreading and the length of time it takes."},
+                "the spreading — and explains why diffusion on its own would "
+                "be far too slow to do the whole job."},
     {"id": "k3", "tag": "Observation 3",
      "text": "Ice floats on water. Almost every other solid sinks in its own "
              "liquid.",

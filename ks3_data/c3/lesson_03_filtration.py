@@ -266,10 +266,15 @@ LESSON = {
                       "Through the paper, in the flask",
                       "Half in the paper, half through",
                   ]},
+         # ⚠️ The paper has just had salt water poured through it, so it is
+         # WET, and when it dries it carries a faint salt residue — which is
+         # exactly what a real class observes (C3-08, chem audit 25 Aug
+         # 2026). "Clean, dry, empty" was false in the moment and the honest
+         # core of the sentence never needed it.
          "summary": "Sand in the paper, water in the flask — and in the "
-                    "other beaker, salt water in the flask and a clean, dry, "
-                    "empty filter paper. Nothing was removed from the salt "
-                    "water at all."},
+                    "other beaker, salt water in the flask and a filter "
+                    "paper with nothing caught in it at all. Nothing was "
+                    "removed from the salt water at all."},
 
         # #s-build — phase two, the same five steps. Light `ks3-block` → `check`.
         {"type": "sequence-rebuild", "id": "filter-rebuild", "anchor": "s-build",

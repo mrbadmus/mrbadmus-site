@@ -320,9 +320,14 @@ LESSON = {
         "kind": "narrative",
         "title": "Two invisible gases. Set fire to them and you get something "
                  "you can drink.",
+        # ⚠️ "both weightless in the hand" stated REACT-07 — the gases-have-
+        # no-mass misconception — in the lesson's own voice, two lessons
+        # before c4-04 exists to break it (C4-3, chem audit 25 Aug 2026).
+        # A balloon of gas has mass. The sensation is kept; the mass claim
+        # goes. Design's approved copy: flagged to her.
         "prompt": "Hydrogen in one balloon, oxygen in another. Both "
-                  "colourless, both weightless in the hand, neither of them "
-                  "wet. Light them and what condenses on the cold glass "
+                  "colourless, neither of them heavy in the hand, neither of "
+                  "them wet. Light them and what condenses on the cold glass "
                   "afterwards is water.",
         "commit": "Where did the water come from?",
         # MRB-177 checked: 7 / 9 / 8 / 6 words. The right answer (C) is not

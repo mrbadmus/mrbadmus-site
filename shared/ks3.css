@@ -23007,6 +23007,14 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
   color: var(--ks3-ink-muted);
 }
+/* The sentence the block is not allowed to ship without: which layer the bar
+   draws wider than the truth, and what its real share is. It sits under the
+   bar's own end captions, it is always visible, and it is not behind a tap —
+   c10-05's `.ks3-amix-foot` pattern, applied where the same distortion is. */
+.ks3-elay .ks3-elay-foot {
+  margin: 14px 0 0; font-size: 17px; line-height: 1.6;
+  color: var(--ks3-ink-muted); max-width: 62ch;
+}
 .ks3-elay .ks3-elay-readout {
   margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel);
   background: var(--ks3-inset); border: 2px solid var(--ks3-ink);
@@ -23066,6 +23074,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   .ks3-elay .ks3-elay-seg { min-width: 30px; }
   .ks3-elay .ks3-elay-name { font-size: 22px; }
   .ks3-elay .ks3-elay-stext { font-size: 18px; }
+  .ks3-elay .ks3-elay-foot { font-size: 16px; }
 }
 
 /* ── c10-01 · depth-evidence (light) ───────────────────────────────────

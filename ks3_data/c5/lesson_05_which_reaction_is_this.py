@@ -189,9 +189,15 @@ _REACTIONS = [
      "text": "Aluminium powder mixed with iron oxide is lit. It reaches "
              "2500 °C and molten iron pours out.",
      "answer": "Displacement.",
+     # ⚠️ The lede promises "a defensible second answer" on the awkward
+     # items, and this reveal never honoured it for a student who answered
+     # Oxidation (C5-5, chem audit 25 Aug 2026). Item 1's reveal already
+     # models the move; this now mirrors it.
      "why": "Spectacular, and still a displacement: aluminium is more "
             "reactive than iron, so it takes the oxygen and the iron is "
-            "pushed out. The drama is not the diagnosis — the reactants are."},
+            "pushed out. And yes — the aluminium gains oxygen, so oxidation "
+            "is defensible too; displacement names the whole event, so it "
+            "says more. The drama is not the diagnosis — the reactants are."},
     # ⚑ NOTES §4 flag 15. Confirmed and kept whole: the biology cross-link is
     # deliberate, and the sentence that carries it is the one that makes the
     # point — same reactants, same products, no flame.

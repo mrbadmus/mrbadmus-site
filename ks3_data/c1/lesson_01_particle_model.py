@@ -445,11 +445,12 @@ LESSON = {
              "The piece would be too small for the knife to touch",
          ],
          "reveal": [
-             "A sharper knife would keep going. Cut a sugar particle in half "
-             "and you will get something — but not sugar. You get carbon, "
-             "hydrogen and oxygen, and they are not sweet, not white, and one "
-             "of them is a gas. The cut is possible; what is impossible is a "
-             "smaller piece <em>that is still sugar</em>.",
+             "A sharper knife does not help, because past this point you are "
+             "not cutting any more. Splitting a sugar particle takes it "
+             "apart into different substances altogether — that is a "
+             "chemical change, not a smaller slice. Cutting has a floor, and "
+             "this is it: what is impossible is a smaller piece "
+             "<em>that is still sugar</em>.",
              "That is what the model claims, and it is a much stronger claim "
              "than \"things are small\". It says matter comes in units with a "
              "floor, and below that floor the substance stops existing. "
@@ -540,7 +541,8 @@ LESSON = {
     # ── the key note (fixed, last, photographable) ──────────────────────────
     "key_note": "Matter is made of particles with a floor you cannot cut past, "
                 "nothing at all between them, and constant motion. Three "
-                "claims. You have tested two of them tonight and the third is "
+                "claims. You have tested two of them in this lesson and the "
+                "third is "
                 "the next five lessons.",
 
     # ── the stretch layer (§5.6) — visible and opt-in to all ────────────────

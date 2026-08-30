@@ -463,8 +463,8 @@ LESSON = {
               "right": "Dissolving. Two substances, and the sugar particles "
                        "spread out among the water particles.",
               "wrong": "Not melting — tea is nowhere near sugar’s melting "
-                       "point of 160 °C. Two substances are involved, so this "
-                       "is dissolving."},
+                       "point of about 186 °C. Two substances are involved, "
+                       "so this is dissolving."},
              {"id": "s2", "text": "Butter left in a pan over a low flame",
               "answer": "melt",
               "right": "Melting. One substance, heated until its particles "
@@ -494,9 +494,11 @@ LESSON = {
              "separate and slot in among the particles of the liquid, and to "
              "get the solid back you have to remove the liquid.",
              "Sugar in tea is dissolving. Sugar in a dry pan over a flame "
-             "really does melt, at about 160 °C, and turns into caramel. Same "
-             "substance, two entirely different events, and the word you "
-             "choose says which one you mean.",
+             "really does melt, at about 186 °C. It is an awkward example, "
+             "because sugar starts browning and breaking down at around its "
+             "melting point — and that browning is a chemical change, not a "
+             "melt. Same substance, two entirely different events, and the "
+             "word you choose says which one you mean.",
          ]},
 
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},

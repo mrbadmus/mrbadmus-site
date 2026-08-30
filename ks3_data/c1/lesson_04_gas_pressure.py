@@ -701,9 +701,18 @@ LESSON = {
     # same thing about the air outside you.
     "stretch": [
         {"type": "explainer", "id": "atmospheric-pressure",
+         # ⚠️ This used to read "the weight of roughly ten metres of
+         # atmosphere" (c1-13, chem audit 25 Aug 2026) — short by a factor of
+         # a thousand: ten metres of AIR is about 120 Pa. 100,000 Pa is the
+         # whole air column, tens of kilometres of it, and it pushes about as
+         # hard as ten metres of WATER. The ten-metre image is kept and made
+         # true. The follow-on arithmetic needed no change: 100,000 N/m² over
+         # roughly 0.1 m² of shoulder really is about a tonne-force, so the
+         # passage now agrees with itself in both directions.
          "text": "You are under pressure right now — about 100,000 "
-                 "pascals of it, the weight of roughly ten metres of "
-                 "atmosphere resting on every square metre of you, which works "
+                 "pascals of it: the weight of the whole depth of the "
+                 "atmosphere above you, which pushes about as hard as ten "
+                 "metres of water would, and works "
                  "out at something like a tonne pressing on your shoulders. "
                  "You cannot feel it because the same pressure is pushing out "
                  "from inside you, and the two balance exactly. Remove one "
