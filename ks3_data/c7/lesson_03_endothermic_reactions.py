@@ -199,9 +199,18 @@ LESSON = {
     "ks4_links":   [],
 
     # ── framing ─────────────────────────────────────────────────────────────
+    # ⚠️ This used to end "cold enough to freeze it to a wet bench" (C7-07,
+    # chem audit 25 Aug 2026). That demonstration belongs to barium hydroxide
+    # + ammonium salt, which reaches about −20 °C. Citric acid and sodium
+    # hydrogencarbonate cannot go below zero, and the PREVIOUS lesson's own
+    # bench runs this very mixture 20 °C → 12 °C and stops. The mixture is
+    # deliberately kitchen-accessible, so children will try it and it will
+    # fail. Ruled 28 Aug 2026: keep the reaction, tell the truth, and name
+    # the drop the course already measured — so a student can predict the
+    # number before they see it.
     "big_question": "Two powders, both at room temperature, stirred together "
-                    "in a beaker. Thirty seconds later the beaker is cold "
-                    "enough to freeze it to a wet bench.",
+                    "in a beaker. Thirty seconds later the thermometer has "
+                    "fallen from 20 °C to 12 °C, and nothing was cooled.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
     # Five stops, Design's `RAIL`, matching `docs/ks3/rail-manifest.md` stop
@@ -230,8 +239,9 @@ LESSON = {
                  "cold on its own.",
         "prompt": "Citric acid and sodium hydrogencarbonate, both at 20 °C, "
                   "both dry, are stirred into water. The thermometer falls to "
-                  "12 °C and keeps going. Put a drop of water under the "
-                  "beaker first and it freezes the beaker to the bench.",
+                  "12 °C — eight degrees down, the same drop the fifth beaker "
+                  "made in the last lesson — and the outside of the beaker "
+                  "mists over cold.",
         "commit": "Where has the energy gone?",
         "options": [
             "It was destroyed by the reaction",
