@@ -57,6 +57,13 @@ holding all of it at once will notice:
      rounding.
 """
 
+# XU-1 (MRB-295/MRB-298, ruled 28 Aug 2026). The estate held four
+# definitions of temperature and three were wrong. There is now one, and it
+# is authored in ks3_data/quantities.py rather than retyped here.
+from ..quantities import (TEMPERATURE_CRITERION, TEMPERATURE_OPTION,
+                          TEMPERATURE_SENTENCE, TEMPERATURE_VOCAB)  # noqa: F401
+
+
 # ── the heating curve, x = energy in (0–100), T = °C ─────────────────────
 #
 # ⚖️ **CORRECTED FROM DESIGN, AND THE CORRECTION IS THE POINT.**
@@ -573,8 +580,12 @@ LESSON = {
             "field_label": "Your explanation",
             "placeholder": "Temperature is a measure of…",
             "success": [
-                "Says temperature is a measure of how fast the particles are "
-                "moving.",
+                # XU-1 — this criterion used to read "Says temperature is a
+                # measure of how fast the particles are moving", which is
+                # wrong, and it is the FIRST time in the course a child is
+                # marked on the definition (Y7 HT1). One definition, authored
+                # once, in ks3_data/quantities.py.
+                TEMPERATURE_CRITERION,
                 "Says the energy going in during melting is used to break the "
                 "particles apart from each other.",
                 "Says that energy is not going into making the particles move "

@@ -41,6 +41,13 @@ naturally first; the COUNT is what MRB-278 measures, and it is 3/3/3/3.
 The lesson carries no figures, so every question is figure=None.
 """
 
+# XU-1 (MRB-295/MRB-298, ruled 28 Aug 2026). The estate held four
+# definitions of temperature and three were wrong. There is now one, and it
+# is authored in ks3_data/quantities.py rather than retyped here.
+from ..quantities import (TEMPERATURE_CRITERION, TEMPERATURE_OPTION,
+                          TEMPERATURE_SENTENCE, TEMPERATURE_VOCAB)  # noqa: F401
+
+
 UNIT = "P1"
 LESSON = "heating-and-thermal-equilibrium"
 LESSON_NUMBER = 4
@@ -114,14 +121,19 @@ QUESTIONS = [
                      "measure it",
              "correct": False,
              "why": "There is no substance called heat to contain. "
-                    "Temperature is about particle speed."},
+                    "Temperature is about the movement energy of one "
+                    "particle, on average."},
             {"text": "How quickly a substance will warm something else that "
                      "it touches",
              "correct": False,
              "why": "That is a rate, and it depends on the material as well. "
                     "Temperature is simpler than that."},
-            {"text": "The average speed of the particles in a substance",
-             "correct": True},
+            # XU-1 — this option used to read "The average speed of the
+            # particles in a substance" and was marked CORRECT, so a child
+            # who knew the right answer was marked down. Two gases at the
+            # same temperature have the same average kinetic energy and
+            # different average speeds; speed is not the quantity.
+            {"text": TEMPERATURE_OPTION, "correct": True},
         ],
         "figure": None,
     },

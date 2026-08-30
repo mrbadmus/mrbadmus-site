@@ -64,6 +64,18 @@ Remedied at the DISTRACTOR both times. Registered.
 ── ⚠️ NO CHILDLINE BLOCK. NO DRAFT MARKINGS. ─────────────────────────
 """
 
+# XU-1 (MRB-295/MRB-298, ruled 28 Aug 2026). THIS IS THE SITE THAT WAS
+# ALREADY RIGHT, and it is deliberately NOT rewritten to import
+# ks3_data/quantities.py. Every occurrence of the definition on this page is
+# embedded in the temperature-VERSUS-internal-energy contrast that the whole
+# lesson is built on, and the "one particle" / "a single particle" phrasing
+# is what makes that contrast land: temperature is the average for ONE
+# particle, internal energy is the total for ALL of them. Swapping in the
+# estate-wide sentence would flatten the one lesson that gets this right.
+# The two forms say the same thing; this one says it more sharply, in the
+# place that needs it sharpest.
+
+
 LESSON = {
     "slug": "temperature-and-internal-energy",
     "title": "Temperature, particle motion and internal energy",

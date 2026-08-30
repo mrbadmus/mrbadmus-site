@@ -27,7 +27,7 @@ from .default_sequence import DEFAULT_SEQUENCE_V1
 
 # Modules in this package that are NOT unit modules.
 _NON_UNIT_MODULES = {"structure", "default_sequence", "half_terms",
-                     "school_schemes", "substatements"}
+                     "school_schemes", "substatements", "quantities"}
 
 
 def _authored_modules():

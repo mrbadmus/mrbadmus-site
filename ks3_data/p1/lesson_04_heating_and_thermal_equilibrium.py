@@ -48,6 +48,13 @@ not existing. Drawing the thing that does not happen is the confrontation of
 `ENER-14`, and it must not be tidied away as a contradictory label.
 """
 
+# XU-1 (MRB-295/MRB-298, ruled 28 Aug 2026). The estate held four
+# definitions of temperature and three were wrong. There is now one, and it
+# is authored in ks3_data/quantities.py rather than retyped here.
+from ..quantities import (TEMPERATURE_CRITERION, TEMPERATURE_OPTION,
+                          TEMPERATURE_SENTENCE, TEMPERATURE_VOCAB)  # noqa: F401
+
+
 LESSON = {
     "slug":  "heating-and-thermal-equilibrium",
     "title": "Heating and thermal equilibrium",
@@ -106,9 +113,9 @@ LESSON = {
             "The spark, but it cools too fast to hurt you",
         ],
         "reveal": "The bath, by an enormous margin — tens of millions of "
-                  "joules against a fraction of one. <strong>Temperature "
-                  "tells you how fast the particles are moving on "
-                  "average. Energy depends on that and on how many "
+                  "joules against a fraction of one. <strong>"
+                  + TEMPERATURE_SENTENCE +
+                  " Energy depends on that and on how many "
                   "particles there are.</strong> A spark is a handful of "
                   "very fast particles; a bath is a hundred kilograms of "
                   "moderately fast ones. Two different quantities, and this "
@@ -178,9 +185,12 @@ LESSON = {
                   "the spark is the proof: the fastest particles on the "
                   "bench, and almost no energy at all."},
 
+        # ⚠️ KEY FACT WORDING IS MIDE'S SIGN-OFF. XU-1's replacement wording
+        # is named in the physics audit report as an item he signs; it is
+        # applied here under his 28 Aug ruling and flagged in the run report.
         {"type": "key-fact", "id": "temperature-is-an-average",
          "ground": "card",
-         "text": "Temperature is the average speed of the particles. The "
+         "text": TEMPERATURE_SENTENCE + " The "
                  "energy in a thermal store depends on that <em>and</em> on "
                  "how many particles there are."},
 
@@ -395,9 +405,7 @@ LESSON = {
 
     "vocabulary": [
         {"term": "temperature",
-         "definition": "A measure of the average speed of the particles in "
-                       "a substance. Measured in degrees Celsius (°C). It "
-                       "does not depend on how much there is."},
+         "definition": TEMPERATURE_VOCAB},
         {"term": "thermal store",
          "definition": "The energy held by a substance because of the "
                        "movement of its particles. Depends on the "
