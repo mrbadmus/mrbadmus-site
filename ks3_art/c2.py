@@ -389,7 +389,19 @@ def r_formula_builder(a, act_id):
             % (axis, n, "true" if n == chosen else "false", n)
             for n in counts)
 
-    cfg = {"pairs": pairs, "known": known, "counts": counts,
+    # ⊕ 30 Aug 2026 (MRB-295/MRB-302 close-out). `known` is stored FLAT
+    # ("H2O — water") because JS's own `name()` composes the not-found
+    # branch the same way and the two have to agree. But the visible
+    # caption is set with `.textContent` on every repaint — including the
+    # one call made at mount — so without this, JS was overwriting the
+    # server-rendered `sci(...)` subscripts (below) with the flat string
+    # within milliseconds of the page loading. `name_html` carries the
+    # already-subscripted form for JS to use on the FOUND branch only; the
+    # not-found branch's ASCII digits are Design's own asymmetry (see
+    # `_fb_name`'s docstring) and stay untouched.
+    known_json = {k: dict(v, name_html=sci(v["name"])) if "name" in v else v
+                  for k, v in known.items()}
+    cfg = {"pairs": pairs, "known": known_json, "counts": counts,
            "colours": a.get("colours") or {},
            "not_found": nf, "captions": a.get("captions") or {},
            "alt": a.get("alt") or {},

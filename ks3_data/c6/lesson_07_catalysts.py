@@ -91,6 +91,7 @@ _TRIALS = [
     # ⭐ THE SECOND CONTROL, AND IT IS THE IMPORTANT ONE. Without it the bench
     # would let a student conclude that adding a powder is what matters.
     {"id": "t2", "label": "Sand", "catalyst": False, "recovered": False,
+     "phase": "solid",
      "volume": "2 cm³", "mass": "1.00 g of 1.00 g",
      "setup": "The same peroxide, with one spatula of clean dry sand stirred "
               "in.",
@@ -148,6 +149,7 @@ _TRIALS = [
     # it now makes the converse point too, that coming back unchanged is not
     # sufficient either.
     {"id": "t5", "label": "Dilute acid", "catalyst": False, "recovered": True,
+     "phase": "liquid",
      "volume": "2 cm³", "mass": "unchanged",
      "setup": "The same peroxide, with 5 cm³ of dilute acid added.",
      "result": "No change. The same few bubbles as the empty flask.",

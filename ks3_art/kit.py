@@ -167,6 +167,16 @@ _ELEMENTS = frozenset("""
  Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm
 """.split())
 
+# ⊕ 30 Aug 2026 (MRB-295/MRB-302 close-out). `X` is not a chemical element —
+# it is Mendeleev's own placeholder for one not yet discovered (c8-02's
+# gap-filler: `XO2`, `X2O3`), and it does not belong in `_ELEMENTS`, which
+# other code may reasonably assume names real chemistry. But typographically
+# it fills an element's slot in a real formula, so a token built from it
+# should subscript exactly the way a real element's would — kept as its own
+# set, checked alongside `_ELEMENTS` in `_formula_sub`, for that reason and
+# no other.
+_PLACEHOLDER_SYMBOLS = frozenset(("X",))
+
 # The single-element species that really are spelled with a subscript. A
 # one-element token outside this set is assumed to be a unit code, a lesson
 # code or an ordinary label, and is left alone.
@@ -203,7 +213,8 @@ def _formula_sub(m):
     groups = _GROUP_RE.findall(body)
     if not groups:
         return m.group(0)
-    if any(sym not in _ELEMENTS for sym, _d in groups):
+    if any(sym not in _ELEMENTS and sym not in _PLACEHOLDER_SYMBOLS
+           for sym, _d in groups):
         return m.group(0)
     if not any(d for _s, d in groups):
         return m.group(0)                      # no subscript to draw

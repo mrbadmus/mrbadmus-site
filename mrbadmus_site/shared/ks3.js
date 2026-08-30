@@ -19219,6 +19219,17 @@
       return (p.a || "") + (na > 1 ? na : "") + (p.b || "")
         + (nb > 1 ? nb : "") + (nf.name_suffix || "");
     }
+    // ⊕ 30 Aug 2026 (MRB-295/MRB-302 close-out). `name()` above stays flat —
+    // the not-found branch and the aria-label both need the plain string —
+    // but the VISIBLE caption has to carry the subscripts the server already
+    // rendered, or repaint() (called once at mount) erases them on load.
+    // `name_html` is precomputed server-side (ks3_art/c2.py) for exactly
+    // this; the not-found branch has no subscripts to carry, so it is
+    // reused as-is.
+    function nameHTML(p, found) {
+      if (found) { return found.name_html || found.name || ""; }
+      return name(p, found);
+    }
 
     function draw(found) {
       if (!canvas || !canvas.getContext) { return; }
@@ -19302,7 +19313,7 @@
       if (found) { seen[key()] = true; }
       if (labelA) { labelA.textContent = p.aName || ""; }
       if (labelB) { labelB.textContent = p.bName || ""; }
-      if (nameEl) { nameEl.textContent = name(p, found); }
+      if (nameEl) { nameEl.innerHTML = nameHTML(p, found); }
       if (noteEl) { noteEl.textContent = (found && found.note) || nf.note || ""; }
       if (canvas && canvas.setAttribute) {
         // Three-way, and composed rather than authored because it quotes

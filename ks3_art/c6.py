@@ -1721,6 +1721,18 @@ def r_catalyst_bench(a, act_id):
             "(Design draws a solid and a liquid), so that the conclusion "
             "cannot survive as 'adding a powder is what matters' either."
             % (act_id, len(inert)))
+    # ⊕ 30 Aug 2026 (MRB-295 close-out). The message above has always claimed
+    # the two inert flasks must be different KINDS of thing, but until now
+    # nothing checked that — only the count. Trial records now carry `phase`
+    # for exactly this reason; assert what the error message promises.
+    phases = {tr.get("phase") for tr in inert}
+    if len(phases) < 2:
+        raise ValueError(
+            "catalyst-bench %r has %d inert flask(s), but they are not "
+            "different KINDS of thing (phase %r) — a solid and a liquid are "
+            "both required, or the bench only teaches 'adding a powder is "
+            "what matters'. Give each inert trial a distinct `phase`."
+            % (act_id, len(inert), sorted(p for p in phases if p)))
 
     first = trials[0]["id"]
 
