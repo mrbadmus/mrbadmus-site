@@ -829,15 +829,23 @@
          the whole success-criteria list — the model answer — arrived before
          a word had been written. This is the missing half of R8.
 
-         The gate is LENGTH, and only length. Sixty characters is about a
-         dozen words: enough to be an attempt at a sentence, low enough that
-         a terse but genuine answer still gets through. Nothing here reads
+         The gate is LENGTH, and only length. Forty characters is about
+         eight words: enough to be an attempt at a sentence, low enough that
+         a terse but genuine answer still gets through.
+
+         ⊕ SIXTY BECAME FORTY, ruled 28 Aug 2026 (MRB-295). The threshold was
+         set to let a terse-but-right writer through and it was not doing it:
+         four audit units independently produced CORRECT answers that left
+         the button dead. C6's evidence is the concrete one — "They should add
+         garden lime because it cancels the acid", 55 characters, a complete
+         and correct answer to the rung, and the control did not move. A
+         58-character correct answer failed the same way. Both pass at 40. Nothing here reads
          what was written — no keywords, no parsing, no judgement of any
          kind. It is the COMMITMENT that is required, not the correctness,
          and a page that marked the words before the student asked it to
          would be doing the very thing R8 exists to stop (R3 / MRB-196 R10).
 
-         ⚠️ NO COPY, deliberately — §8.10. No "write at least 60 characters",
+         ⚠️ NO COPY, deliberately — §8.10. No "write at least 40 characters",
          no character counter, no nag. The control is simply not active yet
          and looks the way an inactive control looks. This is therefore the
          one dimmed control in the key stage with no progress readout beside
@@ -849,7 +857,7 @@
          away because the student trimmed a sentence would strand them with
          the list open. `reopen()` clears `shown`, so a retry re-arms it —
          and a retry keeps the writing, so a real answer stays through. */
-      var MIN_COMMIT = 60;
+      var MIN_COMMIT = 40;
 
       function committed() {
         return !answer || (answer.value || "").trim().length >= MIN_COMMIT;
@@ -33019,7 +33027,7 @@
     var reveal = wrap.querySelector("[data-rwrite-reveal]");
     if (!field || !btn || !reveal) { return; }
 
-    var MIN_COMMIT = 60;
+    var MIN_COMMIT = 40;
     var shown = false;
 
     function gate() {

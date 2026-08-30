@@ -3951,8 +3951,16 @@ def r_layer(lesson, blocks, cls, eyebrow):
 # ⚠️ SHARED FILE. One string literal in `build_ks3.py`, and it moves every
 # KS3 page's bytes. Announced in the MRB-223 report under
 # `docs/ks3/worktrees.md` §2.
-LEGAL_LINE = ('<p class="ks3-legal">Lesson content © MrBadmusAI. Written '
-              'and checked by a qualified science teacher.</p>')
+# ⊕ THE ATTRIBUTION SENTENCE IS GONE, ruled 28 Aug 2026 (MRB-296).
+# This line used to read:
+#     'Lesson content © MrBadmusAI. Written and checked by a qualified
+#      science teacher.'
+# The second sentence is removed from every page. The copyright half is the
+# half that does work on a student-facing page and it stays. This is the ONLY
+# place the sentence was ever emitted — KS4, the student pages, the teacher
+# pages and the marketing pages never carried it — so removing it here
+# removes it everywhere.
+LEGAL_LINE = '<p class="ks3-legal">Lesson content © MrBadmusAI.</p>'
 
 
 def r_endmatter(cards, tutor=None):
