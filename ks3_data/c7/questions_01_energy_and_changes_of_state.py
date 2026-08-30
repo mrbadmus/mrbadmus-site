@@ -284,13 +284,15 @@ QUESTIONS = [
         "options": [
             {"text": "They hold the same energy, because they are at the same "
                      "temperature", "correct": False,
-             "why": "A thermometer is not an energy meter. It reports how "
-                    "fast the particles move, not how many there are."},
+             "why": "A thermometer is not an energy meter. It reports the "
+                    "particles' average kinetic energy, not how many there "
+                    "are."},
             {"text": "The lighter one holds more, because its particles are "
                      "less crowded and move more freely", "correct": False,
              "why": "Both are at the same temperature, so their particles "
-                    "move at the same average speed. There are simply fewer "
-                    "of them."},
+                    "have the same average kinetic energy — same metal, so "
+                    "the same average speed too. There are simply fewer of "
+                    "them."},
             {"text": "Nothing can be said, because energy cannot be compared "
                      "between two separate objects", "correct": False,
              "why": "It can be compared, and the comparison is "

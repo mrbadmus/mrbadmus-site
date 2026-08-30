@@ -541,10 +541,10 @@ LESSON = {
              "flat step is not a pause, it is the most energy-hungry part of "
              "the whole run.",
              "The confusion comes from treating the thermometer as an energy "
-             "meter. It is not. <strong>A thermometer measures how fast the "
-             "particles are moving, and during melting they are not moving "
-             "faster — they are being pulled out of position.</strong> Energy "
-             "in, no temperature change, and nothing contradictory about it.",
+             "meter. It is not. <strong>" + TEMPERATURE_SENTENCE + " During "
+             "melting, that average is not rising — the particles are being "
+             "pulled apart, not sped up.</strong> Energy in, no temperature "
+             "change, and nothing contradictory about it.",
          ]},
     ],
 
@@ -714,9 +714,8 @@ LESSON = {
                        "the change can be undone.",
          "note": "Every change of state is a physical change."},
         {"term": "Temperature",
-         "definition": "A measure of how fast the particles in a substance "
-                       "are moving. It is not a measure of how much energy "
-                       "something contains.",
+         "definition": TEMPERATURE_VOCAB + " It is not a measure of how much "
+                       "energy something contains.",
          "note": "Steam and water at 100 °C are at the same temperature and "
                  "carry very different amounts of energy."},
         {"term": "Evaporating",

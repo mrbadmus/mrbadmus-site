@@ -285,8 +285,8 @@ LESSON = {
                        "far more heat in it.",
               "body": [
                   "Two different quantities are being run together. "
-                  "Temperature says how vigorously the particles are moving; "
-                  "the energy in the thermal store also depends on how many "
+                  + TEMPERATURE_SENTENCE + " The "
+                  "energy in the thermal store also depends on how many "
                   "particles there are. A bath at 40 °C holds far more "
                   "energy than a cup at 80 °C, and yet the tea is hotter — "
                   "and it is the temperature, not the total energy, that "
@@ -348,8 +348,7 @@ LESSON = {
             "field_label": "Your explanation",
             "placeholder": "The spark has a high temperature because…",
             "success": [
-                "Says temperature measures the average speed of the "
-                "particles.",
+                TEMPERATURE_CRITERION,
                 "Says the spark contains very few particles.",
                 "Says the total energy in the spark’s thermal store is "
                 "therefore tiny.",
