@@ -139,6 +139,17 @@
       font-size: 0.95rem;
     }
     .empty { color: var(--muted); font-size: 0.9rem; }
+
+    @media (max-width: 560px) {
+      /* MRB-303 J2 added a third nav-right link (Admin, for admin-scoped
+         viewers) on top of "My classes"/"Sign out" — at 390px the bar was
+         already tight with two; a third with no wrap protection collides.
+         Same three rules as teacher/admin.html's own 390px fix. */
+      nav.top-nav { padding: 10px 14px; gap: 12px; }
+      nav.top-nav > a { white-space: nowrap; }
+      .nav-right { gap: 8px; }
+      .nav-right a, .signout-btn { white-space: nowrap; }
+    }
   </style>
 </head>
 <body>

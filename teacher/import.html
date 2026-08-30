@@ -607,6 +607,14 @@
     @media (max-width: 560px) {
       .step-label { display: none; }
       .page-title { font-size: 1.6rem; }
+      /* MRB-303 J2 added a third nav-right item (Admin, for admin-scoped
+         viewers) on top of the env pill/name/Sign out — at 390px the bar was
+         already tight; a third with no wrap protection collides. Same three
+         rules as teacher/admin.html's own 390px fix. */
+      nav.top-nav { padding: 10px 14px; gap: 12px; }
+      nav.top-nav > a { white-space: nowrap; }
+      .nav-right { gap: 8px; }
+      .nav-right .signout-btn, .nav-right span { white-space: nowrap; }
     }
   </style>
 </head>
@@ -614,7 +622,7 @@
 
 <nav class="top-nav">
   <a href="/index.html" style="font-family:var(--font-serif);font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
-  <div style="display:flex;align-items:center;gap:10px;">
+  <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
     <span id="env-pill" class="pill env-prod" title=""></span>
     <span id="nav-user-area" style="color:var(--muted);font-weight:700;font-size:0.85rem;"></span>
     <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
