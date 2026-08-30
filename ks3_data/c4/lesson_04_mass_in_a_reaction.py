@@ -136,9 +136,18 @@ _RUNS = [
      "note": "Not a hundredth of a gram. The same reaction happened — the "
              "chips still fizzed away — and with the gas trapped on the pan "
              "the balance has nothing to report."},
+    # ⊕ RULED 28 Aug 2026 (MRB-295, C4-7 / C2-9). This run used to read
+    # 2.40 g → 4.00 g — the MAGNESIUM ALONE — under tiles that say "Flask,
+    # contents and everything on the pan", which makes a 2.40 g reading
+    # physically impossible. Ruled: whole apparatus on the pan in BOTH runs,
+    # preserving the +1.60 g gain. 84.60 g is an 82.20 g crucible plus
+    # 2.40 g of magnesium; 86.20 g is the same crucible plus 4.00 g of
+    # magnesium oxide. The chemistry underneath is unchanged and still
+    # exact, and the FIFA worked example still states 2.40 and 4.00 outright.
+    # C2's conservation-of-mass bench now carries the identical pair.
     {"id": "magnesium:open",
-     "before": "2.40 g",
-     "after": "4.00 g",
+     "before": "84.60 g",
+     "after": "86.20 g",
      "third": "not measured — you work it out",
      "third_note": "The mass of oxygen that joined the magnesium.",
      "note": "The reading rose by 1.60 g. The extra mass came out of the air: "
