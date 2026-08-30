@@ -494,6 +494,7 @@
     if (!nav) return false;
     var group = nav.querySelector('div');
     if (!group) return false;
+    if (group.querySelector('a[href="' + entry.href + '"]')) return true;
     var a = anchor('', entry);
     a.style.cssText = 'color:var(--muted);font-weight:700;font-size:0.85rem;' +
                       'text-decoration:none;white-space:nowrap;';
