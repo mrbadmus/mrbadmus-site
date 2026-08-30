@@ -123,15 +123,41 @@ _TRIALS = [
             "inside cells. Boil the liver first and it does nothing at all — "
             "heat destroys the enzyme's shape, and the shape is what does the "
             "work."},
-    # ⭐ ⚑ FLAG 15. THE DISCRIMINATING ITEM. Faster, and still not a catalyst.
-    {"id": "t5", "label": "Dilute acid", "catalyst": False, "recovered": False,
-     "volume": "19 cm³", "mass": "partly consumed",
+    # ⭐ ⚑ FLAG 15 IS RETIRED HERE, AND THIS IS THE FLASK THAT CARRIED IT.
+    #
+    # It used to read 19 cm³ and "partly consumed" — faster than the control
+    # and consumed doing it, which made it the bench's discriminating item:
+    # faster, and still not a catalyst. The LOGIC was the right thing to
+    # teach. The CHEMISTRY was invented (C6-11, chem audit 25 Aug 2026 — the
+    # audit's single most serious finding). Dilute acid does not accelerate
+    # hydrogen peroxide decomposition; it STABILISES it, which is precisely
+    # why the bottle you buy is kept slightly acidic. There is also no
+    # reaction at this level that consumes the acid while releasing oxygen.
+    # A teacher running this bench in a real classroom got a flat
+    # contradiction of the page.
+    #
+    # RULED 28 Aug 2026, option (a): keep dilute acid, flip the result. It
+    # comes out at the control's volume and the flask becomes an honest
+    # NEGATIVE CONTROL — a liquid that does nothing, standing beside the sand
+    # that is a solid that does nothing. The lesson gains the point that
+    # ADDING SOMETHING IS NOT THE SAME AS CATALYSING IT, and the negative
+    # result is the teaching rather than an anomaly to be explained away.
+    #
+    # `recovered` is True and truthful: the acid really is all still there.
+    # It cannot be confused with a catalyst, because it is not faster — and
+    # it now makes the converse point too, that coming back unchanged is not
+    # sufficient either.
+    {"id": "t5", "label": "Dilute acid", "catalyst": False, "recovered": True,
+     "volume": "2 cm³", "mass": "unchanged",
      "setup": "The same peroxide, with 5 cm³ of dilute acid added.",
-     "result": "A noticeable increase in bubbling, then it tails off.",
-     "why": "Faster, but not a catalyst. The acid is consumed as it goes, "
-            "which is why the rate falls away and why you cannot recover what "
-            "you added. Changing the speed is not sufficient — a catalyst "
-            "must also come out unchanged."},
+     "result": "No change. The same few bubbles as the empty flask.",
+     "why": "Nothing happened, and that is worth knowing. Acid does not "
+            "speed this reaction up — if anything it holds it back, which is "
+            "why the bottle of hydrogen peroxide you can buy is kept slightly "
+            "acidic so that it does not go off on the shelf. Pour the flask "
+            "out at the end and the acid is all still there. Adding something "
+            "is not the same as catalysing it: the sand made that point for a "
+            "solid, and this makes it for a liquid."},
 ]
 
 # ── the three judgements (Design's `USES`) ──────────────────────────────
@@ -314,13 +340,17 @@ LESSON = {
          "eyebrow": "Your turn · five flasks",
          "heading": "Same hydrogen peroxide in every flask. One spatula of "
                     "something added to each.",
-         "prompt": "Two of the five are catalysts, two are controls, and one "
-                   "speeds the reaction up and still does not qualify.",
+         "prompt": "Two of the five are catalysts. The other three change "
+                   "nothing at all — and one of those three is the flask "
+                   "most people bet on.",
          "demand": "investigate",
          "head_counter": {"format": "{n} of {total} run", "start": 0},
          "trials": _TRIALS,
          "volume_label": "Oxygen after 60 s",
-         "mass_label": "Solid recovered",
+         # "Solid recovered" printed over a LIQUID reagent on the fifth
+         # flask (secondary detail inside C6-11). The label has to work for
+         # everything the bench can hold.
+         "mass_label": "Recovered afterwards",
          # ⚑ FLAGS 13 AND 16. The figures are illustrative and the page says
          # so where it reports them, on every trial, directly under the two
          # readouts. `r_catalyst_bench` refuses a bench that reports volumes
@@ -336,12 +366,15 @@ LESSON = {
                    "title": "Two of the five were catalysts, and one of those "
                             "was alive.",
                    "paras": [
-                       "The sand did nothing, which is the control: adding a "
-                       "solid is not enough on its own. The acid changed the "
-                       "speed too, but it was consumed doing it — so it is a "
-                       "reactant, not a catalyst. Manganese dioxide and liver "
-                       "both sped the reaction up and both came back weighing "
-                       "the same.",
+                       "The sand did nothing: adding a solid is not enough on "
+                       "its own. The acid did nothing either, which is the "
+                       "one most people get wrong — it is still sitting in "
+                       "the flask, unchanged, and the reaction ran at exactly "
+                       "the speed it ran at with nothing added at all. Being "
+                       "added does not make something a catalyst, and neither "
+                       "does coming back unchanged. Manganese dioxide and "
+                       "liver did both things at once: they sped the reaction "
+                       "up AND came back weighing the same.",
                        "Note the total oxygen. Every flask that was left long "
                        "enough produced the same amount in the end. <strong>A "
                        "catalyst changes when the reaction finishes, not how "
