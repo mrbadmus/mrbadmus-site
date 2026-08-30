@@ -617,7 +617,15 @@ LESSON = {
          "note": "Water is a non-metal oxide and it is the definition of it."},
     ],
 
-    "safety_note": "",
+    # ⚠️ C8-16 — this lesson burns magnesium AND sulfur and shipped with an
+    # EMPTY safety_note while every other demonstration lesson carried one.
+    # The line below is Mide's, authored by him and approved 28 Aug 2026, and
+    # it is reproduced VERBATIM. Do not reword, shorten or extend it.
+    "safety_note": "Teacher demonstration only. Burning sulfur must be done "
+                   "in a fume cupboard — the gas it gives off irritates your "
+                   "lungs. Do not look straight at burning magnesium; the "
+                   "light is bright enough to hurt your eyes. Eye protection "
+                   "for everyone in the room.",
 
     "tutor": {"prompt": "Ask Mr Badmus AI",
               "body": "Still unsure how copper oxide can be a base at pH 7?",

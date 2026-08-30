@@ -503,7 +503,12 @@ LESSON = {
                 "Says the salt is dissolved, so it passes straight through the filter paper.",
                 "Says the sample still contains more than one substance, so it is still a mixture.",
                 "Says clearness only tells you there are no undissolved bits left.",
-                "Gives a test that would show the salt is still there — taste, boil it dry, or weigh what is left.",
+                # SYS-7 — this criterion CREDITED tasting a laboratory
+                # sample, on a page whose own unit teaches that nothing in a
+                # laboratory is tasted. The framing here is a bench, not a
+                # kitchen, so the tasting reference goes. The two legitimate
+                # tests it already offered do the whole job.
+                "Gives a test that would show the salt is still there — boil it dry, weigh what is left, or check whether it conducts electricity.",
                 "Notes that \"looks uniform\" is never evidence of purity.",
             ]},
         "produce": {

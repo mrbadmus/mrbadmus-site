@@ -554,8 +554,10 @@ LESSON = {
                 "gaps, the dissolved salt particles are far smaller.",
                 "Says the liquid in the flask is a salt solution, not pure "
                 "water.",
-                "Gives a way to show the salt is there — taste, boil it "
-                "dry, or weigh what is left.",
+                # SYS-7 — laboratory framing, so tasting goes (see c3-01).
+                "Gives a way to show the salt is there — boil it "
+                "dry, weigh what is left, or check whether it conducts "
+                "electricity.",
             ]},
         "produce": {
             "q": "A camping filter bottle claims to make river water safe to "
@@ -630,10 +632,18 @@ LESSON = {
     # legal line. NOT a callout, and NOT a safeguarding block: this lesson is
     # about water, not about a student's own body or health.
     #
-    # Scoped to pond and river water on purpose. A blanket "never taste
-    # anything" would retract rung 3's own criterion, which credits tasting as
-    # a way of showing dissolved salt is present, and §7 forbids a lesson
-    # retracting itself later on the same page.
+    # Scoped to pond and river water on purpose.
+    #
+    # ⊕ 28 Aug 2026 (MRB-295, SYS-7). This note used to continue: "A blanket
+    # 'never taste anything' would retract rung 3's own criterion, which
+    # credits tasting as a way of showing dissolved salt is present, and §7
+    # forbids a lesson retracting itself later on the same page." That
+    # reasoning was sound and its premise is now gone: rung 3 no longer
+    # credits tasting. The self-retraction the comment guarded against was
+    # resolved from the other end — by removing the criterion, not by
+    # weakening the safety line. Kept rather than deleted because a future
+    # reader finding the old argument in history needs to know it was
+    # answered, not overruled.
     "safety_note": "Filtered pond or river water is not drinking water. The "
                    "filter takes out what you could see and leaves everything "
                    "that could make you ill, so it is never tasted or drunk.",
