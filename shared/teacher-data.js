@@ -2066,6 +2066,148 @@ window.MrBadmusTeacherData = (function () {
     return out;
   }
 
+  /* ══════════════════════════════════════════════════════════════════════
+     MRB-306 WS-3 — IN-PLATFORM STUDENT REMINDERS
+     ══════════════════════════════════════════════════════════════════════
+
+     A teacher presses one button and the students who have not finished this
+     week's work are told ON MRBADMUSAI. Nothing leaves the platform: there is
+     no email path, no Resend call and no push here, and `student_notifications`
+     has no free-text column to carry a teacher's own words — the wording is
+     composed on read from the class, the assignment and the sender's display
+     name. Teacher-to-minor free text is a safeguarding decision and is parked
+     for Mide.
+
+     ── WHO IS CHASED, AND WHY IT IS `status === 'complete'` ────────────────
+
+     ⚠️ The value is `'complete'`. NOT `'completed'` — the column default is
+     `'in_progress'`, and `=== 'completed'` would match nothing and mark every
+     student in the class as owing work.
+
+     ⊕ THREE tests for doneness exist in this codebase, and they are not the
+     same test:
+
+       · this file, in the OLDER per-class reads (`submission_history`,
+         `assignmentDueGroup`)          — `submitted_at NOT NULL`
+       · `shared/teacher-live.js`, `cellOf()` — the UNION:
+         `!!(completed_at || submitted_at) || status === 'complete'`
+       · `shared/student-live.js`             — `status === 'complete'`
+
+     The chase list uses the UNION, because it is the only one of the three
+     that is safe in BOTH directions. It is what the teacher's own dashboard
+     already counts as submitted, so the chase list cannot disagree with the
+     number printed next to it ("one number, one source"); and because
+     `status === 'complete'` is one of its terms, it can never chase a student
+     whose own page reads Complete — the worst failure this feature has.
+
+     ⚠️ The union only works because `loadClassMatrices` actually SELECTS
+     `completed_at` and `status` (see its select list). The older reads at
+     `loadClassDetail` do not, and the same expression there would silently
+     degrade to `submitted_at` alone — undefined never equals 'complete'.
+
+     That the three exist at all is real and PRE-EXISTING, not introduced
+     here. Settling one definition across all three is a product ruling; it is
+     flagged for Mide rather than taken unilaterally. */
+
+  /* sendReminders({ classId, assignmentId, studentIds, teacherId })
+
+     ⚠️ UPSERT, NOT INSERT, and the reason is load-bearing. The rate limit is
+     a unique index on (student_id, assignment_id, sent_on). A plain
+     multi-row INSERT where ONE of the students was already reminded today
+     fails the WHOLE statement on that index — and nobody gets reminded. With
+     `ignoreDuplicates` the already-reminded rows are skipped and everyone
+     else is told, which is exactly the intended idempotence: press twice and
+     the second press adds nothing and errors nothing.
+
+     Returns the rows ACTUALLY written, so the caller reports how many were
+     sent rather than how many were attempted.
+
+     RLS is the enforcement, not this function: the insert policy requires
+     `sent_by = auth.uid()` AND `auth_user_teaches_class(class_id)`. */
+  async function sendReminders(args) {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+    const ids = Array.isArray(args.studentIds) ? args.studentIds.filter(Boolean) : [];
+    if (!args.classId || !args.assignmentId || !args.teacherId) {
+      throw new Error('[teacher-data] sendReminders needs classId, assignmentId and teacherId');
+    }
+    if (ids.length === 0) return [];
+
+    const rows = ids.map(function (sid) {
+      return {
+        student_id:    sid,
+        class_id:      args.classId,
+        assignment_id: args.assignmentId,
+        kind:          'reminder',
+        sent_by:       args.teacherId,
+      };
+      /* `sent_on` is NOT set here. It defaults server-side to
+         (now() at time zone 'Europe/London')::date — never the device clock,
+         which could be wrong or deliberately changed, and never UTC, which
+         would roll a 23:30 London reminder into tomorrow. */
+    });
+
+    const { data, error } = await sb
+      .from('student_notifications')
+      .upsert(rows, { onConflict: 'student_id,assignment_id,sent_on', ignoreDuplicates: true })
+      .select('id, student_id, assignment_id, created_at');
+
+    if (error) {
+      console.error('[teacher-data] sendReminders failed', error);
+      throw error;
+    }
+    return data || [];
+  }
+
+  /* remindersForClass(classId, assignmentId)
+
+     The small log the class screen shows: when, and how many.
+
+     Deliberately NOT filtered to `sent_by = me`. The rate limit above is
+     cross-teacher — a co-taught class must not nudge the same child twice in
+     a day — so a teacher who could not see a colleague's send would be shown
+     an enabled "Remind all" that then wrote nothing. RLS already limits this
+     read to classes the caller actually teaches. */
+  async function remindersForClass(classId, assignmentId) {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+    if (!classId) return { rows: [], sentToday: [], lastAt: null };
+
+    let q = sb.from('student_notifications')
+      .select('id, student_id, assignment_id, created_at, sent_on, sent_by')
+      .eq('class_id', classId)
+      .order('created_at', { ascending: false })
+      .limit(200);
+    if (assignmentId) q = q.eq('assignment_id', assignmentId);
+
+    const { data, error } = await q;
+    if (error) {
+      console.error('[teacher-data] remindersForClass failed', error);
+      throw error;
+    }
+    const rows = data || [];
+
+    /* "Reminded today" is decided by the row's OWN `sent_on`, which the
+       database stamped in the school's timezone. Not by re-deriving a date
+       from created_at in the browser — that would put the control's enabled
+       state on the device clock, which is the thing the server stamp exists
+       to avoid. */
+    const byDay = {};
+    rows.forEach(function (r) { (byDay[r.sent_on] = byDay[r.sent_on] || []).push(r); });
+
+    return {
+      rows: rows,
+      byDay: byDay,
+      lastAt: rows.length ? rows[0].created_at : null,
+    };
+  }
+
   return {
     loadAcademicYears,
     loadTeacherClasses,
@@ -2082,5 +2224,8 @@ window.MrBadmusTeacherData = (function () {
     // ⊕ 27 Aug 2026 — the five per-class numbers, derived from a matrices
     // pack instead of re-fetched per class. See loadTeacherClasses(opts).
     deriveClassMetrics,
+    // ⊕ MRB-306 WS-3 — in-platform reminders. Additive; no existing caller changes.
+    sendReminders,
+    remindersForClass,
   };
 })();

@@ -1749,13 +1749,33 @@
         .select("id, academic_week").eq("class_id", klass.id)
         .is("deleted_at", null)),
       withDbDeadline(WARM_MS, sb.from("academic_years")
-        .select("id, name, start_date, end_date").is("deleted_at", null))
+        .select("id, name, start_date, end_date").is("deleted_at", null)),
+      /* ⊕ MRB-306 WS-3 — unread reminders, joined to THIS wave rather than
+         added after it. It takes only `klass.id`, already an argument here,
+         so it has no dependency on the five above and costs no extra round
+         trip — the MRB-292 lesson about serial waves applies exactly as it
+         did to the other five.
+
+         ⚠️ AN RPC, NOT A TABLE READ, AND THAT IS LOAD-BEARING. The line names
+         the teacher who sent it, and a student can read ONLY their own
+         profile row — there is no policy admitting a student to a TEACHER's
+         profile. A `sent_by:profiles(display_name)` join would therefore come
+         back null SILENTLY, with no error, and the reminder would read as
+         though nobody sent it. `student_reminders_for_viewer` is SECURITY
+         DEFINER, gated on membership, and resolves the name server-side —
+         the same shape, and the same COALESCE chain, as
+         `class_teachers_for_viewer` already uses for exactly this problem.
+
+         READ ONLY — this feature adds no save path to this page and must not
+         disturb the per-answer queue or the keepalive. */
+      withDbDeadline(WARM_MS, sb.rpc("student_reminders_for_viewer", { p_class_id: klass.id }))
     ]);
     var detail = opening[0];
     var practice = opening[1];
     var current = opening[2];
     var aw = opening[3];
     var yrs = opening[4];
+    var unreadNotes = opening[5];
 
     /* Whether a piece of work is still open or has been missed is decided
        against the SERVER's clock and nothing else. Without one, this page does
@@ -2491,7 +2511,42 @@
       }
     };
 
+    /* ── ⊕ MRB-306 WS-3 — THE REMINDER LINE ────────────────────────────────
+       One sentence, composed here from data and nothing else: the teacher who
+       sent it, this class's own code, and this student's own progress on the
+       piece of work. There is no free text anywhere in the path — the table
+       has no column to carry any — so nothing a teacher typed can reach a
+       child through this line.
+
+       ⚠️ THE PROGRESS HALF IS ONLY ADDED WHEN IT IS ACTUALLY KNOWN.
+       `current.progress` is absent when the backend returned no current
+       assignment (before term, or no scheme for the week). Saying
+       "0 of 0 answered" in that case would be a made-up number about a piece
+       of work that does not exist, so the clause is dropped and the line
+       still reads as a sentence. */
+    var noteRows = (unreadNotes && !unreadNotes.error && unreadNotes.data
+                     && unreadNotes.data.reminders) || [];
+    var reminderLine = "";
+    if (noteRows.length) {
+      var senderName = (noteRows[0].sender || "Your teacher");
+      reminderLine = senderName + ": this week's work for " + name + " is waiting";
+      if (benchProg && benchProg.total != null && benchProg.answered != null) {
+        reminderLine += " \u2014 " + benchProg.answered + " of " + benchProg.total + " answered";
+      }
+      reminderLine += ".";
+    }
+
     return {
+      /* ⊕ MRB-306 WS-3. All three keys are published UNCONDITIONALLY, empty
+         when there is nothing to say, because `MRB_DATA` throws on a missing
+         key — a key that only exists sometimes is a page that only mounts
+         sometimes. `hasReminder` is the WRAP gate; it must also be named in
+         the page's render scope or the banner silently never renders. */
+      hasReminder: noteRows.length > 0,
+      reminderCount: noteRows.length,
+      reminderLine: reminderLine,
+      reminderIds: noteRows.map(function (r) { return r.id; }),
+
       work: work,
       roster: roster,
       weekPts: weekPts,
@@ -3097,6 +3152,88 @@
   }
 
   // ── go ────────────────────────────────────────────────────────────────
+  /* ⊕ MRB-306 WS-3 — the student's reminder line.
+
+     Honest, and dismissable. It says who sent it, which class it is about and
+     how far this student has actually got; all three come from data (see
+     `reminderLine` in buildClass). There is no free text in the path at all —
+     `student_notifications` has no column to carry any — so nothing a teacher
+     typed can arrive here.
+
+     Marking read is the ONLY write this feature adds to this page, it is a
+     single UPDATE of a single column (the column-level grant permits no
+     other), and it deliberately does NOT go through the answer sink: the
+     offline queue and its keepalive belong to answers, and a dismissed banner
+     must never sit in the same queue as a child's work. */
+  function drawReminder(sb, data) {
+    var host = document.querySelector("main") || document.body;
+    if (!host || !data.reminderLine) { return; }
+
+    var bar = document.createElement("div");
+    bar.setAttribute("data-mrb-reminder", "1");
+    bar.setAttribute("role", "status");
+    bar.style.cssText = [
+      "display:flex", "align-items:center", "gap:12px",
+      "margin:0 0 16px 0", "padding:12px 14px",
+      "border:1px solid var(--b-soft,rgba(0,0,0,.14))",
+      "border-radius:10px",
+      "background:var(--pg-card,rgba(0,0,0,.03))",
+      "color:var(--t-strong,inherit)",
+      "font-size:.95rem", "line-height:1.4"
+    ].join(";");
+
+    var txt = document.createElement("span");
+    txt.style.flex = "1";
+    txt.textContent = data.reminderLine;
+    bar.appendChild(txt);
+
+    var x = document.createElement("button");
+    x.type = "button";
+    x.textContent = "Dismiss";
+    x.setAttribute("aria-label", "Dismiss this reminder");
+    /* ⚠️ 40px minimum — student_parity layer G asserts touch targets. */
+    x.style.cssText = [
+      "flex:none", "cursor:pointer",
+      "border:1px solid var(--b-soft,rgba(0,0,0,.18))",
+      "border-radius:8px", "background:transparent",
+      "color:inherit", "font:inherit",
+      "min-height:40px", "padding:0 12px"
+    ].join(";");
+    x.addEventListener("click", function () {
+      bar.remove();
+      markRemindersRead(sb, data.reminderIds);
+    });
+    bar.appendChild(x);
+
+    host.insertBefore(bar, host.firstChild);
+
+    /* Opening the work counts as reading the reminder, exactly as dismissing
+       does — the student has done the thing it asked them to do. */
+    var go = document.querySelector('a[href*="/student/assignment"]');
+    if (go) {
+      go.addEventListener("click", function () {
+        markRemindersRead(sb, data.reminderIds);
+      });
+    }
+  }
+
+  /* A failed mark-read is SILENT by design: the line simply returns on the
+     next load, which is the honest outcome, and is far better than an
+     exception on a page showing a child's work. */
+  function markRemindersRead(sb, ids) {
+    if (!sb || !ids || !ids.length) { return; }
+    try {
+      sb.from("student_notifications")
+        .update({ read_at: new Date().toISOString() })
+        .in("id", ids)
+        .then(function (r) {
+          if (r && r.error) { console.warn("[student-live] mark-read failed", r.error); }
+        }, function (e) { console.warn("[student-live] mark-read rejected", e); });
+    } catch (e) {
+      console.warn("[student-live] mark-read threw", e);
+    }
+  }
+
   async function run() {
     var page = whichPage();
     boot(page);                     // ← before the first byte is asked for
@@ -3224,6 +3361,20 @@
           if (pendingSink) { window.__MRB_SINK__ = pendingSink; }
 
           window.__MRB_MOUNT__();
+
+          /* ⊕ MRB-306 WS-3 — the reminder line, drawn AFTER the mount.
+             Design drew no student-side banner, so there is no donor subtree
+             to GRAFT and nothing to be faithful to; this is new markup, and it
+             is built here rather than welded into the template so the port
+             keeps carrying exactly what Design drew and no more. It uses the
+             page's OWN tokens, so it follows the bench theme the student has
+             chosen rather than introducing a palette of its own.
+
+             ⚠️ It draws only when there IS an unread reminder. The fixture has
+             none, so the fixture renders nothing extra and `student_behaviour`'s
+             visible-text comparison against Design's own file is untouched —
+             no RULED_DIVERGENCE needed, because there is no divergence. */
+          if (page === "class" && data && data.hasReminder) { drawReminder(sb, data); }
         } catch (err) {
           console.error("[student-live]", err);
           if (err && err.mrbSay) { return say(err.mrbSay); }
