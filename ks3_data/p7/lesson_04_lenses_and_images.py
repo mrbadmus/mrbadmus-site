@@ -512,6 +512,13 @@ LESSON = {
                    "length and magnification, real and virtual images, and "
                    "correcting short and long sight.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Never look directly at the Sun — not with your eyes, not "
+                   "through a lens, not through a pinhole camera. A lens "
+                   "gathers sunlight to a point hot enough to scorch paper, "
+                   "and it will do the same to the back of your eye. The "
+                   "damage is painless while it happens and it does not heal.",
+
     "convention_note": "The bench is a teaching model. The two arrow heights "
                        "are drawn to one scale, so the ratio between the "
                        "picture and the object is exactly right; distances "

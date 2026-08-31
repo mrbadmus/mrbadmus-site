@@ -727,6 +727,11 @@ LESSON = {
                    "irregular solids and for liquids, and density as the link "
                    "between particle spacing and state of matter.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Eye protection on. Wipe up spilled water straight away — "
+                   "a wet floor is the real hazard here. Measuring cylinders "
+                   "tip easily, so keep them back from the edge of the bench.",
+
     "convention_note": "The bench is a teaching model. Densities are quoted "
                        "at room temperature and ordinary pressure to two "
                        "decimal places: oak 0.65, ice 0.92, water 1.00, "

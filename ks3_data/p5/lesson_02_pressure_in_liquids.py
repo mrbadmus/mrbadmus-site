@@ -633,6 +633,10 @@ LESSON = {
                    "gravitational field strength, pressure differences in "
                    "fluids, and how those give upthrust.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Ask your teacher before making holes in a can. Cut edges "
+                   "are sharp.",
+
     "convention_note": "The tank is a teaching model. Water is taken as "
                        "1000 kg in every cubic metre, sea water as 1025 and "
                        "paraffin as 800, and weight as mass × 10 N/kg; real "

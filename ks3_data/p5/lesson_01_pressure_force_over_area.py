@@ -631,6 +631,11 @@ LESSON = {
                    "and its increase with depth, upthrust and floating, and "
                    "pressure–volume work on gases.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Press the pin against your fingertip firmly, but never "
+                   "hard enough to break the skin. You are feeling the "
+                   "difference, not testing how much you can stand.",
+
     "convention_note": "The sand tray is a teaching model. Its giving-way "
                        "pressure is fixed at 6000 Pa so that failure is "
                        "something you can reach; real ground varies with "

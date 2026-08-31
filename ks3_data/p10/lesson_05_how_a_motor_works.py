@@ -601,6 +601,12 @@ LESSON = {
                    "out from flux density, current and length, and the "
                    "generator effect.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Eye protection on. The coil gets hot within a minute, so "
+                   "switch off between tries and let it cool. Keep fingers, "
+                   "hair and loose sleeves clear of the spinning part. Use "
+                   "only the low-voltage supply your teacher gives you.",
+
     "convention_note": "The bench is a teaching model. The coil is drawn face "
                        "on and frozen in the horizontal position, where the "
                        "turning effect is at its largest; a real coil's "

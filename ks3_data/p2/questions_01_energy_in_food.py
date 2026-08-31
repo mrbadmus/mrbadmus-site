@@ -5,6 +5,13 @@ four foods, the 20 g of water, the 4.18 constant, the capture fractions and
 the systematic-error argument are all hers, and every question below probes
 something that page actually teaches.
 
+⊕ AMENDED MRB-297, 31 Aug 2026 — one of the four is no longer hers. Mide
+ruled the peanut out of the burning-food practical on 30 Aug 2026 and a
+cheese puff replaces it, at 21.6 kJ/g with a capture of 0.38. Two questions
+below quoted the peanut or a number derived from it — `p2-01-s01` and
+`p2-01-h01` — and both are re-derived from the new sample rather than
+carried across. No option was reordered and no answer moved.
+
 The discriminations these are built on, in the order the lesson builds them:
 
   · a kcal and a kJ are the same energy in different units (`ENER-20`);
@@ -116,8 +123,13 @@ QUESTIONS = [
     {
         "id": "p2-01-s01",
         "band": "standard",
-        "text": "A student measures 8 kJ per gram for a peanut. The packet "
-                "says 24 kJ per gram. What is the most likely reason?",
+        # ⚖️ MRB-297 · re-derived, not carried across. The bench's measured
+        # value is `kj_per_g × capture`, so the cheese puff that replaced
+        # Design's peanut reads 21.6 × 0.38 = 8.208, and the packet figure
+        # is the label itself, 21.6. Design's pair was 8 against 24.
+        "text": "A student measures 8.2 kJ per gram for a cheese puff. The "
+                "packet says 21.6 kJ per gram. What is the most likely "
+                "reason?",
         "options": [
             {"text": "The packet figure is an exaggeration by the "
                      "manufacturer",
@@ -127,7 +139,7 @@ QUESTIONS = [
                     "loses energy, not the label that inflates it."},
             {"text": "Much of the energy released never reached the water",
              "correct": True},
-            {"text": "The peanut was a smaller one than the packet assumed",
+            {"text": "The puff was a smaller one than the packet assumed",
              "correct": False,
              "why": "Both figures are PER GRAM, so the size of the sample "
                     "has already been divided out of each."},
@@ -220,9 +232,13 @@ QUESTIONS = [
     {
         "id": "p2-01-h01",
         "band": "harder",
+        # ⚖️ MRB-297 · the five readings and the label were the peanut's.
+        # Design's spread is kept exactly — +0.1, 0.0, +0.2, -0.1, +0.1 —
+        # and shifted onto the cheese puff's 21.6 × 0.38 = 8.2, against
+        # the 21.6 label. No food on this bench carries a 24 any more.
         "text": "A student repeats a calorimeter run five times and gets "
-                "9.1, 9.0, 9.2, 8.9 and 9.1 kJ per gram against a label of "
-                "24. What does the closeness of those five tell you?",
+                "8.3, 8.2, 8.4, 8.1 and 8.3 kJ per gram against a label of "
+                "21.6. What does the closeness of those five tell you?",
         "options": [
             {"text": "That the measurement is accurate, because the readings "
                      "agree",
@@ -232,11 +248,12 @@ QUESTIONS = [
                     "same direction."},
             {"text": "That the error is systematic rather than random",
              "correct": True},
-            {"text": "That the label must be wrong by about 15 kJ per gram",
+            {"text": "That the label must be wrong by about 13 kJ per gram",
              "correct": False,
              "why": "The consistency is evidence about the APPARATUS. There "
                     "is no reading here that tests the label."},
-            {"text": "That more repeats would bring the value up towards 24",
+            {"text": "That more repeats would bring the value up towards "
+                     "21.6",
              "correct": False,
              "why": "Repeating averages out scatter, and there is barely any "
                     "scatter here. Nothing about repetition closes a leak."},

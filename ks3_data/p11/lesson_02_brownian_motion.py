@@ -503,6 +503,10 @@ LESSON = {
                    "law, and Brownian motion as evidence for the particle "
                    "model.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Teacher demonstration. The smoke cell uses a lit taper "
+                   "and a small glass cell — watch, don't handle.",
+
     "convention_note": "The bench is a teaching model. Typical molecular "
                        "speeds are quoted for the gas or liquid named, scaled "
                        "with the square root of absolute temperature from "

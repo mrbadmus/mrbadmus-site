@@ -617,6 +617,15 @@ LESSON = {
                    "strength as force per unit charge, and the link between "
                    "field and potential difference.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "It is the metal shell that protects you, so this only "
+                   "works in a car with a metal roof and metal sides. A "
+                   "convertible, a fibreglass boat or an open tractor cab "
+                   "will not do it, and you should not touch metal inside the "
+                   "car while the storm is overhead. If you are caught "
+                   "outside in a storm, get indoors or into a car — never "
+                   "shelter under a tree.",
+
     "convention_note": "The bench is a teaching model. Charges are treated "
                        "as points of equal size, and the field is calculated "
                        "with the standard inverse-square rule and reported "

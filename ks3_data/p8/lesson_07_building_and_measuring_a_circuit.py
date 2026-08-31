@@ -581,6 +581,14 @@ LESSON = {
                    "systematic and random error, and how a meter's own "
                    "resistance limits the measurement.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Eye protection on. Use only the low-voltage supply your "
+                   "teacher gives you — never mains. The ammeter goes in the "
+                   "circuit, never straight across the cell; that makes a "
+                   "large current and the wires heat up fast. If anything "
+                   "smells hot or feels hot, open the switch straight away "
+                   "and tell your teacher.",
+
     "convention_note": "The bench is a teaching model. The lamp is treated as "
                        "a fixed 10 ohms, the battery and leads as having no "
                        "resistance, the ammeter as having none and the "

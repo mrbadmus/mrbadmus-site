@@ -633,6 +633,12 @@ LESSON = {
                    "right-hand grip rule, and the transformer, where one "
                    "coil's changing field induces a voltage in another.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Eye protection on. The coil gets hot within a minute, so "
+                   "switch off between tries and let it cool. Keep fingers, "
+                   "hair and loose sleeves clear of the spinning part. Use "
+                   "only the low-voltage supply your teacher gives you.",
+
     "convention_note": "The bench is a teaching model. The number of paper "
                        "clips is worked out from a simple rule in which the "
                        "field goes up in proportion to the turns and to the "

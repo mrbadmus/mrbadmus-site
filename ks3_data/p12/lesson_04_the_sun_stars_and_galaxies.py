@@ -493,6 +493,13 @@ LESSON = {
                    "star’s energy, and red shift as evidence for an expanding "
                    "universe.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Never look at the Sun — not with your eyes, not through "
+                   "binoculars, not through a telescope, and not through "
+                   "sunglasses. It damages your sight in a way you cannot "
+                   "feel happening and cannot repair. Everything on this page "
+                   "is about the night sky.",
+
     "convention_note": "The bench is a teaching model. Distances and sizes "
                        "are accepted current figures rounded for display: the "
                        "Sun 150 million km away and 1.39 million km across; "
