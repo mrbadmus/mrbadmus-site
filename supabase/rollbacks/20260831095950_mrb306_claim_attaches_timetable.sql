@@ -1,0 +1,11 @@
+-- ROLLBACK for MRB-306 WS-1 (20260831095950_mrb306_claim_attaches_timetable).
+-- Apply MANUALLY only. Run this BEFORE the timetable_entries rollback.
+--
+-- Restores claim_pending_staff() to its MRB-293 form by re-running that
+-- migration's definition, which contains no reference to timetable_entries:
+--
+--   \i supabase/migrations/20260828203900_mrb293_pending_staff_claim_mechanism.sql
+--
+-- That migration is idempotent (create table if not exists / create or replace
+-- / drop policy if exists), so re-running it is safe and is the intended undo.
+-- It is referenced rather than copied so the two cannot drift apart.
