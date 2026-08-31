@@ -511,7 +511,8 @@ def main():
                       repr(by_heading.get("Year 10")))
 
                 # The pending half, and the slt degradation.
-                invited = [r for r in got["teachers"] if "Invited" in r["tags"]]
+                invited = [r for r in got["teachers"]
+                           if "Not yet signed in" in r["tags"]]
                 if "pending_staff" in drop:
                     check(not invited,
                           "slt is handed no invitations and the page stays quiet",
@@ -521,10 +522,10 @@ def main():
                           "%d row(s)" % len(got["teachers"]))
                 else:
                     check(len(invited) == 2,
-                          "both UNCLAIMED invitations show as invited",
+                          "both UNCLAIMED staff show as not yet signed in",
                           "%d" % len(invited))
                     check(any("Priya Adeyemi" == r["name"] for r in invited),
-                          "an invited teacher shows the seeded name")
+                          "a not-yet-signed-in teacher shows the seeded name")
                     check(any("Joined 14 Aug 2026" in m
                               for m in T.get("Ben Hough", {}).get("metas", [])),
                           "the claim date shows on that teacher's row",

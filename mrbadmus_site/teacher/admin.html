@@ -517,7 +517,7 @@ async function render(ctx) {
     /* ⚠️ AN EMPTY LIST HERE IS NOT AN ERROR. `pending_staff` RLS is
        `school_admin` ONLY — slt is deliberately not on it — so an
        slt-scoped viewer is handed zero rows by the database and the
-       "Invited" section correctly shows nothing. That is the policy doing
+       "Not yet signed in" section correctly shows nothing. That is the policy doing
        its job, and it must degrade to silence rather than to a failure. */
     sb.from('pending_staff')
       .select('id, first_name, last_name, email, profile_role, claimed_at, claimed_profile_id')
@@ -553,7 +553,7 @@ async function render(ctx) {
     [classes.length, classes.length === 1 ? 'Class' : 'Classes'],
     [Object.keys(students).length, 'Students'],
     [profiles.length, profiles.length === 1 ? 'Teacher' : 'Teachers'],
-    [unclaimed.length, 'Invited, not joined'],
+    [unclaimed.length, 'Not yet signed in'],
   ];
   document.getElementById('stats').innerHTML = stats.map(function (s) {
     return '<div class="stat"><div class="n">' + s[0] + '</div>' +
@@ -607,9 +607,8 @@ async function render(ctx) {
     var nm = ((p.first_name || '') + ' ' + (p.last_name || '')).trim() || p.email;
     rows.push('<div class="row">' +
       '<span class="name muted">' + escapeHtml(nm) + '</span> ' +
-      '<span class="tag pending">Invited</span> ' +
+      '<span class="tag pending">Not yet signed in</span> ' +
       '<span class="meta">' + escapeHtml(p.email || '') + '</span>' +
-      '<span class="right"><span class="meta">Hasn’t signed in yet</span></span>' +
       '</div>');
   });
 
