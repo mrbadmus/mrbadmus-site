@@ -203,15 +203,26 @@ changing with it.
   and byte-identical** — each already answers the rule its distractor now
   states, which is itself evidence the beliefs were the right ones to pick.
 
-⚑ For Mide's science gate — NOTES-B7 §3 flags landing on THIS lesson:
-  * flag 13 — the method and its timings: destarch two days in the dark, boil
-    in water about a minute, boil in ethanol in a water bath, dip in hot water,
-    spread on a white tile, add iodine. Order and timings check out against
-    ordinary school practice and are authored as delivered; confirm they match
-    your technicians' version.
-  * flag 14 — the safety wording, in five places. See the top of this
-    docstring. **This is the one that needs the person who signs the risk
-    assessments, not just an examiner.**
+✅ CLEARED BY MIDE — MRB-233 (3b), 31 Aug 2026. Flags 13 and 14 are CLOSED.
+  This block used to open "⚑ For Mide's science gate" and ask for both. It is
+  kept in place, and the two flags rewritten under their own numbers, because
+  a future pass that reads them as still-open will go looking for a sign-off
+  that has already happened — or worse, will "apply" wording that is already
+  the approved wording and move bytes on a page nobody asked to change.
+  * flag 13 — CONFIRMED against the technicians' version recorded in
+    NOTES-B7 §3 flag 13. The method and its timings: destarch two days in the
+    dark, boil in water about a minute, boil in ethanol in a water bath, dip
+    in hot water, spread on a white tile, add iodine. `STEPS` below carries
+    that order step for step, and the two timings that exist are both on it —
+    `destarch` "Two days in a dark cupboard" and `boil` "About a minute in a
+    beaker of boiling water". `soften` is "A few seconds", which the
+    technicians' version leaves unnumbered and school practice agrees with.
+    Nothing moved: the confirmation is that nothing needed to.
+  * flag 14 — SIGNED OFF by Mide, who signs the risk assessments here. The
+    wording below is the APPROVED wording, and it was already in the file —
+    authored to flag 14 clause for clause and rendering on the live page. The
+    ruling APPLIES it rather than changing it, so this lesson's student-facing
+    bytes are unchanged by MRB-233.
   * flag 15 — *why starch and not glucose*. Two corrections above; the glycogen
     parallel is kept and `glycogen` appears nowhere else in KS3, which is the
     right place for it — the stretch layer is where a new name is allowed.
@@ -935,7 +946,12 @@ LESSON = {
     # (`ks3-legal ks3-safety`) for exactly this. §8.10 keeps it small, at the
     # bottom edge, never a callout — which is where Design draws it.
     #
-    # ⛔ LIFTED BYTE-IDENTICAL AND NOT TO BE EDITED WITHOUT MIDE. Every clause
+    # ⛔ APPROVED WORDING — Mide signed it off 31 Aug 2026 (MRB-233 · 3b), and
+    # it is STILL not to be edited without him. The line used to read "LIFTED
+    # BYTE-IDENTICAL AND NOT TO BE EDITED WITHOUT MIDE", which was true while
+    # the wording was authored-but-unsigned; it is now the wording the person
+    # who signs this school's risk assessments has approved, which raises the
+    # bar on changing it rather than lowering it. Every clause
     # is load-bearing: the bench is not a risk assessment; ethanol is heated
     # only in a water bath AND there is no naked flame in the ROOM (not merely
     # under the tube — a neighbouring group's Bunsen is the hazard); iodine

@@ -126,31 +126,53 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ⊕ MRB-233 (3c) SWEEP, 31 Aug 2026 — REWRITTEN, AND FOUND BY THE SWEEP
+    # RATHER THAN BY THE RULING. Mide's B3 ruling was about the small
+    # intestine; this question is about alveoli and sits in another unit. It
+    # was caught because it did BOTH of the things the sweep forbids — it
+    # marked a specific number as the answer ("About 70 m², packed inside a
+    # chest of only six litres"), and it reached for a tennis court to size it
+    # ("Seventy square metres is closer to a third of a tennis court than to a
+    # page"). A third option cross-referenced the gut's 30 m².
+    #
+    # ⚠️ 70 m² IS NOT WRONG AND HAS NOT BEEN "ALIGNED TO 30 m²". The gut's
+    # figure belongs to the gut. What changed is that the alveolar area is no
+    # longer the thing being MARKED — the question now tests the principle,
+    # which is what the sweep asks for where ~30 m² cannot apply.
+    #
+    # ⚠️ Deliberately NOT "why millions of small alveoli rather than one large
+    # cavity" — that is this lesson's RUNG 1, and `h01` (emphysema) already
+    # takes it at the harder band. What is left, and what the original
+    # question's own distractors were built around, is the SURFACE/VOLUME swap:
+    # the note on the old option called six litres "the swap the hook is built
+    # to catch". That swap is now the whole question.
     {
         "id": "b4-03-e04",
         "band": "easier",
-        "text": "Roughly how much gas exchange surface do your alveoli give "
-                "you in total?",
+        "text": "Asked how much gas exchange surface the alveoli give, a "
+                "student answers “about six litres”. What is wrong with that "
+                "answer?",
         "options": [
-            {"text": "About 70 cm², roughly the area of a page in your "
-                     "book.",
+            {"text": "Nothing is wrong — six litres is the usual figure "
+                     "quoted for the alveoli.",
              "correct": False,
-             "why": "Out by a factor of about ten thousand. Seventy square "
-                    "metres is closer to a third of a tennis court than to a "
-                    "page."},
-            {"text": "About 30 m², the same as the lining of the small "
-                     "intestine.",
+             "why": "Six litres is roughly the volume of air the chest can "
+                    "hold, so it is a real figure about the lungs — but it "
+                    "answers a different question from the one asked."},
+            {"text": "The figure is far too small; the lungs hold a great "
+                     "deal more air than six litres.",
              "correct": False,
-             "why": "30 m² is the gut's figure, spread through six metres of "
-                    "tube. The lungs fit more than twice that area into a far "
-                    "smaller space."},
-            {"text": "About 6 litres — the volume of air the chest can "
-                     "hold.",
+             "why": "The size of the number is not the problem here. Whatever "
+                    "number went in front of it, litres measure a volume and "
+                    "the question asked for a surface."},
+            {"text": "It should have been measured after a deep breath in, "
+                     "rather than during quiet breathing.",
              "correct": False,
-             "why": "Six litres is a volume, not a surface, and that is the "
-                    "swap the hook is built to catch. The smooth bag holds the "
-                    "same volume and would kill you in minutes."},
-            {"text": "About 70 m², packed inside a chest of only six litres.",
+             "why": "When it was measured does not change WHAT was measured. "
+                    "A volume taken at any moment of the breath is still a "
+                    "volume, and still not an area."},
+            {"text": "It gives a volume, not a surface — the two are "
+                     "different quantities.",
              "correct": True},
         ],
         "figure": None,

@@ -31,11 +31,16 @@ which the lesson's own confrontation names and refuses, and the belief that
 surface area alone decides the rate, which the four-features panel is built to
 break.
 
-Three questions come off the stretch layer and the convention note rather than
-the body, because a student who meets 200 m² in a library book needs to know
-what to do with it: that the older figure came from fixed, dried and stretched
-tissue, that the 2014 figure is better for how it was measured rather than for
-being newer, and that the exam-safe answer names the reason, not the number.
+⊕ MRB-233 (3c), 31 Aug 2026. This paragraph used to read: *"Three questions
+come off the stretch layer and the convention note rather than the body,
+because a student who meets 200 m² in a library book needs to know what to do
+with it: that the older figure came from fixed, dried and stretched tissue,
+that the 2014 figure is better for how it was measured rather than for being
+newer, and that the exam-safe answer names the reason, not the number."*
+The stretch layer it drew from is GONE (Mide's ruling — see the lesson's
+`stretch` key), and with it the two questions that briefed the older figure.
+The LAST clause survives everything: **the exam-safe answer names the reason,
+not the number**, and that is exactly what the rewritten `h04` now marks.
 
 No question restates a ladder rung. The rungs already own "villi increase
 the…", the blocked blood supply, the whole-design explanation and coeliac
@@ -81,30 +86,42 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ⊕ MRB-233 (3c), 31 Aug 2026 — REWRITTEN TO TEST THE PRINCIPLE.
+    # This question used to ask a student to PICK THE FIGURE ("how much does a
+    # six-metre small intestine have?"), with 30 m² marked correct and "About
+    # 200 m² — roughly the area of a tennis court" as the distractor. Mide's
+    # ruling: a bank question may not mark a specific number as the answer, and
+    # the tennis court leaves the estate with the lesson's revision explainer.
+    # The hose framing is kept — it is the hook's own comparison and it does
+    # real work — but what is now marked is WHERE the area comes from.
+    # ⚠️ Deliberately NOT "villi increase the…", which is rung 1's and which
+    # this bank has always worked around. This asks for all three levels.
     {
         "id": "b3-07-e02",
         "band": "easier",
-        "text": "A six-metre hose has about half a square metre of inner "
-                "surface. Following the fresh-tissue measurements this lesson "
-                "uses, how much does a six-metre small intestine have?",
+        "text": "A six-metre hose and a six-metre small intestine are the "
+                "same length and about the same width, yet the intestine has "
+                "far more inner surface. What accounts for the difference?",
         "options": [
-            {"text": "About 6 m² — one square metre for each metre of length.",
+            {"text": "The intestine is coiled up tightly inside the abdomen.",
              "correct": False,
-             "why": "Six is the length in metres, not the area. Folding "
-                    "changes the area and leaves the length exactly where it "
-                    "was."},
-            {"text": "About 1.5 m² — the wall is corrugated into ridges.",
+             "why": "Coiling packs the tube into a smaller space. It does not "
+                    "add a square centimetre of inner surface — a coiled hose "
+                    "has exactly the surface it had when it was straight."},
+            {"text": "The intestine's wall is a great deal thinner than a "
+                     "hose's, so much more of it counts as surface.",
              "correct": False,
-             "why": "That is the figure after the circular folds alone. Two "
-                    "more levels of folding come after them, and they take it "
-                    "far higher."},
-            {"text": "About 30 m² — roughly the floor of a small bedroom.",
+             "why": "A thin wall is a real adaptation, and it is one of the "
+                    "four — but it shortens the distance across, it does not "
+                    "widen the area. Thickness and area are separate things."},
+            {"text": "The intestine's wall is folded at three scales: folds, "
+                     "villi and microvilli.",
              "correct": True},
-            {"text": "About 200 m² — roughly the area of a tennis court.",
+            {"text": "The intestine stretches when a meal is inside it.",
              "correct": False,
-             "why": "That is the older figure, and you will still meet it in "
-                    "print. It came from tissue that had been fixed, dried "
-                    "and stretched; fresh tissue measures closer to 30 m²."},
+             "why": "Stretching is temporary and small, and the figures in "
+                    "this lesson hold the tube at six metres throughout. The "
+                    "gain is built into the wall, not borrowed from a meal."},
         ],
         "figure": None,
     },
@@ -342,31 +359,46 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ⊕ MRB-233 (3c), 31 Aug 2026 — THE TEXTBOOK HEDGE IS OUT OF THIS QUESTION.
+    # It used to open "A textbook in the school library gives the small
+    # intestine's surface area as 200 m². This lesson gives about 30 m². What
+    # is the best thing to write in an exam?", with distractors arguing from
+    # how often a number is printed and from which figure is newer. Mide's
+    # ruling removes the hedge from the estate: the page teaches ONE figure and
+    # does not brief a KS3 student on which books disagree.
+    # ⚠️ THE TEACHING SURVIVES INTACT, and that is why this is a rewrite rather
+    # than a deletion. The old question's real target was giving a NUMBER where
+    # an explanation was wanted, and its correct option was already the
+    # principle. The stem now reaches that target directly, and option 1 keeps
+    # the number-worship distractor without naming a book.
     {
         "id": "b3-07-h04",
         "band": "harder",
-        "text": "A textbook in the school library gives the small intestine’s "
-                "surface area as 200 m². This lesson gives about 30 m². What "
-                "is the best thing to write in an exam?",
+        "text": "An exam question asks why the small intestine is well "
+                "adapted for absorbing digested food. Which answer would earn "
+                "the most credit?",
         "options": [
-            {"text": "200 m², because that figure appears in far more books.",
+            {"text": "It has a very large surface area, which is what "
+                     "absorption needs.",
              "correct": False,
-             "why": "How often a number is printed is not evidence for it. "
-                    "The 200 m² figure came from tissue that had been fixed, "
-                    "dried and stretched, which exaggerates the area."},
-            {"text": "Neither — a surface area like that cannot really be "
-                     "measured.", "correct": False,
-             "why": "It can be, and it has been, more than once. The two "
-                    "figures differ because of how the tissue was prepared, "
-                    "not because measuring is impossible."},
-            {"text": "The area is very large, and why — folds, villi and "
-                     "microvilli.", "correct": True},
-            {"text": "30 m², because it is newer, and newer figures are "
-                     "always right.", "correct": False,
-             "why": "The 2014 figure is better because it was measured on "
-                    "fresh tissue, not because it is newer. You may meet "
-                    "either number, so give the reason rather than the "
-                    "figure."},
+             "why": "True, and it is the start of the answer rather than the "
+                    "whole of it. An examiner wants to know what MAKES the "
+                    "area large — name the folding and you have the mark."},
+            {"text": "Its inner surface measures about thirty square metres, "
+                     "which is remarkably large for a tube.",
+             "correct": False,
+             "why": "A figure is not an explanation. Quoting an area says "
+                    "nothing about how the intestine achieves it, and a "
+                    "question asking WHY is not answered by a number."},
+            {"text": "Its wall is folded into villi and microvilli, giving a "
+                     "large surface area for diffusion.",
+             "correct": True},
+            {"text": "It is six metres long, so food spends a long time "
+                     "inside it before it finally leaves the small intestine.",
+             "correct": False,
+             "why": "Length gives time, not area, and it is the error this "
+                    "whole lesson is built to break — the hose is six metres "
+                    "too, and absorbs almost nothing."},
         ],
         "figure": None,
     },

@@ -12,23 +12,46 @@ four documented exceptions listed under "What could not be lifted" below.
 ── ⚠️ THE SURFACE AREA IS ~30 m², AND THAT IS NOT A TYPO ────────────────
 
 NOTES-B3 flag 17, and it is the flag its author most wanted a ruling on. The
-familiar textbook figure is 200–300 m² — a tennis court — and it comes from
-measuring folds and villi on tissue that had been fixed, dried and stretched.
-Careful measurements on FRESH tissue, published in 2014, put it closer to
-30 m². The biology did not change; the method did.
+older figure, still widely in print, came from measuring folds and villi on
+tissue that had been fixed, dried and stretched. Careful measurements on FRESH
+tissue, published in 2014, put the area closer to 30 m². The biology did not
+change; the method did.
 
 **Do not "correct" this back to the famous number.** MRB-225 is explicit that a
 lesson teaches the version that is TRUE, not the version that is FAMOUS, and
 this is the exact case that rule was written for: a well-meaning editor who
-recognises 200 m² and does not recognise 30 m² will change it, and every number
-on the page is wired to it — the hook's "sixty times", the four bench notes,
-the ×63 multiple, the three multipliers, and the stretch layer that explains
-the revision. The stretch layer prints BOTH figures and says the older one is
-still in print, which is Design's own handling and is the honest one.
+recognises the older number and does not recognise 30 m² will change it, and
+every number on the page is wired to it — the hook's "sixty times", the four
+bench notes, the three multipliers and the readout.
 
-⚑ Flagged for Mide's science gate, exactly as NOTES-B3 asks: **if the course's
-other materials say 200 m², the two must be made to agree, and this page is not
-the one that should move on its own.**
+✅ RULED BY MIDE, 31 Aug 2026 (MRB-233 · 3c): **~30 m² STANDS.** flag 17 is
+CLOSED and this page does not move.
+
+⊕ AND THE HEDGE IS OUT WITH IT. This block used to end by pointing at "the
+stretch layer that explains the revision", and to say that layer "prints BOTH
+figures and says the older one is still in print, which is Design's own
+handling and is the honest one". That layer is GONE — see the `stretch` key
+below, which quotes it in full. The page now carries ONE figure and no
+commentary about which books disagree. A comparison may be drawn to the
+figure, but it must FIT ~30 m², and **a tennis court is the OLD figure's
+comparison and must never appear on this page again.**
+
+⚠️ WHY "A THIRD OF A BADMINTON COURT", AND NOT A HALF OR A WHOLE ONE. Mide's
+ruling names badminton — "a badminton court is close" — and the object is his.
+The FRACTION is arithmetic, and the arithmetic is the reason the page says a
+third: a doubles badminton court is 13.4 m × 6.1 m = 81.7 m², so a whole one is
+2.7× the figure, a half is 40.9 m² (36% high) and a third is 27.2 m² — within
+10% of 30, and the only one of the three that satisfies the rule above. For
+scale, a doubles tennis court is 23.77 m × 10.97 m = 260.8 m², which is not a
+coincidence: it IS the 200–300 m² figure, and that is why it was the old
+comparison. The wording this replaced, "roughly the floor of a small bedroom",
+failed the rule in the other direction — a small UK bedroom is 7–10 m².
+
+⚑ The remaining half of flag 17 STILL BINDS: **if the course's other materials
+say otherwise, the two must be made to agree, and this page is not the one
+that should move on its own.** The MRB-233 sweep checked, and found nothing to
+reconcile — KS4 biology states no intestinal surface area at all, and the
+ladder carries no figure.
 
 ── FOUR rail stops — Design's fourth restored (MRB-249) ────────────────
 
@@ -110,9 +133,12 @@ number, deliberately kept, and the note above exists so it stays kept.
 # sixty. Four separate prose sites say otherwise and all four are right:
 # the readout note ("About 30 m² … and sixty times the plain tube"), the hook
 # ("Same length, same width, sixty times the surface"), the key fact ("roughly
-# 30 m² … about a sixtieth as fast") and GOING FURTHER (fresh-tissue
-# measurements "closer to 30 m²"). The instrument was the one thing on the page
-# disagreeing with the lesson, on the number the lesson is about.
+# 30 m² … about a sixtieth as fast"). The instrument was the one thing on the
+# page disagreeing with the lesson, on the number the lesson is about.
+# ⊕ MRB-233 (3c) — a FOURTH site used to be listed here, GOING FURTHER's
+# "fresh-tissue measurements closer to 30 m²". That layer was removed by
+# Mide's ruling; the three prose sites above are now the whole set, and they
+# still all say 30 and sixty.
 #
 # ⚑ NOTES-B3 flag 18 already recorded that the factors are chosen to land on
 # ~30 m² and are NOT separately sourced measurements — the block is a model of
@@ -153,8 +179,8 @@ FOLD_NOTES = [
     "naked eye.",
     "Villi are where most of the gain comes from. Seven and a half square "
     "metres of absorbing surface, in a tube you could coil in your hands.",
-    "About 30 m² — roughly the floor of a small bedroom, and sixty times the "
-    "plain tube. The length is still six metres.",
+    "About 30 m² — roughly a third of a badminton court, and sixty "
+    "times the plain tube. The length is still six metres.",
 ]
 
 # ── the four set notes (MRB-257 · 5.18) ─────────────────────────────────
@@ -266,7 +292,7 @@ LESSON = {
                   "centimetres across. The hose has roughly half a square "
                   "metre of inner surface — the area of a tea towel. Your "
                   "small intestine has about thirty square metres, roughly "
-                  "the floor of a small bedroom.",
+                  "a third of a badminton court.",
         "commit": "Same length, same width, sixty times the surface. How?",
         "options": [
             "The intestine is coiled up, which adds surface",
@@ -669,28 +695,34 @@ LESSON = {
                 "diffusion. Water is absorbed here and in the large intestine.",
 
     # ── the stretch layer (§5.6) — visible and opt-in to all ────────────────
-    # ⚠️ MRB-225: the revision history lives HERE and nowhere above, and that
-    # is where Design put it. Nothing earlier on the page is retracted by it —
-    # the ~30 m² figure is not withdrawn, it is given its provenance, and the
-    # older number is named as something a student WILL meet rather than as
-    # something that was simply wrong. The closing sentence is the one that
-    # makes it safe in an exam: say the area is very large and why.
-    "stretch": [
-        {"type": "explainer", "id": "how-the-figure-was-revised",
-         "text": "The figure for intestinal surface area has been revised "
-                 "downwards, and the story is a good lesson in reading "
-                 "numbers sceptically. Textbooks for decades gave 200 to "
-                 "300 m² — a tennis court — a figure that came from "
-                 "measuring folds and villi on tissue that had been fixed, "
-                 "dried and stretched. Careful measurements on fresh tissue "
-                 "published in 2014 put it closer to 30 m², about the floor "
-                 "of a bedroom. The biology did not change; the method did. "
-                 "The older number is still in print in many places, so you "
-                 "will meet both, and the honest thing to say in an exam is "
-                 "that the area is very large and why, rather than "
-                 "committing to a figure someone may have learnt "
-                 "differently."},
-    ],
+    # ⊕ MRB-233 (3c), RULED BY MIDE 31 Aug 2026 — THE REVISION EXPLAINER IS OUT.
+    #
+    # This slot used to hold `how-the-figure-was-revised`, whose text was:
+    #     "The figure for intestinal surface area has been revised downwards …
+    #      Textbooks for decades gave 200 to 300 m² — a tennis court — a figure
+    #      that came from measuring folds and villi on tissue that had been
+    #      fixed, dried and stretched. Careful measurements on fresh tissue
+    #      published in 2014 put it closer to 30 m², about the floor of a
+    #      bedroom … The older number is still in print in many places, so you
+    #      will meet both, and the honest thing to say in an exam is that the
+    #      area is very large and why, rather than committing to a figure
+    #      someone may have learnt differently."
+    #
+    # It is quoted in full rather than deleted silently, because it was good
+    # writing and a future pass WILL want to restore it. Mide's ruling is that
+    # ~30 m² STANDS and the page carries NO hedge about textbooks: a KS3
+    # student meeting one number on one page does not need to be told that a
+    # library book disagrees, and telling them converts a lesson about villi
+    # into a lesson about how to sit on a fence. The tennis court leaves with
+    # it — it was only ever the OLD figure's comparison, and MUST NOT reappear.
+    #
+    # ⚠️ THE FIGURE ITSELF DID NOT MOVE. Everything the docstring says about
+    # ~30 m² still binds, and the ×3/×5/×4 instrument still lands on it. What
+    # went is the commentary about the number's history, not the number.
+    #
+    # Empty and PRESENT — §5.6: may be empty, never absent. Nothing replaces
+    # it; a substitute stretch item was not asked for and would be gap-filling.
+    "stretch": [],
 
     # Present and empty — §5.6's ruling: may be empty, never absent.
     "support": [],

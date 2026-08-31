@@ -802,11 +802,23 @@ LESSON = {
     # ⚠️ THE TREATMENT IS THE RULING TOO (§8.10): a small `ks3-legal` foot line
     # alongside the existing school-nurse / pharmacist / GP routes, NEVER a
     # callout block. A helpline should be findable and quiet.
+    # ⊕ MRB-233 (3a), ruled by Mide 31 Aug 2026 — FRANK IS NAMED, ON B6 ONLY.
+    # The MRB-257 note above records that FRANK "was offered and NOT taken up".
+    # That is reversed for this unit and this unit alone: B6 is the drugs unit,
+    # FRANK is the national drugs service, and a student reading THIS page is
+    # the one it exists for. It is named plainly — service and number, in the
+    # same parallel form as Childline — with NO sentence explaining what it is
+    # or when to ring it. Mide's ruling is that the naming is the whole edit.
+    #
+    # ⚠️ TREATMENT UNCHANGED, and that is also the ruling (§8.10): this stays
+    # the small `ks3-legal` foot line it already was. NOT a callout, not a
+    # panel, not moved up the page. B3, B4, B5 and B8 keep Childline alone —
+    # they are not drugs lessons and FRANK does not belong on them.
     "safeguarding_note": "If any of this is about you or someone you know, "
                          "talk to someone you trust — a parent or carer, a "
                          "teacher, your school nurse, a pharmacist or your "
                          "GP. Out of school hours: Childline — 0800 1111, "
-                         "free and confidential.",
+                         "free and confidential. FRANK — 0300 123 6600.",
 
     # ⊕ MRB-228's `convention_note`, not `safety_note` — see "What could not be
     # lifted" 5. Design draws ONE plain `.ks3-legal` paragraph and this is it:
