@@ -1,7 +1,9 @@
 """P2 lesson 02 — Power ratings in watts: twelve questions (MRB-223).
 
-Written against Design's DECODED page. The kettle and charger figures, the
-six sort cards and the crossover are all hers.
+Written against Design's DECODED page. The kettle/router figures, the six
+sort cards and the crossover are all hers — except the appliance, which
+was a phone charger and is a router since MRB-297 (P2-09). The numbers
+are untouched; see the lesson module's docstring.
 
 The discriminations, in the order the lesson builds them:
 
@@ -17,7 +19,7 @@ The discriminations, in the order the lesson builds them:
 through the twelve, giving exactly three of each.
 
 ⚠️ None of these restates Rung 1 ("one watt is equal to…") or Rung 2
-(the 2000 W kettle against the 15 W charger) — check 6 of
+(the 2000 W kettle against the 15 W router) — check 6 of
 `verify_questions.py` forbids it.
 
 The lesson carries no figures, so every question is figure=None.
@@ -133,11 +135,11 @@ QUESTIONS = [
         "id": "p2-02-s02",
         "band": "standard",
         "text": "Why does a 2000 W kettle need thicker wiring than a 15 W "
-                "charger, even though the charger uses more energy over a "
+                "router, even though the router uses more energy over a "
                 "day?",
         "options": [
             {"text": "Because it will use more energy in total over its whole "
-                     "lifetime than the charger",
+                     "lifetime than the router",
              "correct": False,
              "why": "Lifetime totals do not heat a cable. What heats it is "
                     "what flows through it at the moment it is running."},
@@ -150,7 +152,7 @@ QUESTIONS = [
                      "kettle's rate is 130 times higher",
              "correct": True},
             {"text": "Because the kettle is switched on and off far more "
-                     "often than a charger is",
+                     "often than a router is",
              "correct": False,
              "why": "Switching frequency is not what the cable rating is "
                     "about. It is about how much flows while it is on."},

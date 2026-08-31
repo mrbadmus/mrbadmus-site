@@ -244,6 +244,11 @@ LESSON = {
          "target": ["walk", "still", "jog", "back"],
          "send_label": "Send the walker",
          "clear_label": "Clear the line",
+         # ⚖️ THE CLAMP AT 0 m SAYS SO. The walker cannot go back past the
+         # start, and a refusal that draws a flat line without a word is a
+         # walking walker drawn as a stopped one.
+         "back_refused": "The walker cannot go back past the start, so a "
+                         "walk-back block moved nothing.",
          "alt": "A corridor with a walker, above a distance–time graph. A "
                 "dashed target line is drawn from 0 to 12 seconds, and the "
                 "walker's own line is drawn in as it moves.",

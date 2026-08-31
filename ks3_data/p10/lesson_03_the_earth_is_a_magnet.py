@@ -67,7 +67,11 @@ this reason, so the claim is defensible as well as reachable.
       clamped flat, and the field is not level       13
       clamped flat at the equator                     2
       clamped flat on the pole                        1
-      free to tip                                    15
+      free to tip, and the field is not level        13
+      free to tip at the equator                      2   ⊕ 31 Aug 2026 — the
+                                                          same split `flat`
+                                                          got, in the branch
+                                                          that was not split
       free to tip on the pole                         1
 
 ── ⚠️ MRB-278 · POSITION IS AUTHORED ─────────────────────────────────
@@ -427,6 +431,27 @@ LESSON = {
                          "{horiz} here against 100 at the equator. A walking "
                          "compass avoids the tipping altogether by being "
                          "built flat, with a counterweight under the card."},
+             # ⊕ THE EQUATOR AGAIN, FREE THIS TIME — the same hole `flat_level`
+             # was minted for, in the branch that was not split. `tipped`
+             # renders "tips over by 0° from level, with its north-seeking end
+             # down… because the field is not parallel to the ground", over a
+             # needle the drawing correctly holds dead level, on the one
+             # latitude where the field IS parallel to the ground. A dip of 0°
+             # means the needle lies level and NEITHER end is down, so the
+             # three words that name an end say nothing here.
+             "tipped_level": {
+                 "turn": "settles to magnetic north, and stays level",
+                 "sub": "the field is level here, so nothing tips it",
+                 "note": "Hung freely at {place} the needle stays level, "
+                         "because here the Earth’s field runs along the "
+                         "ground rather than into it. This is the one "
+                         "latitude where a freely hung needle and a clamped "
+                         "one agree. Go north or south from here and the "
+                         "field starts to run into the ground, and the needle "
+                         "follows it over. The sideways pull is {horiz} on "
+                         "this scale, which is as large as it gets anywhere "
+                         "on the planet, because here the whole of the field "
+                         "is sideways."},
          },
          "words": {
              "not_a_reading": "not a field reading",

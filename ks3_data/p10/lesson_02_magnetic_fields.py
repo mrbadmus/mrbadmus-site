@@ -48,20 +48,27 @@ strongest point on the 13 × 7 arrow lattice, which sits hard against a pole
 where no button on the grid can go. Measured across all four layouts, the
 highest reading a student could ever obtain on her scale is 18.05, her top
 band (`very strong`, ≥ 40) is unreachable, and 78 of the 96 readings fall into
-the single bottom band. The reference here is the strongest of the
-twenty-five spots the compass can actually be put on — which is what the
-readout says it is — and the four bands then hold 20, 24, 27 and 24 states.
-The readout's own wording moves with it: *"the strongest spot you can reach
-here"*.
+the single bottom band. The reference here is the strongest of the spots the
+compass can actually be put on AND READ — which is what the readout says it
+is — and the four bands then hold 25, 27, 22 and 10 states. The readout's own
+wording moves with it: *"the strongest spot you can reach here"*. (⊕ 31 Aug
+2026: was "twenty-five spots" and 20 / 24 / 27 / 24 of 95, before the
+drawn-bar no-reading test took eleven more states off the metal — a spot that
+returns no reading is not a spot you can reach a reading at, so it is no
+longer the 100 either.)
 
 ── ⚖️ THE STATE SPACE ────────────────────────────────────────────────
 
     4 layouts × 25 positions        100
-      on the metal                    4   no reading, and the needle is not
-                                          drawn
+      on the metal                   15   no reading, and the needle is not
+                                          drawn — the test is the DRAWN bar
+                                          (⊕ 31 Aug 2026; it was the two point
+                                          poles, and 4, which left eleven
+                                          states printing a full reading with
+                                          the dial drawn on the metal)
       the neutral point               1   reachable, at the centre of the
                                           like-poles layout
-      a reading                      95   every one with a real bearing
+      a reading                      84   every one with a real bearing
 
 ── ⚠️ MRB-278 · POSITION IS AUTHORED ─────────────────────────────────
 
@@ -282,10 +289,18 @@ LESSON = {
                         {"x": 340, "y": 200, "q": 1},
                         {"x": 660, "y": 200, "q": -1},
                         {"x": 860, "y": 200, "q": 1}],
+              # ⊕ 31 Aug 2026 — WHAT THE BENCH SHOWS, NOT WHAT A CLOSE PAIR
+              # WOULD. The sentence used to end "…which is why that gap is
+              # the strongest part of the whole map." That is true of two
+              # magnets whose pole faces are close; this gap is 300 units
+              # across with 220-unit magnets, so the model refuses it — the
+              # compass in the middle reads 34.0 against 100.0 beside the two
+              # faces, and eight readable spots beat the middle.
               "note": "With a north pole facing a south pole the lines run "
-                      "straight across the gap from one to the other, which "
-                      "is why that gap is the strongest part of the whole "
-                      "map."},
+                      "straight across the gap from one to the other — and "
+                      "they are strongest right at the two pole faces, "
+                      "thinning out towards the middle of a gap this "
+                      "wide."},
              {"id": "like", "label": "Two magnets, N facing N",
               "word": "two bar magnets end to end with their north poles "
                       "facing each other across the gap",
@@ -315,10 +330,12 @@ LESSON = {
                       "wanted in a gap."},
          ],
          # ⚠️ FOUR WORDS, READ HIGHEST-FIRST, AND EVERY ONE OF THEM IS
-         # REACHABLE. Against the strongest spot a compass can be put on,
-         # these hold 20, 24, 27 and 24 of the 95 reading states. Against
-         # Design's own reference they held 0, 3, 15 and 78, which is what
-         # made the correction worth making.
+         # REACHABLE. Against the strongest spot a compass can be put on and
+         # read, these hold 25, 27, 22 and 10 of the 84 reading states.
+         # Against Design's own reference they held 0, 3, 15 and 78, which is
+         # what made the correction worth making. (⊕ 31 Aug 2026: 20/24/27/24
+         # of 95 before the drawn-bar no-reading test took eleven states off
+         # the metal and off the scale's reference.)
          "strength_bands": [
              {"at_least": 45, "word": "very strong"},
              {"at_least": 18, "word": "strong"},

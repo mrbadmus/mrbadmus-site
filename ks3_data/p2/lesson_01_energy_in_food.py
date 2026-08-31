@@ -382,13 +382,22 @@ LESSON = {
                   "is a fair everyday phrase for “moved out of my "
                   "body's store” and a bad description of what happened "
                   "to the joules.</strong>",
+                  # ⚖️ RULED 30 Aug 2026 (MRB-297) — P2-02. The clause
+                  # used to end "which is part of why your measured
+                  # value and the label disagree", which is wrong and
+                  # points the wrong way: the tube measures COMBUSTION,
+                  # and a UK label is already an Atwater figure, so
+                  # digestive losses make the LABEL lower, not higher.
+                  # The gap is heat lost to the room, which the Going
+                  # further block on this page accounts for on its own.
                   "One more thing the calorimeter cannot tell you: burning "
                   "food in air and respiring it are not the same process, "
                   "even though the energy released is nearly identical. Your "
                   "body does it in dozens of small controlled steps at "
                   "37 °C, not in one flame — and it cannot get at "
-                  "all of it, which is part of why your measured value and "
-                  "the label disagree.",
+                  "all of it, which is why the number on the label is "
+                  "what a body can actually use rather than what a fire "
+                  "could release.",
               ]},
              {"quote": "A calorie on a food label is the same calorie "
                        "physicists use.",

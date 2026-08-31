@@ -295,7 +295,18 @@ LESSON = {
                          "depends on anything being in it: the arrows were "
                          "there before you put the test point down."},
              "dipole": {
-                 "sub": "from the positive charge towards the negative one",
+                 # ⊕ 31 Aug 2026 (P9-14). This used to read "from the
+                 # positive charge towards the negative one", which is only
+                 # true BETWEEN the two charges. The tile above it is
+                 # computed, so outside the pair the two contradicted each
+                 # other: the reading said "to the left" while the caption
+                 # asserted a rule that would point right. The caption is one
+                 # fixed string per arrangement, so it now states the thing
+                 # that is true at every position; the note below carries the
+                 # region detail. The three-way region split ruled for this
+                 # tile needs the branch chooser in `shared/ks3.js`
+                 # `wireFieldGrid`, which this lane may not edit.
+                 "sub": "set by whichever charge you are nearer",
                  "note": "With a positive charge on the left and a negative "
                          "one on the right, every arrow in the middle runs "
                          "from the positive towards the negative, and the "
@@ -303,9 +314,13 @@ LESSON = {
                          "the two contributions point the same way and add. "
                          "At your point it is {strength}, {rel} on this "
                          "scale, and it points {dir}. Slide out beyond "
-                         "either charge and the arrows thin out fast — there "
-                         "is no distance at which they stop, only distances "
-                         "where they are too small to matter."},
+                         "either charge and that rule stops holding: the "
+                         "nearer charge decides, so left of the positive "
+                         "charge the field points away from the positive, "
+                         "and right of the negative charge it points towards "
+                         "the negative. The arrows thin out fast out there — "
+                         "there is no distance at which they stop, only "
+                         "distances where they are too small to matter."},
              "two_positive": {
                  "sub": "away from the nearer charge",
                  "note": "Two equal positive charges, so the arrows sweep "

@@ -317,9 +317,17 @@ LESSON = {
                   "<em>pathway</em> — a way of moving energy from "
                   "wherever it was generated to wherever it is wanted "
                   "— and it is exactly as clean as whatever filled the "
+                  # ⚖️ RULED 30 Aug 2026 (MRB-297) — P2-31. The sentence
+                  # ended "considerably worse than a small diesel on a
+                  # coal-heavy grid", which the evidence does not carry:
+                  # lifecycle studies put battery-electric BELOW petrol
+                  # even on coal-heavy grids, and about level with the
+                  # best small diesels. "Barely better than a petrol
+                  # one" keeps the whole force of the pathway argument
+                  # and survives the grid decarbonising for longer.
                   "store at the far end. The same electric car is close to "
-                  "zero-carbon on Norwegian hydro and considerably worse "
-                  "than a small diesel on a coal-heavy grid. "
+                  "zero-carbon on Norwegian hydro and barely better than "
+                  "a petrol one on a coal-heavy grid. "
                   "<strong>Nothing is stored as electricity, so nothing can "
                   "be resourced as electricity either.</strong>",
               ]},

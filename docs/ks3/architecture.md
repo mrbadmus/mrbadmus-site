@@ -100,6 +100,57 @@ Stated explicitly so nobody rebuilds the thing we are moving away from.
 | **Gamification that punishes.** Streaks, guilt copy, XP, page leaderboards. | Inherited from bonding Law 8. Doubly important for 11-year-olds. |
 | **Emoji doing content labour.** | Inherited from bonding Law 7. Drawn primitives carry meaning; emoji decorate at most. |
 | **Building all three sciences at once.** | See the vertical slice, §9. |
+| **Sound that plays on its own.** ⊕ | A page that makes a noise the student did not ask for. See the ruling directly below — the posture is SILENT BY DEFAULT, and it has one narrow, ruled exception. |
+
+### 2.1 · Sound — silent by default ⊕ RULED by Mide, 30 August 2026 (MRB-297)
+
+Recorded here, with its reason, so that the next person to ask "should the sound
+unit make a sound?" finds the answer instead of re-opening it. The physics audit
+raised it as M13; three units had already stopped at the adjacent amber question
+before it was ruled, and a posture that lives only in people's heads gets
+re-litigated every six months.
+
+**THE DEFAULT IS SILENCE, AND IT IS NOT A TECHNICAL LIMITATION.** Every KS3
+lesson is silent, deliberately, and the reasons are about the room rather than
+the browser:
+
+- **A KS3 page is read in a classroom of thirty.** One tab making a noise is
+  thirty children looking up, and the teacher who has to deal with it will
+  simply not use the page again. A revision page is also read on a bus, in a
+  library and in a bedroom at 11pm next to a sleeping sibling.
+- **A sound that starts on its own is an accessibility failure**, not a feature:
+  WCAG 1.4.2 requires a mechanism to stop any audio that plays for more than
+  three seconds, and audio that begins unbidden interferes with screen-reader
+  output the student is depending on.
+- **Sound cannot be the only carrier of anything.** A deaf student, a muted
+  device and a broken speaker must all leave the page having learned the same
+  thing, so anything a tone teaches has to be visible too — which means the
+  sound is always an addition, never a channel of its own.
+- **And silence is the cheaper default to be wrong about.** A page that could
+  have made a useful noise and did not has lost an opportunity; a page that made
+  an unwanted one has lost the room.
+
+**THE ONE EXCEPTION, RULED AND SCOPED.** Audio is allowed on
+**`frequency-pitch-and-loudness`** and nowhere else. It is the one lesson whose
+subject IS the sound — pitch and loudness are properties a student can be told
+about or can hear, and hearing them is the lesson. Four constraints, all of them
+part of the ruling and none of them optional:
+
+1. **One instrument, on that lesson only.** Not a platform capability to be
+   reached for elsewhere.
+2. **Behind an explicit press.** The student asks for it; nothing plays on load,
+   on scroll, on hover or on a rail stop.
+3. **NEVER autoplay.** Not once, not quietly, not "just the first time".
+4. **A visible mute control**, present whenever sound is possible — not buried
+   in a menu and not a keyboard-only affordance.
+
+Everything the instrument teaches must remain legible with the sound off, per
+the third bullet above.
+
+⚠️ **The instrument is not built.** The ruling is a permission, not a delivery.
+It is recorded here so the permission and its four constraints survive; whoever
+builds it inherits them, and inherits the obligation to add a liveness-gate
+family and a registry entry with it.
 
 ---
 

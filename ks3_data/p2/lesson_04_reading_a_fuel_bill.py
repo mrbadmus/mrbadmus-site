@@ -402,11 +402,19 @@ LESSON = {
               "note": "Three units, which at 27p each is 81p."},
          ]},
 
+        # ⚖️ RULED 30 Aug 2026 (MRB-297) — P2-24. This example was "A 900 W
+        # fridge compressor", which is a commercial chiller, disagrees
+        # tenfold with this page's own bill row (Fridge-freezer 90 W) and
+        # with `p2-03`'s bench, and put a domestic fridge at 3.6 kWh a day.
+        # 120 W over a 4.0 h duty cycle is a real fridge: 0.120 × 4.0 =
+        # 0.48 kWh. The ÷1000 step the example exists to teach survives,
+        # and the Answer note's wrong-conversion figure (480 units a day)
+        # is now true against this page's own household of 412 a month.
         {"id": "cfifa-bill-convert",
          "kind": "worked-example",
          "demand": "calculate",
          "eyebrow": "Five lines on one row · CFIFA",
-         "heading": "A 900 W fridge compressor runs for 4.0 hours a day. How "
+         "heading": "A 120 W fridge compressor runs for 4.0 hours a day. How "
                     "many units in a day?",
          "head_counter": {"format": "Step {n} of 5", "total": 5},
          "buttons": {"first": "Show the first step",
@@ -417,23 +425,23 @@ LESSON = {
          "staged": True,
          "fifa": [
              {"letter": "C", "label": "Convert",
-              "line": "900 W ÷ 1000 = 0.900 kW",
+              "line": "120 W ÷ 1000 = 0.120 kW",
               "note": "A unit is a kilowatt-hour, so a rating printed in "
                       "watts has to become kilowatts first."},
              {"letter": "F", "label": "Formula",
               "line": "units = power in kW × time in hours",
               "note": "Two quantities multiplied — one row of a bill."},
              {"letter": "I", "label": "Insert",
-              "line": "units = 0.900 kW × 4.0 h",
-              "note": "The converted rating goes in. The 900 never does."},
+              "line": "units = 0.120 kW × 4.0 h",
+              "note": "The converted rating goes in. The 120 never does."},
              {"letter": "F", "label": "Fine-tune",
-              "line": "0.900 × 4.0 = 3.6",
+              "line": "0.120 × 4.0 = 0.48",
               "note": "Kilowatts times hours leaves kilowatt-hours."},
              {"letter": "A", "label": "Answer",
-              "line": "units = 3.6 kWh",
-              "note": "Insert 900 instead of 0.900 and the fridge comes out "
-                      "using 3600 units a day — more than a house uses "
-                      "in a year."},
+              "line": "units = 0.48 kWh",
+              "note": "Insert 120 instead of 0.120 and the fridge comes out "
+                      "using 480 units a day — more than the whole house "
+                      "uses in a month."},
          ]},
     ],
 

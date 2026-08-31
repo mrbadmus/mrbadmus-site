@@ -125,6 +125,20 @@ def r_light_gates(a, act_id):
     for the MEAN of three times, which only makes sense if they can fall
     either side.
 
+    ⚠️ **THE CLOSING SENTENCE IS CHOSEN BY THE RECORDED ROWS** (MRB-297 /
+    P3-1). The bench deliberately lets a student change the gate separation
+    and the ramp between runs — that is what the Distance and Ramp columns
+    are for — and `close` asserts "the same distance every time" and then
+    prescribes a method: average the three times and divide the distance by
+    it. That method is invalid for three runs taken on three setups. So
+    `close` is shown ONLY when every recorded row shares a distance and a
+    ramp, and `close_mixed` is shown otherwise. Both are required; the
+    controls stay free, because a student who changes the setup and is told
+    what it cost has learned the thing rung 3 then assesses.
+
+    ⚠️ TWO CLOSING PANELS, NEVER BOTH VISIBLE. `wireLightGates` hides one
+    and shows the other in the same `paint()`.
+
     HOOKS: `data-lgate` (wrapper, `data-scatter`, `data-target`) ·
     `data-lgate-gate` · `data-lgate-gopt` · `data-lgate-bench` ·
     `data-lgate-ramp` (valued with the ramp index, carrying `data-v`) ·
@@ -166,6 +180,21 @@ def r_light_gates(a, act_id):
             "tile must say the speed has NOT been measured — an "
             "instrument that hands over the answer has removed the lesson "
             "(NOTES-P3 §1 step 2)." % (act_id, val))
+
+    # ⚖️ THE CLOSING SENTENCE IS COMPOSED FROM THE ROWS. See the ruling
+    # above: `close` may only be shown when the recorded runs are repeats
+    # of ONE measurement, so a second sentence for the other case is not
+    # optional.
+    if not (a.get("close") or "").strip():
+        raise ValueError(
+            "light-gates %r has no `close`." % act_id)
+    if not (a.get("close_mixed") or "").strip():
+        raise ValueError(
+            "light-gates %r has no `close_mixed` sentence. The bench lets "
+            "the gate separation AND the ramp change between runs, so the "
+            "`close` — which prescribes the mean of three times over one "
+            "distance — is a valid method for only one of the two cases "
+            "the student can reach (MRB-297 / P3-1)." % act_id)
 
     lo = float(a.get("gap_min") or 0)
     hi = float(a.get("gap_max") or 0)
@@ -218,6 +247,7 @@ def r_light_gates(a, act_id):
             '<table class="ks3-lgate-table"><thead><tr>%s</tr></thead>'
             '<tbody data-lgate-rows></tbody></table></div>'
             '<p class="ks3-lgate-close" data-lgate-close hidden>%s</p>'
+            '<p class="ks3-lgate-close" data-lgate-close-mixed hidden>%s</p>'
             '</div></div>'
             % (float(a.get("scatter_pct") or 3),
                int(a.get("runs_to_record") or 3),
@@ -226,7 +256,8 @@ def r_light_gates(a, act_id):
                lo, hi, step, start, outs,
                t(a.get("release_label") or "Release the trolley"),
                t(a.get("record_label") or "Record this run"),
-               heads, rich(a.get("close") or "")))
+               heads, rich(a.get("close") or ""),
+               rich(a["close_mixed"])))
 
 
 # ═══ p3-01 · #s-compare · three pairs ════════════════════════════════════
@@ -426,6 +457,14 @@ def r_journey_match(a, act_id):
     confrontation — that a falling line is the journey home rather than
     a hill — has nothing to stand on.
 
+    ⚠️ **THE CLAMP AT 0 m MUST HAVE A SENTENCE** (MRB-297 / P3-12). The
+    walker cannot go back past the start — "distance from the start" does
+    not go negative and a signed axis is not KS3 — but the refusal used to
+    be silent, so four "Walk back" blocks drew a flat line and reported
+    "0.0 m from the start", byte-identical to standing still four times on
+    the page whose key fact is that a flat line is stopped. `back_refused`
+    is what the readout says instead, and it is required.
+
     ⚠️ RENDERS INTO `ks3-jwalk-block`, not `ks3-jmatch-block`: that stem was
     already registered by another unit, and two families wearing one shell
     class puts one unit's stylesheet on the other's instrument, silently
@@ -457,6 +496,13 @@ def r_journey_match(a, act_id):
             "never contain a flat section — and 'a flat line is stopped, "
             "not slow' is this lesson's key fact." % act_id)
 
+    if not (a.get("back_refused") or "").strip():
+        raise ValueError(
+            "journey-match %r has no `back_refused` sentence. A walk-back "
+            "from 0 m is clamped, and a clamp with nothing to say draws a "
+            "walking walker as a stopped one — which is this lesson's key "
+            "fact running in reverse (MRB-297 / P3-12)." % act_id)
+
     ids = {m["id"] for m in modes}
     bad = [x for x in target if x not in ids]
     if bad:
@@ -481,7 +527,7 @@ def r_journey_match(a, act_id):
         for i in range(len(target)))
 
     return ('<div class="ks3-jwalk" data-jwalk data-secs="%d" '
-            'data-target="%s" data-n="%d">'
+            'data-target="%s" data-n="%d" data-back-refused="%s">'
             '<div class="ks3-jwalk-corridor" role="img" aria-label="%s">'
             '<span class="ks3-jwalk-walker" data-jwalk-walker '
             'aria-hidden="true"></span></div>'
@@ -503,7 +549,8 @@ def r_journey_match(a, act_id):
             '<p class="ks3-jwalk-close" data-jwalk-close hidden>%s</p>'
             '</div>'
             % (int(a.get("seg_seconds") or 3), e("|".join(target)),
-               len(target), e(a.get("alt", "")), segs,
+               len(target), e(a["back_refused"]),
+               e(a.get("alt", "")), segs,
                t(a.get("send_label") or "Send the walker"),
                t(a.get("clear_label") or "Clear the line"),
                rich(a.get("close") or "")))
@@ -522,6 +569,25 @@ def r_relative_frames(a, act_id):
     VIEWPOINT.** That is the lesson: nothing about either car changed, and
     something is now stationary. The wiring outlines it rather than hiding
     the others.
+
+    ⚠️ **AND THAT ZERO NEEDS A TILE TO LIVE IN** (MRB-297 / P3-18). It used
+    to have none. The four readouts are frame-labelled quantities ("A from
+    the roadside", "B from car A") and so correctly do not change with the
+    picker — but at the shipped defaults they read 25.0 / 20.0 / 5.0 / 5.0
+    in all three viewpoints, no reading is zero, and the closing panel
+    asserted one was. The `self` readout is the fifth tile: it follows the
+    picker, names what you are sitting in, and reads 0.0 m/s from every
+    seat. Its per-observer wording is `self_labels`, carried onto the tile
+    as `data-self-label-<observer>` so the wiring never hard-codes it.
+
+    ⚠️ **THE CARS MOVE, AND THEY MOVE AT `v − v_observer`** (MRB-297 /
+    P3-19). Both used to sit at fixed `left:` percentages that nothing ever
+    changed, so "From the roadside both cars are moving" printed over a
+    still picture and a viewpoint change moved nothing but a number in a
+    box. `wireRelativeFrames` now drifts each car from the relative
+    velocity it already computes and drives the road's duration from
+    `|v_observer|`. Note the road's own rule is unchanged: it belongs to
+    the ground, so it is still the car seats that make it slide.
 
     ⚠️ **A CAR DOES NOT TURN ROUND WHEN YOU CHANGE VIEWPOINT** (Design's
     flag 11, kept deliberately). A car's drawn ORIENTATION follows its
@@ -565,6 +631,25 @@ def r_relative_frames(a, act_id):
             "the viewpoint changed the number and not the car."
             % (act_id, sorted(want - have)))
 
+    # ⚖️ THE OBSERVER'S OWN FRAME IS THE FIFTH TILE, AND IT IS THE LESSON.
+    # See the ruling above. Without it the closing panel's "one of the
+    # readings is always zero" is a claim about a tile that is not there.
+    self_labels = a.get("self_labels") or {}
+    if "self" not in have:
+        raise ValueError(
+            "relative-frames %r has no `self` readout. The observer's own "
+            "frame — the reading that is always zero — is what this lesson "
+            "is about, and without it the closing panel asserts a zero that "
+            "is nowhere on screen (MRB-297 / P3-18)." % act_id)
+    missing = [o["id"] for o in obs
+               if not (self_labels.get(o["id"]) or "").strip()]
+    if missing:
+        raise ValueError(
+            "relative-frames %r has no `self_labels` entry for observer(s) "
+            "%s. The fifth tile is relabelled by the picker — it names what "
+            "you are sitting in — so every observer needs its own words."
+            % (act_id, missing))
+
     lo = float(a.get("speed_min", 0))
     hi = float(a.get("speed_max") or 0)
     step = float(a.get("speed_step") or 0)
@@ -576,11 +661,18 @@ def r_relative_frames(a, act_id):
         _p3_seg("ks3-seg-btn", o["label"], pressed=(o["id"] == "ground"),
                 data_rframe_obs=o["id"]) for o in obs)
 
+    # The fifth tile carries every observer's wording as data, so the
+    # wiring relabels it from the page rather than from a string in JS.
+    self_attrs = "".join(
+        ' data-self-label-%s="%s"' % (e(o["id"]), e(self_labels[o["id"]]))
+        for o in obs)
+
     outs = "".join(
-        '<div class="ks3-rframe-out" data-rframe-outwrap="%s">'
-        '<p class="ks3-rframe-outlabel">%s</p>'
+        '<div class="ks3-rframe-out" data-rframe-outwrap="%s"%s>'
+        '<p class="ks3-rframe-outlabel" data-rframe-outlabel="%s">%s</p>'
         '<p class="ks3-rframe-outval" data-rframe-out="%s"></p></div>'
-        % (e(o["id"]), t(o["label"]), e(o["id"])) for o in outs_spec)
+        % (e(o["id"]), self_attrs if o["id"] == "self" else "",
+           e(o["id"]), t(o["label"]), e(o["id"])) for o in outs_spec)
 
     return ('<div class="ks3-rframe" data-rframe>%s'
             '<div class="ks3-rframe-bench" data-rframe-bench hidden>'

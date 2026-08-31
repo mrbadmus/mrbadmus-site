@@ -596,9 +596,13 @@ def r_compass_plot(a, act_id):
     strongest point on the 13 × 7 LATTICE, which sits hard against a pole
     where no button can go: the highest reading a student could ever get on
     her scale is 18, `very strong` is unreachable, and 78 of the 96 readings
-    fall in one band. The reference here is the strongest of the twenty-five
-    reachable spots, which is what the readout says it is, and the four bands
-    then run 20 / 24 / 27 / 24.
+    fall in one band. The reference here is the strongest of the reachable
+    spots, which is what the readout says it is, and the four bands then run
+    25 / 27 / 22 / 10. ⊕ Corrected 31 Aug 2026: a spot on the DRAWN bar no
+    longer returns a reading (fifteen states, not four), so it is no longer
+    one of the spots the scale is measured against either — before that, the
+    two two-magnet layouts topped out at 27.9 and 28.3 against a 100 nobody
+    could stand on. Was 20 / 24 / 27 / 24 of 95.
 
     ⚠️ **THE NEEDLE IS OMITTED AT THE NEUTRAL POINT AND ON THE METAL**, and the
     tiles say why in words in both cases. A needle drawn at a null would be a
@@ -786,6 +790,14 @@ def r_dip_circle(a, act_id):
     equator it renders *"…running into the ground at 0°"* while denying that
     the field is level. Two reachable states, its own branch here.
 
+    ⚠️ **AND THE SAME AGAIN FREE TO TIP** (⊕ 31 Aug 2026). `tipped` had the
+    identical hole and was not split: at the equator it rendered *"tips over
+    by 0° from level, with its north-seeking end down… because the field is
+    not parallel to the ground"*, over a needle the drawing correctly holds
+    dead level, and contradicted `flat_level` at the very same latitude.
+    `tipped_level` is its equator, and the three words that name a tipping end
+    emit nothing at zero dip — a level needle has NEITHER end down.
+
     ⚖️ **THE NEEDLE IS CAPTURED BY WHAT IS ON THE BENCH, AND THAT IS NOT A
     FAULT.** A speaker magnet beats the whole Earth at a few centimetres; a
     steel clamp stand beats what is left of it above 70°. Both say so, and
@@ -903,7 +915,7 @@ def r_dip_circle(a, act_id):
     branch_data = _branches("dipc", a,
                             ("captured_magnet", "captured_steel", "flat",
                              "flat_level", "flat_at_pole", "at_pole",
-                             "tipped"),
+                             "tipped", "tipped_level"),
                             act_id, "dip-circle")
     word_data = _words("dipc", a,
                        ("not_a_reading", "on_bench", "held_level",

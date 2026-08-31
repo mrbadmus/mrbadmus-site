@@ -94,7 +94,7 @@ QUESTIONS = [
                     "small torch uses over several minutes."},
             {"text": "About 100 000 joules", "correct": False,
              "why": "That is getting on for a third of what it takes to boil "
-                    "a mugful of water."},
+                    "a full litre of water."},
             {"text": "About 0.001 joules", "correct": False,
              "why": "That is a thousand times too small — a joule is "
                     "already a very small amount."},
@@ -140,8 +140,9 @@ QUESTIONS = [
              "correct": True},
             {"text": "Nothing — 4000 J is a reasonable size",
              "correct": False,
-             "why": "It is roughly the energy in a mouthful of bread, and "
-                    "could not boil a litre of anything."},
+             "why": "It is about what it takes to carry yourself up two "
+                    "flights of stairs, and could not boil a litre of "
+                    "anything."},
         ],
         "figure": None,
     },

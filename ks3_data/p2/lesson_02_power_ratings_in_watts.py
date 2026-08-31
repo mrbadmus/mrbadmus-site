@@ -83,14 +83,36 @@ Design's `NOTES-P2.md` §1 predicts one id for this lesson (her
 added "a second misconception quote" to all sixteen P1–P3 lessons. Same
 notes-vs-drawing gap as above, same resolution.
 
-── ⚠️ THE KETTLE/CHARGER ARITHMETIC IS EXACT AND IS CHECKED ────────────
+── ⚠️ THE KETTLE/ROUTER ARITHMETIC IS EXACT AND IS CHECKED ─────────────
 
 2000 W × 180 s = 360 000 J. 15 W × 28 800 s = 432 000 J. The crossover is
 where 2000 t = 15 × 28 800 · t/28800 … in Design's bench it is the time at
-which the charger's running total overtakes the kettle's finished total:
+which the router's running total overtakes the kettle's finished total:
 360 000 ÷ 15 = 24 000 s = 6 h 40 min, which is her "6.67 h". The bench
 COMPUTES it rather than being told it, so the number on screen cannot drift
 from the numbers above it.
+
+── ⚖️ MRB-297 · P2-09 · THE APPLIANCE IS A ROUTER, AND WAS A CHARGER ───
+
+Design's hook raced the kettle against a phone charger left plugged in for
+eight hours, and the bench drew that charger at a flat 15 W for all eight.
+A charger does not do that. It draws near its rating only while the battery
+is taking charge — an hour or two — and then trickles, and one plugged in
+with nothing on the end of it is held by law to a fraction of a watt. Flat
+out for 8 h it would deliver 120 Wh into a phone that holds about 17 Wh.
+Realistically it transfers about 90 kJ overnight, so the KETTLE wins and
+the answer the page credited was wrong — which the page's own second
+misconception quote already says: standby is a low power, not no power.
+
+A home router is rated in the same range, genuinely draws its rating all
+night, and is in every house. So the appliance changed and not one number
+did: 2000 W × 180 s = 360 000 J, 15 W × 28 800 s = 432 000 J, crossover at
+360 000 ÷ 15 = 24 000 s = 6 h 40 min.
+
+⚠️ ONE SITE IS NOT IN THIS FILE. `shared/ks3.js` hardcodes the bench's
+past-crossover caption — "The 15 W charger has now transferred more energy
+than the 2000 W kettle did all day" — inside the power-bench wiring. It
+still says charger, and this lane may not edit that file.
 """
 
 LESSON = {
@@ -112,17 +134,17 @@ LESSON = {
     "references": ["energy-stores"],
     "ks4_links": [],
 
-    "meta_description": "A kettle is 130 times the power of a phone charger "
+    "meta_description": "A kettle is 130 times the power of a home router "
                         "and still costs less to run. Power is a rate, energy "
                         "is a total, and confusing the two is the most "
                         "expensive mistake people make about their own bill.",
 
-    "big_question": "A 2000 W kettle and a 15 W phone charger. Which one "
+    "big_question": "A 2000 W kettle and a 15 W home router. Which one "
                     "costs you more over a day?",
 
     "rail": [
         {"anchor": "s-hook",  "short": "HOOK",
-         "label": "Kettle vs charger",       "done_when": "committed"},
+         "label": "Kettle vs router",        "done_when": "committed"},
         {"anchor": "s-bench", "short": "BENCH",
          "label": "Power bench",             "done_when": "crossover_seen"},
         {"anchor": "s-cfifa", "short": "CFIFA",
@@ -134,19 +156,19 @@ LESSON = {
 
     "phenomenon": {
         "kind": "narrative",
-        "title": "A kettle is 130 times the power of a charger.",
+        "title": "A kettle is 130 times the power of a router.",
         "prompt": "The kettle is rated 2000 W and runs for about three "
-                  "minutes a day. The charger is rated 15 W and is plugged "
-                  "in for eight hours every night.",
+                  "minutes a day. The router is rated 15 W and is left on "
+                  "for eight hours every night.",
         "commit": "Commit. Which uses more energy in a day?",
         "options": [
             "The kettle — 2000 W is far more than 15 W",
-            "The charger — it runs for 160 times as long",
+            "The router — it runs for 160 times as long",
             "Exactly the same, by coincidence",
             "Impossible to say without the voltage",
         ],
         "answer": 1,
-        "reveal": "The charger — 432 000 J against the kettle's "
+        "reveal": "The router — 432 000 J against the kettle's "
                   "360 000 J. The kettle wins on power by a factor of 130 "
                   "and still loses on energy, because power says nothing at "
                   "all about how long the thing runs. <strong>Two different "
@@ -182,7 +204,7 @@ LESSON = {
          "id": "power-bench",
          "anchor": "s-bench",
          "eyebrow": "The power bench · two dials, two answers",
-         "heading": "Race a kettle against a charger.",
+         "heading": "Race a kettle against a router.",
          "prompt": "Two appliances running side by side. The tall bar is "
                    "power — how fast energy is flowing right now. The "
                    "filling bar is the total so far.",
@@ -200,7 +222,7 @@ LESSON = {
          "appliances": [
              {"id": "kettle",  "label": "Kettle",  "watts": 2000,
               "runs_for_s": 180},
-             {"id": "charger", "label": "Charger", "watts": 15,
+             {"id": "router",  "label": "Router",  "watts": 15,
               "runs_for_s": 28800},
          ],
          "jumps": [
@@ -214,10 +236,10 @@ LESSON = {
          "readouts": [
              {"id": "clock",   "label": "Clock"},
              {"id": "kettle",  "label": "Kettle total"},
-             {"id": "charger", "label": "Charger total"},
+             {"id": "router",  "label": "Router total"},
          ],
          "alt": "Two appliances side by side: a kettle rated 2000 watts and "
-                "a charger rated 15 watts, each with a tall bar showing its "
+                "a router rated 15 watts, each with a tall bar showing its "
                 "power and a filling bar showing the energy it has "
                 "transferred so far.",
          "close": "The kettle's bar is over a hundred times taller and its "
@@ -482,7 +504,7 @@ LESSON = {
                    "power.",
             }},
         "apply": {
-            "q": "A 2000 W kettle runs for 3 minutes. A 15 W charger runs "
+            "q": "A 2000 W kettle runs for 3 minutes. A 15 W router runs "
                  "for 8 hours. Which transfers more energy?",
             # ⚠️ MRB-278 — the correct option is NOT at index 0.
             # Across P2's ten ladder sets the answer sits at 0 three
@@ -495,7 +517,7 @@ LESSON = {
                 "You cannot tell without knowing the voltage",
                 "The kettle, because 2000 W is much higher",
                 "They are equal",
-                "The charger",
+                "The router",
             ],
             "answer": 3,
             "feedback": {
@@ -504,11 +526,11 @@ LESSON = {
                 1: "Higher power, far shorter time. 2000 × 180 = "
                    "360 kJ; 15 × 28 800 = 432 kJ.",
                 2: "Close, but not equal — work both products out and "
-                   "the charger comes out ahead.",
+                   "the router comes out ahead.",
             }},
         "explain": {
             "q": "Explain the difference between power and energy, using a "
-                 "2000 W kettle and a 15 W charger as your example. Say what "
+                 "2000 W kettle and a 15 W router as your example. Say what "
                  "each quantity is useful for deciding.",
             "field_label": "Your explanation",
             "placeholder": "Power is a rate…",
@@ -518,7 +540,7 @@ LESSON = {
                 "time.",
                 "Uses the numbers: the kettle is higher power but runs "
                 "briefly.",
-                "States that the charger transfers more energy over a day "
+                "States that the router transfers more energy over a day "
                 "despite its low rating.",
                 "Says power matters for safety and cable choice, and energy "
                 "matters for the bill.",

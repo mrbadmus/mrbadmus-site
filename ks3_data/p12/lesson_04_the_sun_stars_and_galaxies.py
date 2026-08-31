@@ -63,6 +63,45 @@ All three distractors are FINISHED into complete wrong rules; the correct
 answer and every correction are untouched.
 
 ── ⚠️ NO SAFEGUARDING BLOCK. NO DRAFT MARKINGS. ──────────────────────
+
+── ⚖️ MRB-297 · P12-09 · TWO OF THE FIVE FIGURES ARE SIZES ──────────
+
+The panel was captioned *"Distance from Earth in light years"* and the
+second readout card *"DISTANCE FROM EARTH · how long its light has been
+travelling"*. Two of the five objects are things the Earth is INSIDE, and
+for both of them the `ly` value is the object's WIDTH: the solar system at
+11.0 light hours, and the Milky Way at 100 thousand ly — which is the
+galaxy's diameter, as the SIZE card immediately beside it says. The rung
+note then asserted *"At 100 thousand ly from Earth, the light reaching you
+from the Milky Way set out that long ago"*, which is false in every
+reading; the light reaching us from stars in our own galaxy has been
+travelling between about four years and about eighty thousand.
+
+Mide ruled option (a): SPLIT the card rather than invent distances to
+things we are inside, because "the distance to the Milky Way" means
+choosing between its edge and its centre and that is a harder idea than
+this lesson wants.
+
+What that costs here, and what it does NOT reach:
+
+  · the panel caption, the `aria-label`, the lead and the eyebrow are
+    payload, and now cover both quantities;
+  · the false "look into the past" sentence was GLOBAL — one template for
+    all five rungs — so it is gone from the template and lives in the three
+    per-tab notes where it is true (the Sun at 8.3 light minutes, Proxima
+    already carried its own, Andromeda at 2.5 million years). The two
+    inside-objects' notes say in as many words that their figure is a
+    width;
+  · ⚠️ THE READOUT CARD'S LABEL CANNOT VARY BY TAB FROM HERE. Design's
+    `p12ModelLadder` in `shared/ks3.js` returns no `labels` key, and the
+    sub-label comes from one `distance_sub` word, so the card label is one
+    string for all five rungs. It is therefore written to be true of all
+    five rather than left saying "Distance from Earth" on a width. The
+    ruled per-tab split — "Distance from Earth" on the Sun, Proxima and
+    Andromeda, "How far across" on the other two — wants ONE change this
+    lane may not make: `p12ModelLadder` returning
+    `labels: {distance: {word: …}}` per tab, which `r_space_bench` already
+    ships the `data-template` and `data-spbench-tlabel` hooks for.
 """
 
 LESSON = {
@@ -178,18 +217,19 @@ LESSON = {
                  "trillion other galaxies, and the whole lot together is the "
                  "<strong>universe</strong>."},
 
-        # ── #s-bench · five rungs of the distance ladder ────────────────
+        # ── #s-bench · five rungs of the ladder of scale ────────────────
         {"type": "space-bench",
          "id": "bench",
          "anchor": "s-bench",
-         "eyebrow": "At the bench · five rungs of the distance ladder",
+         "eyebrow": "At the bench · five rungs of the ladder of scale",
          "heading": "Every step is a huge jump, and the ladder does not stop.",
          "progress": {"idle": "Change a control to begin",
                       "live": "Controls live"},
-         "lead": "Pick something and see how far away it is, how big it is, "
-                 "and how long its light has been travelling. The bars are on "
-                 "a scale where each step is ten times the last — otherwise "
-                 "the first two would be invisible.",
+         "lead": "Pick something and see how big it is, and how far its "
+                 "light has to travel — to reach you, or right across it if "
+                 "you are inside it. The bars are on a scale where each step "
+                 "is ten times the last — otherwise the first two would be "
+                 "invisible.",
          "model": "distance-ladder",
          # Design's own log placement, in her own constants. Eleven orders of
          # magnitude on one axis; there is no honest linear way to do it.
@@ -212,7 +252,8 @@ LESSON = {
               "kind": "a star", "ly": 0.0000158, "dia": 1.39e6,
               "count": "1 star",
               "note": "An ordinary yellow dwarf, and the only star close "
-                      "enough to look like a disc rather than a point."},
+                      "enough to look like a disc rather than a point. The "
+                      "light on your hands left it 8.3 minutes ago."},
              {"id": "system", "label": "The solar system",
               "name": "the solar system",
               "kind": "one star and everything bound to it",
@@ -222,8 +263,10 @@ LESSON = {
               # `ly` value beside it, and it is the READOUT that is the
               # measurement (5A.1). See the module note.
               "note": "Measured out well beyond Neptune, whose orbit alone "
-                      "is 9000 million km across. Light crosses the whole of "
-                      "this in hours rather than years."},
+                      "is 9000 million km across. That figure is a width "
+                      "and not a distance — you are inside this one — and "
+                      "light crosses the whole of it in hours rather than "
+                      "years."},
              {"id": "proxima", "label": "Proxima Centauri",
               "name": "Proxima Centauri",
               "kind": "the nearest star to the Sun",
@@ -235,19 +278,25 @@ LESSON = {
               "ly": 100000, "dia": 9.5e17,
               "count": "about 200 billion stars",
               "note": "A barred spiral. The Sun is one star in it, about two "
-                      "thirds of the way out."},
+                      "thirds of the way out. This figure is a width too, "
+                      "not a distance: light from the other stars in it has "
+                      "been on its way for anything from four years to "
+                      "eighty thousand."},
              {"id": "andromeda", "label": "Andromeda",
               "name": "the Andromeda galaxy",
               "kind": "the nearest large galaxy",
               "ly": 2500000, "dia": 2e18,
               "count": "about a trillion stars",
               "note": "The furthest thing you can see with your eyes alone, "
-                      "on a dark night."},
+                      "on a dark night. The light doing that left 2.5 "
+                      "million years ago, long before there was anyone here "
+                      "to look."},
          ],
-         "bars_caption": "Distance from Earth in light years — each bar step "
-                         "is ten times the one before",
-         "bars_alt": "Five bars on a ten-times scale showing distance from "
-                     "Earth: {list}. {label} is highlighted.",
+         "bars_caption": "How big, and how far — each bar step is ten times "
+                         "the one before",
+         "bars_alt": "Five bars on a ten-times scale, each one a distance "
+                     "from Earth or a width in light-travel terms: {list}. "
+                     "{label} is highlighted.",
          "bars": [
              {"id": "sun",       "label": "The Sun"},
              {"id": "system",    "label": "The solar system"},
@@ -257,26 +306,25 @@ LESSON = {
          ],
          "readouts": [
              {"id": "what",     "label": "What it is"},
-             {"id": "distance", "label": "Distance from Earth"},
+             {"id": "distance", "label": "How far light travels"},
              {"id": "size",     "label": "Size"},
              {"id": "stars",    "label": "Stars in it"},
          ],
          "words": {
              "what_sub":     "what kind of object this is",
-             "distance_sub": "how long its light has been travelling",
+             "distance_sub": "to reach you — or to cross it, if you are "
+                             "inside it",
              "size_sub":     "across its widest part",
              "stars_sub":    "counted or estimated",
              "list_join":    "and",
          },
          "notes": {
-             "rung": "{note} At {dist} from Earth, the light reaching you "
-                     "from {name} set out that long ago — so every one of "
-                     "these bars is also a look into the past. Notice the "
-                     "shape of the ladder: the whole solar system is a "
-                     "rounding error next to the gap to the nearest star, and "
-                     "that gap is a rounding error next to the width of one "
-                     "galaxy. Each rung is not a little further than the "
-                     "last. It is thousands of times further.",
+             "rung": "{note} Notice the shape of the ladder: the whole "
+                     "solar system is a rounding error next to the gap "
+                     "to the nearest star, and that gap is a rounding "
+                     "error next to the width of one galaxy. Each rung "
+                     "is not a little further than the last. It is "
+                     "thousands of times further.",
          }},
 
         {"type": "key-fact", "ref": "what-sits-inside-what"},

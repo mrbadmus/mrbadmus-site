@@ -295,12 +295,20 @@ LESSON = {
                   "The time is in minutes and the watt is defined per "
                   "<em>second</em>. Three minutes is 180 seconds, so the "
                   "answer is 360 000 J — sixty times what was written.",
+                  # ⚖️ RULED 30 Aug 2026 (MRB-297) — P2-15. The anchor was
+                  # "roughly the energy in a mouthful of bread". Bread is
+                  # about 10 kJ per gram, so 6000 J is half a gram — out by
+                  # thirty times, in the one sentence teaching students to
+                  # check a magnitude. The stairs are exact on the figures
+                  # this key stage uses: 60 kg × 10 N/kg × 10 m = 6000 J,
+                  # and ten metres is about three storeys.
                   "There is a check that catches this every time, and it "
                   "costs you five seconds: <strong>ask whether the answer is "
-                  "a sensible size.</strong> 6000 J is roughly the energy in "
-                  "a mouthful of bread. It could not possibly boil a litre "
-                  "of water. When your answer is absurd, suspect the units "
-                  "before you suspect the physics.",
+                  "a sensible size.</strong> 6000 J is about what it takes "
+                  "to carry yourself up three flights of stairs. It could "
+                  "not possibly boil a litre of water. When your answer is "
+                  "absurd, suspect the units before you suspect the "
+                  "physics.",
                   "The safest habit is to convert on the Insert line, never "
                   "later — write “180 s” into the working rather "
                   "than converting the answer afterwards. Two consistent "
@@ -311,14 +319,18 @@ LESSON = {
                        "a kettle sounds about right.",
               "targets": "ENER-24",
               "body": [
+                  # ⚖️ RULED 30 Aug 2026 (MRB-297) — P2-16. It said "a
+                  # mugful", which needs about 90–110 kJ. 360 000 J is a
+                  # LITRE — what the paragraph above says and what this
+                  # page's own worked example computes.
                   "A joule is tiny. Lifting an apple from the floor to a "
                   "table takes about one; a single AA cell holds around "
-                  "10 000. A kettle boiling a mugful needs about 360 000 J, "
-                  "which is why the answers in this lesson run into hundreds "
-                  "of thousands and why kilojoules and megajoules exist at "
-                  "all. <strong>If a kettle calculation comes out in the "
-                  "thousands, the time was almost certainly left in "
-                  "minutes.</strong>",
+                  "10 000. A kettle boiling a full litre needs about "
+                  "360 000 J, which is why the answers in this lesson "
+                  "run into hundreds of thousands and why kilojoules and "
+                  "megajoules exist at all. <strong>If a kettle "
+                  "calculation comes out in the thousands, the time was "
+                  "almost certainly left in minutes.</strong>",
               ]},
          ]},
 

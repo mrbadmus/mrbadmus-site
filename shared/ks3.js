@@ -7216,7 +7216,7 @@
      moves the marker and the readout together, or fails the build.
 
      ⚠️ AN APPLIANCE STOPS WHEN ITS RUNNING TIME IS UP. The kettle's total
-     freezes at 3 minutes; the charger's keeps climbing. That freeze IS the
+     freezes at 3 minutes; the router's keeps climbing. That freeze IS the
      lesson — a bar that went on growing would make the race a tie. */
   function wirePowerBench(sec) {
     var wrap = sec.querySelector("[data-pbench]");
@@ -7287,15 +7287,32 @@
         var o = out(ap.id);
         if (o) { o.textContent = fmt(energy(ap)); }
       });
-      if (t >= CROSS && CROSS > 0) { seen = true; }
+      /* ⊕ MRB-297 — TWO FIXES IN ONE STRING.
+         P2-09: the appliance is a ROUTER, not a phone charger. A charger
+         does not draw 15 W for eight hours — it draws near its rating for
+         an hour or two and then trickles, and a plugged-in idle supply is
+         legally limited to a fraction of a watt. At a realistic ~90 kJ the
+         KETTLE WINS, so the lesson was crediting the wrong answer for the
+         appliance it named. A router genuinely does draw its rating all
+         night, so every number in the lesson survives the swap untouched.
+         P2-11: `seen` was set at `t >= CROSS`, so the button labelled
+         "Jump to the crossover" landed on the one state where the caption
+         read "has now transferred MORE" over two totals printed EQUAL.
+         Equality is now its own branch, and it is the best moment on the
+         bench: it is the instant the answer changes. */
+      if (t > CROSS && CROSS > 0) { seen = true; }
       if (note) {
         note.textContent = !t
           ? ""
           : (seen
-              ? "Past the crossover. The 15 W charger has now transferred "
+              ? "Past the crossover. The 15 W router has now transferred "
                 + "more energy than the 2000 W kettle did all day."
-              : "The kettle's bar is over a hundred times taller and it has "
-                + "already stopped. Keep going.");
+              : (CROSS > 0 && t === CROSS
+                  ? "The crossover, exactly. The 15 W router has just drawn "
+                    + "level with the 2000 W kettle — and the router is "
+                    + "still running."
+                  : "The kettle's bar is over a hundred times taller and it "
+                    + "has already stopped. Keep going."));
       }
       if (runBtn) {
         runBtn.textContent = running ? "Pause" : (t > 0 ? "Keep running"
@@ -7767,7 +7784,19 @@
      ⚖️ THE SCATTER IS SYMMETRIC and is re-rolled per RELEASE, so three
      runs at one setting genuinely differ — which is what rung 3's mean
      is for. It is derived from the run count rather than Math.random so a
-     reload does not rewrite a table the student has already filled. */
+     reload does not rewrite a table the student has already filled.
+
+     ⚠️ THE CLOSING SENTENCE IS COMPOSED FROM THE ROWS (MRB-297 / P3-1).
+     The bench lets a student change the gate separation AND the ramp
+     between runs — the table has a Distance column and a Ramp column
+     precisely so that it can — and the close used to be one fixed string
+     asserting "the same distance every time" and prescribing "the mean of
+     the three times is what you divide into". Over three runs at 0.40 m /
+     1.20 m / 2.00 m on three ramps, that is not a caption that lies about
+     its data: it is a METHOD that would produce a meaningless number from
+     the readings the bench just allowed. The controls stay free and the
+     sentence follows the rows instead, which turns the defect into the
+     lesson's own point about fair repeats. */
   function wireLightGates(sec) {
     var wrap = sec.querySelector("[data-lgate]");
     if (!wrap) { return; }
@@ -7781,6 +7810,7 @@
     var recordBtn = wrap.querySelector("[data-lgate-record]");
     var body = wrap.querySelector("[data-lgate-rows]");
     var close = wrap.querySelector("[data-lgate-close]");
+    var closeMixed = wrap.querySelector("[data-lgate-close-mixed]");
     var trolley = wrap.querySelector("[data-lgate-trolley]");
     var beamB = wrap.querySelector("[data-lgate-beamb]");
     if (!slider || !ramps.length) { return; }
@@ -7788,10 +7818,28 @@
     var SCAT = parseFloat(wrap.getAttribute("data-scatter")) || 3;
     var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 3;
     var ramp = 0, runs = 0, released = 0, lastT = null, timer = null;
+    /* The recorded rows, kept as data rather than only as table cells, so
+       the closing sentence can be composed from what was actually taken
+       (MRB-297 / P3-1). */
+    var recs = [];
 
     each(ramps, function (b, i) {
       if (b.getAttribute("aria-pressed") === "true") { ramp = i; }
     });
+
+    /* Three repeats of ONE measurement, or three different measurements?
+       Same gate separation AND same ramp across every recorded row is the
+       only setup for which "the mean of the three times" is a method. */
+    function sameSetup() {
+      var i;
+      for (i = 1; i < recs.length; i += 1) {
+        if (recs[i].ramp !== recs[0].ramp) { return false; }
+        if (recs[i].gap.toFixed(2) !== recs[0].gap.toFixed(2)) {
+          return false;
+        }
+      }
+      return true;
+    }
 
     function gap() { return parseFloat(slider.value) || 1.2; }
     function v() {
@@ -7819,7 +7867,15 @@
       if (gapLabel) { gapLabel.textContent = gap().toFixed(2) + " m"; }
       if (beamB) { beamB.style.left = (18 + gap() * 34) + "%"; }
       if (recordBtn) { recordBtn.disabled = lastT === null; }
-      if (close) { setHidden(close, runs < TARGET); }
+      /* ⚠️ ONE OF THE TWO CLOSING SENTENCES, CHOSEN BY THE ROWS. The
+         "same distance every time" sentence prescribes a method — average
+         the three times, divide the distance by it — and that method is
+         invalid for runs taken on different setups (MRB-297 / P3-1). */
+      var repeats = sameSetup();
+      if (close) { setHidden(close, runs < TARGET || !repeats); }
+      if (closeMixed) {
+        setHidden(closeMixed, runs < TARGET || repeats);
+      }
       setCount(sec, runs);
       markStage(sec, runs >= TARGET);      /* three_runs_recorded */
     }
@@ -7878,6 +7934,7 @@
           "<td>" + gap().toFixed(2) + " m</td>" +
           "<td>" + lastT.toFixed(2) + " s</td>";
         if (body) { body.appendChild(tr); }
+        recs.push({ gap: gap(), ramp: ramp });
         runs += 1;
         paint();
       });
@@ -8049,7 +8106,25 @@
      one.
 
      ⚖️ THE COMPARISON IS FACTUAL (R3): two end points as two numbers, and
-     no verdict attached to either. */
+     no verdict attached to either.
+
+     ⚠️ ONE VERTICAL SCALE, FIXED, FOR BOTH LINES (MRB-297 / P3-11). `draw()`
+     used to recompute `dmax` from the union of the target and the line it
+     was drawing, while `paint()` redrew the target from the target alone —
+     so two journeys sat on one set of axes at two different scales, and
+     four "Jog" blocks drew the student's 9 m at the height of the target's
+     3 m. On the page whose rung 2 is "the steeper line is the faster one",
+     that showed the steeper line as the slower one. `DMAX` is now derived
+     once, from the fastest mode over every block, and NEVER changes: a
+     graph whose scale moves is the wrong thing to show a class learning to
+     read steepness.
+
+     ⚠️ A REFUSED WALK-BACK SAYS SO (MRB-297 / P3-12). `points()` clamps at
+     0 m, because "distance from the start" does not go negative and a
+     signed axis is not KS3. The clamp stays; what changed is that it is no
+     longer silent. Four "Walk back" blocks used to draw a flat line and
+     report "0.0 m from the start" — byte-identical to standing still four
+     times, on the page whose key fact is that a flat line is stopped. */
   function wireJourneyWalk(sec) {
     var wrap = sec.querySelector("[data-jwalk]");
     if (!wrap) { return; }
@@ -8070,6 +8145,7 @@
     var chosen = [];
     var speeds = {};
     var timer = null, sent = false;
+    var REFUSED = wrap.getAttribute("data-back-refused") || "";
 
     each(segs, function (seg) {
       each(toArray(seg.querySelectorAll("[data-jwalk-mode]")), function (b) {
@@ -8078,25 +8154,37 @@
       });
     });
 
+    /* The furthest the corridor can reach: the fastest forward mode held
+       for every block. Fixed for the life of the instrument. */
+    var DMAX = 1, mk;
+    for (mk in speeds) {
+      if (speeds[mk] > 0) {
+        DMAX = Math.max(DMAX, speeds[mk] * SECS * N);
+      }
+    }
+
+    /* pts.refused[i] — block i asked to go back past the start and was
+       clamped. Index 0 is the start point, so it is never refused. */
     function points(list) {
-      var d = 0, pts = [[0, 0]];
+      var d = 0, pts = [[0, 0]], refused = [false];
       each(list, function (id, i) {
-        d = Math.max(0, d + (speeds[id] || 0) * SECS);
+        var raw = d + (speeds[id] || 0) * SECS;
+        refused.push(raw < 0);
+        d = Math.max(0, raw);
         pts.push([(i + 1) * SECS, d]);
       });
+      pts.refused = refused;
       return pts;
     }
 
     function draw(el, pts, upto) {
       if (!el) { return; }
-      var tmax = N * SECS, dmax = 1;
-      each(points(TARGET), function (p) { dmax = Math.max(dmax, p[1]); });
-      each(pts, function (p) { dmax = Math.max(dmax, p[1]); });
+      var tmax = N * SECS;
       var out = [];
       each(pts, function (p, i) {
         if (upto !== undefined && i > upto) { return; }
         out.push((p[0] / tmax * 300).toFixed(1) + ","
-                 + (160 - p[1] / dmax * 150).toFixed(1));
+                 + (160 - p[1] / DMAX * 150).toFixed(1));
       });
       el.setAttribute("points", out.join(" "));
     }
@@ -8137,12 +8225,24 @@
       function frame() {
         draw(line, pts, step);
         if (walker) {
-          var dmax = 1;
-          each(pts, function (p) { dmax = Math.max(dmax, p[1]); });
-          walker.style.left = (pts[step][1] / dmax * 88) + "%";
+          walker.style.left = (pts[step][1] / DMAX * 88) + "%";
         }
         if (read) {
-          read.textContent = pts[step][1].toFixed(1) + " m from the start";
+          var last = step >= pts.length - 1;
+          var any = false;
+          each(pts.refused, function (f, i) {
+            if (f && (last || i <= step)) { any = true; }
+          });
+          if (pts.refused[step]) {
+            /* The block the walker is on was refused: say so instead of
+               printing a distance that did not move. */
+            read.textContent = REFUSED;
+          } else if (last && any) {
+            read.textContent = pts[step][1].toFixed(1)
+              + " m from the start. " + REFUSED;
+          } else {
+            read.textContent = pts[step][1].toFixed(1) + " m from the start";
+          }
         }
         if (step >= pts.length - 1) {
           if (timer) { clearInterval(timer); timer = null; }
@@ -8183,8 +8283,39 @@
 
   /* p3-03 `#s-frames` — two cars, three viewpoints.
 
-     ⚖️ EVERY READING IS COMPUTED, as v − v_observer. One of the four is
+     ⚖️ EVERY READING IS COMPUTED, as v − v_observer. One of the FIVE is
      always zero: the one belonging to the seat you are sitting in.
+
+     ⚠️ THAT ZERO IS THE `self` TILE (MRB-297 / P3-18), and it used not to
+     exist. The other four are frame-labelled quantities and correctly do
+     not change with the picker — but at the shipped defaults they read
+     25.0 / 20.0 / 5.0 / 5.0 in every viewpoint, so the closing panel's
+     "one of the readings is always zero" was a claim about a tile that
+     was not on screen. `self` follows the picker, takes its wording from
+     `data-self-label-<observer>` on its own tile, and reads 0.0 from every
+     seat.
+
+     ⚠️ THE CARS MOVE (MRB-297 / P3-19). Both used to sit at fixed CSS
+     `left:` percentages that nothing ever changed, so the roadside view —
+     the default, and the frame every earlier lesson used — printed "From
+     the roadside both cars are moving" over a still picture, and the only
+     motion anywhere was a road dash that ran at a fixed 1.1s whatever the
+     sliders said. Each car now drifts at `v − v_observer` and the road's
+     duration comes from `|v_observer|`, so the seat you are in visibly
+     holds still while everything else goes past — which is the sentence
+     the closing panel is trying to write.
+
+     ⚠️ THE ROAD'S DURATION IS SET INLINE, not in `shared/ks3.css`. The
+     stylesheet's `animation: ks3-rframe-slide 1.1s` stays as the shape of
+     the animation; only its duration and direction are state, and state
+     belongs here. The reduced-motion block in that file sets
+     `animation: none`, which still wins over an inline duration because
+     the shorthand clears the NAME — so a reduced-motion reader gets no
+     sliding road, and `REDUCED` stops the car drift for the same reason.
+
+     ⚠️ MOTION IS DRIVEN THROUGH `left`, NEVER `transform`. The facing rule
+     below owns `transform` (`scaleX(-1)`), and a translate written there
+     would silently cancel it.
 
      ⚠️ A CAR DOES NOT TURN ROUND WHEN THE VIEWPOINT CHANGES. Its drawn
      ORIENTATION follows its GROUND velocity; its MOTION follows its
@@ -8213,6 +8344,23 @@
       && dirBtn.getAttribute("aria-pressed") === "true";
     var seen = {};
 
+    /* The scene's own scale. `PCT_PER_UNIT` is how much of the scene's
+       width a car covers per second for each m/s of RELATIVE speed;
+       `ROAD_PX_PER_UNIT` is the matching rate for the road, whose dash
+       cycle is 52px, so the two read as one picture. */
+    var PCT_PER_UNIT = 0.6;
+    var ROAD_PX_PER_UNIT = 4.4;
+    var ROAD_CYCLE_PX = 52;
+    var LO = -14, SPAN = 126;          /* a car wraps out of sight at both */
+    var posA = 20, posB = 56;          /* Design's own starting positions */
+    var lastFrame = null;
+
+    function wrapPos(p) {
+      var q = (p - LO) % SPAN;
+      if (q < 0) { q += SPAN; }
+      return LO + q;
+    }
+
     function out(id) {
       return wrap.querySelector('[data-rframe-out="' + id + '"]');
     }
@@ -8228,7 +8376,8 @@
         var w = wrap.querySelector('[data-rframe-outwrap="' + id + '"]');
         if (w) {
           w.setAttribute("data-live",
-            (obs === "ground" && (id === "a_ground" || id === "b_ground"))
+            id === "self"
+            || (obs === "ground" && (id === "a_ground" || id === "b_ground"))
             || (obs === "a" && id === "b_from_a")
             || (obs === "b" && id === "a_from_b") ? "1" : "0");
         }
@@ -8237,6 +8386,15 @@
       put("b_ground", b - 0);
       put("b_from_a", b - a);
       put("a_from_b", a - b);
+      /* The seat you are sitting in, measured from where you are sitting.
+         Always zero, and the whole point of the lesson. */
+      put("self", 0);
+      var selfWrap = wrap.querySelector('[data-rframe-outwrap="self"]');
+      var selfLab = wrap.querySelector('[data-rframe-outlabel="self"]');
+      if (selfWrap && selfLab) {
+        var words = selfWrap.getAttribute("data-self-label-" + obs);
+        if (words) { selfLab.textContent = words; }
+      }
 
       var lab = wrap.querySelector("[data-rframe-valabel]");
       if (lab) { lab.textContent = a.toFixed(0) + " m/s"; }
@@ -8250,8 +8408,20 @@
           ? (dirBtn.getAttribute("data-same") || "Same way")
           : (dirBtn.getAttribute("data-opp") || "Opposite ways");
       }
-      /* The road belongs to the GROUND, so it slides in a car's frame. */
-      if (road) { road.setAttribute("data-slide", vo ? "1" : "0"); }
+      /* The road belongs to the GROUND, so it slides in a car's frame —
+         and it slides at the speed of the seat, not at a fixed 1.1s. A
+         seat doing 5 m/s and a seat doing 30 m/s used to give an
+         identically fast road. */
+      if (road) {
+        road.setAttribute("data-slide", vo ? "1" : "0");
+        if (vo) {
+          road.style.animationDuration =
+            (ROAD_CYCLE_PX / (ROAD_PX_PER_UNIT * Math.abs(vo))).toFixed(3)
+            + "s";
+          /* Going left, the ground goes past you the other way. */
+          road.style.animationDirection = vo < 0 ? "reverse" : "normal";
+        }
+      }
       /* Orientation follows the GROUND velocity. Motion follows the
          relative one. See the note above — this is deliberate. */
       if (carA) { carA.setAttribute("data-facing", a >= 0 ? "r" : "l"); }
@@ -8303,6 +8473,35 @@
     vb.addEventListener("change", paint);
     if (dirBtn) {
       dirBtn.addEventListener("click", function () { same = !same; paint(); });
+    }
+
+    /* ⚠️ THE DRIFT. Each car moves at `v − v_observer`, which is exactly
+       the number in its readout, and wraps out of sight at either edge.
+       The observer's own car therefore holds still while the road and the
+       other car go past it. Reduced motion leaves both at Design's
+       positions, matching what `shared/ks3.css` does with the road. */
+    function vels() {
+      var a = parseFloat(va.value) || 0;
+      var b = (parseFloat(vb.value) || 0) * (same ? 1 : -1);
+      return { a: a, b: b, o: obs === "a" ? a : (obs === "b" ? b : 0) };
+    }
+
+    function tick(now) {
+      var dt = lastFrame === null ? 0 : (now - lastFrame) / 1000;
+      lastFrame = now;
+      if (dt > 0.25) { dt = 0.25; }   /* a backgrounded tab must not jump */
+      if (dt > 0 && bench && !bench.hidden) {
+        var v = vels();
+        posA = wrapPos(posA + (v.a - v.o) * PCT_PER_UNIT * dt);
+        posB = wrapPos(posB + (v.b - v.o) * PCT_PER_UNIT * dt);
+        if (carA) { carA.style.left = posA.toFixed(2) + "%"; }
+        if (carB) { carB.style.left = posB.toFixed(2) + "%"; }
+      }
+      window.requestAnimationFrame(tick);
+    }
+
+    if (!REDUCED && window.requestAnimationFrame) {
+      window.requestAnimationFrame(tick);
     }
 
     paint();
@@ -15909,10 +16108,12 @@
 
      ⚖️ TWO MAXIMA, FOR TWO DIFFERENT JOBS. The lattice maximum scales the
      ARROWS, because that is the drawing and it is clamped either way. The
-     READING is against the strongest of the twenty-five spots a compass can
-     actually be put on — which is what the readout says it is, and which
+     READING is against the strongest of the spots a compass can actually be
+     put on AND READ — which is what the readout says it is, and which
      Design's lattice maximum was not: on her scale the highest reading a
-     student could ever reach was 18. */
+     student could ever reach was 18. ⊕ Corrected 31 Aug 2026: a spot on the
+     drawn metal is no longer one of them, because it no longer returns a
+     reading. See `insideBar` below. */
   function wireCompassPlot(sec) {
     var wrap = sec.querySelector("[data-cplot]");
     if (!wrap) { return; }
@@ -15979,7 +16180,7 @@
       var cx = XS[sx], cy = YS[sy];
       var grid = "", magPath = "", northPath = "";
       var latticeMax = 0, reachMax = 0;
-      var samples = [], ix, iy, x, y, f, i, b, mid, h;
+      var samples = [], ix, iy, x, y, f, i, b, mid, h = 34;
 
       each(setups, function (el, k) {
         el.setAttribute("aria-pressed", k === si ? "true" : "false");
@@ -15991,6 +16192,27 @@
             ? "true" : "false");
       });
 
+      /* ⚠️ THE NO-READING TEST IS THE DRAWN BAR, NOT THE TWO POINT POLES.
+         `fieldAt` refuses only within 10 px of a pole, but the bar is DRAWN
+         as a rectangle `h` either side of `b.y` across its whole length — so
+         eleven of the hundred states drew the dial sitting visibly on the
+         metal and printed a full reading beside it, and at the dead centre of
+         the single bar that reading was 270°, "west on the page", the exact
+         opposite of what this bench's own `on_magnet` note tells students the
+         field inside a magnet does. The pole test is KEPT and this is added
+         to it; no-reading states go from four to fifteen, and every one of
+         them now carries the inside-runs-the-other-way sentence. */
+      function insideBar(px, py) {
+        var j, bb;
+        for (j = 0; j < bs.length; j += 1) {
+          bb = bs[j];
+          if (px >= bb.x1 && px <= bb.x2 && Math.abs(py - bb.y) <= h) {
+            return true;
+          }
+        }
+        return false;
+      }
+
       for (ix = 0; ix < 13; ix += 1) {
         for (iy = 0; iy < 7; iy += 1) {
           x = 60 + ix * 73.3; y = 40 + iy * 53.3;
@@ -16000,8 +16222,14 @@
           if (f.mag > latticeMax) { latticeMax = f.mag; }
         }
       }
+      /* ⚠️ AND THE SCALE FOLLOWS IT. The readout says the reading is against
+         "the strongest spot you can reach here", so a spot that is now on the
+         metal cannot be the 100. Left in, the `unlike` and `like` layouts
+         would top out at 27.9 and 28.3 against a 100 nobody can stand on, and
+         `very strong` would be a word neither layout could ever print. */
       for (ix = 0; ix < XS.length; ix += 1) {
         for (iy = 0; iy < YS.length; iy += 1) {
+          if (insideBar(XS[ix], YS[iy])) { continue; }
           f = fieldAt(ps, XS[ix], YS[iy]);
           if (f && f.mag > reachMax) { reachMax = f.mag; }
         }
@@ -16029,7 +16257,7 @@
       });
 
       for (i = 0; i < bs.length; i += 1) {
-        b = bs[i]; h = 34; mid = (b.x1 + b.x2) / 2;
+        b = bs[i]; mid = (b.x1 + b.x2) / 2;
         magPath += "M" + b.x1 + " " + (b.y - h) + " H" + b.x2 + " V" +
           (b.y + h) + " H" + b.x1 + " Z ";
         northPath += b.left === "N"
@@ -16040,7 +16268,7 @@
       }
 
       var here = fieldAt(ps, cx, cy);
-      var onMagnet = !here;
+      var onMagnet = !here || insideBar(cx, cy);
       /* ⚖️ CANCELLING, NOT SMALL. See the block header. */
       var ratio = here && here.scalar > 0 ? here.mag / here.scalar : 1;
       var neutral = !onMagnet && ratio < NULLR;
@@ -16163,7 +16391,13 @@
 
      ⚖️ `CLAMPED FLAT` READS ZERO AND SAYS THE MOUNTING IS DOING IT — except
      at the equator, where the field really is level and the sentence would be
-     false. That state has its own branch. */
+     false. That state has its own branch.
+
+     ⚖️ AND SO DOES FREE-TO-TIP AT THE EQUATOR (⊕ 31 Aug 2026, `tipped_level`).
+     The same hole, in the branch that was not split: `tipped` reported a 0°
+     tip with the "north-seeking end down" and blamed a field "not parallel to
+     the ground", at the one latitude where it is. A level needle has NEITHER
+     end down, so the three words that name an end emit nothing there. */
   function wireDipCircle(sec) {
     var wrap = sec.querySelector("[data-dipc]");
     if (!wrap) { return; }
@@ -16240,6 +16474,13 @@
       else if (flat && level) { key = "flat_level"; }
       else if (flat) { key = "flat"; }
       else if (atPole) { key = "at_pole"; }
+      /* ⚠️ THE EQUATOR, FREE TO TIP — the hole `flat_level` was minted for,
+         in the branch that was not split. `tipped` said the needle "tips over
+         by 0° from level, with its north-seeking end down… because the field
+         is not parallel to the ground", at the one latitude where the field
+         IS parallel to the ground and the drawing correctly holds the needle
+         dead level. */
+      else if (level) { key = "tipped_level"; }
       else { key = "tipped"; }
       br = p10Branch(wrap, "dipc", key);
 
@@ -16250,16 +16491,25 @@
         (horizRel < NAVAT ? p10Word(wrap, "dipc", "nav_barely")
                           : p10Word(wrap, "dipc", "nav_yes"));
 
+      /* ⚠️ NOTHING NAMES AN END AT ZERO DIP. `deg >= 0` sorted the equator
+         into the northern arm, so a needle the drawing holds dead level was
+         labelled "north end down" under a tile reading 0°. A dip of 0° means
+         the needle lies level and NEITHER end is down — so all three of these
+         say nothing at all there, and `tipped_level` carries the sentence
+         instead. */
       dipSub = captured ? p10Word(wrap, "dipc", "on_bench")
         : flat ? p10Word(wrap, "dipc", "held_level")
-          : p10Word(wrap, "dipc", deg >= 0 ? "north_down" : "north_up");
+          : level ? ""
+            : p10Word(wrap, "dipc", deg >= 0 ? "north_down" : "north_up");
 
       var vals = {
         place: name,
         dip: Math.abs(dip).toFixed(0),
         horiz: p10Rel(horizRel),
-        tipword: p10Word(wrap, "dipc", deg >= 0 ? "tips_down" : "tips_up"),
-        tipend: p10Word(wrap, "dipc", deg >= 0 ? "end_down" : "end_up")
+        tipword: level ? ""
+          : p10Word(wrap, "dipc", deg >= 0 ? "tips_down" : "tips_up"),
+        tipend: level ? ""
+          : p10Word(wrap, "dipc", deg >= 0 ? "end_down" : "end_up")
       };
 
       fillSpan(wrap, "dipc", "level", p10Word(wrap, "dipc", "level_label"),

@@ -394,9 +394,23 @@ LESSON = {
          # this unit's own rather than as an edit to `ks3_art/kit.py`.
          "blocked_hint": "No field to multiply by",
          "questions": [
+             # ⚖️ RULED 30 Aug 2026 (MRB-297) — P12-01. Q1 is templated
+             # from the bench tab, and four of its strings put {name} in a
+             # prepositional slot that only works for a body: "standing on
+             # deep space", "the place you are standing", "towards the
+             # centre of deep space", "0 N on deep space". Three are broken
+             # English. The fourth is a physics claim, and it is the exact
+             # claim this page's think-again exists to kill: a weight of
+             # 0 N has no direction and deep space has no centre.
+             #
+             # The audit asked for a `place_in` field and a per-row
+             # `direction` string. Neither is reachable from a payload —
+             # the kit reads a fixed set of keys — so the strings are
+             # written to be TRUE IN ALL FIVE PLACES instead, which needs
+             # no new field and cannot go stale on a sixth tab.
              {"id": "q1", "tab": "Question 1",
-              "head": "Your scales: {v} kg standing on {name}, where g is "
-                      "{g} N/kg.",
+              "head": "Your scales: {v} kg, and the place is {name}, where "
+                      "g is {g} N/kg.",
               "lead": "Write each line out yourself — starting by deciding "
                       "whether anything needs converting. Then check your "
                       "working and tick the lines you had.",
@@ -430,14 +444,16 @@ LESSON = {
                    # bench's fourth readout tile makes the Earth comparison
                    # live a few centimetres above.
                    "note": "The field strength is the one for {name} — the "
-                           "place you are standing, never a default."},
+                           "place you are, never a default."},
                   {"letter": "F", "label": "Fine-tune",
                    "line": "{v} × {g} = {w}",
                    "note": "Kilograms times newtons per kilogram leaves "
                            "newtons."},
                   {"letter": "A", "label": "Answer",
                    "line": "W = {w} N",
-                   "note": "Downwards, towards the centre of {name}."},
+                   "note": "Downwards, towards the centre of whatever is "
+                           "pulling — and where there is no field there is "
+                           "no pull, so no direction either."},
               ],
               # ⚠️ HER CLOSING LINE IS `'The five lines give ' + W + ' N on '
               # + T.name + '. The same ' + V + ' kg on Earth would weigh ' +
@@ -445,8 +461,9 @@ LESSON = {
               # twice: "give 500 N on Earth. The same 50 kg on Earth would
               # weigh 500 N." Rewritten to the point the unit is making, and
               # true in every state.
-              "close": "The five lines give {w} N on {name}, for a mass of "
-                       "{v} kg that is the same everywhere."},
+              "close": "The five lines give {w} N for a mass of {v} kg — "
+                       "and that {v} kg is the same everywhere, whatever "
+                       "the scales say."},
              {"id": "q2", "tab": "Question 2",
               "head": "A rover of mass 185 kg is landed on Mars, where g is "
                       "3.7 N/kg. What does it weigh there?",

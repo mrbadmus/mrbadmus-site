@@ -580,8 +580,8 @@ LESSON = {
                  "built on multiplying rather than adding: every 10 dB is "
                  "ten times the energy arriving, and roughly twice as loud "
                  "to a listener. A whisper sits near 30 dB, a conversation "
-                 "near 60 dB, and a road drill near 100 dB — a million "
-                 "times the energy of the whisper, and nothing like a "
+                 "near 60 dB, and a road drill near 100 dB — ten million "
+                 "times the energy of the whisper, and nothing like ten "
                  "million times as loud."},
     ],
 

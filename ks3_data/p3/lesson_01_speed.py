@@ -246,10 +246,19 @@ LESSON = {
          "alt": "A trolley released from a ramp rolls along a runway and "
                 "breaks two light beams 1.20 metres apart. The timer runs "
                 "only while the trolley is between the beams.",
+         # ⚖️ TWO CLOSING SENTENCES, AND THE ROWS CHOOSE. `close` names a
+         # method — average the three times, divide the distance by it —
+         # and that method only works if the three runs are repeats of ONE
+         # measurement. The bench lets the distance and the ramp change
+         # between runs, so it also has to say when they have.
          "close": "Three runs, three different times, and the same distance "
                   "every time. That scatter is why one reading is never "
                   "enough — and the mean of the three times is what you "
-                  "divide into."},
+                  "divide into.",
+         "close_mixed": "You changed the setup between runs, so these times "
+                        "are not repeats of one measurement — there is no "
+                        "single distance to divide by the mean. Set the "
+                        "gates and the ramp once, then take three runs."},
 
         {"type": "key-fact", "ref": "two-measurements-one-number"},
 

@@ -190,9 +190,9 @@ LESSON = {
          "eyebrow": "Same road, same two cars, three different answers",
          "heading": "Change who is watching.",
          "prompt": "Nothing about the cars changes when you switch "
-                   "viewpoint. Only the numbers do — and one of the "
-                   "three viewpoints always makes something look "
-                   "stationary.",
+                   "viewpoint, and neither do the numbers. What changes is "
+                   "which reading is the one you are sitting in — and that "
+                   "reading is always zero.",
          "gate": {
              "prompt": "Commit first. Two cars both travel at 25 m/s in the "
                        "same direction, side by side. What is the speed of "
@@ -214,18 +214,28 @@ LESSON = {
          "same_direction_label": "Same way",
          "opposite_direction_label": "Opposite ways",
          "start_same_direction": True,
+         # ⚖️ THE FIFTH TILE IS THE ZERO, AND THE ZERO IS THE LESSON. The
+         # first four are frame-labelled quantities and correctly do not
+         # change with the picker. `self` does: it names what you are
+         # sitting in, and it reads 0.0 m/s from every seat.
          "readouts": [
              {"id": "a_ground", "label": "A from the roadside"},
              {"id": "b_ground", "label": "B from the roadside"},
              {"id": "b_from_a", "label": "B from car A"},
              {"id": "a_from_b", "label": "A from car B"},
+             {"id": "self", "label": "The road from the roadside"},
          ],
+         "self_labels": {
+             "ground": "The road from the roadside",
+             "a": "A from car A",
+             "b": "B from car B",
+         },
          "alt": "A road with two cars, drawn from a chosen viewpoint. When a "
                 "car is chosen, that car is held still and the road slides "
                 "underneath it.",
-         "close": "One of the four readings is always zero — whichever "
-                  "one belongs to the viewpoint you are sitting in. Nothing "
-                  "about either car changed to make it so."},
+         "close": "One of the five readings is always zero — whatever you "
+                  "are sitting in, measured from where you are sitting. "
+                  "Nothing about either car changed to make it so."},
 
         {"type": "key-fact", "ref": "relative-to-what"},
 
