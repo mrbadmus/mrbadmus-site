@@ -134,7 +134,7 @@ on the bottom in a sentence. ``r_oxide_bench`` refuses a payload that cannot.
 
 import re
 
-from ks3_art.kit import e, option_letter, rich, t
+from ks3_art.kit import e, option_letter, rich, sci, t
 
 
 # ═══ shared inside C8 ════════════════════════════════════════════════════
@@ -152,7 +152,7 @@ def _c8_seg(cls, label, **attrs):
                     for k, v in sorted(attrs.items()) if v is not None)
     return ('<button type="button" class="ks3-seg-btn %s"%s '
             'aria-pressed="false">%s</button>'
-            % (e(cls), extra, t(label)))
+            % (e(cls), extra, sci(label)))
 
 
 def _c8_lettered(options, hook):
@@ -550,7 +550,7 @@ def r_gap_filler(a, act_id):
 
     rows_html = "".join(
         '<tr><th scope="row">%s</th><td>%s</td><td>%s</td></tr>'
-        % (t(row["prop"]), t(row["predicted"]), t(row["actual"]))
+        % (t(row["prop"]), sci(row["predicted"]), sci(row["actual"]))
         for row in table)
     table_html = ("" if not table else
                   '<div class="ks3-gapf-tablewrap">'
@@ -1660,7 +1660,7 @@ def r_oxide_bench(a, act_id):
         'data-oxb-chip="%s" data-oxb-name="%s" aria-pressed="false">'
         '<span class="ks3-oxb-chipname">%s</span>'
         '<span class="ks3-oxb-chipformula">%s</span></button>'
-        % (e(o["id"]), e(o["name"]), t(o["name"]), t(o["formula"]))
+        % (e(o["id"]), e(o["name"]), t(o["name"]), sci(o["formula"]))
         for o in oxides)
 
     # ── fourteen beaker panels: the empty one shown, thirteen hidden ──────

@@ -269,9 +269,22 @@ LESSON = {
         # `ks3_art/c10.py`.
         {"type": "earth-layers", "id": "layers-bar", "anchor": "s-layers",
          "eyebrow": "Your turn · four layers",
-         "heading": "Tap a layer. The bar is drawn to scale.",
-         "prompt": "The widths are the real proportions. The crust is the "
-                   "sliver you can barely see.",
+         # ⚠️ The heading used to read "The bar is drawn to scale." and the
+         # prompt "The widths are the real proportions." (C10-02, chem audit
+         # 25 Aug 2026). The crust is drawn at the bar's minimum segment
+         # width — roughly ten times its true share — and the page's only
+         # admission of that was locked behind opening all four layers. Both
+         # lines now carry the honesty up front, and `scale_note` puts the
+         # number under the drawing itself. Heading change flagged to Design.
+         "heading": "Tap a layer. The widths are the real proportions — "
+                    "except the crust.",
+         "prompt": "Almost everything on this bar is drawn to scale. The "
+                   "crust is the exception, and it is the sliver at the very "
+                   "top.",
+         "scale_note": "One honest exception: the {thin_name} is really only "
+                       "{thin_share} of the way down, which is thinner than "
+                       "a line you could tap. It is drawn wider here so you "
+                       "can reach it — everything else is to scale.",
          "demand": "investigate",
          "head_counter": {"format": "{n} of {total} opened",
                           "start": 1, "total": 4},
@@ -324,8 +337,8 @@ LESSON = {
               "note": "Hotter than the liquid layer above it and solid "
                       "anyway, because the pressure at the centre of the "
                       "Earth is too great to let the atoms move apart. A "
-                      "ball of iron roughly the size of the Moon, as hot as "
-                      "the surface of the Sun."},
+                      "ball of iron about two-thirds the width of the Moon, "
+                      "as hot as the surface of the Sun."},
          ],
 
          # The panel that opens once all four have been read. `{crust_share}`,

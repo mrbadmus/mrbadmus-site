@@ -64,6 +64,18 @@ Remedied at the DISTRACTOR both times. Registered.
 ── ⚠️ NO CHILDLINE BLOCK. NO DRAFT MARKINGS. ─────────────────────────
 """
 
+# XU-1 (MRB-295/MRB-298, ruled 28 Aug 2026). THIS IS THE SITE THAT WAS
+# ALREADY RIGHT, and it is deliberately NOT rewritten to import
+# ks3_data/quantities.py. Every occurrence of the definition on this page is
+# embedded in the temperature-VERSUS-internal-energy contrast that the whole
+# lesson is built on, and the "one particle" / "a single particle" phrasing
+# is what makes that contrast land: temperature is the average for ONE
+# particle, internal energy is the total for ALL of them. Swapping in the
+# estate-wide sentence would flatten the one lesson that gets this right.
+# The two forms say the same thing; this one says it more sharply, in the
+# place that needs it sharpest.
+
+
 LESSON = {
     "slug": "temperature-and-internal-energy",
     "title": "Temperature, particle motion and internal energy",
@@ -133,9 +145,10 @@ LESSON = {
         "reveal": "The bath, easily — by something like a hundred million "
                   "times. The spark is at about 1000 °C and the bath at "
                   "40 °C, so the spark wins on temperature by a wide margin "
-                  "and loses on everything else. Temperature says how fast "
-                  "the individual particles are moving. Internal energy is "
-                  "that added up over every particle there is, and a bath has "
+                  "and loses on everything else. Temperature says how much "
+                  "kinetic energy each particle has, on average. Internal "
+                  "energy is that added up over every particle there is, "
+                  "and a bath has "
                   "an enormous number of particles while a spark has almost "
                   "none. That is why the spark bounces off your arm and does "
                   "nothing, and the bath would scald you at a quarter of its "
@@ -454,9 +467,10 @@ LESSON = {
             "title": "Rung 4 · Take it somewhere new"},
     },
 
-    "key_note": "Temperature measures the average kinetic energy of a single "
-                "particle and is read in degrees Celsius. Internal energy is "
-                "the total energy of every particle in an object, measured in "
+    "key_note": "Temperature measures the average kinetic energy per "
+                "particle, and is read in degrees Celsius. "
+                "Internal energy is the total energy of every particle in "
+                "an object, measured in "
                 "joules, and depends on the temperature and on how much "
                 "matter there is. A spark at 1000 °C holds almost no internal "
                 "energy because it has almost no mass; a bath at 40 °C holds "

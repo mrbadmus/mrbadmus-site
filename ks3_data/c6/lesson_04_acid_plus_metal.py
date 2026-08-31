@@ -600,8 +600,8 @@ LESSON = {
         {"type": "explainer", "id": "sacrificial-anodes",
          "text": "This reaction is why the hulls of ships are fitted with "
                  "slabs of zinc bolted to the steel below the waterline. "
-                 "Seawater is mildly acidic and full of dissolved salt, and "
-                 "it attacks iron steadily. Bolt on something more reactive "
+                 "Seawater is full of dissolved salt and attacks iron "
+                 "steadily. Bolt on something more reactive "
                  "and the seawater attacks that instead: the zinc corrodes "
                  "away and the hull does not. The slabs are called "
                  "sacrificial anodes, and replacing them is routine dry-dock "

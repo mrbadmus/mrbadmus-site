@@ -237,12 +237,12 @@ QUESTIONS = [
     {
         "id": "c5-02-s04",
         "band": "standard",
-        "text": "Baking powder in a cake mixture is heated in an oven and the "
+        "text": "Baking soda in a cake mixture is heated in an oven and the "
                 "cake rises. Why is this a thermal decomposition?",
         "options": [
             {"text": "The oven air reacted with the powder and made bubbles "
                      "of gas", "correct": False,
-             "why": "Nothing from the oven joins in. The baking powder comes "
+             "why": "Nothing from the oven joins in. The baking soda comes "
                     "apart on its own once it is hot enough, which is why it "
                     "works inside a sealed tin."},
             {"text": "The heat boiled the water in the mixture and the steam "

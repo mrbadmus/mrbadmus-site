@@ -107,9 +107,12 @@ QUESTIONS = [
                     "unchanged."},
             {"text": "Chemical, because the water and the salt made "
                      "something new", "correct": False,
-             "why": "Nothing new was made. The solution still tastes of salt "
-                    "because the salt is still salt, spread out among the "
-                    "water."},
+             # SYS-7 — the bank echo of c4-01's salt line, carrying the same
+             # tasting credit. Aligned with the lesson so the two cannot
+             # drift.
+             "why": "Nothing new was made. Evaporate the water and the salt "
+                    "comes back unchanged, because the salt is still salt, "
+                    "spread out among the water."},
             {"text": "Physical, because the salt is still salt in the water",
              "correct": True},
             {"text": "Physical, because nothing that dissolves is ever a "

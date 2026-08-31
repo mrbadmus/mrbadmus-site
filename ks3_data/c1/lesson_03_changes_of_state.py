@@ -57,6 +57,13 @@ holding all of it at once will notice:
      rounding.
 """
 
+# XU-1 (MRB-295/MRB-298, ruled 28 Aug 2026). The estate held four
+# definitions of temperature and three were wrong. There is now one, and it
+# is authored in ks3_data/quantities.py rather than retyped here.
+from ..quantities import (TEMPERATURE_CRITERION, TEMPERATURE_OPTION,
+                          TEMPERATURE_SENTENCE, TEMPERATURE_VOCAB)  # noqa: F401
+
+
 # ── the heating curve, x = energy in (0–100), T = °C ─────────────────────
 #
 # ⚖️ **CORRECTED FROM DESIGN, AND THE CORRECTION IS THE POINT.**
@@ -463,8 +470,8 @@ LESSON = {
               "right": "Dissolving. Two substances, and the sugar particles "
                        "spread out among the water particles.",
               "wrong": "Not melting — tea is nowhere near sugar’s melting "
-                       "point of 160 °C. Two substances are involved, so this "
-                       "is dissolving."},
+                       "point of about 186 °C. Two substances are involved, "
+                       "so this is dissolving."},
              {"id": "s2", "text": "Butter left in a pan over a low flame",
               "answer": "melt",
               "right": "Melting. One substance, heated until its particles "
@@ -494,9 +501,11 @@ LESSON = {
              "separate and slot in among the particles of the liquid, and to "
              "get the solid back you have to remove the liquid.",
              "Sugar in tea is dissolving. Sugar in a dry pan over a flame "
-             "really does melt, at about 160 °C, and turns into caramel. Same "
-             "substance, two entirely different events, and the word you "
-             "choose says which one you mean.",
+             "really does melt, at about 186 °C. It is an awkward example, "
+             "because sugar starts browning and breaking down at around its "
+             "melting point — and that browning is a chemical change, not a "
+             "melt. Same substance, two entirely different events, and the "
+             "word you choose says which one you mean.",
          ]},
 
         {"type": "quiz", "ref": "ladder", "anchor": "s-ladder"},
@@ -555,9 +564,9 @@ LESSON = {
             ],
             "answer": 0,
             "feedback": {
-                1: "The flask is insulated and the energy is going in at the "
-                   "same rate as before. It is doing a job, just not a job "
-                   "the thermometer can see.",
+                1: "Heat is being lost to the room the whole time, before and "
+                   "after the plateau too — yet the climb only stops while "
+                   "ice remains. The ice is what is absorbing it.",
                 2: "Use a different beaker and the plateau still lasts the "
                    "same time. It is the ice that is absorbing it.",
                 3: "Particles never change size. This is the misconception "
@@ -571,8 +580,12 @@ LESSON = {
             "field_label": "Your explanation",
             "placeholder": "Temperature is a measure of…",
             "success": [
-                "Says temperature is a measure of how fast the particles are "
-                "moving.",
+                # XU-1 — this criterion used to read "Says temperature is a
+                # measure of how fast the particles are moving", which is
+                # wrong, and it is the FIRST time in the course a child is
+                # marked on the definition (Y7 HT1). One definition, authored
+                # once, in ks3_data/quantities.py.
+                TEMPERATURE_CRITERION,
                 "Says the energy going in during melting is used to break the "
                 "particles apart from each other.",
                 "Says that energy is not going into making the particles move "

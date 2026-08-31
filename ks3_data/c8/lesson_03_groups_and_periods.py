@@ -292,9 +292,9 @@ LESSON = {
                     },
              "Al": {"sym": "Al", "name": "Aluminium", "num": 13,
                     "group": 3, "period": 3, "kind": "metal",
-                    "note": "The most common metal in the Earth’s crust, and the last one"
-                            " to be discovered, because it is too reactive to be smelted"
-                            " with carbon."
+                    "note": "The most common metal in the Earth’s crust, yet one of the"
+                            " last everyday metals to be isolated — it is too reactive"
+                            " to be smelted with carbon."
                     },
              "Si": {"sym": "Si", "name": "Silicon", "num": 14,
                     "group": 4, "period": 3, "kind": "non-metal",

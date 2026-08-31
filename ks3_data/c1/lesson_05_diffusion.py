@@ -60,10 +60,18 @@ SCALE_CARDS = [
      "text": "Already hopeless. This is why you have a bloodstream, and why "
              "the blood is never more than a fraction of a millimetre from "
              "any cell."},
-    {"distance": "Across a room · 4 m", "time": "Minutes, in a gas",
+    # ⚠️ THIS CARD USED TO SAY "Minutes, in a gas" (c1-14, chem audit
+    # 25 Aug 2026). Pure diffusion across four metres is a matter of days,
+    # not minutes — the card set contradicted itself, giving 10 mm of tissue
+    # three hours and then 4,000 mm of gas "minutes". Ruled 28 Aug 2026:
+    # draughts and convection do most of the work, diffusion does the last
+    # stretch, and NO number is invented to replace the wrong one. The same
+    # wording is carried at every touch-point in this unit.
+    {"distance": "Across a room · 4 m", "time": "Far too slow on its own",
      "text": "Gas particles move far faster and travel further between "
-             "collisions, so a smell crosses a room while a dye crawls across "
-             "a tank."},
+             "collisions than they do in a liquid — but across a whole room "
+             "diffusion alone would take days. Draughts and convection carry "
+             "a smell most of the way; diffusion covers the last stretch."},
 ]
 
 LESSON = {
@@ -103,8 +111,9 @@ LESSON = {
 
     # ── framing ─────────────────────────────────────────────────────────────
     "big_question": "Someone opens a bottle of perfume at the far end of a "
-                    "sealed, still room with no draught at all. Two minutes "
-                    "later you can smell it. What carried it to you?",
+                    "room. Before long you can smell it. Draughts and "
+                    "convection carry it most of the way — so what covers "
+                    "the last stretch?",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
     # FOUR stops, not Design's five — see the module docstring. `done_when` is
@@ -134,8 +143,8 @@ LESSON = {
         "title": "No draught. No fan. No one waving.",
         "prompt": "The windows are shut, the air is dead still, and a candle "
                   "flame at the centre of the room stands perfectly upright — "
-                  "so there is genuinely no air current. The perfume still "
-                  "reaches you.",
+                  "so there is genuinely no air current to speak of. The "
+                  "perfume still reaches you in the end.",
         "commit": "Commit to what moved it.",
         "options": [
             "A draught too small to see",
@@ -146,10 +155,12 @@ LESSON = {
         ],
         "reveal": "Nothing carried it. Each perfume particle was already "
                   "moving — hundreds of metres per second — and it bounced "
-                  "its way across the room off air particles, in a path so "
-                  "tangled that covering four metres took two minutes. No "
-                  "push was needed, because the movement never stopped in the "
-                  "first place.",
+                  "its way outwards off air particles, in a path so tangled "
+                  "that crossing open space on its own is desperately slow. "
+                  "In a real room draughts and convection carry it most of "
+                  "the way; diffusion covers the last stretch. No push was "
+                  "needed, because the movement never stopped in the first "
+                  "place.",
     },
 
     # ── misconceptions (Law 3) ──────────────────────────────────────────────
@@ -292,9 +303,18 @@ LESSON = {
          # four are in the document at once and one is shown, so no science
          # sentence is ever rebuilt from an attribute.
          "notes": {
+             # ⚠️ The warming sentence is the lesson's own physics, not a
+             # usability hint (c1-15, chem audit 25 Aug 2026): at the default
+             # cool speed the tank takes roughly seven or eight minutes to
+             # even out, which is where the rail tick and the whole
+             # confrontation live, and nothing told the student that warming
+             # shortens the wait. Ruled 28 Aug 2026: tell them.
              "idle": "The drop is sitting on the left. Nothing is pushing it, "
                      "nothing is stirring, and there is no current in the "
-                     "tank. Press start and watch what randomness alone does.",
+                     "tank. Press start and watch what randomness alone does "
+                     "— and warm the water if you want it sooner, because "
+                     "hotter particles move faster and the evening out comes "
+                     "on much more quickly.",
              "spreading": "Early on, more particles cross left-to-right "
                           "than right-to-left — not because they know where "
                           "to go, but because there are more of them on the "
@@ -346,8 +366,7 @@ LESSON = {
         # nothing. Not a rail stop either — see the module docstring.
         {"type": "scale-cards", "id": "scale-panel", "anchor": "s-scale",
          "eyebrow": "Where this does real work",
-         "heading": "Two minutes across a room, a fraction of a second across "
-                    "a cell",
+         "heading": "Hopeless across a room, unbeatable across a cell",
          "prompt": "Diffusion is hopeless over long distances and unbeatable "
                    "over short ones, and that single fact shapes a great deal "
                    "of biology.",
@@ -457,10 +476,10 @@ LESSON = {
                    "direction.",
             }},
         "explain": {
-            "q": "Explain how the smell of perfume crosses a completely still "
-                 "room, and why it takes minutes rather than seconds even "
-                 "though the particles travel at hundreds of metres per "
-                 "second.",
+            "q": "Explain how perfume particles move through the air on "
+                 "their own, and why diffusion alone is so slow across a "
+                 "room even though the particles travel at hundreds of "
+                 "metres per second.",
             "field_label": "Your explanation",
             "placeholder": "The perfume particles are already moving…",
             "success": [

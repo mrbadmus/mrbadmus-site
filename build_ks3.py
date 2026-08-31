@@ -137,10 +137,12 @@ from ks3_art.kit import (
     _verdict_ids,
     _with_suffix,
     e,
+    formulae,
     option_letter,
     r_activity_options,
     r_bench_gate,
     rich,
+    sci,
     t,
 )
 
@@ -694,7 +696,7 @@ def r_hook(lesson, block=None):
     head = ('<p class="ks3-eyebrow">%s</p>'
             '<h2 class="ks3-hook-h">%s</h2>'
             '<p class="ks3-hook-prompt">%s</p>'
-            % (t(p.get("eyebrow") or "Start here"), t(p.get("title", "")),
+            % (t(p.get("eyebrow") or "Start here"), sci(p.get("title", "")),
                rich(p.get("prompt", ""))))
 
     # ⊕ The media column, and the Motion control that belongs to it. Both were
@@ -726,7 +728,7 @@ def r_hook(lesson, block=None):
     if p.get("commit") or p.get("options") or p.get("reveal"):
         bits = []
         if p.get("commit"):
-            bits.append('<p class="ks3-commit">%s</p>' % t(p["commit"]))
+            bits.append('<p class="ks3-commit">%s</p>' % sci(p["commit"]))
         if p.get("options"):
             bits.append(r_activity_options(p["options"]))
         if p.get("reveal"):
@@ -927,7 +929,7 @@ def r_keyword(lesson, block):
             continue
         # No note, no element. An empty .ks3-card-note still costs an 8px flex
         # gap, so the card would sit taller than its neighbours for nothing.
-        note = ('<span class="ks3-card-note">%s</span>' % t(v["note"])
+        note = ('<span class="ks3-card-note">%s</span>' % sci(v["note"])
                 if v.get("note") else "")
         items.append(
             '<li><button type="button" class="ks3-card-btn" aria-expanded="false">'
@@ -936,7 +938,7 @@ def r_keyword(lesson, block):
             '<span class="ks3-card-def">%s</span>%s</span>'
             '<span class="ks3-card-hint">Say it, then tap %s</span>'
             '</button></li>'
-            % (t(v["term"]), t(v["definition"]), note, MARK_ARROW))
+            % (sci(v["term"]), sci(v["definition"]), note, MARK_ARROW))
     if not items:
         return ""
     # ⊕ C3 (MRB-272) — THE ANCHOR, AND WHY IT WAS MISSING THIS LONG.
@@ -1670,7 +1672,8 @@ def r_confrontation(lesson, a, act_id):
         if i:
             parts.append('<div class="ks3-mis-next">')
         if c["quote"]:
-            parts.append('<p class="ks3-mis-quote">%s</p>' % t(_quoted(c["quote"])))
+            parts.append('<p class="ks3-mis-quote">%s</p>'
+                         % sci(_quoted(c["quote"])))
         for para in c["body"]:
             parts.append('<p class="ks3-mis-body">%s</p>' % rich(para))
         if c["key_fact"]:
@@ -2995,7 +2998,7 @@ def _rung_marked(key, num, name, q):
             '<p class="ks3-rung-q">%s</p>'
             '<ul class="ks3-options" role="list">%s</ul>'
             '</div>'
-            % (e(key), num, e(_rung_title(name, q)), t(q.get("q", "")),
+            % (e(key), num, e(_rung_title(name, q)), sci(q.get("q", "")),
                "".join(opts)))
 
 
@@ -3051,7 +3054,7 @@ def _rung_self(slug, key, num, name, q):
             # scaffold — reached no student at all. Exactly the defect R5
             # exists to catch, found by the byte-identity sweep rather than by
             # the lint. The generic label stays as the fallback.
-            % (e(key), num, e(_rung_title(name, q)), t(q.get("q", "")), e(aid),
+            % (e(key), num, e(_rung_title(name, q)), sci(q.get("q", "")), e(aid),
                t(q.get("field_label") or "Write your answer"), e(aid),
                (' placeholder="%s"' % e(q["placeholder"])
                 if q.get("placeholder") else ""),
@@ -3948,8 +3951,16 @@ def r_layer(lesson, blocks, cls, eyebrow):
 # ⚠️ SHARED FILE. One string literal in `build_ks3.py`, and it moves every
 # KS3 page's bytes. Announced in the MRB-223 report under
 # `docs/ks3/worktrees.md` §2.
-LEGAL_LINE = ('<p class="ks3-legal">Lesson content © MrBadmusAI. Written '
-              'and checked by a qualified science teacher.</p>')
+# ⊕ THE ATTRIBUTION SENTENCE IS GONE, ruled 28 Aug 2026 (MRB-296).
+# This line used to read:
+#     'Lesson content © MrBadmusAI. Written and checked by a qualified
+#      science teacher.'
+# The second sentence is removed from every page. The copyright half is the
+# half that does work on a student-facing page and it stays. This is the ONLY
+# place the sentence was ever emitted — KS4, the student pages, the teacher
+# pages and the marketing pages never carried it — so removing it here
+# removes it everywhere.
+LEGAL_LINE = '<p class="ks3-legal">Lesson content © MrBadmusAI.</p>'
 
 
 def r_endmatter(cards, tutor=None):

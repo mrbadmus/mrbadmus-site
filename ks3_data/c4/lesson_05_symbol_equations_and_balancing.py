@@ -196,10 +196,19 @@ LESSON = {
                   "proved that atoms are never destroyed — so this equation, "
                   "exactly as written, is a claim that one of them was.",
         "commit": "What has to change to fix it?",
-        # ⚠️ FLAT FORMULAE, ON PURPOSE. `_option_li` escapes an option with
-        # `t()`, so `<sub>` here would ship as literal angle brackets. These
-        # are Design's own strings and she writes them flat for the same
-        # reason.
+        # ⊕ SUPERSEDED 28 Aug 2026 (MRB-302). This note used to read: "FLAT
+        # FORMULAE, ON PURPOSE. `_option_li` escapes an option with `t()`, so
+        # `<sub>` here would ship as literal angle brackets. These are
+        # Design's own strings and she writes them flat for the same reason."
+        #
+        # The constraint it describes was real and is now gone: `_option_li`
+        # calls `sci()`, which escapes exactly as `t()` did and then draws the
+        # subscripts itself. THE STRINGS BELOW STAY FLAT — that has not
+        # changed and must not — but they now RENDER with real subscripts.
+        # This lesson is the reason the ruling was reversed: its whole
+        # argument is that a big number in front and a small number after a
+        # symbol are different things, and the ladder was printing them at
+        # identical size.
         #
         # MRB-177: option B is the answer and is not the longest — A is 9
         # words, B is 9, C is 6, D is 10. Each distractor is a WRONG RULE in
@@ -435,9 +444,10 @@ LESSON = {
               "label": "Put a big 2 in front of the water",
               "coeff": "2",
               "product": [{"sym": "H", "sub": "2"}, {"sym": "O", "sub": ""}],
-              "text": "Two hydrogens and two oxygens on each side — with "
-                      "hydrogen now needing a 2 as well, giving 2H<sub>2</sub>"
-                      " + O<sub>2</sub> makes 2H<sub>2</sub>O. The substances "
+              "text": "The oxygens now match — and the hydrogens do not, "
+                      "until hydrogen gets a 2 as well: 2H<sub>2</sub>"
+                      " + O<sub>2</sub> makes 2H<sub>2</sub>O, four hydrogens "
+                      "and two oxygens on each side. The substances "
                       "are untouched: water is still water, and all you have "
                       "changed is how many of each particle take part. That "
                       "is the only kind of change balancing is allowed to "
@@ -657,9 +667,11 @@ LESSON = {
     # optional and is not spelled `gloss`. Shape copied from
     # `ks3_data/c3/lesson_02_dissolving_and_solutions.py`.
     #
-    # ⚠️ FLAT FORMULAE HERE TOO. `r_keywords` escapes both fields with `t()`,
-    # so a `<sub>` would ship as visible angle brackets — the same constraint
-    # as the ladder, and the same reason.
+    # ⊕ SUPERSEDED 28 Aug 2026 (MRB-302). This used to read: "FLAT FORMULAE
+    # HERE TOO. `r_keywords` escapes both fields with `t()`, so a `<sub>`
+    # would ship as visible angle brackets — the same constraint as the
+    # ladder, and the same reason." The keyword cards now escape through
+    # `sci()` as well, so the stored strings stay flat and render subscripted.
     #
     # "Coefficient" is deliberately ABSENT. The page never says it to a
     # student — Design writes "the big numbers in front" throughout — and a

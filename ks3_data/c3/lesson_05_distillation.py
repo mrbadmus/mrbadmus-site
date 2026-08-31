@@ -358,10 +358,13 @@ LESSON = {
                             "separating worked, the collecting never "
                             "happened.",
               "result_title": "Fresh water in the beaker, salt in the flask.",
+              # SYS-7 — the result panel MODELLED tasting a lab distillate.
+              # Replaced with the legitimate test for the same claim.
               "result_text": "Boiling separated them because only one of the "
                              "two can become a gas. Cooling collected the one "
-                             "that did. Taste the distillate and it tastes of "
-                             "nothing — which is exactly the point."},
+                             "that did. Evaporate the distillate to dryness "
+                             "and nothing at all is left behind — which is "
+                             "exactly the point."},
 
              {"id": "ink", "name": "Blue ink",
               "temp": "100 °C",
@@ -530,8 +533,13 @@ LESSON = {
             }},
         "apply": {
             "title": "Rung 2 · The one that catches people",
-            "q": "A student distils sea water and their distillate tastes "
-                 "slightly salty. What is the most likely reason?",
+            # SYS-7 — the rung's PREMISE was a student tasting their own
+            # distillate. Same question, detected the way a laboratory
+            # actually detects it. The answer and all four options are
+            # unchanged: boiling too hard is still the reason.
+            "q": "A student distils sea water, evaporates their distillate "
+                 "to dryness, and finds a faint white residue. What is the "
+                 "most likely reason?",
             "options": [
                 "Salt dissolves in water, so it travels wherever the water "
                 "goes, including as a gas",

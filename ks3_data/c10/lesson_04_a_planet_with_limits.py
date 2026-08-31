@@ -265,8 +265,19 @@ LESSON = {
          # usable at the same grade — NOTES-C10 calls it "yield". Energy
          # figures are order-of-magnitude teaching values.
          "materials": [
+             # ⚠️ ALUMINIUM'S ENERGY FIGURES ARE WHOLE-PROCESS, NOT
+             # ELECTROLYSIS ALONE. They used to read 45 / 2.3 (C10-07, chem
+             # audit 25 Aug 2026), which put new aluminium BELOW PET's 85 on
+             # a bench captioned "what it costs to make the material the
+             # first time" — while the bauxite panel three taps away calls
+             # aluminium one of the most energy-hungry industrial processes
+             # there is. Published whole-process primary aluminium is
+             # ~150–200 MJ/kg. 170 / 8.5 restores the real ordering
+             # (Al > film > PET > steel > glass) and keeps every ruled
+             # sentence true: 8.5/170 is exactly a twentieth, so the saving
+             # still prints 95%.
              {"id": "al", "label": "Aluminium can", "name": "Aluminium can",
-              "recovery": 0.95, "e_primary": 45, "e_recycled": 2.3,
+              "recovery": 0.95, "e_primary": 170, "e_recycled": 8.5,
               "what": "Melts and casts again with almost nothing lost. The "
                       "metal does not care how many times it has been "
                       "round."},

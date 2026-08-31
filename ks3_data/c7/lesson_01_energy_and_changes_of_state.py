@@ -104,6 +104,13 @@ student's own body, health or circumstances in that sense — and C3, C4 and C5
 carried none for the same reason.
 """
 
+# XU-1 (MRB-295/MRB-298, ruled 28 Aug 2026). The estate held four
+# definitions of temperature and three were wrong. There is now one, and it
+# is authored in ks3_data/quantities.py rather than retyped here.
+from ..quantities import (TEMPERATURE_CRITERION, TEMPERATURE_OPTION,
+                          TEMPERATURE_SENTENCE, TEMPERATURE_VOCAB)  # noqa: F401
+
+
 # ── the heating curve (Design's `CURVE`, rebuilt under RULING 1) ─────────
 #
 # ⚠️ `t` IS THE MEASUREMENT AND EVERY OTHER NUMBER ON THE PAGE IS DERIVED FROM
@@ -345,9 +352,11 @@ LESSON = {
                   "melting means breaking out of that arrangement. That takes "
                   "energy — a great deal of it — and while it is being spent, "
                   "none is left over to make the particles move faster. "
-                  "<strong>Temperature is how fast the particles are moving. "
-                  "During a change of state they are not speeding up; they "
-                  "are being separated.</strong>",
+                  # XU-1 — this whole latent-heat argument rests on the
+                  # definition, and the definition was wrong.
+                  "<strong>" + TEMPERATURE_SENTENCE + " During a change of "
+                  "state they are not speeding up; they are being "
+                  "separated.</strong>",
     },
 
     # ── misconceptions (Law 3) ──────────────────────────────────────────────
@@ -532,10 +541,10 @@ LESSON = {
              "flat step is not a pause, it is the most energy-hungry part of "
              "the whole run.",
              "The confusion comes from treating the thermometer as an energy "
-             "meter. It is not. <strong>A thermometer measures how fast the "
-             "particles are moving, and during melting they are not moving "
-             "faster — they are being pulled out of position.</strong> Energy "
-             "in, no temperature change, and nothing contradictory about it.",
+             "meter. It is not. <strong>" + TEMPERATURE_SENTENCE + " During "
+             "melting, that average is not rising — the particles are being "
+             "pulled apart, not sped up.</strong> Energy in, no temperature "
+             "change, and nothing contradictory about it.",
          ]},
     ],
 
@@ -705,9 +714,8 @@ LESSON = {
                        "the change can be undone.",
          "note": "Every change of state is a physical change."},
         {"term": "Temperature",
-         "definition": "A measure of how fast the particles in a substance "
-                       "are moving. It is not a measure of how much energy "
-                       "something contains.",
+         "definition": TEMPERATURE_VOCAB + " It is not a measure of how much "
+                       "energy something contains.",
          "note": "Steam and water at 100 °C are at the same temperature and "
                  "carry very different amounts of energy."},
         {"term": "Evaporating",

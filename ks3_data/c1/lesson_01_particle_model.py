@@ -285,7 +285,9 @@ LESSON = {
                          "blunt and your hand has not got tired. There is "
                          "simply no piece of sugar smaller than this one, "
                          "because this one is a single particle, and halving "
-                         "matter runs out.",
+                         "matter runs out. 0.6 nm is about a millionth of a "
+                         "millimetre: a human hair is a hundred thousand "
+                         "times wider.",
              "near_floor": "The edge has stopped being smooth. What looked "
                            "like a solid block four cuts ago is a countable "
                            "number of particles, and you can see the end "
@@ -443,11 +445,12 @@ LESSON = {
              "The piece would be too small for the knife to touch",
          ],
          "reveal": [
-             "A sharper knife would keep going. Cut a sugar particle in half "
-             "and you will get something — but not sugar. You get carbon, "
-             "hydrogen and oxygen, and they are not sweet, not white, and one "
-             "of them is a gas. The cut is possible; what is impossible is a "
-             "smaller piece <em>that is still sugar</em>.",
+             "A sharper knife does not help, because past this point you are "
+             "not cutting any more. Splitting a sugar particle takes it "
+             "apart into different substances altogether — that is a "
+             "chemical change, not a smaller slice. Cutting has a floor, and "
+             "this is it: what is impossible is a smaller piece "
+             "<em>that is still sugar</em>.",
              "That is what the model claims, and it is a much stronger claim "
              "than \"things are small\". It says matter comes in units with a "
              "floor, and below that floor the substance stops existing. "
@@ -529,15 +532,17 @@ LESSON = {
                 "Says the gaps genuinely contain nothing.",
                 "Uses evidence: a gas can be squashed, which would be "
                 "impossible if the space were already full.",
-                "Notes that this is not the same as a vacuum you could stand "
-                "in — the space is smaller than a particle.",
+                "Notes that this is not a vacuum you could stand in — each "
+                "empty space is far too small for anything to be 'in', "
+                "millions of times thinner than a hair.",
             ]},
     },
 
     # ── the key note (fixed, last, photographable) ──────────────────────────
     "key_note": "Matter is made of particles with a floor you cannot cut past, "
                 "nothing at all between them, and constant motion. Three "
-                "claims. You have tested two of them tonight and the third is "
+                "claims. You have tested two of them in this lesson and the "
+                "third is "
                 "the next five lessons.",
 
     # ── the stretch layer (§5.6) — visible and opt-in to all ────────────────

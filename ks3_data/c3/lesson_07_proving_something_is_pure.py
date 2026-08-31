@@ -111,9 +111,16 @@ CRITIQUES = [
     {"id": "q2",
      "step": '"Taste a little of it and see if it tastes of anything else."',
      "answer": "Never done, and it would not settle it anyway.",
-     "why": "Nothing in a laboratory is tasted, and the reason is not "
-            "squeamishness — an unknown white powder is exactly the thing "
-            "that can be poisonous. Even if it were safe, most impurities are "
+     # The safety sentences are Mide's, approved 28 Aug 2026, and reproduced
+     # VERBATIM. Do not reword them. The final clause is kept from the
+     # original because it is the SCIENCE half of the answer — the step's own
+     # verdict is "Never done, and it would not settle it anyway", and
+     # without it the second half of that verdict is unsupported.
+     "why": "Never taste anything in a laboratory. Not a drop, not a "
+            "crystal, not even something you are sure you recognise — an "
+            "unknown white powder is exactly the thing that can poison you. "
+            "In a kitchen, tasting is how you check your food. In here, it "
+            "is how you get hurt. Even if it were safe, most impurities are "
             "tasteless at a few per cent."},
     {"id": "q3",
      "step": '"Stir some into water and check that it all dissolves."',

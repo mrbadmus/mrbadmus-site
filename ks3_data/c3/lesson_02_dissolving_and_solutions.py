@@ -401,11 +401,18 @@ LESSON = {
 
     # ── the KEY FACT box (§4.8.1 B) ─────────────────────────────────────────
     "key_facts": [
+        # ⚠️ The final clause exists because rung 4 turns on it (C3-06, chem
+        # audit 25 Aug 2026): the ladder asks about a flat warm drink and
+        # suffocating fish, and the one sentence that unlocks both used to
+        # live ONLY in Going further, which renders BELOW the ladder. The
+        # rung is still a stretch; it is no longer a stretch onto a fact the
+        # student has not been given.
         {"id": "how-fast-how-much",
          "text": "Dissolving spreads a solute through a solvent as particles "
                  "too small to see. Stirring and grinding change how fast. "
                  "Temperature changes how much — and by how much depends on "
-                 "the solute.",
+                 "the solute. For gases it runs the other way: warm the "
+                 "liquid and less gas stays dissolved, not more.",
          "placement": "top-level",
          "ground": "card",
          "eyebrow": "Key fact"},
@@ -617,7 +624,8 @@ LESSON = {
                  "is a rough rule about solids that has exceptions in both "
                  "directions. Salt barely cares about temperature. Calcium "
                  "sulfate gets slightly <em>less</em> soluble as it warms, "
-                 "which is why it plates out inside kettles and boilers. Any "
+                 "which is why it plates out inside boilers and hot-water "
+                 "pipes. Any "
                  "real solubility claim has to name the solute, the solvent "
                  "and the temperature — which is exactly what the numbers on "
                  "the bench were doing."},

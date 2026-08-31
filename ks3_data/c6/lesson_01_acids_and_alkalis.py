@@ -325,7 +325,8 @@ LESSON = {
         {"type": "explainer",
          "text": "Everything else is <strong>neutral</strong> — pH exactly 7, "
                  "neither one nor the other. Pure water is the obvious "
-                 "example, and so is most of what you drink."},
+                 "example; most of what you drink sits just on the acid side "
+                 "of it, which is the next lesson's scale."},
 
         # #s-bench — the flagship. Light `ks3-block` → `check`.
         #
@@ -622,11 +623,18 @@ LESSON = {
     # everybody's sink — and it does not contradict the judgement block, which
     # says to wash immediately; it names the thing that makes that judgement
     # hard, which is that there is nothing to feel.
+    # The second paragraph is Mide's, approved 28 Aug 2026, and reproduced
+    # VERBATIM — it closes the C6 gap the audit flagged: no C6 safety note
+    # named eye protection for lesson 1's bench. Do not reword it.
     "safety_note": "Oven cleaner and drain unblocker are strong alkalis and "
                    "battery acid is a strong acid. None of them is a thing to "
                    "test at home: a strong alkali does not hurt on contact, "
                    "so there is no signal telling you to wash it off, and by "
-                   "the time there is one the damage is done.",
+                   "the time there is one the damage is done. "
+                   "Eye protection on before you start. Even dilute acid and "
+                   "alkali sting badly if they get in your eyes. If anything "
+                   "splashes on your skin, wash it off with plenty of cold "
+                   "water and tell your teacher straight away.",
 
     # ── end matter (§4.8.1 C, D) ────────────────────────────────────────────
     "tutor": {"prompt": "Ask Mr Badmus AI",

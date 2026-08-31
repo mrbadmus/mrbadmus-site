@@ -82,8 +82,8 @@ QUESTIONS = [
     {
         "id": "c1-05-e03",
         "band": "easier",
-        "text": "The lesson gives the time diffusion alone needs to cross "
-                "three distances. About how long does it take to cross a "
+        "text": "The lesson gives the time diffusion alone needs at "
+                "different scales. About how long does it take to cross a "
                 "fingertip, roughly 10 mm?",
         "options": [
             {"text": "About a hundredth of a second", "correct": False,
@@ -91,9 +91,9 @@ QUESTIONS = [
                     "thousand times shorter. Diffusion falls apart as the "
                     "distance grows."},
             {"text": "About two minutes", "correct": False,
-             "why": "Two minutes is a smell crossing a whole room, and a gas "
-                    "manages that only because its particles move far faster "
-                    "and travel further between collisions."},
+             "why": "Far too fast. Diffusion alone would take days to cross "
+                    "a room — draughts and convection do that work — and "
+                    "through 10 mm of tissue it is slower still."},
             {"text": "About three hours", "correct": True},
             {"text": "About three seconds", "correct": False,
              "why": "If 10 mm took three seconds you would not need a "

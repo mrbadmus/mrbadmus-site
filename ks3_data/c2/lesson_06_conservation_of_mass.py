@@ -233,31 +233,40 @@ LESSON = {
              {"id": "gone", "label": "Where it went",
               "body": "not measured — you work it out"},
          ],
-         # ⚑ **FOR MIDE — `magnesium:sealed` reuses the MARBLE masses.**
-         # `magnesium:open` runs 2.40 → 4.00 and `magnesium:sealed` runs
-         # 152.00 → 152.00, so switching from open to sealed on the magnesium
-         # reaction jumps the display from 2.40 g to 152.00 g with nothing on
-         # the page explaining it. It is arguably defensible — a sealed flask
-         # weighs the whole apparatus, and 152.00 g is a plausible
-         # flask-plus-contents mass — and the note never quotes the number.
-         # But it is undocumented in NOTES, unmentioned in flag 18, and it is
-         # the one place in the unit where two runs share a number for no
-         # stated reason (map F7).
+         # ⊕ **RULED AND CORRECTED 28 Aug 2026 (MRB-295, C2-9 / C4-7).**
          #
-         # **Reproduced exactly as Design drew it, and NOT corrected here.**
-         # These masses cross the examiner gate, which is Mide's alone. If he
-         # wants it coherent, the smallest change that keeps "sealed changes
-         # nothing" true is a magnesium-consistent pair — e.g. 152.00 → 152.00
-         # becomes 84.60 → 84.60 with a line saying the flask is on the
-         # balance too — and it is one number in each of two places below.
+         # This note used to say the masses were reproduced exactly as Design
+         # drew them and NOT corrected, because they cross the examiner gate,
+         # which is Mide's alone. He has now ruled them, and they are
+         # corrected here. The note is kept rather than deleted because it
+         # names the two defects and a future reader needs to know which was
+         # which:
+         #
+         #   1. `magnesium:open` read 2.40 → 4.00 — the METAL ALONE, under a
+         #      bench whose tiles say the whole apparatus is on the pan. A
+         #      2.40 g reading is physically impossible on that pan.
+         #   2. `magnesium:sealed` read 152.00 → 152.00, silently REUSING the
+         #      marble flask's numbers, so switching vessel on the magnesium
+         #      reaction jumped the display 2.40 → 152.00 with nothing on the
+         #      page explaining it (map F7).
+         #
+         # RULED: whole apparatus on the pan in BOTH runs, preserving the
+         # +1.60 g gain. Magnesium now has its own apparatus throughout:
+         # an open crucible at 84.60 g (82.20 g crucible + 2.40 g of
+         # magnesium) rising to 86.20 g (82.20 + 4.00 g of magnesium oxide),
+         # and a sealed flask at 250.00 g — the same sealed flask C4's bench
+         # uses, so the two units now tell one story. The underlying
+         # chemistry is untouched and still exact: 2.40 g Mg → 4.00 g MgO,
+         # +1.60 g of oxygen, and the FIFA worked example below still states
+         # both numbers outright, which is where a student meets them.
          "runs": {
              "marble:open": {"before": 152.00, "after": 149.80, "gas": "out",
                                 "note": "The balance falls by 2.20 g. Carbon dioxide is bubbling out of the flask and into the room, and it has mass — the reading is not wrong, the weighing is incomplete."},
              "marble:sealed": {"before": 152.00, "after": 152.00, "gas": "none",
                                 "note": "Exactly the same reading. The gas is still made, and it is still in the flask, so it is still on the balance. Nothing about the reaction changed; what changed is how much of it you weighed."},
-             "magnesium:open": {"before": 2.40, "after": 4.00, "gas": "in",
+             "magnesium:open": {"before": 84.60, "after": 86.20, "gas": "in",
                                 "note": "The balance rises by 1.60 g. Nothing was added by hand — oxygen from the air has joined the magnesium, and it weighs something."},
-             "magnesium:sealed": {"before": 152.00, "after": 152.00, "gas": "none",
+             "magnesium:sealed": {"before": 250.00, "after": 250.00, "gas": "none",
                                 "note": "No change. The oxygen that joins the magnesium was already inside the sealed flask and already on the balance, so moving it from the air into the powder changes nothing."},
          }},
 

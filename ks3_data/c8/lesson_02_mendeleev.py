@@ -66,10 +66,25 @@ the nature-of-science framing and it is the best sentence on the page.
 argon was isolated in 1894, twenty-five years after the table. It sets up
 c8-06's hook.
 
-⚑ FONT LAW. The oxide formulae inside the prediction and decision payloads are
-PLAIN DIGITS — `SiO2`, `SnO2`, `XO2`, `X2O3`, `GeO2`. They are strings rendered
-through instrument holes, where markup is not available, and the shipped latin
-subsets carry no subscript digits. In PROSE, `<sub>` is used and is safe.
+⚑ FONT LAW, CORRECTED 30 Aug 2026 (MRB-295/MRB-302 close-out). This used to
+say the oxide formulae here are ALL plain digits because "markup is not
+available" through an instrument hole. That was never true — every one of
+these strings passes through `sci()`/`rich()` same as any other lesson prose,
+which is exactly why `SiO2`, `SnO2` and `GeO2` render with real `<sub>`
+digits on the built page. `XO2` and `X2O3` were the odd ones out, and for a
+different reason: `X` is Mendeleev's placeholder for an undiscovered
+element, and `ks3_art/kit.py`'s formula regex only subscripted a token where
+every symbol was a genuine element — correctly, since that is what stops it
+mangling lesson codes like `C1` or `KS3` — so it declined to touch `X`.
+Hand-authoring `<sub>` here does NOT fix it: `sci()` escapes its input before
+scanning for formulae (options and table cells are data, never a markup
+pass-through — R3), so a hand-typed tag comes out as the literal characters
+`&lt;sub&gt;`, which is worse than plain digits. The actual fix is in
+`ks3_art/kit.py`: `X` is now in the recognised symbol set FOR THIS PURPOSE
+ONLY (subscripting), commented there as Mendeleev's placeholder rather than
+a real element, so it needs no special-casing here — `XO2` and `X2O3` are
+still authored flat, same as `SiO2`, and render subscripted wherever
+`sci()`/`rich()` already touches them.
 """
 
 LESSON = {

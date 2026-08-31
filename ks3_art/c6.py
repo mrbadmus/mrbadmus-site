@@ -1675,11 +1675,12 @@ def r_catalyst_bench(a, act_id):
     ringers = [i for i in faster
                if not next(x for x in trials if x["id"] == i).get("catalyst")]
     # ⊕ MRB-281 — and a ringer must NOT be recovered. Being consumed is the
-    # whole reason the dilute acid is not a catalyst despite being faster; a
+    # whole reason a faster-but-not-a-catalyst flask is not a catalyst; a
     # ringer that also comes back unchanged meets both halves of the
-    # definition and is a catalyst, which makes the bench's discriminating
-    # item indistinguishable from the thing it exists to be distinguished
-    # from. Also found by mutation at source.
+    # definition and IS a catalyst, which makes such an item
+    # indistinguishable from the thing it exists to be distinguished from.
+    # Found by mutation at source. This still stands for any bench that
+    # authors a ringer — it is only no longer compulsory to author one.
     for i in ringers:
         tr = next(x for x in trials if x["id"] == i)
         if tr.get("recovered"):
@@ -1689,12 +1690,56 @@ def r_catalyst_bench(a, act_id):
                 "unchanged IS the definition — so either it is a catalyst or "
                 "it is not recovered, and the bench cannot say both."
                 % (act_id, tr["id"]))
-    if not ringers:
+
+    # ⊕ RULED 28 Aug 2026 (MRB-295, C6-11). THIS GUARD USED TO REQUIRE A
+    # RINGER — a trial faster than the control and still not a catalyst —
+    # and it named the dilute-acid flask as the item NOTES-C6 §5 flag 15
+    # kept in order to prevent the bench teaching that speed alone is
+    # sufficient. The requirement is retired because the only flask that
+    # ever satisfied it did so on INVENTED CHEMISTRY: dilute acid does not
+    # accelerate hydrogen peroxide decomposition, it stabilises it. Mide
+    # ruled the flask honest rather than keeping the shape, so a bench that
+    # tells the truth about acid cannot contain a ringer at all, and a guard
+    # demanding one would have forced the invented result back.
+    #
+    # ⚠️ This is NOT the protection being dropped. It is the protection being
+    # re-expressed against what the bench now has to do. The pedagogical risk
+    # the old guard named — a student concluding that adding something, or
+    # speeding something up, is what makes a catalyst — is now carried by
+    # requiring TWO flasks that had something added and did nothing: the sand
+    # (a solid) and the acid (a liquid). That is a strictly harder condition
+    # to satisfy by accident than "one trial is faster and uncatalysed", and
+    # it is the point the ruling put in the lesson's mouth.
+    inert = [tr for tr in trials[1:]
+             if not tr.get("catalyst") and tr["id"] not in faster]
+    if len(inert) < 2:
         raise ValueError(
-            "catalyst-bench %r has no trial that is faster and still not a "
-            "catalyst. Without it the bench teaches that speeding a reaction "
-            "up is sufficient, and the dilute-acid flask is exactly the item "
-            "NOTES-C6 §5 flag 15 keeps in order to prevent that." % act_id)
+            "catalyst-bench %r has %d flask(s) that had something added and "
+            "changed nothing. Two are needed. Without a second one the bench "
+            "lets a student conclude that adding something is what makes a "
+            "catalyst — and the two have to be different KINDS of thing "
+            "(Design draws a solid and a liquid), so that the conclusion "
+            "cannot survive as 'adding a powder is what matters' either."
+            % (act_id, len(inert)))
+    # ⊕ 30 Aug 2026 (MRB-295 close-out). The message above has always claimed
+    # the two inert flasks must be different KINDS of thing, but until now
+    # nothing checked that — only the count. Trial records now carry `phase`
+    # for exactly this reason; assert what the error message promises.
+    phases = {tr.get("phase") for tr in inert}
+    # ⊕ 30 Aug 2026, cold double-check. `{tr.get("phase") for tr in inert}`
+    # on its own passes a trial with NO `phase` at all: {None, "solid"} has
+    # length 2, same as {"solid", "liquid"}, so a third inert flask added
+    # without a `phase` line would satisfy this check while teaching nothing
+    # about kinds. `None` is refused explicitly rather than trusted to make
+    # the set too small.
+    if None in phases or len(phases) < 2:
+        raise ValueError(
+            "catalyst-bench %r has %d inert flask(s), but they are not all "
+            "phase-typed and at least two different KINDS of thing (phase "
+            "%r) — a solid and a liquid are both required, or the bench "
+            "only teaches 'adding a powder is what matters'. Give every "
+            "inert trial a `phase`, and make sure they are not all the same."
+            % (act_id, len(inert), sorted(p for p in phases if p)))
 
     first = trials[0]["id"]
 

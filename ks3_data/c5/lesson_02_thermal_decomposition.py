@@ -207,7 +207,7 @@ _SORTS = [
                "out, and it reverses on cooling. No new substance was made at "
                "all."},
     {"id": "s4", "yes": True,
-     "text": "Baking powder in a cake mixture is heated and the cake rises.",
+     "text": "Baking soda in a cake mixture is heated and the cake rises.",
      "answer": "Thermal decomposition. The sodium hydrogencarbonate breaks "
                "down and the carbon dioxide it releases is trapped in the "
                "mixture."},

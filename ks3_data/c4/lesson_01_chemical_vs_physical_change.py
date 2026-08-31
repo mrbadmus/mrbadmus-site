@@ -187,9 +187,13 @@ _PAIRS = [
               {"test": "Does it come back?",
                "result": "Evaporate the water and the salt is back, to the "
                          "gram."},
+              # SYS-7 — this evidence line credited tasting a beaker one
+              # card away from marble chips in acid. The claim it makes is
+              # "no new properties", and it can make that claim without
+              # asking anyone to taste anything.
               {"test": "New properties?",
-               "result": "The solution still tastes of salt, because the "
-                         "salt is still salt."},
+               "result": "None that are new. The salt is still salt — it "
+                         "just cannot be seen while it is dissolved."},
               {"test": "Mass",
                "result": "Unchanged. 100 g of water plus 10 g of salt weighs "
                          "110 g."},
@@ -799,11 +803,18 @@ LESSON = {
     # ⊖ NO `safety_note`, and the decision is deliberate rather than an
     # omission. This page gives no method and asks for nothing to be done at
     # a bench: the acid, the candle and the pan are all described, never
-    # carried out. The one line that could invite an action is pair 2's "The
-    # solution still tastes of salt", and a blanket never-taste line would
-    # retract the evidence the page uses to prove the salt is still salt —
-    # which is the self-retraction §7 forbids. Reported to the commander
-    # rather than added silently (contract §16).
+    # carried out.
+    #
+    # ⊕ 28 Aug 2026 (MRB-295, SYS-7). This note used to continue: "The one
+    # line that could invite an action is pair 2's 'The solution still tastes
+    # of salt', and a blanket never-taste line would retract the evidence the
+    # page uses to prove the salt is still salt — which is the
+    # self-retraction §7 forbids. Reported to the commander rather than added
+    # silently." It was reported, it was ruled, and it is resolved from the
+    # other end: pair 2 no longer credits tasting, so there is no longer a
+    # line inviting the action, and STILL no safety_note is needed. No safety
+    # wording was written here — the ruling was to remove the invitation, not
+    # to add a warning.
 
     # ── end matter (§4.8.1 C, D) ────────────────────────────────────────────
     "tutor": {"prompt": "Ask Mr Badmus AI",

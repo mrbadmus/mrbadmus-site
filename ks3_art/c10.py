@@ -118,7 +118,7 @@ mono control-group labels on this bench are `--ks3-on-dark-muted`.
 
 import re
 
-from ks3_art.kit import e, rich, t
+from ks3_art.kit import e, rich, sci, t
 
 
 # ═══ shared inside C10 ═══════════════════════════════════════════════════
@@ -741,6 +741,33 @@ def r_earth_layers(a, act_id):
             "about the scale, or the page is asserting a proportion it is "
             "visibly not drawing." % act_id)
 
+    # ⚖️ **THE DISTORTION IS CONFESSED WHERE THE DRAWING IS** (C10-02, chem
+    # audit 25 Aug 2026). The scale PANEL above is the payoff for opening
+    # every layer — which means a student who stops at two layers had been
+    # told the bar was "drawn to scale", shown a crust roughly ten times too
+    # thick, and never met the correction. This bar ALWAYS exaggerates its
+    # thinnest layer (the min-width that makes the segment tappable is what
+    # does it), so unlike air-mix's conditional note there is no payload on
+    # which the confession is optional. It is required, it names the true
+    # share, and it renders in the always-visible footer under the bar —
+    # c10-05's own pattern, which C10's auditor named as the template.
+    note = a.get("scale_note") or ""
+    if not note:
+        raise ValueError(
+            "earth-layers %r authors no scale_note. The bar gives its "
+            "thinnest layer a minimum width so it can be tapped, and that "
+            "makes it wider than its share — so the block cannot ship "
+            "without saying so somewhere a student sees WITHOUT finishing "
+            "the instrument. The scale panel is gated behind opening every "
+            "layer; this note is not." % act_id)
+    if "{thin_share}" not in note or "{thin_name}" not in note:
+        raise ValueError(
+            "earth-layers %r's scale_note %r never names {thin_share}, or "
+            "never names {thin_name}. The note is the page's admission that "
+            "one layer is drawn wider than the truth, so it has to say which "
+            "layer and what the true share is — a vague admission is not one."
+            % (act_id, note))
+
     # ── the four states ──────────────────────────────────────────────────
     state_label = a.get("state_label") or "State"
     share_label = a.get("share_label") or "Share of the depth"
@@ -812,12 +839,16 @@ def r_earth_layers(a, act_id):
            "".join('<p class="ks3-elay-stext">%s</p>' % rich(_fill(p))
                    for p in scale_text)))
 
+    # The confession sits directly under the bar's end captions, above the
+    # readout — where the drawing is, and never behind a tap.
+    foot_html = '<p class="ks3-elay-foot">%s</p>' % rich(_fill(note))
+
     return ('<div class="ks3-elay" data-elay data-total="%d" '
             'data-target="%d"><div class="ks3-elay-bar">%s</div>'
-            '<div class="ks3-elay-ends">%s</div>'
+            '<div class="ks3-elay-ends">%s</div>%s'
             '<div class="ks3-elay-readout">%s</div>%s</div>'
-            % (len(layers), target, "".join(segs), ends, "".join(outs),
-               scale_html))
+            % (len(layers), target, "".join(segs), ends, foot_html,
+               "".join(outs), scale_html))
 
 
 # ═══ c10-01 · depth-evidence ═════════════════════════════════════════════
@@ -1765,7 +1796,7 @@ def r_air_mix(a, act_id):
                e(g["id"]),
                "true" if pressed else "false",
                e("%s, %s %s" % (g["name"], shown, suffix)),
-               pct, t(g["label"])))
+               pct, sci(g["label"])))
 
         outs.append(
             '<div class="ks3-amix-one" data-amix-out="%s"%s>'

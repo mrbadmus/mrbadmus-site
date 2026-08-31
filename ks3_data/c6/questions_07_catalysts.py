@@ -12,10 +12,18 @@ converter and a dead one side by side with the same mass of platinum in both,
 so "it wore out" has to explain a balance that has not moved.
 
 A second strand, which is the whole construction of the bench and is in no
-register entry, is that FASTER IS SUFFICIENT. e04, s01 and h02 are built on it:
-the dilute acid trial is faster and still not a catalyst, the sand is a solid
-with a large surface area and does nothing, and the empty flask reacts anyway
-given a year.
+register entry, is that ADDING SOMETHING IS SUFFICIENT. e04, s01 and h02 are
+built on it: the dilute acid changes nothing at all and is still there in full
+at the end, the sand is a solid with a large surface area and does nothing
+either, and the empty flask reacts anyway given a year.
+
+⊕ 30 Aug 2026 (MRB-295, C6-11). This strand USED to read "FASTER IS
+SUFFICIENT", and e04 and h02 were built on the dilute acid being faster than
+the control and consumed doing it. That was invented chemistry — acid
+stabilises hydrogen peroxide — and Mide ruled the flask honest on 28 Aug
+2026. Both questions are re-aimed at what the bench now shows, which is the
+same definition approached from its other half: coming back unchanged is not
+sufficient either, and the acid is the flask that proves it.
 
 A third strand is that a catalyst makes MORE. e03 and s04 separate rate from
 yield, which is the distinction rung 2 turns on and the one a factory pays for.
@@ -107,23 +115,25 @@ QUESTIONS = [
     {
         "id": "c6-07-e04",
         "band": "easier",
-        "text": "Dilute acid speeds up the decomposition of hydrogen "
-                "peroxide, but is partly consumed doing it. Is it a catalyst?",
+        "text": "Dilute acid is added to hydrogen peroxide. The reaction runs "
+                "no faster than it did with nothing added, and the acid is "
+                "all still there at the end. Is it a catalyst?",
         "options": [
-            {"text": "Yes, because speeding the reaction up is what a "
-                     "catalyst does", "correct": False,
-             "why": "That is only half the definition. The other half is "
-                    "coming back unchanged, and this does not."},
-            {"text": "Yes, because it is not one of the products either",
+            {"text": "Yes, because it came back unchanged", "correct": False,
+             "why": "That is only half the definition, and it is the half "
+                    "that is easiest to pass — the sand came back unchanged "
+                    "too. A catalyst also has to speed the reaction up."},
+            {"text": "Yes, because something was added to the flask",
              "correct": False,
-             "why": "Not being a product is not the test. Being unchanged at "
-                    "the end is."},
+             "why": "Adding something is not the test. Making the reaction "
+                    "go faster, and coming back unchanged, is."},
             {"text": "No, because a catalyst has to be a solid powder",
              "correct": False,
              "why": "The liver on the same bench is not a powder and is a "
-                    "catalyst. What rules the acid out is being consumed."},
-            {"text": "No, because it is consumed, so it fails half the "
-                     "definition", "correct": True},
+                    "catalyst. What rules the acid out is that it changed "
+                    "nothing."},
+            {"text": "No, because it did not speed the reaction up at all",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -251,22 +261,25 @@ QUESTIONS = [
         "id": "c6-07-h02",
         "band": "harder",
         "text": "Which single result on the five-flask bench proves that "
-                "being faster is not enough to make something a catalyst?",
+                "coming back unchanged is not enough to make something a "
+                "catalyst?",
         "options": [
-            {"text": "The sand flask, which made no difference at all",
+            {"text": "The empty flask, which reacted very slowly on its own",
              "correct": False,
-             "why": "That shows a solid need not be a catalyst. It says "
-                    "nothing about whether faster is sufficient."},
-            {"text": "The dilute acid flask, which was faster and was "
-                     "consumed", "correct": True},
+             "why": "That is the control the others are measured against. "
+                    "Nothing was added to it at all, so there is nothing to "
+                    "come back unchanged."},
+            {"text": "The dilute acid flask, which changed nothing and was "
+                     "all still there at the end", "correct": True},
             {"text": "The liver flask, which was the fastest of all five",
              "correct": False,
              "why": "The liver is a catalyst and it passes both halves. It "
                     "cannot show that one half is insufficient."},
-            {"text": "The empty flask, which reacted very slowly on its own",
-             "correct": False,
-             "why": "That is the control the others are measured against. It "
-                    "is not faster than anything."},
+            {"text": "The manganese dioxide flask, which was recovered in "
+                     "full", "correct": False,
+             "why": "It was recovered in full AND it sped the reaction up. "
+                    "Passing both halves is what makes it a catalyst, so it "
+                    "cannot show that either half alone is not enough."},
         ],
         "figure": None,
     },
@@ -305,8 +318,9 @@ QUESTIONS = [
                     "and not a result."},
             {"text": "Run it with and without the powder and compare the two "
                      "times", "correct": False,
-             "why": "That settles the first half of the definition only. It "
-                    "cannot tell a catalyst from the dilute acid."},
+             "why": "That settles the first half of the definition only. "
+                    "Something can speed a reaction up and still be used up "
+                    "doing it, and a stopwatch cannot see the difference."},
             {"text": "Weigh the powder before and after, and check nothing "
                      "was lost", "correct": False,
              "why": "That settles the second half only. Sand also comes back "
