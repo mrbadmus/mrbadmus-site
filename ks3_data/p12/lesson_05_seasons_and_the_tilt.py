@@ -150,6 +150,26 @@ LESSON = {
     "core": [
         {"type": "hook", "id": "hook-commit", "anchor": "s-hook"},
 
+        # ── ⚖️ RULED 30 Aug 2026 · THE DAILY SPIN COMES FIRST ──────────
+        #
+        # Nothing anywhere in KS3 said the Earth rotates; the only two
+        # mentions in the whole estate were wrong answers in option lists,
+        # and this lesson's rung 4 already asks about "a whole rotation".
+        # It goes BEFORE the tilt because the tilt is a tilt of the spin
+        # axis — the tilt paragraph below has nothing to be a tilt of until
+        # this one has been read. ⚠️ The Sun does not "rise" or "set" here,
+        # in any wording: killing that reading is half the paragraph's job.
+        {"type": "explainer",
+         "text": "Start with the motion that has nothing to do with seasons. "
+                 "The Earth turns <strong>once on its own axis every 24 "
+                 "hours</strong>. Half of it faces the Sun and has day; the "
+                 "other half faces away and has night; and as it turns, "
+                 "every place passes through both. The Sun is not "
+                 "travelling across the sky — we are turning underneath it, "
+                 "which is why it appears to move. That daily spin is a "
+                 "separate motion from the year-long journey round the Sun, "
+                 "and it is the year-long one that the rest of this lesson "
+                 "is about."},
         {"type": "explainer",
          "text": "The Earth’s axis is <strong>tilted by about 23.4°</strong> "
                  "away from upright, and that tilt keeps pointing in the same "

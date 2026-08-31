@@ -88,8 +88,7 @@ LESSON = {
 
     "requires": ["moments"],
     "assumes": [],
-    "references": ["balanced-and-unbalanced", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["balanced-and-unbalanced", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "A spring turns a force into a length you can read "

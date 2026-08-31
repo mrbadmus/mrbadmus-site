@@ -83,8 +83,7 @@ LESSON = {
 
     "requires": ["air-and-water-resistance"],
     "assumes": [],
-    "references": ["biomechanics-forces-in-the-body", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["biomechanics-forces-in-the-body", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "Push a door at the handle and it swings. Push just "

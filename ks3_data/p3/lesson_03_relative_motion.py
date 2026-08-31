@@ -466,8 +466,9 @@ LESSON = {
         "body": "Not sure when to add and when to subtract?",
         "cta": "Ask about this lesson"},
 
-    "ks4_becomes": "Vectors and resultant velocity, and — much later "
-                   "— the reason light refuses to play by these rules.",
+    "ks4_becomes": "Vectors and combining motions that carry direction, "
+                   "and — much later — the reason light refuses to play "
+                   "by these rules.",
 
     "ws": ["analysis-and-evaluation"],
 }

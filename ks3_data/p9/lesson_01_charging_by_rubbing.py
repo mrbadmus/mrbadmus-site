@@ -91,16 +91,26 @@ LESSON = {
     "typical_year": 8,
     "typical_minutes": 60,
 
-    # ⚠️ HER OWN ENDMATTER. "Before this lesson" is p8-07 and "Connects to"
-    # is p9-03, p8-06 and p8-01; "Next in this unit" is emitted from the unit
-    # order and is not authored here. P8 is not this lane's to author, and it
-    # does not need to be: the registry carries every slot in `structure.py`,
-    # authored or not, and each one builds a page.
+    # ⚠️ HER OWN ENDMATTER, WITH ONE EDGE RULED AWAY FROM IT. "Before this
+    # lesson" was p8-07 and "Connects to" is p9-03, p8-06 and p8-01; "Next in
+    # this unit" is emitted from the unit order and is not authored here. P8
+    # is not this lane's to author, and it does not need to be: the registry
+    # carries every slot in `structure.py`, authored or not, and each one
+    # builds a page.
+    #
+    # ── ⚖️ RULED 30 Aug 2026 · THE PREREQUISITE IS p8-06, NOT p8-07 ────
+    #
+    # `requires` is a HARD edge (§4.9): you cannot understand this lesson
+    # without that one. Building and measuring a circuit is not that lesson —
+    # nothing here is a circuit. What a student meeting static charge cannot
+    # do without is the conductor/insulator split, which is why the rubbing
+    # works on a plastic rod and dies on a metal one. It sat below as a mere
+    # see-also. The edge swaps up; the duplicate see-also goes, because one
+    # lesson is not both a prerequisite and a cross-reference.
     "requires": [{"unit": "P8",
-                  "lesson": "building-and-measuring-a-circuit"}],
+                  "lesson": "conductors-and-insulators"}],
     "assumes": [],
     "references": ["electric-fields",
-                   {"unit": "P8", "lesson": "conductors-and-insulators"},
                    {"unit": "P8", "lesson": "current-and-circuits"}],
     "ks4_links": [],
 

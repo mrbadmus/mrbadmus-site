@@ -88,7 +88,7 @@ LESSON = {
 
     "requires": ["balanced-and-unbalanced"],
     "assumes": [],
-    "references": ["speed", "what-a-force-is", "pressure-force-over-area"],
+    "references": ["speed", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "A curling stone slides twenty metres with nothing "

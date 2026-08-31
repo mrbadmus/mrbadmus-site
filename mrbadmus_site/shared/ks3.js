@@ -6310,12 +6310,20 @@
 
   /* p1-04 `#s-two` — two axes, and only one of them moves the temperature.
 
-     ⚖️ THE THERMAL BAR IS LOGARITHMIC (Design's science flag 10). The
-     spark-to-bath range is about 10^9, so a linear bar leaves the spark at
-     zero pixels and teaches that a spark holds no energy — the opposite of
-     the lesson. log10 is taken of the store and mapped onto the bar; the
+     ⚖️ THE THERMAL BAR IS LOGARITHMIC (Design's science flag 10). p1-04's
+     bench runs from 0.009 J to 627 MJ, a range of about 10^11, so a linear
+     bar leaves the spark at zero pixels and teaches that a spark holds no
+     energy — the opposite of the lesson. log10 is taken of the store and
+     mapped onto the bar between the bench's OWN emitted min and max, so the
+     smallest state is a visible sliver and the largest fills the bar; the
      scale note under it says so, and the renderer refuses a payload without
-     that note. */
+     that note.
+
+     ⚠️ `n` IS A HEAT CAPACITY IN J/K (mass × specific heat capacity), so
+     `n × t` is a real number of joules. It is a FLOAT — the spark's is
+     0.00045 — and parseInt would round it to zero. It was once an invented
+     particle index and the bench then contradicted its own page (MRB-297,
+     P1-13); the renderer now guards the ordering. */
   function wireTwoQuantities(sec) {
     var wrap = sec.querySelector("[data-twoq]");
     if (!wrap) { return; }
@@ -6329,30 +6337,62 @@
     var movedAmt = false, movedSpd = false;
 
     function n() {
-      return parseInt(wrap.getAttribute("data-twoq-n-" + amt), 10) || 1;
+      /* parseFloat, NOT parseInt — the smallest heat capacity on the bench
+         is 0.00045 J/K and parseInt reads it as 0. */
+      return parseFloat(wrap.getAttribute("data-twoq-n-" + amt)) || 0;
     }
     function temp() {
       return parseInt(wrap.getAttribute("data-twoq-t-" + spd), 10) || 0;
     }
+    function bound(name, fallback) {
+      var v = parseFloat(wrap.getAttribute("data-twoq-" + name));
+      return (isFinite(v) && v > 0) ? v : fallback;
+    }
+
+    /* A store in joules, printed so a Year 8 can read it at either end of a
+       range of 10^11: MJ above a million, kJ above a thousand, whole joules
+       above one, and two significant figures below one — because "0 J" for
+       a spark is the very claim the lesson is arguing against. */
+    function joules(v) {
+      if (v >= 1e6) {
+        var mj = v / 1e6;
+        return (mj >= 100 ? Math.round(mj) : Math.round(mj * 10) / 10) + " MJ";
+      }
+      if (v >= 1000) {
+        var kj = v / 1000;
+        return (kj >= 10 ? Math.round(kj) : Math.round(kj * 10) / 10) + " kJ";
+      }
+      if (v >= 1) { return Math.round(v) + " J"; }
+      if (v <= 0) { return "0 J"; }
+      /* Two significant figures, with trailing zeros trimmed: 0.0090 → 0.009. */
+      return parseFloat(v.toPrecision(2)) + " J";
+    }
 
     function paint() {
-      /* The store scales with BOTH how many particles and how fast they
-         move. n is Design's particle-count index, t her temperature. */
+      /* The store scales with BOTH how much there is and how fast it moves.
+         n is a heat capacity in J/K, t a temperature in °C, so n × t is the
+         energy in the thermal store above 0 °C, in joules. */
       var store = n() * temp();
       var el;
 
       el = wrap.querySelector('[data-twoq-out="temp"]');
       if (el) { el.textContent = temp() + " °C"; }
       el = wrap.querySelector('[data-twoq-out="store"]');
-      if (el) {
-        el.textContent = store >= 1000
-          ? Math.round(store / 1000) + " kJ (about)"
-          : Math.round(store) + " J (about)";
-      }
+      if (el) { el.textContent = joules(store) + " (about)"; }
       el = wrap.querySelector("[data-twoq-bar]");
       if (el) {
-        /* log10, floored at 0 so an empty bar is empty rather than negative. */
-        var pct = Math.max(0, Math.min(100, (Math.log(store + 1) / Math.LN10) * 22));
+        /* Log axis normalised over the bench's OWN reachable min and max, so
+           the smallest state is a visible sliver rather than nothing and the
+           largest fills the bar. A hard-coded factor cannot do that across a
+           range this wide. */
+        var lo = bound("min", 1), hi = bound("max", lo * 10);
+        var span = (Math.log(hi) - Math.log(lo)) / Math.LN10;
+        var frac = span > 0
+          ? ((Math.log(Math.max(store, lo)) / Math.LN10) - (Math.log(lo) / Math.LN10)) / span
+          : 1;
+        var pct = store > 0
+          ? Math.max(0, Math.min(100, 3 + Math.max(0, Math.min(1, frac)) * 97))
+          : 0;
         el.style.width = pct + "%";
       }
 
@@ -12884,7 +12924,25 @@
       var eye = y.getAttribute("data-key") === "eye";
       var mm = parseFloat(L.getAttribute(eye ? "data-eye" : "data-cam")) || 0;
       var omm = parseFloat(L.getAttribute(eye ? "data-cam" : "data-eye")) || 0;
-      var rPx = eye ? mm * 9 : mm * 1.7;
+      /* ⚠️ `rPx` IS THE HALF-OPENING, and it used to be the half-BLADE.
+
+         The two marks are `data-eyecam-stop` — the stop, the OPAQUE part —
+         and they were drawn from a fixed pair of inner ends at y=194 and
+         y=206 out to `200 ± rPx`. So the hole was a constant 12 units at
+         every light level and the blades GREW as the light fell: dragging
+         from sunlight to darkness closed the front of the eye into a
+         near-solid pillar with a hairline slit, while the readout beside it
+         read 2.0 mm → 8.0 mm and the gate question one screen up said the
+         pupil opens in the dark. A dilating iris does the opposite.
+
+         Inverted: the OUTER ends are pinned to the case and the inner ends
+         move, so the drawn gap is 2 × rPx and grows in the dark. `HALF` is
+         where the case wall is at x = CX − 118 — the eyeball's own outline
+         (a 140 circle 118 from its centre reaches y = 200 ± 75.3) and the
+         camera's lens barrel (y 120–280) — and the opening is clamped ten
+         units inside it so there is always a blade left to see. */
+      var HALF = eye ? 72 : 74;
+      var rPx = Math.max(5, Math.min(eye ? mm * 7.75 : mm * 1.28, HALF - 10));
       var bx = eye ? CX + 108 : 840;
 
       each(systems, function (b) {
@@ -12895,8 +12953,10 @@
         ? "M" + CX + " 60 a140 140 0 1 1 -0.1 0 M" + (CX - 140) + " 200 h-70"
         : "M420 80 H860 V320 H420 Z M420 120 H360 V280 H420");
       setPath(wrap, "[data-eyecam-stop]",
-              "M" + (CX - 118) + " " + (200 - rPx).toFixed(1) + " V194 " +
-              "M" + (CX - 118) + " 206 V" + (200 + rPx).toFixed(1));
+              "M" + (CX - 118) + " " + (200 - HALF) + " V" +
+              (200 - rPx).toFixed(1) + " " +
+              "M" + (CX - 118) + " " + (200 + rPx).toFixed(1) + " V" +
+              (200 + HALF));
       setPath(wrap, "[data-eyecam-lens]", eye
         ? "M" + (CX - 60) + " 120 Q" + (CX - 16) + " 200 " + (CX - 60) +
           " 280 Q" + (CX - 104) + " 200 " + (CX - 60) + " 120 Z"
@@ -12904,6 +12964,10 @@
       setPath(wrap, "[data-eyecam-back]", eye
         ? "M" + (CX + 100) + " 90 A140 140 0 0 1 " + (CX + 100) + " 310"
         : "M840 110 V290");
+      /* 0.7 of the half-opening is INSIDE the hole now. While `rPx` was the
+         half-blade these two waypoints landed inside the opaque marks at
+         every setting, so the drawing also had light passing through the
+         iris. */
       setPath(wrap, "[data-eyecam-rays]",
               "M120 90 L" + (CX - 118) + " " +
               (200 - rPx * 0.7).toFixed(1) + " L" + bx + " 255 " +
@@ -12982,7 +13046,22 @@
      the same colour out, no fan at all, and nothing for a second prism to
      recombine — her note says that rather than leaving the control looking
      broken. */
-  var P7_PRISM_Y = { R: 196, O: 208, Y: 220, G: 234, B: 250, V: 264 };
+  /* ⚠️ THE FAN'S GEOMETRY IS NOT HERE ANY MORE, and that is the fix.
+
+     This function used to own `P7_PRISM_Y = {R:196 … V:264}` and derive
+     each landing from it at paint time. Nothing in the build could see
+     those numbers, so nothing in the build could check them — and what
+     shipped was every colour deviated toward the prism's APEX with RED
+     deviated furthest: `LIGHT-23`, drawn by the instrument registered as
+     the one that kills it, contradicting the page's own rung 1 one screen
+     below. It survived every review because the six rays still read
+     R,O,Y,G,B,V from top to bottom.
+
+     The numbers now come from `_prism_fan()` in `ks3_art/p7.py`, which
+     refuses a backwards fan at build time, and arrive here as attributes:
+     `data-prism-y` and `data-prism-hit` on each ray, and eight path
+     strings on the wrapper. This function joins strings. It computes no
+     geometry at all, so it cannot reintroduce any. */
 
   function wirePrismBench(sec) {
     var wrap = sec.querySelector("[data-prism]");
@@ -13010,28 +13089,49 @@
         b.setAttribute("aria-pressed", b === sec2 ? "true" : "false");
       });
 
+      /* THE LIGHT IS ONE PATH WITH TWO BENDS IN IT, and it is drawn that
+         way: in through the left face, ONE segment across the glass, out
+         through the right face. The beam used to stop 68 units inside the
+         glass and the fan used to start 30 units further in, on a lesson
+         whose mechanism sentence is "one bend on the way in, one on the
+         way out". */
       var beam = wrap.querySelector("[data-prism-beam]");
       if (beam) { beam.setAttribute("style", "stroke:" + colour + ";"); }
-      setPath(wrap, "[data-prism-beam]", "M40 150 L262 210");
+      setPath(wrap, "[data-prism-beam]",
+              wrap.getAttribute("data-prism-inpath"));
+      var inner = wrap.querySelector("[data-prism-inner]");
+      if (inner) { inner.setAttribute("style", "stroke:" + colour + ";"); }
+      setPath(wrap, "[data-prism-inner]",
+              wrap.getAttribute("data-prism-innerpath"));
 
+      /* WHERE IT WOULD HAVE GONE. Rung 1 asks about exactly this line, and
+         the bench did not draw it. Hidden with the second prism in, where
+         it would cross the second piece of glass and say nothing. */
+      setPath(wrap, "[data-prism-ghost]",
+              on ? null : wrap.getAttribute("data-prism-ghostpath"));
+
+      var from = wrap.getAttribute("data-prism-from");
+      var sx = wrap.getAttribute("data-prism-screenx");
+      var twoExit = wrap.getAttribute("data-prism-twoexit");
       each(toArray(wrap.querySelectorAll("[data-prism-ray]")),
         function (el) {
           var k = el.getAttribute("data-prism-ray");
-          var y = P7_PRISM_Y[k];
           var has = keys.indexOf(k) >= 0;
           var d = !has ? null
-            : (on ? "M330 210 L640 " + y
-                  : "M330 210 L" + 925 + " " + (y + (y - 210) * 1.9).toFixed(1));
+            : (on ? "M" + from + " L" + el.getAttribute("data-prism-hit") +
+                    " L" + twoExit
+                  : "M" + from + " L" + sx + " " +
+                    el.getAttribute("data-prism-y"));
           el.setAttribute("d", d || "M0 0");
           setHidden(el, !d);
         });
 
       setPath(wrap, "[data-prism-two]",
-              on ? "M660 300 L560 120 L760 120 Z" : null);
+              on ? wrap.getAttribute("data-prism-twopath") : null);
       var outb = wrap.querySelector("[data-prism-outbeam]");
       if (outb) { outb.setAttribute("style", "stroke:" + colour + ";"); }
       setPath(wrap, "[data-prism-outbeam]",
-              on ? "M700 210 L925 210" : null);
+              on ? wrap.getAttribute("data-prism-outpath") : null);
 
       fillSpan(wrap, "prism", "caption", on ? CAP2 : CAP1,
                absP7("3%", "95%", "#C6B9A7", "", "3%"));
@@ -13042,9 +13142,15 @@
       subP7(wrap, "prism", "in", inC.getAttribute("data-sub"));
       setOut(wrap, "prism", "least", least);
       setOut(wrap, "prism", "most", most);
+      /* ⚖️ RECOMBINED IS NOT THE SAME WORD AS WHITE. This branch was
+         unconditional on WHICH colours went in, so blue and red — two
+         colours whose sum is magenta — came back out under "One white
+         patch", over a drawing stroked dusky pink, on the page whose whole
+         argument is that a prism gives back only what went in. The mixture
+         authors its own verdict and its own beam-word now. */
       setOut(wrap, "prism", "screen", on
         ? (single ? "One patch of " + least.toLowerCase() + ", as it went in"
-                  : "One white patch — the colours put back together")
+                  : inC.getAttribute("data-two-screen"))
         : (single ? "One patch of " + least.toLowerCase() + ", shifted sideways"
                   : "A band of separated colour"));
 
@@ -13052,7 +13158,8 @@
         var key = single ? "single" : (on ? "recombined" : "dispersed");
         noteEl.textContent = fillTokens(branchP7(wrap, "prism", key), {
           word: inC.getAttribute("data-word"), n: keys.length,
-          least: least.toLowerCase(), most: most.toLowerCase()
+          least: least.toLowerCase(), most: most.toLowerCase(),
+          arrives: inC.getAttribute("data-two-beam")
         });
       }
 
@@ -14461,10 +14568,22 @@
       markSibling(sec, wrap, committed ? 1 : 0);
 
       /* The Convert line is computed from whatever unit the ammeter is
-         showing — mA, µA, nA or pA — so an insulator specimen converts
-         correctly rather than being waved through. Design's own rule. */
+         showing, so a specimen converts correctly rather than being waved
+         through. Design's own rule.
+
+         ⊕ MRB-297, RULED 30 Aug 2026 — THE PRACTICE IS BOUNDED TO A AND mA.
+         Design's rule read "mA, µA, nA or pA", and it made the practice
+         panel harder than anything the page had taught: converting picoamps
+         needs standard form, which is GCSE, while this page's own worked
+         examples never go past milliamps. Six of the fourteen reachable
+         states did it — tap water (150.0 µA / 15.0 µA), dry wood (1.2 µA /
+         120.0 nA) and the plastic ruler (3.0 pA / 0.3 pA). `div` is 1 for A
+         and 1e3 for mA, so `div > 1e3` is exactly "µA, nA or pA", and those
+         six now take the blocked path the page already has for copper.
+         The eight A/mA states are untouched and the coupling survives. */
       var unit = p8FmtI(I).split(" ")[1];
       var div = UNITS[unit] || 1;
+      var tiny = div > 1e3;          /* µA, nA or pA — see the note above */
       var amps = div === 1 ? p8FmtI(I) : Number(I.toPrecision(3)) + " A";
       publishLiveP8(sec, {
         len: lenWord, name: name, i: p8FmtI(I), iamps: amps,
@@ -14478,15 +14597,27 @@
           ? "The ammeter already reads in amps, so there is nothing to convert."
           : "There are " + p8Group(div) + " " + NAMES[unit] +
             " in an amp, so divide before you go any further.",
+        /* ⚠️ THE HEAD MUST AGREE WITH THE BLOCKED PANEL BESIDE IT. Bounding
+           the practice to A and mA blocks the panel on µA/nA/pA states, and
+           its shared line reads "clip a specimen the ammeter can read". A
+           head still saying "the ammeter reads 150.0 µA" would contradict it
+           on screen — found by driving all seven specimens, not by reading
+           the diff. The tiny case gets its own head, keeps the figure (it is
+           the teaching) and says why the five lines are waiting. */
         qhead: isShort
           ? fillTokens(wrap.getAttribute("data-short-head"), { len: lenWord })
-          : "Your gap: " + VOLTS.toFixed(1) + " V across " + lenWord +
-            " of " + name + ", and the ammeter reads " + p8FmtI(I) + ".",
-        qclose: isShort
+          : tiny
+            ? "Your gap: " + VOLTS.toFixed(1) + " V across " + lenWord +
+              " of " + name + ", and the current is " + p8FmtI(I) +
+              " — far below anything a school ammeter can show. Clip in a " +
+              "specimen it can read and these five steps will follow it."
+            : "Your gap: " + VOLTS.toFixed(1) + " V across " + lenWord +
+              " of " + name + ", and the ammeter reads " + p8FmtI(I) + ".",
+        qclose: (isShort || tiny)
           ? "Pick a specimen with a reading and the five lines will fill in."
           : "The five lines give " + p8FmtR(R) + " for " + lenWord +
             " of " + name + "."
-      }, isShort);
+      }, isShort || div > 1e3);
     }
 
     p8Gate(sec, wrap, "tgap", function () { committed = true; paint(); });

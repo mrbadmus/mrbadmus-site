@@ -601,8 +601,9 @@ LESSON = {
         "body": "Stuck on which number to divide by which?",
         "cta": "Ask about this lesson"},
 
-    "ks4_becomes": "Acceleration, velocity–time graphs, and the equations of "
-                   "motion — all built on distance ÷ time.",
+    "ks4_becomes": "Acceleration, motion graphs that carry direction as "
+                   "well as size, and the equations of motion — all built "
+                   "on distance ÷ time.",
 
     "ws": ["measurement", "analysis-and-evaluation"],
 }

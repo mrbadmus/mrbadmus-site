@@ -80,8 +80,7 @@ LESSON = {
 
     "requires": ["friction"],
     "assumes": [],
-    "references": ["balanced-and-unbalanced", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["balanced-and-unbalanced", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "A skydiver falls for a minute and stops getting any "

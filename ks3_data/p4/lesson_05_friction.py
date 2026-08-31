@@ -70,8 +70,7 @@ LESSON = {
 
     "requires": ["what-forces-do-to-motion"],
     "assumes": [],
-    "references": ["balanced-and-unbalanced", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["balanced-and-unbalanced", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "Nothing about a crate changes when you start "

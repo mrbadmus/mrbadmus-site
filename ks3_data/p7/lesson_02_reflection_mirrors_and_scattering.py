@@ -177,6 +177,27 @@ LESSON = {
                  "surface. A matt black card is rough like paper and absorbs "
                  "most of what lands on it, so very little leaves in any "
                  "direction at all."},
+        # ── ⚖️ RULED 30 Aug 2026 · THE PLANE MIRROR IMAGE ──────────────
+        #
+        # `covers` claims LGT.04a, imaging in mirrors, and nothing on the
+        # page delivered it. The near/far wording is load-bearing and is
+        # not to be "tidied" into the usual left-right sentence: a plane
+        # mirror does NOT swap left and right, and "lateral inversion" is a
+        # label rather than a reason. Turning the page round is what swaps
+        # its left and right; the mirror reverses only the axis pointing at
+        # it. No figure — P7 has no drawer for one.
+        {"type": "explainer",
+         "text": "Stand a mirror up and look at yourself. The image is the "
+                 "same size as you and the same way up, and it sits as far "
+                 "behind the glass as you are in front of it. Nothing is "
+                 "there: no light comes from behind the mirror. Your eye "
+                 "follows the reflected rays back along the straight lines "
+                 "they arrived on, and the image is where those lines meet. "
+                 "That is what <strong>virtual</strong> means. The one axis "
+                 "a plane mirror does reverse is the one running towards it "
+                 "and away from it — near and far. Writing looks backwards "
+                 "because you had to turn the page round to face the glass, "
+                 "and turning it is what swapped its left and right."},
 
         # ── #s-ray · a ray box, a protractor and four surfaces ─────────
         {"type": "ray-surface",

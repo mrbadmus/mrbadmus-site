@@ -425,8 +425,8 @@ LESSON = {
         "body": "Not sure why a flat line means stopped?",
         "cta": "Ask about this lesson"},
 
-    "ks4_becomes": "Gradients of curved graphs, velocity–time graphs, and "
-                   "the area underneath them.",
+    "ks4_becomes": "Gradients of curved graphs, motion graphs where a value "
+                   "can be negative, and the area underneath them.",
 
     "ws": ["analysis-and-evaluation", "measurement"],
 }

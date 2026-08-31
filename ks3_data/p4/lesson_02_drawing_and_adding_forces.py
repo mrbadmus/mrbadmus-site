@@ -88,7 +88,7 @@ LESSON = {
 
     "requires": ["what-a-force-is"],
     "assumes": [],
-    "references": ["moments", "pressure-force-over-area"],
+    "references": ["moments"],
     "ks4_links": [],
 
     "meta_description": "A sledge pulled 40 N one way and 25 N the other. "

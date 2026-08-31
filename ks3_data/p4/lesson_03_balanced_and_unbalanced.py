@@ -77,8 +77,7 @@ LESSON = {
 
     "requires": ["drawing-and-adding-forces"],
     "assumes": [],
-    "references": ["springs-and-hookes-law", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["springs-and-hookes-law", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "Two identical books have the same weight pulling "

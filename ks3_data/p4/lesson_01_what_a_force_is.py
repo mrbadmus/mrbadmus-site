@@ -94,6 +94,15 @@ LESSON = {
     "requires": [],
     "before_this": "Nothing — this is where the unit starts.",
     "assumes": [],
+    # ⚖️ RULED 30 Aug 2026 (MRB-297) · THE ONLY P4 LESSON THAT KEEPS THE P5 LINK.
+    # `pressure-force-over-area` is a Year 8 lesson and P4 is Year 7. It was
+    # carried by EIGHT of P4's nine lessons — template-applied, not considered,
+    # and eight identical forward links teach a student the card is noise. The
+    # other seven were dropped. It stays HERE because this is the lesson where
+    # the connection is genuinely instructive: this page defines what a force
+    # is, and pressure is that same force asked a second question — spread
+    # over what area? A student who has just met the force is the one for whom
+    # the next step actually follows.
     "references": ["non-contact-forces", "what-forces-do-to-motion",
                    "pressure-force-over-area"],
     "ks4_links": [],

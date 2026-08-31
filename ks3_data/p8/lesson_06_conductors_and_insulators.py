@@ -490,10 +490,22 @@ LESSON = {
          # The bench's opening state: 10 cm of pencil lead on 6.0 V, so the
          # ammeter reads 200.0 mA. `convline` and `convnote` are WHOLE
          # sentences rather than assembled ones, because Design computes the
-         # Convert line from whatever unit the meter is showing — mA, µA, nA
-         # or pA — and the divisor and the unit's name both change with it.
-         # `qhead` and `qclose` are whole sentences for the same reason: the
-         # copper state replaces them rather than filling them.
+         # Convert line from whatever unit the meter is showing, and the
+         # divisor and the unit's name both change with it. `qhead` and
+         # `qclose` are whole sentences for the same reason: the blocked
+         # states replace them rather than filling them.
+         #
+         # ⊕ MRB-297, RULED 30 Aug 2026 — the line above used to read "mA,
+         # µA, nA or pA". It no longer does: the practice is BOUNDED TO A AND
+         # mA. Converting picoamps needs standard form, which is GCSE, so the
+         # first practice item was harder than anything this page taught —
+         # its own worked examples never go past milliamps. Six of the
+         # fourteen reachable states did it (tap water, dry wood and the
+         # plastic ruler, at both lengths); those now take the same blocked
+         # path copper takes, with their own head naming the current and
+         # saying it is below what a school ammeter shows. The eight A/mA
+         # states are unchanged. Implemented in `wireTestGap` in
+         # `shared/ks3.js` (`isShort || div > 1e3`), not here.
          "rest": {"len": "10 cm", "name": "pencil lead (graphite)",
                   "i": "200.0 mA", "iamps": "0.2 A", "ibare": "0.2",
                   "r": "30 Ω", "rbare": "30", "verdict": "a conductor",

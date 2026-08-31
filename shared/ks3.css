@@ -474,9 +474,9 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-on-dark-body);
 }
 .ks3-motion-btn[aria-pressed="true"] {
-  border-color: var(--ks3-alert);
-  background: var(--ks3-alert);
-  color: var(--ks3-ink);
+  border-color: var(--ks3-accent);
+  background: var(--ks3-dark-panel);
+  color: var(--ks3-on-dark);
 }
 
 /* R7 / Law 9 — one switch turns every drawing's animation off, and the OS
@@ -689,6 +689,44 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-opt-label { flex: 1; }
 
+/* ⊕⊕ SELECTION MOVES TO THE ACCENT TOKEN — RULED BY MIDE, 30 Aug 2026
+   (audit P10-26 / Mide-pile M6). THIS IS THE PLATFORM RULE. Every "you
+   picked this" state on an ink-dark ground reads from here; the per-unit
+   comments further down this file that still say "amber is chosen" are
+   SUPERSEDED by it, and are kept only so the reasoning they record is not
+   lost.
+
+       Amber is reserved for warning and loss. A colour meaning "careful"
+       must not also mean "you picked this".
+
+   The light-ground branch had already expressed selection as accent — an
+   accent border over an accent-tint fill (see `.ks3-option[aria-pressed]`
+   above) — so this makes ONE rule across both grounds instead of two.
+
+   ⚠️ THE DARK TREATMENT IS A BORDER, NOT A SLAB, AND THAT IS A CONTRAST
+   FINDING RATHER THAN A PREFERENCE. `--ks3-accent` #E4572E is annotated
+   "3.4:1 — LARGE TEXT ONLY", and `--ks3-ink` #221E1B measured ON an accent
+   fill is 4.49:1 — a hair UNDER the 4.5:1 body-text floor. So the amber
+   slab these controls used to paint CANNOT simply be recoloured: a solid
+   accent fill with ink text would ship 16px labels below AA. What ships
+   instead mirrors the light ground — `--ks3-dark-panel` #3E3730 as the
+   fill, the accent as the 2px border (3.18:1 on the panel, 4.49:1 on the
+   ink ground behind it, both over the 3:1 non-text floor of WCAG 1.4.11),
+   and `--ks3-on-dark` cream as the label (10.63:1). Selection still reads
+   on two channels, because the resting state of nearly every one of these
+   controls is `background: transparent` with a muted border.
+
+   ⚠️ WHAT THIS RULING DOES **NOT** MOVE. MRB-252 (19 Aug 2026) sent BOTH
+   "category" AND "selection" to `--ks3-data`. Mide's ruling moves SELECTION
+   ONLY. Every `--ks3-data` use meaning "this column, not that one" or "this
+   is the field you are looking at" stays exactly where it is, and so does
+   every amber that means a wrong idea being confronted, a caution, or a
+   loss. Recolouring a CATEGORY under cover of this ruling is the one way to
+   get it wrong.
+
+   Three separate units stopped at this question before it was ruled. It is
+   settled; do not re-raise it. */
+
 /* options on an ink-dark block */
 .ks3-dark .ks3-option {
   background: var(--ks3-dark-panel);
@@ -697,12 +735,13 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-dark .ks3-option[aria-pressed="true"] {
   background: var(--ks3-dark-panel);
-  border-color: var(--ks3-alert);
+  border-color: var(--ks3-accent);
 }
 .ks3-dark .ks3-opt-mark { background: var(--ks3-on-dark-muted); color: var(--ks3-ink); }
 .ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark {
-  background: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 
 .ks3-reveal {
@@ -1371,9 +1410,9 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-dark .ks3-seg-btn[aria-pressed="true"],
 .ks3-dark .ks3-sim-seg-btn[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 
 /* R19 — particle-states gets a band strip instead of a number, so the
@@ -4025,9 +4064,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-fit-part[aria-pressed="true"] {
-  border-color: var(--ks3-alert);
-  background: var(--ks3-alert);
-  color: var(--ks3-ink);
+  border-color: var(--ks3-accent);
+  background: var(--ks3-dark-panel);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-fit-part .ks3-part-num {
   background: var(--ks3-dark-panel);
@@ -8256,7 +8295,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-dark .ks3-plate-hint { color: var(--ks3-on-dark-muted); }
 /* Design's dark pair, identical to `.ks3-sim-seg-btn`'s: the lit state is the
    alert yellow with ink text, the resting state transparent on the muted rule.
-   ⚖️ AMBER HERE IS "CHOSEN", NOT "WRONG". On an ink ground it is the only
+   ⚖️ AMBER HERE IS "CHOSEN", NOT "WRONG". ⊕ SUPERSEDED 30 Aug 2026 — selection is now the ACCENT (see the platform block at `.ks3-dark .ks3-option`); this paragraph is kept for its reasoning, not its colour.
+
+   On an ink ground it is the only
    colour in the system with enough lift to read as a pressed control, and
    Design uses it that way on all three B3 dark blocks. Nothing in this
    instrument uses it to mark a mistake. */
@@ -8266,9 +8307,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-plate-band[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* ⊕ CORRECTED FROM THE SHIPPED STYLESHEET, and reported. `.ks3-reveal-btn` is
    `background: var(--ks3-ink)` on a `border: 2px solid var(--ks3-ink)`, which
@@ -8827,9 +8868,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-fold-toggle[aria-pressed="true"] {
-  border-color: var(--ks3-alert);
-  background: var(--ks3-alert);
-  color: var(--ks3-ink);
+  border-color: var(--ks3-accent);
+  background: var(--ks3-dark-panel);
+  color: var(--ks3-on-dark);
 }
 
 .ks3-fold-readout {
@@ -9129,9 +9170,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-gut-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-gut-stop,
 .ks3-dark .ks3-gut-chart { background: var(--ks3-dark-panel); }
@@ -9247,9 +9288,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-jobsw-toggle[aria-pressed="true"] {
-  border-color: var(--ks3-alert);
-  background: var(--ks3-alert);
-  color: var(--ks3-ink);
+  border-color: var(--ks3-accent);
+  background: var(--ks3-dark-panel);
+  color: var(--ks3-on-dark);
 }
 
 /* ⚖️ CREAM INSIDE THE INK BLOCK, and this is the rule the whole file warns
@@ -9529,9 +9570,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 }
 .ks3-dark .ks3-ledger-tab[aria-pressed="true"],
 .ks3-dark .ks3-ledger-food[data-count]:not([data-count="0"]) {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-ledger-panel { background: var(--ks3-dark-panel); }
 .ks3-dark .ks3-ledger-name,
@@ -9716,9 +9757,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-tbench-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-tbench-tubecard,
 .ks3-dark .ks3-tbench-methodcard { background: var(--ks3-dark-panel); }
@@ -10034,9 +10075,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-gas-choice[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* ⚖️ RIGHT KEEPS ITS PANEL, WRONG LOSES IT. This is not marking — the reveal
    has already happened and the answer is on screen either way. It is the row
@@ -10382,9 +10423,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-cross-switch[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-cross-panel { background: var(--ks3-dark-panel); }
 .ks3-dark .ks3-cross-tile { background: rgba(255, 255, 255, .06); }
@@ -10523,9 +10564,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-fault-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-fault-scenario { background: var(--ks3-dark-panel); }
 .ks3-dark .ks3-fault-tag,
@@ -10688,9 +10729,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-tpl-preset[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-tpl-flowname { color: var(--ks3-on-dark); }
 .ks3-dark .ks3-tpl-flowval { color: var(--ks3-on-dark-muted); }
@@ -10956,9 +10997,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-route-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-route-panel,
 .ks3-dark .ks3-route-else { background: var(--ks3-dark-panel); }
@@ -11125,9 +11166,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    and each press pours another one. A drink that latched would read as a
    choice a student had made rather than a thing they had done. */
 .ks3-dark .ks3-clock-fix[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-clock-panel { background: var(--ks3-dark-panel); }
 .ks3-dark .ks3-clock-units,
@@ -11333,9 +11374,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-ccheck-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-ccheck-panel { background: var(--ks3-dark-panel); }
 .ks3-dark .ks3-ccheck-claim,
@@ -11372,7 +11413,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    a right one. If a rule below this line ever resolves to `--ks3-ok` #12A150
    or `--ks3-danger` #FF6B6B, the bench has started marking. */
 .ks3-dark .ks3-ccheck-fault[aria-pressed="true"] {
-  border-color: var(--ks3-alert);
+  border-color: var(--ks3-accent);
   background: rgba(255, 255, 255, .10);
 }
 .ks3-dark .ks3-ccheck-fault[aria-pressed="true"] .ks3-ccheck-mark {
@@ -11636,14 +11677,16 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   border-color: var(--ks3-on-dark-muted);
   color: var(--ks3-on-dark-body);
 }
-/* ⚖️ A CHOSEN TAB IS ALERT AND NOTHING ELSE (MRB-196 R10). Choosing which
+/* ⚖️ A CHOSEN TAB IS ALERT AND NOTHING ELSE (MRB-196 R10). ⊕ SUPERSEDED 30 Aug 2026 — selection is now the ACCENT (see the platform block at `.ks3-dark .ks3-option`); this paragraph is kept for its reasoning, not its colour.
+
+   Choosing which
    structure to look at is not answering anything, so if this rule ever
    resolves to `--ks3-ok` #12A150 or `--ks3-danger` #FF6B6B the bench has
    started marking a control that has no right answer. */
 .ks3-dark .ks3-b5c-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-dark-panel);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-b5c-panel { background: var(--ks3-dark-panel); }
 .ks3-dark .ks3-b5c-name { color: var(--ks3-on-dark); }
@@ -11975,11 +12018,11 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark-body);
 }
 /* ⚖️ CHOOSING A CYCLE LENGTH IS NOT ANSWERING ANYTHING (MRB-196 R10). Alert,
-   and never `--ks3-ok` or `--ks3-danger`: there is no right length. */
+   and never `--ks3-ok` or `--ks3-danger`: there is no right length. ⊕ SUPERSEDED 30 Aug 2026 — selection is now the ACCENT (see the platform block at `.ks3-dark .ks3-option`); this paragraph is kept for its reasoning, not its colour. */
 .ks3-dark .ks3-dial-len[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-dark-panel);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-dial-panel { background: var(--ks3-dark-panel); }
 .ks3-dark .ks3-dial-track { background: rgba(255, 255, 255, .07); }
@@ -12108,15 +12151,15 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    of it.
 
    ⚠️ AND IT IS STILL NOT A MARK (MRB-196 R10). Alert is "this is the setting
-   you have chosen", never "this is correct". Nothing on these benches is
+   you have chosen", never "this is correct". ⊕ SUPERSEDED 30 Aug 2026 — selection is now the ACCENT (see the platform block at `.ks3-dark .ks3-option`); this paragraph is kept for its reasoning, not its colour. Nothing on these benches is
    right or wrong; only the ladder marks. */
 .ks3-dark .ks3-rr-opt[aria-pressed="true"],
 .ks3-dark .ks3-lt-opt[aria-pressed="true"],
 .ks3-dark .ks3-mb-opt[aria-pressed="true"],
 .ks3-dark .ks3-tb-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* The four bench buttons are `.ks3-reveal-btn`, which is INK ON INK — on a
    `ks3-dark` block that paints an invisible control. Inverted here, exactly as
@@ -12751,12 +12794,12 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    to one unit and not a replacement.
 
    ⚠️ AND IT IS STILL NOT A MARK (MRB-196 R10). Alert is "this is the setting
-   you have chosen", never "this is correct". Nothing on these benches is right
+   you have chosen", never "this is correct". ⊕ SUPERSEDED 30 Aug 2026 — selection is now the ACCENT (see the platform block at `.ks3-dark .ks3-option`); this paragraph is kept for its reasoning, not its colour. Nothing on these benches is right
    or wrong; only the mastery ladder marks. */
 .ks3-dark .ks3-ml-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* The bench buttons are `.ks3-reveal-btn`, which is INK ON INK — on a
    `ks3-dark` block that paints an invisible control. Inverted here, exactly as
@@ -12945,9 +12988,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   font-weight: 700;
 }
 .ks3-dark .ks3-cd-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-cd-panel {
   margin-top: 20px;
@@ -13103,9 +13146,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   font-weight: 700;
 }
 .ks3-dark .ks3-od-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-od-panel {
   margin-top: 20px;
@@ -13239,9 +13282,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   font-weight: 700;
 }
 .ks3-dark .ks3-fm-opt[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-fm-panel {
   margin-top: 20px;
@@ -13531,15 +13574,15 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    than replacing the platform rule.
 
    ⚠️ AND IT IS STILL NOT A MARK (MRB-196 R10). Alert is "this is the setting
-   you have chosen", never "this is correct". Nothing on these six benches is
+   you have chosen", never "this is correct". ⊕ SUPERSEDED 30 Aug 2026 — selection is now the ACCENT (see the platform block at `.ks3-dark .ks3-option`); this paragraph is kept for its reasoning, not its colour. Nothing on these six benches is
    right or wrong; only the mastery ladder marks. */
 .ks3-dark .ks3-cl-tab[aria-pressed="true"],
 .ks3-dark .ks3-rs-tab[aria-pressed="true"],
 .ks3-dark .ks3-ba-tab[aria-pressed="true"],
 .ks3-dark .ks3-qb-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* The bench buttons are `.ks3-reveal-btn`, which is INK ON INK — on a
    `ks3-dark` block that paints an invisible control. Inverted here, exactly as
@@ -14438,9 +14481,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    bench, never that the student is right. */
 .ks3-dark .ks3-vp-tab[aria-pressed="true"],
 .ks3-dark .ks3-vp-pred[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* `.ks3-reveal-btn` is INK ON INK, which on a `ks3-dark` block paints an
    invisible control. Inverted, exactly as B9's bench buttons are. */
@@ -14636,9 +14679,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-dark .ks3-zb-saylabel { color: var(--ks3-on-dark-muted); }
 .ks3-dark .ks3-zb-answer { color: var(--ks3-on-dark-body); }
 .ks3-dark .ks3-zb-qtab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 
 /* ── b10-03 `#s-bench` · model-builder ─────────────────────────────────── */
@@ -14765,9 +14808,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-dark .ks3-dh-what { color: var(--ks3-on-dark-body); }
 .ks3-dark .ks3-dh-why { color: var(--ks3-alert); }
 .ks3-dark .ks3-dh-opt[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-dh-verdict {
   background: var(--ks3-ground);
@@ -14919,9 +14962,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   color: var(--ks3-on-dark-body);
 }
 .ks3-dark .ks3-pc-geno[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-pc-one,
 .ks3-dark .ks3-pc-many,
@@ -15059,9 +15102,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-dark .ks3-sc-facts { color: var(--ks3-on-dark-body); }
 .ks3-dark .ks3-sc-commit { color: var(--ks3-on-dark); }
 .ks3-dark .ks3-sc-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* A verdict is a full-width ROW on the panel ground, not a segment — three
    sentences that have to be read, not three chips to be scanned. */
@@ -15072,7 +15115,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 }
 .ks3-dark .ks3-sc-verdict[aria-pressed="true"] {
   background: rgba(255, 255, 255, .1);
-  border-color: var(--ks3-alert);
+  border-color: var(--ks3-accent);
 }
 .ks3-dark .ks3-sc-letter {
   border-color: var(--ks3-on-dark-muted);
@@ -15259,9 +15302,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    platform rule. Still not a mark: it says which world the bench is standing
    in, never that the student is right. */
 .ks3-dark .ks3-ab-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* ⚖️⚖️ THE COLUMN'S TWO ENDS, AND EVERY OTHER ROW IS MUTED. The default is
    the muted tone on BOTH the figure and the bar, and `data-ab-rank` is only
@@ -15428,9 +15471,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    on, and pressing it does not reset the population, which is the best thing
    on this bench. */
 .ks3-dark .ks3-nr-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-nr-one,
 .ks3-dark .ks3-nr-ten,
@@ -15582,9 +15625,9 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-dark .ks3-pb-outlabel { color: var(--ks3-on-dark); }
 .ks3-dark .ks3-pb-track { background: rgba(255, 255, 255, .08); }
 .ks3-dark .ks3-pb-tab[aria-pressed="true"] {
-  background: var(--ks3-alert);
-  border-color: var(--ks3-alert);
-  color: var(--ks3-ink);
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* ⚑⚑ THREE BANDS, AND AMBER IS THE BOTTOM ONE AS DATA. `--ks3-alert` here
    means "this population is in trouble fifty years on", not "you are wrong":
