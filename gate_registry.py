@@ -117,7 +117,16 @@ GATES = [
              "row is the gate that claim needed. It carries dated "
              "baselines for the bio/chem corpora, which are worse and are "
              "already live; a baselined scope fails the moment it gets "
-             "worse."),
+             "worse. ⚠️ TWO FIGURES, AND BOTH BELONG IN THE HEAD: the gate "
+             "measures the MARGIN-FILTERED exploit — of the sets where one "
+             "option visibly stands out, how often is it right — which for "
+             "physics went 43.9% to 19.6%. The UNFILTERED exploit, always "
+             "pick the longest over all 840 whether it stands out or not, "
+             "went only 37.7% to 31.9% (measured, ties to the first "
+             "longest) and is still seven points over chance. The filtered "
+             "figure is the one a student can act on "
+             "and the one worth gating; the unfiltered one is the honest "
+             "ceiling on what was achieved, and it is not zero."),
 
     dict(name="3d_isolation",
          cmd=["python3", "3d_isolation_check.py"],

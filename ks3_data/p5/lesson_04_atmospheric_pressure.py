@@ -77,14 +77,39 @@ LESSON = {
     "references": ["pressure-in-liquids", "pressure-force-over-area"],
     "ks4_links": [],
 
-    "meta_description": "Boil a splash of water in a can, seal it and cool "
-                        "it, and the can crushes itself flat with nothing "
-                        "near it. Take three things up a mountain and find "
-                        "out what was pressing all along.",
+    # ── ⚠️ NO `safety_note` ON THIS LESSON, AND THE ABSENCE IS DELIBERATE ──
+    #
+    # ⊕ MRB-297, 31 Aug 2026. Mide approved twelve safety notes on 30 Aug and
+    # eleven were placed. The twelfth was for THIS lesson and reads
+    # "Teacher demonstration only — never try this one yourself. …". It is
+    # NOT here, and it is not to be added without his say-so.
+    #
+    # Why: the note assumes the crushed can is a teacher demonstration, and
+    # this lesson's own `meta_description` and `big_question` were written as
+    # an INSTRUCTION TO THE STUDENT — "Boil a splash of water in an empty
+    # can, seal it, and cool it." A note saying "never try this one
+    # yourself" under a page that tells a child to do it would make the page
+    # contradict itself on a safety point, so the run's rule applied: where a
+    # note's assumption is contradicted by the lesson, the note is not placed
+    # and NOT ADAPTED — it goes back to Mide.
+    #
+    # ⊕ AMENDED 1 Sep 2026, by the cold double-check, which was right that
+    # withholding the note ALONE left the worst of the three states: a do-it
+    # instruction on a hazard, with nothing beside it. Audit M1's option (c)
+    # pairs the two, so the two leading fields are now in the SAME PASSIVE
+    # VOICE the lesson's own hook already uses nineteen lines below ("A
+    # little water is boiled … The can is sealed and stood in cold water").
+    # No new safety wording was written and no claim about who does it was
+    # added; an instruction was turned back into a description, in the
+    # lesson's own words. **The note itself is still Mide's to rule on.**
+    "meta_description": "A little water is boiled in a can, the can is "
+                        "sealed and cooled, and it crushes itself flat with "
+                        "nothing near it. Take three things up a mountain "
+                        "and find out what was pressing all along.",
 
-    "big_question": "Boil a splash of water in an empty can, seal it, and "
-                    "cool it. The can crushes itself flat, and nothing goes "
-                    "anywhere near it.",
+    "big_question": "A little water is boiled in an empty can, which is then "
+                    "sealed and cooled. The can crushes itself flat, and "
+                    "nothing goes anywhere near it.",
 
     "rail": [
         {"anchor": "s-hook",    "short": "CAN",

@@ -18285,7 +18285,18 @@
      untouched. */
   function p12ModelLadder(wrap, ctx) {
     function fmtLy(ly) {
-      if (ly < 0.001) { return (ly * 365.25 * 24 * 60).toFixed(1) + " light minutes"; }
+      /* ⊕ MRB-297 cold double-check, 1 Sep 2026 — the minutes/hours cut was
+         `ly < 0.001`, which is 8.77 light hours: an arbitrary round number in
+         the WRONG unit, so anything up to nearly nine hours printed in
+         minutes. It only showed once the solar system's `ly` was corrected
+         to 0.000951 (the light-crossing time of its own drawn width) and the
+         readout answered "500.2 light minutes" beside a note saying light
+         crosses it "in hours rather than years". The cut is now ONE LIGHT
+         HOUR — 1/(365.25 x 24) ly — so each figure prints in the largest
+         unit it fills. The Sun stays in minutes (8.3); the solar system
+         reads 8.3 light hours. */
+      var HOUR_LY = 1 / (365.25 * 24);
+      if (ly < HOUR_LY) { return (ly * 365.25 * 24 * 60).toFixed(1) + " light minutes"; }
       if (ly < 1) { return (ly * 365.25 * 24).toFixed(1) + " light hours"; }
       if (ly >= 1e6) { return (ly / 1e6).toFixed(1) + " million ly"; }
       if (ly >= 1000) { return p12Group(ly / 1000) + " thousand ly"; }

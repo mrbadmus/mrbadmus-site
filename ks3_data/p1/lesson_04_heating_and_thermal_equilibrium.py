@@ -185,14 +185,26 @@ LESSON = {
          # ⚖️ Design's flag 10 — the thermal bar is LOGARITHMIC and says so.
          # This bench reaches 0.009 J at one end and 627 MJ at the other; a
          # linear bar shows nothing at the spark end.
-         "scale_note": "The thermal-store bar is logarithmic — this bench "
-                       "runs from 0.009 J (a slow spark) to 627 MJ (a very "
-                       "hot bath), a range of about 10^11, and a linear bar "
-                       "would leave the spark invisible.",
+         # ⊕ MRB-297 COLD DOUBLE-CHECK, 1 Sep 2026 — the note used to read
+         # "runs from 0.009 J (a slow spark) to 627 MJ (a very hot bath)".
+         # Both dials are free, deliberately — moving one and watching the
+         # other readout not follow IS the lesson — but naming the corners as
+         # OBJECTS asserted two things that do not exist: a spark at 20 °C is
+         # not a spark, and 100 kg of water at 1500 °C is not a bath (it has
+         # boiled, and 627 MJ omits the 226 MJ of latent heat and uses
+         # water's c for steam). The range is real and the note now states it
+         # without claiming either corner is a thing you could point at.
+         "scale_note": "The thermal-store bar is logarithmic — the largest "
+                       "setting on this bench holds about 10^11 times the "
+                       "smallest, and a linear bar would leave everything "
+                       "but the bath at nothing.",
          # ⚠️ `n` IS A HEAT CAPACITY IN JOULES PER KELVIN (mass × specific
          # heat capacity), NOT an invented particle index. The engine prints
          # `n × t`, so n must be in J/K for that product to be a real number
-         # of joules in the thermal store above 0 °C. Derived:
+         # of joules in the thermal store above 0 °C — exact for every
+         # pairing a student would call by its name, and a model at the two
+         # corners where the amount and the temperature do not belong to the
+         # same object (see the scale-note comment above). Derived:
          #     spark  1 mg of steel   1e-6 kg × 450  J/kg/K = 0.00045 J/K
          #     mug    300 g of water  0.300 kg × 4180 J/kg/K = 1254   J/K
          #     bath   100 kg of water  100 kg  × 4180 J/kg/K = 418000 J/K

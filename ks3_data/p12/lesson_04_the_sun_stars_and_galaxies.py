@@ -41,12 +41,20 @@ ten per cent. Both are fixed and her VALUES are untouched. Registered in
 
 Her tab note reads *"Measured out to Neptune. Sunlight takes about four
 hours to cross it."* while the same tab's `ly` value is 0.00126, which the
-distance readout renders as **11.0 light hours**. Four hours is the light
+distance readout rendered as **11.0 light hours**. Four hours is the light
 time from the Sun to Neptune; 11 light hours is about 80 astronomical
-units, well beyond it. 5A.1's rule settles which side moves — *the
-instrument is the measurement and the prose is what changes* — so the note
-now names the boundary the readout actually computes. Her `ly` and her
-`dia` are untouched. Registered.
+units, well beyond it.
+
+⊕ **REOPENED AND SETTLED THE OTHER WAY, MRB-297 cold double-check, 1 Sep
+2026.** 5A.1's rule — *the instrument is the measurement and the prose is
+what changes* — assumed the readout was measuring one thing. P12-09's fix
+broke that assumption: relabelling this readout from a DISTANCE to a WIDTH
+put two widths of the same object on one tab, 0.00126 ly (11.0 light hours,
+11 900 million km) against a `dia` of 9000 million km captioned *"across its
+widest part"* — 32% apart, and no rule about which side moves can reconcile
+two figures for the same measurement. So `ly` is now **0.000951**, the light
+crossing time of `dia` itself (9e9 ÷ 299 792.458 ÷ 3600 = 8.34 hours), and
+both readouts describe Neptune's orbit. `dia` is untouched; `ly` moved.
 
 ── ⚠️ MRB-278 · POSITION IS AUTHORED ─────────────────────────────────
 
@@ -70,7 +78,7 @@ The panel was captioned *"Distance from Earth in light years"* and the
 second readout card *"DISTANCE FROM EARTH · how long its light has been
 travelling"*. Two of the five objects are things the Earth is INSIDE, and
 for both of them the `ly` value is the object's WIDTH: the solar system at
-11.0 light hours, and the Milky Way at 100 thousand ly — which is the
+8.3 light hours, and the Milky Way at 100 thousand ly — which is the
 galaxy's diameter, as the SIZE card immediately beside it says. The rung
 note then asserted *"At 100 thousand ly from Earth, the light reaching you
 from the Milky Way set out that long ago"*, which is false in every
@@ -257,16 +265,24 @@ LESSON = {
              {"id": "system", "label": "The solar system",
               "name": "the solar system",
               "kind": "one star and everything bound to it",
-              "ly": 0.00126, "dia": 9e9, "count": "1 star, 8 planets",
+              "ly": 0.000951, "dia": 9e9, "count": "1 star, 8 planets",
               # ⚠️ HER NOTE SAID "Measured out to Neptune. Sunlight takes
-              # about four hours to cross it." — which disagrees with the
+              # about four hours to cross it." — which disagreed with the
               # `ly` value beside it, and it is the READOUT that is the
               # measurement (5A.1). See the module note.
-              "note": "Measured out well beyond Neptune, whose orbit alone "
-                      "is 9000 million km across. That figure is a width "
-                      "and not a distance — you are inside this one — and "
-                      "light crosses the whole of it in hours rather than "
-                      "years."},
+              # ⊕ MRB-297 COLD DOUBLE-CHECK, 1 Sep 2026 — `ly` WAS 0.00126,
+              # and P12-09's fix is what made that a contradiction. Relabelling
+              # this readout from "distance from Earth" to a WIDTH put two
+              # widths of the SAME object on one tab, 32% apart: 0.00126 ly is
+              # 11.0 light hours (11 900 million km), while `dia` is 9000
+              # million km and its readout is captioned "across its widest
+              # part". Both are now Neptune's orbit, which is the figure `dia`
+              # already held and the one a school uses: 9000 million km, and
+              # 9e9 / 299 792.458 / 3600 = 8.34 light hours = 0.000951 ly.
+              "note": "Measured across Neptune's orbit, 9000 million km from "
+                      "side to side. That figure is a width and not a "
+                      "distance — you are inside this one — and light "
+                      "crosses it in hours rather than years."},
              {"id": "proxima", "label": "Proxima Centauri",
               "name": "Proxima Centauri",
               "kind": "the nearest star to the Sun",

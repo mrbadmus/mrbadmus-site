@@ -41,11 +41,24 @@ student receives.
                draws from (`ks3_assignment_bank`). NOT live for physics: 0
                rows on production as of 31 Aug 2026, which is why the physics
                tell had to be fixed BEFORE the export, not after.
+               ⊕ CORRECTED 1 Sep 2026: physics was NOT 0 rows. It had been
+               exported on 30 Aug at 23:36 UTC, carrying the full 43.9%
+               giveaway, and was live to students for two days. The pools were
+               repaired on 1 Sep and re-verified row by row against source.
   · `ladder` — the four rungs baked into every lesson page. LIVE.
   · `hook`   — `phenomenon.options` on the lesson dict. LIVE. Carries an
-               integer `answer` index in `ks3_data` on 62 of 70 physics
-               lessons; the 8 that do not resolve are all of P1, whose hook is
-               shaped differently, and they are skipped rather than guessed at.
+               integer `answer` index in `ks3_data` on **70 of 70** physics
+               lessons, so none is skipped.
+               ⊕ This paragraph used to read "62 of 70 … the 8 that do not
+               resolve are all of P1". That was true when this gate was
+               written and P1's eight hooks were the estate's only unwatched
+               MCQ corpus. They were never unresolvable — every reveal names
+               one option — so MRB-297 wrote the index down, and the gate
+               went red the same minute: 5 of the 5 hooks with a visible
+               margin had the correct answer as the longest option, on eight
+               live pages. Fixed. The lesson is that a corpus nothing can
+               measure reports no defects, which is not the same as having
+               none.
 
 ── HOW IT FAILS ─────────────────────────────────────────────────────────
 
