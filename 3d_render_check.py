@@ -118,6 +118,7 @@ gate owns is that nothing a student can see has moved.
 
 from __future__ import annotations
 
+
 import atexit
 import json
 import math
@@ -129,6 +130,54 @@ import tempfile
 import time
 
 import ks3_browser as cdp
+
+# ── MRB-305 · lift the "coming soon" gate for this harness ────────────────
+# The studio ships gated: dimmed, `inert`, two words over it (`src/studio/
+# gate.ts`). Every assertion in this file is about the studio ITSELF — its
+# regions, its computed styles, its interactions — and not one of them stops
+# being true because a student cannot currently reach it. So the harness lifts
+# the gate in the page it is already driving and goes on measuring the thing it
+# was written to measure. A gated studio must still be a CORRECT studio, or
+# lifting the gate later ships whatever broke while nobody was looking.
+#
+# ⚠️ NOT A URL PARAMETER, deliberately. `?gate=off` would do the same job and
+# would be reachable by any student who guessed it. This is a window flag set
+# over the debugger, which nothing outside a CDP session can set.
+#
+# Patched onto `goto` rather than called at ~10 navigation sites, so a
+# navigation added later cannot forget it. Guarded, because both 3D gates
+# apply the same patch and they share one imported module object.
+if not getattr(cdp.Page, "_mrb305_patched", False):
+    _MRB305_ORIG_GOTO = cdp.Page.goto
+
+    def _mrb305_goto(self, url, settle=None, timeout=30.0):
+        page = _MRB305_ORIG_GOTO(self, url, settle=settle, timeout=timeout)
+        # Set the flag FIRST so React's effect skips on every later render,
+        # then undo the pass it already made before the flag existed.
+        self.eval("""
+            window.__MRB_GATE_LIFTED__ = true;
+            var app = document.querySelector('.app');
+            if (app) {
+                app.removeAttribute('data-gate');
+                Array.prototype.forEach.call(app.children, function (c) {
+                    c.inert = false;
+                    c.removeAttribute('aria-hidden');
+                });
+            }
+            // ⚠️ HIDDEN, NEVER REMOVED. The overlay is React's node, and
+            // pulling it out from under React makes its next commit fail with
+            // "removeChild: the node to be removed is not a child of this
+            // node" — which is exactly what the first version of this lift
+            // did, on every drag in §09. React unmounts it itself on the next
+            // render, because the flag above has already turned `gated` off.
+            var cs = document.querySelector('.comingsoon');
+            if (cs) cs.style.display = 'none';
+            true;
+        """)
+        return page
+
+    cdp.Page.goto = _mrb305_goto
+    cdp.Page._mrb305_patched = True
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP = os.path.join(HERE, "3d-studio")

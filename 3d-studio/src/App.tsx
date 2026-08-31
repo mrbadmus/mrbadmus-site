@@ -29,6 +29,7 @@ import {
   type RoundDeps,
   type RoundState,
 } from './studio/retrieval'
+import { COMING_SOON, COMING_SOON_WORDS, gateLifted } from './studio/gate'
 import { Stage, type StageMode } from './components/Stage'
 import { TopBar, ModeToggle } from './components/TopBar'
 import { LibraryColumn, LibraryDrawer, LibraryFullScreen } from './components/Library'
@@ -301,9 +302,57 @@ export default function App({
     />
   )
 
+  /* ── MRB-305 · the "coming soon" gate ──────────────────────────────────
+   * `pointer-events: none` (studio.css) stops a mouse and a finger. It does
+   * NOT stop a keyboard, and it does not stop a screen reader — a control a
+   * mouse user cannot reach is still in the tab order and still announced,
+   * which is exactly the split Mide's ruling names and forbids. `inert` is
+   * the one thing that closes both: it removes a subtree from the tab order,
+   * from the accessibility tree and from hit-testing in one attribute.
+   *
+   * Applied to every CHILD of `.app` except the header and the overlay,
+   * rather than to `.app` itself, because the header has to stay live — a
+   * student who lands on a dead page must still be able to leave it.
+   *
+   * ⚠️ NO DEPENDENCY ARRAY, deliberately. The drawers and the phone sheet
+   * mount and unmount as siblings, so a new child can appear at any render.
+   * This runs after every one of them and gates whatever it finds. */
+  const appRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!COMING_SOON || gateLifted()) return
+    const root = appRef.current
+    if (!root) return
+    for (const el of Array.from(root.children)) {
+      const child = el as HTMLElement & { inert?: boolean }
+      if (child.classList.contains('topbar') || child.classList.contains('comingsoon')) continue
+      child.inert = true
+      child.setAttribute('aria-hidden', 'true')
+    }
+    /* ⚠️ NOT EVERY CONTROL IN THE HEADER IS NAVIGATION. The header survives so
+     * a student can LEAVE — brand, site nav, sign-in. But at the tablet and
+     * phone breakpoints TopBar also puts STUDIO controls up there: the
+     * specimen-library trigger, the Explore/Retrieve toggle, and retrieval's
+     * "End round". Sparing the whole header would leave a phone user able to
+     * pull open a library drawer that is itself dimmed and dead — a broken
+     * state rather than a gated one. So the header is spared by DEFAULT and
+     * these three are gated by NAME. */
+    for (const el of Array.from(root.querySelectorAll('.topbar .libtrigger, .topbar .modewrap, .topbar .endround'))) {
+      const control = el as HTMLElement & { inert?: boolean }
+      control.inert = true
+      control.setAttribute('aria-hidden', 'true')
+    }
+  })
+
+  const gated = COMING_SOON && !gateLifted()
+
   return (
     <div
+      ref={appRef}
       className="app"
+      /* THE SINGLE SWITCH, at the page root. `studio.css` hangs the dimming
+       * and the dead pointer off this one attribute; `src/studio/gate.ts`
+       * hangs the attribute off one boolean. */
+      data-gate={gated ? 'coming-soon' : undefined}
       data-mode={mode}
       data-layout={layout}
       // The phone sheet overlays the stage's lower half, so the stage's own
@@ -443,6 +492,18 @@ export default function App({
           onClose={() => setLibraryOpen(false)}
           keyStage={keyStage}
         />
+      )}
+
+      {/* MRB-305 — LAST CHILD, so it paints over the studio without a
+        * z-index war, and so the effect above walks past it. It is NOT
+        * aria-hidden: everything else on the page has just been hidden from
+        * the accessibility tree, and these two words are the only thing left
+        * that explains why. `pointer-events: none` (studio.css) lets the
+        * header underneath stay clickable through it. */}
+      {gated && (
+        <div className="comingsoon">
+          <p className="comingsoon__word">{COMING_SOON_WORDS}</p>
+        </div>
       )}
     </div>
   )

@@ -1742,3 +1742,98 @@ a:hover { color: var(--st-accent-hover); }
   .main--retrieve .stage { flex: none; height: 300px; border-radius: 0; border: none; }
   .rpanel { border-radius: 0; border: none; flex: 1; }
 }
+
+/* ── MRB-305 · the "coming soon" gate ───────────────────────────
+ * Ruled by Mide, 31 Aug 2026. Everything here hangs off ONE attribute,
+ * `data-gate="coming-soon"` on `.app`, which hangs off ONE boolean in
+ * `src/studio/gate.ts`. Lift the gate there and every rule below stops
+ * matching; nothing in this block needs editing to ship the studio.
+ *
+ * ⚠️ THE HEADER IS EXCLUDED BY NAME, and that is the ruling, not a detail:
+ * the studio goes dim and dead, the nav stays lit and live, so a student who
+ * lands on a gated page can navigate away from it. `.comingsoon` is excluded
+ * too — the overlay must not dim itself.
+ *
+ * `pointer-events` is only half the job; the other half is `inert`, applied
+ * in App.tsx, because a keyboard and a screen reader both walk straight past
+ * a CSS property. Neither half is sufficient alone. */
+.app[data-gate='coming-soon'] > *:not(.topbar):not(.comingsoon) {
+  opacity: 0.26;
+  pointer-events: none;
+  user-select: none;
+}
+
+.comingsoon {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  /* Clears the 64px header, so the words centre in the STUDIO rather than in
+   * the viewport and can never sit on top of the nav. The header shrinks at
+   * the phone breakpoint; the override is at the foot of the media block. */
+  padding: 64px 16px 16px;
+  /* The nav underneath stays clickable THROUGH the overlay. Without this the
+   * gate would defeat its own escape route. */
+  pointer-events: none;
+}
+
+.comingsoon__word {
+  margin: 0;
+  /* Never wider than the phone it is read on: at 390px this caps the words at
+   * 359px and lets them wrap to two lines rather than overflow. */
+  max-width: 92vw;
+  text-align: center;
+  font-family: var(--st-display);
+  font-weight: 800;
+  font-size: clamp(34px, 9.5vw, 104px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--st-ink);
+  /* A halo in the page's own ground colour, so the words stay legible over
+   * whatever the dimmed studio happens to be showing behind them — the model,
+   * a panel edge, a photograph. */
+  text-shadow:
+    0 0 18px var(--st-ground),
+    0 0 44px var(--st-ground),
+    0 2px 4px var(--st-ground);
+}
+
+/* Retrieval's dark room. Unreachable while the gate is up — the mode toggle
+ * is inside the gated half — but the studio can open straight into it if a
+ * future default changes, and a near-black word on a near-black ground is
+ * not a failure anyone would notice until a student did. */
+.app[data-mode='retrieve'] .comingsoon__word {
+  color: var(--st-cream);
+  text-shadow:
+    0 0 18px var(--st-room),
+    0 0 44px var(--st-room),
+    0 2px 4px var(--st-room);
+}
+
+/* The header shrinks twice on the way down; the overlay's top padding tracks
+ * it, so the words stay centred in the studio and clear of the nav at every
+ * width. 390px lands in the second block. */
+@media (max-width: 1023px) {
+  .comingsoon { padding-top: 60px; }
+}
+@media (max-width: 699px) {
+  /* The phone raises a sheet over the lower half of the screen, so the
+   * viewport's centre lands on the sheet's own top edge and the words read as
+   * if they had fallen there. Pinned into the STAGE instead — over the model,
+   * clear of the sheet — which is what "centred over the studio" means at a
+   * width where the studio is stacked rather than side by side. */
+  .comingsoon { padding-top: 52px; place-items: start center; }
+  .comingsoon__word { margin-top: 22vh; }
+}
+
+/* The header is spared as a whole so a student can navigate away — but the
+ * tablet and phone headers also carry STUDIO controls, and those are gated by
+ * name. See the matching block in App.tsx, which inerts the same three. */
+.app[data-gate='coming-soon'] .topbar .libtrigger,
+.app[data-gate='coming-soon'] .topbar .modewrap,
+.app[data-gate='coming-soon'] .topbar .endround {
+  opacity: 0.26;
+  pointer-events: none;
+  user-select: none;
+}
