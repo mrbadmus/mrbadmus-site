@@ -6374,12 +6374,52 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* The brand is the other unshrinkable thing on the rail. It is one word and
-     a chevron, so it cannot elide usefully — but it can stop being allowed to
-     push the trail off the edge, which is what `flex-shrink: 0` on a 177px
-     item does at 390. */
-  .ks3-brand { min-width: 0; }
-  .ks3-brand svg { flex: 0 0 auto; }
+  /* ⊖ SUPERSEDED by MRB-297 — the rule below replaces it. It read
+       `.ks3-brand { min-width: 0; }`
+     and its reasoning was that the brand "can stop being allowed to push the
+     trail off the edge, which is what `flex-shrink: 0` on a 177px item does
+     at 390". The reasoning was right about the trail and wrong about what
+     shrinking a brand actually does.
+
+     ⚠️ `min-width: 0` LET THE BOX SHRINK. IT DID NOT SHRINK THE WORDMARK.
+     `.ks3-brand` is `overflow: visible`, so the flex algorithm squeezed the
+     BOX to 52–137px while the text went on needing 177px — and painted the
+     difference straight out through the divider and over the first crumb.
+     Measured on all 70 physics lessons at a true 390px device-metrics
+     override: 70 of 70 overprint, by +13.6px to +98.4px, median +60. A
+     reader sees `MrBadm[Describi]usAI`. The same rule serves biology and
+     chemistry, so it is 185 of 185 lessons, and it is chemistry's C3-03.
+
+     ⚠️ THE TEST THAT MISSES IT, recorded so it is not repeated. The layout
+     boxes never intersect, so `getBoundingClientRect()` overlap returns
+     **0 of 70** and the defect reads as absent; `document.scrollWidth` is
+     exactly 390 and no per-element overflow sweep fires either. Three
+     auditors reported this ABSENT on that evidence and all three were
+     struck. The only valid test is a `Range` over the wordmark's own TEXT
+     NODE against the trail's left edge — text ink, not the box.
+
+     THE FIX, and why it is a scale and not a hide. The brand stops being
+     the thing that gives way (`flex-shrink: 0` + `min-width: max-content`,
+     so overprinting is impossible by construction rather than by arithmetic)
+     and instead comes down to the trail's own 17px on a phone. Measured, the
+     trail keeps the width it had — 104.4px against 107.6px before — so
+     nothing about the trail gets worse, and the wordmark becomes legible.
+     Holding the brand at 22px and making it unshrinkable also fixes the
+     overprint, but costs the trail 36px and cuts the last crumb to 15px,
+     which is the trade this rule declines. Design's mark is unchanged: same
+     chevron, same wordmark, same weight, scaled — MRB-197 governs the
+     composition of the mark, not its size at every viewport.
+
+     ⚠️ `ks3_parity`'s row "nav brand wordmark (MRB-197)" pins 22px. Verified
+     it still passes: that harness pins no viewport and lands at 756px, where
+     this block does not apply and the brand computes 22px. */
+  .ks3-brand {
+    flex-shrink: 0;
+    min-width: max-content;
+    font-size: 17px;
+    gap: 8px;
+  }
+  .ks3-brand svg { flex: 0 0 auto; width: 26px; height: 26px; }
 }
 
 /* ═══ BEGIN C1 ═══ */
