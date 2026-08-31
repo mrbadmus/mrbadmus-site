@@ -100,12 +100,12 @@ LESSON = {
         "options": [
             "The house lamps each have their own path to the supply; the "
             "decorations are all threaded onto one path",
-            "House wiring runs at a higher voltage, and higher voltages "
-            "survive a broken bulb",
-            "The decorations use much smaller bulbs, and small bulbs fail "
-            "together",
-            "A house has a fuse box that keeps the other rooms going when one "
-            "bulb fails",
+            "House wiring runs at a much higher voltage, and a higher "
+            "voltage keeps working across a broken bulb",
+            "The decorations use much smaller bulbs, and small bulbs are all "
+            "made to fail together in a batch",
+            "A house has a fuse box that keeps the other rooms going whenever "
+            "one of its bulbs burns out",
         ],
         "answer": 0,
         "reveal": "It is the number of paths. Every light in a house has its "

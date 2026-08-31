@@ -35,17 +35,20 @@ QUESTIONS = [
         "band": "easier",
         "text": "What does a single field line on a map actually show?",
         "options": [
-            {"text": "Where a strip of iron has been laid on the paper",
+            {"text": "Where a thin strip of iron has been laid down on the "
+                     "paper",
              "correct": False,
              "why": "There is nothing on the paper. The line is a record of "
                     "readings, drawn afterwards in pencil."},
             {"text": "The direction a compass needle would point at each spot "
                      "along it", "correct": True},
-            {"text": "The edge of the region the magnet can reach",
+            {"text": "The outer edge of the region that the magnet is able "
+                     "to reach",
              "correct": False,
              "why": "Lines are drawn all through the region, not around it. "
                     "The field does not stop at a line."},
-            {"text": "How far a magnet can pull an object from",
+            {"text": "How far away from the magnet an object can still be "
+                     "pulled",
              "correct": False,
              "why": "A line carries a direction, not a distance. How far the "
                     "magnet reaches is shown by how the lines spread."},

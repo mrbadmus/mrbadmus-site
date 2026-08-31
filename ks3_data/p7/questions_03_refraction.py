@@ -33,14 +33,16 @@ QUESTIONS = [
         "options": [
             {"text": "the change of direction of light when it crosses into "
                      "a different material at an angle", "correct": True},
-            {"text": "the bouncing of light off a surface", "correct": False,
+            {"text": "the bouncing of light off a surface, so that it comes "
+                     "back into the material it was in", "correct": False,
              "why": "That is reflection. Refraction happens to the light "
                     "that goes IN."},
             {"text": "the taking up of light by a surface, so that none of "
-                     "it leaves again", "correct": False,
+                     "it ever leaves the surface again", "correct": False,
              "why": "That is absorption, and the light does not come out "
                     "again at all."},
-            {"text": "the splitting of white light into colours",
+            {"text": "the splitting of white light into the band of colours "
+                     "a prism spreads out",
              "correct": False,
              "why": "That is dispersion, which is a consequence of "
                     "refraction rather than the same thing."},

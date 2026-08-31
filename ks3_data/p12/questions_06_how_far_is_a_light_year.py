@@ -70,13 +70,13 @@ QUESTIONS = [
                 "how far is that?",
         "options": [
             {"text": "About 9.5 million million kilometres", "correct": True},
-            {"text": "About 300 000 kilometres", "correct": False,
+            {"text": "About 300 thousand kilometres", "correct": False,
              "why": "That is how far light travels in one SECOND. A year is "
                     "over thirty million seconds."},
             {"text": "About 150 million kilometres", "correct": False,
              "why": "That is the distance from the Earth to the Sun, which "
                     "light crosses in a little over eight minutes."},
-            {"text": "About 9500 kilometres", "correct": False,
+            {"text": "About 9.5 thousand kilometres", "correct": False,
              "why": "That is less than the diameter of the Earth. Light "
                     "covers it in a thirtieth of a second."},
         ],

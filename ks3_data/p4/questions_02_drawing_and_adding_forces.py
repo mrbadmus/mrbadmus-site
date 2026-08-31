@@ -267,15 +267,18 @@ QUESTIONS = [
                 "the current pushes straight backwards. Why can you not just "
                 "subtract the two numbers?",
         "options": [
-            {"text": "Because the current is always bigger.",
+            {"text": "Because the current is always bigger than the pull a "
+                     "rope can give.",
              "correct": False,
-             "why": "Its size is not the problem. The method fails whichever "
-                    "is bigger."},
-            {"text": "Because one of them is a pull and one is a push.",
+             "why": "It need not be bigger at all, and its size is not the "
+                    "problem. The method fails whichever is bigger."},
+            {"text": "Because one of them is a pull and one is a push, and "
+                     "opposites never combine.",
              "correct": False,
              "why": "Pushes and pulls subtract perfectly well when they are "
                     "along one line — that is the whole lesson."},
-            {"text": "Because a rope cannot exert a force at an angle.",
+            {"text": "Because a rope cannot exert a force at an angle, only "
+                     "straight ahead.",
              "correct": False,
              "why": "It can, and it does. That is precisely the situation "
                     "being described."},

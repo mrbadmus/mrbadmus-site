@@ -29,14 +29,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "In a longitudinal wave, the particles move…",
         "options": [
-            {"text": "at right angles to the direction the wave travels",
-             "correct": False,
+            {"text": "at right angles to the direction in which the wave "
+                     "travels", "correct": False,
              "why": "That is a transverse wave, which is what water waves "
                     "do."},
-            {"text": "in circles around their resting place", "correct": False,
+            {"text": "in small circles around the place where they were "
+                     "resting", "correct": False,
              "why": "Circular motion is closer to what water waves do. In a "
                     "longitudinal wave the movement is along one line."},
-            {"text": "not at all — only the wave moves", "correct": False,
+            {"text": "not at all — the wave moves and the particles all "
+                     "stay put", "correct": False,
              "why": "The particles have to move, or there would be nothing "
                     "to pass the disturbance on."},
             {"text": "backwards and forwards along the direction the wave "
@@ -138,14 +140,17 @@ QUESTIONS = [
                      "across the room and arriving at the listener's ear", "correct": False,
              "why": "That air moves a fraction of a millimetre and stays "
                     "near the speaker. Nothing is delivered across the room."},
-            {"text": "A steady breeze from the speaker", "correct": False,
+            {"text": "A steady breeze from the speaker, blowing gently "
+                     "against the listener the whole time the note lasts",
+             "correct": False,
              "why": "There is no breeze. Hold a candle in front of a "
                     "speaker and the flame is undisturbed."},
             {"text": "A travelling pattern of squeezed and spread-out air, "
                      "handed on from one bit of air to the next",
              "correct": True},
-            {"text": "The vibration of the cone itself, carried through the "
-                     "air", "correct": False,
+            {"text": "The vibration of the cone itself, carried across the "
+                     "room and arriving intact at the listener",
+             "correct": False,
              "why": "The cone stays in the speaker. What travels is the "
                     "disturbance it set going."},
         ],
@@ -158,14 +163,15 @@ QUESTIONS = [
         "options": [
             {"text": "How far each bit of air shifts from its resting place "
                      "as the wave passes", "correct": True},
-            {"text": "How far apart the compressions are", "correct": False,
+            {"text": "How far apart the compressions are spaced out along "
+                     "the wave", "correct": False,
              "why": "That is the wavelength."},
-            {"text": "How high the wavy line is drawn on the page",
-             "correct": False,
+            {"text": "How high the wavy line is drawn on the page it is "
+                     "printed on", "correct": False,
              "why": "The height on the page represents the amplitude, but "
                     "the amplitude itself is a real distance in the air."},
-            {"text": "Sound waves have no amplitude, because there is no "
-                     "hump to measure", "correct": False,
+            {"text": "Sound waves have no amplitude at all, because there "
+                     "is no hump to measure", "correct": False,
              "why": "There is a real quantity to measure: how far the air is "
                     "shifted, and how much the pressure changes with it."},
         ],
@@ -177,18 +183,23 @@ QUESTIONS = [
         "text": "Which of these is a genuine difference between a water wave "
                 "and a sound wave in air?",
         "options": [
-            {"text": "Only one of them carries energy", "correct": False,
+            {"text": "Only one of them carries energy, and the other "
+                     "simply passes a shape along without any energy at "
+                     "all", "correct": False,
              "why": "Both carry energy. That is what a wave does."},
             {"text": "Only one of them needs a material to travel through, "
                      "and the other can cross a gap with nothing in it",
              "correct": False,
              "why": "Both do. A water wave obviously needs water, and a "
                     "sound wave needs a medium too."},
-            {"text": "Only one of them can be reflected", "correct": False,
+            {"text": "Only one of them can be reflected, and the other is "
+                     "soaked up by whatever surface it happens to meet",
+             "correct": False,
              "why": "Both reflect. A ripple bounces off a tank wall and a "
                     "shout bounces off a cliff."},
             {"text": "In one, the material moves at right angles to the "
-                     "travel; in the other, along it", "correct": True},
+                     "travel; in the other, along the line of it",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -203,17 +214,19 @@ QUESTIONS = [
             {"text": "A compression is a place where the air is crowded "
                      "together and the pressure is higher; temperature is "
                      "not what defines it", "correct": True},
-            {"text": "A compression is where the air is colder, not hotter",
-             "correct": False,
+            {"text": "A compression is a place where the air is colder "
+                     "rather than hotter, and it is the drop in "
+                     "temperature that the word records", "correct": False,
              "why": "Swapping hot for cold keeps the same mistake. "
                     "Temperature is not the defining property either way."},
             {"text": "A compression is a place where the air is moving "
                      "fastest, and how quickly it is moving is what the "
-                     "word records", "correct": False,
+                     "word actually records", "correct": False,
              "why": "Air speed and air crowding are different things, and "
                     "the crowding is what the word means."},
-            {"text": "A compression is where the sound is loudest",
-             "correct": False,
+            {"text": "A compression is a place where the sound happens to "
+                     "be at its loudest, and that loudness is what the "
+                     "word records", "correct": False,
              "why": "Loudness belongs to the whole wave, not to one part of "
                     "it. Every wave has compressions, loud or quiet."},
         ],
@@ -226,16 +239,19 @@ QUESTIONS = [
                 "sideways send a pulse to the far end. Why is only one of "
                 "them a model of sound?",
         "options": [
-            {"text": "Because only one of them carries energy",
-             "correct": False,
+            {"text": "Because only one of them carries energy along to the "
+                     "far end, and carrying energy from place to place is "
+                     "what sound does", "correct": False,
              "why": "Both carry energy to the far end, and both can knock "
                     "something over when they arrive."},
-            {"text": "Because only one of them travels", "correct": False,
+            {"text": "Because only one of them actually travels from one "
+                     "end of the slinky to the other, and sound has to "
+                     "travel to reach you", "correct": False,
              "why": "Both travel. The difference is in what the coils do, "
                     "not in whether the pulse gets there."},
             {"text": "Because the sideways one is easier to see, and a "
-                     "model has to be watchable before it can be a model of "
-                     "anything",
+                     "model has to be watchable before it can be a model "
+                     "of anything at all",
              "correct": False,
              "why": "How easy something is to see does not decide what it is "
                     "a model of."},
@@ -252,8 +268,9 @@ QUESTIONS = [
                 "steady note. Its diaphragm moves backwards and forwards. "
                 "What is pushing it?",
         "options": [
-            {"text": "A stream of air arriving from the speaker",
-             "correct": False,
+            {"text": "A stream of air arriving from the speaker and "
+                     "blowing steadily against the front face of the "
+                     "diaphragm", "correct": False,
              "why": "No stream arrives. The diaphragm goes backwards as well "
                     "as forwards, which a one-way stream could not do."},
             {"text": "The magnetic field of the speaker reaching across the "
@@ -264,8 +281,9 @@ QUESTIONS = [
             {"text": "Air pressure that rises above and falls below normal "
                      "in turn as compressions and rarefactions arrive",
              "correct": True},
-            {"text": "The vibration of the floor between them",
-             "correct": False,
+            {"text": "The vibration of the floor between them, passed up "
+                     "through the bench and the stand the microphone sits "
+                     "on", "correct": False,
              "why": "The microphone works with the speaker held in the air, "
                     "touching nothing."},
         ],
@@ -285,12 +303,15 @@ QUESTIONS = [
                     "not the obstacle."},
             {"text": "Because a water wave changes the SHAPE of a surface "
                      "you can see, while a sound wave only changes how "
-                     "crowded invisible air is", "correct": True},
-            {"text": "Because sound waves are too small to see",
-             "correct": False,
+                     "crowded the invisible air is", "correct": True},
+            {"text": "Because sound waves are far too small to see, being "
+                     "well below the size of anything that a camera lens "
+                     "could ever hope to resolve", "correct": False,
              "why": "Sound wavelengths are often around a metre — far from "
                     "small. It is the air being invisible that matters."},
-            {"text": "Because sound waves do not exist until they are heard",
+            {"text": "Because sound waves do not exist until they are "
+                     "heard, so there is nothing there for a camera to "
+                     "record until somebody is in the room to listen",
              "correct": False,
              "why": "A microphone with nobody in the room records them "
                     "perfectly well."},

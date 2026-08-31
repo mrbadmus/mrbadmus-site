@@ -198,21 +198,21 @@ QUESTIONS = [
                 "the room. Why is that wasted for the bulb but not for the "
                 "heater?",
         "options": [
-            {"text": "The heater produces a different kind of energy from "
-                     "the bulb",
+            {"text": "The heater makes warmth directly while the bulb "
+                     "only makes light",
              "correct": False,
-             "why": "It does not. Both end with energy in a thermal store in "
-                    "the room — the physics is identical."},
+             "why": "The bulb warms the room too. Both end with energy in a "
+                    "thermal store there — the physics is identical."},
             {"text": "Because “wasted” describes the job you wanted "
                      "done, not the physics",
              "correct": True},
-            {"text": "The heater is more efficient, so less of its energy is "
-                     "wasted",
+            {"text": "The heater is more efficient, so a smaller share "
+                     "of its energy is wasted",
              "correct": False,
              "why": "Efficiency is not the difference here. The heater's job "
                     "IS the warm room, so none of it is off-target."},
-            {"text": "The bulb loses energy to the room and the heater does "
-                     "not",
+            {"text": "The bulb leaks energy into the room and the heater "
+                     "does not leak any",
              "correct": False,
              "why": "Both put the same kind of energy in the same place. "
                     "Only your intention differs."},
@@ -279,18 +279,18 @@ QUESTIONS = [
             {"text": "The old bulbs had been doing part of the heating, "
                      "whether or not anyone intended it",
              "correct": True},
-            {"text": "LEDs draw energy away from the heating system to run "
-                     "themselves",
+            {"text": "LEDs draw energy away from the heating system, so "
+                     "it has less of its own to use",
              "correct": False,
              "why": "They do not interact with the heating at all. They "
                     "simply stop supplying the warmth the bulbs did."},
-            {"text": "LEDs are less efficient than filament bulbs at making "
-                     "the room warm",
+            {"text": "LEDs are less efficient than the filament bulbs "
+                     "were at making the room warm",
              "correct": False,
              "why": "True in a sense, but backwards as an explanation — "
                     "warming the room was never the bulbs' job."},
-            {"text": "The shop is using more total energy than it was with "
-                     "the bulbs",
+            {"text": "The shop is using more total energy than it did "
+                     "when the filament bulbs were in",
              "correct": False,
              "why": "It is using far less overall. Only the heating system's "
                     "share of it has gone up."},
@@ -304,19 +304,21 @@ QUESTIONS = [
                 "“the energy was used up by the brakes”. What is "
                 "wrong with that?",
         "options": [
-            {"text": "Nothing — that is what braking does to energy",
+            {"text": "Nothing — braking uses energy up, and that is what "
+                     "brakes are for",
              "correct": False,
              "why": "It is the belief this lesson exists to correct. Nothing "
                     "uses energy up, ever."},
             {"text": "Nothing is used up — it filled a thermal store in the "
                      "discs, tyres and air",
              "correct": True},
-            {"text": "The energy went into the road rather than the brakes",
+            {"text": "The energy went into the road surface rather than "
+                     "into the brakes",
              "correct": False,
              "why": "Some does, but the error is the phrase “used "
                     "up”, not which object got it."},
-            {"text": "The kinetic store was never full, so there was nothing "
-                     "to use",
+            {"text": "The kinetic store was never full, so there was "
+                     "nothing there to be used",
              "correct": False,
              "why": "It was full — the car was moving. The question is where "
                     "that went, not whether it existed."},

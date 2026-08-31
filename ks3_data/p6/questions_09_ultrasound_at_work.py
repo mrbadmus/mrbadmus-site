@@ -113,8 +113,9 @@ QUESTIONS = [
             {"text": "In steel, because sound travels more than three times "
                      "faster there, so the echo is back much sooner",
              "correct": True},
-            {"text": "In water, because the pulse has less material to get "
-                     "through", "correct": False,
+            {"text": "In water, because the pulse has a good deal less "
+                     "material to get through on the way down and then "
+                     "back up again", "correct": False,
              "why": "The depth is the same in both. What differs is how fast "
                     "the pulse gets there and back."},
             {"text": "The same in both, because it is the same reflector at "
@@ -122,7 +123,8 @@ QUESTIONS = [
                      "time", "correct": False,
              "why": "The screen shows TIME, and the same distance takes very "
                     "different times in the two materials."},
-            {"text": "In water, because water reflects more of the pulse",
+            {"text": "In water, because water reflects a great deal more "
+                     "of the pulse back to the probe than steel does",
              "correct": False,
              "why": "How much comes back changes the height of the pip, not "
                     "when it arrives."},
@@ -182,10 +184,14 @@ QUESTIONS = [
              "correct": False,
              "why": "Both are information devices, and both work at as low a "
                     "power as they can."},
-            {"text": "Both work above 20 000 Hz", "correct": False,
+            {"text": "Both work above 20 000 Hz, at frequencies that sit "
+                     "well past the top of anything a person can hear",
+             "correct": False,
              "why": "A microphone works at ordinary audible frequencies, "
                     "roughly 20 to 20 000 Hz."},
-            {"text": "Both need a gel to work", "correct": False,
+            {"text": "Both need a layer of gel between them and whatever "
+                     "they are working on before anything can get through",
+             "correct": False,
              "why": "A microphone needs no gel; it takes sound straight out "
                     "of the air."},
             {"text": "Both take information out of a sound wave and turn it "
@@ -201,7 +207,8 @@ QUESTIONS = [
         "text": "Why is the gel between the probe and the skin essential "
                 "rather than merely comfortable?",
         "options": [
-            {"text": "Because it lets the probe slide about more easily",
+            {"text": "Because it lets the probe slide about on the skin a "
+                     "great deal more easily than it otherwise would do",
              "correct": False,
              "why": "It does help with that, but a dry probe pressed still "
                     "against the skin would still give no picture."},
@@ -210,8 +217,9 @@ QUESTIONS = [
                      "than cold tissue does", "correct": False,
              "why": "The gel is usually cold, and a degree or two would make "
                     "no difference anyway."},
-            {"text": "Because it is what makes the ultrasound audible to the "
-                     "machine", "correct": False,
+            {"text": "Because it is what makes the ultrasound audible to "
+                     "the machine, which could not register a returning "
+                     "pulse at all without it", "correct": False,
              "why": "The machine listens electronically and does not need "
                     "anything made audible."},
             {"text": "Because a thin layer of air would reflect almost the "
@@ -229,15 +237,18 @@ QUESTIONS = [
             {"text": "Because high frequencies are absorbed faster and do "
                      "not reach as far, so depth is traded against detail",
              "correct": True},
-            {"text": "Because deep structures are larger and move more "
-                     "slowly", "correct": False,
+            {"text": "Because the structures deep inside are larger and "
+                     "move more slowly, and that is what settles the "
+                     "choice", "correct": False,
              "why": "Size varies at every depth, and movement is not what "
                     "sets the choice of frequency."},
             {"text": "Because a low frequency travels faster and so gets "
-                     "deeper before the echo is needed", "correct": False,
+                     "down deeper before its echo is needed back",
+             "correct": False,
              "why": "All frequencies travel at the same speed in the same "
                     "tissue."},
-            {"text": "Because a lower frequency is safer for deep tissue",
+            {"text": "Because a lower frequency is safer for the deep "
+                     "tissue it has to travel through on the way",
              "correct": False,
              "why": "Safety is managed by keeping the power low, not by the "
                     "frequency choice."},

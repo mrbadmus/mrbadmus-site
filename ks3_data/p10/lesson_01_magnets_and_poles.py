@@ -137,10 +137,9 @@ LESSON = {
         # ⚠️ MRB-278 — her order is A B C D with A correct. Position 2 here.
         "options": [
             "One of them lost its magnetism when it was picked up",
-            "Turning it round made it stronger, so it could push instead of "
-            "pull",
+            "Turning it round made it stronger, so it pushed instead",
             "Which pole of each magnet is facing the gap",
-            "The bench pushed back the second time because of friction",
+            "The bench pushed back the second time, because of friction",
         ],
         "answer": 2,
         "reveal": "Which poles were facing each other. Each magnet has a "

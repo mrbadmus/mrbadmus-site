@@ -116,10 +116,10 @@ LESSON = {
         "commit": "Commit. What does that tell you about the word "
                   "“renewable”?",
         "options": [
-            "Nothing — wood must be cleaner than it looks",
+            "Nothing — wood must be cleaner than the smoke suggests",
             "Renewable answers whether it runs out, and nothing else",
-            "Nuclear must secretly be renewable",
-            "The word renewable is meaningless",
+            "Nuclear must secretly count as renewable after all",
+            "The word renewable does not really mean anything",
         ],
         "answer": 1,
         "reveal": "It answers one question and one only: <strong>will it run "

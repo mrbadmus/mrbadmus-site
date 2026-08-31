@@ -64,16 +64,18 @@ QUESTIONS = [
         "band": "easier",
         "text": "An elephant can hear down to about 16 Hz. That sound is…",
         "options": [
-            {"text": "ordinary audible sound for a person too",
+            {"text": "ordinary audible sound for a person to hear too",
              "correct": False,
              "why": "16 Hz is below about 20 Hz, so it is under the bottom of "
                     "the human range."},
             {"text": "infrasound, as far as human ears are concerned",
              "correct": True},
-            {"text": "ultrasound", "correct": False,
+            {"text": "ultrasound, well above the top of the human range",
+             "correct": False,
              "why": "Ultrasound is above the top of our range. 16 Hz is at "
                     "the other end entirely."},
-            {"text": "not sound at all", "correct": False,
+            {"text": "not sound at all, just a vibration too low to count",
+             "correct": False,
              "why": "It is an ordinary pressure wave in air, made and "
                     "carried in exactly the same way."},
         ],
@@ -105,15 +107,17 @@ QUESTIONS = [
         "text": "Why are auditory ranges usually drawn on an axis where each "
                 "mark is ten times the one before?",
         "options": [
-            {"text": "Because a straight scale is harder to read",
-             "correct": False,
+            {"text": "Because a straight scale is harder for a reader to "
+                     "take in at a glance, and a stepped one is always the "
+                     "easier of the two to read off", "correct": False,
              "why": "A straight scale is easy to read. The trouble is what "
                     "it would show."},
             {"text": "Because the numbers run from a few hertz to over a "
                      "hundred thousand, and on a straight scale every band "
                      "would pile into one end", "correct": True},
             {"text": "Because frequency can only be measured in powers of "
-                     "ten", "correct": False,
+                     "ten, so those are the only marks that could honestly "
+                     "be put along the axis at all", "correct": False,
              "why": "Frequency can be any value at all — 440 Hz, for "
                     "instance."},
             {"text": "Because the ear can only hear frequencies that are "
@@ -268,20 +272,23 @@ QUESTIONS = [
         "text": "Why is it misleading to say simply that animals hear better "
                 "than people?",
         "options": [
-            {"text": "Because animals actually hear worse, and the ranges on "
-                     "the chart are exaggerated", "correct": False,
+            {"text": "Because animals actually hear a good deal worse than "
+                     "people do, and the ranges shown on the chart have "
+                     "been exaggerated", "correct": False,
              "why": "The ranges are real. Reversing the claim keeps the same "
                     "one-dimensional thinking."},
             {"text": "Because a range only says what an ear responds to at "
-                     "all, and it says nothing about how well",
+                     "all, and it says nothing whatever about how well it "
+                     "does any of it",
              "correct": False,
              "why": "True, and worth saying — but it is not the main thing "
                     "wrong with the sentence, which is about direction."},
             {"text": "Because ranges sit in different places rather than "
                      "being simply wider: an elephant reaches lower than us "
                      "and stops lower too", "correct": True},
-            {"text": "Because only mammals have auditory ranges",
-             "correct": False,
+            {"text": "Because only mammals have auditory ranges at all, "
+                     "and the chart leaves out every other kind of animal "
+                     "there is", "correct": False,
              "why": "Birds, fish and insects all detect sound, and many have "
                     "measured ranges."},
         ],

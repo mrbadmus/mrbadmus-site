@@ -215,16 +215,16 @@ QUESTIONS = [
         "options": [
             {"text": "Almost nothing, because each filter absorbs what the "
                      "other lets through", "correct": True},
-            {"text": "Yellow light, because red and green make yellow",
-             "correct": False,
+            {"text": "Yellow light, because red and green add together to "
+                     "give yellow light", "correct": False,
              "why": "Mixing red and green LIGHT gives yellow. Stacking "
                     "filters subtracts instead of adding."},
-            {"text": "Red light, because the first filter decides",
-             "correct": False,
+            {"text": "Red light, because the first filter in the stack "
+                     "decides", "correct": False,
              "why": "The green filter then absorbs that red, because red is "
                     "not what it passes."},
-            {"text": "White light, because the two filters cancel out",
-             "correct": False,
+            {"text": "White light, because the two filters cancel each "
+                     "other out", "correct": False,
              "why": "Filters do not undo each other. Each one takes away "
                     "more."},
         ],

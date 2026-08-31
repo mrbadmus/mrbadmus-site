@@ -133,10 +133,9 @@ LESSON = {
                   "wrong?",
         "options": [
             "A connection somewhere in the loop is not gripping",
-            "Their ammeter is faulty and needs replacing",
+            "Their ammeter is faulty and is reading lower than it should",
             "Their lamp is a different rating from the first pair’s",
-            "They read the diagram in the wrong order, so the components are "
-            "in the wrong sequence",
+            "They read the diagram wrong and built it out of sequence",
         ],
         "answer": 0,
         "reveal": "Almost always a connection. A loop only works if every "

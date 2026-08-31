@@ -118,12 +118,14 @@ LESSON = {
         "commit": "There is no lens, no glass and nothing electrical in the "
                   "box. Why is the picture inverted?",
         "options": [
-            "The hole turns the light round as it squeezes through",
+            "The hole turns the light round as it squeezes through, the way "
+            "a narrow gap twists a jet of water",
             "Light from the top of the window is heading downwards as it "
             "reaches the hole, and keeps going downwards",
-            "The greaseproof paper shows the picture from behind, so it looks "
-            "reversed both ways at once",
-            "The light bounces off the inside of the box before it lands",
+            "The greaseproof paper is being looked at from behind, so the "
+            "picture on it seems reversed both ways at once",
+            "The light bounces off the inside of the box before it lands, "
+            "and each bounce flips the picture over",
         ],
         "answer": 1,
         "reveal": "Straight lines, and nothing else. To get through the hole "

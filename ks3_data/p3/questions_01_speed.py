@@ -69,12 +69,15 @@ QUESTIONS = [
         "band": "easier",
         "text": "What does m/s mean?",
         "options": [
-            {"text": "Metres multiplied by seconds", "correct": False,
+            {"text": "Metres multiplied by the number of seconds taken",
+             "correct": False,
              "why": "The slash means divided by, not multiplied by."},
-            {"text": "Minutes per second", "correct": False,
+            {"text": "The number of minutes passing in each second",
+             "correct": False,
              "why": "The m is metres. Minutes would make the unit a ratio of "
                     "two times."},
-            {"text": "Metres per minute", "correct": False,
+            {"text": "The number of metres travelled each minute",
+             "correct": False,
              "why": "The s is seconds. Metres per minute would be written "
                     "m/min."},
             {"text": "The number of metres travelled each second",
@@ -156,18 +159,21 @@ QUESTIONS = [
                 "three times and gets three different times. What should "
                 "they do?",
         "options": [
-            {"text": "Use the fastest run, because the others had errors",
+            {"text": "Use the fastest run, because the other two must have "
+                     "had errors",
              "correct": False,
              "why": "Nothing marks one run as the right one. Picking the "
                     "fastest is a choice, not a measurement."},
-            {"text": "Repeat until two runs agree exactly", "correct": False,
-             "why": "Two runs agreeing exactly would be luck, and waiting "
-                    "for it throws away the readings you have."},
-            {"text": "Use the first run, because it was done most carefully",
+            {"text": "Keep repeating the timing until two of the runs agree "
+                     "exactly",
+             "correct": False,
+             "why": "Two runs agreeing exactly would be luck, and waiting for "
+                    "it throws away the readings you have."},
+            {"text": "Use the first run, because it was the one done most "
+                     "carefully",
              "correct": False,
              "why": "There is no reason the first is better than the others, "
-                    "and it makes the answer depend on which run came "
-                    "first."},
+                    "and it makes the answer depend on which run came first."},
             {"text": "Take the mean of the three times, then divide the "
                      "distance by it",
              "correct": True},
@@ -224,13 +230,13 @@ QUESTIONS = [
         "text": "Why does the light-gate bench show a distance and a time "
                 "but refuse to show a speed?",
         "options": [
-            {"text": "Because the apparatus is not accurate enough to "
-                     "calculate one",
+            {"text": "Because the apparatus is not accurate enough to work "
+                     "out a speed you could trust from the two readings",
              "correct": False,
              "why": "It has both numbers it would need. Accuracy is not what "
                     "is stopping it."},
-            {"text": "Because speed can only be measured over long "
-                     "distances",
+            {"text": "Because a speed can only be measured over long "
+                     "distances, and a metre of bench is nowhere near enough",
              "correct": False,
              "why": "Speed can be measured over any distance you can time. "
                     "That is what the gates do."},
@@ -238,10 +244,11 @@ QUESTIONS = [
                      "measurements, and doing it for you would remove the "
                      "step",
              "correct": True},
-            {"text": "Because the gates only measure time, not distance",
+            {"text": "Because the gates only measure time, and the distance "
+                     "on the display was never measured",
              "correct": False,
-             "why": "You set the gate separation yourself, so the distance "
-                    "is measured too — by you."},
+             "why": "You set the gate separation yourself, so the distance is "
+                    "measured too — by you."},
         ],
         "figure": None,
     },
@@ -252,15 +259,18 @@ QUESTIONS = [
                 "later fined by an average-speed check on the same road. How "
                 "is that possible?",
         "options": [
-            {"text": "The roadside camera must have been faulty",
+            {"text": "The roadside camera must have been faulty, because two "
+                     "honest measurements of one journey cannot disagree",
              "correct": False,
              "why": "Both readings can be perfectly accurate. They are "
                     "measurements of different things."},
-            {"text": "Average-speed cameras are set to a lower limit",
+            {"text": "Average-speed cameras are set to a lower limit than "
+                     "roadside ones, so the same driving fails one of them",
              "correct": False,
              "why": "The limit is the same. What differs is the stretch each "
                     "one divides by."},
-            {"text": "The average-speed check measured a different vehicle",
+            {"text": "The average-speed check measured a different vehicle, "
+                     "because the plates are read from a long way off",
              "correct": False,
              "why": "The point of the pair of gantries is that they identify "
                     "the same vehicle at both ends."},

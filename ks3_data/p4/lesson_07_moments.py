@@ -116,12 +116,14 @@ LESSON = {
                   "lean.",
         "commit": "Why is the same force so much less use near the hinge?",
         "options": [
-            "You push harder at the handle without noticing, because a long "
-            "handle is easier to lean your weight on",
+            "You push harder at the handle without noticing, because leaning "
+            "is easier there",
             "The turning effect depends on the distance from the pivot as "
             "well as the force",
-            "The door is heavier near the hinge",
-            "The hinge takes the force away",
+            "The door is heavier near the hinge, so there is more of it to "
+            "shift there",
+            "The hinge takes the force away, so a push near it never reaches "
+            "the door",
         ],
         "answer": 1,
         "reveal": "Turning is not decided by the force alone. It is decided "

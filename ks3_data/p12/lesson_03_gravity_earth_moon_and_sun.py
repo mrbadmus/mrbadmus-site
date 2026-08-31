@@ -117,11 +117,11 @@ LESSON = {
                   "for four billion years.",
         "commit": "Why has it not arrived?",
         "options": [
-            "The Earth is not pulling it — it is too far away",
-            "Something is pushing it outwards and balancing the pull",
+            "The Earth is not really pulling it — it is far too far away",
+            "Something is pushing it outwards and balancing the pull exactly",
             "It is falling, and missing the Earth because it is moving "
             "sideways",
-            "It is held up by the Sun pulling it the other way",
+            "It is held up by the Sun pulling it the other way instead",
         ],
         "answer": 2,
         "reveal": "It is falling, and missing. The Earth pulls the Moon with "

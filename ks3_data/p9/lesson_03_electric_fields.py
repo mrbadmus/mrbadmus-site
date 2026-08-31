@@ -121,8 +121,10 @@ LESSON = {
         "options": [
             "Nothing at all — the comb changes the space around it, and the "
             "water responds to that",
-            "Air, pushed sideways by the charge on the comb",
-            "A thin thread of charge travelling from the comb to the water",
+            "Air, pushed sideways by the charge on the comb, which then "
+            "shoves the stream over",
+            "A thin thread of charge travelling from the comb to the water "
+            "and pulling on it",
             # ⚠️ MRB-177 — Design's distractor, FINISHED. It ended at "and
             # the two attract directly" (13 words) against a 17-word correct
             # option, which is a tell at the ≥4-word threshold. On a hook that
@@ -130,8 +132,8 @@ LESSON = {
             # never commits, and a belief nobody commits to cannot be
             # confronted. Remedied at the distractor, and the added clause is
             # the wrong rule stated completely rather than padding.
-            "Nothing — the water must already be charged, and two opposite "
-            "charges pull on each other directly across the gap",
+            "Nothing — the water is already charged, and two opposite charges "
+            "pull across the gap",
         ],
         "answer": 0,
         "reveal": "Nothing crosses the gap. The comb fills the space around "

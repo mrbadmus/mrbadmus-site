@@ -85,15 +85,17 @@ QUESTIONS = [
         "text": "Why is a drawing pin given a sharp point?",
         "options": [
             {"text": "To make the force pushing it bigger than it would be "
-                     "with a blunt one", "correct": False,
+                     "with a blunt point", "correct": False,
              "why": "The force is whatever your thumb supplies. Sharpening "
                     "changes no force anywhere."},
-            {"text": "To make the metal harder", "correct": False,
+            {"text": "To make the metal harder, so that the pin is stiff "
+                     "enough to enter wood", "correct": False,
              "why": "Hardness matters for a pin that has to survive, but it "
                     "is not why the point goes in."},
             {"text": "To concentrate the same force onto a tiny area, giving "
                      "a very high pressure", "correct": True},
-            {"text": "To make the pin lighter", "correct": False,
+            {"text": "To make the pin lighter, so that less weight has to "
+                     "be forced into the wood", "correct": False,
              "why": "Its weight is nowhere near enough to matter. What goes "
                     "in is the pressure under the point."},
         ],
@@ -247,18 +249,20 @@ QUESTIONS = [
                 "up a car on a big one. What is the catch?",
         "options": [
             {"text": "The pressure in the big cylinder is much higher, "
-                     "which is where the extra force comes from",
+                     "which is where all of the extra force comes from",
              "correct": False,
              "why": "The pressure is the SAME in both. What differs is the "
                     "area it acts on."},
-            {"text": "There is no catch — force really is created.",
+            {"text": "There is no catch — a jack really does make force "
+                     "out of nothing, and nothing is paid for it.",
              "correct": False,
              "why": "Force can be multiplied; nothing is created. The energy "
                     "transferred is the same either way."},
             {"text": "The small piston has to move much further than the big "
                      "one, so the energy transferred is the same.",
              "correct": True},
-            {"text": "The jack only works while the oil is warm.",
+            {"text": "The jack only works while the oil is warm, because "
+                     "cold oil is too stiff to pass the push on.",
              "correct": False,
              "why": "Temperature is not the trade. The trade is distance "
                     "against force."},
@@ -271,15 +275,18 @@ QUESTIONS = [
         "text": "A student writes “pressure = 3000 N” for a block on sand. "
                 "What has gone wrong, and what would fix it?",
         "options": [
-            {"text": "Nothing — a press on the ground is a force.",
+            {"text": "Nothing has gone wrong — a press on the ground is a "
+                     "force in newtons.",
              "correct": False,
              "why": "The press IS a force, but the quantity they were asked "
                     "for is how that force is spread out."},
-            {"text": "The number is wrong; the unit is fine.",
+            {"text": "The number is wrong and the unit is fine, so only "
+                     "the arithmetic needs redoing.",
              "correct": False,
              "why": "The arithmetic may be perfect. What is wrong is that a "
                     "pressure cannot be reported in newtons."},
-            {"text": "They should divide by the area again to fix the unit.",
+            {"text": "They should divide by the area a second time, and "
+                     "that would fix the unit.",
              "correct": False,
              "why": "The area has already been divided in. Dividing twice "
                     "would give a number that means nothing at all."},

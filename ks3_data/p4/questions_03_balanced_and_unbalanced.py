@@ -243,18 +243,21 @@ QUESTIONS = [
                 "explains what happened in terms of forces?",
         "options": [
             {"text": "The load's weight suddenly increased past what the "
-                     "rope could hold.", "correct": False,
+                     "rope could hold, so the rope gave way.",
+             "correct": False,
              "why": "The weight never changed. What ran out was the rope's "
                     "ability to match it."},
             {"text": "The rope stopped being able to supply the force "
                      "needed, so the forces stopped being balanced.",
              "correct": True},
             {"text": "There were no forces on the rope until the moment it "
-                     "snapped.", "correct": False,
+                     "snapped, when they all arrived at once.",
+             "correct": False,
              "why": "It was holding the whole weight the entire time. That "
                     "is what eventually broke it."},
             {"text": "The rope's pull and the weight added together until "
-                     "they were too much.", "correct": False,
+                     "the total was more than the rope could bear.",
+             "correct": False,
              "why": "They act in opposite directions, so they subtract. "
                     "Nothing accumulated."},
         ],

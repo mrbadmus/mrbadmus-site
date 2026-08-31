@@ -167,18 +167,18 @@ QUESTIONS = [
             {"text": "The total is unchanged; some now sits in thermal "
                      "stores in the ball, floor and air",
              "correct": True},
-            {"text": "The total has fallen by the fraction of the height the "
-                     "ball failed to reach",
+            {"text": "The total has fallen by the same fraction as the "
+                     "height the ball failed to reach",
              "correct": False,
              "why": "The height fell; the total did not. Height measures one "
                     "store, not the whole account."},
-            {"text": "The total has fallen because the floor absorbed and "
-                     "destroyed part of it",
+            {"text": "The total has fallen because the floor absorbed "
+                     "part of it and destroyed it",
              "correct": False,
              "why": "The floor received it and is very slightly warmer. "
                     "Absorbing is not destroying."},
-            {"text": "The total is unchanged because the ball will "
-                     "eventually bounce back to 1 m",
+            {"text": "The total is unchanged, because the ball will "
+                     "eventually bounce back up to 1 m",
              "correct": False,
              "why": "It never will. The total is unchanged anyway — the "
                     "energy has simply moved somewhere it cannot come back "
@@ -192,8 +192,8 @@ QUESTIONS = [
         "text": "Why is conservation of energy drawn as a balance beam "
                 "rather than as a formula triangle?",
         "options": [
-            {"text": "Because a triangle is only used for equations that "
-                     "students meet later on",
+            {"text": "Because a triangle is only used for the sort of "
+                     "equations students meet later on",
              "correct": False,
              "why": "It is not about when you meet it. It is about what "
                     "shape the relationship actually has."},
@@ -201,12 +201,12 @@ QUESTIONS = [
                      "triangle means multiply or divide",
              "correct": True},
             {"text": "Because a beam can show four stores at once and a "
-                     "triangle can only show three",
+                     "triangle can only ever show three",
              "correct": False,
              "why": "The count is not the reason. A triangle would be wrong "
                     "even with exactly three stores."},
-            {"text": "Because energy is measured in joules and triangles "
-                     "only work for other units",
+            {"text": "Because energy is measured in joules and formula "
+                     "triangles only work for other units",
              "correct": False,
              "why": "Units have nothing to do with it. E = F × d is a "
                     "triangle and its answer is in joules too."},

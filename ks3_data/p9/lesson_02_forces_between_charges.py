@@ -114,8 +114,13 @@ LESSON = {
         "options": [
             "Both balloons got the same charge, so they repel; the wall has "
             "no charge, and a charged object attracts an uncharged one",
-            "The wall is oppositely charged because the room is positively "
-            "charged overall",
+            # ⚠️ MRB-297 — remedied the same way as Design's distractor
+            # below: the correct option is the longest by a clear margin, and
+            # on a HOOK that is the tell that stops a student committing.
+            # Lengthened at the distractor, and the added clause states the
+            # wrong rule through to its conclusion rather than padding it.
+            "The wall is oppositely charged because the room itself is "
+            "positively charged overall, so the balloon is pulled to it",
             # ⚠️ MRB-177 — Design's distractor, FINISHED. Her hook's correct
             # option is 22 words against a longest distractor of 15, which is
             # a tell at the ≥4-word threshold — and a tell on a HOOK does the
@@ -125,8 +130,8 @@ LESSON = {
             # states the wrong rule completely rather than padding it.
             "The balloon that sticks has lost its charge, so it is held to "
             "the wall by ordinary friction and nothing electrical",
-            "Balloons repel other balloons and attract everything else, as a "
-            "property of rubber",
+            "Balloons repel other balloons and attract everything else, "
+            "because that is simply how rubber behaves once rubbed",
         ],
         "answer": 0,
         "reveal": "Rubbed on the same jumper, both balloons end up with the "

@@ -90,19 +90,22 @@ QUESTIONS = [
         "text": "Why is the first reading in this investigation taken with "
                 "NO load on the spring?",
         "options": [
-            {"text": "To warm the spring up before it is used.",
+            {"text": "To warm the spring up before it is used, because a "
+                     "cold spring would not stretch at all.",
              "correct": False,
-             "why": "Springs need no warming up, and nothing about the "
-                    "reading depends on temperature here."},
-            {"text": "To check the ruler is straight.", "correct": False,
+             "why": "A spring at room temperature stretches perfectly well. "
+                    "Nothing here depends on how warm it is."},
+            {"text": "To check the ruler is straight, because a bent scale "
+                     "would spoil every reading.", "correct": False,
              "why": "Useful, but not the reason. The zero reading is a "
                     "measurement in its own right."},
             {"text": "Because it is the natural length, which every "
                      "extension is measured from.", "correct": True},
-            {"text": "Because the spring might already be broken.",
+            {"text": "Because the spring might already be broken, which "
+                     "only a zero reading would reveal.",
              "correct": False,
-             "why": "That would show up later. The zero is needed even for a "
-                    "perfect spring."},
+             "why": "A broken spring shows itself the moment a load goes on. "
+                    "The zero is needed even for a perfect spring."},
         ],
         "figure": None,
     },

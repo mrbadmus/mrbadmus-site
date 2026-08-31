@@ -106,7 +106,8 @@ LESSON = {
                   "move as the disturbance goes past it?",
         "options": [
             "Along the slinky, in the same line as the disturbance is going",
-            "Round in a small circle",
+            "Round in a small circle, each coil looping back to where it "
+            "started",
             "The coils do not move at all — only the squashed patch travels",
             "Across the slinky, at right angles to the way the disturbance "
             "is going",

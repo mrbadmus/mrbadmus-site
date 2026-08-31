@@ -121,7 +121,7 @@ LESSON = {
             "The shower, by a wide margin",
             "They are almost exactly equal",
             "The lamp, by a wide margin",
-            "The shower, but only by about a tenth",
+            "The shower, but only by a tenth",
         ],
         "answer": 1,
         "reveal": "The shower gives 5.1 MJ, against the lamp's 5.2 MJ. They "

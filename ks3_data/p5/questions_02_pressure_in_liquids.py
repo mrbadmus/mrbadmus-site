@@ -47,17 +47,20 @@ QUESTIONS = [
         "text": "Why does water come out SIDEWAYS through a hole in the side "
                 "of a can?",
         "options": [
-            {"text": "Because the water is pushed by the air above it",
+            {"text": "Because the air pressing on the surface above drives "
+                     "the water out of the hole",
              "correct": False,
              "why": "Air pressure acts on the surface, but the sideways jet "
                     "happens with an open can either way."},
-            {"text": "Because the hole is lower than the surface",
+            {"text": "Because the hole is lower than the surface, so the "
+                     "water is aimed sideways out of it",
              "correct": False,
              "why": "Depth sets how FAST it comes out, not why it comes out "
                     "sideways rather than running down inside."},
             {"text": "Because a liquid presses equally in every direction, "
                      "including sideways on the wall", "correct": True},
-            {"text": "Because the can squeezes the water", "correct": False,
+            {"text": "Because the can squeezes the water and forces some "
+                     "of it out through the hole", "correct": False,
              "why": "The can is rigid and is doing nothing. The push comes "
                     "from the water itself."},
         ],

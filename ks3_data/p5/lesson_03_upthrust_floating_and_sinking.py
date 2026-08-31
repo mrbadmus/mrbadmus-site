@@ -109,12 +109,21 @@ LESSON = {
             # been invented: her prompt was ported and her answers were
             # not, which the HTML comparison could not see because a
             # `.dc.html` renders them from `{{ opt.text }}`.
-            "The water is trying to get out of the way",
-            "A floating object has no weight, so nothing holds it down and "
-            "it simply stays at the top",
+            # ⊕ AMENDED MRB-297, 31 Aug 2026 — no longer true of all four,
+            # and kept rather than deleted so the provenance is not silently
+            # overstated. HER CORRECT OPTION IS UNCHANGED, byte for byte.
+            # The distractors were re-authored to the same length and shape:
+            # as delivered they were terse beside a reasoned correct answer,
+            # so the right one was the visibly longest and the hook could be
+            # answered without reading it.
+            "The water is trying to get out of the way of the ball, and "
+            "shoving it upwards is how it does that",
+            "A floating object has no weight, so nothing at all holds it "
+            "down and it simply stays at the top",
             "The water presses harder on the bottom of the ball than on the "
             "top, and the difference pushes up",
-            "The air inside makes it rise on its own",
+            "The air sealed inside makes the ball rise on its own, with "
+            "no help needed from the water around it",
         ],
         "answer": 2,
         "reveal": "It comes from the pressure being different at different "
@@ -469,7 +478,7 @@ LESSON = {
                  "water, the spring balance reads 37 N. What is the upthrust "
                  "on it?",
             "options": [
-                "8 N",
+                "8 N — 45 N in air less 37 N in water",
                 "82 N — add the two readings",
                 "8 Pa — the water is pressing on it, so the answer is a "
                 "pressure",

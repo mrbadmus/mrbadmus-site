@@ -123,8 +123,8 @@ LESSON = {
         "options": [
             "Kilowatt — a measure of power",
             "Kilowatt-hour — a measure of energy",
-            "Joule",
-            "Watt per hour",
+            "Joule — the standard measure of energy",
+            "Watt per hour — a measure of energy used",
         ],
         "answer": 1,
         "reveal": "One kilowatt-hour — the energy a 1 kW appliance "

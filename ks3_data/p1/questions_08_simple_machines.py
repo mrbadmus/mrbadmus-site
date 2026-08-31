@@ -194,20 +194,20 @@ QUESTIONS = [
                 "MORE than 30 J, never less. Why never less?",
         "options": [
             {"text": "Because the force meter is not sensitive enough to "
-                     "read the smaller values",
+                     "catch the smaller readings",
              "correct": False,
              "why": "It is not an instrument fault. A better meter would "
                     "show the same one-sided pattern."},
             {"text": "Because the bar itself stores a little of the energy "
-                     "as it bends slightly",
+                     "as it bends very slightly",
              "correct": False,
              "why": "A stiff bar stores very little, and it gives that back. "
                     "Something else takes a permanent cut."},
             {"text": "Because friction at the fulcrum fills a thermal store, "
                      "so you always supply extra",
              "correct": True},
-            {"text": "Because the load is heavier than 600 N once it starts "
-                     "to move upwards",
+            {"text": "Because the load acts as though it is heavier than "
+                     "600 N once it starts moving",
              "correct": False,
              "why": "Its weight does not change. What changed is where some "
                     "of your energy went."},

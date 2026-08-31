@@ -112,9 +112,9 @@ LESSON = {
         "commit": "What is that number telling you?",
         "options": [
             "The potential difference it is designed to have across it",
-            "How much electricity it uses up while it is on",
-            "The current that will flow through it, in volts",
-            "How bright it is when it is working properly",
+            "How much electricity it uses up in every second it is on",
+            "The current that will flow through it, measured in volts",
+            "How bright it is when it is working the way it should",
         ],
         "answer": 0,
         "reveal": "It is the p.d. the maker designed it for — the push it "

@@ -93,13 +93,14 @@ LESSON = {
                   "on its feet and looking at the door.",
         "commit": "What is actually coming out of the whistle?",
         "options": [
-            "A very quiet tone that only a dog is sensitive enough to pick "
-            "up",
+            "A very quiet tone — too faint for a person to hear, but loud "
+            "enough for a dog",
             "A loud tone at a frequency above the top of the human range, "
             "which the dog can respond to",
-            "A tone travelling too fast for human ears to catch",
-            "Nothing — the whistle makes no sound, and the dog is reacting "
-            "to the movement of the air being blown through it",
+            "A tone travelling too fast for human ears to catch, but slow "
+            "enough for a dog",
+            "Nothing — the whistle makes no sound, and the dog reacts to the "
+            "puff of air blown through it",
         ],
         "answer": 1,
         "reveal": "Put a microphone in front of it and it registers a strong, "

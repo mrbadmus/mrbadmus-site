@@ -69,11 +69,14 @@ QUESTIONS = [
         "text": "A struck tuning fork looks completely still. Which "
                 "observation shows it is vibrating?",
         "options": [
-            {"text": "It feels cold to the touch", "correct": False,
+            {"text": "It feels cold to the touch when you hold it",
+             "correct": False,
              "why": "Metal feels cold whether it has been struck or not."},
-            {"text": "It is heavier after being struck", "correct": False,
+            {"text": "It is heavier after it has been struck",
+             "correct": False,
              "why": "Nothing has been added to it. Its mass is unchanged."},
-            {"text": "It rings for several seconds", "correct": False,
+            {"text": "It rings on for several seconds afterwards",
+             "correct": False,
              "why": "The ringing is the sound itself, which is what is being "
                     "explained. It is not independent evidence."},
             {"text": "Dipping its tip into water throws a spray",
@@ -108,17 +111,20 @@ QUESTIONS = [
         "text": "A microphone and a loudspeaker are built from very similar "
                 "parts. What is the relationship between them?",
         "options": [
-            {"text": "A microphone is a small, quiet loudspeaker, and size "
-                     "is the whole of the difference", "correct": False,
+            {"text": "A microphone is a small, quiet loudspeaker, and the "
+                     "size of the parts inside is the whole of the "
+                     "difference between them", "correct": False,
              "why": "Size and loudness are not the difference. A microphone "
                     "the size of a speaker would still be a microphone."},
             {"text": "A microphone works on electricity and a loudspeaker "
-                     "does not, which is why one has to be plugged in",
+                     "does not, which is why only one of the two ever has "
+                     "to be plugged in",
              "correct": False,
              "why": "Both involve electricity. The difference is which way "
                     "it flows through the chain."},
-            {"text": "They are unrelated devices that happen to look alike, "
-                     "and nothing useful follows from the resemblance",
+            {"text": "They are quite unrelated devices that happen to look "
+                     "alike, and nothing useful at all follows from the "
+                     "resemblance between them",
              "correct": False,
              "why": "The resemblance is not a coincidence — a loudspeaker "
                     "can genuinely be used as a rough microphone."},
@@ -134,18 +140,18 @@ QUESTIONS = [
         "text": "A guitar string is plucked and then a finger is laid gently "
                 "on it. The sound stops at once. Why?",
         "options": [
-            {"text": "The finger absorbs the sound already in the air",
-             "correct": False,
+            {"text": "The finger absorbs the sound that is already out in "
+                     "the air around the string", "correct": False,
              "why": "The sound already in the air carries on to your ear "
                     "regardless. What stops is the making of new sound."},
             {"text": "The finger stops the string vibrating, so nothing is "
                      "left to disturb the air", "correct": True},
-            {"text": "The finger blocks the path the sound was taking",
-             "correct": False,
+            {"text": "The finger blocks off the path that the sound was "
+                     "taking out to your ear", "correct": False,
              "why": "Sound spreads in every direction. One finger cannot "
                     "block all of them."},
-            {"text": "The finger cools the string, and cold strings do not "
-                     "make sound", "correct": False,
+            {"text": "The finger cools the string down, and a cold string "
+                     "does not make any sound", "correct": False,
              "why": "Temperature is not what decides it. A cold string "
                     "plucked hard sounds perfectly well."},
         ],
@@ -178,20 +184,22 @@ QUESTIONS = [
         "text": "Someone says the air makes the sound and the object just "
                 "gets it going. What is wrong with that?",
         "options": [
-            {"text": "Nothing is wrong — the air really is the source, and "
-                     "the object only starts it off", "correct": False,
+            {"text": "Nothing is wrong at all — the air really is the "
+                     "source of the sound, and the object only ever starts "
+                     "it off", "correct": False,
              "why": "Still air makes no sound at all, and the note stops the "
                     "instant the object is stopped."},
-            {"text": "The air does nothing at all — the sound reaches you on "
-                     "its own, and would cross a room with the air pumped "
-                     "out", "correct": False,
+            {"text": "The air does nothing at all — the sound reaches you "
+                     "on its own, and would cross a room with all the air "
+                     "pumped out", "correct": False,
              "why": "This overcorrects. The air is essential: it is what "
                     "carries the disturbance to you."},
             {"text": "The object is the source and the air is the carrier: "
                      "stop the object and the sound stops, and the air is "
                      "still there", "correct": True},
-            {"text": "The air only matters for loud sounds, and a quiet one "
-                     "reaches you without it", "correct": False,
+            {"text": "The air only matters for the loud sounds, and a "
+                     "quiet one reaches your ear without needing any air "
+                     "to carry it", "correct": False,
              "why": "The air carries quiet sounds in exactly the same way. "
                     "Loudness is not what decides it."},
         ],
@@ -207,19 +215,21 @@ QUESTIONS = [
                 "best correction?",
         "options": [
             {"text": "The sound was stored in the air around the glass "
-                     "instead, and the tap shook it loose", "correct": False,
+                     "instead, and the tap is what shook it loose from "
+                     "there", "correct": False,
              "why": "This moves the storage rather than removing it. Nothing "
                     "anywhere holds a stock of sound."},
             {"text": "Nothing was stored — the tap set the glass vibrating, "
                      "and the sound exists only while the vibration lasts",
              "correct": True},
-            {"text": "The sound was stored, but only briefly, so most of it "
-                     "was gone before the tap", "correct": False,
+            {"text": "The sound was stored, but only briefly, so most of "
+                     "it had already leaked away before the tap arrived",
+             "correct": False,
              "why": "Briefly stored is still stored. Damp the glass with a "
                     "hand and the sound stops instantly, with nothing left "
                     "to come out later."},
             {"text": "The glass makes new sound each time it is looked at, "
-                     "and goes on for as long as anyone is watching",
+                     "and it goes on for as long as anyone is watching",
              "correct": False,
              "why": "Looking has nothing to do with it. The vibration is "
                     "what makes the sound."},
@@ -234,8 +244,8 @@ QUESTIONS = [
                 "sound.",
         "options": [
             {"text": "The sound itself was captured, kept and released "
-                     "again, unchanged from the moment it was made",
-             "correct": False,
+                     "again, completely unchanged from the moment it was "
+                     "first made in the room", "correct": False,
              "why": "Nothing of the original sound survives. Only a record "
                     "of its pattern does."},
             {"text": "The recording holds air from the original room and "
@@ -244,14 +254,15 @@ QUESTIONS = [
              "correct": False,
              "why": "No air is stored. A recording is a pattern, not a "
                     "sample of anything physical."},
-            {"text": "The speaker guesses the pattern from the instructions "
-                     "it is given, filling in what the recording lost",
+            {"text": "The speaker guesses at the pattern from the "
+                     "instructions it is given, filling in for itself "
+                     "whatever the recording lost on the way in",
              "correct": False,
              "why": "There is no guessing. The pattern is copied faithfully "
                     "from what the microphone measured."},
             {"text": "The pattern moved from air, to a diaphragm, to "
-                     "electricity, to storage, and back out through a cone "
-                     "into air again", "correct": True},
+                     "electricity, to storage, and then back out through a "
+                     "cone into the air again", "correct": True},
         ],
         "figure": None,
     },
@@ -262,8 +273,9 @@ QUESTIONS = [
                 "hear a whine. Your hand waves about twice a second and you "
                 "hear nothing. Both are moving air. What is the difference?",
         "options": [
-            {"text": "The mosquito is closer to your ear, and closeness is "
-                     "what decides whether a moving thing can be heard",
+            {"text": "The mosquito is closer to your ear than your hand "
+                     "ever gets to it, and closeness is what decides "
+                     "whether a moving thing can be heard at all",
              "correct": False,
              "why": "Move the mosquito across the room and you still hear "
                     "it; wave your hand next to your ear and you still hear "
@@ -278,9 +290,10 @@ QUESTIONS = [
                      "times a second, which is fast enough for the ear to "
                      "respond to; twice a second is far too slow",
              "correct": True},
-            {"text": "The hand moves air smoothly, and only rough movement "
-                     "makes sound, which is why a tuning fork is silent",
-             "correct": False,
+            {"text": "The hand moves the air smoothly, and only rough "
+                     "movement makes a sound, which is why a tuning fork "
+                     "running smoothly of its own accord stays quite "
+                     "silent", "correct": False,
              "why": "Smooth and rough is not the distinction. A smoothly "
                     "vibrating tuning fork makes a very clean note."},
         ],
@@ -296,11 +309,13 @@ QUESTIONS = [
                      "of the air, and a cone that only pushed would give one "
                      "shove and then stop", "correct": True},
             {"text": "Because the cone would fall off its mounting if it "
-                     "only ever travelled one way", "correct": False,
+                     "only ever travelled the one way, and no speaker "
+                     "would last a whole evening of use", "correct": False,
              "why": "The mounting is not the reason. The physics of what "
                     "sound is decides it."},
-            {"text": "Because moving back is what makes the sound loud, and "
-                     "pushing forwards only sets the pitch", "correct": False,
+            {"text": "Because moving back is what makes the sound loud, "
+                     "and pushing forwards only sets the pitch of the note "
+                     "that comes out of it", "correct": False,
              "why": "Loudness comes from how far it moves, not from which "
                     "direction it is going."},
             {"text": "Because the air has to be given time to get out of the "

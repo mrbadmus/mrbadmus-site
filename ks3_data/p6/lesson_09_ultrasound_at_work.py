@@ -102,11 +102,14 @@ LESSON = {
         "commit": "How would you find out what is inside a solid block of "
                   "steel, and where?",
         "options": [
-            "Tap it and listen for a dull note",
-            "Warm one end and see where the heat gets held up",
+            "Tap it all over and listen for the place where the note "
+            "sounds dull",
+            "Warm one end and see where along it the heat gets held up "
+            "on the way",
             "Send a short pulse of sound into it and time anything that "
             "comes back",
-            "Weigh it, since a crack means metal is missing",
+            "Weigh it very precisely, since a crack means some metal must "
+            "be missing",
         ],
         "answer": 2,
         "reveal": "Sound goes into steel perfectly well, and it reflects "

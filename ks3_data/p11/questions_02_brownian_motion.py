@@ -76,16 +76,20 @@ QUESTIONS = [
         "band": "easier",
         "text": "What happens to Brownian motion when the fluid is warmed?",
         "options": [
-            {"text": "It stops", "correct": False,
-             "why": "It never stops at any temperature. Warming makes it "
-                    "wilder, not quieter."},
-            {"text": "It slows down", "correct": False,
-             "why": "Warming speeds every molecule up, so the strikes are "
-                    "harder and the leftover push is bigger."},
+            {"text": "It stops completely, because the molecules settle",
+             "correct": False,
+             "why": "Nothing settles at any temperature. Warming makes the "
+                    "jiggling wilder, not quieter."},
+            {"text": "It slows down and becomes gentler, because warmth calms "
+                     "the fluid", "correct": False,
+             "why": "Warmth does the opposite of calming. It speeds every "
+                    "molecule up, so the strikes are harder and the leftover "
+                    "push is bigger."},
             {"text": "It gets faster and more violent", "correct": True},
-            {"text": "It stays exactly the same", "correct": False,
-             "why": "Temperature is what sets molecular speed, so it changes "
-                    "the jiggling directly."},
+            {"text": "It stays exactly the same, because heat does not reach "
+                     "the speck", "correct": False,
+             "why": "The warmth reaches the speck through the very molecules "
+                    "that strike it, and their speed changes with it."},
         ],
         "figure": None,
     },
@@ -94,19 +98,19 @@ QUESTIONS = [
         "band": "easier",
         "text": "Why do the strikes on a smoke speck nearly cancel out?",
         "options": [
-            {"text": "Because the molecules are all moving at the same speed",
-             "correct": False,
-             "why": "They are not, and it would not matter if they were. What "
-                    "cancels them is the number arriving from every side at "
-                    "once."},
-            {"text": "Because the speck is heavy enough to resist them",
-             "correct": False,
-             "why": "A speck heavy enough to resist them would not move at "
-                    "all, and this one does."},
-            {"text": "Because half the molecules are moving and half are "
-                     "still", "correct": False,
+            {"text": "Because the molecules all move at the same speed, so "
+                     "their pushes are equal", "correct": False,
+             "why": "They do not all move at the same speed, and it would not "
+                    "matter if they did. What cancels them is the number "
+                    "arriving from every side at once."},
+            {"text": "Because the speck is heavy enough to resist all but the "
+                     "hardest strikes", "correct": False,
+             "why": "A speck heavy enough to resist the strikes would not "
+                    "move at all, and this one plainly does."},
+            {"text": "Because half the molecules are moving and half of them "
+                     "are standing still", "correct": False,
              "why": "Every molecule in a fluid is moving, all the time. None "
-                    "of them is still."},
+                    "of them is ever standing still."},
             {"text": "Because huge numbers arrive from every direction at the "
                      "same instant", "correct": True},
         ],
@@ -120,16 +124,18 @@ QUESTIONS = [
         "text": "A student says the specks jiggle because there is a draught "
                 "in the cell. Which observation shows they are wrong?",
         "options": [
-            {"text": "The specks are lit from the side", "correct": False,
+            {"text": "The specks are lit from the side, which is how they "
+                     "are made visible", "correct": False,
              "why": "That is how you see them, not why they move. It says "
                     "nothing about draughts."},
             {"text": "A draught would carry every speck the same way at once, "
                      "and they go in every direction", "correct": True},
-            {"text": "The specks are made of burnt material", "correct": False,
+            {"text": "The specks are made of burnt material, which was never "
+                     "alive", "correct": False,
              "why": "True, and it rules out something alive rather than "
                     "something blowing."},
-            {"text": "The cell is sealed and still, so nothing outside it can be "
-                     "moving the air about", "correct": False,
+            {"text": "The cell is sealed and kept still, so nothing outside "
+                     "it can be moving the air about", "correct": False,
              "why": "A sealed cell can still have a current inside it. What "
                     "settles it is that the specks move independently of one "
                     "another."},
@@ -164,15 +170,16 @@ QUESTIONS = [
         "band": "standard",
         "text": "What does Brownian motion show about a fluid?",
         "options": [
-            {"text": "That it is smooth and continuous all the way down",
-             "correct": False,
+            {"text": "That it is smooth and continuous all the way down, "
+                     "with no gaps", "correct": False,
              "why": "A smooth fluid would push on the speck evenly and it "
                     "would sit still. The jiggle is what rules that out."},
-            {"text": "That it is always flowing in one direction",
+            {"text": "That it is always flowing steadily in one direction",
              "correct": False,
              "why": "The pushes come from every direction, and the speck's "
                     "path changes constantly."},
-            {"text": "That it contains something alive", "correct": False,
+            {"text": "That it contains something alive that is moving "
+                     "itself", "correct": False,
              "why": "Brown found the same jiggling in ground-up rock, which "
                     "had never been alive."},
             {"text": "That it is made of separate particles in constant "
@@ -210,18 +217,19 @@ QUESTIONS = [
         "text": "A pollen grain in water jiggles less than a smoke speck in "
                 "air at the same temperature. Suggest why.",
         "options": [
-            {"text": "Water molecules move faster, so they push the grain "
-                     "further", "correct": False,
+            {"text": "Water molecules move faster, so each one pushes the "
+                     "grain further", "correct": False,
              "why": "Water molecules at 20 °C are quoted at about 590 m/s "
                     "against air's 500, so their speed is not why the grain "
                     "moves less."},
-            {"text": "The water must be colder than the air", "correct": False,
-             "why": "Both are at the same temperature; that is what the "
-                    "question says."},
+            {"text": "The water must be colder than the air, so its "
+                     "molecules are slower", "correct": False,
+             "why": "Both are at the same temperature, which is what the "
+                    "question says, so neither set of molecules is slower."},
             {"text": "A pollen grain is far bigger, so the leftover push "
                      "shifts it less", "correct": True},
-            {"text": "Water molecules are too large to move a pollen grain",
-             "correct": False,
+            {"text": "Water molecules are too large to shift a pollen grain "
+                     "very far", "correct": False,
              "why": "A water molecule is a fraction of a nanometre across. "
                     "Being small is what makes the pushes cancel so well, not "
                     "what stops them."},
@@ -234,15 +242,16 @@ QUESTIONS = [
         "text": "Einstein's 1905 work on this mattered because it did "
                 "something a description could not. What?",
         "options": [
-            {"text": "It showed the specks under a far stronger microscope",
-             "correct": False,
+            {"text": "It showed the specks under a microscope strong enough "
+                     "to see molecules", "correct": False,
              "why": "No microscope shows a molecule, and the argument never "
                     "needed one."},
-            {"text": "It proved that pollen is alive", "correct": False,
+            {"text": "It proved that pollen grains are alive, which explains "
+                     "the movement", "correct": False,
              "why": "The opposite: the same jiggling happens in ground-up "
-                    "rock."},
-            {"text": "It measured the speed of the air molecules directly",
-             "correct": False,
+                    "rock, which was never alive."},
+            {"text": "It measured the speed of the air molecules directly, "
+                     "one at a time", "correct": False,
              "why": "Nothing measured a molecule directly. What was measured "
                     "was how far the speck wandered."},
             {"text": "It predicted a number that could be measured, and the "

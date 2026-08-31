@@ -52,19 +52,20 @@ QUESTIONS = [
         "band": "easier",
         "text": "The wavelength of a water wave is measured…",
         "options": [
-            {"text": "from the rest line up to a crest", "correct": False,
+            {"text": "from the rest line up to the highest point of the "
+                     "crest above it", "correct": False,
              "why": "That is the amplitude — how far the water moves, not "
                     "how long the wave is."},
-            {"text": "from a crest down to the trough beside it",
-             "correct": False,
+            {"text": "from the top of a crest down to the bottom of the "
+                     "trough beside it", "correct": False,
              "why": "That is a height, and it is twice the amplitude. The "
                     "wavelength runs along the wave, not up and down it."},
             {"text": "from the front of the wave to the back of the whole "
                      "set of waves", "correct": False,
              "why": "That would measure the whole train of waves. A "
                     "wavelength is the length of one of them."},
-            {"text": "from one crest to the very next crest",
-             "correct": True},
+            {"text": "from the top of one crest along to the top of the "
+                     "next crest", "correct": True},
         ],
         "figure": None,
     },
@@ -97,18 +98,19 @@ QUESTIONS = [
         "text": "A water wave is described as transverse. That means the "
                 "water moves…",
         "options": [
-            {"text": "in the same direction as the wave travels",
+            {"text": "in the same direction as the wave itself travels",
              "correct": False,
              "why": "That describes a longitudinal wave, which is how sound "
                     "behaves. Water waves are not like that."},
-            {"text": "in circles that carry it steadily forwards",
-             "correct": False,
+            {"text": "in circles that carry it steadily forwards with the "
+                     "wave", "correct": False,
              "why": "Water particles do move in small loops, but they end up "
                     "where they started. Nothing is carried steadily "
                     "forwards."},
             {"text": "at right angles to the direction the wave travels",
              "correct": True},
-            {"text": "faster than the wave itself does", "correct": False,
+            {"text": "faster than the wave itself does across the surface",
+             "correct": False,
              "why": "The water is not racing the wave. It is going up and "
                     "down while the wave goes along."},
         ],
@@ -142,19 +144,22 @@ QUESTIONS = [
         "text": "Two waves have the same wavelength, but one has twice the "
                 "amplitude of the other. How do they differ?",
         "options": [
-            {"text": "One moves the water twice as far up and down, and the "
-                     "crests are the same distance apart", "correct": True},
+            {"text": "One moves the water twice as far up and down, and "
+                     "the crests stay the same distance apart, so one is "
+                     "taller and both are the same length", "correct": True},
             {"text": "One has crests twice as far apart, and moves the water "
                      "the same distance, so the two are the same height and "
                      "one of them is simply longer", "correct": False,
              "why": "Crests being further apart is a longer wavelength, and "
                     "the question says the wavelengths are equal."},
-            {"text": "One travels twice as fast as the other",
-             "correct": False,
+            {"text": "One travels twice as fast as the other, because a "
+                     "wave that moves the water further must also be "
+                     "getting along the tank more quickly", "correct": False,
              "why": "Amplitude says how far the water moves, not how quickly "
                     "the wave gets along."},
-            {"text": "One is transverse and the other is longitudinal",
-             "correct": False,
+            {"text": "One is transverse and the other is longitudinal, "
+                     "because doubling how far the water moves changes the "
+                     "direction in which it moves", "correct": False,
              "why": "Both are water waves, so both are transverse. Amplitude "
                     "does not change what kind of wave something is."},
         ],
@@ -167,16 +172,16 @@ QUESTIONS = [
                 "ripples reach the duck. Which is the best description of "
                 "what has arrived?",
         "options": [
-            {"text": "Water from the place the stone landed",
-             "correct": False,
+            {"text": "Water carried across the pond all the way from the "
+                     "place the stone landed", "correct": False,
              "why": "The water at the duck was already there. Nothing has "
                     "been delivered from the splash."},
-            {"text": "A push of air travelling just above the surface",
-             "correct": False,
+            {"text": "A push of air travelling just above the surface of "
+                     "the water, ahead of it", "correct": False,
              "why": "The ripples are in the water, not the air, and they "
                     "would still arrive under a lid."},
-            {"text": "Nothing has arrived — the duck is simply bobbing on "
-                     "its own", "correct": False,
+            {"text": "Nothing has arrived — the duck is simply bobbing "
+                     "about on its own account", "correct": False,
              "why": "Something certainly arrived: the duck was still until "
                     "the stone was dropped, and it started moving afterwards."},
             {"text": "Energy, carried by a disturbance passing through water "
@@ -191,11 +196,14 @@ QUESTIONS = [
                 "often, and nothing else is changed. What happens to the "
                 "pattern on the water?",
         "options": [
-            {"text": "The waves become taller", "correct": False,
+            {"text": "The waves become taller, but no closer together",
+             "correct": False,
              "why": "How high the waves are is set by how far the dipper "
                     "moves each time, not by how often it moves."},
-            {"text": "The crests get closer together", "correct": True},
-            {"text": "The waves stop travelling outwards", "correct": False,
+            {"text": "The crests get closer together, but no taller",
+             "correct": True},
+            {"text": "The waves stop spreading outwards from the dipper",
+             "correct": False,
              "why": "They keep travelling outwards; bobbing more often does "
                     "not stop the disturbance spreading."},
             {"text": "The water starts moving along with the waves",
@@ -238,21 +246,26 @@ QUESTIONS = [
         "text": "A student says a big wave must be a long wave, because it "
                 "is bigger. What is wrong with that?",
         "options": [
-            {"text": "Nothing is wrong — height and length always go "
-                     "together on water", "correct": False,
+            {"text": "Nothing is wrong at all — height and length always "
+                     "go together on water, so any wave that is bigger in "
+                     "the one way must be bigger in the other way as well",
+             "correct": False,
              "why": "They can go together and they need not. Steep, short "
                     "waves in a gale and low, very long ocean swell are both "
                     "ordinary."},
             {"text": "Big and long are two different measurements: "
-                     "amplitude is how far the water moves, wavelength is "
-                     "how far apart the crests are", "correct": True},
+                     "amplitude is how far the water moves up and down, "
+                     "and wavelength is how far apart the crests are",
+             "correct": True},
             {"text": "Nothing can be big and long at the same time, because "
                      "the water would run out — a wave can be tall or "
                      "widely spaced, and taking one always costs the other",
              "correct": False,
              "why": "A very large ocean swell is both. There is no rule "
                     "stopping one wave being tall and widely spaced."},
-            {"text": "Waves have no length, only height", "correct": False,
+            {"text": "Waves have no length at all, only height, so the "
+                     "only measurement there is to make on one is how tall "
+                     "it stands above the rest line", "correct": False,
              "why": "Wavelength is the distance from one crest to the next, "
                     "and it is a perfectly real measurement."},
         ],
@@ -265,18 +278,18 @@ QUESTIONS = [
                 "observation would show that the wave, and not the water, is "
                 "what travels?",
         "options": [
-            {"text": "The corks all bunch up at the far side of the pond",
-             "correct": False,
+            {"text": "The corks all bunch up together at the far side of "
+                     "the pond in the end", "correct": False,
              "why": "That is what you would see if the water DID travel, so "
                     "it would show the opposite of what is wanted."},
-            {"text": "The corks stop moving as soon as the ripples pass",
-             "correct": False,
+            {"text": "The corks all stop moving as soon as the ripples "
+                     "have passed them by", "correct": False,
              "why": "True, but it only shows the disturbance has gone by. It "
                     "says nothing about whether the water moved along."},
             {"text": "Each cork rises and falls in turn and every one ends "
                      "up where it started", "correct": True},
-            {"text": "The corks nearest the splash move first",
-             "correct": False,
+            {"text": "The corks nearest the splash are always the first "
+                     "ones to start moving", "correct": False,
              "why": "That shows the disturbance spreads outwards, which is "
                     "not in doubt. It does not show whether the water "
                     "travelled with it."},
@@ -291,14 +304,18 @@ QUESTIONS = [
         "options": [
             {"text": "Because the rest line is where the water sits when "
                      "nothing is disturbing it, so the amplitude says how "
-                     "far the disturbance moves it", "correct": True},
+                     "far the disturbance has moved it from there",
+             "correct": True},
             {"text": "Because troughs are harder to see than crests, and a "
                      "measurement should always start from the part of the "
-                     "wave that is easiest to find", "correct": False,
+                     "wave that is easiest to find and to read off against "
+                     "a ruler", "correct": False,
              "why": "Both are equally visible. The reason is about what the "
                     "measurement means, not about how easy it is to spot."},
-            {"text": "Because the trough is below the water and cannot be "
-                     "measured", "correct": False,
+            {"text": "Because the trough is below the level of the water "
+                     "and cannot be measured, so the only place left to "
+                     "start a measurement from is the rest line above it",
+             "correct": False,
              "why": "The trough is part of the surface and can be measured "
                     "perfectly well."},
             {"text": "Because measuring from the trough would give a number "

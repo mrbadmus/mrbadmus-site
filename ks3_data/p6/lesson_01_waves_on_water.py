@@ -113,13 +113,13 @@ LESSON = {
                   "What was it?",
         "options": [
             "Nothing travelled — the water only went up and down, so the "
-            "wave was standing still",
+            "wave was standing still all along",
             "The water travelled across the pond, and the gull was too "
-            "light to be carried with it",
+            "light to be carried along with it",
             "The disturbance travelled across the pond; the water and the "
             "gull moved up and down on the spot",
             "The wind travelled across the pond and the water simply "
-            "followed it",
+            "followed the wind along the surface",
         ],
         "answer": 2,
         "reveal": "The water did not go anywhere. Each patch of it lifted and "
@@ -341,7 +341,8 @@ LESSON = {
                 "the trough up to the crest",
                 "Wavelength 0.05 m, amplitude 0.60 m — the bigger number is "
                 "the size of the wave",
-                "Wavelength 0.60 m, amplitude 0.05 m",
+                "Wavelength 0.60 m, amplitude 0.05 m — crest to crest, "
+                "and the still level up to the crest",
                 "Wavelength 0.30 m, amplitude 0.05 m — wavelength runs from "
                 "a crest to the next trough",
             ],

@@ -106,10 +106,12 @@ LESSON = {
                   "what you hear?",
         "options": [
             "The buzzer keeps vibrating and the sound fades away to nothing",
-            "The buzzer stops working, because it needs air to run",
-            "The note gets higher as the air thins out",
-            "The sound gets quieter but never disappears, because it can "
-            "still cross the empty space slowly",
+            "The buzzer stops working, because it needs air around it to run "
+            "at all",
+            "The note gets higher as the air thins out, and then climbs past "
+            "what you can hear",
+            "The sound gets quieter but never disappears, because it crosses "
+            "empty space slowly",
         ],
         "answer": 0,
         "reveal": "The hammer never stops. What stops is the delivery: sound "

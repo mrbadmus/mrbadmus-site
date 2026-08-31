@@ -110,10 +110,10 @@ LESSON = {
         "commit": "Your finger and your thumb push on the pin with the same "
                   "force. So why does only one end go in?",
         "options": [
-            "The point is sharper, so it pushes with a bigger force",
+            "The point is sharper, so the push it gives out is bigger",
             "The same force is acting on a much smaller area at the point",
-            "The metal is stronger at the point than at the head",
-            "Your thumb pushes harder than your finger does",
+            "The metal is stronger at the point than it is at the head",
+            "Your thumb pushes harder on the pin than your finger does",
         ],
         "answer": 1,
         "reveal": "Nothing about the force is different. What is different "
@@ -478,7 +478,7 @@ LESSON = {
                  "600 N. Its base measures 0.30 m². What is the pressure on "
                  "the floor?",
             "options": [
-                "2000 Pa",
+                "2000 Pa — 600 N shared over 0.30 m²",
                 "180 Pa — multiply the force by the area",
                 "2000 N — a press on the floor is a force, so it is in "
                 "newtons",

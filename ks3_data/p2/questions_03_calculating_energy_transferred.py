@@ -223,19 +223,21 @@ QUESTIONS = [
                 "hours turn out to transfer almost the same energy. What "
                 "does this show about power ratings?",
         "options": [
-            {"text": "That ratings are unreliable and should not be printed",
+            {"text": "That ratings are unreliable, so the number printed on "
+                     "the label should not be trusted",
              "correct": False,
              "why": "The ratings are perfectly accurate. They simply answer a "
                     "different question from the one about the bill."},
-            {"text": "That the lamp must be faulty to draw so much",
+            {"text": "That the lamp must be faulty, because nothing rated "
+                     "that small should match a shower",
              "correct": False,
              "why": "The lamp draws exactly its 60 W. It is the 86 400 "
                     "seconds that does the work."},
             {"text": "That a rating cannot tell you the energy without the "
                      "time, however large the difference in rating",
              "correct": True},
-            {"text": "That small appliances are generally more wasteful than "
-                     "large ones",
+            {"text": "That small appliances are generally more wasteful with "
+                     "energy than large ones ever are",
              "correct": False,
              "why": "Neither is wasteful here. The comparison is about "
                     "duration, not about waste."},
@@ -250,17 +252,18 @@ QUESTIONS = [
                 "expected newton seconds. What does that failure have in "
                 "common with writing 2000 × 3 = 6000 J?",
         "options": [
-            {"text": "Both were arithmetic errors that a calculator would "
-                     "have caught",
+            {"text": "Both were arithmetic errors that a careful check on a "
+                     "calculator would have caught",
              "correct": False,
-             "why": "Neither was an arithmetic error. Every multiplication "
-                    "in both cases was performed correctly."},
-            {"text": "Both involved numbers that were too large to check by "
-                     "hand",
+             "why": "Neither was an arithmetic error. Every multiplication in "
+                    "both cases was performed correctly."},
+            {"text": "Both involved numbers that were far too large to be "
+                     "checked over by hand at all",
              "correct": False,
-             "why": "2000 × 3 is easy to check. Size was not the "
-                    "problem in either case."},
-            {"text": "Both came from software rather than from people",
+             "why": "2000 × 3 is easy to check. Size was not the problem in "
+                    "either case."},
+            {"text": "Both came from software making a mistake rather than "
+                     "from the people involved",
              "correct": False,
              "why": "The orbiter's error came from two teams' conventions, "
                     "and the kettle's from a student. Neither is a software "

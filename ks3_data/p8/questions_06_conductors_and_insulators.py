@@ -272,19 +272,21 @@ QUESTIONS = [
                 "near overhead cables, yet a WET wooden ladder is not safe "
                 "at all. Which explanation fits both?",
         "options": [
-            {"text": "Wet wood becomes a metal, so it conducts like the "
-                     "aluminium one", "correct": False,
+            {"text": "Wet wood becomes a metal itself, so it conducts about "
+                     "as well as the aluminium one does", "correct": False,
              "why": "It becomes no such thing. Its resistance falls a long "
                     "way and it is still wood."},
-            {"text": "Water is a conductor and wood is an insulator, so the "
-                     "wet ladder is really two ladders", "correct": False,
+            {"text": "Water is a conductor and wood is an insulator, so a "
+                     "wet ladder is really two ladders side by side",
+             "correct": False,
              "why": "Pure water conducts poorly. What matters is the "
                     "dissolved ions the water brings with it."},
             {"text": "Dry wood resists millions of ohms; water carries "
                      "dissolved ions, so wetting it drops the resistance "
                      "enormously", "correct": True},
-            {"text": "Aluminium resists more than wet wood, which is why the "
-                     "metal ladder is the dangerous one", "correct": False,
+            {"text": "Aluminium resists more than either dry wood or wet "
+                     "wood, which is why the metal ladder is the dangerous "
+                     "one", "correct": False,
              "why": "Aluminium resists far LESS than either. It is the "
                     "dangerous one because it conducts freely."},
         ],

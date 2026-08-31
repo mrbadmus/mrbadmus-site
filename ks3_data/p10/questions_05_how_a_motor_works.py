@@ -272,17 +272,18 @@ QUESTIONS = [
         "options": [
             {"text": "It becomes about twenty times larger, because each turn "
                      "carries the current through the field", "correct": True},
-            {"text": "It stays the same, because the current has not changed",
+            {"text": "It stays the same, because neither the current nor "
+                     "the magnets have been changed at all",
              "correct": False,
              "why": "The same current now passes through the field twenty "
                     "times over instead of once, and each pass gets its own "
                     "push."},
-            {"text": "It falls to a twentieth, because the current is shared "
-                     "between the turns", "correct": False,
+            {"text": "It falls to a twentieth, because the current has to be "
+                     "shared out between the twenty turns", "correct": False,
              "why": "Nothing is shared. The current runs through every turn "
                     "in succession."},
-            {"text": "It reverses, because half of the twenty turns run the "
-                     "other way", "correct": False,
+            {"text": "It reverses, because half of the twenty turns must end "
+                     "up running the other way round", "correct": False,
              "why": "Every turn is wound the same way round, so all twenty "
                     "pushes act in the same direction."},
         ],

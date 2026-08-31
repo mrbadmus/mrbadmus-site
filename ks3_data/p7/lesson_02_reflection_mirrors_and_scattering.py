@@ -109,11 +109,14 @@ LESSON = {
         "commit": "What is different about what the light does at the two "
                   "surfaces?",
         "options": [
-            "The paper does not really reflect light — it makes its own",
+            "The paper does not really reflect light — it makes its own, "
+            "which is why a room brightens",
             "The mirror keeps the rays in the arrangement they arrived in; "
             "the paper scrambles them",
-            "The mirror sends back far more light than the paper does",
-            "The paper absorbs the image and only sends back the brightness",
+            "The mirror sends back far more light than the paper does, and "
+            "paper keeps most of it back",
+            "The paper absorbs the image and sends back only the brightness, "
+            "so no face can survive",
         ],
         "answer": 1,
         "reveal": "Both surfaces send back most of the light, and both obey "

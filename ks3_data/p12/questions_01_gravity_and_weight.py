@@ -182,15 +182,15 @@ QUESTIONS = [
                      "scales cannot detect the change", "correct": False,
              "why": "Mass does not fall. What falls is the force the person "
                     "presses down with."},
-            {"text": "Because the spring inside them stretches differently in "
-                     "a weaker field", "correct": False,
+            {"text": "Because the spring inside them stretches differently "
+                     "in the Moon's weaker field", "correct": False,
              "why": "The spring behaves normally. It stretches less because "
                     "it is being pulled on less, which is exactly what it is "
                     "supposed to do."},
             {"text": "Because the scales measure a force and then divide by "
                      "Earth's field strength to print a mass", "correct": True},
             {"text": "Because the scales are calibrated for the Moon rather "
-                     "than for the Earth", "correct": False,
+                     "than for the Earth's field", "correct": False,
              "why": "They are calibrated for the Earth. That is precisely why "
                     "they mislead anywhere else."},
         ],
@@ -226,19 +226,19 @@ QUESTIONS = [
                 "standing on bathroom scales inside it watches the reading. "
                 "What happens, and why?",
         "options": [
-            {"text": "It stays the same, because the Earth's gravity has not "
-                     "changed", "correct": False,
+            {"text": "It stays exactly the same, because the Earth's gravity "
+                     "has not changed at all", "correct": False,
              "why": "Gravity has not changed, and the reading still drops. "
                     "The scales measure the push between the person and the "
                     "floor, and there is none."},
-            {"text": "It rises, because falling adds to the force pressing "
-                     "down", "correct": False,
+            {"text": "It rises, because falling adds to the force the person "
+                     "presses down with", "correct": False,
              "why": "Falling removes the push rather than adding to it. "
                     "Nothing is holding the person up any more."},
             {"text": "It drops to zero, because the person and the floor are "
                      "falling together and nothing presses", "correct": True},
             {"text": "It drops to zero, because gravity stops acting on "
-                     "anything that is falling", "correct": False,
+                     "anything that is falling freely", "correct": False,
              "why": "Gravity is the reason they are falling. It is acting the "
                     "whole time, which is what makes the fall speed up."},
         ],

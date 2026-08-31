@@ -128,7 +128,7 @@ LESSON = {
         "options": [
             "Something an object has inside it, which gets used up",
             "A push or a pull, always between two objects",
-            "How fast something is going",
+            "How fast something is going, in metres per second",
             "The energy stored in something that is moving",
         ],
         "answer": 1,

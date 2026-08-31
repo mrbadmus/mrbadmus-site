@@ -234,21 +234,21 @@ QUESTIONS = [
                 "about 22 s and glass in about 150 s. What does the ORDER "
                 "tell you?",
         "options": [
-            {"text": "That the two metals share a route the glass does not "
-                     "have at all",
+            {"text": "That the two metals share a route through the rod "
+                     "that the glass does not have",
              "correct": False,
              "why": "True, and it is why both metals beat glass — but the "
                     "ORDER also separates the two metals."},
-            {"text": "That the glass rod must have been thinner than the "
-                     "two metal rods were",
+            {"text": "That the glass rod must have been thinner or longer "
+                     "than the metal ones were",
              "correct": False,
              "why": "All three rods are identical. Only the material "
                     "changed, which is what makes it a fair test."},
             {"text": "That both metals beat glass, and copper's electrons "
                      "move more freely than iron's",
              "correct": True},
-            {"text": "That copper must have started at a higher temperature "
-                     "than the other two",
+            {"text": "That copper must have started off at a higher "
+                     "temperature than the other two",
              "correct": False,
              "why": "All three start at room temperature. The difference is "
                     "entirely in how they carry energy."},

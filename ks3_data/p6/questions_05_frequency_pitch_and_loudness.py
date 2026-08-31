@@ -69,14 +69,18 @@ QUESTIONS = [
                      "the cone gets round its journey more often", "correct": False,
              "why": "Higher would need more vibrations each second, and the "
                     "rate has not changed."},
-            {"text": "gets lower", "correct": False,
+            {"text": "gets lower, because a longer journey each time "
+                     "leaves the cone fewer trips to make each second",
+             "correct": False,
              "why": "Lower would need fewer vibrations each second. Again, "
                     "the rate is unchanged."},
-            {"text": "stops altogether", "correct": False,
+            {"text": "stops altogether, because a cone pushed that far can "
+                     "no longer settle back to its rest place",
+             "correct": False,
              "why": "The cone is still vibrating, so it is still making "
                     "sound."},
-            {"text": "gets louder and stays at the same pitch",
-             "correct": True},
+            {"text": "gets louder and stays at the same pitch, because "
+                     "only the distance moved has changed", "correct": True},
         ],
         "figure": None,
     },
@@ -108,18 +112,18 @@ QUESTIONS = [
         "text": "An oscilloscope shows a 20 ms window. The volume is turned "
                 "up and nothing else changes. What happens to the trace?",
         "options": [
-            {"text": "More vibrations fit in the window, at the same height",
-             "correct": False,
+            {"text": "More vibrations fit in the window, at the same "
+                     "height as before", "correct": False,
              "why": "That is what raising the frequency would do. The volume "
                     "dial does not change the rate."},
-            {"text": "Fewer vibrations fit, and they are taller",
-             "correct": False,
+            {"text": "Fewer vibrations fit in the window, and they are "
+                     "taller than before", "correct": False,
              "why": "The number in the window is set by the frequency, which "
                     "has not been touched."},
-            {"text": "The same number of vibrations, drawn taller",
-             "correct": True},
-            {"text": "Nothing changes, because the window is fixed",
-             "correct": False,
+            {"text": "The same number of vibrations as before, drawn "
+                     "taller on the screen", "correct": True},
+            {"text": "Nothing changes at all, because the width of the "
+                     "window is fixed", "correct": False,
              "why": "The window being fixed is exactly why the change shows "
                     "up as height rather than as spacing."},
         ],
@@ -219,12 +223,14 @@ QUESTIONS = [
         "text": "A piccolo and a tuba play together in a band a hundred "
                 "metres away. Why does the music arrive as music?",
         "options": [
-            {"text": "Because the piccolo is quieter, which slows it down to "
-                     "match", "correct": False,
+            {"text": "Because the piccolo is the quieter of the two, which "
+                     "slows it down until it matches the pace the tuba is "
+                     "setting", "correct": False,
              "why": "Loudness does not change the speed either, and a loud "
                     "piccolo would still arrive with the tuba."},
-            {"text": "Because the tuba's low notes travel faster and catch "
-                     "up", "correct": False,
+            {"text": "Because the tuba's low notes travel faster through "
+                     "the air than the piccolo's high ones and catch them "
+                     "up on the way", "correct": False,
              "why": "No frequency catches any other up. All of them travel "
                     "at the same speed."},
             {"text": "Because your brain reassembles the notes into the "
@@ -270,19 +276,21 @@ QUESTIONS = [
         "text": "Why is a trace at 800 Hz more crowded than one at 200 Hz, "
                 "when the oscilloscope window is the same either way?",
         "options": [
-            {"text": "Because a higher note travels faster, so more of it "
-                     "gets past in the time", "correct": False,
+            {"text": "Because a higher note travels faster through the "
+                     "air, so more of it gets past in the same time",
+             "correct": False,
              "why": "Both travel at the same speed. Speed is not what fills "
                     "the window."},
             {"text": "Because at 800 Hz the source completes four times as "
                      "many vibrations in the same fixed window",
              "correct": True},
-            {"text": "Because a higher note is quieter, so more of it fits "
-                     "in", "correct": False,
+            {"text": "Because a higher note is quieter, so a great deal "
+                     "more of it fits into the same fixed window",
+             "correct": False,
              "why": "Loudness sets the height of the trace, not how many "
                     "vibrations there are."},
-            {"text": "Because the oscilloscope shortens the window for high "
-                     "notes", "correct": False,
+            {"text": "Because the oscilloscope shortens the window that it "
+                     "shows for the higher notes", "correct": False,
              "why": "The window is fixed at 20 ms whatever the frequency, "
                     "which is what makes the comparison fair."},
         ],

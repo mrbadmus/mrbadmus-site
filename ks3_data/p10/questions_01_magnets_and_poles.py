@@ -54,16 +54,19 @@ QUESTIONS = [
         "band": "easier",
         "text": "What are the two ends of a magnet called?",
         "options": [
-            {"text": "Its positive end and its negative end", "correct": False,
-             "why": "Positive and negative are the words for charge. A "
-                    "magnet's ends are poles, and they are named for the "
-                    "direction each one seeks."},
+            {"text": "Its positive end and its negative end, like a battery",
+             "correct": False,
+             "why": "Positive and negative are the words for charge, and for "
+                    "a battery's terminals. A magnet's ends are poles, and "
+                    "they are named for the direction each one seeks."},
             {"text": "Its north-seeking pole and its south-seeking pole",
              "correct": True},
-            {"text": "Its magnetic end and its ordinary end", "correct": False,
+            {"text": "Its magnetic end and its ordinary, unmagnetic end",
+             "correct": False,
              "why": "Both ends are magnetic and both are the same steel. "
                     "What differs is which way each one points."},
-            {"text": "Its strong end and its weak end", "correct": False,
+            {"text": "Its strong pulling end and its weak pulling end",
+             "correct": False,
              "why": "The two poles are equally strong. Turning a magnet round "
                     "changes which pole faces you, never how strong it is."},
         ],
@@ -239,15 +242,16 @@ QUESTIONS = [
                 "no movement at all, and writes: “the can is not a metal.” "
                 "What is wrong with that?",
         "options": [
-            {"text": "Nothing is wrong — a magnet is a fair test of whether "
-                     "something is a metal", "correct": False,
+            {"text": "Nothing is wrong — holding up a magnet is a fair test "
+                     "of whether something is a metal", "correct": False,
              "why": "It is a test of whether something is MAGNETIC. Most "
                     "metals fail that test and are still metals."},
-            {"text": "The can must have been too far away for the magnet to "
-                     "reach it", "correct": False,
+            {"text": "The can must have been held too far away for the "
+                     "magnet to be able to reach across", "correct": False,
              "why": "Distance would weaken a real pull, but there is no pull "
                     "to weaken. Aluminium gives none at any distance."},
-            {"text": "The can was probably painted, and paint blocks a magnet",
+            {"text": "The can was probably painted, and a layer of paint "
+                     "blocks a magnet's pull completely",
              "correct": False,
              "why": "A magnet acts straight through paint, paper and "
                     "cardboard. Nothing was blocking anything."},
@@ -285,18 +289,19 @@ QUESTIONS = [
                 "holding the next, with only the top one touching the magnet. "
                 "Why does the second clip hold the third?",
         "options": [
-            {"text": "The clips are sticky once they have touched a magnet",
+            {"text": "The clips turn sticky once they have been touched by "
+                     "a magnet, and stay that way",
              "correct": False,
              "why": "Nothing is sticking. Take the magnet away and the whole "
                     "chain falls apart at once."},
             {"text": "Each clip is magnetised while it is there, so it "
                      "behaves as a small magnet itself", "correct": True},
             {"text": "The magnet reaches past the first clip and pulls "
-                     "directly on all of them", "correct": False,
+                     "directly on every clip below", "correct": False,
              "why": "It does reach past, but that would not explain why each "
                     "clip holds the one below it rather than falling off."},
             {"text": "The clips have shared out the magnet's magnetism "
-                     "between them", "correct": False,
+                     "between them, a little each", "correct": False,
              "why": "The magnet does not lose anything. It lines the clips up "
                     "and keeps everything it had."},
         ],

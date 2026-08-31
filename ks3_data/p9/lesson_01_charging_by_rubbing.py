@@ -141,10 +141,12 @@ LESSON = {
         "options": [
             "Positively charged, by exactly the same amount as the rod is "
             "negative",
-            "Also negatively charged, because both were rubbed",
-            "Still neutral, because only the rod was being charged",
-            "Positively charged, but by a smaller amount, because some "
-            "charge is lost in the rubbing",
+            "Also negatively charged, because rubbing puts the same charge on "
+            "both",
+            "Still neutral, because it was the rod being charged and not the "
+            "cloth",
+            "Positively charged, but by less, because some charge is lost in "
+            "rubbing",
         ],
         "answer": 0,
         "reveal": "Positive, by exactly as much. Every electron the rod "

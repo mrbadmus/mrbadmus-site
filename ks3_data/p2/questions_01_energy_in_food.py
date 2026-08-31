@@ -75,13 +75,16 @@ QUESTIONS = [
         "text": "In the calorimeter, what is actually measured to work out "
                 "how much energy the food released?",
         "options": [
-            {"text": "How long the sample burns for", "correct": False,
+            {"text": "How long the sample burns for before it goes out",
+             "correct": False,
              "why": "Burning time depends on the shape of the sample as much "
                     "as its energy. Nothing is calculated from it."},
-            {"text": "How much smoke comes off the flame", "correct": False,
+            {"text": "How much smoke comes off the flame as it burns",
+             "correct": False,
              "why": "Nothing on the bench measures smoke, and it would not "
                     "tell you a number of joules."},
-            {"text": "How much the sample shrinks", "correct": False,
+            {"text": "How much the sample shrinks as it burns away",
+             "correct": False,
              "why": "The mass burned is recorded, but it is not what the "
                     "energy is calculated from — the water is."},
             {"text": "The temperature rise of the water above it",
@@ -278,15 +281,18 @@ QUESTIONS = [
             {"text": "Water in the sample soaks up energy without ever "
                      "reaching the thermometer",
              "correct": True},
-            {"text": "Water reacts with the fat and reduces the energy the "
-                     "food holds",
+            {"text": "Water reacts with the fat and lowers the energy the "
+                     "food itself holds",
              "correct": False,
              "why": "The chemical store in the fat is unchanged by being wet. "
                     "It is the MEASUREMENT that suffers, not the food."},
-            {"text": "Wet food cannot be weighed accurately",
+            {"text": "Wet food cannot be weighed accurately, so the per-gram "
+                     "figure is wrong",
              "correct": False,
-             "why": "It weighs perfectly well. The mass is not the problem."},
-            {"text": "Water makes the flame burn hotter, so more escapes",
+             "why": "It weighs perfectly well, and the balance is not "
+                    "troubled by water. The mass is not the problem."},
+            {"text": "Water makes the flame burn hotter, so more of the "
+                     "energy escapes the can",
              "correct": False,
              "why": "Water does not make a flame hotter. It takes energy to "
                     "warm and to evaporate, which is where the loss is."},
@@ -301,21 +307,21 @@ QUESTIONS = [
                 "bath. Which problem with the school version does each of "
                 "those features fix?",
         "options": [
-            {"text": "The sealing stops the sample being weighed wrongly and "
-                     "the oxygen speeds the reaction up",
+            {"text": "The sealing stops the sample from being weighed "
+                     "wrongly, and the oxygen speeds the reaction up",
              "correct": False,
-             "why": "Weighing was never the problem, and speed is not what "
-                    "is wrong with the school version either."},
-            {"text": "The steel absorbs the escaping energy and the water "
-                     "bath measures the sample's mass",
+             "why": "Weighing was never the problem, and speed is not what is "
+                    "wrong with the school version either."},
+            {"text": "The steel absorbs the escaping energy, and the water "
+                     "bath measures the sample's mass for you",
              "correct": False,
              "why": "The water bath measures a temperature rise. Nothing "
                     "there measures mass."},
-            {"text": "The oxygen prevents the sample burning at all until it "
-                     "is measured",
+            {"text": "The oxygen prevents the sample burning at all until the "
+                     "moment it is measured",
              "correct": False,
-             "why": "Pure oxygen does the opposite — it makes combustion "
-                    "more complete, which is the point."},
+             "why": "Pure oxygen does the opposite — it makes combustion more "
+                    "complete, which is the point."},
             {"text": "The seal stops energy escaping to the room, and the "
                      "oxygen makes sure the sample burns completely",
              "correct": True},

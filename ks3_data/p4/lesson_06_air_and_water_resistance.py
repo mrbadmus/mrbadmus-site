@@ -113,12 +113,14 @@ LESSON = {
                   "metres per second. It does not go up any further.",
         "commit": "Why does the falling stop getting faster?",
         "options": [
-            "Gravity gets weaker as you fall",
-            "There is a fastest speed anything can fall at, and every "
-            "falling object reaches the same one",
+            "Gravity gets weaker as you fall, so the pull on you drops until "
+            "you stop speeding up",
+            "There is a fastest speed anything can fall at, and every object "
+            "reaches the same one",
             "Air resistance grows with speed until it matches the weight, "
             "leaving 0 N over",
-            "The air is holding the skydiver up completely",
+            "The air is holding the skydiver up completely, so gravity has "
+            "stopped acting",
         ],
         "answer": 2,
         "reveal": "Air resistance is not a fixed force. The faster you go, "

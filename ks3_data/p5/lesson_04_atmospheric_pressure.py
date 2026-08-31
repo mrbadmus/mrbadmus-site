@@ -111,12 +111,21 @@ LESSON = {
             # been invented: her prompt was ported and her answers were
             # not, which the HTML comparison could not see because a
             # `.dc.html` renders them from `{{ opt.text }}`.
-            "The vacuum inside sucked the sides in",
+            # ⊕ AMENDED MRB-297, 31 Aug 2026 — no longer true of all four,
+            # and kept rather than deleted so the provenance is not silently
+            # overstated. HER CORRECT OPTION IS UNCHANGED, byte for byte.
+            # The distractors were re-authored to the same length and shape:
+            # as delivered they were terse beside a reasoned correct answer,
+            # so the right one was the visibly longest and the hook could be
+            # answered without reading it.
+            "The vacuum inside sucked the sides in, because empty space pulls "
+            "on what surrounds it",
             "The air outside was always pressing that hard, and the steam "
             "inside had been pushing back",
-            "The metal shrank as it cooled",
+            "The metal shrank as it cooled, and pulled its own walls inwards "
+            "with it",
             "The steam pulled the sides in as it cooled, because a gas "
-            "turning back to liquid drags whatever is around it",
+            "turning to liquid drags things in",
         ],
         "answer": 1,
         "reveal": "The air outside. It was pressing that hard the whole time "
@@ -525,7 +534,7 @@ LESSON = {
                 "66 667 N — divide the pressure by the area",
                 "150 000 Pa — the air is pressing, so the answer is a "
                 "pressure",
-                "150 000 N",
+                "150 000 N — 100 000 Pa acting on each of 1.5 m²",
                 "0.000015 N — divide the area by the pressure",
             ],
             "answer": 2,

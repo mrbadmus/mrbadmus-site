@@ -243,20 +243,24 @@ QUESTIONS = [
                 "metal and carry similar currents. Why must one resist much "
                 "more than the other?",
         "options": [
-            {"text": "The flex must resist more, so that the current reaching "
-                     "the kettle is limited to a safe value", "correct": False,
+            {"text": "The flex must resist more, so that the current it lets "
+                     "through to the kettle is limited to a safe amount",
+             "correct": False,
              "why": "That is the wrong way round. A cable that resisted "
                     "would waste energy heating itself, which is the danger."},
-            {"text": "Neither has to — the resistance is decided by the "
-                     "metal, and they are the same metal", "correct": False,
+            {"text": "Neither has to — the resistance is decided only by "
+                     "the metal, and the two of them are made of the same "
+                     "metal",
+             "correct": False,
              "why": "The metal sets the resistance per unit of shape. The "
                     "shape — long and thin against short and thick — is what "
                     "the manufacturer chooses."},
             {"text": "The element must resist more, because energy has to be "
                      "transferred to heat in it and almost none in the "
                      "cable", "correct": True},
-            {"text": "The element must resist less, so that it can draw "
-                     "enough current to get hot", "correct": False,
+            {"text": "The element must resist less, so that it can draw a "
+                     "big enough current to get properly hot",
+             "correct": False,
              "why": "A very low resistance draws a huge current and is a "
                     "short circuit. What makes an element hot is the energy "
                     "given up in it."},

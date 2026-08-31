@@ -108,11 +108,12 @@ LESSON = {
                   "and its furthest — about 152 million km — in early July.",
         "commit": "So what causes summer?",
         "options": [
-            "Summer happens when the Earth is closest to the Sun",
+            "Summer happens when the Earth is closest to the Sun in its "
+            "orbit",
             "Summer happens when your half of the Earth is tilted towards the "
             "Sun",
-            "Summer happens when the Earth spins more slowly",
-            "Summer happens when the Sun gives out more energy",
+            "Summer happens when the Earth spins more slowly on its axis",
+            "Summer happens when the Sun gives out more energy than usual",
         ],
         "answer": 1,
         "reveal": "When your half is tilted towards the Sun. The Earth is "

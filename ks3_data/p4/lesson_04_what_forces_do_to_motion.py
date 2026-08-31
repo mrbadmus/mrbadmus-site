@@ -119,11 +119,14 @@ LESSON = {
                   "nothing pushing it forwards at all.",
         "commit": "So why does it keep moving?",
         "options": [
-            "Force from the push is still inside it, slowly running out",
+            "Force from the push is still stored inside it, and it is "
+            "slowly running out",
             "Nothing needs to push it — with almost nothing left over, "
             "almost nothing changes",
-            "The ice is pushing it forwards",
-            "It keeps going because it is heavy",
+            "The ice underneath is pushing the stone forwards the whole "
+            "way down",
+            "It keeps going because it is heavy, and heavy things carry "
+            "themselves along",
         ],
         "answer": 1,
         "reveal": "It keeps moving because nothing is stopping it. "

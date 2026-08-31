@@ -99,10 +99,10 @@ LESSON = {
         "commit": "What has changed — your mass, your weight, both or "
                   "neither?",
         "options": [
-            "Your mass gets smaller as you go up",
+            "Your mass gets smaller, because you are further from the Earth",
             "Your weight gets smaller, because gravity is weaker up there",
-            "Both get smaller by the same amount",
-            "Neither changes at all",
+            "Both get smaller, because everything weighs less high up",
+            "Neither changes, because 8849 m is nothing to the Earth",
         ],
         "answer": 1,
         "reveal": "Your weight changes and your mass does not. Mass is how "

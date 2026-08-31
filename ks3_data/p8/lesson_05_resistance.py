@@ -113,9 +113,12 @@ LESSON = {
         "options": [
             "It made the whole loop harder to get through, so the current "
             "everywhere fell",
-            "It used up some of the current before it reached the bulb",
-            "It stole some of the current down a second path",
-            "It cooled the bulb down by carrying the heat away",
+            "It used up some of the current on its way round, so less was "
+            "left to reach the bulb",
+            "It stole some of the current down a second path of its own, "
+            "away from the bulb",
+            "It cooled the bulb down by carrying the heat away from it along "
+            "the wire",
         ],
         "answer": 0,
         "reveal": "The wire added resistance to the one loop. There is still "

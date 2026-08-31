@@ -113,12 +113,12 @@ LESSON = {
         "options": [
             "The light is much faster than the sound, so it covers the same "
             "two kilometres far sooner",
-            "The thunder is made a few seconds after the flash, further down "
-            "the strike",
-            "The sound has to travel round obstacles, so it takes a longer "
-            "route",
-            "The light goes straight to you and the sound spreads out in "
-            "every direction first",
+            "The thunder is made a few seconds after the flash, so it sets "
+            "off from the hillside later",
+            "The sound has to travel round trees and walls, so it takes a "
+            "much longer route than the light",
+            "The light goes straight to you, and the sound spreads in every "
+            "direction before it starts out",
         ],
         "answer": 0,
         "reveal": "One event, two messengers, wildly different speeds. Light "

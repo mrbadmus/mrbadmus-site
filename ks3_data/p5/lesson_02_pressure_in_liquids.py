@@ -113,11 +113,21 @@ LESSON = {
             # been invented: her prompt was ported and her answers were
             # not, which the HTML comparison could not see because a
             # `.dc.html` renders them from `{{ opt.text }}`.
-            "The can is narrower at the bottom, so the water speeds up",
-            "The water from the bottom hole has further to fall",
+            # ⊕ AMENDED MRB-297, 31 Aug 2026 — no longer true of all four,
+            # and kept rather than deleted so the provenance is not silently
+            # overstated. HER CORRECT OPTION IS UNCHANGED, byte for byte.
+            # The distractors were re-authored to the same length and shape:
+            # as delivered they were terse beside a reasoned correct answer,
+            # so the right one was the visibly longest and the hook could be
+            # answered without reading it.
+            "The can is narrower at the bottom, so the water is squeezed "
+            "out faster there",
+            "The water from the bottom hole has further to fall, so it "
+            "lands further out",
             "There is more water stacked above the bottom hole, so it "
             "presses harder there",
-            "Water gets heavier as it sinks",
+            "Water gets heavier as it sinks, so the lowest water pushes "
+            "hardest of all",
         ],
         "answer": 2,
         "reveal": "Nothing about the water changes as it sinks. A litre near "
@@ -481,7 +491,7 @@ LESSON = {
                 "75 Pa — multiply the weight by the area",
                 "30 000 N — the probe is measuring a push, so it reads in "
                 "newtons",
-                "30 000 Pa",
+                "30 000 Pa — 1500 N shared over 0.05 m²",
                 "0.000033 Pa — divide the area by the weight",
             ],
             "answer": 2,

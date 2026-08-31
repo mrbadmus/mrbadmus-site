@@ -176,11 +176,13 @@ QUESTIONS = [
         "options": [
             {"text": "Absorbing almost all the sound that reaches it, so "
                      "very little comes back into the room", "correct": True},
-            {"text": "Stopping sound from outside getting in",
+            {"text": "Stopping sound from outside getting in, so that the "
+                     "room stays quiet the whole time a take is running",
              "correct": False,
              "why": "Blocking is done by mass, not by softness. Thin foam "
                     "does almost nothing to keep noise out."},
-            {"text": "Reflecting the sound evenly in all directions",
+            {"text": "Reflecting the sound evenly in all directions, so "
+                     "that no one corner of the room sounds odd",
              "correct": False,
              "why": "It is doing the opposite of reflecting — the wedges "
                     "exist to stop reflections."},
@@ -200,8 +202,9 @@ QUESTIONS = [
                 "Someone suggests fixing thin acoustic foam to your side of "
                 "the wall. Will it help?",
         "options": [
-            {"text": "Yes — foam absorbs sound, so less will arrive",
-             "correct": False,
+            {"text": "Yes — foam absorbs sound, so a good deal less of the "
+                     "television's noise will manage to get through to "
+                     "your side", "correct": False,
              "why": "The foam absorbs sound that is already in your room. "
                     "The television's sound arrives through the wall itself."},
             {"text": "Yes, but only if it is fixed to the neighbour's side, "
@@ -213,7 +216,8 @@ QUESTIONS = [
             {"text": "Hardly at all — blocking needs mass, and thin foam "
                      "has almost none; what it fixes is echo inside a room",
              "correct": True},
-            {"text": "No, because sound cannot pass through a wall at all",
+            {"text": "No, because sound cannot pass through a solid wall "
+                     "at all, so the foam would have nothing to stop",
              "correct": False,
              "why": "Sound clearly does pass through, which is the whole "
                     "problem being described."},
@@ -228,11 +232,13 @@ QUESTIONS = [
         "options": [
             {"text": "Because the sound that comes back is the same sound, "
                      "sent back the way it came, just quieter", "correct": True},
-            {"text": "Because the wall copies whatever it hears",
-             "correct": False,
+            {"text": "Because the wall copies whatever sound it hears and "
+                     "then sends its own version of it straight back to "
+                     "you", "correct": False,
              "why": "Copying would need the wall to make sound, and it makes "
                     "none."},
-            {"text": "Because your brain fills in what it expects to hear",
+            {"text": "Because your brain fills in what it expects to hear "
+                     "and quietly supplies your own voice for you",
              "correct": False,
              "why": "A microphone records the echo just as faithfully, with "
                     "no brain involved."},
@@ -277,19 +283,21 @@ QUESTIONS = [
                 "salty patch where sound travels faster. What happens to its "
                 "readings?",
         "options": [
-            {"text": "Nothing — the timing is what matters, not the speed",
-             "correct": False,
+            {"text": "Nothing at all changes — the timing is what matters "
+                     "and not the speed, and the timing itself has not "
+                     "changed here", "correct": False,
              "why": "The timing has to be turned into a distance, and the "
                     "speed is what does the turning."},
             {"text": "Every depth is reported too shallow, because the real "
                      "pulse covered more distance in the time than the "
                      "sounder assumes", "correct": True},
             {"text": "Every depth is reported too deep, because faster "
-                     "sound takes longer to return and the sounder waits "
-                     "for it", "correct": False,
+                     "sound takes longer to return and the sounder simply "
+                     "waits for it", "correct": False,
              "why": "Faster sound returns sooner, not later."},
-            {"text": "The sounder stops working, because the speed is "
-                     "outside its range", "correct": False,
+            {"text": "The sounder stops working altogether, because the "
+                     "speed of sound it meets is outside the range it was "
+                     "built for", "correct": False,
              "why": "It goes on reporting perfectly confident numbers, which "
                     "is exactly what makes the error dangerous."},
         ],

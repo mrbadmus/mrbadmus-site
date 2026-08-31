@@ -103,12 +103,14 @@ LESSON = {
                   "started it.",
         "commit": "Why is starting it harder than keeping it going?",
         "options": [
-            "The crate gets lighter once it is moving",
+            "The crate gets lighter once it is moving, so less push is needed "
+            "to keep it going",
             "Friction is largest just before sliding starts, and drops once "
             "the surfaces are sliding",
-            "Your push gets stronger as you lean into it, so the crate only "
-            "moves once you are pushing hard enough",
-            "The floor stops pushing back once the crate moves",
+            "Your push gets stronger as you lean into it, so the crate moves "
+            "once you push hard enough",
+            "The floor stops pushing back once the crate is moving, so "
+            "nothing resists it",
         ],
         "answer": 1,
         "reveal": "Friction is a force between two surfaces that resists "

@@ -103,6 +103,22 @@ GATES = [
              "than half the answers or never be the answer. KS3's bank once "
              "never landed on D; nothing watched KS4 until this row."),
 
+    dict(name="answer_lengths",
+         cmd=["python3", "verify_answer_lengths.py"],
+         speed="fast",
+         why="MRB-297 — the tell POSITION cannot see. The row above watches "
+             "WHERE the correct answer sits; nothing watched HOW LONG it "
+             "is. The physics audit measured the cost: a student who "
+             "ignored the physics and always picked the longest option "
+             "scored 35% against 25% by chance, 56% in P11. Every P1–P12 "
+             "question file claimed in its own docstring that distractors "
+             "were written to the correct answer's length — the claim was "
+             "written and never gated, and 191 questions failed it. This "
+             "row is the gate that claim needed. It carries dated "
+             "baselines for the bio/chem corpora, which are worse and are "
+             "already live; a baselined scope fails the moment it gets "
+             "worse."),
+
     dict(name="3d_isolation",
          cmd=["python3", "3d_isolation_check.py"],
          speed="fast",

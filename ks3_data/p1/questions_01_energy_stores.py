@@ -190,16 +190,16 @@ QUESTIONS = [
         "band": "standard",
         "text": "Which pair of situations fills the SAME store?",
         "options": [
-            {"text": "A stretched catapult and a bowl of porridge",
+            {"text": "A stretched catapult and a bowl of cold porridge",
              "correct": False,
              "why": "The catapult fills an elastic store and the porridge "
                     "holds a chemical one. Both are stores; they are not the "
                     "same store."},
-            {"text": "A hot mug and a moving skateboard",
+            {"text": "A mug of hot tea and a skateboard rolling along",
              "correct": False,
              "why": "Thermal and kinetic. Getting hotter and getting faster "
                     "are different changes."},
-            {"text": "A charged battery and a raised book",
+            {"text": "A freshly charged battery and a book on a high shelf",
              "correct": False,
              "why": "Chemical and gravitational. The battery is about which "
                     "substances exist; the book is about height."},
@@ -240,18 +240,21 @@ QUESTIONS = [
                 "and is stored in the bulb as light energy\". How many "
                 "separate errors is that?",
         "options": [
-            {"text": "One — only the second half is wrong",
+            {"text": "One — energy really does travel as electricity "
+                     "down the wire",
              "correct": False,
-             "why": "Look at the first half too. Is electricity something "
-                    "that gets stored, or something that happens?"},
+             "why": "Look at the first half too. Electricity is something "
+                    "that happens, not something a wire or a bulb holds."},
             {"text": "Two — electricity is not a store, and light is not "
                      "one either",
              "correct": True},
-            {"text": "None — both halves are the normal way of saying it",
+            {"text": "None — both halves are the normal way people say "
+                     "it in class",
              "correct": False,
              "why": "It is a very common way of saying it, and that is "
                     "exactly why the lesson separates stores from pathways."},
-            {"text": "Three — the wire, the bulb and the light are all wrong",
+            {"text": "Three — the wire, the bulb and the light are each "
+                     "named wrongly",
              "correct": False,
              "why": "The wire and the bulb are real objects doing real jobs. "
                     "The errors are about the two things named as energies."},

@@ -149,10 +149,10 @@ LESSON = {
                   "the fly.",
         "commit": "So what would you have to know to say which is faster?",
         "options": [
-            "Which one crossed your view fastest",
+            "Which of them crossed your view the fastest",
             "How far each one travelled, and how long it took",
-            "Which one is bigger",
-            "How far away each one is from you",
+            "Which of the two of them is the bigger object",
+            "How far away each of them is from your eye",
         ],
         "answer": 1,
         "reveal": "How fast something <em>looks</em> depends on how far away "

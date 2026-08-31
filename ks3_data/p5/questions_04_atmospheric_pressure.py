@@ -90,15 +90,17 @@ QUESTIONS = [
         "band": "easier",
         "text": "Why do you not feel the air pressing on you?",
         "options": [
-            {"text": "Because it is too small to notice against everything "
-                     "else pressing on you", "correct": False,
+            {"text": "Because it is too small a push to notice against "
+                     "everything else pressing on you", "correct": False,
              "why": "It is about 1000 N on each palm. That is not small."},
             {"text": "Because it pushes equally from every side, and your "
                      "insides push out just as hard", "correct": True},
-            {"text": "Because your skin blocks it", "correct": False,
+            {"text": "Because your skin blocks it and keeps the push away "
+                     "from what is inside you", "correct": False,
              "why": "Skin is not a pressure barrier. The air presses on it "
                     "and it presses back."},
-            {"text": "Because air is very light", "correct": False,
+            {"text": "Because air is very light, so a column of it can "
+                     "hardly press on anything", "correct": False,
              "why": "A single litre is light. A hundred-kilometre column of "
                     "it is not."},
         ],
@@ -133,18 +135,20 @@ QUESTIONS = [
         "text": "Water boils at about 71 °C on the summit of Everest. Why?",
         "options": [
             {"text": "Because the water up there is colder to start with, "
-                     "so it takes longer to reach its boiling point",
+                     "so it takes much longer to reach its boiling point",
              "correct": False,
              "why": "The starting temperature sets how long it takes, not "
                     "what temperature it boils at."},
-            {"text": "Because stoves burn less well in thin air.",
+            {"text": "Because stoves burn less well in thin air, so the "
+                     "water there simply never gets any hotter than that.",
              "correct": False,
              "why": "True and irrelevant — a stronger stove still boils it "
                     "at 71 °C."},
             {"text": "Because water boils when its vapour can push the air "
                      "out of the way, and there is much less air to push.",
              "correct": True},
-            {"text": "Because the water is under more pressure up there.",
+            {"text": "Because the water is under more pressure up there, "
+                     "and more pressure is what brings the boiling on.",
              "correct": False,
              "why": "It is under LESS. More pressure would push the boiling "
                     "point up, which is how a pressure cooker works."},
@@ -204,19 +208,21 @@ QUESTIONS = [
         "band": "harder",
         "text": "Explain a drink coming up a straw without the word suck.",
         "options": [
-            {"text": "Your mouth pulls the drink up through the straw.",
+            {"text": "Your mouth pulls the drink up through the straw, the "
+                     "way a rope pulls a bucket.",
              "correct": False,
              "why": "That is the same claim in different words. A mouth "
                     "cannot pull on a liquid across a gap of air."},
             {"text": "You lower the pressure in your mouth, and the "
                      "atmosphere pressing on the drink pushes it up.",
              "correct": True},
-            {"text": "The straw draws the liquid up by capillary action.",
+            {"text": "The straw draws the liquid up by capillary action, "
+                     "the way a paper towel soaks up a spill.",
              "correct": False,
              "why": "Capillary action works in very narrow tubes and would "
                     "lift a drink a millimetre or two, not up a straw."},
             {"text": "The vacuum in the straw pulls the drink into it, the "
-                     "way a magnet pulls iron",
+                     "way a magnet pulls iron towards it",
              "correct": False,
              "why": "There is no vacuum, and a vacuum could not pull if "
                     "there were."},
@@ -251,19 +257,24 @@ QUESTIONS = [
         "text": "A pump cannot lift water more than about ten metres up a "
                 "pipe, however good the pump is. Why?",
         "options": [
-            {"text": "Because water is too heavy to be pulled that far up a "
-                     "pipe of any width, whatever pump is used on it",
+            {"text": "Because water is far too heavy to be pulled that far "
+                     "up a pipe of any width at all, whatever kind of pump "
+                     "is used on it",
              "correct": False,
              "why": "Nothing is pulling it. The framing is what makes the "
                     "limit look mysterious."},
-            {"text": "Because the pipe would collapse first.",
+            {"text": "Because the pipe would collapse first, and no pipe "
+                     "can be made strong enough to survive a column that "
+                     "tall.",
              "correct": False,
              "why": "A strong pipe hits the same limit. The barrier is not "
                     "the pipe."},
             {"text": "Because ten metres of water is the most the atmosphere "
                      "can push up, and the pump only lowers the pressure "
                      "above it.", "correct": True},
-            {"text": "Because the pump runs out of power.",
+            {"text": "Because the pump runs out of power once the column "
+                     "of water standing above it gets that tall and "
+                     "heavy.",
              "correct": False,
              "why": "A more powerful pump makes no difference. The ceiling "
                     "is set by the air outside, not by the pump."},

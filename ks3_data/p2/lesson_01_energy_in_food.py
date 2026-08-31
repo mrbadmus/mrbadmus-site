@@ -141,12 +141,18 @@ LESSON = {
         "commit": "Commit to why there are two.",
         # ⚑ MRB-177 — Design's four kept verbatim. Each is a sentence a real
         # student says, and only B names two units for one quantity.
+        # ⊕ AMENDED MRB-297, 31 Aug 2026 — the line above is no longer true of
+        # all four and is kept rather than deleted so the provenance is not
+        # silently overstated. The CORRECT option is still hers, byte for
+        # byte. Distractors were re-authored to the same length and shape,
+        # because Design's terse ones made the correct option the visibly
+        # longest and a student could answer this hook without reading it.
         "options": [
             "Calories are what your body uses; joules are the total in the "
             "food",
             "They are the same energy in two different units",
-            "One is for fat and one is for carbohydrate",
-            "The kJ figure includes the packaging",
+            "One number is for the fat and the other is for the carbohydrate",
+            "The kJ figure counts the packaging as well as the food itself",
         ],
         "answer": 1,
         "reveal": "They are the same amount of energy in two different units, "

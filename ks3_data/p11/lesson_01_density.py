@@ -122,10 +122,10 @@ LESSON = {
                   "is dead level. The oak is about twelve times the size.",
         "commit": "Which one is heavier?",
         "options": [
-            "The iron, because iron is a heavy metal",
-            "The oak, because there is more of it",
+            "The iron, because a metal always weighs more than wood",
+            "The oak, because there is so much more of it on the pan",
             "They weigh the same, because the balance is level",
-            "It depends on the shape of each block",
+            "It depends on the shape of each of the two blocks",
         ],
         "answer": 2,
         "reveal": "They weigh the same — that is what a level balance means. "

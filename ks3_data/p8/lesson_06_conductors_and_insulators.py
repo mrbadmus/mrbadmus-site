@@ -125,10 +125,9 @@ LESSON = {
         # exactly what a student reaching for it has in mind.
         # See DEPARTURES-P8.md row 1.
         "options": [
-            "About ten times",
-            "About a thousand times",
-            "About a million times — the gap between a metal and a poor "
-            "conductor like tap water",
+            "About ten times — one metal against another",
+            "About a thousand times — a wire against a resistor",
+            "About a million times — a metal against tap water",
             "More than a million million times",
         ],
         "answer": 3,

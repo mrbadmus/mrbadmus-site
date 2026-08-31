@@ -35,15 +35,16 @@ QUESTIONS = [
         "options": [
             {"text": "How much kinetic energy one particle has, on average",
              "correct": True},
-            {"text": "How much energy the whole object contains",
-             "correct": False,
+            {"text": "How much energy the whole object contains, particle "
+                     "by particle", "correct": False,
              "why": "That is the internal energy, and it depends on how many "
                     "particles there are as well."},
-            {"text": "How many particles the object contains",
+            {"text": "How many particles there are in the object altogether",
              "correct": False,
              "why": "A thermometer says nothing at all about how much there "
                     "is."},
-            {"text": "How much heat the object is holding", "correct": False,
+            {"text": "How much heat the object has stored up inside it",
+             "correct": False,
              "why": "An object does not contain heat. Heating is energy on "
                     "the move; what an object holds is internal energy."},
         ],
@@ -73,16 +74,19 @@ QUESTIONS = [
         "text": "Two identical mugs of water are at 70 °C and 30 °C and are "
                 "put in contact. Which way does energy travel?",
         "options": [
-            {"text": "From the colder one to the hotter one", "correct": False,
-             "why": "Energy travels from hotter to colder on its own, never "
-                    "the other way."},
-            {"text": "Neither way — they are both water", "correct": False,
-             "why": "Being the same substance makes no difference. What "
-                    "decides it is the temperature difference."},
+            {"text": "From the colder one to the hotter one, because the "
+                     "hotter one pulls it in", "correct": False,
+             "why": "Energy travels from hotter to colder on its own. Being "
+                    "hot does not let an object pull energy in."},
+            {"text": "Neither way, because they are both water at the same "
+                     "pressure", "correct": False,
+             "why": "Being the same substance at the same pressure makes no "
+                    "difference. What decides it is the temperature "
+                    "difference."},
             {"text": "From the hotter one to the colder one, until both read "
                      "the same", "correct": True},
-            {"text": "Both ways at the same rate, so nothing changes at all",
-             "correct": False,
+            {"text": "Both ways at exactly the same rate, so nothing changes "
+                     "at all", "correct": False,
              "why": "The net flow is one way. If nothing changed the two "
                     "temperatures would never meet, and they do."},
         ],
@@ -121,18 +125,18 @@ QUESTIONS = [
                 "20 °C. Which statement is right?",
         "options": [
             {"text": "The kettle holds more internal energy, because it is "
-                     "far hotter", "correct": False,
+                     "at the far higher temperature", "correct": False,
              "why": "Temperature is an average per particle. A pool has so "
                     "many more particles that its total is vastly larger."},
             {"text": "The pool holds far more internal energy, and the kettle "
                      "is at the higher temperature", "correct": True},
-            {"text": "They hold the same, because energy is conserved",
-             "correct": False,
+            {"text": "They hold the same amount, because energy is always "
+                     "conserved", "correct": False,
              "why": "Conservation says energy is not created or destroyed. It "
                     "does not make two different objects hold equal "
                     "amounts."},
             {"text": "The pool is at the higher temperature, because it holds "
-                     "more energy", "correct": False,
+                     "far more energy in total", "correct": False,
              "why": "More total energy does not mean a higher temperature. "
                     "The pool reads 20 °C on any thermometer."},
         ],
@@ -145,17 +149,18 @@ QUESTIONS = [
                 "thermometer reads 0 °C for several minutes. What is "
                 "happening to the energy going in?",
         "options": [
-            {"text": "It is being destroyed", "correct": False,
+            {"text": "It is being destroyed, because nothing in the beaker "
+                     "is getting any hotter", "correct": False,
              "why": "Energy is never destroyed. It is going somewhere the "
                     "thermometer cannot see."},
-            {"text": "It is escaping to the room, so none of it is absorbed",
-             "correct": False,
+            {"text": "It is escaping to the room as fast as it arrives, so "
+                     "none of it is absorbed at all", "correct": False,
              "why": "Some always escapes, and the beaker is absorbing energy "
                     "the whole time — the ice is melting."},
             {"text": "It is breaking the forces holding the solid together, "
                      "rather than speeding particles up", "correct": True},
-            {"text": "It is not going in at all until the ice has gone",
-             "correct": False,
+            {"text": "It is not going in at all until every last piece of "
+                     "the ice has gone", "correct": False,
              "why": "It is going in from the first moment. If it were not, "
                     "the ice would not melt."},
         ],
@@ -167,15 +172,16 @@ QUESTIONS = [
         "text": "What makes a spark from a grinder harmless when it lands on "
                 "your skin?",
         "options": [
-            {"text": "Sparks are not really as hot as the figure says",
-             "correct": False,
+            {"text": "Sparks are nowhere near as hot as the quoted figure "
+                     "suggests", "correct": False,
              "why": "The temperature is real. What is small is how much "
                     "matter is at it."},
-            {"text": "Skin reflects the energy away", "correct": False,
+            {"text": "Skin reflects the energy away before it can be "
+                     "absorbed", "correct": False,
              "why": "Skin absorbs it. There is simply very little of it to "
                     "absorb."},
-            {"text": "The spark is travelling too fast to transfer anything",
-             "correct": False,
+            {"text": "The spark is travelling too fast to transfer anything "
+                     "to the skin", "correct": False,
              "why": "Speed is not the reason. A slow spark of the same size "
                     "would be just as harmless."},
             {"text": "It has almost no mass, so it carries almost no internal "
@@ -190,13 +196,16 @@ QUESTIONS = [
                 "raising its temperature?",
         "options": [
             {"text": "Melting it at its melting point", "correct": True},
-            {"text": "Warming it by one degree", "correct": False,
+            {"text": "Warming it by one degree on a hotplate",
+             "correct": False,
              "why": "That raises the temperature by definition, and the "
                     "question asks for the case where it does not move."},
-            {"text": "Cutting it in half", "correct": False,
-             "why": "Cutting halves the amount, so each half holds less. "
-                    "Nothing has been added."},
-            {"text": "Cooling it towards 0 °C", "correct": False,
+            {"text": "Cutting it in half and keeping one piece",
+             "correct": False,
+             "why": "Cutting halves the amount, so the piece you keep holds "
+                    "less. Nothing has been added."},
+            {"text": "Cooling it down towards freezing point",
+             "correct": False,
              "why": "Cooling takes energy out, so the internal energy goes "
                     "down rather than up."},
         ],
