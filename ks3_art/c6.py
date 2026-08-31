@@ -1726,12 +1726,19 @@ def r_catalyst_bench(a, act_id):
     # nothing checked that — only the count. Trial records now carry `phase`
     # for exactly this reason; assert what the error message promises.
     phases = {tr.get("phase") for tr in inert}
-    if len(phases) < 2:
+    # ⊕ 30 Aug 2026, cold double-check. `{tr.get("phase") for tr in inert}`
+    # on its own passes a trial with NO `phase` at all: {None, "solid"} has
+    # length 2, same as {"solid", "liquid"}, so a third inert flask added
+    # without a `phase` line would satisfy this check while teaching nothing
+    # about kinds. `None` is refused explicitly rather than trusted to make
+    # the set too small.
+    if None in phases or len(phases) < 2:
         raise ValueError(
-            "catalyst-bench %r has %d inert flask(s), but they are not "
-            "different KINDS of thing (phase %r) — a solid and a liquid are "
-            "both required, or the bench only teaches 'adding a powder is "
-            "what matters'. Give each inert trial a distinct `phase`."
+            "catalyst-bench %r has %d inert flask(s), but they are not all "
+            "phase-typed and at least two different KINDS of thing (phase "
+            "%r) — a solid and a liquid are both required, or the bench "
+            "only teaches 'adding a powder is what matters'. Give every "
+            "inert trial a `phase`, and make sure they are not all the same."
             % (act_id, len(inert), sorted(p for p in phases if p)))
 
     first = trials[0]["id"]

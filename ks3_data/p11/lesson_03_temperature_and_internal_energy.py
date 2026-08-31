@@ -468,7 +468,7 @@ LESSON = {
     },
 
     "key_note": "Temperature measures the average kinetic energy per "
-                "particle, on average, and is read in degrees Celsius. "
+                "particle, and is read in degrees Celsius. "
                 "Internal energy is the total energy of every particle in "
                 "an object, measured in "
                 "joules, and depends on the temperature and on how much "
