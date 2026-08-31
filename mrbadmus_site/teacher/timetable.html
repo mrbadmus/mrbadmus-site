@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Your timetable — Mr Badmus AI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=21ae3356"/>
+  <style>
+    html { background: var(--bg); }
+    :root {
+      --darker: var(--bg);
+      --dark:   var(--sunken);
+      --card2:  var(--sunken);
+      --shadow: var(--shadow-card);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--darker);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 80px 20px 60px;
+      /* Hidden until the guard's onAllowed fires AND the admin-scope check
+         answers. Fail-closed: if the guard bounces, the scope check refuses,
+         or JS fails outright, the page never reveals school-wide staff data.
+         The refusal state reveals the body too — see `notice()` — so a
+         legitimate teacher who lands here gets a sentence, never a page that
+         stays blank and looks broken. */
+      display: none;
+    }
+
+    nav.top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
+    .pill.env-prod { background: var(--sunken); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    .container { max-width: 980px; margin: 0 auto; }
+    .page-header { margin-bottom: 10px; }
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      font-size: 1.7rem;
+    }
+    .page-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .page-sub .sep { padding: 0 6px; opacity: 0.6; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 30px;
+      margin-bottom: 22px;
+    }
+    .card h2 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* At a glance */
+    .stats { display: flex; flex-wrap: wrap; gap: 12px; }
+    .stat {
+      flex: 1 1 150px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .stat .n { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+    .stat .l {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* A row — used for both teachers and classes. Flex, not a table, so it
+       reflows at 390px instead of scrolling sideways. */
+    .row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px 14px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+    .row:first-of-type { border-top: none; }
+    .row .name { font-weight: 700; font-size: 1rem; }
+    .row .meta { color: var(--muted); font-size: 0.84rem; }
+    .row .right { margin-left: auto; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+
+    /* Classes card: one heading per year group, each a fresh "table" of
+       rows — the first row under a heading gets no top border of its own
+       (`.row:first-of-type` is scoped per parent), so the heading is the
+       only divider between one year and the next. */
+    .year-heading {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 22px;
+      padding: 16px 0 8px;
+      border-top: 2px solid var(--text);
+    }
+    .year-group:first-child .year-heading { border-top: none; margin-top: 0; padding-top: 0; }
+    @media (max-width: 560px) {
+      body { padding: 76px 14px 50px; }
+      .card { padding: 20px 16px; }
+      .row .right { margin-left: 0; width: 100%; }
+      /* At 390px the nav has no room to be generous. Without these three the
+         wordmark and "My classes" run into each other with no gap at all, and
+         "Sign out" wraps onto a second line — which makes the bar two rows
+         tall and tucks the page heading underneath the fixed nav. The
+         `gap` separates them, `nowrap` keeps each control on one line. */
+      nav.top-nav { padding: 10px 14px; gap: 12px; }
+      nav.top-nav > a { white-space: nowrap; }
+      .nav-right { gap: 8px; }
+      .nav-right a, .signout-btn { white-space: nowrap; }
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--sunken);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .tag.pending { background: var(--higher-soft); color: var(--higher); border-color: transparent; }
+    .tag.you     { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+
+    .classlist { color: var(--muted); font-size: 0.84rem; }
+    .count { font-variant-numeric: tabular-nums; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .empty { color: var(--muted); font-size: 0.9rem; }
+
+    a.classlink { color: var(--text); text-decoration: none; font-weight: 700; }
+    a.classlink:hover { color: var(--accent); text-decoration: underline; }
+
+    /* The refusal, and the honest-failure state. Plain words, no codes. */
+    .notice { max-width: 620px; margin: 40px auto; text-align: center; }
+    .notice h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .notice p { color: var(--muted); font-size: 1rem; line-height: 1.6; }
+    .notice a { color: var(--accent); font-weight: 700; }
+  
+    /* ── ⊕ MRB-306 WS-2 — Today ──────────────────────────────────────────
+       Today's own additions. Everything above is admin.html's, copied so the
+       two hand-written staff pages cannot drift apart. */
+
+    .lesson {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+      text-decoration: none; color: inherit;
+    }
+    .lesson:last-child { border-bottom: none; }
+    .lesson:hover .lesson-code { color: var(--accent); }
+    .lesson-period {
+      flex: none; min-width: 84px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); padding-top: 3px;
+    }
+    .lesson-body { flex: 1; min-width: 0; }
+    .lesson-code { font-weight: 700; font-size: 1.02rem; }
+    .lesson-meta { color: var(--muted); font-size: 0.86rem; margin-top: 3px; }
+    .lesson-state { font-size: 0.86rem; margin-top: 6px; }
+    .lesson-state.chase { color: var(--danger); font-weight: 700; }
+    .lesson-state.clear { color: var(--muted); }
+
+    .daybar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+    .daybar span {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 6px 11px; border-radius: 999px;
+      background: var(--sunken); color: var(--muted);
+    }
+    .daybar span.on { background: var(--accent); color: #fff; }
+
+    /* Skeletons: the class page's pattern — never a bare heading on empty
+       ground while the reads are in flight. */
+    .skel { background: var(--sunken); border-radius: 6px; animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+    .skel-row { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .skel-row:last-child { border-bottom: none; }
+
+    .prompt { padding: 4px 0 2px; }
+    .prompt p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px; }
+    .btn {
+      display: inline-block; padding: 11px 16px; min-height: 40px;
+      border: 1px solid var(--border); border-radius: 9px;
+      background: transparent; color: var(--accent);
+      font: inherit; font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; text-decoration: none;
+    }
+    .btn:disabled { opacity: 0.55; cursor: default; color: var(--muted); }
+    .remind-row {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+    }
+    .remind-row .who { flex: 1; min-width: 200px; color: var(--muted); font-size: 0.9rem; }
+
+    @media (max-width: 560px) {
+      .lesson { gap: 12px; }
+      .lesson-period { min-width: 62px; font-size: 0.68rem; }
+    }
+
+    /* ── ⊕ MRB-306 — the timetable editor ───────────────────────────────── */
+    .grid-wrap { overflow-x: auto; }
+    table.grid { border-collapse: collapse; width: 100%; min-width: 640px; }
+    table.grid th, table.grid td {
+      border: 1px solid var(--border); padding: 6px; vertical-align: middle;
+    }
+    table.grid th {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted); background: var(--sunken);
+    }
+    table.grid th.rowhead { text-align: left; white-space: nowrap; width: 92px; }
+    table.grid select {
+      width: 100%; min-height: 40px; padding: 6px 8px;
+      border: 1px solid var(--border); border-radius: 7px;
+      background: var(--card); color: var(--text);
+      font-family: var(--font-sans); font-size: 0.85rem;
+    }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
+    .msg { font-size: 0.9rem; margin-top: 12px; }
+    .msg.ok  { color: var(--foundation, #4a7); font-weight: 700; }
+    .msg.bad { color: var(--danger); font-weight: 700; }
+    .rows { margin-top: 14px; font-size: 0.88rem; }
+    .rows .row { padding: 7px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; }
+    .rows .row:last-child { border-bottom: none; }
+    .rows .row .w { flex: none; width: 86px; color: var(--muted); }
+    .rows .row.bad .why { color: var(--danger); font-weight: 700; }
+    .drop {
+      border: 1px dashed var(--border); border-radius: 10px;
+      padding: 18px; text-align: center; color: var(--muted); font-size: 0.92rem;
+    }
+    .drop input[type=file] { margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/index.html" style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:-0.01em;">MrBadmusAI</a>
+  <div class="nav-right">
+    <a href="/teacher/classes.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">My classes</a>
+    <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
+    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<div class="container" id="main" style="display:none;">
+  <div class="page-header"><h1>Your timetable</h1></div>
+  <div class="page-sub" id="sub">&hellip;</div>
+
+  <div class="card">
+    <h2>Build it here</h2>
+    <p class="empty" style="margin-bottom:14px;">
+      Pick a class for each period you teach. Leave the rest empty.
+      Periods are numbered because the school&rsquo;s bell times aren&rsquo;t on the system yet.
+    </p>
+    <div class="grid-wrap"><table class="grid" id="grid"></table></div>
+    <div class="actions">
+      <button class="btn" id="save">Save timetable</button>
+      <button class="btn" id="clear">Clear all</button>
+      <a class="btn" href="/teacher/today.html">Back to Today</a>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+
+  <div class="card">
+    <h2>Or upload a file</h2>
+    <p class="empty" style="margin-bottom:14px;">
+      A CSV with a row per lesson. Two shapes are recognised:
+      <code>day,period,class</code>, or a school MIS export with
+      <code>Day</code>, <code>Period</code> and <code>Class</code> columns.
+      Class codes are matched to your own classes; anything that isn&rsquo;t yours is listed and skipped.
+    </p>
+    <div class="drop">
+      Choose a CSV file
+      <div><input type="file" id="file" accept=".csv,text/csv"/></div>
+    </div>
+    <div class="rows" id="preview"></div>
+    <div class="actions" id="upload-actions" style="display:none;">
+      <button class="btn" id="apply">Replace my timetable with this</button>
+    </div>
+    <div class="msg" id="umsg"></div>
+  </div>
+</div>
+
+<div class="container" id="notice" style="display:none;">
+  <div class="notice">
+    <h1 id="notice-title"></h1>
+    <p id="notice-body"></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js?v=06f24811"></script>
+<script src="/shared/class-entry.js?v=d47329ae"></script>
+<script src="/shared/teacher-guard.js?v=2efdc820"></script>
+<script src="/shared/teacher-data.js?v=f05eeaa9"></script>
+<script src="/shared/teacher-admin-nav.js?v=6549c6a4"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   MRB-306 — THE TIMETABLE EDITOR
+   ══════════════════════════════════════════════════════════════════════════
+
+   Two ways in, and the GRID is the guaranteed one. A teacher can always build
+   a week by picking classes from their own list; the CSV path is a
+   convenience on top of it, never the only road.
+
+   ⚠️ WHAT THIS PAGE DOES NOT CLAIM. Design's v3 upload screen offers "a photo
+   of your paper timetable works too". No photo path is built, so that
+   sentence does not appear here. A screen promises what it does.
+
+   ⚠️ CLASS OWNERSHIP IS THE SERVER'S RULE, NOT THIS PAGE'S. The picker only
+   ever offers classes this teacher teaches, and the CSV importer refuses codes
+   it cannot match — but `replace_timetable` re-asserts
+   `auth_user_teaches_class` for every row, so neither is load-bearing.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const DAYS  = [[1,'Mon'],[2,'Tue'],[3,'Wed'],[4,'Thu'],[5,'Fri']];
+const PERIODS = [1,2,3,4,5];
+
+function el(id) { return document.getElementById(id); }
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
+}
+function notice(title, body) {
+  el('main').style.display = 'none';
+  el('notice-title').textContent = title;
+  el('notice-body').innerHTML = body;
+  el('notice').style.display = 'block';
+  document.body.style.display = 'block';
+}
+
+let CLASSES = [];
+let pendingRows = null;
+
+function drawGrid(existing) {
+  const bySlot = {};
+  (existing || []).forEach(function (e) { bySlot[e.weekday + ':' + e.period] = e.classId; });
+
+  let html = '<tr><th class="rowhead"></th>';
+  PERIODS.forEach(function (p) { html += '<th>Period ' + p + '</th>'; });
+  html += '</tr>';
+
+  DAYS.forEach(function (d) {
+    html += '<tr><th class="rowhead">' + d[1] + '</th>';
+    PERIODS.forEach(function (p) {
+      const sel = bySlot[d[0] + ':' + p] || '';
+      html += '<td><select data-wd="' + d[0] + '" data-p="' + p + '" aria-label="' +
+              d[1] + ' period ' + p + '"><option value="">&mdash;</option>';
+      CLASSES.forEach(function (c) {
+        html += '<option value="' + esc(c.id) + '"' + (c.id === sel ? ' selected' : '') +
+                '>' + esc(c.name) + '</option>';
+      });
+      html += '</select></td>';
+    });
+    html += '</tr>';
+  });
+  el('grid').innerHTML = html;
+}
+
+function readGrid() {
+  const out = [];
+  document.querySelectorAll('#grid select').forEach(function (s) {
+    if (s.value) {
+      out.push({ classId: s.value, weekday: Number(s.dataset.wd), period: Number(s.dataset.p) });
+    }
+  });
+  return out;
+}
+
+/* ── CSV ──────────────────────────────────────────────────────────────────
+   A small, deliberate parser. It handles quoted fields and both header
+   shapes, and it does NOT try to be clever: a row it cannot read is REPORTED,
+   never guessed at. Guessing a lesson wrong is worse than skipping it. */
+function parseCsv(text) {
+  const rows = [];
+  let field = '', row = [], q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') {
+        if (text[i+1] === '"') { field += '"'; i++; } else { q = false; }
+      } else { field += c; }
+    } else if (c === '"') { q = true; }
+    else if (c === ',') { row.push(field); field = ''; }
+    else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+    else if (c !== '\r') { field += c; }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(function (r) { return r.some(function (v) { return v.trim() !== ''; }); });
+}
+
+const DAY_WORDS = { mon:1, monday:1, tue:2, tues:2, tuesday:2, wed:3, weds:3, wednesday:3,
+                    thu:4, thur:4, thurs:4, thursday:4, fri:5, friday:5 };
+
+function readDay(v) {
+  const s = String(v || '').trim().toLowerCase();
+  if (DAY_WORDS[s] != null) { return DAY_WORDS[s]; }
+  const m = /^([a-z]+)/.exec(s);
+  if (m && DAY_WORDS[m[1]] != null) { return DAY_WORDS[m[1]]; }
+  const n = parseInt(s, 10);
+  return (n >= 1 && n <= 5) ? n : null;
+}
+function readPeriod(v) {
+  const m = /(\d+)/.exec(String(v || ''));
+  if (!m) { return null; }
+  const n = parseInt(m[1], 10);
+  return (n >= 1 && n <= 20) ? n : null;
+}
+
+/* Both shapes collapse to the same three columns. A header row is detected
+   rather than assumed, so a file with no header still imports. */
+function columnsOf(rows) {
+  const head = rows[0].map(function (h) { return String(h||'').trim().toLowerCase(); });
+  const find = function (names) {
+    for (let i = 0; i < head.length; i++) {
+      if (names.indexOf(head[i]) !== -1) { return i; }
+    }
+    return -1;
+  };
+  const d = find(['day','weekday','dayofweek','day of week']);
+  const p = find(['period','pd','lesson','slot']);
+  const c = find(['class','class code','classcode','group','set','teaching group']);
+  if (d !== -1 && p !== -1 && c !== -1) { return { day:d, period:p, cls:c, skipHeader:true }; }
+  return { day:0, period:1, cls:2, skipHeader:false };
+}
+
+function matchClass(code) {
+  const want = String(code || '').trim().toLowerCase();
+  if (!want) { return null; }
+  let hit = CLASSES.filter(function (c) { return c.name.toLowerCase() === want; })[0];
+  if (hit) { return hit; }
+  // A looser match on the code with spaces and case removed — MIS exports
+  // write "8R/SC1" and "8r / Sc1" for the same class.
+  const norm = function (s) { return s.toLowerCase().replace(/[^a-z0-9]/g, ''); };
+  hit = CLASSES.filter(function (c) { return norm(c.name) === norm(want); })[0];
+  return hit || null;
+}
+
+function renderPreview(parsed) {
+  const good = parsed.filter(function (r) { return r.ok; });
+  el('preview').innerHTML = parsed.map(function (r) {
+    return '<div class="row' + (r.ok ? '' : ' bad') + '">' +
+      '<span class="w">' + esc(r.where) + '</span>' +
+      '<span>' + esc(r.raw) + '</span>' +
+      (r.ok ? '<span style="margin-left:auto;">&rarr; ' + esc(r.className) + '</span>'
+            : '<span class="why" style="margin-left:auto;">' + esc(r.why) + '</span>') +
+      '</div>';
+  }).join('');
+  el('umsg').className = 'msg';
+  el('umsg').textContent = good.length
+    ? (good.length + ' lesson' + (good.length === 1 ? '' : 's') + ' ready. ' +
+       (parsed.length - good.length) + ' skipped.')
+    : 'Nothing in this file could be matched to your classes.';
+  el('upload-actions').style.display = good.length ? 'flex' : 'none';
+  pendingRows = good.map(function (r) {
+    return { classId: r.classId, weekday: r.weekday, period: r.period };
+  });
+}
+
+MrBadmusTeacherGuard.requireTeacherRole({
+  onDenied: function () {},
+  onAllowed: async function () {
+    document.body.style.display = 'block';
+    const TD = window.MrBadmusTeacherData;
+
+    let entries = [];
+    try {
+      const years = await TD.loadAcademicYears();
+      const yid = years && years.working ? years.working.id : null;
+      const both = await Promise.all([
+        TD.loadTeacherClasses(yid, { metrics: false }),
+        TD.loadTimetable()
+      ]);
+      CLASSES = (both[0] || []).slice().sort(function (a, b) {
+        return String(a.name).localeCompare(String(b.name));
+      });
+      entries = both[1] || [];
+      el('sub').textContent = years && years.working
+        ? (years.working.name + ' · ' + CLASSES.length +
+           (CLASSES.length === 1 ? ' class' : ' classes'))
+        : (CLASSES.length + ' classes');
+    } catch (e) {
+      console.error('[timetable] load failed', e);
+      return notice('Your timetable is unavailable',
+        'It could not be loaded just now. Refresh in a moment, or open ' +
+        '<a href="/teacher/classes.html">My classes</a>.');
+    }
+
+    if (!CLASSES.length) {
+      return notice('No classes yet',
+        'A timetable is built from your classes, and none are linked to your ' +
+        'account yet. <a href="/teacher/classes.html">My classes</a>.');
+    }
+
+    drawGrid(entries);
+    el('main').style.display = 'block';
+
+    el('save').addEventListener('click', async function () {
+      const rows = readGrid();
+      el('msg').className = 'msg';
+      el('msg').textContent = 'Saving…';
+      el('save').disabled = true;
+      try {
+        const n = await TD.saveTimetable(rows, 'manual');
+        el('msg').className = 'msg ok';
+        el('msg').textContent = n + ' lesson' + (n === 1 ? '' : 's') + ' saved.';
+      } catch (e) {
+        el('msg').className = 'msg bad';
+        el('msg').textContent = 'Could not save: ' + (e && e.message ? e.message : 'try again in a moment.');
+      }
+      el('save').disabled = false;
+    });
+
+    /* Clearing is destructive and irreversible from here, so it asks first —
+       the same confirm the file path gets, for the same reason. */
+    el('clear').addEventListener('click', async function () {
+      if (!window.confirm('Remove every lesson from your timetable? Today will go back to asking for one.')) { return; }
+      el('clear').disabled = true;
+      try {
+        await TD.saveTimetable([], 'manual');
+        drawGrid([]);
+        el('msg').className = 'msg ok';
+        el('msg').textContent = 'Timetable cleared.';
+      } catch (e) {
+        el('msg').className = 'msg bad';
+        el('msg').textContent = 'Could not clear: ' + (e && e.message ? e.message : 'try again.');
+      }
+      el('clear').disabled = false;
+    });
+
+    el('file').addEventListener('change', function (ev) {
+      const f = ev.target.files && ev.target.files[0];
+      if (!f) { return; }
+      const fr = new FileReader();
+      fr.onload = function () {
+        let rows;
+        try { rows = parseCsv(String(fr.result || '')); }
+        catch (e) { rows = []; }
+        if (!rows.length) {
+          el('preview').innerHTML = '';
+          el('umsg').className = 'msg bad';
+          el('umsg').textContent = 'That file has no rows in it.';
+          el('upload-actions').style.display = 'none';
+          return;
+        }
+        const cols = columnsOf(rows);
+        const body = cols.skipHeader ? rows.slice(1) : rows;
+        const parsed = body.map(function (r, i) {
+          const rawDay = r[cols.day], rawP = r[cols.period], rawC = r[cols.cls];
+          const raw = [rawDay, rawP, rawC].map(function (v) { return String(v||'').trim(); }).join(' · ');
+          const where = 'Row ' + (i + 1 + (cols.skipHeader ? 1 : 0));
+          const wd = readDay(rawDay), pd = readPeriod(rawP);
+          if (wd == null) { return { where, raw, ok:false, why:'day not understood' }; }
+          if (pd == null) { return { where, raw, ok:false, why:'period not understood' }; }
+          const k = matchClass(rawC);
+          if (!k) { return { where, raw, ok:false, why:'not one of your classes' }; }
+          return { where, raw, ok:true, weekday:wd, period:pd, classId:k.id, className:k.name };
+        });
+        renderPreview(parsed);
+      };
+      fr.readAsText(f);
+    });
+
+    el('apply').addEventListener('click', async function () {
+      if (!pendingRows || !pendingRows.length) { return; }
+      if (!window.confirm('Replace your whole timetable with these ' + pendingRows.length +
+                          ' lessons? Your current one will be removed.')) { return; }
+      el('apply').disabled = true;
+      try {
+        const n = await TD.saveTimetable(pendingRows, 'upload');
+        el('umsg').className = 'msg ok';
+        el('umsg').textContent = n + ' lesson' + (n === 1 ? '' : 's') + ' saved. ';
+        drawGrid(pendingRows);
+      } catch (e) {
+        el('umsg').className = 'msg bad';
+        el('umsg').textContent = 'Could not save: ' + (e && e.message ? e.message : 'try again.');
+      }
+      el('apply').disabled = false;
+    });
+  }
+});
+</script>
+</body>
+</html>

@@ -2126,6 +2126,38 @@ window.MrBadmusTeacherData = (function () {
       });
   }
 
+  /* saveTimetable(entries, source)
+
+     `entries` is [{ classId, weekday, period }]. Replaces this teacher's
+     whole timetable for the year those classes belong to.
+
+     ⚠️ ONE CALL, because it is one transaction. Retiring the old rows and
+     inserting the new ones from here would be two round trips, and a
+     connection that dropped between them would leave a teacher with NO
+     timetable at all. `replace_timetable` is SECURITY INVOKER, so RLS still
+     decides every row; the RPC only makes the two halves atomic, and
+     re-asserts class ownership server-side because a screen is not a
+     boundary.
+
+     An empty array is legitimate and means "clear it". */
+  async function saveTimetable(entries, source) {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+    const rows = (entries || []).map(function (e) {
+      return { class_id: e.classId, weekday: Number(e.weekday), period: Number(e.period) };
+    });
+    const { data, error } = await sb.rpc('replace_timetable',
+      { p_entries: rows, p_source: source === 'upload' ? 'upload' : 'manual' });
+    if (error) {
+      console.error('[teacher-data] saveTimetable failed', error);
+      throw error;
+    }
+    return data;
+  }
+
   /* The school's own weekday, 1=Mon … 7=Sun, from the SERVER-shaped clock
      rather than the device's timezone. A teacher in another timezone (or with
      a wrong clock) must not be shown Tuesday's lessons on Monday morning.
@@ -2310,6 +2342,7 @@ window.MrBadmusTeacherData = (function () {
     remindersForClass,
     // ⊕ MRB-306 WS-1 — the timetable Today is built from.
     loadTimetable,
+    saveTimetable,
     schoolWeekday,
   };
 })();

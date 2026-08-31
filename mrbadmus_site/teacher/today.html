@@ -301,7 +301,7 @@
      is not already on the page, and this page's very first read needs it. -->
 <script src="/shared/class-entry.js?v=d47329ae"></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/teacher-data.js?v=444829bd"></script>
+<script src="/shared/teacher-data.js?v=f05eeaa9"></script>
 <script src="/shared/teacher-admin-nav.js?v=6549c6a4"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
@@ -426,7 +426,9 @@ MrBadmusTeacherGuard.requireTeacherRole({
         '<p>Today shows your lessons in order, each one telling you who still owes you ' +
         'this week&rsquo;s work before you walk in. It needs your timetable first, and ' +
         'there isn&rsquo;t one on your account yet.</p>' +
-        '<a class="btn" href="/teacher/classes.html">Go to my classes</a>' +
+        /* ⊕ Now that the editor exists this offers it. It did NOT before —
+           an action that led nowhere would have been worse than none. */
+        '<a class="btn" href="/teacher/timetable.html">Set up my timetable</a>' +
         '</div>';
       el('main').style.display = 'block';
       return;
@@ -469,6 +471,21 @@ MrBadmusTeacherGuard.requireTeacherRole({
       const why = todayWeekday >= 6 ? 'No lessons at the weekend.' : 'No lessons today.';
       el('day-line').textContent = why + ' Showing your next teaching day.';
       el('lessons-heading').textContent = 'Next: ' + DAY_NAMES[showDay];
+    }
+
+    /* A standing way back to the editor once a timetable exists — a teacher's
+       rooms and sets change, and finding the page should not require
+       remembering the URL. */
+    const edit = document.createElement('a');
+    edit.className = 'btn';
+    edit.href = '/teacher/timetable.html';
+    edit.textContent = 'Edit timetable';
+    edit.style.cssText = 'margin-left:auto;font-size:0.8rem;padding:7px 11px;min-height:0;';
+    const h = el('lessons-heading');
+    if (h && h.parentNode) {
+      h.style.display = 'flex';
+      h.style.alignItems = 'center';
+      h.appendChild(edit);
     }
 
     if (!dayEntries.length) {

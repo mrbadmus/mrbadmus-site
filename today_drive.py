@@ -174,6 +174,10 @@ PACKS = '''
 window.__MRB_PACKS__ = %s;
 '''
 
+CLASSES_JS = '''
+window.__MRB_CLASSES__ = %s;
+'''
+
 PACK_JS = '''
 /* ⚠️ A SETTER, NOT A POLL — the same trick STUB_JS uses for `window.supabase`,
    and for the same reason. A `setTimeout` poll LOST THE RACE: teacher-data.js
@@ -197,6 +201,16 @@ PACK_JS = '''
           out[id] = (window.__MRB_PACKS__ || {})[id] || null;
         });
         return Promise.resolve(out);
+      };
+      /* `loadTeacherClasses` reads class_teachers with a NESTED join
+         (`class:class_id ( … )`) that the tiny query stub does not model, so
+         unstubbed it returns zero classes and the editor correctly shows
+         "No classes yet" — a true page behaviour, but not the one under test.
+         Stubbed at the same data-layer boundary as the matrices, for the
+         same reason: reproducing PostgREST's join semantics in the stub
+         would be testing the stub. */
+      v.loadTeacherClasses = function () {
+        return Promise.resolve((window.__MRB_CLASSES__ || []).slice());
       };
     }
     return v;
@@ -243,16 +257,18 @@ def packs_for(with_data=True):
     }
 
 
-def run_case(b, base, name, when, tables, packs, shots, width=1280):
+def run_case(b, base, name, when, tables, packs, shots, width=1280,
+             page="/teacher/today.html", evals=None):
     """One state. A FRESH PAGE TARGET each time, because
     `Page.addScriptToEvaluateOnNewDocument` is per-target — reusing a page
     would carry the previous case's frozen clock into the next one."""
     pre = ("window.__MRB_STUB__=%s;\n" % json.dumps({"uid": TEACHER, "tables": tables, "log": []}))
-    pre += STUB_JS + (FREEZE % when) + (PACKS % json.dumps(packs)) + PACK_JS
+    pre += STUB_JS + (FREEZE % when) + (PACKS % json.dumps(packs))
+    pre += (CLASSES_JS % json.dumps(TABLES['classes'])) + PACK_JS
 
     p = b.page("about:blank", settle=0.2)
     p.send("Page.addScriptToEvaluateOnNewDocument", {"source": pre})
-    p.goto(base + "/teacher/today.html", settle=3.5)
+    p.goto(base + page, settle=3.5)
     # ⚠️ SCOPED TO THE RENDERED REGION, not `document.body`. `innerText` on
     # body pulled in this page's own <script> source, so the drive matched
     # the words "Period" and "upload" in its own comments and called that a
@@ -286,7 +302,12 @@ def run_case(b, base, name, when, tables, packs, shots, width=1280):
                      "return painted(m)||painted(n);})()")
     # The favicon 404 is the static server's, not the page's.
     errs = [e for e in p.console_errors() if 'favicon' not in e]
-    return text or "", shot, overflow, errs, visible
+    # `evals` lets a case assert DOM STATE, not only rendered text — the
+    # grid's selected options are not text and cannot be read any other way.
+    probed = {}
+    for k, expr in (evals or {}).items():
+        probed[k] = p.eval(expr)
+    return text or "", shot, overflow, errs, visible, probed
 
 
 def main():
@@ -308,7 +329,7 @@ def main():
     try:
         with cdp.Browser() as b:
             # ── 1. a weekday this teacher teaches (Monday 7 Sep 2026) ────
-            t, s1, ov, errs, vis = run_case(b, base, "1-weekday", "2026-09-07T09:00:00",
+            t, s1, ov, errs, vis, _ = run_case(b, base, "1-weekday", "2026-09-07T09:00:00",
                                        TABLES, packs_for(), args.shots)
             print("\n--- WEEKDAY ---\n" + t[:800] + "\n")
             check("Monday" in t, "weekday: names the day")
@@ -334,7 +355,7 @@ def main():
             check(not errs, "weekday: no console errors", "; ".join(errs[:2]))
 
             # ── 2. Saturday ──────────────────────────────────────────────
-            t2, s2, _, e2, vis2 = run_case(b, base, "2-weekend", "2026-09-12T09:00:00",
+            t2, s2, _, e2, vis2, _ = run_case(b, base, "2-weekend", "2026-09-12T09:00:00",
                                      TABLES, packs_for(), args.shots)
             print("--- WEEKEND ---\n" + t2[:500] + "\n")
             check("No lessons at the weekend" in t2, "weekend: says so plainly")
@@ -345,7 +366,7 @@ def main():
             check(not e2, "weekend: no console errors", "; ".join(e2[:2]))
 
             # ── 3. a weekday with no lessons (Friday) ────────────────────
-            t3, s3, _, e3, vis3 = run_case(b, base, "3-empty-day", "2026-09-11T09:00:00",
+            t3, s3, _, e3, vis3, _ = run_case(b, base, "3-empty-day", "2026-09-11T09:00:00",
                                      TABLES, packs_for(), args.shots)
             print("--- EMPTY WEEKDAY ---\n" + t3[:400] + "\n")
             check("No lessons today" in t3, "empty weekday: says so")
@@ -354,7 +375,7 @@ def main():
 
             # ── 4. no timetable at all ───────────────────────────────────
             empty = dict(TABLES); empty["timetable_entries"] = []
-            t4, s4, _, e4, vis4 = run_case(b, base, "4-no-timetable", "2026-09-07T09:00:00",
+            t4, s4, _, e4, vis4, _ = run_case(b, base, "4-no-timetable", "2026-09-07T09:00:00",
                                      empty, {}, args.shots)
             print("--- NO TIMETABLE ---\n" + t4[:400] + "\n")
             check("No timetable yet" in t4, "no timetable: says so")
@@ -364,11 +385,80 @@ def main():
             check(vis4, "no timetable: the page is actually PAINTED")
 
             # ── 5. 390px ─────────────────────────────────────────────────
-            t5, s5, ov5, e5, vis5 = run_case(b, base, "5-390px", "2026-09-07T09:00:00",
+            t5, s5, ov5, e5, vis5, _ = run_case(b, base, "5-390px", "2026-09-07T09:00:00",
                                        TABLES, packs_for(), args.shots, width=390)
             check(not ov5, "390px: no horizontal overflow")
             check("8r/Sc1" in t5, "390px: still renders the lessons")
             check(vis5, "390px: the page is actually PAINTED")
+
+            # ── 6. the timetable EDITOR ──────────────────────────────────
+            t6, s6, ov6, e6, vis6, g6 = run_case(
+                b, base, "6-editor", "2026-09-07T09:00:00", TABLES,
+                packs_for(), args.shots, page="/teacher/timetable.html",
+                evals={
+                    "cells":  "document.querySelectorAll('#grid select').length",
+                    "filled": "(function(){var s=document.querySelectorAll('#grid select'),n=0;"
+                              "for(var i=0;i<s.length;i++){if(s[i].value)n++;}return n;})()",
+                    "options":"(function(){var s=document.querySelector('#grid select');"
+                              "return s?s.options.length:0;})()",
+                })
+            print("--- EDITOR ---\n" + t6[:500] + "\n")
+            check(vis6, "editor: the page is actually PAINTED")
+            check(not e6, "editor: no console errors", "; ".join(e6[:2]))
+            check("PHOTO" not in t6.upper(),
+                  "editor: no photo-upload promise",
+                  "Design's v3 offers one; no photo path is built, so it is not claimed")
+            check("MON" in t6.upper() and "FRI" in t6.upper(),
+                  "editor: the Mon-Fri grid is drawn")
+            check("PERIOD 1" in t6.upper() and "PERIOD 5" in t6.upper(),
+                  "editor: five periods, by NUMBER")
+            check(g6["cells"] == 25, "editor: a full Mon-Fri x P1-P5 grid",
+                  "25 cells, got %s" % g6["cells"])
+            # The fixture's teacher has 5 timetable entries; the grid must open
+            # on the timetable they ALREADY have, not empty.
+            check(g6["filled"] == 5, "editor: pre-filled from the saved timetable",
+                  "expected 5 selected, got %s" % g6["filled"])
+            # 3 classes + the empty option. A picker offering a class the
+            # teacher does not teach is the failure this asserts against.
+            check(g6["options"] == 4, "editor: offers ONLY this teacher's classes",
+                  "expected 3 classes + blank, got %s" % g6["options"])
+
+            # ── 7. the CSV importer, exercised through the page's own
+            #       functions. It is pure logic over text, so driving it
+            #       directly asserts far more than clicking a file input:
+            #       both header shapes, a quoted field, loose code matching,
+            #       and every way a row can be REFUSED rather than guessed.
+            csv_probe = {
+                # simple shape, no header
+                "simple": "JSON.stringify((function(){var r=parseCsv('Mon,1,8r/Sc1\\nWed,4,10h/Ph1');"
+                          "var c=columnsOf(r);return [r.length,c.skipHeader,readDay(r[0][0]),readPeriod(r[0][1]),"
+                          "!!matchClass(r[0][2])];})())",
+                # MIS shape, with a header and different column order words
+                "mis":    "JSON.stringify((function(){var r=parseCsv('Day,Period,Class\\nTuesday,P3,\"8R / SC1\"');"
+                          "var c=columnsOf(r);return [c.skipHeader,c.day,c.period,c.cls,"
+                          "readDay(r[1][c.day]),readPeriod(r[1][c.period]),"
+                          "(matchClass(r[1][c.cls])||{}).name||null];})())",
+                # every refusal path
+                "bad":    "JSON.stringify([readDay('Sunday'),readDay('nonsense'),readPeriod('none'),"
+                          "readPeriod('99'),matchClass('9z/Xx9'),matchClass('')])",
+            }
+            _t7, _s7, _o7, _e7, _v7, c7 = run_case(
+                b, base, "7-csv", "2026-09-07T09:00:00", TABLES, packs_for(),
+                args.shots, page="/teacher/timetable.html", evals=csv_probe)
+
+            simple = json.loads(c7["simple"])
+            check(simple == [2, False, 1, 1, True],
+                  "csv: bare day,period,class shape", str(simple))
+
+            mis = json.loads(c7["mis"])
+            check(mis == [True, 0, 1, 2, 2, 3, "8r/Sc1"],
+                  "csv: MIS export shape, quoted field, loose code match",
+                  "'8R / SC1' must resolve to 8r/Sc1; got %s" % (mis,))
+
+            bad = json.loads(c7["bad"])
+            check(bad == [None, None, None, None, None, None],
+                  "csv: every unreadable row is REFUSED, never guessed",
+                  "Sunday, nonsense, bad periods and unknown codes all null; got %s" % (bad,))
     finally:
         try: server.shutdown()
         except Exception: pass
