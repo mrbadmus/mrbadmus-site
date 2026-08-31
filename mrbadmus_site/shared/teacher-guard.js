@@ -121,9 +121,17 @@ window.MrBadmusTeacherGuard = (function () {
         // `.then()` FORCES IT TO LEAVE NOW. A PostgREST builder is lazy — it
         // is a thenable that fires on await — so holding the builder in a
         // local would run it serially after `getUser()` and change nothing.
+        /* ⊕ MRB-306 — `display_name` and `last_name` join the select.
+           Today greets a teacher by the name STUDENTS see, and the guard's
+           profile read is the one this page already waits on — a second
+           read for one column would be a serial wave for nothing.
+           ⚠️ THE TWO SELECTS IN THIS FILE MUST STAY IDENTICAL. They are the
+           prefetch and its fallback for the same row; a column present in
+           one and absent from the other would make a page's greeting depend
+           on whether a stored session happened to be warm. */
         prefetched = sb
           .from('profiles')
-          .select('first_name, role, school_id')
+          .select('first_name, last_name, display_name, role, school_id')
           .eq('id', prefetchId)
           .single()
           .then(function (r) { return r; },
@@ -150,7 +158,7 @@ window.MrBadmusTeacherGuard = (function () {
       ? await prefetched
       : await sb
           .from('profiles')
-          .select('first_name, role, school_id')
+          .select('first_name, last_name, display_name, role, school_id')
           .eq('id', user.id)
           .single();
 

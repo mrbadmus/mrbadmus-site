@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Today — Mr Badmus AI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=21ae3356"/>
+  <style>
+    html { background: var(--bg); }
+    :root {
+      --darker: var(--bg);
+      --dark:   var(--sunken);
+      --card2:  var(--sunken);
+      --shadow: var(--shadow-card);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--darker);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 80px 20px 60px;
+      /* Hidden until the guard's onAllowed fires AND the admin-scope check
+         answers. Fail-closed: if the guard bounces, the scope check refuses,
+         or JS fails outright, the page never reveals school-wide staff data.
+         The refusal state reveals the body too — see `notice()` — so a
+         legitimate teacher who lands here gets a sentence, never a page that
+         stays blank and looks broken. */
+      display: none;
+    }
+
+    nav.top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      z-index: 10;
+    }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
+    .pill.env-prod { background: var(--sunken); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    .container { max-width: 980px; margin: 0 auto; }
+    .page-header { margin-bottom: 10px; }
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      font-size: 1.7rem;
+    }
+    .page-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .page-sub .sep { padding: 0 6px; opacity: 0.6; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 30px;
+      margin-bottom: 22px;
+    }
+    .card h2 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* At a glance */
+    .stats { display: flex; flex-wrap: wrap; gap: 12px; }
+    .stat {
+      flex: 1 1 150px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .stat .n { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+    .stat .l {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* A row — used for both teachers and classes. Flex, not a table, so it
+       reflows at 390px instead of scrolling sideways. */
+    .row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px 14px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+    .row:first-of-type { border-top: none; }
+    .row .name { font-weight: 700; font-size: 1rem; }
+    .row .meta { color: var(--muted); font-size: 0.84rem; }
+    .row .right { margin-left: auto; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+
+    /* Classes card: one heading per year group, each a fresh "table" of
+       rows — the first row under a heading gets no top border of its own
+       (`.row:first-of-type` is scoped per parent), so the heading is the
+       only divider between one year and the next. */
+    .year-heading {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 22px;
+      padding: 16px 0 8px;
+      border-top: 2px solid var(--text);
+    }
+    .year-group:first-child .year-heading { border-top: none; margin-top: 0; padding-top: 0; }
+    @media (max-width: 560px) {
+      body { padding: 76px 14px 50px; }
+      .card { padding: 20px 16px; }
+      .row .right { margin-left: 0; width: 100%; }
+      /* At 390px the nav has no room to be generous. Without these three the
+         wordmark and "My classes" run into each other with no gap at all, and
+         "Sign out" wraps onto a second line — which makes the bar two rows
+         tall and tucks the page heading underneath the fixed nav. The
+         `gap` separates them, `nowrap` keeps each control on one line. */
+      nav.top-nav { padding: 10px 14px; gap: 12px; }
+      nav.top-nav > a { white-space: nowrap; }
+      .nav-right { gap: 8px; }
+      .nav-right a, .signout-btn { white-space: nowrap; }
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--sunken);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .tag.pending { background: var(--higher-soft); color: var(--higher); border-color: transparent; }
+    .tag.you     { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+
+    .classlist { color: var(--muted); font-size: 0.84rem; }
+    .count { font-variant-numeric: tabular-nums; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .empty { color: var(--muted); font-size: 0.9rem; }
+
+    a.classlink { color: var(--text); text-decoration: none; font-weight: 700; }
+    a.classlink:hover { color: var(--accent); text-decoration: underline; }
+
+    /* The refusal, and the honest-failure state. Plain words, no codes. */
+    .notice { max-width: 620px; margin: 40px auto; text-align: center; }
+    .notice h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .notice p { color: var(--muted); font-size: 1rem; line-height: 1.6; }
+    .notice a { color: var(--accent); font-weight: 700; }
+  
+    /* ── ⊕ MRB-306 WS-2 — Today ──────────────────────────────────────────
+       Today's own additions. Everything above is admin.html's, copied so the
+       two hand-written staff pages cannot drift apart. */
+
+    .lesson {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+      text-decoration: none; color: inherit;
+    }
+    .lesson:last-child { border-bottom: none; }
+    .lesson:hover .lesson-code { color: var(--accent); }
+    .lesson-period {
+      flex: none; min-width: 84px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); padding-top: 3px;
+    }
+    .lesson-body { flex: 1; min-width: 0; }
+    .lesson-code { font-weight: 700; font-size: 1.02rem; }
+    .lesson-meta { color: var(--muted); font-size: 0.86rem; margin-top: 3px; }
+    .lesson-state { font-size: 0.86rem; margin-top: 6px; }
+    .lesson-state.chase { color: var(--danger); font-weight: 700; }
+    .lesson-state.clear { color: var(--muted); }
+
+    .daybar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+    .daybar span {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 6px 11px; border-radius: 999px;
+      background: var(--sunken); color: var(--muted);
+    }
+    .daybar span.on { background: var(--accent); color: #fff; }
+
+    /* Skeletons: the class page's pattern — never a bare heading on empty
+       ground while the reads are in flight. */
+    .skel { background: var(--sunken); border-radius: 6px; animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+    .skel-row { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .skel-row:last-child { border-bottom: none; }
+
+    .prompt { padding: 4px 0 2px; }
+    .prompt p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px; }
+    .btn {
+      display: inline-block; padding: 11px 16px; min-height: 40px;
+      border: 1px solid var(--border); border-radius: 9px;
+      background: transparent; color: var(--accent);
+      font: inherit; font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; text-decoration: none;
+    }
+    .btn:disabled { opacity: 0.55; cursor: default; color: var(--muted); }
+    .remind-row {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+    }
+    .remind-row .who { flex: 1; min-width: 200px; color: var(--muted); font-size: 0.9rem; }
+
+    @media (max-width: 560px) {
+      .lesson { gap: 12px; }
+      .lesson-period { min-width: 62px; font-size: 0.68rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/index.html" style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:-0.01em;">MrBadmusAI</a>
+  <div class="nav-right">
+    <a href="/teacher/classes.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">My classes</a>
+    <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
+    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<div class="container" id="main" style="display:none;">
+  <div class="page-header"><h1 id="greeting">Today</h1></div>
+  <div class="page-sub" id="day-line">&hellip;</div>
+
+  <div class="daybar" id="daybar"></div>
+
+  <div class="card">
+    <h2 id="lessons-heading">Your lessons</h2>
+    <div id="lessons">
+      <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:120px;height:16px;"></div><div class="skel" style="width:220px;height:12px;margin-top:8px;"></div></div></div>
+      <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:100px;height:16px;"></div><div class="skel" style="width:190px;height:12px;margin-top:8px;"></div></div></div>
+      <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:130px;height:16px;"></div><div class="skel" style="width:210px;height:12px;margin-top:8px;"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="notice" style="display:none;">
+  <div class="notice">
+    <h1 id="notice-title"></h1>
+    <p id="notice-body"></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js?v=06f24811"></script>
+<!-- ⚠️ NOT `defer`, AND IT MUST COME BEFORE `teacher-data.js` — CLAUDE.md's
+     load-order rule (MRB-267). `teacher-data.js` delegates
+     `workingAcademicYear` to `class-entry.js` and throws a named error if it
+     is not already on the page, and this page's very first read needs it. -->
+<script src="/shared/class-entry.js?v=d47329ae"></script>
+<script src="/shared/teacher-guard.js?v=2efdc820"></script>
+<script src="/shared/teacher-data.js?v=444829bd"></script>
+<script src="/shared/teacher-admin-nav.js?v=6549c6a4"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   MRB-306 — TODAY
+   ══════════════════════════════════════════════════════════════════════════
+
+   The teacher's day, built from `timetable_entries` (WS-1's seed) and the
+   class reads `teacher-data.js` already owns.
+
+   WHAT THIS PAGE WILL NOT DO
+   · It will not invent a clock time. `school_period_times` is empty on
+     purpose, so lessons are ordered by period NUMBER and labelled
+     "Period 1 … 5". A wrong time in front of someone about to walk into a
+     room is worse than no time at all.
+   · It will not compose an assignment, or offer to. Composition happens in
+     ONE place — the backend's `/api/class/current-assignment` — and no
+     teacher surface calls it, so a teacher cannot cause it however the
+     button is worded. Where there is no work set this page says so plainly
+     rather than offering an action that would do nothing.
+   · It will not read a deadline from the device clock. The weekday is
+     interpreted in the school's timezone (`schoolWeekday`), and that decides
+     only WHICH ROW of the grid to show — never whether something is late.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const DAY_NAMES = { 1:'Monday', 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday', 7:'Sunday' };
+const DAY_SHORT = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+function el(id) { return document.getElementById(id); }
+
+function notice(title, bodyHtml) {
+  el('main').style.display = 'none';
+  el('notice-title').textContent = title;
+  el('notice-body').innerHTML = bodyHtml;
+  el('notice').style.display = 'block';
+  document.body.style.display = 'block';
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
+/* Time-of-day greeting. From the clock, which is fine — being wished good
+   afternoon at 11:59 is a cosmetic error, and nothing here is a deadline. */
+function greetingFor(name) {
+  const h = new Date().getHours();
+  const part = h < 12 ? 'Good morning' : (h < 18 ? 'Good afternoon' : 'Good evening');
+  return name ? (part + ', ' + name) : part;
+}
+
+/* The name students see. `display_name` is the "What name should students
+   see" field; where a teacher has not set one, fall back the same way
+   `class_teachers_for_viewer` does, so one person is never named two ways. */
+function teacherName(profile) {
+  if (!profile) { return ''; }
+  const dn = (profile.display_name || '').trim();
+  if (dn) { return dn; }
+  const fl = ((profile.first_name || '') + ' ' + (profile.last_name || '')).trim();
+  return fl || '';
+}
+
+/* KS3 /Sc → Science, KS4 /Sc → Combined Science, /Ph /Ch /Bi → the separate
+   science. The subject comes from the CLASS CODE, never from tier or
+   pathway, which are deliberately absent from every teacher surface. */
+function subjectFromCode(code, keyStage) {
+  const m = /\/([A-Za-z]{2})/.exec(code || '');
+  if (!m) { return ''; }
+  const s = m[1].toLowerCase();
+  if (s === 'ph') { return 'Physics'; }
+  if (s === 'ch') { return 'Chemistry'; }
+  if (s === 'bi') { return 'Biology'; }
+  if (s === 'sc') { return keyStage === 'KS4' ? 'Combined Science' : 'Science'; }
+  return '';
+}
+
+/* The next teaching day at or after `from`, among the days this teacher
+   actually teaches. Returns null when the timetable is empty. */
+function nextTeachingDay(days, from) {
+  if (!days.length) { return null; }
+  for (let i = 0; i < 7; i++) {
+    const d = ((from - 1 + i) % 7) + 1;
+    if (days.indexOf(d) !== -1) { return d; }
+  }
+  return null;
+}
+
+MrBadmusTeacherGuard.requireTeacherRole({
+  onDenied: function () { /* the guard redirects; nothing to draw */ },
+  onAllowed: async function (ctx) {
+    /* ⚠️ 'block', NEVER ''. The stylesheet says `body { display: none }` so a
+       page reveals itself by SETTING a value; assigning '' removes the inline
+       style and falls straight back to none — a page that passes every text
+       assertion (the nodes are all there) and renders a blank screen. Caught
+       by looking at the screenshot, not by the assertions. */
+    document.body.style.display = 'block';
+    const TD = window.MrBadmusTeacherData;
+
+    let entries;
+    try {
+      entries = await TD.loadTimetable();
+    } catch (e) {
+      console.error('[today] loadTimetable failed', e);
+      return notice('Today is unavailable',
+        'Your timetable could not be loaded just now. Refresh in a moment, or open ' +
+        '<a href="/teacher/classes.html">My classes</a>.');
+    }
+
+    const name = teacherName(ctx && ctx.profile);
+    el('greeting').textContent = greetingFor(name);
+
+    /* ── NO TIMETABLE AT ALL ────────────────────────────────────────────
+       An honest prompt, and deliberately NOT a promise. Upload is not built
+       yet, so this does not offer it; it says what the page needs and where
+       the work already is. */
+    if (!entries.length) {
+      el('day-line').textContent = 'No timetable yet.';
+      el('daybar').style.display = 'none';
+      el('lessons-heading').textContent = 'Your lessons';
+      el('lessons').innerHTML =
+        '<div class="prompt">' +
+        '<p>Today shows your lessons in order, each one telling you who still owes you ' +
+        'this week&rsquo;s work before you walk in. It needs your timetable first, and ' +
+        'there isn&rsquo;t one on your account yet.</p>' +
+        '<a class="btn" href="/teacher/classes.html">Go to my classes</a>' +
+        '</div>';
+      el('main').style.display = 'block';
+      return;
+    }
+
+    const todayWeekday = TD.schoolWeekday();
+    const taughtDays = [];
+    entries.forEach(function (e) {
+      if (taughtDays.indexOf(e.weekday) === -1) { taughtDays.push(e.weekday); }
+    });
+    taughtDays.sort();
+
+    /* Which day are we showing, and is it actually today? Weekend, or a
+       weekday with no lessons, both fall through to the next teaching day —
+       and the page SAYS which day it is showing rather than letting a
+       Saturday quietly render Monday's lessons as "today". */
+    let showDay = todayWeekday;
+    let isToday = true;
+    if (taughtDays.indexOf(todayWeekday) === -1) {
+      showDay = nextTeachingDay(taughtDays, todayWeekday);
+      isToday = false;
+    }
+
+    const dayEntries = entries.filter(function (e) { return e.weekday === showDay; })
+                              .sort(function (a, b) { return a.period - b.period; });
+
+    // The weekday rail, so a teacher can see the shape of their week.
+    el('daybar').innerHTML = [1,2,3,4,5].map(function (d) {
+      const on = d === showDay ? ' on' : '';
+      const n = entries.filter(function (e) { return e.weekday === d; }).length;
+      return '<span class="' + ('' + on).trim() + '">' + DAY_SHORT[d] + ' &middot; ' + n + '</span>';
+    }).join('');
+
+    if (isToday) {
+      el('day-line').textContent = DAY_NAMES[showDay] + ' \u00B7 ' +
+        dayEntries.length + (dayEntries.length === 1 ? ' lesson' : ' lessons');
+      el('lessons-heading').textContent = 'Today\u2019s lessons';
+    } else {
+      /* Honest label. It is NOT today, and the heading says so. */
+      const why = todayWeekday >= 6 ? 'No lessons at the weekend.' : 'No lessons today.';
+      el('day-line').textContent = why + ' Showing your next teaching day.';
+      el('lessons-heading').textContent = 'Next: ' + DAY_NAMES[showDay];
+    }
+
+    if (!dayEntries.length) {
+      el('lessons').innerHTML = '<div class="empty">Nothing timetabled.</div>';
+      el('main').style.display = 'block';
+      return;
+    }
+
+    /* Draw the lessons FIRST, from the timetable alone, then fill each one's
+       state in as the class reads land. A teacher gets their room order
+       immediately rather than waiting on the slowest class. */
+    el('lessons').innerHTML = dayEntries.map(function (e) {
+      const subj = subjectFromCode(e.className, e.keyStage);
+      const meta = [e.keyStage, subj].filter(Boolean).join(' \u00B7 ');
+      return '<a class="lesson" href="/teacher/class-detail.html?class=' + encodeURIComponent(e.classId) + '">' +
+             '<div class="lesson-period">Period ' + e.period + '</div>' +
+             '<div class="lesson-body">' +
+             '<div class="lesson-code">' + esc(e.className || 'Class') + '</div>' +
+             '<div class="lesson-meta">' + esc(meta) + '</div>' +
+             '<div class="lesson-state clear" data-state-for="' + esc(e.classId) + '">' +
+             '<span class="skel" style="display:inline-block;width:150px;height:11px;"></span>' +
+             '</div>' +
+             '</div></a>';
+    }).join('');
+    el('main').style.display = 'block';
+
+    /* ── PER-CLASS STATE ────────────────────────────────────────────────
+       One read for every class on the day, in parallel — not one wave per
+       lesson (the MRB-292 lesson). Each cell is filled independently, so one
+       slow or failing class cannot blank the others. */
+    const classIds = [];
+    dayEntries.forEach(function (e) {
+      if (e.classId && classIds.indexOf(e.classId) === -1) { classIds.push(e.classId); }
+    });
+
+    let matrices = null;
+    try {
+      matrices = await TD.loadClassMatrices(classIds);
+    } catch (err) {
+      console.warn('[today] class state unavailable', err);
+    }
+
+    classIds.forEach(function (cid) {
+      const cells = document.querySelectorAll('[data-state-for="' + cid + '"]');
+      if (!cells.length) { return; }
+
+      /* ⚠️ UNKNOWN IS NOT ZERO. Where the read failed the line says nothing
+         rather than "0 to chase", which would be a made-up reassurance about
+         a class this page could not see. */
+      if (!matrices) {
+        cells.forEach(function (c) { c.innerHTML = ''; });
+        return;
+      }
+
+      const pack = matrices[cid];
+      const state = describeClass(pack);
+      cells.forEach(function (c) {
+        c.className = 'lesson-state ' + (state.chase ? 'chase' : 'clear');
+        c.textContent = state.text;
+      });
+    });
+  }
+});
+
+/* What to say about one class, from its own submission rows.
+
+   ⚠️ The doneness test is the UNION — completed_at, submitted_at, or
+   status === 'complete' — the same one `teacher-live.js`'s cellOf() uses, so
+   this page cannot disagree with the class screens ("one number, one
+   source"), and it can never count a student as owing work when their own
+   page reads Complete. The literal is 'complete', NOT 'completed'. */
+function describeClass(pack) {
+  if (!pack) { return { text: '', chase: false }; }
+
+  const assignments = pack.assignments || [];
+  const members = pack.members || [];
+  if (!assignments.length) {
+    /* No work set. Say so; do NOT offer to set it — nothing on a teacher
+       surface can compose an assignment. */
+    return { text: 'No work set this week.', chase: false };
+  }
+  if (!members.length) {
+    return { text: 'No students on this class yet.', chase: false };
+  }
+
+  // This week's work: the newest by due date, nulls first — the same order
+  // buildPapers uses, where index 0 is the week the class opens parked on.
+  const papers = assignments.slice().sort(function (a, b) {
+    if (a.due_at == null && b.due_at == null) { return 0; }
+    if (a.due_at == null) { return -1; }
+    if (b.due_at == null) { return 1; }
+    return a.due_at < b.due_at ? 1 : -1;
+  });
+  const paper = papers[0];
+  if (!paper) { return { text: '', chase: false }; }
+
+  const subs = (pack.submissions || []).filter(function (s) {
+    return s.assignment_id === paper.id;
+  });
+  const doneBy = {};
+  subs.forEach(function (s) {
+    const done = !!(s.completed_at || s.submitted_at) || s.status === 'complete';
+    if (done) { doneBy[s.student_id] = true; }
+  });
+
+  const total = members.length;
+  const inCount = members.filter(function (m) { return doneBy[m.student_id]; }).length;
+  const owing = total - inCount;
+
+  if (owing === 0) {
+    return { text: inCount + ' of ' + total + ' in \u00B7 nothing to chase', chase: false };
+  }
+  return {
+    text: inCount + ' of ' + total + ' in \u00B7 ' + owing +
+          (owing === 1 ? ' still to hand in' : ' still to hand in'),
+    chase: true
+  };
+}
+</script>
+</body>
+</html>

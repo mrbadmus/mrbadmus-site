@@ -109,6 +109,23 @@ window.MrBadmusAdminScope = (function () {
   var MARK = 'data-mrb-admin-nav';          // so we never inject twice
   var HREF = '/teacher/admin.html';
 
+  /* ⊕ MRB-306 — TODAY joins the same nav, through the same two hosts and the
+     same redraw observer.
+
+     It is here rather than in a file of its own because a new file would need
+     a `<script>` tag on the five PORTED pages, and those tags are written by
+     `build_teacher_port.py` from Design's template — a ruling, and a node
+     index, for a link. This module is already loaded on every page that needs
+     it and already survives the ported pages' full-tree redraw, which is the
+     hard part and the part a fresh injector gets wrong.
+
+     ⚠️ UNLIKE ADMIN, TODAY IS NOT SCOPE-GATED. Every teacher has a day. It is
+     injected unconditionally, and needs no client and no predicate — so it is
+     injected at DOM-ready rather than waiting on `client()`, and a page with
+     no session still shows it (the page behind it does its own guarding). */
+  var TODAY_MARK = 'data-mrb-today-nav';
+  var TODAY_HREF = '/teacher/today.html';
+
   // Keep the environment across the hop. Both page families load config.js,
   // so this is the one source that works on the hand-written pages and the
   // ported ones alike — a tester on TEST who clicks Admin must not be
@@ -123,13 +140,25 @@ window.MrBadmusAdminScope = (function () {
     return window.location.pathname === HREF;
   }
 
-  function make(style, label) {
+  function make(style, label, mark, target) {
     var a = document.createElement('a');
-    a.setAttribute(MARK, '1');
-    a.href = href();
+    a.setAttribute(mark || MARK, '1');
+    a.href = target || href();
     a.textContent = label;
     a.style.cssText = style;
     return a;
+  }
+
+  /* Today's own href/here pair. Kept beside `href()`/`isHere()` rather than
+     folded into them: the two links differ in that Admin carries `?env=test`
+     and Today does not need to, and collapsing them would tie one link's URL
+     shape to the other's. */
+  function todayHref() {
+    var c = window.MrBadmusConfig;
+    return TODAY_HREF + (c && c.environment === 'test' ? '?env=test' : '');
+  }
+  function todayIsHere() {
+    return window.location.pathname === TODAY_HREF;
   }
 
   /* Host A — the hand-written staff pages (`teacher-profile.html`,
@@ -149,6 +178,44 @@ window.MrBadmusAdminScope = (function () {
       make('color:var(--muted);font-weight:700;font-size:0.85rem;' +
            'text-decoration:none;', 'Admin'), btn);
     return true;
+  }
+
+  /* Today, host A. Same anchor and same reasoning as `injectTopNav` above —
+     the sign-out button, not `.nav-right`, because the hand-written pages do
+     not agree on the container. */
+  function injectTodayTopNav() {
+    if (todayIsHere()) { return true; }
+    var btn = document.querySelector('nav.top-nav .signout-btn');
+    if (!btn || !btn.parentNode) { return false; }
+    if (btn.parentNode.querySelector('[' + TODAY_MARK + ']')) { return true; }
+    btn.parentNode.insertBefore(
+      make('color:var(--muted);font-weight:700;font-size:0.85rem;' +
+           'text-decoration:none;', 'Today', TODAY_MARK, todayHref()), btn);
+    return true;
+  }
+
+  /* Today, host B — the ported pages' topbar. */
+  function injectTodayTopbar() {
+    if (todayIsHere()) { return true; }
+    var bar = document.querySelector('[data-port-region="topbar"]');
+    if (!bar) { return false; }
+    if (bar.querySelector('[' + TODAY_MARK + ']')) { return true; }
+    var buttons = bar.querySelectorAll('button');
+    var out = buttons.length ? buttons[buttons.length - 1] : null;
+    var link = make(
+      'flex:none;height:32px;padding:0 12px;display:inline-flex;' +
+      'align-items:center;font:600 15.5px/1.2 var(--st-ui);' +
+      'color:var(--st-muted);background:transparent;' +
+      'border:1px solid var(--st-btn-border);border-radius:9px;' +
+      'cursor:pointer;text-decoration:none;', 'Today', TODAY_MARK, todayHref());
+    if (out) { bar.insertBefore(link, out); } else { bar.appendChild(link); }
+    return true;
+  }
+
+  function injectToday() {
+    var a = injectTodayTopNav();
+    var b = injectTodayTopbar();
+    return a || b;
   }
 
   /* Host B — the five ported pages, whose topbar is `data-port-region`
@@ -184,6 +251,32 @@ window.MrBadmusAdminScope = (function () {
     var a = injectTopNav();
     var b = injectTopbar();
     return a || b;
+  }
+
+  /* ⊕ MRB-306. Today is armed on its own, at DOM-ready, because it is not
+     scope-gated and so must not wait on `client()` — a teacher with a slow
+     session would otherwise watch the nav change shape seconds after the page
+     settled. It rides the SAME observer as Admin (see `watch`), which is what
+     keeps it alive through the ported pages' full-tree redraws. */
+  function watchToday() {
+    injectToday();
+    var mount = document.getElementById('mrb-teacher') || document.body;
+    if (!mount || !window.MutationObserver) { return; }
+    var pending = false;
+    new MutationObserver(function () {
+      if (pending) { return; }
+      pending = true;
+      (window.requestAnimationFrame || window.setTimeout)(function () {
+        pending = false;
+        injectToday();
+      }, 0);
+    }).observe(mount, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', watchToday);
+  } else {
+    watchToday();
   }
 
   function watch() {

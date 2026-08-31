@@ -167,6 +167,32 @@ GATES = [
              "the port has run — so this SKIPS BY NAME until then rather "
              "than failing on three pages nobody has built yet."),
 
+    dict(name="today_drive",
+         cmd=["python3", "today_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site/teacher/today.html",
+         why="MRB-306's Today screen, DRIVEN through its four states. Today "
+             "is the one teacher page whose whole job is to be HONEST about a "
+             "day, and every way it can lie is a state rather than a value: "
+             "a weekend that renders Monday as though it were today, a "
+             "weekday with no lessons that says nothing, an empty timetable "
+             "that invents one, a class whose read failed showing '0 to "
+             "chase' instead of blank. Text assertions alone cannot catch "
+             "those, so this drives weekday / weekend / empty-weekday / "
+             "no-timetable / 390px against fixture rows. "
+             "⚠️ IT ASSERTS THE PAGE IS PAINTED, and that is not belt-and-"
+             "braces: the first run of this drive passed all twenty-one text "
+             "checks against a page that rendered COMPLETELY BLANK — `body` "
+             "was display:none and `getComputedStyle` on a child of a hidden "
+             "parent still reports its own display:block. The visibility "
+             "check is the finding, not the feature. "
+             "It needs a browser but NO network and NO credentials: the "
+             "client is stubbed, the clock is frozen per case, and the pages "
+             "are served from mrbadmus_site/ over a local port — which is "
+             "why it is a push gate and admin_view_drive.py, which signs in "
+             "for real, is not. The RLS behind it (timetable_entries_own_all) "
+             "is proved separately in SQL under real roles.",
+         ),
     dict(name="teacher_behaviour",
          cmd=["python3", "teacher_behaviour.py"],
          speed="slow",

@@ -2067,6 +2067,87 @@ window.MrBadmusTeacherData = (function () {
   }
 
   /* ══════════════════════════════════════════════════════════════════════
+     MRB-306 WS-1 — THE TEACHER'S TIMETABLE
+     ══════════════════════════════════════════════════════════════════════
+
+     `loadTimetable()` returns every live entry this teacher owns, with the
+     class attached. RLS does the scoping: `timetable_entries_own_all` admits
+     only rows whose `teacher_id` is auth.uid(), so an unclaimed colleague's
+     seeded rows — which hang off `pending_staff_id` and have no teacher_id at
+     all — are invisible here and cannot leak into anyone's day.
+
+     ⚠️ NO CLOCK TIMES. `school_period_times` exists and is EMPTY, deliberately:
+     Rainford's period times are unknown, and a wrong time in front of a
+     teacher about to walk into a room is worse than no time. Entries are
+     ordered by period NUMBER and the page labels them "Period 1 … 5". When
+     that table is filled the label becomes a time and nothing else changes. */
+  async function loadTimetable() {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    const { data, error } = await sb
+      .from('timetable_entries')
+      .select('id, class_id, weekday, period, week_cycle, source, academic_year_id, ' +
+              'classes ( id, name, key_stage, year_group, academic_year_id )')
+      .is('deleted_at', null)
+      .order('weekday', { ascending: true })
+      .order('period', { ascending: true });
+
+    if (error) {
+      console.error('[teacher-data] loadTimetable failed', error);
+      throw error;
+    }
+
+    /* Scoped to the working academic year, for the same reason every class
+       list on this site is (MRB-261): through late August two years are both
+       unfinished, and a timetable row from the year that ended in July must
+       not appear in today's lessons. `workingAcademicYear` is the one
+       implementation, in class-entry.js. */
+    const years = await loadAcademicYears();
+    const workingId = years && years.working ? years.working.id : null;
+
+    return (data || [])
+      .filter(function (r) { return !workingId || r.academic_year_id === workingId; })
+      .map(function (r) {
+        return {
+          id: r.id,
+          classId: r.class_id,
+          weekday: r.weekday,
+          period: r.period,
+          weekCycle: r.week_cycle,
+          source: r.source,
+          className: r.classes ? r.classes.name : null,
+          keyStage: r.classes ? r.classes.key_stage : null,
+          yearGroup: r.classes ? r.classes.year_group : null,
+        };
+      });
+  }
+
+  /* The school's own weekday, 1=Mon … 7=Sun, from the SERVER-shaped clock
+     rather than the device's timezone. A teacher in another timezone (or with
+     a wrong clock) must not be shown Tuesday's lessons on Monday morning.
+
+     ⚠️ This still reads the device's INSTANT — there is no server time on this
+     page — but it interprets that instant in the school's timezone, which is
+     the half that actually goes wrong in practice. A deadline is never
+     computed from this; it only decides which row of the grid to show. */
+  function schoolWeekday(when) {
+    const d = when || new Date();
+    try {
+      const name = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/London', weekday: 'short'
+      }).format(d);
+      const map = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 };
+      return map[name] || d.getDay() || 7;
+    } catch (e) {
+      return d.getDay() || 7;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
      MRB-306 WS-3 — IN-PLATFORM STUDENT REMINDERS
      ══════════════════════════════════════════════════════════════════════
 
@@ -2227,5 +2308,8 @@ window.MrBadmusTeacherData = (function () {
     // ⊕ MRB-306 WS-3 — in-platform reminders. Additive; no existing caller changes.
     sendReminders,
     remindersForClass,
+    // ⊕ MRB-306 WS-1 — the timetable Today is built from.
+    loadTimetable,
+    schoolWeekday,
   };
 })();
