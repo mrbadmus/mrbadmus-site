@@ -66,7 +66,7 @@ home.
     CIRC-25  if a meter reads zero the meter is broken     (hers, §7)
     CIRC-26  it cannot matter which way round the leads go (hers, §7)
     CIRC-27  the order of the components round a loop matters (from the hook)
-    CIRC-28  a near-full voltmeter reading means it works  (from rung 2)
+    CIRC-28  a full voltmeter reading means it works       (from rung 2)
 
 ⚠️ **THIS PAGE ELICITS `CIRC-14` and does not re-declare it.** Design's §7
 gives `CIRC-14` — *a voltmeter goes in the loop, like an ammeter* — an
@@ -163,7 +163,7 @@ LESSON = {
          "elicited_by": "s-hook",
          "confronted_by": "s-hook"},
         {"id": "CIRC-28",
-         "statement": "A voltmeter reading close to the battery's value means "
+         "statement": "A voltmeter reading at the battery's own value means "
                       "the circuit is working.",
          "elicited_by": "s-ladder",
          "confronted_by": "wire"},
@@ -277,14 +277,25 @@ LESSON = {
                  "nothing and goes out, and the current is limited only by "
                  "the battery. Open the switch: this is the one wiring "
                  "mistake in this practical that can damage a meter.",
+             # ⊕ MRB-297 / P8-04, RULED 30 Aug 2026 — THIS USED TO SAY
+             # 2.94 V, AND THE PANEL'S OWN MODEL CANNOT PRODUCE IT.
+             # 3.00 V across a million ohms and ten is 3.0 µA, which the
+             # bench already reports, and 3.0 µA through a million ohms is
+             # 3.00 V — leaving the lamp thirty microvolts. 2.94 V would
+             # need a 20 kΩ lamp. The true figure is also the better
+             # lesson: it looks exactly like a working circuit, and only
+             # the ammeter gives the fault away.
              "strangled":
                  "The voltmeter is in the loop, and a voltmeter has an "
                  "enormous resistance — about a million ohms against the "
                  "lamp's ten. Almost nothing gets round, so the lamp is dark "
                  "and the ammeter reads zero, while the voltmeter reads "
-                 "2.94 V because nearly the whole battery p.d. is now across "
-                 "the voltmeter itself. That reading is correct and "
-                 "completely misleading: it is measuring the fault.",
+                 "3.00 V, because effectively the whole battery p.d. is now "
+                 "across the meter itself and the lamp is left with "
+                 "microvolts. That reading is correct and completely "
+                 "misleading: on its own it looks exactly like a working "
+                 "circuit, and only the ammeter's 0.00 A gives the fault "
+                 "away.",
              "both":
                  "Both meters are in the wrong place, and the voltmeter wins: "
                  "its million ohms in the loop hold the current down to a few "
@@ -322,8 +333,8 @@ LESSON = {
                             "Every crocodile clip and terminal, the switch, "
                             "and that the cells are the right way round in "
                             "the holder"]},
-                 {"head": "Lamp dark, but the voltmeter reads nearly the "
-                          "whole battery p.d.",
+                 {"head": "Lamp dark, but the voltmeter reads the whole "
+                          "battery p.d.",
                   "cells": ["The voltmeter is in the loop instead of across "
                             "the lamp — or the filament is broken",
                             "That the voltmeter has one lead on each side of "
@@ -414,8 +425,13 @@ LESSON = {
     # ⚠️ MRB-278 · POSITION IS AUTHORED. This lesson takes indices 0 and 2.
     "ladder": {
         "recall": {
+            # ⊕ MRB-297 / P8-04 — 2.94 V here and in rung 2 came from the
+            # bench, and the bench's own model cannot produce it. The
+            # diagnosis is unchanged and in fact sharper: it is the
+            # ammeter's zero beside a full voltmeter reading that names
+            # the fault.
             "q": "A group reports: the lamp is dark, the ammeter reads "
-                 "0.00 A, and the voltmeter reads 2.94 V. Every clip is "
+                 "0.00 A, and the voltmeter reads 3.00 V. Every clip is "
                  "tight. What have they most likely done?",
             "options": [
                 "Wired the voltmeter into the loop instead of across the lamp",
@@ -426,11 +442,11 @@ LESSON = {
             "answer": 0,
             "feedback": {
                 1: "That fault gives a huge ammeter reading, not zero, and "
-                   "the ammeter would have gone off the scale. A near-full "
+                   "the ammeter would have gone off the scale. A full "
                    "voltmeter reading with no current is the signature of a "
                    "voltmeter in the loop.",
                 2: "An open switch gives zero on both meters. Here the "
-                   "voltmeter is reading almost the whole battery p.d., so "
+                   "voltmeter is reading the whole battery p.d., so "
                    "something is completing the loop — through the "
                    "voltmeter.",
                 3: "Reversed cells still drive the lamp; a digital meter "
@@ -440,17 +456,17 @@ LESSON = {
             "title": "Rung 1 · Read the symptom"},
         "apply": {
             "q": "A student wires the voltmeter into the loop, sees it read "
-                 "2.94 V on a 3.0 V battery, and concludes the circuit is "
+                 "3.00 V on a 3.0 V battery, and concludes the circuit is "
                  "working properly. What is right?",
             # ⚑ Option A is FINISHED into a complete wrong rule so that the
             # correct answer is no longer a length tell. Her wrong idea and
             # her correction are untouched; the clause after the dash states
             # the rule the wrong idea depends on. See DEPARTURES-P8.md row 1.
             "options": [
-                "The student is right — 2.94 V out of 3.0 V is close enough, "
-                "so the circuit is fine, because a voltmeter that reads "
-                "almost the whole supply is showing that almost the whole "
-                "supply is reaching the component it is measuring.",
+                "The student is right — 3.00 V out of 3.0 V is the whole "
+                "supply, so the circuit is fine, because a voltmeter that "
+                "reads the whole supply is showing that the whole supply "
+                "is reaching the component it is measuring.",
                 "The reading is wrong — a voltmeter in the loop cannot "
                 "measure anything.",
                 "The reading is correct and the circuit is not. The "
@@ -463,7 +479,7 @@ LESSON = {
             "answer": 2,
             "feedback": {
                 0: "The number looks reassuring and the lamp is dark. A "
-                   "reading close to the battery’s value tells you the "
+                   "reading at the battery’s own value tells you the "
                    "voltmeter is holding the p.d., not that the lamp is "
                    "getting it.",
                 1: "It measures perfectly well; it is measuring the p.d. "

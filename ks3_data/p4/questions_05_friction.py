@@ -33,7 +33,8 @@ QUESTIONS = [
              "why": "That is weight. Friction acts along the surfaces, "
                     "whichever way they are facing."},
             {"text": "in the direction of movement", "correct": False,
-             "why": "The opposite. Friction never pushes something along."},
+             "why": "The opposite. Friction acts against the sliding "
+                    "between the surfaces."},
             {"text": "against the sliding", "correct": True},
             {"text": "away from the heavier object", "correct": False,
              "why": "Mass does not set the direction. The sliding does."},

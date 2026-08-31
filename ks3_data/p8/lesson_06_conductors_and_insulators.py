@@ -245,25 +245,49 @@ LESSON = {
              ],
              "answer": 1,
          },
+         # ⊕ MRB-297 / P8-07, RULED 30 Aug 2026 — `use` IS PER SPECIMEN.
+         # The conductor-band note used to end on one fixed clause, "which
+         # is why it is used where you want heat rather than where you want
+         # a wire", and that clause is NICHROME'S. It was printing verbatim
+         # under a pencil, telling a Year 8 that graphite is a heating
+         # element, in the lesson whose method is that the difference is
+         # measured rather than declared. Every specimen now carries its
+         # own closing sentence and the note fills `{use}` from it.
          "specimens": [
              {"id": "copper", "label": "Copper wire", "name": "COPPER WIRE",
-              "ohms": 0.05, "carriers": "loose electrons, in huge numbers"},
+              "ohms": 0.05, "carriers": "loose electrons, in huge numbers",
+              "use": "That is why every connecting lead in the lab is made "
+                     "of it."},
              {"id": "nichrome", "label": "Nichrome wire",
               "name": "NICHROME WIRE", "ohms": 1.1,
-              "carriers": "loose electrons, harder going"},
+              "carriers": "loose electrons, harder going",
+              "use": "That is why it is used where you want heat rather "
+                     "than where you want a wire."},
              {"id": "pencil", "label": "Pencil lead",
               "name": "PENCIL LEAD (GRAPHITE)", "ohms": 30,
-              "carriers": "electrons free along the carbon sheets"},
+              "carriers": "electrons free along the carbon sheets",
+              "use": "Graphite conducts along its carbon sheets, which is "
+                     "why a pencil line carries a current at all, and why "
+                     "graphite is used for brushes and electrodes rather "
+                     "than for wiring."},
              {"id": "salt", "label": "Salt water", "name": "SALT WATER",
-              "ohms": 400, "carriers": "dissolved ions, not electrons"},
+              "ohms": 400, "carriers": "dissolved ions, not electrons",
+              "use": "That is why sea water conducts and distilled water "
+                     "barely does."},
              {"id": "tap", "label": "Tap water", "name": "TAP WATER",
-              "ohms": 40000, "carriers": "a few dissolved ions only"},
+              "ohms": 40000, "carriers": "a few dissolved ions only",
+              "use": "That is why wet hands make an electric shock far "
+                     "worse."},
              {"id": "wood", "label": "Dry wood", "name": "DRY WOOD",
               "ohms": 5000000,
-              "carriers": "almost nothing free to move"},
+              "carriers": "almost nothing free to move",
+              "use": "That is why dry wood is treated as safe and damp wood "
+                     "is not."},
              {"id": "plastic", "label": "Plastic ruler",
               "name": "PLASTIC RULER", "ohms": 2000000000000,
-              "carriers": "every electron locked in a bond"},
+              "carriers": "every electron locked in a bond",
+              "use": "That is why it is wrapped round the copper in every "
+                     "cable."},
          ],
          "lengths": [
              {"label": "10 cm of it", "mult": 1, "word": "10 cm"},
@@ -287,11 +311,17 @@ LESSON = {
                  "itself can deliver, not by the wire. Clip in any other "
                  "specimen and the wire is the thing that decides, so the "
                  "meter has something to say.",
+             # ⊕ MRB-297 / P8-07 — `{lamp}` IS DERIVED FROM THE CURRENT AND
+             # `{use}` FROM THE SPECIMEN. This note used to be one fixed
+             # template over three specimens and was false about two of
+             # them: 10 cm of nichrome passes 5.5 A here and was called
+             # "enough to light a lamp comfortably" (eighteen times this
+             # unit's own torch-lamp current, and 33 W in 10 cm of thin
+             # wire), and the pencil carried nichrome's heating-element
+             # clause. `p8Lamp` in `shared/ks3.js` fills `{lamp}`.
              "good":
                  "{len} of {name} measures {r} and passes {i} at 6.0 V — "
-                 "enough to light a lamp comfortably. It resists {times} than "
-                 "10 cm of copper, which is why it is used where you want "
-                 "heat rather than where you want a wire.",
+                 "{lamp}. It resists {times} than 10 cm of copper. {use}",
              "poor":
                  "{len} of {name} measures {r} and passes {i} at 6.0 V. The "
                  "meter can see it, so this is genuinely conducting — but "
@@ -508,7 +538,7 @@ LESSON = {
          # `shared/ks3.js` (`isShort || div > 1e3`), not here.
          "rest": {"len": "10 cm", "name": "pencil lead (graphite)",
                   "i": "200.0 mA", "iamps": "0.2 A", "ibare": "0.2",
-                  "r": "30 Ω", "rbare": "30", "verdict": "a conductor",
+                  "r": "30 Ω", "rohms": "30", "verdict": "a conductor",
                   "convline": "200.0 mA ÷ 1 000 = 0.2 A",
                   "convnote": "There are 1 000 milliamps in an amp, so divide "
                               "before you go any further.",
@@ -541,7 +571,7 @@ LESSON = {
                    "note": "The supply is fixed, so only the current changes "
                            "from specimen to specimen."},
                   {"letter": "F", "label": "Fine-tune",
-                   "line": "6.0 ÷ {ibare} = {rbare}",
+                   "line": "6.0 ÷ {ibare} = {rohms}",
                    "note": "Volts divided by amps leaves ohms, however small "
                            "the current is."},
                   {"letter": "A", "label": "Answer",

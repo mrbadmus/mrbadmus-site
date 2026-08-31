@@ -98,6 +98,15 @@ LESSON = {
             "At the same rate — insulation only works on hot things",
             "It will not melt at all while wrapped",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 1,
         "reveal": "The wrapped one lasts far longer. If a blanket were a "
                   "source of warmth, wrapping ice in it would be the fastest "
                   "way to melt it — and it is the slowest. <strong>A blanket "

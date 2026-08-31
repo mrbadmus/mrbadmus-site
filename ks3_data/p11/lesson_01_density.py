@@ -280,6 +280,28 @@ LESSON = {
              "float_sub": "under 1.00 g/cm³",
              "sink_sub": "over 1.00 g/cm³",
              "same_sub": "exactly 1.00 g/cm³",
+             # ⚖️ P11-02. THE CONVERT LINE OF THE ATTEMPT BELOW, BRANCHED
+             # ON WHAT THE BALANCE IS ACTUALLY READING. Past 1000 g the
+             # balance switches to kilograms, and the attempt used to say
+             # "there is nothing to convert" while it did so — at six
+             # reachable states, one of them the opening tab of gold with
+             # the slider untouched. Kilograms with cubic centimetres is
+             # the mismatched pair this whole lesson opens on, so the state
+             # that broke the sentence is the state that teaches it best.
+             "convert_g_line": "{mass} g stays {mass} g · {v} cm³ stays "
+                               "{v} cm³",
+             "convert_g_note": "The balance reads grams and the cylinder "
+                               "reads cubic centimetres, which is what "
+                               "g/cm³ needs, so there is nothing to "
+                               "convert.",
+             "convert_kg_line": "{mass_kg} kg × 1000 = {mass} g · {v} cm³ "
+                                "stays {v} cm³",
+             "convert_kg_note": "The balance has gone past a kilogram, so "
+                                "it has stopped counting in grams. "
+                                "Kilograms with cubic centimetres is a "
+                                "mismatched pair, so this one DOES need "
+                                "converting — multiply by 1000 to bring the "
+                                "mass into grams, and it pairs with cm³.",
          },
          "notes": {
              "floats": "A {v} cm³ block of {name} has a mass of {mass_f}, so "
@@ -442,20 +464,35 @@ LESSON = {
          # bytes a crawler and a JavaScript-off reader get; `data-template`
          # beside them is what the wiring refills from live state.
          "rest": {"mass": "270.0", "mass_f": "270.0 g", "v": "100",
-                  "name": "aluminium", "d": "2.70"},
+                  "name": "aluminium", "d": "2.70",
+                  # The opening state is 270.0 g, which is under a kilogram,
+                  # so the resting bytes carry the no-conversion branch.
+                  "convert_line": "270.0 g stays 270.0 g · 100 cm³ stays "
+                                  "100 cm³",
+                  "convert_note": "The balance reads grams and the cylinder "
+                                  "reads cubic centimetres, which is what "
+                                  "g/cm³ needs, so there is nothing to "
+                                  "convert."},
          "questions": [
              {"id": "q1", "tab": "Question 1",
-              "head": "Your block: {mass} g of {name}, taking up {v} cm³.",
+              # ⚖️ P11-02. `{mass_f}`, NOT `{mass} g`. The stem quotes what
+              # the balance is actually showing — grams under a kilogram,
+              # kilograms over it. With `{mass} g` the stem handed the
+              # student the converted figure and the Convert step below had
+              # nothing left to do at exactly the six states that need it.
+              "head": "Your block: {mass_f} of {name}, taking up {v} cm³.",
               "lead": "Write each line out yourself — starting by deciding "
                       "whether anything needs converting. Then check your "
                       "working and tick the lines you had.",
               "steps": [
+                  # ⚖️ P11-02. BRANCHED — the model picks between the two
+                  # `convert_*` words on the bench above and hands the
+                  # chosen pair down already filled. Do not re-author the
+                  # sentence here; there are two of it.
                   {"letter": "C", "label": "Convert",
                    "placeholder": "anything to convert?",
-                   "line": "{mass} g stays {mass} g · {v} cm³ stays {v} cm³",
-                   "note": "The balance reads grams and the cylinder reads "
-                           "cubic centimetres, which is what g/cm³ needs, so "
-                           "there is nothing to convert."},
+                   "line": "{convert_line}",
+                   "note": "{convert_note}"},
                   {"letter": "F", "label": "Formula",
                    "line": "density = mass ÷ volume",
                    "note": "Cover d on the triangle: m sits over V, so you "
@@ -502,8 +539,10 @@ LESSON = {
                            "per cubic centimetre."},
                   {"letter": "A", "label": "Answer",
                    "line": "density = 7.80 g/cm³",
-                   "note": "Insert 0.039 instead of 39 and the bolt comes out "
-                           "less dense than air."},
+                   "note": "Insert 0.039 instead of 39 and the bolt comes "
+                           "out at 0.008 g/cm³ — a hundredth the density "
+                           "of water, which would make a steel bolt "
+                           "float."},
               ],
               "close": "The five lines give 7.80 g/cm³ — steel, near the iron "
                        "bar on the chart. The whole question turned on the "

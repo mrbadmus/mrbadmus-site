@@ -65,6 +65,8 @@ before these were written.
 Full words — `easier`, `standard`, `harder`. Never `s` or `h`.
 """
 
+import re as _re
+
 from ks3_art.kit import e, r_cfifa_attempt, rich, t
 
 
@@ -1124,11 +1126,22 @@ def r_spring_plot(a, act_id):
     `past > per_n`, because a bench where the line bends the other way would
     say a spring gets stiffer past its limit.
 
+    ⚠️ **THE SPRING REMEMBERS.** ⊕ P4-03, 31 Aug 2026. The wiring keeps the
+    largest load the spring has seen and carries the stretch that did not
+    come back into every reading below it, including the zero. Before this
+    the bench announced permanent deformation at 10 N and then, one drag
+    later, read 40 mm at 2 N again — exactly what it read before it was
+    ruined. `data-splot-newspring` is the way back and is not optional: a
+    bench that can be ruined and not reset is a dead end.
+
     HOOKS: `data-splot` (wrapper, `data-per-n`, `data-limit`, `data-spoil`,
-    `data-past`, `data-target`) · `data-splot-gate` · `data-splot-gopt` ·
+    `data-past`, `data-target`, `data-past-lead`, `data-spoiled-lead`) ·
+    `data-splot-gate` · `data-splot-gopt` ·
     `data-splot-body` · `data-splot-load` · `data-splot-record` ·
-    `data-splot-clear` · `data-splot-coil` · `data-splot-extbar` ·
-    `data-splot-grid` · `data-splot-dots` · `data-splot-line` ·
+    `data-splot-clear` · `data-splot-newspring` · `data-splot-coil` ·
+    `data-splot-extbar` ·
+    `data-splot-grid` · `data-splot-dots` · `data-splot-dots-set` ·
+    `data-splot-line` ·
     `data-splot-out` · `data-splot-note`.
     """
     per_n = a.get("per_n")
@@ -1169,12 +1182,33 @@ def r_spring_plot(a, act_id):
             % (act_id, target))
 
     branches = a.get("branches") or {}
-    need = ("zero", "on_line", "at_limit", "past_limit", "deformed")
+    # ⊕ P4-03, 31 Aug 2026 — `zero_set` and `under_set` ARE REQUIRED, and
+    # the bench is wrong without them. It announces permanent deformation
+    # ("taking the load off will not bring it back") and the wiring now
+    # carries that set into every later reading, so a bench with no note
+    # for the way back down demonstrates the misconception the lesson
+    # registers as FORCE-43 on the student's very next drag of the slider.
+    need = ("zero", "on_line", "at_limit", "past_limit", "deformed",
+            "zero_set", "under_set")
     missing = [k for k in need if not branches.get(k)]
     if missing:
         raise ValueError(
             "spring-plot %r has no note for state(s) %s."
             % (act_id, ", ".join(missing)))
+    # ⊕ P4-02, 31 Aug 2026 — the attempt panel's two refusals. Scaling a
+    # ratio up is legal on the straight line and nowhere else; a bench that
+    # hands the five lines a reading from past the limit, or from a spring
+    # that no longer returns, is endorsing the arithmetic the lesson two
+    # screens above has just disproved.
+    for k in ("attempt_past_limit", "attempt_spoiled"):
+        if not a.get(k):
+            raise ValueError(
+                "spring-plot %r has no %r. The five lines below the bench "
+                "read this bench's live load, and there are two states "
+                "where no prediction can honestly be made from it — past "
+                "the limit of proportionality, and after the spring has "
+                "taken a permanent set. Each needs its own refusal."
+                % (act_id, k))
 
     # Design's own two viewBoxes (page lines 168–212): the spring at 300×460
     # and the graph at 1000×400.
@@ -1195,6 +1229,13 @@ def r_spring_plot(a, act_id):
         '<path class="ks3-splot-prop" data-splot-prop d="M0 0"/>'
         '<path class="ks3-splot-line" data-splot-line d="M0 0"/>'
         '<path class="ks3-splot-dots" data-splot-dots d="M0 0"/>'
+        # ⊕ P4-03 — points recorded AFTER the spring took a permanent set,
+        # drawn hollow. A filled and a hollow ring differ in shape and not
+        # only in hue, and the two sets must not be joined by the line:
+        # they are two different springs' worth of readings.
+        '<path class="ks3-splot-dots" data-splot-dots-set '
+        'style="fill:none;stroke:var(--ks3-accent);stroke-width:3" '
+        'd="M0 0"/>'
         '<text class="ks3-splot-axislabel" x="540" y="386" '
         'text-anchor="middle">%s</text>'
         '<text class="ks3-splot-axislabel" x="40" y="190" '
@@ -1212,7 +1253,8 @@ def r_spring_plot(a, act_id):
 
     return ('<div class="ks3-splot" data-splot data-per-n="%s" '
             'data-limit="%s" data-spoil="%s" data-past="%s" '
-            'data-target="%d"%s>%s%s%s'
+            'data-target="%d" data-past-lead="%s" data-spoiled-lead="%s"'
+            '%s>%s%s%s'
             '<div class="ks3-splot-body" data-splot-body hidden>'
             '<div class="ks3-splot-controls">'
             '<div class="ks3-splot-row"><div class="ks3-splot-rowhead">'
@@ -1224,7 +1266,9 @@ def r_spring_plot(a, act_id):
             '<button type="button" class="ks3-seg-btn ks3-splot-record" '
             'data-splot-record>%s</button>'
             '<button type="button" class="ks3-seg-btn ks3-splot-clear" '
-            'data-splot-clear>%s</button></div></div>'
+            'data-splot-clear>%s</button>'
+            '<button type="button" class="ks3-seg-btn ks3-splot-clear" '
+            'data-splot-newspring hidden>%s</button></div></div>'
             '<div class="ks3-splot-figs">'
             '<div class="ks3-splot-figwrap">%s'
             '<span class="ks3-splot-fill ks3-splot-ext" '
@@ -1234,7 +1278,9 @@ def r_spring_plot(a, act_id):
             '<div class="ks3-splot-figwrap ks3-splot-graphwrap">%s</div>'
             '</div>%s<p class="ks3-splot-note" data-splot-note></p>%s'
             '</div></div>'
-            % (e(per_n), e(limit), e(spoil), e(past), target, _sibling(a),
+            % (e(per_n), e(limit), e(spoil), e(past), target,
+               e(a["attempt_past_limit"]), e(a["attempt_spoiled"]),
+               _sibling(a),
                _head("splot", a), lead,
                _gate(act_id, "spring-plot", a.get("gate") or {}, "splot"),
                e(act_id), t(load.get("label", "Load on the spring")),
@@ -1242,6 +1288,7 @@ def r_spring_plot(a, act_id):
                e(load["step"]), e(load["start"]),
                t(a.get("record_label", "Record this reading")),
                t(a.get("clear_label", "Clear the readings")),
+               t(a.get("new_spring_label", "Fit a new spring")),
                spring, graph,
                _tiles("splot", a.get("readouts") or []), branch_data))
 
@@ -1692,6 +1739,98 @@ def r_p4_spring_beam(fig):
 
 # ═══ the CFIFA attempt · #s-formula, under the worked examples ═══════════
 
+# ── the arithmetic gate on the five lines ────────────────────────────────
+#
+# ⊕ P5-12, 31 Aug 2026 — EVERY LINE OF THE SHAPE `a op b = c` IS EVALUATED
+# AT BUILD TIME, and a false one fails the build.
+#
+# The bench printed "2.4 − 10 = 7.6" on the one step whose entire job is to
+# be the arithmetic, in three reachable states, and nothing caught it: the
+# renderer checks the letters, the labels and that a line is non-empty, and
+# nothing anywhere checks that the sum is true. The 2026-08-28 physics
+# audit found the same shape of defect in P2 by hand ("2000 x 180 = 360 kJ").
+#
+# ⚠️ THIS BELONGS IN `ks3_art.kit.r_cfifa_attempt`, where it would cover
+# every unit and every worked example rather than these two. It is here,
+# twice, because MRB-297's lanes hold `kit.py`. Lift it and delete both
+# copies.
+#
+# A Fine-tune line may legitimately be prose ("Nothing needed converting"),
+# so a line that does not MATCH the shape is passed over; only a line that
+# claims a sum is held to it. The claim is judged at the precision it is
+# written to, so a line that rounds ("1.2 / 0.35 = 3.4") passes and one
+# that has the sign or the order wrong does not.
+
+_ARITH_N = (r"[-+−]?\d[\d \u00a0\u2009,]*(?:\.\d+)?"
+            r"(?:[eE][-+]?\d+)?")
+_ARITH_U = r"(?:\s*[A-Za-z°%/µΩ²³]+)?"
+_ARITH = _re.compile(
+    r"^\s*(%s)%s\s*([\u00d7x*\u00f7/+\u2212-])\s*(%s)%s"
+    r"\s*=\s*(%s)%s(?![\d.])"
+    % (_ARITH_N, _ARITH_U, _ARITH_N, _ARITH_U, _ARITH_N, _ARITH_U))
+
+
+def _arith_num(s):
+    s = s.replace("\u2212", "-")
+    for junk in ("\u00a0", "\u2009", " ", ","):
+        s = s.replace(junk, "")
+    return float(s)
+
+
+def _check_arithmetic(act_id, where, line):
+    """Fail the build on a line that states a sum and states it wrongly."""
+    m = _ARITH.match(line or "")
+    if not m:
+        return
+    a, op, b, c = (_arith_num(m.group(1)), m.group(2),
+                   _arith_num(m.group(3)), _arith_num(m.group(4)))
+    if op in ("\u00d7", "x", "*"):
+        got = a * b
+    elif op in ("\u00f7", "/"):
+        if b == 0:
+            return
+        got = a / b
+    elif op == "+":
+        got = a + b
+    else:
+        got = a - b
+    # Judged at the precision the line is WRITTEN to, so a line that
+    # rounds ("1.2 / 0.35 = 3.4") and one that truncates ("1.20 / 0.84 =
+    # 1.4285...") both pass, and a line with the sign or the order the
+    # wrong way round does not: "2.4 - 10 = 7.6" is out by 15.2.
+    tail = m.group(4).split(".")[1] if "." in m.group(4) else ""
+    dp = len(tail.split("e")[0].split("E")[0])
+    if abs(got - c) >= max(10.0 ** -dp, abs(c) * 1e-3):
+        raise ValueError(
+            "cfifa-attempt %r, %s, states %r. %s %s %s is %s, not %s. A "
+            "model line a student writes their own working against has to "
+            "be true as written."
+            % (act_id, where, line.strip(), m.group(1), op, m.group(3),
+               ("%%.%df" % dp) % got, m.group(4)))
+
+
+def _check_attempt_arithmetic(a, act_id):
+    """Every line of every question, with question 1's tokens resolved.
+
+    Question 1 is live on the bench, so its lines carry `{token}`s; the
+    payload's `rest` block is the state the page ships in and is the one
+    set of values a build can see. Question 2 is fixed and is checked as
+    written.
+    """
+    rest = a.get("rest") or {}
+    for qi, q in enumerate(a.get("questions") or []):
+        for si, st in enumerate(q.get("steps") or []):
+            line = st.get("line") or ""
+            if qi == 0:
+                for k, v in rest.items():
+                    line = line.replace("{%s}" % k, str(v))
+            if "{" in line:
+                continue          # a token no resting value supplies
+            _check_arithmetic(
+                act_id, "question %d step %d (%s)"
+                % (qi + 1, si + 1, st.get("label")), line)
+
+
 def r_p4_attempt(a, act_id):
     """⊕ P4's half of Design's `Cfifa`: the student's own five lines.
 
@@ -1710,6 +1849,7 @@ def r_p4_attempt(a, act_id):
     # this activity's eyebrow in Design's `.ks3-blockhead`; the kit helper
     # printed it again. `None` tells the helper it is already on the page
     # (the P7 opt-out, applied here after it was measured on live pages).
+    _check_attempt_arithmetic(a, act_id)
     return r_cfifa_attempt(dict(a, eyebrow=None), act_id, "p4cfa")
 
 

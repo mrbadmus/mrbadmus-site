@@ -93,6 +93,15 @@ LESSON = {
             "Neither — they are at the same temperature",
             "It depends which one you picked up first",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 2,
         "reveal": "Neither. Put a thermometer on both and they read the "
                   "same, to within a fraction of a degree — they have had "
                   "all night to reach the room's temperature. What differs "

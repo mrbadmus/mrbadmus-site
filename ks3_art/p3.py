@@ -352,7 +352,8 @@ def r_graph_plot(a, act_id):
     two intersections cannot be plotted with buttons at all, and the block
     would render a grid the task cannot be completed on.
 
-    HOOKS: `data-gplot` (wrapper, `data-target`) · `data-gplot-cell`
+    HOOKS: `data-gplot` (wrapper, `data-target`, `data-line` — the
+    joining line's own vertices, in grid percentages) · `data-gplot-cell`
     (valued `<t>,<d>`) · `data-gplot-seek` · `data-gplot-join` ·
     `data-gplot-line` · `data-gplot-read` (valued with the read id) ·
     `data-gplot-opt` · `data-gplot-why` · `data-gplot-close`.
@@ -405,6 +406,54 @@ def r_graph_plot(a, act_id):
 
     order = "|".join("%s,%s" % (p["t"], p["d"]) for p in data)
 
+    # ⚖️ ONE FORMULA FOR THE DOTS AND THE LINE. A cell's centre sits at
+    # `(index + 0.5) / count` of the grid box — that is where the CSS puts
+    # the button's dot — and the joining line is built from THE SAME
+    # expression here. It used to be re-derived in the wiring as
+    # `value ÷ max`, which is half a cell out in each direction: the first
+    # vertex was drawn outside the grid frame and the flat run, the whole
+    # point of the lesson, was the part most visibly off its own dots. The
+    # wiring now draws `data-line` verbatim, so there is no second formula
+    # left to drift.
+    def centre(i, n):
+        return (i + 0.5) / float(n) * 100.0
+
+    cw, ch = 100.0 / len(ts), 100.0 / len(ds)
+    verts = []
+    for p in data:
+        col = ts.index(p["t"])
+        row = len(ds) - 1 - ds.index(p["d"])          # ds are drawn bottom-up
+        x, y = centre(col, len(ts)), centre(row, len(ds))
+        if not (col * cw < x < (col + 1) * cw
+                and row * ch < y < (row + 1) * ch):
+            raise ValueError(
+                "graph-plot %r would draw the vertex for (%s s, %s m) at "
+                "(%.2f%%, %.2f%%), which is outside the cell the student "
+                "actually plots — column %d spans %.2f–%.2f%% across, row "
+                "%d spans %.2f–%.2f%% down. The dots and the joined line "
+                "must come from one cell-centre formula; when they do not, "
+                "the line does not pass through the points, and this is "
+                "the page that teaches a child to plot points and read a "
+                "line."
+                % (act_id, p["t"], p["d"], x, y, col, col * cw,
+                   (col + 1) * cw, row, row * ch, (row + 1) * ch))
+        verts.append((x, y))
+    line_pts = " ".join("%.2f,%.2f" % v for v in verts)
+
+    # ⚖️ THE SCALE IS ON THE PAGE, NOT ONLY IN THE ACCESSIBLE NAME. The
+    # grid's `aria-label` states the range, so a screen-reader user was
+    # told the scale and a sighted one was not — while rung 3 asks for a
+    # time or a distance to be READ OFF THE AXES. The authored `t_values`
+    # and `d_values` are rendered as two strips on the same
+    # `repeat(n, 1fr)` tracks as the grid, so each number lands on its own
+    # column or row by construction. They are `aria-hidden` because the
+    # accessible name already carries the range and each button names its
+    # own coordinates; a bare run of numbers would only add noise.
+    NUM = ("font-family:var(--ks3-font-mono);font-size:11px;"
+           "color:var(--ks3-ink-muted);")
+    dnums = "".join("<span>%s</span>" % dv for dv in reversed(ds))
+    tnums = "".join("<span>%s</span>" % tv for tv in ts)
+
     reads_html = "".join(
         '<li class="ks3-gplot-read" data-gplot-read="%s" data-answer="%d" '
         'data-why="%s"><p class="ks3-gplot-q">%s</p>'
@@ -415,26 +464,38 @@ def r_graph_plot(a, act_id):
                    for i, o in enumerate(r["options"])))
         for r in reads)
 
-    return ('<div class="ks3-gplot" data-gplot data-target="%d" '
-            'data-order="%s">'
-            '<p class="ks3-gplot-seek">Looking for: '
-            '<span data-gplot-seek></span></p>'
-            '<div class="ks3-gplot-wrap">'
-            '<span class="ks3-gplot-ylab">%s</span>'
+    axes = ('<div class="ks3-gplot-axes" style="display:grid;'
+            'grid-template-columns:auto 1fr;column-gap:6px">'
+            '<div class="ks3-gplot-dnums" aria-hidden="true" '
+            'style="%sdisplay:grid;grid-template-rows:repeat(%d,1fr);'
+            'align-items:center;justify-items:end;padding:2px 0">%s</div>'
             '<div class="ks3-gplot-grid" role="group" aria-label="%s" '
             'style="--cols:%d;--rows:%d">%s'
             '<svg class="ks3-gplot-line" data-gplot-line aria-hidden="true" '
             'viewBox="0 0 100 100" preserveAspectRatio="none"></svg>'
             '</div>'
+            '<div class="ks3-gplot-tnums" aria-hidden="true" '
+            'style="%sdisplay:grid;grid-column:2;'
+            'grid-template-columns:repeat(%d,1fr);justify-items:center;'
+            'padding:0 2px;margin-top:4px">%s</div>'
+            '</div>'
+            % (NUM, len(ds), dnums, e(a.get("alt", "")), len(ts), len(ds),
+               "".join(cells), NUM, len(ts), tnums))
+
+    return ('<div class="ks3-gplot" data-gplot data-target="%d" '
+            'data-order="%s" data-line="%s">'
+            '<p class="ks3-gplot-seek">Looking for: '
+            '<span data-gplot-seek></span></p>'
+            '<div class="ks3-gplot-wrap">'
+            '<span class="ks3-gplot-ylab">%s</span>%s'
             '<span class="ks3-gplot-xlab">%s</span></div>'
             '<button type="button" class="ks3-seg-btn ks3-gplot-join" '
             'data-gplot-join disabled>%s</button>'
             '<ul class="ks3-gplot-reads" role="list">%s</ul>'
             '<p class="ks3-gplot-close" data-gplot-close hidden>%s</p>'
             '</div>'
-            % (len(data), e(order), t(a.get("d_label", "")),
-               e(a.get("alt", "")), len(ts), len(ds), "".join(cells),
-               t(a.get("t_label", "")),
+            % (len(data), e(order), line_pts, t(a.get("d_label", "")),
+               axes, t(a.get("t_label", "")),
                t(a.get("join_label") or "Join the points"),
                reads_html, rich(a.get("close") or "")))
 

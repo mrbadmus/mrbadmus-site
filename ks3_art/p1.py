@@ -52,12 +52,26 @@ Where a band appears it is the full word — `standard`, `harder`, `easier`.
 Never `s` or `h`.
 """
 
+import math
 import re
 
 from ks3_art.kit import e, rich, t
 
 
 # ═══ shared P1 primitives ════════════════════════════════════════════════
+
+def _num(v):
+    """A number for a data attribute, without a stray trailing `.0`.
+
+    Heat capacities are authored as real J/K figures and some of them are
+    fractional (a 30 g steel spoon is 13.5 J/K). `%d` would truncate the
+    physics and `%s` on a float would print `840.0` where the author wrote
+    `840`, so the integer case is printed as an integer and everything else
+    keeps its decimals.
+    """
+    f = float(v)
+    return "%d" % int(f) if f == int(f) else repr(f)
+
 
 def _p1_seg(cls, label, pressed=False, **attrs):
     """One segmented-control button. No `correct`, ever.
@@ -735,12 +749,20 @@ def r_running_total(a, act_id):
             "moving numbers in their head."
             % (act_id, sorted(want_out - {r.get("id") for r in readouts})))
 
-    for key in ("rest", "running", "stopped", "no_friction", "hidden"):
+    # ⚖️ `fresh` IS REQUIRED, AND IT IS THE P1-9 NOTE. A reset after a
+    # completed run puts the bar back to the full total, which is the one
+    # moment on this bench where energy appears to come back out of the
+    # surroundings. The note is what stops that reading: the room keeps the
+    # last run's energy, and the count is starting again. Without it the
+    # reset is silent and the student is left to infer the wrong thing.
+    for key in ("rest", "running", "stopped", "no_friction", "hidden",
+                "fresh"):
         if not notes.get(key):
             raise ValueError(
                 "running-total %r has no %r note. Each names what the bench "
-                "is showing in that state, and the `hidden` one carries the "
-                "argument." % (act_id, key))
+                "is showing in that state, the `hidden` one carries the "
+                "argument, and the `fresh` one is the only thing that stops "
+                "a reset reading as energy coming back." % (act_id, key))
 
     _unique_ids(controls, act_id, "running-total", "control")
     _unique_ids(readouts, act_id, "running-total", "readout")
@@ -789,7 +811,8 @@ def r_running_total(a, act_id):
         for k, v in (("rest", notes["rest"]), ("running", notes["running"]),
                      ("stopped", notes["stopped"]),
                      ("no_friction", notes["no_friction"]),
-                     ("hidden", notes["hidden"])))
+                     ("hidden", notes["hidden"]),
+                     ("fresh", notes["fresh"])))
 
     return ('<div class="ks3-rtotal" data-rtotal data-total="%d">'
             '<div class="ks3-rtotal-gate" data-rtotal-gate>'
@@ -1116,6 +1139,22 @@ def r_one_way_flow(a, act_id):
                 "The keys are roles, not labels, and swapping them would "
                 "draw the arrow backwards."
                 % (act_id, p["id"]))
+        # ⚖️ SCIENCE · A PAIR WITHOUT CAPACITIES SETTLES AT THE HALFWAY
+        # POINT, WHICH IS ONLY TRUE OF TWO EQUAL BODIES. The bench ran that
+        # way once and put a hot spoon and a beaker of water level at 38 °C
+        # under a note saying the water barely warms. Where the pair meets
+        # is the whole subject of this instrument, so the weighting is
+        # required rather than defaulted.
+        for key in ("hot_cap", "cold_cap"):
+            cap = p.get(key)
+            if cap is None or float(cap) <= 0:
+                raise ValueError(
+                    "one-way-flow %r pair %r has no positive %r. Each body "
+                    "needs a heat capacity in J/K: the pair settles at the "
+                    "capacity-weighted mean, and without one the bench "
+                    "shows every pair meeting halfway, which is true only "
+                    "of two identical objects."
+                    % (act_id, p["id"], key))
 
     if not any(int(p["hot"]) == int(p["cold"]) for p in pairs):
         raise ValueError(
@@ -1131,8 +1170,10 @@ def r_one_way_flow(a, act_id):
 
     data = "".join(
         ' data-oflow-hot-%s="%d" data-oflow-cold-%s="%d" '
+        'data-oflow-hotcap-%s="%s" data-oflow-coldcap-%s="%s" '
         'data-oflow-hotname-%s="%s" data-oflow-coldname-%s="%s"'
         % (e(p["id"]), int(p["hot"]), e(p["id"]), int(p["cold"]),
+           e(p["id"]), _num(p["hot_cap"]), e(p["id"]), _num(p["cold_cap"]),
            e(p["id"]), e(p["hot_name"]), e(p["id"]), e(p["cold_name"]))
         for p in pairs)
 
@@ -1557,6 +1598,108 @@ def r_ice_trial(a, act_id):
 
 # ═══ p1-08 · lever-bench ═════════════════════════════════════════════════
 
+# The fulcrum slider's reachable positions, as a percentage along the bar.
+# ⚠️ THESE THREE ARE WRITTEN INTO THE `<input type="range">` BELOW *AND*
+# SWEPT BY `_lever_rows_multiply_out`. They are constants rather than
+# literals in two places so that widening the slider also widens the check.
+_LEVER_MIN_PCT, _LEVER_MAX_PCT, _LEVER_STEP_PCT = 10, 90, 1
+
+
+def _js_to_precision(x, p=4):
+    """`Number.prototype.toPrecision` for the positive, non-exponential case.
+
+    Python's `%g` strips trailing zeros and JavaScript's `toPrecision` keeps
+    them — 0.45 to four figures is `0.4500` in the browser and `0.45` in
+    Python. The check below compares against what the STUDENT sees, so it
+    has to round the way the browser does.
+    """
+    ex = math.floor(math.log10(abs(x)))
+    return "%.*f" % (max(p - 1 - ex, 0), x)
+
+
+def _lever_rows_multiply_out(act_id, load, rise, lo, hi):
+    """⚖️ SCIENCE · EVERY ROW THE BENCH CAN WRITE MUST SATISFY E = F × d.
+
+    The lesson drills `E = F × d` through two worked examples and then asks
+    the student to "read both ends, then multiply". For a while the table
+    could not survive that: the friction bias was added to the ENERGY rather
+    than to the force it should come from, and the distance was printed to
+    three decimals, so 5400 N × 0.006 m came out as 32.4 J against a printed
+    30.4 J — 6.6% out, and out in the direction that says the machine lost
+    energy.
+
+    Both causes are fixed in `wireLeverBench`, and this is the assertion
+    that stops them coming back. It walks EVERY fulcrum position the slider
+    can reach, reproduces exactly the two figures the row will print, and
+    checks that their product is the third figure to the precision it is
+    printed at — and, separately, that the measured input is still strictly
+    the larger of the two energies, which is science flag 20.
+
+    ⚠️ THIS MIRRORS `wireLeverBench`'s ARITHMETIC AND MUST BE KEPT WITH IT.
+    A change to the record handler that is not made here is a change this
+    check no longer describes. The mirroring is the price of asserting a
+    runtime table at build time; the alternative is asserting nothing.
+    """
+    eout = float(load) * float(rise)
+    for pct in range(_LEVER_MIN_PCT, _LEVER_MAX_PCT + 1, _LEVER_STEP_PCT):
+        load_arm = pct / 100.0
+        ratio = load_arm / (1.0 - load_arm)
+        effort = float(load) * ratio
+        edist = float(rise) / ratio
+        frac = ((pct * 37) % 100) / 100.0
+        bias = (lo + (hi - lo) * frac) / 100.0
+        d_str = _js_to_precision(edist)
+        d_val = float(d_str)
+        # `Math.round` goes to +infinity on a half; Python's `round` goes to
+        # the even neighbour, and the two disagree on exactly the values a
+        # student is most likely to check.
+        f_shown = math.floor(effort * (1.0 + bias) + 0.5)
+        if f_shown * d_val <= eout:
+            f_shown += 1
+        # ── CHECK 1 · THE PRINTED DISTANCE IS THE REAL ONE.
+        # This is P1-25's second cause and the one this sweep genuinely
+        # catches: at the far end of the slider the distance is 0.005556 m,
+        # and printed to three decimals as 0.006 m the rounding is 8%. The
+        # row would still be internally consistent — it would simply be
+        # consistent about the wrong lever. A tenth of a per cent is the
+        # most a printed figure may lose.
+        if abs(d_val - edist) > abs(edist) * 0.001:
+            raise ValueError(
+                "lever-bench %r would print the effort distance at fulcrum "
+                "%d%% as %s m when it is really %.6f m — a rounding of "
+                "%.1f%%. The student is asked to multiply the printed "
+                "figures, so a printed figure that is not the measurement "
+                "makes the equation fail on the page even though it holds "
+                "in the physics."
+                % (act_id, pct, d_str, edist,
+                   100.0 * abs(d_val - edist) / abs(edist)))
+
+        product = f_shown * d_val
+        printed = float("%.1f" % product)
+        # ── CHECK 2 · THE ROW MULTIPLIES OUT AS PRINTED.
+        # The energy is printed to 0.1 J, so a rounding of up to half that
+        # is the display and not a defect. Anything beyond it is the row
+        # failing its own equation.
+        if abs(product - printed) > 0.0501:
+            raise ValueError(
+                "lever-bench %r would print a row that fails E = F × d. At "
+                "fulcrum %d%% the row reads %d N × %s m = %.1f J, but the "
+                "printed force and distance multiply to %.4f J. The lesson "
+                "asks the student to do that multiplication; a row that "
+                "does not close teaches them that the equation does not "
+                "work." % (act_id, pct, f_shown, d_str, printed, product))
+        # ── CHECK 3 · THE FRICTION STORY SURVIVES THE ROUNDING.
+        if printed <= round(eout, 1):
+            raise ValueError(
+                "lever-bench %r would print a row whose measured input "
+                "(%.1f J) is not larger than the energy out (%.1f J) at "
+                "fulcrum %d%%. Friction costs energy, so the input is "
+                "always the larger — a row that breaks even shows a "
+                "frictionless machine, and a row that came out smaller "
+                "would show a machine making energy."
+                % (act_id, printed, round(eout, 1), pct))
+
+
 def r_lever_bench(a, act_id):
     """⊕ p1-08 `#s-bench` — move the fulcrum, read both ends, multiply.
 
@@ -1625,8 +1768,17 @@ def r_lever_bench(a, act_id):
             "which is the belief this bench exists to kill."
             % (act_id, bias.get("min_pct"), bias.get("max_pct")))
 
+    if not a.get("readout_note"):
+        raise ValueError(
+            "lever-bench %r has no `readout_note`. The four live readouts "
+            "show the IDEAL lever and the recorded rows show a measured one, "
+            "so the same fulcrum reads 600 N above the table and 612 N in "
+            "it. Unlabelled that is two different answers to one question; "
+            "the note is what makes it a distinction." % act_id)
+
     _unique_ids(cols, act_id, "lever-bench", "column")
     _no_correct_flags(cols, act_id, "lever-bench")
+    _lever_rows_multiply_out(act_id, load, rise, lo, hi)
 
     opts = "".join(
         '<button type="button" class="ks3-option" data-lever-gopt="%d" '
@@ -1654,8 +1806,12 @@ def r_lever_bench(a, act_id):
             '<label class="ks3-lever-sliderlabel" for="%s-f">'
             'Where the fulcrum sits · drag to set</label>'
             '<input class="ks3-lever-slider" id="%s-f" type="range" '
-            'min="10" max="90" step="1" value="50" data-lever-fulcrum>'
+            'min="%d" max="%d" step="%d" value="50" data-lever-fulcrum>'
             '<div class="ks3-lever-outs">%s</div>'
+            # The readouts are the IDEAL lever; the table is a measured one.
+            # Reusing `.ks3-lever-sliderlabel` rather than adding a class:
+            # it is already the instrument-caption treatment on this bench.
+            '<p class="ks3-lever-sliderlabel">%s</p>'
             '<div class="ks3-lever-acts">'
             '<button type="button" class="ks3-seg-btn" data-lever-record>'
             'Lift it and record</button>'
@@ -1668,7 +1824,9 @@ def r_lever_bench(a, act_id):
             '</div></div>'
             % (float(load), float(rise), float(bar), lo, hi,
                int(a.get("runs_to_record") or 3),
-               t(gate["prompt"]), opts, e(act_id), e(act_id), outs, heads,
+               t(gate["prompt"]), opts, e(act_id), e(act_id),
+               _LEVER_MIN_PCT, _LEVER_MAX_PCT, _LEVER_STEP_PCT,
+               outs, t(a["readout_note"]), heads,
                rich(a.get("close") or "")))
 
 

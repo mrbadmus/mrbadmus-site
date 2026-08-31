@@ -99,12 +99,51 @@ LESSON = {
         "commit": "Commit to what that tells you about energy.",
         # ⚑ MRB-177 — four accounts a real student gives, at one length.
         # Design's four, verbatim and in her order.
+        # ── ⚖️ SCIENCE · TWO OF DESIGN'S FOUR HAD TO GO, AND FOR OPPOSITE
+        # REASONS.
+        #
+        # Her option B read "Energy has no mass — it is a number, not a
+        # substance". That is false: 40 kJ is 4.4 × 10⁻¹³ kg by E = mc², so a
+        # flat power bank really is lighter, just not by anything a balance
+        # can find. And her option A — "the balance is not sensitive enough"
+        # — was the physically CORRECT account, offered as one of three
+        # wrong ones, with the milligram premise chosen to make it correct.
+        #
+        # Mass–energy equivalence has no place at KS3, and this is not an
+        # attempt to teach it. The fix is to stop asserting its negation:
+        # B now says only what the lesson actually needs (energy is a
+        # number, not stuff you can pour), and A is replaced by a distractor
+        # that is genuinely wrong. Order and length are Design's.
+        # ⊕ AMENDED MRB-297, 31 Aug 2026 — "four accounts ... at one length"
+        # and "Order and length are Design's" are no longer true of the
+        # distractors, and were never gated: as delivered the four ran 44 /
+        # 75 / 43 / 34 characters, so the correct one was the visibly longest
+        # and the hook could be answered without reading any physics. The
+        # hook's `answer` index now exists, so `verify_answer_lengths`
+        # measures it. THE CORRECT OPTION IS UNCHANGED, byte for byte, as is
+        # the ORDER; only the three distractors were lengthened to the
+        # answer's length, and each is still a wrong account a real student
+        # gives. Kept rather than deleted so the provenance is not silently
+        # overstated.
         "options": [
-            "The balance is not sensitive enough to detect it",
-            "Energy has no mass — it is a number, not a substance",
-            "The energy is still in there, just unusable",
-            "Air rushed in to replace what left",
+            "Batteries are sealed, so nothing can get out — energy needs "
+            "a hole to leave by",
+            "Energy is not a substance — it is a number, so there is "
+            "nothing to pour out",
+            "The energy is still in there, just too spread out for the "
+            "device to use",
+            "Air rushed in through the case and replaced exactly what "
+            "left, gram for gram",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 1,
         "reveal": "Energy is not stuff. Nothing was poured out of the "
                   "battery and nothing was consumed. The chemicals inside "
                   "were rearranged, and a number you can calculate about "

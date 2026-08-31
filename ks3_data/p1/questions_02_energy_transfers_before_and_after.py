@@ -228,8 +228,9 @@ QUESTIONS = [
         "options": [
             {"text": "It falls slightly, by the mass of the energy that left",
              "correct": False,
-             "why": "Energy is not a substance and has no mass to lose. "
-                    "There is nothing to weigh."},
+             "why": "Nothing was poured out to be weighed. The chemicals "
+                    "inside were rearranged, and the same atoms are all "
+                    "still in there."},
             {"text": "It rises slightly, because the chemicals have "
                      "rearranged",
              "correct": False,
@@ -237,10 +238,11 @@ QUESTIONS = [
                     "same atoms are present throughout."},
             {"text": "It does not change at all",
              "correct": True},
-            {"text": "It falls, but by too little for a balance to detect",
+            {"text": "It falls by a few grams, too little to notice by hand",
              "correct": False,
-             "why": "This still pictures energy as stuff with weight. The "
-                    "point is that there is no substance involved at all."},
+             "why": "A balance reading to a milligram would find a few "
+                    "grams easily. Nothing of that size left the power "
+                    "bank."},
         ],
         "figure": None,
     },

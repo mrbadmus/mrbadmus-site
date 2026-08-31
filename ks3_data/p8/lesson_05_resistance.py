@@ -158,10 +158,10 @@ LESSON = {
          "text": "<strong>Resistance</strong> is how hard a component makes "
                  "it for charge to get through. It is measured in "
                  "<strong>ohms</strong>, written with the Greek letter "
-                 "<strong>Ω</strong>. A thick short copper wire is a couple "
-                 "of ohms; a thin nichrome wire is several; a resistor is "
-                 "whatever it says on the packet; a filament is tens of ohms "
-                 "once it is glowing."},
+                 "<strong>Ω</strong>. A short piece of copper wire is a few "
+                 "hundredths of an ohm; a thin nichrome wire is several; a "
+                 "resistor is whatever it says on the packet; a filament is "
+                 "tens of ohms once it is glowing."},
         {"type": "explainer",
          "text": "There is no such thing as an ohm-meter that reads "
                  "resistance off the component the way a ruler reads a "
@@ -217,9 +217,21 @@ LESSON = {
              "answer": 2,
          },
          "components": [
-             {"id": "cu", "label": "Thick copper wire",
-              "name": "THICK COPPER WIRE", "ohms": 2, "band": "low",
-              "shape": "wire", "stroke": 16},
+             # ⊕ MRB-297 / P8-02, RULED 30 Aug 2026 — THIS WAS A THICK
+             # COPPER WIRE AT 2 Ω, AND COPPER IS NOT A COUPLE OF OHMS. A
+             # short thick copper lead is a few thousandths of an ohm; 2 Ω
+             # of it is over a hundred metres of 1 mm² wire. Worse, the
+             # next lesson puts copper at 0.05 Ω per 10 cm and invites the
+             # comparison, so the unit gave copper two resistances forty
+             # times apart with an instrument vouching for each — and this
+             # bench showed a bare copper wire drawing a calm 6.000 A while
+             # two other places in the estate refuse to print a figure for
+             # exactly that object, because it is a short circuit.
+             # A 2 Ω resistor is genuinely a couple of ohms, so the bench
+             # keeps its low-resistance demonstration and every number,
+             # ratio and note on it stays exactly as it was.
+             {"id": "r2", "label": "2 Ω resistor", "name": "2 OHM RESISTOR",
+              "ohms": 2, "band": "low", "shape": "res"},
              {"id": "nichrome", "label": "Thin nichrome wire",
               "name": "THIN NICHROME WIRE", "ohms": 5, "band": "low",
               "shape": "wire", "stroke": 7},
@@ -249,16 +261,28 @@ LESSON = {
                  "electrons collide more often, and the resistance genuinely "
                  "rises. Every one of those numbers is the real resistance of "
                  "the lamp at that temperature.",
+             # ⊕ MRB-297 / P8-05, RULED 30 Aug 2026 — `{size}` IS DERIVED
+             # FROM THE CURRENT ON SCREEN, NEVER FROM THE BAND. These two
+             # notes used to carry a fixed adjective each: the low branch
+             # said "a large current" and the high branch said "only {i} …
+             # the reading is small", so thin nichrome at 1.50 V was called
+             # large at 0.300 A while the 10 Ω resistor at 12.00 V was
+             # called small at 1.200 A — four times as much. That taught
+             # "large" and "small" as labels belonging to the COMPONENT, on
+             # the one lesson whose thesis is that the current depends on V
+             # and R together and only the RATIO belongs to the component.
+             # `p8Size` in `shared/ks3.js` fills `{size}`; the ratio
+             # sentences below are the teaching and are unchanged.
              "low":
-                 "At {v} this {name} passes {i}, a large current, and V ÷ I "
-                 "gives {r}. Move the supply anywhere on the slider and the "
-                 "two readings change together, so the division keeps giving "
+                 "At {v} this {name} passes {i}, {size}, and V ÷ I gives "
+                 "{r}. Move the supply anywhere on the slider and the two "
+                 "readings change together, so the division keeps giving "
                  "{r}. That is what a low resistance means — a small push "
                  "buys a lot of flow — and a fixed ratio is what lets one "
                  "number describe the component.",
              "high":
-                 "At {v} this {name} passes only {i}, and V ÷ I gives {r}. "
-                 "The reading is small because the resistance is high: it "
+                 "At {v} this {name} passes {i}, {size}, and V ÷ I gives "
+                 "{r}. The current is held down by the resistance, which "
                  "charges {rint} volts for every amp. Change the supply and "
                  "both meters move, but the ratio comes back to {r} every "
                  "time, which is why the value can be printed on the "

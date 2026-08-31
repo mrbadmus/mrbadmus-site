@@ -8,7 +8,7 @@ cannot check — or where the lane genuinely judges its own version teaches
 better and will defend the row to an examiner. Unsure does not clear the bar;
 uncertainty resolves toward her page.
 
-The register is expected to be SHORT. **This one has EIGHT changed rows, and
+The register is expected to be SHORT. **This one has TEN changed rows, and
 one of them is a word.** Nothing in her structure moved: four rail stops per
 lesson from her own `RAIL`, in her order, with her shorts and labels; her
 hooks, gates, branch notes, worked examples, attempt panels and all fourteen
@@ -23,9 +23,15 @@ as the one the instrument exists to kill. Rows 1–4 are judgement; these four
 are corrections, and the prism's is now held by a build-time refusal rather
 than by anyone's eye.
 
+⊕ **Rows 9 and 10 were added 31 Aug 2026 (MRB-297)** and are findings P7-04
+and P7-10. Row 9 puts a direction on every ray in the unit — none had one —
+and row 10 redraws the straw figure's back-projection, which pointed into the
+wrong quadrant, and moves the marker that was sitting on the wrong line
+entirely. Both are corrections of Design's drawings, both ruled.
+
 ---
 
-## Changed — 8 rows
+## Changed — 10 rows
 
 ### 1. Two rail labels said "four steps" over a five-step block
 
@@ -106,6 +112,28 @@ is honest: six of her sets needed the fix, and thirty-one of mine did.
 | **What she drew** | The two marks are the STOP — the opaque part — and their INNER ends were the constants. So the hole was 12 units at every light level, on both instruments, while each blade grew from 12 units in bright sunlight to 66 on a moonless night. Dragging from sunlight to darkness closed the front of the eye into a near-solid pillar with a hairline slit in it. Both rays were routed through `200 ± rPx × 0.7`, which put them INSIDE the opaque marks at every setting, so the drawing also had light passing through the iris. |
 | **What is built** | The construction is inverted: the OUTER ends are pinned to the case — the eyeball's own outline at y = 200 ± 72, the camera's lens barrel at 200 ± 74 — and the inner ends move, so the drawn gap is 2 × `rPx` and GROWS in the dark. Measured across all ten states, the eye's gap runs 31 → 124 units for 2.0 → 8.0 mm, exactly proportional, and the camera's 10 → 128 for 3 → 50 mm. `rPx` is clamped ten units inside the case so there is always a blade left to see, and floored at 5 so the smallest aperture still has a visible hole; the floor lifts only the camera's 3 mm state. Her ray waypoints are untouched and are now correct as written, because 0.7 of the half-opening is inside the hole. |
 | **The defect in hers** | **The lesson's one adjustable quantity was drawn as unchanging, and the part that changed, changed the wrong way.** A dilating iris opens. The readout beside the drawing said 2.0 mm → 8.0 mm, and the gate question a student answered one screen earlier says the pupil opens in the dark. Every readout and note on the bench was already right; nothing but the drawing changed. |
+
+### 9. Not one light ray in the unit carried a direction — MRB-297, P7-04
+
+| | |
+|---|---|
+| **Where** | Every ray drawing in P7: `p7-02` `#s-ray`, `p7-03` `#s-block` and `#s-inout`, `p7-04` `#s-camera`, `p7-05` `#s-eye`, `p7-06` `#s-prism`, `p7-07` `#s-lamp` |
+| **What she drew** | Undirected lines. Measured across all eight built files: `marker-end` 0, `marker-start` 0, `<marker` 0. She DOES draw arrowheads — on `p7-01`'s two race lanes, on the `p7-04` and `p7-05` object arrows, on the `p7-05` image arrow and on `p7-06`'s two band arrows — all of them the same open V, 18 long and 10 either side of the tip. Rays are the one thing that never got one. |
+| **What is built** | ONE `<marker>` per instrument, `ks3-rayhead-<hook>`, carrying her own 18×10 open V, applied to the twenty-one ray paths and to nothing else. `markerUnits="userSpaceOnUse"`, because every P7 viewBox is 1000 wide and the head must not scale with a shaft that runs 4 to 11 units; `stroke:context-stroke` with a literal fallback, because `p7-06` draws six colours and `p7-07` recolours its ray at paint time. Per lesson: `p7-02` 2, `p7-03` 5, `p7-04` 2, `p7-05` 3 (one path, two rays, three heads each), `p7-06` 9, `p7-07` 2. `p7-01` takes none — both its arrows already carry hers. One sentence is added to `p7-02`'s first explainer: *"A ray is always drawn with an arrow on it, because which way the light is going is part of the answer."* |
+| **The defect in hers** | **A line with no arrow is not a ray, and three of the drawings were readable as the negation of the lesson beside them.** The reflection bench is exactly mirror-symmetric about the normal, so nothing said which line was incident. The refraction block read right-to-left shows light bending AWAY from the normal on entering glass. The eye bench and the straw figure both drew an undirected line between a scene and an eye, on the two pages carrying `LIGHT-17`, *your eyes send something out in order to see*. Arrows on rays are the first thing a UK teacher marks and a standard GCSE mark loss, and the unit's own `ks4_becomes` card promises "ray diagrams" while nothing on any page told a student to draw one. |
+| **What stays headless, deliberately** | Every normal; `.ks3-rblock-ghost` and `[data-prism-ghost]`, the *where it would have gone* lines; `.ks3-lband-back`, the straw's back-projection; `.ks3-rsurf-arcs`; `.ks3-pinh-axis`, `-box`, `-object` and `-img`; `.ks3-eyecam-scene`, `-case`, `-stop`, `-lens`, `-back` and `-img`; `.ks3-lband-beam` on the lens pair; both `.ks3-lrace-` arrows. A construction line is a line a student DRAWS, not a path light TAKES, and the whole value of the head is that the difference reads. |
+| **Scope** | P7 only. The marker is emitted into this module's own `<svg>` elements with ids of its own hooks; nothing outside `ks3_art/p7.py` names `ks3-rayhead-`, and `shared/ks3.css` is not touched, so no other unit's bytes can move. Turning heads on for biology, chemistry or the other physics units is a wider change and wants its own pass. |
+
+### 10. The figure that explains the illusion drew the illusion wrongly — MRB-297, P7-10
+
+| | |
+|---|---|
+| **Where** | `p7-03` `#s-inout`, *Why the straw looks broken* — `_band_straw` |
+| **What she drew** | Back-projection `M520 140 L740 296`; *WHERE IT LOOKS* at `cx=452 cy=253`. |
+| **What is built** | Back-projection `M520 140 L392 163`; *WHERE IT LOOKS* at `cx=400 cy=161`, with its label moved to `x=240` so it stacks under *WATER SURFACE* and above *WHERE IT IS*, both anchored outside the glass exactly as hers already was. |
+| **The defect in hers** | **The dashed line was not the backward extension of the ray reaching the eye, and the marker was not on the dashed line either.** The emergent ray is `M520 140 L800 90`, so backwards from (520, 140) the direction is (−280, +50) — up and to the left. Hers ran (+220, +156), the opposite quadrant, out through the glass's right-hand wall at x=620 and into mid-air. And *WHERE IT LOOKS* at (452, 253) sits on the REAL in-water ray `M400 330 L520 140`, which passes through (452, 248) — so the drawing asserted that the straw's end appears at a place the light genuinely goes through, 100 units from the only construction line that would have shown why. Her own `aria_label` describes the correct figure, which was not the one drawn, and every rung-3 and rung-4 answer on the page depends on it. |
+| **Why the minimum and not the better version** | The honest construction is TWO rays from the straw's end to two nearby points on the surface, both refracted, their dashed back-projections intersecting at the apparent position — it delivers the *higher **and** closer* her alt text promises and removes the single-ray arbitrariness. That is a Design brief and no Design batch was open on this run, so it is recorded rather than taken. |
+| **What is still wrong, and declared** | The drawn emergent angle is ~80° from the normal against ~32° inside; water (n = 1.33) allows ~45°. It cannot be corrected without moving the water line, the exit point, the straw and the eye — at 45° from (520, 140) an eye outside the glass leaves the 380-unit canvas — so it goes with the Design brief. The lesson's `convention_note` covered only the bench; it now names the figure and says the angles in it are not to scale. |
 
 ---
 

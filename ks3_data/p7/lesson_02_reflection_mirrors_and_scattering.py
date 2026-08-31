@@ -151,13 +151,22 @@ LESSON = {
     "core": [
         {"type": "hook", "id": "hook-commit", "anchor": "s-hook"},
 
+        # ── ⊕ MRB-297 · P7-04 · THE ARROW IS PART OF THE ANSWER ───────
+        #
+        # The unit's `ks4_becomes` card promises ray diagrams at GCSE and
+        # nothing on any of the seven pages told a student to put an arrow
+        # on a ray. A ray without one is a line, and an unmarked arrow is a
+        # standard mark loss. The sentence goes here because this is the
+        # explainer that says how to set a ray diagram up.
         {"type": "explainer",
          "text": "Every ray that meets a surface obeys the same rule. Draw a "
                  "line at right angles to the surface where the ray lands — "
                  "that line is called the <strong>normal</strong> — and "
                  "measure both angles from it. Then the <strong>angle of "
                  "reflection equals the angle of incidence</strong>, always, "
-                 "on every surface, however rough."},
+                 "on every surface, however rough. A ray is always drawn "
+                 "with an arrow on it, because which way the light is going "
+                 "is part of the answer."},
         {"type": "explainer",
          "text": "What changes between a mirror and a sheet of paper is not "
                  "the rule but the surface. A mirror is smooth on the scale "

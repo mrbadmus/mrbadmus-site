@@ -424,8 +424,12 @@ LESSON = {
                       "and arrives at the south pole. The arrow is the way a "
                       "compass points."},
              {"id": "rule-crowd", "art": "crowd",
-              "aria_label": "Lines packed tightly at one end of a diagram and "
-                            "spread widely at the other.",
+              # ⚖️ The COUNT is named as equal here too: the drawing's
+              # claim is the spacing, and this is the only channel a
+              # student who cannot see the tile has.
+              "aria_label": "Five lines packed tightly on one side of a "
+                            "diagram and the same five spread widely on "
+                            "the other.",
               "body": "Crowded lines mean a strong field. Spread-out lines "
                       "mean a weak one. That is why lines bunch at the "
                       "poles."},

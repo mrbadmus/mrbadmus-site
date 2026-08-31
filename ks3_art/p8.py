@@ -84,8 +84,79 @@ Full words — `easier`, `standard`, `harder`. Never `s` or `h`.
 """
 
 import math
+import re
 
 from ks3_art.kit import e, r_cfifa_attempt, rich, t
+
+
+# ═══ ⚖️ MRB-297 · A CAPTION MAY NOT SIZE A VALUE IT CANNOT SEE ══════════
+#
+# Ruled 30 Aug 2026, out of P8-05 and P8-07, and it is one rule with two
+# halves.
+#
+# P8-05: `component-under-test`'s note carried one size adjective per BAND,
+# so thin nichrome at 1.50 V was "a large current" at 0.300 A while the
+# 10 Ω resistor at 12.00 V was "only 1.200 A … the reading is small" — four
+# times as much, called the opposite. The damage was the model, not the
+# word: "large" and "small" became labels belonging to the COMPONENT, on
+# the lesson whose whole thesis is that the current follows V and R
+# together and that only the RATIO belongs to the component.
+#
+# P8-07: `test-gap`'s conductor note was one fixed template over three
+# specimens and false about two. 10 cm of nichrome passes 5.5 A and was
+# called "enough to light a lamp comfortably" — eighteen times this unit's
+# own torch-lamp current — and the pencil carried nichrome's
+# heating-element clause, telling a Year 8 that graphite is a heater.
+#
+# A branch note may therefore not HOLD a size adjective or a per-specimen
+# use. It fills `{size}` / `{lamp}` from the rendered current and `{use}`
+# from the specimen, and every token it names has to be one the wiring
+# actually supplies — an unknown token renders as literal `{sise}` on the
+# page, which is the silent half of the same failure.
+
+_SIZE_WORDS = (
+    "a large current", "a big current", "a healthy current",
+    "a small current", "a tiny current",
+    "the reading is small", "the reading is large",
+    "passes only", "enough to light a lamp", "enough to light a small lamp",
+    "enough to make the wire", "far too little to light",
+)
+
+_BRANCH_TOKENS = {
+    "component-under-test": ("v", "i", "r", "name", "size", "rint",
+                             "rcold", "rhot"),
+    "test-gap": ("len", "name", "r", "i", "times", "lamp", "use",
+                 "carriers"),
+}
+
+
+def _refuse_fixed_size(branches, act_id, family):
+    known = _BRANCH_TOKENS[family]
+    for key in sorted(branches or {}):
+        text = str(branches[key] or "")
+        low = text.lower()
+        for phrase in _SIZE_WORDS:
+            if phrase in low:
+                raise ValueError(
+                    "%s %r: the %r note holds the phrase %r.\n"
+                    "⚖️ Ruled by Mide, 30 Aug 2026 (MRB-297, P8-05 and "
+                    "P8-07): a branch note is shown at every state of the "
+                    "bench, and a size adjective written into it describes "
+                    "only one of them. This one held \"a large current\" for "
+                    "0.300 A and \"only … small\" for 1.200 A — four times "
+                    "as much, called the opposite — which teaches that big "
+                    "and small belong to the COMPONENT rather than to the "
+                    "reading. Say {size} (or {lamp}) and let the wiring "
+                    "choose the words from the current on screen."
+                    % (family, act_id, key, phrase))
+        for tok in sorted(set(re.findall(r"\{([a-zA-Z0-9_]+)\}", text))):
+            if tok not in known:
+                raise ValueError(
+                    "%s %r: the %r note names {%s}, which nothing fills. "
+                    "An unfilled token is not blank — `fillTokens` leaves "
+                    "it as the literal text {%s} on the page. The tokens "
+                    "this bench supplies are: %s."
+                    % (family, act_id, key, tok, tok, ", ".join(known)))
 
 
 # ═══ shared P8 primitives ════════════════════════════════════════════════
@@ -875,6 +946,9 @@ def r_component_under_test(a, act_id):
     # that asserts the RATE of the lamp's climb is refused — the page may say
     # the resistance rises, and may not say how evenly.
     _refuse_even_rise(a, act_id)
+    # ⚖️ AND THE SIZE ADJECTIVE COMES FROM THE READING (MRB-297 / P8-05).
+    _refuse_fixed_size(a.get("branches") or {}, act_id,
+                       "component-under-test")
 
     comp_tabs = "".join(
         _seg("ks3-seg-btn ks3-cundt-comp", c["label"],
@@ -1030,8 +1104,14 @@ def r_test_gap(a, act_id):
             "middle of it argues the opposite." % (act_id, len(specs)))
     _unique(specs, act_id, "test-gap", "specimen")
     for s in specs:
+        # ⚖️ `use` IS REQUIRED, AND MRB-297 / P8-07 IS WHY. The conductor
+        # note's closing clause used to be fixed — "which is why it is used
+        # where you want heat rather than where you want a wire" — and it
+        # printed verbatim under a pencil, which is not a heating element.
+        # One closing sentence per specimen, or the note has nothing true
+        # to end on.
         _need(s, act_id, "test-gap specimen",
-              ("id", "label", "name", "ohms", "carriers"))
+              ("id", "label", "name", "ohms", "carriers", "use"))
     ordered = [float(s["ohms"]) for s in specs]
     if ordered != sorted(ordered):
         raise ValueError(
@@ -1084,7 +1164,8 @@ def r_test_gap(a, act_id):
         _seg("ks3-seg-btn ks3-tgap-spec", s["label"],
              pressed=(i == int(a.get("start_spec", 0))),
              data_tgap_spec=s["id"], data_ohms=s["ohms"], data_name=s["name"],
-             data_carriers=s["carriers"], data_label=s["label"])
+             data_carriers=s["carriers"], data_label=s["label"],
+             data_use=s["use"])
         for i, s in enumerate(specs))
     len_tabs = "".join(
         _seg("ks3-seg-btn ks3-tgap-len", L["label"],
@@ -1114,6 +1195,10 @@ def r_test_gap(a, act_id):
         'text-anchor="middle">%s</text></svg>'
         % (t(a.get("supply_label_svg", "6.0 V FIXED")),
            t(a.get("gap_label", "THE TEST GAP"))))
+
+    # ⚖️ ONE NOTE, FOURTEEN STATES (MRB-297 / P8-07): the lamp phrase comes
+    # from the current and the closing sentence from the specimen.
+    _refuse_fixed_size(a.get("branches") or {}, act_id, "test-gap")
 
     branches = _branch_data(
         "tgap", a.get("branches") or {},
@@ -1610,6 +1695,18 @@ def r_p8_attempt(a, act_id):
             '<div class="ks3-cfa" data-p8cfa ',
             '<div class="ks3-cfa" data-p8cfa data-blocked-progress="%s" '
             % e(q1["blocked_progress"]), 1)
+    # ⚖️ MRB-297 / P8-06, RULED 30 Aug 2026 — THE MODEL LINES CARRY THIS
+    # SENTENCE INSTEAD OF A COMPUTATION WHILE THE PANEL IS BLOCKED.
+    # The five lines used to be composed for every state, copper included,
+    # so the marked panel held "120.0 A stays 120.0 A" → "R = 0.05 Ω" for
+    # the one specimen the bench refuses to give a reading for, and one
+    # character typed into any box put it on screen. `paintAttemptP8`
+    # reads this attribute; the guard is the other half of the repair.
+    if q1.get("blocked_lead"):
+        html = html.replace(
+            '<div class="ks3-cfa" data-p8cfa ',
+            '<div class="ks3-cfa" data-p8cfa data-blocked-line="%s" '
+            % e(q1["blocked_lead"]), 1)
     return html
 
 

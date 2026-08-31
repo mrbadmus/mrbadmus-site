@@ -503,7 +503,12 @@ LESSON = {
                        "the drawing leaves that out to keep one ray to "
                        "follow. The block is treated as having exactly "
                        "parallel faces, which is what makes the emerging ray "
-                       "parallel to the original.",
+                       "parallel to the original. In the straw figure the "
+                       "angles are not to scale: the ray leaving the water is "
+                       "drawn much flatter than water really bends it, so "
+                       "that the bend and the line your brain draws back can "
+                       "both be seen on one small picture. The bench above is "
+                       "the one to measure.",
 
     "ws": ["measurement"],
 }

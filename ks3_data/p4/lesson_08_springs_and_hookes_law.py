@@ -188,6 +188,10 @@ LESSON = {
                   "step": 1, "start": 2},
          "record_label": "Record this reading",
          "clear_label": "Clear the readings",
+         # ⊕ P4-03 · a way back off the ruined spring. Without this the
+         # bench becomes a dead end the moment a student takes it past 9 N,
+         # because the permanent set is now carried and nothing undoes it.
+         "new_spring_label": "Fit a new spring",
          "x_label": "Load in newtons",
          "y_label": "Extension in millimetres",
          "gate": {
@@ -230,7 +234,40 @@ LESSON = {
                          "coils have been pulled apart for good. A spring "
                          "balance treated like this reads wrongly at every "
                          "load afterwards.",
+             # ⊕ P4-03 · the two states that used to deny everything the
+             # `past_limit` and `deformed` notes had just promised. The
+             # bench now carries the stretch that did not come back, so
+             # these are the notes for the readings on the way down.
+             "zero_set": "No load — and the spring is still {set} mm longer "
+                         "than it began. That much has been pulled out of "
+                         "it for good. It will read high at every load from "
+                         "now on, so fit a new spring before taking any "
+                         "more readings.",
+             "under_set": "{load} N gives {ext} mm. A spring that had never "
+                          "been overloaded would read {fresh} mm here, so "
+                          "this one is {over} mm high. That is the stretch "
+                          "that did not come back, and no reading it gives "
+                          "below {maxseen} N can be trusted again.",
          },
+         # ⊕ P4-02 · the two states where the five lines below the bench
+         # must NOT be offered. Scaling a ratio up is only legal on the
+         # straight line, and the panel used to do it anywhere — printing
+         # its own caveat on the Formula line and then ignoring it on the
+         # next three. These are the refusals, in the same shape the sledge
+         # bench already uses at zero pull.
+         "attempt_past_limit": "This reading is at {load} N, past this "
+                               "spring's limit of proportionality of "
+                               "{limit} N. Up here extension ÷ load is not "
+                               "the same for every reading, so there is no "
+                               "ratio to scale up and no prediction to make "
+                               "from it. Set the bench to {limit} N or less "
+                               "and the five lines come back.",
+         "attempt_spoiled": "This spring has been stretched past its limit "
+                            "and has not come all the way back, so it is "
+                            "reading {over} mm high and extension ÷ load is "
+                            "no longer the same for every reading. Fit a "
+                            "new spring, take a reading on the straight "
+                            "line, and the five lines come back.",
          "readouts": [
              {"id": "load", "label": "Load"},
              {"id": "ext", "label": "Extension"},

@@ -1535,19 +1535,60 @@ def _art_outin(aria):
         'text-anchor="middle">OUT OF N, INTO S</text>', aria)
 
 
+# ⚖️ THE COUNT IS EQUAL, AND THE COUNT BEING EQUAL IS THE LESSON.
+# Lines used to be drawn five on the strong side and three on the weak
+# one. What a student could then COUNT was a different number of lines,
+# which is `MAG-08` — the misconception this page mints — drawn as fact,
+# and refuted in words two blocks below by the ladder's own rung-1
+# feedback: "Every line that leaves the north pole arrives at the south
+# pole, so the count is the same everywhere. What differs is how much
+# space they are spread over." A child holds the picture over the words.
+# The same five marks now appear on both sides, the same length, and the
+# SPACING carries the whole difference: 8 px pitch against 18.
+# ⚠️ The count is written out ONCE PER GROUP and then asserted equal, so
+# that changing one of them is what trips the gate.
+_CROWD_LINES = (5, 5)      # strong, weak — how many lines each group draws
+_CROWD_PITCH = (8, 18)     # strong, weak — px between neighbouring lines
+_CROWD_MID = 44            # both groups centred on the same axis
+_CROWD_BAND = (8, 84)      # the clear height, above the tile's caption
+
+
 def _art_crowd(aria):
-    """Five lines packed and three spread — the spacing IS the claim, so the
-    two groups differ only in how much room the same marks are given."""
+    """Five lines packed and the SAME five spread — the spacing is the
+    whole claim, so the two groups differ only in how much room one set of
+    marks is given. Asserted below, because a drawing that shows the count
+    differing teaches `MAG-08` however carefully the prose refutes it."""
+    groups = [[_CROWD_MID + (i - (n - 1) / 2.0) * pitch for i in range(n)]
+              for n, pitch in zip(_CROWD_LINES, _CROWD_PITCH)]
+    strong, weak = groups
+    if len(strong) != len(weak):
+        raise ValueError(
+            "crowd tile: %d line(s) drawn where the field is strong and %d "
+            "where it is weak. The two counts MUST be equal. Every line "
+            "that leaves the north pole arrives at the south pole, so a "
+            "tile a student can count more lines on where the field is "
+            "stronger draws MAG-08 — the misconception this very page "
+            "exists to refute. Spacing carries the difference; the number "
+            "never does." % (len(strong), len(weak)))
+    for name, ys in (("strong", strong), ("weak", weak)):
+        if min(ys) < _CROWD_BAND[0] or max(ys) > _CROWD_BAND[1]:
+            raise ValueError(
+                "crowd tile: the %s group runs from y=%g to y=%g, outside "
+                "the clear band y=%g to y=%g that this tile's caption "
+                "leaves free. Widen the viewBox before widening the pitch, "
+                "or the lines will run into the STRONG/WEAK labels."
+                % (name, min(ys), max(ys),
+                   _CROWD_BAND[0], _CROWD_BAND[1]))
     return _band_svg(
         "0 0 240 110",
-        '<path class="ks3-magband-line" d="M20 20 H120 M20 32 H120 '
-        'M20 44 H120 M20 56 H120 M20 68 H120"/>'
-        '<path class="ks3-magband-line" d="M140 16 H228 M140 44 H228 '
-        'M140 72 H228"/>'
-        '<text class="ks3-magband-artcap" x="70" y="100" '
+        '<path class="ks3-magband-line" d="%s"/>'
+        '<path class="ks3-magband-line" d="%s"/>'
+        '<text class="ks3-magband-artcap" x="68" y="100" '
         'text-anchor="middle">STRONG</text>'
-        '<text class="ks3-magband-artcap" x="184" y="100" '
-        'text-anchor="middle">WEAK</text>', aria)
+        '<text class="ks3-magband-artcap" x="180" y="100" '
+        'text-anchor="middle">WEAK</text>'
+        % (" ".join("M18 %g H118" % y for y in strong),
+           " ".join("M130 %g H230" % y for y in weak)), aria)
 
 
 def _art_nocross(aria):

@@ -106,13 +106,15 @@ LESSON = {
     "ks4_links": [],
 
     "meta_description": "A spark at a thousand degrees bounces off your arm. "
-                        "A bath at forty would scald you. Both facts are "
-                        "about energy, not about temperature alone.",
+                        "A bath at forty can injure a small child. Both "
+                        "facts are about energy, not about temperature "
+                        "alone.",
 
     "big_question": "A spark from a grinder is at a thousand degrees and it "
-                    "bounces off your arm without a mark. A bath at forty "
-                    "would scald you. Both facts are about energy, and "
-                    "neither is about temperature alone.",
+                    "bounces off your arm without a mark. A bath at forty, "
+                    "barely more than body temperature, can injure a small "
+                    "child. Both facts are about energy, and neither is "
+                    "about temperature alone.",
 
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",
@@ -130,10 +132,21 @@ LESSON = {
     "phenomenon": {
         "kind": "narrative",
         "title": "A spark at 1000 °C and a bath at 40 °C.",
+        # ⚖️ P11-13. This read "A bath run too hot at 40 °C will take the
+        # skin off you". A bath is RUN at 37–40 °C; scalding needs about
+        # 50 °C and up, which is why water is stored at 60 °C and
+        # thermostatic mixers exist. Every child in the room has had a bath
+        # at about this temperature, so the class contradicts it out loud —
+        # at the opening sentence of the page that most needs to be
+        # believed. P1's `heating-and-thermal-equilibrium` already runs this
+        # hook honestly, and this now matches it. The comparison does not
+        # need the exaggeration: 40 °C really does hold ~10⁸ times a
+        # spark's internal energy.
         "prompt": "A grinding wheel throws a shower of white-hot sparks "
                   "against your forearm and you feel a faint tick, nothing "
-                  "more. A bath run too hot at 40 °C will take the skin off "
-                  "you.",
+                  "more. A bath at 40 °C, barely more than body "
+                  "temperature, will make you flinch, and it can genuinely "
+                  "injure a small child.",
         "commit": "Which one holds more energy?",
         "options": [
             "The spark, because it is far hotter",
@@ -151,8 +164,8 @@ LESSON = {
                   "and a bath has "
                   "an enormous number of particles while a spark has almost "
                   "none. That is why the spark bounces off your arm and does "
-                  "nothing, and the bath would scald you at a quarter of its "
-                  "temperature.",
+                  "nothing, while the bath, far cooler on the thermometer, "
+                  "can genuinely injure a small child.",
     },
 
     "misconceptions": [

@@ -106,13 +106,35 @@ LESSON = {
                   "injure a small child.",
         "commit": "Commit. Which holds more energy, and why does the cooler "
                   "one do more damage?",
+        # ⊕ MRB-297, 31 Aug 2026 — THE DISTRACTORS WERE LENGTHENED. The
+        # hook's `answer` index now exists, so `verify_answer_lengths` can
+        # see this set for the first time, and it read 100%: at 51 / 70 / 50
+        # / 44 characters the correct option was the visibly longest of the
+        # four, so the hook could be answered without reading any physics.
+        # THE CORRECT OPTION IS UNCHANGED, byte for byte, and so are the
+        # spark and bath figures and the temperature wording settled earlier
+        # in this run — only the three distractors' length moved. Each is
+        # still a wrong account a real student gives. The order and the
+        # answer index are untouched.
         "options": [
-            "The spark — it is far hotter, so it has more energy",
+            "The spark — it is far hotter, so it must be holding far "
+            "more energy",
             "The bath — temperature is an average, and it has vastly more "
             "particles",
-            "They hold the same energy, just spread differently",
-            "The spark, but it cools too fast to hurt you",
+            "They hold the same energy, just spread over different "
+            "numbers of particles",
+            "The spark, but it cools down far too fast for you to feel "
+            "any of it",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 1,
         "reveal": "The bath, by an enormous margin — tens of millions of "
                   "joules against a fraction of one. <strong>"
                   + TEMPERATURE_SENTENCE +
@@ -224,20 +246,52 @@ LESSON = {
          # labelled as not existing. That IS the confrontation of ENER-14,
          # and it must not be tidied away as a contradictory label.
          "ghost_label": "no cold travels this way",
+         # ── ⚖️ SCIENCE · EVERY PAIR CARRIES A HEAT CAPACITY, IN J/K, AND
+         # THE BENCH SETTLES AT THE WEIGHTED MEAN.
+         #
+         # It used to settle at a fixed 1:2 weighting for every pair, so the
+         # hot spoon and the cold water met at 38 °C — a 26-degree rise in
+         # the water, printed in large type directly above a note saying
+         # "the water barely warms". Renumbering until the sentence happened
+         # to be true would have left the model wrong; the subject of this
+         # bench IS thermal equilibrium, and the weighted mean is the
+         # physics of it. So the weighting is authored per pair.
+         #
+         # `hot_cap` / `cold_cap` are heat capacities in joules per kelvin.
+         # Settling temperature = (Ch·Th + Cc·Tc) / (Ch + Cc).
          "pairs": [
+             # 200 g of drink is 840 J/K. The 20 g ice cube is 42 J/K on its
+             # own, but it also has to MELT, and the melting is most of what
+             # it takes: 168 J to warm it from −4 to 0, then 6680 J to melt
+             # it, then 84 J/K as meltwater. Lumped over the whole −4 → 13
+             # climb that is about 476 J/K, and it is the melting that makes
+             # the drink so much colder than the cube's own size suggests.
+             # (840·22 + 476·−4) / 1316 = 12.6 °C.
              {"id": "p1", "label": "Ice in a drink",
-              "hot": 22, "cold": -4, "hot_name": "Drink", "cold_name": "Ice",
+              "hot": 22, "cold": -4, "hot_name": "Drink",
+              "cold_name": "Ice, then meltwater",
+              "hot_cap": 840, "cold_cap": 476,
               "note": "Energy leaves the drink and enters the ice. One "
                       "arrow, pointing from the drink to the ice. Nothing "
                       "at all travels the other way — the drink gets colder "
-                      "because it is losing, not because it is receiving."},
+                      "because it is losing, not because it is receiving. "
+                      "The ice reaches 0 °C, melts, and the meltwater goes "
+                      "on warming with the drink — which is why the drink "
+                      "ends up colder than the size of the cube suggests."},
+             # 30 g of steel is 13.5 J/K against 200 g of water at 840 J/K —
+             # a ratio of about 1 to 62. (13.5·90 + 840·12) / 853.5 =
+             # 13.2 °C, so the spoon falls 77 degrees and the water rises
+             # one. That is the pairing, and it is why the note can say it.
              {"id": "p2", "label": "Hot spoon in cold water",
               "hot": 90, "cold": 12, "hot_name": "Spoon",
               "cold_name": "Water",
+              "hot_cap": 13.5, "cold_cap": 840,
               "note": "The spoon is much hotter but tiny, so it loses "
-                      "temperature fast while the water barely warms. Same "
-                      "one-way flow — and it stops when they match, not "
-                      "when the spoon “runs out”."},
+                      "temperature fast while the water barely warms — "
+                      "there are far more particles in the water, so the "
+                      "same energy shifts its temperature hardly at all. "
+                      "Same one-way flow — and it stops when they match, "
+                      "not when the spoon “runs out”."},
              # ⚠️ THE EQUAL STATE. Design draws it deliberately: two blocks
              # already at the same temperature, no net flow, nothing
              # happening. It is thermal equilibrium, and it is also the
@@ -245,6 +299,9 @@ LESSON = {
              {"id": "p3", "label": "Two blocks the same",
               "hot": 30, "cold": 30, "hot_name": "Block A",
               "cold_name": "Block B",
+              # The same block twice, so the same capacity twice. Nothing
+              # about the weighting can move a pair that starts equal.
+              "hot_cap": 400, "cold_cap": 400,
               "note": "Already at the same temperature, so there is no net "
                       "flow at all and nothing happens — this is thermal "
                       "equilibrium. Particles are still colliding and still "

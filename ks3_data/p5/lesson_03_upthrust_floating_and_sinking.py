@@ -232,7 +232,14 @@ LESSON = {
          "readouts": [
              {"id": "weight", "label": "Weight in air", "sub": True},
              {"id": "up", "label": "Upthrust now", "sub": True},
-             {"id": "reading", "label": "On a spring balance in the water"},
+             # ⊕ P5-13 · NO SPRING BALANCE READS A NEGATIVE NUMBER; it
+             # goes slack. Hold a floater under and what is being
+             # measured is the student's own hand pushing DOWN, which is
+             # what the branch note two lines below already says. The
+             # balance label is kept for the sinkers, where it is
+             # literally true and is what both worked examples use.
+             {"id": "reading", "label": "On a spring balance in the water",
+              "alt_label": "The push your hand must give"},
              {"id": "verdict", "label": "What it does"},
          ]},
 
@@ -351,8 +358,20 @@ LESSON = {
          "kind": "p5-attempt",
          "demand": "calculate",
          "eyebrow": "Your turn · the same five steps",
+         # ⊕ P5-12 · `formula`, `insert` and `finetune` ARE COMPOSED BY
+         # THE BENCH, not written here, because the order of the
+         # subtraction depends on which force is bigger. The lines used
+         # to be fixed at weight-minus-upthrust and print the magnitude
+         # of the difference, so a floater held under gave "2.4 − 10 =
+         # 7.6" — false arithmetic on the one step whose whole job is to
+         # be the arithmetic. The resting values below are pine floating,
+         # where the two forces are equal and every line reads as it
+         # always did.
          "rest": {"name": "pine", "weight": "5 N", "up": "5 N",
                   "wnum": 5, "unum": 5, "onum": 0,
+                  "formula": "left over = weight − upthrust",
+                  "insert": "5 N − 5 N",
+                  "finetune": "5 − 5 = 0",
                   "answer": "nothing left over — it floats",
                   "finenote": "They cancel exactly, which is what floating "
                               "is.",
@@ -371,14 +390,15 @@ LESSON = {
                    "note": "Both are already forces in newtons, so there is "
                            "nothing to convert."},
                   {"letter": "F", "label": "Formula",
-                   "line": "left over = weight − upthrust",
+                   "line": "{formula}",
                    "note": "A difference between two opposite forces, so a "
                            "beam rather than a triangle."},
                   {"letter": "I", "label": "Insert",
-                   "line": "left over = {weight} − {up}",
-                   "note": "Both figures come off the bench above."},
+                   "line": "left over = {insert}",
+                   "note": "Both figures come off the bench above, bigger "
+                           "one first."},
                   {"letter": "F", "label": "Fine-tune",
-                   "line": "{wnum} − {unum} = {onum}",
+                   "line": "{finetune}",
                    "note": "{finenote}"},
                   {"letter": "A", "label": "Answer",
                    "line": "{answer}",

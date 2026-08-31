@@ -7,9 +7,11 @@ The discriminations:
 
   · every speed is measured relative to SOMETHING, usually the ground and
     usually unsaid (`FORCE-09`, `FORCE-11`);
-  · same way, SUBTRACT; opposite ways, ADD (`FORCE-10`) — and nothing
-    here is ever a multiplication, which is why the lesson has no formula
-    triangle;
+  · for how fast one passes the other: same way, SUBTRACT; opposite
+    ways, ADD (`FORCE-10`) — and nothing here is ever a multiplication,
+    which is why the lesson has no formula triangle. ⚠️ The rule is
+    SCOPED (P3-20): a walk inside a moving frame, or a plane in moving
+    air, is a composition and adds when the two go the same way;
   · changing who measures changes the number and never the object;
   · a relative speed decides how long a pass TAKES, which is why
     overtaking feels slow and a head-on pass is a blur.

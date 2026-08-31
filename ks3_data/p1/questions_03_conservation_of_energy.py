@@ -249,8 +249,9 @@ QUESTIONS = [
             {"text": "Weigh the bicycle before and after braking to see if "
                      "anything was lost",
              "correct": False,
-             "why": "Energy has no mass, so the balance would read the same "
-                    "either way and settle nothing."},
+             "why": "A balance cannot follow energy from one store to "
+                    "another. It would read the same either way and "
+                    "settle nothing."},
             {"text": "Time how long the bicycle takes to stop from the same "
                      "speed twice",
              "correct": False,

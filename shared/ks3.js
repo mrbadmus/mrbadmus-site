@@ -6090,9 +6090,14 @@
     if (!ctls.length) { return; }
 
     var TOTAL = parseInt(wrap.getAttribute("data-total"), 10) || 120;
+    /* `fresh` — a reset performed AFTER a run has already happened. It is
+       its own state because the honest sentence for it is not the resting
+       sentence: the room still holds the last run's energy, and the count
+       is starting again rather than the energy coming back. See P1-9. */
     var st = {
       running: false, friction: true, hide: false,
-      everRan: false, stopped: false, phase: 0, amp: 1, therm: 0
+      everRan: false, stopped: false, fresh: false,
+      phase: 0, amp: 1, therm: 0
     };
     var timer = null;
 
@@ -6120,6 +6125,7 @@
       if (st.hide) { return "hidden"; }
       if (!st.friction) { return "no_friction"; }
       if (st.stopped) { return "stopped"; }
+      if (st.fresh) { return "fresh"; }
       if (st.everRan) { return "running"; }
       return "rest";
     }
@@ -6150,8 +6156,27 @@
 
       el = ctl("run");
       if (el) {
-        el.textContent = st.running ? "Pause"
-          : (st.everRan ? "Continue" : "Release it");
+        /* ⚖️ SCIENCE · P1-9 — AT REST THERE IS NOTHING TO CONTINUE.
+           This branch used to read "Continue" once the pendulum had run
+           down, and pressing it silently reset the run: 120 J of thermal
+           became 15 J thermal and 104 J gravitational a second later, so a
+           child watched 105 J flow spontaneously back out of the room on
+           the very page that argues it cannot. The total was preserved, so
+           no gate saw it. The control is now dead at the stopped state and
+           says where to go instead; `reset` is the only way on, and its
+           note owns up to what the reset does. */
+        /* "Continue" is only ever true of a PAUSE. After a reset the bob is
+           back at the top and the next press is a fresh release, so the
+           label goes back to saying so. */
+        el.textContent = st.stopped ? "Run over — pull it back"
+          : (st.running ? "Pause"
+            : ((st.everRan && !st.fresh) ? "Continue" : "Release it"));
+        el.disabled = !!st.stopped;
+        el.setAttribute("aria-disabled", st.stopped ? "true" : "false");
+        /* `.ks3-seg-btn` sets its own colour, so the UA's disabled grey
+           never lands. Carried inline rather than in `shared/ks3.css`. */
+        el.style.opacity = st.stopped ? "0.5" : "";
+        el.style.cursor = st.stopped ? "default" : "";
         el.setAttribute("aria-pressed", st.running ? "true" : "false");
       }
       el = ctl("friction");
@@ -6209,6 +6234,9 @@
 
     function reset() {
       stop();
+      /* A reset after a run is a NEW run, not a resumption of the old one.
+         `fresh` carries that distinction to the note. */
+      st.fresh = st.everRan;
       st.running = false; st.stopped = false; st.phase = 0; st.therm = 0;
       paint();
     }
@@ -6228,10 +6256,11 @@
       btn.addEventListener("click", function () {
         var id = btn.getAttribute("data-rtotal-ctl");
         if (id === "run") {
-          if (st.stopped) { reset(); }
+          /* P1-9: dead at rest. The reset control is the only way on. */
+          if (st.stopped) { return; }
           st.running = !st.running;
           st.everRan = true;
-          if (st.running) { start(); } else { stop(); }
+          if (st.running) { st.fresh = false; start(); } else { stop(); }
         } else if (id === "reset") {
           reset();
         } else if (id === "friction") {
@@ -6457,16 +6486,31 @@
       return parseInt(
         wrap.getAttribute("data-oflow-" + key + "-" + current), 10) || 0;
     }
+    /* Heat capacity in J/K. Authored per body, per pair — a spoon is 13.5
+       and the water round it is 840, and that ratio is what decides where
+       the two meet. See P1-15. */
+    function cap(key) {
+      var v = parseFloat(
+        wrap.getAttribute("data-oflow-" + key + "cap-" + current));
+      return (isFinite(v) && v > 0) ? v : 1;
+    }
     function name(key) {
       return wrap.getAttribute("data-oflow-" + key + "name-" + current) || "";
     }
 
     var hot = 0, cold = 0;
+    var hotCap = 1, coldCap = 1, eqT = 0;
 
     function reset() {
       if (timer) { window.clearInterval(timer); timer = null; }
       hot = attr("hot");
       cold = attr("cold");
+      hotCap = cap("hot");
+      coldCap = cap("cold");
+      /* The settling temperature is the CAPACITY-WEIGHTED mean, computed
+         once from the authored figures so that the printed end state is
+         exact rather than wherever the animation happened to stop. */
+      eqT = (hotCap * hot + coldCap * cold) / (hotCap + coldCap);
     }
 
     function paint() {
@@ -6502,16 +6546,24 @@
     function tick() {
       var gap = hot - cold;
       if (Math.abs(gap) <= 0.4) {
-        hot = cold = (hot + cold) / 2;
+        /* Land on the weighted mean, not the midpoint. */
+        hot = cold = eqT;
         if (timer) { window.clearInterval(timer); timer = null; }
         paint();
         return;
       }
-      /* Both move toward each other; the smaller body moves faster, which
-         is why Design's hot spoon loses temperature while the water barely
-         warms. Approximated by a fixed fraction of the gap each way. */
-      hot -= gap * 0.06;
-      cold += gap * 0.03;
+      /* ⚖️ SCIENCE · P1-15. Both move toward each other, and the body with
+         the SMALLER heat capacity moves further, because the same joules
+         shift fewer particles by more degrees. Each step hands the same
+         energy across, so Ch·ΔTh + Cc·ΔTc stays zero and the pair converges
+         on the weighted mean. This used to be a fixed 0.06 / 0.03, i.e. a
+         2:1 capacity ratio for every pair on the bench whatever the
+         objects were, which is what put a spoon and a beaker of water
+         level at 38 °C. The gap still closes at 9% a step whatever the
+         capacities are, so the run takes the same time it always did. */
+      var sum = hotCap + coldCap;
+      hot -= gap * 0.09 * (coldCap / sum);
+      cold += gap * 0.09 * (hotCap / sum);
       paint();
     }
 
@@ -6530,6 +6582,9 @@
         if (window.matchMedia &&
             window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
           for (var i = 0; i < 300 && Math.abs(hot - cold) > 0.4; i++) { tick(); }
+          /* One more, so the reduced-motion path lands on the weighted mean
+             rather than wherever the loop condition let go of it. */
+          tick();
           paint();
           return;
         }
@@ -6927,7 +6982,13 @@
       el = wrap.querySelector('[data-lever-out="effort"]');
       if (el) { el.textContent = g.effort.toFixed(0) + " N"; }
       el = wrap.querySelector('[data-lever-out="edist"]');
-      if (el) { el.textContent = g.edist.toFixed(3) + " m"; }
+      /* ⚖️ P1-25 · FOUR SIGNIFICANT FIGURES, NOT THREE DECIMALS. At the
+         far end of the slider the distance is 0.005556 m; printed as
+         0.006 m the rounding is 8% and a student multiplying the printed
+         numbers gets 32.4 J against a printed 30.4 J. The lesson asks
+         them to do exactly that multiplication, so the figures have to
+         carry it. */
+      if (el) { el.textContent = g.edist.toPrecision(4) + " m"; }
       el = wrap.querySelector('[data-lever-out="ein"]');
       if (el) { el.textContent = g.ein.toFixed(1) + " J"; }
       el = wrap.querySelector('[data-lever-out="eout"]');
@@ -6959,12 +7020,33 @@
            fulcrum position rather than at random keeps the table stable on
            a re-read and still gives a different figure per row. */
         var frac = ((g.pct * 37) % 100) / 100;
-        var bias = 1 + (LO + (HI - LO) * frac) / 100;
-        var measured = g.ein * bias;
+        var bias = (LO + (HI - LO) * frac) / 100;
+
+        /* ⚖️ SCIENCE · P1-25 — THE FRICTION BIAS GOES ON THE FORCE, AND
+           THE ENERGY IS THE PRODUCT OF THE TWO PRINTED FIGURES.
+           It used to be added to the ENERGY, leaving every row failing
+           the equation the lesson had just drilled: 600 N x 0.050 m
+           printed as 30.6 J. Friction does not add joules out of
+           nowhere — it makes you push HARDER for the same lift, so the
+           bias belongs on the force and the extra energy follows from
+           E = F x d on its own. Both columns are rounded FIRST and the
+           energy is then computed from the rounded pair, so the row
+           multiplies out exactly as printed rather than to within
+           whatever the rounding left. */
+        var dStr = g.edist.toPrecision(4);
+        var dVal = parseFloat(dStr);
+        var fShown = Math.round(g.effort * (1 + bias));
+        /* On the lightest pushes (67 N at the near end) half a newton of
+           rounding is bigger than half a per cent of the force, so the
+           bias can round away and the row would show a machine breaking
+           even. One more newton, which is still a real reading on a real
+           meter, keeps the input strictly the larger — flag 20. */
+        if (fShown * dVal <= g.eout) { fShown += 1; }
+        var measured = fShown * dVal;
         var tr = document.createElement("tr");
         tr.innerHTML =
-          "<td>" + g.effort.toFixed(0) + " N</td>" +
-          "<td>" + g.edist.toFixed(3) + " m</td>" +
+          "<td>" + fShown + " N</td>" +
+          "<td>" + dStr + " m</td>" +
           "<td>" + measured.toFixed(1) + " J</td>" +
           "<td>" + g.eout.toFixed(1) + " J</td>";
         if (body) { body.appendChild(tr); }
@@ -8013,6 +8095,13 @@
     if (!cells.length) { return; }
 
     var ORDER = (wrap.getAttribute("data-order") || "").split("|");
+    /* ⚖️ The joining line's vertices are computed ONCE, in `r_graph_plot`,
+       from the same cell-centre formula that positions the dots, and are
+       drawn here verbatim. They used to be re-derived from value / max,
+       which is half a cell out in each direction — the first vertex fell
+       outside the grid frame and the flat run, the lesson's whole point,
+       sat visibly off its own dots. */
+    var LINE = wrap.getAttribute("data-line") || "";
     var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || ORDER.length;
     var next = 0, joined = false, answered = {};
 
@@ -8056,19 +8145,8 @@
       joinBtn.addEventListener("click", function () {
         if (next < ORDER.length) { return; }
         joined = true;
-        if (line) {
-          var tmax = 0, dmax = 0;
-          each(ORDER, function (o) {
-            tmax = Math.max(tmax, parseFloat(o.split(",")[0]));
-            dmax = Math.max(dmax, parseFloat(o.split(",")[1]));
-          });
-          var pts = [];
-          each(ORDER, function (o) {
-            var p = o.split(",");
-            pts.push((parseFloat(p[0]) / (tmax || 1) * 100).toFixed(2) + ","
-                     + (100 - parseFloat(p[1]) / (dmax || 1) * 100).toFixed(2));
-          });
-          line.innerHTML = '<polyline points="' + pts.join(" ")
+        if (line && LINE) {
+          line.innerHTML = '<polyline points="' + LINE
             + '" fill="none" stroke="currentColor" stroke-width="2"'
             + ' vector-effect="non-scaling-stroke"></polyline>';
         }
@@ -8600,11 +8678,16 @@
   /* A bench publishes its live numbers here; the attempt panel on the same
      page repaints from them. One direction only: the panel never writes
      back, so a bench cannot be moved by the scaffold that reads it. */
-  function publishLive(sec, vals, blocked) {
+  /* `why` is optional and names WHICH refusal this is. A bench with one
+     blocked state leaves it out and the authored `blocked_lead` stands, as
+     it always has; a bench with more than one — the spring plot has three,
+     and two of them are about the physics rather than about a zero —
+     passes the sentence for the state it is actually in. */
+  function publishLive(sec, vals, blocked, why) {
     var host = sec && sec.closest ? sec.closest(".ks3-lesson") : null;
     if (!host) { host = document; }
     var panels = toArray(host.querySelectorAll("[data-p4cfa]"));
-    each(panels, function (p) { paintAttempt(p, vals, blocked); });
+    each(panels, function (p) { paintAttempt(p, vals, blocked, why); });
   }
 
   function tagStyle(fx, fy, colour, align) {
@@ -8649,30 +8732,48 @@
     for (var i = 0; i < els.length; i += 1) { els[i].textContent = text; }
   }
 
+  /* ⚖️ A SHORT ARROW SHRINKS ITS HEAD, IT DOES NOT KEEP A FULL-SIZE ONE.
+     The head used to be a fixed 26px (28 across), so every force whose
+     scaled length fell under it drew the SAME glyph and the shaft was
+     emitted running backwards past its own tail. On the support rig that
+     put 5 N, 3 N and 2 N on screen as three identical arrows under an
+     aria-label promising they were "drawn to the same scale", and on the
+     fall bench it made the two component arrows longer than the arrow they
+     add up to. `headOf` clamps the head to the arrow and narrows it in
+     proportion, so tip-to-tail is exactly `len` at every size and a 2 N
+     force on the rig is a 6px stub. At or above the head length nothing
+     changes: `h === head` and `hf === half`, to the byte. */
+  function headOf(len, head, half) {
+    var h = Math.min(head, len);
+    return { h: h, half: Math.round(half * h / head * 10) / 10 };
+  }
+
   /* A vertical arrow, Design's own head geometry. `len` in px of the
      drawing's own viewBox. Refuses to draw below 2px: a zero-length arrow
      is not a small arrow, and every P4 bench prints words at zero instead. */
   function arrowV(x, y0, len, down, head, half) {
     head = head || 26; half = half || 17;
     if (!(len > 2)) { return { shaft: "M0 0", head: "M0 0" }; }
+    var g = headOf(len, head, half);
     var tip = down ? y0 + len : y0 - len;
-    var base = down ? tip - head : tip + head;
+    var base = down ? tip - g.h : tip + g.h;
     return {
       shaft: "M" + x + " " + y0 + " V" + base,
-      head: "M" + x + " " + tip + " L" + (x - half) + " " + base +
-            " L" + (x + half) + " " + base + " Z"
+      head: "M" + x + " " + tip + " L" + (x - g.half) + " " + base +
+            " L" + (x + g.half) + " " + base + " Z"
     };
   }
 
   function arrowH(x0, y, len, right, head, half) {
     head = head || 28; half = half || 16;
     if (!(len > 2)) { return { shaft: "M0 0", head: "M0 0" }; }
+    var g = headOf(len, head, half);
     var tip = right ? x0 + len : x0 - len;
-    var base = right ? tip - head : tip + head;
+    var base = right ? tip - g.h : tip + g.h;
     return {
       shaft: "M" + x0 + " " + y + " H" + base,
-      head: "M" + tip + " " + y + " L" + base + " " + (y - half) +
-            " L" + base + " " + (y + half) + " Z"
+      head: "M" + tip + " " + y + " L" + base + " " + (y - g.half) +
+            " L" + base + " " + (y + g.half) + " Z"
     };
   }
 
@@ -8694,7 +8795,7 @@
      marks a line right or wrong: the five model lines appear beside what the
      student wrote and they decide. That is the same contract the mastery
      ladder's rungs 3 and 4 already use. */
-  function paintAttempt(wrap, vals, blocked) {
+  function paintAttempt(wrap, vals, blocked, why) {
     var qs = toArray(wrap.querySelectorAll("[data-p4cfa-q]"));
     each(qs, function (q, qi) {
       if (qi !== 0) { return; }     /* only Q1 is live on the bench */
@@ -8717,7 +8818,15 @@
       var block = q.querySelector("[data-p4cfa-blocked]");
       var rows = q.querySelector(".ks3-cfa-rows");
       var chk = q.querySelector("[data-p4cfa-check]");
-      if (block) { setHidden(block, !blocked); }
+      if (block) {
+        /* The authored sentence is kept the first time it is seen, so a
+           bench that swaps in a reason can always put it back. */
+        if (!block.hasAttribute("data-authored")) {
+          block.setAttribute("data-authored", block.textContent);
+        }
+        block.textContent = why || block.getAttribute("data-authored");
+        setHidden(block, !blocked);
+      }
       if (rows) { setHidden(rows, !!blocked); }
       if (chk && blocked) { chk.setAttribute("disabled", ""); }
     });
@@ -9865,6 +9974,7 @@
     var load = wrap.querySelector("[data-splot-load]");
     var recBtn = wrap.querySelector("[data-splot-record]");
     var clrBtn = wrap.querySelector("[data-splot-clear]");
+    var newBtn = wrap.querySelector("[data-splot-newspring]");
     var springSvg = wrap.querySelector("[data-splot-springalt]");
     var graphSvg = wrap.querySelector("[data-splot-graphalt]");
     var noteEl = wrap.querySelector("[data-splot-note]");
@@ -9873,18 +9983,57 @@
     var SPOIL = parseFloat(wrap.getAttribute("data-spoil")) || 9;
     var PAST = parseFloat(wrap.getAttribute("data-past")) || 32;
     var TARGET = parseInt(wrap.getAttribute("data-target"), 10) || 2;
+    var MAXL = load ? parseFloat(load.getAttribute("max")) : 10;
+    var PASTLEAD = wrap.getAttribute("data-past-lead") || "";
+    var SPOILEDLEAD = wrap.getAttribute("data-spoiled-lead") || "";
     var committed = false;
     var readings = [];
+    /* ⚖️ THE SPRING REMEMBERS THE BIGGEST LOAD IT HAS EVER CARRIED.
+       `ext` is the virgin spring: straight to the limit, then steeper.
+       `ext2` is THIS spring, which has been somewhere. Past the limit part
+       of the stretch is plastic and does not come back, so unloading runs
+       DOWN A LINE OF THE ORIGINAL STIFFNESS offset by that permanent set —
+       which is the standard loading/unloading picture and, more to the
+       point here, is what the bench's own `deformed` note promises out
+       loud before saying "taking the load off will not bring it back".
+       It used to bring it back. Slide to 10 N, read "Permanently
+       stretched", slide back to 2 N and the bench read 40 mm again — the
+       same number as before it was ruined — which is FORCE-43, the
+       misconception this lesson registers, demonstrated on screen by the
+       instrument named as its confrontation.
+
+       `permSet` is `ext(maxSeen) − maxSeen × PER`: the total stretch at
+       the furthest point, less the elastic part that recovers along the
+       original slope. It is exactly 0 while `maxSeen <= LIMIT`, so a
+       spring that was never overloaded behaves as it always did, to the
+       reading. And `ext2` is continuous at `maxSeen`, so there is no step
+       in the graph where the two regimes meet. */
+    var maxSeen = 0;
 
     function ext(L) {
       return L <= LIMIT ? L * PER : LIMIT * PER + (L - LIMIT) * PAST;
+    }
+    function permSet() {
+      return Math.round((ext(maxSeen) - maxSeen * PER) * 10) / 10;
+    }
+    function ext2(L) {
+      return L >= maxSeen
+        ? ext(L)
+        : Math.round((permSet() + L * PER) * 10) / 10;
     }
     function gx(L) { return 120 + L * 82; }
     function gy(mm) { return 340 - mm * 1.1538; }
 
     function paint() {
       var L = load ? Number(load.value) : 0;
-      var E = ext(L);
+      if (L > maxSeen) { maxSeen = L; }
+      var SET = permSet();
+      var E = ext2(L);
+      /* How much this spring reads above a fresh one AT THIS LOAD. Not
+         the same as the permanent set once the load is itself past the
+         limit, because the fresh spring is on its steep part there too. */
+      var OVER = Math.round((E - ext(L)) * 10) / 10;
+      var spoiled = SET > 0 && L < maxSeen;
       var px = E * 0.9;
       var coilTop = 40, natural = 70;
       var coilEnd = coilTop + natural + px;
@@ -9903,12 +10052,29 @@
         ? "M250 110 V" + coilEnd + " M240 110 H260 M240 " + coilEnd + " H260"
         : null);
 
-      var sorted = readings.slice().sort(function (a, b) { return a - b; });
-      var dots = "", line = "";
-      sorted.forEach(function (r, i) {
-        var cx = gx(r), cy = gy(ext(r));
-        dots += "M" + (cx - 7) + " " + cy + " a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0 ";
-        line += (i ? "L" : "M") + cx + " " + cy + " ";
+      /* ⚠️ A RECORDED POINT KEEPS THE EXTENSION IT WAS RECORDED AT. This
+         used to replot every point through `ext(load)` on every paint, so
+         the moment the spring took a permanent set the whole graph
+         REWROTE ITS OWN HISTORY and the readings a student took on a
+         fresh spring silently moved. The points before an overload and
+         the points after it are two different springs' readings; the line
+         joins only the ones still on the original characteristic, and the
+         rest are drawn hollow. */
+      var sorted = readings.slice().sort(function (a, b) {
+        return a.load - b.load || a.ext - b.ext;
+      });
+      var dots = "", dotsSet = "", line = "", joined = 0;
+      sorted.forEach(function (r) {
+        var cx = gx(r.load), cy = gy(r.ext);
+        var ring = "M" + (cx - 7) + " " + cy +
+                   " a7 7 0 1 0 14 0 a7 7 0 1 0 -14 0 ";
+        if (r.ext === ext(r.load)) {
+          dots += ring;
+          line += (joined ? "L" : "M") + cx + " " + cy + " ";
+          joined += 1;
+        } else {
+          dotsSet += ring;
+        }
       });
       var grid = "";
       for (var k = 1; k <= 10; k += 1) { grid += "M" + gx(k) + " 340 V334 "; }
@@ -9920,7 +10086,8 @@
               "M" + gx(0) + " " + gy(0) + " L" + gx(LIMIT) + " " +
               gy(LIMIT * PER));
       setPath(wrap, "[data-splot-dots]", dots || null);
-      setPath(wrap, "[data-splot-line]", sorted.length > 1 ? line : null);
+      setPath(wrap, "[data-splot-dots-set]", dotsSet || null);
+      setPath(wrap, "[data-splot-line]", joined > 1 ? line : null);
 
       fillSpan(wrap, "splot", "ext", E + " mm",
                tagStyle(0.88, ((110 + coilEnd) / 2) / 460, "#8FB7FF", "end"));
@@ -9931,43 +10098,73 @@
       setOut(wrap, "splot", "ext", E + " mm");
       setOut(wrap, "splot", "pern", L === 0 ? "—"
         : (Math.round((E / L) * 10) / 10) + " mm/N");
+      /* Once the spring is carrying a set, the verdict cannot go on
+         saying "On the straight line" — it is not on it any more, and at
+         zero it is not unloaded to where it started either. */
       setOut(wrap, "splot", "verdict",
-             L === 0 ? "Unloaded"
+             spoiled ? (L === 0 ? "Still stretched" : "Reading high")
+               : L === 0 ? "Unloaded"
                : L < LIMIT ? "On the straight line"
                : L === LIMIT ? "At the limit"
                : L <= SPOIL ? "Past the limit" : "Permanently stretched");
 
-      var key = L === 0 ? "zero"
+      var key = spoiled ? (L === 0 ? "zero_set" : "under_set")
+        : L === 0 ? "zero"
         : L < LIMIT ? "on_line"
         : L === LIMIT ? "at_limit"
         : L <= SPOIL ? "past_limit" : "deformed";
       var bEl = wrap.querySelector('[data-splot-branch="' + key + '"]');
       if (noteEl && bEl) {
         noteEl.textContent = fillTokens(bEl.getAttribute("data-note"), {
-          load: L, ext: E, predicted: L * PER
+          load: L, ext: E, predicted: L * PER,
+          set: SET, fresh: ext(L), over: OVER, maxseen: maxSeen
         });
       }
 
       if (recBtn) {
-        var already = readings.indexOf(L) >= 0;
+        /* A load already plotted can be plotted AGAIN once the spring has
+           been stretched, because it no longer gives the same reading —
+           and the two points side by side at one load are the clearest
+           thing this bench can show. Matched on the reading, not the
+           load. */
+        var already = false;
+        for (var ri = 0; ri < readings.length; ri += 1) {
+          if (readings[ri].load === L && readings[ri].ext === E) {
+            already = true;
+          }
+        }
         recBtn.textContent = already ? "Already plotted"
                                      : "Record this reading";
         if (already) { recBtn.setAttribute("disabled", ""); }
         else { recBtn.removeAttribute("disabled"); }
       }
 
+      /* ⚖️ THE WAY BACK APPEARS THE MOMENT THERE IS SOMETHING TO COME BACK
+         FROM. A bench that can be ruined and not reset is a dead end, and
+         a child will reach the most dramatic state on it within a minute
+         of finding the slider. */
+      if (newBtn) { setHidden(newBtn, SET <= 0); }
+
       if (springSvg) {
         springSvg.setAttribute("aria-label",
           "A spring hanging from a clamp with " + L + " newtons on it, " +
           "stretched " + E + " millimetres below the dashed line marking " +
-          "its natural length.");
+          "its natural length." +
+          (SET > 0
+            ? " This spring has been overloaded and is " + SET +
+              " millimetres longer than it began, even with nothing on it."
+            : ""));
       }
       if (graphSvg) {
         graphSvg.setAttribute("aria-label",
           "A graph of extension in millimetres against load in newtons " +
           "with " + readings.length + " points plotted, and a dashed line " +
           "showing the straight line through the origin that the first " +
-          "readings make.");
+          "readings make." +
+          (dotsSet
+            ? " The hollow points were recorded after the spring had been " +
+              "overloaded, and are not joined to the others."
+            : ""));
       }
 
       var prog = sec.querySelector("[data-count]"); /* ⊕ MRB-223: the shell's own head-row readout; the second head row this unit drew is gone */
@@ -9980,14 +10177,40 @@
 
       var dbl = L * 2;
       var pred = E * 2;
-      var actual = ext(dbl);
+      var actual = ext2(dbl);
       var pern = Math.round((E / Math.max(L, 1)) * 10) / 10;
+      /* ⚖️ THE FIVE LINES ARE OFFERED ON THE STRAIGHT LINE AND NOWHERE
+         ELSE. `extension ÷ load is the same for every reading` is the
+         Formula line, and it prints its own caveat — "true while the
+         spring is on the straight line" — which the next three lines then
+         ignored. At 8 N the panel told a student to divide 184 by 8 and
+         double it, giving 368 mm against the bench's own 440 mm, and the
+         only feedback blamed the bench's RANGE rather than the
+         proportionality having given out. Two states have no honest
+         prediction in them and both now refuse, the way the sledge bench
+         already refuses at zero pull: past the limit, and after the
+         spring has taken a set. */
+      /* ⚠️ SPOILED IS TESTED FIRST, and the order is load-bearing. Both
+         can be true at once — a ruined spring set back to 8 N — and the
+         past-limit sentence's way back is "set the bench to 6 N or less",
+         which on a ruined spring leads to a panel that still refuses. The
+         spoiled sentence's way back is "fit a new spring", which works
+         from either state. A refusal that sends a student somewhere the
+         panel also refuses is worse than no refusal at all. */
+      var refuse = SPOILEDLEAD && spoiled
+        ? fillTokens(SPOILEDLEAD, { over: OVER, set: SET })
+        : (PASTLEAD && L > LIMIT
+          ? fillTokens(PASTLEAD, { load: L, limit: LIMIT })
+          : "");
+      var blocked = L === 0 || !!refuse;
       publishLive(sec, {
         load: L, ext: E, dbl: dbl, pern: pern, predicted: pred,
-        checkclose: dbl > 10
+        checkclose: dbl > MAXL
           ? "The five lines predict " + pred + " mm at " + dbl +
-            " N — but the bench only goes to 10 N, so this one cannot be " +
-            "checked. Choose a smaller load and run it again."
+            " N. The bench stops at " + MAXL + " N, so that reading " +
+            "cannot be taken — and " + dbl + " N is past this spring's " +
+            "limit of proportionality of " + LIMIT + " N, so the " +
+            "prediction would not have held there in any case."
           : (Math.abs(actual - pred) < 0.5
             ? "The five lines predict " + pred + " mm, and setting the " +
               "bench to " + dbl + " N gives exactly " + actual + " mm. The " +
@@ -9998,7 +10221,7 @@
               "predicted. Doubling took the spring past its limit of " +
               "proportionality. The arithmetic was right; the assumption " +
               "behind it was not.")
-      }, L === 0);
+      }, blocked, refuse);
 
       setCount(sec, readings.length);
       markStage(sec, committed && readings.length >= TARGET);
@@ -10023,12 +10246,27 @@
     if (recBtn) {
       recBtn.addEventListener("click", function () {
         var L = load ? Number(load.value) : 0;
-        if (readings.indexOf(L) < 0) { readings.push(L); }
+        var E = ext2(L), seen = false, i;
+        for (i = 0; i < readings.length; i += 1) {
+          if (readings[i].load === L && readings[i].ext === E) { seen = true; }
+        }
+        if (!seen) { readings.push({ load: L, ext: E }); }
         paint();
       });
     }
     if (clrBtn) {
       clrBtn.addEventListener("click", function () {
+        readings = [];
+        paint();
+      });
+    }
+    if (newBtn) {
+      newBtn.addEventListener("click", function () {
+        /* The load comes off first — a spring cannot be changed with the
+           weights still hanging on it — and the old spring's readings go
+           with it, because they are not this spring's readings. */
+        if (load) { load.value = load.getAttribute("min"); }
+        maxSeen = 0;
         readings = [];
         paint();
       });
@@ -10714,9 +10952,29 @@
 
       setOut(wrap, "ftank", "weight", W + " N");
       setOut(wrap, "ftank", "up", U + " N");
+      /* ⚖️ NO SPRING BALANCE READS A NEGATIVE NUMBER. It goes slack. This
+         tile printed cork at −7.6 N, pine at −5 N and ice at −0.8 N under
+         a label reading "On a spring balance in the water", in a lesson
+         whose two worked examples turn on reading a real balance honestly
+         (12 N in air, 9 N in water). What is being measured in that state
+         is the student's HAND, pushing down — which is what the branch
+         note two lines below already says. So the tile takes its other
+         name and the value goes positive with its direction on it. The
+         balance label stays for the sinkers, where it is literally true. */
+      var handPush = R > 0;
+      var lab = wrap.querySelector('[data-ftank-label="reading"]');
+      if (lab) {
+        if (!lab.hasAttribute("data-authored")) {
+          lab.setAttribute("data-authored", lab.textContent);
+        }
+        lab.textContent = (handPush && lab.getAttribute("data-ftank-altlabel"))
+          ? lab.getAttribute("data-ftank-altlabel")
+          : lab.getAttribute("data-authored");
+      }
       setOut(wrap, "ftank", "reading",
              floats() && !holding ? "0 N — it holds itself up"
-                                  : (Math.round((W - U) * 10) / 10) + " N");
+               : handPush ? R + " N downwards"
+               : (Math.round((W - U) * 10) / 10) + " N");
       setOut(wrap, "ftank", "verdict",
              floats() ? (holding ? "Pushes back up" : "Floats") : "Sinks");
       var sub = wrap.querySelector('[data-ftank-sub="weight"]');
@@ -10756,10 +11014,29 @@
         prog.textContent = touched ? "Both controls live"
                                    : "Change a control to begin";
       }
+      /* ⚖️ THE SUBTRACTION IS WRITTEN BIGGER FIRST, SO THE LINE IS TRUE AS
+         WELL AS POSITIVE. The Insert and Fine-tune lines were fixed at
+         weight-minus-upthrust and then printed the MAGNITUDE of the
+         difference, so a floater held under gave "left over = 2.4 N −
+         10 N" and "2.4 − 10 = 7.6" — three reachable states, all of them
+         false, on the one step whose entire job is to be the arithmetic.
+         Writing "10 − 2.4 = 7.6" is true, stays positive, and leaves the
+         Answer and every note untouched. Printing "2.4 − 10 = −7.6" would
+         be truer to R = W − U, but it puts negative forces in front of a
+         Year 8 and the rest of this unit does the whole subject with
+         arrow lengths instead. The Formula line says so when it applies. */
+      var big = R > 0 ? U : W;
+      var small = R > 0 ? W : U;
       publishLiveP5(sec, {
         name: blk().getAttribute("data-name"),
         weight: W + " N", up: U + " N",
         wnum: W, unum: U, onum: Math.abs(R),
+        formula: R > 0
+          ? "left over = the bigger force − the smaller one, and it acts " +
+            "the bigger one's way"
+          : "left over = weight − upthrust",
+        insert: big + " N − " + small + " N",
+        finetune: big + " − " + small + " = " + Math.abs(R),
         answer: R === 0 ? "nothing left over — it floats"
           : Math.abs(R) + " N " + (R > 0 ? "upwards" : "downwards"),
         finenote: R === 0
@@ -13697,6 +13974,39 @@
     return Number(v).toFixed(dp) + " " + unit;
   }
 
+  /* ⚖️ MRB-297 / P8-05, RULED 30 Aug 2026 — THE SIZE ADJECTIVE COMES FROM
+     THE CURRENT ON SCREEN, NEVER FROM THE COMPONENT'S BAND.
+
+     `p8-05`'s bench used to keep one adjective per band, so thin nichrome
+     at 1.50 V was "a large current" at 0.300 A while the 10 Ω resistor at
+     12.00 V was "only 1.200 A … small" — four times as much, called the
+     opposite. The damage was not the wrong word: it taught that "large"
+     and "small" belong to the COMPONENT, on the one lesson whose thesis is
+     that the current follows V and R together and only the RATIO belongs
+     to the component. Mide's thresholds, verbatim. */
+  function p8Size(i) {
+    if (i >= 1) { return "a large current"; }
+    if (i >= 0.1) { return "a healthy current"; }
+    if (i >= 0.01) { return "a small current"; }
+    return "a tiny current";
+  }
+
+  /* ⚖️ MRB-297 / P8-07, RULED 30 Aug 2026 — AND WHAT THAT CURRENT WOULD DO
+     TO A LAMP, on `p8-06`'s test gap. "Enough to light a lamp comfortably"
+     was fixed into the conductor-band note, so 10 cm of nichrome passing
+     5.5 A carried it — eighteen times this unit's own torch-lamp current,
+     and 33 W in 10 cm of thin wire, which is a glowing element and a burn
+     rather than a comfortable lamp. Same mechanism as `p8Size`: read the
+     value, then choose the words. */
+  function p8Lamp(i) {
+    if (i >= 1) {
+      return "enough to make the wire itself glow red and get hot";
+    }
+    if (i >= 0.1) { return "enough to light a lamp comfortably"; }
+    if (i >= 0.01) { return "enough to light a small lamp faintly"; }
+    return "far too little to light a lamp";
+  }
+
   function paintAttemptP8(wrap, vals, blocked) {
     var qs = toArray(wrap.querySelectorAll("[data-p8cfa-q]"));
     each(qs, function (q, qi) {
@@ -13706,11 +14016,32 @@
         head.textContent = fillTokens(head.getAttribute("data-template"),
                                       vals);
       }
-      each(toArray(q.querySelectorAll("[data-p8cfa-line]")), function (el) {
-        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      /* ⚖️ MRB-297 / P8-06, RULED 30 Aug 2026 — A BLOCKED STATE COMPOSES NO
+         FIGURES AT ALL.
+         `p8-06`'s bench refuses to print a current for a bare copper wire
+         and the page says why in its own footer: a bare copper wire across
+         a supply is a short circuit, so there is no honest figure for the
+         meter to show. The five model lines were still being composed
+         behind the guard, and one character typed into any box handed them
+         over: "120.0 A stays 120.0 A" → "R = 0.05 Ω". The page contradicted
+         itself within one screen, and 120 A — a current that would vaporise
+         the wire — was presented to a Year 8 as an ordinary bench reading
+         with no comment.
+         The guard below is now authoritative, and this is the second half
+         of the repair: while the state is blocked the model rows carry the
+         reason instead of a computation, so no future wiring change has
+         anything to expose. */
+      var lines = toArray(q.querySelectorAll("[data-p8cfa-line]"));
+      var notes = toArray(q.querySelectorAll("[data-p8cfa-note]"));
+      each(lines, function (el, li) {
+        el.textContent = blocked
+          ? (li === 0 ? (wrap.getAttribute("data-blocked-line") || "") : "")
+          : fillTokens(el.getAttribute("data-template"), vals);
       });
-      each(toArray(q.querySelectorAll("[data-p8cfa-note]")), function (el) {
-        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+      each(notes, function (el) {
+        el.textContent = blocked
+          ? ""
+          : fillTokens(el.getAttribute("data-template"), vals);
       });
       var close = q.querySelector("[data-p8cfa-close]");
       if (close) {
@@ -13727,6 +14058,14 @@
       var chk = q.querySelector("[data-p8cfa-check]");
       if (block) { setHidden(block, !blocked); }
       if (rows) { setHidden(rows, !!blocked); }
+      /* ⚖️ MRB-297 / P8-06 — AND THE MARKED PANEL GOES BACK BEHIND THE
+         GUARD. A student who marks Q1 on a readable specimen and then
+         clips copper in was otherwise left looking at a marked panel for a
+         state the page has just said has no reading. */
+      if (blocked) {
+        var rev = q.querySelector("[data-p8cfa-reveal]");
+        if (rev) { setHidden(rev, true); }
+      }
       /* ⚠️ THE BUTTON'S STATE IS RECOMPUTED FROM THE BOXES, NEVER SET.
          The kit's contract is that Check REFUSES AN EMPTY ATTEMPT — a
          student who taps it first has been handed all five model lines
@@ -13794,6 +14133,7 @@
       var reveal = q.querySelector("[data-p8cfa-reveal]");
       var tally = q.querySelector("[data-p8cfa-tally]");
       var ticks = toArray(q.querySelectorAll("[data-p8cfa-tick]"));
+      var blockEl = q.querySelector("[data-p8cfa-blocked]");
       if (!btn) { return; }
 
       function written() {
@@ -13801,15 +14141,29 @@
         each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
         return n;
       }
+      /* ⚖️ MRB-297 / P8-06, RULED 30 Aug 2026 — THE SPECIMEN GUARD IS
+         AUTHORITATIVE, AND IT IS AN AND RATHER THAN AN OR.
+         `paintAttemptP8` disabled the button while the bench had no
+         readable current, and this handler re-enabled it on the first
+         character typed into any box — so the guard held only until the
+         student did the thing the panel invited. One character bought all
+         five model lines for a state the page had just said has no honest
+         reading. The panel is blocked exactly when its blocked paragraph
+         is showing, which is the same signal a reader sees. */
+      function isBlocked() {
+        return !!(blockEl && !blockEl.hidden);
+      }
       function repaintBtn() {
         if (btn.textContent === "Marked") { return; }
-        var n = written();
-        if (n) { btn.removeAttribute("disabled"); }
+        var n = written(), stop = isBlocked();
+        if (n && !stop) { btn.removeAttribute("disabled"); }
         else { btn.setAttribute("disabled", ""); }
         if (hint) {
-          hint.textContent = n
-            ? n + " of " + inputs.length + " written"
-            : "Write at least one line first";
+          hint.textContent = stop
+            ? (wrap.getAttribute("data-blocked-progress") || "")
+            : n
+              ? n + " of " + inputs.length + " written"
+              : "Write at least one line first";
         }
       }
       function retally() {
@@ -13831,7 +14185,9 @@
       });
 
       btn.addEventListener("click", function () {
-        if (!written()) { return; }
+        /* The same AND again, on the press itself: a keyboard activation
+           of a stale button must not get past the guard either. */
+        if (!written() || isBlocked()) { return; }
         each(inputs, function (i, k) {
           var yours = q.querySelector('[data-p8cfa-yours="' + k + '"]');
           var line = q.querySelector('[data-p8cfa-yourline="' + k + '"]');
@@ -14568,7 +14924,7 @@
              band === "lamp" ? "the ratio climbs" : "the ratio stays put");
 
       p8Note(wrap, "cundt", band === "lamp" ? "lamp" : band, {
-        v: fv, i: fi, r: fr, name: name,
+        v: fv, i: fi, r: fr, name: name, size: p8Size(I),
         rint: R.toFixed(0),
         rcold: (BASE + SLOPE * VOLTS[0]).toFixed(1),
         rhot: (BASE + SLOPE * VOLTS[VOLTS.length - 1]).toFixed(1)
@@ -14629,6 +14985,28 @@
 
   function p8Group(n) {
     return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+
+  /* ⚖️ MRB-297 / P8-03, RULED 30 Aug 2026 — THE FINE-TUNE LINE PRINTS THE
+     QUOTIENT IN BASE UNITS, AND THE ANSWER LINE DOES THE PREFIXING.
+
+     It used to print `p8FmtR(R)` with the unit stripped off, which is the
+     MANTISSA of the prefixed answer and not the result of the division the
+     line states: "6.0 ÷ 0.0000012 = 5.0" for an answer of 5.0 MΩ, and
+     "6.0 ÷ 0.0015 = 4.0" for 4.0 kΩ. The step note directly beneath reads
+     "Volts divided by amps leaves ohms", so the student was told the
+     printed number IS in ohms and the answer line then multiplied it by a
+     thousand or a million without saying so — the exact unit-prefix error
+     the five-step method exists to prevent, printed as the model answer.
+     A student who divided correctly and wrote 5 000 000 marked themselves
+     wrong against "5.0".
+
+     Three significant figures, then grouped with thin gaps above a
+     thousand, so the long strings stay readable and no exponent reaches
+     the page. `Number(...)` drops the trailing zeros `toPrecision` adds. */
+  function p8Ohms(r) {
+    var v = Number(Number(r).toPrecision(3));
+    return v < 1000 ? String(v) : p8Group(Math.round(v));
   }
 
   /* p8-06 `#s-test` — clip a specimen in and divide.
@@ -14743,6 +15121,12 @@
                                      isShort ? "short" : band), {
         len: lenWord, name: name, r: p8FmtR(R), i: p8FmtI(I),
         times: p8Times(R / COPPER),
+        /* ⚖️ MRB-297 / P8-07 — the closing sentence is the SPECIMEN'S and
+           the lamp phrase is the CURRENT'S. Neither is keyed to the band
+           any more: a band holds three specimens across two lengths, and
+           one sentence over six states was false in two of them. */
+        lamp: p8Lamp(I),
+        use: S.getAttribute("data-use") || "",
         carriers: S.getAttribute("data-carriers")
       });
       if (mult !== 1 && !isShort) {
@@ -14787,7 +15171,11 @@
       publishLiveP8(sec, {
         len: lenWord, name: name, i: p8FmtI(I), iamps: amps,
         ibare: amps.replace(" A", ""),
-        r: p8FmtR(R), rbare: p8FmtR(R).replace(/ [^ ]+$/, ""),
+        /* ⚖️ MRB-297 / P8-03 — `rohms` REPLACES `rbare`, which was the
+           mantissa of the prefixed answer masquerading as the quotient.
+           See `p8Ohms`. The Answer line still prints `{r}`, prefix and
+           all, which is what the Answer line is for. */
+        r: p8FmtR(R), rohms: p8Ohms(R),
         verdict: verdict,
         convline: div === 1
           ? p8FmtI(I) + " stays " + p8FmtI(I)
@@ -14869,18 +15257,37 @@
         verdict = "the lamp is shorted out"; key = "shorted";
         aCap = "far more than the meter can show";
         vCap = "no p.d. left across the lamp";
+      /* ⚖️ MRB-297 / P8-04, RULED 30 Aug 2026 — THE VOLTMETER-IN-THE-LOOP
+         STATES READ 3.00 V, NOT 2.94 V.
+         Three numbers sat in one frame and no two of them agreed. The
+         panel's own model is a 3.00 V battery, a 10 Ω lamp and a one-megohm
+         voltmeter, and its own sub-caption says "about 3 millionths of an
+         amp". Work it: 3.00 V ÷ 1 000 010 Ω = 3.0 µA, and 3.0 µA through
+         1 MΩ is 3.00 V across the meter, leaving the lamp 30 microvolts.
+         For the meter to read 2.94 V the lamp would have to hold 0.06 V,
+         which at 3 µA means 20 kΩ — a lamp two thousand times the one the
+         page names. (Keeping 2.94 V the other way needs a meter of about
+         490 Ω, which is not a voltmeter. There was one honest repair.)
+         It mattered more than a stray digit: this is the lesson about
+         taking trustworthy readings, and V = I × R is what the previous
+         two lessons just taught, so a student applying the unit's own
+         method to the unit's own bench got a different answer from it.
+         And 3.00 V is the BETTER lesson — a reading that looks exactly
+         like a working circuit, with only the ammeter to give the fault
+         away. Rungs 1 and 2 carry the same figure and were updated with
+         it. */
       } else if (aLoop && !vAcross) {
-        aRead = "0.00 A"; vRead = "2.94 V"; lampLit = false;
+        aRead = "0.00 A"; vRead = "3.00 V"; lampLit = false;
         lampWord = "dark"; verdict = "the loop is strangled";
         key = "strangled";
         aCap = "about 3 millionths of an amp — below what it can show";
-        vCap = "almost the whole battery p.d., across the meter itself";
+        vCap = "the whole battery p.d., across the meter itself";
       } else if (!aLoop && !vAcross) {
-        aRead = "0.00 A"; vRead = "2.94 V"; lampLit = false;
+        aRead = "0.00 A"; vRead = "3.00 V"; lampLit = false;
         lampWord = "dark — bypassed"; verdict = "both meters misplaced";
         key = "both";
         aCap = "the current through the bypass is far too small to show";
-        vCap = "almost the whole battery p.d., across the meter itself";
+        vCap = "the whole battery p.d., across the meter itself";
       } else {
         aRead = "0.30 A"; vRead = "3.00 V"; lampLit = true;
         lampWord = "lit, at full brightness"; verdict = "wired correctly";
@@ -16974,10 +17381,19 @@
   }
 
   /* Her `fmt` for a mass: grams to one decimal until a kilogram, then
-     kilograms to two. The step is hers and it is what keeps "9650.0 g" off
-     the balance readout. */
+     kilograms. The step is hers and it is what keeps "9650.0 g" off the
+     balance readout.
+
+     ⚠️ THREE DECIMALS IN THE KILOGRAM BAND, NOT HER TWO. P11-02 puts a
+     real conversion in the attempt's Convert line at the six states where
+     this reads kilograms, and at two of them — iron at 200 cm³ (1574 g) and
+     at 500 cm³ (3935 g) — two decimals rounds the balance to 1.57 and 3.94,
+     so "1.57 kg × 1000 = 1574.0 g" would be false arithmetic printed inside
+     the step that teaches converting. Three decimals is gram resolution,
+     which is what a balance switched to kilograms actually shows, and it is
+     exact at all six. */
   function p11Mass(g) {
-    return g >= 1000 ? (g / 1000).toFixed(2) + " kg" : g.toFixed(1) + " g";
+    return g >= 1000 ? (g / 1000).toFixed(3) + " kg" : g.toFixed(1) + " g";
   }
 
   /* Her `fmtE`. Three bands, so four quantities spanning five orders of
@@ -17046,16 +17462,35 @@
       var same = Math.abs(d - 1) < 1e-9;
       var branch = same ? "same" : (d < 1 ? "floats" : "sinks");
       var pick = same ? "same" : (d < 1 ? "float" : "sink");
+      var num = {
+        v: String(V), label: p11Attr(T, "label"), name: p11Attr(T, "name"),
+        d: d.toFixed(2), mass: m.toFixed(1), mass_f: p11Mass(m),
+        mass_kg: (m / 1000).toFixed(3)
+      };
+      /* ⚖️ P11-02. THE CONVERT LINE BRANCHES ON THE BALANCE'S OWN UNIT.
+         `p11Mass` switches to kilograms at 1000 g, and at the six states
+         where it does — gold at 100/200/500, iron at 200/500, aluminium at
+         500 — the attempt below used to reveal "there is nothing to
+         convert" while the balance beside it read 9.650 kg. That is on the
+         page whose first rule is that a mismatched pair must be converted,
+         and gold at the default 100 cm³ needs no slider move to reach it.
+         The condition is exactly the one `p11Mass` computes. BOTH sentences
+         are authored in `words`, beside the physics, for the reason
+         `MODEL_WORDS` in `ks3_art/p11.py` gives; they carry tokens of their
+         own, so they are filled against the numbers before they go out. */
+      var kg = m >= 1000;
       return {
         branch: branch,
         focus: p11Id(T),
         bars: bars,
-        tokens: {
-          v: String(V), label: p11Attr(T, "label"), name: p11Attr(T, "name"),
-          d: d.toFixed(2), mass: m.toFixed(1), mass_f: p11Mass(m),
+        tokens: p11Merge(num, {
           verdict: c.words[pick + "_verdict"] || "",
-          verdict_sub: c.words[pick + "_sub"] || ""
-        }
+          verdict_sub: c.words[pick + "_sub"] || "",
+          convert_line: fillTokens(
+            c.words[kg ? "convert_kg_line" : "convert_g_line"] || "", num),
+          convert_note: fillTokens(
+            c.words[kg ? "convert_kg_note" : "convert_g_note"] || "", num)
+        })
       };
     },
 
@@ -17063,14 +17498,36 @@
        with the square root of ABSOLUTE temperature from her 20 °C figures,
        and the visible jiggle scales with the same root — which is why the
        jiggle bar is the only one of the three that a microscope could show
-       and the only one that is marked. */
+       and the only one that is marked.
+
+       ⚠️ THE JIGGLE ALSO DEPENDS ON THE SPECK, AND USED NOT TO. It was
+       `2.5 * k` — the temperature root and nothing else — so a pollen grain
+       (100,000 × a molecule) and a fat droplet in milk (3,000 ×) both
+       reported 2.5 µm each second, directly beneath a bar announcing the
+       size ratio and a paragraph saying the size is precisely what decides
+       it. The bench demonstrated that size makes no difference at all: the
+       negation of the model the lesson exists to install. Brownian
+       displacement goes as r^(−1/2) (Stokes–Einstein, D = kT/6πηr), so the
+       bigger the speck the more completely the strikes cancel. Smoke stays
+       the reference at 2.5 µm/s at 20 °C and the rest scale by the square
+       root of the size ratio against it: pollen 0.6, dust 0.8, milk fat
+       3.2. See P11-09. */
     "brownian": function (c) {
       var T = c.tabs[c.tab];
       var V = Number(c.values[c.sv]);
       var k = Math.sqrt((V + 273) / 293);
       var vmol = Math.round(p11AttrN(T, "v_mol") * k);
-      var jig = (2.5 * k).toFixed(1);
       var ratio = p11AttrN(T, "ratio");
+      /* DERIVED, NOT TYPED — the reference is the smoke tab, the speck a
+         school smoke cell actually shows and the tab the bench opens on, so
+         a change to the deck's ratios cannot leave the scale behind. */
+      var refT = c.tabs[0];
+      each(c.tabs, function (b) {
+        if (p11Id(b) === "smoke") { refT = b; }
+      });
+      var ref = p11AttrN(refT, "ratio");
+      var size = (ratio > 0 && ref > 0) ? Math.sqrt(ref / ratio) : 1;
+      var jig = (2.5 * k * size).toFixed(1);
       var speck = p11Attr(T, "speck");
       var g = {
         v: String(V), label: p11Attr(T, "label"), name: p11Attr(T, "name"),

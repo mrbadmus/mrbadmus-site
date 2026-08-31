@@ -160,6 +160,93 @@ def _picker(hook, label, tabs):
             % (hook, hook, t(label), hook, tabs))
 
 
+# ── ⊕ MRB-297 · P7-04 · ONE ARROWHEAD, AND IT IS DESIGN'S OWN ─────────
+#
+# **A line with no arrow is not a ray.** Not one light ray in this unit
+# carried a direction, and three of the drawings therefore read as the
+# negation of the lesson beside them: the reflection bench is mirror-
+# symmetric about the normal, so nothing said which line was the incident
+# one; the refraction block read right-to-left shows light bending AWAY
+# from the normal on entering glass; and the eye bench and the straw figure
+# both drew an undirected line between a scene and an eye, on the two pages
+# whose registered misconception is `LIGHT-17`, *your eyes send something
+# out in order to see*.
+#
+# ⚖️ **THE SHAPE IS NOT NEW.** It is the head Design already draws on
+# `p7-01`'s two race lanes — `M900 46 L882 36 M900 46 L882 56` for the
+# light and the same eighteen-by-ten open V composed in `shared/ks3.js`
+# for the sound — and the same head again on her `p7-04` object arrow
+# (`l-11 18`), her `p7-05` scene arrow and her `p7-06` band arrows. An
+# open V, 18 long and 10 either side, in a 1000-wide viewBox. Every P7
+# viewBox except the lens pair's is 1000 wide, so ONE size is consistent
+# across the unit and the head is therefore `markerUnits="userSpaceOnUse"`:
+# it must NOT scale with the shaft, or `p7-07`'s 11-wide ray would carry a
+# head twice the size of `p7-05`'s 4-wide one.
+#
+# ⚠️ **NOT ON CONSTRUCTION LINES.** Normals, the refraction block's ghost,
+# the prism's ghost and the straw's back-projection are lines a student
+# DRAWS, not paths light TAKES, and the whole value of the arrowhead is
+# that the difference reads. They stay headless, deliberately, and the
+# list is in the report.
+#
+# ⚠️ **THE DEFINITION IS INERT OUTSIDE P7.** The marker is emitted into
+# each of this module's own `<svg>` elements with an id of its own hook, so
+# no other unit's bytes can move: nothing outside `ks3_art/p7.py` names
+# `ks3-rayhead-`, and `shared/ks3.css` is not touched. Turning arrowheads
+# on for biology, chemistry or the other physics units is a wider change
+# than a physics S1 fix and wants its own verification pass.
+#
+# ⚠️ **`context-stroke` WITH A LITERAL FALLBACK, IN THAT ORDER.** The head
+# has to take the colour of the ray it sits on — `p7-06` draws six colours
+# and `p7-07` recolours its ray at paint time from the lamp — and only
+# `context-stroke` can read it. A browser that does not know the keyword
+# drops that declaration and keeps the one before it, so the head is the
+# instrument's base colour rather than invisible.
+
+P7_HEAD_LEN, P7_HEAD_HALF = 18, 10
+
+
+def _rayhead(hook, width, fallback):
+    """The `<defs>` block for one instrument's ray arrowhead.
+
+    `width` is the stroke width of the rays it will sit on, so the head is
+    drawn at the weight of its own shaft; `fallback` is that instrument's
+    base ray colour, used only where `context-stroke` is unsupported.
+
+    ⚠️ The SIZE is `P7_HEAD_LEN` × `P7_HEAD_HALF` for every instrument and
+    does NOT follow the width. That is Design's own practice here — the
+    same 18×10 head sits on her 8-wide race lane, her 8-wide object arrow
+    and her 4-wide band arrow — and it is what keeps `p7-07`'s 11-wide ray
+    and `p7-05`'s 4-wide ray wearing the same mark.
+    """
+    ln, half, pad = P7_HEAD_LEN, P7_HEAD_HALF, width
+    tipx, tipy = ln + pad, half + pad
+    return (
+        '<defs><marker id="ks3-rayhead-%s" markerUnits="userSpaceOnUse" '
+        'markerWidth="%s" markerHeight="%s" refX="%s" refY="%s" '
+        'orient="auto" overflow="visible">'
+        '<path d="M%s %s L%s %s M%s %s L%s %s" fill="none" '
+        'stroke-linecap="round" stroke-linejoin="round" stroke-width="%s" '
+        'style="stroke:%s;stroke:context-stroke"/></marker></defs>'
+        % (hook, _n(tipx + pad), _n(tipy + half + pad),
+           _n(tipx), _n(tipy),
+           _n(tipx), _n(tipy), _n(pad), _n(pad),
+           _n(tipx), _n(tipy), _n(pad), _n(tipy + half),
+           _n(width), fallback))
+
+
+def _head(hook, *where):
+    """`marker-end` (and friends) as presentation ATTRIBUTES.
+
+    ⚠️ Attributes, never `style`: `shared/ks3.js` overwrites the `style` of
+    `[data-clamp-in]`, `[data-clamp-back]`, `[data-prism-beam]`,
+    `[data-prism-inner]` and `[data-prism-outbeam]` on every paint, and a
+    marker declared there would be wiped at the first click.
+    """
+    return "".join(' marker-%s="url(#ks3-rayhead-%s)"' % (w, hook)
+                   for w in (where or ("end",)))
+
+
 def _sibling(a):
     """`data-sibling` — the band stop this bench ticks, at its own count.
 
@@ -452,15 +539,17 @@ def r_ray_surface(a, act_id):
     # the landing point; everything else is a hole.
     svg = (
         '<svg class="ks3-rsurf-svg" viewBox="0 0 1000 420" role="img" '
-        'aria-label="" data-rsurf-alt>'
+        'aria-label="" data-rsurf-alt>%s'
         '<path class="ks3-rsurf-surface" data-rsurf-surface d="M120 340 '
         'H880"/>'
         '<path class="ks3-rsurf-normal" d="M500 340 V60"/>'
         '<text class="ks3-rsurf-normallabel" x="510" y="52">%s</text>'
-        '<path class="ks3-rsurf-in" data-rsurf-in d="M0 0"/>'
-        '<path class="ks3-rsurf-out" data-rsurf-refrays d="M0 0"/>'
+        '<path class="ks3-rsurf-in" data-rsurf-in d="M0 0"%s/>'
+        '<path class="ks3-rsurf-out" data-rsurf-refrays d="M0 0"%s/>'
         '<path class="ks3-rsurf-arcs" data-rsurf-arcs d="M0 0"/></svg>'
-        % t(a.get("normal_label", "NORMAL")))
+        % (_rayhead("rsurf", 6, "var(--ks3-blue-light)"),
+           t(a.get("normal_label", "NORMAL")),
+           _head("rsurf"), _head("rsurf", "mid", "end")))
 
     fills = "".join(
         '<span class="ks3-rsurf-fill ks3-rsurf-%s" data-rsurf-fill="%s">'
@@ -570,18 +659,21 @@ def r_refraction_block(a, act_id):
     # normal fixed at the entry point, the second one moving with the exit.
     svg = (
         '<svg class="ks3-rblock-svg" viewBox="0 0 1000 460" role="img" '
-        'aria-label="" data-rblock-alt>'
+        'aria-label="" data-rblock-alt>%s'
         '<rect class="ks3-rblock-block" x="140" y="150" width="720" '
         'height="160" rx="6"/>'
         '<path class="ks3-rblock-normal" d="M400 40 V420"/>'
         '<path class="ks3-rblock-normal" data-rblock-normal2 d="M0 0"/>'
         '<text class="ks3-rblock-normallabel" x="410" y="36">%s</text>'
-        '<path class="ks3-rblock-ray" data-rblock-in d="M0 0"/>'
-        '<path class="ks3-rblock-inner" data-rblock-mid d="M0 0"/>'
-        '<path class="ks3-rblock-ray" data-rblock-exit d="M0 0"/>'
+        '<path class="ks3-rblock-ray" data-rblock-in d="M0 0"%s/>'
+        '<path class="ks3-rblock-inner" data-rblock-mid d="M0 0"%s/>'
+        '<path class="ks3-rblock-ray" data-rblock-exit d="M0 0"%s/>'
         '<path class="ks3-rblock-ghost" data-rblock-ghost d="M0 0"/>'
         '<text class="ks3-rblock-airlabel" x="150" y="140">%s</text></svg>'
-        % (t(a.get("normal_label", "NORMAL")), t(a.get("air_label", "AIR"))))
+        % (_rayhead("rblock", 6, "var(--ks3-blue-light)"),
+           t(a.get("normal_label", "NORMAL")),
+           _head("rblock"), _head("rblock"), _head("rblock"),
+           t(a.get("air_label", "AIR"))))
 
     fills = "".join(
         '<span class="ks3-rblock-fill ks3-rblock-%s" data-rblock-fill="%s">'
@@ -680,19 +772,21 @@ def r_pinhole_camera(a, act_id):
     # Design's own 1000×440 viewBox.
     svg = (
         '<svg class="ks3-pinh-svg" viewBox="0 0 1000 440" role="img" '
-        'aria-label="" data-pinh-alt>'
+        'aria-label="" data-pinh-alt>%s'
         '<path class="ks3-pinh-axis" d="M60 220 H960"/>'
         '<path class="ks3-pinh-object" d="M120 220 V130 M120 130 l-11 18 '
         'M120 130 l11 18"/>'
         '<path class="ks3-pinh-box" data-pinh-box d="M0 0"/>'
-        '<path class="ks3-pinh-ray" data-pinh-raytop d="M0 0"/>'
-        '<path class="ks3-pinh-ray" data-pinh-raybot d="M0 0"/>'
+        '<path class="ks3-pinh-ray" data-pinh-raytop d="M0 0"%s/>'
+        '<path class="ks3-pinh-ray" data-pinh-raybot d="M0 0"%s/>'
         '<path class="ks3-pinh-img" data-pinh-img d="M0 0"/>'
         '<text class="ks3-pinh-partlabel" x="60" y="118">%s</text>'
         '<text class="ks3-pinh-partlabel" x="960" y="118" '
         'text-anchor="end">%s</text>'
         '<text class="ks3-pinh-axislabel" x="60" y="424">%s</text></svg>'
-        % (t(a.get("object_label", "")), t(a.get("screen_label", "SCREEN")),
+        % (_rayhead("pinh", 4, "var(--ks3-blue-light)"),
+           _head("pinh"), _head("pinh"),
+           t(a.get("object_label", "")), t(a.get("screen_label", "SCREEN")),
            t(a.get("axis_note", ""))))
 
     fills = ('<span class="ks3-pinh-fill ks3-pinh-hole-label" '
@@ -832,7 +926,7 @@ def r_eye_camera(a, act_id):
     # everything about the instrument is a hole.
     svg = (
         '<svg class="ks3-eyecam-svg" viewBox="0 0 1000 400" role="img" '
-        'aria-label="" data-eyecam-alt>'
+        'aria-label="" data-eyecam-alt>%s'
         '<path class="ks3-eyecam-scene" d="M120 200 V90 M120 90 l-11 18 '
         'M120 90 l11 18"/>'
         '<text class="ks3-eyecam-partlabel" x="60" y="72">%s</text>'
@@ -840,9 +934,11 @@ def r_eye_camera(a, act_id):
         '<path class="ks3-eyecam-stop" data-eyecam-stop d="M0 0"/>'
         '<path class="ks3-eyecam-lens" data-eyecam-lens d="M0 0"/>'
         '<path class="ks3-eyecam-back" data-eyecam-back d="M0 0"/>'
-        '<path class="ks3-eyecam-rays" data-eyecam-rays d="M0 0"/>'
+        '<path class="ks3-eyecam-rays" data-eyecam-rays d="M0 0"%s/>'
         '<path class="ks3-eyecam-img" data-eyecam-img d="M0 0"/></svg>'
-        % t(a.get("scene_label", "THE SCENE")))
+        % (_rayhead("eyecam", 4, "var(--ks3-blue-light)"),
+           t(a.get("scene_label", "THE SCENE")),
+           _head("eyecam", "start", "mid", "end")))
 
     fills = "".join(
         '<span class="ks3-eyecam-fill ks3-eyecam-%s" data-eyecam-fill="%s">'
@@ -1158,9 +1254,10 @@ def r_prism_bench(a, act_id):
     G = P7_PRISM
     rays = "".join(
         '<path class="ks3-prism-ray ks3-prism-ray-%s" data-prism-ray="%s" '
-        'data-prism-y="%s" data-prism-hit="%s %s" d="M0 0"/>'
+        'data-prism-y="%s" data-prism-hit="%s %s" d="M0 0"%s/>'
         % (k.lower(), k, _n(G["land"][k]),
-           _n(G["hit"][k][0]), _n(G["hit"][k][1])) for k in G["keys"])
+           _n(G["hit"][k][0]), _n(G["hit"][k][1]),
+           _head("prism")) for k in G["keys"])
     # ⚠️ ORDER IS LOAD-BEARING, and it changed. The second prism used to be
     # painted AFTER the rays, which was harmless while they stopped in mid
     # air at x=640; now that they run to its far face, a filled triangle on
@@ -1173,18 +1270,20 @@ def r_prism_bench(a, act_id):
     # values would be a token to keep in sync for no gain.
     svg = (
         '<svg class="ks3-prism-svg" viewBox="0 0 1000 420" role="img" '
-        'aria-label="" data-prism-alt>'
+        'aria-label="" data-prism-alt>%s'
         '<path data-prism-ghost d="M0 0" style="fill:none;stroke:#5C554D;'
         'stroke-width:3;stroke-dasharray:10 10"/>'
         '<path class="ks3-prism-glass" d="M300 90 L400 270 L200 270 Z"/>'
         '<path class="ks3-prism-glass" data-prism-two d="M0 0"/>'
-        '<path class="ks3-prism-beam" data-prism-beam d="M0 0"/>'
-        '<path class="ks3-prism-beam" data-prism-inner d="M0 0"/>%s'
-        '<path class="ks3-prism-beam" data-prism-outbeam d="M0 0"/>'
+        '<path class="ks3-prism-beam" data-prism-beam d="M0 0"%s/>'
+        '<path class="ks3-prism-beam" data-prism-inner d="M0 0"%s/>%s'
+        '<path class="ks3-prism-beam" data-prism-outbeam d="M0 0"%s/>'
         '<path class="ks3-prism-screen" d="M930 40 V380"/>'
         '<text class="ks3-prism-partlabel" x="930" y="30" '
         'text-anchor="end">%s</text></svg>'
-        % (rays, t(a.get("screen_label", "SCREEN"))))
+        % (_rayhead("prism", 6, "#F2ECDD"),
+           _head("prism"), _head("prism"), rays, _head("prism"),
+           t(a.get("screen_label", "SCREEN"))))
 
     fills = ('<span class="ks3-prism-fill ks3-prism-caption" '
              'data-prism-fill="caption"></span>')
@@ -1344,18 +1443,19 @@ def r_colour_bench(a, act_id):
     # in the middle, the eye at the top right.
     svg = (
         '<svg class="ks3-clamp-svg" viewBox="0 0 1000 380" role="img" '
-        'aria-label="" data-clamp-alt>'
+        'aria-label="" data-clamp-alt>%s'
         '<path class="ks3-clamp-lampbody" d="M120 40 h150 l-40 70 h-70 Z"/>'
         '<text class="ks3-clamp-partlabel" x="120" y="30">%s</text>'
-        '<path class="ks3-clamp-in" data-clamp-in d="M205 114 L440 216"/>'
+        '<path class="ks3-clamp-in" data-clamp-in d="M205 114 L440 216"%s/>'
         '<rect class="ks3-clamp-rect" data-clamp-rect x="440" y="150" '
         'width="200" height="140" rx="10"/>'
-        '<path class="ks3-clamp-out" data-clamp-back d="M640 216 L880 130"/>'
+        '<path class="ks3-clamp-out" data-clamp-back d="M640 216 L880 130"%s/>'
         '<circle class="ks3-clamp-eye" cx="920" cy="118" r="26"/>'
         '<circle class="ks3-clamp-pupil" cx="920" cy="118" r="9"/>'
         '<text class="ks3-clamp-partlabel" x="880" y="80">%s</text></svg>'
-        % (t(a.get("lamp_glyph_label", "LAMP")),
-           t(a.get("eye_label", "EYE"))))
+        % (_rayhead("clamp", 8, "#F2ECDD"),
+           t(a.get("lamp_glyph_label", "LAMP")), _head("clamp"),
+           _head("clamp"), t(a.get("eye_label", "EYE"))))
 
     fills = "".join(
         '<span class="ks3-clamp-fill ks3-clamp-%s" data-clamp-fill="%s">'
@@ -1488,6 +1588,46 @@ def _band_straw(spec, act_id):
     ⚠️ Every string here is a constant at build time, so `<text>` is
     right: MRB-254 forbids a `<text>` that ships empty to be filled later,
     and none of these is.
+
+    ── ⊕ MRB-297 · P7-10 · THE BACK-PROJECTION IS NOW THE RAY'S OWN ────
+
+    ⚖️ **THE FIGURE THAT EXISTS TO EXPLAIN THE ILLUSION DREW THE ILLUSION
+    WRONGLY.** The dashed line was `M520 140 L740 296` — down and to the
+    RIGHT of the refraction point, out through the right-hand wall of the
+    glass, ending in mid-air. It is meant to be the emergent ray continued
+    straight BACKWARDS. That ray is `M520 140 L800 90`, so backwards from
+    (520, 140) the direction is (−280, +50): up the page and to the left,
+    the opposite quadrant to the one drawn. Continued 128 units back in x
+    it reaches (392, 162.9), which is `M520 140 L392 163`.
+
+    ⚖️ **AND THE MARKER WAS ON THE WRONG LINE.** *WHERE IT LOOKS* sat at
+    (452, 253), which is not on the back-projection and never was — it is
+    a point on the REAL in-water ray `M400 330 L520 140`, which passes
+    through (452, 248). So the drawing asserted that the straw's end
+    appears at a place the light genuinely goes through, and the one
+    construction line that would have shown why pointed elsewhere. Every
+    rung-3 and rung-4 answer on this page depends on the figure.
+
+    The marker is now at (400, 161), which IS on the new dashed line and
+    is directly above *WHERE IT IS* at (400, 330). The vertical gap
+    between the two rings is the apparent-depth story, and both labels sit
+    at x=240 outside the glass so the gap is legible as a gap. Her own
+    `aria_label` — *"a point higher and closer than the real end"* — is
+    now true of the drawing: (400, 161) is 169 units higher, and it is
+    nearer the eye at (840, 80) than the real end is, by 447 against 506.
+
+    ⚠️ **THE DASHED LINE STAYS HEADLESS.** It is a construction line — the
+    line a brain draws, not a path light takes — and P7-04's arrowheads
+    are on this figure's two real rays precisely so that the difference
+    between the two kinds of line can be read. The normal stays headless
+    for the same reason.
+
+    ⚠️ **THE DRAWN EMERGENT ANGLE IS STILL ~80°, AND WATER ALLOWS ~45°.**
+    Not fixed here, and it cannot be without moving the water line, the
+    exit point, the straw and the eye: with the exit at (520, 140), an eye
+    outside the glass (x > 620) and a 380-unit canvas, 45° from the normal
+    leaves the frame. Reported as a Design brief with the two-ray version.
+    The lesson's `convention_note` now declares the exaggeration.
     """
     for f in ("aria_label", "surface_label", "normal_label", "eye_label",
               "looks_label", "is_label"):
@@ -1496,7 +1636,7 @@ def _band_straw(spec, act_id):
     return (
         '<div class="ks3-lband-figwrap">'
         '<svg class="ks3-lband-svg" viewBox="0 0 1000 380" role="img" '
-        'aria-label="%s">'
+        'aria-label="%s">%s'
         '<path class="ks3-lband-glass" d="M300 60 V340 H620 V60"/>'
         '<rect class="ks3-lband-water" x="303" y="140" width="314" '
         'height="197"/>'
@@ -1504,20 +1644,24 @@ def _band_straw(spec, act_id):
         '<text class="ks3-lband-figlabel" x="240" y="134" '
         'text-anchor="end">%s</text>'
         '<path class="ks3-lband-straw" d="M470 60 L400 330"/>'
-        '<path class="ks3-lband-rayline" d="M400 330 L520 140"/>'
-        '<path class="ks3-lband-rayline" d="M520 140 L800 90"/>'
-        '<path class="ks3-lband-back" d="M520 140 L740 296"/>'
+        '<path class="ks3-lband-rayline" d="M400 330 L520 140"%s/>'
+        '<path class="ks3-lband-rayline" d="M520 140 L800 90"%s/>'
+        '<path class="ks3-lband-back" d="M520 140 L392 163"/>'
         '<path class="ks3-lband-normal" d="M520 140 V60"/>'
         '<text class="ks3-lband-figlabel" x="530" y="54">%s</text>'
         '<circle class="ks3-lband-eye" cx="840" cy="80" r="26"/>'
         '<circle class="ks3-lband-pupil" cx="840" cy="80" r="9"/>'
         '<text class="ks3-lband-figlabel" x="874" y="86">%s</text>'
-        '<circle class="ks3-lband-looks" cx="452" cy="253" r="11"/>'
-        '<text class="ks3-lband-looklabel" x="466" y="248">%s</text>'
+        '<circle class="ks3-lband-looks" cx="400" cy="161" r="11"/>'
+        '<text class="ks3-lband-looklabel" x="240" y="166" '
+        'text-anchor="end">%s</text>'
         '<circle class="ks3-lband-is" cx="400" cy="330" r="11"/>'
         '<text class="ks3-lband-figlabel" x="240" y="336" '
         'text-anchor="end">%s</text></svg></div>'
-        % (e(spec["aria_label"]), t(spec["surface_label"]),
+        % (e(spec["aria_label"]),
+           _rayhead("straw", 5, "var(--ks3-accent)"),
+           t(spec["surface_label"]),
+           _head("straw"), _head("straw"),
            t(spec["normal_label"]), t(spec["eye_label"]),
            t(spec["looks_label"]), t(spec["is_label"])))
 

@@ -18,7 +18,7 @@ The discriminations, in the order the lesson builds them:
 3,2,1,0 · 0,1,2,3 · 1,0,3,1;
 the twelve fall 3/4/2/3 across the four indices.
 
-⚠️ Neither ladder rung is restated: not the 0.00 A with 2.94 V symptom,
+⚠️ Neither ladder rung is restated: not the 0.00 A with 3.00 V symptom,
 and not the student who wires the voltmeter into the loop and reads it as
 success. This lesson has no worked examples, so no worked figure can be
 restated either.
@@ -158,7 +158,7 @@ QUESTIONS = [
             {"text": "The voltmeter has been connected in the loop",
              "correct": False,
              "why": "That gives the opposite symptom: almost no current and "
-                    "a near-full voltmeter reading."},
+                    "a full voltmeter reading."},
             {"text": "The cells have been put in the wrong way round",
              "correct": False,
              "why": "Reversed cells still drive the lamp; on a digital meter "
@@ -250,7 +250,7 @@ QUESTIONS = [
         "options": [
             {"text": "A break somewhere in the loop", "correct": True},
             {"text": "The voltmeter wired into the loop", "correct": False,
-             "why": "That gives a NEAR-FULL voltmeter reading, because the "
+             "why": "That gives a FULL voltmeter reading, because the "
                     "meter itself is holding the p.d."},
             {"text": "The ammeter wired across the lamp", "correct": False,
              "why": "That gives an off-the-scale ammeter, not zero."},
