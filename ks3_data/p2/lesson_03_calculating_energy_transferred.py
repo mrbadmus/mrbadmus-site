@@ -63,12 +63,29 @@ what lets the first error survive: a student who knew a joule was tiny
 would reject 6000 J for a kettle on sight. Different roots, so two rows,
 and the second is why the first is not caught.
 
-── ⚠️ THE FRIDGE OUTRANKS THE OVEN, AND THAT IS THE POINT ─────────────
+── ⚠️ THE FRIDGE OUTRANKS THE KETTLE, AND THAT IS THE POINT ───────────
 
-90 W × 24 h = 2.16 kWh against 2200 W × 45 min = 1.65 kWh.
+90 W × 12 h = 1.08 kWh against 2000 W × 3 min = 0.100 kWh.
 Design's flag 10 flags it deliberately: it is `ENER-21` from `p2-02`
 paying off one lesson later, on real appliances. The bench COMPUTES both,
 so the ordering cannot drift from the ratings above it.
+
+⊕ Corrected 31 Aug 2026 (P2-19). This used to read "THE FRIDGE OUTRANKS
+THE OVEN", on 90 W × 24 h = 2.16 kWh against the oven's 1.65 kWh. The
+kept sentence is the trap: that model was false in the one direction
+this unit cannot afford, because it charged the fridge its full rating
+for every hour of the day — which is `ENER-21` itself, the belief the
+bench is here to kill. A compressor cycles. A UK fridge-freezer really
+uses about 0.8–1.2 kWh a day, which places it BEHIND both the oven and
+the shower, so "the biggest consumer of the five" was never true.
+
+The rating stays 90 W — a compressor really is rated about that. The
+typical time is halved to 720 min, which is the duty cycle: the motor
+runs in bursts for roughly half the day. 90 W × 12 h = 1.08 kWh sits
+inside the real range, both numbers on screen are true, and the
+inversion survives against the KETTLE — 1.08 kWh against 0.100 kWh,
+a low rating beating a rating twenty-two times higher. Change the time
+here and rung 4, `p2-03-h01` and `p2-04`'s fridge row move with it.
 """
 
 LESSON = {
@@ -228,21 +245,27 @@ LESSON = {
               "typical_min": 45,
               "tnote": "a 45-minute roast"},
              {"id": "fridge", "label": "Fridge", "watts": 90,
-              "typical_min": 1440,
-              "tnote": "all day, every day"},
+              "typical_min": 720,
+              "tnote": "in bursts, about half of every day"},
          ],
          "readouts": [
              {"id": "joules", "label": "In joules"},
              {"id": "kwh",    "label": "In kilowatt-hours"},
-             {"id": "cost",   "label": "At 27p per kWh"},
+             # ⚖️ RULED 30 Aug 2026 (MRB-297) — DATE THE MONEY. The UK price
+             # cap moves every three months, so an undated tariff quietly
+             # becomes wrong and a student cannot tell when it stopped being
+             # true. Mide's own wording, verbatim. The NUMBER does not move.
+             {"id": "cost",   "label": "At 27p per kWh (2026)"},
          ],
          "alt": "An appliance bench. A rating in watts and a running time in "
                 "minutes, with the same energy shown in joules and in "
                 "kilowatt-hours side by side, and the cost beside them.",
          "close": "The fridge — 90 W, the second-lowest rating on the "
-                  "bench — is the biggest consumer of the five, because "
-                  "it never switches off. Nothing about its rating hints at "
-                  "that."},
+                  "bench — gets through more energy in a day than the "
+                  "kettle does, because it keeps coming back on all day "
+                  "and night. Its motor does not run flat out the whole "
+                  "time; it runs in bursts, for about half the day. "
+                  "Nothing about its rating hints at that."},
 
         {"type": "key-fact", "ref": "convert-on-the-insert-line"},
 
@@ -457,18 +480,20 @@ LESSON = {
             ]},
         "produce": {
             "q": "A household wants to cut its electricity bill and has a "
-                 "2200 W oven used 45 minutes a day, a 90 W fridge running "
-                 "constantly, and eight 9 W LED lamps on about 5 hours a "
-                 "day. Work out which costs most per day and advise them, "
-                 "using numbers.",
+                 "2200 W oven used 45 minutes a day, a 90 W fridge whose "
+                 "motor runs in bursts for about 12 hours a day, and "
+                 "eight 9 W LED lamps on about 5 hours a day. Work out "
+                 "which costs most per day and advise them, using "
+                 "numbers.",
             "field_label": "Your answer",
             "placeholder": "Oven: 2.2 kW × 0.75 h = …",
             "success": [
                 "Calculates the oven at about 1.65 kWh per day.",
-                "Calculates the fridge at about 2.16 kWh per day.",
+                "Calculates the fridge at about 1.08 kWh per day.",
                 "Calculates the lamps at about 0.36 kWh per day in total.",
-                "Identifies the fridge as the largest, despite having the "
-                "lowest power rating.",
+                "Ranks the oven first and the fridge second, and notes "
+                "that the fridge comes that close on the lowest rating of "
+                "the three — it is the hours that do it.",
                 "Gives advice that follows from the numbers — and notes "
                 "that the fridge cannot simply be switched off, so the "
                 "realistic saving is elsewhere.",

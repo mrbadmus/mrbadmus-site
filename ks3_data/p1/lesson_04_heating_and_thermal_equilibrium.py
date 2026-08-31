@@ -40,8 +40,9 @@ Two mints and one re-confrontation, following her `NOTES-P1.md` §2:
 ── ⚖️ TWO OF HER SCIENCE FLAGS ARE LOAD-BEARING HERE ──────────────────
 
 Flag 10: the thermal-store bar is LOGARITHMIC and says so on the face of it.
-The spark-to-bath range is about 10^9 and a linear bar would show nothing at
-the spark end. Kept, and the bench labels it.
+The bench runs from 0.009 J (the spark, slow) to 627 MJ (the bath, very
+fast) — a range of about 10^11 — and a linear bar would show nothing at the
+spark end. Kept, and the bench labels it.
 
 Flag 11: the "no cold travels this way" arrow is DRAWN and then labelled as
 not existing. Drawing the thing that does not happen is the confrontation of
@@ -160,15 +161,31 @@ LESSON = {
                    "are moving. Watch the two readouts move independently — "
                    "that is the whole point.",
          # ⚖️ Design's flag 10 — the thermal bar is LOGARITHMIC and says so.
-         # The spark-to-bath range is about 10^9; a linear bar shows nothing.
-         "scale_note": "The thermal-store bar is logarithmic — the range "
-                       "from a spark to a bath is about 10^9, and a linear "
-                       "bar would leave the spark invisible.",
+         # This bench reaches 0.009 J at one end and 627 MJ at the other; a
+         # linear bar shows nothing at the spark end.
+         "scale_note": "The thermal-store bar is logarithmic — this bench "
+                       "runs from 0.009 J (a slow spark) to 627 MJ (a very "
+                       "hot bath), a range of about 10^11, and a linear bar "
+                       "would leave the spark invisible.",
+         # ⚠️ `n` IS A HEAT CAPACITY IN JOULES PER KELVIN (mass × specific
+         # heat capacity), NOT an invented particle index. The engine prints
+         # `n × t`, so n must be in J/K for that product to be a real number
+         # of joules in the thermal store above 0 °C. Derived:
+         #     spark  1 mg of steel   1e-6 kg × 450  J/kg/K = 0.00045 J/K
+         #     mug    300 g of water  0.300 kg × 4180 J/kg/K = 1254   J/K
+         #     bath   100 kg of water  100 kg  × 4180 J/kg/K = 418000 J/K
+         # Water 4180 J/kg/K, steel 450 J/kg/K; the two masses are the tags
+         # below. Because the mug and the bath are both water, n_bath/n_mug
+         # IS the particle-count ratio the key fact talks about (300 g to
+         # 100 kg), so the key fact stays exactly true.
+         # ⚖️ THE ORDERING IS THE LESSON: bath at 20 °C = 8 360 000 J beats
+         # spark at 1500 °C = 0.675 J. `r_two_quantities` refuses a payload
+         # where it does not, because the close paragraph below asserts it.
          "amounts": [
-             {"id": "spark", "label": "A spark", "n": 3,
-              "tag": "a few particles"},
-             {"id": "mug",   "label": "A mug",   "n": 22, "tag": "300 g"},
-             {"id": "bath",  "label": "A bath",  "n": 60, "tag": "100 kg"},
+             {"id": "spark", "label": "A spark", "n": 0.00045,
+              "tag": "1 mg of steel"},
+             {"id": "mug",   "label": "A mug",   "n": 1254, "tag": "300 g"},
+             {"id": "bath",  "label": "A bath",  "n": 418000, "tag": "100 kg"},
          ],
          "speeds": [
              {"id": "slow", "label": "Slow",      "t": 20},

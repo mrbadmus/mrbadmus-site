@@ -879,6 +879,179 @@ def r_eye_camera(a, act_id):
 
 # ═══ p7-06 · #s-prism · a ray box, a prism and a white screen ════════════
 
+# ── ⚠️ THE FAN'S GEOMETRY IS COMPUTED HERE, NOT IN THE RUNTIME ──────────
+#
+# It used to be a JS-only constant (`P7_PRISM_Y` in `shared/ks3.js`) with the
+# landing points derived at paint time. Nothing in the build could see it, so
+# nothing in the build could check it — and what shipped, for as long as the
+# unit has existed, was `LIGHT-23` drawn by the instrument built to kill it:
+# every colour deviated toward the APEX, and red deviated MOST. It survived
+# every review because the six rays still read R,O,Y,G,B,V top to bottom.
+#
+# So the numbers live here, `_prism_fan()` refuses a backwards one, and the
+# runtime does nothing but read the attributes and join them into path
+# strings. The check runs at import, on every build, for free.
+#
+# ⚠️ THE DRAWING IS A SCHEMATIC AND SAYS SO. A real 60° prism deviates a
+# horizontal ray by about 43° and separates red from violet by under a
+# degree; drawn to scale on this 1000×420 canvas the fan would leave the
+# frame and the six colours would be one line. So the SEPARATION is
+# exaggerated — about eighteen-fold — while the three things a student can
+# be wrong about are exact: every colour bends toward the BASE, violet bends
+# furthest and red least, and the light bends TWICE, once at each face.
+
+P7_APEX = (300.0, 90.0)          # her prism: M300 90 L400 270 L200 270 Z
+P7_BASE_Y = 270.0
+P7_HALF_BASE = 100.0
+P7_FACE = (P7_BASE_Y - P7_APEX[1]) / P7_HALF_BASE   # 1.8 down per 1 out
+P7_BEAM_X0 = 40.0                # where the ray box's beam starts
+P7_BEAM_Y = 160.0                # horizontal in, so the ghost is this line
+P7_INSIDE = 0.1405408            # tan 8° — the ray's slope inside the glass
+P7_SCREEN_X = 925.0              # the rays stop just short of the screen
+P7_SCREEN_SPAN = (48.0, 372.0)   # the drawn screen is M930 40 V380
+P7_MIN_DEV = 60.0                # red is deviated too, and must look it
+
+# The six landings on the screen, low frequency first. The GAPS are in the
+# ratio of the real red→violet spread in crown glass (n−1 = .514 .517 .519
+# .523 .529 .539), which is why they widen toward violet rather than being
+# evenly spaced: dispersion is not linear in colour.
+P7_FAN = (("R", 265.0), ("O", 276.0), ("Y", 284.0),
+          ("G", 298.0), ("B", 321.0), ("V", 358.0))
+
+# The second prism, the other way up: apex DOWN at (660,300), base along the
+# top. Its base side is therefore UP, so it bends every colour back the way
+# it came — most for violet — which is the whole argument.
+P7_TWO_PATH = "M660 300 L560 120 L760 120 Z"
+P7_TWO_LEFT_TOP = (560.0, 120.0)
+P7_TWO_APEX = (660.0, 300.0)
+P7_TWO_EXIT = (710.0, 210.0)     # on its right face; the beam leaves level
+
+
+def _n(v):
+    """One decimal place, and no trailing `.0` in a path string."""
+    s = "%.1f" % v
+    return s[:-2] if s.endswith(".0") else s
+
+
+def _prism_fan(fan, beam_y=P7_BEAM_Y, inside=P7_INSIDE):
+    """Every drawn number for the prism bench — and the refusal.
+
+    ⚖️ **VIOLET IS DEVIATED MOST, RED LEAST, AND BOTH TOWARD THE BASE.**
+    Drawn the other way round the bench teaches `LIGHT-23`, the registered
+    misconception it exists to kill, and contradicts its own rung 1 one
+    screen below. That cannot be left to a reviewer's eye: the top-to-bottom
+    colour order still reads R,O,Y,G,B,V when the physics is inverted, which
+    is exactly how it shipped.
+    """
+    ax, ay = P7_APEX
+    entry_x = ax - (beam_y - ay) / P7_FACE
+    # Right face  y = ay + FACE·(x − ax);  inside ray  y = beam_y + m·(x − entry_x)
+    exit_x = ((beam_y - inside * entry_x - ay + P7_FACE * ax)
+              / (P7_FACE - inside))
+    exit_y = ay + P7_FACE * (exit_x - ax)
+
+    keys = [k for k, _ in fan]
+    land = dict(fan)
+    slope, hit, dev = {}, {}, {}
+    tx, ty = P7_TWO_LEFT_TOP
+    for k in keys:
+        s = (land[k] - exit_y) / (P7_SCREEN_X - exit_x)
+        slope[k] = s
+        dev[k] = land[k] - beam_y
+        # the left face of the second prism: y = ty + FACE·(x − tx)
+        hx = ((exit_y - s * exit_x - ty + P7_FACE * tx) / (P7_FACE - s))
+        hit[k] = (hx, ty + P7_FACE * (hx - tx))
+
+    faults = []
+    if not (ay <= beam_y <= P7_BASE_Y):
+        faults.append("the beam enters off the left face (y=%s)" % _n(beam_y))
+    if not (ay <= exit_y <= P7_BASE_Y):
+        faults.append("the ray leaves off the right face (y=%s)" % _n(exit_y))
+
+    apex_side = [k for k in keys if dev[k] <= 0]
+    if apex_side:
+        faults.append(
+            "%s deviated toward the APEX, not the base. A prism deviates "
+            "every colour toward its BASE — here the base is the bottom edge "
+            "at y=%s, so every ray must land BELOW the undeviated line at "
+            "y=%s." % ("/".join(apex_side), _n(P7_BASE_Y), _n(beam_y)))
+
+    order = [abs(dev[k]) for k in keys]
+    if any(b <= a for a, b in zip(order, order[1:])):
+        faults.append(
+            "the deviations do not increase with frequency. %s is the "
+            "lowest frequency drawn and %s the highest, so %s must land "
+            "NEAREST the undeviated line and %s FURTHEST from it."
+            % (keys[0], keys[-1], keys[0], keys[-1]))
+
+    if order and min(order) < P7_MIN_DEV:
+        faults.append(
+            "%s is drawn barely deviated (%s units). A prism deviates every "
+            "colour strongly; only the DIFFERENCE between them is small."
+            % (keys[0], _n(min(order))))
+
+    off = [k for k in keys
+           if not (P7_SCREEN_SPAN[0] <= land[k] <= P7_SCREEN_SPAN[1])]
+    if off:
+        faults.append("%s lands off the screen (y must be %s–%s)"
+                      % ("/".join(off), _n(P7_SCREEN_SPAN[0]),
+                         _n(P7_SCREEN_SPAN[1])))
+
+    flat = [k for k in keys if slope[k] <= inside]
+    if flat:
+        faults.append(
+            "%s does not bend AWAY from the normal on the way out. Light "
+            "leaving glass bends away from the normal, so every exit ray "
+            "must be steeper than the ray inside the glass (slope %s), "
+            "which is itself steeper than the beam going in."
+            % ("/".join(flat), "%.4f" % inside))
+
+    stray = [k for k in keys
+             if not (tx <= hit[k][0] <= P7_TWO_APEX[0]
+                     and ty <= hit[k][1] <= P7_TWO_APEX[1])]
+    if stray:
+        faults.append(
+            "%s misses the second prism's left face, so the recombination "
+            "state draws light entering glass through thin air."
+            % "/".join(stray))
+
+    if faults:
+        table = "".join(
+            "\n    %s  lands %8s   %s the undeviated line by %s"
+            % (k, _n(land[k]), "below" if dev[k] > 0 else "ABOVE",
+               _n(abs(dev[k]))) for k in keys)
+        raise ValueError(
+            "prism-bench: the drawn fan is wrong — %s.%s\n\n"
+            "  This is not a cosmetic geometry check. Violet deviated least "
+            "and red most IS `LIGHT-23`, the misconception registered on "
+            "this very page as the one this bench exists to kill, and it "
+            "contradicts the page's own rung 1 — 'which colour lands "
+            "closest to where the undeviated beam would have gone' — one "
+            "screen below. It survives a glance because the top-to-bottom "
+            "colour order still reads R,O,Y,G,B,V."
+            % ("; ".join(f.rstrip(".") for f in faults), table))
+
+    return {
+        "keys": keys, "land": land, "slope": slope, "hit": hit, "dev": dev,
+        "entry": (entry_x, beam_y), "exit": (exit_x, exit_y),
+        "in_path": "M%s %s L%s %s" % (_n(P7_BEAM_X0), _n(beam_y),
+                                      _n(entry_x), _n(beam_y)),
+        "inner_path": "M%s %s L%s %s" % (_n(entry_x), _n(beam_y),
+                                         _n(exit_x), _n(exit_y)),
+        "ghost_path": "M%s %s L%s %s" % (_n(entry_x), _n(beam_y),
+                                         _n(P7_SCREEN_X), _n(beam_y)),
+        "from": "%s %s" % (_n(exit_x), _n(exit_y)),
+        "two_path": P7_TWO_PATH,
+        "two_exit": "%s %s" % (_n(P7_TWO_EXIT[0]), _n(P7_TWO_EXIT[1])),
+        "out_path": "M%s %s L%s %s" % (_n(P7_TWO_EXIT[0]), _n(P7_TWO_EXIT[1]),
+                                       _n(P7_SCREEN_X), _n(P7_TWO_EXIT[1])),
+        "screen_x": _n(P7_SCREEN_X),
+    }
+
+
+P7_PRISM = _prism_fan(P7_FAN)
+
+
 def r_prism_bench(a, act_id):
     """⊕ p7-06 `#s-prism` — send white light in, sort what comes out.
 
@@ -901,9 +1074,13 @@ def r_prism_bench(a, act_id):
 
     HOOKS: `data-prism` (wrapper) · `data-prism-gate` ·
     `data-prism-gopt` · `data-prism-body` · `data-prism-in-tab` ·
-    `data-prism-second` · `data-prism-beam` · `data-prism-ray` (valued
-    R/O/Y/G/B/V) · `data-prism-two` · `data-prism-outbeam` ·
-    `data-prism-fill` · `data-prism-out` · `data-prism-note`.
+    `data-prism-second` · `data-prism-beam` · `data-prism-inner` ·
+    `data-prism-ghost` · `data-prism-ray` (valued R/O/Y/G/B/V, each
+    carrying `data-prism-y` and `data-prism-hit`) · `data-prism-two` ·
+    `data-prism-outbeam` · `data-prism-fill` · `data-prism-out` ·
+    `data-prism-note`. The wrapper carries the eight geometry strings
+    `data-prism-inpath` / `-innerpath` / `-ghostpath` / `-from` /
+    `-screenx` / `-twopath` / `-twoexit` / `-outpath`.
     """
     _no_head(a, act_id, "prism-bench")
     ins = a.get("inputs") or []
@@ -919,6 +1096,21 @@ def r_prism_bench(a, act_id):
                 raise ValueError(
                     "prism-bench %r input %r has no %r."
                     % (act_id, i2.get("id"), f))
+        # ⚖️ RECOMBINED IS NOT THE SAME WORD AS WHITE, and the verdict has to
+        # be authored per mixture rather than assumed. Blue and red put back
+        # together give magenta; white needs every frequency, and this bench
+        # offers a mixture that is not white precisely so a student can see
+        # that a prism gives back only what went in. A shared string here
+        # said "One white patch" over a drawing stroked dusky pink.
+        if len(i2["keys"]) > 1:
+            for f in ("two_screen", "two_beam"):
+                if not i2.get(f):
+                    raise ValueError(
+                        "prism-bench %r mixture %r has no %r. A mixture that "
+                        "is not white must say what the second prism "
+                        "actually puts back together — the tile and the note "
+                        "cannot both default to white."
+                        % (act_id, i2.get("id"), f))
     if not any(len(i2["keys"]) == 1 for i2 in ins):
         raise ValueError(
             "prism-bench %r offers no single-colour input. It is the state "
@@ -947,6 +1139,8 @@ def r_prism_bench(a, act_id):
              data_prism_in_tab=x["id"], data_keys=",".join(x["keys"]),
              data_word=x["word"], data_sub=x["sub"], data_least=x["least"],
              data_most=x["most"], data_colour=x["colour"],
+             data_two_screen=x.get("two_screen", ""),
+             data_two_beam=x.get("two_beam", ""),
              data_name=x["label"])
         for i, x in enumerate(ins))
     second_tabs = "".join(
@@ -956,15 +1150,36 @@ def r_prism_bench(a, act_id):
 
     # Design's own 1000×420 viewBox. The first prism and the screen are
     # fixed; the second prism, the beams and the six rays are holes.
+    #
+    # ⚠️ EACH RAY CARRIES ITS OWN TWO NUMBERS — where it lands on the screen,
+    # and where it meets the second prism's left face. Both come from
+    # `_prism_fan`, which has already refused a backwards fan, so the runtime
+    # never computes a landing and cannot reintroduce one.
+    G = P7_PRISM
     rays = "".join(
         '<path class="ks3-prism-ray ks3-prism-ray-%s" data-prism-ray="%s" '
-        'd="M0 0"/>' % (k.lower(), k) for k in ("R", "O", "Y", "G", "B", "V"))
+        'data-prism-y="%s" data-prism-hit="%s %s" d="M0 0"/>'
+        % (k.lower(), k, _n(G["land"][k]),
+           _n(G["hit"][k][0]), _n(G["hit"][k][1])) for k in G["keys"])
+    # ⚠️ ORDER IS LOAD-BEARING, and it changed. The second prism used to be
+    # painted AFTER the rays, which was harmless while they stopped in mid
+    # air at x=640; now that they run to its far face, a filled triangle on
+    # top of them would hide the recombination inside the glass. Ghost first
+    # (it is under everything), then both pieces of glass, then the light.
+    #
+    # ⚠️ THE GHOST IS INLINE-STYLED rather than given a class, because it is
+    # the refraction bench's `.ks3-rblock-ghost` treatment exactly — #5C554D,
+    # 3 wide, 10/10 dashes — and a second class declaring the same four
+    # values would be a token to keep in sync for no gain.
     svg = (
         '<svg class="ks3-prism-svg" viewBox="0 0 1000 420" role="img" '
         'aria-label="" data-prism-alt>'
+        '<path data-prism-ghost d="M0 0" style="fill:none;stroke:#5C554D;'
+        'stroke-width:3;stroke-dasharray:10 10"/>'
         '<path class="ks3-prism-glass" d="M300 90 L400 270 L200 270 Z"/>'
-        '<path class="ks3-prism-beam" data-prism-beam d="M0 0"/>%s'
         '<path class="ks3-prism-glass" data-prism-two d="M0 0"/>'
+        '<path class="ks3-prism-beam" data-prism-beam d="M0 0"/>'
+        '<path class="ks3-prism-beam" data-prism-inner d="M0 0"/>%s'
         '<path class="ks3-prism-beam" data-prism-outbeam d="M0 0"/>'
         '<path class="ks3-prism-screen" d="M930 40 V380"/>'
         '<text class="ks3-prism-partlabel" x="930" y="30" '
@@ -978,14 +1193,22 @@ def r_prism_bench(a, act_id):
                             ("single", "recombined", "dispersed"), act_id,
                             "prism-bench")
 
+    geom = (' data-prism-inpath="%s" data-prism-innerpath="%s"'
+            ' data-prism-ghostpath="%s" data-prism-from="%s"'
+            ' data-prism-screenx="%s" data-prism-twopath="%s"'
+            ' data-prism-twoexit="%s" data-prism-outpath="%s"'
+            % (e(G["in_path"]), e(G["inner_path"]), e(G["ghost_path"]),
+               e(G["from"]), e(G["screen_x"]), e(G["two_path"]),
+               e(G["two_exit"]), e(G["out_path"])))
+
     return ('<div class="ks3-prism" data-prism data-cap-one="%s" '
-            'data-cap-two="%s"%s>%s'
+            'data-cap-two="%s"%s%s>%s'
             '<div class="ks3-prism-body" data-prism-body hidden>'
             '<div class="ks3-prism-controls">%s%s</div>'
             '<div class="ks3-prism-figwrap">'
             '<div class="ks3-prism-figinner">%s%s</div></div>%s'
             '<p class="ks3-prism-note" data-prism-note></p>%s</div></div>'
-            % (e(caps["one"]), e(caps["two"]), _sibling(a),
+            % (e(caps["one"]), e(caps["two"]), geom, _sibling(a),
                _gate(act_id, "prism-bench", a.get("gate") or {}, "prism"),
                _picker("prism", a.get("in_label", "What goes into the prism"),
                        in_tabs),

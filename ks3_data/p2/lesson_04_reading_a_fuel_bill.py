@@ -69,6 +69,19 @@ that they are plausible mid-2020s UK values rather than live figures, and
 that she isolated them as constants precisely because they will date. They
 are constants here for the same reason. They are not a quotation and the
 page does not present them as one.
+
+⊕ RULED 30 Aug 2026 (MRB-297) — DATE THE MONEY, WHERE SHOWN. The figures
+stay at 27p and 53p; only the dating changes. The cap moves quarterly, so
+ONE clause in the hook (`phenomenon.prompt`) dates the whole page, and the
+p2-03 bench readout label carries Mide's own "(2026)". A figure that is a
+STIPULATED INPUT to a calculation — a ladder stem, a bank stem, a CFIFA
+line — is not dated again: the question supplies its own price and no
+reader takes it as a claim about today. A figure that is a claim about the
+WORLD is dated: `#s-think`'s "around 53p a day here in 2026".
+
+⊕ RULED 30 Aug 2026 (MRB-297) — THE GAS BILL. `stretch` gains a second
+entry covering the gas meter's m³ → kWh conversion, closing
+`KS3.P.FUEL.04` properly. The title, `covers` and the rail are unchanged.
 """
 
 LESSON = {
@@ -115,10 +128,15 @@ LESSON = {
     "phenomenon": {
         "kind": "narrative",
         "title": "412 of something, at 27p each.",
+        # ⚖️ RULED 30 Aug 2026 (MRB-297) — ONE dating clause, here in the
+        # hook, for the whole page. The prices are real 2026 figures and the
+        # cap that sets them moves quarterly; the arithmetic does not.
         "prompt": "A real electricity bill lists “units used: "
                   "412” and charges 27p for each one. Nowhere on the "
                   "page does it say what a unit is — the word appears "
-                  "eleven times and is never defined.",
+                  "eleven times and is never defined. The prices on this "
+                  "page are 2026 ones, and the cap that sets them moves "
+                  "every three months.",
         "commit": "Commit. A unit on an electricity bill is one…",
         "options": [
             "Kilowatt — a measure of power",
@@ -204,7 +222,9 @@ LESSON = {
          "heading": "Set the household's habits and watch the total.",
          "prompt": "Five appliances, five sliders. Each row is a product; "
                    "the bottom line is their sum, plus a standing charge "
-                   "that no slider can touch.",
+                   "that no slider can touch. The hours are the hours a "
+                   "thing is drawing power — a fridge is plugged in all "
+                   "day, but its motor only runs about half of it.",
          "gate": {
              "prompt": "Commit first. In a typical UK home, which of these "
                        "is usually the largest single item on the "
@@ -222,6 +242,12 @@ LESSON = {
              ],
              "answer": 2,
          },
+         # ⚖️ RULED 30 Aug 2026 (MRB-297) — these are 2026 UK figures and the
+         # price cap that sets them moves quarterly. They are NOT rendered as
+         # authored text: `build_ks3.py` emits them as `data-price` /
+         # `data-standing` for the instrument, so the dating a reader sees is
+         # the hook's clause, not a label here. If the instrument ever paints
+         # the tariff into the DOM, that label wants "(2026)" too.
          "price_per_kwh": 0.27,
          "standing_per_day": 0.53,
          "days": 30,
@@ -238,7 +264,7 @@ LESSON = {
               "min": 0, "max": 60,  "start": 12, "unit": "min/day",
               "per_hour": 60},
              {"id": "fridge", "name": "Fridge-freezer",  "watts": 90,
-              "min": 0, "max": 24,  "start": 24, "unit": "h/day",
+              "min": 0, "max": 24,  "start": 12, "unit": "h/day",
               "per_hour": 1},
              {"id": "lights", "name": "Lighting, whole house", "watts": 72,
               "min": 0, "max": 24,  "start": 5,  "unit": "h/day",
@@ -333,8 +359,9 @@ LESSON = {
               "body": [
                   "The units do; the standing charge does not. It is a fixed "
                   "daily amount for being connected to the network — "
-                  "around 53p a day here, or about £16 a month — and "
-                  "it is on the bill whether you use one unit or a thousand. "
+                  "around 53p a day here in 2026, or about £16 a month "
+                  "— and it is on the bill whether you use one unit or "
+                  "a thousand. "
                   "<strong>That is why the cheapest month is never free, and "
                   "why comparing suppliers on unit price alone is not "
                   "enough.</strong>",
@@ -521,6 +548,39 @@ LESSON = {
                  "genuine saving would be worth, the standing charge has to "
                  "come out of the calculation first, and it is the one row "
                  "on the bill that no change in behaviour will touch."},
+
+        # ⚖️ RULED 30 Aug 2026 (MRB-297) — THE GAS BILL. The lesson claims
+        # `KS3.P.FUEL.04`, "domestic fuel bills, fuel use and costs", and
+        # covered electricity only. Gas is the larger bill in most UK homes.
+        # Ruled: cover it HERE, in Going further, and keep the title — so
+        # `covers` is unchanged and no new statutory claim is added. The VAT
+        # clause folds in. The conversion is the one printed on every UK gas
+        # bill; 1.02264 is the regulator's volume correction factor, 39.5 the
+        # calorific value in MJ/m³ (it genuinely varies, ~37.5–43.0), and
+        # ÷3.6 is MJ→kWh because 1 kWh = 3.6 MJ. Worked check:
+        # 100 × 1.02264 = 102.264 → × 39.5 = 4039.428 MJ → ÷ 3.6 = 1122.06 kWh.
+        {"id": "what-a-gas-meter-actually-measures",
+         "type": "explainer",
+         "text": "Gas is the other half of most fuel bills, and its meter "
+                 "counts volume, not energy: the number in the little window "
+                 "is cubic metres of gas that have gone past, and that is not "
+                 "the number you are billed for. The bill converts it with a "
+                 "formula printed on every UK gas bill — kWh = m³ × "
+                 "1.02264 × 39.5 ÷ 3.6. The 1.02264 is a volume "
+                 "correction factor, fixed by the regulator, bringing the "
+                 "measured volume to a standard temperature and pressure. The "
+                 "39.5 is the calorific value in megajoules per cubic metre "
+                 "— how much energy that gas carries. The network "
+                 "measures it and prints it on the bill, and it does vary, "
+                 "roughly 37.5 to 43.0, with where the gas came from. "
+                 "Dividing by 3.6 turns megajoules into kilowatt-hours, "
+                 "because one kilowatt-hour is 3.6 MJ. So 100 m³ gives "
+                 "100 × 1.02264 = 102.264, then × 39.5 = 4039.4 MJ, "
+                 "then ÷ 3.6 = 1122 kWh. Domestic energy is charged VAT "
+                 "at 5 per cent, not the standard 20. <strong>The unit at the "
+                 "end is the same kilowatt-hour the electricity side is "
+                 "billed in</strong> — which is what lets you compare "
+                 "the two halves of a bill."},
     ],
 
     "support": [],

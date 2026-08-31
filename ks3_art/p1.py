@@ -913,11 +913,23 @@ def r_two_quantities(a, act_id):
     two independent controls rather than one.
 
     ⚖️ **THE THERMAL BAR IS LOGARITHMIC AND SAYS SO** (Design's science flag
-    10). The spark-to-bath range is about 10^9 — a linear bar leaves the
-    spark at zero pixels and teaches that a spark has no energy at all, which
-    is the opposite of the point. The scale note is not decoration and the
-    renderer refuses a payload without it: a log axis a student has not been
-    told about is a lie told in a picture.
+    10). p1-04's bench runs from 0.009 J to 627 MJ, a range of about 10^11 —
+    a linear bar leaves the spark at zero pixels and teaches that a spark has
+    no energy at all, which is the opposite of the point. The scale note is
+    not decoration and the renderer refuses a payload without it: a log axis
+    a student has not been told about is a lie told in a picture.
+
+    ⚠️ **`n` IS A HEAT CAPACITY IN J/K, NOT AN INDEX.** The engine prints
+    `n × t` as joules, so an authored `n` that is a made-up "particle count"
+    prints a made-up energy. It was one once (3 / 22 / 60), and the bench
+    then showed a spark out-holding a bath while the paragraph underneath
+    said the opposite (MRB-297, finding P1-13). Hence the ordering guard
+    below, and hence `n` is emitted as a float — `int()` destroys 0.00045.
+
+    ⚖️ **THE ORDERING GUARD IS THE LESSON.** The biggest amount at the
+    COLDEST setting must beat the smallest amount at the HOTTEST setting.
+    That inequality is the entire claim the bench exists to demonstrate; a
+    payload that breaks it is a bench arguing against its own page.
 
     ⚠️ **BOTH AXES MUST OFFER AT LEAST THREE SETTINGS.** With two, "moved it
     and the other readout did not follow" is a coincidence a student can
@@ -942,7 +954,7 @@ def r_two_quantities(a, act_id):
     if not a.get("scale_note"):
         raise ValueError(
             "two-quantities %r has no `scale_note`. The thermal bar is "
-            "logarithmic — the spark-to-bath range is about 10^9 — and a log "
+            "logarithmic — p1-04's bench spans about 10^11 — and a log "
             "axis the student has not been told about is a lie told in a "
             "picture." % act_id)
 
@@ -965,6 +977,28 @@ def r_two_quantities(a, act_id):
                 "two-quantities %r speed %r has no label or no temperature."
                 % (act_id, x.get("id")))
 
+    # ⚖️ THE ORDERING IS THE LESSON — see the docstring. The biggest amount
+    # at the coldest setting must hold MORE than the smallest amount at the
+    # hottest setting, because that is the sentence the bench is under.
+    big = max(amounts, key=lambda x: float(x["n"]))
+    small = min(amounts, key=lambda x: float(x["n"]))
+    cold = min(speeds, key=lambda x: float(x["t"]))
+    hot = max(speeds, key=lambda x: float(x["t"]))
+    coldest_big = float(big["n"]) * float(cold["t"])
+    hottest_small = float(small["n"]) * float(hot["t"])
+    if not coldest_big > hottest_small:
+        raise ValueError(
+            "two-quantities %r inverts its own lesson: %s at %s (%g J) does "
+            "not beat %s at %s (%g J). The bench exists to show that the "
+            "coldest large thing holds more than the hottest small one, and "
+            "the closing paragraph under it says so in words. `n` is a heat "
+            "capacity in joules per kelvin (mass × specific heat capacity) — "
+            "if it has been authored as a made-up particle index, the "
+            "readout prints a made-up energy and the page argues with "
+            "itself."
+            % (act_id, big.get("id"), cold.get("id"), coldest_big,
+               small.get("id"), hot.get("id"), hottest_small))
+
     want = {"temp", "store"}
     if want - {r.get("id") for r in readouts}:
         raise ValueError(
@@ -982,10 +1016,19 @@ def r_two_quantities(a, act_id):
                 data_twoq_spd=x["id"])
         for i, x in enumerate(speeds))
 
-    data = "".join(' data-twoq-n-%s="%d"' % (e(x["id"]), int(x["n"]))
+    # ⚠️ FLOAT, NOT `int()`. `n` is a heat capacity in J/K and the spark's is
+    # 0.00045 — `int()` rounds it to zero and the spark loses its energy
+    # entirely. %.10g keeps every authored digit without exponent notation.
+    data = "".join(' data-twoq-n-%s="%.10g"' % (e(x["id"]), float(x["n"]))
                    for x in amounts)
     data += "".join(' data-twoq-t-%s="%d"' % (e(x["id"]), int(x["t"]))
                     for x in speeds)
+    # The bench's OWN reachable extremes, so the log bar is normalised over
+    # exactly the range this bench can reach rather than a hard-coded factor
+    # that saturates somewhere arbitrary.
+    data += ' data-twoq-min="%.10g" data-twoq-max="%.10g"' % (
+        float(small["n"]) * float(cold["t"]),
+        float(big["n"]) * float(hot["t"]))
 
     outs = "".join(
         '<div class="ks3-twoq-out%s"><p class="ks3-twoq-outlabel">%s</p>'

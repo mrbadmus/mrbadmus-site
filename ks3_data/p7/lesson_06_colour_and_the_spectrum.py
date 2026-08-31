@@ -193,7 +193,10 @@ LESSON = {
              {"id": "white", "label": "White light",
               "keys": ["R", "O", "Y", "G", "B", "V"], "word": "White light",
               "sub": "every visible frequency at once",
-              "least": "Red", "most": "Violet", "colour": "#F2ECDD"},
+              "least": "Red", "most": "Violet", "colour": "#F2ECDD",
+              "two_screen": "One white patch — the colours put back "
+                            "together",
+              "two_beam": "white light again"},
              {"id": "red", "label": "Red only", "keys": ["R"],
               "word": "Red only", "sub": "one narrow band of frequencies",
               "least": "Red", "most": "Red", "colour": "#D9563A"},
@@ -203,7 +206,12 @@ LESSON = {
              {"id": "bluered", "label": "Blue and red", "keys": ["R", "B"],
               "word": "Blue and red together",
               "sub": "two separated bands, no yellows or greens",
-              "least": "Red", "most": "Blue", "colour": "#9A647A"},
+              "least": "Red", "most": "Blue", "colour": "#9A647A",
+              "two_screen": "One patch of pinky-purple — the two colours "
+                            "put back together, and still no yellow or "
+                            "green",
+              "two_beam": "one pinky-purple beam, with no yellow and no "
+                          "green anywhere in it"},
          ],
          "second": [{"id": "no", "label": "No second prism", "on": False},
                     {"id": "yes", "label": "Second prism in", "on": True}],
@@ -233,8 +241,8 @@ LESSON = {
                        "piece of glass.",
              "recombined": "The second prism, the other way up, bends each "
                            "colour back by the same amount the first one bent "
-                           "it, and they arrive at the screen together as one "
-                           "beam again. That is the experiment that settles "
+                           "it, and they arrive at the screen together as "
+                           "{arrives}. That is the experiment that settles "
                            "it: if glass made colour, a second piece would "
                            "make more of it. It makes less.",
              "dispersed": "{word} goes in and {n} separated colours come out, "
@@ -487,6 +495,13 @@ LESSON = {
     "ks4_becomes": "The electromagnetic spectrum in full, the wave equation "
                    "applied to light, and the properties and uses of each "
                    "region.",
+
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Never look directly at the Sun — not with your eyes, not "
+                   "through a lens, not through a pinhole camera. A lens "
+                   "gathers sunlight to a point hot enough to scorch paper, "
+                   "and it will do the same to the back of your eye. The "
+                   "damage is painless while it happens and it does not heal.",
 
     "convention_note": "The bench is a teaching model. The prism angles and "
                        "the spread of the fan are drawn for clarity rather "

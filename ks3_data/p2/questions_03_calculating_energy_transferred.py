@@ -193,26 +193,27 @@ QUESTIONS = [
     {
         "id": "p2-03-h01",
         "band": "harder",
-        "text": "A 90 W fridge runs constantly. A 2200 W oven runs 45 "
-                "minutes a day. Which uses more energy in a day, and why?",
+        "text": "A 90 W fridge motor runs in bursts, about 12 hours a "
+                "day in total. A 2000 W kettle runs 3 minutes a day. "
+                "Which uses more energy in a day, and why?",
         "options": [
-            {"text": "The oven, because its rating is over twenty times "
+            {"text": "The kettle, because its rating is over twenty times "
                      "higher",
              "correct": False,
-             "why": "The oven gives 2.2 × 0.75 = 1.65 kWh. The fridge "
-                    "gives 0.09 × 24 = 2.16 kWh, and wins."},
-            {"text": "The fridge, because 24 hours outweighs the higher "
+             "why": "The kettle gives 2.0 × 0.05 = 0.10 kWh. The fridge "
+                    "gives 0.09 × 12 = 1.08 kWh, and wins."},
+            {"text": "The fridge, because 12 hours outweighs the higher "
                      "rating",
              "correct": True},
-            {"text": "The oven, because a fridge cools rather than heats",
+            {"text": "The kettle, because a fridge cools rather than heats",
              "correct": False,
              "why": "A fridge still draws power to run its compressor, and "
                     "what it does with the energy does not change the "
                     "total."},
-            {"text": "They are the same, at about 1.65 kWh each",
+            {"text": "They are the same, at about 0.10 kWh each",
              "correct": False,
-             "why": "The oven is 1.65 kWh; the fridge is 2.16 kWh. They are "
-                    "not equal."},
+             "why": "The kettle is 0.10 kWh; the fridge is 1.08 kWh. They "
+                    "are not equal."},
         ],
         "figure": None,
     },
