@@ -407,86 +407,94 @@ NAV = {
         # this tuple without that entry would drop the assertion silently.
         # `goClasses` itself is unchanged: node 83, the class screen's Back,
         # still goes to the class list carrying its academic year.
-        nodes=(83,),
-        frm="      goClasses: () => this.setState({ screen: 'classes', "
-            "modal: null }),",
+        nodes=(463,),
+        anchor=dict(key="goClasses"),
         to="      goClasses: () => MRB_GO('classes', "
            "{ year: MRB_DATA('yearParam') }),",
-        why="the class screen's Back (83), and the \"My classes\" link this "
+        why="the class screen's Back (463), and the \"My classes\" link this "
             "port adds to the top bar (`INSERT_AT[(10, 13)]`). Design's node 348 — "
             "the import screen's Back — is drawn by the same handler and is "
             "not emitted; see the note above. Node 11, the brand mark, used "
-            "to be on this list and is now in `RETARGET_ON`."),
+            "to be on this list and is now in `RETARGET_ON`. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 renumbered it — the class screen's "
+            "Back is node 463, reading \"Back to my classes\", and it is now "
+            "the ONLY node carrying `goClasses`. The import screen's 348 is "
+            "gone from the delivery entirely, so the note above describes a "
+            "node that no longer exists rather than one merely unemitted."),
     "goClass": dict(
-        nodes=(211, 247),
-        frm="      goClass: () => this.setState({ screen: 'class', modal: "
-            "null }, () => this.snapWeekRail()),",
+        nodes=(331, 371),
+        anchor=dict(key="goClass"),
         to="      goClass: () => MRB_GO('class', { 'class': k && k.id }),",
-        why="the student screen's Back (211) and the marking screen's Back "
-            "(247). `snapWeekRail` was a scroll fix for a rail that had never "
-            "left the DOM; there is no rail to restore across a navigation."),
+        why="the student screen's Back (331) and the marking screen's Back "
+            "(371). `snapWeekRail` was a scroll fix for a rail that had never "
+            "left the DOM; there is no rail to restore across a navigation. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 dropped the `snapWeekRail` callback "
+            "itself, so Design's handler now agrees with this ruling on that "
+            "point; the rewiring to a real URL is unchanged."),
     "goDigest": dict(
-        nodes=(37,),
-        frm="      goDigest: () => this.setState({ screen: 'digest', "
-            "digestScope: 'all' }),",
+        nodes=(41, 166),
+        anchor=dict(key="goDigest"),
         to="      goDigest: () => MRB_GO('digest', {}),",
         why="\"Weekly digest\". No `class` parameter IS `digestScope: 'all'` "
             "— see the state initialiser, which derives the scope from the "
-            "presence of the parameter so a reload cannot lose it."),
+            "presence of the parameter so a reload cannot lose it. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 draws it TWICE — node 41 on the new "
+            "Today screen and node 166 on the classes screen — and adds a "
+            "`digestFrom` to Design's setState so her prototype can find its "
+            "way back. Both are dropped by the same rewrite: `digestFrom` is "
+            "a back stack, and ours is the browser's."),
     "goReport": dict(
-        nodes=(90,),
-        frm="      goReport: () => this.setState({ screen: 'digest', "
-            "digestScope: 'class' }),",
+        nodes=(217,),
+        anchor=dict(key="goReport"),
         to="      goReport: () => MRB_GO('digest', { 'class': k && k.id }),",
         why="\"Class report\" — the same page as the digest, scoped to one "
             "class, which is what `digestScope: 'class'` meant in the "
-            "prototype."),
+            "prototype. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 relabels the control \"Print report\" "
+            "and adds `digestFrom: 'class'`; neither changes where it goes."),
     "goImport": dict(
-        nodes=(38,),
-        frm="      goImport: () => this.setState({ screen: 'import', "
-            "importStep: 1 }),",
+        nodes=(167,),
+        anchor=dict(key="goImport"),
         to="      goImport: () => MRB_GO('import', {}),",
         why="\"Import students\" on the classes screen."),
     "openInsights": dict(
-        nodes=(21, 89),
-        frm="      openInsights: () => this.setState({\n"
-            "        screen: 'insights',\n"
-            "        insFrom: s.screen === 'class' ? 'class' : 'classes',\n"
-            "        chartScope: s.screen === 'class' ? k.id : chartScope\n"
-            "      }),",
+        nodes=(25, 216),
+        anchor=dict(key="openInsights"),
         to="      openInsights: () => MRB_GO('insights', s.screen === "
            "'class' ? { 'class': k && k.id } : {}),",
-        why="the chart icon in the top bar (22) and \"Charts\" on the class "
-            "screen (105). Design's handler carried the scope with it — from "
+        why="the chart icon in the top bar (25) and \"Charts\" on the class "
+            "screen (216). Design's handler carried the scope with it — from "
             "a class it opened scoped to that class, from anywhere else to "
             "all classes — and that fork survives as the presence or absence "
             "of `?class=`. `insFrom` goes: the browser's history is the back "
-            "stack now."),
+            "stack now. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 widens `insFrom` to three screens "
+            "and defaults it to the new `today`. That is the same back stack "
+            "this ruling already replaces, so the rewrite is unchanged."),
     "goBackFromDigest": dict(
-        nodes=(301,),
-        frm="      goBackFromDigest: () => this.setState({ screen: "
-            "s.digestScope === 'class' ? 'class' : 'classes' }, () => { if "
-            "(s.digestScope === 'class') this.snapWeekRail(); }),",
+        nodes=(429,),
+        anchor=dict(key="goBackFromDigest"),
         to="      goBackFromDigest: () => MRB_BACK(),",
         why="the digest's Back. Design chose between two destinations from "
             "state; the browser knows the real answer, and a digest opened "
             "from a bookmark has no state to consult. `MRB_BACK` falls "
             "through to the class list when there is no history, so it is "
-            "never a dead press."),
+            "never a dead press. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 chooses between THREE now, off the "
+            "new `digestFrom`, and one of them is `today`. Design needing a "
+            "third is the argument for the ruling rather than against it."),
     "goBackFromInsights": dict(
-        nodes=(390,),
-        frm="      goBackFromInsights: () => this.setState({ screen: "
-            "s.insFrom || 'classes' }, () => { if ((s.insFrom || 'classes') "
-            "=== 'class') this.snapWeekRail(); }),",
+        nodes=(518,),
+        anchor=dict(key="goBackFromInsights"),
         to="      goBackFromInsights: () => MRB_BACK(),",
-        why="the charts screen's Back. Same reasoning as the digest's."),
+        why="the charts screen's Back. Same reasoning as the digest's. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 dropped the `snapWeekRail` callback "
+            "and now falls back to `today` rather than `classes`."),
 
     # ── the loop-scoped six ─────────────────────────────────────────────
     "c.open": dict(
-        nodes=(50,),
-        frm="      open: () => c.n > 0\n"
-            "        ? this.openClass({ classId: c.id })\n"
-            "        : this.setState({ screen: 'import', importStep: 1 }),",
+        nodes=(179,),
+        anchor=dict(builder="cards", key="open"),
         to="      open: () => MRB_GO(c.n > 0 ? 'class' : 'import', "
            "{ 'class': c.id, year: MRB_DATA('yearParam') }),",
         why="the class card. ⚠️ DESIGN'S FORK IS KEPT: a card with no "
@@ -494,51 +502,80 @@ NAV = {
             "route is real — `roster-import` is one of the three writes that "
             "exist — and the brief's one-line version of this rewiring would "
             "have sent a teacher with an empty class to a page with nothing "
-            "on it."),
+            "on it. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 stopped routing the live arm through "
+            "`openClass()` and calls `setState` directly; the fork itself is "
+            "unchanged. ⚠️ AND `c.open` IS NOW THREE DIFFERENT CONTROLS — the "
+            "class card (179), the Today screen's chase list (69, built by "
+            "`chaseTop`) and the class glance's chase chips (234, built by "
+            "`glance.chase`). Only the card is this ruling's, which is why "
+            "the anchor names the `cards` builder and `nodes` names 179 "
+            "alone. The other two are unported dead controls on the Today "
+            "screen; they are a finding for MRB-306, not for this table."),
     "s.open": dict(
-        nodes=(127,),
-        frm="        open: () => this.setState({ screen: 'student', "
-            "studentId: r.id })\n      };\n    });\n\n    const paperRow",
+        nodes=(294,),
+        anchor=dict(builder="roster", key="open"),
         to="        open: () => MRB_GO('student', { student: r.id, 'class': "
-           "k && k.id })\n      };\n    });\n\n    const paperRow",
+           "k && k.id })",
         why="a roster row on the class screen. ⚠️ ANCHORED ON THE FIVE LINES "
             "THAT FOLLOW IT, because the closure's own text is BYTE-IDENTICAL "
             "to the marking grid's at node 304, and an exactly-once "
-            "replacement would refuse the build on a count of two."),
+            "replacement would refuse the build on a count of two. "
+            "⊕ 1 Sep 2026 (MRB-306): that sentence describes the mechanism "
+            "this entry no longer uses, and it is kept because it is the "
+            "reason the trailing context was ever there. The closure is still "
+            "byte-identical to three others; it is now told apart by the "
+            "BUILDER it lives in (`roster`), which is a name Design chose, "
+            "rather than by the lines that happen to follow it, which she "
+            "moved. The trailing `};\\n});\\n\\nconst paperRow` came out of "
+            "`to` with it — `paperRow` does not exist in v3, and re-emitting "
+            "it would have written v2 source into the middle of a v3 "
+            "builder."),
     "a.open": dict(
-        nodes=(153, 168),
-        frm="      open: () => this.setState({ screen: 'marking', paperId: "
-            "p.id })\n    });\n\n    const flagged",
+        nodes=(320,),
+        anchor=dict(builder="assignments", key="open"),
         to="      open: () => MRB_GO('marking', { 'class': k && k.id, paper: "
-           "p.idx })\n    });\n\n    const flagged",
+           "p.idx })",
         why="the upcoming (166) and marked (181) assignment rows. Both are "
             "drawn by the one `paperRow` closure, so one rewrite serves both "
-            "nodes — which is why both are asserted here."),
+            "nodes — which is why both are asserted here. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 draws the assignment table ONCE, as "
+            "node 320 over `assignments as a`, so there is one node to assert "
+            "rather than two, and `paperRow` is gone — the closure is inline "
+            "in the `assignments` builder. Its trailing context came out of "
+            "`to` for the reason given under `s.open`."),
     "h.open": dict(
-        nodes=(237,),
-        frm="        open: () => this.setState({ screen: 'marking', paperId: "
-            "p.id })\n      };\n    }) : [];",
+        nodes=(361,),
+        anchor=dict(builder="stHistory", key="open"),
         to="        open: () => MRB_GO('marking', { 'class': k && k.id, "
-           "paper: p.idx })\n      };\n    }) : [];",
+           "paper: p.idx })",
         why="a row of the student's assignment history. Anchored on its "
-            "trailing `}) : [];` for the same reason `s.open` is."),
+            "trailing `}) : [];` for the same reason `s.open` is. "
+            "⊕ 1 Sep 2026 (MRB-306): anchored on the `stHistory` builder "
+            "now, for the reason given under `s.open`."),
     "r.open (marking grid)": dict(
-        nodes=(291,),
-        frm="      open: () => this.setState({ screen: 'student', studentId: "
-            "r.id })\n    })) : [];",
+        nodes=(419,),
+        anchor=dict(builder="grid", key="open"),
         to="      open: () => MRB_GO('student', { student: r.id, 'class': "
-           "k && k.id })\n    })) : [];",
-        why="a row of the marking screen's question grid — NOT a digest row."),
+           "k && k.id })",
+        why="a row of the marking screen's question grid — NOT a digest row. "
+            "⊕ 1 Sep 2026 (MRB-306): the control survives v3 unchanged, as "
+            "node 419 over `paper.grid as r`, still built by `grid`."),
     "d.open": dict(
-        nodes=(325,),
-        frm="        open: () => c.n > 0 ? this.openClass({ classId: c.id, "
-            "digestScope: 'all' }) : this.ping('No students in ' + c.code + "
-            "' yet')",
+        nodes=(453,),
+        anchor=dict(builder="digestRows", key="open"),
         to="        open: () => c.n > 0 ? MRB_GO('class', { 'class': c.id }) "
            ": this.ping('No students in ' + c.code + ' yet')",
         why="a row of the weekly digest. Design's empty-class arm is KEPT as "
             "a toast: it is not a navigation and never was, and silently "
-            "doing nothing would be the dead control the toast avoids."),
+            "doing nothing would be the dead control the toast avoids. "
+            "⚠️ 1 Sep 2026 (MRB-306): node 453 is fed by TWO builders — "
+            "`digestRows` on the whole-school digest and `classReportRows` "
+            "when `digestScope` is `class`. This ruling reaches only the "
+            "first, exactly as it did in v2; the class report's rows still "
+            "call `setState`. That is a pre-existing gap this re-anchoring "
+            "did not create and is not authorised to close — it is reported "
+            "rather than fixed."),
     # ⊕ RULED 24 Aug 2026 — AND IT WAS SHIPPING BLANK. This file's own note
     # above `DEAD` said "`act` itself is rewritten to import-only in
     # `METHODS`". It was not: `act` is a LOOP-SCOPED closure inside the
@@ -559,29 +596,33 @@ NAV = {
     # never present on ANY page — 74 would fail it. That node's existence is
     # asserted by `DEAD` instead, which is the right owner.
     "c.act": dict(
-        nodes=(71,),
-        frm="      act: (e) => {\n"
-            "        e.stopPropagation();\n"
-            "        if (c.state === 'empty') this.setState({ screen: "
-            "'import', importStep: 1 });\n"
-            "        else this.setState({ modal: 'setwork', swStep: 1, "
-            "swClasses: [c.id] });\n"
-            "      }",
+        nodes=(198,),
+        anchor=dict(builder="cards", key="act"),
         to="      act: (e) => { e.stopPropagation(); "
            "MRB_GO('import', { 'class': c.id }); }",
         why="\"Import\" on a class card with no students. The one route into "
             "the roster importer from the class list, and it was rendering a "
-            "blank page."),
+            "blank page. "
+            "⊕ 1 Sep 2026 (MRB-306): v3 renumbers the pair — the \"Import\" "
+            "arm is node 198 and the \"Set work\" arm `DEAD` prunes is node "
+            "194 (they were 71 and 74). The note above still applies "
+            "unchanged: only the kept node is asserted here, because the "
+            "build's closing sweep refuses a NAV node that appears on no "
+            "page. ⚠️ v3 also grows a SECOND control with this shape — "
+            "`setupRows.act` at node 95 on the Today screen, drawing the same "
+            "Import/Set-work fork — which no ruling touches. A finding for "
+            "MRB-306, not a change to make here."),
 
     "r.open (search)": dict(
-        nodes=(535,),
-        frm="      open: () => this.setState({ screen: 'student', classId: "
-            "p.classId, studentId: p.id, modal: null })",
+        nodes=(665,),
+        anchor=dict(builder="results", key="open"),
         to="      open: () => MRB_GO('student', { student: p.id, 'class': "
            "p.classId })",
         why="a result row in the search overlay. It is the one navigation "
             "that changes CLASS as well as student, which is why it reads "
-            "`p.classId` rather than the page's own `k.id`."),
+            "`p.classId` rather than the page's own `k.id`. "
+            "⊕ 1 Sep 2026 (MRB-306): the control survives v3 unchanged, as "
+            "node 665 over `searchResults as r`, still built by `results`."),
 }
 
 

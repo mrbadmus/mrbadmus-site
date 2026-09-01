@@ -520,6 +520,260 @@ def _balanced(src, start, opener, closer):
                      "in Design's logic." % (opener, start))
 
 
+# ── ⊕ MRB-306 · A NAV RULING ANCHORS ON A NAME, NOT ON ITS NEIGHBOURS ────
+#
+# ⛔ WHAT BROKE. Every `NAV` entry used to carry `frm`: a VERBATIM span of
+# Design's logic, replaced exactly once. Six of the sixteen are loop-scoped
+# closures called `open`, and their bodies are byte-identical to each other —
+# `open: () => this.setState({ screen: 'student', studentId: r.id })` is four
+# different controls in four different builders. So `frm` was PADDED with the
+# lines that happened to follow it (`\n      };\n    });\n\n    const
+# paperRow`) purely to tell them apart.
+#
+# That padding is not part of the ruling. It is a photograph of Design's file
+# at one moment, and it breaks whenever she touches a line NEAR the handler
+# rather than the handler itself. On the v3 delivery ELEVEN of the sixteen
+# stopped matching, and not one of them because the handler had changed: she
+# added a Today screen above them and the neighbours moved.
+#
+# ⚑ WHAT REPLACES IT. `anchor`, in one of two forms:
+#
+#     anchor=dict(key="goClass")                 a top-level handler
+#     anchor=dict(builder="cards", key="open")   a closure inside a `.map(`
+#
+# The builder form is the whole point: it says WHICH LIST the row belongs to,
+# which is the thing that actually distinguishes six identical closures, and
+# it is a name Design chose deliberately rather than a line she happened to
+# type underneath. `cards`, `roster`, `assignments`, `grid`, `stHistory`,
+# `digestRows`, `results` all survived v2 → v3 unrenamed while every one of
+# their `frm` spans died.
+#
+# ⚠️ EXACTLY ONE MATCH IS REQUIRED, and that is the safety property, not a
+# convenience. A key form that matched twice would rewire whichever came
+# first and leave the other a dead control; a builder form that matched zero
+# means Design has renamed the list, and the ruling must be re-read by a
+# human before it is re-pointed. Both refuse the build, by name.
+#
+# `frm` still works, unchanged, for any entry that has no `anchor` — this
+# mechanism was added incrementally and the two paths are allowed to coexist.
+
+
+def _logic_lines(logic):
+    """Design's logic as [(start, end, text, depth_after)], one per line.
+
+    `start`/`end` are byte offsets into `logic`; `end` excludes the newline.
+    `depth_after` is the bracket nesting depth at the END of that line.
+
+    ⚠️ STRING- AND COMMENT-AWARE, because a bare bracket count is wrong on
+    this file and wrong QUIETLY. `this.ping('No students in ' + c.code + '
+    yet')` sits inside the digest builder and `/* ── Today ── */` sits
+    between two others; a scan that counts a bracket inside either drifts by
+    one and then swallows every builder after it, so the block it hands back
+    would be the whole rest of the file and the "exactly one match" check
+    would refuse a handler that is perfectly fine.
+    """
+    out, depth, i, n = [], 0, 0, len(logic)
+    in_block_comment = False
+    line_start, line_no_end = 0, None
+    while i <= n:
+        if i == n or logic[i] == "\n":
+            out.append((line_start, i, logic[line_start:i], depth))
+            line_start = i + 1
+            i += 1
+            continue
+        ch = logic[i]
+        if in_block_comment:
+            if logic.startswith("*/", i):
+                in_block_comment = False
+                i += 2
+            else:
+                i += 1
+            continue
+        if logic.startswith("//", i):
+            j = logic.find("\n", i)
+            i = n if j < 0 else j
+            continue
+        if logic.startswith("/*", i):
+            in_block_comment = True
+            i += 2
+            continue
+        if ch in "'\"`":
+            q, i = ch, i + 1
+            while i < n:
+                if logic[i] == "\\":
+                    i += 2
+                    continue
+                if logic[i] == q:
+                    break
+                i += 1
+            i += 1
+            continue
+        if ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+        i += 1
+    return out
+
+
+def _nav_refusal(handler, anchor, what):
+    """The one refusal every anchor failure routes through.
+
+    Same shape as the `frm` refusal it replaces: name the handler, say what
+    was looked for, say what was found, and say where to fix it. A NAV rewire
+    that silently does not happen leaves a button that changes `s.screen` on
+    a page where `s.screen` is fixed — it draws perfectly and does nothing,
+    and no static check downstream can see that.
+    """
+    return SystemExit(
+        "build_teacher_port.py: the navigation ruling for %r %s.\n"
+        "    anchor = %r\n"
+        "  Design has redrawn or renamed that handler. Re-anchor it in "
+        "teacher_rulings.NAV — do NOT drop it, and do NOT widen the anchor "
+        "until it matches something: a skipped rewire is a dead control that "
+        "every gate calls green." % (handler, what, anchor))
+
+
+def resolve_nav_anchor(logic, spec):
+    """(start, end) of the source span one NAV `anchor` names.
+
+    `start` is the beginning of the handler's own line, at column 0, so the
+    caller can read Design's indentation off it. `end` is just past the last
+    character of the handler, excluding its newline.
+
+    The span is the anchor line PLUS whatever continuation lines the arrow
+    body needs. Bracket balance alone is NOT enough for that, and the class
+    card is the proof:
+
+        open: () => c.n > 0                                     ← balanced
+          ? this.setState({ screen: 'class', classId: c.id })   ← balanced
+          : this.setState({ screen: 'import', importStep: 1 }), ← balanced
+
+    Every line closes what it opens; a depth-only rule would replace the
+    first and leave a ternary with no consequent, which is a syntax error on
+    six pages. So the span ends at the first line that is BOTH back at the
+    starting depth AND finished as a property: it ends with a comma, or the
+    line after it closes the enclosing object.
+    """
+    handler = spec.get("_name", "?")
+    anchor = spec["anchor"]
+    key = anchor["key"]
+    lines = _logic_lines(logic)
+
+    lo, hi = 0, len(lines)
+    if "builder" in anchor:
+        builder = anchor["builder"]
+        decl = re.compile(r"^\s*const\s+%s\s*=" % re.escape(builder))
+        hits = [n for n, (_, _, text, _) in enumerate(lines)
+                if decl.match(text)]
+        # ⚠️ `.map(` IS PART OF THE ANCHOR, not a sanity check. `const
+        # chaseAll = [];` … `forEach(… push(…))` builds rows the same way and
+        # would answer to a bare `const <name> =`; the ruling says a MAP
+        # builder, so a list built some other way must refuse rather than be
+        # silently accepted at the wrong extent.
+        #
+        # ⚠️ AND THE LOOK-AHEAD STOPS AT THE END OF THE DECLARATION, NOT AFTER
+        # SOME NUMBER OF LINES. Design declares `const roster` TWICE — once as
+        # `this.rosterFor(k)` inside `gridFor()` and once as the class
+        # screen's `rosterSorted.map(…)` — and the line directly under the
+        # first is `const diff = this.STEMS.map(…)`. A fixed-window scan sees
+        # that neighbour's `.map(` and calls the wrong `roster` a builder,
+        # which is exactly the neighbour-sensitivity this mechanism removes.
+        mapped = []
+        for n in hits:
+            head = []
+            for _, _, text, _ in lines[n:_builder_block_end(
+                    lines, n, handler, anchor)]:
+                head.append(text)
+                if ".map(" in text:
+                    break
+            if ".map(" in "\n".join(head):
+                mapped.append(n)
+        if len(mapped) != 1:
+            raise _nav_refusal(
+                handler, anchor,
+                "anchors on a `.map(` builder named %r, and Design's logic "
+                "declares %d of them, not one" % (builder, len(mapped)))
+        n = mapped[0]
+        lo, hi = n, _builder_block_end(lines, n, handler, anchor)
+
+    want = key + ":"
+    found = [n for n in range(lo, hi)
+             if lines[n][2].lstrip().startswith(want)]
+    # the declaration line itself is the builder, never the handler
+    if "builder" in anchor:
+        found = [n for n in found if n != lo]
+    if len(found) != 1:
+        raise _nav_refusal(
+            handler, anchor,
+            "anchors on a line beginning `%s`, and there are %d of them%s"
+            % (want, len(found),
+               " inside `const %s`" % anchor["builder"]
+               if "builder" in anchor else " in Design's logic"))
+
+    n = found[0]
+    start_depth = lines[n][3] - _line_delta(lines, n)
+    i = n
+    while i < len(lines):
+        text = lines[i][2].rstrip()
+        if lines[i][3] == start_depth:
+            nxt = lines[i + 1][2].lstrip() if i + 1 < len(lines) else ""
+            if text.endswith(",") or nxt[:1] in ("}", ")", "]"):
+                return lines[n][0], lines[i][1]
+        i += 1
+    raise _nav_refusal(
+        handler, anchor,
+        "anchors on a line beginning `%s` whose arrow body never closes" % want)
+
+
+def _line_delta(lines, n):
+    """The depth CHANGE across line `n`."""
+    before = lines[n - 1][3] if n else 0
+    return lines[n][3] - before
+
+
+def _builder_block_end(lines, n, handler, anchor):
+    """The line index just past `const <builder> = …;`.
+
+    Ends on the first line that is back at the declaration's own starting
+    depth AND terminates the statement with `;`. The `;` half is load-bearing
+    for a CHAINED builder — `liveClasses.map(…)` on one line, `.filter(…)`
+    and `.sort(…).slice(…).map(…)` on the next three — where the depth is
+    already back to base at the end of the first line and a depth-only rule
+    would hand back a one-line block with no handler in it.
+    """
+    base = lines[n][3] - _line_delta(lines, n)
+    for i in range(n, len(lines)):
+        if lines[i][3] == base and lines[i][2].rstrip().endswith(";"):
+            return i + 1
+    raise _nav_refusal(
+        handler, anchor,
+        "anchors inside `const %s`, whose declaration never ends"
+        % anchor["builder"])
+
+
+def _reindent(text, indent):
+    """`to` re-laid at Design's own indentation.
+
+    ⚠️ THE RULING OWNS THE CODE; DESIGN OWNS THE MARGIN. `to` is written once
+    and must survive a redelivery, and Design reindents freely — the class
+    roster's `open` moved from eight spaces to six between v2 and v3 without
+    a character of it changing. Pinning the margin inside `to` would make
+    every such move a hand-edit of the rulings, which is the padding problem
+    this mechanism exists to remove.
+    """
+    body = text.split("\n")
+    lead = len(body[0]) - len(body[0].lstrip())
+    out = []
+    for line in body:
+        if not line.strip():
+            out.append("")
+            continue
+        keep = line[lead:] if line[:lead].strip() == "" else line.lstrip()
+        out.append(indent + keep)
+    return "\n".join(out)
+
+
 def replace_method(logic, name, body, why):
     """Replace a method's whole body, found by balanced-brace scan."""
     m = re.search(r"\n  %s\s*\(" % re.escape(name), logic)
@@ -645,9 +899,24 @@ def seam_logic(tpl_logic):
     # Design had not touched. Found by the build stopping, which is the check
     # working.
     #
+    # ⊕ 1 Sep 2026 (MRB-306) — AND THAT ORDERING HAZARD IS GONE FOR ANY ENTRY
+    # THAT CARRIES AN `anchor`. The paragraph above is kept because it is the
+    # reason the trailing context existed at all, and because the `frm` path
+    # below still honours it. An `anchor` names the BUILDER and the KEY, so
+    # nothing about the lines around the handler is load-bearing any more —
+    # see `resolve_nav_anchor`. All sixteen entries are anchored today; the
+    # `frm` path stays for the next ruling that needs it.
+    #
     # Same refusal, and the same reason. The NODES these are anchored to are
     # asserted separately, in `apply_rulings` — here it is only the source.
     for handler, spec in R.NAV.items():
+        if "anchor" in spec:
+            start, end = resolve_nav_anchor(logic, dict(spec, _name=handler))
+            span = logic[start:end]
+            indent = span[:len(span) - len(span.lstrip(" \t"))]
+            logic = logic[:start] + _reindent(spec["to"], indent) + logic[end:]
+            counts["nav"] += 1
+            continue
         n = logic.count(spec["frm"])
         if n != 1:
             raise SystemExit(
