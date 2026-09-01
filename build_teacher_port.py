@@ -1746,10 +1746,31 @@ c.CLASSES.forEach(function (k) {
   out.PAPERS[k.id] = papers;
   out.MATRIX[k.id] = mx;
   out.ROSTER[k.id] = c.rosterFor(k);
-  out.WEEKS[k.id] = papers.map(function (p) {
-    return { idx: p.idx, range: p.range, due: p.due.replace(/^Due /, ''),
-             set: p.set, dueShort: p.dueShort, lateShort: p.lateShort,
-             academic_week: null, weekLabel: '' };
+  /* ⊕ MRB-306 — THE FIXTURE'S WEEKS ARE WEEKS, not assignments, because the
+     live seam's are. `buildWeeks` in `shared/teacher-live.js` returns the
+     ACADEMIC YEAR's teaching weeks and papers carry a `weekIdx` onto them;
+     a fixture still shaped like the old one-week-per-paper list would draw a
+     two-chip bar beside a live page's twelve and nothing would say why.
+
+     Design's twelve weeks are twelve papers, so `weekIdx` is the paper's own
+     index — true inside her fiction, and the reason the two models were
+     indistinguishable until real data arrived.
+
+     ⚠️ NO TERM NAME, DELIBERATELY. The live label ("Autumn Week 6") is
+     derived from an `academic_years` row's start date, and Design's sample
+     has no academic year at all — it has a hardcoded first date. Inventing a
+     term here would put a season into a fixture that no data supports, so
+     the chip's second line reads "Week 11" and the newest chip reads "This
+     week", which is Design's own wording. */
+  const wks = c.weeks();
+  out.WEEKS[k.id] = wks.map(function (w, i) {
+    return { idx: i, weekOfYear: wks.length - i, term: '',
+             label: 'Week ' + (wks.length - i), range: w.range,
+             now: i === 0, monYmd: '', friYmd: '' };
+  });
+  papers.forEach(function (p) {
+    p.weekIdx = p.idx;
+    p.weekOfYear = wks.length - p.idx;
   });
 });
 
@@ -2355,9 +2376,18 @@ function MRB_ENV(){var c=window.MrBadmusConfig;
    screen (`SCREEN_BY_PAGE`) and prefetches only the grids that screen draws,
    so a link to the wrong file is a page that stays pending for ever with
    nothing in the console. The two maps are inverses and must stay so. */
+/* ⊕ 2 Sep 2026 (MRB-306) — `today` and `timetable` are on this map and are
+   NOT emitted by this generator. They are the two HAND-WRITTEN teacher pages
+   of those names, and v3's chrome links to them: the top-bar tab strip and
+   the class screen's "Back to today". The filenames are the ones the port
+   will emit when Design's Today and Timetable screens are ported, so these
+   links survive that unit unchanged. `teacher-live.js`'s `SCREEN_BY_PAGE`
+   does not name either — it falls back to `"classes"` for an unknown page,
+   which is what those two hand-written pages have always been served. */
 var MRB_PAGE = {classes:'classes.html', 'class':'class-detail.html',
   student:'student-detail.html', marking:'assignment.html',
-  digest:'digest.html', 'import':'import.html', insights:'insights.html'};
+  digest:'digest.html', 'import':'import.html', insights:'insights.html',
+  today:'today.html', timetable:'timetable.html'};
 function MRB_GO(screen, params){
   var f = MRB_PAGE[screen];
   if(!f)throw new Error('teacher page: no page for screen "'+screen+'"');
@@ -3022,6 +3052,10 @@ def build():
     stamped = dict(versions)
     nav_nodes_seen = set()
     retarget_seen = set()
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — the same accumulator, for the four
+    # node-anchored tables that never had one. See `KNOWN_UNAPPLIED`.
+    ruling_seen = {"SET_ATTR": set(), "BIND_ATTR": set(),
+                   "RETEXT_AT": set(), "SET_ON": set()}
     region_report = {}
     empty_report = {}
 
@@ -3196,11 +3230,35 @@ def build():
         # (`c.yearName` / `k.yearName`) and must not reach for the dashboard's
         # (`MRB_DATA('yearLabel')`), which is what both did until E1 and what
         # made twelve cards out of 2025-26 each say 2026-27.
-        for what, own, line in (
-                ("the class card's meta line", "c.yearName", "meta:"),
-                ("the class header's long meta", "k.yearName", "longMeta:")):
+        # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — BOTH ANCHORS RE-CUT, and the
+        # second one was WATCHING A KEY THAT NO LONGER EXISTS. Design's v3
+        # deleted `longMeta` and rebuilt the class header as `klass.meta`;
+        # the ruling was re-expressed onto `klass.meta` on 1 Sep and this
+        # guard was not, so it searched for a string absent from every page
+        # and refused all six builds. The FIRST anchor was worse: a bare
+        # `find("meta:")` takes whichever `meta:` comes first in the file,
+        # and v3 put the Today screen's lesson meta ahead of the card's — so
+        # for one afternoon it was checking `t.room` for an academic year.
+        #
+        # Each row now names the DECLARATION it belongs under and searches
+        # forward from there, so neither can drift onto a neighbour's key.
+        for what, own, decl, line in (
+                ("the class card's meta line", "c.yearName",
+                 "const cards = ", "meta:"),
+                ("the class header's meta line", "k.yearName",
+                 "      klass: {", "meta:")):
             seg = ""
-            at = page_logic.find(line)
+            base = page_logic.find(decl)
+            if base == -1:
+                raise SystemExit(
+                    "build_teacher_port.py: %s — %s cannot be checked: "
+                    "`%s` is not in the emitted logic.\n"
+                    "  Design has renamed or removed the declaration this "
+                    "guard reads. An E1 check that cannot find its own "
+                    "anchor must refuse; skipping it would let the working "
+                    "year back onto a past year's class."
+                    % (spec["out"], what, decl.strip()))
+            at = page_logic.find(line, base)
             if at != -1:
                 seg = page_logic[at:at + 260]
             if own not in seg:
@@ -3242,6 +3300,9 @@ def build():
         for handler, nav in R.NAV.items():
             nav_nodes_seen |= {n for n in nav["nodes"] if n in here}
         retarget_seen |= {n for n in R.RETARGET_ON if n in here}
+        for _t, _tbl in (("SET_ATTR", R.SET_ATTR), ("BIND_ATTR", R.BIND_ATTR),
+                         ("RETEXT_AT", R.RETEXT_AT), ("SET_ON", R.SET_ON)):
+            ruling_seen[_t] |= {n for n in _tbl if n in here}
 
         print("     ✅ %-24s %7d bytes  (%d node(s) pruned, %d inserted, "
               "%d wrapped, %d retargeted, %d binding(s), %d retext(s), "
@@ -3277,6 +3338,50 @@ def build():
             "on ANY of the six pages, so the ruling anchored on them was "
             "never checked. Design has removed those controls; re-anchor "
             "teacher_rulings.RETARGET_ON." % missed)
+
+    # ── ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · THE UNGUARDED-RULING SWEEP ────
+    #
+    # ⛔ FOUR TABLES HAD NO SWEEP AT ALL. `apply_rulings` skips a node that is
+    # not on the page it is building — right per page, and it meant a node
+    # Design had DELETED was skipped on all six and its ruling checked
+    # nowhere. `NAV` and `RETARGET_ON` were already swept; `SET_ATTR`,
+    # `BIND_ATTR`, `RETEXT_AT` and `SET_ON` were not, and that is the same
+    # silent failure as the hand-edit this file replaced: green build, ruling
+    # not in the page.
+    #
+    # ⚠️ BOTH DIRECTIONS. A node in `KNOWN_UNAPPLIED` that DOES appear on a
+    # page fails too — an exemption list that can only ever excuse is a switch
+    # for turning the guard off.
+    for table, seen in sorted(ruling_seen.items()):
+        named = R.KNOWN_UNAPPLIED.get(table, {})
+        all_nodes = set(getattr(R, table))
+        missed = sorted((all_nodes - seen) - set(named))
+        if missed:
+            raise SystemExit(
+                "build_teacher_port.py: teacher_rulings.%s names node(s) %s "
+                "and NONE of the six pages carries them, so those rulings "
+                "were never applied and never checked.\n"
+                "  Design has redrawn or deleted those nodes. Re-anchor "
+                "them, or — if they belong to a screen this port "
+                "deliberately does not emit — name them in "
+                "teacher_rulings.KNOWN_UNAPPLIED with the reason. A ruling "
+                "that silently applied to nothing is the hand-edit failure "
+                "this file exists to prevent." % (table, missed))
+        rotted = sorted(set(named) & seen)
+        if rotted:
+            raise SystemExit(
+                "build_teacher_port.py: teacher_rulings.KNOWN_UNAPPLIED[%r] "
+                "excuses node(s) %s as unreachable, and they ARE on an "
+                "emitted page.\n"
+                "  The exemption is stale. Remove those rows: an exemption "
+                "list that is never checked back is a way of switching a "
+                "guard off." % (table, rotted))
+    print("     ✅ unguarded-ruling sweep: %d node-anchored ruling(s) across "
+          "6 table(s) proved applied on at least one page; %d named "
+          "unapplied and why"
+          % (len(nav_nodes_seen) + len(retarget_seen)
+             + sum(len(v) for v in ruling_seen.values()),
+             sum(len(v) for v in R.KNOWN_UNAPPLIED.values())))
 
     _verify_stamps(stamped)
 

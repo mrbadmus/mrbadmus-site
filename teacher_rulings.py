@@ -77,27 +77,226 @@ page.
 # child is what carries `data-port-region`, because `student-runtime` renders
 # an `<if>` as a BRANCH and never as an element — an attribute set on the `if`
 # would be dropped, silently, and the gate anchoring on it would find nothing.
+# ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — RE-ANCHORED ON v3, AND TWO ROWS ADDED.
+#
+# ⛔ THE DEFECT THIS TABLE CARRIED. The v3 port re-indexed `NAV` and stopped.
+# Every other node-indexed ruling in this file — this one included — was still
+# holding Design's v2 numbering, and v2's numbering is not wrong in a way any
+# gate could see: `28` is a real node in v3 too. It is the wrong one.
+#
+# ⚠️ AND THE ROW THAT WAS NOT HERE AT ALL WAS THE DANGEROUS ONE. v3 opens with
+# TWO NEW SCREENS — `isToday` (node 32) and `isTimetable` (node 96) — and this
+# dict is what makes each page prune the screens it is not. A screen that is
+# not named here is not pruned by anybody, so all six pages would have shipped
+# Today AND Timetable stacked on top of their own content, and every gate
+# would have stayed green: the build asserts that what it names is present,
+# never that what it does not name is absent.
+#
+# They are named here for exactly the reason `import` still is — every OTHER
+# page has to prune it — and for no other. Today and Timetable are hand-written
+# pages today (`teacher/today.html`, `teacher/timetable.html`); bringing them
+# into the generator is a later unit, and this row does not do it.
+#
+#   key          v2 (as ruled)     v3 (this table)
+#   today        — absent —        32
+#   timetable    — absent —        96
+#   classes      28                157
+#   class        80                207
+#   student      209               329
+#   marking      245               369
+#   digest       299               427
+#   import       333               461
+#   insights     388               516
 SCREENS = {
-    "classes":  28,
-    "class":    80,
-    "student":  209,
-    "marking":  245,
-    "digest":   299,
-    "import":   333,
-    "insights": 388,
+    "today":     32,
+    "timetable": 96,
+    "classes":  157,
+    "class":    207,
+    "student":  329,
+    "marking":  369,
+    "digest":   427,
+    "import":   461,
+    "insights": 516,
 }
+
+
+# ── ⊕ RULED BY MIDE, 1 Sep 2026 · THE CLASS-DETAIL WEEK BAR STAYS ────────
+#
+# ⛔ DESIGN'S v3 DELETED IT. The class screen's week rail — twelve chips, a
+# chevron either side, and every figure below scoped to the chip you pressed
+# — is gone from the v3 delivery, replaced by a dated assignment table and a
+# `glance` block. Mide overrode that on 1 Sep 2026: the bar stays.
+#
+# This constant exists so that the decision is a RECORDED RULING rather than
+# a gap somebody closes by reading the drawing. The next port reads Design's
+# file, finds no week bar, and — without this — deletes it again as drift.
+# `IMPORT_NOT_PORTED` is here for the same reason and was written for the
+# same failure.
+#
+# ── WHAT IS DELIBERATELY DIFFERENT FROM v2 ──────────────────────────────
+#
+# ⚠️ **v2's RAIL WAS INDEXED BY ASSIGNMENT. THIS ONE IS INDEXED BY TEACHING
+# WEEK.** That is the whole of the difference and it is invisible in Design's
+# file, because her sample class has exactly one assignment per week for
+# twelve weeks — so "week 3" and "the third paper" are the same object and
+# nothing can tell them apart. `8r/Sc1`, the only class in the working year
+# with any assignments, has TWO against a thirty-nine-week year. Copied
+# forward, the bar would have drawn two chips and called them the term.
+#
+#   · `weeks()` is the academic year's teaching weeks (seam: `buildWeeks`),
+#     newest first, at most twelve, and NEVER a week from before the year
+#     began — on the first day of term that is one chip, marked "This week",
+#     and that is correct rather than broken.
+#   · `weekIdxFor` clamps to `weeks().length`, not to `papersFor(k).length`.
+#   · Papers map ONTO weeks by the week they were SET in (seam:
+#     `assignPaperWeeks`) — v2's own embedded rule, kept: "a week's range is
+#     the teaching week it was set in, not the week its deadline falls in".
+#   · A week with NO assignment is a real, drawable state. v2 could not
+#     produce one, so Design never drew one; it says "No work set in this
+#     week" in words and invents no date.
+#   · The chips' second line is filled on every chip — "This week", or the
+#     term-relative label. v2 left eleven of twelve blank because its ranges
+#     were self-identifying inside its own fiction.
+#
+# ── WHAT IS UNCHANGED FROM v2, DELIBERATELY ─────────────────────────────
+#
+#   · `rail()`, `snapWeekRail()` and `pickWeek()` are v2 verbatim (LOGIC #36).
+#   · The markup is v2's, style string for style string, with ONE structural
+#     change: the chip's `sc-if w.now` wrapper is gone, because that line now
+#     carries text on every chip and an always-true `if` is a control nobody
+#     can tell from a broken one.
+#   · `weekIdx: 0` is the CURRENT week and the list counts backwards, so
+#     `wPast = wi > 0`, back is `wi + 1` and forward is `wi - 1` — Design's
+#     own directions, and every consumer still reads them that way.
+#
+# ── THE ONE APPROXIMATION, STATED ───────────────────────────────────────
+#
+# ⚠️ THERE IS NO `terms` TABLE. Checked, not assumed: `academic_years` holds
+# a start date and an end date and nothing else. So "Autumn Week 6" is
+# derived — the term from the week's own Monday against `seasonFor`'s
+# Sep-Dec / Jan-Mar / Apr-Aug boundaries, the number by counting weeks since
+# the year began. Half terms and a moving Easter are not in the data, so the
+# count runs straight through the holidays and the week after Christmas reads
+# "Autumn Week 18". A `terms` table would make it exact. That is Mide's call,
+# and it is in the handover.
+WEEK_BAR_RESTORED = dict(
+    screen="teacher/class-detail.html",
+    ruled_by="Mide",
+    ruled_on="2026-09-01",
+    against="Design's v3 delivery, which removed the rail",
+    logic=("#6 the roster column, #13 the week scope and everything it "
+           "reaches, #36 the four methods and the cold-load hooks, plus the "
+           "week-bar entries appended at the end of LOGIC"),
+    markup="INSERT_AT[(208, 218)]",
+    seam="shared/teacher-live.js — buildWeeks / assignPaperWeeks",
+    indexed_by="teaching week, NOT assignment",
+    approximation="term boundaries and the within-term week number are "
+                  "derived from the year's start and end dates; there is no "
+                  "`terms` table, so half terms are counted as teaching "
+                  "weeks. Open on Mide.",
+)
 
 # ── the four overlays ────────────────────────────────────────────────────
 #
 # `setWorkOpen` is on this list so the build can PRUNE it by name on every
 # page rather than by an index typed in seven places. It is kept by none of
 # them; see `DEAD`.
+# ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — re-anchored on v3. 453→581, 500→628,
+# 525→655, 541→671. The four overlays survive v3 unchanged in shape; only
+# their numbering moved, behind the two screens Design added above them.
 OVERLAYS = {
-    "setWorkOpen": 453,
-    "bulkOpen":    500,
-    "searchOpen":  525,
-    "hasToast":    541,
+    "setWorkOpen": 581,
+    "bulkOpen":    628,
+    "searchOpen":  655,
+    "hasToast":    671,
 }
+
+# ── ⛔ OPEN ON MIDE, 2 Sep 2026 (MRB-306 Phase 1c) ───────────────────────
+#
+# **DESIGN'S v3 DELETED THE CLASS SCREEN'S SHOUTOUT COMPOSER AND ITS FEED.**
+# This constant exists for the same reason `WEEK_BAR_RESTORED` and
+# `IMPORT_NOT_PORTED` do: so the next reader finds a RECORDED DECISION rather
+# than a gap they close by reading the drawing. The difference is that Mide
+# has ruled on the week bar and has NOT ruled on this — so nothing is
+# restored here, and nothing is quietly accepted either.
+#
+# ── WHAT WAS THERE, AND WHAT IS THERE NOW ───────────────────────────────
+#
+# v2's class screen carried, below the assignments table:
+#
+#     181  "Shoutouts" heading
+#     183  "Send to several students"  → the bulk overlay
+#     185  the composer: recipient <select> (187) over the roster, six
+#          template buttons (194), a message <textarea> (196), a character
+#          count and "Send shoutout" (199)
+#     200  the FEED — every shoutout already written about this class, each
+#          card carrying who, when, which template and the body (203-208)
+#
+# v3 has NONE of it. In its place is the `glance` block (nodes 222-276): the
+# open homework, who has not submitted, the two weakest questions from the
+# last marked set, students to keep an eye on, students worth praising, and
+# ONE button — "Send a shoutout" (276) — which opens the BULK sheet.
+#
+# ── WHAT SURVIVES, MEASURED RATHER THAN ASSUMED ─────────────────────────
+#
+#   · SENDING still works. The bulk overlay is intact (628-654) and v3 even
+#     ADDS a free-text `<textarea>` to it (651) that v2 did not have. Its
+#     rows carry real ids and `MRB_SEND_SHOUTOUTS` takes ids, so nothing
+#     regressed to sending a name. A teacher can still send to one child by
+#     selecting one child.
+#   · READING does not. There is no feed on any of the six pages, so a
+#     teacher cannot see what has already been written about a class — by
+#     them or by a colleague.
+#   · REMOVING does not, and that is a RULING with nothing to hang on:
+#     Mide, 24 Aug 2026 — "a teacher who can post a shoutout can remove one."
+#     `softDeleteClassShoutout` has existed since MRB-46 and is now reachable
+#     from nowhere in the ported estate.
+#   · MRB-261'S READ-ONLY GUARANTEE has a hole: `WRAP["class-detail.html"]`
+#     is empty, because both nodes it wrapped are gone, and the two controls
+#     that open the surviving bulk sheet (215, 276) are NOT wrapped. On a
+#     past academic year a teacher can open the sheet and press Send. See
+#     the note in `WRAP`.
+#
+# ── WHAT IS PARKED, SO NOTHING HAS TO BE RE-DERIVED ─────────────────────
+#
+#   `SHOUTOUT_MARKUP_PARKED`   the two INSERT_AT subtrees (the Remove control
+#                              and its confirm sheet), verbatim.
+#   retired in place            SET_ATTR 187/196, BIND_ATTR 190, WRAP 183/185,
+#                              the four `AMENDED_ADDITIONS` rows — each left
+#                              as a comment where it was, with its reasoning.
+#   still lifted               `LIVE_REGIONS["class-detail.html"]` keeps
+#                              `compose-error` and `shoutouts-loadmore`. They
+#                              are id-anchored in the RETIRED hand-written
+#                              page, not on a Design node, so they still
+#                              carry; they are now a safety net with no
+#                              surface above them.
+#
+# ── THE THREE WAYS THIS COULD GO, AND WHY NONE WAS TAKEN HERE ───────────
+#
+#   1. Restore the composer and feed as an `INSERT_AT`, the way the week bar
+#      was restored. That is a Mide ruling, and he has not made it.
+#   2. Accept v3 and drop the delete ruling. That withdraws a ruling of his,
+#      which is not this port's to do.
+#   3. Move the feed somewhere Design DID draw. There is no such place.
+#
+# So: recorded, parked, and reported. ⚠️ DO NOT close this by reading the
+# drawing — v3 is drawn without a feed, and re-deriving from the drawing is
+# how a ruling gets deleted as drift.
+SHOUTOUT_COMPOSER_DROPPED = dict(
+    screen="teacher/class-detail.html",
+    found_by="MRB-306 Phase 1c, 2026-09-02",
+    what="Design's v3 removed the single-student shoutout composer (v2 nodes "
+         "185-199) and the shoutout feed (v2 nodes 200-208) from the class "
+         "screen. The bulk overlay survives and gained a free-text field.",
+    rulings_left_without_a_surface=(
+        "Mide 2026-08-24 — a teacher who can post a shoutout can remove one",
+        "MRB-287 — the recipient is an id, not a name (BIND_ATTR 190)",
+        "MRB-261 — a past academic year is read-only (WRAP 183/185)",
+    ),
+    still_works="sending, via the bulk sheet (nodes 628-654)",
+    open_on="Mide",
+)
+
 
 # ── ⊕ RULED, MRB-287 · THE IMPORT WIZARD IS NOT PORTED ───────────────────
 #
@@ -215,17 +414,55 @@ IMPORT_NOT_PORTED = dict(
 # had just been pruned, and the class list went blank. It is rewritten now —
 # in `NAV`, under the key `c.act`, because it is a loop-scoped closure and
 # `METHODS` cannot reach one.
+# ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — re-anchored on v3. Every row was still
+# holding a v2 index; each moved to the node carrying the SAME tag and the
+# SAME handler in v3, verified by structural diff of the two compiled trees
+# rather than by reading the drawing:
+#
+#   453 → 581  the Set-work sheet          (`if setWorkOpen`)
+#    36 → 165  classes screen "Set work"   (`button openSetWork`)
+#    87 → 214  class screen "Set work"     (`button openSetWork`)
+#   180 → 282  the no-work empty state     (`button openSetWork`)
+#   254 → 382  the marking header action   (`button openSetWork`)
+#    67 → 194  the class card's "Set work" (`button c.act`)
+#
+# ⚠️ v3 draws a SIXTH `openSetWork` at node 40, on the new Today screen. It is
+# not listed: `SCREENS` prunes Today whole on all six pages, and the build's
+# own sweep refuses a DEAD node that survives on no page.
 DEAD = (
-    (453, "the Set-work sheet itself. Three steps, a summary line and a "
+    (581, "the Set-work sheet itself. Three steps, a summary line and a "
           "confirm button, in front of a write path that does not exist."),
-    (36,  "\"Set work\" — the primary action on the classes screen."),
-    (87, "\"Set work\" — the primary action on the class screen."),
-    (180, "\"Set work\" — the empty-state prompt on a class with no "
+    (165, "\"Set work\" — the primary action on the classes screen."),
+    (214, "\"Set work\" — the primary action on the class screen."),
+    (282, "\"Set work\" — the empty-state prompt on a class with no "
           "assignments. The emptiest possible dead control: it is the only "
           "thing on screen and it does nothing."),
-    (254, "\"Set work\" — the marking screen's header action."),
-    (67,  "\"Set work\" on a class card that has students but no work set. "
-          "See the note above for why its twin at node 71 survives."),
+    (382, "\"Reteach and reset\" — the marking screen's header action. It "
+          "is drawn by `openSetWork` and opens the same sheet."),
+    (194, "\"Set work\" on a class card that has students but no work set. "
+          "See the note above for why its twin at node 198 survives."),
+
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — AND ONE THAT LIES RATHER THAN DOES
+    # NOTHING, WHICH IS WORSE. Node 236 is v3's "Remind all N" in the class
+    # glance, and Design's handler is
+    # `remind: () => this.ping('Reminder sent to N students in 8r/Sc1')` — a
+    # toast asserting a send, in front of no write at all. A teacher presses
+    # it, reads that N children were reminded, and nothing was.
+    #
+    # ⚠️ THIS IS NOT A LOST AFFORDANCE. `shared/teacher-live.js` INJECTS a
+    # real reminder control onto this same page after mount
+    # (`drawRemindControl`, MRB-306 WS-3), backed by `remindersForClass` and
+    # a unique index that stops a second reminder the same day. Its own
+    # comment already anticipates this exact moment: "Her v3 delivery DOES
+    # draw 'Send reminders' and 'Remind all N'; when that port lands this
+    # injection is deleted and the real control takes over." Swapping the two
+    # is that port's job — a one-line deletion in the seam plus a NAV entry
+    # here. Until then the page carries ONE remind control and it is the one
+    # that works.
+    (236, "\"Remind all N\" in the class glance. It toasts \"Reminder sent "
+          "to N students\" and sends nothing. The working reminder control "
+          "on this page is the one teacher-live.js injects; this is its "
+          "duplicate, and it lies."),
 )
 
 
@@ -247,8 +484,11 @@ DEAD = (
 # in `student_rulings`: silently replacing an `onClick` Design drew would swap
 # one working control's behaviour for another's, and the page would still look
 # and gate exactly right.
+# ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — 27 → 31. Design's v3 top bar grows a tab
+# strip and a `hasCrumb` wrapper ahead of it, so the "Sign out" button (still a
+# `<button>` with no handler at all, still on every screen) moved four places.
 SET_ON = {
-    27: "signOut",
+    31: "signOut",
 }
 
 
@@ -303,13 +543,37 @@ SET_ON = {
 # a key `renderVals` does not have — which `student-runtime` records as a
 # missed binding, so `teacher_behaviour` would catch it, but only after a page
 # had shipped with a brand mark that did nothing.
+# ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · RULED BY MIDE — THE `expect` HALF MOVES
+# FROM `goClasses` TO `goToday`, AND THE NODE DOES NOT MOVE AT ALL.
+#
+# Design's v3 top bar still hangs a handler on node 11, the brand mark, and it
+# is no longer `goClasses`: v3 puts a Today screen first and the wordmark now
+# carries `goToday`. The DESTINATION this ruling asserts against changed; the
+# defect it fixes did not. Pressing "MrBadmusAI" would now be a press that
+# takes a teacher to Today rather than a press that reloaded the class list —
+# a different wrong answer to the same question.
+#
+# ⚑ MIDE, 1 Sep 2026: re-anchor it to `goToday` and keep the ruling. His
+# reading is that v3 putting Today first IS MRB-304's "the brand mark goes
+# home" arriving on its own — Design reached for the same conclusion (the
+# wordmark should leave the page you are on) and stopped one step short of
+# leaving the teacher portal. The ruling completes it.
+#
+# ⚠️ THE ASSERTION IS THE WHOLE SAFETY PROPERTY AND IT IS WHAT CAUGHT THIS.
+# Had `expect` been dropped rather than re-anchored, the port would have moved
+# node 11 off a handler it was no longer carrying and the build would have
+# stayed green. `goToday` itself is NOT left dangling: it is still carried by
+# node 210 ("Back to today", class screen) and given a real destination in
+# `NAV["goToday"]`.
 RETARGET_ON = {
-    11: ("goClasses", "goHome",
-         "the brand mark in the sticky top bar, on all six pages. Design "
-         "shares `goClasses` between it and the class screen's Back (83); "
-         "only the brand moves. \"MrBadmusAI\" is the site's name, not the "
-         "dashboard's, and on classes.html it was a press that reloaded the "
-         "page a teacher was already on."),
+    11: ("goToday", "goHome",
+         "the brand mark in the sticky top bar, on all six pages. In v2 "
+         "Design shared `goClasses` between it and the class screen's Back; "
+         "in v3 she hangs `goToday` on it and shares that with the class "
+         "screen's \"Back to today\" (210). Either way only the brand moves. "
+         "\"MrBadmusAI\" is the site's name, not the dashboard's, and on "
+         "classes.html it was a press that reloaded the page a teacher was "
+         "already on."),
 }
 
 
@@ -407,7 +671,29 @@ NAV = {
         # this tuple without that entry would drop the assertion silently.
         # `goClasses` itself is unchanged: node 83, the class screen's Back,
         # still goes to the class list carrying its academic year.
-        nodes=(463,),
+        # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — `nodes` IS EMPTY, AND THAT IS
+        # THE FINDING, not a loosened assertion. The 1 Sep note below says
+        # node 463 is "the class screen's Back". It is not: node 463's
+        # ancestors are 9 → 461 → 462 → 463, and 461 is `<if isImport>`. It
+        # is the IMPORT screen's Back — the same control the 24 Aug note two
+        # paragraphs down removed as node 348, back under a new number — and
+        # the import screen is not emitted on any page, so the build's
+        # closing sweep refused it exactly as it refused 348.
+        #
+        # ⚠️ v3'S CLASS SCREEN HAS NO "BACK TO MY CLASSES" AT ALL. Node 210
+        # is its only Back and it reads "Back to today", carrying `goToday`.
+        # So `goClasses` is carried by nothing this port emits.
+        #
+        # The REWRITE is kept anyway, and it is not dead: it is what makes
+        # `goClasses` a real navigation the moment the import screen or any
+        # other Back is emitted, and removing it would leave that control
+        # calling `setState` on a page where every other screen is pruned —
+        # a blank page. What is gone is the ANCHOR, because there is no
+        # emitted node left to anchor on. The way back to the class list on
+        # all six pages is now the top bar's "My classes" tab (`LOGIC`,
+        # `navTabs`), which carries `yearParam` for the same reason this
+        # entry does.
+        nodes=(),
         anchor=dict(key="goClasses"),
         to="      goClasses: () => MRB_GO('classes', "
            "{ year: MRB_DATA('yearParam') }),",
@@ -432,7 +718,13 @@ NAV = {
             "itself, so Design's handler now agrees with this ruling on that "
             "point; the rewiring to a real URL is unchanged."),
     "goDigest": dict(
-        nodes=(41, 166),
+        # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — node 41 removed. It is the Today
+        # screen's "Weekly digest" and `SCREENS` now prunes Today on all six
+        # pages, so it is present on none of them and the closing sweep
+        # refuses an anchor that was never checked. Node 166, the classes
+        # screen's, is unchanged and still asserted. One rewrite still serves
+        # both, so 41 becomes real the day Today is ported.
+        nodes=(166,),
         anchor=dict(key="goDigest"),
         to="      goDigest: () => MRB_GO('digest', {}),",
         why="\"Weekly digest\". No `class` parameter IS `digestScope: 'all'` "
@@ -569,13 +861,49 @@ NAV = {
         why="a row of the weekly digest. Design's empty-class arm is KEPT as "
             "a toast: it is not a navigation and never was, and silently "
             "doing nothing would be the dead control the toast avoids. "
-            "⚠️ 1 Sep 2026 (MRB-306): node 453 is fed by TWO builders — "
-            "`digestRows` on the whole-school digest and `classReportRows` "
-            "when `digestScope` is `class`. This ruling reaches only the "
-            "first, exactly as it did in v2; the class report's rows still "
-            "call `setState`. That is a pre-existing gap this re-anchoring "
-            "did not create and is not authorised to close — it is reported "
-            "rather than fixed."),
+            "⊕ 2 Sep 2026 (MRB-306 Phase 1c): node 453 is fed by TWO "
+            "builders — `digestRows` on the whole-school digest and "
+            "`classReportRows` when `digestScope` is `class` — and this "
+            "entry reaches only the first. The second is now the entry "
+            "below, on Mide's ruling. The `builder=` anchor is what makes "
+            "two entries on one node possible at all: the handler NAME is "
+            "the same on both rows and only the closure they live in tells "
+            "them apart."),
+
+    # ── ⊕ RULED BY MIDE, 1 Sep 2026 · A v2 DEFECT CLOSED IN PASSING ──────
+    #
+    # ⛔ THE CLASS REPORT'S ROWS WERE NEVER REWIRED, IN v2 OR IN v3. Node 453
+    # is ONE row markup — `<for digestRows as d>` — and `digestRows` is
+    # `isClassReport ? classReportRows : digestRows`, so the SAME row is
+    # drawn by two different closures depending on whether the digest is
+    # scoped to a class. The entry above rewires `digestRows`. Nothing
+    # rewired `classReportRows`, so on `digest.html?class=<id>` — the CLASS
+    # REPORT, which is where a teacher goes to look at one class's papers —
+    # every row still ran Design's `this.setState({ screen: 'marking',
+    # paperId: p.id })`.
+    #
+    # On a six-URL port that press sets a screen the page does not carry, so
+    # every screen `<if>` goes false and THE PAGE RENDERS NOTHING. It is the
+    # `c.act` blank page again, on a row a teacher presses to open marking.
+    #
+    # ⚠️ AND `paperId` WOULD HAVE BEEN WRONG EVEN IF THE SCREEN EXISTED.
+    # Design keys a paper by a made-up string (`'8rsc1:p1'`);
+    # `teacher-live.js` reads `?paper=` as an INDEX into the class's own
+    # paper list. `p.idx` is the index, and it is already in scope — the
+    # same closure reads `kMx.colSub[p.idx]` two lines up.
+    #
+    # ⚑ MIDE, 1 Sep 2026: fix it now. It was reported as pre-existing and
+    # out of scope on 1 Sep; this closes it.
+    "d.open (class report)": dict(
+        nodes=(453,),
+        anchor=dict(builder="classReportRows", key="open"),
+        to="        open: () => MRB_GO('marking', { 'class': k && k.id, "
+           "paper: p.idx })",
+        why="a row of the CLASS REPORT — `digest.html?class=<id>` — which "
+            "draws the same node 453 as the whole-school digest through a "
+            "different builder. It opens the marking screen for that paper, "
+            "which is what Design's own closure meant; it went by a paper id "
+            "the seam cannot read, to a screen this page does not carry."),
     # ⊕ RULED 24 Aug 2026 — AND IT WAS SHIPPING BLANK. This file's own note
     # above `DEAD` said "`act` itself is rewritten to import-only in
     # `METHODS`". It was not: `act` is a LOOP-SCOPED closure inside the
@@ -613,6 +941,63 @@ NAV = {
             "Import/Set-work fork — which no ruling touches. A finding for "
             "MRB-306, not a change to make here."),
 
+    # ══ ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · v3'S NEW CLASS-SCREEN CONTROLS ══
+    #
+    # ⛔ FIVE CONTROLS DESIGN ADDED IN v3 THAT NO RULING TOUCHED, ALL FIVE ON
+    # `class-detail.html`, ALL FIVE SETTING `s.screen`. On a six-URL port that
+    # is not a navigation, it is a page that renders nothing: `s.screen` is
+    # fixed by the build and every other screen `<if>` has been pruned, so the
+    # press makes every branch false. It is the `c.act` blank page of 24 Aug,
+    # five times over, on the page a teacher spends most of their day on.
+    #
+    # They were flagged as findings on 1 Sep and left; they are closed here
+    # because a screen-setting control on an emitted page is the same defect
+    # class as the `TODAY_LESSONS` throw this unit was sent to fix, and
+    # leaving a class page whose "glance" block is five dead presses does not
+    # serve a teacher looking at a real class.
+    "goToday": dict(
+        nodes=(210,),
+        anchor=dict(key="goToday"),
+        to="      goToday: () => MRB_GO('today', {}),",
+        why="the class screen's Back (210), which v3 relabels \"Back to "
+            "today\" — v2's was \"Back to my classes\" and carried "
+            "`goClasses`. It goes to `teacher/today.html`, the hand-written "
+            "Today page, which is real and live; when Design's Today screen "
+            "is ported it emits that same filename, so this link does not "
+            "become a rename. ⚠️ Node 11, the brand mark, ALSO carries "
+            "`goToday` in v3 and is moved OFF it by `RETARGET_ON` before this "
+            "rewrite is asserted — the brand goes to the public homepage, "
+            "which is Mide's MRB-304 ruling and is not weakened by v3 giving "
+            "the wordmark a nicer wrong destination."),
+
+    "glance.openMarking": dict(
+        nodes=(253,),
+        anchor=dict(key="openMarking"),
+        to="      openMarking: () => MRB_GO('marking', { 'class': k && k.id, "
+           "paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id)) }),",
+        why="\"Open the full breakdown\" under the class glance's two "
+            "weakest questions. Design's own destination is the marking "
+            "screen for `lastP`, the last MARKED paper — but by `paperId`, a "
+            "made-up string the seam cannot read. `MRB_NEWEST_MARKED` is the "
+            "port's existing answer to \"which paper is the newest marked "
+            "one\", taken from `teacher-live.js` rather than reimplemented, "
+            "and it is the same function every other marking link already "
+            "uses. Design's `if (lastP)` guard is not needed: the whole "
+            "glance block is inside `<if klass.hasWork>`."),
+
+    "w.open (keep an eye on)": dict(
+        nodes=(259,),
+        anchor=dict(builder="watch", key="open"),
+        to="      open: () => MRB_GO('student', { student: r.id, 'class': "
+           "k && k.id })",
+        why="a student chip in the class glance's \"Keep an eye on\" list "
+            "(259). ⚠️ ANCHORED ON THE `watch` BUILDER, not on the line, "
+            "because v3 draws a byte-identical closure on the Today screen "
+            "as well and an exactly-once source replacement would refuse on "
+            "a count of two. It gains `'class'` — Design's version sets only "
+            "`studentId`, and a student page needs the class it is being "
+            "read in."),
+
     "r.open (search)": dict(
         nodes=(665,),
         anchor=dict(builder="results", key="open"),
@@ -638,26 +1023,37 @@ NAV = {
 # silently dropped and the gate would find nothing.
 #
 # `data-import-slot` is the same idea for a different job: see `RETEXT_AT`.
+# ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — re-anchored on v3, every row:
+#   10→10 · 29→158 · 81→208 · 210→330 · 246→370 · 300→428 · 334→462
+#   389→517 · 501→629 · 526→656 · 542→672
+#   355→483 · 356→484 · 371→499 · 374→502 · 377→505 · 387→515
+# and the two composer rows (187, 196) are GONE — see the note where they
+# were, below.
 SET_ATTR = {
     10:  {"data-port-region": "topbar"},
-    29:  {"data-port-region": "classes"},
-    81:  {"data-port-region": "class"},
-    210: {"data-port-region": "student"},
-    246: {"data-port-region": "marking"},
-    300: {"data-port-region": "digest"},
-    334: {"data-port-region": "import"},
-    389: {"data-port-region": "insights"},
-    501: {"data-port-region": "overlay-bulk"},
-    526: {"data-port-region": "overlay-search"},
-    542: {"data-port-region": "toast"},
+    158: {"data-port-region": "classes"},
+    208: {"data-port-region": "class"},
+    330: {"data-port-region": "student"},
+    370: {"data-port-region": "marking"},
+    428: {"data-port-region": "digest"},
+    462: {"data-port-region": "import"},
+    517: {"data-port-region": "insights"},
+    629: {"data-port-region": "overlay-bulk"},
+    656: {"data-port-region": "overlay-search"},
+    672: {"data-port-region": "toast"},
     # ⊕ THE TWO COMPOSER FIELDS, so the send can CLEAR them. Design's select
     # and textarea are uncontrolled — neither carries a `value` — and
     # `student-runtime` deliberately carries field values across a redraw, so
     # clearing `s.recipient` and `s.note` clears the state and leaves the
     # typed text on screen. `MRB_COMPOSE_RESET` empties the DOM first, and
     # this is how it finds them without an id Design did not write.
-    187: {"data-compose-field": "recipient"},
-    196: {"data-compose-field": "note"},
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — RETIRED. They were nodes 187 and 196
+    # and there is nothing in v3 to re-anchor them onto: Design's v3 DELETED
+    # the class screen's single-student shoutout composer and the shoutout
+    # feed under it (v2 nodes 181–208) outright, and replaced them with the
+    # `glance` block. See `SHOUTOUT_COMPOSER_DROPPED`. `MRB_COMPOSE_RESET`
+    # still queries `[data-compose-field]` and now matches nothing, which is
+    # a no-op rather than an error; the bulk overlay clears its own fields.
 
     # ⚠️ THE FIVE `data-import-slot` ROWS BELOW APPLY TO NO EMITTED PAGE. They
     # are the import screen's nodes and the import screen is not ported (see
@@ -666,12 +1062,12 @@ SET_ATTR = {
     # work a future re-port would otherwise redo — and said out loud here,
     # because a ruling that quietly applies to nothing is the drift this file
     # exists to stop.
-    355: {"data-import-slot": "fileName"},
-    356: {"data-import-slot": "fileSummary"},
-    371: {"data-import-slot": "newCount"},
-    374: {"data-import-slot": "matchedCount"},
-    377: {"data-import-slot": "attentionCount"},
-    387: {"data-import-slot": "confirm"},
+    483: {"data-import-slot": "fileName"},
+    484: {"data-import-slot": "fileSummary"},
+    499: {"data-import-slot": "newCount"},
+    502: {"data-import-slot": "matchedCount"},
+    505: {"data-import-slot": "attentionCount"},
+    515: {"data-import-slot": "confirm"},
 }
 
 
@@ -703,13 +1099,16 @@ BIND_ATTR = {
     # ⚠️ THIS IS AN ATTRIBUTE AND NOT A TEXT NODE, so `BINDINGS_AT` cannot
     # reach it — the same reason the search placeholder is here. The visible
     # LABEL stays `s.name`; only the value changes.
-    190: ("value",
-          {"parts": [{"e": "s.name"}]},
-          {"parts": [{"e": "s.id"}]},
-          "the shoutout recipient. Design's option value is the child's "
-          "NAME; the write path needs the id, and the id is what identifies "
-          "a child."),
-    532: ("placeholder",
+    #
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — RETIRED, and the note above is kept
+    # because it is the reasoning, not the anchor. The ruling was on node 190,
+    # the `<option>` inside the class screen's recipient `<select>`, and v3
+    # has no such node: Design deleted the whole single-student composer. The
+    # id-not-name principle survives where the write still happens — the bulk
+    # overlay's `bulkStudents` rows carry `s.id` and `MRB_SEND_SHOUTOUTS`
+    # takes ids — so nothing regressed to sending a name. See
+    # `SHOUTOUT_COMPOSER_DROPPED`.
+    662: ("placeholder",
           "Search students across all 12 classes",
           {"parts": [{"e": "searchPlaceholder"}]},
           "the 12 is this teacher's real class count. Design drew a teacher "
@@ -732,6 +1131,17 @@ BIND_ATTR = {
 # one side emits and the other never supplies is a thrown error on a real
 # page, so the names are taken from that file's own `load()` return rather
 # than chosen here.
+# ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — re-anchored on v3: 32→161 · 77→204 ·
+# 79→206 · 306→434 · 395→523.
+#
+# ⚠️ TWO OF THE ASSERTED LITERALS CHANGED AS WELL AS THE INDEX, and that is
+# the reason this table asserts the literal at all. Design moved her sample
+# forward one week between deliveries: the digest heading now reads
+# "Mon 24 – Fri 28 Aug 2026" and the charts heading "Week of Mon 24 Aug 2026".
+# Re-anchoring the index alone would have left the build asserting a date
+# Design no longer types, which refuses loudly — the right failure. What it
+# must NOT become is a literal loosened to make it pass: the literal is what
+# proves the node is still the heading and not its neighbour.
 BINDINGS_AT = {
     # ── the top bar, on every page ──────────────────────────────────────
     #
@@ -753,21 +1163,21 @@ BINDINGS_AT = {
     # not come back.
 
     # ── the classes screen ──────────────────────────────────────────────
-    32:  ("Autumn term · 2026–27", "termLabel"),
-    77:  ("Viewing 2026–27", "viewingYearLabel"),
+    161: ("Autumn term · 2026–27", "termLabel"),
+    204: ("Viewing 2026–27", "viewingYearLabel"),
     # ⊕ MRB-287 E1 — the year toggle's own label. "Previous years" is right
     # only while the WORKING year is in view; opened FROM a past year the same
     # list leads forward as well, and the retired hand-written page said
     # "other years" for exactly that case
     # (teacher-classes-2026-08-24-retired.html:677). It is `pastYearsLabel`,
     # computed in the seam, and it is the reason that key is no longer dead.
-    79:  ("Previous years", "pastYearsLabel"),
+    206: ("Previous years", "pastYearsLabel"),
 
     # ── the digest ──────────────────────────────────────────────────────
-    306: ("Mon 17 – Fri 21 Aug 2026", "weekRangeLabel"),
+    434: ("Mon 24 – Fri 28 Aug 2026", "weekRangeLabel"),
 
     # ── the charts screen ───────────────────────────────────────────────
-    395: ("Week of Mon 17 Aug 2026", "weekOfLabel"),
+    523: ("Week of Mon 24 Aug 2026", "weekOfLabel"),
 }
 
 
@@ -796,17 +1206,41 @@ BINDINGS_AT = {
 #
 # `{node: (exact literal, replacement text, why)}`.
 RETEXT_AT = {
-    355: ("year8-autumn.csv", "",
+    # ── ⊕ MIDE, 1 Sep 2026 · THE ROSTER COLUMN IS THE SELECTED WEEK ─────
+    #
+    # ⚠️ AND THIS ONE IS A BINDING, NOT A LITERAL, WHICH IS WHY IT IS HERE
+    # AND NOT IN `BINDINGS_AT`. `BINDINGS_AT` keys are `MRB_DATA` keys, read
+    # out of `teacher-live.js`'s payload at mount; `rosterWeekCol` is a
+    # `renderVals` key, because it changes every time a teacher presses a
+    # chip and the payload does not. A text node's `v` takes a `parts`
+    # expression exactly as an attribute's does — Design writes one herself
+    # on node 309 — so the assertion this table already makes (the node still
+    # reads what the ruling thinks it reads) is the guard that matters.
+    #
+    # Left as the literal "This week" it is simply false the moment a past
+    # week is selected: the column would be headed "This week" over marks
+    # from October.
+    289: ("This week",
+          {"parts": [{"e": "rosterWeekCol"}]},
+          "the roster table's second column heading. Under the week bar the "
+          "column is the SELECTED week, and it says which one."),
+
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — the six import rows re-anchored on
+    # v3: 355→483 · 356→484 · 371→499 · 374→502 · 377→505 · 387→515. Every
+    # literal is unchanged, which is what says these are the same six nodes.
+    # ⚠️ Node 289 above is NOT remapped — it was written against v3 by the
+    # week-bar unit and v3's node 289 is the roster's second column heading.
+    483: ("year8-autumn.csv", "",
           "a file nobody uploaded."),
-    356: ("27 rows · 5 columns", "",
+    484: ("27 rows · 5 columns", "",
           "counts of a file nobody parsed."),
-    371: ("24", "",
+    499: ("24", "",
           "\"New students\" — a dry-run nobody ran."),
-    374: ("2", "",
+    502: ("2", "",
           "\"Matched existing\" — same."),
-    377: ("1", "",
+    505: ("1", "",
           "\"Needs attention\" — same, and the one a teacher would act on."),
-    387: ("Import 26 students", "Import students",
+    515: ("Import 26 students", "Import students",
           "the button. 26 is fiction; \"Import\" is not. An empty button is "
           "an unpressable rectangle, so the count goes and the verb stays."),
 }
@@ -982,7 +1416,152 @@ _DEL_PRIMARY = ("flex:none;height:38px;padding:0 18px;"
 _NAV_BACK_BTN = _DEL_TEXT_BTN
 
 
+# ── ⊕ MIDE, 1 Sep 2026 · the week bar's style strings ────────────────────
+#
+# Read out of the v2 delivery, character for character, not retyped from a
+# description: `docs/…/teacher/source/Teacher Dashboard.dc.html` at commit
+# 3ee8172f6, lines 157-177. Design drew this bar and then removed it; the
+# ruling is that it comes back, not that it gets redesigned.
+_WK_BAR = ("display:flex;align-items:center;gap:12px;margin-top:18px;"
+           "padding:12px;background:var(--st-paper);"
+           "border:1px solid var(--st-rule-soft);border-radius:12px")
+_WK_CAPTION = ("flex:none;padding-left:4px;font:500 13px/1.2 var(--st-mono);"
+               "letter-spacing:.16em;text-transform:uppercase;"
+               "color:var(--st-caption)")
+_WK_CHEV = ("flex:none;display:flex;align-items:center;justify-content:center;"
+            "width:36px;height:52px;background:var(--st-paper);"
+            "border:1px solid var(--st-rule-soft);border-radius:9px;color:")
+_WK_RAIL = ("display:flex;align-items:stretch;overflow-x:auto;padding:1px;"
+            "scrollbar-width:none")
+_WK_CHIP = ("flex:none;display:flex;flex-direction:column;align-items:center;"
+            "justify-content:center;gap:5px;min-height:52px;padding:8px 17px;"
+            "background:")
+_WK_RANGE = "font:500 18px/1.15 var(--st-mono);color:"
+_WK_SUB = ("font:500 11.5px/1 var(--st-mono);letter-spacing:.14em;"
+           "text-transform:uppercase;white-space:nowrap;color:")
+_WK_NOTE = "margin-top:14px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)"
+
+
+def _wk_chevron(handler, label, path, colour, cursor, marker):
+    """One of the two week chevrons, in v2's own drawing.
+
+    ⚠️ `data-mrb-added` IS NOT DECORATION. Inserted markup carries no `i` —
+    Design's numbering is what every other ruling is anchored on — so it also
+    carries no `data-dc-tpl`, and `teacher_behaviour`'s control sweep finds
+    an inserted control ONLY by this attribute. Without it the two chevrons
+    would be markup no gate can see, which is the hole that comment records.
+    """
+    return {
+        "t": "button",
+        "a": {"type": "button", "aria-label": label,
+              "data-mrb-added": marker,
+              "style": {"parts": [_WK_CHEV, {"e": colour},
+                                  ";cursor:", {"e": cursor}]}},
+        "hov": "border-color:var(--st-edge)",
+        "on": handler,
+        "c": [{"t": "svg",
+               "a": {"width": "15", "height": "15", "viewBox": "0 0 14 14",
+                     "fill": "none", "aria-hidden": "true"},
+               "c": [{"t": "path",
+                      "a": {"d": path, "stroke": "currentColor",
+                            "stroke-width": "1.7", "stroke-linecap": "round",
+                            "stroke-linejoin": "round"}}]}]}
+
+
 INSERT_AT = {
+    # ── ⊕ RULED BY MIDE, 1 Sep 2026 · THE WEEK BAR ─────────────────────
+    #
+    # See `WEEK_BAR_RESTORED` at the top of this file for the ruling and for
+    # what is deliberately different from v2. This is the markup half; the
+    # logic half is LOGIC #6, #13, #36 and the week-bar entries at the end of
+    # LOGIC, and the data half is `buildWeeks` / `assignPaperWeeks` in
+    # `shared/teacher-live.js`.
+    #
+    # ⚠️ THE MARKUP AND THE KEYS SHIP TOGETHER OR NEITHER SHIPS. `weekTabs`
+    # with nowhere to render is invisible — the page builds, every gate is
+    # green, and the bar Mide ruled is simply not there. `weekBack` with no
+    # button is the opposite failure and the one `teacher_behaviour` catches:
+    # a handler nothing calls.
+    #
+    # ⚑ IT IS AN ADDITION AGAINST DESIGN'S v3 and is registered in
+    # `AMENDED_ADDITIONS` for that reason — but it is not new design. Every
+    # style string is v2's, read out of the delivery rather than retyped, and
+    # Design drew all of it. What changed is that she removed it and Mide put
+    # it back.
+    #
+    # ⚠️ PLACED AFTER NODE 218 — the class header (code, meta, stat line),
+    # which owns the rule under it — and therefore before node 222, v3's
+    # `glance` grid. That is exactly where v2 drew it: under the header,
+    # above everything the week scopes.
+    #
+    # ⚠️ GATED ON `klass.hasWork`, WHICH IS DESIGN'S OWN RULE AND SURVIVES THE
+    # RE-INDEXING. The weeks now come from the academic year rather than from
+    # the class's assignments, so a class with no work set HAS twelve weeks —
+    # and a bar over a class with nothing to scope is a control that does
+    # nothing whichever chip you press. The seam's `weeks()` ruling says the
+    # same thing from the other side.
+    #
+    # ⚠️ THE CHIP'S SECOND LINE HAS NO `if` ANY MORE. v2 wrapped it in
+    # `sc-if w.now` and rendered "This week" on one chip out of twelve,
+    # because its ranges identified the weeks inside its own fiction. Dated
+    # from a real academic year they do not — "5–9 Oct" says nothing about
+    # which teaching week it is — so the line carries "This week" or the
+    # term-relative label on every chip, in Design's own type. An
+    # always-true `if` was the alternative, and a dead conditional cannot be
+    # told from a broken one.
+    (208, 218): ({
+        "t": "if", "e": "klass.hasWork",
+        "c": [
+            {"t": "div",
+             "a": {"class": "noprint", "style": _WK_BAR},
+             "c": [
+                 {"t": "span", "a": {"style": _WK_CAPTION},
+                  "c": [{"t": "#", "v": "Week"}]},
+                 _wk_chevron("weekBack", "Previous week", "M9 3L5 7l4 4",
+                             "weekBackColor", "weekBackCursor", "week-back"),
+                 {"t": "div",
+                  "a": {"data-rail": "weeks", "style": _WK_RAIL},
+                  "c": [{
+                      "t": "for", "e": "weekTabs", "as": "w",
+                      "c": [{
+                          "t": "button",
+                          "a": {"type": "button",
+                                "data-mrb-added": "week-chip",
+                                "data-week": {"parts": [{"e": "w.idx"}]},
+                                "aria-pressed": {"parts": [{"e": "w.on"}]},
+                                "style": {"parts": [
+                                    _WK_CHIP, {"e": "w.bg"},
+                                    ";border:none;border-left:1px solid ",
+                                    {"e": "w.divider"},
+                                    ";box-shadow:", {"e": "w.ring"},
+                                    ";border-radius:9px;cursor:pointer"]}},
+                          "hov": "background:var(--st-note-bg)",
+                          "on": "w.pick",
+                          "c": [
+                              {"t": "span",
+                               "a": {"style": {"parts": [
+                                   _WK_RANGE, {"e": "w.dateColor"},
+                                   ";white-space:nowrap"]}},
+                               "c": [{"t": "#",
+                                      "v": {"parts": [{"e": "w.range"}]}}]},
+                              {"t": "span",
+                               "a": {"style": {"parts": [
+                                   _WK_SUB, {"e": "w.subFg"}]}},
+                               "c": [{"t": "#",
+                                      "v": {"parts": [{"e": "w.sub"}]}}]}
+                          ]}]}]},
+                 _wk_chevron("weekFwd", "Next week", "M5 3l4 4-4 4",
+                             "weekFwdColor", "weekFwdCursor", "week-fwd")
+             ]},
+            {"t": "div", "a": {"style": _WK_NOTE},
+             "c": [{"t": "#", "v": {"parts": [{"e": "weekNote"}]}}]}
+        ]},
+        "the class screen's week bar — Mide's ruling of 1 Sep 2026, against "
+        "Design's v3, which deleted it. Twelve teaching weeks of the "
+        "academic year, newest first; pressing one re-scopes the glance "
+        "block, the roster column and the assignment table. v2's markup, "
+        "style string for style string."),
+
     # ── ⊕ RULED, MRB-304 · A PERSISTENT WAY BACK TO THE CLASS LIST ──────
     #
     # ⛔ THE BRAND MARK WAS DOING THIS JOB AND HAS STOPPED. See `RETARGET_ON`:
@@ -1025,19 +1604,29 @@ INSERT_AT = {
     # and before node 15, the search button that carries `margin-left:auto`.
     # So it sits in the left-hand group with the brand and the crumb, and the
     # right-hand group Design drew is untouched.
-    (10, 13): ({
-        "t": "button",
-        "a": {"type": "button",
-              "data-mrb-added": "nav-classes",
-              "style": _NAV_BACK_BTN},
-        "hov": "color:var(--st-ink)",
-        "on": "goClasses",
-        "c": [{"t": "#", "v": "My classes"}]},
-        "the top bar's way back to the class list, on every one of the six "
-        "screens. The brand mark used to be it and now goes to the public "
-        "homepage (RETARGET_ON node 11), and `teacher/import.html` and "
-        "`teacher/admin.html` — the two hand-written teacher pages — have "
-        "carried exactly this pair since they were written."),
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — RETIRED, BECAUSE DESIGN DREW IT.
+    #
+    # The insertion that was here put a "My classes" button into the top bar
+    # after Design's crumb. v3's top bar opens with a TAB STRIP of her own —
+    # node 13 holding `<for navTabs>`, whose two tabs are literally "Today"
+    # and "My classes", present on every screen, with the active one lit.
+    # That is Mide's 31 Aug requirement — "a separate My classes control to
+    # the dashboard, present and working identically everywhere" — arriving
+    # in Design's own hand, exactly as v3 independently arrived at the other
+    # half of MRB-304 (`RETARGET_ON`, where the wordmark had already stopped
+    # pointing at the class list).
+    #
+    # ⚠️ SO THE RULING IS SATISFIED, NOT DROPPED. Keeping the insertion as
+    # well would put TWO "My classes" controls eight pixels apart in a 62px
+    # bar, one lit and one not.
+    #
+    # ⚠️ AND IT ONLY COUNTS BECAUSE THE TAB WAS REWIRED. Design's `t.pick` is
+    # `this.setState({ screen: t.id })`, and on a page where every screen but
+    # one is pruned that press renders NOTHING — the same blank-page failure
+    # `c.act` shipped with in August. See the `navTabs` entry in `LOGIC`: both
+    # tabs are real navigations now, and the "My classes" one carries
+    # `yearParam` exactly as this insertion's `goClasses` did, so a teacher
+    # browsing 2025-26 still comes back to 2025-26.
 
     # ── the environment badge, conditional now ──────────────────────────
     #
@@ -1049,7 +1638,7 @@ INSERT_AT = {
     # production origin, so this `if` renders nothing there (v2's exact
     # drawing) and renders TEST / LOCAL anywhere it would matter. Styling is
     # v1's own chip, at v2's 12px nav scale.
-    (10, 21): ({
+    (10, 25): ({
         "t": "if", "e": "envBadge",
         "c": [{
             "t": "span",
@@ -1078,7 +1667,7 @@ INSERT_AT = {
     # "Self-marked or written" — the two things the state actually is, in
     # Design's own uppercase mono, in the register of the three keys beside
     # it.
-    (275, 280): ({
+    (403, 408): ({
         "t": "span", "a": {"style": _LEGEND_KEY},
         "c": [
             {"t": "span", "a": {"style": "width:9px;height:9px;"
@@ -1104,7 +1693,7 @@ INSERT_AT = {
     # `teacher-live.js` throws before mount (`SAY.noClasses`) so that the
     # truly-empty case never reaches this grid at all. Two sentences for one
     # condition is how a page ends up disagreeing with itself.
-    (29, 48): ({
+    (158, 177): ({
         "t": "if", "e": "noneShown",
         "c": [{
             "t": "div",
@@ -1153,7 +1742,7 @@ INSERT_AT = {
     # eight pixels from node 84, which already says it. The statement rides
     # on `viewingYearLabel` instead — "Viewing 2025–26 · read-only" — one
     # binding, one sentence, and no literal year anywhere near it.
-    (76, 79): ({
+    (203, 206): ({
         "t": "if", "e": "yearsOpen",
         "c": [{
             "t": "span",
@@ -1197,7 +1786,7 @@ INSERT_AT = {
     # reads MORE loudly, and read-only is a state worth reading loudly.
     # Not into node 82's action row: that is `space-between` and a third
     # child there would push the header actions off their edge.
-    (91, None): ({
+    (218, None): ({
         "t": "if", "e": "readOnlyLine",
         "c": [{
             "t": "span",
@@ -1232,6 +1821,29 @@ INSERT_AT = {
     # leaves the feed for EVERYONE, the author included. What a teacher sees
     # is a real removal, which is what the word says; "delete" would promise
     # something about the database that the database does not do.
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — TWO ENTRIES RETIRED FROM HERE, and
+    # they are the shoutout-delete pair. Their markup is PARKED, not deleted,
+    # in `SHOUTOUT_MARKUP_PARKED` immediately below; the build does not read
+    # it. See `SHOUTOUT_COMPOSER_DROPPED` for why, and for what is open on
+    # Mide.
+
+}
+
+
+# ── ⊕ PARKED, 2 Sep 2026 (MRB-306 Phase 1c) ─────────────────────────────
+#
+# The two `INSERT_AT` subtrees that drew Mide's shoutout-delete control and
+# its confirm sheet. They came out of `INSERT_AT` because Design's v3 deleted
+# the class screen's shoutout FEED, and a delete control on a feed that is
+# not on the page is markup nobody can reach.
+#
+# ⚠️ KEPT RATHER THAN DELETED, because Mide RULED this control into existence
+# on 24 Aug 2026 ("a teacher who can post a shoutout can remove one") and
+# that ruling has not been withdrawn — only its host has gone. If the feed
+# comes back, these two go straight back into `INSERT_AT` against the feed
+# card's new indices and nothing has to be re-derived. NOTHING IN THE BUILD
+# READS THIS NAME.
+SHOUTOUT_MARKUP_PARKED = {
     (203, 206): ({
         "t": "if", "e": "f.canDelete",
         "c": [{
@@ -1370,35 +1982,43 @@ INSERT_AT = {
 # reason; see the guard beside the wrap step.
 #
 # `{page: {node index: renderVals key}}`.
+# ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — re-anchored on v3: 78→205, 79→206,
+# 38→167, 71→198. And `class-detail.html` LOST BOTH OF ITS ROWS, which is a
+# change in what the page does and not only in its numbering — see the note
+# where they were.
 WRAP = {
     "classes.html": {
         # The year strip's separator and its toggle. A school in its first
         # year has no other year to reach, and Design's unconditional button
         # would answer "there are none" — which is a control that exists to
         # tell you it should not.
-        78: "hasOtherYears",
-        79: "hasOtherYears",
+        205: "hasOtherYears",
+        206: "hasOtherYears",
         # The two import routes. `roster-import` is one of only three write
         # paths on the whole teacher surface, and importing children into a
         # class that finished in July is not an action worth offering.
-        # Node 38 is the header action; node 71 is the same route from an
-        # empty class card (the one node 74's pruning deliberately spared).
-        38: "canWrite",
-        71: "canWrite",
+        # Node 167 is the header action; node 198 is the same route from an
+        # empty class card (the one node 194's pruning deliberately spared).
+        167: "canWrite",
+        198: "canWrite",
     },
-    "class-detail.html": {
-        # The bulk sheet's opener and the composer card. Node 185 is the
-        # WHOLE composer — its label (199), the recipient select (200), the
-        # six template buttons (206/207), the textarea (209) and the footer
-        # holding "Send shoutout" (212) are all inside it — so one wrap takes
-        # the write surface off the page without touching Design's grid.
-        #
-        # ⚠️ NODE 200, THE FEED, STAYS. A past year is READ-only, not
-        # invisible: what a teacher wrote about a child last year is exactly
-        # the record MRB-261 exists to keep reachable.
-        183: "canWrite",
-        185: "canWrite",
-    },
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — `class-detail.html` HAD TWO ROWS HERE
+    # AND HAS NONE. They were nodes 183 ("Send to several students") and 185
+    # (the whole single-student composer), wrapped in `canWrite` so a PAST
+    # academic year could not be written to. Design's v3 deleted both nodes.
+    #
+    # ⚠️ SO MRB-261'S READ-ONLY GUARANTEE NOW HAS A HOLE ON THIS PAGE, and it
+    # is stated rather than left to be discovered: the shoutout write surface
+    # that survives v3 is the BULK OVERLAY, opened from node 215 ("Shoutouts")
+    # and node 276 ("Send a shoutout"), and NEITHER IS WRAPPED. On a past year
+    # a teacher can still open the sheet and press Send. The insert is refused
+    # further down — `insertClassShoutout` writes against the class's own
+    # academic year and the year is what the page is scoped by — so this is a
+    # control that lies rather than a control that corrupts, which is the
+    # lesser of the two and still not right. Closing it means wrapping 215 and
+    # 276, and that is a behaviour change on a live page rather than a remap,
+    # so it is written up for Mide instead of taken here.
+    # See `SHOUTOUT_COMPOSER_DROPPED`.
 }
 
 
@@ -1465,34 +2085,14 @@ AMENDED_ADDITIONS = (
     # working year by design — `MRB_GO` drops an empty param so the ordinary
     # URL stays byte-identical — so demanding a value there would fail on
     # every fixture that is in the year it is supposed to be in.
-    dict(marker="nav-classes",
-         pages=("classes.html", "class-detail.html", "student-detail.html",
-                "assignment.html", "digest.html", "insights.html"),
-         node=10, label="My classes",
-         expect_nav=dict(screen="classes"),
-         why="Mide, 31 Aug 2026: the brand mark goes to the public homepage "
-             "from every teacher page, and there is a separate, always "
-             "visible way back to the class list. Design's top bar hung both "
-             "jobs on the wordmark, which on classes.html was a press that "
-             "reloaded the page the teacher was already on. The two "
-             "hand-written teacher pages have carried this exact pair — "
-             "brand to /index.html, \"My classes\" beside it — since they "
-             "were written; this is the ported six catching up with them."),
-    # ⊕ MRB-287 E1 — the academic year a teacher is switching TO.
-    #
-    # ⚠️ `needs_data` IS DELIBERATELY NOT SET, per the warning above. This is
-    # CHROME: the year strip is on screen in every state the classes page can
-    # be in, including the one with no classes at all — which is precisely the
-    # state it matters most in, because a teacher whose classes are ALL last
-    # year's arrives at an empty grid and this is their only way out of it.
-    #
-    # ⚠️ `opener_tpl` IS DESIGN'S NODE, NOT AN ADDITION, AND THE GATE NEEDED
-    # TEACHING THAT. `teacher_behaviour`'s reveal loop presses earlier
-    # ADDITIONS to uncover a later one; this is the first addition on its page
-    # and the thing that opens it is node 86, one of Design's own. Without the
-    # opener the marker is reported unreachable — correctly, because it would
-    # be, to that gate.
-    dict(marker="year-open", pages=("classes.html",), node=76, opener_tpl=79,
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — the `nav-classes` row was here and is
+    # RETIRED: Design's v3 top bar draws the control itself, as the "My
+    # classes" tab of her own `navTabs` strip, so the port no longer adds one.
+    # The full reasoning is at the retired `INSERT_AT[(10, 13)]` entry. This
+    # register names markup the port ADDS; a control Design drew is asserted
+    # by `NAV`/`LOGIC` instead, which is where the rewired tab is asserted.
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — re-anchored on v3: 76→203, 79→206.
+    dict(marker="year-open", pages=("classes.html",), node=203, opener_tpl=206,
          label="<the year's name>",
          # ⚠️ WHERE IT GOES, NOT JUST THAT IT MOVES. A control whose entire
          # job is to navigate proves nothing by re-rendering, and `MRB_GO`
@@ -1506,34 +2106,19 @@ AMENDED_ADDITIONS = (
              "year and cannot open it. MRB-261 is explicit that the history "
              "stays reachable; this is what makes the strip a control "
              "instead of a caption."),
-    dict(marker="shoutout-delete", pages=("class-detail.html",), node=203,
-         label="Remove", needs_data=True,
-         why="Mide, 24 Aug 2026: \"A teacher who can post a shoutout can "
-             "remove one.\" Design's feed card has no delete affordance. "
-             "Shown only where `f.canDelete` — the row's `author_id` is the "
-             "signed-in teacher's — because the RLS UPDATE policy is "
-             "author-only and a control that fails RLS is a control that "
-             "lied."),
-    dict(marker="shoutout-delete-close", pages=("class-detail.html",),
-         node=81,
-         label="Keep the shoutout", needs_data=True,
-         why="the confirm sheet's close X, off Design's node 520."),
-    dict(marker="shoutout-delete-cancel", pages=("class-detail.html",),
-         node=81,
-         label="Keep it", needs_data=True,
-         why="the confirm sheet's decline. The wording is the SAFE choice "
-             "stated as an action, so the two footer buttons read as a "
-             "choice rather than as one button and an escape hatch."),
-    dict(marker="shoutout-delete-confirm", pages=("class-detail.html",),
-         node=81,
-         label="Remove shoutout", needs_data=True,
-         why="the press that actually writes. `confirmDelete` calls "
-             "`MRB_DELETE_SHOUTOUT`, which is "
-             "`MrBadmusTeacherData.softDeleteClassShoutout` — the function "
-             "that has existed since MRB-46 — and then re-reads the feed "
-             "through `MRB_REFRESH_FEED`. On failure it writes "
-             "`#compose-error` and toasts, which is the composer's own "
-             "failure idiom and not a second one."),
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — THE FOUR SHOUTOUT-DELETE ROWS WERE
+    # HERE AND ARE RETIRED. They registered `shoutout-delete` on the feed card
+    # and the three buttons of its confirm sheet. Design's v3 deleted the
+    # class screen's shoutout FEED and its single-student composer outright,
+    # so all four hung off markup that no longer exists.
+    #
+    # ⚠️ MIDE'S RULING OF 24 AUG 2026 IS NOT WITHDRAWN — "a teacher who can
+    # post a shoutout can remove one" still stands, and there is now nowhere
+    # on the ported pages to post one FROM except the bulk sheet, and nowhere
+    # at all to see what was posted. That is a product regression, not a
+    # numbering change, and it is written up in `SHOUTOUT_COMPOSER_DROPPED`
+    # for Mide rather than papered over here. The markup is parked in
+    # `SHOUTOUT_MARKUP_PARKED` so restoring it costs nothing.
 )
 
 
@@ -1569,6 +2154,25 @@ DROP_FIELDS = (
               "here to record that they were CHECKED and kept, because they "
               "are a scale and not a sample. See below: the tuple is "
               "consulted, not this sentence."),
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — AND THIS ONE WAS THROWING AT MOUNT.
+    # `TODAY_LESSONS` is four invented lessons — four class ids, four period
+    # numbers, four times and two room names — new in v3 and reached by TWO
+    # readers, `const lessons` and `const lessonToday`, BOTH unconditional in
+    # `renderVals`. `lessons` opens `this.klassById(t.classId)` and then
+    # `c.state`, and on a real class list `klassById('8hsc2')` is undefined:
+    # a TypeError at mount, on every one of the six pages, whatever screen
+    # they draw. It survived because the Today screen is not emitted and
+    # nobody looked at a page that crashes before it paints.
+    #
+    # ⚠️ THE FABRICATION MATTERS AS MUCH AS THE CRASH. `klass.meta` printed
+    # "Next lesson today · P5 · 13:55 · Lab 2" for a real class, and there is
+    # no timetable data behind any of those four values. Real timetable data
+    # is the Today/Timetable unit's job; this row only stops the invention
+    # and the throw. See the two `LOGIC` entries that degrade its readers.
+    ("TODAY_LESSONS", "four invented lessons — fake class ids, periods, "
+                      "times and room names, new in v3. Both its readers "
+                      "run on every page, and the first one throws on any "
+                      "real class list."),
     ("rnd", "THE HASH THAT INVENTS EVERY NUMBER ON THE PAGE. Every mark, "
             "percentage, submission count and chart column in Design's "
             "delivery comes out of this function."),
@@ -1608,6 +2212,63 @@ DROP_KEYS = (
     "swRelease", "swClassList", "swSummary", "swBackLabel", "swNextLabel",
     "swBack", "swNext", "openSetWork",
     "sampleCsv",
+
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — A SEEDED DATE, NEW IN v3.
+    # `todayLine: 'Monday 31 August · Autumn term · 2026–27'` — a literal
+    # weekday, a literal date, a literal term and a literal academic year,
+    # all four wrong for every school on every day but one. It is read by
+    # exactly one node (36, on the Today screen), which `SCREENS` prunes on
+    # all six pages, so it renders nowhere — but it SHIPS in the logic of all
+    # six, and `teacher_tells` refuses it there, correctly: a sample string in
+    # the bytes is one failed guard away from a sample string on the page.
+    #
+    # Dropped rather than bound, for the reason the Set-work keys above were:
+    # binding it needs a `MRB_DATA` key, and inventing one that
+    # `teacher-live.js` does not supply is a thrown error at mount. When the
+    # Today screen is ported it gets a real date from the seam, in the seam.
+    "todayLine",
+
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — THE TIMETABLE WIZARD, WHOLE.
+    #
+    # `ttRows` is the one that matters and the other nine go with it. It is
+    # seven invented timetable slots — a weekday and period, a clock time, a
+    # source string off an imaginary MIS export, and a match status — WRAPPED
+    # AROUND REAL CLASS CODES. `8h/Sc2`, `7r/Sc3`, `9h/Sc5`, `10h/Ph1`,
+    # `8r/Sc1` and `11h/Sc5` are this school's actual 2026-27 classes; the
+    # days, the times and the rooms beside them are Design's fiction. That
+    # mixture is worse than a wholly invented row, because the half a reader
+    # can check is true.
+    #
+    # ⚠️ IT IS DROPPED, NOT SEAMED, AND THAT IS THE SAME CALL `TODAY_LESSONS`
+    # GOT. There is no timetable data anywhere in this product — no table, no
+    # RPC, nothing on `teacher-live.js` to bind to — so a seam would need a
+    # `MRB_DATA` key nobody supplies, which is a throw at mount rather than a
+    # blank row. Real timetable data is the Today/Timetable unit's job.
+    #
+    # The other nine exist only to drive the wizard `SCREENS` prunes:
+    #
+    #   · `ttSteps`, `tt1`, `tt2`, `tt3` — the three-step chrome. Read by
+    #     nodes 104/109/116/141, every one of them inside node 96.
+    #   · `ttNext`, `ttBack` — nodes 114/140 and 139/155, also inside 96.
+    #   · `ttDone` — node 156, inside 96. It also `ping`s "Timetable linked —
+    #     Today now shows your lessons", which is not true of anything.
+    #   · `ttSample` — node 115, inside 96, and it is `sampleCsv` again
+    #     verbatim: `this.ping('Timetable template downloaded')` in front of
+    #     no Blob, no anchor and no download. Dropped for the reason
+    #     `sampleCsv` was.
+    #   · `goTimetable` — CHECKED BY READING, because the top bar was rewired
+    #     by the week-bar unit and a live control must not lose its handler.
+    #     Its only two readers are nodes 42 and 49, and BOTH are inside node
+    #     32, the Today screen, which `SCREENS` prunes on all six pages.
+    #     `navTabs` does NOT reach it: Design's own strip is two tabs,
+    #     `today` and `classes`, and the port's rewire dispatches both through
+    #     `MRB_GO(t.id, …)`. There is no third tab and never was.
+    #
+    # ⚠️ `ttStep` IS NOT ON THIS LIST — see the state initialiser in `LOGIC`,
+    # where the reason it stays is written down and was corrected by this
+    # unit rather than left standing.
+    "ttSteps", "tt1", "tt2", "tt3", "ttRows",
+    "ttNext", "ttBack", "ttDone", "ttSample", "goTimetable",
 )
 
 
@@ -1832,10 +2493,23 @@ LOGIC = (
     # it. Three kinds of key meet in this object and each is kept for its own
     # reason:
     #
-    #   · v3's own keys the port still needs — `ttStep` drives the timetable
-    #     wizard's three steps; `insFrom` and `digestFrom` are the "came
-    #     from" crumbs. Dropping a key Design's render reads is a silent
-    #     `undefined` on screen, never an error.
+    #   · v3's own keys the port still needs — `insFrom` and `digestFrom`
+    #     are the "came from" crumbs. Dropping a key Design's render reads
+    #     is a silent `undefined` on screen, never an error.
+    #     ⊕ CORRECTED 2 Sep 2026 (MRB-306 Phase 1c). This bullet used to
+    #     read "`ttStep` drives the timetable wizard's three steps", and
+    #     that sentence stopped being true in the same run that wrote it:
+    #     `DROP_KEYS` now takes the whole wizard — `ttSteps`, `tt1`-`tt3`,
+    #     `ttRows`, `ttNext`, `ttBack`, `ttDone`, `ttSample`,
+    #     `goTimetable` — because `ttRows` is invented timetable data and
+    #     the rest only served the screen `SCREENS` prunes. `ttStep: 1`
+    #     therefore has NO reader left in the shipped logic.
+    #     It stays anyway, on `weekIdx`'s reasoning below: a state key
+    #     ahead of its readers is inert, a reader ahead of its state key is
+    #     not, and the Timetable screen is a named later unit that will
+    #     want the cursor back. It is also not a tell — the value is the
+    #     integer 1, not a fact about anybody's school. Left as a comment
+    #     that says so rather than a comment that lies.
     #   · the ported keys, all of them — MRB_SCREEN, the three MRB_DATA
     #     reads, MRB_FIRST_TEMPLATE for `boTpl`, `digestScope`/`chartScope`
     #     off the URL via MRB_Q, and `yearsOpen`.
@@ -1992,38 +2666,46 @@ LOGIC = (
     #   · `'1/1 on time'` — the OPEN week's label, over `r.inWeek`, which
     #     means SUBMITTED and says nothing about lateness. The words claimed a
     #     punctuality the number never measured.
-    ("""      const scPct = sc == null ? 0 : Math.round((sc / 8) * 100);
-      return {
-        name: r.name,
-        initials: this.initials(r.name),
-        hue: this.hueFor(r.name),
-        hasWork: kPapers.length > 0,
-        pct: wPast ? scPct : (r.inWeek ? 100 : 0),
-        weekLabel: kPapers.length === 0 ? 'No work set'
-          : (wPast
-            ? (sc == null ? 'Not submitted' : scPct + '% · ' + (late ? 'late' : 'on time'))
-            : (r.inWeek ? '1/1 on time' : '0/1 in')),""",
-     """      const scPct = mrow && mrow.pct[wi] != null ? mrow.pct[wi] : null;
-      const lateState = mrow ? mrow.late[wi] : null;
-      return {
-        id: r.id,
-        name: r.name,
-        initials: this.initials(r.name),
-        hue: this.hueFor(r.name),
-        hasWork: kPapers.length > 0,
-        pct: wPast ? (scPct == null ? 0 : scPct) : (r.inWeek ? 100 : 0),
-        weekLabel: kPapers.length === 0 ? 'No work set'
-          : (wPast
-            ? (scPct == null ? 'Not submitted'
-              : scPct + '% · ' + (lateState === true ? 'late'
-                : (lateState === false ? 'on time' : 'timing unknown')))
-            : (r.inWeek ? 'Submitted' : 'Not in')),""",
-     "the roster row. See the block comment: three defects, five lines. "
-     "⊕ AND `id`, ADDED 24 Aug 2026: the shoutout composer's `<select>` is "
-     "built from this list, and its option values have to be the child's real "
-     "id rather than their name — `insertClassShoutout` writes "
-     "`recipient_id`, RLS checks the recipient is a member of this class, and "
-     "two children in one class can share a name. See `BIND_ATTR` 203."),
+    # ⊕ RE-EXPRESSED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306), AND SCOPED TO
+    # THE SELECTED WEEK. v3 deleted the whole span this ruling was written
+    # against — no `scPct`, no `pct`, no `weekLabel`, and no `sc`/`late`
+    # locals at all — and redrew the row as a BINARY `week`/`weekFg`/`dot`
+    # triple over `r.inWeek`, which is "did this child hand in THIS week's
+    # work" and nothing else.
+    #
+    # All three defects above survive v3 in a shorter sentence. `'In · on
+    # time'` is written over `r.inWeek`, which still means SUBMITTED and
+    # still says nothing about lateness, so v3 states a punctuality it has
+    # not measured for every child who handed anything in — the third defect,
+    # word for word. The `/8` and the two-state `late` are gone from this row
+    # only because the row no longer shows a score.
+    #
+    # ⚑ AND UNDER MIDE'S WEEK BAR THE COLUMN IS NOT "THIS WEEK" ANY MORE. It
+    # is the week the teacher has picked, so it reads the SELECTED week's
+    # papers out of the matrix rather than the seam's `inWeek` flag, which is
+    # hard-wired to the current week window. `wTally` — built beside the week
+    # scope, see the tiles ruling — is that count per child.
+    #
+    # ⚠️ A WEEK NOBODY WAS ASKED ANYTHING IN IS NOT "NOT IN YET". It is
+    # "Nothing set", and it has to be, because "Not in yet" beside a child's
+    # name in a week their teacher set no work is an accusation the data does
+    # not support. That state is unreachable in Design's sample and reachable
+    # on nearly every real class.
+    (dict(builder="roster", key="week"),
+     """      week: !kPapers.length ? '—'
+        : (!wTally[r.id].asked ? 'Nothing set'
+          : (!wTally[r.id].in ? 'Not in yet'
+            : (wTally[r.id].in < wTally[r.id].asked
+              ? wTally[r.id].in + ' of ' + wTally[r.id].asked + ' in'
+              : (wTally[r.id].late === true ? 'In · late'
+                : (wTally[r.id].late === false ? 'In · on time'
+                  : 'In · timing unknown'))))),""",
+     "the roster row. See the block comment: Design's binary column states a "
+     "punctuality it never measured, and under Mide's week bar the column is "
+     "the SELECTED week rather than this one. The `id` this row also needs — "
+     "the shoutout composer's `<select>` writes `recipient_id` — is its own "
+     "entry at the end of this tuple, because a property anchor replaces one "
+     "property and `id` is a different one."),
 
     # ══ THE QUESTION LIST: STEMS WAS A CLASS FIELD, AND qpct CAN BE NULL ═
     #
@@ -2158,39 +2840,94 @@ LOGIC = (
     #   exactly one open paper;
     #   "Revision, not homework" over `k.last`, which is the newest SUBMISSION
     #   stamp — homework, precisely.
-    ("""          { label: 'Submitted', value: kMx.colSub[wi] + '/' + k.n, sub: wPaper.title },
-          { label: 'Week mean', value: wMean == null ? '—' : wMean + '%', sub: wGap == null ? 'Nothing marked' : (wGap === 0 ? 'Level with the term average' : Math.abs(wGap) + (Math.abs(wGap) === 1 ? ' point ' : ' points ') + (wGap > 0 ? 'above' : 'below') + ' the term average') },
-          { label: 'On time', value: kMx.colSub[wi] ? Math.round((kMx.colOnTime[wi] / kMx.colSub[wi]) * 100) + '%' : '—', sub: wLate + ' late of ' + kMx.colSub[wi] + ' submitted' },
-          { label: 'Not submitted', value: String(k.n - kMx.colSub[wi]), sub: 'Of ' + k.n + ' students' }
-        ] : [
-          { label: 'This week', value: kMx.colSub[0] + '/' + k.n, sub: upcomingPaper ? upcomingPaper.title : '' },
-          { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + (kPapers.length - 1) + ' marked assignments' },
-          { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: Math.max(0, kMx.markedSub - kMx.markedOnTime) + ' late of ' + kMx.markedSub + ' marked' },
-          { label: 'Needs a look', value: String(flagged), sub: flagged ? 'Nothing in for two weeks' : 'Everyone accounted for' }
-        ]) : [
-          { label: 'This week', value: '—', sub: 'No work set' },
-          { label: 'Class mean', value: '—', sub: 'Nothing marked yet' },
-          { label: 'Students', value: String(k.n), sub: 'Roster imported' },
-          { label: 'Last activity', value: k.last, sub: 'Revision, not homework' }
-        ]""",
-     """          { label: 'Submitted', value: kAsked(wi), sub: wPaper.title },
-          { label: 'Week mean', value: wMean == null ? '—' : wMean + '%', sub: wGap == null ? 'Nothing marked' : (wGap === 0 ? 'Level with the term average' : Math.abs(wGap) + (Math.abs(wGap) === 1 ? ' point ' : ' points ') + (wGap > 0 ? 'above' : 'below') + ' the term average') },
-          { label: 'On time', value: kOnTimePct(wi), sub: MRB_LATE_LINE(kMx.colLate[wi], kMx.colLateUnknown[wi], kMx.colSub[wi], 'submitted') },
-          { label: 'Not submitted', value: String(Math.max(0, (kMx.colAsked[wi] || 0) - kMx.colSub[wi])), sub: 'Of ' + (kMx.colAsked[wi] || 0) + ' asked' }
-        ] : [
-          { label: 'This week', value: kAsked(0), sub: upcomingPaper ? upcomingPaper.title : '' },
-          { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' marked assignment' : ' marked assignments') },
-          { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_LATE_LINE(kMx.markedLate, kMx.markedLateUnknown, kMx.markedSub, 'marked') },
-          { label: 'Needs a look', value: String(flagged), sub: flagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
-        ]) : [
-          { label: 'This week', value: '—', sub: 'No work set' },
-          { label: 'Class mean', value: '—', sub: 'Nothing marked yet' },
-          { label: 'Students', value: String(k.n), sub: 'On the roster' },
-          { label: 'Last activity', value: k.last, sub: 'Newest submission' }
-        ]""",
-     "the class screen's four tiles. See the block comment: the roster as a "
-     "denominator, lateness by subtraction, and three captions that overstate "
-     "their own figure."),
+    #
+    # ── ⊕ RE-EXPRESSED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306) ─────────────
+    #
+    # ⛔ THERE ARE NO TILES IN v3. `klass` carries `code`, `meta`, `statLine`,
+    # `rosterLine`, `hasWork`, `noWork`, `noWorkLine` and `paperLine`, and
+    # nothing else; the four-tile grid is replaced by a `glance` block —
+    # this week's assignment with a chase list, the last marked set with its
+    # two weakest questions, and a watch list. The brief for this run said
+    # this ruling needed one `String(flagged)` corrected. It needed the whole
+    # ruling re-read: there is no `String(flagged)` because there is no tile
+    # to print it in.
+    #
+    # ⚑ EVERY DEFECT ABOVE MOVED WITH THE COMPONENT. `glance.openIn` is
+    # `kMx.colSub[0] + ' of ' + k.n + ' in'` — the roster denominator, on the
+    # same figure, one screen redesign later — and `openPct` divides by `k.n`
+    # too. `openP = kPapers[0]` and `lastP = kPapers[1]` are the one-open-
+    # paper-at-index-0 assumption, stated as fact. So the ruling is
+    # re-expressed onto `glance` rather than dropped, in the same way E1's
+    # year statement moved from the deleted `longMeta` onto `klass.meta`.
+    #
+    # ⚑ AND THIS ENTRY IS WHERE MIDE'S WEEK BAR LANDS, because the two lines
+    # it replaces — `const openP` / `const lastP` — ARE the class screen's
+    # scope, and the ruling is that the scope is a teaching week rather than
+    # a position in the paper list. Everything downstream (`glance`, the
+    # roster column, the assignment table) reads the locals declared here.
+    #
+    # ⚠️ THE FIRST AND LAST CHIPS ARE BUCKETS, DELIBERATELY. The bar shows at
+    # most twelve weeks. Work set for a week still AHEAD (teachers plan
+    # forward, and `academic_week` can name any week of the year) has a
+    # negative index, and work older than the twelfth chip has an index off
+    # the end. Filtered strictly, both would simply vanish from the class
+    # screen — a teacher would set next week's homework and watch it
+    # disappear. So the current-week chip carries everything at or ahead of
+    # it and the oldest chip carries everything at or behind it. Nothing a
+    # teacher has set is ever unreachable, and each paper still states its
+    # own due date.
+    #
+    # ⚠️ `wMean` IS THE MEAN OF THE WEEK'S COLUMN MEANS, not a pooled
+    # sum/sum, because that is the definition `classMean` already uses in the
+    # seam and two definitions of one word is how a dashboard starts
+    # disagreeing with itself.
+    (dict(method="renderVals", key="const openP"),
+     """    /* ── ⊕ RULED BY MIDE, 1 Sep 2026 — THE CLASS SCREEN IS SCOPED TO A
+        TEACHING WEEK. `weekIdx` 0 is the week the bar opens on and the list
+        counts backwards, which is Design's own direction. Papers map onto
+        weeks by the week they were SET in; the two end chips are buckets, so
+        work set ahead and work older than the bar are both still reachable.
+        See `WEEK_BAR_RESTORED`. ── */
+    const kWeeks = this.weeks();
+    const wi = this.weekIdxFor(k);
+    const wWeek = kWeeks[wi] || null;
+    const wOldest = wi >= kWeeks.length - 1;
+    const wPapers = kPapers.filter(p => wi === 0
+      ? (p.weekIdx == null || p.weekIdx <= 0)
+      : (wOldest ? p.weekIdx >= wi : p.weekIdx === wi));
+    const wIdxs = wPapers.map(p => p.idx);
+
+    /* Per child, for the SELECTED week: how many of that week's papers they
+       handed in, and whether any of them was late. `late` stays TRI-STATE —
+       true, false, or null for "no stamp and no deadline" — because folding
+       the unknown into either answer is a claim about a child that the row
+       cannot support. */
+    const wTally = {};
+    kRoster.forEach(r => {
+      const row = kMx.byId[r.id];
+      let wIn = 0, wLateOne = null;
+      wIdxs.forEach(i => {
+        if (!(row && row.submitted[i])) return;
+        wIn += 1;
+        if (row.late[i] === true) wLateOne = true;
+        else if (row.late[i] === false && wLateOne !== true) wLateOne = false;
+      });
+      wTally[r.id] = { in: wIn, asked: wIdxs.length, late: wLateOne };
+    });
+
+    const wSub = wIdxs.reduce((a, i) => a + (kMx.colSub[i] || 0), 0);
+    const wAsk = wIdxs.reduce((a, i) => a + (kMx.colAsked[i] || 0), 0);
+    const wMeans = wIdxs.map(i => kMx.colMean[i]).filter(v => v != null);
+    const wMean = wMeans.length
+      ? Math.round(wMeans.reduce((a, v) => a + v, 0) / wMeans.length) : null;
+    const openP = wPapers[0] || null;""",
+     "the class screen's four tiles, re-expressed onto the block v3 replaced "
+     "them with, and scoped to Mide's teaching week. See the block comment: "
+     "the roster as a denominator, lateness by subtraction, and three "
+     "captions that overstate their own figure — all three survive v3 inside "
+     "`glance`, which the locals declared here now scope. The corrections to "
+     "`glance`'s own keys are separate entries at the end of this tuple, "
+     "because a property anchor replaces one property."),
 
     # the two helpers those tiles now call, defined beside them
     #
@@ -2250,11 +2987,7 @@ LOGIC = (
     (dict(method="renderVals", key="klass.meta"),
      "        meta: [k.yearName,\n"
      "          k.n + (k.n === 1 ? ' student' : ' students'),\n"
-     "          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject,\n"
-     "          lessonToday\n"
-     "            ? 'Next lesson today · ' + lessonToday.p + ' · ' + "
-     "lessonToday.time + ' · ' + lessonToday.room\n"
-     "            : 'No lesson today'\n"
+     "          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject\n"
      "        ].filter(Boolean).join(' · '),",
      "the class header's long meta line. The year, and a plural that said "
      "\"1 assignments\".\n"
@@ -2274,7 +3007,17 @@ LOGIC = (
      "and it is stated on `klass.meta` — v3's parts, v3's order, "
      "`k.yearName` leading, dropped rather than printed when the school has "
      "not named the year. `k.year` is guarded for the same reason: "
-     "`year_group` is nullable and \"Year null\" is worse than silence."),
+     "`year_group` is nullable and \"Year null\" is worse than silence.\n"
+     "\n"
+     "        ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — THE FOURTH PART IS GONE. v3's "
+     "own line ended `· Next lesson today · P5 · 13:55 · Lab 2`, off "
+     "`TODAY_LESSONS`, which is four invented lessons and is deleted by "
+     "`DROP_FIELDS`. The falsy arm is not kept either: \"No lesson today\" "
+     "is not the honest empty state, it is a CLAIM — that this class has no "
+     "lesson today — and the platform holds no timetable to make it from. A "
+     "part that cannot be computed is dropped, which is what "
+     "`.filter(Boolean)` is here for. When the Today/Timetable unit lands "
+     "real timetable data, this is the part that comes back."),
 
     # ══ THE DIGEST ══════════════════════════════════════════════════════
     ("          : (c.state === 'nowork' ? 'No work set for two weeks' : (fl ? "
@@ -2719,22 +3462,98 @@ LOGIC = (
     # who has scrolled the rail themselves and then presses something else
     # loses that scroll either way, because the element they scrolled no
     # longer exists.
-    ("  openClass(patch) { this.setState({ screen: 'class', weekIdx: 0, "
-     "...patch }, () => this.snapWeekRail()); }",
-     "  /* ⊕ MRB-287 — THE COLD LOAD. Seven URLs mean the class page is\n"
-     "     reached without `openClass` ever running. See teacher_rulings. */\n"
-     "  componentDidMount() { this.snapWeekRail(); }\n"
-     "  componentDidUpdate() {\n"
-     "    const el = this.rail();\n"
-     "    if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) {\n"
-     "      this.snapWeekRail();\n"
-     "    }\n"
-     "  }\n"
-     "  openClass(patch) { this.setState({ screen: 'class', weekIdx: 0, "
-     "...patch }, () => this.snapWeekRail()); }",
-     "the week rail's scroll position, on a page opened directly. Design's "
-     "only caller was a screen-change handler and there are no screen "
-     "changes any more."),
+    # ⊕ RE-ANCHORED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306) — AND IT NOW
+    # RESTORES THE METHODS AS WELL AS THE HOOK. v3 deleted `openClass`,
+    # `rail`, `snapWeekRail`, `pickWeek` and `weekIdxFor` outright along with
+    # the rail they served. Mide's ruling of 1 Sep keeps the bar, so the four
+    # methods come back — but `weekIdxFor` comes back RE-DERIVED, not copied.
+    #
+    # ⛔ v2's `weekIdxFor` CLAMPED TO `papersFor(k).length - 1`. One chip per
+    # ASSIGNMENT. In Design's fiction one paper is one week so the two never
+    # disagree; on the working year `8r/Sc1` has two assignments against a
+    # thirty-nine-week year, and a copied-forward clamp would have pinned the
+    # whole bar to two positions and called them the term. It clamps to
+    # `weeks().length` now, and `weeks()` is the academic year's teaching
+    # weeks — see the seam.
+    #
+    # ⚠️ THE ANCHOR IS THIS PORT'S OWN OUTPUT, ON PURPOSE. `CLASSES =
+    # MRB_DATA('CLASSES')` is the first LOGIC ruling's result, so Design
+    # cannot break this anchor by redrawing anything — which is precisely the
+    # problem for a ruling that RESTORES code Design has deleted: there is no
+    # span of hers left to name. A class body takes fields and methods in any
+    # order, so they land here, immediately under the field, rather than in
+    # the methods block below.
+    #
+    # ⚑ THE COLD LOAD. Seven URLs mean the class page is reached without any
+    # screen-change handler ever running, so the rail's opening scroll
+    # position has to come from the lifecycle instead. `setState` resets the
+    # rail's `scrollLeft` to 0 — press a sort tab, open the search overlay,
+    # dismiss a toast, and the rail is back on the oldest week — so it
+    # re-snaps only when the rail is scrolled hard left AND has somewhere to
+    # scroll, which is exactly the state a rebuild leaves behind. A teacher
+    # who has scrolled the rail themselves and then presses something else
+    # loses that scroll either way, because the element they scrolled no
+    # longer exists. `student-runtime.js` defines both hooks as no-ops and
+    # calls them, and Design defines neither, so there is nothing to shadow.
+    (dict(key="CLASSES = MRB_DATA"),
+     r"""CLASSES = MRB_DATA('CLASSES');
+
+/* ── ⊕ MIDE, 1 Sep 2026 (MRB-306) · THE WEEK BAR, RESTORED ──────────
+   Design's v3 deleted the class-detail week rail in favour of a dated
+   assignment table; Mide overrode that and the bar stays. These are the
+   four methods it needs, back from v2 — three of them verbatim, and
+   `weekIdxFor` re-derived over WEEKS rather than over assignments.
+   See `WEEK_BAR_RESTORED` in teacher_rulings.py. ── */
+rail() { return document.querySelector('[data-rail="weeks"]'); }
+
+/* The strip runs oldest to newest, so it opens parked on this week. */
+snapWeekRail() {
+  const snap = () => {
+    const el = this.rail();
+    if (!el) return;
+    if (!this.state.weekIdx) { el.scrollLeft = el.scrollWidth; return; }
+    const chip = el.querySelector('[data-week="' + this.state.weekIdx + '"]');
+    if (chip) el.scrollLeft = Math.max(0, chip.offsetLeft - (el.clientWidth - chip.offsetWidth) / 2);
+  };
+  requestAnimationFrame(snap);
+  setTimeout(snap, 90);
+}
+
+pickWeek(i) {
+  this.setState({ weekIdx: i }, () => {
+    const el = this.rail();
+    if (!el) return;
+    const chip = el.querySelector('[data-week="' + i + '"]');
+    if (!chip) return;
+    const left = chip.offsetLeft, right = left + chip.offsetWidth;
+    if (left < el.scrollLeft + 8) el.scrollTo({ left: Math.max(0, left - 14), behavior: 'smooth' });
+    else if (right > el.scrollLeft + el.clientWidth - 8) el.scrollTo({ left: right - el.clientWidth + 14, behavior: 'smooth' });
+  });
+}
+
+/* ⚠️ WEEKS, NOT PAPERS. v2 clamped to `papersFor(k).length - 1`, which
+   is one position per assignment. `weeks()` is the academic year's
+   teaching weeks, newest first, at most twelve. */
+weekIdxFor(k) {
+  const n = this.weeks().length;
+  if (!n) return 0;
+  return Math.min(Math.max(0, this.state.weekIdx || 0), n - 1);
+}
+
+/* ⊕ MRB-287 — THE COLD LOAD. Six URLs mean the class page is reached
+   without any screen-change handler running. See teacher_rulings. */
+componentDidMount() { this.snapWeekRail(); }
+componentDidUpdate() {
+  const el = this.rail();
+  if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) {
+    this.snapWeekRail();
+  }
+}""",
+     "the week rail's scroll position, on a page opened directly, and — "
+     "since v3 deleted them — the four methods the rail is made of. "
+     "Design's only caller was a screen-change handler and there are no "
+     "screen changes any more. `weekIdxFor` is re-derived over weeks; the "
+     "other three are v2 verbatim."),
 
     # ══ ⊕ 24 Aug 2026 · A FILTER THAT MATCHES NOTHING ═══════════════════
     #
@@ -3148,7 +3967,487 @@ LOGIC = (
      "than dividing by a number nobody set. "
      "⊕ 1 Sep 2026 (MRB-306) — split out of #11's ten-line `frm` onto its "
      "own anchor; the ruling is unchanged."),
+
+    # ══ MRB-306 · THE WEEK BAR — THE REST OF #6 AND #13 ═════════════════
+    #
+    # Appended rather than inserted, for the reason the block above gives:
+    # LOGIC entries are named by INDEX in every brief written about this
+    # port, and inserting in the middle renumbers everything after it in
+    # silence. #6 owns the roster row's `week`; #13 owns the week scope
+    # itself. Everything those two corrections reach — and there is more of
+    # it in v3 than there was in v2, because v3 spread the four tiles across
+    # a `glance` block, a `statLine` and an assignments table — lands here.
+    #
+    # ⚠️ ORDER IS SAFE AND WAS CHECKED, NOT ASSUMED. Every entry below
+    # anchors on a line that no earlier ruling removes or rewrites, and none
+    # of them contains a span another entry is still looking for.
+
+    # ── the roster row's other two properties ───────────────────────────
+    #
+    # Design writes these as a binary over `r.inWeek`. Under the bar they are
+    # the SELECTED week, and a week nobody was asked anything in reads as the
+    # neutral ghost rather than as the accent that means "chase this child".
+    (dict(builder="roster", key="weekFg"),
+     """      weekFg: (!kPapers.length || !wTally[r.id].asked) ? 'var(--st-ghost)'
+        : (wTally[r.id].in >= wTally[r.id].asked
+          ? 'var(--st-ink)' : 'var(--st-accent-text)'),""",
+     "the roster row's week colour, on the selected week. Part of #6."),
+
+    (dict(builder="roster", key="dot"),
+     """      dot: (!kPapers.length || !wTally[r.id].asked) ? 'var(--st-rule-strong)'
+        : ((wTally[r.id].in >= wTally[r.id].asked && wTally[r.id].late !== true)
+          ? 'var(--ks3-ok)' : 'var(--st-accent)'),""",
+     "the roster row's week dot, on the selected week. ⚠️ A LATE SUBMISSION IS NOT GREEN: v3 paints the dot from `inWeek` alone, so a child who handed in a week after the deadline got the same green as one who was on time — the row's own words say \"In · late\" beside it. Part of #6."),
+
+    # ── the id the shoutout composer writes ─────────────────────────────
+    #
+    # ⊕ 24 Aug 2026, and it is the half of #6 that a property anchor cannot
+    # carry: `id` is a different property from `week`, so it is a different
+    # entry. The composer's `<select>` is built from this list and its option
+    # values have to be the child's real id rather than their name —
+    # `insertClassShoutout` writes `recipient_id`, RLS checks the recipient is
+    # an active member of this class, and two children in one class can share
+    # a name. See `BIND_ATTR` 190.
+    (dict(builder="roster", key="name"),
+     """      id: r.id,
+      name: r.name,""",
+     "the roster row's `id`, for the shoutout composer. Part of #6."),
+
+    # ── "the last marked set" stops meaning "the second paper" ──────────
+    #
+    # ⛔ `kPapers[1]` IS THE ONE-OPEN-PAPER-AT-INDEX-0 ASSUMPTION, and it is
+    # the same defect `paper()` was corrected for in METHODS: index 1 is the
+    # newest marked paper only when exactly one paper is open, which is a
+    # property of Design's sample. A real class has none open, or three. The
+    # matrix already publishes `markedIdx` — which columns have closed,
+    # newest first — so the answer exists and does not have to be guessed.
+    ("    const lastP = kPapers[1] || null;",
+     "    const lastP = kMx.markedIdx.length "
+     "? (kPapers[kMx.markedIdx[0]] || null) : null;",
+     "the class screen's \"last marked set\". Part of #13: `kPapers[1]` is "
+     "the index-0 assumption, and `markedIdx` is the seam's own answer to "
+     "the same question."),
+
+    ("    const g1 = lastP ? this.gridFor(k, 1) : null;",
+     "    const g1 = lastP ? this.gridFor(k, lastP.idx) : null;",
+     "the grid behind \"Worth a reteach\". Design asks for the grid of paper "
+     "1 rather than the grid of the paper it has just resolved, so on a "
+     "class whose newest marked set is anywhere else it reteaches the wrong "
+     "assignment. Part of #13."),
+
+    ("    const worstTwo = g1 ? this.STEMS.map((q, qi) => ({ id: q.id, "
+     "text: q.text, pct: g1.qpct[qi] })).sort((a, b) => a.pct - b.pct)"
+     ".slice(0, 2) : [];",
+     "    const worstTwo = g1 ? g1.stems.map((q, qi) => ({ id: q.id, "
+     "text: q.text, pct: g1.qpct[qi] })).filter(q => q.pct != null)"
+     ".sort((a, b) => a.pct - b.pct).slice(0, 2) : [];",
+     "the two weakest questions. `this.STEMS` is DELETED by DROP_FIELDS — "
+     "eight invented stems for every paper in every subject — so this line "
+     "throws the moment a grid is present; and `qpct[i]` is null where "
+     "nothing at that question was machine-marked, which sorts below a real "
+     "0%. Same correction as #7, one screen along. Part of #13."),
+
+    # ── `glance`, scoped to the selected week ───────────────────────────
+    #
+    # This is where the four tiles' defects went. `openIn` is
+    # `colSub[0] + ' of ' + k.n` — the roster as a denominator, the first
+    # thing #13 was written about — and `openPct` divides by `k.n` too.
+    # `colAsked` is who the paper actually went to; both numbers are true and
+    # neither can render "31 of 29".
+    (dict(method="renderVals", key="openTitle"),
+     """      openTitle: openP
+        ? (wPapers.length > 1
+          ? openP.title + ' · +' + (wPapers.length - 1) + ' more'
+          : openP.title)
+        : 'No work set in this week',""",
+     "the week's assignment. ⚠️ A WEEK WITH NO ASSIGNMENT IS A REAL STATE "
+     "AND DESIGN NEVER DREW IT — its rail could not produce one, because its "
+     "rail was made of assignments. It says so in words rather than showing "
+     "an em dash, which reads as a missing figure. Part of #13."),
+
+    (dict(method="renderVals", key="openDue"),
+     "      openDue: openP && openP.due "
+     "? openP.due.replace(/^Due /, '') : '',",
+     "the week's due date, blank when the assignment has no deadline. "
+     "Design's `.replace('Due ', '')` strips the prefix anywhere in the "
+     "string; anchored to the front, which is where it is written. "
+     "Part of #13."),
+
+    (dict(method="renderVals", key="openIn"),
+     "      openIn: wPapers.length ? wSub + ' of ' + wAsk + ' in' : '—',",
+     "\"N of M in\", over the week and over `colAsked`. Part of #13: the "
+     "roster as a denominator is the defect this ruling has always been "
+     "about, and v3 moved it here from the tiles."),
+
+    (dict(method="renderVals", key="openPct"),
+     "      openPct: wAsk ? Math.round((wSub / wAsk) * 100) : 0,",
+     "the bar under it, over the same denominator. Part of #13."),
+
+    # ── the assignment table, scoped to the week ────────────────────────
+    #
+    # Mide's ruling: picking a week "re-scopes the tiles, the roster column
+    # and the assignment tables". The end chips are buckets — see #13 — so
+    # nothing a teacher has set ever becomes unreachable.
+    ("    const assignments = kPapers.map(p => {",
+     "    const assignments = wPapers.map(p => {",
+     "the assignment table, scoped to the selected teaching week. Mide, "
+     "1 Sep 2026. Part of #13."),
+
+    # ── ⛔ AND THIS ONE IS A LIVE CRASH, NOT A WEEK-BAR CHANGE ───────────
+    #
+    # `gridFor` RETURNS NULL FOR A GRID THAT HAS NOT BEEN FETCHED, which is
+    # the documented contract in METHODS, and `teacher-live.js` prefetches NO
+    # grids for the class screen. So `g.qpct` on the line below is a
+    # TypeError on any class with a marked assignment — which is `8r/Sc1`,
+    # the only class in the working year that has any assignments at all.
+    # This is v3-new (v2 had no weak column here) and no ruling covered it;
+    # found while scoping the table to a week, fixed here because the week
+    # bar puts that paper on the screen.
+    #
+    # `this.STEMS` is the second half: it is DELETED by DROP_FIELDS, so even
+    # with a grid present the line throws. The grid carries its own stems.
+    # And `qpct[i]` is null where nothing at that question was machine-marked
+    # — `Math.min` over an array containing null returns 0, which would name
+    # a question as the class's weakest at 0% on the strength of no marks at
+    # all.
+    ("""      let weak = '—', weakFg = 'var(--st-ghost)';
+      if (markedRow) {
+        const g = this.gridFor(k, p.idx);
+        const min = Math.min.apply(null, g.qpct);
+        const qi = g.qpct.indexOf(min);
+        weak = this.STEMS[qi].id + ' · ' + min + '%';
+        weakFg = min < 50 ? 'var(--st-accent-text)' : 'var(--st-muted)';
+      }""",
+     """      let weak = '—', weakFg = 'var(--st-ghost)';
+      const wkG = markedRow ? this.gridFor(k, p.idx) : null;
+      const wkPct = (wkG && wkG.qpct) ? wkG.qpct : [];
+      let wkMin = null, wkAt = -1;
+      wkPct.forEach((v, qi) => {
+        if (v != null && (wkMin == null || v < wkMin)) { wkMin = v; wkAt = qi; }
+      });
+      if (wkMin != null) {
+        const wkStem = (wkG.stems || [])[wkAt];
+        weak = ((wkStem && wkStem.id) || ('Q' + (wkAt + 1))) + ' · ' + wkMin + '%';
+        weakFg = wkMin < 50 ? 'var(--st-accent-text)' : 'var(--st-muted)';
+      }""",
+     "the assignment table's weakest-question column. A null grid and a "
+     "deleted `STEMS` are two separate throws on the one class that has "
+     "work set; a null `qpct` entry is a third wrong answer that does not "
+     "throw. See the block comment."),
+
+    # ── ⛔ AND THE SAME THREE THROWS AGAIN, IN `weakFor` ─────────────────
+    #
+    # v3-new, and worse than the one above because `renderVals` builds
+    # `reteachRows` UNCONDITIONALLY on every screen: `weakFor` is called for
+    # every live class on all six pages, so this is a mount-time TypeError on
+    # a real teacher's dashboard, not just on class detail. Found by driving
+    # the seamed logic over `8r/Sc1`'s real shape — it threw before it
+    # reached the week bar.
+    #
+    #   · `gridFor(k, 1)` is the index-0 assumption AND an unfetched grid.
+    #     The class, Today and insights screens prefetch no grids at all
+    #     (`teacher-live.js` prefetches only for `marking` and for the
+    #     questions chart), so `g` is null every time.
+    #   · `this.STEMS` is deleted by DROP_FIELDS.
+    #   · `Math.min` over a `qpct` containing nulls returns 0, which would
+    #     name a question as the weakest in the school at 0% on no marks.
+    #
+    # Fixed here rather than left for the Today-screen unit because it stands
+    # between a real teacher and every one of the six pages, and because it
+    # is the same defect as the entry above — one ruling, two addresses.
+    ("""  weakFor(k) {
+    if (k.state !== 'live') return null;
+    const g = this.gridFor(k, 1);
+    const min = Math.min.apply(null, g.qpct);
+    const qi = g.qpct.indexOf(min);
+    return { qi, min, id: this.STEMS[qi].id, text: this.STEMS[qi].text, paperId: k.id + ':p1' };
+  }""",
+     """  weakFor(k) {
+    if (!k || k.state !== 'live') return null;
+    const papers = this.papersFor(k);
+    const pi = MRB_NEWEST_MARKED(papers);
+    const p = pi >= 0 ? papers[pi] : null;
+    const g = p ? this.gridFor(k, p.idx) : null;
+    if (!g || !g.qpct) return null;
+    let min = null, qi = -1;
+    g.qpct.forEach((v, i) => {
+      if (v != null && (min == null || v < min)) { min = v; qi = i; }
+    });
+    if (min == null) return null;
+    const stem = (g.stems || [])[qi] || {};
+    return { qi, min, id: stem.id || ('Q' + (qi + 1)),
+      text: stem.text || '', paperId: p.id };
+  }""",
+     "the cross-class \"Worth a reteach\" list. Three throws in five lines, "
+     "on every page rather than on one. See the block comment."),
+
+    # ── the assignment section's own count ──────────────────────────────
+    (dict(method="renderVals", key="klass.paperLine"),
+     """        paperLine: !kPapers.length ? 'None set'
+          : (wPapers.length
+            ? wPapers.length + (wPapers.length === 1 ? ' assignment' : ' assignments') + ' · ' + kPapers.length + ' this term'
+            : 'None in this week · ' + kPapers.length + ' this term')""",
+     "the caption over the assignment table. With the table scoped to a "
+     "week it has to say how many of the term's assignments it is showing, "
+     "or a teacher reads a filtered table as the whole term. Part of #13."),
+
+    # ══ THE WEEK BAR'S OWN KEYS ═════════════════════════════════════════
+    #
+    # ⚑ v2 had all nine of these and v3 has none. They are restored here, on
+    # `backToClass` — a property the class screen has kept and which sits
+    # exactly where v2 declared them, immediately after `roster` and
+    # `assignments`.
+    #
+    # ⚠️ `weekTabs` MAPS OVER WEEKS. v2 mapped over `kPapers` and labelled
+    # each chip with the week its paper was set in, which is one chip per
+    # ASSIGNMENT wearing a week's clothes. That is the single thing about
+    # this bar most likely to be got wrong by copying v2 faithfully, and it
+    # is the thing real data breaks first.
+    #
+    # ⚠️ THE SECOND LINE OF EVERY CHIP IS FILLED. Design drew it as an
+    # `sc-if w.now` reading "This week" and nothing at all on the other
+    # eleven chips, because in her fiction the ranges alone identified the
+    # weeks. Dated from a real academic year they do not — "5–9 Oct" says
+    # nothing about which teaching week it is — so the line reads "This
+    # week" on the current chip and the term-relative label ("Autumn Week 6")
+    # on every other, in Design's own uppercase mono at her own size. The
+    # conditional is gone rather than left always-true: a dead `if` is a
+    # control that cannot be told from a broken one.
+    #
+    # ⚠️ THE TERM LABEL IS AN APPROXIMATION AND THE SEAM SAYS SO. There is no
+    # `terms` table — checked, not assumed — so the term comes from the
+    # week's own Monday against `seasonFor`'s Sep–Dec / Jan–Mar / Apr–Aug
+    # boundaries and the number counts every week since the year began,
+    # holidays included. "Autumn Week 18" for the week after Christmas is
+    # what that costs. A `terms` table would make it exact; Mide's call.
+    (dict(method="renderVals", key="backToClass"),
+     """      backToClass: 'Back to ' + k.code,
+
+      /* ── ⊕ MIDE, 1 Sep 2026 (MRB-306) · THE WEEK BAR ── */
+      weekTabs: kWeeks.slice().reverse().map((w, n) => {
+        const i = w.idx;
+        const on = i === wi;
+        return {
+          idx: String(i),
+          range: w.range,
+          sub: w.now ? 'This week' : w.label,
+          subFg: w.now ? 'var(--st-accent-text)' : 'var(--st-muted)',
+          on,
+          now: w.now,
+          pick: () => this.pickWeek(i),
+          bg: on ? 'var(--st-num-well)' : 'transparent',
+          ring: on ? 'inset 0 0 0 1.5px var(--st-accent)' : 'none',
+          divider: n === 0 || on ? 'transparent' : 'var(--st-rule-soft)',
+          dateColor: on ? 'var(--st-ink)' : 'var(--st-muted)'
+        };
+      }),
+      weekNote: !wWeek ? ''
+        : [wWeek.now ? 'This week' : wWeek.label, wWeek.range,
+          (!wPapers.length
+            ? 'No work set in this week'
+            : (wPapers.length === 1
+              ? wPapers[0].title
+                + (wPapers[0].when === 'upcoming' ? ' · open' : ' · marked')
+                + (wPapers[0].due ? ', due ' + wPapers[0].due.replace(/^Due /, '') : '')
+              : wPapers.length + ' assignments set')),
+          wMean == null ? '' : 'Week mean ' + wMean + '%'
+        ].filter(Boolean).join(' · '),
+      weekBack: () => { if (wi < kWeeks.length - 1) this.pickWeek(wi + 1); },
+      weekFwd: () => { if (wi > 0) this.pickWeek(wi - 1); },
+      weekBackColor: wi >= kWeeks.length - 1 ? 'var(--st-rule-strong)' : 'var(--st-ink)',
+      weekFwdColor: wi <= 0 ? 'var(--st-rule-strong)' : 'var(--st-ink)',
+      weekBackCursor: wi >= kWeeks.length - 1 ? 'default' : 'pointer',
+      weekFwdCursor: wi <= 0 ? 'default' : 'pointer',
+      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) : 'This week',""",
+     "the nine keys Mide's week bar renders — the chips, the sentence under "
+     "them, the two chevrons with their disabled colours and cursors, and "
+     "the roster column's heading. All nine are v2's, `weekTabs` re-derived "
+     "over WEEKS rather than over assignments and every chip's second line "
+     "now filled. See the block comment."),
+
+    # ══ ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · THE TWO READERS OF TODAY_LESSONS ═
+    #
+    # ⛔ A GREEN BUILD THAT THREW AT MOUNT. `DROP_FIELDS` deletes the four
+    # invented lessons; these two entries are what stops the code that read
+    # them from throwing on the way past. BOTH run unconditionally inside
+    # `renderVals`, on every one of the six pages, before anything is drawn.
+    #
+    # `lessons` is the Today screen's list, and the Today screen is pruned on
+    # all six pages — so the ONLY thing this expression ever did on an emitted
+    # page was throw. It degrades to `[]`, which is the honest answer: the
+    # platform holds no timetable, so it knows of no lessons today. Design's
+    # own presentation of an empty list is what the Today screen will use when
+    # it is ported.
+    #
+    # ⚠️ `[]` AND NOT A ONE-LINE GUARD INSIDE THE MAP. Guarding
+    # `klassById(t.classId)` would have stopped the throw and kept four rows
+    # of fiction — periods, times and rooms nobody timetabled — which is the
+    # failure this port exists to prevent, wearing the fix's clothes.
+    ("""    const lessons = this.TODAY_LESSONS.map(t => {
+      const c = this.klassById(t.classId);
+      const chase = this.chaseFor(c);
+      let ready = '', readyFg = 'var(--st-muted)';
+      if (c.state === 'empty') { ready = 'No students yet — import your class list'; }
+      else if (c.state === 'nowork') { ready = 'No work set for two weeks · ' + c.n + ' students waiting'; readyFg = 'var(--st-accent-text)'; }
+      else if (!chase.length) { ready = 'All ' + c.n + ' homeworks in — nothing to chase'; readyFg = 'var(--ks3-ok-text)'; }
+      else {
+        ready = (c.n - chase.length) + ' of ' + c.n + ' in — chase ' + chase.slice(0, 2).map(r => this.shortName(r.name)).join(', ') + (chase.length > 2 ? ' +' + (chase.length - 2) + ' more' : '');
+        readyFg = 'var(--st-accent-text)';
+      }
+      return {
+        p: t.p, time: t.time, code: c.code,
+        meta: t.room + (c.n ? ' · ' + c.n + ' students' : '') + ' · ' + c.subject,
+        ready, readyFg,
+        open: () => c.n > 0 ? this.setState({ screen: 'class', classId: c.id }) : this.setState({ screen: 'import', importStep: 1 })
+      };
+    });""",
+     """    /* ⊕ MRB-306: `TODAY_LESSONS` was four invented lessons and is deleted.
+       This ran on every page and threw on the first real class id. There is
+       no timetable behind this dashboard yet, so the honest list is empty. */
+    const lessons = [];""",
+     "the Today screen's lesson list. It read four fabricated lessons, and "
+     "`klassById` on a fabricated class id returns undefined, so `c.state` "
+     "threw at mount on all six pages."),
+
+    # `lessonToday` is the CLASS screen's copy of the same fiction, and unlike
+    # `lessons` its output reached a page a teacher actually opens:
+    # `klass.meta` printed "Next lesson today · P5 · 13:55 · Lab 2" under a
+    # real class code. `.filter(...)[0]` on a deleted field would throw; it
+    # becomes `null`, and the `klass.meta` ruling above drops the part rather
+    # than printing the falsy arm, because "No lesson today" is a claim and
+    # not an empty state.
+    ("    const lessonToday = this.TODAY_LESSONS.filter(t => t.classId === k.id)[0];",
+     "    /* ⊕ MRB-306: no timetable data exists; see DROP_FIELDS. */\n"
+     "    const lessonToday = null;",
+     "the class header's \"next lesson\" fact. Four invented rooms and "
+     "times, printed under a real class's code."),
+
+    # ══ ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · DESIGN'S TOP-BAR TABS BECOME REAL ═
+    #
+    # ⛔ A BLANK PAGE, ON EVERY PAGE, FROM THE CHROME. v3's top bar is a two-
+    # tab strip — "Today" and "My classes" — and both tabs call
+    # `this.setState({ screen: t.id })`. On these six pages `s.screen` is
+    # fixed by the build and every other screen `<if>` is PRUNED, so setting
+    # `screen` to a screen this page does not carry makes every branch false
+    # and the page renders nothing at all. It is the `c.act` failure of 24
+    # Aug exactly, in the chrome rather than on one card, and therefore on all
+    # six pages: every gate green, and a teacher pressing a tab in the header
+    # gets a white screen with no error in the console.
+    #
+    # ⚑ SO THE TABS BECOME NAVIGATIONS, which is what every other screen-
+    # changing control in this port already is. `t.pick` is loop-scoped, so
+    # the destination has to be written in the closure that builds the row —
+    # `NAV`'s builder anchor cannot reach it, because `navTabs` is a key of
+    # `renderVals`'s return and not a `const … = ….map(` declaration.
+    #
+    # ⚠️ "Today" GOES TO THE HAND-WRITTEN `teacher/today.html`, WHICH IS REAL.
+    # It is a live page that already loads `teacher-live.js`; it is simply not
+    # one of the six this generator emits yet. Porting Design's Today screen
+    # is a later unit, and when it lands it emits `teacher/today.html` — the
+    # SAME URL — so this link does not become a redirect or a rename. The
+    # alternative was pruning Design's strip, which would have thrown away the
+    # only always-visible navigation on the dashboard to avoid a link to a
+    # page that works.
+    #
+    # ⚠️ "My classes" CARRIES `yearParam`, because it is now the control that
+    # `INSERT_AT[(10, 13)]` used to be, and MRB-287 E1's guarantee travels
+    # with it: a teacher browsing 2025-26 comes back to 2025-26 rather than
+    # being silently returned to the working year.
+    #
+    # The `on` computation, the two colours and Design's markup are untouched:
+    # only the press changes.
+    ("""          pick: () => this.setState({ screen: t.id, modal: null })""",
+     """          pick: () => MRB_GO(t.id,
+            t.id === 'classes' ? { year: MRB_DATA('yearParam') } : {})""",
+     "the top bar's two tabs. Design's press set `s.screen`, which on a "
+     "six-URL port is a page that renders nothing; both are real navigations "
+     "now, and \"My classes\" carries the academic year the way the control "
+     "it replaces did."),
+
+    # ══ ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · THE THREE GLANCE CHIPS `NAV`
+    #    CANNOT ANCHOR ═══════════════════════════════════════════════════
+    #
+    # The other five of v3's new class-screen controls are in `NAV` (see
+    # `goToday`, `glance.openMarking`, `w.open (keep an eye on)`). These three
+    # are here instead, and the reason is mechanical rather than a preference:
+    # `NAV`'s builder anchor requires a `const <name> = ….map(` declaration,
+    # and neither of these two lists has one. `chase` is a property INSIDE the
+    # `const glance = {` object literal, and `praise` is `const praise = [];`
+    # filled by two `.push(` calls. So they are anchored the way this file
+    # anchors everything a node cannot reach: on their own source, exactly
+    # once, and the build refuses on nought matches or two.
+    #
+    # ⚠️ STATED PLAINLY — THESE THREE ARE SOURCE-ANCHORED AND NOT
+    # NODE-ANCHORED, so nodes 234 and 270 are asserted by nothing. If Design
+    # redraws the glance block the source anchors below go red (which is the
+    # protection that matters), but a chip that MOVED to a different node
+    # would not be noticed. It is the weaker of the two guarantees and it is
+    # the one available.
+    ("        open: (e) => { e.stopPropagation(); this.setState({ screen: 'student', studentId: r.id }); }",
+     "        open: (e) => { e.stopPropagation(); MRB_GO('student', "
+     "{ student: r.id, 'class': k && k.id }); }",
+     "a name chip in the class glance's \"Not in yet\" chase list (node "
+     "234). `e.stopPropagation()` is KEPT — the chip sits inside a card that "
+     "has its own press, and dropping it would fire both."),
+
+    ("open: () => this.setState({ screen: 'student', studentId: best.id })",
+     "open: () => MRB_GO('student', { student: best.id, 'class': k && k.id })",
+     "the \"Worth a shoutout\" chip for the class's top average (node 270)."),
+
+    ("open: () => this.setState({ screen: 'student', studentId: imp.r.id })",
+     "open: () => MRB_GO('student', { student: imp.r.id, 'class': "
+     "k && k.id })",
+     "the \"Worth a shoutout\" chip for the most improved student (the "
+     "second row of node 270's loop)."),
 )
+
+
+
+# ── ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · THE UNGUARDED-RULING SWEEP ─────────
+#
+# ⛔ THE HOLE THIS CLOSES. `apply_rulings` runs each node-anchored table with
+# `if node not in here: continue` — correct per page, because a node pruned
+# with somebody else's screen is legitimately absent. But four of those
+# tables had NO cross-page sweep behind them, so a node Design had DELETED
+# was skipped on all six pages and the ruling was never checked anywhere:
+# build green, ruling not in any page. That is exactly the failure this whole
+# file exists to prevent, and it was live in `SET_ATTR`, `BIND_ATTR`,
+# `RETEXT_AT` and `SET_ON`. `NAV` and `RETARGET_ON` already had the sweep;
+# these four now share it.
+#
+# ⚠️ AND A BARE SWEEP WOULD HAVE BEEN RED ON A CORRECT BUILD, which is why
+# this register exists. Twelve rulings BELONG to the import screen, and the
+# import screen is deliberately not emitted (`IMPORT_NOT_PORTED`). They are
+# kept rather than deleted because they are the anchoring a future re-port
+# would otherwise redo. Naming them here is the difference between "we know
+# these twelve apply to nothing, and here is why" and silence.
+#
+# ⚠️ IT IS CHECKED IN BOTH DIRECTIONS. An entry named here that DOES turn up
+# on a page fails the build too — otherwise the exemption list rots into a
+# way of switching a guard off. `{table: {node: why}}`.
+KNOWN_UNAPPLIED = {
+    "SET_ATTR": {
+        462: "import wizard — the screen's own `data-port-region`. Found by "
+             "the sweep on its first run, which is the point of it: nobody "
+             "had noticed this row applied to nothing.",
+        483: "import wizard — the uploaded file's name",
+        484: "import wizard — the row/column summary",
+        499: "import wizard — \"New students\"",
+        502: "import wizard — \"Matched existing\"",
+        505: "import wizard — \"Needs attention\"",
+        515: "import wizard — the confirm button",
+    },
+    "RETEXT_AT": {
+        483: "import wizard — a file nobody uploaded",
+        484: "import wizard — counts of a file nobody parsed",
+        499: "import wizard — a dry-run nobody ran",
+        502: "import wizard — same",
+        505: "import wizard — same",
+        515: "import wizard — the button's fictional count",
+    },
+    "BIND_ATTR": {},
+    "SET_ON": {},
+}
 
 
 # ── the assertion that proves no invented number survived ────────────────

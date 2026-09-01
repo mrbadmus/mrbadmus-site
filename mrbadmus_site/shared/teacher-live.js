@@ -987,27 +987,176 @@
     });
   }
 
-  /* The week bar. Design derives twelve weeks from a hardcoded first date;
-     these are the class's OWN weeks — one per assignment it actually has,
-     labelled with the teaching week it was set in. A class with no work set
-     has no week bar, which is Design's own rule and now a consequence of the
-     data rather than a special case. */
-  function buildWeeks(papers) {
-    return papers.map(function (p) {
-      return {
-        idx: p.idx,
-        range: p.range,
-        due: p.due.replace(/^Due /, ""),
-        set: p.set,
-        dueShort: p.dueShort,
-        lateShort: p.lateShort,
-        academic_week: p.academic_week,
-        // `academic_week` is what the scheme of work counts in, so where an
-        // assignment carries one it is the honest week number. Null where the
-        // assignment was created outside that path; blank, not guessed.
-        weekLabel: p.academic_week == null ? "" : "Week " + p.academic_week
-      };
+  /* ═════════════════════════════════════════════════════════════════════
+     THE WEEK BAR — INDEXED BY TEACHING WEEK, NOT BY ASSIGNMENT
+     ═════════════════════════════════════════════════════════════════════
+
+     ⚑ RULED BY MIDE, 1 Sep 2026 (MRB-306). Design's v3 deleted the class
+     screen's week rail; Mide overrode that and kept it: "twelve
+     hairline-separated teaching weeks … picking one re-scopes the tiles, the
+     roster column and the assignment tables", dated from real academic-year
+     weeks. The named ruling is `WEEK_BAR_RESTORED` in `teacher_rulings.py`.
+
+     ⛔ WHAT THIS REPLACES, AND WHY IT IS NOT A REFACTOR. Until today
+     `buildWeeks` was `papers.map(...)` — ONE WEEK PER ASSIGNMENT, carrying
+     the assignment's own index. That is Design's model, and inside Design's
+     fiction it is exactly right: her sample class has one assignment per
+     week for twelve weeks, so "week 3" and "the third paper" are the same
+     object and nothing can tell them apart.
+
+     They come apart completely on real data. `8r/Sc1` — the only class in
+     the working year with any assignments at all — has TWO, against a
+     thirty-nine-week year. Carried forward unchanged, the bar would have
+     drawn two chips and called them the year, and a teacher stepping back
+     through it would have been stepping through papers while reading week
+     ranges. Weeks are the axis; papers map ONTO weeks.
+
+     ⚠️ INDEX 0 IS THE WEEK THE BAR OPENS ON, AND THE LIST COUNTS BACKWARDS.
+     That is Design's own direction (`wPast = wi > 0`, back = `wi + 1`,
+     forward = `wi - 1`) and every consumer still reads it that way. While
+     the year is running index 0 is THIS teaching week; in a year that has
+     already finished — a teacher browsing 2025-26, which is read-only — it
+     is that year's last teaching week, because "this week" is not a fact
+     about a year you are only reading.
+
+     ⚠️ NO WEEK FROM BEFORE THE YEAR BEGAN. Twelve is a cap, not a count: a
+     year that is four weeks old has four chips, and on the first day of term
+     it has one, marked "This week". Offering weeks from before the start
+     date would be offering last year's teaching under this year's heading. */
+
+  /* Whole weeks between two Monday-aligned dates.
+
+     ⚠️ ROUNDED, NEVER FLOORED. Two Mondays either side of a clock change are
+     7×24h−1h apart, so a floor divides 6.99 weeks down to 6 and every week
+     label after the October change is off by one. `academicWeekOf` above
+     still floors; that is a pre-existing defect recorded in the handover
+     rather than changed under this ticket. */
+  function weeksBetween(fromMon, toMon) {
+    return Math.round((toMon.getTime() - fromMon.getTime()) / 604800000);
+  }
+
+  /* The teaching weeks of one academic year, newest first, at most twelve.
+
+     `term` and the within-term number come from `seasonFor`'s own Sep–Dec /
+     Jan–Mar / Apr–Aug boundaries applied to each week's OWN Monday, so
+     "Autumn Week 1" is derived from the year's start date and nothing is
+     typed. ⚠️ IT IS AN APPROXIMATION AND IT IS NOT A SMALL ONE: `academic_years`
+     records a start and an end and NOTHING about half terms, and Easter
+     moves, so the count runs straight through the holidays. Half-term weeks
+     are counted as teaching weeks because the data cannot say otherwise. A
+     `terms` table would make it exact; that is Mide's call and it is in the
+     handover. */
+  function buildWeeks(year, now) {
+    if (!year || !year.start_date) { return []; }
+    var startD = new Date(String(year.start_date) + "T00:00:00");
+    if (isNaN(startD.getTime())) { return []; }
+    var startMon = teachingWeek(startD).mon;
+
+    var topMon = teachingWeek(new Date(now)).mon;
+    if (topMon.getTime() < startMon.getTime()) { topMon = startMon; }
+    if (year.end_date) {
+      var endD = new Date(String(year.end_date) + "T00:00:00");
+      if (!isNaN(endD.getTime())) {
+        var lastMon = teachingWeek(endD).mon;
+        if (topMon.getTime() > lastMon.getTime()) { topMon = lastMon; }
+      }
+    }
+    var elapsed = weeksBetween(startMon, topMon) + 1;      // 1 on day one
+    var count = Math.max(1, Math.min(12, elapsed));
+
+    // Term numbering has to be counted FROM THE START OF THE YEAR, not from
+    // the first chip: the twelfth week back is not the first week of its term
+    // just because the bar stops there.
+    var termN = {}, numberOf = {};
+    for (var w = 0; w < elapsed; w += 1) {
+      var m = new Date(startMon);
+      m.setDate(startMon.getDate() + w * 7);
+      var t = seasonFor(ymd(m), year);
+      termN[t] = (termN[t] || 0) + 1;
+      numberOf[ymd(m)] = { term: t, n: termN[t], week: w + 1 };
+    }
+
+    var thisMonYmd = ymd(teachingWeek(new Date(now)).mon);
+    var out = [];
+    for (var i = 0; i < count; i += 1) {
+      var mon = new Date(topMon);
+      mon.setDate(topMon.getDate() - i * 7);
+      var fri = new Date(mon);
+      fri.setDate(mon.getDate() + 4);
+      var meta = numberOf[ymd(mon)] || { term: seasonFor(ymd(mon), year), n: 1, week: 1 };
+      out.push({
+        idx: i,
+        weekOfYear: meta.week,
+        term: meta.term,
+        // "Autumn Week 1" — the chip's second line, and the sentence under
+        // the bar. "This week" replaces it on the week a teacher is in.
+        label: meta.term + " Week " + meta.n,
+        // Design's own range format, which the chips are sized for.
+        range: weekRangeLabel(mon),
+        now: ymd(mon) === thisMonYmd,
+        monYmd: ymd(mon),
+        friYmd: ymd(fri)
+      });
+    }
+    return out;
+  }
+
+  /* Which teaching week each assignment belongs to, written onto the paper as
+     `weekIdx` — the same index the bar is keyed on.
+
+     ⚑ `academic_week` FIRST, BECAUSE IT IS THE AUTHORED INTENT. Where the
+     scheme of work put a number on the assignment, that number is the answer
+     and nothing is derived. Only where it is NULL is the week worked out from
+     the deadline.
+
+     ⚠️ AND THE DERIVATION IS `due_at − 7`, NOT `created_at`. That is this
+     file's own ruling of 24 Aug 2026, recorded on `buildPapers`, and it is
+     the opposite of what the week-bar brief asked for: `created_at` is the
+     row's insert stamp, so a term composed in one sitting gives every
+     assignment in it the same one and the whole bar collapses onto a single
+     week. It fails silently and it fails on exactly the data the platform
+     has. Both rules agree on the two real assignments in the working year, so
+     nothing observable turns on the choice today — but only one of them keeps
+     agreeing once a teacher plans a term in an afternoon.
+
+     ⚠️ A DATE BEFORE THE YEAR STARTS IS WEEK 1 — Mide's ruling, and it is the
+     live default rather than an edge case: both real assignments on `8r/Sc1`
+     were set in late August against a year that began on 1 September.
+
+     ⚠️ A WEEK STILL AHEAD IS A NEGATIVE INDEX, DELIBERATELY. Teachers set work
+     forward; clamping it back onto this week would date it wrongly, and
+     dropping it would hide work that has been set. The class screen buckets
+     everything at or ahead of the current week into the current week's view,
+     so nothing ever vanishes, and the paper's own due date still says when it
+     is for. An assignment with NO deadline and no `academic_week` has no week
+     to be in and is treated the same way: it never closes, so it is open now. */
+  function assignPaperWeeks(papers, weeks, year, now) {
+    var topWeek = weeks.length ? weeks[0].weekOfYear : null;
+    var startMon = null;
+    if (year && year.start_date) {
+      var d = new Date(String(year.start_date) + "T00:00:00");
+      if (!isNaN(d.getTime())) { startMon = teachingWeek(d).mon; }
+    }
+    papers.forEach(function (p) {
+      var wk = null;
+      if (p.academic_week != null) {
+        wk = Math.max(1, Number(p.academic_week));
+      } else if (p.due_at && startMon) {
+        var setD = asDate(p.due_at);
+        if (setD) {
+          setD.setDate(setD.getDate() - 7);
+          wk = Math.max(1, weeksBetween(startMon, teachingWeek(setD).mon) + 1);
+        }
+      }
+      /* NULL, NOT ZERO. A paper with no deadline and no `academic_week` has
+         no week to be in, and saying "week 0" would be a claim rather than an
+         absence. The class screen buckets a null into the current week — it
+         never closes, so it is open now — but it does so knowingly, and
+         anything else reading `weekIdx` can still tell the two apart. */
+      p.weekOfYear = wk;
+      p.weekIdx = (wk == null || topWeek == null) ? null : (topWeek - wk);
     });
+    return papers;
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -1413,10 +1562,20 @@
     var now = Date.now();
     var CLASSES = [], MATRIX = {}, ROSTER = {}, PAPERS = {}, WEEKS = {};
 
+    /* ⊕ MRB-306 — ONE WEEK LIST FOR THE WHOLE PAGE, keyed per class because
+       that is the shape `weeks()` reads (`MRB_PICK('WEEKS', k.id)`). The
+       weeks are the VIEWED academic year's, not the working one: a teacher
+       reading 2025-26 is reading that year's teaching weeks, and its last
+       week — not this one — is the week the bar opens on. Every class on a
+       page is in the year being viewed, so the list is computed once and
+       shared by reference rather than rebuilt twelve times. */
+    var yearWeeks = buildWeeks(viewing, now);
+
     classRows.forEach(function (c) {
       var pack = packs[c.id];
       if (!pack) { return; }                       // cannot happen: it throws
       var papers = buildPapers(pack, now);
+      assignPaperWeeks(papers, yearWeeks, viewing, now);
       var mx = buildMatrix(pack, papers, now);
       decoratePapers(papers, mx);      // `sub` / `mean` / `asked`, from the matrix
       var roster = buildRoster(pack, mx, now);
@@ -1424,7 +1583,7 @@
       PAPERS[c.id] = papers;
       MATRIX[c.id] = mx;
       ROSTER[c.id] = roster;
-      WEEKS[c.id] = buildWeeks(papers);
+      WEEKS[c.id] = yearWeeks;
 
       // Which of the three shapes this class is in. Design's states, and the
       // order matters: no roster beats no work, because a class with neither
