@@ -126,7 +126,20 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- Profiles for each. Note: the existing 33 profiles on the branch will
--- still exist; these are additional fake ones that won't collide.
+-- still exist; these are additional fake ones.
+--
+-- The ON CONFLICT is load-bearing, and it is newer than the rest of this
+-- harness. When these tests were written, inserting into auth.users above did
+-- nothing else. It does now: on_auth_user_created fires handle_new_user(),
+-- which auto-creates a public.profiles row for every one of the eleven fake
+-- users the moment Section A runs. So by the time we reach this statement the
+-- rows already exist, and a plain INSERT dies on profiles_pkey with a 23505
+-- before a single assertion gets to run.
+--
+-- We still need OUR values in them — the school_id, role, department and
+-- key_stage below are exactly what the RLS and scope assertions later in this
+-- file are checking. So this reconciles with the trigger rather than fighting
+-- it: let handle_new_user() make the row, then overwrite it with the fixture.
 INSERT INTO public.profiles (id, school_id, role, department, key_stage, first_name, last_name)
 VALUES
   -- Alpha
@@ -142,7 +155,14 @@ VALUES
   ('b0000002-0000-0000-0000-000000000002', '22222222-2222-2222-2222-222222222222', 'teacher', NULL,        'KS4', 'Bravo',  'BioTeacher'),
   ('b0000003-0000-0000-0000-000000000003', '22222222-2222-2222-2222-222222222222', 'student', NULL,        'KS4', 'Bravo',  'Student1'),
   -- Legacy
-  ('c0000001-0000-0000-0000-000000000001', NULL,                                    'student', NULL,       'KS4', 'Legacy', 'User');
+  ('c0000001-0000-0000-0000-000000000001', NULL,                                    'student', NULL,       'KS4', 'Legacy', 'User')
+ON CONFLICT (id) DO UPDATE SET
+  school_id  = EXCLUDED.school_id,
+  role       = EXCLUDED.role,
+  department = EXCLUDED.department,
+  key_stage  = EXCLUDED.key_stage,
+  first_name = EXCLUDED.first_name,
+  last_name  = EXCLUDED.last_name;
 
 -- One class in each school
 INSERT INTO public.classes (id, school_id, academic_year_id, name, key_stage, year_group, tier, science_pathway)
