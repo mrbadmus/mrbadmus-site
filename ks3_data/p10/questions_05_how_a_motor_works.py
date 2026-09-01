@@ -130,7 +130,11 @@ QUESTIONS = [
              "correct": False,
              "why": "The magnets are only half of it. The push also depends "
                     "on how much current is flowing."},
-            {"text": "It roughly doubles", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It roughly doubles, because the push follows the "
+                     "current", "correct": True},
             {"text": "It reverses, because doubling passes through the point "
                      "where it cancels", "correct": False,
              "why": "There is no such point. Direction is set by the two "

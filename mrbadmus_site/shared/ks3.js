@@ -7448,17 +7448,25 @@
          `data-w` and `.ks3-pbench-name`, which is where the bars and the
          crossover already get them.
 
-         ⚠️ STILL HARDCODED, DELIBERATELY, AND REPORTED: "over a hundred
-         times taller" in the third sentence is the power RATIO (2000/15 =
-         133). It is a content claim rather than a figure, so re-wording it
-         is Mide's call, not this file's. */
+         ⊖ SUPERSEDED four lines later in the same commit, and kept because
+         a reader who stops here would be misled. It read: "STILL
+         HARDCODED, DELIBERATELY, AND REPORTED: 'over a hundred times
+         taller' in the third sentence is the power RATIO (2000/15 = 133).
+         It is a content claim rather than a figure, so re-wording it is
+         Mide's call, not this file's." The very next block derives it. Two
+         edits in one sitting, and the first one's note was never revisited
+         — which is the same defect this whole block is about, one comment
+         further up. */
       /* ⊕ MRB-297 · 1 Sep 2026 — THE ONE HARDCODED NUMBER LEFT IN THESE
          CAPTIONS, DERIVED. And a near-miss recorded, because the near-miss
          is the more useful half.
 
          ⚠️ THIS BENCH DRAWS TWO BARS PER APPLIANCE — `.ks3-pbench-pow`,
          the rating, which never moves, and `.ks3-pbench-nrg`, the running
-         total, which does. "The kettle's bar is over a hundred times
+         total, which does. ⚠️ AND NEITHER OF THEM IS 133 TIMES THE OTHER
+         ON SCREEN — see the correction at `beforeNote()` below; the CSS
+         floors a bar at 3px and the drawn ratio is about 33. "The kettle's
+         bar is over a hundred times
          taller" names the RATING bar: 2000 W against 15 W is 133, true at
          every moment of the run, and it is the lesson — a tall bar that
          stops early loses to a short bar that does not. The closing line
@@ -7472,22 +7480,55 @@
          bench and reading BOTH sentences on the page rather than the one
          being edited. The sentence was never false; only the 133 was
          typed rather than computed, and that is all that changes here. */
+      /* ⊕ CORRECTED 1 Sep 2026 — THE CLAIM IS ABOUT THE RATING, NOT THE
+         DRAWN BAR, AND THE PREVIOUS VERSION OF THIS LINE WAS PRECISELY
+         WRONG WHERE THE ONE BEFORE IT HAD ONLY BEEN VAGUE.
+
+         It read "the kettle's BAR is about 133 times taller". 133 is the
+         ratio of the WATTAGES. The drawn bars are not in that ratio,
+         because `.ks3-pbench-pow` in `shared/ks3.css` carries
+         `min-height: 3px`: at 1280px the kettle's bar renders 132px and
+         the router's 4px, so what a child could measure on the screen
+         with a ruler is about 33. Deriving the number from the markup was
+         right; attaching it to the bar was not, and the earlier hedge
+         ("over a hundred times") was not false only because it was too
+         vague to check. The sentence now says what the 133 actually is. */
       function beforeNote() {
         var ratio = LONG.w ? SHORT.w / LONG.w : 0;
-        return "The " + SHORT.name.toLowerCase() + "'s bar is about "
-             + Math.round(ratio) + " times taller and it has already "
-             + "stopped. Keep going.";
+        return "The " + SHORT.name.toLowerCase() + " is drawing about "
+             + Math.round(ratio) + " times as much power, and it has "
+             + "already stopped. Keep going.";
       }
 
       if (t >= CROSS && CROSS > 0) { seen = true; }
       if (note) {
+        /* ⊕ CORRECTED 1 Sep 2026 — THE CAPTION BRANCHES ON THE CLOCK, THE
+           RAIL STOP ON THE LATCH, AND CONFLATING THEM PRINTED THE OPPOSITE
+           OF THE READOUTS.
+
+           `seen` is a STICKY latch — only "Back to zero" clears it — and
+           it has to be, because the rail stop is an achievement and a
+           student may keep scrubbing afterwards. Earlier today this run
+           correctly changed the latch from `t > CROSS` to `t >= CROSS` so
+           the "Jump to the crossover" button awards the stop it is named
+           after. What it did not notice is that the CAPTION was reading
+           the same latch. WHAT A STUDENT SAW: jump to the crossover, then
+           jump back to 3 minutes, and the page said "Past the crossover —
+           the 15 W router has now transferred more energy than the 2000 W
+           kettle did all day" over readouts printing kettle 360 kJ and
+           router 3 kJ. The page contradicted its own numbers by a factor
+           of 120, on the one comparison the lesson exists to draw, and the
+           control that produced it was the one this run had just repaired.
+
+           The latch keeps the achievement; the caption describes the state
+           the bench is actually in. */
         note.textContent = (!t || !LONG || !SHORT)
           ? ""
           : ((CROSS > 0 && t === CROSS)
               ? "The crossover, exactly. The " + watted(LONG) + " has just "
                 + "drawn level with the " + watted(SHORT) + " — and the "
                 + LONG.name.toLowerCase() + " is still running."
-              : (seen
+              : ((CROSS > 0 && t > CROSS)
                   ? "Past the crossover. The " + watted(LONG) + " has now "
                     + "transferred more energy than the " + watted(SHORT)
                     + " did all day."
@@ -8987,6 +9028,15 @@
          handles both directions, which is precisely why it can be trusted
          with the one direction it was being kept away from. Driven at
          0 N, 6 N, 8 N and 10 N on `springs-and-hookes-law`. */
+      /* ⊕ MRB-297 · 1 Sep 2026 — AND THE READOUT IS REPAINTED WHETHER OR NOT
+         THE BUTTON IS. The line below deliberately skips a marked panel so
+         that "Marked" is never relabelled; the readout beside it was riding
+         on the same skip, so a student who marked and then moved the bench
+         into a refusal was left with a dead button, no reveal, and a readout
+         still saying "5 of 5 written". `repaintHint` reads the blocked state
+         itself and handles both directions, so it is called unconditionally.
+         Driven at 0 N, 4 N, 6 N and 8 N on `springs-and-hookes-law`. */
+      if (q.repaintHint) { q.repaintHint(); }
       if (chk && chk.textContent !== "Marked" && q.repaintBtn) {
         q.repaintBtn();
       }
@@ -9036,29 +9086,62 @@
       function isBlocked() {
         return !!(blockEl && !blockEl.hidden);
       }
+      /* ⊕ MRB-297 · 1 Sep 2026 — THE READOUT IS ITS OWN JOB NOW, BECAUSE THE
+         BUTTON'S EARLY RETURN WAS SILENCING IT.
+
+         WHAT WAS WRONG. The readout was written inside `repaintBtn`, and
+         `repaintBtn` opens by returning when the button already reads
+         "Marked" — so once a student had pressed Check nothing could rewrite
+         it again. `paintAttempt` then guarded its own call on the same
+         condition, so a marked panel entering a refusal never reached this
+         code at all, in either direction.
+         WHAT A STUDENT SAW, measured in a browser on
+         `springs-and-hookes-law.html`: Check at 4 N, then slide to 0 N. The
+         panel refuses, the boxes and the earned reveal go away, Check is
+         dead — and the readout beside it still said "5 of 5 written", which
+         is true of the boxes and no answer at all to "why does pressing do
+         nothing?". A student who had NOT marked, at the same 0 N, was told
+         "Waiting on a reading to scale up". Marking the panel cost them the
+         explanation.
+         WHAT IT DOES NOW: the readout is computed here, `paintAttempt` calls
+         it on every paint in BOTH directions, and the button's early return
+         — which is worth keeping, so a marked button is never relabelled —
+         no longer decides whether a student is told anything.
+         ⚠️ THE REASON IS STILL NEVER INVENTED. It is the authored
+         `blockedProgress` off the wrapper, the same sentence an unmarked
+         student sees. What is added when a reveal has been EARNED is the one
+         thing that authored sentence cannot know: that the marked panel has
+         been put away for this reading rather than lost. That clause is
+         about the panel, not about the science. */
+      function repaintHint() {
+        if (!hint) { return; }
+        if (isBlocked()) {
+          var why = wrap.getAttribute("data-blocked-progress")
+            || "Check is off for this reading";
+          hint.textContent = q.getAttribute("data-marked") === "1"
+            ? why + " · your marked lines come back with it"
+            : why;
+          return;
+        }
+        var n = written();
+        hint.textContent = n
+          ? n + " of " + inputs.length + " written"
+          : "Write at least one line first";
+      }
       function repaintBtn() {
-        if (btn.textContent === "Marked") { return; }
+        if (btn.textContent === "Marked") { repaintHint(); return; }
         var n = written(), stop = isBlocked();
         if (n && !stop) { btn.removeAttribute("disabled"); }
         else { btn.setAttribute("disabled", ""); }
-        if (hint) {
-          /* ⚠️ NO BLOCKED WORDING IS INVENTED HERE. P8 reads its
-             `blockedProgress` off the wrapper; P4's renderer does not emit
-             one yet, so when the attribute is absent the readout keeps
-             saying what it always said rather than this file making up a
-             sentence for a student. Named in the MRB-297 report. */
-          var bp = wrap.getAttribute("data-blocked-progress");
-          hint.textContent = (stop && bp)
-            ? bp
-            : n
-              ? n + " of " + inputs.length + " written"
-              : "Write at least one line first";
-        }
+        repaintHint();
       }
       /* Handed to `paintAttempt` so a question that stops being blocked
          gets its button back without the student having to guess that
-         touching a field will do it. Mirrors P12's copy. */
+         touching a field will do it. Mirrors P12's copy. The readout is
+         handed across SEPARATELY because it has to move in both directions
+         even on the paints where the button must not move at all. */
       q.repaintBtn = repaintBtn;
+      q.repaintHint = repaintHint;
       function retally() {
         var got = 0;
         each(ticks, function (t) {
@@ -14336,9 +14419,23 @@
          GUARD. A student who marks Q1 on a readable specimen and then
          clips copper in was otherwise left looking at a marked panel for a
          state the page has just said has no reading. */
-      if (blocked) {
-        var rev = q.querySelector("[data-p8cfa-reveal]");
-        if (rev) { setHidden(rev, true); }
+      /* ⊕ MRB-297 · 1 Sep 2026 — AND IT COMES BACK. This hid an earned
+         reveal on the way in to the copper short and had nothing at all on
+         the way out, so the panel was not put away, it was destroyed.
+         WHAT A STUDENT SAW, measured in a browser on
+         `conductors-and-insulators.html`: write five lines on nichrome,
+         press Check, read the marked panel; clip copper in; clip nichrome
+         back. The five model lines and their own five lines and their
+         self-ticks are gone, the button is dead and still reads "Marked",
+         and no control on the page brings any of it back — Check refuses an
+         empty attempt and their attempt is no longer empty.
+         WHAT IT DOES NOW: the same restore P4 and P12 already had. The
+         reveal is reopened only when the state is NOT blocked and only when
+         it was actually earned, so the empty-attempt contract is untouched. */
+      var rev = q.querySelector("[data-p8cfa-reveal]");
+      if (rev && blocked) { setHidden(rev, true); }
+      else if (rev && q.getAttribute("data-marked") === "1") {
+        setHidden(rev, false);
       }
       /* ⚠️ THE BUTTON'S STATE IS RECOMPUTED FROM THE BOXES, NEVER SET.
          The kit's contract is that Check REFUSES AN EMPTY ATTEMPT — a
@@ -14360,17 +14457,32 @@
              function (i) { if (i.value.trim()) { typed += 1; } });
         if (blocked || !typed) { chk.setAttribute("disabled", ""); }
         else { chk.removeAttribute("disabled"); }
-        var hint = q.querySelector("[data-p8cfa-hint]");
-        if (hint) {
+      }
+      /* ⊕ MRB-297 · 1 Sep 2026 — AND THE READOUT IS OUTSIDE THAT BRANCH NOW.
+         It used to be written inside it, so a MARKED panel never had its
+         readout touched again: clip copper in and the disabled button was
+         explained by "5 of 5 written", which is true of the boxes and no
+         answer at all to "why is this off?". An unmarked student at the same
+         bench was told "Waiting on a specimen the ammeter can read".
+         `repaintHint` reads the blocked state itself and handles both
+         directions. The inline write below is kept only for the paint that
+         can arrive before the panel is wired — see the note by the
+         `wireCfifaAttemptP8` call — where there is no `repaintHint` yet. */
+      if (q.repaintHint) { q.repaintHint(); }
+      else {
+        var hint0 = q.querySelector("[data-p8cfa-hint]");
+        if (hint0) {
+          var ins0 = toArray(q.querySelectorAll("[data-p8cfa-input]"));
+          var t0 = 0;
+          each(ins0, function (i) { if (i.value.trim()) { t0 += 1; } });
           /* ⚖️ HER `blockedProgress` — "Waiting on a specimen the ammeter
              can read" — is what the readout says while the copper short
              has nothing to divide. Carried on the wrapper by
              `r_p8_attempt`. */
-          hint.textContent = blocked
+          hint0.textContent = blocked
             ? (wrap.getAttribute("data-blocked-progress") || "")
-            : (typed
-              ? typed + " of " +
-                q.querySelectorAll("[data-p8cfa-input]").length + " written"
+            : (t0
+              ? t0 + " of " + ins0.length + " written"
               : "Write at least one line first");
         }
       }
@@ -14427,19 +14539,38 @@
       function isBlocked() {
         return !!(blockEl && !blockEl.hidden);
       }
+      /* ⊕ MRB-297 · 1 Sep 2026 — the readout is its own job, for the same
+         reason it is on P4 and P12: `repaintBtn` returns early on a marked
+         panel so that "Marked" is never relabelled, and the readout was
+         riding on that return. It is handed to `paintAttemptP8` separately
+         because it has to move in both directions even on the paints where
+         the button must not move at all. The reason is her authored
+         `blockedProgress`; the clause added for an EARNED reveal says the
+         one thing that sentence cannot, that the marked panel is put away
+         for this specimen rather than lost. */
+      function repaintHint() {
+        if (!hint) { return; }
+        if (isBlocked()) {
+          var why = wrap.getAttribute("data-blocked-progress")
+            || "Check is off for this specimen";
+          hint.textContent = q.getAttribute("data-marked") === "1"
+            ? why + " · your marked lines come back with it"
+            : why;
+          return;
+        }
+        var n = written();
+        hint.textContent = n
+          ? n + " of " + inputs.length + " written"
+          : "Write at least one line first";
+      }
       function repaintBtn() {
-        if (btn.textContent === "Marked") { return; }
+        if (btn.textContent === "Marked") { repaintHint(); return; }
         var n = written(), stop = isBlocked();
         if (n && !stop) { btn.removeAttribute("disabled"); }
         else { btn.setAttribute("disabled", ""); }
-        if (hint) {
-          hint.textContent = stop
-            ? (wrap.getAttribute("data-blocked-progress") || "")
-            : n
-              ? n + " of " + inputs.length + " written"
-              : "Write at least one line first";
-        }
+        repaintHint();
       }
+      q.repaintHint = repaintHint;
       function retally() {
         var got = 0;
         each(ticks, function (t) {
@@ -14475,6 +14606,11 @@
         setHidden(reveal, false);
         btn.setAttribute("disabled", "");
         btn.textContent = "Marked";
+        /* ⊕ MRB-297 · 1 Sep 2026 — recorded so `paintAttemptP8` can put an
+           EARNED reveal back after the bench leaves the copper short. Set
+           here and nowhere else, so it can only ever mean "this student
+           pressed Check on a specimen that had a reading". */
+        q.setAttribute("data-marked", "1");
         retally();
         markStage(sec, true);          /* attempt_checked */
       });
@@ -19013,7 +19149,14 @@
           q.repaintBtn();
         }
       }
-      if (hint && hintEl && blocked) {
+      /* ⊕ MRB-297 · 1 Sep 2026 — repainted in BOTH directions. This used to
+         write the refusal wording on the way in and nothing on the way out,
+         which is how "No field to multiply by" survived the walk back to
+         Earth. `repaintHint` reads the blocked state itself. The direct
+         write is kept only for the paint that can arrive before the panel is
+         wired, where there is no `repaintHint` to call yet. */
+      if (q.repaintHint) { q.repaintHint(); }
+      else if (hint && hintEl && blocked) {
         hint.textContent = hintEl.getAttribute("data-text") || "";
       }
     });
@@ -19065,28 +19208,56 @@
       function isBlocked() {
         return !!(blockEl && !blockEl.hidden);
       }
+      /* ⊕ MRB-297 · 1 Sep 2026 — THE READOUT IS ITS OWN JOB HERE TOO, AND ON
+         THIS UNIT THE DEFECT IS OLDER THAN THIS RUN — it was driven at the
+         parent commit before being fixed here.
+
+         WHAT WAS WRONG. `paintAttemptP12` wrote "No field to multiply by"
+         into the readout on the way IN to deep space, and nothing wrote it
+         back on the way OUT: the only thing that could was `repaintBtn`, and
+         `paintAttemptP12` calls that only when the panel is not marked.
+         WHAT A STUDENT SAW, measured in a browser on
+         `gravity-and-weight.html`: Check on Earth, tab to Deep space, tab
+         back to Earth. Their marked panel is on screen again with all five
+         lines and their own self-ticks — and the readout beside it still
+         reads "No field to multiply by", about a field they are standing in.
+         WHAT IT DOES NOW: one function computes the readout from the state,
+         and `paintAttemptP12` calls it on every paint in both directions, so
+         a refusal wording can no longer outlive the refusal. The reason is
+         still her authored `blockedProgress`; the clause added for an EARNED
+         reveal says the one thing that sentence cannot, that the marked
+         panel is put away rather than lost. */
+      function repaintHint() {
+        if (!hint) { return; }
+        var bh = wrap.parentNode
+          ? wrap.parentNode.querySelector("[data-p12cfa-blockhint]") : null;
+        if (isBlocked()) {
+          var why = (bh && bh.getAttribute("data-text"))
+            || "Check is off for this reading";
+          hint.textContent = q.getAttribute("data-marked") === "1"
+            ? why + " · your marked lines come back with it"
+            : why;
+          return;
+        }
+        var n = written();
+        hint.textContent = n
+          ? n + " of " + inputs.length + " lines written"
+          : "Write at least one line first";
+      }
       function repaintBtn() {
-        if (btn.textContent === "Marked") { return; }
+        if (btn.textContent === "Marked") { repaintHint(); return; }
         var n = written(), stop = isBlocked();
         if (n && !stop) { btn.removeAttribute("disabled"); }
         else { btn.setAttribute("disabled", ""); }
-        if (hint) {
-          /* Her `blockedProgress` — "No field to multiply by" — is carried
-             beside the panel as `data-p12cfa-blockhint`, and it is the same
-             sentence `paintAttemptP12` puts here. */
-          var bh = wrap.parentNode
-            ? wrap.parentNode.querySelector("[data-p12cfa-blockhint]") : null;
-          hint.textContent = (stop && bh)
-            ? (bh.getAttribute("data-text") || "")
-            : n
-              ? n + " of " + inputs.length + " lines written"
-              : "Write at least one line first";
-        }
+        repaintHint();
       }
       /* Handed to `paintAttemptP12` so a question that stops being blocked
          gets its button back without the student having to guess that
-         touching a field will do it. */
+         touching a field will do it. The readout goes across separately
+         because it has to move in both directions even on the paints where
+         the button must not move at all. */
       q.repaintBtn = repaintBtn;
+      q.repaintHint = repaintHint;
 
       function retally() {
         var got = 0;

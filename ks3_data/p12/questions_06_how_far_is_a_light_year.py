@@ -92,7 +92,11 @@ QUESTIONS = [
              "correct": False,
              "why": "Light is fast and not instant. Over astronomical "
                     "distances the delay is enormous."},
-            {"text": "12 years", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "12 years, one year per light year",
+             "correct": True},
             {"text": "12 seconds", "correct": False,
              "why": "In 12 seconds light covers about 3.6 million km, which "
                     "does not even reach the Moon ten times over."},
@@ -222,7 +226,11 @@ QUESTIONS = [
                 "light years away and star Y is 3000. Which are you seeing "
                 "further into the past, and by how much?",
         "options": [
-            {"text": "Star Y, by about 2900 years", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "Star Y, by about 2900 years — 3000 minus 100",
+             "correct": True},
             {"text": "Star X, by about 2900 years", "correct": False,
              "why": "The further star's light has been travelling longer, so "
                     "it shows an older scene. Star Y is the further one."},

@@ -256,7 +256,11 @@ QUESTIONS = [
              "correct": False,
              "why": "The air was doing nothing for the magnetism. Removing "
                     "it changes nothing about the pull."},
-            {"text": "It is exactly the same.", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It is exactly the same. Magnetism crosses a "
+                     "vacuum.", "correct": True},
             {"text": "It gets stronger, because nothing is in the way any "
                      "more.", "correct": False,
              "why": "The air was never in the way. The pull is unchanged in "

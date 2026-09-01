@@ -59,7 +59,11 @@ QUESTIONS = [
             {"text": "The air molecules", "correct": False,
              "why": "A molecule is thousands of times below what any light "
                     "microscope can resolve. You never see one."},
-            {"text": "The smoke specks", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "The smoke specks, scattering light",
+             "correct": True},
             {"text": "Both the smoke specks and the air molecules",
              "correct": False,
              "why": "Only the specks. The molecules are far too small to see, "

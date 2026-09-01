@@ -129,7 +129,11 @@ QUESTIONS = [
             {"text": "To the right, along the arrow", "correct": False,
              "why": "That is what a positive charge would do. A negative "
                     "one always goes against the arrow."},
-            {"text": "To the left, against the arrow", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "To the left, against the arrow, as it is negative",
+             "correct": True},
             {"text": "It feels no force, because the map is drawn for "
                      "positive charges only", "correct": False,
              "why": "The map works for both. It is drawn for a positive "
@@ -170,7 +174,11 @@ QUESTIONS = [
         "text": "On a map of one positive and one negative charge, where "
                 "are the arrows longest?",
         "options": [
-            {"text": "In the gap between the two charges", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "In the gap between the two charges, where both "
+                     "fields add", "correct": True},
             {"text": "Far out beyond both of them, where the two fields "
                      "have room to spread", "correct": False,
              "why": "Both contributions are weakest far away, so the arrows "

@@ -313,8 +313,20 @@ LESSON = {
                       "million years ago, long before there was anyone here "
                       "to look."},
          ],
-         "bars_caption": "How big, and how far — each bar step is ten times "
-                         "the one before",
+         # ⊕ MRB-297 · 1 Sep 2026. This read "each bar step is ten times
+         # the one before", which names the OBJECTS: read plainly, it says
+         # each bar is ten times the bar before it. Off the `ly` values the
+         # four steps are ×60, ×4459, ×23585 and ×25, so that was false on
+         # every one of them, and it contradicted the rung note below and
+         # `bars_alt` beside it — all three render inside `[data-spbench]`
+         # on all five tabs. It is the AXIS that steps by ten, which is
+         # what `bars_alt` and the `lead` already say and what
+         # `scale.log_span` draws. The caption now names the scale.
+         # ⚠️ Not "gridline": the bench draws no ticks or gridlines at all,
+         # only proportional fills, so a caption naming them would point at
+         # something not on screen.
+         "bars_caption": "How big, and how far — the bars are drawn on a "
+                         "ten-times scale",
          "bars_alt": "Five bars on a ten-times scale, each one a distance "
                      "from Earth or a width in light-travel terms: {list}. "
                      "{label} is highlighted.",
@@ -346,16 +358,28 @@ LESSON = {
          # of the four are tens, not thousands, and the claim was false on
          # half the ladder. It is now the four figures themselves, which
          # make the real point better: the steps are wildly unequal.
+         # ⊕ MRB-297 · 1 Sep 2026 (second pass, same figure). The four
+         # ratios are right, but they were attached to the OBJECTS — "sixty
+         # times from the Sun to the whole solar system" — and on the first
+         # step that compares two different kinds of quantity. The Sun's
+         # `ly` is a distance from Earth (8.3 light minutes); the solar
+         # system's is a width (light crossing Neptune's orbit). Under the
+         # P12-09 ruling this ladder carries both kinds on purpose, so no
+         # rewording can make that pair a size-against-size comparison.
+         # What every bar DOES plot is one quantity — "How far light
+         # travels", to reach you or to cross it — so the ratios are now
+         # stated as ratios of that, bar against bar, which is like with
+         # like on all four steps. The four numbers are unchanged.
          "notes": {
              "rung": "{note} Notice the shape of the ladder: the whole "
                      "solar system is a rounding error next to the gap "
                      "to the nearest star, and that gap is a rounding "
-                     "error next to the width of one galaxy. The steps "
-                     "are nowhere near equal — about sixty times from "
-                     "the Sun to the whole solar system, four and a half "
-                     "thousand times from there to the nearest star, "
-                     "twenty-four thousand more to the width of the "
-                     "galaxy, and then only twenty-five to Andromeda.",
+                     "error next to the width of one galaxy. Compare "
+                     "each bar with the one before and the steps are "
+                     "nowhere near equal: light goes about sixty times "
+                     "as far, then four and a half thousand times as "
+                     "far, then twenty-four thousand, and then only "
+                     "twenty-five.",
          }},
 
         {"type": "key-fact", "ref": "what-sits-inside-what"},

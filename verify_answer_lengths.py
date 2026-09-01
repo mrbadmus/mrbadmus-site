@@ -251,19 +251,56 @@ RANK_ALL_BASELINE = {
     ("hook", "PHYSICS", 3): (62, 1),          #  1.6% at rank 4, mirror
 }
 
-# 2 · THE WORST RATE AT ANY RANK AT ANY MARGIN FROM 3 TO 10.
+# 2 · THE WORST RATE AT EACH RANK AT ANY MARGIN FROM 3 TO 10.
 #
 # `MARGIN` is a judgement about what a reader can see, and a fix aimed at one
 # value of it is a fix aimed at a constant. Sweeping is the answer: whatever a
 # student's threshold of perception actually is, it is somewhere in 3..10, and
 # the gate holds the worst case across all of them.
+#
+# ⚠️ ⊕ REWRITTEN 1 Sep 2026 BY THE FIFTH COLD DOUBLE-CHECK, WHICH FOUND THREE
+# FAULTS IN THE FIRST VERSION, EACH OF WHICH HID A REAL REGRESSION.
+#
+#   1. IT WAS KEYED BY SCOPE, NOT BY RANK, and so compared magnitudes across
+#      different exploits. The physics bank printed "rank 4 at margin 10:
+#      43.8% GIVEAWAY BASELINED 53.4%" — and that 53.4% is RANK 1 at margin 7.
+#      "Pick the shortest" had gone 21.3% -> 43.8% (p = 5e-6) and was passing
+#      against a baseline for a different strategy entirely. The tell had been
+#      INVERTED, not removed, and one rank-blind scalar hid it. Keyed by rank
+#      now, so a baseline can only ever excuse the thing it measured.
+#   2. IT TOOK THE MAXIMUM, so `_hot()` could only ever return "GIVEAWAY" —
+#      the largest of four rates is >= 25% by construction. The MIRROR half of
+#      the check was unreachable from here. It now walks every cell.
+#   3. ⚠️ AND IT CARRIED A ROW FOR A SCOPE THAT WAS NEVER RED. `("ladder",
+#      "PHYSICS"): 0.348` was taken from the branch point's worst CELL without
+#      checking whether that cell was red, and 34.78% is below `HI` — so it
+#      was not. Re-measured at 834624da7: the physics ladder was red at NO
+#      margin and NO rank. That row was the only thing holding this gate green
+#      over a "pick the second-longest" tell this run's own edits created, and
+#      it broke the rule written a few lines above it in this same file.
+#      **A baseline is now derived only from cells that were actually red**,
+#      and this table is what that produces.
 SWEEP_BASELINE = {
-    ("bank",   "BIO+CHEM"): 0.692,   # rank 1 at margin 8, 139/201
-    ("bank",   "PHYSICS"):  0.534,   # rank 1 at margin 7, 173/324
-    ("ladder", "BIO+CHEM"): 0.810,   # rank 1 at margin 10, 34/42
-    ("ladder", "PHYSICS"):  0.348,   # rank 4 at margin 9, 24/69
-    ("hook",   "PHYSICS"):  0.647,   # rank 1 at margin 6, 22/34
+    # (corpus, group, rank) -> worst rate at that rank across margins 3..10,
+    # AT THE BRANCH POINT, and only where that cell was RED there.
+    # GIVEAWAY rows — the rate is too HIGH, so "no worse" means "not above".
+    ("bank",   "BIO+CHEM", 0): 0.6915,   # margin 8, 139/201
+    ("bank",   "PHYSICS",  0): 0.5340,   # margin 7, 173/324
+    ("ladder", "BIO+CHEM", 0): 0.8095,   # margin 10, 34/42
+    ("hook",   "PHYSICS",  0): 0.6471,   # margin 6, 22/34 — not gated
+    # MIRROR rows — the rate is too LOW, so "no worse" means "not below".
+    ("bank",   "BIO+CHEM", 1): 0.0647,   # margin 8, 13/201
+    ("bank",   "BIO+CHEM", 2): 0.0000,   # margin 8, 0/201
+    ("bank",   "PHYSICS",  2): 0.0085,   # margin 10, 2/235
+    ("ladder", "BIO+CHEM", 1): 0.0476,   # margin 10, 2/42
+    ("ladder", "BIO+CHEM", 2): 0.0000,   # margin 8, 0/54
+    ("ladder", "PHYSICS",  2): 0.0145,   # margin 9, 1/69
+    ("hook",   "PHYSICS",  2): 0.0000,   # margin 5, 0/41 — not gated
+    ("hook",   "PHYSICS",  3): 0.0000,   # margin 10, 0/26 — not gated
 }
+# ⚠️ NO ROW FOR ("ladder", "PHYSICS", 1), DELIBERATELY. The physics ladder's
+# rank 2 was not red at the branch point at any margin. If it is red now, that
+# is this run's doing and this run's to fix, not to excuse.
 SWEEP_MARGINS = range(3, 11)
 
 # ⚠️ THE HOOK CORPUS IS MEASURED AND PRINTED BUT DOES NOT GATE, because it is
@@ -480,16 +517,41 @@ def rank_all(opts, ans):
     return sorted(range(len(opts)), key=lambda j: (-len(opts[j]), j)).index(ans)
 
 
-def _hot(n, k):
-    """"GIVEAWAY" / "MIRROR" / "" for k of n against chance, both conditions."""
+def _hot(n, k, alpha=None):
+    """"GIVEAWAY" / "MIRROR" / "" for k of n against chance, both conditions.
+
+    `alpha` overrides `ALPHA` — the sweep passes a corrected one. See
+    `SWEEP_CELLS` for why.
+    """
     if n == 0:
         return ""
+    a = ALPHA if alpha is None else alpha
     rate = k / n
-    if rate > HI and binom_tail_ge(k, n, CHANCE) < ALPHA:
+    if rate > HI and binom_tail_ge(k, n, CHANCE) < a:
         return "GIVEAWAY"
-    if rate < LO and binom_tail_le(k, n, CHANCE) < ALPHA:
+    if rate < LO and binom_tail_le(k, n, CHANCE) < a:
         return "MIRROR"
     return ""
+
+
+# ⚠️ THE SWEEP TESTS EVERY RANK AT EVERY MARGIN, WHICH IS A LOT OF TESTS, AND
+# A THRESHOLD APPLIED ONCE PER TEST IS NOT THE SAME THRESHOLD.
+#
+# 8 margins x 4 ranks x 4 corpus-groups is about 130 cells per run. At
+# `ALPHA` = 0.01 each, roughly one of them is expected to look significant on
+# a corpus with no tell in it at all — so an uncorrected sweep is a gate that
+# goes red on healthy data and teaches people to re-run it. The cells are also
+# nested subsets of each other and therefore highly correlated, which makes
+# Bonferroni conservative rather than wrong.
+#
+# So the sweep divides `ALPHA` by the number of cells it actually tested on
+# this run, counted rather than assumed. Measured 1 Sep 2026: 132 cells, so
+# the corrected threshold is 7.6e-5. What that changes, on the tree that
+# prompted it: physics bank rank 2 at margin 9 (p = 8.8e-5) and physics ladder
+# rank 2 at margin 3 (p = 0.0069) stop being findings, and physics bank rank 4
+# at margin 10 (p = 5.1e-6) remains one. The whole-corpus check above is a
+# SINGLE test per rank and is not corrected — it does not need to be.
+SWEEP_ALPHA_NOTE = "ALPHA / cells tested"
 
 
 def report_ranks_all(tally):
@@ -535,58 +597,81 @@ def report_ranks_all(tally):
 
 
 def report_sweep(sets):
-    """PRIMARY CHECK — the worst rate at any rank at any margin in 3..10.
+    """PRIMARY CHECK — every rank at every margin from 3 to 10.
 
-    A fix shaped to one `MARGIN` shows up here as a rate that is fine at the
-    value the gate ships and bad two either side of it. That is precisely what
-    this run did to its own headline number, and nothing could see it.
+    A fix shaped to one `MARGIN` shows up here as a number that is fine at the
+    value this file happens to ship and bad two either side of it. That is
+    precisely what this run did to its own headline figure, and the
+    single-margin table could not see it.
+
+    ⚠️ EVERY CELL IS WALKED, NOT JUST THE WORST ONE. The first version took the
+    maximum rate per scope, which is >= 25% by construction, so it could never
+    report a MIRROR — and a fix that creates a strong "never pick the long one"
+    at one particular margin is exactly the kind this check exists to catch.
     """
     bad = []
-    worst = {}
-    for M in SWEEP_MARGINS:
-        tal = collections.defaultdict(lambda: [0, 0, 0, 0])
-        for corpus, unit, _w, opts, ans in sets:
-            if len(opts) != 4:
-                continue
-            grp = "PHYSICS" if unit in PHYS else "BIO+CHEM"
-            order = sorted(range(4), key=lambda j: (-len(opts[j]), j))
-            r = order.index(ans)
-            lens = [len(opts[j]) for j in order]
-            if r > 0 and lens[r - 1] - lens[r] < M:
-                continue
-            if r < 3 and lens[r] - lens[r + 1] < M:
-                continue
-            tal[(corpus, grp)][r] += 1
-        for key, cnt in tal.items():
-            n = sum(cnt)
-            if n < 20:
-                continue
-            for r, k in enumerate(cnt):
-                cur = worst.get(key)
-                if cur is None or k / n > cur[0]:
-                    worst[key] = (k / n, M, r, n, k)
+    cells = {}                      # (corpus, grp, rank) -> (rate, M, n, k)
+    # Two passes: the first counts the cells so the second can correct for
+    # how many tests are being run. See the note on `SWEEP_ALPHA_NOTE`.
+    tested = 0
+    corrected = [ALPHA]
+    for _pass in (0, 1):
+      if _pass:
+        corrected[0] = ALPHA / max(1, tested)
+        tested = 0
+        cells = {}
+      for M in SWEEP_MARGINS:
+          tal = collections.defaultdict(lambda: [0, 0, 0, 0])
+          for corpus, unit, _w, opts, ans in sets:
+              if len(opts) != 4:
+                  continue
+              grp = "PHYSICS" if unit in PHYS else "BIO+CHEM"
+              order = sorted(range(4), key=lambda j: (-len(opts[j]), j))
+              r = order.index(ans)
+              lens = [len(opts[j]) for j in order]
+              if r > 0 and lens[r - 1] - lens[r] < M:
+                  continue
+              if r < 3 and lens[r] - lens[r + 1] < M:
+                  continue
+              tal[(corpus, grp)][r] += 1
+          for key, cnt in tal.items():
+              n = sum(cnt)
+              if n < 20:
+                  continue
+              for r, k in enumerate(cnt):
+                  tested += 1
+                  hot = _hot(n, k, alpha=corrected[0])
+                  if not hot:
+                      continue
+                  # Keep the WORST margin for this rank, in the direction that
+                  # rank is bad in: highest for a giveaway, lowest for a mirror.
+                  cur = cells.get((key[0], key[1], r))
+                  rate = k / n
+                  if cur is None or (rate > cur[0] if hot == "GIVEAWAY"
+                                     else rate < cur[0]):
+                      cells[(key[0], key[1], r)] = (rate, M, n, k, hot)
     print()
-    print("  WORST RATE AT ANY RANK AT ANY MARGIN 3..10 — a fix that only works")
-    print("  at the margin this file happens to ship is not a fix. This gates.")
-    for key in sorted(worst):
-        corpus, grp = key
-        rate, M, r, n, k = worst[key]
+    print("  WORST CELL AT EACH RANK ACROSS MARGINS 3..10 — a fix that only")
+    print("  works at the margin this file happens to ship is not a fix. This")
+    print("  gates. Only cells that are RED somewhere in the sweep are listed.")
+    if not cells:
+        print("  ✅ no rank in any corpus is red at any margin in 3..10")
+    for key in sorted(cells):
+        corpus, grp, r = key
+        rate, M, n, k, hot = cells[key]
         gates = HOOK_GATES if corpus == "hook" else True
-        hot = _hot(n, k)
-        tag = ""
+        base = SWEEP_BASELINE.get(key)
         fails = False
-        if hot:
-            br = SWEEP_BASELINE.get(key)
-            if br is None:
-                tag = " " + hot
-                fails = gates
-            elif worse_than_baseline(n, k, br, hot):
-                tag = " %s WORSE THAN ITS BASELINE %.1f%%" % (hot, 100 * br)
-                fails = gates
-            else:
-                tag = " %s BASELINED %.1f%%" % (hot, 100 * br)
+        if base is None:
+            tag = " %s — NO BASELINE: this rank was not red at the branch point" % hot
+            fails = gates
+        elif worse_than_baseline(n, k, base, hot):
+            tag = " %s WORSE THAN ITS BASELINE %.1f%%" % (hot, 100 * base)
+            fails = gates
+        else:
+            tag = " %s BASELINED %.1f%%" % (hot, 100 * base)
         if fails:
-            bad.append("%s/%s worst-across-margins" % (corpus, grp))
+            bad.append("%s/%s rank %d across margins" % (corpus, grp, r + 1))
         note = "" if gates else "   (measured, not gated)"
         print("  %s %-16s rank %d at margin %2d: %3d/%-4d = %5.1f%%%s%s"
               % ("✅" if not fails else "❌", "%s %s" % (corpus, grp),

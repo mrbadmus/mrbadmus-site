@@ -79,7 +79,10 @@ QUESTIONS = [
              "why": "Size makes no difference. A cubic centimetre of it is "
                     "lighter than a cubic centimetre of water whatever the "
                     "total volume."},
-            {"text": "Floats", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "Floats, less dense than water", "correct": True},
             {"text": "Stays wherever you put it", "correct": False,
              "why": "That happens only at exactly 1.00 g/cm³, which is the "
                     "density of water itself."},

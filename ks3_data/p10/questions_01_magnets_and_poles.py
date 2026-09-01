@@ -87,7 +87,11 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing happens only when neither object is a magnet. "
                     "Two north poles act on each other strongly."},
-            {"text": "They push apart", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "They push apart, because two like poles always "
+                     "repel", "correct": True},
             {"text": "They pull together at first and then push apart",
              "correct": False,
              "why": "The direction of the force does not change as they get "
@@ -266,7 +270,11 @@ QUESTIONS = [
         "text": "An unlabelled bar is offered to one end of a magnet and is "
                 "pushed firmly away. What does that tell you?",
         "options": [
-            {"text": "The bar is a magnet", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "The bar is a magnet, because only another magnet "
+                     "is ever pushed away", "correct": True},
             {"text": "The bar is a magnetic material, but it may or may not "
                      "be a magnet", "correct": False,
              "why": "That is what ATTRACTION leaves open. A push can only "

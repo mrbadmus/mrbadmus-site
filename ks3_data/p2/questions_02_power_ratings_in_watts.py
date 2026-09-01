@@ -120,7 +120,10 @@ QUESTIONS = [
              "why": "900 × 120 s = 108 kJ. The router gets "
                     "9 × 86 400 s = 778 kJ. The rating is not the "
                     "whole calculation."},
-            {"text": "The router", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "The router, by about seven times", "correct": True},
             {"text": "They are equal", "correct": False,
              "why": "Work both products out — the router comes out about "
                     "seven times ahead."},

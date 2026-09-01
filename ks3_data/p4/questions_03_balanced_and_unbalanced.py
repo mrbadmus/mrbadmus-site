@@ -221,7 +221,10 @@ QUESTIONS = [
                 "12 000 N. It is at rest. How much spare pull does the cable "
                 "have?",
         "options": [
-            {"text": "3 000 N", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "3 000 N — 12 000 minus 9 000", "correct": True},
             {"text": "11 100 N", "correct": False,
              "why": "That is 12 000 − 900, subtracting the MASS from a "
                     "force. The weight is 900 × 10 = 9 000 N."},

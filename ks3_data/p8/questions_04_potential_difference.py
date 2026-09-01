@@ -188,7 +188,11 @@ QUESTIONS = [
         "text": "Two lamps sit in parallel across a 6 V battery. What is the "
                 "p.d. across each one?",
         "options": [
-            {"text": "6 V across each", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "6 V across each, as each branch is straight "
+                     "across the battery", "correct": True},
             {"text": "3 V across each, because the battery shares its push "
                      "between them", "correct": False,
              "why": "Sharing is the SERIES rule. Each parallel branch is "

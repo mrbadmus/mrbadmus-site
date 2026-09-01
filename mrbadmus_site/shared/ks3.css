@@ -4094,7 +4094,20 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    on it and stays as it is: ink on accent measures 8.6:1 the other way up. */
 .ks3-dark .ks3-fit-part[aria-pressed="true"] .ks3-part-num {
   background: var(--ks3-ink);
-  border-color: var(--ks3-accent);
+  /* ⚠️ ⊕ CORRECTED 1 Sep 2026 — `border-color` ALONE PAINTED NOTHING, and the
+     comment above asserted it was doing the work. `.ks3-fit-part
+     .ks3-part-num` two hundred lines up sets `border: 0`, so a colour with no
+     width is invisible: measured 0px on the chosen badge and the unchosen one
+     alike. The state still READ, because the ink slab and the glyph colour
+     both change — but not by the mechanism this block claims, and a comment
+     that describes a mechanism the code does not have is how the next person
+     "tidies away" the property that is actually carrying it.
+     `border: 2px solid` now, which is the shorthand the platform's own
+     migrated badge uses at `.ks3-dark .ks3-option[aria-pressed="true"]
+     .ks3-opt-mark` — so the claim above is true, and the two badges are one
+     treatment rather than two that resemble each other. Global `border-box`
+     (`shared/styles.css`) means the 24px badge stays 24px. */
+  border: 2px solid var(--ks3-accent);
   color: var(--ks3-on-dark);
 }
 

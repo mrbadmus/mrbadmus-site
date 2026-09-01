@@ -1575,6 +1575,30 @@ COMPONENTS = [
          sel=".ks3-fit-part",
          props={"border-top-left-radius": "999px", "min-height": "48px",
                 "border-top-color": "#C6B9A7", "color": "#FBF3E6"}),
+    # ⊕ MRB-297 · 1 Sep 2026 — AND THE CHOSEN CHIP'S BADGE, WHICH NOTHING
+    # WATCHED. The row above measures a chip at rest and `.ks3-part-num` is
+    # pinned on `animal-and-plant-cells.html` in its resting form; the badge
+    # inside a CHOSEN chip was moved from `--ks3-alert` to the accent by
+    # Mide's 30 Aug ruling and had no row at all, so the gate could have
+    # reported green over any drift in the one state a student creates.
+    # Driven, because a row that measured an unpressed chip would be
+    # reporting coverage it does not have.
+    # ⚠️ THE BORDER COLOUR IS PINNED AND THE BORDER WIDTH IS NOT, and that is
+    # a finding rather than an oversight: `.ks3-fit-part .ks3-part-num` sets
+    # `border: 0`, so the accent `border-color` this state declares resolves
+    # correctly and renders at ZERO WIDTH. Measured: 0px, chosen and
+    # unchosen alike. The state still reads — the badge goes from the panel
+    # (#3E3730) to the ink slab (#221E1B) and its glyph from muted to on-dark,
+    # and the chip around it does take a real accent border — so this row
+    # pins the three properties that are actually doing the work and reports
+    # the zeroed border rather than asserting 0px as correct. `shared/ks3.css`
+    # is not this lane's to change; named in the MRB-297 report.
+    dict(name="an installed fit chip's badge is the accent slab, not amber",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         drive="b1-fit-part-installed",
+         sel='.ks3-dark .ks3-fit-part[aria-pressed="true"] .ks3-part-num',
+         props={"background-color": "#221E1B", "border-color": "#E4572E",
+                "color": "#FBF3E6"}),
     dict(name="the fit job panel is the dark nested panel, not a cream inset",
          on="biology/cells-and-organisation/animal-and-plant-cells.html",
          sel=".ks3-fit-job", props={"background-color": "#3E3730"}),
@@ -4204,6 +4228,24 @@ COMPONENTS = [
          on=B7_METHOD, sel=".ks3-mb-num",
          props={"color": "#C6B9A7", "border-top-color": "#C6B9A7",
                 "font-family": "Bricolage Grotesque"}),
+    # ⊕ MRB-297 · 1 Sep 2026 — THE FOURTH OF B7'S FOUR BENCHES, FINALLY
+    # PINNED. `shared/ks3.css` and the coverage manifest both describe
+    # `.ks3-dark .ks3-mb-opt[aria-pressed="true"]` as one of the four
+    # selection states that moved from amber to the accent on 30 Aug; the
+    # other three — `rr-opt`, `lt-opt`, `tb-tab` — each got a row and this one
+    # did not, so a recolour nobody could see had nothing watching it. Same
+    # values as the dial row on `the-photosynthesis-reaction`, because it is
+    # the same rule and the same ruling: an accent FILL at .22 rather than a
+    # bare border, since four steps with four thin borders do not read as a
+    # state at a glance. If this ever resolves to #3E3730 the narrowing has
+    # been lost to source order and every bench in the unit is showing its
+    # settings the platform's way.
+    dict(name="a chosen method step is an accent fill, not a bare border",
+         on=B7_METHOD, drive="b7-method-step-chosen",
+         sel='.ks3-dark .ks3-mb-opt[aria-pressed="true"]',
+         props={"background-color": "rgba(228, 87, 46, 0.22)",
+                "border-color": "#E4572E", "color": "#FBF3E6",
+                "min-height": "44px"}),
     dict(name="the run button is inverted on ink, not ink on ink",
          on=B7_METHOD, sel=".ks3-mb-run",
          props={"background-color": "#FBF3E6", "color": "#221E1B",
@@ -5387,6 +5429,22 @@ COMPONENTS = [
          sel='[data-sc-panel]:not([hidden]) .ks3-sc-verdict[aria-pressed="true"]',
          props={"border-top-color": "#E4572E", "border-top-width": "2px",
                 "background-color": "rgba(255, 255, 255, 0.1)"}),
+    # ⊕ MRB-297 · 1 Sep 2026 — AND ITS LETTER, WHICH NOTHING WATCHED. The
+    # only `.ks3-sc-letter` row is the one above it, which pins the UNCHOSEN
+    # letter at #C6B9A7; the chosen letter was moved from `--ks3-alert` to the
+    # accent border plus an on-dark glyph by the same 30 Aug ruling, and had
+    # no row. Both halves of the control are now pinned, which is the point:
+    # the fault letter in B6 drifted precisely because its button was watched
+    # and it was not. The glyph is `--ks3-on-dark` rather than the accent
+    # because #E4572E on the panel is 4.49:1 at 14px/800, under the floor —
+    # so the selection is carried by the 2px border, and this row asserts
+    # both, since chosen and unchosen must differ in more than one property.
+    dict(name="B10 species-cases · the chosen verdict's letter follows its button",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel=('[data-sc-panel]:not([hidden]) '
+              '.ks3-sc-verdict[aria-pressed="true"] .ks3-sc-letter'),
+         props={"border-top-color": "#E4572E", "border-top-width": "2px",
+                "color": "#FBF3E6"}),
     # ⛔ AND THE UNCHOSEN VERDICTS DIM RATHER THAN BEING MARKED. No green on
     # the right one, no red on the wrong one, no badge — the bench says whether
     # the commitment held in WORDS on the cream panel (schema §0.6) and the
@@ -8287,6 +8345,47 @@ DRIVES = {
   return "";
 })()
 """,
+    # ⊕ MRB-297 · 1 Sep 2026 — ONE NUMBERED PART INSTALLED, BY PRESSING IT.
+    # The badge inside a CHOSEN fit chip was recoloured by the amber→accent
+    # ruling and no row watched it, so the gate would have reported green over
+    # any drift in it. A row that measured an UNPRESSED chip would report
+    # coverage it does not have, which is the same defect one layer down —
+    # hence a drive, and hence the check below that the element the row will
+    # go on to measure is the one this drive pressed. The chips are rendered
+    # by `renderParts()` and are NOT in the served html, so the scope is the
+    # block rather than the bench wrapper: `[data-fit]` is on the four
+    # specimen TABS as well, and scoping to it finds a tab and no parts.
+    "b1-fit-part-installed": r"""
+(function () {
+  var blk = document.querySelector('[data-fitblock]');
+  if (!blk) { return "no build-a-cell bench on the page"; }
+  var parts = blk.querySelectorAll('.ks3-fit-part');
+  if (!parts.length) { return "the bench rendered no parts to install"; }
+  var want = null;
+  for (var i = 0; i < parts.length; i++) {
+    if (parts[i].querySelector('.ks3-part-num') &&
+        parts[i].getAttribute('aria-pressed') === 'false') {
+      want = parts[i]; break;
+    }
+  }
+  if (!want) { return "no unpressed part carries the numbered badge"; }
+  var id = want.getAttribute('data-part');
+  want.click();
+  // ⚠️ `renderParts()` REBUILDS THE LIST, so the pressed chip is a NEW
+  // element and cannot be compared by identity. Compared by part id instead.
+  var got = document.querySelector('.ks3-fit-part[aria-pressed="true"]');
+  if (!got) { return "the part was pressed and nothing is installed"; }
+  if (got.getAttribute('data-part') !== id) {
+    return "the first installed part is " + got.getAttribute('data-part') +
+      " and this drive pressed " + id + " — the row would measure a chip " +
+      "this drive never touched";
+  }
+  if (!got.querySelector('.ks3-part-num')) {
+    return "the installed chip lost its numbered badge";
+  }
+  return "";
+})()
+""",
     # R5 hides a sim's control panel and readout behind a cover until the
     # student has committed a prediction, so every control, label, select and
     # readout pair can only be measured on an unlocked panel — and the cover's
@@ -10921,6 +11020,40 @@ DRIVES = {
     # precedence is read from the page, that the result is withheld until the
     # iodine goes on, that changing a step un-runs it, and that the four-state
     # readout fills its own placeholder.
+    # ⊕ MRB-297 · 1 Sep 2026 — ONE METHOD STEP CHOSEN, BY PRESSING IT.
+    # `.ks3-dark .ks3-mb-opt[aria-pressed="true"]` is one of B7's four benches
+    # in the stylesheet and in the coverage manifest, and it was the one of the
+    # four with no row: `rr-opt`, `lt-opt` and `tb-tab` were all pinned and
+    # this was not. The bench SERVES a pressed option at every step, so a row
+    # with no drive would have measured a state nobody had entered; this drive
+    # presses one and then checks that the pressed option the row will measure
+    # — `document.querySelector`, so the first in document order — is the one
+    # it pressed.
+    "b7-method-step-chosen": r"""
+(function () {
+  var w = document.querySelector('[data-mb]');
+  if (!w) { return "no method breaker on the page"; }
+  var opts = w.querySelectorAll('.ks3-mb-opt');
+  if (!opts.length) { return "the bench draws no step settings"; }
+  var want = null;
+  for (var i = 0; i < opts.length; i++) {
+    if (opts[i].getAttribute('aria-pressed') === 'false') {
+      want = opts[i]; break;
+    }
+  }
+  if (!want) { return "every step setting is already chosen"; }
+  want.click();
+  if (want.getAttribute('aria-pressed') !== 'true') {
+    return "a step setting was pressed and did not take the chosen state";
+  }
+  var got = document.querySelector('.ks3-dark .ks3-mb-opt[aria-pressed="true"]');
+  if (got !== want) {
+    return "the first chosen setting in the document is not the one this " +
+      "drive pressed, so the row would measure a setting nobody touched";
+  }
+  return "";
+})()
+""",
     "b7-method-run": r"""
 (function () {
   var sec = document.querySelector('[data-mbblock]');

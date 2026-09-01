@@ -1861,6 +1861,45 @@ def r_p4_attempt(a, act_id):
     # absent (it says so, at its own read), so the sentence is authored here,
     # in the lesson, exactly as P8's is. Same key name, same mechanism, one
     # copy of the idea.
+    #
+    # ⊕ MRB-297 · 1 Sep 2026 — ONE WRAPPER, SO ONE REFUSAL SENTENCE, SO A
+    # BUILD-TIME REFUSAL RATHER THAN PER-QUESTION MACHINERY.
+    #
+    # `kit.r_cfifa_attempt` returns ONE `.ks3-cfa` wrapper holding every
+    # question as a tab panel, so `data-blocked-progress` is one attribute
+    # for the whole activity — reading it off question 1 is not a shortcut
+    # that happens to work, it is the only reading the markup can carry.
+    # What it cannot do is notice a SECOND question authoring its own: that
+    # wording would be dropped in silence, and if question 2 authored one
+    # while question 1 did not, nothing would be emitted at all.
+    #
+    # ⚠️ The reviewer who raised this read the P4 pages as carrying one
+    # question each. They carry two — the kit refuses any other count
+    # unless the payload declares `one_question_because`, and no lesson
+    # does. Measured across P4, P8 and P12: every cfifa attempt has two
+    # questions and only question 1 is ever blocked, so nothing is wrong
+    # on screen today. The guard below keeps it that way instead of
+    # growing generality nothing exercises.
+    #
+    # ⚠️ `ks3_art/p8.py` carries this same shape and wants this same guard.
+    # The one right home for both is `kit.r_cfifa_attempt`, which renders
+    # the single wrapper; this lane owns neither that file nor `p8.py`, so
+    # the check here is deliberately narrow and the two stay identical in
+    # behaviour. Named in the MRB-297 report.
+    for qi, q in enumerate(a.get("questions") or []):
+        if qi and q.get("blocked_progress"):
+            raise ValueError(
+                "cfifa-attempt %r authors `blocked_progress` on question "
+                "%d. Only question 1's is read, because "
+                "`data-blocked-progress` is a single attribute on the one "
+                "`.ks3-cfa` wrapper that holds every question tab, so a "
+                "second sentence has nowhere to go and would vanish "
+                "without a word. Either move the wording onto question 1 "
+                "so both tabs share it, or give `kit.r_cfifa_attempt` a "
+                "per-question hook first — `paintAttemptP4` in "
+                "`shared/ks3.js` reads the wrapper attribute, so that is a "
+                "two-file change and `ks3_art/p8.py` needs it in the same "
+                "breath." % (act_id, qi + 1))
     q1 = (a.get("questions") or [{}])[0]
     if q1.get("blocked_progress"):
         html = html.replace(

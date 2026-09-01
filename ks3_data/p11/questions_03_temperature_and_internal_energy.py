@@ -228,7 +228,11 @@ QUESTIONS = [
                      "faster", "correct": False,
              "why": "Warming faster is about the rate. The total energy "
                     "needed is set by the mass and the temperature change."},
-            {"text": "Twice as much for the 500 g mug", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "Twice as much for the 500 g mug, twice the mass",
+             "correct": True},
             {"text": "Four times as much for the 500 g mug", "correct": False,
              "why": "Doubling the mass doubles the energy needed. Nothing "
                     "here is squared."},

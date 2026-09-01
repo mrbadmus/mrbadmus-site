@@ -118,7 +118,10 @@ QUESTIONS = [
              "correct": False,
              "why": "Dividing is how you get a pressure from a force. Here "
                     "the pressure is known, so the two multiply."},
-            {"text": "60 000 N", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "60 000 N — 100 000 × 0.6", "correct": True},
             {"text": "60 000 Pa", "correct": False,
              "why": "The arithmetic is right and the unit is wrong. Pressure "
                     "× area gives a force."},

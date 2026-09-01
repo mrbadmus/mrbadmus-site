@@ -175,8 +175,11 @@ QUESTIONS = [
                 "reads in kilograms. It is taken to a mining base on Mars, "
                 "where g = 3.7 N/kg. What happens to its readings?",
         "options": [
-            {"text": "Every reading is about a third of the true mass",
-             "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "Every reading is about a third of the true mass — "
+                     "g is 3.7", "correct": True},
             {"text": "Every reading is about three times the true mass",
              "correct": False,
              "why": "The pull on Mars is weaker, so the spring stretches "

@@ -35,7 +35,10 @@ QUESTIONS = [
             {"text": "A push", "correct": False,
              "why": "Gravity never pushes. There is no known circumstance in "
                     "which two masses repel each other gravitationally."},
-            {"text": "A pull", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "A pull, always and only", "correct": True},
             {"text": "A push or a pull, depending on the two masses",
              "correct": False,
              "why": "Electric charges can do either. Gravity only ever "

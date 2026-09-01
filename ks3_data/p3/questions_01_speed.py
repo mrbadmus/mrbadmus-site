@@ -119,7 +119,10 @@ QUESTIONS = [
              "why": "Finishing sooner only means the distance was shorter. "
                     "100 ÷ 10.5 = 9.52 m/s against 400 ÷ 32 = "
                     "12.50 m/s."},
-            {"text": "The cyclist", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "The cyclist, going at 12.5 m/s", "correct": True},
             {"text": "They are the same", "correct": False,
              "why": "Work both divisions out — 9.52 m/s against "
                     "12.50 m/s is not a dead heat."},
@@ -144,7 +147,11 @@ QUESTIONS = [
              "correct": False,
              "why": "Which unit is scientific has nothing to do with which "
                     "speed is larger."},
-            {"text": "They are the same", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "They are the same: 72 km/h ÷ 3.6 = 20 m/s",
+             "correct": True},
             {"text": "It cannot be worked out from these numbers",
              "correct": False,
              "why": "It can: dividing km/h by 3.6 gives m/s, because there "

@@ -182,7 +182,11 @@ QUESTIONS = [
                      "changed", "correct": False,
              "why": "The force depends on the separation as well as on the "
                     "charges."},
-            {"text": "It falls to about a ninth", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It falls to about a ninth, three squared",
+             "correct": True},
             {"text": "It falls to about a sixth, because the distance "
                      "tripled and the pair shares the drop between them",
              "correct": False,
@@ -273,7 +277,11 @@ QUESTIONS = [
         "text": "Two charged objects are sealed in a jar and all the air is "
                 "pumped out. What happens to the force between them?",
         "options": [
-            {"text": "It is unchanged", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It is unchanged, because an electric force needs "
+                     "no air to carry it", "correct": True},
             {"text": "It disappears, because there is nothing left to carry "
                      "it across the gap", "correct": False,
              "why": "Nothing was carrying it in the first place. Air is not "

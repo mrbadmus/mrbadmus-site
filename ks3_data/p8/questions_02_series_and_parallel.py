@@ -74,7 +74,11 @@ QUESTIONS = [
         "text": "One lamp in a string of ten wired in series fails. What "
                 "happens to the other nine?",
         "options": [
-            {"text": "They all go out", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "They all go out, because their one shared path "
+                     "breaks", "correct": True},
             {"text": "They all get brighter, because there is one fewer to "
                      "share with", "correct": False,
              "why": "Nothing is shared, and nothing is left to be brighter: "

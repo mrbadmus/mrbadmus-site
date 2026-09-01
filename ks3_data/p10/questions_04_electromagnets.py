@@ -151,7 +151,11 @@ QUESTIONS = [
                      "as many turns", "correct": False,
              "why": "The same current runs through every turn, one after "
                     "another. Nothing is shared out."},
-            {"text": "It roughly doubles", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It roughly doubles, as each turn adds its own "
+                     "field", "correct": True},
             {"text": "It stays the same, because the current has not changed",
              "correct": False,
              "why": "The current is only half the story. Each turn adds its "

@@ -26,10 +26,10 @@ grade boundaries, no mark schemes and no "Higher tier" badges anywhere in KS3.
 subject identity only.
 
 **The shape of the course.** 33 **units** (a unit is a multi-week block of teaching, e.g.
-"Particles and their behaviour"), containing **183 lesson slots** in total. A lesson is roughly one
+"Particles and their behaviour"), containing **185 lesson slots** in total. A lesson is roughly one
 40-minute classroom lesson and is the atom of the system — one lesson, one web page.
 
-**The state of the build, stated plainly.** Of the 183 lesson slots:
+**The state of the build, stated plainly.** Of the 185 lesson slots:
 
 | | Count | What it renders as |
 |---|---|---|
@@ -58,6 +58,13 @@ different reason: the vocabulary is exercised rather than hypothetical.
 ⚠️ Counted, not estimated: `find ks3_data -name 'lesson_*.py'` gives 185, and
 `ks3_data.KS3_UNITS` reports 185 slots of which 185 are `authored`.
 
+⊕ **MRB-297 · 1 Sep 2026 — the slot TOTAL was wrong too, in nine places.** The two sentences above
+this table read ~~"containing **183 lesson slots** in total"~~ and ~~"Of the 183 lesson slots"~~,
+and seven further passages divided by 183: §1's three-unrendered-families paragraph, §5's
+coming-soon row, §7's two framing sentences, §7's lesson-title extremes, §9's unwritten-lessons row
+and §10.1's closing paragraph. There are **185**, and 183 was hand-counted drift of the same kind
+that left the family table two lessons short. All nine are corrected in place and marked.
+
 **Total pages the generator writes: 297.** That is 1 KS3 landing page + 3 discipline hubs + 33 unit
 index pages + 185 lesson pages + 75 browse-layer index pages.
 
@@ -84,11 +91,11 @@ the system.
 |---|---|---|---|
 | **MODEL** | One idea explains a whole class of behaviour. | **51** — Biology 8, Chemistry 19, Physics 24 | *The particle model* (unit C1) — **authored, viewable today** |
 | **PROCESS** | A mechanism unfolds in steps. | **34** — Biology 12, Chemistry 15, Physics 7 | *Changes of state* (unit C1) — **authored, viewable today** |
-| **SYSTEM** | Parts working together, and what happens when one part fails. | **32** — Biology 21, Chemistry 2, Physics 9 | *The digestive system* (unit B3) — not yet written |
+| **SYSTEM** | Parts working together, and what happens when one part fails. | **32** — Biology 21, Chemistry 2, Physics 9 | *The digestive system* (unit B3) — **authored, viewable today** |
 | **CONTRAST** | Two things, one difference that discriminates between them. | **19** — Biology 4, Chemistry 8, Physics 7 | *Solids, liquids and gases* (unit C1) — **authored, viewable today** |
 | **INVESTIGATION** | The scientific skill itself is the subject (fair testing, graphs, measurement error). | **17** — Biology 7, Chemistry 4, Physics 6 | *Testing the model: does it explain everything?* (unit C1) — **authored, viewable today** |
-| **QUANTITATIVE** | A calculation carries the concept. | **17** — Biology 2, Chemistry 2, Physics 13 | *Speed* (unit P3) — not yet written |
-| **CLASSIFY** | Decide which category, fast, and know why. | **15** — Biology 4, Chemistry 7, Physics 4 | *Acids and alkalis* (unit C6) — not yet written |
+| **QUANTITATIVE** | A calculation carries the concept. | **17** — Biology 2, Chemistry 2, Physics 13 | *Speed* (unit P3) — **authored, viewable today** |
+| **CLASSIFY** | Decide which category, fast, and know why. | **15** — Biology 4, Chemistry 7, Physics 4 | *Acids and alkalis* (unit C6) — **authored, viewable today** |
 
 Counts sum to 185.
 
@@ -99,21 +106,38 @@ Counts sum to 185.
 were written by hand and the lesson files kept moving. §10.1's Slots column carried the same drift
 from a different starting point and is corrected there too.
 
-**Three families have never been rendered with real content:** SYSTEM (32 lessons), QUANTITATIVE
-(17) and CLASSIFY (15). That is 64 of 183 lessons — just over a third of the course — whose page
-shape exists only as a written intention. In particular:
+⊕ **MRB-297 · 1 Sep 2026 — and three of its Named examples still said "not yet written".** The
+SYSTEM, QUANTITATIVE and CLASSIFY rows named *The digestive system* (B3), *Speed* (P3) and *Acids
+and alkalis* (C6) as ~~not yet written~~, inside the very table whose counts were being corrected.
+All three are authored and on the site; each row now says so, in the same words the other four
+rows use.
 
-- **QUANTITATIVE** is the only family that routinely needs a calculation layout. The generator has
-  exactly one calculation component (see "FIFA" in section 2) and it has been used once, in one
-  Chemistry lesson. Thirteen of the seventeen QUANTITATIVE lessons are Physics.
-- **SYSTEM** is a Biology-heavy family (21 of its 32 lessons). Its defining component is
-  "perturbation" — break one part of a system, predict the knock-on effect, reveal the result.
-  Nothing like that has been built yet.
-- **CLASSIFY** needs sorting and category-decision components. Nothing like that has been built
-  yet.
+⊕ **MRB-297 · 1 Sep 2026 — the whole premise of this passage is gone, not only its numbers.** It
+read:
 
-**The two "authored" families are unevenly represented too.** Four of the six written lessons are
-MODEL or CONTRAST. Only one PROCESS lesson and one INVESTIGATION lesson exist.
+> **Three families have never been rendered with real content:** SYSTEM (32 lessons), QUANTITATIVE
+> (17) and CLASSIFY (15). That is 64 of 183 lessons — just over a third of the course — whose page
+> shape exists only as a written intention. In particular:
+>
+> - **QUANTITATIVE** is the only family that routinely needs a calculation layout. The generator
+>   has exactly one calculation component (see "FIFA" in section 2) and it has been used once, in
+>   one Chemistry lesson. Thirteen of the seventeen QUANTITATIVE lessons are Physics.
+> - **SYSTEM** is a Biology-heavy family (21 of its 32 lessons). Its defining component is
+>   "perturbation" — break one part of a system, predict the knock-on effect, reveal the result.
+>   Nothing like that has been built yet.
+> - **CLASSIFY** needs sorting and category-decision components. Nothing like that has been built
+>   yet.
+>
+> **The two "authored" families are unevenly represented too.** Four of the six written lessons are
+> MODEL or CONTRAST. Only one PROCESS lesson and one INVESTIGATION lesson exist.
+
+**All seven families are rendered with real content.** Every one of the 185 lessons is authored, so
+SYSTEM has 32 real pages, QUANTITATIVE 17 and CLASSIFY 15, and no family's page shape is a written
+intention any longer. Two measurements inside the old passage are still true and are worth keeping:
+13 of the 17 QUANTITATIVE lessons are Physics, and 21 of SYSTEM's 32 are Biology. The rest has
+expired — the FIFA calculation layout now ships on **24** lessons rather than one, and the lessons
+between them place **258** distinct activity kinds, so "nothing like that has been built yet" is
+false of all three families. The passage is kept because later sections quote it as evidence.
 
 ---
 
@@ -319,7 +343,7 @@ carries it, so a design can be specified against something concrete.
 |---|---|---|
 | **Draft / under review** | ⛔ **REVOKED — MRB-221, 16 Aug 2026** | The `.ks3-review-flag` marker paragraph and the `Draft` badge are **deleted**. Nothing renders here. Kept as a row so the state is not re-invented: it was a visible under-review marker in the lesson header, mandatory on every non-frozen lesson, and it existed to protect a student from unreviewed science. Mide and colleagues have since reviewed the content, so it protects nobody and says nothing true. `verify_ks3.py` now asserts its ABSENCE. Do not reinstate. ~~It must stay legible and prominent — the one thing on a page more important than the science is protecting a student from unreviewed science.~~ |
 | **Reviewed and frozen** | Review state is "frozen" | No marker. **Zero lessons are in this state today.** |
-| **Coming-soon lesson slot** | The lesson has no authored content | An entirely different, much shorter page: header with unit name and family label, then one section `ks3-block ks3-coming-soon` containing a small "Coming soon" tag, the single sentence *"This lesson has not been written yet."*, and a link back to the unit. **176 of 183 pages are in this state today.** |
+| **Coming-soon lesson slot** | The lesson has no authored content | An entirely different, much shorter page: header with unit name and family label, then one section `ks3-block ks3-coming-soon` containing a small "Coming soon" tag, the single sentence *"This lesson has not been written yet."*, and a link back to the unit. ⊕ **MRB-297 · 1 Sep 2026:** this read ~~*176 of 183 pages are in this state today*~~. **Zero pages are in this state today** — all 185 lessons are authored. The branch is kept in `build_ks3.py` (its markup is at line 4525) because a newly added slot passes through it before it is written. |
 | **Cross-reference slot** | The slot points at another discipline's unit | **No page at all.** It appears only as a row on index pages, styled `ks3-lesson-row is-ref`, carrying a badge naming the owning unit and a pointer paragraph: *"Taught in Chemistry — Particles and their behaviour. You'll meet the full lesson there."* There is exactly **one** of these in the whole course. |
 
 ### Figure states
@@ -604,10 +628,12 @@ Two design consequences follow directly:
 
 ## 7. Content variance
 
-**How to read this section.** Only **6 of the 183 slots** have content. Every range below marked
-*(from 6 lessons)* is measured across those six — all Chemistry, all one unit. Treat them as the
-narrowest possible sample, not as the shape of the finished course. Ranges marked *(all 183)* are
-measured across every slot, because titles and family labels exist for all of them.
+**How to read this section.** ⊕ **MRB-297 · 1 Sep 2026.** This read ~~"Only **6 of the 183 slots**
+have content"~~. All **185** slots have content. The ranges below marked *(from 6 lessons)* were
+measured when six lessons existed — all Chemistry, all unit C1 — and they have **not** been
+re-measured since. Read them as a record of what C1 looked like, not as the shape of the course,
+and re-measure before designing to any of them. Ranges marked *(all 185)* are measured across every
+slot, because titles and family labels exist for all of them.
 
 ### Blocks per lesson *(from 6 lessons)*
 
@@ -675,7 +701,9 @@ Every lesson opens `hook` then `check`, and ends `quiz` then `summary`. Everythi
 
 ### Text extremes
 
-**Lesson titles** *(all 183 slots)*:
+**Lesson titles** *(all 185 slots)*: ⊕ **MRB-297 · 1 Sep 2026** — the label read ~~*(all 183
+slots)*~~. Re-measured across all 185 titles, the extremes below are unchanged; "Testing the model:
+does it explain everything?" (unit C1) joins the 46-character mark.
 
 - Shortest: **"Speed"** — 5 characters (unit P3)
 - Also short: "Joints" (6), "Density" (7)
@@ -913,8 +941,8 @@ These are gaps in the current build, not design instructions.
 | **No frozen lessons** | Every written lesson is a draft carrying the under-review marker. The "no marker" state has never been rendered. |
 | **No real artwork** | All 11 declared figures are placeholders. The "figure with an image" state has never been rendered. |
 | **No support-layer content** | The "Need a hand?" section has never been rendered. |
-| **177 of 183 lessons unwritten** | Three of seven families — SYSTEM, QUANTITATIVE, CLASSIFY, 64 lessons between them — have no authored example at all. |
-| **One calculation only** | The Formula / Insert / Fix / Answer layout has shipped once. Seventeen QUANTITATIVE lessons, thirteen of them Physics, will need it. |
+| ⊕ ~~**177 of 183 lessons unwritten**~~ **All 185 lessons written** | MRB-297 · 1 Sep 2026. The row read *"Three of seven families — SYSTEM, QUANTITATIVE, CLASSIFY, 64 lessons between them — have no authored example at all."* Every family has real pages now: SYSTEM 32, QUANTITATIVE 17, CLASSIFY 15. This is no longer a gap; the row is kept so the claim is not read forward. |
+| ⊕ ~~**One calculation only**~~ **FIFA ships on 24 lessons** | MRB-297 · 1 Sep 2026. The row read *"The Formula / Insert / Fix / Answer layout has shipped once. Seventeen QUANTITATIVE lessons, thirteen of them Physics, will need it."* Measured across `ks3_data`, 24 lessons place a FIFA or CFIFA attempt. Same defect as the row above, and corrected with it. |
 | **No end matter** | The architecture specifies a closing block with score-plus-delta, the AI tutor and previous/next navigation. What the generator actually writes is a static "Stuck? Ask Mr Badmus AI" heading and one line of text — **the tutor is not wired up on KS3 pages, and there are no previous/next links.** |
 | **No stepper rendering** | A stepped presentation is permitted where a family calls for it, especially PROCESS lessons. None is implemented; PROCESS content currently renders as ordinary stacked blocks. |
 | **Components named but not built** | The architecture names several inherited components for future use — sorting and matching interactions, an explanation-chain builder, a write-then-self-mark component. None is wired into the KS3 generator. Rung ③ and rung ④ currently render as an ordinary question and a self-marking checklist. |
@@ -993,10 +1021,11 @@ The **Approved** column is deliberately not "Mide, 16 Aug 2026". Design has draw
 family is unblocked for authoring, but the science on both pages is `draft` and Mide has not
 reviewed either. The row records who drew it and when, and that his gate is still ahead.
 
-Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 183
+Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 185
 slots**, every one of which would have inherited whatever Code invented. Design's approved
 B1 pages are what closed them; this delivery closes the last 17, and **every one of the seven
-families now has a screen.**
+families now has a screen.** ⊕ **MRB-297 · 1 Sep 2026:** the denominator above read ~~183~~; there
+are 185 slots, and the ninth and last of this document's 183s is corrected here.
 
 ### 10.2 Block type → the registered components that gate it
 

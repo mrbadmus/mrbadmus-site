@@ -111,7 +111,11 @@ QUESTIONS = [
                      "conducts", "correct": False,
              "why": "Length makes a specimen worse, never better, and "
                     "nothing reaches zero resistance at room temperature."},
-            {"text": "rises to ten times", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "rises to ten times, because resistance grows with "
+                     "length", "correct": True},
         ],
         "figure": None,
     },
