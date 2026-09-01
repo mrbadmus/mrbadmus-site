@@ -98,6 +98,14 @@ baseline is a debt and a debt kept in the thing that measures it cannot be
 mislaid. Every row is a live defect awaiting its own run. **Deleting a row is
 how this debt gets paid; raising one is not a fix.**
 
+⚠️ **AND NEITHER IS THE BIO/CHEM HOOK CORPUS — 115 sets, 66 of them with a
+visibly longest option.** Every biology and chemistry lesson carries
+`phenomenon.answer = None`, so nothing here knows which option is right and the
+sets cannot be measured. That is a corpus 14 times the size of the P1 one whose
+absence this gate was written about. It is now printed at the head of every run
+by `report_skipped()` rather than left invisible in the output — measuring it
+needs the index authored, which is the bio/chem lane's work, not this gate's.
+
 ⚠️ **KS4 is not watched by this gate.** `all_subtopics_*.py` has a different
 option shape and `generate_site_v5.make_new_quiz` reshuffles at build time —
 which cures position but does nothing at all for length. Whether KS4 carries the
@@ -170,8 +178,12 @@ def visibly_longest(opts):
     return order[0]
 
 
-def collect():
-    """(corpus, unit, where, n_options, correct_idx, longest_idx) per set."""
+def collect(skipped=None):
+    """(corpus, unit, where, options, correct_idx) per measurable set.
+
+    `skipped`, if given, is a dict this fills with the sets it could NOT
+    measure — see `report_skipped` for why that is not optional.
+    """
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import ks3_data
     import ks3_data.question_bank as qb
@@ -196,6 +208,15 @@ def collect():
                 if isinstance(a, int) and 0 <= a < len(ph["options"]):
                     sets.append(("hook", code, l["slug"],
                                  texts(ph["options"]), a))
+                elif skipped is not None:
+                    # No `answer` index, so nothing here knows which option is
+                    # right and the set cannot be measured. It is RECORDED,
+                    # not dropped — see `report_skipped`.
+                    grp = "PHYSICS" if code in PHYS else "BIO+CHEM"
+                    b = skipped.setdefault(("hook", grp), [0, 0])
+                    b[0] += 1
+                    if visibly_longest(texts(ph["options"])) is not None:
+                        b[1] += 1
     for rec in qb.load_bank():
         for q in rec["questions"]:
             ci = [i for i, o in enumerate(q["options"]) if o.get("correct")]
@@ -204,6 +225,31 @@ def collect():
             sets.append(("bank", rec["unit"], q.get("id"),
                          texts(q["options"]), ci[0]))
     return sets
+
+
+def report_skipped(skipped):
+    """Say out loud what this gate cannot see. Not optional.
+
+    ⚠️ A GATE THAT SILENTLY SKIPS A CORPUS REPORTS NO DEFECTS IN IT, WHICH IS
+    NOT THE SAME AS THERE BEING NONE. This gate was written after exactly that
+    happened: P1's eight hooks had no `answer` index, so nothing measured them,
+    so nothing was wrong with them — until the index was written down and five
+    of five turned out to be giveaways.
+
+    ⊕ ADDED 1 Sep 2026 by the second cold double-check, which found the same
+    shape still here and larger: **all 115 biology and chemistry hooks carry
+    `answer = None`**, 66 of them have a visibly longest option, and the gate
+    printed no line for them at all — so the omission was invisible in the
+    output rather than merely unreported. It is now the first thing printed.
+    """
+    if not skipped:
+        return
+    print("  ⚠️  NOT MEASURED — these sets carry no `answer` index, so nothing")
+    print("      here knows which option is right. Reported, not hidden.")
+    for (corpus, grp), (n, vis) in sorted(skipped.items()):
+        print("      %-6s %-10s %3d set(s) skipped, %d of them with a visibly "
+              "longest option" % (corpus, grp, n, vis))
+    print()
 
 
 def verdict(corpus, scope, n, k):
@@ -239,7 +285,8 @@ def main():
           "(margin %d chars, chance %.0f%%)" % (MARGIN, 100 * CHANCE))
 
     tally = collections.defaultdict(lambda: [0, 0])   # (corpus, scope)->[n,k]
-    for corpus, unit, _where, opts, ans in collect():
+    skipped = {}
+    for corpus, unit, _where, opts, ans in collect(skipped):
         j = visibly_longest(opts)
         if j is None:
             continue
@@ -247,6 +294,9 @@ def main():
         for scope in ("whole corpus %s" % grp, unit):
             tally[(corpus, scope)][0] += 1
             tally[(corpus, scope)][1] += (j == ans)
+
+    print()
+    report_skipped(skipped)
 
     for corpus in ("bank", "ladder", "hook"):
         keys = [k for k in tally if k[0] == corpus]

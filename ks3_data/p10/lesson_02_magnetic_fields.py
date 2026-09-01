@@ -140,11 +140,14 @@ LESSON = {
         # ⚠️ MRB-278 — position 0 is Design's own here, and it is kept: this
         # unit takes 2, 0, 3, 1, 2 across its five hooks, so index 0 is used
         # once rather than five times.
+        # ⊕ MRB-297, 1 Sep 2026 — distractor 1 widened. The correct option
+        # was the longest by 5, which is a tell below the gate's constant
+        # as well as at it. The balance now holds at 1.
         "options": [
             "Each filing turns into a tiny magnet and lines up with a field "
             "that was already there",
-            "The magnet draws the lines onto the paper, and the filings fall "
-            "into the grooves",
+            "The magnet draws the lines onto the paper first, and the "
+            "filings fall into the grooves",
             "The filings are pushed to wherever the field is strongest and "
             "pile up in ridges",
             "Tapping the paper gives the filings a charge, and charged specks "

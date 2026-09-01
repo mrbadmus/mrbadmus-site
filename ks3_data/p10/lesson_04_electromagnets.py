@@ -148,13 +148,16 @@ LESSON = {
                   "the disc.",
         "commit": "How does it let go?",
         # ⚠️ MRB-278 — position 1.
+        # ⊕ MRB-297, 1 Sep 2026 — distractor 3 widened. The correct option
+        # was the longest by 5, which is a tell below the gate's constant
+        # as well as at it. The balance now holds at 1.
         "options": [
             "The disc is turned over so its south pole faces the car instead",
             "The disc is an electromagnet, and the operator switches the "
             "current off",
             "The car is shaken loose, because a magnet cannot be switched",
-            "The magnet is worn out by the lift and has to recover between "
-            "cars",
+            "The magnet is worn out by the heavy lift and has to recover "
+            "between cars",
         ],
         "answer": 1,
         "reveal": "The disc is a coil of wire with an iron core, and it is "
