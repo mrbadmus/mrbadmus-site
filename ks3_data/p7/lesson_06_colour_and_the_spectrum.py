@@ -496,12 +496,26 @@ LESSON = {
                    "applied to light, and the properties and uses of each "
                    "region.",
 
-    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
-    "safety_note": "Never look directly at the Sun — not with your eyes, not "
-                   "through a lens, not through a pinhole camera. A lens "
-                   "gathers sunlight to a point hot enough to scorch paper, "
-                   "and it will do the same to the back of your eye. The "
-                   "damage is painless while it happens and it does not heal.",
+    # ⚖️ MRB-297 · Mide's wording. Approved 1 Sep 2026, recorded on the
+    # ticket. Not to be edited.
+    #
+    # ⊕ 1 Sep 2026 — REPLACED IN FULL. The old note, approved 30 Aug 2026,
+    # was shared byte-for-byte with `lesson_04_lenses_and_images.py` and
+    # warned about a lens and a pinhole camera — apparatus this lesson does
+    # not have. This lesson's instrument is a triangular glass prism (the
+    # `prism-bench` block above), and its rung 4 puts the student in a
+    # rainbow scenario outdoors in sunlight, so the replacement is written
+    # for THIS rig: no lens, no pinhole, and it adds the outdoor-rainbow
+    # guidance ("keep the Sun behind you") the old shared text never
+    # covered. `lesson_04_lenses_and_images.py`'s note is untouched — it was
+    # already correct for its own apparatus.
+    "safety_note": "Never look directly at the Sun, and never look along a "
+                   "beam of sunlight into the prism. Turn the prism to catch "
+                   "the light and look at the spectrum it casts, not at the "
+                   "source. If you go outside to find a rainbow, keep the Sun "
+                   "behind you — that is where a rainbow always is. Looking at "
+                   "the Sun damages your sight in a way you cannot feel "
+                   "happening and cannot repair.",
 
     "convention_note": "The bench is a teaching model. The prism angles and "
                        "the spread of the fan are drawn for clarity rather "

@@ -5316,7 +5316,49 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 
 /* Prose standing in for a list in an end-matter card (⊕ §4.8.1 D). */
 .ks3-endmatter-prose { color: var(--ks3-ink-body); }
-.ks3-safety { border-top: 0; margin-top: 18px; }
+
+/* ⊕ MRB-297, ruled by Mide 1 Sep 2026 — R14 ("anything legal sits small,
+   at the bottom edge, never a callout") is deliberately broken for THIS
+   one case. A safety instruction had been rendering identically to the
+   `.ks3-legal` modelling disclaimer beneath it: same 15px muted grey,
+   same hairline rule, no way to tell an instruction from a caveat.
+
+   Amber marks it — never the words, only the mark (R1: amber is a fill
+   or a mark, never body-size text). A bare amber border/rule against
+   the cream ground measures ~2.66:1, under the 3:1 non-text minimum, so
+   the marker reuses `.ks3-misconception`'s own proven pattern instead:
+   an ink-filled badge carrying the amber glyph (ink-on-tint 14.98:1,
+   amber-on-ink 10.48:1 — both AAA). The body stays ink at the page's
+   own 19px reading size, never amber and never small print — amber
+   text does not hold contrast on this cream ground. Order is untouched:
+   the generator already emits `safety_note` before `convention_note`
+   (build_ks3.py, §4.8.1 D), so this sits above the modelling disclaimer
+   without a markup change. */
+.ks3-legal.ks3-safety {
+  border-top: 0;
+  margin: 34px 0 0;
+  padding: 14px 16px;
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-alert-tint);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+.ks3-safety::before {
+  content: "!";
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin: 0 10px -3px 0;
+  border-radius: 6px;
+  background: var(--ks3-ink);
+  color: var(--ks3-alert);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1;
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    C2 · Atoms, elements and compounds  (⊕ 16 Aug 2026, MRB-220)
