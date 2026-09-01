@@ -636,36 +636,36 @@ LESSON = {
                    "right-hand grip rule, and the transformer, where one "
                    "coil's changing field induces a voltage in another.",
 
-    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    # ⚖️ MRB-297 · Mide's wording. Approved 1 Sep 2026, recorded on the
+    # ticket as `## RULED — 1 Sep 2026`. Not to be edited.
     #
-    # ⚠️ ⊕ 1 Sep 2026 — RAISED FOR MIDE, AND DELIBERATELY NOT ACTED ON.
-    # A reviewer found that this note names apparatus this lesson has not
-    # got: `grep -i "spin|rotat|revolv"` over all 668 lines returns only the
-    # line below, and every `turns` on the page is turns-of-coil. The note is
-    # byte-identical to the one on `lesson_05_how_a_motor_works.py`, which
-    # does have a spinning part.
+    # ⊕ 1 Sep 2026 — THE TWO P10 RIGS NOW CARRY DIFFERENT NOTES, AND THE
+    # DIFFERENCE IS THE POINT. This lesson and `lesson_05_how_a_motor_works.py`
+    # used to share ONE note, character for character, and it named a
+    # spinning part. An electromagnet rig has no spinning part: `grep -i
+    # "spin|rotat|revolv"` over this lesson now returns nothing outside this
+    # comment. A note that warns about hardware the rig has not got teaches a
+    # student that the note was not written for them.
     #
-    # THE EVIDENCE THAT MAKES IT A QUESTION RATHER THAN A QUIBBLE. The audit
-    # that prompted the safety work splits the two rigs by hazard —
-    # `docs/ks3/audits/2026-08-28-ks3-physics/records/p10.md:312-314`:
+    # The audit that prompted the safety work had already split the two rigs
+    # by hazard — `docs/ks3/audits/2026-08-28-ks3-physics/records/p10.md:312-314`:
     #     "Electromagnet rigs: hot coils, short-circuited cells, low-voltage
     #      supplies only. Motor rigs: bare wires, spinning parts, eye
     #      protection."
-    # "Spinning parts" sits under MOTOR rigs alone, and the electromagnet's
-    # own listed hazard — short-circuited cells — is absent from the note.
     #
-    # ⚠️ AND IT IS STILL NOT THIS RUN'S TO CHANGE. Mide's own instruction
-    # named the approved text as covering "P10 electromagnets and the motor",
-    # one text for both lessons, and the rule for the run is that an approved
-    # safety line goes in verbatim or not at all — never adapted. So the note
-    # stays exactly as he wrote it and the conflict is recorded here instead:
-    # it is between his heading and the audit's hazard split, and only he can
-    # settle it. Written down so the next audit finds the reasoning rather
-    # than re-opening the finding.
-    "safety_note": "Eye protection on. The coil gets hot within a minute, so "
-                   "switch off between tries and let it cool. Keep fingers, "
-                   "hair and loose sleeves clear of the spinning part. Use "
-                   "only the low-voltage supply your teacher gives you.",
+    # ⊕ The previous run RAISED this and refused to act on it, and that
+    # judgement was right: an approved safety line goes in verbatim or not at
+    # all, never adapted. Its refusal is what sent the conflict to Mide. He
+    # has now written the split himself and approved both halves, so the
+    # spinning-part sentence is gone from here and the short-circuit
+    # sentence — this rig's own listed hazard, and the one the old note was
+    # missing — stands in its place.
+    "safety_note": "Eye protection on. The coil gets hot within a minute, "
+                   "so switch off between tries and let it cool. Never "
+                   "connect the coil straight across the cell on its own "
+                   "— that makes a large current and the wires heat up "
+                   "fast. Use only the low-voltage supply your teacher "
+                   "gives you.",
 
     "convention_note": "The bench is a teaching model. The number of paper "
                        "clips is worked out from a simple rule in which the "

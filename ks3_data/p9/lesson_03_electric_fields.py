@@ -665,12 +665,23 @@ LESSON = {
                    "strength as force per unit charge, and the link between "
                    "field and potential difference.",
 
-    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
-    "safety_note": "It is the metal shell that protects you, so this only "
-                   "works in a car with a metal roof and metal sides. A "
-                   "convertible, a fibreglass boat or an open tractor cab "
-                   "will not do it, and you should not touch metal inside the "
-                   "car while the storm is overhead. If you are caught "
+    # ⚖️ MRB-297 · Mide's wording. Approved 1 Sep 2026, recorded on the
+    # ticket as `## RULED — 1 Sep 2026`. Not to be edited.
+    #
+    # ⊕ 1 Sep 2026 — REPLACED IN FULL, for a RENDERING defect that was
+    # invisible in this file. The previous note opened "It is the metal shell
+    # that protects you, so this only works in a car with …". The
+    # `safety_note` slot renders as a standalone footer AFTER the tutor
+    # block, so by the time a student reads it nothing on screen has named a
+    # car: "it" and "this" both pointed at nothing. The replacement names the
+    # car in its first clause and is self-contained, like the other twelve.
+    # ⚠️ Read this one on the BUILT page, not here, if it is ever revisited.
+    "safety_note": "A car protects you because its metal shell carries "
+                   "the charge around you. That only works in a car with "
+                   "a metal roof and metal sides — a convertible, a "
+                   "fibreglass boat or an open tractor cab will not do "
+                   "it, and you should not touch metal inside the car "
+                   "while the storm is overhead. If you are caught "
                    "outside in a storm, get indoors or into a car — never "
                    "shelter under a tree.",
 

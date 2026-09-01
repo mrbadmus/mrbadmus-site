@@ -604,11 +604,20 @@ LESSON = {
                    "out from flux density, current and length, and the "
                    "generator effect.",
 
-    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
-    "safety_note": "Eye protection on. The coil gets hot within a minute, so "
-                   "switch off between tries and let it cool. Keep fingers, "
-                   "hair and loose sleeves clear of the spinning part. Use "
-                   "only the low-voltage supply your teacher gives you.",
+    # ⚖️ MRB-297 · Mide's wording. Approved 1 Sep 2026, recorded on the
+    # ticket as `## RULED — 1 Sep 2026`. Not to be edited.
+    #
+    # ⊕ 1 Sep 2026. This note used to be shared byte-for-byte with
+    # `lesson_04_electromagnets.py`, which has no spinning part. Mide has
+    # split the two rigs. The spinning-part warning stays HERE, where there
+    # IS a spinning part — a coil on an axle turned by a split-ring
+    # commutator — and now LEADS the note instead of trailing it. The
+    # reasoning is written up in full in lesson 04.
+    "safety_note": "Eye protection on. Keep fingers, hair and loose "
+                   "sleeves clear of the spinning part. The coil gets hot "
+                   "within a minute, so switch off between tries and let "
+                   "it cool. Use only the low-voltage supply your teacher "
+                   "gives you.",
 
     "convention_note": "The bench is a teaching model. The coil is drawn face "
                        "on and frozen in the horizontal position, where the "

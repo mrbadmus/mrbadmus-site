@@ -99,6 +99,23 @@ LESSON = {
     # of TEN distinct texts, not eleven. Ten placed plus this one withheld
     # is ELEVEN approved.
     #
+    # ⊕ AMENDED AGAIN 1 Sep 2026 (safety-wording correction run). Two of the
+    # counts above are now stale, and they are kept rather than edited
+    # because they are the record of what the 30 Aug approval WAS.
+    # Mide rewrote two of the notes on 1 Sep and approved the replacements
+    # (`## RULED — 1 Sep 2026` on MRB-297):
+    #   · the P10 coil line is NO LONGER "on two, character for character
+    #     identical". It split into two different texts, one per rig —
+    #     `p10-04 electromagnets` and `p10-05 how-a-motor-works` — because
+    #     the shared text named a spinning part the electromagnet rig has
+    #     not got.
+    #   · the `p9-03 electric-fields` note was replaced in full, because it
+    #     opened with a pronoun and renders as a standalone footer with no
+    #     car named anywhere above it.
+    # The tree therefore now holds TWELVE placements of ELEVEN distinct
+    # texts (was ten), still across the same twelve lessons, plus the one
+    # note below that is still withheld. Nothing here changed.
+    #
     # The eleventh was for THIS lesson and reads
     # "Teacher demonstration only — never try this one yourself. …".
     # It is NOT here, and it is not to be added without his say-so.
