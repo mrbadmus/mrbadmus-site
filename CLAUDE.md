@@ -95,7 +95,7 @@ The name "MrBadmus" refers to Mide Badmus, the teacher who built this site for h
 | **AI model** | Claude (Anthropic) — accessed via a custom backend |
 | **Backend API** | Separate Node/Express server at `https://mrbadmus-backend.onrender.com` — lives in a separate repo |
 | **Auth & database** | Supabase — handles user sign-in, session tokens, profiles, and leaderboard data (project ID `urklkrwevjtlfbwnipjn`) |
-| **Site generation** | **`build_all.py`** — the entry point. It runs FOUR generators in a load-bearing order: `generate_site_v5.py` (KS4), `build_ks3.py` (KS3), `build_student.py` (previews), then `build_student_port.py` (**the live student pages**). ⚠️ `generate_site_v5.py` alone does NOT build KS3 — see "How the Site is Generated" below |
+| **Site generation** | **`build_all.py`** — the entry point. It runs SIX generators in a load-bearing order: `generate_site_v5.py` (KS4), `build_ks3.py` (KS3), `build_student.py` (previews), `build_student_port.py` (**the live student pages**), `build_teacher_port.py` (**six of the teacher screens**), then `build_leaderboard_port.py` (**the live leaderboard**). ⚠️ `generate_site_v5.py` alone does NOT build KS3 — see "How the Site is Generated" below |
 | **Hosting** | Cloudflare Pages at mrbadmus.com (auto-deploys from GitHub) |
 | **Email** | Resend.com from noreply@mrbadmus.com |
 
@@ -229,7 +229,7 @@ mrbadmus-site/
 ├── triple/                 — Triple Science pages (auto-generated)
 ├── combined/               — Combined Science pages (auto-generated)
 │
-├── build_all.py            — ⭐ THE ENTRY POINT. Runs all three generators, in the correct order.
+├── build_all.py            — ⭐ THE ENTRY POINT. Runs all SIX generators, in the correct order.
 ├── generate_site_v5.py     — KS4 generator: topic pages + copies root HTML into mrbadmus_site/
 ├── build_ks3.py            — KS3 generator (ks3/). SEPARATE ON PURPOSE. generate_site_v5.py never builds KS3.
 ├── build_student.py        — student preview pages. Runs LAST.
@@ -288,7 +288,7 @@ The two repos share an API contract documented in **`API-CONTRACT.md` in the bac
 **Rule: frontend and backend changes that affect the API contract must be deployed together.** A breaking change pushed to only one side will cause student-visible errors. The correct deployment sequence:
 1. Run any required SQL migrations in Supabase
 2. Push backend repo (Render auto-deploys, wait for "Live")
-3. Run `python3 build_all.py` (NOT `generate_site_v5.py` alone — that skips KS3 and the student previews)
+3. Run `python3 build_all.py` (NOT `generate_site_v5.py` alone — that skips KS3, the student previews, the live student pages, the teacher screens and the leaderboard)
 4. Push frontend repo (Cloudflare auto-deploys)
 5. Smoke test
 
@@ -296,7 +296,15 @@ The two repos share an API contract documented in **`API-CONTRACT.md` in the bac
 
 ## How the Site is Generated
 
-### ⚠️ There are THREE generators, and one entry point
+### ⚠️ There are SIX generators, and one entry point
+
+⊕ Corrected 1 Sep 2026 (MRB-306 WS-0). This heading said THREE and the table
+listed four; `build_all.py` has run six since MRB-290 landed on 25 Aug 2026.
+The undercount is the dangerous kind — it names the teacher and leaderboard
+builds nowhere, so a reader following this file would edit `teacher_rulings.py`
+or `build_leaderboard_port.py`, run `build_all.py`, watch it exit 0, and
+conclude their change had no effect. `build_all.py`'s own `STEPS` list is the
+authority; this table follows it.
 
 Run this, always:
 
@@ -310,8 +318,34 @@ It runs, in this order:
 |---|---|---|
 | 1 | `generate_site_v5.py` | the KS4 site — `combined/`, `triple/`, root pages, `shared/` |
 | 2 | `build_ks3.py` | the KS3 site — everything under `ks3/` |
-| 3 | `build_student.py` | the student preview pages |
+| 3 | `build_student.py` | the student preview pages — `student/*-preview.html` |
 | 4 | `build_student_port.py` | **the LIVE student pages** — `student/class.html`, `student/assignment.html` |
+| 5 | `build_teacher_port.py` | **six of the teacher screens** — see the split below |
+| 6 | `build_leaderboard_port.py` | **the LIVE `leaderboard.html`** — site root, both trees |
+
+**Steps 3–6 all run AFTER step 1, and that is load-bearing.**
+`generate_site_v5.build_site()` opens by wiping `mrbadmus_site/` except the
+foreign output trees it is told to skip (`ks3/`, `3d/`). `student/`, `teacher/`
+and the site root are NOT on that skip list, so anything they emit before
+step 1 is deleted by step 1. Step 6 has a second reason on top: step 1's
+`_auth_file` list still names `leaderboard.html` and copies the root copy into
+`mrbadmus_site/`, so run earlier it would simply be overwritten.
+
+### ⚠️ Four of the ten teacher pages are HAND-WRITTEN, and six are generated
+
+Getting this backwards costs a night in either direction — hand-edit a
+generated page and the next build silently discards it; hunt for the generator
+behind a hand-written one and there isn't one.
+
+| `teacher/…` | who writes it |
+|---|---|
+| `classes.html`, `class-detail.html`, `student-detail.html`, `assignment.html`, `digest.html`, `insights.html` | **generated** by `build_teacher_port.py` — never hand-edit; changes go in `teacher_rulings.py` |
+| `admin.html`, `import.html`, `today.html`, `timetable.html` | **hand-written** — edit them directly |
+
+`import.html`'s exemption is a ruling, not an oversight: it is the hand-written
+CSV/Excel wizard, `_REFUSED` in `build_teacher_port.py` names it, and
+`IMPORT_NOT_PORTED` in `teacher_rulings.py` says why. Design's import screen
+stays in `SCREENS` regardless, because every OTHER page has to prune it.
 
 ### ⊕ 22 Aug 2026 — the student pages are GENERATED, and are not hand-editable
 

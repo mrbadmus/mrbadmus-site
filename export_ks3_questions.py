@@ -699,10 +699,32 @@ def verify(bank, ladder, cards):
         return 3
 
     url = "https://urklkrwevjtlfbwnipjn.supabase.co"
-    src = open(os.path.join(REPO, "leaderboard.html"), encoding="utf-8").read()
+
+    # ⊕ 1 Sep 2026 (MRB-306 WS-0). The key used to be scraped out of
+    # leaderboard.html. MRB-290 made that page GENERATED and derive-everything,
+    # and its inline anon key left with the hand-written original — so this
+    # gate would have died on `.group(0)` of None the moment somebody set
+    # MRB_TEST_STUDENT_PASSWORD, i.e. exactly when it was finally asked to run.
+    # It never surfaced because the skip above returns first without the env
+    # var. shared/config.js carries BOTH projects, so take the key whose own
+    # `ref` claim matches the project this verify is pointed at.
+    import base64
     import re
-    key = re.search(r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}",
-                    src).group(0)
+    ref = url.split("//", 1)[1].split(".", 1)[0]
+    src = open(os.path.join(REPO, "shared", "config.js"), encoding="utf-8").read()
+    key = None
+    for tok in re.findall(
+            r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}",
+            src):
+        payload = tok.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        if ('"ref":"%s"' % ref) in base64.urlsafe_b64decode(payload).decode():
+            key = tok
+            break
+    if key is None:
+        raise SystemExit(
+            "export_ks3_questions --verify: shared/config.js carries no anon "
+            "key for project %r." % ref)
     ctx = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 
     def api(path, headers, body=None):

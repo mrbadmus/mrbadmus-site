@@ -200,10 +200,33 @@ DESTRUCTIVE = {"Sign out"}
 
 
 def anon_key():
-    src = open("leaderboard.html", encoding="utf-8").read()
-    return re.search(
-        r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}",
-        src).group(0)
+    """The anon key for SUPABASE_URL's project, out of shared/config.js.
+
+    ⊕ 1 Sep 2026 (MRB-306 WS-0). This used to read leaderboard.html and take
+    the first JWT it found. MRB-290 made the leaderboard a GENERATED page that
+    derives everything through the backend, and the inline anon key went with
+    the hand-written original — so the regex matched nothing and this drive
+    died on `.group(0)` of None before it pressed a single control. A crash,
+    not a skip: the gate looked broken rather than unrun.
+
+    config.js carries BOTH projects, so the first JWT is no longer the right
+    one by construction. Pick the key whose own `ref` claim matches the project
+    this drive is pointed at, and the two can never drift apart again.
+    """
+    import base64
+    ref = SUPABASE_URL.split("//", 1)[1].split(".", 1)[0]
+    src = open("shared/config.js", encoding="utf-8").read()
+    for tok in re.findall(
+            r"eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{10,}",
+            src):
+        payload = tok.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        if ('"ref":"%s"' % ref) in base64.urlsafe_b64decode(payload).decode():
+            return tok
+    raise SystemExit(
+        "student_controls_drive: shared/config.js carries no anon key for "
+        "project %r. The drive points at %s; check config.js still defines "
+        "that project." % (ref, SUPABASE_URL))
 
 
 def sign_in(key):
