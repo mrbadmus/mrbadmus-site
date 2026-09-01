@@ -174,10 +174,13 @@ QUESTIONS = [
              "why": "R = V ÷ I always applies; what is not always true is "
                     "that the answer stays put. A lamp is the standard "
                     "counter-example."},
-            {"text": "It falls, because more p.d. drives more current",
-             "correct": False,
+            # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so the
+            # correct answer stops being resolvable as the second-longest.
+            {"text": "It falls, because more p.d. drives more current, so "
+                     "V ÷ I drops", "correct": False,
              "why": "More current would lower the ratio if the p.d. had not "
-                    "risen too. It has, and by more."},
+                    "risen too. It has, and by more — so V ÷ I goes up, not "
+                    "down."},
             {"text": "It cannot be calculated for a lamp at all",
              "correct": False,
              "why": "It can, at every setting. Each answer is the lamp's "

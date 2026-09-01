@@ -483,8 +483,11 @@ LESSON = {
                 "changes how comfortable it is.",
                 "The long spanner gives 20 N m against 5 N m — four times "
                 "the turning effect for the same pull.",
+                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
+                # the correct answer stops being resolvable as the
+                # second-longest.
                 "The short spanner gives more, because the force acts closer "
-                "to the bolt.",
+                "to the bolt that is being turned.",
                 "The long spanner gives more, because a longer spanner "
                 "weighs more.",
             ],

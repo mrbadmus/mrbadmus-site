@@ -616,8 +616,11 @@ LESSON = {
                 # it, and her correction below answers it word for word.
                 "Compasses made today are calibrated to a different north "
                 "from the ones that were made forty years ago",
-                "The map’s grid north has moved, because the squares are "
-                "redrawn each edition",
+                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
+                # the correct answer stops being resolvable as the
+                # second-longest.
+                "The map’s grid north has moved, because the grid squares "
+                "are redrawn for each new edition",
             ],
             "answer": 1,
             "feedback": {

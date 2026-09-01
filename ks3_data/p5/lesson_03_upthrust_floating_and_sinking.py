@@ -499,7 +499,10 @@ LESSON = {
                  "on it?",
             "options": [
                 "8 N — 45 N in air less 37 N in water",
-                "82 N — add the two readings",
+                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
+                # the correct answer stops being resolvable as the
+                # second-longest.
+                "82 N — add the two balance readings",
                 "8 Pa — the water is pressing on it, so the answer is a "
                 "pressure",
                 "1.2 — divide 45 by 37",

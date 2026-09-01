@@ -180,11 +180,13 @@ QUESTIONS = [
         "options": [
             {"text": "It is nearly the same strength and direction all "
                      "through that gap", "correct": True},
-            {"text": "It is nearly zero, because parallel lines cancel out",
-             "correct": False,
+            # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so the
+            # correct answer stops being resolvable as the second-longest.
+            {"text": "It is nearly zero, because parallel lines cancel each "
+                     "other out", "correct": False,
              "why": "Cancelling shows up as lines curving away and a bare "
                     "patch. Parallel arrows of a good length mean a steady, "
-                    "real field."},
+                    "real field, not two fields undoing each other."},
             {"text": "It is about to become uneven, because the lines are on "
                      "the point of crossing", "correct": False,
              "why": "Parallel lines never meet, and lines never cross "

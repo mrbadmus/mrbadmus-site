@@ -144,19 +144,71 @@ BASELINE = {
     ("ladder", "whole corpus BIO+CHEM"): (99, 46),
 }
 
+# ── rank baselines · same rule as BASELINE above: only a scope that is RED
+# TODAY gets a row, and a row is a debt, not permission to decay.
+RANK_BASELINE = {
+    # ⚠️ EVERY ROW HERE IS MEASURED AT THIS RUN'S BRANCH POINT, 834624da7 —
+    # the state it INHERITED — not at the state it left behind. That is the
+    # whole point: a baseline taken after the work would let the work grade
+    # itself, and a tell MOVED from one rank to another would pass unnoticed.
+    # Measured 1 Sep 2026 by `git archive 834624da7` and re-running this
+    # file's own filter over it.
+    # ⚠️ NOT `origin/main`, which has moved seven commits ahead with other
+    # lanes' biology work (b3-07, b4-03) that this branch does not carry.
+    # Baselining against a tree containing changes this run never saw would
+    # have failed it for someone else's edits — it did, by one set, before
+    # this was caught.
+    #
+    # bio/chem — untouched by this run, live on production, its own lane's
+    # debt. HEAD matches main to within one set in every cell.
+    ("bank",   "BIO+CHEM", 0): (338, 218),   # 64.5% at rank 1
+    ("bank",   "BIO+CHEM", 1): (338, 32),    #  9.5% at rank 2
+    ("bank",   "BIO+CHEM", 2): (338, 8),     #  2.4% at rank 3
+    ("ladder", "BIO+CHEM", 0): (68, 46),     # 67.6% at rank 1
+    ("ladder", "BIO+CHEM", 2): (68, 1),      #  1.5% at rank 3
+    #
+    # physics — the depleted middle ranks are inherited, not made here.
+    ("bank",   "PHYSICS", 2): (365, 15),     #  4.1% at rank 3 on main
+    ("ladder", "PHYSICS", 2): (77, 3),       #  3.9% at rank 3 on main
+    #
+    # ⚠️ NO ROW FOR PHYSICS RANK 2, IN EITHER CORPUS, DELIBERATELY. Main had
+    # bank 27.7% and ladder 33.8%; this run pushed them to 35.8% and 38.9% by
+    # lengthening distractors past correct answers, which is a REGRESSION and
+    # is fixed rather than recorded. Rank 1 is where the work went and it
+    # shows: physics bank rank 1 went 52.3% -> 24.7% and the whole physics
+    # bank distribution's chi-square fell from 186 to 37.
+}
+
 PHYS = {"P%d" % i for i in range(1, 13)}
 FAIL = []
 
 
+def _binom_pmf(i, n, p):
+    """One binomial term, in log space.
+
+    ⚠️ NOT `math.comb(n, i) * p**i * (1-p)**(n-i)`, which is what this was.
+    That is exact and fine at n = 70, and it raises OverflowError the moment a
+    corpus is big enough to matter: `math.comb(1380, 493)` is a 400-digit
+    integer and Python refuses to multiply it by a float. The gate crashed on
+    the bio/chem bank the first time the rank check was pointed at it. Logs
+    have no such ceiling.
+    """
+    if p <= 0.0:
+        return 1.0 if i == 0 else 0.0
+    if p >= 1.0:
+        return 1.0 if i == n else 0.0
+    log = (math.lgamma(n + 1) - math.lgamma(i + 1) - math.lgamma(n - i + 1)
+           + i * math.log(p) + (n - i) * math.log(1.0 - p))
+    return math.exp(log) if log > -745.0 else 0.0
+
+
 def binom_tail_ge(k, n, p):
-    """P(X >= k) for X ~ Binomial(n, p). Exact; no scipy in this repo."""
-    return sum(math.comb(n, i) * p ** i * (1 - p) ** (n - i)
-               for i in range(k, n + 1))
+    """P(X >= k) for X ~ Binomial(n, p). No scipy in this repo."""
+    return sum(_binom_pmf(i, n, p) for i in range(k, n + 1))
 
 
 def binom_tail_le(k, n, p):
-    return sum(math.comb(n, i) * p ** i * (1 - p) ** (n - i)
-               for i in range(0, k + 1))
+    return sum(_binom_pmf(i, n, p) for i in range(0, k + 1))
 
 
 def texts(options):
@@ -227,6 +279,106 @@ def collect(skipped=None):
     return sets
 
 
+def rank_of(opts, ans):
+    """Where the correct option sits when the four are ordered longest-first.
+
+    ⚠️ ADDED 1 Sep 2026 BY THE THIRD COLD DOUBLE-CHECK, AND IT IS THE MOST
+    IMPORTANT THING IN THIS FILE.
+
+    Until now this gate only ever asked about RANK 1 — is the correct option
+    the visibly longest. That is one exploit of four, and a fix aimed at it
+    does not remove the information, it MOVES it. That is not hypothetical:
+    MRB-297 widened one distractor in each of six hooks to push the correct
+    answer off rank 1, and measured on the same 70 sets
+
+        pick the longest      34.3% -> 25.7%   (fixed)
+        pick the 2nd longest  34.3% -> 42.9%   p = 0.0008   (created)
+
+    A student who picks the second-longest option now does better than one who
+    picks the longest ever did, and the old check could not see it, because
+    `visibly_longest()` never looks below rank 1. The gate was gameable and it
+    was gamed by its own author.
+
+    So every rank is measured, under the same two-condition rule the rest of
+    the file uses. Length carries no information only when the correct answer
+    is equally likely to be the longest, the second, the third or the
+    shortest — that is the property; rank 1 was only ever a proxy for it.
+    """
+    order = sorted(range(len(opts)), key=lambda j: (-len(opts[j]), j))
+    r = order.index(ans)
+    # ⚠️ AND THE RANK ONLY COUNTS IF A STUDENT COULD IDENTIFY IT.
+    # "Pick the second-longest" is only a strategy if the second-longest can
+    # be told apart from the first and the third. Counting every set makes the
+    # measure obey differences of one or two characters that nobody perceives
+    # — and then demands they be shuffled, which is precisely the padding
+    # this file's own opening refuses. Measured on the physics hooks: the raw
+    # distribution says rank 2 is 42.9% and looks alarming; filtered to the
+    # positions a reader can actually resolve it is 4 sets in 70, all at rank
+    # 4, with nothing significant anywhere. The raw number was an artefact of
+    # invisible differences. The ladder, filtered the same way, keeps a real
+    # signal — so the filter is not a way of making the problem go away.
+    lens = [len(opts[j]) for j in order]
+    gaps = []
+    if r > 0:
+        gaps.append(lens[r - 1] - lens[r])
+    if r < len(order) - 1:
+        gaps.append(lens[r] - lens[r + 1])
+    if any(g < MARGIN for g in gaps):
+        return None
+    return r
+
+
+def report_ranks(rank_tally):
+    """The full rank distribution, per corpus per group. Fails like the rest."""
+    bad = []
+    print("  RANK OF THE CORRECT OPTION BY LENGTH — 1 is longest, 4 shortest,")
+    print("  counting only the sets where that position is VISIBLE (every "
+          "bounding gap >= %d chars)." % MARGIN)
+    print("  Chance is 25% at every rank; a fix that only flattens rank 1 has "
+          "moved the tell, not removed it.")
+    for key in sorted(rank_tally):
+        corpus, grp = key
+        cnt = rank_tally[key]
+        n = sum(cnt)
+        if n < 20:                      # too few to say anything
+            continue
+        cells = []
+        for r, k in enumerate(cnt):
+            rate = k / n
+            hot = ""
+            if rate > HI and binom_tail_ge(k, n, CHANCE) < ALPHA:
+                hot = "GIVEAWAY"
+            elif rate < LO and binom_tail_le(k, n, CHANCE) < ALPHA:
+                hot = "MIRROR"
+            excused = False
+            if hot:
+                base = RANK_BASELINE.get((corpus, grp, r))
+                # ⚠️ "NO WORSE" POINTS THE OTHER WAY FOR THE TWO TELLS, and
+                # getting that backwards excuses a real regression while
+                # failing a real improvement. A GIVEAWAY is a rate that is too
+                # HIGH, so no-worse means rate <= baseline. A MIRROR is a rate
+                # that is too LOW, so no-worse means rate >= baseline. Caught
+                # by the physics ladder's rank 3 going 15/140 to 16/140 — an
+                # improvement — and being failed for it.
+                if base is not None:
+                    br = base[1] / base[0]
+                    excused = (rate <= br + 1e-9 if hot == "GIVEAWAY"
+                               else rate >= br - 1e-9)
+                if excused:
+                    pass                    # a recorded debt, no worse
+                else:
+                    bad.append("%s/%s rank %d" % (corpus, grp, r + 1))
+            cells.append("r%d %2d/%d=%4.1f%%%s"
+                         % (r + 1, k, n, 100 * rate,
+                            (" " + hot + (" BASELINED" if excused else ""))
+                            if hot else ""))
+        fails = any(("GIVEAWAY" in c or "MIRROR" in c) and "BASELINED" not in c
+                    for c in cells)
+        print("  %s %-9s %s" % ("❌" if fails else "✅",
+                                "%s %s" % (corpus, grp), " · ".join(cells)))
+    return bad
+
+
 def report_skipped(skipped):
     """Say out loud what this gate cannot see. Not optional.
 
@@ -285,18 +437,25 @@ def main():
           "(margin %d chars, chance %.0f%%)" % (MARGIN, 100 * CHANCE))
 
     tally = collections.defaultdict(lambda: [0, 0])   # (corpus, scope)->[n,k]
+    ranks = collections.defaultdict(lambda: [0, 0, 0, 0])
     skipped = {}
     for corpus, unit, _where, opts, ans in collect(skipped):
+        grp = "PHYSICS" if unit in PHYS else "BIO+CHEM"
+        if len(opts) == 4:
+            r = rank_of(opts, ans)
+            if r is not None:
+                ranks[(corpus, grp)][r] += 1
         j = visibly_longest(opts)
         if j is None:
             continue
-        grp = "PHYSICS" if unit in PHYS else "BIO+CHEM"
         for scope in ("whole corpus %s" % grp, unit):
             tally[(corpus, scope)][0] += 1
             tally[(corpus, scope)][1] += (j == ans)
 
     print()
     report_skipped(skipped)
+    FAIL.extend(report_ranks(ranks))
+    print()
 
     for corpus in ("bank", "ladder", "hook"):
         keys = [k for k in tally if k[0] == corpus]

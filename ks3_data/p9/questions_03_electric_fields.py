@@ -245,10 +245,13 @@ QUESTIONS = [
         "band": "harder",
         "text": "Why is a mobile phone signal lost inside a metal lift?",
         "options": [
-            {"text": "The metal absorbs the signal and turns it into heat "
-                     "inside the walls", "correct": False,
-             "why": "Very little is absorbed. The free charges in the metal "
-                    "rearrange so that almost no field gets inside."},
+            # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so the
+            # correct answer stops being resolvable as the second-longest.
+            {"text": "The metal absorbs the whole signal and turns it into "
+                     "heat inside the walls", "correct": False,
+             "why": "Very little is absorbed, and the walls do not warm up. "
+                    "The free charges in the metal rearrange so that almost "
+                    "no field gets inside."},
             {"text": "The lift is moving, so the signal cannot lock on to "
                      "it", "correct": False,
              "why": "It happens with the lift standing still, and it stops "

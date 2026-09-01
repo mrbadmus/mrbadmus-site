@@ -358,7 +358,10 @@ LESSON = {
                 "the other two get brighter",
                 "0.60 A, and the other two stay at full brightness",
                 "0.60 A, and all three go out",
-                "0.20 A, and the other two stay lit",
+                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
+                # the correct answer stops being resolvable as the
+                # second-longest.
+                "0.20 A altogether, and the other two stay lit",
             ],
             "answer": 1,
             "feedback": {

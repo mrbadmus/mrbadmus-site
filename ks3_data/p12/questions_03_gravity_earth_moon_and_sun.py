@@ -167,10 +167,13 @@ QUESTIONS = [
              "why": "The two forces really are equal. Calling them equal and "
                     "then treating one as stronger is the contradiction the "
                     "question is testing."},
-            {"text": "Because the Sun is anchored in place by the rest of the "
-                     "galaxy", "correct": False,
-             "why": "The Sun is not anchored to anything; it orbits the "
-                    "centre of the galaxy itself."},
+            # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so the
+            # correct answer stops being resolvable as the second-longest.
+            {"text": "Because the Sun is anchored by the pull of the rest of "
+                     "the galaxy", "correct": False,
+             "why": "The Sun is not anchored by anything. The galaxy's pull "
+                    "is what makes it orbit the centre of the galaxy, not "
+                    "what holds it still."},
             {"text": "Because the Sun has far more mass, so the same force "
                      "moves it far less", "correct": True},
             {"text": "Because the Earth is moving and the Sun is standing "
