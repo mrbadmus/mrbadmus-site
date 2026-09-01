@@ -342,6 +342,17 @@ behind a hand-written one and there isn't one.
 | `classes.html`, `class-detail.html`, `student-detail.html`, `assignment.html`, `digest.html`, `insights.html` | **generated** by `build_teacher_port.py` — never hand-edit; changes go in `teacher_rulings.py` |
 | `admin.html`, `import.html`, `today.html`, `timetable.html` | **hand-written** — edit them directly |
 
+⚠️ **"Hand-written" means the CONTENT is yours, not that a build never touches
+the file.** `generate_site_v5.py` walks all of `mrbadmus_site/`, restamps the
+`?v=` cache-bust query on every `<link>`/`<script>` it finds — skipping only the
+foreign trees `ks3/` and `3d/`, which stamp themselves — and then round-trips the
+result back over the repo copy. So a shared asset changing anywhere (a
+`shared/tokens.css` edit, or just merging a branch that touched it) leaves
+`teacher/today.html` and `teacher/timetable.html` MODIFIED after a build, with a
+one-line diff that is only the stamp. That is expected, it is not drift, and it
+has to be committed — `prepush_gate.py` refuses to record any receipt while a
+tracked file is modified.
+
 `import.html`'s exemption is a ruling, not an oversight: it is the hand-written
 CSV/Excel wizard, `_REFUSED` in `build_teacher_port.py` names it, and
 `IMPORT_NOT_PORTED` in `teacher_rulings.py` says why. Design's import screen
