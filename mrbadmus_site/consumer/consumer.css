@@ -1,0 +1,316 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/consumer.css — SCAFFOLD styling for /consumer/*.
+
+   MRB-308 Night 1. This is not a design and is not trying to be one.
+   Claude Design is drawing every consumer screen and Night 3 compiles
+   those; until then these five pages need to look deliberate rather than
+   broken, so this file does the minimum: it borrows the estate's existing
+   tokens and reuses the class names teacher/admin.html already established
+   (`.card`, `.page-sub`, `.stats`, `.empty`, `.row`), prefixed `c-` where
+   a name is genuinely new.
+
+   ⚠️ NO NEW TOKENS. Every colour, radius, shadow, space and font below is
+   a var() out of /shared/tokens.css. A scaffold that invents `--parent-blue`
+   is a scaffold that has to be un-invented on Night 3, and in the meantime
+   it is a second palette nobody ruled.
+
+   The one thing here that IS load-bearing: `body { display: none }`. It is
+   how the flag gate fails closed — see the header of consumer-common.js.
+   Nothing but `boot()` reveals the page, so a page whose script never runs
+   shows nothing rather than showing an unguarded consumer product.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+html { background: var(--bg); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  min-height: 100vh;
+  padding: 84px var(--sp-5) var(--sp-8);
+  /* ⚠️ Load-bearing. See the header. */
+  display: none;
+}
+
+/* ── nav ─────────────────────────────────────────────────────────────── */
+.c-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: var(--sp-3) var(--sp-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+.c-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  text-decoration: none;
+  color: var(--text);
+}
+/* Bricolage Grotesque is the face Design's mark is set in; the fallback
+   chain matters because this wordmark sits next to the chevron and a
+   mismatched fallback reads as two logos. */
+.c-brand span {
+  font-family: 'Bricolage Grotesque', var(--font-sans);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+.c-nav-right { display: flex; align-items: center; gap: var(--sp-3); }
+.c-nav-right a {
+  color: var(--muted);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.c-nav-right a:hover { color: var(--accent); }
+
+/* ── page furniture (names borrowed from teacher/admin.html) ─────────── */
+.container { max-width: 720px; margin: 0 auto; }
+.container.wide { max-width: 980px; }
+.page-header h1 {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: 1.7rem;
+  line-height: var(--lh-title);
+}
+.page-sub {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: var(--sp-2) 0 var(--sp-6);
+}
+.page-sub .sep { padding: 0 6px; opacity: 0.6; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 26px 30px;
+  margin-bottom: 22px;
+}
+.card h2 {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--sp-4);
+}
+
+.stats { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+.stat {
+  flex: 1 1 150px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.stat .n { font-size: 1.35rem; font-weight: 700; line-height: 1.15; }
+.stat .l {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Flex rather than a table, for the same reason admin.html gives: it
+   reflows at 390px instead of scrolling sideways. */
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+.row:first-of-type { border-top: none; }
+.row .name { font-weight: 700; font-size: 1rem; }
+.row .meta { color: var(--muted); font-size: 0.84rem; }
+.row .right { margin-left: auto; display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+
+.empty { color: var(--muted); font-size: 0.9rem; }
+.muted { color: var(--muted); }
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--sunken);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.tag.ok      { background: var(--success-soft); color: var(--success); border-color: transparent; }
+.tag.warn    { background: var(--higher-soft);  color: var(--higher);  border-color: transparent; }
+.tag.danger  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+
+/* ── forms ───────────────────────────────────────────────────────────── */
+.field { margin-bottom: var(--sp-4); }
+.field label {
+  display: block;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 11px 13px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+.field input:focus, .field select:focus {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+/* Year 7–9 has no tier at all on this platform, so the control is disabled
+   rather than hidden — a control that vanishes reads as a bug, whereas a
+   greyed one with a note underneath explains itself. */
+.field input:disabled, .field select:disabled {
+  background: var(--sunken);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+.field .hint { color: var(--muted); font-size: 0.8rem; margin-top: 5px; }
+.field-row { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
+.field-row > .field { flex: 1 1 200px; }
+
+.btn {
+  display: inline-block;
+  padding: 11px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  width: 100%;
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-small { padding: 6px 11px; font-size: 0.8rem; }
+/* Destructive UI routes through --danger, never --chemistry. CLAUDE.md's
+   MRB-46 Phase 3 split, applied on a new surface from the start. */
+.btn-danger:hover:not(:disabled) { border-color: var(--danger); color: var(--danger); }
+
+.c-or {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  color: var(--muted);
+  font-size: var(--fs-small);
+  margin: var(--sp-5) 0;
+}
+.c-or::before, .c-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.btn-sso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.btn-sso:hover:not(:disabled) { border-color: var(--accent); }
+.btn-sso svg { width: 18px; height: 18px; }
+
+/* ── messages ────────────────────────────────────────────────────────── */
+.c-msg {
+  display: none;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  margin-bottom: var(--sp-4);
+  background: var(--sunken);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.c-msg-error   { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+.c-msg-ok      { background: var(--success-soft); color: var(--success); border-color: transparent; }
+
+.c-fail { padding: var(--sp-4) 0; }
+.c-fail p { color: var(--text); font-size: 0.95rem; }
+.c-fail-hint { color: var(--muted); font-size: 0.86rem; margin-top: 6px; }
+
+/* The refusal / off state. Plain words, no codes — admin.html's `.notice`. */
+.c-notice { max-width: 620px; margin: 18vh auto 0; text-align: center; padding: 0 var(--sp-5); }
+.c-notice h1 {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.c-notice p { color: var(--muted); font-size: 1rem; line-height: var(--lh-body); }
+
+/* ── username availability (add-child) ───────────────────────────────── */
+.c-uname-state { margin-top: 7px; font-size: 0.86rem; min-height: 20px; }
+.c-uname-state.ok   { color: var(--success); font-weight: 700; }
+.c-uname-state.bad  { color: var(--danger); }
+.c-uname-state.busy { color: var(--muted); }
+.c-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+.c-chip {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.c-chip:hover { background: var(--accent); color: var(--on-accent); }
+
+@media (max-width: 560px) {
+  body { padding: 78px var(--sp-4) var(--sp-7); }
+  .card { padding: 20px 16px; }
+  .row .right { margin-left: 0; width: 100%; }
+  .c-nav { padding: 10px var(--sp-4); }
+}

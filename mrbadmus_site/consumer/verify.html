@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Verifying your email — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container" id="c-main">
+  <div class="page-header"><h1 id="head">Verifying your email…</h1></div>
+  <div class="page-sub" id="sub">One moment.</div>
+  <div class="card" id="panel"><p class="muted">Checking your account.</p></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/verify.html — where the verification link lands. MRB-308 N1.
+
+   SCAFFOLD. Three arrivals reach this page and it must handle all three:
+
+     1. the email confirmation link  — supabase-js reads the tokens out of
+                                       the URL fragment and establishes a
+                                       session before our code runs;
+     2. the Google OAuth return      — same mechanism, different provider;
+     3. someone opening the URL cold — no tokens, no session.
+
+   ── WHY IT WAITS RATHER THAN READING ONCE ──────────────────────────────
+   `getSession()` at DOMContentLoaded can legitimately answer null on
+   arrivals 1 and 2: the SDK's detectSessionInUrl work is asynchronous, and
+   whether it has finished by the time our script runs is a race we do not
+   control. Reading once and giving up produces the worst possible bug —
+   a parent who clicked a perfectly good link is told it did not work, and
+   a refresh fixes it, which makes it look intermittent rather than wrong.
+
+   So the page SUBSCRIBES (`onAuthStateChange`) and also polls its own
+   `getSession`, with a bounded wait. Only when the wait expires with no
+   session does it say so, and then it says the honest thing: open the link
+   from your email, or sign in.
+
+   ── AND WHY IT STILL CALLS `ensure` ────────────────────────────────────
+   signup.html already calls it on the rare same-session path. This page
+   calls it too, because for most parents THIS is the first moment a
+   verified session exists. `ensure` is idempotent by contract, so calling
+   it twice must be as safe as calling it once — if that ever stops being
+   true, this page is where a family gets duplicated.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  // 12 seconds is generous for a token exchange and short enough that a
+  // dead link does not leave someone staring at a spinner. Two arms are
+  // deliberate: the subscription usually wins, the poll covers the case
+  // where the session was already in place before we subscribed.
+  var WAIT_MS = 12000, POLL_MS = 400;
+
+  C.boot({ run: function (ctx) {
+    var sb = ctx.sb;
+    document.getElementById('c-nav').innerHTML = C.navHtml('');
+
+    var headEl  = document.getElementById('head');
+    var subEl   = document.getElementById('sub');
+    var panelEl = document.getElementById('panel');
+    var settled = false;
+
+    function state(head, sub, panelHtml) {
+      headEl.textContent = head;
+      subEl.textContent = sub;
+      panelEl.innerHTML = panelHtml;
+    }
+
+    function unverified(email) {
+      settled = true;
+      state('Your email isn’t verified yet',
+            email ? ('We’re waiting on ' + email + '.') : 'We’re waiting on your email address.',
+            '<p>Open the link we emailed you and this page will finish the job. ' +
+            'If it has expired, ask for a new one from the signup page.</p>' +
+            '<p style="margin-top:16px;"><a class="btn" href="' +
+            C.escapeHtml(C.href('/consumer/signup.html')) + '">Back to signup</a></p>');
+    }
+
+    function noSession() {
+      settled = true;
+      state('We couldn’t verify this link',
+            'It may have expired, or already been used.',
+            '<p>Verification links are single-use and time-limited. ' +
+            'Head back and sign in — if you’re already verified you’ll go ' +
+            'straight through, and if not you can send yourself a fresh link.</p>' +
+            '<p style="margin-top:16px;"><a class="btn" href="' +
+            C.escapeHtml(C.href('/consumer/signup.html')) + '">Back to signup</a></p>');
+    }
+
+    function accept(session) {
+      if (settled) { return; }
+      if (!session || !session.user) { return; }
+      settled = true;
+
+      if (!session.user.email_confirmed_at) { return unverified(session.user.email); }
+
+      state('Setting up your family…', 'Almost done.', '<p class="muted">One moment.</p>');
+      C.api('/api/consumer/family/ensure', { method: 'POST', token: session.access_token })
+        .then(function () { C.go('/consumer/overview.html'); })
+        .catch(function (e) {
+          /* Verified but the family could not be created. That is NOT a
+             verification failure and must not be reported as one — the
+             parent's account is fine and re-clicking the email link would
+             be the wrong advice. */
+          state('You’re verified — but we couldn’t finish setting up',
+                'Your email is confirmed. The last step didn’t complete.',
+                '<p>' + C.escapeHtml(e.message) + '</p>' +
+                '<p style="margin-top:16px;"><button class="btn" type="button" ' +
+                'onclick="window.location.reload()">Try again</button></p>');
+        });
+    }
+
+    // Arm 1 — the subscription. Fires on SIGNED_IN when the SDK finishes
+    // reading the tokens out of the URL.
+    var sub = sb.auth.onAuthStateChange(function (_evt, session) { accept(session); });
+
+    // Arm 2 — the poll, for a session that already existed.
+    accept(ctx.session);
+    var waited = 0;
+    var timer = setInterval(function () {
+      if (settled) {
+        clearInterval(timer);
+        if (sub && sub.data && sub.data.subscription) { sub.data.subscription.unsubscribe(); }
+        return;
+      }
+      waited += POLL_MS;
+      if (waited >= WAIT_MS) {
+        clearInterval(timer);
+        if (sub && sub.data && sub.data.subscription) { sub.data.subscription.unsubscribe(); }
+        return noSession();
+      }
+      sb.auth.getSession().then(function (r) {
+        accept(r && r.data && r.data.session);
+      }).catch(function () { /* keep waiting; the deadline decides */ });
+    }, POLL_MS);
+  }});
+})();
+</script>
+</body>
+</html>

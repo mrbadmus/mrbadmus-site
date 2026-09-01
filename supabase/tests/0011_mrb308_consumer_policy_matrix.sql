@@ -313,9 +313,49 @@ BEGIN
   PERFORM pg_temp.assert_count('each child has exactly one class', 2,
     (SELECT count(*)::int FROM public.classes WHERE school_id=fam_a));
 
-  PERFORM pg_temp.assert_count('consumer signup flag is OFF by default', 1,
+  -- ⚠️ This deliberately does NOT read the live value of
+  -- consumer_signup_enabled, though that is the obvious thing to assert.
+  -- That value is a LIVE SWITCH: anyone driving a consumer flow against this
+  -- sandbox turns it on for the length of their run, and an assertion that
+  -- reads it goes red for a reason that has nothing to do with the code under
+  -- test. It did exactly that during the night-1 build, and a gate that cries
+  -- wolf gets ignored, which is worse than not having it.
+  --
+  -- The guarantee worth holding is that a flag is BORN OFF — that switching
+  -- consumer signup on is always a deliberate act and never a default. So a
+  -- fresh row is inserted inside this rolled-back transaction and read back,
+  -- which is deterministic whatever the live switch happens to be doing.
+  INSERT INTO public.platform_flags (key) VALUES ('mrb308_probe_flag');
+  PERFORM pg_temp.assert_count('a new platform flag is born disabled', 1,
     (SELECT count(*)::int FROM public.platform_flags
-      WHERE key='consumer_signup_enabled' AND enabled = false));
+      WHERE key='mrb308_probe_flag' AND enabled = false));
+
+  PERFORM pg_temp.assert_count('the consumer signup flag row exists at all', 1,
+    (SELECT count(*)::int FROM public.platform_flags
+      WHERE key='consumer_signup_enabled'));
+
+  -- parent_owns_child, in both directions. These are here because the first
+  -- version of that function never asked what the TARGET was: every clause
+  -- described the parent or the org, so it answered true for a parent against
+  -- themselves and for one parent against the other adult in the same family.
+  -- An end-to-end drive caught it, not this file — and this file is the one
+  -- that should have. Migration 20260901220658 fixed the predicate; these four
+  -- rows are the matrix growing the eyes it was missing.
+  PERFORM pg_temp.assert_count('parent owns their own child', 1,
+    public.parent_owns_child('a0000000-0000-0000-0000-000000000001',
+                             'a0000000-0000-0000-0000-000000000011')::int);
+
+  PERFORM pg_temp.assert_count('parent does NOT own themselves', 0,
+    public.parent_owns_child('a0000000-0000-0000-0000-000000000001',
+                             'a0000000-0000-0000-0000-000000000001')::int);
+
+  PERFORM pg_temp.assert_count('parent does NOT own another family''s child', 0,
+    public.parent_owns_child('a0000000-0000-0000-0000-000000000001',
+                             'b0000000-0000-0000-0000-000000000011')::int);
+
+  PERFORM pg_temp.assert_count('parent B does NOT own family A''s child', 0,
+    public.parent_owns_child('b0000000-0000-0000-0000-000000000001',
+                             'a0000000-0000-0000-0000-000000000011')::int);
 END $$;
 
 -- =====================================================================

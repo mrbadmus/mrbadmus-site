@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Your family — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container wide" id="c-main">
+  <div class="page-header"><h1 id="family-name">Your family</h1></div>
+  <div class="page-sub" id="family-sub">…</div>
+
+  <div class="c-msg" id="msg"></div>
+
+  <div class="card">
+    <h2>Subscription</h2>
+    <div class="stats" id="sub-stats"></div>
+  </div>
+
+  <div class="card">
+    <h2>Children</h2>
+    <div id="children"></div>
+    <div class="empty" id="children-empty" style="display:none;"></div>
+    <p style="margin-top:20px;">
+      <a class="btn" id="add-child-link" href="#">Add a child</a>
+    </p>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/overview.html — the parent's home. MRB-308 Night 1.
+
+   SCAFFOLD. One read (`GET /api/consumer/family`) drives the whole page,
+   and everything on screen is a field of that response. Nothing here is
+   derived, guessed or defaulted into a number.
+
+   ── THE ONE RULE THIS PAGE HAS TO GET RIGHT: DON'T INVENT ──────────────
+   A parent is looking at a page about money and about their children. A
+   trial end date this page made up, a subscription status it inferred from
+   a missing field, a child's class name it filled in with a plausible
+   blank — each is a sentence the product has told a customer that nobody
+   can trace to a source. So: a field the backend did not send renders as
+   "Not set", visibly, and a count the backend did not send does not
+   render at all. `dash()` and `dateLabel()` are the whole of that policy.
+
+   ── THE EMPTY STATE IS A REAL STATE, NOT A FAILURE ─────────────────────
+   A family with no children yet is the NORMAL condition thirty seconds
+   after signup — it is what every single parent sees first. It gets a
+   sentence that tells them what to do next, in the same voice
+   teacher/admin.html uses for `pending_staff`: degrade to silence and a
+   next step, never to an error.
+
+   ── THE THREE PER-CHILD ACTIONS ────────────────────────────────────────
+   Edit / Reset password / Remove. Their paths were written as assumptions
+   and have since been CONFIRMED against the backend (1 Sep 2026) — see the
+   note above `CHILD_ENDPOINTS`. They still live in that one object, because
+   a path repeated through a render is a path that gets half-changed.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  /* ⊕ CONFIRMED against the backend, 1 Sep 2026. These were written as
+     assumptions — Night 1's brief named the per-child actions as buttons
+     without giving paths — and the conventional REST shapes guessed here
+     turned out to match `server.js` exactly: DELETE /children/:id and
+     POST /children/:id/password, the latter taking `{ password }`.
+
+     Leaving them collected here anyway. The reason was never that they were
+     guesses; it is that a path repeated through a render is a path that gets
+     half-changed later. */
+  var CHILD_ENDPOINTS = {
+    remove:   function (id) { return '/api/consumer/children/' + encodeURIComponent(id); },
+    password: function (id) { return '/api/consumer/children/' + encodeURIComponent(id) + '/password'; }
+  };
+
+  var MODE_LABEL = {
+    alongside_school: 'Alongside school',
+    home_education:   'Home education'
+  };
+  var INTENSITY_LABEL = { light: 'Light', steady: 'Steady', full: 'Full' };
+
+  function dash(v) { return (v == null || v === '') ? 'Not set' : String(v); }
+
+  function dateLabel(iso) {
+    if (!iso) { return 'Not set'; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return 'Not set'; }
+    var M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return d.getDate() + ' ' + M[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  /* The status pill's tone. Anything the backend sends that isn't on this
+     list still renders — as its own words, in the neutral tone. A status
+     we have not seen before must show up as itself, not as "unknown". */
+  function statusTone(s) {
+    s = String(s || '').toLowerCase();
+    if (s === 'active' || s === 'trialing' || s === 'comped') { return 'ok'; }
+    if (s === 'past_due' || s === 'paused') { return 'warn'; }
+    if (s === 'canceled' || s === 'cancelled' || s === 'expired') { return 'danger'; }
+    return '';
+  }
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    var msgEl = document.getElementById('msg');
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/add-child.html')) + '">Add a child</a>' +
+      '<a href="#" id="signout">Sign out</a>'
+    );
+    document.getElementById('add-child-link').href = C.href('/consumer/add-child.html');
+    document.getElementById('signout').addEventListener('click', function (e) {
+      e.preventDefault();
+      ctx.sb.auth.signOut().then(function () { C.go('/consumer/signup.html'); });
+    });
+
+    function load() {
+      return C.api('/api/consumer/family', { token: ctx.token }).then(render);
+    }
+
+    function render(data) {
+      data = data || {};
+      // Tolerant of both shapes: {family:{…},children:[…]} and a flat object
+      // carrying the same fields. A scaffold that only understands one and
+      // renders a blank page for the other teaches nothing on Night 2.
+      var fam = data.family || data.org || data;
+      var kids = data.children || fam.children || [];
+
+      document.getElementById('family-name').textContent = fam.name || 'Your family';
+      document.getElementById('family-sub').innerHTML =
+        C.escapeHtml(kids.length + (kids.length === 1 ? ' child' : ' children')) +
+        '<span class="sep">·</span>' +
+        C.escapeHtml(fam.kind === 'organisation' ? 'Organisation' : 'Family');
+
+      var status = fam.subscription_status || fam.status;
+      var trialEnd = fam.trial_ends_at || fam.trial_end;
+      var periodEnd = fam.current_period_end || fam.period_end;
+
+      var tone = statusTone(status);
+      document.getElementById('sub-stats').innerHTML =
+        '<div class="stat"><div class="n">' +
+          '<span class="tag ' + tone + '">' + C.escapeHtml(dash(status)) + '</span>' +
+        '</div><div class="l">Status</div></div>' +
+        '<div class="stat"><div class="n">' + C.escapeHtml(dateLabel(trialEnd)) +
+        '</div><div class="l">Trial ends</div></div>' +
+        (periodEnd
+          ? '<div class="stat"><div class="n">' + C.escapeHtml(dateLabel(periodEnd)) +
+            '</div><div class="l">Renews</div></div>'
+          : '');
+
+      var listEl  = document.getElementById('children');
+      var emptyEl = document.getElementById('children-empty');
+
+      if (!kids.length) {
+        listEl.innerHTML = '';
+        // Honest, and with the next step in it. See the header note.
+        emptyEl.textContent =
+          'No children on this account yet. Add one and they’ll get a ' +
+          'username and password to sign in with — no email address needed.';
+        emptyEl.style.display = 'block';
+        return;
+      }
+      emptyEl.style.display = 'none';
+
+      listEl.innerHTML = kids.map(function (k) {
+        var ks = k.key_stage ? ('KS' + String(k.key_stage).replace(/^KS/i, '')) : null;
+        var meta = [
+          k.year_group != null ? ('Year ' + k.year_group) : null,
+          ks,
+          MODE_LABEL[k.mode] || k.mode,
+          INTENSITY_LABEL[k.intensity] || k.intensity,
+          k.class_name || k.class || null
+        ].filter(Boolean).map(C.escapeHtml).join(' · ');
+
+        return '<div class="row" data-child="' + C.escapeHtml(k.id) + '">' +
+          '<span class="name">' + C.escapeHtml(dash(k.first_name)) + '</span> ' +
+          '<span class="tag">' + C.escapeHtml(dash(k.username)) + '</span> ' +
+          '<span class="meta">' + (meta || 'No details set') + '</span>' +
+          '<span class="right">' +
+            '<a class="btn btn-small" href="' +
+              C.escapeHtml(C.href('/consumer/add-child.html', { child: k.id })) + '">Edit</a>' +
+            '<button class="btn btn-small" type="button" data-act="password">Reset password</button>' +
+            '<button class="btn btn-small btn-danger" type="button" data-act="remove">Remove</button>' +
+          '</span>' +
+        '</div>';
+      }).join('');
+
+      // One delegated listener rather than one per button — the list is
+      // re-rendered after every action, and per-row listeners would be
+      // re-attached each time or (worse) left bound to detached nodes.
+      listEl.onclick = function (e) {
+        var btn = e.target.closest ? e.target.closest('button[data-act]') : null;
+        if (!btn) { return; }
+        var row = btn.closest('.row');
+        var id = row && row.getAttribute('data-child');
+        var name = row.querySelector('.name').textContent;
+        if (!id) { return; }
+        if (btn.getAttribute('data-act') === 'password') { return resetPassword(id, name, btn); }
+        return removeChild(id, name, btn);
+      };
+    }
+
+    function resetPassword(id, name, btn) {
+      /* `prompt` is a scaffold affordance and nothing more — it is here to
+         prove the endpoint, not to be the experience. Design's screen will
+         replace it with a proper field. It is not a password field, so it
+         echoes what is typed; that is acceptable on Night 1 and must not
+         survive to launch. */
+      var pw = window.prompt('New password for ' + name + ' (at least 8 characters):');
+      if (pw == null) { return; }
+      if (pw.length < 8) {
+        return C.setMsg(msgEl, 'That password is too short — use at least 8 characters.', 'error');
+      }
+      C.setBusy(btn, true, 'Saving…');
+      C.api(CHILD_ENDPOINTS.password(id), {
+        method: 'POST', token: ctx.token, body: { password: pw }
+      }).then(function () {
+        C.setBusy(btn, false);
+        C.setMsg(msgEl, name + '’s password has been changed.', 'ok');
+      }).catch(function (e) {
+        C.setBusy(btn, false);
+        C.setMsg(msgEl, e.message, 'error');
+      });
+    }
+
+    function removeChild(id, name, btn) {
+      if (!window.confirm('Remove ' + name + ' from your family? They won’t be able to sign in.')) { return; }
+      C.setBusy(btn, true, 'Removing…');
+      C.api(CHILD_ENDPOINTS.remove(id), { method: 'DELETE', token: ctx.token })
+        .then(function () {
+          C.setMsg(msgEl, name + ' has been removed.', 'ok');
+          return load();
+        })
+        .catch(function (e) {
+          C.setBusy(btn, false);
+          C.setMsg(msgEl, e.message, 'error');
+        });
+    }
+
+    return load().catch(function (e) {
+      /* The read failed. Say so in the panel the data was going to fill,
+         so the page is a page with a sentence in it rather than a set of
+         empty headings that looks like a family with nothing in it. */
+      C.fail(document.getElementById('children'), e.message,
+             'Refresh in a moment. If it keeps happening, email hello@mrbadmus.com.');
+      document.getElementById('family-sub').textContent = '';
+      document.getElementById('sub-stats').innerHTML =
+        '<p class="empty">We couldn’t load your subscription details.</p>';
+    });
+  }});
+})();
+</script>
+</body>
+</html>

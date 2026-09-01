@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Add a child — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container" id="c-main">
+  <div class="page-header"><h1 id="head">Add a child</h1></div>
+  <div class="page-sub">They sign in with a username and password. Children never have an email address on MrBadmus.</div>
+
+  <div class="card">
+    <div class="c-msg" id="msg"></div>
+
+    <div class="field">
+      <label for="first_name">First name</label>
+      <input type="text" id="first_name" autocomplete="off"/>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="year_group">Year group</label>
+        <select id="year_group">
+          <option value="">Choose…</option>
+          <option value="7">Year 7</option>
+          <option value="8">Year 8</option>
+          <option value="9">Year 9</option>
+          <option value="10">Year 10</option>
+          <option value="11">Year 11</option>
+          <option value="12">Year 12</option>
+          <option value="13">Year 13</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="exam_board">Exam board</label>
+        <select id="exam_board">
+          <option value="aqa">AQA</option>
+          <option value="edexcel">Edexcel</option>
+          <option value="ocr">OCR</option>
+          <option value="eduqas">Eduqas / WJEC</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="tier">Tier</label>
+      <select id="tier" disabled>
+        <option value="">Not applicable</option>
+        <option value="foundation">Foundation</option>
+        <option value="higher">Higher</option>
+      </select>
+      <div class="hint" id="tier-hint">Tier applies from Year 10. Choose a year group first.</div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="mode">How they’re studying</label>
+        <select id="mode">
+          <option value="alongside_school">Alongside school</option>
+          <option value="home_education">Home education</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="intensity">Intensity</label>
+        <select id="intensity">
+          <option value="light">Light</option>
+          <option value="steady" selected>Steady</option>
+          <option value="full">Full</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" autocomplete="off" autocapitalize="off" spellcheck="false"/>
+      <div class="c-uname-state" id="uname-state"></div>
+      <div class="c-chips" id="uname-chips"></div>
+      <div class="hint">This is what they type to sign in. No email address is involved.</div>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="new-password" placeholder="At least 8 characters"/>
+    </div>
+
+    <button class="btn btn-primary" id="btn-save" type="button">Add child</button>
+    <p style="margin-top:14px;"><a class="btn btn-small" id="back-link" href="#">Cancel</a></p>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/add-child.html — MRB-308 Night 1. SCAFFOLD.
+
+   Two jobs, and the second one is the interesting one.
+
+   ── 1. TIER IS A PROPERTY OF KEY STAGE, NOT A PREFERENCE ───────────────
+   AQA tiering starts at GCSE. A Year 7–9 child does not have a Foundation
+   or Higher tier — the platform has no such concept for them, and a tier
+   stored against one is a value that will later be read by something that
+   assumes it means something.
+
+   So the control is DISABLED and its value CLEARED for anything outside
+   Years 10–11, and both halves matter: disabling alone leaves whatever was
+   selected before sitting in the field, and a disabled <select> still has a
+   value even though the browser won't submit it — this form reads
+   `.value` directly, so "disabled" would not have saved us.
+
+   ⚠️ Years 12–13 are on the list because parents of sixth-formers exist,
+   and they are NOT tiered either — A-level has no Foundation paper. Tier
+   is 10 and 11, exactly.
+
+   It is disabled rather than hidden on purpose: a field that disappears
+   reads as a bug, a greyed field with a sentence under it explains itself.
+
+   ── 2. THE USERNAME CHECK, AND WHY IT IS DEBOUNCED AND SEQUENCED ───────
+   The check fires on blur, debounced. Two failure modes are guarded:
+
+     · the parent tabs through the field repeatedly → the debounce collapses
+       those into one request;
+     · an EARLIER request answers AFTER a later one → the answer for a name
+       they have already changed overwrites the answer for the one on
+       screen. `seq` discards any response that is not the newest, which is
+       the difference between "taken" appearing against the wrong name and
+       not appearing at all.
+
+   The endpoint's exact response shape was not specified, so `readCheck()`
+   accepts the three conventional spellings of each field rather than
+   guessing one. When the backend settles, that function is the one place
+   to narrow.
+
+   ⚠️ THE CHECK IS ADVICE, NOT ENFORCEMENT. A tick here means "free a
+   moment ago". Only the POST can actually claim a username, and it must
+   fail cleanly when two parents race for the same one — this page renders
+   that failure as the same "taken" message rather than as a crash.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var DEBOUNCE_MS = 350;
+
+  // Tier exists at GCSE only. See the header note — 12/13 are not tiered.
+  function tierApplies(year) { return year === '10' || year === '11'; }
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/overview.html')) + '">Your family</a>'
+    );
+    document.getElementById('back-link').href = C.href('/consumer/overview.html');
+
+    var msgEl    = document.getElementById('msg');
+    var yearEl   = document.getElementById('year_group');
+    var tierEl   = document.getElementById('tier');
+    var hintEl   = document.getElementById('tier-hint');
+    var unameEl  = document.getElementById('username');
+    var stateEl  = document.getElementById('uname-state');
+    var chipsEl  = document.getElementById('uname-chips');
+    var pwEl     = document.getElementById('password');
+    var saveBtn  = document.getElementById('btn-save');
+
+    // Edit mode. The child id comes in on the query string from the
+    // overview's Edit link; with no id this is a plain create.
+    var childId = new URLSearchParams(window.location.search).get('child');
+
+    // ── tier gating ──────────────────────────────────────────────────────
+    function syncTier() {
+      var y = yearEl.value;
+      if (tierApplies(y)) {
+        tierEl.disabled = false;
+        hintEl.textContent = 'Foundation or Higher, as entered for their GCSE.';
+      } else {
+        tierEl.disabled = true;
+        tierEl.value = '';          // CLEARED, not merely greyed. See header.
+        hintEl.textContent = y
+          ? 'Tier only applies in Years 10 and 11.'
+          : 'Tier applies from Year 10. Choose a year group first.';
+      }
+    }
+    yearEl.addEventListener('change', syncTier);
+    syncTier();
+
+    // ── username availability ────────────────────────────────────────────
+    var seq = 0, timer = null;
+
+    /* The response shape was not pinned down on Night 1, so read all three
+       conventional spellings rather than betting on one. Narrow this when
+       the backend settles — it is the only place that needs to change. */
+    function readCheck(d) {
+      d = d || {};
+      var ok = d.available;
+      if (ok == null) { ok = d.ok; }
+      if (ok == null) { ok = d.valid; }
+      var list = d.suggestions || d.alternatives || d.suggested || [];
+      return {
+        ok: ok === true,
+        reason: d.reason || d.message || d.error || '',
+        suggestions: Array.isArray(list) ? list : []
+      };
+    }
+
+    function clearState() { stateEl.className = 'c-uname-state'; stateEl.textContent = ''; chipsEl.innerHTML = ''; }
+
+    function renderSuggestions(list) {
+      chipsEl.innerHTML = list.slice(0, 6).map(function (s) {
+        return '<button class="c-chip" type="button" data-u="' + C.escapeHtml(s) + '">' +
+               C.escapeHtml(s) + '</button>';
+      }).join('');
+    }
+    chipsEl.addEventListener('click', function (e) {
+      var chip = e.target.closest ? e.target.closest('.c-chip') : null;
+      if (!chip) { return; }
+      unameEl.value = chip.getAttribute('data-u');
+      chipsEl.innerHTML = '';
+      checkUsername();                 // a filled chip is a new name to verify
+    });
+
+    function checkUsername() {
+      var u = unameEl.value.trim();
+      if (!u) { return clearState(); }
+      var mine = ++seq;
+      stateEl.className = 'c-uname-state busy';
+      stateEl.textContent = 'Checking…';
+      chipsEl.innerHTML = '';
+
+      C.api('/api/consumer/username/check?u=' + encodeURIComponent(u), { token: ctx.token })
+        .then(function (d) {
+          if (mine !== seq) { return; }          // a newer answer already won
+          var r = readCheck(d);
+          if (r.ok) {
+            stateEl.className = 'c-uname-state ok';
+            // Drawn as a word, not a ✓ — the latin subsets on this site do
+            // not carry U+2713 and it silently falls back mid-line.
+            stateEl.textContent = u + ' is available';
+            return;
+          }
+          stateEl.className = 'c-uname-state bad';
+          stateEl.textContent = r.reason || 'That username isn’t available.';
+          if (r.suggestions.length) { renderSuggestions(r.suggestions); }
+        })
+        .catch(function (e) {
+          if (mine !== seq) { return; }
+          /* A failed CHECK is not a failed name. Say what actually happened
+             so nobody abandons a perfectly good username because the
+             network hiccuped. */
+          stateEl.className = 'c-uname-state busy';
+          stateEl.textContent = 'We couldn’t check that just now — ' + e.message;
+        });
+    }
+
+    unameEl.addEventListener('blur', function () {
+      if (timer) { clearTimeout(timer); }
+      timer = setTimeout(checkUsername, DEBOUNCE_MS);
+    });
+    unameEl.addEventListener('input', clearState);
+
+    // ── edit mode ────────────────────────────────────────────────────────
+    /* There is no GET-one-child endpoint in the Night 1 brief, so edit mode
+       reads the family and picks the child out of it. One request, and it
+       is a request the page is allowed to make. */
+    function loadForEdit() {
+      return C.api('/api/consumer/family', { token: ctx.token }).then(function (data) {
+        var kids = (data && (data.children || (data.family && data.family.children))) || [];
+        var kid = kids.filter(function (k) { return String(k.id) === String(childId); })[0];
+        if (!kid) {
+          C.setMsg(msgEl, 'We couldn’t find that child on your account.', 'error');
+          saveBtn.disabled = true;
+          return;
+        }
+        document.getElementById('head').textContent = 'Edit ' + (kid.first_name || 'child');
+        document.title = 'Edit child — MrBadmus';
+        saveBtn.textContent = 'Save changes';
+
+        document.getElementById('first_name').value = kid.first_name || '';
+        yearEl.value = kid.year_group == null ? '' : String(kid.year_group);
+        document.getElementById('exam_board').value = kid.exam_board || 'aqa';
+        syncTier();
+        if (!tierEl.disabled) { tierEl.value = kid.tier || ''; }
+        document.getElementById('mode').value = kid.mode || 'alongside_school';
+        document.getElementById('intensity').value = kid.intensity || 'steady';
+
+        /* The username is their identity and changing it silently breaks a
+           sign-in they have memorised, so it is read-only here. Renaming is
+           its own decision and its own screen. */
+        unameEl.value = kid.username || '';
+        unameEl.disabled = true;
+        stateEl.className = 'c-uname-state';
+        stateEl.textContent = 'Usernames can’t be changed here.';
+
+        pwEl.placeholder = 'Leave blank to keep their current password';
+      });
+    }
+
+    // ── save ─────────────────────────────────────────────────────────────
+    saveBtn.addEventListener('click', function () {
+      var body = {
+        first_name: document.getElementById('first_name').value.trim(),
+        year_group: yearEl.value ? Number(yearEl.value) : null,
+        exam_board: document.getElementById('exam_board').value,
+        // null, never '' — an empty string is a value the database would
+        // store, and "" is not a tier.
+        tier: tierEl.disabled ? null : (tierEl.value || null),
+        mode: document.getElementById('mode').value,
+        intensity: document.getElementById('intensity').value
+      };
+      var pw = pwEl.value;
+
+      if (!body.first_name) { return C.setMsg(msgEl, 'Please enter their first name.', 'error'); }
+      if (!body.year_group) { return C.setMsg(msgEl, 'Please choose a year group.', 'error'); }
+      if (tierApplies(yearEl.value) && !body.tier) {
+        return C.setMsg(msgEl, 'Please choose Foundation or Higher for Year ' + yearEl.value + '.', 'error');
+      }
+
+      var path, method;
+      if (childId) {
+        path = '/api/consumer/children/' + encodeURIComponent(childId);
+        method = 'PATCH';
+        if (pw) {
+          if (pw.length < 8) { return C.setMsg(msgEl, 'A password needs at least 8 characters.', 'error'); }
+          body.password = pw;
+        }
+      } else {
+        path = '/api/consumer/children';
+        method = 'POST';
+        body.username = unameEl.value.trim();
+        body.password = pw;
+        if (!body.username) { return C.setMsg(msgEl, 'Please choose a username for them.', 'error'); }
+        if (pw.length < 8) { return C.setMsg(msgEl, 'Please set a password of at least 8 characters.', 'error'); }
+      }
+
+      C.setBusy(saveBtn, true, 'Saving…');
+      C.setMsg(msgEl, '');
+      C.api(path, { method: method, token: ctx.token, body: body })
+        .then(function () { C.go('/consumer/overview.html'); })
+        .catch(function (e) {
+          C.setBusy(saveBtn, false);
+          C.setMsg(msgEl, e.message, 'error');
+          /* The race the header warns about: the check said free, the POST
+             says taken. Surface it against the field, where the parent is
+             looking, as well as at the top. */
+          if (/username/i.test(e.message)) {
+            stateEl.className = 'c-uname-state bad';
+            stateEl.textContent = e.message;
+          }
+        });
+    });
+
+    if (childId) { return loadForEdit(); }
+  }});
+})();
+</script>
+</body>
+</html>
