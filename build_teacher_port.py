@@ -536,10 +536,14 @@ def _balanced(src, start, opener, closer):
 # stopped matching, and not one of them because the handler had changed: she
 # added a Today screen above them and the neighbours moved.
 #
-# ⚑ WHAT REPLACES IT. `anchor`, in one of two forms:
+# ⚑ WHAT REPLACES IT. `anchor`, in one of these forms:
 #
 #     anchor=dict(key="goClass")                 a top-level handler
 #     anchor=dict(builder="cards", key="open")   a closure inside a `.map(`
+#     anchor=dict(method="renderVals",           a statement inside a method
+#                 key="const flagged")            ⊕ MRB-306
+#     anchor=dict(method="renderVals",           a property inside a property
+#                 key="klass.meta")               ⊕ MRB-306
 #
 # The builder form is the whole point: it says WHICH LIST the row belongs to,
 # which is the thing that actually distinguishes six identical closures, and
@@ -556,6 +560,21 @@ def _balanced(src, start, opener, closer):
 #
 # `frm` still works, unchanged, for any entry that has no `anchor` — this
 # mechanism was added incrementally and the two paths are allowed to coexist.
+#
+# ⊕ 1 Sep 2026 (MRB-306) — `LOGIC` TAKES ANCHORS TOO, and the same failure
+# mode is what put it there. `LOGIC` was 55 exactly-once source replacements
+# and NINE stopped matching on Design's v3. Five of the nine changed nothing
+# a ruling was about: `const swSel` was followed by one blank line instead of
+# two, `const flagged` lost a `.length`, `late: late,` became the `late,`
+# shorthand one line above the span's real target, `state = {` gained a key,
+# `meta` gained a subject. Three genuinely need the week rail rebuilt. One —
+# `longMeta` — was renamed, and is re-expressed onto the key that replaced it.
+#
+# An anchored `LOGIC` entry writes its anchor WHERE `frm` GOES: the first
+# element of the triple is either a string (verbatim source, the old path) or
+# a dict (an anchor). Nothing else about the entry changes, and the 46 whose
+# `frm` is genuinely self-identifying were LEFT ALONE — converting a ruling
+# that already works is risk with no reward.
 
 
 def _logic_lines(logic):
@@ -616,34 +635,87 @@ def _logic_lines(logic):
     return out
 
 
-def _nav_refusal(handler, anchor, what):
+def _anchor_refusal(head, name, anchor, what, tail):
     """The one refusal every anchor failure routes through.
 
-    Same shape as the `frm` refusal it replaces: name the handler, say what
-    was looked for, say what was found, and say where to fix it. A NAV rewire
-    that silently does not happen leaves a button that changes `s.screen` on
-    a page where `s.screen` is fixed — it draws perfectly and does nothing,
-    and no static check downstream can see that.
+    Same shape as the `frm` refusal it replaces: name the ruling, say what
+    was looked for, say what was found, and say where to fix it. The two
+    lists differ ONLY in the closing paragraph, because they fail
+    differently — see the two wrappers below.
     """
     return SystemExit(
-        "build_teacher_port.py: the navigation ruling for %r %s.\n"
+        "build_teacher_port.py: %s for %r %s.\n"
         "    anchor = %r\n"
-        "  Design has redrawn or renamed that handler. Re-anchor it in "
+        "  %s" % (head, name, what, anchor, tail))
+
+
+def _nav_refusal(handler, anchor, what):
+    """A NAV anchor that resolved to nothing, or to two things.
+
+    A NAV rewire that silently does not happen leaves a button that changes
+    `s.screen` on a page where `s.screen` is fixed — it draws perfectly and
+    does nothing, and no static check downstream can see that.
+    """
+    return _anchor_refusal(
+        "the navigation ruling", handler, anchor, what,
+        "Design has redrawn or renamed that handler. Re-anchor it in "
         "teacher_rulings.NAV — do NOT drop it, and do NOT widen the anchor "
         "until it matches something: a skipped rewire is a dead control that "
-        "every gate calls green." % (handler, what, anchor))
+        "every gate calls green.")
 
 
-def resolve_nav_anchor(logic, spec):
-    """(start, end) of the source span one NAV `anchor` names.
+def _logic_refusal(ruling, anchor, what):
+    """⊕ 1 Sep 2026 (MRB-306) — the same failure, for an anchored LOGIC entry.
 
-    `start` is the beginning of the handler's own line, at column 0, so the
-    caller can read Design's indentation off it. `end` is just past the last
-    character of the handler, excluding its newline.
+    Word for word the paragraph the `frm` path has always printed, because
+    the consequence is identical and the reader is the same person: a LOGIC
+    ruling that matches nothing ships a page in which Mide's correction is
+    simply absent, and every gate downstream calls that green.
+    """
+    return _anchor_refusal(
+        "an MRB-287 ruling", ruling, anchor, what,
+        "The ruling is Mide's and still stands. Design has redrawn that "
+        "span; re-anchor it in teacher_rulings.LOGIC rather than dropping "
+        "it, and do NOT hand-edit the built page — that is exactly how the "
+        "MRB-275 rulings were lost.\n"
+        "  ⚠️ SKIPPING IS NOT AVAILABLE. A ruling that silently matched "
+        "nothing is the same failure as the hand-edit it replaces: the "
+        "build goes green and the ruling is not in the page.")
 
-    The span is the anchor line PLUS whatever continuation lines the arrow
-    body needs. Bracket balance alone is NOT enough for that, and the class
-    card is the proof:
+
+# A key segment shaped like a JS identifier is a PROPERTY (`meta` → `meta:`);
+# anything else is a STATEMENT, matched as a literal line prefix (`const
+# flagged`). `_PATH` is the dotted form — a property inside a property.
+_IDENT = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
+_PATH = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*(\.[A-Za-z_$][A-Za-z0-9_$]*)+$")
+
+
+def resolve_anchor(logic, spec, refusal=_nav_refusal):
+    """(start, end) of the source span one `anchor` names.
+
+    `start` is the beginning of the anchored line, at column 0, so the caller
+    can read Design's indentation off it. `end` is just past the last
+    character of the span, excluding its newline.
+
+    ── SCOPES ───────────────────────────────────────────────────────────
+    `method="renderVals"`   the body of that method, closer excluded
+    `builder="cards"`       the `const cards = ….map(…)` declaration
+    both                    the builder, looked for only inside the method
+    neither                 all of Design's logic
+
+    ── KEYS ─────────────────────────────────────────────────────────────
+    `key="open"`            a PROPERTY: the line beginning `open:`
+    `key="klass.meta"`      `meta:` inside the `klass:` object, and nowhere
+                            else — the narrowing that lets one anchor pick
+                            `klass.meta` out of a `renderVals` that returns
+                            four different `meta:` lines
+    `key="const flagged"`   a STATEMENT: the line beginning with that text
+
+    The two shapes END differently, and that is the whole reason they are
+    distinguished. A property ends at the first line back at its starting
+    depth that is FINISHED AS A PROPERTY — it ends with a comma, or the line
+    after it closes the enclosing object. Bracket balance alone is not
+    enough for that, and the class card is the proof:
 
         open: () => c.n > 0                                     ← balanced
           ? this.setState({ screen: 'class', classId: c.id })   ← balanced
@@ -651,21 +723,35 @@ def resolve_nav_anchor(logic, spec):
 
     Every line closes what it opens; a depth-only rule would replace the
     first and leave a ternary with no consequent, which is a syntax error on
-    six pages. So the span ends at the first line that is BOTH back at the
-    starting depth AND finished as a property: it ends with a comma, or the
-    line after it closes the enclosing object.
+    six pages. A STATEMENT ends at the first line back at its starting depth
+    that ends with `;` — which is what carries `state = { … };` and any
+    other multi-line initialiser across its own closing brace.
+
+    ⚠️ EXACTLY ONE MATCH IS REQUIRED at every step, scopes included. That is
+    the safety property and not a convenience; never widen it, and never add
+    a first-match-wins path.
     """
-    handler = spec.get("_name", "?")
+    name = spec.get("_name", "?")
     anchor = spec["anchor"]
     key = anchor["key"]
     lines = _logic_lines(logic)
 
-    lo, hi = 0, len(lines)
+    def refuse(what):
+        return refusal(name, anchor, what)
+
+    # `decl` is the line that OPENED the current scope — a builder
+    # declaration or a container property. It is never itself the match.
+    # `scope` is how a refusal NAMES where it looked, innermost first.
+    lo, hi, decl, scope = 0, len(lines), None, []
+
+    if "method" in anchor:
+        lo, hi = _method_scope(lines, anchor["method"], refuse)
+        scope.append("`%s()`" % anchor["method"])
+
     if "builder" in anchor:
         builder = anchor["builder"]
-        decl = re.compile(r"^\s*const\s+%s\s*=" % re.escape(builder))
-        hits = [n for n, (_, _, text, _) in enumerate(lines)
-                if decl.match(text)]
+        decl_re = re.compile(r"^\s*const\s+%s\s*=" % re.escape(builder))
+        hits = [n for n in range(lo, hi) if decl_re.match(lines[n][2])]
         # ⚠️ `.map(` IS PART OF THE ANCHOR, not a sanity check. `const
         # chaseAll = [];` … `forEach(… push(…))` builds rows the same way and
         # would answer to a bare `const <name> =`; the ruling says a MAP
@@ -682,48 +768,59 @@ def resolve_nav_anchor(logic, spec):
         mapped = []
         for n in hits:
             head = []
-            for _, _, text, _ in lines[n:_builder_block_end(
-                    lines, n, handler, anchor)]:
+            for _, _, text, _ in lines[n:_builder_block_end(lines, n, refuse,
+                                                            builder)]:
                 head.append(text)
                 if ".map(" in text:
                     break
             if ".map(" in "\n".join(head):
                 mapped.append(n)
         if len(mapped) != 1:
-            raise _nav_refusal(
-                handler, anchor,
+            raise refuse(
                 "anchors on a `.map(` builder named %r, and Design's logic "
                 "declares %d of them, not one" % (builder, len(mapped)))
         n = mapped[0]
-        lo, hi = n, _builder_block_end(lines, n, handler, anchor)
+        lo, hi, decl = n, _builder_block_end(lines, n, refuse, builder), n
+        scope.append("`const %s`" % builder)
 
-    want = key + ":"
+    segs = key.split(".") if _PATH.match(key) else [key]
+    for seg in segs[:-1]:
+        n = _one_line(lines, lo, hi, seg + ":", decl, scope, refuse)
+        lo = n
+        hi = _prop_span_end(lines, n, seg + ":", refuse) + 1
+        decl = n
+        scope.append("`%s`" % seg)
+
+    last = segs[-1]
+    prop = bool(_IDENT.match(last))
+    want = last + ":" if prop else last
+    n = _one_line(lines, lo, hi, want, decl, scope, refuse)
+    end = (_prop_span_end(lines, n, want, refuse) if prop
+           else _stmt_span_end(lines, n, want, refuse))
+    return lines[n][0], lines[end][1]
+
+
+def resolve_nav_anchor(logic, spec):
+    """`resolve_anchor` with the NAV refusal. Kept as the NAV entry point."""
+    return resolve_anchor(logic, spec, _nav_refusal)
+
+
+def _scope_words(scope):
+    """How the refusal names the scope it searched, innermost first."""
+    if not scope:
+        return " in Design's logic"
+    return " inside " + " in ".join(reversed(scope))
+
+
+def _one_line(lines, lo, hi, want, decl, scope, refuse):
+    """The single line in [lo, hi) that begins `want`. Refuses on 0 or 2+."""
     found = [n for n in range(lo, hi)
-             if lines[n][2].lstrip().startswith(want)]
-    # the declaration line itself is the builder, never the handler
-    if "builder" in anchor:
-        found = [n for n in found if n != lo]
+             if n != decl and lines[n][2].lstrip().startswith(want)]
     if len(found) != 1:
-        raise _nav_refusal(
-            handler, anchor,
+        raise refuse(
             "anchors on a line beginning `%s`, and there are %d of them%s"
-            % (want, len(found),
-               " inside `const %s`" % anchor["builder"]
-               if "builder" in anchor else " in Design's logic"))
-
-    n = found[0]
-    start_depth = lines[n][3] - _line_delta(lines, n)
-    i = n
-    while i < len(lines):
-        text = lines[i][2].rstrip()
-        if lines[i][3] == start_depth:
-            nxt = lines[i + 1][2].lstrip() if i + 1 < len(lines) else ""
-            if text.endswith(",") or nxt[:1] in ("}", ")", "]"):
-                return lines[n][0], lines[i][1]
-        i += 1
-    raise _nav_refusal(
-        handler, anchor,
-        "anchors on a line beginning `%s` whose arrow body never closes" % want)
+            % (want, len(found), _scope_words(scope)))
+    return found[0]
 
 
 def _line_delta(lines, n):
@@ -732,7 +829,63 @@ def _line_delta(lines, n):
     return lines[n][3] - before
 
 
-def _builder_block_end(lines, n, handler, anchor):
+def _prop_span_end(lines, n, want, refuse):
+    """The LAST line index of the property that starts at line `n`."""
+    start_depth = lines[n][3] - _line_delta(lines, n)
+    for i in range(n, len(lines)):
+        text = lines[i][2].rstrip()
+        if lines[i][3] == start_depth:
+            nxt = lines[i + 1][2].lstrip() if i + 1 < len(lines) else ""
+            if text.endswith(",") or nxt[:1] in ("}", ")", "]"):
+                return i
+    raise refuse(
+        "anchors on a line beginning `%s` whose arrow body never closes"
+        % want)
+
+
+def _stmt_span_end(lines, n, want, refuse):
+    """The LAST line index of the statement that starts at line `n`.
+
+    Ends on the first line back at the statement's own starting depth that
+    terminates it with `;`. That is what carries a multi-line initialiser —
+    `state = {` opens a brace on its first line and closes it four lines
+    later on `};`, and a depth-only rule would hand back the opening line
+    alone and splice a `to` in on top of an orphaned object literal.
+    """
+    base = lines[n][3] - _line_delta(lines, n)
+    for i in range(n, len(lines)):
+        if lines[i][3] == base and lines[i][2].rstrip().endswith(";"):
+            return i
+    raise refuse(
+        "anchors on a statement beginning `%s` that never ends" % want)
+
+
+def _method_scope(lines, method, refuse):
+    """(lo, hi): the line range of `method`'s BODY, its closer excluded.
+
+    ⊕ 1 Sep 2026 (MRB-306). `builder=` says WHICH LIST a row belongs to;
+    `method=` says WHICH METHOD a statement belongs to, which is the scope a
+    plain statement needs — `const flagged` is not a property of anything
+    and has no builder above it, but it is unambiguously one line of
+    `renderVals`, and `renderVals` is a name Design has never renamed.
+    """
+    decl = re.compile(r"^  %s\s*\(" % re.escape(method))
+    hits = [n for n in range(len(lines)) if decl.match(lines[n][2])]
+    if len(hits) != 1:
+        raise refuse(
+            "anchors inside a method named %r, and Design's class declares "
+            "%d of them, not one" % (method, len(hits)))
+    n = hits[0]
+    base = lines[n][3] - _line_delta(lines, n)
+    if lines[n][3] == base:          # `klass() { return …; }` — one line
+        return n, n + 1
+    for i in range(n + 1, len(lines)):
+        if lines[i][3] == base:
+            return n + 1, i
+    raise refuse("anchors inside `%s()`, whose body never closes" % method)
+
+
+def _builder_block_end(lines, n, refuse, builder):
     """The line index just past `const <builder> = …;`.
 
     Ends on the first line that is back at the declaration's own starting
@@ -746,10 +899,8 @@ def _builder_block_end(lines, n, handler, anchor):
     for i in range(n, len(lines)):
         if lines[i][3] == base and lines[i][2].rstrip().endswith(";"):
             return i + 1
-    raise _nav_refusal(
-        handler, anchor,
-        "anchors inside `const %s`, whose declaration never ends"
-        % anchor["builder"])
+    raise refuse(
+        "anchors inside `const %s`, whose declaration never ends" % builder)
 
 
 def _reindent(text, indent):
@@ -933,7 +1084,21 @@ def seam_logic(tpl_logic):
         counts["nav"] += 1
 
     # ── 2. the guarded exactly-once source replacements ──────────────────
+    #
+    # ⊕ 1 Sep 2026 (MRB-306) — the first element is `frm` OR an `anchor`.
+    # A dict means the ruling names the node it corrects rather than
+    # photographing the source around it; see the block comment above
+    # `_logic_lines`. The `frm` branch below is unchanged and still carries
+    # the 46 entries whose span is self-identifying text.
     for frm, to, why in R.LOGIC:
+        if isinstance(frm, dict):
+            spec = dict(anchor=frm, _name=why.split(".")[0][:72])
+            start, end = resolve_anchor(logic, spec, _logic_refusal)
+            span = logic[start:end]
+            indent = span[:len(span) - len(span.lstrip(" \t"))]
+            logic = logic[:start] + _reindent(to, indent) + logic[end:]
+            counts["logic"] += 1
+            continue
         n = logic.count(frm)
         if n != 1:
             raise SystemExit(

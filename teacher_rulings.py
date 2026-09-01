@@ -1822,24 +1822,54 @@ LOGIC = (
     # templates are the DB enum now (`class_shoutouts_template_key_chk`) and
     # their ids are strings; `3` matches nothing, so Design's composer would
     # open with no template selected and no way to tell that from a bug.
-    ("""  state = {
-    screen: 'classes', classId: '8rsc1', studentId: '8rsc1-3', paperId: '8rsc1:p1', weekIdx: 0,
-    ks: 'All', sort: 'code', modal: null, toast: '',
-    swStep: 1, swTopic: 't1', swQ: 10, swDay: 'Wed', swRel: 'now', swClasses: ['8rsc1'],
-    boSel: [], boTpl: 3, note: '', search: '', importStep: 1, digestScope: 'all', recipient: '',
-    chartKind: 'submissions', chartScope: 'all', insFrom: 'classes'
-  };""",
+    # ⊕ RE-ANCHORED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306). The `frm` was a
+    # photograph of v2's seven lines and v3 redrew five of them — `screen`
+    # opens on 'today', `weekIdx` is gone, `ttStep`, `insFrom` and
+    # `digestFrom` are new. The ruling is not about any of that: it is about
+    # WHICH INITIALISER, and there is exactly one `state = {` in the class.
+    #
+    # ⚠️ THIS IS A MERGE AND NOT A REPLACEMENT, which is the whole care in
+    # it. Three kinds of key meet in this object and each is kept for its own
+    # reason:
+    #
+    #   · v3's own keys the port still needs — `ttStep` drives the timetable
+    #     wizard's three steps; `insFrom` and `digestFrom` are the "came
+    #     from" crumbs. Dropping a key Design's render reads is a silent
+    #     `undefined` on screen, never an error.
+    #   · the ported keys, all of them — MRB_SCREEN, the three MRB_DATA
+    #     reads, MRB_FIRST_TEMPLATE for `boTpl`, `digestScope`/`chartScope`
+    #     off the URL via MRB_Q, and `yearsOpen`.
+    #   · `weekIdx: 0`, RESTORED. v3 deleted it with the week rail; Mide
+    #     ruled the week bar back in on 1 Sep 2026, so the state key belongs
+    #     here even though the rail's own markup lands in a later unit. A
+    #     state key that arrives before its readers is inert; a reader that
+    #     arrives before its state key reads `undefined` and indexes an
+    #     array with it.
+    #
+    # The Set-work keys (`swStep`, `swTopic`, `swQ`, `swDay`, `swRel`,
+    # `swClasses`) stay dropped: Set work is not shipped, and #52 deletes the
+    # three locals that read them.
+    (dict(key="state = {"),
      """  state = {
     screen: 'MRB_SCREEN',
     classId: MRB_DATA('classId'), studentId: MRB_DATA('studentId'),
     paperIdx: MRB_DATA('paperIdx'), weekIdx: 0,
     ks: 'All', sort: 'code', modal: null, toast: '',
     boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', search: '',
-    importStep: 1, digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
+    importStep: 1, ttStep: 1,
+    digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
     chartKind: 'submissions', chartScope: MRB_Q('class') || 'all',
+    insFrom: 'today', digestFrom: 'today',
     yearsOpen: false
   };""",
-     "the state initialiser. See the block comment above."),
+     "the state initialiser. See the block comment above. "
+     "⊕ 1 Sep 2026 (MRB-306) — moved off a verbatim `frm` onto "
+     "`key=\"state = {\"`, because v3 redrew five of the seven lines the "
+     "`frm` had photographed without touching what the ruling is about. "
+     "Merged rather than replaced: v3's `ttStep`, `insFrom` and `digestFrom` "
+     "are kept, and `weekIdx: 0` is RESTORED under Mide's 1 Sep week-bar "
+     "ruling — the rail's markup follows in a later unit, and a state key "
+     "that arrives early is inert where a reader that arrives early is not."),
 
     # ══ the class list, the templates, the teacher ══════════════════════
     ("""  CLASSES = [
@@ -1931,11 +1961,20 @@ LOGIC = (
     # the year. Year group and key stage do NOT come back: they were v1's
     # drawing, not part of the ruling, and v2's KS filter tabs already answer
     # the key-stage question.
-    ("      meta: c.n ? c.n + ' students' : 'No students yet',",
-     "      meta: [c.n ? c.n + ' students' : 'No students yet', c.yearName]\n"
-     "        .filter(Boolean).join(' · '),",
+    # ⊕ RE-ANCHORED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306). v3 appends the
+    # subject: `(c.n ? … ) + ' · ' + c.subject`. That is Design's drawing and
+    # it stays; the academic year is Mide's E1 ruling and it stays too. The
+    # anchor names the card builder and the key, so the next time Design
+    # appends something to this line the ruling still finds it.
+    (dict(builder="cards", key="meta"),
+     "      meta: [c.n ? c.n + ' students' : 'No students yet',\n"
+     "        c.subject, c.yearName].filter(Boolean).join(' · '),",
      "the class card's meta line — v2's student count, plus the card's OWN "
-     "academic year (Mide's E1 ruling), not the dashboard's."),
+     "academic year (Mide's E1 ruling), not the dashboard's. "
+     "⊕ 1 Sep 2026 (MRB-306) — moved off `frm` onto "
+     "`builder=\"cards\", key=\"meta\"`, and v3's `c.subject` is folded into "
+     "the same `.filter(Boolean)` list rather than concatenated, so an "
+     "unnamed academic year drops out instead of printing a bare separator."),
 
     # ══ THE ROSTER ROW: /8, AND \"on time\" FOR AN UNKNOWN ══════════════
     #
@@ -2057,32 +2096,40 @@ LOGIC = (
     #
     # The matrix carries `stampShort[]`, which is `completed_at` or
     # `submitted_at` formatted — the real thing, blank where there is none.
-    ("""      const pct = sc == null ? null : Math.round((sc / 8) * 100);
-      const tone = open ? 'neutral' : (sc == null || late ? 'warn' : 'ok');
-      return {
-        marked: !open && sc != null,
-        missing: !open && sc == null,
-        late: late,
-        pct: open ? null : pct,
-        title: p.title,
-        due: p.due.replace('Due ', ''),
-        submitted: open ? (sc != null ? st.last : 'Not yet') : (sc == null ? '—' : (late ? p.lateShort : p.dueShort)),
-        score: open || sc == null ? '—' : sc + '/8 · ' + pct + '%',""",
+    # ⊕ RE-ANCHORED AND SPLIT FOR DESIGN'S v3, 1 Sep 2026 (MRB-306).
+    #
+    # ⚠️ THE LATENESS HALF OF THIS AREA IS NOT v3's, AND IT IS EASY TO READ IT
+    # THAT WAY. The built page carries `lateState`, a three-way tone and a
+    # "timing unknown" status, and every one of those is THIS PORT'S — rulings
+    # #41, #42, #43 and #45, which all still apply cleanly. Design's v3 file
+    # still reads `const late = !open && sc != null && stRow.late[i];` and
+    # still writes "On time" over an unknown. Nothing was fixed upstream.
+    #
+    # What v3 ACTUALLY changed here is one character class: v2 wrote
+    # `late: late,` and `pct: open ? null : pct,` on two lines, v3 writes the
+    # shorthand `late, pct: open ? null : pct,` on one. That is the entire
+    # reason a ten-line `frm` stopped matching, and it is the argument for
+    # anchors in a sentence — nine of those ten lines were dragged along only
+    # to reach `submitted:` and `score:` at the bottom.
+    #
+    # So the ruling is now THREE anchors on the three nodes it actually
+    # corrects. The other two are at the END of LOGIC rather than here,
+    # deliberately: entries are addressed by index in the week-rail unit that
+    # follows this one, and inserting two here would silently renumber #13
+    # and #36 out from under it. Search `MRB-306 — #11, parts 2 and 3`.
+    (dict(builder="stHistory", key="const pct"),
      """      const pct = stRow ? stRow.pct[i] : null;
-      const stampS = stRow ? stRow.stampShort[i] : null;
-      const tone = open ? 'neutral' : (sc == null || late ? 'warn' : 'ok');
-      return {
-        marked: !open && sc != null,
-        missing: !open && sc == null,
-        late: late,
-        pct: open ? null : pct,
-        title: p.title,
-        due: p.due.replace('Due ', ''),
-        submitted: open ? (sc != null ? st.last : 'Not yet') : (stampS || '—'),
-        score: open || sc == null || stRow.max[i] == null ? '—'
-          : sc + '/' + stRow.max[i] + (pct == null ? '' : ' · ' + pct + '%'),""",
+      const stampS = stRow ? stRow.stampShort[i] : null;""",
      "the student's assignment history. `/ 8` twice and a fabricated date; "
-     "see the block comment above."),
+     "see the block comment above. "
+     "⊕ 1 Sep 2026 (MRB-306) — SPLIT INTO THREE, and this entry is the "
+     "first: the score percentage off `stRow.pct[i]`, and `stampShort` "
+     "captured for the date. Moved off a ten-line `frm` onto "
+     "`builder=\"stHistory\", key=\"const pct\"`. v3 shortened `late: late,` "
+     "to the `late,` shorthand one line below, and that alone killed the "
+     "span; the `/ 8` and the fabricated date were never touched. The "
+     "`submitted` and `score` halves are two further anchored entries at the "
+     "end of LOGIC."),
 
     ("      const late = !open && sc != null && stRow.late[i];",
      "      const late = !open && sc != null && stRow.late[i] === true;",
@@ -2146,18 +2193,30 @@ LOGIC = (
      "their own figure."),
 
     # the two helpers those tiles now call, defined beside them
-    ("    const flagged = kRoster.filter(r => r.flag).length;",
+    #
+    # ⊕ RE-ANCHORED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306). This entry only
+    # ever PREPENDED two helpers; `const flagged` is where they go, not what
+    # they are about. v3 dropped `.length` from that line — `flagged` is an
+    # array now, `watch` takes `flagged.slice(0, 4)` and `kFlagged =
+    # flagged.length` is declared further down — so the line is REPRODUCED AS
+    # v3 WROTE IT. Restoring the `.length` would leave `flagged.slice` on a
+    # number, which is a TypeError at mount on every class page.
+    (dict(method="renderVals", key="const flagged"),
      "    const kAsked = (i) => kMx.colSub[i] + '/' + (kMx.colAsked[i] || 0);\n"
      "    const kOnTimePct = (i) => {\n"
      "      const known = kMx.colOnTime[i] + kMx.colLate[i];\n"
      "      return known ? Math.round((kMx.colOnTime[i] / known) * 100) + '%' "
      ": '—';\n"
      "    };\n"
-     "    const flagged = kRoster.filter(r => r.flag).length;",
+     "    const flagged = kRoster.filter(r => r.flag);",
      "`kAsked` is `submitted/asked` — the denominator MRB-38 locked. "
      "`kOnTimePct` divides by the population whose lateness is KNOWN rather "
      "than by everyone who submitted, which is the same correction "
-     "`markedPct` already carries in the seam."),
+     "`markedPct` already carries in the seam. "
+     "⊕ 1 Sep 2026 (MRB-306) — moved off `frm` onto "
+     "`method=\"renderVals\", key=\"const flagged\"`, and the anchor line is "
+     "now emitted in v3's shape (an array, no `.length`) because v3's own "
+     "`watch` and `kFlagged` both read it that way."),
 
     # ⊕ RE-ANCHORED FOR DESIGN'S v2, 26 Aug 2026. v1 drew `'Year ' + k.year +
     # ' · ' + k.ks + ' · 2026–27 · '` ahead of the counts; v2 draws the counts
@@ -2165,12 +2224,37 @@ LOGIC = (
     # class's OWN academic year is Mide's E1 ruling and stays, leading, so
     # 10h/Ph1 and 11h/Ph1 — the same 17 students a year apart — never share a
     # header. The singular fix ("1 assignment") survives the redraw.
-    ("        longMeta: k.n + ' students · ' + (kPapers.length ? "
-     "kPapers.length + ' assignments' : 'no assignments'),",
-     "        longMeta: [k.yearName,\n"
-     "          k.n + ' students',\n"
-     "          kPapers.length ? kPapers.length + (kPapers.length === 1 ? "
-     "' assignment' : ' assignments') : 'no assignments'\n"
+    # ⊕ RE-EXPRESSED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306) — AND THIS ONE IS
+    # A RE-EXPRESSION, NOT A RE-ANCHOR. There is no `longMeta` in v3 to point
+    # at: Design deleted the key outright and rebuilt the class header as
+    # `klass.meta` / `klass.statLine` / `klass.paperLine`. The assignment
+    # count moved to `paperLine` and is drawn correctly there, so the plural
+    # half of this ruling has been overtaken by Design and is not restated.
+    #
+    # What has NOT been overtaken is the E1 ruling the entry exists to serve:
+    # every class surface states its OWN academic year, off `k.yearName`, and
+    # `MRB_DATA('yearLabel')` — the WORKING year — is banned from this
+    # expression. v3's `meta` states the year nowhere, so a class opened out
+    # of 2025-26 is again indistinguishable from this year's, which is
+    # precisely the defect E1 was written about. The line is therefore
+    # re-expressed onto `klass.meta`: v3's own three parts, in v3's own
+    # order, with `k.yearName` LEADING (as it led in `longMeta` — the card
+    # meta trails it, the header leads with it, so a teacher checking WHICH
+    # 11h/Ph1 they are on reads the year first).
+    #
+    # `.filter(Boolean).join(' · ')` rather than concatenation, for the
+    # reason it always was: `academic_year_name` is null on a year nobody
+    # named and `year_group` is nullable, and a dropped part beats
+    # "Year null · undefined". With both present the rendered string is v3's,
+    # character for character, plus the year.
+    (dict(method="renderVals", key="klass.meta"),
+     "        meta: [k.yearName,\n"
+     "          k.n + (k.n === 1 ? ' student' : ' students'),\n"
+     "          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject,\n"
+     "          lessonToday\n"
+     "            ? 'Next lesson today · ' + lessonToday.p + ' · ' + "
+     "lessonToday.time + ' · ' + lessonToday.room\n"
+     "            : 'No lesson today'\n"
      "        ].filter(Boolean).join(' · '),",
      "the class header's long meta line. The year, and a plural that said "
      "\"1 assignments\".\n"
@@ -2181,7 +2265,16 @@ LOGIC = (
      "its own header. Fixed here rather than left for later because two "
      "statements of one class's year that can disagree is worse than the "
      "line of scope it costs — and the class page is exactly where a teacher "
-     "goes to check WHICH 11h/Ph1 they are looking at."),
+     "goes to check WHICH 11h/Ph1 they are looking at.\n"
+     "\n"
+     "        ⊕ RE-EXPRESSED, 1 Sep 2026 (MRB-306). v3 DELETED `longMeta` "
+     "and rebuilt the header as `klass.meta` + `statLine` + `paperLine`, so "
+     "there was nothing left to re-anchor. The assignment plural is now "
+     "Design's own job on `paperLine`; the academic year is still Mide's, "
+     "and it is stated on `klass.meta` — v3's parts, v3's order, "
+     "`k.yearName` leading, dropped rather than printed when the school has "
+     "not named the year. `k.year` is guarded for the same reason: "
+     "`year_group` is nullable and \"Year null\" is worse than silence."),
 
     # ══ THE DIGEST ══════════════════════════════════════════════════════
     ("          : (c.state === 'nowork' ? 'No work set for two weeks' : (fl ? "
@@ -2967,15 +3060,24 @@ LOGIC = (
      "named a class and said it was at 0% on time."),
 
     # ══ the Set-work sheet's leftovers ══════════════════════════════════
+    #
+    # ⊕ 1 Sep 2026 (MRB-306) — THE THREE STATEMENTS ARE UNCHANGED IN v3 AND
+    # THE `frm` STILL DIED, on two trailing blank lines that became one. Left
+    # on `frm` deliberately: three complete statements naming three locals is
+    # self-identifying text, not disambiguation padding, and converting a
+    # ruling that works is risk with no reward. What is trimmed is the blank
+    # line — Design's whitespace was never part of the ruling.
     ("""    const swSel = s.swClasses;
     const swStudents = this.CLASSES.filter(c => swSel.indexOf(c.id) > -1).reduce((a, c) => a + c.n, 0);
     const topic = this.TOPICS.filter(t => t.id === s.swTopic)[0] || this.TOPICS[0];
-
 """,
      "",
      "three locals only the Set-work keys read. `topic` reads `this.TOPICS`, "
      "which is deleted, so this is not tidying — left in place it throws at "
-     "mount on all seven pages."),
+     "mount on all seven pages. "
+     "⊕ 1 Sep 2026 (MRB-306) — the trailing blank line came out of `frm`; "
+     "v3 leaves one blank line here where v2 left two, and the statements "
+     "themselves never changed."),
 
     ("      sw1: s.swStep === 1, sw2: s.swStep === 2, sw3: s.swStep === 3,\n",
      "",
@@ -3014,6 +3116,38 @@ LOGIC = (
      "goes from every teacher page (Mide, 31 Aug 2026). Defined next to the "
      "handler node 11 has just stopped calling, so the pair reads as one "
      "decision. See `RETARGET_ON`."),
+
+    # ══ MRB-306 — #11, PARTS 2 AND 3 ════════════════════════════════════
+    #
+    # The other two nodes of the student's assignment-history ruling. They
+    # belong beside #11 and they are HERE, at the bottom, for one reason: the
+    # week-rail unit that follows this one names LOGIC entries by index, and
+    # inserting two entries in the middle would renumber every ruling after
+    # them without a word of warning. Appending renumbers nothing.
+    #
+    # Order is safe: both anchor inside `const stHistory`, which no earlier
+    # ruling removes, and neither touches a line another entry is looking for.
+    (dict(builder="stHistory", key="submitted"),
+     "        submitted: open ? (sc != null ? st.last : 'Not yet') "
+     ": (stampS || '—'),",
+     "the SUBMITTED column, and it is the worst line in Design's file. It "
+     "renders `p.dueShort` when the work was on time and `p.lateShort` when "
+     "it was late — the DEADLINE and the END OF THE WEEK. Neither is when "
+     "anybody submitted anything, and on a parents' evening it would be "
+     "quoted. `stampShort[]` is `completed_at` or `submitted_at` formatted, "
+     "blank where there is none. "
+     "⊕ 1 Sep 2026 (MRB-306) — split out of #11's ten-line `frm` onto its "
+     "own anchor; the ruling is unchanged."),
+
+    (dict(builder="stHistory", key="score"),
+     "        score: open || sc == null || stRow.max[i] == null ? '—'\n"
+     "          : sc + '/' + stRow.max[i] "
+     "+ (pct == null ? '' : ' · ' + pct + '%'),",
+     "the SCORE column's `/8`. Design's every paper is out of eight; a real "
+     "one is out of `max[]`, and a paper whose max is unknown says so rather "
+     "than dividing by a number nobody set. "
+     "⊕ 1 Sep 2026 (MRB-306) — split out of #11's ten-line `frm` onto its "
+     "own anchor; the ruling is unchanged."),
 )
 
 
