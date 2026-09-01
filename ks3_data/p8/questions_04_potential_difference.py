@@ -188,7 +188,11 @@ QUESTIONS = [
         "text": "Two lamps sit in parallel across a 6 V battery. What is the "
                 "p.d. across each one?",
         "options": [
-            {"text": "6 V across each", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "6 V across each, as each branch is straight "
+                     "across the battery", "correct": True},
             {"text": "3 V across each, because the battery shares its push "
                      "between them", "correct": False,
              "why": "Sharing is the SERIES rule. Each parallel branch is "
@@ -213,20 +217,25 @@ QUESTIONS = [
                 "loop, in the same way that the current is. What is wrong "
                 "with the sentence?",
         "options": [
-            {"text": "Only the second half — the current IS used up, but the "
-                     "voltage is not", "correct": False,
-             "why": "The current is not used up either. Both halves of the "
+            {"text": "Only the second half — the current IS used up, "
+                     "because each component in the loop takes a share of "
+                     "it",
+             "correct": False,
+             "why": "The current is not used up either: an ammeter reads the "
+                    "same before a lamp and after it. Both halves of the "
                     "sentence are wrong, for different reasons."},
             {"text": "Both halves. Nothing flows except charge, and the "
                      "charge all comes back; what is handed over is energy",
              "correct": True},
-            {"text": "Nothing — it is a fair way to describe what happens",
+            {"text": "Nothing — it is a fair way to describe what happens "
+                     "all the way round the loop",
              "correct": False,
              "why": "It puts two different quantities in one wrong picture. "
                     "A p.d. is a difference between two places and does not "
                     "travel at all."},
-            {"text": "Only the first half — voltage IS used up, but the "
-                     "current is not", "correct": False,
+            {"text": "Only the first half — the voltage IS used up, because "
+                     "each component in the loop takes a share of it",
+             "correct": False,
              "why": "The shares do add to the battery's value, which is why "
                     "it sounds right. But a difference between two points is "
                     "not a substance being spent."},

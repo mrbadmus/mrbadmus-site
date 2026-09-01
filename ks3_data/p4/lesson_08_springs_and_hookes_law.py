@@ -88,8 +88,7 @@ LESSON = {
 
     "requires": ["moments"],
     "assumes": [],
-    "references": ["balanced-and-unbalanced", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["balanced-and-unbalanced", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "A spring turns a force into a length you can read "
@@ -189,6 +188,10 @@ LESSON = {
                   "step": 1, "start": 2},
          "record_label": "Record this reading",
          "clear_label": "Clear the readings",
+         # ⊕ P4-03 · a way back off the ruined spring. Without this the
+         # bench becomes a dead end the moment a student takes it past 9 N,
+         # because the permanent set is now carried and nothing undoes it.
+         "new_spring_label": "Fit a new spring",
          "x_label": "Load in newtons",
          "y_label": "Extension in millimetres",
          "gate": {
@@ -225,13 +228,79 @@ LESSON = {
                            "32 mm instead of 20 mm. The spring will still "
                            "shorten when you unload it, but not quite all "
                            "the way.",
-             "deformed": "Above 9 N this spring is permanently deformed. It "
-                         "is at {ext} mm now, and taking the load off will "
-                         "not bring it back to where it started — the "
-                         "coils have been pulled apart for good. A spring "
-                         "balance treated like this reads wrongly at every "
-                         "load afterwards.",
+             # ⊕ MRB-297 · 1 Sep 2026 — THE THRESHOLD IN THE FIRST SENTENCE
+             # WAS TWO NEWTONS OUT, AND THIS RUN'S OWN NEW NOTE CONTRADICTED
+             # IT OUT LOUD. It read "Above 9 N this spring is permanently
+             # deformed." `permSet()` in `shared/ks3.js` is `ext(maxSeen) −
+             # maxSeen × PER`, which goes non-zero the moment `maxSeen`
+             # passes LIMIT — and LIMIT is 6. SPOIL is the 9, and all it
+             # decides is which LABEL the readout prints. Driven to 7 N and
+             # back to 0 the bench holds a permanent set of 12 mm and the
+             # new `zero_set` note announces "still 12 mm longer than it
+             # began … pulled out of it for good", two newtons below the
+             # threshold this sentence had just given. `past_limit` had it
+             # right all along — "will still shorten when you unload it, but
+             # not quite all the way". 9 N is where the damage turns severe,
+             # not where it starts. The branch fires only at L = 10, because
+             # the `load` slider is min 0 / max 10 / step 1 and the key is
+             # `L <= SPOIL ? "past_limit" : "deformed"`, so `{load}` here is
+             # always 10 and is safe to print. `{load}` and `{ext}` are both
+             # in the payload at `shared/ks3.js`.
+             "deformed": "At {load} N this spring is badly deformed. It is "
+                         "at {ext} mm now, and taking the load off will not "
+                         "bring it back to where it started. Some stretch "
+                         "has been left behind ever since 6 N, the limit of "
+                         "proportionality; by here the coils have been "
+                         "pulled apart for good. A spring balance treated "
+                         "like this reads wrongly at every load afterwards.",
+             # ⊕ P4-03 · the two states that used to deny everything the
+             # `past_limit` and `deformed` notes had just promised. The
+             # bench now carries the stretch that did not come back, so
+             # these are the notes for the readings on the way down.
+             "zero_set": "No load — and the spring is still {set} mm longer "
+                         "than it began. That much has been pulled out of "
+                         "it for good. It will read high at every load from "
+                         "now on, so fit a new spring before taking any "
+                         "more readings.",
+             # ⊕ MRB-297 · 1 Sep 2026 — {over} IS NOT "THE STRETCH THAT DID
+             # NOT COME BACK", AND `shared/ks3.js` SAYS SO IN ITS OWN
+             # COMMENT. `OVER = E − ext(L)` is how far THIS spring reads
+             # above a fresh one AT THIS LOAD, and the JS notes it is "not
+             # the same as the permanent set once the load is itself past
+             # the limit, because the fresh spring is on its steep part
+             # there too". Drag to 10 N and slide back to 7 N: the note
+             # printed 36 mm as the stretch that did not come back, where
+             # the permanent set is 48 mm. `{set}` is the token that
+             # carries the permanent set — it is in the payload as
+             # `set: SET`, and the sibling `zero_set` note already uses it.
+             # Both numbers now say the thing each one actually is.
+             "under_set": "{load} N gives {ext} mm. A spring that had never "
+                          "been overloaded would read {fresh} mm here, so "
+                          "this one is {over} mm high at this load. Take "
+                          "the load right off and {set} mm of stretch is "
+                          "still there — that is what did not come back, "
+                          "and no reading below {maxseen} N can be trusted "
+                          "again.",
          },
+         # ⊕ P4-02 · the two states where the five lines below the bench
+         # must NOT be offered. Scaling a ratio up is only legal on the
+         # straight line, and the panel used to do it anywhere — printing
+         # its own caveat on the Formula line and then ignoring it on the
+         # next three. These are the refusals, in the same shape the sledge
+         # bench already uses at zero pull.
+         "attempt_past_limit": "This reading is at {load} N, past this "
+                               "spring's limit of proportionality of "
+                               "{limit} N. Up here extension ÷ load is not "
+                               "the same for every reading, so there is no "
+                               "ratio to scale up and no prediction to make "
+                               "from it. Set the bench to {limit} N or less "
+                               "and the five lines come back.",
+         "attempt_spoiled": "This spring has been stretched past its limit "
+                            "and has not come all the way back, so it is "
+                            "reading {over} mm high and extension ÷ load is "
+                            "no longer the same for every reading. Fit a "
+                            "new spring, take a reading on the straight "
+                            "line, and the five lines come back.",
          "readouts": [
              {"id": "load", "label": "Load"},
              {"id": "ext", "label": "Extension"},
@@ -392,6 +461,11 @@ LESSON = {
                       "held.",
               "blocked_lead": "Put a load on the spring first — a zero "
                               "reading has nothing to scale up.",
+              # ⊕ MRB-297 · 1 Sep 2026 — see the note on the same key in
+              # `lesson_02_drawing_and_adding_forces.py`. This panel refuses
+              # in two states, zero load and past the limit, and one line
+              # covers both: neither gives a reading to scale up.
+              "blocked_progress": "Waiting on a reading to scale up",
               "steps": [
                   {"letter": "C", "label": "Convert",
                    "placeholder": "anything to convert?",

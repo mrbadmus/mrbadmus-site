@@ -121,12 +121,18 @@ def r_calorimeter(a, act_id):
     sample a step at a time, and a table that records what each run
     measured — deliberately well below the label.
 
-    ⚖️ **THE CAPTURE FRACTIONS ARE THE LESSON AND THEY ARE HERS,
-    UNCHANGED.** 0.30 to 0.46, so the bench reads 30–46% of the packet
-    figure. Rung 3's fifth criterion — that repeating a measurement does
-    nothing about a systematic leak — can only be answered by a student who
-    has watched their own value come out low. The renderer refuses a capture
-    fraction of 1.0 for that reason.
+    ⚖️ **THE CAPTURE FRACTIONS ARE THE LESSON.** 0.30 to 0.42, so the bench
+    reads 30–42% of the packet figure. Rung 3's fifth criterion — that
+    repeating a measurement does nothing about a systematic leak — can
+    only be answered by a student who has watched their own value come out
+    low. The renderer refuses a capture fraction of 1.0 for that reason.
+
+    ⊕ MRB-297 · 1 Sep 2026 — this said "AND THEY ARE HERS, UNCHANGED. 0.30
+    to 0.46, so the bench reads 30–46%". Three of the four are still hers
+    and unchanged; the 0.46 was the peanut's, and the peanut was ruled out
+    of the practical on 30 Aug 2026. The cheese puff that replaced it
+    carries 0.38, so the set is 0.30, 0.34, 0.38, 0.42 and the range closes
+    at 0.42. See D-P2-02.
 
     ⚖️ **THE MEASURED PER-GRAM VALUE IS COMPUTED, NEVER AUTHORED.**
     `measured = (rise × water × shc / 1000) ÷ consumed`, which reduces to
@@ -286,22 +292,32 @@ def r_calorimeter(a, act_id):
 # ═══ p2-02 · #s-bench · the power bench ══════════════════════════════════
 
 def r_power_bench(a, act_id):
-    """⊕ p2-02 `#s-bench` — race a 2000 W kettle against a 15 W charger.
+    """⊕ p2-02 `#s-bench` — race a 2000 W kettle against a 15 W router.
 
     Design's bench. Two appliances side by side; a TALL bar for power, which
     never moves, and a FILLING bar for the running total, which does. The
     whole lesson is in the fact that the short bar wins.
 
+    ⊕ MRB-297 · 1 Sep 2026 — THE APPLIANCE IS A ROUTER. This docstring
+    said "charger" in four places, and is corrected in place rather than
+    marked line by line because the word is the NAME of a thing the bench
+    draws, not a claim about it. The ruling and its reasoning are P2-09,
+    written up in `ks3_data/p2/lesson_02_power_ratings_in_watts.py`: a
+    charger does not draw its rating for eight hours, so the page credited
+    the wrong answer for the appliance it named. A router does, and not one
+    number moved in the swap. The old name is kept in this sentence so the
+    change is still findable.
+
     ⚖️ **THE CROSSOVER IS COMPUTED, NEVER AUTHORED.** It is the moment the
-    charger's running total passes the kettle's finished total, i.e.
-    `kettle_watts x kettle_runs_for / charger_watts` = 2000 x 180 / 15 =
+    router's running total passes the kettle's finished total, i.e.
+    `kettle_watts x kettle_runs_for / router_watts` = 2000 x 180 / 15 =
     24 000 s = 6 h 40 min. Authoring "6.67 h" as a constant would let a
     later edit to a wattage leave the marker pointing at a time that is no
     longer the crossover, and the page would go on claiming it was.
 
     ⚖️ **A POWER BAR IS A HEIGHT AND AN ENERGY BAR IS AN AREA.** They are
     drawn as two different bars on purpose — the kettle's power bar is
-    133 times the charger's and its energy bar ends up SHORTER. Drawing both
+    133 times the router's and its energy bar ends up SHORTER. Drawing both
     quantities in one bar would hide exactly the thing the lesson is for.
 
     HOOKS: `data-pbench` (wrapper, `data-cross`, `data-maxt`) ·

@@ -118,12 +118,14 @@ LESSON = {
         "commit": "There is no lens, no glass and nothing electrical in the "
                   "box. Why is the picture inverted?",
         "options": [
-            "The hole turns the light round as it squeezes through",
+            "The hole turns the light round as it squeezes through, the way "
+            "a narrow gap twists a jet of water",
             "Light from the top of the window is heading downwards as it "
             "reaches the hole, and keeps going downwards",
-            "The greaseproof paper shows the picture from behind, so it looks "
-            "reversed both ways at once",
-            "The light bounces off the inside of the box before it lands",
+            "The greaseproof paper is being looked at from behind, so the "
+            "picture on it seems reversed both ways at once",
+            "The light bounces off the inside of the box before it lands, "
+            "and each bounce flips the picture over",
         ],
         "answer": 1,
         "reveal": "Straight lines, and nothing else. To get through the hole "
@@ -509,6 +511,13 @@ LESSON = {
     "ks4_becomes": "Ray diagrams for converging and diverging lenses, focal "
                    "length and magnification, real and virtual images, and "
                    "correcting short and long sight.",
+
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Never look directly at the Sun — not with your eyes, not "
+                   "through a lens, not through a pinhole camera. A lens "
+                   "gathers sunlight to a point hot enough to scorch paper, "
+                   "and it will do the same to the back of your eye. The "
+                   "damage is painless while it happens and it does not heal.",
 
     "convention_note": "The bench is a teaching model. The two arrow heights "
                        "are drawn to one scale, so the ratio between the "

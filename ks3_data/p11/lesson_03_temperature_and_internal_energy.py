@@ -105,14 +105,23 @@ LESSON = {
                            "before a temperature is put on it."}],
     "ks4_links": [],
 
+    # ⊕ MRB-297 · 1 Sep 2026. Both fields said a bath at 40 °C "can injure
+    # a small child". That is wrong, and it contradicts the comment on the
+    # hook nineteen lines below, which this run wrote: a bath is RUN at
+    # 37-40 °C and scalding needs about 50 °C. It was also new safety
+    # wording, which this run was not authoring. The contrast the lesson
+    # needs is spark-at-1000 against bath-at-40, and it does not need a
+    # hazard. Both now say the bath already feels properly hot.
     "meta_description": "A spark at a thousand degrees bounces off your arm. "
-                        "A bath at forty would scald you. Both facts are "
-                        "about energy, not about temperature alone.",
+                        "A bath at forty, barely above body temperature, "
+                        "already feels properly hot. Both facts are about "
+                        "energy, not about temperature alone.",
 
     "big_question": "A spark from a grinder is at a thousand degrees and it "
-                    "bounces off your arm without a mark. A bath at forty "
-                    "would scald you. Both facts are about energy, and "
-                    "neither is about temperature alone.",
+                    "bounces off your arm without a mark. A bath at forty, "
+                    "barely more than body temperature, already feels "
+                    "properly hot. Both facts are about energy, and neither "
+                    "is about temperature alone.",
 
     "rail": [
         {"anchor": "s-hook",   "short": "HOOK",
@@ -130,10 +139,25 @@ LESSON = {
     "phenomenon": {
         "kind": "narrative",
         "title": "A spark at 1000 °C and a bath at 40 °C.",
+        # ⚖️ P11-13. This read "A bath run too hot at 40 °C will take the
+        # skin off you". A bath is RUN at 37–40 °C; scalding needs about
+        # 50 °C and up, which is why water is stored at 60 °C and
+        # thermostatic mixers exist. Every child in the room has had a bath
+        # at about this temperature, so the class contradicts it out loud —
+        # at the opening sentence of the page that most needs to be
+        # believed. P1's `heating-and-thermal-equilibrium` already runs this
+        # hook honestly, and this now matches it. The comparison does not
+        # need the exaggeration: 40 °C really does hold ~10⁸ times a
+        # spark's internal energy.
+        # ⊕ MRB-297 · 1 Sep 2026. The clause read "will make you flinch, and
+        # it can genuinely injure a small child" — put there while the
+        # older "take the skin off you" was being fixed, and just as untrue.
+        # It also contradicted the comment directly above it. It now says
+        # what a 40 °C bath really is: hot to get into, and nothing worse.
         "prompt": "A grinding wheel throws a shower of white-hot sparks "
                   "against your forearm and you feel a faint tick, nothing "
-                  "more. A bath run too hot at 40 °C will take the skin off "
-                  "you.",
+                  "more. A bath at 40 °C, barely more than body "
+                  "temperature, already feels properly hot.",
         "commit": "Which one holds more energy?",
         "options": [
             "The spark, because it is far hotter",
@@ -151,8 +175,10 @@ LESSON = {
                   "and a bath has "
                   "an enormous number of particles while a spark has almost "
                   "none. That is why the spark bounces off your arm and does "
-                  "nothing, and the bath would scald you at a quarter of its "
-                  "temperature.",
+                  "nothing, while the bath, far cooler on the thermometer, "
+                  # ⊕ MRB-297 · 1 Sep 2026. Ended "can genuinely injure a
+                  # small child"; see the note on the prompt above.
+                  "holds enough to keep a whole body warm for an hour.",
     },
 
     "misconceptions": [

@@ -221,7 +221,10 @@ QUESTIONS = [
                 "12 000 N. It is at rest. How much spare pull does the cable "
                 "have?",
         "options": [
-            {"text": "3 000 N", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "3 000 N — 12 000 minus 9 000", "correct": True},
             {"text": "11 100 N", "correct": False,
              "why": "That is 12 000 − 900, subtracting the MASS from a "
                     "force. The weight is 900 × 10 = 9 000 N."},
@@ -243,18 +246,21 @@ QUESTIONS = [
                 "explains what happened in terms of forces?",
         "options": [
             {"text": "The load's weight suddenly increased past what the "
-                     "rope could hold.", "correct": False,
+                     "rope could hold, so the rope gave way.",
+             "correct": False,
              "why": "The weight never changed. What ran out was the rope's "
                     "ability to match it."},
             {"text": "The rope stopped being able to supply the force "
                      "needed, so the forces stopped being balanced.",
              "correct": True},
             {"text": "There were no forces on the rope until the moment it "
-                     "snapped.", "correct": False,
+                     "snapped, when they all arrived at once.",
+             "correct": False,
              "why": "It was holding the whole weight the entire time. That "
                     "is what eventually broke it."},
             {"text": "The rope's pull and the weight added together until "
-                     "they were too much.", "correct": False,
+                     "the total was more than the rope could bear.",
+             "correct": False,
              "why": "They act in opposite directions, so they subtract. "
                     "Nothing accumulated."},
         ],

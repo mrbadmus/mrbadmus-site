@@ -105,12 +105,32 @@ LESSON = {
                   "swings it is hanging straight down, motionless.",
         "commit": "Commit. Energy is supposed to be conserved. What "
                   "happened?",
+        # ⊕ MRB-297, 31 Aug 2026 — THE DISTRACTORS WERE LENGTHENED. The
+        # hook's `answer` index now exists, so `verify_answer_lengths` can
+        # see this set for the first time, and it read 100%: at 46 / 62 / 40
+        # / 53 characters the correct option was the visibly longest of the
+        # four, so the hook could be answered without reading any physics.
+        # THE CORRECT OPTION IS UNCHANGED, byte for byte — the reasoning in
+        # it is the teaching. The three distractors were re-authored to its
+        # length and shape; each is still a wrong account a real student
+        # gives. The order and the answer index are untouched.
         "options": [
-            "The energy was gradually destroyed by friction",
+            "The energy was gradually destroyed by friction until none "
+            "was left",
             "It moved into the air and the pivot as a tiny temperature rise",
-            "The pendulum used up its energy swinging",
-            "Conservation of energy only works for perfect systems",
+            "The pendulum used up its energy swinging, like a torch battery",
+            "Conservation of energy only works for perfect frictionless "
+            "systems",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 1,
         "reveal": "Nothing happened to the total. Every joule that left the "
                   "swinging is now in the air of the room and the pivot of "
                   "the pendulum, as a rise in temperature far too small to "
@@ -203,7 +223,17 @@ LESSON = {
              "stopped":  "Stopped — and the bar still reaches the top line. "
                          "Every joule that was in the swinging is now in "
                          "the thermal store of the air and the pivot. The "
-                         "pendulum ran down; the total did not.",
+                         "pendulum ran down; the total did not. Nothing "
+                         "here can set it swinging again on its own — to "
+                         "go again, pull it back and release.",
+             # ⚖️ SCIENCE · P1-9. The reset puts the bar back to a full
+             # 120 J of gravitational, which is the one moment on this
+             # bench that could be read as the room handing its energy
+             # back. It is not, and this note is where that is said.
+             "fresh":    "Fresh run — pulled back to the top, and the count "
+                         "starts at 120 J again. The room keeps the energy "
+                         "from the last run; none of it has come back. You "
+                         "put in a new 120 J by lifting the bob.",
              "no_friction": "Friction off. The swing never dies down and "
                             "nothing enters the thermal store, so "
                             "gravitational and kinetic simply trade back "

@@ -91,16 +91,26 @@ LESSON = {
     "typical_year": 8,
     "typical_minutes": 60,
 
-    # ⚠️ HER OWN ENDMATTER. "Before this lesson" is p8-07 and "Connects to"
-    # is p9-03, p8-06 and p8-01; "Next in this unit" is emitted from the unit
-    # order and is not authored here. P8 is not this lane's to author, and it
-    # does not need to be: the registry carries every slot in `structure.py`,
-    # authored or not, and each one builds a page.
+    # ⚠️ HER OWN ENDMATTER, WITH ONE EDGE RULED AWAY FROM IT. "Before this
+    # lesson" was p8-07 and "Connects to" is p9-03, p8-06 and p8-01; "Next in
+    # this unit" is emitted from the unit order and is not authored here. P8
+    # is not this lane's to author, and it does not need to be: the registry
+    # carries every slot in `structure.py`, authored or not, and each one
+    # builds a page.
+    #
+    # ── ⚖️ RULED 30 Aug 2026 · THE PREREQUISITE IS p8-06, NOT p8-07 ────
+    #
+    # `requires` is a HARD edge (§4.9): you cannot understand this lesson
+    # without that one. Building and measuring a circuit is not that lesson —
+    # nothing here is a circuit. What a student meeting static charge cannot
+    # do without is the conductor/insulator split, which is why the rubbing
+    # works on a plastic rod and dies on a metal one. It sat below as a mere
+    # see-also. The edge swaps up; the duplicate see-also goes, because one
+    # lesson is not both a prerequisite and a cross-reference.
     "requires": [{"unit": "P8",
-                  "lesson": "building-and-measuring-a-circuit"}],
+                  "lesson": "conductors-and-insulators"}],
     "assumes": [],
     "references": ["electric-fields",
-                   {"unit": "P8", "lesson": "conductors-and-insulators"},
                    {"unit": "P8", "lesson": "current-and-circuits"}],
     "ks4_links": [],
 
@@ -141,10 +151,12 @@ LESSON = {
         "options": [
             "Positively charged, by exactly the same amount as the rod is "
             "negative",
-            "Also negatively charged, because both were rubbed",
-            "Still neutral, because only the rod was being charged",
-            "Positively charged, but by a smaller amount, because some "
-            "charge is lost in the rubbing",
+            "Also negatively charged, because rubbing puts the same charge on "
+            "both",
+            "Still neutral, because it was the rod being charged and not the "
+            "cloth",
+            "Positively charged, but by less, because some charge is lost in "
+            "rubbing",
         ],
         "answer": 0,
         "reveal": "Positive, by exactly as much. Every electron the rod "
@@ -253,15 +265,23 @@ LESSON = {
          },
          "rubs": {"label": "Strokes", "min": 1, "max": 20, "step": 1,
                   "start": 8, "value": "8 strokes"},
-         # ⚠️ HER ORDER, TOP TO BOTTOM, AND IT IS THE SAME SEVEN THE FIGURE
-         # BELOW LISTS. The rank IS the physics: the one higher up loses
-         # electrons to the one lower down.
+         # ⚠️ THE SAME SEVEN THE FIGURE BELOW LISTS, IN THE SAME ORDER. The
+         # rank IS the physics: the one higher up loses electrons to the one
+         # lower down.
+         # ⊕ RE-RANKED 31 Aug 2026 (P9-1). Design drew acetate at 5, below
+         # wool at 3, which made an acetate strip rubbed with a woollen
+         # duster come out NEGATIVE. Cellulose acetate charges POSITIVELY
+         # against wool — that is why acetate and polythene are the standard
+         # school pair for showing the two signs from one cloth. Acetate
+         # moves to 3, wool to 4, cotton to 5. Polythene and PVC do not move,
+         # so polythene + duster stays negative and glass + wool stays glass
+         # positive.
          "materials": [
              {"id": "hair",      "label": "Hair",      "name": "HUMAN HAIR"},
              {"id": "glass",     "label": "Glass",     "name": "GLASS ROD"},
+             {"id": "acetate",   "label": "Acetate",   "name": "ACETATE STRIP"},
              {"id": "wool",      "label": "Wool",      "name": "WOOL DUSTER"},
              {"id": "cotton",    "label": "Cotton",    "name": "COTTON CLOTH"},
-             {"id": "acetate",   "label": "Acetate",   "name": "ACETATE STRIP"},
              {"id": "polythene", "label": "Polythene", "name": "POLYTHENE ROD"},
              {"id": "pvc",       "label": "PVC",       "name": "PVC PIPE"},
          ],
@@ -338,18 +358,25 @@ LESSON = {
              "top_label": "Loses electrons",
              "bottom_label": "Gains electrons",
              # ⚖️ `tone` IS DESIGN'S OWN THREE-WAY BADGE PAINT, and it is a
-             # channel: the top three in the accent tint, the middling one in
-             # the band, the bottom three in the blue tint, so the split the
-             # list is about is visible before a word is read. The two rows
-             # the tone makes a claim about carry it in words too.
+             # channel: the losing rows in the accent tint, the middling one
+             # in the band, the gaining rows in the blue tint, so the split
+             # the list is about is visible before a word is read. The two
+             # rows the tone makes a claim about carry it in words too.
+             # ⊕ RE-RANKED 31 Aug 2026 (P9-1) — see the note on `materials`
+             # above; the two lists must stay in step. The badge split goes
+             # with it, from Design's 3/1/3 to 4 loses / 1 middle / 2 gains:
+             # wool badged as a gainer would be wrong, and wool is the duster
+             # in this lesson's own headline demonstration. The `middling`
+             # tell moves with cotton, which is where *Going further* already
+             # puts it. Design gets a note for the band paint.
              "rows": [
                  {"num": "1", "name": "Human hair", "tone": "loses",
                   "tell": "most likely to end up positive"},
                  {"num": "2", "name": "Glass rod", "tone": "loses"},
-                 {"num": "3", "name": "Wool duster", "tone": "loses"},
-                 {"num": "4", "name": "Cotton cloth", "tone": "middle",
+                 {"num": "3", "name": "Acetate strip", "tone": "loses"},
+                 {"num": "4", "name": "Wool duster", "tone": "loses"},
+                 {"num": "5", "name": "Cotton cloth", "tone": "middle",
                   "tell": "middling — poor at either job"},
-                 {"num": "5", "name": "Acetate strip", "tone": "gains"},
                  {"num": "6", "name": "Polythene rod", "tone": "gains"},
                  {"num": "7", "name": "PVC pipe", "tone": "gains",
                   "tell": "most likely to end up negative"},

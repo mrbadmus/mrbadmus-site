@@ -362,18 +362,18 @@ QUESTIONS = [
         "text": "Two objects are left touching for a long time. What finally "
                 "stops the transfer between them?",
         "options": [
-            {"text": "The hotter one runs out of the energy it had to give "
-                     "away to the other",
+            {"text": "The hotter one runs out of the energy it had to "
+                     "give away to the colder one",
              "correct": False,
              "why": "It never runs out. Both objects still hold plenty when "
                     "the transfer stops."},
-            {"text": "The colder one becomes completely full and can accept "
-                     "no more energy",
+            {"text": "The colder one becomes completely full and can "
+                     "accept no more energy at all",
              "correct": False,
              "why": "There is no upper limit to fill. A store is not a "
                     "container with a brim."},
-            {"text": "The surrounding air removes the difference between the "
-                     "two of them",
+            {"text": "The surrounding air removes the difference in "
+                     "temperature between the two",
              "correct": False,
              "why": "The air affects both, but the transfer between them "
                     "stops for a reason of its own."},

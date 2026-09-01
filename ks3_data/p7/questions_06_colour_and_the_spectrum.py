@@ -110,16 +110,17 @@ QUESTIONS = [
             {"text": "Because refraction depends slightly on frequency, so "
                      "the higher frequencies are bent a little further",
              "correct": True},
-            {"text": "Because the glass adds a colour to each part of the "
-                     "beam", "correct": False,
+            {"text": "Because the glass adds a colour of its own to each "
+                     "part of the beam as it goes through", "correct": False,
              "why": "Nothing is added. Send red light in on its own and red "
                     "comes out."},
-            {"text": "Because the beam is split by the sharp edge of the "
-                     "prism", "correct": False,
+            {"text": "Because the beam is split into parts by the two sharp "
+                     "edges of the prism", "correct": False,
              "why": "The whole beam fans out, not just its edges, and it "
                     "happens in the body of the glass."},
-            {"text": "Because each colour travels at a different speed in "
-                     "the air on the far side", "correct": False,
+            {"text": "Because each colour travels at a different speed "
+                     "through the air on the far side, so they spread "
+                     "apart", "correct": False,
              "why": "Air treats all the visible colours very nearly the "
                     "same. The separation happens in the glass."},
         ],
@@ -174,16 +175,16 @@ QUESTIONS = [
         "band": "standard",
         "text": "Which statement about the visible spectrum is right?",
         "options": [
-            {"text": "It has exactly seven colours with boundaries between "
-                     "them", "correct": False,
+            {"text": "It has exactly seven separate colours, with a sharp "
+                     "boundary between each pair", "correct": False,
              "why": "Seven is a historical count. There are no boundaries "
                     "anywhere in it."},
-            {"text": "It is a set of six separate kinds of light",
-             "correct": False,
+            {"text": "It is a set of six separate kinds of light, one for "
+                     "each of the names", "correct": False,
              "why": "The six names are labels along one continuous band, "
                     "not six different things."},
-            {"text": "It runs from violet at the lowest frequency to red at "
-                     "the highest", "correct": False,
+            {"text": "It runs from violet at the lowest frequency up to red "
+                     "at the very highest", "correct": False,
              "why": "That is the right band the wrong way round: red is the "
                     "lowest visible frequency and violet the highest."},
             {"text": "It changes smoothly, and the names are places along "
@@ -272,16 +273,16 @@ QUESTIONS = [
             {"text": "That white light contains them all along, and more "
                      "than one arrangement can separate them",
              "correct": True},
-            {"text": "That the oil is coloured and the water washes it into "
-                     "bands", "correct": False,
+            {"text": "That the oil is coloured to begin with, and the water "
+                     "washes it out into separate bands", "correct": False,
              "why": "The same oil in a bottle is not coloured. It is the "
                     "thin film that does it."},
-            {"text": "That oil turns white light into coloured light",
-             "correct": False,
+            {"text": "That oil turns white light into coloured light as the "
+                     "light passes through it", "correct": False,
              "why": "That would be making colour, which nothing does. The "
                     "colours were in the light already."},
-            {"text": "That the road is reflecting different colours from "
-                     "different places", "correct": False,
+            {"text": "That the road itself is reflecting different colours "
+                     "from different places on it", "correct": False,
              "why": "The bands move when you move, so they are not "
                     "properties of particular spots on the road."},
         ],

@@ -190,18 +190,19 @@ QUESTIONS = [
                 "little way apart. What pattern appears where the two sets "
                 "of ripples overlap?",
         "options": [
-            {"text": "A single set of ripples spreading from a point midway "
-                     "between them", "correct": False,
+            {"text": "A single set of ripples spreading out from one point "
+                     "midway between the two stones", "correct": False,
              "why": "The two sources stay separate, and their circles keep "
                     "spreading from where each stone landed."},
             {"text": "A criss-cross pattern with places of unusually big "
                      "movement and places of almost none", "correct": True},
-            {"text": "Flat water everywhere the two sets meet",
-             "correct": False,
+            {"text": "Flat water everywhere that the two sets of ripples "
+                     "meet and cancel one another out", "correct": False,
              "why": "That happens only where a crest meets a trough. "
                     "Elsewhere the crests reinforce each other."},
-            {"text": "The stronger set of ripples continuing and the weaker "
-                     "one vanishing", "correct": False,
+            {"text": "The stronger set of ripples carrying on and the "
+                     "weaker set vanishing away altogether",
+             "correct": False,
              "why": "Neither set vanishes. Both keep spreading and both keep "
                     "contributing everywhere they overlap."},
         ],
@@ -215,15 +216,18 @@ QUESTIONS = [
         "text": "Noise-cancelling headphones work by playing a second sound. "
                 "Why does the wearer hear quiet rather than more noise?",
         "options": [
-            {"text": "The headphones play a very loud sound that drowns out "
-                     "the noise", "correct": False,
+            {"text": "The headphones play a very loud sound that drowns "
+                     "out the noise, so the wearer simply stops noticing "
+                     "what was there before", "correct": False,
              "why": "That would be louder, not quieter, and the wearer would "
                     "hear the drowning sound instead."},
             {"text": "The second sound is timed so its compressions arrive "
                      "where the noise has rarefactions, and the two add to "
                      "almost nothing at the eardrum", "correct": True},
-            {"text": "The headphones absorb the noise before it reaches the "
-                     "ear", "correct": False,
+            {"text": "The headphones absorb the noise in their padding "
+                     "before it reaches the ear, so nothing at all is left "
+                     "of it by the time the eardrum is reached",
+             "correct": False,
              "why": "Some padding does absorb, but that is not what the "
                     "electronics are doing. Switch the electronics off and "
                     "the padding is still there."},
@@ -249,14 +253,16 @@ QUESTIONS = [
              "why": "Two equal and opposite displacements do cancel exactly. "
                     "The trouble with the word is what happens afterwards."},
             {"text": "Because only one of them is destroyed and the other "
-                     "carries on", "correct": False,
+                     "carries on through the water on its own, entirely "
+                     "unchanged by the meeting", "correct": False,
              "why": "Neither is destroyed. Both emerge, and both are "
                     "unchanged."},
-            {"text": "Because cancelling is what the WATER does at one place "
-                     "at one instant, and both waves travel on unchanged",
-             "correct": True},
-            {"text": "Because waves cannot be destroyed by anything at all",
-             "correct": False,
+            {"text": "Because cancelling is what the WATER does at one "
+                     "place at one instant, while both waves travel on "
+                     "through each other unchanged", "correct": True},
+            {"text": "Because waves cannot be destroyed by anything at "
+                     "all, so nothing that happens where two of them meet "
+                     "could ever count as destruction", "correct": False,
              "why": "Waves are absorbed and die away all the time. What "
                     "cancelling is not, is one of the ways that happens."},
         ],
@@ -269,7 +275,8 @@ QUESTIONS = [
                 "wins. What is the best correction?",
         "options": [
             {"text": "The smaller one wins, because it is easier for the "
-                     "water to follow", "correct": False,
+                     "water to follow a small movement than it is to "
+                     "follow a larger one instead", "correct": False,
              "why": "Reversing the claim keeps the mistake. Neither wave "
                     "wins anything."},
             {"text": "The bigger one wins only if it has the longer "
@@ -277,13 +284,14 @@ QUESTIONS = [
                      "two heights are close together", "correct": False,
              "why": "Wavelength does not decide it either. Both waves "
                     "contribute whatever their length."},
-            {"text": "They take it in turns, one after the other",
-             "correct": False,
+            {"text": "They take it in turns, one after the other, so the "
+                     "water follows first the one wave and then the other "
+                     "one after it", "correct": False,
              "why": "They arrive together, not in turn, and the water "
                     "responds to both at once."},
             {"text": "Neither wins — the water is displaced by the sum of "
                      "the two, and each wave carries on afterwards exactly "
-                     "as it was", "correct": True},
+                     "as it was before", "correct": True},
         ],
         "figure": None,
     },

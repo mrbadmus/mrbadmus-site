@@ -127,7 +127,10 @@ QUESTIONS = [
         "text": "On a diagram, a 60 N arrow is drawn 6 cm long. How long "
                 "should a 20 N arrow on the SAME diagram be?",
         "options": [
-            {"text": "2 cm", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "2 cm, a third of 6 cm", "correct": True},
             {"text": "6 cm, so the diagram looks tidy", "correct": False,
              "why": "Equal lengths are a claim that the forces are equal. "
                     "Drawing them the same makes the diagram say something "
@@ -176,7 +179,11 @@ QUESTIONS = [
             {"text": "380 N, because both forces act on it", "correct": False,
              "why": "They act in opposite directions, so they subtract "
                     "rather than add."},
-            {"text": "20 N to the right", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "20 N to the right, 200 N minus 180 N",
+             "correct": True},
             {"text": "20 N, but only once the friction stops",
              "correct": False,
              "why": "The friction never stops while it is sliding. The "
@@ -267,15 +274,18 @@ QUESTIONS = [
                 "the current pushes straight backwards. Why can you not just "
                 "subtract the two numbers?",
         "options": [
-            {"text": "Because the current is always bigger.",
+            {"text": "Because the current is always bigger than the pull a "
+                     "rope can give.",
              "correct": False,
-             "why": "Its size is not the problem. The method fails whichever "
-                    "is bigger."},
-            {"text": "Because one of them is a pull and one is a push.",
+             "why": "It need not be bigger at all, and its size is not the "
+                    "problem. The method fails whichever is bigger."},
+            {"text": "Because one of them is a pull and one is a push, and "
+                     "opposites never combine.",
              "correct": False,
              "why": "Pushes and pulls subtract perfectly well when they are "
                     "along one line — that is the whole lesson."},
-            {"text": "Because a rope cannot exert a force at an angle.",
+            {"text": "Because a rope cannot exert a force at an angle, only "
+                     "straight ahead.",
              "correct": False,
              "why": "It can, and it does. That is precisely the situation "
                     "being described."},

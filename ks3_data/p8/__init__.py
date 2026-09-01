@@ -97,6 +97,7 @@ and each lesson's docstring records the indices it takes.
 
 import importlib
 import pkgutil
+import re
 
 _INSTRUMENT_SEGMENTS = {
     # Every P8 bench is `ks3-block ks3-dark ks3-practical`.
@@ -156,6 +157,101 @@ def _normalise(lesson):
     return lesson
 
 
+# ⚖️ MRB-297 / P8-03, RULED 30 Aug 2026 — A PRINTED `a ÷ b = c` MUST BE
+# TRUE, AND THE BUILD IS WHERE THAT IS SETTLED.
+#
+# `p8-06`'s "your turn" printed the MANTISSA of the prefixed answer as the
+# quotient — "6.0 ÷ 0.0000012 = 5.0" for an answer of 5.0 MΩ, and
+# "6.0 ÷ 0.0015 = 4.0" for 4.0 kΩ — in seven of its fourteen states, with a
+# step note directly beneath saying "volts divided by amps leaves ohms". A
+# student who did the division correctly and wrote 5 000 000 marked
+# themselves wrong against the model answer. It is the exact unit-prefix
+# error the five-step method exists to prevent, and nothing could see it,
+# because every gate in the estate reads the vocabulary of a line rather
+# than its arithmetic.
+#
+# So the arithmetic is read. Every string in every P8 lesson is scanned for
+# a fully numeric division and the division is done. A line whose numbers
+# are still `{tokens}` cannot be checked here, so the attempt panels are
+# checked a second time with their own `rest` defaults substituted, which
+# is the state the page ships in.
+#
+# ⚠️ THIS COVERS P8 AND ONLY P8. The class is estate-wide and the check
+# belongs beside the FIFA renderer in `ks3_art/kit.py`, where every unit's
+# worked examples and attempts pass through one function. That file is
+# shared and this lane may not edit it; the extension is written up in the
+# MRB-297 report.
+
+_NUM = r"\d+(?: \d{3})+|\d+(?:\.\d+)?(?:[eE][-+]?\d+)?"
+_TAIL = r"(?:\s*[^\s0-9÷=][^\s÷=]*)?"
+_DIVIDE = re.compile(
+    "(%s)%s\\s*÷\\s*(%s)%s\\s*=\\s*(%s)" % (_NUM, _TAIL, _NUM, _TAIL, _NUM))
+
+# Three significant figures on either side of a division leaves about half
+# a per cent of slack; 1.5% is comfortably outside rounding and nowhere
+# near the thousandfold errors this exists to catch.
+_DIVIDE_TOL = 0.015
+
+
+def _check_divisions(text, where, slug):
+    for a, b, c in _DIVIDE.findall(str(text)):
+        top = float(a.replace(" ", ""))
+        bot = float(b.replace(" ", ""))
+        got = float(c.replace(" ", ""))
+        if bot == 0:
+            raise ValueError(
+                "%s: %s prints a division by zero — %r ÷ %r."
+                % (slug, where, a, b))
+        want = top / bot
+        if abs(want - got) > _DIVIDE_TOL * max(abs(want), 1e-30):
+            raise ValueError(
+                "%s: %s prints “%s ÷ %s = %s”, and %s ÷ %s is %r.\n"
+                "⚖️ MRB-297 / P8-03, ruled 30 Aug 2026: a printed division "
+                "must be TRUE in the units it is printed in. The commonest "
+                "way to break this is to print the MANTISSA of a prefixed "
+                "answer as the quotient — 6.0 ÷ 0.0000012 = 5.0 beside an "
+                "answer of 5.0 MΩ — which teaches the student that dividing "
+                "gives you a small number you then rename, and marks a "
+                "correct answer of 5 000 000 wrong. Print the quotient in "
+                "BASE UNITS and let the answer line do the prefixing; that "
+                "is what the answer line is for."
+                % (slug, where, a, b, c, a, b, want))
+
+
+def _refuse_false_division(lesson):
+    slug = lesson.get("slug", "?")
+
+    def walk(v, where):
+        if isinstance(v, str):
+            _check_divisions(v, where, slug)
+        elif isinstance(v, dict):
+            for k, sub in v.items():
+                walk(sub, "%s.%s" % (where, k))
+        elif isinstance(v, (list, tuple)):
+            for i, sub in enumerate(v):
+                walk(sub, "%s[%d]" % (where, i))
+
+    walk(lesson, "the lesson")
+
+    # And again with each attempt panel's own defaults filled in, because
+    # `{ibare}` and `{rohms}` hide the arithmetic from the pass above and
+    # the filled line is what the page ships showing.
+    for act in lesson.get("activities") or []:
+        rest = act.get("rest")
+        if not isinstance(rest, dict):
+            continue
+        for qi, q in enumerate(act.get("questions") or []):
+            for si, st in enumerate(q.get("steps") or []):
+                filled = str(st.get("line", ""))
+                for key, val in rest.items():
+                    filled = filled.replace("{%s}" % key, str(val))
+                _check_divisions(
+                    filled,
+                    "%s question %d step %d, with its own `rest` defaults"
+                    % (act.get("id", "?"), qi + 1, si + 1), slug)
+    return lesson
+
+
 def lessons():
     """The authored P8 lesson records, in slot order, normalised."""
     found = []
@@ -165,5 +261,5 @@ def lessons():
         m = importlib.import_module("%s.%s" % (__name__, mod))
         record = getattr(m, "LESSON", None)
         if record is not None:
-            found.append(_normalise(dict(record)))
+            found.append(_refuse_false_division(_normalise(dict(record))))
     return found

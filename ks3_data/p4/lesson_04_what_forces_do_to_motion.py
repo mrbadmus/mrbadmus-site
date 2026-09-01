@@ -88,7 +88,7 @@ LESSON = {
 
     "requires": ["balanced-and-unbalanced"],
     "assumes": [],
-    "references": ["speed", "what-a-force-is", "pressure-force-over-area"],
+    "references": ["speed", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "A curling stone slides twenty metres with nothing "
@@ -118,12 +118,18 @@ LESSON = {
                   "steady speed. Nobody is touching it. No engine, no rope, "
                   "nothing pushing it forwards at all.",
         "commit": "So why does it keep moving?",
+        # ⊕ MRB-297, 1 Sep 2026 — distractor 0 widened. The correct option
+        # was the longest by 5, which is a tell below the gate's constant
+        # as well as at it. The top two are now level.
         "options": [
-            "Force from the push is still inside it, slowly running out",
+            "Force from the push is still stored inside it, and it is "
+            "only slowly running out",
             "Nothing needs to push it — with almost nothing left over, "
             "almost nothing changes",
-            "The ice is pushing it forwards",
-            "It keeps going because it is heavy",
+            "The ice underneath is pushing the stone forwards the whole "
+            "way down",
+            "It keeps going because it is heavy, and heavy things carry "
+            "themselves along",
         ],
         "answer": 1,
         "reveal": "It keeps moving because nothing is stopping it. "

@@ -48,16 +48,18 @@ QUESTIONS = [
         "band": "easier",
         "text": "Upthrust on an object is equal to…",
         "options": [
-            {"text": "the weight of the object", "correct": False,
+            {"text": "the weight of the object, whether it floats or "
+                     "sinks", "correct": False,
              "why": "Only when it floats. A sinker's upthrust is less than "
                     "its weight, which is why it sinks."},
             {"text": "the weight of the liquid it pushes out of the way",
              "correct": True},
-            {"text": "the depth it is at", "correct": False,
+            {"text": "the depth it is at, measured down from the surface",
+             "correct": False,
              "why": "A depth is not a force. A block gets the same upthrust "
                     "at 1 m and at 10 m, once it is fully under."},
-            {"text": "the pressure at the bottom of the object",
-             "correct": False,
+            {"text": "the pressure of the liquid at the bottom of the "
+                     "object", "correct": False,
              "why": "That is a pressure, not a force — and it is only half "
                     "the story. The push on the top counts too."},
         ],
@@ -86,15 +88,18 @@ QUESTIONS = [
         "band": "easier",
         "text": "An object floats when…",
         "options": [
-            {"text": "it is lighter than water, whatever shape it is in", "correct": False,
+            {"text": "it is lighter than water, whatever shape it has been "
+                     "made into", "correct": False,
              "why": "A ship is not lighter than water. What matters is the "
                     "water it pushes aside."},
-            {"text": "it has air inside it", "correct": False,
+            {"text": "it has air sealed inside it, because air always "
+                     "keeps things up", "correct": False,
              "why": "A sealed tin full of air sinks if it is heavy enough. "
                     "Air only helps by changing what is pushed aside."},
             {"text": "the upthrust on it equals its weight, so nothing is "
                      "left over", "correct": True},
-            {"text": "it is at the surface", "correct": False,
+            {"text": "it is sitting at the surface instead of down in the "
+                     "water", "correct": False,
              "why": "That is the result, not the reason. Something held at "
                     "the surface by a hand is not floating."},
         ],
@@ -108,16 +113,18 @@ QUESTIONS = [
         "text": "Two one-litre blocks, one cork and one steel, are both held "
                 "completely under water. Which gets the bigger upthrust?",
         "options": [
-            {"text": "The steel, because it is heavier.", "correct": False,
+            {"text": "The steel, because it weighs far more than the "
+                     "cork.", "correct": False,
              "why": "Upthrust does not depend on the object's weight. It "
                     "depends on what the object pushes aside."},
             {"text": "The same on both — each pushes aside one litre.",
              "correct": True},
-            {"text": "The cork, because it is trying to rise.",
+            {"text": "The cork, because it is the one trying to rise.",
              "correct": False,
              "why": "Trying to rise is the RESULT of its small weight, not "
                     "a bigger upthrust."},
-            {"text": "The steel, because it goes deeper.", "correct": False,
+            {"text": "The steel, because it is the one that goes deeper.",
+             "correct": False,
              "why": "Once fully under, going deeper changes nothing: the "
                     "pushes on top and bottom both rise by the same amount."},
         ],
@@ -149,18 +156,23 @@ QUESTIONS = [
         "text": "A heavy rock feels easier to lift while it is still under "
                 "water and suddenly heavier as it breaks the surface. Why?",
         "options": [
-            {"text": "The water makes the rock lighter.", "correct": False,
+            {"text": "The water makes the rock itself lighter, so there is "
+                     "genuinely less of it to lift while it is under.",
+             "correct": False,
              "why": "Its weight is unchanged throughout. What changes is "
                     "how much of it you have to supply."},
             {"text": "Water reduces the pull of gravity on it, so the "
-                     "object genuinely weighs less while it is under",
+                     "object genuinely weighs less the whole time it is "
+                     "under",
              "correct": False,
              "why": "Gravity is unchanged. Something else is helping you "
                     "while the rock is submerged."},
             {"text": "Under water the upthrust is taking part of the weight, "
                      "and it stops as soon as the rock leaves the water.",
              "correct": True},
-            {"text": "You get more grip on a wet rock.", "correct": False,
+            {"text": "You get more grip on a wet rock, so less of your "
+                     "effort is wasted while it is still in the water.",
+             "correct": False,
              "why": "Grip is a separate matter, and a wet rock is usually "
                     "harder to hold, not easier."},
         ],
@@ -172,15 +184,18 @@ QUESTIONS = [
         "text": "A ship's steel is melted down and cast into one solid "
                 "block. The block sinks. What changed?",
         "options": [
-            {"text": "The weight of the steel went up.", "correct": False,
+            {"text": "The weight of the steel went up when it was cast, so "
+                     "the water can no longer hold the block up.",
+             "correct": False,
              "why": "It is the same steel and the same weight. Nothing was "
                     "added."},
-            {"text": "Steel became denser when it was melted.",
+            {"text": "Steel became denser when it was melted, so the same "
+                     "block of it now weighs more for its size.",
              "correct": False,
              "why": "The steel is unchanged. What changed is the SHAPE it "
                     "is in."},
-            {"text": "Gravity acts more strongly on a solid shape than on a "
-                     "hollow one of the same weight",
+            {"text": "Gravity acts more strongly on a solid shape than it "
+                     "does on a hollow one of exactly the same weight",
              "correct": False,
              "why": "Gravity does not care about shape. Neither does the "
                     "weight."},
@@ -197,19 +212,22 @@ QUESTIONS = [
         "band": "harder",
         "text": "Where does upthrust actually come from?",
         "options": [
-            {"text": "From the liquid trying to get back to where the "
-                     "object is, and shoving it out of the way as it does", "correct": False,
+            {"text": "From the liquid trying to get back to the space "
+                     "where the object is, and shoving it out of the way "
+                     "as it does", "correct": False,
              "why": "A liquid does not try to do anything. The force has a "
                     "mechanical origin."},
             {"text": "From the pressure being greater on the bottom of the "
                      "object than on the top, because the bottom is deeper.",
              "correct": True},
-            {"text": "From the object being lighter than the liquid.",
+            {"text": "From the object being lighter than the liquid around "
+                     "it, which is what allows the liquid to hold it up.",
              "correct": False,
              "why": "A sinker is heavier than its own volume of water and "
                     "still gets upthrust."},
             {"text": "From the surface of the liquid pushing down "
-                     "everywhere.", "correct": False,
+                     "everywhere, and that push reaching the object from "
+                     "below.", "correct": False,
              "why": "The surface presses down on the top of the object. It "
                     "is the DIFFERENCE with the bottom that is left over."},
         ],
@@ -221,17 +239,20 @@ QUESTIONS = [
         "text": "A submarine dives by flooding its ballast tanks. What "
                 "happens to the upthrust on it?",
         "options": [
-            {"text": "It falls, because the submarine is heavier.",
+            {"text": "It falls, because the submarine is now a great deal "
+                     "heavier.",
              "correct": False,
              "why": "Upthrust does not depend on the submarine's weight. It "
                     "depends on the water it pushes aside."},
-            {"text": "It rises, because the submarine is deeper.",
+            {"text": "It rises, because the submarine is now sitting "
+                     "deeper.",
              "correct": False,
              "why": "Once fully submerged, depth changes nothing: the pushes "
                     "on top and bottom rise together."},
             {"text": "It stays the same — the shape and volume have not "
                      "changed.", "correct": True},
-            {"text": "It becomes zero, which is why the submarine sinks.",
+            {"text": "It becomes zero, and that is why the submarine sinks "
+                     "at all.",
              "correct": False,
              "why": "It is still fully supported by the same upthrust. What "
                     "changed is that the weight now exceeds it."},
@@ -244,16 +265,20 @@ QUESTIONS = [
         "text": "A hot-air balloon rises. Which sentence describes it in the "
                 "same terms as a cork in water?",
         "options": [
-            {"text": "Hot air rises because heat travels upwards.",
+            {"text": "Hot air rises because heat always travels upwards, "
+                     "and the balloon is carried along with the heat.",
              "correct": False,
              "why": "That describes nothing about the forces, and heat "
                     "travelling upwards is a separate idea."},
-            {"text": "The envelope is sealed, so it cannot sink.",
+            {"text": "The envelope is sealed, so nothing heavy can get "
+                     "into it and there is nothing at all to weigh it "
+                     "down.",
              "correct": False,
              "why": "Sealed things sink all the time. What matters is what "
                     "is pushed aside."},
-            {"text": "The balloon is lighter than air, so gravity misses it "
-                     "and there is nothing to pull it down", "correct": False,
+            {"text": "The balloon is lighter than the air, so gravity "
+                     "misses it altogether and there is nothing to pull it "
+                     "down", "correct": False,
              "why": "Gravity pulls on it exactly as on anything else. The "
                     "upthrust simply beats it."},
             {"text": "The hot air inside weighs less than the cold air the "
@@ -269,19 +294,22 @@ QUESTIONS = [
                 "and salt water. Why?",
         "options": [
             {"text": "Salt water is more corrosive, so the hull must sit "
-                     "higher to keep the paint out of it", "correct": False,
+                     "higher up to keep the paint clear of the water",
+             "correct": False,
              "why": "Corrosion is a real problem and a separate one. The "
                     "marks are about how deep the hull may legally sit."},
             {"text": "A cubic metre of salt water weighs more, so the same "
                      "hull pushes aside more weight and floats higher.",
              "correct": True},
-            {"text": "Salt water is denser, so ships sink deeper in it.",
+            {"text": "Salt water is denser than fresh, so a ship pushes "
+                     "further down into it and has to be marked lower.",
              "correct": False,
              "why": "The premise is right and the conclusion is backwards. "
                     "Denser water gives MORE upthrust, so the hull rides "
                     "higher."},
-            {"text": "The ship's weight changes between fresh and salt "
-                     "water.", "correct": False,
+            {"text": "The ship's weight changes between fresh water and "
+                     "salt water, so the safe mark has to change too.",
+             "correct": False,
              "why": "The ship's weight is whatever it is loaded to. It is "
                     "the water that has changed."},
         ],

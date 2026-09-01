@@ -70,8 +70,7 @@ LESSON = {
 
     "requires": ["what-forces-do-to-motion"],
     "assumes": [],
-    "references": ["balanced-and-unbalanced", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["balanced-and-unbalanced", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "Nothing about a crate changes when you start "
@@ -103,12 +102,14 @@ LESSON = {
                   "started it.",
         "commit": "Why is starting it harder than keeping it going?",
         "options": [
-            "The crate gets lighter once it is moving",
+            "The crate gets lighter once it is moving, so less push is needed "
+            "to keep it going",
             "Friction is largest just before sliding starts, and drops once "
             "the surfaces are sliding",
-            "Your push gets stronger as you lean into it, so the crate only "
-            "moves once you are pushing hard enough",
-            "The floor stops pushing back once the crate moves",
+            "Your push gets stronger as you lean into it, so the crate moves "
+            "once you push hard enough",
+            "The floor stops pushing back once the crate is moving, so "
+            "nothing resists it",
         ],
         "answer": 1,
         "reveal": "Friction is a force between two surfaces that resists "
@@ -235,9 +236,13 @@ LESSON = {
          "heading": "Every reading on the bench obeyed all four.",
          "panels": [
              {"num": "1", "name": "It acts against the sliding",
-              "body": "Always the opposite way to the movement, or to the "
-                      "movement that is about to happen. Friction never "
-                      "pushes something along."},
+              "body": "Always the opposite way to the sliding between "
+                      "the two surfaces — or to the sliding that is "
+                      "about to happen. That is not always the opposite "
+                      "way to the object: when you walk, your shoe "
+                      "pushes backwards on the ground, so friction "
+                      "pushes your shoe forwards. It is what you walk "
+                      "on."},
              {"num": "2", "name": "It depends on both surfaces",
               "body": "Swap the floor and the reading changes even though "
                       "the block has not. Rough or smooth is a fact about "

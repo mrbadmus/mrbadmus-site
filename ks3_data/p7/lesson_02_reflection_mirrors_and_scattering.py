@@ -109,11 +109,14 @@ LESSON = {
         "commit": "What is different about what the light does at the two "
                   "surfaces?",
         "options": [
-            "The paper does not really reflect light — it makes its own",
+            "The paper does not really reflect light — it makes its own, "
+            "which is why a room brightens",
             "The mirror keeps the rays in the arrangement they arrived in; "
             "the paper scrambles them",
-            "The mirror sends back far more light than the paper does",
-            "The paper absorbs the image and only sends back the brightness",
+            "The mirror sends back far more light than the paper does, and "
+            "paper keeps most of it back",
+            "The paper absorbs the image and sends back only the brightness, "
+            "so no face can survive",
         ],
         "answer": 1,
         "reveal": "Both surfaces send back most of the light, and both obey "
@@ -148,13 +151,22 @@ LESSON = {
     "core": [
         {"type": "hook", "id": "hook-commit", "anchor": "s-hook"},
 
+        # ── ⊕ MRB-297 · P7-04 · THE ARROW IS PART OF THE ANSWER ───────
+        #
+        # The unit's `ks4_becomes` card promises ray diagrams at GCSE and
+        # nothing on any of the seven pages told a student to put an arrow
+        # on a ray. A ray without one is a line, and an unmarked arrow is a
+        # standard mark loss. The sentence goes here because this is the
+        # explainer that says how to set a ray diagram up.
         {"type": "explainer",
          "text": "Every ray that meets a surface obeys the same rule. Draw a "
                  "line at right angles to the surface where the ray lands — "
                  "that line is called the <strong>normal</strong> — and "
                  "measure both angles from it. Then the <strong>angle of "
                  "reflection equals the angle of incidence</strong>, always, "
-                 "on every surface, however rough."},
+                 "on every surface, however rough. A ray is always drawn "
+                 "with an arrow on it, because which way the light is going "
+                 "is part of the answer."},
         {"type": "explainer",
          "text": "What changes between a mirror and a sheet of paper is not "
                  "the rule but the surface. A mirror is smooth on the scale "
@@ -174,6 +186,27 @@ LESSON = {
                  "surface. A matt black card is rough like paper and absorbs "
                  "most of what lands on it, so very little leaves in any "
                  "direction at all."},
+        # ── ⚖️ RULED 30 Aug 2026 · THE PLANE MIRROR IMAGE ──────────────
+        #
+        # `covers` claims LGT.04a, imaging in mirrors, and nothing on the
+        # page delivered it. The near/far wording is load-bearing and is
+        # not to be "tidied" into the usual left-right sentence: a plane
+        # mirror does NOT swap left and right, and "lateral inversion" is a
+        # label rather than a reason. Turning the page round is what swaps
+        # its left and right; the mirror reverses only the axis pointing at
+        # it. No figure — P7 has no drawer for one.
+        {"type": "explainer",
+         "text": "Stand a mirror up and look at yourself. The image is the "
+                 "same size as you and the same way up, and it sits as far "
+                 "behind the glass as you are in front of it. Nothing is "
+                 "there: no light comes from behind the mirror. Your eye "
+                 "follows the reflected rays back along the straight lines "
+                 "they arrived on, and the image is where those lines meet. "
+                 "That is what <strong>virtual</strong> means. The one axis "
+                 "a plane mirror does reverse is the one running towards it "
+                 "and away from it — near and far. Writing looks backwards "
+                 "because you had to turn the page round to face the glass, "
+                 "and turning it is what swapped its left and right."},
 
         # ── #s-ray · a ray box, a protractor and four surfaces ─────────
         {"type": "ray-surface",

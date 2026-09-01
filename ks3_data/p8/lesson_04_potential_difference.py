@@ -112,9 +112,9 @@ LESSON = {
         "commit": "What is that number telling you?",
         "options": [
             "The potential difference it is designed to have across it",
-            "How much electricity it uses up while it is on",
-            "The current that will flow through it, in volts",
-            "How bright it is when it is working properly",
+            "How much electricity it uses up in every second it is on",
+            "The current that will flow through it, measured in volts",
+            "How bright it is when it is working the way it should",
         ],
         "answer": 0,
         "reveal": "It is the p.d. the maker designed it for — the push it "
@@ -673,11 +673,13 @@ LESSON = {
          "type": "explainer",
          "text": "One volt means one joule of energy given up by every "
                  "coulomb of charge. That is the whole definition, and it "
-                 "explains something that sounds impossible: a 400 000 V "
-                 "power line is not dangerous because of the number, and a "
-                 "car battery at 12 V can weld metal. The volts say how much "
-                 "energy each bit of charge carries; the amps say how many "
-                 "bits go past each second. Damage needs both."},
+                 "explains something that sounds impossible: the ten "
+                 "thousand volts that jump from a door handle to your "
+                 "finger leave you unhurt, while a car battery at 12 V can "
+                 "weld metal. The volts say how much energy each bit of "
+                 "charge carries; the amps say how many bits go past each "
+                 "second. Damage needs both — and a power line has both, in "
+                 "enormous quantities, which is why you never go near one."},
         {"id": "the-sharing-rule-is-a-tool",
          "type": "explainer",
          "text": "The sharing rule is a tool as well as a fact. Put two "

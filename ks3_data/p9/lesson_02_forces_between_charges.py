@@ -114,8 +114,13 @@ LESSON = {
         "options": [
             "Both balloons got the same charge, so they repel; the wall has "
             "no charge, and a charged object attracts an uncharged one",
-            "The wall is oppositely charged because the room is positively "
-            "charged overall",
+            # ⚠️ MRB-297 — remedied the same way as Design's distractor
+            # below: the correct option is the longest by a clear margin, and
+            # on a HOOK that is the tell that stops a student committing.
+            # Lengthened at the distractor, and the added clause states the
+            # wrong rule through to its conclusion rather than padding it.
+            "The wall is oppositely charged because the room itself is "
+            "positively charged overall, so the balloon is pulled to it",
             # ⚠️ MRB-177 — Design's distractor, FINISHED. Her hook's correct
             # option is 22 words against a longest distractor of 15, which is
             # a tell at the ≥4-word threshold — and a tell on a HOOK does the
@@ -125,14 +130,14 @@ LESSON = {
             # states the wrong rule completely rather than padding it.
             "The balloon that sticks has lost its charge, so it is held to "
             "the wall by ordinary friction and nothing electrical",
-            "Balloons repel other balloons and attract everything else, as a "
-            "property of rubber",
+            "Balloons repel other balloons and attract everything else, "
+            "because that is simply how rubber behaves once rubbed",
         ],
         "answer": 0,
         "reveal": "Rubbed on the same jumper, both balloons end up with the "
                   "same charge, and like charges repel — so they swing "
                   "apart. The wall was never charged, and it still is not. "
-                  "What the balloon does is push the wall's own charges "
+                  "What the balloon does is push the wall's own electrons "
                   "aside, so the surface nearest the balloon becomes "
                   "slightly opposite to it, and the balloon is pulled in. "
                   "Attraction to an uncharged object is a real effect with "
@@ -232,7 +237,7 @@ LESSON = {
                  "They repel, because the neutral one has as many negatives "
                  "as the charged one",
                  "They attract weakly, because the charged one pushes the "
-                 "neutral one's charges aside",
+                 "neutral one's electrons aside",
                  "They attract strongly, exactly as two opposite charges "
                  "would",
              ],
@@ -305,10 +310,13 @@ LESSON = {
                  "verdict": "they attract, weakly",
                  "sub": "induction on the neutral sphere",
                  "note": "The {cside} sphere is {csign} and the {nside} one "
-                         "has no charge at all — and they still attract. The "
-                         "charged sphere pushes the neutral one's own "
-                         "charges along, so its near face turns slightly "
-                         "{nearsign} and its far face slightly {farsign}. "
+                         "has no charge at all — and they still attract. "
+                         "Only electrons move, and only the neutral "
+                         "sphere's own: a negative charge pushes them away "
+                         "to the far face, a positive charge pulls them "
+                         "towards the near face. Here that leaves the near "
+                         "face slightly {nearsign} and the far face "
+                         "slightly {farsign}. "
                          "Both faces feel a force, but the near one is "
                          "closer and closeness matters enormously, so the "
                          "pull wins. It is much weaker than the pull two "
@@ -429,9 +437,9 @@ LESSON = {
          "placement": "top-level",
          "text": "Like charges repel and unlike charges attract, with equal "
                  "and opposite forces that weaken quickly with distance. A "
-                 "charged object also attracts a neutral one, by pushing "
-                 "that object's own charges to one side. So repulsion proves "
-                 "an object is charged; attraction does not."},
+                 "charged object also attracts a neutral one, by moving "
+                 "that object's own electrons to one side. So repulsion "
+                 "proves an object is charged; attraction does not."},
     ],
 
     # ⚠️ MRB-278 · POSITION IS AUTHORED. This lesson takes indices 1 and 3.
@@ -496,8 +504,8 @@ LESSON = {
             "success": [
                 "Says the balloon is charged and the wall is neutral, and "
                 "stays neutral throughout.",
-                "Says the balloon’s charge pushes the wall’s own charges to "
-                "one side.",
+                "Says the balloon’s charge pushes the wall’s own "
+                "electrons to one side.",
                 "Says the near surface of the wall ends up with the opposite "
                 "charge to the balloon.",
                 "Says the far side ends up with the same charge as the "
@@ -534,7 +542,7 @@ LESSON = {
                 "direction. The force weakens quickly as the separation "
                 "grows — doubling the distance cuts it to about a quarter. A "
                 "charged object also attracts a neutral one, because it "
-                "pushes that object's own charges to one side and the "
+                "moves that object's own electrons to one side and the "
                 "closer, opposite face wins. So repulsion is proof that an "
                 "object is charged, and attraction is not.",
 
@@ -575,8 +583,8 @@ LESSON = {
                        "so do a charged object and a neutral one, which is "
                        "why attraction proves nothing on its own."},
         {"term": "induction",
-         "definition": "A charged object pushing a neutral object's own "
-                       "charges to one side, so the near face becomes "
+         "definition": "A charged object moving a neutral object's own "
+                       "electrons to one side, so the near face becomes "
                        "opposite and the whole object is pulled in. The "
                        "neutral object's total charge never changes."},
     ],

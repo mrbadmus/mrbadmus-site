@@ -123,12 +123,32 @@ LESSON = {
                   "lifts it easily. The bar has no motor, no battery and no "
                   "moving parts.",
         "commit": "Commit. Where did the extra 500 N come from?",
+        # ⊕ MRB-297, 31 Aug 2026 — THE DISTRACTORS WERE LENGTHENED. The
+        # hook's `answer` index now exists, so `verify_answer_lengths` can
+        # see this set for the first time, and it read 100%: at 37 / 63 / 41
+        # / 42 characters the correct option was the visibly longest of the
+        # four, so the hook could be answered without reading any physics.
+        # THE CORRECT OPTION IS UNCHANGED, byte for byte — the reasoning in
+        # it is the teaching. The three distractors were re-authored to its
+        # length and shape; each is still a wrong account a real student
+        # gives. The order and the answer index are untouched.
         "options": [
-            "The bar stores energy and releases it",
+            "The bar stores energy while you push and releases it into "
+            "the slab",
             "Nowhere — you move your end much further, so the energy matches",
-            "The ground pushes up with the extra force",
-            "The slab weighs less once it is on the bar",
+            "The ground pushes up with the extra force and the bar "
+            "passes it on",
+            "The slab weighs less once one end of it is resting on the bar",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 1,
         "reveal": "Nowhere. <strong>Force is not conserved and there is "
                   "nothing strange about multiplying it</strong> — you get "
                   "six times the force and you move your end six times as "
@@ -187,14 +207,25 @@ LESSON = {
          # below it. A symmetric scatter would show a machine giving energy
          # away for free several times a session.
          "input_bias": {"min_pct": 0.5, "max_pct": 3.5},
+         # ⚠️ THE FOUR LIVE READOUTS ARE THE IDEAL LEVER; THE TABLE IS A
+         # MEASURED ONE. The same fulcrum reads 600 N above the table and
+         # 612 N in it, because friction makes you push harder. Unlabelled
+         # that is two different answers to one question — a student who
+         # noticed it had nothing on the page to explain it.
+         "readout_note": "Ideal · press Record to measure it",
          "columns": [
              {"id": "effort",   "label": "Your force"},
              {"id": "edist",    "label": "Your distance"},
              {"id": "ein",      "label": "Energy in"},
              {"id": "eout",     "label": "Energy out"},
          ],
-         "close": "Every row has the same number in the last two columns, "
-                  "whatever you did with the fulcrum — and the input column "
+         # ⚠️ "NEARLY", for the same reason as the think-again's second
+         # paragraph: friction is in every row, so the two energy columns
+         # are close but never equal. Saying "the same" and then "the input
+         # is always a little the larger" in one sentence cannot both hold.
+         "close": "Every row has nearly the same number in the last two "
+                  "columns, whatever you did with the fulcrum — and the "
+                  "input column "
                   "is always a little the larger, never the smaller. That is "
                   "friction at the fulcrum taking its cut into a thermal "
                   "store. A machine changes the shape of a job; it never "
@@ -376,13 +407,21 @@ LESSON = {
                   "it in reverse every time you lift something. What is "
                   "forbidden is getting more energy out than you put in, and "
                   "no arrangement of levers has ever managed it.",
+                  # ── ⚖️ SCIENCE · "the last column" NAMED ENERGY OUT.
+                  # Written that way this paragraph said the output is
+                  # always larger than the input, on the page whose whole
+                  # argument is that it cannot be — and it contradicted its
+                  # own next sentence, rung 3, and the bench's own closing
+                  # paragraph, which had it right. The columns are named
+                  # rather than counted now. "Nearly the same" because
+                  # friction puts a little more in every row than comes out.
                   "Your own runs are the argument. Every row of the table "
-                  "has the same number in the last two columns, whatever you "
-                  "did with the fulcrum. Six times the force, one sixth of "
-                  "the distance, identical product. A machine changes the "
-                  "shape of a job so your muscles can do it; it never "
-                  "changes the size of the job.",
-                  "And in reality the last column is always slightly the "
+                  "has nearly the same number in the last two columns, "
+                  "whatever you did with the fulcrum. Six times the force, "
+                  "one sixth of the distance, near enough the same product. "
+                  "A machine changes the shape of a job so your muscles can "
+                  "do it; it never changes the size of the job.",
+                  "And in reality the input column is always slightly the "
                   "larger of the two, because friction at the fulcrum takes "
                   "its cut into a thermal store. Real machines need a little "
                   "more energy in than the job strictly requires — never "

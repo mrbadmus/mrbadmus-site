@@ -149,10 +149,10 @@ LESSON = {
                   "the fly.",
         "commit": "So what would you have to know to say which is faster?",
         "options": [
-            "Which one crossed your view fastest",
+            "Which of them crossed your view the fastest",
             "How far each one travelled, and how long it took",
-            "Which one is bigger",
-            "How far away each one is from you",
+            "Which of the two of them is the bigger object",
+            "How far away each of them is from your eye",
         ],
         "answer": 1,
         "reveal": "How fast something <em>looks</em> depends on how far away "
@@ -246,10 +246,30 @@ LESSON = {
          "alt": "A trolley released from a ramp rolls along a runway and "
                 "breaks two light beams 1.20 metres apart. The timer runs "
                 "only while the trolley is between the beams.",
+         # ⚖️ TWO CLOSING SENTENCES, AND THE ROWS CHOOSE. `close` names a
+         # method — average the three times, divide the distance by it —
+         # and that method only works if the three runs are repeats of ONE
+         # measurement. The bench lets the distance and the ramp change
+         # between runs, so it also has to say when they have.
          "close": "Three runs, three different times, and the same distance "
                   "every time. That scatter is why one reading is never "
                   "enough — and the mean of the three times is what you "
-                  "divide into."},
+                  "divide into.",
+         # ⊕ MRB-297 · 1 Sep 2026 — THE REFUSAL GAVE A REASON THAT IS FALSE
+         # IN HALF THE STATES IT FIRES IN. It said "there is no single
+         # distance to divide by the mean". `sameSetup()` in `shared/ks3.js`
+         # returns false if EITHER the ramp or the gate separation differs
+         # between recorded rows, so change only the RAMP and the refusal
+         # appears over three runs that do share one distance — and a
+         # student who checked, correctly, that the gates had not moved was
+         # told they had. The refusal itself is right: three runs down
+         # different ramps are not repeats of one measurement, so their
+         # mean is not a time for anything. That is what it now says, and
+         # it is true whichever part of the setup moved.
+         "close_mixed": "You changed the setup between runs, so these times "
+                        "are not repeats of one measurement, and the mean "
+                        "of them is not a time for anything. Set the "
+                        "gates and the ramp once, then take three runs."},
 
         {"type": "key-fact", "ref": "two-measurements-one-number"},
 
@@ -601,8 +621,9 @@ LESSON = {
         "body": "Stuck on which number to divide by which?",
         "cta": "Ask about this lesson"},
 
-    "ks4_becomes": "Acceleration, velocity–time graphs, and the equations of "
-                   "motion — all built on distance ÷ time.",
+    "ks4_becomes": "Acceleration, motion graphs that carry direction as "
+                   "well as size, and the equations of motion — all built "
+                   "on distance ÷ time.",
 
     "ws": ["measurement", "analysis-and-evaluation"],
 }

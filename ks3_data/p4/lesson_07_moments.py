@@ -83,8 +83,7 @@ LESSON = {
 
     "requires": ["air-and-water-resistance"],
     "assumes": [],
-    "references": ["biomechanics-forces-in-the-body", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["biomechanics-forces-in-the-body", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "Push a door at the handle and it swings. Push just "
@@ -116,12 +115,14 @@ LESSON = {
                   "lean.",
         "commit": "Why is the same force so much less use near the hinge?",
         "options": [
-            "You push harder at the handle without noticing, because a long "
-            "handle is easier to lean your weight on",
+            "You push harder at the handle without noticing, because leaning "
+            "is easier there",
             "The turning effect depends on the distance from the pivot as "
             "well as the force",
-            "The door is heavier near the hinge",
-            "The hinge takes the force away",
+            "The door is heavier near the hinge, so there is more of it to "
+            "shift there",
+            "The hinge takes the force away, so a push near it never reaches "
+            "the door",
         ],
         "answer": 1,
         "reveal": "Turning is not decided by the force alone. It is decided "
@@ -482,8 +483,11 @@ LESSON = {
                 "changes how comfortable it is.",
                 "The long spanner gives 20 N m against 5 N m — four times "
                 "the turning effect for the same pull.",
+                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
+                # the correct answer stops being resolvable as the
+                # second-longest.
                 "The short spanner gives more, because the force acts closer "
-                "to the bolt.",
+                "to the bolt that is being turned.",
                 "The long spanner gives more, because a longer spanner "
                 "weighs more.",
             ],

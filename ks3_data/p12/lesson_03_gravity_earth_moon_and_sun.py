@@ -117,11 +117,11 @@ LESSON = {
                   "for four billion years.",
         "commit": "Why has it not arrived?",
         "options": [
-            "The Earth is not pulling it — it is too far away",
-            "Something is pushing it outwards and balancing the pull",
+            "The Earth is not really pulling it — it is far too far away",
+            "Something is pushing it outwards and balancing the pull exactly",
             "It is falling, and missing the Earth because it is moving "
             "sideways",
-            "It is held up by the Sun pulling it the other way",
+            "It is held up by the Sun pulling it the other way instead",
         ],
         "answer": 2,
         "reveal": "It is falling, and missing. The Earth pulls the Moon with "
@@ -181,9 +181,20 @@ LESSON = {
          "text": "A gravitational pull always comes as a pair of equal and "
                  "opposite forces. The Sun pulls the Earth and the Earth "
                  "pulls the Sun, with exactly the same number of newtons. "
+                 # ⚖️ RULED 30 Aug 2026 (MRB-297) — P12-07. This read "a
+                 # body of two thousand trillion trillion kilograms",
+                 # which is 2 × 10²⁷ kg — a thousand times too small, and
+                 # almost exactly Jupiter, in the one sentence whose job
+                 # is to say why the SUN barely moves. The comparison
+                 # form is taken rather than the corrected words-form,
+                 # because "thousand/million trillion trillion" is the
+                 # construction that produced the slip and a comparison
+                 # cannot be mis-scaled by one word. Checked on the IAU
+                 # values: 1.989 × 10³⁰ ÷ 5.972 × 10²⁴ = 333 000, so
+                 # 330 000 to two figures.
                  "What differs is the result: the same force barely stirs a "
-                 "body of two thousand trillion trillion kilograms and swings "
-                 "a smaller one right round it."},
+                 "body 330 000 times the mass of the Earth and swings a "
+                 "smaller one right round it."},
 
         # ── #s-bench · four gravitational pulls, and distance ───────────
         {"type": "space-bench",

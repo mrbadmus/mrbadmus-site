@@ -109,12 +109,21 @@ LESSON = {
             # been invented: her prompt was ported and her answers were
             # not, which the HTML comparison could not see because a
             # `.dc.html` renders them from `{{ opt.text }}`.
-            "The water is trying to get out of the way",
-            "A floating object has no weight, so nothing holds it down and "
-            "it simply stays at the top",
+            # ⊕ AMENDED MRB-297, 31 Aug 2026 — no longer true of all four,
+            # and kept rather than deleted so the provenance is not silently
+            # overstated. HER CORRECT OPTION IS UNCHANGED, byte for byte.
+            # The distractors were re-authored to the same length and shape:
+            # as delivered they were terse beside a reasoned correct answer,
+            # so the right one was the visibly longest and the hook could be
+            # answered without reading it.
+            "The water is trying to get out of the way of the ball, and "
+            "shoving it upwards is how it does that",
+            "A floating object has no weight, so nothing at all holds it "
+            "down and it simply stays at the top",
             "The water presses harder on the bottom of the ball than on the "
             "top, and the difference pushes up",
-            "The air inside makes it rise on its own",
+            "The air sealed inside makes the ball rise on its own, with "
+            "no help needed from the water around it",
         ],
         "answer": 2,
         "reveal": "It comes from the pressure being different at different "
@@ -223,7 +232,14 @@ LESSON = {
          "readouts": [
              {"id": "weight", "label": "Weight in air", "sub": True},
              {"id": "up", "label": "Upthrust now", "sub": True},
-             {"id": "reading", "label": "On a spring balance in the water"},
+             # ⊕ P5-13 · NO SPRING BALANCE READS A NEGATIVE NUMBER; it
+             # goes slack. Hold a floater under and what is being
+             # measured is the student's own hand pushing DOWN, which is
+             # what the branch note two lines below already says. The
+             # balance label is kept for the sinkers, where it is
+             # literally true and is what both worked examples use.
+             {"id": "reading", "label": "On a spring balance in the water",
+              "alt_label": "The push your hand must give"},
              {"id": "verdict", "label": "What it does"},
          ]},
 
@@ -342,8 +358,20 @@ LESSON = {
          "kind": "p5-attempt",
          "demand": "calculate",
          "eyebrow": "Your turn · the same five steps",
+         # ⊕ P5-12 · `formula`, `insert` and `finetune` ARE COMPOSED BY
+         # THE BENCH, not written here, because the order of the
+         # subtraction depends on which force is bigger. The lines used
+         # to be fixed at weight-minus-upthrust and print the magnitude
+         # of the difference, so a floater held under gave "2.4 − 10 =
+         # 7.6" — false arithmetic on the one step whose whole job is to
+         # be the arithmetic. The resting values below are pine floating,
+         # where the two forces are equal and every line reads as it
+         # always did.
          "rest": {"name": "pine", "weight": "5 N", "up": "5 N",
                   "wnum": 5, "unum": 5, "onum": 0,
+                  "formula": "left over = weight − upthrust",
+                  "insert": "5 N − 5 N",
+                  "finetune": "5 − 5 = 0",
                   "answer": "nothing left over — it floats",
                   "finenote": "They cancel exactly, which is what floating "
                               "is.",
@@ -362,14 +390,15 @@ LESSON = {
                    "note": "Both are already forces in newtons, so there is "
                            "nothing to convert."},
                   {"letter": "F", "label": "Formula",
-                   "line": "left over = weight − upthrust",
+                   "line": "{formula}",
                    "note": "A difference between two opposite forces, so a "
                            "beam rather than a triangle."},
                   {"letter": "I", "label": "Insert",
-                   "line": "left over = {weight} − {up}",
-                   "note": "Both figures come off the bench above."},
+                   "line": "left over = {insert}",
+                   "note": "Both figures come off the bench above, bigger "
+                           "one first."},
                   {"letter": "F", "label": "Fine-tune",
-                   "line": "{wnum} − {unum} = {onum}",
+                   "line": "{finetune}",
                    "note": "{finenote}"},
                   {"letter": "A", "label": "Answer",
                    "line": "{answer}",
@@ -469,8 +498,11 @@ LESSON = {
                  "water, the spring balance reads 37 N. What is the upthrust "
                  "on it?",
             "options": [
-                "8 N",
-                "82 N — add the two readings",
+                "8 N — 45 N in air less 37 N in water",
+                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
+                # the correct answer stops being resolvable as the
+                # second-longest.
+                "82 N — add the two balance readings",
                 "8 Pa — the water is pressing on it, so the answer is a "
                 "pressure",
                 "1.2 — divide 45 by 37",

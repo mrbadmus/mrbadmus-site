@@ -146,12 +146,31 @@ LESSON = {
         # the answer's own length. Design's four are kept verbatim: each is a
         # sentence a real student says, and only the second names a
         # destination rather than an ending.
+        # ⊕ AMENDED MRB-297, 31 Aug 2026 — "at the answer's own length" was
+        # never true, and was never gated: as delivered the four ran 30 / 59 /
+        # 43 / 36 characters, so the correct one was the visibly longest and
+        # the hook could be answered without reading any physics. The hook's
+        # `answer` index now exists, so `verify_answer_lengths` measures it.
+        # THE CORRECT OPTION IS UNCHANGED, byte for byte — the reasoning in
+        # it is the teaching. The three distractors were lengthened to its
+        # length, so "kept verbatim" no longer holds of them; each is still a
+        # wrong account a real student gives. Kept rather than deleted so the
+        # provenance is not silently overstated.
         "options": [
-            "It was used up by the friction",
+            "It was used up by the friction, the way petrol is used up",
             "Into the carpet and the ball, as a tiny rise in temperature",
-            "It was absorbed by the ground and destroyed",
-            "The ball never really had any energy",
+            "It was absorbed by the ground and destroyed somewhere down there",
+            "The ball never really had any energy — moving things store none",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 1,
         "reveal": "Into the carpet and the ball, as a very small rise in "
                   "temperature — a few thousandths of a degree, spread "
                   "across a wide area, far too little to feel but exactly "
@@ -193,10 +212,31 @@ LESSON = {
          "demand": "classify",
          "targets": "ENER-09",
          "eyebrow": "The store audit · fill in the ledger",
-         "heading": "Which stores are filled, before and after?",
-         "prompt": "Pick a scenario. Tick the stores that hold energy at the "
-                   "start and the stores that hold it at the end. Then "
-                   "check.",
+         # ── ⚖️ SCIENCE · THE LEDGER ASKS WHICH STORE *CHANGES*, NOT WHICH
+         # STORE HOLDS. The columns used to read "Filled at the start" /
+         # "Filled at the end" over a prompt asking which stores *hold*
+         # energy, and the data underneath has only ever encoded which store
+         # empties and which store fills. So a physically true tick was
+         # marked wrong: thermal on a braking car (warm brakes, warm tyres),
+         # chemical on the same car (it has a fuel tank), nuclear on the
+         # kettle (every nucleus in it). That marks the lesson's own key
+         # fact wrong. The framing is now `changes`, which is what the
+         # `before`/`after` lists have always meant.
+         # ⊕ MRB-297 · 1 Sep 2026 — SINGULAR HERE MARKS A STUDENT WRONG.
+         # The P1-1 fix earlier in this run reframed this ledger from which
+         # stores HOLD energy to which EMPTY and FILL, which was right and
+         # stays. What it also did was make both strings singular — "the
+         # store that empties and the store that fills". Scenario `sc5` two
+         # hundred lines below has `"after": ["el", "therm"]`, TWO stores,
+         # and its own verdict calls the thermal one "the interesting tick";
+         # `shared/ks3.js` marks this ledger on an EXACT SET match and names
+         # any required chip left unticked as one "you missed". So a student
+         # who obeyed the printed instruction and ticked one was marked wrong
+         # on the single scenario the page most wants them to get. Plural
+         # restored, framing kept.
+         "heading": "Which stores empty, and which stores fill?",
+         "prompt": "Pick a scenario. Tick the stores that empty and the "
+                   "stores that fill. Then check.",
          "head_counter": {"format": "{n} of 5 ledgers balanced", "total": 5,
                           "start": 0},
          # ⚖️ THREE OF FIVE, WHICH IS DESIGN'S OWN NUMBER — her
@@ -205,8 +245,8 @@ LESSON = {
          # the stop a completion badge rather than a record of the idea
          # landing.
          "ledgers_to_balance": 3,
-         "before_title": "Filled at the start",
-         "after_title": "Filled at the end",
+         "before_title": "Emptied",
+         "after_title": "Filled",
          "check_label": "Check the ledger",
          "clear_label": "Clear it",
 
@@ -235,7 +275,9 @@ LESSON = {
                          "does not go up: the energy in the stretch is the "
                          "energy in the flight. Whoever pulled the catapult "
                          "back put it there, out of their own chemical "
-                         "store."},
+                         "store. A real catapult warms its band a little "
+                         "too — we are counting only the stores that "
+                         "change enough to matter."},
              {"id": "sc2", "label": "Diver on a board",
               "text": "A diver stands still on a high board, then steps off "
                       "and falls. Judge the moment just before they hit the "

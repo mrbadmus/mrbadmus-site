@@ -57,15 +57,18 @@ QUESTIONS = [
         "band": "easier",
         "text": "What makes the Earth's magnetic field?",
         "options": [
-            {"text": "The Sun, which magnetises the planet as it goes past",
+            {"text": "The Sun, which magnetises the whole planet as it "
+                     "passes overhead",
              "correct": False,
              "why": "The field is there at night and in the middle of winter. "
                     "It is made inside the Earth."},
-            {"text": "The Earth spinning, which drags the air round with it",
+            {"text": "The Earth spinning, which drags the air around with it "
+                     "as it turns",
              "correct": False,
              "why": "Spinning on its own makes no magnetic field, and the air "
                     "has nothing to do with it."},
-            {"text": "Layers of magnetic rock in the crust, near the surface",
+            {"text": "Layers of magnetic rock in the crust, close beneath "
+                     "the surface",
              "correct": False,
              "why": "Rocks near the surface do change the field locally, but "
                     "the field covering the whole planet is made far deeper."},
@@ -303,16 +306,19 @@ QUESTIONS = [
                 "the ship is first fitted out. What problem are the spheres "
                 "there to solve?",
         "options": [
-            {"text": "The steel hull blocks the Earth's field, so the spheres "
-                     "let some of it through", "correct": False,
+            {"text": "The steel hull blocks the Earth's field, and the "
+                     "spheres are there to let some of it back through",
+             "correct": False,
              "why": "Nothing blocks a magnetic field. The hull adds one of "
                     "its own instead."},
             {"text": "The spheres are heavy enough to hold the compass steady "
-                     "when the ship rolls in rough weather", "correct": False,
+                     "when the ship rolls about in rough weather",
+             "correct": False,
              "why": "Steadying is done by the fluid the card floats in. Iron "
                     "would be a strange choice of ballast."},
-            {"text": "The spheres make the compass point at true north "
-                     "instead of magnetic north", "correct": False,
+            {"text": "The spheres pull the needle round so that the compass "
+                     "points at true north instead of magnetic north",
+             "correct": False,
              "why": "No arrangement of iron knows where true north is. That "
                     "correction is done on the chart, using the declination."},
             {"text": "The hull has been magnetised by the Earth's field and "

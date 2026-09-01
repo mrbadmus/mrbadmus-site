@@ -281,9 +281,10 @@ LESSON = {
                        "M228 130 H264 M264 130 L252 121 M264 130 L252 139",
               "note": "A fork is built to vibrate at one rate and almost "
                       "nothing else, which is why it is used for tuning. Its "
-                      "prongs move much less far than a plucked string and "
-                      "it still fills a room, because it goes on doing it "
-                      "for a long time."},
+                      "prongs move much less far than a plucked string, and "
+                      "two thin prongs push very little air, so a fork held "
+                      "up on its own is quiet; stand its base on a table and "
+                      "the whole table pushes the air for it."},
              {"id": "drum", "label": "Drum skin",
               "caption": "DRUM SKIN", "moves": "The stretched skin",
               "driven": "set going by a hit, then left alone",

@@ -125,6 +125,20 @@ def r_light_gates(a, act_id):
     for the MEAN of three times, which only makes sense if they can fall
     either side.
 
+    ⚠️ **THE CLOSING SENTENCE IS CHOSEN BY THE RECORDED ROWS** (MRB-297 /
+    P3-1). The bench deliberately lets a student change the gate separation
+    and the ramp between runs — that is what the Distance and Ramp columns
+    are for — and `close` asserts "the same distance every time" and then
+    prescribes a method: average the three times and divide the distance by
+    it. That method is invalid for three runs taken on three setups. So
+    `close` is shown ONLY when every recorded row shares a distance and a
+    ramp, and `close_mixed` is shown otherwise. Both are required; the
+    controls stay free, because a student who changes the setup and is told
+    what it cost has learned the thing rung 3 then assesses.
+
+    ⚠️ TWO CLOSING PANELS, NEVER BOTH VISIBLE. `wireLightGates` hides one
+    and shows the other in the same `paint()`.
+
     HOOKS: `data-lgate` (wrapper, `data-scatter`, `data-target`) ·
     `data-lgate-gate` · `data-lgate-gopt` · `data-lgate-bench` ·
     `data-lgate-ramp` (valued with the ramp index, carrying `data-v`) ·
@@ -166,6 +180,21 @@ def r_light_gates(a, act_id):
             "tile must say the speed has NOT been measured — an "
             "instrument that hands over the answer has removed the lesson "
             "(NOTES-P3 §1 step 2)." % (act_id, val))
+
+    # ⚖️ THE CLOSING SENTENCE IS COMPOSED FROM THE ROWS. See the ruling
+    # above: `close` may only be shown when the recorded runs are repeats
+    # of ONE measurement, so a second sentence for the other case is not
+    # optional.
+    if not (a.get("close") or "").strip():
+        raise ValueError(
+            "light-gates %r has no `close`." % act_id)
+    if not (a.get("close_mixed") or "").strip():
+        raise ValueError(
+            "light-gates %r has no `close_mixed` sentence. The bench lets "
+            "the gate separation AND the ramp change between runs, so the "
+            "`close` — which prescribes the mean of three times over one "
+            "distance — is a valid method for only one of the two cases "
+            "the student can reach (MRB-297 / P3-1)." % act_id)
 
     lo = float(a.get("gap_min") or 0)
     hi = float(a.get("gap_max") or 0)
@@ -218,6 +247,7 @@ def r_light_gates(a, act_id):
             '<table class="ks3-lgate-table"><thead><tr>%s</tr></thead>'
             '<tbody data-lgate-rows></tbody></table></div>'
             '<p class="ks3-lgate-close" data-lgate-close hidden>%s</p>'
+            '<p class="ks3-lgate-close" data-lgate-close-mixed hidden>%s</p>'
             '</div></div>'
             % (float(a.get("scatter_pct") or 3),
                int(a.get("runs_to_record") or 3),
@@ -226,7 +256,8 @@ def r_light_gates(a, act_id):
                lo, hi, step, start, outs,
                t(a.get("release_label") or "Release the trolley"),
                t(a.get("record_label") or "Record this run"),
-               heads, rich(a.get("close") or "")))
+               heads, rich(a.get("close") or ""),
+               rich(a["close_mixed"])))
 
 
 # ═══ p3-01 · #s-compare · three pairs ════════════════════════════════════
@@ -321,7 +352,8 @@ def r_graph_plot(a, act_id):
     two intersections cannot be plotted with buttons at all, and the block
     would render a grid the task cannot be completed on.
 
-    HOOKS: `data-gplot` (wrapper, `data-target`) · `data-gplot-cell`
+    HOOKS: `data-gplot` (wrapper, `data-target`, `data-line` — the
+    joining line's own vertices, in grid percentages) · `data-gplot-cell`
     (valued `<t>,<d>`) · `data-gplot-seek` · `data-gplot-join` ·
     `data-gplot-line` · `data-gplot-read` (valued with the read id) ·
     `data-gplot-opt` · `data-gplot-why` · `data-gplot-close`.
@@ -374,6 +406,54 @@ def r_graph_plot(a, act_id):
 
     order = "|".join("%s,%s" % (p["t"], p["d"]) for p in data)
 
+    # ⚖️ ONE FORMULA FOR THE DOTS AND THE LINE. A cell's centre sits at
+    # `(index + 0.5) / count` of the grid box — that is where the CSS puts
+    # the button's dot — and the joining line is built from THE SAME
+    # expression here. It used to be re-derived in the wiring as
+    # `value ÷ max`, which is half a cell out in each direction: the first
+    # vertex was drawn outside the grid frame and the flat run, the whole
+    # point of the lesson, was the part most visibly off its own dots. The
+    # wiring now draws `data-line` verbatim, so there is no second formula
+    # left to drift.
+    def centre(i, n):
+        return (i + 0.5) / float(n) * 100.0
+
+    cw, ch = 100.0 / len(ts), 100.0 / len(ds)
+    verts = []
+    for p in data:
+        col = ts.index(p["t"])
+        row = len(ds) - 1 - ds.index(p["d"])          # ds are drawn bottom-up
+        x, y = centre(col, len(ts)), centre(row, len(ds))
+        if not (col * cw < x < (col + 1) * cw
+                and row * ch < y < (row + 1) * ch):
+            raise ValueError(
+                "graph-plot %r would draw the vertex for (%s s, %s m) at "
+                "(%.2f%%, %.2f%%), which is outside the cell the student "
+                "actually plots — column %d spans %.2f–%.2f%% across, row "
+                "%d spans %.2f–%.2f%% down. The dots and the joined line "
+                "must come from one cell-centre formula; when they do not, "
+                "the line does not pass through the points, and this is "
+                "the page that teaches a child to plot points and read a "
+                "line."
+                % (act_id, p["t"], p["d"], x, y, col, col * cw,
+                   (col + 1) * cw, row, row * ch, (row + 1) * ch))
+        verts.append((x, y))
+    line_pts = " ".join("%.2f,%.2f" % v for v in verts)
+
+    # ⚖️ THE SCALE IS ON THE PAGE, NOT ONLY IN THE ACCESSIBLE NAME. The
+    # grid's `aria-label` states the range, so a screen-reader user was
+    # told the scale and a sighted one was not — while rung 3 asks for a
+    # time or a distance to be READ OFF THE AXES. The authored `t_values`
+    # and `d_values` are rendered as two strips on the same
+    # `repeat(n, 1fr)` tracks as the grid, so each number lands on its own
+    # column or row by construction. They are `aria-hidden` because the
+    # accessible name already carries the range and each button names its
+    # own coordinates; a bare run of numbers would only add noise.
+    NUM = ("font-family:var(--ks3-font-mono);font-size:11px;"
+           "color:var(--ks3-ink-muted);")
+    dnums = "".join("<span>%s</span>" % dv for dv in reversed(ds))
+    tnums = "".join("<span>%s</span>" % tv for tv in ts)
+
     reads_html = "".join(
         '<li class="ks3-gplot-read" data-gplot-read="%s" data-answer="%d" '
         'data-why="%s"><p class="ks3-gplot-q">%s</p>'
@@ -384,26 +464,38 @@ def r_graph_plot(a, act_id):
                    for i, o in enumerate(r["options"])))
         for r in reads)
 
-    return ('<div class="ks3-gplot" data-gplot data-target="%d" '
-            'data-order="%s">'
-            '<p class="ks3-gplot-seek">Looking for: '
-            '<span data-gplot-seek></span></p>'
-            '<div class="ks3-gplot-wrap">'
-            '<span class="ks3-gplot-ylab">%s</span>'
+    axes = ('<div class="ks3-gplot-axes" style="display:grid;'
+            'grid-template-columns:auto 1fr;column-gap:6px">'
+            '<div class="ks3-gplot-dnums" aria-hidden="true" '
+            'style="%sdisplay:grid;grid-template-rows:repeat(%d,1fr);'
+            'align-items:center;justify-items:end;padding:2px 0">%s</div>'
             '<div class="ks3-gplot-grid" role="group" aria-label="%s" '
             'style="--cols:%d;--rows:%d">%s'
             '<svg class="ks3-gplot-line" data-gplot-line aria-hidden="true" '
             'viewBox="0 0 100 100" preserveAspectRatio="none"></svg>'
             '</div>'
+            '<div class="ks3-gplot-tnums" aria-hidden="true" '
+            'style="%sdisplay:grid;grid-column:2;'
+            'grid-template-columns:repeat(%d,1fr);justify-items:center;'
+            'padding:0 2px;margin-top:4px">%s</div>'
+            '</div>'
+            % (NUM, len(ds), dnums, e(a.get("alt", "")), len(ts), len(ds),
+               "".join(cells), NUM, len(ts), tnums))
+
+    return ('<div class="ks3-gplot" data-gplot data-target="%d" '
+            'data-order="%s" data-line="%s">'
+            '<p class="ks3-gplot-seek">Looking for: '
+            '<span data-gplot-seek></span></p>'
+            '<div class="ks3-gplot-wrap">'
+            '<span class="ks3-gplot-ylab">%s</span>%s'
             '<span class="ks3-gplot-xlab">%s</span></div>'
             '<button type="button" class="ks3-seg-btn ks3-gplot-join" '
             'data-gplot-join disabled>%s</button>'
             '<ul class="ks3-gplot-reads" role="list">%s</ul>'
             '<p class="ks3-gplot-close" data-gplot-close hidden>%s</p>'
             '</div>'
-            % (len(data), e(order), t(a.get("d_label", "")),
-               e(a.get("alt", "")), len(ts), len(ds), "".join(cells),
-               t(a.get("t_label", "")),
+            % (len(data), e(order), line_pts, t(a.get("d_label", "")),
+               axes, t(a.get("t_label", "")),
                t(a.get("join_label") or "Join the points"),
                reads_html, rich(a.get("close") or "")))
 
@@ -425,6 +517,14 @@ def r_journey_match(a, act_id):
     never require the line to fall, and the lesson's whole `FORCE-06`
     confrontation — that a falling line is the journey home rather than
     a hill — has nothing to stand on.
+
+    ⚠️ **THE CLAMP AT 0 m MUST HAVE A SENTENCE** (MRB-297 / P3-12). The
+    walker cannot go back past the start — "distance from the start" does
+    not go negative and a signed axis is not KS3 — but the refusal used to
+    be silent, so four "Walk back" blocks drew a flat line and reported
+    "0.0 m from the start", byte-identical to standing still four times on
+    the page whose key fact is that a flat line is stopped. `back_refused`
+    is what the readout says instead, and it is required.
 
     ⚠️ RENDERS INTO `ks3-jwalk-block`, not `ks3-jmatch-block`: that stem was
     already registered by another unit, and two families wearing one shell
@@ -457,6 +557,13 @@ def r_journey_match(a, act_id):
             "never contain a flat section — and 'a flat line is stopped, "
             "not slow' is this lesson's key fact." % act_id)
 
+    if not (a.get("back_refused") or "").strip():
+        raise ValueError(
+            "journey-match %r has no `back_refused` sentence. A walk-back "
+            "from 0 m is clamped, and a clamp with nothing to say draws a "
+            "walking walker as a stopped one — which is this lesson's key "
+            "fact running in reverse (MRB-297 / P3-12)." % act_id)
+
     ids = {m["id"] for m in modes}
     bad = [x for x in target if x not in ids]
     if bad:
@@ -481,7 +588,7 @@ def r_journey_match(a, act_id):
         for i in range(len(target)))
 
     return ('<div class="ks3-jwalk" data-jwalk data-secs="%d" '
-            'data-target="%s" data-n="%d">'
+            'data-target="%s" data-n="%d" data-back-refused="%s">'
             '<div class="ks3-jwalk-corridor" role="img" aria-label="%s">'
             '<span class="ks3-jwalk-walker" data-jwalk-walker '
             'aria-hidden="true"></span></div>'
@@ -503,7 +610,8 @@ def r_journey_match(a, act_id):
             '<p class="ks3-jwalk-close" data-jwalk-close hidden>%s</p>'
             '</div>'
             % (int(a.get("seg_seconds") or 3), e("|".join(target)),
-               len(target), e(a.get("alt", "")), segs,
+               len(target), e(a["back_refused"]),
+               e(a.get("alt", "")), segs,
                t(a.get("send_label") or "Send the walker"),
                t(a.get("clear_label") or "Clear the line"),
                rich(a.get("close") or "")))
@@ -512,16 +620,45 @@ def r_journey_match(a, act_id):
 # ═══ p3-03 · #s-frames · change who watches ══════════════════════════════
 
 def r_relative_frames(a, act_id):
-    """⊕ p3-03 `#s-frames` — two cars, three viewpoints, four readings.
+    """⊕ p3-03 `#s-frames` — two cars, three viewpoints, five readings.
 
     ⚖️ **EVERY READING IS COMPUTED FROM THE TWO SLIDERS.** `v − v_observer`,
-    every time. Authoring any of the four would let a viewpoint show a
+    every time. Authoring any of the five would let a viewpoint show a
     number that does not follow from the speeds above it.
+
+    ⊕ MRB-297 · 1 Sep 2026 — FIVE READINGS, NOT FOUR. Both lines above
+    said "four". Kept in this note rather than left in place, because four
+    is the count the renderer's `want` set still enforces and a reader who
+    trusts the summary will not look for the fifth. `self` was added by
+    P3-18 below and is now REQUIRED — the raise at the foot of this
+    function refuses a payload without it — so the bench ships five tiles.
+    The `want` set and its "All four have to be on screen together" message
+    are still correct as written: they name the four frame-labelled
+    readouts only, and `self` is checked separately just after them.
 
     ⚖️ **ONE READING IS ALWAYS ZERO — WHICHEVER BELONGS TO THE CURRENT
     VIEWPOINT.** That is the lesson: nothing about either car changed, and
     something is now stationary. The wiring outlines it rather than hiding
     the others.
+
+    ⚠️ **AND THAT ZERO NEEDS A TILE TO LIVE IN** (MRB-297 / P3-18). It used
+    to have none. The four readouts are frame-labelled quantities ("A from
+    the roadside", "B from car A") and so correctly do not change with the
+    picker — but at the shipped defaults they read 25.0 / 20.0 / 5.0 / 5.0
+    in all three viewpoints, no reading is zero, and the closing panel
+    asserted one was. The `self` readout is the fifth tile: it follows the
+    picker, names what you are sitting in, and reads 0.0 m/s from every
+    seat. Its per-observer wording is `self_labels`, carried onto the tile
+    as `data-self-label-<observer>` so the wiring never hard-codes it.
+
+    ⚠️ **THE CARS MOVE, AND THEY MOVE AT `v − v_observer`** (MRB-297 /
+    P3-19). Both used to sit at fixed `left:` percentages that nothing ever
+    changed, so "From the roadside both cars are moving" printed over a
+    still picture and a viewpoint change moved nothing but a number in a
+    box. `wireRelativeFrames` now drifts each car from the relative
+    velocity it already computes and drives the road's duration from
+    `|v_observer|`. Note the road's own rule is unchanged: it belongs to
+    the ground, so it is still the car seats that make it slide.
 
     ⚠️ **A CAR DOES NOT TURN ROUND WHEN YOU CHANGE VIEWPOINT** (Design's
     flag 11, kept deliberately). A car's drawn ORIENTATION follows its
@@ -565,6 +702,25 @@ def r_relative_frames(a, act_id):
             "the viewpoint changed the number and not the car."
             % (act_id, sorted(want - have)))
 
+    # ⚖️ THE OBSERVER'S OWN FRAME IS THE FIFTH TILE, AND IT IS THE LESSON.
+    # See the ruling above. Without it the closing panel's "one of the
+    # readings is always zero" is a claim about a tile that is not there.
+    self_labels = a.get("self_labels") or {}
+    if "self" not in have:
+        raise ValueError(
+            "relative-frames %r has no `self` readout. The observer's own "
+            "frame — the reading that is always zero — is what this lesson "
+            "is about, and without it the closing panel asserts a zero that "
+            "is nowhere on screen (MRB-297 / P3-18)." % act_id)
+    missing = [o["id"] for o in obs
+               if not (self_labels.get(o["id"]) or "").strip()]
+    if missing:
+        raise ValueError(
+            "relative-frames %r has no `self_labels` entry for observer(s) "
+            "%s. The fifth tile is relabelled by the picker — it names what "
+            "you are sitting in — so every observer needs its own words."
+            % (act_id, missing))
+
     lo = float(a.get("speed_min", 0))
     hi = float(a.get("speed_max") or 0)
     step = float(a.get("speed_step") or 0)
@@ -576,11 +732,18 @@ def r_relative_frames(a, act_id):
         _p3_seg("ks3-seg-btn", o["label"], pressed=(o["id"] == "ground"),
                 data_rframe_obs=o["id"]) for o in obs)
 
+    # The fifth tile carries every observer's wording as data, so the
+    # wiring relabels it from the page rather than from a string in JS.
+    self_attrs = "".join(
+        ' data-self-label-%s="%s"' % (e(o["id"]), e(self_labels[o["id"]]))
+        for o in obs)
+
     outs = "".join(
-        '<div class="ks3-rframe-out" data-rframe-outwrap="%s">'
-        '<p class="ks3-rframe-outlabel">%s</p>'
+        '<div class="ks3-rframe-out" data-rframe-outwrap="%s"%s>'
+        '<p class="ks3-rframe-outlabel" data-rframe-outlabel="%s">%s</p>'
         '<p class="ks3-rframe-outval" data-rframe-out="%s"></p></div>'
-        % (e(o["id"]), t(o["label"]), e(o["id"])) for o in outs_spec)
+        % (e(o["id"]), self_attrs if o["id"] == "self" else "",
+           e(o["id"]), t(o["label"]), e(o["id"])) for o in outs_spec)
 
     return ('<div class="ks3-rframe" data-rframe>%s'
             '<div class="ks3-rframe-bench" data-rframe-bench hidden>'

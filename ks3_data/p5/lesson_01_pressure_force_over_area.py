@@ -110,10 +110,10 @@ LESSON = {
         "commit": "Your finger and your thumb push on the pin with the same "
                   "force. So why does only one end go in?",
         "options": [
-            "The point is sharper, so it pushes with a bigger force",
+            "The point is sharper, so the push it gives out is bigger",
             "The same force is acting on a much smaller area at the point",
-            "The metal is stronger at the point than at the head",
-            "Your thumb pushes harder than your finger does",
+            "The metal is stronger at the point than it is at the head",
+            "Your thumb pushes harder on the pin than your finger does",
         ],
         "answer": 1,
         "reveal": "Nothing about the force is different. What is different "
@@ -478,7 +478,7 @@ LESSON = {
                  "600 N. Its base measures 0.30 m². What is the pressure on "
                  "the floor?",
             "options": [
-                "2000 Pa",
+                "2000 Pa — 600 N shared over 0.30 m²",
                 "180 Pa — multiply the force by the area",
                 "2000 N — a press on the floor is a force, so it is in "
                 "newtons",
@@ -630,6 +630,11 @@ LESSON = {
     "ks4_becomes": "Pressure in pascals and kilopascals, pressure in fluids "
                    "and its increase with depth, upthrust and floating, and "
                    "pressure–volume work on gases.",
+
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Press the pin against your fingertip firmly, but never "
+                   "hard enough to break the skin. You are feeling the "
+                   "difference, not testing how much you can stand.",
 
     "convention_note": "The sand tray is a teaching model. Its giving-way "
                        "pressure is fixed at 6000 Pa so that failure is "

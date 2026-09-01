@@ -35,7 +35,10 @@ QUESTIONS = [
             {"text": "A push", "correct": False,
              "why": "Gravity never pushes. There is no known circumstance in "
                     "which two masses repel each other gravitationally."},
-            {"text": "A pull", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "A pull, always and only", "correct": True},
             {"text": "A push or a pull, depending on the two masses",
              "correct": False,
              "why": "Electric charges can do either. Gravity only ever "
@@ -92,18 +95,18 @@ QUESTIONS = [
         "band": "easier",
         "text": "What is an orbit?",
         "options": [
-            {"text": "A path along which gravity has been cancelled out",
-             "correct": False,
+            {"text": "A path along which gravity has been cancelled out "
+                     "completely", "correct": False,
              "why": "Nothing cancels gravity. An orbiting body is being "
                     "pulled the whole time, which is why its path curves."},
-            {"text": "A groove in space that a moon or planet runs along",
+            {"text": "A groove in space that a moon or a planet runs along",
              "correct": False,
              "why": "There is nothing there to run along. The path is the "
                     "result of a pull and a sideways motion, not a track."},
             {"text": "A body falling towards another while moving sideways "
                      "fast enough to keep missing it", "correct": True},
-            {"text": "A balance between gravity pulling inwards and a force "
-                     "pushing outwards", "correct": False,
+            {"text": "A balance between gravity pulling inwards and some "
+                     "other force pushing outwards", "correct": False,
              "why": "There is no outward force. If the forces balanced, the "
                     "body would travel in a straight line and leave."},
         ],
@@ -167,10 +170,13 @@ QUESTIONS = [
              "why": "The two forces really are equal. Calling them equal and "
                     "then treating one as stronger is the contradiction the "
                     "question is testing."},
-            {"text": "Because the Sun is anchored in place by the rest of the "
-                     "galaxy", "correct": False,
-             "why": "The Sun is not anchored to anything; it orbits the "
-                    "centre of the galaxy itself."},
+            # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so the
+            # correct answer stops being resolvable as the second-longest.
+            {"text": "Because the Sun is anchored by the pull of the rest of "
+                     "the galaxy", "correct": False,
+             "why": "The Sun is not anchored by anything. The galaxy's pull "
+                    "is what makes it orbit the centre of the galaxy, not "
+                    "what holds it still."},
             {"text": "Because the Sun has far more mass, so the same force "
                      "moves it far less", "correct": True},
             {"text": "Because the Earth is moving and the Sun is standing "
@@ -217,16 +223,16 @@ QUESTIONS = [
         "options": [
             {"text": "It falls straight down onto the Moon, because there is "
                      "nothing to curve its path", "correct": True},
-            {"text": "It goes into orbit, because anything released in space "
-                     "orbits", "correct": False,
+            {"text": "It goes into orbit, because anything released in "
+                     "space orbits something", "correct": False,
              "why": "An orbit needs the sideways motion as well as the pull. "
                     "With only the pull, there is nothing to miss with."},
-            {"text": "It stays where it is, because it has no weight in "
-                     "space", "correct": False,
+            {"text": "It stays exactly where it is, because it has no "
+                     "weight out there in space", "correct": False,
              "why": "It has a weight — the Moon's field is pulling on it. "
                     "That pull is what makes it fall."},
-            {"text": "It drifts away, because the Moon's gravity is too weak "
-                     "to hold it", "correct": False,
+            {"text": "It drifts slowly away, because the Moon's gravity is "
+                     "far too weak to hold it", "correct": False,
              "why": "The Moon's field is about a sixth of Earth's, which is "
                     "weak but nowhere near nothing. It pulls the probe in."},
         ],
@@ -260,18 +266,19 @@ QUESTIONS = [
                 "pressed against the outside wall. How does that compare with "
                 "what keeps the Moon in orbit?",
         "options": [
-            {"text": "It is the same effect: an outward force acts in both "
-                     "cases", "correct": False,
+            {"text": "It is the same effect: an outward force acts on you "
+                     "and on the Moon alike", "correct": False,
              "why": "There is no outward force in either case. The wall "
                     "pushes you INWARDS, which is what bends your path."},
-            {"text": "It is the opposite: the ride pushes outwards while "
-                     "gravity pulls inwards", "correct": False,
+            {"text": "It is the opposite: the ride pushes you outwards "
+                     "while gravity pulls the Moon steadily inwards",
+             "correct": False,
              "why": "The ride does not push outwards. The only force it "
                     "applies to you is the wall pushing in."},
             {"text": "Both are the same thing: your body carrying on straight "
                      "while something bends its path inwards", "correct": True},
-            {"text": "They are unrelated, because the ride uses a real force "
-                     "and gravity does not", "correct": False,
+            {"text": "They are unrelated, because the ride uses a real "
+                     "force and gravity is not one", "correct": False,
              "why": "Gravity is as real a force as the wall's push. Both bend "
                     "a path that would otherwise be straight."},
         ],
@@ -283,18 +290,19 @@ QUESTIONS = [
         "text": "Astronomers detect a distant star wobbling slightly, in a "
                 "regular rhythm. What is the best explanation?",
         "options": [
-            {"text": "The star is pulsing in and out as it burns its fuel",
-             "correct": False,
+            {"text": "The star is pulsing in and out in a steady rhythm as "
+                     "it burns its fuel", "correct": False,
              "why": "Some stars do pulse, and that changes their brightness "
                     "rather than moving them from side to side."},
             {"text": "The star is being pulled by something orbiting it, "
                      "because gravitational pulls come in pairs", "correct": True},
-            {"text": "Something is pushing the star from alternating sides",
-             "correct": False,
+            {"text": "Something is pushing the star first from one side and "
+                     "then from the other", "correct": False,
              "why": "Gravity never pushes, and there is nothing in the "
                     "picture that could."},
-            {"text": "The light is bending on its way to us, so the star only "
-                     "appears to move", "correct": False,
+            {"text": "The light is bending on its way to us, so the star "
+                     "only appears to move from side to side",
+             "correct": False,
              "why": "Light does bend near very massive objects, and it would "
                     "not produce a regular repeating rhythm."},
         ],

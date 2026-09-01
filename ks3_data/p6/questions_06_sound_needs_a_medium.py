@@ -29,14 +29,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "Sound cannot travel through a vacuum because…",
         "options": [
-            {"text": "a vacuum is too cold", "correct": False,
+            {"text": "a vacuum is far too cold for any disturbance to be "
+                     "passed along from place to place", "correct": False,
              "why": "Temperature changes the speed a little. It is not why "
                     "there is no sound at all."},
-            {"text": "a vacuum is too dark", "correct": False,
+            {"text": "a vacuum is far too dark for any disturbance to be "
+                     "able to find its way across", "correct": False,
              "why": "Light and sound are different things, and darkness has "
                     "nothing to do with it."},
-            {"text": "there are no particles to pass the disturbance from "
-                     "one to the next", "correct": True},
+            {"text": "there are no particles at all there to pass the "
+                     "disturbance from one to the next", "correct": True},
             {"text": "sound is absorbed by empty space, which soaks up any "
                      "disturbance that tries to cross it", "correct": False,
              "why": "Absorbing needs a material to do the absorbing, and "
@@ -128,8 +130,9 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why does sound travel faster in steel than in air?",
         "options": [
-            {"text": "Because steel is heavier, and heavy things move "
-                     "faster", "correct": False,
+            {"text": "Because steel is a great deal heavier than air, and "
+                     "heavy things always move faster through a room than "
+                     "lighter ones do", "correct": False,
              "why": "Nothing is moving through the steel. The disturbance is "
                     "handed on from particle to particle."},
             {"text": "Because steel's particles are close together and "
@@ -140,7 +143,9 @@ QUESTIONS = [
                      "faster the sound crosses it", "correct": False,
              "why": "Difficulty getting in is not a mechanism, and it would "
                     "predict slowness rather than speed."},
-            {"text": "Because steel does not absorb any of the sound",
+            {"text": "Because steel does not absorb any of the sound at "
+                     "all, so the whole of it arrives at the far end "
+                     "rather than only a part of what set off",
              "correct": False,
              "why": "Steel does absorb some. Absorbing changes how much "
                     "arrives, not how fast it gets there."},
@@ -171,18 +176,21 @@ QUESTIONS = [
         "text": "A whale call carries for tens of kilometres through the "
                 "sea. Which comparison with air is right?",
         "options": [
-            {"text": "Sound in water is slower than in air, so it lasts "
-                     "longer", "correct": False,
+            {"text": "Sound in water is slower than it is in air, so the "
+                     "call lasts longer and therefore carries further",
+             "correct": False,
              "why": "It is faster in water, about 1500 m/s against 340."},
-            {"text": "Sound in water and in air travel at the same speed, "
-                     "because it is the same sound", "correct": False,
+            {"text": "Sound in water and in air travel at exactly the same "
+                     "speed, because it is the same sound either way",
+             "correct": False,
              "why": "The speed belongs to the material, not to the sound, "
                     "and water and air are very different materials."},
             {"text": "Sound in water is more than four times faster than in "
                      "air, because the particles are already touching",
              "correct": True},
             {"text": "Sound cannot travel in water at all, which is why "
-                     "whales use light", "correct": False,
+                     "whales have to signal to each other with light "
+                     "instead", "correct": False,
              "why": "Water carries sound extremely well; it is light that "
                     "struggles to get far through the sea."},
         ],
@@ -242,18 +250,18 @@ QUESTIONS = [
         "text": "Why is the value 340 m/s always quoted with a temperature "
                 "attached?",
         "options": [
-            {"text": "Because cold air is denser, and denser air blocks "
-                     "sound", "correct": False,
+            {"text": "Because cold air is denser than warm air, and denser "
+                     "air blocks the sound on its way", "correct": False,
              "why": "Density is not the mechanism here, and warm air is "
                     "faster, not slower."},
-            {"text": "Because sound is only made at certain temperatures",
-             "correct": False,
+            {"text": "Because sound is only made within a certain range of "
+                     "temperatures, and not outside it", "correct": False,
              "why": "Sound is made at any temperature. The clause is about "
                     "the speed, not about whether sound exists."},
             {"text": "Because warmer particles are already moving faster, so "
                      "they reach their neighbours sooner", "correct": True},
-            {"text": "Because thermometers have to be used to measure "
-                     "sound", "correct": False,
+            {"text": "Because a thermometer is the instrument that has to "
+                     "be used when measuring sound", "correct": False,
              "why": "Sound is timed rather than measured with a thermometer. "
                     "The temperature is a condition, not an instrument."},
         ],
@@ -265,8 +273,9 @@ QUESTIONS = [
         "text": "An astronaut on a spacewalk hears their own breathing and "
                 "the radio, but nothing from outside. Why?",
         "options": [
-            {"text": "Because the helmet blocks outside sound the way "
-                     "earplugs do", "correct": False,
+            {"text": "Because the helmet blocks the outside sound in the "
+                     "way that a pair of earplugs blocks the noise of a "
+                     "busy room", "correct": False,
              "why": "Even with the visor open there would be nothing to "
                     "hear, because there is nothing outside to carry it."},
             {"text": "Because sound outside is at frequencies too high for "
@@ -275,7 +284,8 @@ QUESTIONS = [
              "why": "There is no sound outside at any frequency, because "
                     "there are no particles to make one."},
             {"text": "Because the radio is louder than anything outside "
-                     "could be", "correct": False,
+                     "could ever be, and it simply drowns out the rest of "
+                     "what arrives at the helmet", "correct": False,
              "why": "Loudness is not the issue. Outside there is no sound "
                     "at all to be quieter."},
             {"text": "Because the suit holds a pocket of air that carries "

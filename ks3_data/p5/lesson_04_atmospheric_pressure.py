@@ -31,9 +31,15 @@ nothing cannot pull.
 
 101, 90, 75, 50, 31 and 23 kPa at 0, 1000, 2500, 5500, 8850 and 11 000 m
 — each within a kilopascal of the international standard atmosphere. The
-boiling points (100, 97, 92, 82, 71, 65 °C) follow from them. Real
-pressure moves several kilopascals with the weather, which is what makes
-a barometer useful at all, and the foot line says so. `r_altitude_column`
+boiling points (100, 97, 92, 82, 71, 63 °C) follow from them.
+
+⊕ MRB-297 · 1 Sep 2026 — the last one read 65 °C and is now 63 °C. Water's
+saturation pressure is 22.9 kPa at 63 °C and 25.0 kPa at 65 °C, so 23 kPa
+boils at 63, and 65 was two degrees out. Every other row is within about a
+degree of its own pressure, so this one was also the odd row out.
+
+Real pressure moves several kilopascals with the weather, which is what
+makes a barometer useful at all, and the foot line says so. `r_altitude_column`
 asserts that the pressure FALLS at every step, because that is the
 statement this lesson owns.
 
@@ -77,14 +83,52 @@ LESSON = {
     "references": ["pressure-in-liquids", "pressure-force-over-area"],
     "ks4_links": [],
 
-    "meta_description": "Boil a splash of water in a can, seal it and cool "
-                        "it, and the can crushes itself flat with nothing "
-                        "near it. Take three things up a mountain and find "
-                        "out what was pressing all along.",
+    # ── ⚠️ NO `safety_note` ON THIS LESSON, AND THE ABSENCE IS DELIBERATE ──
+    #
+    # ⊕ MRB-297, 31 Aug 2026. Mide approved eleven safety notes on 30 Aug.
+    # TEN of them were placed, across TWELVE lessons — the P7 Sun line goes
+    # on two lessons and the P10 coil line on two, character for character
+    # identical each time.
+    #
+    # ⊕ CORRECTED 1 Sep 2026. This used to say "twelve safety notes … and
+    # eleven were placed", which is wrong twice over and the same wrong
+    # count stands in commit a60252844's message. Counted from the tree:
+    # thirteen physics lessons carry a `safety_note`, but one of them,
+    # `p4-08 springs-and-hookes-law`, had its note long before this run
+    # started and is not Mide's 30 Aug work. That leaves twelve placements
+    # of TEN distinct texts, not eleven. Ten placed plus this one withheld
+    # is ELEVEN approved.
+    #
+    # The eleventh was for THIS lesson and reads
+    # "Teacher demonstration only — never try this one yourself. …".
+    # It is NOT here, and it is not to be added without his say-so.
+    #
+    # Why: the note assumes the crushed can is a teacher demonstration, and
+    # this lesson's own `meta_description` and `big_question` were written as
+    # an INSTRUCTION TO THE STUDENT — "Boil a splash of water in an empty
+    # can, seal it, and cool it." A note saying "never try this one
+    # yourself" under a page that tells a child to do it would make the page
+    # contradict itself on a safety point, so the run's rule applied: where a
+    # note's assumption is contradicted by the lesson, the note is not placed
+    # and NOT ADAPTED — it goes back to Mide.
+    #
+    # ⊕ AMENDED 1 Sep 2026, by the cold double-check, which was right that
+    # withholding the note ALONE left the worst of the three states: a do-it
+    # instruction on a hazard, with nothing beside it. Audit M1's option (c)
+    # pairs the two, so the two leading fields are now in the SAME PASSIVE
+    # VOICE the lesson's own hook already uses nineteen lines below ("A
+    # little water is boiled … The can is sealed and stood in cold water").
+    # No new safety wording was written and no claim about who does it was
+    # added; an instruction was turned back into a description, in the
+    # lesson's own words. **The note itself is still Mide's to rule on.**
+    "meta_description": "A little water is boiled in a can, the can is "
+                        "sealed and cooled, and it crushes itself flat with "
+                        "nothing near it. Take three things up a mountain "
+                        "and find out what was pressing all along.",
 
-    "big_question": "Boil a splash of water in an empty can, seal it, and "
-                    "cool it. The can crushes itself flat, and nothing goes "
-                    "anywhere near it.",
+    "big_question": "A little water is boiled in an empty can, which is then "
+                    "sealed and cooled. The can crushes itself flat, and "
+                    "nothing goes anywhere near it.",
 
     "rail": [
         {"anchor": "s-hook",    "short": "CAN",
@@ -111,12 +155,21 @@ LESSON = {
             # been invented: her prompt was ported and her answers were
             # not, which the HTML comparison could not see because a
             # `.dc.html` renders them from `{{ opt.text }}`.
-            "The vacuum inside sucked the sides in",
+            # ⊕ AMENDED MRB-297, 31 Aug 2026 — no longer true of all four,
+            # and kept rather than deleted so the provenance is not silently
+            # overstated. HER CORRECT OPTION IS UNCHANGED, byte for byte.
+            # The distractors were re-authored to the same length and shape:
+            # as delivered they were terse beside a reasoned correct answer,
+            # so the right one was the visibly longest and the hook could be
+            # answered without reading it.
+            "The vacuum inside sucked the sides in, because empty space pulls "
+            "on what surrounds it",
             "The air outside was always pressing that hard, and the steam "
             "inside had been pushing back",
-            "The metal shrank as it cooled",
+            "The metal shrank as it cooled, and pulled its own walls inwards "
+            "with it",
             "The steam pulled the sides in as it cooled, because a gas "
-            "turning back to liquid drags whatever is around it",
+            "turning to liquid drags things in",
         ],
         "answer": 1,
         "reveal": "The air outside. It was pressing that hard the whole time "
@@ -212,9 +265,11 @@ LESSON = {
              {"id": "h8850", "label": "8850 m",
               "name": "the summit of Everest", "m": 8850, "kpa": 31,
               "boil": 71},
+             # ⊕ MRB-297 · 1 Sep 2026 — `boil` was 65. 23 kPa is the
+             # saturation pressure of water at about 63 °C. See the note.
              {"id": "h11000", "label": "11 000 m",
               "name": "cruising height for an airliner", "m": 11000,
-              "kpa": 23, "boil": 65},
+              "kpa": 23, "boil": 63},
          ],
          "cases": [
              {"id": "bag", "label": "Sealed bag", "tile": "The bag",
@@ -525,7 +580,17 @@ LESSON = {
                 "66 667 N — divide the pressure by the area",
                 "150 000 Pa — the air is pressing, so the answer is a "
                 "pressure",
-                "150 000 N",
+                # ⊕ MRB-297 · 1 Sep 2026 — THE CORRECT OPTION DID NOT PARSE.
+                # It read "150 000 N — 100 000 Pa acting on each of 1.5 m²",
+                # which puts the whole pressure on each of one and a half
+                # square metres and reads as nonsense. Its three siblings in
+                # P5 use the working form — "600 N shared over 0.30 m²",
+                # "1500 N shared over 0.05 m²" — and this rung's own
+                # feedback already says it properly: "each square metre
+                # carries 100 000 N, so the two multiply". The wording now
+                # matches the feedback; the number and the answer index are
+                # untouched.
+                "150 000 N — 100 000 N on each of the 1.5 m²",
                 "0.000015 N — divide the area by the pressure",
             ],
             "answer": 2,

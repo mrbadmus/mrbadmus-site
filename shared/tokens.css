@@ -371,7 +371,34 @@
 
      The ruling reserves amber for WARNING AND CONFRONTATION: the `#s-think`
      register, and genuine caution or loss states. Category and selection uses
-     move to `--ks3-data` below. */
+     move to `--ks3-data` below.
+
+     ⊕ AMENDED 30 Aug 2026 — SELECTION LEAVES `--ks3-data` FOR THE ACCENT.
+     RULED BY MIDE (audit P10-26 / Mide-pile M6). The sentence above sends
+     BOTH "category" AND "selection" to `--ks3-data`; this amendment splits
+     that pair and moves only the second half. Nothing above is deleted,
+     because the half that stays is still the rule.
+
+         SELECTION — "you picked this"  →  `--ks3-accent`  (BOTH grounds)
+         CATEGORY  — "this column, not that one",
+                     "this is the field you are looking at"
+                                        →  `--ks3-data`   (unchanged)
+
+     Mide's reason, and it is the part that stops this being re-raised: amber
+     is reserved for warning and loss, and A COLOUR MEANING "CAREFUL" MUST NOT
+     ALSO MEAN "YOU PICKED THIS". The light-ground branch already expressed
+     selection as accent, so this makes ONE rule across both grounds rather
+     than two. Three separate units stopped at this before it was ruled.
+
+     ⚠️ ON DARK GROUNDS SELECTION IS AN ACCENT BORDER, NEVER AN ACCENT SLAB,
+     and that is forced by the measurement rather than chosen. `--ks3-ink`
+     #221E1B on an `--ks3-accent` #E4572E fill is 4.49:1 — under the 4.5:1
+     body-text floor — so the amber slab those controls painted could not
+     simply be recoloured. What ships mirrors the light ground:
+     `--ks3-dark-panel` as the fill, the accent as the 2px border (3.18:1 on
+     the panel, 4.49:1 on the ink ground behind — both clear of the 3:1
+     non-text floor, WCAG 1.4.11), `--ks3-on-dark` as the label (10.63:1).
+     See the platform block at `.ks3-dark .ks3-option` in `shared/ks3.css`. */
   --ks3-alert:         #FFC53D;
   --ks3-alert-text:    #5A430A;
   --ks3-alert-tint:    #FFF3D4;
@@ -393,7 +420,12 @@
   --ks3-blue-tint:     #E1E8FE;
   --ks3-blue-light:    #8FB7FF;  /* on ink-dark only */
 
-  /* ── data · the category and selection colour (⊕ MRB-252, RULED) ──
+  /* ── data · the CATEGORY colour (⊕ MRB-252, RULED)
+     ⊕ AMENDED 30 Aug 2026 — this was "the category and selection colour".
+     Mide's ruling of that date moves SELECTION to `--ks3-accent` on both
+     grounds (see the amendment on `--ks3-alert` above). CATEGORY stays here
+     and does not move. The heading is narrowed to match; the token's value,
+     its dual constraint and its provenance are all unchanged. ──
      Minted so that an instrument which needs to say "this column, not that
      one" or "this is the field you are looking at" has a colour of its own
      and does not have to borrow the warning one. It carries a DUAL
@@ -405,7 +437,8 @@
      What is new is the ROLE having a name, so the two can move apart later
      without either dragging the other. Distinct in hue from the alert
      (#FFC53D), the accent (#E4572E) and the mint (#40DD84). */
-  --ks3-data:          #8FB7FF;  /* CATEGORY AND SELECTION, never a mark.
+  --ks3-data:          #8FB7FF;  /* CATEGORY, never a mark and (⊕ 30 Aug 2026)
+                                    never selection — selection is the accent.
                                     5.8:1 as text on dark-panel · 4.8:1 on the
                                     #4A433C tile · ink reads ON it at 8.2:1 ✓ */
 

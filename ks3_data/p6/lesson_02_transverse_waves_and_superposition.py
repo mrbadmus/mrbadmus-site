@@ -106,12 +106,14 @@ LESSON = {
         "commit": "At a spot where the two sets of ripples are crossing, "
                   "what is the water doing?",
         "options": [
-            "The two waves bounce off each other and stop where they meet",
-            "The two join into one new wave, and the original two are gone, "
-            "because two waves in one place can only ever be one wave",
+            "The two waves bounce off each other where they meet, and neither "
+            "carries on past it",
+            "The two join into one new wave and the original two are gone, "
+            "because one place holds one wave",
             "At every point the two displacements add: up with up makes a "
             "bigger up, up with down cancels",
-            "The stronger set of ripples wins and the weaker set disappears",
+            "The stronger set of ripples wins where they meet, and the weaker "
+            "set disappears for good",
         ],
         "answer": 2,
         "reveal": "The surface cannot be in two places, so it does the only "
@@ -496,7 +498,8 @@ LESSON = {
             "options": [
                 "5 mm — take the average, because the surface can only be "
                 "in one place at a time",
-                "10 mm",
+                "10 mm — add the two, because both waves lift the surface "
+                "at the same moment",
                 "24 mm — multiply the two amplitudes, because both waves "
                 "are acting at once",
                 "2 mm — take the smaller from the bigger, because one wave "

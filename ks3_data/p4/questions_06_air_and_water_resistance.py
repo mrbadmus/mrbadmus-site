@@ -129,14 +129,16 @@ QUESTIONS = [
         "text": "A skydiver changes from spread-out to head-down. What "
                 "happens to their terminal velocity?",
         "options": [
-            {"text": "It falls, because they weigh less head-down",
+            {"text": "It falls, because a head-down skydiver weighs less "
+                     "than a spread-out one",
              "correct": False,
              "why": "Their weight is exactly the same in either posture."},
-            {"text": "It stays the same, because their weight has not "
-                     "changed", "correct": False,
+            {"text": "It stays the same, because weight is what sets it and "
+                     "that has not changed", "correct": False,
              "why": "The weight has not changed, but the AREA facing the "
                     "flow has, so the balance point moves."},
-            {"text": "It cannot change without a parachute",
+            {"text": "It cannot change without a parachute, because posture "
+                     "does not set it",
              "correct": False,
              "why": "Posture alone changes it — from about 55 m/s to "
                     "about 80 m/s."},

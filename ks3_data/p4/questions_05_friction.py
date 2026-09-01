@@ -33,7 +33,8 @@ QUESTIONS = [
              "why": "That is weight. Friction acts along the surfaces, "
                     "whichever way they are facing."},
             {"text": "in the direction of movement", "correct": False,
-             "why": "The opposite. Friction never pushes something along."},
+             "why": "The opposite. Friction acts against the sliding "
+                    "between the surfaces."},
             {"text": "against the sliding", "correct": True},
             {"text": "away from the heavier object", "correct": False,
              "why": "Mass does not set the direction. The sliding does."},
@@ -200,10 +201,15 @@ QUESTIONS = [
         "text": "Why does friction depend on how hard two surfaces are "
                 "pressed together, rather than on how big the block looks?",
         "options": [
-            {"text": "Because a bigger block has more air underneath it.",
+            {"text": "Because a bigger block traps more air underneath it, "
+                     "and that cushion of air is what has to be dragged "
+                     "along.",
              "correct": False,
-             "why": "Air is not what is doing the gripping. The peaks are."},
-            {"text": "Because a bigger block is always heavier.",
+             "why": "There is no cushion of air to drag. The gripping is "
+                    "done by the peaks that touch."},
+            {"text": "Because a bigger block is always heavier, and the "
+                     "sheer size of a block is what sets how much friction "
+                     "it feels.",
              "correct": False,
              "why": "Not necessarily — and even at the same weight, "
                     "spreading the block over a wider area does not change "
@@ -212,7 +218,8 @@ QUESTIONS = [
                      "and pressing harder flattens them so more come into "
                      "contact.", "correct": True},
             {"text": "Because a bigger block has more surface to heat up, "
-                     "and heating is what friction costs you",
+                     "and it is the heating that decides how much friction "
+                     "there is",
              "correct": False,
              "why": "Heating is a consequence of friction, not what sets its "
                     "size."},

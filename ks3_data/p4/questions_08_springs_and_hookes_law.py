@@ -90,19 +90,39 @@ QUESTIONS = [
         "text": "Why is the first reading in this investigation taken with "
                 "NO load on the spring?",
         "options": [
-            {"text": "To warm the spring up before it is used.",
+            {"text": "To warm the spring up before it is used, because a "
+                     "cold spring would not stretch at all.",
              "correct": False,
-             "why": "Springs need no warming up, and nothing about the "
-                    "reading depends on temperature here."},
-            {"text": "To check the ruler is straight.", "correct": False,
+             "why": "A spring at room temperature stretches perfectly well. "
+                    "Nothing here depends on how warm it is."},
+            {"text": "To check the ruler is straight, because a bent scale "
+                     "would spoil every reading.", "correct": False,
              "why": "Useful, but not the reason. The zero reading is a "
                     "measurement in its own right."},
             {"text": "Because it is the natural length, which every "
                      "extension is measured from.", "correct": True},
-            {"text": "Because the spring might already be broken.",
+            # ⊕ MRB-297 · 1 Sep 2026 — THIS `why` TAUGHT THE NEGATION OF THE
+            # LESSON'S OWN CREDITED CRITERION, AND THIS RUN WROTE IT. It
+            # read "A broken spring shows itself the moment a load goes on.
+            # The zero is needed even for a perfect spring." The first
+            # sentence is false: a permanently stretched spring reads
+            # plausibly UNDER load — that is exactly why it is dangerous —
+            # and what gives it away is that it no longer returns to zero.
+            # `lesson_08_springs_and_hookes_law.py` credits precisely that:
+            # "Says to check that the dial still reads zero with nothing on
+            # it, because a permanently deformed spring reads wrongly for
+            # ever." So a student who had learnt the lesson was told here
+            # that the check they had just been taught looks the wrong way.
+            # The rebuttal stands without the false claim: spotting a ruined
+            # spring is a real use of the zero reading, but it is not the
+            # REASON you always take one.
+            {"text": "Because the spring might already be broken, which "
+                     "only a zero reading would reveal.",
              "correct": False,
-             "why": "That would show up later. The zero is needed even for a "
-                    "perfect spring."},
+             "why": "True as far as it goes — a stretched spring reads "
+                    "plausibly under load and only gives itself away at "
+                    "zero. But that is not the reason: the zero is needed "
+                    "on a perfect spring too."},
         ],
         "figure": None,
     },

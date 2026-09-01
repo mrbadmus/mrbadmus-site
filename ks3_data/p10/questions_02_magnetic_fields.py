@@ -35,17 +35,20 @@ QUESTIONS = [
         "band": "easier",
         "text": "What does a single field line on a map actually show?",
         "options": [
-            {"text": "Where a strip of iron has been laid on the paper",
+            {"text": "Where a thin strip of iron has been laid down on the "
+                     "paper",
              "correct": False,
              "why": "There is nothing on the paper. The line is a record of "
                     "readings, drawn afterwards in pencil."},
             {"text": "The direction a compass needle would point at each spot "
                      "along it", "correct": True},
-            {"text": "The edge of the region the magnet can reach",
+            {"text": "The outer edge of the region that the magnet is able "
+                     "to reach",
              "correct": False,
              "why": "Lines are drawn all through the region, not around it. "
                     "The field does not stop at a line."},
-            {"text": "How far a magnet can pull an object from",
+            {"text": "How far away from the magnet an object can still be "
+                     "pulled",
              "correct": False,
              "why": "A line carries a direction, not a distance. How far the "
                     "magnet reaches is shown by how the lines spread."},
@@ -177,11 +180,13 @@ QUESTIONS = [
         "options": [
             {"text": "It is nearly the same strength and direction all "
                      "through that gap", "correct": True},
-            {"text": "It is nearly zero, because parallel lines cancel out",
-             "correct": False,
+            # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so the
+            # correct answer stops being resolvable as the second-longest.
+            {"text": "It is nearly zero, because parallel lines cancel each "
+                     "other out", "correct": False,
              "why": "Cancelling shows up as lines curving away and a bare "
                     "patch. Parallel arrows of a good length mean a steady, "
-                    "real field."},
+                    "real field, not two fields undoing each other."},
             {"text": "It is about to become uneven, because the lines are on "
                      "the point of crossing", "correct": False,
              "why": "Parallel lines never meet, and lines never cross "

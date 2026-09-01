@@ -115,16 +115,17 @@ QUESTIONS = [
                 "normal of the card as a whole. What happens to that one "
                 "ray?",
         "options": [
-            {"text": "It leaves at a random angle, because the card is "
-                     "rough", "correct": False,
+            {"text": "It leaves at a random angle, because a rough surface "
+                     "scatters at random", "correct": False,
              "why": "Nothing about reflection is random. The ray obeys the "
                     "law exactly at the facet it lands on."},
-            {"text": "It is absorbed, because rough surfaces do not "
-                     "reflect", "correct": False,
-             "why": "Rough surfaces reflect a great deal — white card sends "
-                    "back most of what lands on it."},
+            {"text": "It is absorbed, because a rough surface has no smooth "
+                     "face to reflect from", "correct": False,
+             "why": "Every tiny facet is smooth, and rough surfaces reflect "
+                    "a great deal — white card sends back most of what "
+                    "lands on it."},
             {"text": "It leaves at 40° to the normal of the card as a "
-                     "whole", "correct": False,
+                     "whole, as a mirror would", "correct": False,
              "why": "It leaves at 40° to the normal of its own tiny facet, "
                     "which points somewhere else. That is why the fan "
                     "spreads."},
@@ -291,20 +292,23 @@ QUESTIONS = [
                 "the window; from outside, someone sees into the room "
                 "instead. Explain what the glass is doing.",
         "options": [
-            {"text": "The glass is a mirror on one side only, which is what "
-                     "one-way glass means", "correct": False,
+            {"text": "The glass is a mirror on one side only and a plain "
+                     "window on the other, which is what one-way glass "
+                     "means", "correct": False,
              "why": "Ordinary window glass behaves identically on both "
                     "sides. What differs is how much light is arriving on "
                     "each of them."},
             {"text": "Reflecting a little and letting most through — and "
                      "indoors the little that reflects beats the darkness "
                      "outside", "correct": True},
-            {"text": "Absorbing the light from outside, so nothing gets in",
+            {"text": "Absorbing the light that arrives from outside, so "
+                     "almost none of it gets into the room",
              "correct": False,
              "why": "Glass absorbs very little; that is what makes it a "
                     "window. If it absorbed the outside light, nobody could "
                     "see out by day either."},
-            {"text": "Refracting the room's light back into the room",
+            {"text": "Refracting the room's own light back into the room, "
+                     "which is why you appear in the glass",
              "correct": False,
              "why": "Refraction bends light through the glass, it does not "
                     "send it back. What sends it back is reflection at the "

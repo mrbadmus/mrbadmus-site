@@ -256,7 +256,11 @@ QUESTIONS = [
              "correct": False,
              "why": "The air was doing nothing for the magnetism. Removing "
                     "it changes nothing about the pull."},
-            {"text": "It is exactly the same.", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It is exactly the same. Magnetism crosses a "
+                     "vacuum.", "correct": True},
             {"text": "It gets stronger, because nothing is in the way any "
                      "more.", "correct": False,
              "why": "The air was never in the way. The pull is unchanged in "
@@ -271,13 +275,16 @@ QUESTIONS = [
                 "nothing around it. Which pair of objects is the force "
                 "between?",
         "options": [
-            {"text": "The rocket and space itself.", "correct": False,
+            {"text": "The rocket and the empty space it is pushing against.",
+             "correct": False,
              "why": "Space is not an object and cannot be one end of a "
                     "force. Something with mass has to be thrown."},
-            {"text": "The rocket and the planet it left.", "correct": False,
+            {"text": "The rocket and the distant planet it set out from.",
+             "correct": False,
              "why": "That pull is real but it acts towards the planet, and "
                     "it is not what the engine is doing."},
-            {"text": "The rocket and its own fuel tank.", "correct": False,
+            {"text": "The rocket and the fuel tank bolted inside it.",
+             "correct": False,
              "why": "The tank is part of the rocket. A force needs a second "
                     "object, not another part of the first one."},
             {"text": "The rocket and the exhaust gas it throws backwards.",

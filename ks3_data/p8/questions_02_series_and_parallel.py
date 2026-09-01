@@ -74,7 +74,11 @@ QUESTIONS = [
         "text": "One lamp in a string of ten wired in series fails. What "
                 "happens to the other nine?",
         "options": [
-            {"text": "They all go out", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "They all go out, because their one shared path "
+                     "breaks", "correct": True},
             {"text": "They all get brighter, because there is one fewer to "
                      "share with", "correct": False,
              "why": "Nothing is shared, and nothing is left to be brighter: "
@@ -141,16 +145,17 @@ QUESTIONS = [
             {"text": "Because a switch in series can break the only path, "
                      "which is what turning something off means",
              "correct": True},
-            {"text": "Because a switch in parallel would be too far from the "
-                     "component to work", "correct": False,
+            {"text": "Because a switch wired in parallel would be too far "
+                     "from the component it controls to work",
+             "correct": False,
              "why": "Distance is irrelevant in a circuit. What matters is "
                     "which path the switch is in."},
-            {"text": "Because a switch has to be nearer the battery than "
-                     "anything else", "correct": False,
+            {"text": "Because a switch has to sit nearer the battery than "
+                     "anything else in the loop", "correct": False,
              "why": "Position round a single loop makes no difference. A "
                     "switch works anywhere in the loop it is breaking."},
-            {"text": "Because a switch in parallel would use more current "
-                     "when it is open", "correct": False,
+            {"text": "Because a switch in parallel would draw more current "
+                     "from the supply while it is open", "correct": False,
              "why": "An open switch carries nothing wherever it is. The "
                     "problem with parallel is what happens when it CLOSES."},
         ],
@@ -184,20 +189,22 @@ QUESTIONS = [
         "text": "Adding a THIRD lamp in parallel to two that are already "
                 "there does what to the first lamp?",
         "options": [
-            {"text": "It dims, because the current is now shared three ways",
+            {"text": "It dims, because the fixed current from the battery is "
+                     "now shared three ways",
              "correct": False,
-             "why": "Nothing is shared out. Each branch draws what it draws, "
-                    "and the battery supplies the total."},
+             "why": "Nothing is shared out, and there is no fixed total. Each "
+                    "branch draws what it draws, and the battery supplies "
+                    "the total."},
             {"text": "It brightens, because more branches make it easier for "
-                     "charge to get round", "correct": False,
+                     "the charge to get round the circuit", "correct": False,
              "why": "The whole circuit does get easier, but the first lamp's "
                     "own branch is unchanged, so it draws exactly what it "
                     "drew before."},
             {"text": "Nothing changes for the lamp, but the battery now "
                      "supplies more current and goes flat sooner",
              "correct": True},
-            {"text": "It goes out, because one battery cannot drive three "
-                     "branches at once", "correct": False,
+            {"text": "It goes out, because one battery cannot drive as many "
+                     "as three branches at once", "correct": False,
              "why": "A battery supplies whatever the branches ask for until "
                     "it is exhausted. Three lamps run; the battery just "
                     "flattens sooner."},

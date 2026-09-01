@@ -94,7 +94,7 @@ QUESTIONS = [
                     "small torch uses over several minutes."},
             {"text": "About 100 000 joules", "correct": False,
              "why": "That is getting on for a third of what it takes to boil "
-                    "a mugful of water."},
+                    "a full litre of water."},
             {"text": "About 0.001 joules", "correct": False,
              "why": "That is a thousand times too small — a joule is "
                     "already a very small amount."},
@@ -140,8 +140,9 @@ QUESTIONS = [
              "correct": True},
             {"text": "Nothing — 4000 J is a reasonable size",
              "correct": False,
-             "why": "It is roughly the energy in a mouthful of bread, and "
-                    "could not boil a litre of anything."},
+             "why": "It is about what it takes to carry yourself up two "
+                    "flights of stairs, and could not boil a litre of "
+                    "anything."},
         ],
         "figure": None,
     },
@@ -193,26 +194,27 @@ QUESTIONS = [
     {
         "id": "p2-03-h01",
         "band": "harder",
-        "text": "A 90 W fridge runs constantly. A 2200 W oven runs 45 "
-                "minutes a day. Which uses more energy in a day, and why?",
+        "text": "A 90 W fridge motor runs in bursts, about 12 hours a "
+                "day in total. A 2000 W kettle runs 3 minutes a day. "
+                "Which uses more energy in a day, and why?",
         "options": [
-            {"text": "The oven, because its rating is over twenty times "
+            {"text": "The kettle, because its rating is over twenty times "
                      "higher",
              "correct": False,
-             "why": "The oven gives 2.2 × 0.75 = 1.65 kWh. The fridge "
-                    "gives 0.09 × 24 = 2.16 kWh, and wins."},
-            {"text": "The fridge, because 24 hours outweighs the higher "
+             "why": "The kettle gives 2.0 × 0.05 = 0.10 kWh. The fridge "
+                    "gives 0.09 × 12 = 1.08 kWh, and wins."},
+            {"text": "The fridge, because 12 hours outweighs the higher "
                      "rating",
              "correct": True},
-            {"text": "The oven, because a fridge cools rather than heats",
+            {"text": "The kettle, because a fridge cools rather than heats",
              "correct": False,
              "why": "A fridge still draws power to run its compressor, and "
                     "what it does with the energy does not change the "
                     "total."},
-            {"text": "They are the same, at about 1.65 kWh each",
+            {"text": "They are the same, at about 0.10 kWh each",
              "correct": False,
-             "why": "The oven is 1.65 kWh; the fridge is 2.16 kWh. They are "
-                    "not equal."},
+             "why": "The kettle is 0.10 kWh; the fridge is 1.08 kWh. They "
+                    "are not equal."},
         ],
         "figure": None,
     },
@@ -223,19 +225,21 @@ QUESTIONS = [
                 "hours turn out to transfer almost the same energy. What "
                 "does this show about power ratings?",
         "options": [
-            {"text": "That ratings are unreliable and should not be printed",
+            {"text": "That ratings are unreliable, so the number printed on "
+                     "the label should not be trusted",
              "correct": False,
              "why": "The ratings are perfectly accurate. They simply answer a "
                     "different question from the one about the bill."},
-            {"text": "That the lamp must be faulty to draw so much",
+            {"text": "That the lamp must be faulty, because nothing rated "
+                     "that small should match a shower",
              "correct": False,
              "why": "The lamp draws exactly its 60 W. It is the 86 400 "
                     "seconds that does the work."},
             {"text": "That a rating cannot tell you the energy without the "
                      "time, however large the difference in rating",
              "correct": True},
-            {"text": "That small appliances are generally more wasteful than "
-                     "large ones",
+            {"text": "That small appliances are generally more wasteful with "
+                     "energy than large ones ever are",
              "correct": False,
              "why": "Neither is wasteful here. The comparison is about "
                     "duration, not about waste."},
@@ -250,17 +254,18 @@ QUESTIONS = [
                 "expected newton seconds. What does that failure have in "
                 "common with writing 2000 × 3 = 6000 J?",
         "options": [
-            {"text": "Both were arithmetic errors that a calculator would "
-                     "have caught",
+            {"text": "Both were arithmetic errors that a careful check on a "
+                     "calculator would have caught",
              "correct": False,
-             "why": "Neither was an arithmetic error. Every multiplication "
-                    "in both cases was performed correctly."},
-            {"text": "Both involved numbers that were too large to check by "
-                     "hand",
+             "why": "Neither was an arithmetic error. Every multiplication in "
+                    "both cases was performed correctly."},
+            {"text": "Both involved numbers that were far too large to be "
+                     "checked over by hand at all",
              "correct": False,
-             "why": "2000 × 3 is easy to check. Size was not the "
-                    "problem in either case."},
-            {"text": "Both came from software rather than from people",
+             "why": "2000 × 3 is easy to check. Size was not the problem in "
+                    "either case."},
+            {"text": "Both came from software making a mistake rather than "
+                     "from the people involved",
              "correct": False,
              "why": "The orbiter's error came from two teams' conventions, "
                     "and the kettle's from a student. Neither is a software "

@@ -105,8 +105,8 @@ LESSON = {
                   "in that second?",
         "options": [
             "It depends on how loudly you shout",
-            "170 m — the distance to the cliff",
-            "85 m — half the distance, because the echo is the return half",
+            "170 m — the distance out to the cliff",
+            "85 m — half the distance, the return half",
             "340 m — out to the cliff and back again",
         ],
         "answer": 3,
@@ -553,11 +553,15 @@ LESSON = {
                  "the cliff?",
             "options": [
                 "About 113 m — divide the speed by the time",
+                # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so
+                # the correct answer stops being resolvable as the
+                # second-longest.
                 "About 255 m — halve the time first, then halve the "
-                "distance",
+                "distance as well",
                 "About 1020 m — multiply the speed by the time and that is "
                 "the distance to the cliff",
-                "About 510 m",
+                "About 510 m — 340 m/s for 3.0 s is the there-and-back "
+                "path, so halve it",
             ],
             "answer": 3,
             "feedback": {

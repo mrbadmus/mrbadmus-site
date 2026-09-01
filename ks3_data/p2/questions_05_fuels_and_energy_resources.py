@@ -72,13 +72,13 @@ QUESTIONS = [
         "text": "Which resource is renewable but still releases a great deal "
                 "of carbon dioxide when used?",
         "options": [
-            {"text": "Solar", "correct": False,
+            {"text": "Solar power", "correct": False,
              "why": "Solar releases almost nothing while generating."},
-            {"text": "Nuclear", "correct": False,
-             "why": "Nuclear is low-carbon, but it is not renewable — "
-                    "uranium does not refill."},
+            {"text": "Nuclear power", "correct": False,
+             "why": "Nuclear is low-carbon, but it is not renewable — uranium "
+                    "does not refill."},
             {"text": "Wood and biomass", "correct": True},
-            {"text": "Tidal", "correct": False,
+            {"text": "Tidal power", "correct": False,
              "why": "Tidal is renewable and low-carbon. Its costs are "
                     "elsewhere, in estuary habitats."},
         ],
@@ -89,19 +89,22 @@ QUESTIONS = [
         "band": "easier",
         "text": "Is electricity an energy resource?",
         "options": [
-            {"text": "No — it is a pathway that moves energy from a "
-                     "store to where it is wanted",
+            {"text": "No — it is a pathway that moves energy from a store to "
+                     "where it is wanted",
              "correct": True},
-            {"text": "Yes, and it is the cleanest one available",
+            {"text": "Yes, and it is the cleanest of all the resources a "
+                     "country can use",
              "correct": False,
              "why": "It is exactly as clean as whatever generated it, which "
                     "differs from country to country."},
-            {"text": "Yes, and it is renewable because power stations keep "
-                     "making it",
+            {"text": "Yes, and it is renewable because power stations keep on "
+                     "making more of it",
              "correct": False,
              "why": "Making it always means emptying some other store. It is "
                     "not itself a store to refill."},
-            {"text": "Only when it comes from a battery", "correct": False,
+            {"text": "Yes, but only when it comes from a battery rather than "
+                     "the mains",
+             "correct": False,
              "why": "A battery holds a CHEMICAL store. The electricity is "
                     "still the pathway out of it."},
         ],
@@ -115,19 +118,25 @@ QUESTIONS = [
         "text": "A student says wind must be better than nuclear because "
                 "wind is renewable. What has the argument missed?",
         "options": [
-            {"text": "Nothing — renewable is the only thing that "
-                     "matters",
+            {"text": "Nothing — being renewable is the only axis that "
+                     "matters, so wind wins the comparison",
              "correct": False,
              "why": "The lesson's whole point is that it is one axis among "
                     "several, and the others disagree with it."},
-            {"text": "That wind is not actually renewable", "correct": False,
-             "why": "Wind is genuinely renewable. That is not the flaw."},
+            {"text": "That wind is not actually renewable, because a still "
+                     "day leaves nothing to use",
+             "correct": False,
+             "why": "Wind is genuinely renewable — a still day is a supply "
+                    "problem, not a running-out one. That is not the flaw."},
             {"text": "That renewability says nothing about whether the "
                      "resource is available when it is needed",
              "correct": True},
-            {"text": "That nuclear is also renewable", "correct": False,
-             "why": "Nuclear is not renewable — uranium is finite. The "
-                    "point is that it is low-carbon anyway."},
+            {"text": "That nuclear is also renewable, because uranium can be "
+                     "used again and again",
+             "correct": False,
+             "why": "Nuclear is not renewable — uranium is finite, and no "
+                    "amount of reuse refills the ground. The point is that it "
+                    "is low-carbon anyway."},
         ],
         "figure": None,
     },
@@ -159,16 +168,19 @@ QUESTIONS = [
             {"text": "Because it can be switched on quickly when the wind "
                      "drops",
              "correct": True},
-            {"text": "Because it is renewable, so it does not run out",
+            {"text": "Because it is renewable, so the supply of it never runs "
+                     "out",
              "correct": False,
              "why": "Gas is a fossil fuel and is finite."},
-            {"text": "Because it produces no carbon dioxide", "correct": False,
-             "why": "It produces a substantial amount — around half that "
-                    "of coal per unit, but far from none."},
-            {"text": "Because wind turbines cannot work without it",
+            {"text": "Because it produces no carbon dioxide when it is burned",
              "correct": False,
-             "why": "Turbines work perfectly well alone. The problem is what "
-                    "happens when the air is still."},
+             "why": "It produces a substantial amount — around half that of "
+                    "coal per unit, but far from none."},
+            {"text": "Because wind turbines cannot work without gas to start "
+                     "them",
+             "correct": False,
+             "why": "Turbines start and run perfectly well on their own. The "
+                    "problem is what happens when the air is still."},
         ],
         "figure": None,
     },
@@ -229,16 +241,19 @@ QUESTIONS = [
         "text": "A country plans to run entirely on wind and solar. What is "
                 "the strongest practical objection?",
         "options": [
-            {"text": "That wind and solar release too much carbon dioxide",
+            {"text": "That wind and solar release too much carbon dioxide "
+                     "while they are generating",
              "correct": False,
              "why": "Both are among the lowest-carbon options there are."},
-            {"text": "That wind and solar will eventually run out",
+            {"text": "That wind and solar will eventually run out, just as a "
+                     "fossil fuel does",
              "correct": False,
              "why": "Both are renewable. Running out is not the problem."},
             {"text": "That demand does not fall when the wind drops, so "
                      "something must cover the gap",
              "correct": True},
-            {"text": "That they take up less land than fossil fuels",
+            {"text": "That they take up far less land than a fossil-fuel "
+                     "station would need",
              "correct": False,
              "why": "They take up MORE land, and in any case that would be a "
                     "point in favour if it were true."},
@@ -271,24 +286,25 @@ QUESTIONS = [
         "text": "The lesson refuses to name a best energy resource. What is "
                 "the strongest reason for that refusal?",
         "options": [
-            {"text": "Because the axes disagree, so any single winner "
-                     "depends on which axis you stopped counting at",
+            {"text": "Because the axes disagree, so any single winner depends "
+                     "on which axis you stopped counting at",
              "correct": True},
-            {"text": "Because the science is not settled enough to say",
+            {"text": "Because the science behind each of the axes is not yet "
+                     "settled enough to name a winner",
              "correct": False,
              "why": "The science on each axis is reasonably clear. It is the "
                     "combining of them that has no single answer."},
-            {"text": "Because it would be a political statement rather than "
-                     "a scientific one",
+            {"text": "Because naming a winner would be a political statement "
+                     "rather than a scientific judgement",
              "correct": False,
-             "why": "Closer, but it dodges the actual structure: even with "
-                    "no politics at all, three orderings that disagree "
-                    "cannot produce one winner."},
+             "why": "Closer, but it dodges the actual structure: even with no "
+                    "politics at all, three orderings that disagree cannot "
+                    "produce one winner."},
             {"text": "Because every resource turns out to be about equally "
-                     "good overall",
+                     "good once all the axes are added up",
              "correct": False,
-             "why": "They are not equal — they differ sharply, just not "
-                    "in the same direction on every axis."},
+             "why": "They are not equal — they differ sharply, just not in "
+                    "the same direction on every axis."},
         ],
         "figure": None,
     },

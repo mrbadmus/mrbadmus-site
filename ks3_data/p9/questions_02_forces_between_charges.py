@@ -124,12 +124,12 @@ QUESTIONS = [
         "text": "A charged rod attracts a small hanging ball. Which single "
                 "further observation would prove the ball is charged?",
         "options": [
-            {"text": "Bringing the rod closer and finding the pull gets "
-                     "stronger", "correct": False,
+            {"text": "Bringing the rod closer and finding that the pull "
+                     "on the ball gets much stronger", "correct": False,
              "why": "It gets stronger for a neutral ball too — induction "
                     "falls off with distance even faster."},
-            {"text": "Weighing the ball before and after to see whether it "
-                     "has changed", "correct": False,
+            {"text": "Weighing the ball before and after to see whether "
+                     "it has gained any mass", "correct": False,
              "why": "The electrons involved weigh nothing you could "
                     "measure, and a neutral ball would weigh the same "
                     "either way."},
@@ -151,11 +151,13 @@ QUESTIONS = [
             {"text": "Electrons in the wall are pushed away from the "
                      "surface, leaving the near face positive",
              "correct": True},
-            {"text": "Electrons are pulled towards the surface, making the "
-                     "near face negative", "correct": False,
+            {"text": "Electrons in the wall are pulled towards the "
+                     "surface, leaving the near face negative",
+             "correct": False,
              "why": "The balloon is negative, so it PUSHES the wall's "
                     "electrons away rather than pulling them in."},
-            {"text": "Protons in the wall move towards the surface",
+            {"text": "Protons in the wall move towards the surface, "
+                     "leaving the far face negative",
              "correct": False,
              "why": "Protons never move. Everything that happens here is "
                     "electrons shifting."},
@@ -180,7 +182,11 @@ QUESTIONS = [
                      "changed", "correct": False,
              "why": "The force depends on the separation as well as on the "
                     "charges."},
-            {"text": "It falls to about a ninth", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It falls to about a ninth, three squared",
+             "correct": True},
             {"text": "It falls to about a sixth, because the distance "
                      "tripled and the pair shares the drop between them",
              "correct": False,
@@ -246,12 +252,13 @@ QUESTIONS = [
                 "edges instead of drifting past?",
         "options": [
             {"text": "The charged droplets repel each other so hard that "
-                     "some are pushed round the far side", "correct": False,
+                     "some of them are pushed round to the far side",
+             "correct": False,
              "why": "They do repel each other, which spreads the spray — "
                     "but what pulls paint onto the far side is the metal "
                     "attracting it."},
-            {"text": "Earthing makes the body a magnet, and paint contains "
-                     "iron", "correct": False,
+            {"text": "Earthing turns the body into a magnet, and the "
+                     "paint has iron powder mixed into it", "correct": False,
              "why": "Nothing here is magnetic. It is charge and induction "
                     "throughout."},
             {"text": "The droplets are heavier than air, so they settle "
@@ -270,7 +277,11 @@ QUESTIONS = [
         "text": "Two charged objects are sealed in a jar and all the air is "
                 "pumped out. What happens to the force between them?",
         "options": [
-            {"text": "It is unchanged", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It is unchanged, because an electric force needs "
+                     "no air to carry it", "correct": True},
             {"text": "It disappears, because there is nothing left to carry "
                      "it across the gap", "correct": False,
              "why": "Nothing was carrying it in the first place. Air is not "

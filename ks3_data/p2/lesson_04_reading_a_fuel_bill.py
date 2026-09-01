@@ -69,6 +69,19 @@ that they are plausible mid-2020s UK values rather than live figures, and
 that she isolated them as constants precisely because they will date. They
 are constants here for the same reason. They are not a quotation and the
 page does not present them as one.
+
+⊕ RULED 30 Aug 2026 (MRB-297) — DATE THE MONEY, WHERE SHOWN. The figures
+stay at 27p and 53p; only the dating changes. The cap moves quarterly, so
+ONE clause in the hook (`phenomenon.prompt`) dates the whole page, and the
+p2-03 bench readout label carries Mide's own "(2026)". A figure that is a
+STIPULATED INPUT to a calculation — a ladder stem, a bank stem, a CFIFA
+line — is not dated again: the question supplies its own price and no
+reader takes it as a claim about today. A figure that is a claim about the
+WORLD is dated: `#s-think`'s "around 53p a day here in 2026".
+
+⊕ RULED 30 Aug 2026 (MRB-297) — THE GAS BILL. `stretch` gains a second
+entry covering the gas meter's m³ → kWh conversion, closing
+`KS3.P.FUEL.04` properly. The title, `covers` and the rail are unchanged.
 """
 
 LESSON = {
@@ -115,16 +128,21 @@ LESSON = {
     "phenomenon": {
         "kind": "narrative",
         "title": "412 of something, at 27p each.",
+        # ⚖️ RULED 30 Aug 2026 (MRB-297) — ONE dating clause, here in the
+        # hook, for the whole page. The prices are real 2026 figures and the
+        # cap that sets them moves quarterly; the arithmetic does not.
         "prompt": "A real electricity bill lists “units used: "
                   "412” and charges 27p for each one. Nowhere on the "
                   "page does it say what a unit is — the word appears "
-                  "eleven times and is never defined.",
+                  "eleven times and is never defined. The prices on this "
+                  "page are 2026 ones, and the cap that sets them moves "
+                  "every three months.",
         "commit": "Commit. A unit on an electricity bill is one…",
         "options": [
             "Kilowatt — a measure of power",
             "Kilowatt-hour — a measure of energy",
-            "Joule",
-            "Watt per hour",
+            "Joule — the standard measure of energy",
+            "Watt per hour — a measure of energy used",
         ],
         "answer": 1,
         "reveal": "One kilowatt-hour — the energy a 1 kW appliance "
@@ -202,9 +220,18 @@ LESSON = {
          "anchor": "s-bill",
          "eyebrow": "Build the bill · a sum of products",
          "heading": "Set the household's habits and watch the total.",
+         # ⊕ MRB-297 · 1 Sep 2026. This said the motor "only runs about
+         # half" the day, and the row below started at 12 h. At 90 W that
+         # is 1.08 kWh a day, which is about twice a real fridge-freezer
+         # (0.4-0.55 kWh) and 2.25 times what this page's own CFIFA
+         # teaches a few blocks down (120 W for 4.0 h = 0.48 kWh). The
+         # CFIFA is the one that is right, so the bench moved to it: the
+         # row now starts at 5 h, giving 0.45 kWh a day.
          "prompt": "Five appliances, five sliders. Each row is a product; "
                    "the bottom line is their sum, plus a standing charge "
-                   "that no slider can touch.",
+                   "that no slider can touch. The hours are the hours a "
+                   "thing is drawing power — a fridge is plugged in all "
+                   "day, but its motor only runs a few hours of it.",
          "gate": {
              "prompt": "Commit first. In a typical UK home, which of these "
                        "is usually the largest single item on the "
@@ -222,6 +249,12 @@ LESSON = {
              ],
              "answer": 2,
          },
+         # ⚖️ RULED 30 Aug 2026 (MRB-297) — these are 2026 UK figures and the
+         # price cap that sets them moves quarterly. They are NOT rendered as
+         # authored text: `build_ks3.py` emits them as `data-price` /
+         # `data-standing` for the instrument, so the dating a reader sees is
+         # the hook's clause, not a label here. If the instrument ever paints
+         # the tariff into the DOM, that label wants "(2026)" too.
          "price_per_kwh": 0.27,
          "standing_per_day": 0.53,
          "days": 30,
@@ -237,8 +270,9 @@ LESSON = {
              {"id": "kettle", "name": "Kettle",          "watts": 2000,
               "min": 0, "max": 60,  "start": 12, "unit": "min/day",
               "per_hour": 60},
+             # ⊕ MRB-297 · 1 Sep 2026 — `start` was 12. See the prompt.
              {"id": "fridge", "name": "Fridge-freezer",  "watts": 90,
-              "min": 0, "max": 24,  "start": 24, "unit": "h/day",
+              "min": 0, "max": 24,  "start": 5, "unit": "h/day",
               "per_hour": 1},
              {"id": "lights", "name": "Lighting, whole house", "watts": 72,
               "min": 0, "max": 24,  "start": 5,  "unit": "h/day",
@@ -333,8 +367,9 @@ LESSON = {
               "body": [
                   "The units do; the standing charge does not. It is a fixed "
                   "daily amount for being connected to the network — "
-                  "around 53p a day here, or about £16 a month — and "
-                  "it is on the bill whether you use one unit or a thousand. "
+                  "around 53p a day here in 2026, or about £16 a month "
+                  "— and it is on the bill whether you use one unit or "
+                  "a thousand. "
                   "<strong>That is why the cheapest month is never free, and "
                   "why comparing suppliers on unit price alone is not "
                   "enough.</strong>",
@@ -375,11 +410,19 @@ LESSON = {
               "note": "Three units, which at 27p each is 81p."},
          ]},
 
+        # ⚖️ RULED 30 Aug 2026 (MRB-297) — P2-24. This example was "A 900 W
+        # fridge compressor", which is a commercial chiller, disagrees
+        # tenfold with this page's own bill row (Fridge-freezer 90 W) and
+        # with `p2-03`'s bench, and put a domestic fridge at 3.6 kWh a day.
+        # 120 W over a 4.0 h duty cycle is a real fridge: 0.120 × 4.0 =
+        # 0.48 kWh. The ÷1000 step the example exists to teach survives,
+        # and the Answer note's wrong-conversion figure (480 units a day)
+        # is now true against this page's own household of 412 a month.
         {"id": "cfifa-bill-convert",
          "kind": "worked-example",
          "demand": "calculate",
          "eyebrow": "Five lines on one row · CFIFA",
-         "heading": "A 900 W fridge compressor runs for 4.0 hours a day. How "
+         "heading": "A 120 W fridge compressor runs for 4.0 hours a day. How "
                     "many units in a day?",
          "head_counter": {"format": "Step {n} of 5", "total": 5},
          "buttons": {"first": "Show the first step",
@@ -390,23 +433,23 @@ LESSON = {
          "staged": True,
          "fifa": [
              {"letter": "C", "label": "Convert",
-              "line": "900 W ÷ 1000 = 0.900 kW",
+              "line": "120 W ÷ 1000 = 0.120 kW",
               "note": "A unit is a kilowatt-hour, so a rating printed in "
                       "watts has to become kilowatts first."},
              {"letter": "F", "label": "Formula",
               "line": "units = power in kW × time in hours",
               "note": "Two quantities multiplied — one row of a bill."},
              {"letter": "I", "label": "Insert",
-              "line": "units = 0.900 kW × 4.0 h",
-              "note": "The converted rating goes in. The 900 never does."},
+              "line": "units = 0.120 kW × 4.0 h",
+              "note": "The converted rating goes in. The 120 never does."},
              {"letter": "F", "label": "Fine-tune",
-              "line": "0.900 × 4.0 = 3.6",
+              "line": "0.120 × 4.0 = 0.48",
               "note": "Kilowatts times hours leaves kilowatt-hours."},
              {"letter": "A", "label": "Answer",
-              "line": "units = 3.6 kWh",
-              "note": "Insert 900 instead of 0.900 and the fridge comes out "
-                      "using 3600 units a day — more than a house uses "
-                      "in a year."},
+              "line": "units = 0.48 kWh",
+              "note": "Insert 120 instead of 0.120 and the fridge comes out "
+                      "using 480 units a day — more than the whole house "
+                      "uses in a month."},
          ]},
     ],
 
@@ -521,6 +564,39 @@ LESSON = {
                  "genuine saving would be worth, the standing charge has to "
                  "come out of the calculation first, and it is the one row "
                  "on the bill that no change in behaviour will touch."},
+
+        # ⚖️ RULED 30 Aug 2026 (MRB-297) — THE GAS BILL. The lesson claims
+        # `KS3.P.FUEL.04`, "domestic fuel bills, fuel use and costs", and
+        # covered electricity only. Gas is the larger bill in most UK homes.
+        # Ruled: cover it HERE, in Going further, and keep the title — so
+        # `covers` is unchanged and no new statutory claim is added. The VAT
+        # clause folds in. The conversion is the one printed on every UK gas
+        # bill; 1.02264 is the regulator's volume correction factor, 39.5 the
+        # calorific value in MJ/m³ (it genuinely varies, ~37.5–43.0), and
+        # ÷3.6 is MJ→kWh because 1 kWh = 3.6 MJ. Worked check:
+        # 100 × 1.02264 = 102.264 → × 39.5 = 4039.428 MJ → ÷ 3.6 = 1122.06 kWh.
+        {"id": "what-a-gas-meter-actually-measures",
+         "type": "explainer",
+         "text": "Gas is the other half of most fuel bills, and its meter "
+                 "counts volume, not energy: the number in the little window "
+                 "is cubic metres of gas that have gone past, and that is not "
+                 "the number you are billed for. The bill converts it with a "
+                 "formula printed on every UK gas bill — kWh = m³ × "
+                 "1.02264 × 39.5 ÷ 3.6. The 1.02264 is a volume "
+                 "correction factor, fixed by the regulator, bringing the "
+                 "measured volume to a standard temperature and pressure. The "
+                 "39.5 is the calorific value in megajoules per cubic metre "
+                 "— how much energy that gas carries. The network "
+                 "measures it and prints it on the bill, and it does vary, "
+                 "roughly 37.5 to 43.0, with where the gas came from. "
+                 "Dividing by 3.6 turns megajoules into kilowatt-hours, "
+                 "because one kilowatt-hour is 3.6 MJ. So 100 m³ gives "
+                 "100 × 1.02264 = 102.264, then × 39.5 = 4039.4 MJ, "
+                 "then ÷ 3.6 = 1122 kWh. Domestic energy is charged VAT "
+                 "at 5 per cent, not the standard 20. <strong>The unit at the "
+                 "end is the same kilowatt-hour the electricity side is "
+                 "billed in</strong> — which is what lets you compare "
+                 "the two halves of a bill."},
     ],
 
     "support": [],

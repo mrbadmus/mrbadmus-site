@@ -106,7 +106,8 @@ LESSON = {
                   "move as the disturbance goes past it?",
         "options": [
             "Along the slinky, in the same line as the disturbance is going",
-            "Round in a small circle",
+            "Round in a small circle, each coil looping back to where it "
+            "started",
             "The coils do not move at all — only the squashed patch travels",
             "Across the slinky, at right angles to the way the disturbance "
             "is going",
@@ -210,16 +211,35 @@ LESSON = {
          "mark": {"label": "Where the marked coil sits", "min": 0,
                   "max": 100, "step": 5, "start": 25, "value": "25%"},
          "branches": {
-             "trans-crest": "This coil is at a crest, 60 mm across the "
-                            "slinky from where it started, and that is as "
-                            "far across as any coil goes. It is a crest "
-                            "because the coil has been carried sideways; "
-                            "nothing here is bunched up.",
-             "trans-trough": "This coil is at a trough, 60 mm across the "
+             # ⊕ MRB-297 · 1 Sep 2026 — BOTH NOTES NAMED THE WRONG CAUSE
+             # FOR THE 57 mm. They said the reading stops short because
+             # "no drawn coil sits exactly on the top of a crest". Drawn
+             # coils are not the limit: `shared/ks3.js` runs `i = 0` to
+             # `n = 60`, so it draws 61 coils every 20 mm along the 1200 mm
+             # slinky, and coil 4 sits at 80 mm where the displacement is
+             # 60 × sin(96°) = 59.67 mm — which prints as 60. What actually
+             # bounds the reading is this bench's own `mark` slider: it has
+             # `"step": 5`, so the mark can only land every 60 mm and the
+             # best it can reach is 5% — 60 mm along, 72° of phase,
+             # 57.06 mm. Coil 4 is drawn, is very nearly on the crest, and
+             # simply cannot be selected. The cause is the slider, and both
+             # notes now say so.
+             "trans-crest": "This coil is at a crest: it has been carried "
+                            "sideways, and nothing here is bunched up. The "
+                            "wave is driven 60 mm across the slinky, but "
+                            "the slider moves in fixed steps and none of "
+                            "the places it can put the mark is exactly on "
+                            "the top of a crest. That is why the reading "
+                            "stops short of 60 mm: 57 mm is the closest "
+                            "step there is.",
+             "trans-trough": "This coil is at a trough, carried across the "
                              "slinky the other way. A crest and a trough are "
                              "the same size of movement in opposite "
                              "directions, and both are at right angles to "
-                             "the way the wave is going.",
+                             "the way the wave is going. The wave is driven "
+                             "60 mm each way, and the reading stops a little "
+                             "short of that because none of the slider's "
+                             "steps lands exactly at the bottom of a trough.",
              "trans-mid": "This coil is passing through its rest place, so "
                           "at this instant it is exactly where it would be "
                           "with the slinky still. It is still a transverse "
@@ -240,9 +260,12 @@ LESSON = {
                           "a dip.",
              "long-mid": "This coil is at its rest spacing at this instant, "
                          "halfway between a compression and a rarefaction, "
-                         "but it has been displaced 60 mm along the slinky "
-                         "from where it started. Along the slinky, not "
-                         "across it — which is what longitudinal means.",
+                         "but it has been displaced along the slinky from "
+                         "where it started. Along the slinky, not across it "
+                         "— which is what longitudinal means. The wave is "
+                         "driven 60 mm; the reading is a little less, "
+                         "because no drawn coil sits exactly at the far end "
+                         "of that swing.",
          },
          "readouts": [
              {"id": "travel", "label": "Which way the wave travels",
@@ -536,7 +559,18 @@ LESSON = {
                        "millimetre in both directions. The pictures are "
                        "frozen snapshots rather than animations, so the "
                        "marked coil shows where it has been displaced to at "
-                       "one instant and not how fast it is going. Air is "
+                       # ⊕ MRB-297 · 1 Sep 2026 — the same wrong cause as
+                       # the two bench notes above. This read "the largest
+                       # reading any drawn coil gives is 57 mm", but coil 4
+                       # of the 61 drawn reaches 59.67 mm. The bound is the
+                       # `mark` slider's step of 5, which samples the
+                       # slinky every 60 mm and never lands on a crest.
+                       "one instant and not how fast it is going. The mark "
+                       "moves along the slinky in fixed steps rather than "
+                       "to any point you choose, so it samples the wave "
+                       "rather than sitting on the exact top of a crest: "
+                       "the largest reading the slider can be set to is "
+                       "57 mm, not the full 60 mm. Air is "
                        "drawn as evenly spaced columns for clarity; real air "
                        "is not in rows, and the distance a patch of air "
                        "actually shuffles in ordinary sound is a small "

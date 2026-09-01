@@ -8,15 +8,30 @@ cannot check — or where the lane genuinely judges its own version teaches
 better and will defend the row to an examiner. Unsure does not clear the bar;
 uncertainty resolves toward her page.
 
-The register is expected to be SHORT. **This one has FOUR changed rows, and
+The register is expected to be SHORT. **This one has TEN changed rows, and
 one of them is a word.** Nothing in her structure moved: four rail stops per
 lesson from her own `RAIL`, in her order, with her shorts and labels; her
 hooks, gates, branch notes, worked examples, attempt panels and all fourteen
 marked rungs are ported from her JavaScript constants, not from her HTML.
 
+⊕ **Rows 5–8 were added 31 Aug 2026 (MRB-297)** and are a different kind of
+row from 1–4. They are the KS3 physics audit's findings P7-22, P7-24, P7-23
+and P7-19 — two of Design's own bench DRAWINGS, measured from the served path
+data and found to be teaching the opposite of what their lessons say. The
+first of them draws `LIGHT-23`, a misconception registered on that very page
+as the one the instrument exists to kill. Rows 1–4 are judgement; these four
+are corrections, and the prism's is now held by a build-time refusal rather
+than by anyone's eye.
+
+⊕ **Rows 9 and 10 were added 31 Aug 2026 (MRB-297)** and are findings P7-04
+and P7-10. Row 9 puts a direction on every ray in the unit — none had one —
+and row 10 redraws the straw figure's back-projection, which pointed into the
+wrong quadrant, and moves the marker that was sitting on the wrong line
+entirely. Both are corrections of Design's drawings, both ruled.
+
 ---
 
-## Changed — 4 rows
+## Changed — 10 rows
 
 ### 1. Two rail labels said "four steps" over a five-step block
 
@@ -58,6 +73,67 @@ is honest: six of her sets needed the fix, and thirty-one of mine did.
 | **What she wrote** | *"Two bars of the same length, always. … whatever one bar reads, the other reads too."* |
 | **What is built** | *"Two sides that always balance. … whatever one side reads, the other reads too."* The rest of the sentence — *nothing is being added up here and nothing is being shared out, so there is nothing to cover* — is hers, untouched. |
 | **The rationale** | Row 3 replaced her two stacked bars with the engine's pan balance, and this sentence is a description of the drawing above it. Left as written it told a student to look for two bars under a picture of two pans — the page contradicting its own figure. It is the same judgement the aria descriptions take: a sentence about a picture describes the picture that is there. Commander's row, added at Phase 3 (25 Aug 2026). |
+
+### 5. `p7-06`'s prism drew the dispersion backwards — MRB-297, P7-22
+
+| | |
+|---|---|
+| **Where** | `p7-06` `#s-prism`, the fan. Her `lessonVals()`: `inBeam: 'M40 150 L262 210'`, `ys = {R:196, O:208, Y:220, G:234, B:250, V:264}`, each ray drawn to `925, ys[k] + (ys[k] − 210) × 1.9`. |
+| **What she drew** | The incident beam tilted DOWN into the prism; extended straight it reaches the screen at y ≈ 389, **below every exit ray**. So every colour was deviated UPWARD, toward the apex, of a prism whose base is the bottom edge — and the amount ran red 219.8 > orange 185.0 > yellow 150.2 > green 109.6 > blue 63.2 > violet 22.6. Measured from the served path data, not read off her source. |
+| **What is built** | A horizontal beam at y=160 entering the left face at (261.1, 160); one segment across the glass to (345.5, 171.9) on the right face; six rays landing R 265 · O 276 · Y 284 · G 298 · B 321 · V 358, i.e. deviations of 105 · 116 · 124 · 138 · 161 · **198**, every one of them BELOW the undeviated line. The gaps are in the ratio of the real red→violet spread in crown glass, so they widen toward violet rather than being evenly spaced. |
+| **The defect in hers** | **The bench drew the misconception it exists to kill.** `LIGHT-23` — *high-frequency light is bent the least by a prism* — is registered on this very page with `confronted_by: prism`. A prism deviates toward its BASE, and violet most. Hers did neither, and it contradicted its own ladder rung 1 (*"Red, because it has the lowest frequency … and is refracted the least"*) one screen below. It survived every review because the top-to-bottom colour order still reads R,O,Y,G,B,V, which is what a spectrum looks like. |
+| **What stops it recurring** | The landings are no longer a runtime constant. `_prism_fan()` in `ks3_art/p7.py` computes every drawn number and REFUSES a fan that is on the apex side, whose deviations do not increase with frequency, whose red is barely deviated, that leaves the frame, or whose exit rays bend toward the normal rather than away from it. The runtime reads the numbers off attributes and joins strings; it computes no geometry at all. |
+| **The honest caveat** | The drawing is a schematic and the module says so in terms. A real 60° prism deviates a horizontal ray by about 43° and separates red from violet by well under a degree; drawn to scale on this 1000×420 canvas the fan would leave the frame and the six colours would be one line. The SEPARATION is exaggerated roughly eighteen-fold. The three things a student can be *wrong* about are exact: toward the base, violet furthest, and two bends. |
+
+### 6. `p7-06`'s prism was a box light went into and came out of — MRB-297, P7-24
+
+| | |
+|---|---|
+| **Where** | `p7-06` `#s-prism`, the path through the glass |
+| **What she drew** | The beam stopped at (262, 210), inside the glass; the fan began at (330, 210), also inside it. Sixty-eight units of glass with nothing drawn between them. |
+| **What is built** | The beam stops ON the left face, one segment crosses the glass, and the fan starts ON the right face — so the bend at each surface is a bend a student can point at. The segment inside the glass takes the input's colour, as her incident beam does. |
+| **The defect in hers** | The lesson's mechanism sentence is *"One bend on the way in, another on the way out"*, and the drawing showed neither: light went in, disappeared, and came out somewhere else already sorted. That is the prism-as-magic-box reading the lesson exists to prevent. |
+| **What else moved** | The second prism is now painted BEFORE the rays rather than after. That was harmless while the rays stopped in mid-air at x=640; now that they run through its left face to its far face, a filled triangle painted on top of them would hide the recombination inside the glass. The rays enter the second prism's left face at their own computed points, bend back toward its base — which is uppermost, because it is inverted — and leave as one beam **parallel to the beam that went in**, which is what an inverted identical prism actually does. |
+
+### 7. `p7-06` called blue and red recombined "one white patch" — MRB-297, P7-23
+
+| | |
+|---|---|
+| **Where** | `p7-06` `#s-prism`, the *On the screen* verdict tile and the `recombined` note, with the second prism in |
+| **What she wrote** | `screenWord: two ? (single ? … : 'One white patch — the colours put back together')` — unconditional on which colours went in. The note: *"…they arrive at the screen together as one beam again."* |
+| **What is built** | The verdict is authored per mixture. White light keeps her sentence to the character. Blue and red reads *"One patch of pinky-purple — the two colours put back together, and still no yellow or green"*, and the note's phrase becomes *"…together as one pinky-purple beam, with no yellow and no green anywhere in it"* — the rest of her sentence, *if glass made colour, a second piece would make more of it. It makes less*, untouched. A mixture that declares no wording is now refused at build time. |
+| **The defect in hers** | Blue and red recombined give magenta. White needs the whole spectrum, and the state's own input sub-line says so — *"two separated bands, no yellows or greens"*. Her own drawing was honest, stroking the outgoing beam `#9A647A`, a dusky pink, so the tile contradicted the picture beside it as well as the physics — and it undercut the lesson's central argument, that a prism gives back only what went in, by claiming two colours in and white out. |
+
+### 8. `p7-05` drew the pupil as a constant and the iris the wrong way round — MRB-297, P7-19
+
+| | |
+|---|---|
+| **Where** | `p7-05` `#s-eye`, `[data-eyecam-stop]`. Her construction: `'M' + (cx−118) + ' ' + (200 − rPx) + ' V194 M' + (cx−118) + ' 206 V' + (200 + rPx)`, with `rPx = eye ? mm × 9 : mm × 1.7`. |
+| **What she drew** | The two marks are the STOP — the opaque part — and their INNER ends were the constants. So the hole was 12 units at every light level, on both instruments, while each blade grew from 12 units in bright sunlight to 66 on a moonless night. Dragging from sunlight to darkness closed the front of the eye into a near-solid pillar with a hairline slit in it. Both rays were routed through `200 ± rPx × 0.7`, which put them INSIDE the opaque marks at every setting, so the drawing also had light passing through the iris. |
+| **What is built** | The construction is inverted: the OUTER ends are pinned to the case — the eyeball's own outline at y = 200 ± 72, the camera's lens barrel at 200 ± 74 — and the inner ends move, so the drawn gap is 2 × `rPx` and GROWS in the dark. Measured across all ten states, the eye's gap runs 31 → 124 units for 2.0 → 8.0 mm, exactly proportional, and the camera's 10 → 128 for 3 → 50 mm. `rPx` is clamped ten units inside the case so there is always a blade left to see, and floored at 5 so the smallest aperture still has a visible hole; the floor lifts only the camera's 3 mm state. Her ray waypoints are untouched and are now correct as written, because 0.7 of the half-opening is inside the hole. |
+| **The defect in hers** | **The lesson's one adjustable quantity was drawn as unchanging, and the part that changed, changed the wrong way.** A dilating iris opens. The readout beside the drawing said 2.0 mm → 8.0 mm, and the gate question a student answered one screen earlier says the pupil opens in the dark. Every readout and note on the bench was already right; nothing but the drawing changed. |
+
+### 9. Not one light ray in the unit carried a direction — MRB-297, P7-04
+
+| | |
+|---|---|
+| **Where** | Every ray drawing in P7: `p7-02` `#s-ray`, `p7-03` `#s-block` and `#s-inout`, `p7-04` `#s-camera`, `p7-05` `#s-eye`, `p7-06` `#s-prism`, `p7-07` `#s-lamp` |
+| **What she drew** | Undirected lines. Measured across all eight built files: `marker-end` 0, `marker-start` 0, `<marker` 0. She DOES draw arrowheads — on `p7-01`'s two race lanes, on the `p7-04` and `p7-05` object arrows, on the `p7-05` image arrow and on `p7-06`'s two band arrows — all of them the same open V, 18 long and 10 either side of the tip. Rays are the one thing that never got one. |
+| **What is built** | ONE `<marker>` per instrument, `ks3-rayhead-<hook>`, carrying her own 18×10 open V, applied to the twenty-one ray paths and to nothing else. `markerUnits="userSpaceOnUse"`, because every P7 viewBox is 1000 wide and the head must not scale with a shaft that runs 4 to 11 units; `stroke:context-stroke` with a literal fallback, because `p7-06` draws six colours and `p7-07` recolours its ray at paint time. Per lesson: `p7-02` 2, `p7-03` 5, `p7-04` 2, `p7-05` 3 (one path, two rays, three heads each), `p7-06` 9, `p7-07` 2. `p7-01` takes none — both its arrows already carry hers. One sentence is added to `p7-02`'s first explainer: *"A ray is always drawn with an arrow on it, because which way the light is going is part of the answer."* |
+| **The defect in hers** | **A line with no arrow is not a ray, and three of the drawings were readable as the negation of the lesson beside them.** The reflection bench is exactly mirror-symmetric about the normal, so nothing said which line was incident. The refraction block read right-to-left shows light bending AWAY from the normal on entering glass. The eye bench and the straw figure both drew an undirected line between a scene and an eye, on the two pages carrying `LIGHT-17`, *your eyes send something out in order to see*. Arrows on rays are the first thing a UK teacher marks and a standard GCSE mark loss, and the unit's own `ks4_becomes` card promises "ray diagrams" while nothing on any page told a student to draw one. |
+| **What stays headless, deliberately** | Every normal; `.ks3-rblock-ghost` and `[data-prism-ghost]`, the *where it would have gone* lines; `.ks3-lband-back`, the straw's back-projection; `.ks3-rsurf-arcs`; `.ks3-pinh-axis`, `-box`, `-object` and `-img`; `.ks3-eyecam-scene`, `-case`, `-stop`, `-lens`, `-back` and `-img`; `.ks3-lband-beam` on the lens pair; both `.ks3-lrace-` arrows. A construction line is a line a student DRAWS, not a path light TAKES, and the whole value of the head is that the difference reads. |
+| **Scope** | P7 only. The marker is emitted into this module's own `<svg>` elements with ids of its own hooks; nothing outside `ks3_art/p7.py` names `ks3-rayhead-`, and `shared/ks3.css` is not touched, so no other unit's bytes can move. Turning heads on for biology, chemistry or the other physics units is a wider change and wants its own pass. |
+
+### 10. The figure that explains the illusion drew the illusion wrongly — MRB-297, P7-10
+
+| | |
+|---|---|
+| **Where** | `p7-03` `#s-inout`, *Why the straw looks broken* — `_band_straw` |
+| **What she drew** | Back-projection `M520 140 L740 296`; *WHERE IT LOOKS* at `cx=452 cy=253`. |
+| **What is built** | Back-projection `M520 140 L392 163`; *WHERE IT LOOKS* at `cx=400 cy=161`, with its label moved to `x=240` so it stacks under *WATER SURFACE* and above *WHERE IT IS*, both anchored outside the glass exactly as hers already was. |
+| **The defect in hers** | **The dashed line was not the backward extension of the ray reaching the eye, and the marker was not on the dashed line either.** The emergent ray is `M520 140 L800 90`, so backwards from (520, 140) the direction is (−280, +50) — up and to the left. Hers ran (+220, +156), the opposite quadrant, out through the glass's right-hand wall at x=620 and into mid-air. And *WHERE IT LOOKS* at (452, 253) sits on the REAL in-water ray `M400 330 L520 140`, which passes through (452, 248) — so the drawing asserted that the straw's end appears at a place the light genuinely goes through, 100 units from the only construction line that would have shown why. Her own `aria_label` describes the correct figure, which was not the one drawn, and every rung-3 and rung-4 answer on the page depends on it. |
+| **Why the minimum and not the better version** | The honest construction is TWO rays from the straw's end to two nearby points on the surface, both refracted, their dashed back-projections intersecting at the apparent position — it delivers the *higher **and** closer* her alt text promises and removes the single-ray arbitrariness. That is a Design brief and no Design batch was open on this run, so it is recorded rather than taken. |
+| **What is still wrong, and declared** | The drawn emergent angle is ~80° from the normal against ~32° inside; water (n = 1.33) allows ~45°. It cannot be corrected without moving the water line, the exit point, the straw and the eye — at 45° from (520, 140) an eye outside the glass leaves the 380-unit canvas — so it goes with the Design brief. The lesson's `convention_note` covered only the bench; it now names the figure and says the angles in it are not to scale. |
 
 ---
 

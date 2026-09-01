@@ -50,7 +50,11 @@ QUESTIONS = [
         "band": "easier",
         "text": "It is July in the UK. What season is it in Australia?",
         "options": [
-            {"text": "Winter", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "Winter, with that half leaning away",
+             "correct": True},
             {"text": "Summer", "correct": False,
              "why": "The two hemispheres are always opposite, because only "
                     "one of them can lean towards the Sun at a time."},

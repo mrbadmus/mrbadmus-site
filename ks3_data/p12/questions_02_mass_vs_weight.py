@@ -175,8 +175,11 @@ QUESTIONS = [
                 "reads in kilograms. It is taken to a mining base on Mars, "
                 "where g = 3.7 N/kg. What happens to its readings?",
         "options": [
-            {"text": "Every reading is about a third of the true mass",
-             "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "Every reading is about a third of the true mass — "
+                     "g is 3.7", "correct": True},
             {"text": "Every reading is about three times the true mass",
              "correct": False,
              "why": "The pull on Mars is weaker, so the spring stretches "
@@ -201,8 +204,8 @@ QUESTIONS = [
         "text": "Why is it wrong to say that kilograms and newtons are two "
                 "units for the same quantity, like metres and feet?",
         "options": [
-            {"text": "Because newtons are much larger than kilograms",
-             "correct": False,
+            {"text": "Because a newton is a much larger unit than a "
+                     "kilogram", "correct": False,
              "why": "Size is not the issue. A metre is larger than a foot and "
                     "they still measure the same quantity."},
             {"text": "Because the number connecting them is a property of the "
@@ -212,8 +215,8 @@ QUESTIONS = [
              "why": "It is the other way round in ordinary speech, and in any "
                     "case who uses a unit says nothing about what it "
                     "measures."},
-            {"text": "Because newtons only apply to objects that are moving",
-             "correct": False,
+            {"text": "Because newtons only apply to objects that are "
+                     "actually moving", "correct": False,
              "why": "A book resting on a table has a weight in newtons and is "
                     "not moving at all."},
         ],

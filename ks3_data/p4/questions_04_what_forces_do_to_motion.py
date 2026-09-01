@@ -134,17 +134,20 @@ QUESTIONS = [
         "text": "A trolley is travelling right when a resultant force acts "
                 "SIDEWAYS on it. What happens to the motion it already had?",
         "options": [
-            {"text": "It is cancelled — the trolley now goes sideways only.",
+            {"text": "It is cancelled at once, and the trolley now goes "
+                     "sideways only.",
              "correct": False,
              "why": "Nothing cancels it. A resultant force adds a change; it "
                     "does not replace the motion."},
             {"text": "It is kept, and the path bends: the trolley goes right "
                      "AND sideways.", "correct": True},
-            {"text": "It stops until the sideways force is removed.",
+            {"text": "It stops dead for as long as the sideways force keeps "
+                     "acting.",
              "correct": False,
              "why": "The rightward motion continues throughout. The force is "
                     "not acting against it."},
-            {"text": "It doubles, because two motions are now happening.",
+            {"text": "It doubles in size, because two motions are now "
+                     "happening at once.",
              "correct": False,
              "why": "The rightward speed is unchanged. What is added is a "
                     "sideways change."},

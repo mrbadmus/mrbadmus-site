@@ -105,13 +105,16 @@ LESSON = {
                   "on, no curtain opened. The same very small amount of light "
                   "is arriving as when you walked in.",
         "commit": "What has changed in the minute you waited?",
+        # ⊕ MRB-297, 1 Sep 2026 — distractor 3 widened. The correct option
+        # was the longest by 5, which is a tell below the gate's constant
+        # as well as at it. The balance now holds at 1.
         "options": [
             "Your pupils have opened wider, and that is the whole of it",
             "Your pupils opened, and the retina itself has also become far "
             "more sensitive",
             "Your eyes have started sending out a little light of their own",
-            "Your brain has learned the shape of the room and is filling in "
-            "the rest",
+            "Your brain has learned the shape of the whole room and is "
+            "filling in the rest",
         ],
         "answer": 1,
         "reveal": "Two things happen and they are wildly different sizes. The "

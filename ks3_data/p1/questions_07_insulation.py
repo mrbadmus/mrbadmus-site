@@ -318,18 +318,18 @@ QUESTIONS = [
         "text": "A snowman is dressed in a thick coat on a mild day. What "
                 "happens compared with an undressed one?",
         "options": [
-            {"text": "It melts faster, because the coat is warm and passes "
-                     "that warmth in",
+            {"text": "It melts faster, because the coat is warm in itself "
+                     "and passes that warmth in",
              "correct": False,
              "why": "The coat has no warmth of its own. This is the ice "
                     "trial in a different hat."},
-            {"text": "It melts at the same rate, because coats only work on "
-                     "living things",
+            {"text": "It melts at the same rate, because coats can only "
+                     "work on living bodies",
              "correct": False,
              "why": "Nothing about insulation requires a body. It slows a "
                     "flow either way."},
-            {"text": "It melts more quickly at first and then much more "
-                     "slowly afterwards",
+            {"text": "It melts more quickly at first and then more slowly, "
+                     "because the coat warms up",
              "correct": False,
              "why": "There is no crossover. It is slower throughout, for "
                     "the same reason all the way."},

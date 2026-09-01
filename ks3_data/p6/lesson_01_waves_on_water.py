@@ -111,15 +111,26 @@ LESSON = {
                   "reach the far side. The gull is exactly where it started.",
         "commit": "Something clearly travelled from one side to the other. "
                   "What was it?",
+        # ⊕ MRB-297 · 1 Sep 2026 — THE LENGTH TELL WAS INVERTED, NOT
+        # REMOVED. On origin/main these ran [83, 85, 95, 67] with the
+        # correct option (index 2) longest by 10. This run lengthened the
+        # distractors to [93, 91, 95, 91] — the correct option is STILL the
+        # longest, just by 2 instead of 10, so a student reading by length
+        # picks the same option and the fix only hid it from a margin gate.
+        # Rewritten by the rule this run settled on: lengthen a distractor
+        # with words that belong to the misconception it carries, never
+        # shorten the correct answer, and land the correct answer at rank 2
+        # or 3. Now [98, 100, 95, 91] — correct is third longest. Index 2
+        # is unchanged; only the two distractors gained words.
         "options": [
-            "Nothing travelled — the water only went up and down, so the "
-            "wave was standing still",
-            "The water travelled across the pond, and the gull was too "
-            "light to be carried with it",
+            "Nothing travelled — the water only went up and down on the "
+            "spot, so the wave stood still all along",
+            "The water travelled across the pond behind the waves, and the "
+            "gull was too light to be carried along",
             "The disturbance travelled across the pond; the water and the "
             "gull moved up and down on the spot",
             "The wind travelled across the pond and the water simply "
-            "followed it",
+            "followed the wind along the surface",
         ],
         "answer": 2,
         "reveal": "The water did not go anywhere. Each patch of it lifted and "
@@ -336,12 +347,23 @@ LESSON = {
             "q": "A wave on a tank has crests 0.60 m apart. A float on it "
                  "rises 0.05 m above the still level and drops 0.05 m below "
                  "it. Give the wavelength and the amplitude.",
+            # ⊕ MRB-297 · 1 Sep 2026 — SAME INVERSION AS THE HOOK ABOVE,
+            # and worse. On origin/main these ran [84, 79, 35, 85]: the
+            # correct option (index 2) was the SHORTEST by 44, a tell in
+            # the other direction. This run lengthened it to 89, which made
+            # it the LONGEST — [84, 79, 89, 85] — so the tell was flipped
+            # rather than removed and a length-reader still lands on it.
+            # Fixed the ruled way: the correct option is untouched at 89
+            # and two distractors gain words that belong to the
+            # misconception each carries. Now [98, 91, 89, 85] — correct is
+            # third longest. Answer index 2 is unchanged.
             "options": [
-                "Wavelength 0.60 m, amplitude 0.10 m — amplitude runs from "
-                "the trough up to the crest",
-                "Wavelength 0.05 m, amplitude 0.60 m — the bigger number is "
-                "the size of the wave",
-                "Wavelength 0.60 m, amplitude 0.05 m",
+                "Wavelength 0.60 m, amplitude 0.10 m — amplitude runs the "
+                "whole way from the trough up to the crest",
+                "Wavelength 0.05 m, amplitude 0.60 m — the bigger of the "
+                "two numbers is the size of the wave",
+                "Wavelength 0.60 m, amplitude 0.05 m — crest to crest, "
+                "and the still level up to the crest",
                 "Wavelength 0.30 m, amplitude 0.05 m — wavelength runs from "
                 "a crest to the next trough",
             ],

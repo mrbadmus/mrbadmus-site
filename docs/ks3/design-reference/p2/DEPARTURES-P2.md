@@ -13,7 +13,7 @@ re-cuts a rail or changes what a lesson covers.
 
 ---
 
-## CHANGED — 1 row
+## CHANGED — 2 rows
 
 ### D-P2-01 · `p2-01 energy-in-food` · the calorimeter's sample mass
 
@@ -41,6 +41,82 @@ bench now agrees with the apparatus its own prose describes.
 
 Her prose is untouched: "a boiling tube holding 20 g of water" was already
 correct and stays.
+
+⊕ **AMENDED 31 Aug 2026 — the two peanut figures in this row are the record
+of what the bench held when D-P2-01 was written, and are kept rather than
+corrected.** The peanut has since been ruled out of the practical; see
+D-P2-02. On today's bench the same 0.30 g gives 18 °C for cheese and dry
+pasta, 33 °C for crisps and 30 °C for the cheese puff, and the highest
+`kJperG × capture` is the crisps' 9.24 rather than the peanut's 11.27 — so
+the boiling-point margin this row bought is wider now, not narrower.
+
+⊕ **CORRECTED 1 Sep 2026 (MRB-297) — the amendment above quietly changed
+the QUANTITY, and so read as a correction of figures that were never
+wrong.** It is kept above rather than rewritten in place, because the two
+sets of numbers look like a disagreement and are not one, and a later
+reader who "reconciles" them will break the row's argument.
+
+**Both sets are right. They are different quantities.** The engine's
+`riseNow()` is `consumed × kJperG × capture × scatter × 1000 / (WATER ×
+SHC)`, and `paint()` prints TWO readouts from it: `rise`, and `temp` which
+is `START + rise` with `START` = 20 °C. At 0.30 g into 20 g of water at
+scatter 1.0:
+
+| food | `kJperG × capture` | rise | temp = 20 + rise |
+|---|---|---|---|
+| Cheese (17.0 × 0.30) | 5.10 | 18.30 °C | **38.30 °C** |
+| Dry pasta (15.0 × 0.34) | 5.10 | 18.30 °C | **38.30 °C** |
+| Crisps (22.0 × 0.42) | 9.24 | 33.16 °C | **53.16 °C** |
+| Cheese puff (21.6 × 0.38) | 8.21 | 29.45 °C | **49.45 °C** |
+| Peanut, retired (24.5 × 0.46) | 11.27 | 40.44 °C | **60.44 °C** |
+
+So the original row's "38 °C for cheese and dry pasta, 53 °C for crisps,
+60 °C for peanut" are the FINAL TEMPERATURES, and are exact. The 31 Aug
+amendment's "18 °C … 33 °C … 30 °C" are the RISES for three of the same
+states, and are also right (the cheese puff is 29.45, so 29 rather than
+30). Nothing about the peanut swap moved cheese or pasta, and nothing
+could have: neither food's constants were touched.
+
+⚠️ **AND THE ROW'S ARGUMENT ONLY WORKS ON THE TEMPERATURE.** The claim
+being made is that every combination "stays below boiling". A rise of
+18 °C is not a fact about boiling; 38.30 °C is. Restated as rises, the
+sentence stops supporting its own conclusion. The conclusion still holds
+at the top of the scatter band, which is the case it was chosen for: at
+scatter 1.1 the hottest state on today's bench is the crisps at 56.47 °C,
+and even the retired peanut only reached 64.49 °C.
+
+What the amendment was right about stands: the peanut is out, and the
+highest `kJperG × capture` a student can now reach is the crisps' 9.24
+rather than the peanut's 11.27, so the boiling-point margin is wider than
+when D-P2-01 was written. **D-P2-01 needed no correction of its figures —
+only that note about the margin.**
+
+---
+
+### D-P2-02 · `p2-01 energy-in-food` · the peanut comes out of the practical
+
+| | |
+|---|---|
+| **What she wrote** | `{ id: 'peanut', label: 'Peanut', kJperG: 24.5, capture: 0.46 }` as the bench's second sample and its default (`startFood: 'Peanut'`), noted as "the highest of the four … the classic school sample"; the commit-gate option "A peanut — it is mostly fat"; and Rung 3, "Your calorimeter gives 9 kJ per gram for a peanut. The packet says 24 kJ per gram." |
+| **What I wrote** | A cheese puff in the same slot, same default: **`kj_per_g` 21.6, `capture` 0.38.** 21.6 is the UK nutrition label — 2156 kJ per 100 g, 516 kcal, fat 30.3 g per 100 g. 0.38 is a modelling constant, not a measurement, and the reasoning is in the file: a puffed snack is mostly air, so it flares fast and loses more sideways than a dense nut, which puts it below the peanut's 0.46 and inside the ruled 0.30–0.46 band. The gate option becomes "A cheese puff — it is mostly fat" and Rung 3 is re-derived: 21.6 × 0.38 = 8.2 measured against a 21.6 label. |
+| **THE DEFECT** | **A nut sample in a classroom practical, ruled out by Mide on 30 Aug 2026.** Not a wording problem and not something a safety note reaches: a child who reacts to airborne particles from burning nut is not protected by a line of prose. The instrument, the water, the constant, the other three foods, the capture band and every rung's teaching are unchanged. |
+
+**What this costs, stated rather than hidden:** the peanut was the highest of
+the four and the cheese puff is not — the crisps at 22.0 kJ/g now top the
+bench. No non-nut classroom food beats a crisp on energy density, because a
+crisp is already about a third fat and near the ceiling for a dry snack,
+while nuts led precisely because they are about half fat. The figure was NOT
+adjusted to preserve the old ordering. The sample's note is rewritten to say
+what is true of a puff instead, and "the classic school sample" is deleted
+with the peanut it described.
+
+**Swept beyond P2, and it leaves the physics lane.** The ruling is about nuts
+in classrooms, not about this bench, so `ks3_data/b3/lesson_02_food_tests.py`
+rung 1 — a crushed peanut in the ethanol emulsion test — takes double cream
+instead. Same order, same correct option, same teaching, every option the
+same word count. Two nut mentions were left alone because nothing is handled:
+B5's hazelnut as an example of a fruit, and B9's almond as a
+pollinator-dependent crop.
 
 ---
 

@@ -89,15 +89,15 @@ QUESTIONS = [
         "options": [
             {"text": "The object is returning towards the start",
              "correct": True},
-            {"text": "The object is going downhill", "correct": False,
-             "why": "The graph holds no information about hills at all "
-                    "— only how far from the start and how long."},
-            {"text": "The object is slowing down", "correct": False,
+            {"text": "The object is going downhill for a while",
+             "correct": False,
+             "why": "The graph holds no information about hills at all — only "
+                    "how far from the start and how long."},
+            {"text": "The object is slowing down as it goes", "correct": False,
              "why": "Slowing down makes the line get less steep while still "
                     "climbing. Falling is a different thing."},
-            {"text": "The object has stopped", "correct": False,
-             "why": "Stopped is a flat line. A falling line is still "
-                    "moving."},
+            {"text": "The object has stopped where it is", "correct": False,
+             "why": "Stopped is a flat line. A falling line is still moving."},
         ],
         "figure": None,
     },
@@ -172,19 +172,21 @@ QUESTIONS = [
             {"text": "Because it plots only how far from the start and how "
                      "long, and neither carries direction",
              "correct": True},
-            {"text": "Because the graph is not accurate enough",
+            {"text": "Because the graph is not plotted accurately enough to "
+                     "show up a change of direction",
              "correct": False,
-             "why": "Accuracy is not the issue. The information is simply "
-                    "not among the two quantities plotted."},
-            {"text": "Because bends only matter at high speed",
+             "why": "Accuracy is not the issue. The information is simply not "
+                    "among the two quantities plotted."},
+            {"text": "Because a bend only matters at high speed, and nothing "
+                     "here was going fast enough",
              "correct": False,
              "why": "Whether a bend matters is beside the point: the graph "
                     "does not record direction at all."},
-            {"text": "Because bends are drawn as curves and this graph has "
-                     "none",
+            {"text": "Because a bend would have to appear as a curve, and "
+                     "this kind of graph never curves",
              "correct": False,
-             "why": "This graph can certainly have curves — they mean "
-                    "the speed is changing, not that the route bends."},
+             "why": "This graph can certainly have curves — they mean the "
+                    "speed is changing, not that the route bends."},
         ],
         "figure": None,
     },

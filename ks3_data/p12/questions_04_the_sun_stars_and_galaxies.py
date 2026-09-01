@@ -1,7 +1,13 @@
 """P12 lesson 04 — The Sun, stars and galaxies: twelve questions (MRB-223).
 
 Written against Design's page. The star you can see in daylight and the
-five rungs of the distance ladder are hers.
+five rungs of the ladder of scale are hers.
+
+⊕ MRB-297 · 1 Sep 2026 — this said "the distance ladder", which this
+branch renamed "the ladder of scale" on the page itself
+(`lesson_04_the_sun_stars_and_galaxies.py` #s-bench). The prose follows
+the rename. ⚠️ The MODEL KEY stays `distance-ladder`: it is the dispatch
+string `shared/ks3.js` matches on, and `ks3_art/p12.py` says so.
 
 The discriminations, in the order the lesson builds them:
 
@@ -66,10 +72,12 @@ QUESTIONS = [
         "band": "easier",
         "text": "What is a galaxy?",
         "options": [
-            {"text": "A star with planets going round it", "correct": False,
+            {"text": "A star with planets going round it, and nothing else",
+             "correct": False,
              "why": "That is a solar system. A galaxy holds billions of "
                     "them."},
-            {"text": "The whole of space and everything in it", "correct": False,
+            {"text": "The whole of space and everything that is in it",
+             "correct": False,
              "why": "That is the universe, which holds around two trillion "
                     "galaxies."},
             {"text": "An enormous collection of stars held together by "
@@ -130,11 +138,11 @@ QUESTIONS = [
         "text": "Why does the Sun look so much bigger and brighter than any "
                 "other star?",
         "options": [
-            {"text": "Because it is by far the largest star there is",
-             "correct": False,
+            {"text": "Because it is by far the largest star there is "
+                     "anywhere", "correct": False,
              "why": "It is fairly ordinary. Some stars are hundreds of times "
                     "its diameter."},
-            {"text": "Because it is the only star inside our galaxy",
+            {"text": "Because it is the only star inside our own galaxy",
              "correct": False,
              "why": "The Milky Way holds about 200 billion stars, and the Sun "
                     "is one of them."},
@@ -224,15 +232,17 @@ QUESTIONS = [
                 "night sky. Proxima Centauri is 4.24 light years away and "
                 "needs a telescope. What does that tell you?",
         "options": [
-            {"text": "Proxima Centauri must be behind a cloud of dust",
-             "correct": False,
+            {"text": "Proxima Centauri must be hidden behind a thick cloud "
+                     "of dust", "correct": False,
              "why": "Dust does dim some stars, and it is not needed here: "
                     "Proxima is simply a very faint kind of star."},
             {"text": "Betelgeuse must have been measured wrongly, because "
-                     "closer stars always look brighter", "correct": False,
+                     "closer stars always look brighter than distant ones",
+             "correct": False,
              "why": "Closer stars do not always look brighter. That is the "
                     "assumption this pair of stars exists to break."},
-            {"text": "One of the two distances must be wrong", "correct": False,
+            {"text": "One of the two distances must have been measured "
+                     "wrongly", "correct": False,
              "why": "Both are well measured. The two stars really are that "
                     "different in the light they give out."},
             {"text": "Betelgeuse gives out vastly more light than Proxima "
@@ -249,16 +259,16 @@ QUESTIONS = [
         "options": [
             {"text": "It names OUR star and everything orbiting it, and other "
                      "stars have systems of their own", "correct": True},
-            {"text": "It names every star with planets, so most of the night "
-                     "sky is part of it", "correct": False,
+            {"text": "It names every star that has planets of its own, so "
+                     "most of the night sky is part of it", "correct": False,
              "why": "It names ours alone. Every other star's system is a "
                     "separate one, light years away."},
             {"text": "It has become meaningless, because there are so many "
-                     "systems", "correct": False,
+                     "other systems", "correct": False,
              "why": "It is a name for one particular system, which is exactly "
                     "as useful now as it was before the others were found."},
-            {"text": "It should be replaced, because the Sun turns out not to "
-                     "be special", "correct": False,
+            {"text": "It should be replaced, because the Sun turns out not "
+                     "to be special at all", "correct": False,
              "why": "The Sun is ordinary as stars go, and it is still the one "
                     "star our own system is built round."},
         ],

@@ -189,10 +189,19 @@ LESSON = {
          "anchor": "s-frames",
          "eyebrow": "Same road, same two cars, three different answers",
          "heading": "Change who is watching.",
+         # ⊕ MRB-297 · 1 Sep 2026 — THE FIRST SENTENCE ON THIS SECTION
+         # DENIED THE SECTION. It read "Nothing about the cars changes when
+         # you switch viewpoint, and neither do the numbers." The eyebrow
+         # directly above it promises "three different answers", the
+         # `key_note` says "Changing who measures changes the number, never
+         # the object", and the gate below has the same two cars reading
+         # 0 m/s from each other and 25 m/s from the verge. So a Year 7 read
+         # "the numbers do not change" and then met three numbers. The half
+         # that is true — the cars themselves are untouched — is kept.
          "prompt": "Nothing about the cars changes when you switch "
-                   "viewpoint. Only the numbers do — and one of the "
-                   "three viewpoints always makes something look "
-                   "stationary.",
+                   "viewpoint, but the numbers do. What changes is "
+                   "which reading is the one you are sitting in — and that "
+                   "reading is always zero.",
          "gate": {
              "prompt": "Commit first. Two cars both travel at 25 m/s in the "
                        "same direction, side by side. What is the speed of "
@@ -214,18 +223,28 @@ LESSON = {
          "same_direction_label": "Same way",
          "opposite_direction_label": "Opposite ways",
          "start_same_direction": True,
+         # ⚖️ THE FIFTH TILE IS THE ZERO, AND THE ZERO IS THE LESSON. The
+         # first four are frame-labelled quantities and correctly do not
+         # change with the picker. `self` does: it names what you are
+         # sitting in, and it reads 0.0 m/s from every seat.
          "readouts": [
              {"id": "a_ground", "label": "A from the roadside"},
              {"id": "b_ground", "label": "B from the roadside"},
              {"id": "b_from_a", "label": "B from car A"},
              {"id": "a_from_b", "label": "A from car B"},
+             {"id": "self", "label": "The road from the roadside"},
          ],
+         "self_labels": {
+             "ground": "The road from the roadside",
+             "a": "A from car A",
+             "b": "B from car B",
+         },
          "alt": "A road with two cars, drawn from a chosen viewpoint. When a "
                 "car is chosen, that car is held still and the road slides "
                 "underneath it.",
-         "close": "One of the four readings is always zero — whichever "
-                  "one belongs to the viewpoint you are sitting in. Nothing "
-                  "about either car changed to make it so."},
+         "close": "One of the five readings is always zero — whatever you "
+                  "are sitting in, measured from where you are sitting. "
+                  "Nothing about either car changed to make it so."},
 
         {"type": "key-fact", "ref": "relative-to-what"},
 
@@ -234,7 +253,12 @@ LESSON = {
          "id": "passing-speeds",
          "anchor": "s-pass",
          "eyebrow": "Four passes · decide the direction first",
-         "heading": "Same way, subtract. Opposite ways, add.",
+         # ⚖️ P3-20 — the rule is SCOPED to the question it answers.
+         # Unqualified it is broken by Pass 4, which is a composition
+         # through a moving frame and adds: a student who followed the
+         # heading picked the distractor and was never told why.
+         "heading": "How fast does one pass the other? Same way, "
+                    "subtract. Opposite ways, add.",
          "prompt": "Decide whether the two are going the same way or "
                    "opposite ways before you touch the numbers.",
          # ⚖️ MRB-204 — every `sum` below is an ADDITION or a SUBTRACTION.
@@ -267,9 +291,11 @@ LESSON = {
               "options": ["5 m/s", "20 m/s", "45 m/s"],
               "answer": 0,
               "sum": "25 − 20 = 5 m/s",
-              "why": "Walking pace. A 15 m overtake therefore takes about "
-                     "three seconds, which is why it feels like nothing is "
-                     "happening."},
+              # ⚖️ P3-21 — 5 m/s is not walking pace. The unit's own
+              # journey matcher pins walking at 1 m/s and a jog at 3.
+              "why": "A bit faster than a jog. A 15 m overtake therefore "
+                     "takes about three seconds, which is why it feels "
+                     "like nothing is happening."},
              {"id": "c4", "label": "Pass 4",
               "question": "You walk at 1.5 m/s towards the front of a train "
                           "that is doing 30 m/s. How fast are you moving "
@@ -277,8 +303,10 @@ LESSON = {
               "options": ["28.5 m/s", "30 m/s", "31.5 m/s"],
               "answer": 2,
               "sum": "30 + 1.5 = 31.5 m/s",
-              "why": "Your speed relative to the train is 1.5 m/s, and the "
-                     "train's speed relative to the ground is 30. Walk "
+              "why": "This one is not a pass — you are inside one of the "
+                     "moving things. Your speed relative to the train is "
+                     "1.5 m/s and the train's speed relative to the ground "
+                     "is 30, so going the same way the two add. Walk "
                      "towards the back instead and it is 28.5."},
          ],
          "close": "Four passes, and not one of them was a multiplication. "
@@ -418,8 +446,23 @@ LESSON = {
             "success": [
                 "Gives 250 + 50 = 300 m/s for the leg with the wind.",
                 "Gives 250 − 50 = 200 m/s for the leg against it.",
-                "Says the speed is now being measured relative to the air "
-                "first, and then relative to the ground.",
+                # ⊕ MRB-297 · 1 Sep 2026 — THIS CRITERION CREDITED THE
+                # WRONG RULE, AND IT WAS THIS RUN THAT ADDED IT. Commit
+                # `e4334e228` appended ", so the plane's speed and the wind's
+                # add rather than subtract" to a criterion that had ended at
+                # "…and then relative to the ground". They add on ONE leg.
+                # Two lines above, criterion 2 requires 250 − 50 = 200 for the
+                # other. So a marker following the list credited "they add" as
+                # the general rule while the same list demanded a subtraction,
+                # and a student who wrote the true thing — that the wind is
+                # taken off on the way back — met a criterion telling them
+                # otherwise. What the clause was reaching for is real and is
+                # now stated correctly: it is the CHANGE OF FRAME that makes
+                # the two speeds combine at all, and the direction of travel
+                # that decides the sign.
+                "Says the speed is quoted relative to the air first and then "
+                "relative to the ground, so the wind is added going with it "
+                "and taken off coming back.",
                 "Says the slow leg takes more extra time than the fast leg "
                 "saves, because the slow leg lasts longer.",
                 "Uses total distance ÷ total time for the round trip "
@@ -428,10 +471,10 @@ LESSON = {
     },
 
     "key_note": "Every speed is relative to something, and for ordinary "
-                "questions that something is the ground. Two objects going "
-                "the same way: subtract. Two objects going opposite ways: "
-                "add. Changing who measures changes the number, never the "
-                "object.",
+                "questions that something is the ground. To find how fast "
+                "one object passes another: same way, subtract; opposite "
+                "ways, add. Changing who measures changes the number, never "
+                "the object.",
 
     "stretch": [
         {"id": "no-stationary-thing",
@@ -450,8 +493,9 @@ LESSON = {
 
     "vocabulary": [
         {"term": "relative speed",
-         "definition": "The speed of one object measured from another. Same "
-                       "way: subtract. Opposite ways: add."},
+         "definition": "The speed of one object measured from another. To "
+                       "find how fast one passes the other: same way, "
+                       "subtract; opposite ways, add."},
         {"term": "frame of reference",
          "definition": "The thing a speed is measured against. Usually the "
                        "ground, and usually not said out loud."},
@@ -466,8 +510,9 @@ LESSON = {
         "body": "Not sure when to add and when to subtract?",
         "cta": "Ask about this lesson"},
 
-    "ks4_becomes": "Vectors and resultant velocity, and — much later "
-                   "— the reason light refuses to play by these rules.",
+    "ks4_becomes": "Vectors and combining motions that carry direction, "
+                   "and — much later — the reason light refuses to play "
+                   "by these rules.",
 
     "ws": ["analysis-and-evaluation"],
 }

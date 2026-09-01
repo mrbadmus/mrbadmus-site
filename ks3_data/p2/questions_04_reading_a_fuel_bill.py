@@ -89,13 +89,16 @@ QUESTIONS = [
             {"text": "A fixed daily amount for being connected, whatever you "
                      "use",
              "correct": True},
-            {"text": "An extra charge for using more than your allowance",
+            {"text": "An extra charge for using more units than your "
+                     "allowance",
              "correct": False,
-             "why": "It does not depend on how much you use at all — "
-                    "that is the whole point of it."},
-            {"text": "The cost of the first unit each day", "correct": False,
+             "why": "It does not depend on how much you use at all — that is "
+                    "the whole point of it."},
+            {"text": "The cost of the first unit of electricity you use each "
+                     "day",
+             "correct": False,
              "why": "It is charged even on a day when no units are used."},
-            {"text": "A one-off fee when you join a supplier",
+            {"text": "A one-off fee charged when you first join a supplier",
              "correct": False,
              "why": "It appears on every bill, every day, not once."},
         ],
@@ -149,19 +152,21 @@ QUESTIONS = [
         "text": "Why does a bill need a balance beam to describe it and not "
                 "just a formula triangle?",
         "options": [
-            {"text": "Because bills involve money as well as energy",
+            {"text": "Because bills involve money as well as energy, and a "
+                     "triangle has no place for money",
              "correct": False,
              "why": "Money is not what decides the shape. The arithmetic is."},
-            {"text": "Because a triangle only works for three quantities and "
-                     "a bill has five appliances",
+            {"text": "Because a triangle only works for three quantities, and "
+                     "a bill has five appliances on it",
              "correct": False,
              "why": "Closer, but not the reason. Even a two-row bill would "
                     "need a beam, because a total of two rows is still a "
                     "sum."},
-            {"text": "Because a triangle cannot show a division",
+            {"text": "Because a triangle can only show a multiplication and "
+                     "never a division of any kind",
              "correct": False,
-             "why": "A triangle shows divisions perfectly well — that is "
-                    "most of what it is for."},
+             "why": "A triangle shows divisions perfectly well — that is most "
+                    "of what it is for."},
             {"text": "Because each row is a product but the total is a SUM, "
                      "and a triangle cannot show adding up",
              "correct": True},
@@ -194,20 +199,21 @@ QUESTIONS = [
         "text": "A family halves its electricity usage. Why does the bill "
                 "fall by less than half?",
         "options": [
-            {"text": "Because the price per unit rises when you use less",
+            {"text": "Because the price per unit rises once you drop below a "
+                     "certain amount",
              "correct": False,
-             "why": "The unit price is the same however much you use. "
-                    "Nothing on the bill works that way."},
+             "why": "The unit price is the same however much you use. Nothing "
+                    "on the bill works that way."},
             {"text": "Because the standing charge is a fixed portion that "
                      "does not move",
              "correct": True},
-            {"text": "Because appliances draw more power when used less "
-                     "often",
+            {"text": "Because appliances draw more power when they are used "
+                     "less often",
              "correct": False,
              "why": "An appliance draws its rated power whenever it runs, "
                     "regardless of how often that is."},
-            {"text": "Because the meter cannot measure small amounts "
-                     "accurately",
+            {"text": "Because the meter cannot measure small amounts of "
+                     "energy accurately",
              "correct": False,
              "why": "Meters measure small amounts fine. The reason is on the "
                     "bill, in plain sight."},
@@ -220,21 +226,23 @@ QUESTIONS = [
         "text": "Why do suppliers charge a standing charge at all, rather "
                 "than putting everything into the unit price?",
         "options": [
-            {"text": "Because it is more profitable than charging per unit",
+            {"text": "Because charging in that way is simply more profitable "
+                     "than putting it all into the unit price",
              "correct": False,
-             "why": "It is a way of matching a cost to how that cost "
-                    "actually arises, not a way of charging more."},
+             "why": "It is a way of matching a cost to how that cost actually "
+                    "arises, not a way of charging more."},
             {"text": "Because energy is more expensive to produce on days "
-                     "when little is used",
+                     "when very little of it is used",
              "correct": False,
              "why": "Production cost does not rise on a quiet day."},
             {"text": "Because the cables, meters and repair crews cost the "
                      "same whether a house draws 400 units or none",
              "correct": True},
-            {"text": "Because it discourages people from wasting energy",
+            {"text": "Because a fixed daily charge discourages people from "
+                     "wasting energy around the house",
              "correct": False,
-             "why": "It does the opposite if anything — it is the one "
-                    "part of the bill that using less cannot reduce."},
+             "why": "It does the opposite if anything — it is the one part of "
+                    "the bill that using less cannot reduce."},
         ],
         "figure": None,
     },
@@ -245,19 +253,22 @@ QUESTIONS = [
                 "unit with 40p a day. For a household using very little "
                 "electricity, which is likely better and why?",
         "options": [
-            {"text": "The first, because a lower unit price is always better",
+            {"text": "The first, because a lower price for every unit is "
+                     "always the better deal overall",
              "correct": False,
              "why": "For a low user the units are a small part of the bill, "
                     "so the daily charge dominates."},
-            {"text": "The first, because 70p a day is only £21 a month",
+            {"text": "The first, because 70p a day comes to only about £21 "
+                     "over the course of a month",
              "correct": False,
-             "why": "£21 against £12 is a £9 gap the cheaper units would "
-                    "have to make up — and a low user does not buy "
-                    "enough units to do it."},
-            {"text": "It makes no difference; the totals always match",
+             "why": "£21 against £12 is a £9 gap the cheaper units would have "
+                    "to make up — and a low user does not buy enough units to "
+                    "do it."},
+            {"text": "It makes no difference, because the two bills always "
+                     "come to the same total",
              "correct": False,
-             "why": "They match only at one particular usage. Above and "
-                    "below it, one is cheaper."},
+             "why": "They match only at one particular usage. Above and below "
+                    "it, one is cheaper."},
             {"text": "The second, because the lower daily charge saves more "
                      "than the higher unit price costs",
              "correct": True},

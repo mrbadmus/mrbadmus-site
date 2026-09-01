@@ -130,7 +130,11 @@ QUESTIONS = [
              "correct": False,
              "why": "The magnets are only half of it. The push also depends "
                     "on how much current is flowing."},
-            {"text": "It roughly doubles", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It roughly doubles, because the push follows the "
+                     "current", "correct": True},
             {"text": "It reverses, because doubling passes through the point "
                      "where it cancels", "correct": False,
              "why": "There is no such point. Direction is set by the two "
@@ -272,17 +276,18 @@ QUESTIONS = [
         "options": [
             {"text": "It becomes about twenty times larger, because each turn "
                      "carries the current through the field", "correct": True},
-            {"text": "It stays the same, because the current has not changed",
+            {"text": "It stays the same, because neither the current nor "
+                     "the magnets have been changed at all",
              "correct": False,
              "why": "The same current now passes through the field twenty "
                     "times over instead of once, and each pass gets its own "
                     "push."},
-            {"text": "It falls to a twentieth, because the current is shared "
-                     "between the turns", "correct": False,
+            {"text": "It falls to a twentieth, because the current has to be "
+                     "shared out between the twenty turns", "correct": False,
              "why": "Nothing is shared. The current runs through every turn "
                     "in succession."},
-            {"text": "It reverses, because half of the twenty turns run the "
-                     "other way", "correct": False,
+            {"text": "It reverses, because half of the twenty turns must end "
+                     "up running the other way round", "correct": False,
              "why": "Every turn is wound the same way round, so all twenty "
                     "pushes act in the same direction."},
         ],

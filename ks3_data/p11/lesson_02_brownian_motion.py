@@ -503,14 +503,21 @@ LESSON = {
                    "law, and Brownian motion as evidence for the particle "
                    "model.",
 
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Teacher demonstration. The smoke cell uses a lit taper "
+                   "and a small glass cell — watch, don't handle.",
+
     "convention_note": "The bench is a teaching model. Typical molecular "
                        "speeds are quoted for the gas or liquid named, scaled "
                        "with the square root of absolute temperature from "
                        "about 500 m/s for air and about 590 m/s for water at "
                        "20 °C; real distributions are broad and no molecule "
                        "holds one speed for long. The jiggle figure is an "
-                       "illustrative displacement rate, not a measurement, "
-                       "and is scaled with the same square root. Size ratios "
+                       "illustrative displacement rate, not a measurement. "
+                       "It is scaled with the same square root, and it falls "
+                       "as the speck grows: the bigger the speck, the more "
+                       "completely the strikes on it cancel, so a smoke speck "
+                       "jiggles further than a pollen grain. Size ratios "
                        "are order-of-magnitude comparisons between a typical "
                        "speck and a typical molecule.",
 

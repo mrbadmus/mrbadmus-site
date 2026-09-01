@@ -123,16 +123,19 @@ QUESTIONS = [
         "options": [
             {"text": "Yes — a real one, and a compass at either end finds a "
                      "definite pole", "correct": True},
-            {"text": "No — a coil with no core is just a length of wire",
+            {"text": "No — a coil with nothing down the middle is just a "
+                     "length of wire",
              "correct": False,
              "why": "Wound into a coil it is a magnet whenever a current runs "
                     "through it. The core only multiplies what is already "
                     "there."},
-            {"text": "No — the field cannot form without iron to form it in",
+            {"text": "No — the field cannot form without a piece of iron to "
+                     "form it in",
              "correct": False,
              "why": "The current makes the field. Iron responds to it, which "
                     "is a different job."},
-            {"text": "Only while the coil is being wound", "correct": False,
+            {"text": "Only while the coil is being wound, and never once it "
+                     "is finished", "correct": False,
              "why": "Winding it does nothing. Switching the current on is "
                     "what matters."},
         ],
@@ -148,7 +151,11 @@ QUESTIONS = [
                      "as many turns", "correct": False,
              "why": "The same current runs through every turn, one after "
                     "another. Nothing is shared out."},
-            {"text": "It roughly doubles", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "It roughly doubles, as each turn adds its own "
+                     "field", "correct": True},
             {"text": "It stays the same, because the current has not changed",
              "correct": False,
              "why": "The current is only half the story. Each turn adds its "
@@ -220,18 +227,20 @@ QUESTIONS = [
                 "Explain how both can be true.",
         "options": [
             {"text": "The meter must be wrong, because more wire always "
-                     "carries more current", "correct": False,
+                     "carries more current, whatever it is wound onto",
+             "correct": False,
              "why": "More wire is more resistance, so slightly less current "
                     "is exactly what you would expect."},
             {"text": "Each extra turn adds its own field in the same place, "
                      "and that outweighs the slightly smaller current",
              "correct": True},
-            {"text": "The extra wire stores magnetism, so the coil keeps some "
-                     "from before", "correct": False,
+            {"text": "The extra wire stores magnetism from earlier, so the "
+                     "coil keeps some of what it had before",
+             "correct": False,
              "why": "Nothing is stored anywhere. Switch off and the whole "
                     "field goes at once."},
-            {"text": "The current is smaller but faster, so it does the same "
-                     "job in less time", "correct": False,
+            {"text": "The current is smaller but travels faster, so it does "
+                     "the same job in less time than before", "correct": False,
              "why": "There is no speed here to trade against size. The field "
                     "depends on how much current, not on how quickly."},
         ],

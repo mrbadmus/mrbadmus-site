@@ -88,7 +88,7 @@ LESSON = {
 
     "requires": ["what-a-force-is"],
     "assumes": [],
-    "references": ["moments", "pressure-force-over-area"],
+    "references": ["moments"],
     "ks4_links": [],
 
     "meta_description": "A sledge pulled 40 N one way and 25 N the other. "
@@ -366,6 +366,11 @@ LESSON = {
                       "are the ones your own sledge is showing.",
               "blocked_lead": "Both ropes are slack. Set a pull above zero "
                               "and the five lines come back.",
+              # ⊕ MRB-297 · 1 Sep 2026 — the readout beside the Check button
+              # while it refuses. It used to say "5 of 5 written", which is
+              # true of the boxes and says nothing about why pressing does
+              # nothing. Same key and same mechanism as p8-06's.
+              "blocked_progress": "Waiting on a pull above zero",
               "steps": [
                   {"letter": "C", "label": "Convert",
                    "placeholder": "anything to convert?",

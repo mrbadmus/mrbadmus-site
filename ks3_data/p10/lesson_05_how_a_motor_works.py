@@ -143,11 +143,14 @@ LESSON = {
                   "been touched.",
         "commit": "Why does swapping the wires reverse it?",
         # ⚠️ MRB-278 — position 2.
+        # ⊕ MRB-297, 1 Sep 2026 — distractor 1 widened. The correct option
+        # was the longest by 5, which is a tell below the gate's constant
+        # as well as at it. The balance now holds at 1.
         "options": [
             "The battery pushes rather than pulls when it is the other way "
             "round",
-            "The magnets inside are flipped over by the current arriving from "
-            "the other side",
+            "The magnets inside are flipped right over by the current "
+            "arriving from the other side",
             "The current now runs the other way round the coil, so the push "
             "on each side reverses",
             "The motor always alternates direction, and swapping the wires "
@@ -600,6 +603,12 @@ LESSON = {
     "ks4_becomes": "Fleming's left-hand rule, the force on a conductor worked "
                    "out from flux density, current and length, and the "
                    "generator effect.",
+
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Eye protection on. The coil gets hot within a minute, so "
+                   "switch off between tries and let it cool. Keep fingers, "
+                   "hair and loose sleeves clear of the spinning part. Use "
+                   "only the low-voltage supply your teacher gives you.",
 
     "convention_note": "The bench is a teaching model. The coil is drawn face "
                        "on and frozen in the horizontal position, where the "

@@ -142,8 +142,23 @@ QUESTIONS = [
     {
         "id": "p9-01-s02",
         "band": "standard",
-        "text": "A cotton cloth sits in the middle of the list. Why is it a "
-                "poor choice for a classroom demonstration?",
+        # ⊕ MRB-297 · 1 Sep 2026 — THE RE-RANK MOVED COTTON AND THIS STEM
+        # DID NOT FOLLOW IT. The stem read "A cotton cloth sits in the
+        # middle of the list." On origin/main cotton was row 4 of 7, the
+        # exact centre, and that was literally true. This branch re-ranked
+        # the series (acetate above wool) and cotton is now row 5 of 7, so
+        # the centre is the wool duster and the stem named a position
+        # cotton no longer holds — while the lesson's badge still said
+        # "middle". THE RANKING IS RIGHT AND STAYS: an acetate rod rubbed
+        # with wool is the standard school demonstration of a POSITIVE rod,
+        # so acetate must sit above wool, and cotton genuinely sits below
+        # wool and near neutral. The stem is what moves, and it now says
+        # the thing the badge says — that cotton sits between the materials
+        # that lose electrons and the ones that gain them — which is true
+        # at row 5 with rows 1–4 badged "loses" and rows 6–7 "gains".
+        "text": "A cotton cloth sits between the materials that lose "
+                "electrons and the ones that gain them. Why is it a poor "
+                "choice for a classroom demonstration?",
         "options": [
             {"text": "Cotton is a conductor, so any charge escapes at once",
              "correct": False,

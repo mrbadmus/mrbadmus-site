@@ -151,6 +151,31 @@ Quoted from the Foundations screen, and binding:
 - **Violet · optional depth.** "Going further" and "Need a hand?" only. It marks a layer the student
   chose, never a level they were put in.
 
+**Selection is never amber — on either ground.** ⊕ Ruled by Mide, 30 August 2026.
+
+Amber is reserved for warning and loss: a wrong idea being confronted, a caution, a thing given up.
+**A colour that means "careful" must not also mean "you picked this."** A student who has learned
+across a term that amber means "careful, this is a wrong idea" cannot then meet amber meaning "the
+tab you are on" without the first meaning wearing away — and it is the first meaning that is
+load-bearing.
+
+So selection takes the **orange accent on both grounds**. On a light ground that is an accent border
+over an accent tint, which is what the light branch already did. On an ink-dark ground it is the same
+shape read for the dark: the dark panel as the fill, the accent as the border, cream as the label.
+
+⚠️ **The dark treatment is a border and not a slab, and that is arithmetic rather than taste.**
+`--ks3-accent` #E4572E is a large-text-only colour, and ink #221E1B measured on an accent fill is
+**4.49:1** — under the 4.5:1 body floor. A solid accent slab would ship control labels below AA, so
+the amber slab is not simply recoloured; it is re-expressed as a border, which needs only the 3:1 of
+WCAG 1.4.11 and clears it (3.18:1 on the dark panel, 4.49:1 on the ink ground behind).
+
+⚠️ **This moves selection only.** It does not move **category** — "this column, not that one", "this
+is the field you are looking at" — which stays on `--ks3-data` where MRB-252 put it. Recolouring a
+category under cover of this rule is the one way to get it wrong.
+
+Three separate units stopped at this question before it was ruled, which is why it is written here.
+It is settled. Do not re-raise it.
+
 ---
 
 ## 2. Type

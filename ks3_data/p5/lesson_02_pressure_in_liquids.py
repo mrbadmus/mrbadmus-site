@@ -81,13 +81,13 @@ LESSON = {
     "ks4_links": [],
 
     "meta_description": "Punch three holes down the side of a full can and "
-                        "the bottom jet shoots furthest, every time. Lower a "
-                        "probe into a tank and find out why depth is the "
-                        "only thing that matters.",
+                        "the bottom jet comes out hardest and fastest, every "
+                        "time. Lower a probe into a tank and find out why "
+                        "depth is the only thing that matters.",
 
     "big_question": "Punch three holes down the side of a full can — near "
                     "the top, halfway, near the bottom. The bottom jet "
-                    "shoots out furthest, every single time.",
+                    "comes out hardest and fastest, every single time.",
 
     "rail": [
         {"anchor": "s-hook",    "short": "CAN",
@@ -105,19 +105,29 @@ LESSON = {
         "kind": "narrative",
         "title": "Three holes, one can, three different jets.",
         "prompt": "The top hole dribbles. The middle one arches out. The "
-                  "bottom one throws water most of the way across the sink. "
-                  "Same can, same water, holes the same size.",
-        "commit": "Why does the bottom jet travel furthest?",
+                  "bottom one comes out hard and flat, fast enough to "
+                  "feel. Same can, same water, holes the same size.",
+        "commit": "Why does the bottom jet come out fastest?",
         "options": [
             # ⊕ PHASE 3, 25 Aug 2026 — HER four options. These had
             # been invented: her prompt was ported and her answers were
             # not, which the HTML comparison could not see because a
             # `.dc.html` renders them from `{{ opt.text }}`.
-            "The can is narrower at the bottom, so the water speeds up",
-            "The water from the bottom hole has further to fall",
+            # ⊕ AMENDED MRB-297, 31 Aug 2026 — no longer true of all four,
+            # and kept rather than deleted so the provenance is not silently
+            # overstated. HER CORRECT OPTION IS UNCHANGED, byte for byte.
+            # The distractors were re-authored to the same length and shape:
+            # as delivered they were terse beside a reasoned correct answer,
+            # so the right one was the visibly longest and the hook could be
+            # answered without reading it.
+            "The can is narrower at the bottom, so the water is squeezed "
+            "out faster there",
+            "The water from the bottom hole has further to fall, so it "
+            "lands further out",
             "There is more water stacked above the bottom hole, so it "
             "presses harder there",
-            "Water gets heavier as it sinks",
+            "Water gets heavier as it sinks, so the lowest water pushes "
+            "hardest of all",
         ],
         "answer": 2,
         "reveal": "Nothing about the water changes as it sinks. A litre near "
@@ -481,7 +491,7 @@ LESSON = {
                 "75 Pa — multiply the weight by the area",
                 "30 000 N — the probe is measuring a push, so it reads in "
                 "newtons",
-                "30 000 Pa",
+                "30 000 Pa — 1500 N shared over 0.05 m²",
                 "0.000033 Pa — divide the area by the weight",
             ],
             "answer": 2,
@@ -548,7 +558,7 @@ LESSON = {
             "field_label": "Your answer",
             "placeholder": "The bottom hole…",
             "success": [
-                "Says the lowest hole gives the fastest, furthest jet.",
+                "Says the lowest hole gives the fastest, hardest jet.",
                 "Explains it as the greatest depth of water above that hole.",
                 "Says the jets come out sideways because a liquid presses in "
                 "every direction.",
@@ -622,6 +632,10 @@ LESSON = {
     "ks4_becomes": "Pressure in a column of liquid as height × density × "
                    "gravitational field strength, pressure differences in "
                    "fluids, and how those give upthrust.",
+
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Ask your teacher before making holes in a can. Cut edges "
+                   "are sharp.",
 
     "convention_note": "The tank is a teaching model. Water is taken as "
                        "1000 kg in every cubic metre, sea water as 1025 and "

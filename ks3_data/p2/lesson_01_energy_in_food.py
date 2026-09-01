@@ -7,6 +7,14 @@ Her page wins outright. Every food, every capture fraction, every rung and
 every line of the two notes below is hers; what this file adds is the
 engine's shape and the rulings the record has to carry.
 
+⊕ AMENDED MRB-297, 31 Aug 2026 — the sentence above is no longer true of
+one food and is kept rather than deleted so the provenance is not silently
+overstated. Design's second sample was a peanut; Mide ruled it out of the
+practical on 30 Aug 2026 and a cheese puff replaces it. Its energy figure,
+its capture fraction, its note, the commit-gate option that named it and
+rung 3's two numbers are this repository's, not hers. The other three foods
+are untouched. Full row in `DEPARTURES-P2.md` as D-P2-02.
+
 ── ⚖️ RULED · THIS LESSON OWNS THE FOOD-ENERGY FIGURES ──────────────────
 
 `KS3.P.FUEL.01` — "comparing energy values of different foods (from labels)
@@ -21,8 +29,16 @@ two copies.
 ── ⚖️ RULED · THE CALORIMETER READS LOW ON PURPOSE ──────────────────────
 
 Design's science flag 1 asks for a ruling and this is it: the capture
-fractions stay exactly as she set them (0.30–0.46), and the bench keeps
-reading 30–46% of the label figure.
+fractions stay low, and the bench keeps reading well under half the label
+figure.
+
+⊕ MRB-297 · 1 Sep 2026 — this read "stay exactly as she set them
+(0.30–0.46), and the bench keeps reading 30–46% of the label figure",
+which stopped being true when the peanut left. Her 0.46 went with it. The
+four now on the bench are 0.42, 0.38, 0.34 and 0.30, so the range is
+0.30–0.42 and the bench reads 30–42% of the label. Three of the four are
+still hers, character for character; the cheese puff's 0.38 is this
+repository's, and D-P2-02 says so.
 
 That gap IS the lesson. Rung 3's fifth criterion is that repeating a
 measurement does nothing about a systematic leak, and it can only be
@@ -37,11 +53,18 @@ cannot be answered from it.
 
 Design's flag 3 offers 4.2 for arithmetic simplicity. Kept at 4.18, for a
 reason internal to the page rather than to taste: her hook quotes a real
-packet, 229 kcal and 958 kJ, and 229 × 4.18 = 957.2, which rounds to the
-958 printed. At 4.2 it gives 961.8 and the hook's own arithmetic stops
-landing on the number the student can read off the bag. The constant and
-the worked example are the same constant, so it cannot be changed in one
-place only.
+packet, 229 kcal and 958 kJ, and 4.2 gives 961.8, so the hook's own
+arithmetic stops landing on the number the student can read off the bag.
+
+⊕ MRB-297 · 1 Sep 2026 — THE PARAGRAPH ABOVE USED TO FINISH THE SUM AND
+GET IT WRONG. It read "229 × 4.18 = 957.2, which rounds to the 958
+printed". 957.2 rounds to 957 at every precision there is; it is not 958,
+and this is the answer to the question the page opens with. The label's
+own conversion factor is 4.184 — the figure the food-labelling rules set
+— and 229 × 4.184 = 958.1, which is where the packet's 958 comes from.
+So the hook now prints the sum with 4.184 and tells the student to round
+to 4.18 for their own working. Everywhere else on the page 4.18 stands:
+it IS 4.184 to three figures, and no other sentence here multiplies by it.
 
 ── ⚖️ MRB-204 · TRIANGLE, AND IT IS THE RIGHT SHAPE ────────────────────
 
@@ -141,19 +164,30 @@ LESSON = {
         "commit": "Commit to why there are two.",
         # ⚑ MRB-177 — Design's four kept verbatim. Each is a sentence a real
         # student says, and only B names two units for one quantity.
+        # ⊕ AMENDED MRB-297, 31 Aug 2026 — the line above is no longer true of
+        # all four and is kept rather than deleted so the provenance is not
+        # silently overstated. The CORRECT option is still hers, byte for
+        # byte. Distractors were re-authored to the same length and shape,
+        # because Design's terse ones made the correct option the visibly
+        # longest and a student could answer this hook without reading it.
         "options": [
             "Calories are what your body uses; joules are the total in the "
             "food",
             "They are the same energy in two different units",
-            "One is for fat and one is for carbohydrate",
-            "The kJ figure includes the packaging",
+            "One number is for the fat and the other is for the carbohydrate",
+            "The kJ figure counts the packaging as well as the food itself",
         ],
         "answer": 1,
+        # ⊕ MRB-297 · 1 Sep 2026. This printed "229 × 4.18 gives 957 —
+        # which rounds to the 958 on the packet". 957.2 does not round to
+        # 958. The label's own conversion factor is 4.184, and
+        # 229 × 4.184 = 958.1, which is the 958 the packet prints.
         "reveal": "They are the same amount of energy in two different units, "
-                  "like 6 feet and 1.83 metres. One kilocalorie is 4.18 "
-                  "kilojoules, and 229 × 4.18 gives 957 — which "
-                  "rounds to the 958 on the packet. The joule is the "
-                  "scientific unit; the calorie survives on labels because "
+                  "like 6 feet and 1.83 metres. One kilocalorie is 4.184 "
+                  "kilojoules, and 229 × 4.184 gives 958 — the "
+                  "figure on the packet. Round it to 4.18 for your own "
+                  "working. The joule is the scientific unit; "
+                  "the calorie survives on labels because "
                   "people are used to it. <strong>Nothing about the crisps "
                   "changes.</strong>",
     },
@@ -193,9 +227,13 @@ LESSON = {
          "gate": {
              "prompt": "Commit first. Which of these do you expect to hold "
                        "the most energy per gram?",
+             # ⚖️ MRB-297 · the peanut goes here too. The answer stays at
+             # index 1 and stays correct: among the four offered, the puff
+             # at 21.6 kJ/g beats cheese at 17.0 and pasta at 15.0. The
+             # gate asks "which of these", and the crisps are not offered.
              "options": [
                  "Dry pasta — it is pure carbohydrate",
-                 "A peanut — it is mostly fat",
+                 "A cheese puff — it is mostly fat",
                  "Cheese — it is the heaviest",
                  "They are all about the same per gram",
              ],
@@ -209,6 +247,20 @@ LESSON = {
          # and the capture fractions are all hers and all unchanged, and
          # because the measured kJ/g divides the mass back out, no number
          # this lesson teaches moves.
+         # ⊕ CORRECTED MRB-297 · 1 Sep 2026 — "the foods and the capture
+         # fractions are all hers and all unchanged" stopped being true in
+         # this same commit, a few hundred lines below, where Mide's ruling
+         # of 30 Aug 2026 took the peanut out. Design's second sample was a
+         # peanut at 24.5 kJ/g with her own capture fraction; the cheese
+         # puff that replaced it carries 0.38, which is this repository's
+         # number and not hers, and her 0.46 left with the peanut. The four
+         # now on the bench are 0.42 / 0.38 / 0.34 / 0.30. Three of the four
+         # foods and three of the four fractions are hers, character for
+         # character; the fourth of each is ours, and D-P2-02 says so. The
+         # sentence is kept rather than deleted because it is what the
+         # provenance record claimed, and the claim needs to be visibly
+         # withdrawn rather than quietly dropped. The water, the constant
+         # and the kJ/g arithmetic are untouched, exactly as it says.
          "mass_min": 0.10,
          "mass_max": 0.50,
          "mass_step": 0.05,
@@ -216,20 +268,46 @@ LESSON = {
          "start_food": 1,
          "runs_to_record": 3,
          # ⚖️ CAPTURE FRACTIONS ARE THE LESSON. See the ruling above.
+         # ⚖️ MRB-297 · THE PEANUT IS OUT. Ruled by Mide, 30 Aug 2026: a nut
+         # in a classroom is not a wording problem, and no safety note
+         # protects a child who reacts to airborne particles from burning
+         # nut. Design's second sample was a peanut at 24.5 kJ/g, capture
+         # 0.46. A cheese puff replaces it — the standard UK non-nut
+         # sample, extruded and high in fat, so it lights at once and
+         # burns steadily on a mounted needle, which is the only property
+         # the peanut was here for. The bench keeps its comparison.
+         #
+         # ⚠️ IT IS NO LONGER THE HIGHEST OF THE FOUR, AND THAT IS HONEST.
+         # The crisps at 22.0 now top the bench. No non-nut classroom food
+         # beats a crisp on energy density, because a crisp is already
+         # about a third fat and near the ceiling for a dry snack, and
+         # nuts led precisely because they are about half fat. The figure
+         # is not adjusted to preserve the old ordering.
          "foods": [
-             {"id": "crisp",  "label": "Crisps",    "kj_per_g": 22.0,
+             {"id": "crisp",  "label": "Crisps",      "kj_per_g": 22.0,
               "capture": 0.42,
               "note": "Crisps are largely fat, and fat is the densest store "
                       "in food — about 37 kJ per gram on its own."},
-             {"id": "peanut", "label": "Peanut",    "kj_per_g": 24.5,
-              "capture": 0.46,
-              "note": "The highest of the four, and it burns steadily enough "
-                      "to be the classic school sample."},
-             {"id": "pasta",  "label": "Dry pasta", "kj_per_g": 15.0,
+             # ⚑ 21.6 kJ/g is the UK nutrition label, not an estimate:
+             # 2156 kJ per 100 g (516 kcal), fat 30.3 g per 100 g.
+             # ⚑ 0.38 is a MODELLING CONSTANT, not a measurement. Capture
+             # is a property of the bench, not of the food. A puffed snack
+             # is mostly air, so it flares fast and more of what it
+             # releases goes sideways into the room than a dense peanut's
+             # did — below the peanut's 0.46, and above the other three.
+             # ⊕ MRB-297 · 1 Sep 2026 — this line ended "inside the ruled
+             # 0.30–0.46", quoting a range the peanut's departure had
+             # already closed. The four fractions now run 0.30 to 0.42.
+             {"id": "puff",   "label": "Cheese puff", "kj_per_g": 21.6,
+              "capture": 0.38,
+              "note": "Mostly fat and air. It lights at once and burns "
+                      "steadily, which is why a prep room reaches for a "
+                      "puffed snack."},
+             {"id": "pasta",  "label": "Dry pasta",   "kj_per_g": 15.0,
               "capture": 0.34,
               "note": "Mostly carbohydrate, at roughly 17 kJ per gram — "
                       "well under half of fat."},
-             {"id": "cheese", "label": "Cheese",    "kj_per_g": 17.0,
+             {"id": "cheese", "label": "Cheese",      "kj_per_g": 17.0,
               "capture": 0.30,
               "note": "Fatty, but wet — and the water in it soaks up "
                       "energy without ever reaching your thermometer."},
@@ -341,13 +419,22 @@ LESSON = {
                   "is a fair everyday phrase for “moved out of my "
                   "body's store” and a bad description of what happened "
                   "to the joules.</strong>",
+                  # ⚖️ RULED 30 Aug 2026 (MRB-297) — P2-02. The clause
+                  # used to end "which is part of why your measured
+                  # value and the label disagree", which is wrong and
+                  # points the wrong way: the tube measures COMBUSTION,
+                  # and a UK label is already an Atwater figure, so
+                  # digestive losses make the LABEL lower, not higher.
+                  # The gap is heat lost to the room, which the Going
+                  # further block on this page accounts for on its own.
                   "One more thing the calorimeter cannot tell you: burning "
                   "food in air and respiring it are not the same process, "
                   "even though the energy released is nearly identical. Your "
                   "body does it in dozens of small controlled steps at "
                   "37 °C, not in one flame — and it cannot get at "
-                  "all of it, which is part of why your measured value and "
-                  "the label disagree.",
+                  "all of it, which is why the number on the label is "
+                  "what a body can actually use rather than what a fire "
+                  "could release.",
               ]},
              {"quote": "A calorie on a food label is the same calorie "
                        "physicists use.",
@@ -499,10 +586,17 @@ LESSON = {
                    "side by side.",
             }},
         "explain": {
-            "q": "Your calorimeter gives 9 kJ per gram for a peanut. The "
-                 "packet says 24 kJ per gram. Explain three reasons your "
-                 "value is lower, and say whether repeating the measurement "
-                 "would fix it.",
+            # ⚖️ MRB-297 · re-derived from the sample that replaced the
+            # peanut, not carried across. The bench computes a measured
+            # value of `kj_per_g × capture`, so the cheese puff reads
+            # 21.6 × 0.38 = 8.208, which is 8.2 to the readout's precision;
+            # the packet figure is the label itself, 21.6. Design's pair
+            # was 9 against 24, off the peanut's 24.5 × 0.46. None of the
+            # five success criteria quotes a figure, so none of them moves.
+            "q": "Your calorimeter gives 8.2 kJ per gram for a cheese puff. "
+                 "The packet says 21.6 kJ per gram. Explain three reasons "
+                 "your value is lower, and say whether repeating the "
+                 "measurement would fix it.",
             "field_label": "Your explanation",
             "placeholder": "Not all the energy released reached the water…",
             "success": [
@@ -546,10 +640,16 @@ LESSON = {
     "stretch": [
         {"id": "every-error-runs-one-way",
          "type": "explainer",
-         "text": "Your school calorimeter will read low — usually 20 to "
-                 "60 per cent below the label — and every source of "
-                 "that error is worth naming, because they are all in the "
-                 "same direction. Energy escapes from the flame into the "
+         # ⊕ MRB-297 · 1 Sep 2026. This said "usually 20 to 60 per cent
+         # below the label". The bench's four capture fractions are 0.42,
+         # 0.38, 0.34 and 0.30, so a reading is 30 to 42 per cent OF the
+         # label — 58 to 70 per cent below it. The old band did not
+         # contain a single value the bench can produce.
+         "text": "Your school calorimeter will read low — usually only "
+                 "30 to 42 per cent of the label figure — and every "
+                 "source of that error is worth naming, because they are "
+                 "all in the same direction. "
+                 "Energy escapes from the flame into the "
                  "room instead of the water. The glass of the tube absorbs "
                  "some. The sample often stops burning before it is fully "
                  "consumed. None of these could ever make the reading too "
@@ -596,6 +696,13 @@ LESSON = {
                    "practical, and the difference between the energy a food "
                    "contains and the energy a body can actually get out of "
                    "it.",
+
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Teacher demonstration only. Eye protection for everyone. "
+                   "Burning food spits, and the boiling tube gets hot enough "
+                   "to burn — a hot tube looks exactly like a cold one, so "
+                   "put it on a heatproof mat and leave it there. Never taste "
+                   "any of the samples, before or after.",
 
     "ws": ["measurement", "analysis-and-evaluation"],
 }

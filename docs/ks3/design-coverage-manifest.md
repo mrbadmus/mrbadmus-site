@@ -26,30 +26,47 @@ grade boundaries, no mark schemes and no "Higher tier" badges anywhere in KS3.
 subject identity only.
 
 **The shape of the course.** 33 **units** (a unit is a multi-week block of teaching, e.g.
-"Particles and their behaviour"), containing **183 lesson slots** in total. A lesson is roughly one
+"Particles and their behaviour"), containing **185 lesson slots** in total. A lesson is roughly one
 40-minute classroom lesson and is the atom of the system — one lesson, one web page.
 
-**The state of the build, stated plainly.** Of the 183 lesson slots:
+**The state of the build, stated plainly.** Of the 185 lesson slots:
 
 | | Count | What it renders as |
 |---|---|---|
-| Fully authored lessons | **6** | A real lesson page with all its content |
-| Unwritten slots | **176** | A short "Coming soon" placeholder page |
-| Cross-reference slots | **1** | No page of its own — it links to another discipline's lesson |
+| Fully authored lessons | **185** | A real lesson page with all its content |
+| Unwritten slots | **0** | A short "Coming soon" placeholder page |
 
-All six authored lessons are the same unit: **C1, "Particles and their behaviour"** (Chemistry,
-typically Year 7). All six are marked `draft`, meaning not yet checked for scientific accuracy, so
-all six currently show an under-review marker.
+⊕ **MRB-297 · 1 Sep 2026 — THE WHOLE KEY STAGE IS AUTHORED, and this table said 6.** The three
+rows above read "Fully authored **6** · Unwritten slots **176** · Cross-reference slots **1**",
+and the paragraph under them read:
 
-**Consequence for the design work.** There are only six real lesson pages in existence to design
-against, and they are all one unit of one science. The other 177 slots are placeholders. A design
-that only looks right on Chemistry particle lessons will break when Biology systems lessons and
-Physics calculation lessons are written. Sections 1, 2 and 3 therefore describe the **full
-vocabulary the generator can render**, not only what is currently on screen, and mark clearly which
-parts have never yet been exercised by real content.
+> All six authored lessons are the same unit: **C1, "Particles and their behaviour"** (Chemistry,
+> typically Year 7) … There are only six real lesson pages in existence to design against, and
+> they are all one unit of one science. The other 177 slots are placeholders.
 
-**Total pages the generator writes: 294.** That is 1 KS3 landing page + 3 discipline hubs + 33 unit
-index pages + 182 lesson pages + 75 browse-layer index pages.
+That was true when it was written and has not been true for some time; every one of the 185 slots
+now carries a real page, across all 33 units of all three disciplines. It is kept rather than
+deleted because it is the premise of the whole document — the reason sections 1, 2 and 3 describe
+"the full vocabulary the generator can render" rather than only what was on screen. That reason no
+longer applies, and a reader who does not know the premise has expired will read the coverage
+claims far too conservatively. The "Cross-reference slots" row is dropped: no lesson carries a
+cross-reference key any more, and 185 slots resolve to 185 authored pages with none left over.
+
+Sections 1, 2 and 3 still describe the full vocabulary, which is now the right thing for a
+different reason: the vocabulary is exercised rather than hypothetical.
+
+⚠️ Counted, not estimated: `find ks3_data -name 'lesson_*.py'` gives 185, and
+`ks3_data.KS3_UNITS` reports 185 slots of which 185 are `authored`.
+
+⊕ **MRB-297 · 1 Sep 2026 — the slot TOTAL was wrong too, in nine places.** The two sentences above
+this table read ~~"containing **183 lesson slots** in total"~~ and ~~"Of the 183 lesson slots"~~,
+and seven further passages divided by 183: §1's three-unrendered-families paragraph, §5's
+coming-soon row, §7's two framing sentences, §7's lesson-title extremes, §9's unwritten-lessons row
+and §10.1's closing paragraph. There are **185**, and 183 was hand-counted drift of the same kind
+that left the family table two lessons short. All nine are corrected in place and marked.
+
+**Total pages the generator writes: 297.** That is 1 KS3 landing page + 3 discipline hubs + 33 unit
+index pages + 185 lesson pages + 75 browse-layer index pages.
 
 **Where the code lives.** The generator is `build_ks3.py`; the page behaviour is `shared/ks3.js`;
 the styling is `shared/ks3.css`; the content is the `ks3_data/` folder; the governing design
@@ -70,33 +87,57 @@ shapes.** A lesson built around a simulation looks different from a lesson built
 step-by-step mechanism, and that is deliberate. A design that assumes one page skeleton will fight
 the system.
 
-| Family | What it means, in one line | Lessons carrying it (of 183) | Named example |
+| Family | What it means, in one line | Lessons carrying it (of 185) | Named example |
 |---|---|---|---|
-| **MODEL** | One idea explains a whole class of behaviour. | **49** — Biology 8, Chemistry 17, Physics 24 | *The particle model* (unit C1) — **authored, viewable today** |
+| **MODEL** | One idea explains a whole class of behaviour. | **51** — Biology 8, Chemistry 19, Physics 24 | *The particle model* (unit C1) — **authored, viewable today** |
 | **PROCESS** | A mechanism unfolds in steps. | **34** — Biology 12, Chemistry 15, Physics 7 | *Changes of state* (unit C1) — **authored, viewable today** |
-| **SYSTEM** | Parts working together, and what happens when one part fails. | **32** — Biology 21, Chemistry 2, Physics 9 | *The digestive system* (unit B3) — not yet written |
-| **CONTRAST** | Two things, one difference that discriminates between them. | **18** — Biology 4, Chemistry 7, Physics 7 | *Solids, liquids and gases* (unit C1) — **authored, viewable today** |
-| **INVESTIGATION** | The scientific skill itself is the subject (fair testing, graphs, measurement error). | **18** — Biology 7, Chemistry 5, Physics 6 | *Testing the model: does it explain everything?* (unit C1) — **authored, viewable today** |
-| **QUANTITATIVE** | A calculation carries the concept. | **17** — Biology 2, Chemistry 2, Physics 13 | *Speed* (unit P3) — not yet written |
-| **CLASSIFY** | Decide which category, fast, and know why. | **15** — Biology 4, Chemistry 7, Physics 4 | *Acids and alkalis* (unit C6) — not yet written |
+| **SYSTEM** | Parts working together, and what happens when one part fails. | **32** — Biology 21, Chemistry 2, Physics 9 | *The digestive system* (unit B3) — **authored, viewable today** |
+| **CONTRAST** | Two things, one difference that discriminates between them. | **19** — Biology 4, Chemistry 8, Physics 7 | *Solids, liquids and gases* (unit C1) — **authored, viewable today** |
+| **INVESTIGATION** | The scientific skill itself is the subject (fair testing, graphs, measurement error). | **17** — Biology 7, Chemistry 4, Physics 6 | *Testing the model: does it explain everything?* (unit C1) — **authored, viewable today** |
+| **QUANTITATIVE** | A calculation carries the concept. | **17** — Biology 2, Chemistry 2, Physics 13 | *Speed* (unit P3) — **authored, viewable today** |
+| **CLASSIFY** | Decide which category, fast, and know why. | **15** — Biology 4, Chemistry 7, Physics 4 | *Acids and alkalis* (unit C6) — **authored, viewable today** |
 
-Counts sum to 183.
+Counts sum to 185.
 
-**Three families have never been rendered with real content:** SYSTEM (32 lessons), QUANTITATIVE
-(17) and CLASSIFY (15). That is 64 of 183 lessons — just over a third of the course — whose page
-shape exists only as a written intention. In particular:
+⊕ **MRB-297 · 1 Sep 2026 — this table summed to 183 and three of its rows were wrong.** MODEL read
+49 (Chemistry 17), CONTRAST 18 (Chemistry 7) and INVESTIGATION 18 (Chemistry 5). Measured from the
+`"family"` key of all 185 lesson files, the true split is MODEL 51 (Chemistry 19), CONTRAST 19
+(Chemistry 8) and INVESTIGATION 17 (Chemistry 4). Pre-existing drift, not this run's: the counts
+were written by hand and the lesson files kept moving. §10.1's Slots column carried the same drift
+from a different starting point and is corrected there too.
 
-- **QUANTITATIVE** is the only family that routinely needs a calculation layout. The generator has
-  exactly one calculation component (see "FIFA" in section 2) and it has been used once, in one
-  Chemistry lesson. Thirteen of the seventeen QUANTITATIVE lessons are Physics.
-- **SYSTEM** is a Biology-heavy family (21 of its 32 lessons). Its defining component is
-  "perturbation" — break one part of a system, predict the knock-on effect, reveal the result.
-  Nothing like that has been built yet.
-- **CLASSIFY** needs sorting and category-decision components. Nothing like that has been built
-  yet.
+⊕ **MRB-297 · 1 Sep 2026 — and three of its Named examples still said "not yet written".** The
+SYSTEM, QUANTITATIVE and CLASSIFY rows named *The digestive system* (B3), *Speed* (P3) and *Acids
+and alkalis* (C6) as ~~not yet written~~, inside the very table whose counts were being corrected.
+All three are authored and on the site; each row now says so, in the same words the other four
+rows use.
 
-**The two "authored" families are unevenly represented too.** Four of the six written lessons are
-MODEL or CONTRAST. Only one PROCESS lesson and one INVESTIGATION lesson exist.
+⊕ **MRB-297 · 1 Sep 2026 — the whole premise of this passage is gone, not only its numbers.** It
+read:
+
+> **Three families have never been rendered with real content:** SYSTEM (32 lessons), QUANTITATIVE
+> (17) and CLASSIFY (15). That is 64 of 183 lessons — just over a third of the course — whose page
+> shape exists only as a written intention. In particular:
+>
+> - **QUANTITATIVE** is the only family that routinely needs a calculation layout. The generator
+>   has exactly one calculation component (see "FIFA" in section 2) and it has been used once, in
+>   one Chemistry lesson. Thirteen of the seventeen QUANTITATIVE lessons are Physics.
+> - **SYSTEM** is a Biology-heavy family (21 of its 32 lessons). Its defining component is
+>   "perturbation" — break one part of a system, predict the knock-on effect, reveal the result.
+>   Nothing like that has been built yet.
+> - **CLASSIFY** needs sorting and category-decision components. Nothing like that has been built
+>   yet.
+>
+> **The two "authored" families are unevenly represented too.** Four of the six written lessons are
+> MODEL or CONTRAST. Only one PROCESS lesson and one INVESTIGATION lesson exist.
+
+**All seven families are rendered with real content.** Every one of the 185 lessons is authored, so
+SYSTEM has 32 real pages, QUANTITATIVE 17 and CLASSIFY 15, and no family's page shape is a written
+intention any longer. Two measurements inside the old passage are still true and are worth keeping:
+13 of the 17 QUANTITATIVE lessons are Physics, and 21 of SYSTEM's 32 are Biology. The rest has
+expired — the FIFA calculation layout now ships on **24** lessons rather than one, and the lessons
+between them place **258** distinct activity kinds, so "nothing like that has been built yet" is
+false of all three families. The passage is kept because later sections quote it as evidence.
 
 ---
 
@@ -302,7 +343,7 @@ carries it, so a design can be specified against something concrete.
 |---|---|---|
 | **Draft / under review** | ⛔ **REVOKED — MRB-221, 16 Aug 2026** | The `.ks3-review-flag` marker paragraph and the `Draft` badge are **deleted**. Nothing renders here. Kept as a row so the state is not re-invented: it was a visible under-review marker in the lesson header, mandatory on every non-frozen lesson, and it existed to protect a student from unreviewed science. Mide and colleagues have since reviewed the content, so it protects nobody and says nothing true. `verify_ks3.py` now asserts its ABSENCE. Do not reinstate. ~~It must stay legible and prominent — the one thing on a page more important than the science is protecting a student from unreviewed science.~~ |
 | **Reviewed and frozen** | Review state is "frozen" | No marker. **Zero lessons are in this state today.** |
-| **Coming-soon lesson slot** | The lesson has no authored content | An entirely different, much shorter page: header with unit name and family label, then one section `ks3-block ks3-coming-soon` containing a small "Coming soon" tag, the single sentence *"This lesson has not been written yet."*, and a link back to the unit. **176 of 183 pages are in this state today.** |
+| **Coming-soon lesson slot** | The lesson has no authored content | An entirely different, much shorter page: header with unit name and family label, then one section `ks3-block ks3-coming-soon` containing a small "Coming soon" tag, the single sentence *"This lesson has not been written yet."*, and a link back to the unit. ⊕ **MRB-297 · 1 Sep 2026:** this read ~~*176 of 183 pages are in this state today*~~. **Zero pages are in this state today** — all 185 lessons are authored. The branch is kept in `build_ks3.py` (its markup is at line 4525) because a newly added slot passes through it before it is written. |
 | **Cross-reference slot** | The slot points at another discipline's unit | **No page at all.** It appears only as a row on index pages, styled `ks3-lesson-row is-ref`, carrying a badge naming the owning unit and a pointer paragraph: *"Taught in Chemistry — Particles and their behaviour. You'll meet the full lesson there."* There is exactly **one** of these in the whole course. |
 
 ### Figure states
@@ -453,13 +494,36 @@ border, which is where the alert accent comes from: orange on ink cannot be read
 drew the **chosen** state of a dark option button. The values below are what the build renders
 today, registered so they cannot drift while that screen is outstanding.
 
+⊕ **MRB-297 · 1 Sep 2026 — the paragraph above no longer explains the Chosen row, and the row
+itself was stale.** Two corrections, and the first is why the second went unnoticed for two days.
+
+1. **The Chosen row said `--ks3-alert` `#FFC53D` and the build has not rendered that since
+   30 August**, when Mide ruled that selection moves to `--ks3-accent`. The row is corrected
+   below. This document's promise is "what the build renders today", so a stale row is not a
+   small error here — it is the document failing at the one job it claims.
+2. **"Orange on ink cannot be read" is still true, and is now the reason for the shape rather
+   than an argument against the colour.** The accent is the BORDER and never the fill:
+   `--ks3-ink` on an `--ks3-accent` slab measures 4.49:1, just under the 4.5:1 body floor,
+   while a border answers only to the 3:1 of WCAG 1.4.11 and gets 3.18:1 on the panel. So the
+   sentence survives the ruling; it changed which half of the control it governs.
+
+The badge moved with it: it was a solid amber fill and is now the dark panel with a 2px accent
+border and an `--ks3-on-dark` glyph, which costs no width because `styles.css` sets
+`box-sizing: border-box`. Pinned at `ks3_parity.py`'s two `dark-block option CHOSEN` rows.
+
 | State | Signal | Ground | Border | Badge fill / glyph |
 |---|---|---|---|---|
 | **Resting** | `aria-pressed="false"` | `--ks3-dark-panel` `#3E3730` | `--ks3-on-dark-muted` `#C6B9A7` | `--ks3-on-dark-muted` / `--ks3-ink` |
-| **Chosen** | `aria-pressed="true"` | `--ks3-dark-panel` (unchanged) | `--ks3-alert` `#FFC53D` | `--ks3-alert` / `--ks3-ink` |
+| **Chosen** | `aria-pressed="true"` | `--ks3-dark-panel` (unchanged) | `--ks3-accent` `#E4572E` | `--ks3-dark-panel` + `2px` `--ks3-accent` / `--ks3-on-dark` `#FBF3E6` |
 
 On this surface the chosen state is carried by the **border alone**, so that border is a
 state-bearing mark and is held to 3:1 against the panel behind it.
+
+⚠️ **One unit narrows this rule and is allowed to.** B7's four benches
+(`.ks3-rr-opt`, `.ks3-lt-opt`, `.ks3-mb-opt`, `.ks3-tb-tab`) add an accent FILL at .22 under the
+same accent border, because four dials each showing a thin border on one ground do not read as a
+state at a glance. That narrowing is documented at its rule in `shared/ks3.css` and pinned in
+`ks3_parity.py`. It changes the fill, never the selection colour.
 
 ### Prediction-gate states (activities that are not simulations)
 
@@ -564,10 +628,12 @@ Two design consequences follow directly:
 
 ## 7. Content variance
 
-**How to read this section.** Only **6 of the 183 slots** have content. Every range below marked
-*(from 6 lessons)* is measured across those six — all Chemistry, all one unit. Treat them as the
-narrowest possible sample, not as the shape of the finished course. Ranges marked *(all 183)* are
-measured across every slot, because titles and family labels exist for all of them.
+**How to read this section.** ⊕ **MRB-297 · 1 Sep 2026.** This read ~~"Only **6 of the 183 slots**
+have content"~~. All **185** slots have content. The ranges below marked *(from 6 lessons)* were
+measured when six lessons existed — all Chemistry, all unit C1 — and they have **not** been
+re-measured since. Read them as a record of what C1 looked like, not as the shape of the course,
+and re-measure before designing to any of them. Ranges marked *(all 185)* are measured across every
+slot, because titles and family labels exist for all of them.
 
 ### Blocks per lesson *(from 6 lessons)*
 
@@ -635,7 +701,9 @@ Every lesson opens `hook` then `check`, and ends `quiz` then `summary`. Everythi
 
 ### Text extremes
 
-**Lesson titles** *(all 183 slots)*:
+**Lesson titles** *(all 185 slots)*: ⊕ **MRB-297 · 1 Sep 2026** — the label read ~~*(all 183
+slots)*~~. Re-measured across all 185 titles, the extremes below are unchanged; "Testing the model:
+does it explain everything?" (unit C1) joins the 46-character mark.
 
 - Shortest: **"Speed"** — 5 characters (unit P3)
 - Also short: "Joints" (6), "Density" (7)
@@ -873,8 +941,8 @@ These are gaps in the current build, not design instructions.
 | **No frozen lessons** | Every written lesson is a draft carrying the under-review marker. The "no marker" state has never been rendered. |
 | **No real artwork** | All 11 declared figures are placeholders. The "figure with an image" state has never been rendered. |
 | **No support-layer content** | The "Need a hand?" section has never been rendered. |
-| **177 of 183 lessons unwritten** | Three of seven families — SYSTEM, QUANTITATIVE, CLASSIFY, 64 lessons between them — have no authored example at all. |
-| **One calculation only** | The Formula / Insert / Fix / Answer layout has shipped once. Seventeen QUANTITATIVE lessons, thirteen of them Physics, will need it. |
+| ⊕ ~~**177 of 183 lessons unwritten**~~ **All 185 lessons written** | MRB-297 · 1 Sep 2026. The row read *"Three of seven families — SYSTEM, QUANTITATIVE, CLASSIFY, 64 lessons between them — have no authored example at all."* Every family has real pages now: SYSTEM 32, QUANTITATIVE 17, CLASSIFY 15. This is no longer a gap; the row is kept so the claim is not read forward. |
+| ⊕ ~~**One calculation only**~~ **FIFA ships on 24 lessons** | MRB-297 · 1 Sep 2026. The row read *"The Formula / Insert / Fix / Answer layout has shipped once. Seventeen QUANTITATIVE lessons, thirteen of them Physics, will need it."* Measured across `ks3_data`, 24 lessons place a FIFA or CFIFA attempt. Same defect as the row above, and corrected with it. |
 | **No end matter** | The architecture specifies a closing block with score-plus-delta, the AI tutor and previous/next navigation. What the generator actually writes is a static "Stuck? Ask Mr Badmus AI" heading and one line of text — **the tutor is not wired up on KS3 pages, and there are no previous/next links.** |
 | **No stepper rendering** | A stepped presentation is permitted where a family calls for it, especially PROCESS lessons. None is implemented; PROCESS content currently renders as ordinary stacked blocks. |
 | **Components named but not built** | The architecture names several inherited components for future use — sorting and matching interactions, an explanation-chain builder, a write-then-self-mark component. None is wired into the KS3 generator. Rung ③ and rung ④ currently render as an ordinary question and a self-marking checklist. |
@@ -909,13 +977,20 @@ and the build fails naming the family.
 
 | Family | Slots | Reference screen | Approved |
 |---|---|---|---|
-| MODEL | 50 | `docs/ks3/design-reference/b1/b1-03-animal-and-plant-cells.dc.html` | Mide, 12 Aug 2026 |
+| MODEL | 51 | `docs/ks3/design-reference/b1/b1-03-animal-and-plant-cells.dc.html` | Mide, 12 Aug 2026 |
 | PROCESS | 34 | `docs/ks3/design-reference/KS3 Reference Set (offline).html` | Mide, 8 Aug 2026 |
 | SYSTEM | 32 | `docs/ks3/design-reference/b1/b1-04-specialised-cells.dc.html` | Mide, 12 Aug 2026 |
-| INVESTIGATION | 18 | `docs/ks3/design-reference/b1/b1-02-using-a-microscope.dc.html` | Mide, 12 Aug 2026 |
-| CONTRAST | 18 | `docs/ks3/design-reference/b1/b1-06-unicellular-organisms.dc.html` | Mide, 12 Aug 2026 |
+| INVESTIGATION | 17 | `docs/ks3/design-reference/b1/b1-02-using-a-microscope.dc.html` | Mide, 12 Aug 2026 |
+| CONTRAST | 19 | `docs/ks3/design-reference/b1/b1-06-unicellular-organisms.dc.html` | Mide, 12 Aug 2026 |
 | CLASSIFY | 15 | `docs/ks3/design-reference/b1/b1-01-life-processes.dc.html` | Mide, 12 Aug 2026 |
 | QUANTITATIVE | 17 | `docs/ks3/design-reference/b2/b2-04-biomechanics-forces-in-the-body.dc.html` | Design delivered 15 Aug 2026 · **awaiting Mide** |
+
+⊕ **MRB-297 · 1 Sep 2026 — the Slots column summed to 184 and should sum to 185.** MODEL read 50,
+INVESTIGATION 18 and CONTRAST 18; measured from the `"family"` key of all 185 lesson files they are
+51, 17 and 19. Pre-existing drift, corrected in §1's table at the same time. ⚠️ The Slots column is
+NOT read by the build — `check_design_coverage` takes only the Family and Reference-screen columns
+from this table — so this drift could never have gone red. It is documentation, and it was wrong
+for as long as it took someone to add up a column.
 
 ⊕ **QUANTITATIVE rowed 16 Aug 2026 (MRB-220). It was the last unrowed family.** Design's B2/C1/C2
 delivery includes two QUANTITATIVE pages — `b2-04 biomechanics-forces-in-the-body` and
@@ -946,10 +1021,11 @@ The **Approved** column is deliberately not "Mide, 16 Aug 2026". Design has draw
 family is unblocked for authoring, but the science on both pages is `draft` and Mide has not
 reviewed either. The row records who drew it and when, and that his gate is still ahead.
 
-Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 183
+Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 185
 slots**, every one of which would have inherited whatever Code invented. Design's approved
 B1 pages are what closed them; this delivery closes the last 17, and **every one of the seven
-families now has a screen.**
+families now has a screen.** ⊕ **MRB-297 · 1 Sep 2026:** the denominator above read ~~183~~; there
+are 185 slots, and the ninth and last of this document's 183s is corrected here.
 
 ### 10.2 Block type → the registered components that gate it
 
@@ -978,7 +1054,7 @@ Every block type the generator can emit must map to at least one component regis
 | misconception | `misconception is amber`, `second confrontation is divided in amber`, `scorecard figure is mono 32px, not a heading` |
 | check | `activity option resting`, `activity option CHOSEN`, `activity option CHOSEN badge`, `board lamp is a column, not an option row`, `board lamp badge is a 28px display square`, `board verdict is ink-dark`, `board tally is mono 24px`, `sorter row is a card on a hairline, not an option`, `sorter chip is 16px, narrower than a segment`, `self-check options are a plain grid`, `settles-it feature is a panel, not a row`, `settles-it choice is 16px on the ground`, `settles-it why is ONE tone (MRB-196)`, `case verdict is ink-dark with an alert label`, `bench cell picker is a full-width ROW, not a segment`, `tuning dial is a fixed 74px mono chip`, `zoom slider clears the 44px tap target`, `zoom gain label is accent-text mono`, `awkward row is unmarked until opened`, `cell-bench part row carries a numbered badge`, `cell-bench readout name is display 800 at 25px`, `pair row is the sorter's sibling, not the sorter`, `fit-parts installs as a wrapping row of pills`, `a fit chip is a pill on the dark block, not a light option row`, `the fit job panel is the dark nested panel, not a cream inset`, `the fit results card re-declares ink on its own cream ground`, `critique step is a full-width tappable row`, `critique verdict is indented under its badge`, `FIFA field is a real text input at tap size`, `model line is mono, so it reads as working`, `C3 sorter card is inset on a 2px ink border`, `C3 sorter reveal is the ink panel, one tone for both verdicts`, `C3 dissolve readout tile is inset on a 2px ink border`, `C3 sequence step rests as a card on the hairline rule`, `C3 sequence NEXT step takes the accent border`, `C3 sequence report is the ink panel, never a mark`, `C3 crystal tile is inset on a 2px ink border`, `C3 crystal dish is a card, not an inset tile`, `C3 method-choice reveal is the ink panel`, `C3 still gauge is inset on a 2px ink border`, `C3 chromatography strip is a card behind a 2px ink edge`, `C3 critique reveal is the ink panel`, `C3 melting-point table is mono, so the columns line up`, `C4 pair side is a card on a 2px ink border`, `C4 rearranger panel is a card on a 2px ink border`, `C4 equation bench is inset on a 2px ink border`, `C4 reading card is inset on a 2px ink border`, `C4 balance tile is inset on a 2px ink border`, `C4 covered cell is the blue tint, never the alert`, `C4 worked step is a card on a 2px accent border`, `C4 check step takes the worked step's treatment`, `C4 element counter is blue-tint on blue, never the mark green`, `C4 impossible-ask verdict is the ink panel, one tone for a refusal and a build`, `C4 forbidden-move reveal is a card, never the alert`, `C4 chain reveal is inset on a 2px ink border`, `C5 burner tile is inset on a 2px ink border`, `C5 fuel card is inset on a 2px ink border`, `C5 decomposition stage is a card on a 2px accent border`, `C5 decomposition sort item is inset on a 2px ink border`, `C5 control tube card is inset on a 2px ink border`, `C5 rust-stop card is inset on a 2px ink border`, `C5 grid cell is a card at the tighter grid radius`, `C5 reactivity-use card is inset on a 2px ink border`, `C5 type-sorter card is inset on a 2px ink border`, `C5 rule-write model panel is inset on a 2px ink border`, `C7 heating-curve readout is inset on a 2px ink border`, `C7 heating-curve trace is a card, not an inset tile`, `C7 energy-uses card is inset on a 2px ink border`, `C7 temperature bench card is inset on a 2px ink border`, `C7 energy sorter item is inset on a 2px ink border`, `C7 plan-critique step is inset on a 2px ink border`, `C7 rig-builder bench is inset on a 2px ink border`, `C6 bottle card is inset on a 2px ink border`, `C6 judgement card is inset on a 2px ink border`, `C6 pH chip is near-white on a 2px near-white border`, `C6 pH bench readout is the ink panel`, `C6 titration bar rests on the band fill`, `C6 titration bar reached is the accent fill`, `C6 grid cell is a card at the tighter grid radius`, `C6 grid cell chosen on load takes the accent border`, `C6 grid readout is the ink panel`, `C6 naming answer is the ink panel`, `C6 placed method step takes the accent border, never a mark`, `C6 catalyst trial readout is the ink panel`, `C8 property-sorter sample is inset on a 2px ink border`, `C8 gap-filler neighbour is a card, not an inset tile`, `C8 gap-filler gap is transparent and dashed, not a square`, `C8 predict-cards card is inset on a 2px ink border`, `C8 periodic-table square is a card, not an inset tile`, `C8 periodic-table readout is inset on a 2px ink border`, `C8 water-trough stage is inset on a 2px ink border`, `C8 halogen-grid cell is a card, not an inset tile`, `C8 halogen-grid readout is inset on a 2px ink border`, `C8 shell-strip row is inset on a 2px ink border`, `C9 reaction-audit cell is a card, not an inset tile`, `C9 reaction-audit readout is inset on a 2px ink border`, `C9 prediction-deck strip is a card, not an inset tile`, `C9 prediction-deck card is inset on a 2px ink border`, `C9 extraction-route readout is inset on a 2px ink border`, `C9 spec-bench job is inset on a 2px ink border`, `C9 spec-bench requirement is a pill on the card ground` |
 | worked-example | `R8 answer box`, `R8 check-my-answer button` |
-| practical | `sim canvas`, `sim live figure is mono`, `sabotage chain's first link is the cell itself`, `removal outcome lands on a LIGHT panel`, `B10 variation-plotter · the characteristic label is muted mono`, `B10 variation-plotter · the chosen characteristic is the alert ground`, `B10 variation-plotter · an unchosen characteristic stays on the panel ground`, `B10 variation-plotter · the bench sits on the nested dark panel`, `B10 variation-plotter · the characteristic name is on-dark at 20px`, `B10 variation-plotter · the predict ask is on-dark, not muted`, `B10 variation-plotter · a predict button clears the tap target`, `B10 variation-plotter · the plot button is dimmed until a shape is committed`, `B10 variation-plotter · the plot button is inverted on ink`, `B10 variation-plotter · the chosen prediction takes the alert ground`, `B10 variation-plotter · the bars are drawn to the derived gap`, `B10 variation-plotter · the bar is the alert fill`, `B10 variation-plotter · the chart sits in a translucent well`, `B10 variation-plotter · the bin count is muted mono at 12px`, `B10 variation-plotter · the bin label is muted mono at 11px`, `B10 variation-plotter · the axis caption is muted mono, uppercase`, `B10 variation-plotter · the verdict is the page ground on an ink block`, `B10 variation-plotter · the verdict tag is accent-TEXT mono, never accent`, `B10 variation-plotter · the kind line is display 800 at 22px`, `B10 variation-plotter · the shape answer reads in ink body`, `B10 variation-plotter · the cause answer is divided off by a rule`, `B10 variation-plotter · the spent plot button dims`, `B10 zoom-bench · the ladder sits on the nested dark panel`, `B10 zoom-bench · an unreached level dims and takes no outline`, `B10 zoom-bench · an unreached level's name is muted`, `B10 zoom-bench · a reached level's name is on-dark headline`, `B10 zoom-bench · the scale figure is alert mono on every row`, `B10 zoom-bench · the level just reached takes the alert outline`, `B10 zoom-bench · a reached level's number is the alert chip`, `B10 zoom-bench · an unreached number is a muted outline`, `B10 zoom-bench · a revealed level body reads in on-dark body`, `B10 zoom-bench · the zoom button is inverted on ink`, `B10 zoom-bench · the back-out button is inverted on ink`, `B10 zoom-bench · the say-it-back panel is a well on the ink block`, `B10 zoom-bench · the say-it-back label is muted mono, uppercase`, `B10 zoom-bench · the chosen question is the alert ground`, `B10 zoom-bench · an unchosen question stays on the panel ground`, `B10 zoom-bench · the answer reads in on-dark body`, `B10 zoom-bench · the spent zoom button dims`, `B10 zoom-bench · the close is the page ground on an ink block`, `B10 zoom-bench · the last level is the one lit at the bottom`, `B10 model-builder · the dial name is muted mono, uppercase`, `B10 model-builder · the chosen dial is the alert ground`, `B10 model-builder · an unchosen dial stays on the panel ground`, `B10 model-builder · the bench sits on the nested dark panel`, `B10 model-builder · the model line is on-dark at 20px`, `B10 model-builder · an evidence card sits in a translucent well`, `B10 model-builder · a failing card takes the alert outline`, `B10 model-builder · a failing card's verdict is alert mono`, `B10 model-builder · the evidence name is on-dark at 18px`, `B10 model-builder · what the evidence IS reads in on-dark body`, `B10 model-builder · the elimination line is amber`, `B10 model-builder · the verdict is the page ground on an ink block`, `B10 model-builder · the verdict tag is accent-TEXT mono, never accent`, `B10 model-builder · the verdict body reads in ink body`, `B10 model-builder · a passing card takes the green outline`, `B10 model-builder · a passing card's verdict is green mono`, `B10 pea-cross · the parent name is muted mono, uppercase`, `B10 pea-cross · the chosen genotype is the alert ground`, `B10 pea-cross · an unchosen genotype stays on the panel ground`, `B10 pea-cross · the plot sits on the nested dark panel`, `B10 pea-cross · the cross line is on-dark at 20px`, `B10 pea-cross · the note reads in on-dark body on a well`, `B10 pea-cross · the grow buttons are inverted on ink`, `B10 pea-cross · the clear button is inverted on ink`, `B10 pea-cross · the most-recent-seed card is a well`, `B10 pea-cross · the seed label is muted mono, uppercase`, `B10 pea-cross · the seed line reads in on-dark body`, `B10 pea-cross · the tally name is on-dark at 17px`, `B10 pea-cross · the tally figure is muted mono`, `B10 pea-cross · the purple bar is the alert fill`, `B10 pea-cross · the white bar is the muted fill, not a second alert`, `B10 pea-cross · the bars sit in a translucent well`, `B10 pea-cross · the ratio line is alert mono`, `B10 species-cases · the case label is muted mono, uppercase`, `B10 species-cases · the chosen case is the alert ground`, `B10 species-cases · the bench sits on the nested dark panel`, `B10 species-cases · the case title is display 800 at 25px`, `B10 species-cases · the facts read in on-dark body`, `B10 species-cases · a verdict is a full-width row, not a segment`, `B10 species-cases · the verdict letter is a drawn ring, not a tint`, `B10 species-cases · the check button is dimmed until a verdict is chosen`, `B10 species-cases · the tally beside it is muted mono`, `B10 species-cases · the chosen verdict takes the alert outline`, `B10 species-cases · a spent unchosen verdict dims and takes no mark`, `B10 species-cases · the outcome is the page ground on an ink block`, `B10 species-cases · the outcome tag is accent-TEXT mono, never accent`, `B10 species-cases · the answer is display 800 at 22px`, `B10 species-cases · the reasoning reads in ink body`, `B10 species-cases · the spent check button dims`, `B11 advantage-bench · the conditions label is muted mono`, `B11 advantage-bench · the chosen condition is the alert ground`, `B11 advantage-bench · an unchosen condition stays on the block ground`, `B11 advantage-bench · the bench sits on the nested dark panel`, `B11 advantage-bench · the condition headline is on-dark at 20px`, `B11 advantage-bench · what the condition does is muted, not body`, `B11 advantage-bench · the variation's name is on-dark at 18px`, `B11 advantage-bench · the survival bar runs in a drawn track`, `B11 advantage-bench · the column's best is green and says so`, `B11 advantage-bench · the column's worst is the data colour and says so`, `B11 advantage-bench · the best bar is the mark green fill`, `B11 advantage-bench · the worst bar is the data fill, not the alert`, `B11 advantage-bench · an unranked figure is muted mono`, `B11 advantage-bench · an unranked bar is the muted fill`, `B11 advantage-bench · the reason under the bar reads in on-dark body`, `B11 advantage-bench · the verdict is the page ground on an ink block`, `B11 advantage-bench · the tied column marks nothing best`, `B11 advantage-bench · the tied column's figures are all muted`, `B11 selection-runner · the bark label is muted mono`, `B11 selection-runner · the chosen bark is the alert ground`, `B11 selection-runner · an unchosen bark stays on the block ground`, `B11 selection-runner · the bench sits on the nested dark panel`, `B11 selection-runner · what the bark IS reads muted, not body`, `B11 selection-runner · the generations sit in a fixed well`, `B11 selection-runner · a generation column shares the well`, `B11 selection-runner · the pale stack is the muted fill`, `B11 selection-runner · the dark stack is the alert fill`, `B11 selection-runner · the axis caption is muted mono, uppercase`, `B11 selection-runner · the pale figure matches the pale stack`, `B11 selection-runner · the dark figure matches the dark stack`, `B11 selection-runner · the note reads in on-dark body on a well`, `B11 selection-runner · the run buttons are inverted on ink`, `B11 selection-runner · the reset is inverted on ink too`, `B11 selection-runner · a run fills the well with columns`, `B11 pressure-bench · an axis label is muted mono`, `B11 pressure-bench · the chosen species is the alert ground`, `B11 pressure-bench · the chosen pressure is the alert ground too`, `B11 pressure-bench · an unchosen tab stays on the block ground`, `B11 pressure-bench · the bench sits on the nested dark panel`, `B11 pressure-bench · the species name is on-dark at 21px`, `B11 pressure-bench · a trait reads in on-dark body`, `B11 pressure-bench · a trait's name is muted mono at 13px`, `B11 pressure-bench · a rule divides the species from the pressure`, `B11 pressure-bench · the pressure headline is on-dark at 19px`, `B11 pressure-bench · what the pressure does reads muted`, `B11 pressure-bench · the outcome ask is on-dark at 17px`, `B11 pressure-bench · the outcome bar runs in a drawn track`, `B11 pressure-bench · a bottom-band outcome is amber and says so`, `B11 pressure-bench · a bottom-band bar is the amber fill`, `B11 pressure-bench · the outcome text is the page ground on ink`, `B11 pressure-bench · a top-band outcome is green`, `B11 pressure-bench · a top-band bar is the green fill`, `B11 blight-bench · the field label is muted mono`, `B11 blight-bench · the chosen field is the data ground, not the alert`, `B11 blight-bench · an unchosen field stays on the block ground`, `B11 blight-bench · the bench sits on the nested dark panel`, `B11 blight-bench · the field name is on-dark at 20px`, `B11 blight-bench · what was planted reads muted, not body`, `B11 blight-bench · a bar's name is on-dark at 17px`, `B11 blight-bench · a bar runs in a drawn track`, `B11 blight-bench · the variation bar is the muted fill`, `B11 blight-bench · the yield bar is amber, as the cost`, `B11 blight-bench · the unblighted field is a full green bar`, `B11 blight-bench · the survivor figure is the on-dark green, not the fill`, `B11 blight-bench · the release button is inverted on ink`, `B11 blight-bench · the clear button is inverted on ink`, `B11 blight-bench · a zero harvest is amber and says so`, `B11 blight-bench · the zero-survivor bar is the amber fill`, `B11 blight-bench · the verdict is the page ground on an ink block`, `B11 blight-bench · the spent release button dims` |
+| practical | `sim canvas`, `sim live figure is mono`, `sabotage chain's first link is the cell itself`, `removal outcome lands on a LIGHT panel`, `B10 variation-plotter · the characteristic label is muted mono`, `B10 variation-plotter · the chosen characteristic takes the accent border on the dark panel`, `B10 variation-plotter · an unchosen characteristic stays on the panel ground`, `B10 variation-plotter · the bench sits on the nested dark panel`, `B10 variation-plotter · the characteristic name is on-dark at 20px`, `B10 variation-plotter · the predict ask is on-dark, not muted`, `B10 variation-plotter · a predict button clears the tap target`, `B10 variation-plotter · the plot button is dimmed until a shape is committed`, `B10 variation-plotter · the plot button is inverted on ink`, `B10 variation-plotter · the chosen prediction takes the accent border on the dark panel`, `B10 variation-plotter · the bars are drawn to the derived gap`, `B10 variation-plotter · the bar is the alert fill`, `B10 variation-plotter · the chart sits in a translucent well`, `B10 variation-plotter · the bin count is muted mono at 12px`, `B10 variation-plotter · the bin label is muted mono at 11px`, `B10 variation-plotter · the axis caption is muted mono, uppercase`, `B10 variation-plotter · the verdict is the page ground on an ink block`, `B10 variation-plotter · the verdict tag is accent-TEXT mono, never accent`, `B10 variation-plotter · the kind line is display 800 at 22px`, `B10 variation-plotter · the shape answer reads in ink body`, `B10 variation-plotter · the cause answer is divided off by a rule`, `B10 variation-plotter · the spent plot button dims`, `B10 zoom-bench · the ladder sits on the nested dark panel`, `B10 zoom-bench · an unreached level dims and takes no outline`, `B10 zoom-bench · an unreached level's name is muted`, `B10 zoom-bench · a reached level's name is on-dark headline`, `B10 zoom-bench · the scale figure is alert mono on every row`, `B10 zoom-bench · the level just reached takes the alert outline`, `B10 zoom-bench · a reached level's number is the alert chip`, `B10 zoom-bench · an unreached number is a muted outline`, `B10 zoom-bench · a revealed level body reads in on-dark body`, `B10 zoom-bench · the zoom button is inverted on ink`, `B10 zoom-bench · the back-out button is inverted on ink`, `B10 zoom-bench · the say-it-back panel is a well on the ink block`, `B10 zoom-bench · the say-it-back label is muted mono, uppercase`, `B10 zoom-bench · the chosen question takes the accent border on the dark panel`, `B10 zoom-bench · an unchosen question stays on the panel ground`, `B10 zoom-bench · the answer reads in on-dark body`, `B10 zoom-bench · the spent zoom button dims`, `B10 zoom-bench · the close is the page ground on an ink block`, `B10 zoom-bench · the last level is the one lit at the bottom`, `B10 model-builder · the dial name is muted mono, uppercase`, `B10 model-builder · the chosen dial takes the accent border on the dark panel`, `B10 model-builder · an unchosen dial stays on the panel ground`, `B10 model-builder · the bench sits on the nested dark panel`, `B10 model-builder · the model line is on-dark at 20px`, `B10 model-builder · an evidence card sits in a translucent well`, `B10 model-builder · a failing card takes the alert outline`, `B10 model-builder · a failing card's verdict is alert mono`, `B10 model-builder · the evidence name is on-dark at 18px`, `B10 model-builder · what the evidence IS reads in on-dark body`, `B10 model-builder · the elimination line is amber`, `B10 model-builder · the verdict is the page ground on an ink block`, `B10 model-builder · the verdict tag is accent-TEXT mono, never accent`, `B10 model-builder · the verdict body reads in ink body`, `B10 model-builder · a passing card takes the green outline`, `B10 model-builder · a passing card's verdict is green mono`, `B10 pea-cross · the parent name is muted mono, uppercase`, `B10 pea-cross · the chosen genotype takes the accent border on the dark panel`, `B10 pea-cross · an unchosen genotype stays on the panel ground`, `B10 pea-cross · the plot sits on the nested dark panel`, `B10 pea-cross · the cross line is on-dark at 20px`, `B10 pea-cross · the note reads in on-dark body on a well`, `B10 pea-cross · the grow buttons are inverted on ink`, `B10 pea-cross · the clear button is inverted on ink`, `B10 pea-cross · the most-recent-seed card is a well`, `B10 pea-cross · the seed label is muted mono, uppercase`, `B10 pea-cross · the seed line reads in on-dark body`, `B10 pea-cross · the tally name is on-dark at 17px`, `B10 pea-cross · the tally figure is muted mono`, `B10 pea-cross · the purple bar is the alert fill`, `B10 pea-cross · the white bar is the muted fill, not a second alert`, `B10 pea-cross · the bars sit in a translucent well`, `B10 pea-cross · the ratio line is alert mono`, `B10 species-cases · the case label is muted mono, uppercase`, `B10 species-cases · the chosen case takes the accent border on the dark panel`, `B10 species-cases · the bench sits on the nested dark panel`, `B10 species-cases · the case title is display 800 at 25px`, `B10 species-cases · the facts read in on-dark body`, `B10 species-cases · a verdict is a full-width row, not a segment`, `B10 species-cases · the verdict letter is a drawn ring, not a tint`, `B10 species-cases · the check button is dimmed until a verdict is chosen`, `B10 species-cases · the tally beside it is muted mono`, `B10 species-cases · the chosen verdict takes the accent outline`, `B10 species-cases · a spent unchosen verdict dims and takes no mark`, `B10 species-cases · the outcome is the page ground on an ink block`, `B10 species-cases · the outcome tag is accent-TEXT mono, never accent`, `B10 species-cases · the answer is display 800 at 22px`, `B10 species-cases · the reasoning reads in ink body`, `B10 species-cases · the spent check button dims`, `B11 advantage-bench · the conditions label is muted mono`, `B11 advantage-bench · the chosen condition takes the accent border on the dark panel`, `B11 advantage-bench · an unchosen condition stays on the block ground`, `B11 advantage-bench · the bench sits on the nested dark panel`, `B11 advantage-bench · the condition headline is on-dark at 20px`, `B11 advantage-bench · what the condition does is muted, not body`, `B11 advantage-bench · the variation's name is on-dark at 18px`, `B11 advantage-bench · the survival bar runs in a drawn track`, `B11 advantage-bench · the column's best is green and says so`, `B11 advantage-bench · the column's worst is the data colour and says so`, `B11 advantage-bench · the best bar is the mark green fill`, `B11 advantage-bench · the worst bar is the data fill, not the alert`, `B11 advantage-bench · an unranked figure is muted mono`, `B11 advantage-bench · an unranked bar is the muted fill`, `B11 advantage-bench · the reason under the bar reads in on-dark body`, `B11 advantage-bench · the verdict is the page ground on an ink block`, `B11 advantage-bench · the tied column marks nothing best`, `B11 advantage-bench · the tied column's figures are all muted`, `B11 selection-runner · the bark label is muted mono`, `B11 selection-runner · the chosen bark takes the accent border on the dark panel`, `B11 selection-runner · an unchosen bark stays on the block ground`, `B11 selection-runner · the bench sits on the nested dark panel`, `B11 selection-runner · what the bark IS reads muted, not body`, `B11 selection-runner · the generations sit in a fixed well`, `B11 selection-runner · a generation column shares the well`, `B11 selection-runner · the pale stack is the muted fill`, `B11 selection-runner · the dark stack is the alert fill`, `B11 selection-runner · the axis caption is muted mono, uppercase`, `B11 selection-runner · the pale figure matches the pale stack`, `B11 selection-runner · the dark figure matches the dark stack`, `B11 selection-runner · the note reads in on-dark body on a well`, `B11 selection-runner · the run buttons are inverted on ink`, `B11 selection-runner · the reset is inverted on ink too`, `B11 selection-runner · a run fills the well with columns`, `B11 pressure-bench · an axis label is muted mono`, `B11 pressure-bench · the chosen species takes the accent border on the dark panel`, `B11 pressure-bench · the chosen pressure takes the accent border on the dark panel too`, `B11 pressure-bench · an unchosen tab stays on the block ground`, `B11 pressure-bench · the bench sits on the nested dark panel`, `B11 pressure-bench · the species name is on-dark at 21px`, `B11 pressure-bench · a trait reads in on-dark body`, `B11 pressure-bench · a trait's name is muted mono at 13px`, `B11 pressure-bench · a rule divides the species from the pressure`, `B11 pressure-bench · the pressure headline is on-dark at 19px`, `B11 pressure-bench · what the pressure does reads muted`, `B11 pressure-bench · the outcome ask is on-dark at 17px`, `B11 pressure-bench · the outcome bar runs in a drawn track`, `B11 pressure-bench · a bottom-band outcome is amber and says so`, `B11 pressure-bench · a bottom-band bar is the amber fill`, `B11 pressure-bench · the outcome text is the page ground on ink`, `B11 pressure-bench · a top-band outcome is green`, `B11 pressure-bench · a top-band bar is the green fill`, `B11 blight-bench · the field label is muted mono`, `B11 blight-bench · the chosen field is the data ground, not the alert`, `B11 blight-bench · an unchosen field stays on the block ground`, `B11 blight-bench · the bench sits on the nested dark panel`, `B11 blight-bench · the field name is on-dark at 20px`, `B11 blight-bench · what was planted reads muted, not body`, `B11 blight-bench · a bar's name is on-dark at 17px`, `B11 blight-bench · a bar runs in a drawn track`, `B11 blight-bench · the variation bar is the muted fill`, `B11 blight-bench · the yield bar is amber, as the cost`, `B11 blight-bench · the unblighted field is a full green bar`, `B11 blight-bench · the survivor figure is the on-dark green, not the fill`, `B11 blight-bench · the release button is inverted on ink`, `B11 blight-bench · the clear button is inverted on ink`, `B11 blight-bench · a zero harvest is amber and says so`, `B11 blight-bench · the zero-survivor bar is the amber fill`, `B11 blight-bench · the verdict is the page ground on an ink block`, `B11 blight-bench · the spent release button dims` |
 | key-fact | `KEY FACT box is band on an ACCENT shadow`, `KEY FACT label is mono accent-text`, `KEY FACT statement is display 700` |
 | rule | `statement panel is band on a 3px ink border`, `statement is display 800 at the ruled clamp`, `statement cards take the option border`, `badged card is one column of full-width rows, not the auto grid`, `badged card is a two-column grid`, `initials badge is a 44px accent square`, `badged card's name is display 800 at 22px`, `badged card's role is accent-TEXT mono under the name`, `card limit is muted prose, not the mono example line` |
 | formula | `formula panel is centred`, `formula statement takes the FORMULA clamp, not the rule's`, `formula triangle is drawn, not typed`, `triangle cover is ink and starts invisible` |

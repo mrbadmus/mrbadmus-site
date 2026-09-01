@@ -111,7 +111,11 @@ QUESTIONS = [
                      "conducts", "correct": False,
              "why": "Length makes a specimen worse, never better, and "
                     "nothing reaches zero resistance at room temperature."},
-            {"text": "rises to ten times", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "rises to ten times, because resistance grows with "
+                     "length", "correct": True},
         ],
         "figure": None,
     },
@@ -272,19 +276,21 @@ QUESTIONS = [
                 "near overhead cables, yet a WET wooden ladder is not safe "
                 "at all. Which explanation fits both?",
         "options": [
-            {"text": "Wet wood becomes a metal, so it conducts like the "
-                     "aluminium one", "correct": False,
+            {"text": "Wet wood becomes a metal itself, so it conducts about "
+                     "as well as the aluminium one does", "correct": False,
              "why": "It becomes no such thing. Its resistance falls a long "
                     "way and it is still wood."},
-            {"text": "Water is a conductor and wood is an insulator, so the "
-                     "wet ladder is really two ladders", "correct": False,
+            {"text": "Water is a conductor and wood is an insulator, so a "
+                     "wet ladder is really two ladders side by side",
+             "correct": False,
              "why": "Pure water conducts poorly. What matters is the "
                     "dissolved ions the water brings with it."},
             {"text": "Dry wood resists millions of ohms; water carries "
                      "dissolved ions, so wetting it drops the resistance "
                      "enormously", "correct": True},
-            {"text": "Aluminium resists more than wet wood, which is why the "
-                     "metal ladder is the dangerous one", "correct": False,
+            {"text": "Aluminium resists more than either dry wood or wet "
+                     "wood, which is why the metal ladder is the dangerous "
+                     "one", "correct": False,
              "why": "Aluminium resists far LESS than either. It is the "
                     "dangerous one because it conducts freely."},
         ],

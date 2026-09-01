@@ -102,6 +102,15 @@ LESSON = {
             "Convection currents in the solar wind",
             "The Sun heats the atmosphere, which heats the ground",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 1,
         "reveal": "By <strong>radiation</strong> — a wave that needs no "
                   "material at all and travels perfectly well through "
                   "nothing. It is the same family of thing as visible "

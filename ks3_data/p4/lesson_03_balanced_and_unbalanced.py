@@ -77,8 +77,7 @@ LESSON = {
 
     "requires": ["drawing-and-adding-forces"],
     "assumes": [],
-    "references": ["springs-and-hookes-law", "what-a-force-is",
-                   "pressure-force-over-area"],
+    "references": ["springs-and-hookes-law", "what-a-force-is"],
     "ks4_links": [],
 
     "meta_description": "Two identical books have the same weight pulling "
@@ -110,11 +109,14 @@ LESSON = {
         "commit": "So what is different about the forces on the book on the "
                   "table?",
         "options": [
-            "The falling book has more weight",
+            "The falling book has more weight than the same book resting "
+            "on a table",
             "A second force pushes up on the resting book, exactly matching "
             "its weight",
-            "The resting book has no forces on it at all",
-            "Gravity switches off when something is resting on a surface",
+            "The resting book has no forces acting on it at all while it "
+            "stays still",
+            "Gravity switches off as soon as something rests on a solid "
+            "surface",
         ],
         "answer": 1,
         "reveal": "There is a second force. The table is squashed by an "

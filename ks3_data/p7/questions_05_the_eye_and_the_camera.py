@@ -110,18 +110,21 @@ QUESTIONS = [
         "band": "standard",
         "text": "Light is absorbed by the retina. What happens next?",
         "options": [
-            {"text": "The light is reflected back out through the pupil",
+            {"text": "The light is reflected back out through the pupil and "
+                     "lost, so nothing is left behind in the eye",
              "correct": False,
              "why": "Absorbed light does not leave again. That is what "
                     "absorbed means."},
             {"text": "Its energy causes a chemical change in the rod and "
                      "cone cells, which sets off electrical signals",
              "correct": True},
-            {"text": "The retina focuses it more sharply", "correct": False,
+            {"text": "The retina focuses it more sharply before passing it "
+                     "on to the optic nerve behind", "correct": False,
              "why": "The focusing was done by the cornea and the lens "
-                    "before the light arrived."},
-            {"text": "It is turned back into light and sent along the optic "
-                     "nerve to the brain", "correct": False,
+                    "before the light arrived. The retina absorbs; it does "
+                    "not focus."},
+            {"text": "It is turned back into light again and sent along the "
+                     "optic nerve to the brain", "correct": False,
              "why": "What travels along the optic nerve is an electrical "
                     "signal, not light."},
         ],
@@ -155,17 +158,17 @@ QUESTIONS = [
                 "nothing at first and then more and more. Which is the "
                 "bigger effect?",
         "options": [
-            {"text": "The pupil widening, which is nearly all of it",
-             "correct": False,
+            {"text": "The pupil widening, which lets in nearly all the "
+                     "extra light", "correct": False,
              "why": "The pupil widens in about a second and lets in perhaps "
                     "ten times as much. The other effect is thousands of "
                     "times."},
-            {"text": "The lens getting fatter to gather more light",
-             "correct": False,
+            {"text": "The lens getting fatter so that it gathers more of "
+                     "the light", "correct": False,
              "why": "The lens changes shape to FOCUS, not to gather. It "
                     "does not affect how much light comes in."},
-            {"text": "The brain filling in the shape of the room",
-             "correct": False,
+            {"text": "The brain filling in the shape of the room from "
+                     "memory", "correct": False,
              "why": "You genuinely see more detail, and detail cannot be "
                     "filled in from nothing."},
             {"text": "The retina becoming far more sensitive as its pigment "
@@ -233,15 +236,17 @@ QUESTIONS = [
             {"text": "Light carries energy from a source to an absorber, "
                      "and at the absorber that energy makes something "
                      "happen", "correct": True},
-            {"text": "All four give out light again after absorbing it, "
-                     "which is how the signal gets passed on",
-             "correct": False,
+            {"text": "All four give out light again after they have "
+                     "absorbed it, which is how the signal gets passed "
+                     "along", "correct": False,
              "why": "None of them re-emits light. Each turns the absorbed "
                     "energy into something else."},
-            {"text": "All four focus light to a point", "correct": False,
+            {"text": "All four focus the light to a point, which is what "
+                     "makes a sharp picture possible", "correct": False,
              "why": "Focusing is the lens's job in front of them. A solar "
                     "cell has no lens at all."},
-            {"text": "All four produce an electrical signal directly",
+            {"text": "All four produce an electrical signal directly, with "
+                     "nothing happening in between",
              "correct": False,
              "why": "Film and the retina start with a CHEMICAL change. Only "
                     "the sensor and the cell are electrical straight away."},
@@ -254,18 +259,20 @@ QUESTIONS = [
         "text": "A cat's eyes seem to glow in headlights. Does this show "
                 "that eyes send light out?",
         "options": [
-            {"text": "Yes — the glow is light the cat is producing",
+            {"text": "Yes — the glow is light the cat is producing itself, "
+                     "using energy from the food it eats",
              "correct": False,
              "why": "Cover the headlights and the glow stops instantly, "
                     "which a light source would not do."},
-            {"text": "Yes, but only in cats, which is why people's eyes do "
-                     "not do it", "correct": False,
+            {"text": "Yes, but only in cats, which is why people's eyes "
+                     "never glow back in headlights", "correct": False,
              "why": "People's eyes reflect too — that is what red-eye in a "
                     "flash photograph is. The cat's mirror layer just makes "
                     "it stronger."},
             {"text": "No — a mirror-like layer behind the retina is sending "
                      "the headlights' own light back out", "correct": True},
-            {"text": "No — the glow is refraction in the cornea",
+            {"text": "No — the glow is refraction in the cornea sending "
+                     "the beam back to the driver",
              "correct": False,
              "why": "Refraction bends light on the way in; it does not send "
                     "it back towards the driver."},
@@ -279,21 +286,23 @@ QUESTIONS = [
                 "millimetres. The eye's pupil is much narrower. Why is the "
                 "eye not much worse in dim light?",
         "options": [
-            {"text": "Because the eye's lens is far more powerful, so it "
-                     "gathers light the pupil never let in", "correct": False,
+            {"text": "Because the eye's lens is far more powerful than a "
+                     "camera's, so it gathers light the pupil never let in",
+             "correct": False,
              "why": "A lens can only work with the light that got through "
                     "the opening. It cannot gather what was blocked."},
             {"text": "Because the eye is a smaller instrument overall, and "
                      "its absorbing surface is closer, and its retina can "
                      "become thousands of times more sensitive",
              "correct": True},
-            {"text": "Because the eye can hold its pupil open for longer "
-                     "than a camera can hold its shutter, and a longer "
-                     "opening always gathers more", "correct": False,
+            {"text": "Because the eye can hold its pupil open for far "
+                     "longer than a camera can hold its shutter open, and a "
+                     "longer opening always gathers more light",
+             "correct": False,
              "why": "A camera can hold a shutter open for minutes. Time is "
                     "the camera's advantage, not the eye's."},
             {"text": "Because eyes work at night by a different mechanism "
-                     "that does not need light", "correct": False,
+                     "that does not need light at all", "correct": False,
              "why": "There is no such mechanism. In a room with no light at "
                     "all an eye sees nothing."},
         ],

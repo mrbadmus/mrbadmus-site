@@ -111,9 +111,12 @@ LESSON = {
                   "meet it — while there is still a clear centimetre of air "
                   "in between.",
         "commit": "What is pulling the hair?",
+        # ⊕ MRB-297, 1 Sep 2026 — distractor 1 widened. The correct option
+        # was the longest by 6, which is a tell at every margin below the
+        # gate's constant as well as at it. The balance now holds at 2.
         "options": [
             "The air in between is pushing the hair upwards",
-            "The balloon touches the hair too quickly to see",
+            "The balloon touches the hair too quickly for you to see",
             "Some forces act across a gap, with nothing in between",
             "Static is a stickiness rather than a force",
         ],

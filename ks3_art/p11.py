@@ -164,8 +164,16 @@ MODEL_BRANCHES = {
 # P9's reason: a sentence a student reads that lives in the engine is a
 # sentence no content gate can see and no examiner can find.
 MODEL_WORDS = {
+    # ⚖️ P11-02 adds the four `convert_*` strings. They are the attempt's
+    # Convert line and note, branched on whether the balance has gone over a
+    # kilogram, and they live here for the same reason the verdicts do: a
+    # sentence a student reads must sit where a content gate can see it.
+    # They carry `{mass}` / `{mass_kg}` / `{v}` of their own, and the model
+    # fills them before they reach the panel.
     "density":         ("float_verdict", "sink_verdict", "same_verdict",
-                        "float_sub", "sink_sub", "same_sub"),
+                        "float_sub", "sink_sub", "same_sub",
+                        "convert_g_line", "convert_g_note",
+                        "convert_kg_line", "convert_kg_note"),
     "brownian":        (),
     "internal-energy": ("biggest_holds", "rest_holds"),
     "ice":             ("float_verdict", "sink_verdict",

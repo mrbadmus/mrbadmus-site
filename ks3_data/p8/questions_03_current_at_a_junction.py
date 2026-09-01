@@ -166,7 +166,11 @@ QUESTIONS = [
                      "branches read zero", "correct": False,
              "why": "A battery has no current of its own to read. With no "
                     "complete path, nothing flows anywhere."},
-            {"text": "All three read 0.00 A", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "All three read 0.00 A, because no complete path "
+                     "exists anywhere", "correct": True},
             {"text": "The branches read zero and the main wire cannot be "
                      "read at all", "correct": False,
              "why": "It can be read, and it reads zero. A meter in a broken "
@@ -269,7 +273,11 @@ QUESTIONS = [
             {"text": "It depends which branch resists more", "correct": False,
              "why": "The split depends on that. The TOTAL does not — it is "
                     "the same at both junctions whatever the branches are."},
-            {"text": "Exactly the same", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "Exactly the same, because charge is conserved",
+             "correct": True},
         ],
         "figure": None,
     },

@@ -32,13 +32,34 @@ by reading her §4 table, and the two agree exactly:
 
     track-pair       5 × 5 objects × 6 gaps       150   nothing 102 · repel 12
                                                         attract 12 · induced 24
-    compass-plot     4 layouts × 25 positions     100   on the metal 4
-                                                        neutral point 1 · 95 readings
+    compass-plot     4 layouts × 25 positions     100   on the metal 15
+                                                        neutral point 1 · 84 readings
     dip-circle       9 lats × 3 objects × 2 mounts  54   magnet 18 · steel 4
                                                         flat 16 · tipped 15 · pole 1
     solenoid-bench   5 × 5 × 3 cores × 2 switch   150   off 75 · iron 25
                                                         air 25 · plastic 25
     motor-coil       2 × 2 × 2 × 4 currents        32   never 8 · keeps 12 · stops 12
+
+⊕ MRB-297 · 1 Sep 2026 — THE COMPASS-PLOT ROW WAS RIGHT WHEN WRITTEN AND
+WAS MADE STALE BY A FIX IN THIS RUN. It used to read "on the metal 4 /
+neutral point 1 · 95 readings". Kept rather than deleted, because 4/1/95
+is not a miscount: it is the exact split under the OLD `onMagnet` test,
+which was `fieldAt` returning null and so only caught a spot within 10
+units of a pole centre. The 31 Aug correction to `insideBar` in
+`shared/ks3.js` made a spot on the DRAWN metal return no reading either,
+which is what the readout had always claimed, and that moved eleven spots
+out of the readings column.
+
+Re-measured by enumerating all four layouts over the 5 × 5 spot lattice
+against the shipped `data-poles` / `data-bars` / `data-nullratio` (0.02):
+
+    attract  metal  1 · neutral 0 · readings 24
+    unlike   metal  4 · neutral 0 · readings 21
+    like     metal  4 · neutral 1 · readings 20
+    pair     metal  6 · neutral 0 · readings 19
+
+The neutral point is still exactly one, in `like`, which is the claim the
+bench is built on. Re-derive here if a layout's bars or poles move.
 
 ⚠️ **THREE OF HER BRANCH PREDICATES DO NOT DIVIDE THE STATE SPACE THE WAY
 THEIR OWN SENTENCES CLAIM, AND ALL THREE ARE CORRECTED HERE.** Each is a
@@ -596,9 +617,13 @@ def r_compass_plot(a, act_id):
     strongest point on the 13 × 7 LATTICE, which sits hard against a pole
     where no button can go: the highest reading a student could ever get on
     her scale is 18, `very strong` is unreachable, and 78 of the 96 readings
-    fall in one band. The reference here is the strongest of the twenty-five
-    reachable spots, which is what the readout says it is, and the four bands
-    then run 20 / 24 / 27 / 24.
+    fall in one band. The reference here is the strongest of the reachable
+    spots, which is what the readout says it is, and the four bands then run
+    25 / 27 / 22 / 10. ⊕ Corrected 31 Aug 2026: a spot on the DRAWN bar no
+    longer returns a reading (fifteen states, not four), so it is no longer
+    one of the spots the scale is measured against either — before that, the
+    two two-magnet layouts topped out at 27.9 and 28.3 against a 100 nobody
+    could stand on. Was 20 / 24 / 27 / 24 of 95.
 
     ⚠️ **THE NEEDLE IS OMITTED AT THE NEUTRAL POINT AND ON THE METAL**, and the
     tiles say why in words in both cases. A needle drawn at a null would be a
@@ -786,6 +811,14 @@ def r_dip_circle(a, act_id):
     equator it renders *"…running into the ground at 0°"* while denying that
     the field is level. Two reachable states, its own branch here.
 
+    ⚠️ **AND THE SAME AGAIN FREE TO TIP** (⊕ 31 Aug 2026). `tipped` had the
+    identical hole and was not split: at the equator it rendered *"tips over
+    by 0° from level, with its north-seeking end down… because the field is
+    not parallel to the ground"*, over a needle the drawing correctly holds
+    dead level, and contradicted `flat_level` at the very same latitude.
+    `tipped_level` is its equator, and the three words that name a tipping end
+    emit nothing at zero dip — a level needle has NEITHER end down.
+
     ⚖️ **THE NEEDLE IS CAPTURED BY WHAT IS ON THE BENCH, AND THAT IS NOT A
     FAULT.** A speaker magnet beats the whole Earth at a few centimetres; a
     steel clamp stand beats what is left of it above 70°. Both say so, and
@@ -903,7 +936,7 @@ def r_dip_circle(a, act_id):
     branch_data = _branches("dipc", a,
                             ("captured_magnet", "captured_steel", "flat",
                              "flat_level", "flat_at_pole", "at_pole",
-                             "tipped"),
+                             "tipped", "tipped_level"),
                             act_id, "dip-circle")
     word_data = _words("dipc", a,
                        ("not_a_reading", "on_bench", "held_level",
@@ -1523,19 +1556,60 @@ def _art_outin(aria):
         'text-anchor="middle">OUT OF N, INTO S</text>', aria)
 
 
+# ⚖️ THE COUNT IS EQUAL, AND THE COUNT BEING EQUAL IS THE LESSON.
+# Lines used to be drawn five on the strong side and three on the weak
+# one. What a student could then COUNT was a different number of lines,
+# which is `MAG-08` — the misconception this page mints — drawn as fact,
+# and refuted in words two blocks below by the ladder's own rung-1
+# feedback: "Every line that leaves the north pole arrives at the south
+# pole, so the count is the same everywhere. What differs is how much
+# space they are spread over." A child holds the picture over the words.
+# The same five marks now appear on both sides, the same length, and the
+# SPACING carries the whole difference: 8 px pitch against 18.
+# ⚠️ The count is written out ONCE PER GROUP and then asserted equal, so
+# that changing one of them is what trips the gate.
+_CROWD_LINES = (5, 5)      # strong, weak — how many lines each group draws
+_CROWD_PITCH = (8, 18)     # strong, weak — px between neighbouring lines
+_CROWD_MID = 44            # both groups centred on the same axis
+_CROWD_BAND = (8, 84)      # the clear height, above the tile's caption
+
+
 def _art_crowd(aria):
-    """Five lines packed and three spread — the spacing IS the claim, so the
-    two groups differ only in how much room the same marks are given."""
+    """Five lines packed and the SAME five spread — the spacing is the
+    whole claim, so the two groups differ only in how much room one set of
+    marks is given. Asserted below, because a drawing that shows the count
+    differing teaches `MAG-08` however carefully the prose refutes it."""
+    groups = [[_CROWD_MID + (i - (n - 1) / 2.0) * pitch for i in range(n)]
+              for n, pitch in zip(_CROWD_LINES, _CROWD_PITCH)]
+    strong, weak = groups
+    if len(strong) != len(weak):
+        raise ValueError(
+            "crowd tile: %d line(s) drawn where the field is strong and %d "
+            "where it is weak. The two counts MUST be equal. Every line "
+            "that leaves the north pole arrives at the south pole, so a "
+            "tile a student can count more lines on where the field is "
+            "stronger draws MAG-08 — the misconception this very page "
+            "exists to refute. Spacing carries the difference; the number "
+            "never does." % (len(strong), len(weak)))
+    for name, ys in (("strong", strong), ("weak", weak)):
+        if min(ys) < _CROWD_BAND[0] or max(ys) > _CROWD_BAND[1]:
+            raise ValueError(
+                "crowd tile: the %s group runs from y=%g to y=%g, outside "
+                "the clear band y=%g to y=%g that this tile's caption "
+                "leaves free. Widen the viewBox before widening the pitch, "
+                "or the lines will run into the STRONG/WEAK labels."
+                % (name, min(ys), max(ys),
+                   _CROWD_BAND[0], _CROWD_BAND[1]))
     return _band_svg(
         "0 0 240 110",
-        '<path class="ks3-magband-line" d="M20 20 H120 M20 32 H120 '
-        'M20 44 H120 M20 56 H120 M20 68 H120"/>'
-        '<path class="ks3-magband-line" d="M140 16 H228 M140 44 H228 '
-        'M140 72 H228"/>'
-        '<text class="ks3-magband-artcap" x="70" y="100" '
+        '<path class="ks3-magband-line" d="%s"/>'
+        '<path class="ks3-magband-line" d="%s"/>'
+        '<text class="ks3-magband-artcap" x="68" y="100" '
         'text-anchor="middle">STRONG</text>'
-        '<text class="ks3-magband-artcap" x="184" y="100" '
-        'text-anchor="middle">WEAK</text>', aria)
+        '<text class="ks3-magband-artcap" x="180" y="100" '
+        'text-anchor="middle">WEAK</text>'
+        % (" ".join("M18 %g H118" % y for y in strong),
+           " ".join("M130 %g H230" % y for y in weak)), aria)
 
 
 def _art_nocross(aria):

@@ -1,7 +1,9 @@
 """P2 lesson 02 — Power ratings in watts: twelve questions (MRB-223).
 
-Written against Design's DECODED page. The kettle and charger figures, the
-six sort cards and the crossover are all hers.
+Written against Design's DECODED page. The kettle/router figures, the six
+sort cards and the crossover are all hers — except the appliance, which
+was a phone charger and is a router since MRB-297 (P2-09). The numbers
+are untouched; see the lesson module's docstring.
 
 The discriminations, in the order the lesson builds them:
 
@@ -17,7 +19,7 @@ The discriminations, in the order the lesson builds them:
 through the twelve, giving exactly three of each.
 
 ⚠️ None of these restates Rung 1 ("one watt is equal to…") or Rung 2
-(the 2000 W kettle against the 15 W charger) — check 6 of
+(the 2000 W kettle against the 15 W router) — check 6 of
 `verify_questions.py` forbids it.
 
 The lesson carries no figures, so every question is figure=None.
@@ -110,17 +112,32 @@ QUESTIONS = [
     {
         "id": "p2-02-s01",
         "band": "standard",
-        "text": "A 9 W router runs all day. A 900 W microwave runs for two "
-                "minutes. Which transfers more energy in that day?",
+        # ⊕ MRB-297 · 1 Sep 2026 — TWO DIFFERENT ROUTERS ON ONE LESSON. The
+        # P2-09 rename put a router into the lesson's own hook at 15 W left
+        # on for eight hours a night; this question already had one at 9 W
+        # running all day. A student met the same appliance twice with two
+        # ratings and two duties, on the same page, with nothing to say
+        # which was theirs. The lesson's 15 W router is load-bearing — the
+        # crossover, its `data-w` and three captions all derive from it, and
+        # the whole point of the P2-09 rename was an appliance that really
+        # does draw its rating all night — so the QUESTION moves instead.
+        # A fish-tank pump genuinely runs the full 24 hours. The arithmetic
+        # is unchanged and re-checked: 9 × 86 400 = 777.6 kJ against
+        # 900 × 120 = 108 kJ, a ratio of 7.2, so "about seven times" holds.
+        "text": "A 9 W fish-tank pump runs all day. A 900 W microwave runs "
+                "for two minutes. Which transfers more energy in that day?",
         "options": [
             {"text": "The microwave, because 900 W is a hundred times more",
              "correct": False,
-             "why": "900 × 120 s = 108 kJ. The router gets "
+             "why": "900 × 120 s = 108 kJ. The pump gets "
                     "9 × 86 400 s = 778 kJ. The rating is not the "
                     "whole calculation."},
-            {"text": "The router", "correct": True},
+            # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
+            # with no reason attached, and so the shortest by a clear margin.
+            # The reason is added; the claim itself is unchanged.
+            {"text": "The pump, by about seven times", "correct": True},
             {"text": "They are equal", "correct": False,
-             "why": "Work both products out — the router comes out about "
+             "why": "Work both products out — the pump comes out about "
                     "seven times ahead."},
             {"text": "It cannot be decided without knowing the voltage",
              "correct": False,
@@ -133,21 +150,24 @@ QUESTIONS = [
         "id": "p2-02-s02",
         "band": "standard",
         "text": "Why does a 2000 W kettle need thicker wiring than a 15 W "
-                "charger, even though the charger uses more energy over a "
+                "router, even though the router uses more energy over a "
                 "day?",
         "options": [
-            {"text": "Because it uses more energy in total over its "
-                     "lifetime",
+            {"text": "Because it will use more energy in total over its whole "
+                     "lifetime than the router",
              "correct": False,
              "why": "Lifetime totals do not heat a cable. What heats it is "
                     "what flows through it at the moment it is running."},
-            {"text": "Because thick cable stores more energy",
+            {"text": "Because thicker cable stores more of the energy on its "
+                     "way through",
              "correct": False,
-             "why": "Cable does not store energy. It carries it."},
+             "why": "Cable does not store energy on the way through. It "
+                    "carries it."},
             {"text": "Because the cable has to survive the RATE, and the "
                      "kettle's rate is 130 times higher",
              "correct": True},
-            {"text": "Because the kettle is switched on and off more often",
+            {"text": "Because the kettle is switched on and off far more "
+                     "often than a router is",
              "correct": False,
              "why": "Switching frequency is not what the cable rating is "
                     "about. It is about how much flows while it is on."},
@@ -205,18 +225,21 @@ QUESTIONS = [
                 "one “to save electricity”. What is wrong with the "
                 "advice?",
         "options": [
-            {"text": "Nothing — half the power is half the energy",
+            {"text": "Nothing is wrong — half the power means half the "
+                     "energy, so the bill for boiling halves as well",
              "correct": False,
              "why": "Only if the time stayed the same, and it does not. The "
                     "slower kettle runs about twice as long."},
             {"text": "The slower kettle takes about twice as long, so the "
                      "total is roughly the same or slightly worse",
              "correct": True},
-            {"text": "A 1000 W kettle cannot boil water at all",
+            {"text": "A 1000 W kettle cannot bring a full jug to the boil, so "
+                     "it never saves anything at all",
              "correct": False,
-             "why": "It boils perfectly well. It simply takes longer."},
-            {"text": "The advice is right, but only for small amounts of "
-                     "water",
+             "why": "It boils a full jug perfectly well. It simply takes "
+                    "longer."},
+            {"text": "The advice is right, but only for the small amounts of "
+                     "water that most people actually boil",
              "correct": False,
              "why": "The amount of water does not change the argument: "
                     "halving the power roughly doubles the time either way."},
@@ -229,19 +252,21 @@ QUESTIONS = [
         "text": "Swapping a 2000 W kettle for a 1000 W one makes the total "
                 "energy slightly WORSE, not just equal. Why?",
         "options": [
-            {"text": "Lower-power elements are always less efficient",
+            {"text": "Lower-power elements are always less efficient, so more "
+                     "energy is wasted",
              "correct": False,
              "why": "The element itself is close to fully efficient either "
                     "way — almost all the energy reaches the water."},
-            {"text": "The slower kettle draws more current overall",
+            {"text": "The slower kettle draws more current overall, so the "
+                     "wires waste more",
              "correct": False,
              "why": "It draws LESS current. Current is not what makes the "
                     "difference here."},
             {"text": "It spends longer heating, so it has longer to lose "
                      "energy to the kitchen",
              "correct": True},
-            {"text": "Water takes more energy to boil when it is heated "
-                     "slowly",
+            {"text": "Water takes more energy to reach boiling point when it "
+                     "is heated slowly",
              "correct": False,
              "why": "The energy needed to raise the water to 100 °C is the "
                     "same however fast you do it. The extra is loss, not "
@@ -255,16 +280,19 @@ QUESTIONS = [
         "text": "When does swapping to a lower-wattage appliance GENUINELY "
                 "save energy?",
         "options": [
-            {"text": "Whenever the new appliance has a smaller number on it",
+            {"text": "Whenever the new appliance has a smaller number on it, "
+                     "whatever job it happens to be doing",
              "correct": False,
-             "why": "This is exactly the reasoning the lesson takes apart. "
-                    "A smaller rate over a longer time can be the same or "
+             "why": "This is exactly the reasoning the lesson takes apart. A "
+                    "smaller rate over a longer time can be the same or "
                     "worse."},
-            {"text": "Whenever the appliance is used less than an hour a day",
+            {"text": "Whenever the appliance is used for less than an hour a "
+                     "day, so the total stays small",
              "correct": False,
-             "why": "How long it runs affects the total, but it does not "
-                    "make a lower rating automatically a saving."},
-            {"text": "Never — power and energy are unrelated",
+             "why": "How long it runs affects the total, but it does not make "
+                    "a lower rating automatically a saving."},
+            {"text": "Never — power and energy are unrelated, so the rating "
+                     "cannot tell you anything at all",
              "correct": False,
              "why": "They are closely related: energy is power multiplied by "
                     "time. The point is that one alone is not enough."},
@@ -285,17 +313,18 @@ QUESTIONS = [
             {"text": "A horse can transfer energy about seven times faster "
                      "than a person can sustain",
              "correct": True},
-            {"text": "A horse holds about seven times as much energy as a "
-                     "person",
+            {"text": "A horse holds about seven times as much energy in store "
+                     "as a person does",
              "correct": False,
-             "why": "Neither figure is an amount held. Both are rates — "
-                    "how fast energy is transferred."},
-            {"text": "A horse can do about seven times as much work in total",
+             "why": "Neither figure is an amount held. Both are rates — how "
+                    "fast energy is transferred."},
+            {"text": "A horse can do about seven times as much total work as "
+                     "a person ever could",
              "correct": False,
              "why": "Total work depends on how long each keeps going, which "
                     "these figures do not say."},
-            {"text": "A person is about seven times more efficient than a "
-                     "horse",
+            {"text": "A person is about seven times more efficient with "
+                     "energy than a horse is",
              "correct": False,
              "why": "Efficiency is a different quantity again, and nothing "
                     "here measures it."},

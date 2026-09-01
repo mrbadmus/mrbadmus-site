@@ -53,6 +53,8 @@ on the first run. Checked again before these were written.
 Full words — `easier`, `standard`, `harder`. Never `s` or `h`.
 """
 
+import re as _re
+
 from ks3_art.kit import e, r_cfifa_attempt, rich, t
 
 
@@ -92,16 +94,28 @@ def _gate(act_id, family, gate, hook):
 
 
 def _tiles(hook, specs):
-    """The readout row. `sub` is Design's second line — the working."""
+    """The readout row. `sub` is Design's second line — the working.
+
+    ⊕ P5-13, 31 Aug 2026 — `alt_label` IS THE SECOND NAME A TILE CAN TAKE.
+    A tile whose label is an instrument ("On a spring balance in the
+    water") is making a claim about what is being measured, and on the
+    float tank that claim stops being true the moment a floater is held
+    under: the balance would go slack and what is really being measured is
+    the hand pushing down. Rather than print a negative reading under a
+    label that cannot produce one, the tile carries both names and the
+    wiring chooses. Optional — a tile with one honest name leaves it out.
+    """
     cells = ""
     for s in specs:
         sub = ('<p class="ks3-%s-tile-sub" data-%s-sub="%s"></p>'
                % (hook, hook, e(s["id"]))) if s.get("sub") else ""
+        alt = (' data-%s-altlabel="%s"' % (hook, e(s["alt_label"]))
+               if s.get("alt_label") else "")
         cells += ('<div class="ks3-%s-tile">'
-                  '<p class="ks3-%s-tile-label" data-%s-label="%s">%s</p>'
+                  '<p class="ks3-%s-tile-label" data-%s-label="%s"%s>%s</p>'
                   '<p class="ks3-%s-tile-value" data-%s-out="%s">%s</p>%s'
                   '</div>'
-                  % (hook, hook, hook, e(s["id"]), t(s["label"]),
+                  % (hook, hook, hook, e(s["id"]), alt, t(s["label"]),
                      hook, hook, e(s["id"]), t(s.get("value", "—")), sub))
     return '<div class="ks3-%s-tiles">%s</div>' % (hook, cells)
 
@@ -896,6 +910,98 @@ def r_p5_opposed_beam(fig):
 
 # ═══ the CFIFA attempt · #s-formula, under the worked examples ═══════════
 
+# ── the arithmetic gate on the five lines ────────────────────────────────
+#
+# ⊕ P5-12, 31 Aug 2026 — EVERY LINE OF THE SHAPE `a op b = c` IS EVALUATED
+# AT BUILD TIME, and a false one fails the build.
+#
+# The bench printed "2.4 − 10 = 7.6" on the one step whose entire job is to
+# be the arithmetic, in three reachable states, and nothing caught it: the
+# renderer checks the letters, the labels and that a line is non-empty, and
+# nothing anywhere checks that the sum is true. The 2026-08-28 physics
+# audit found the same shape of defect in P2 by hand ("2000 x 180 = 360 kJ").
+#
+# ⚠️ THIS BELONGS IN `ks3_art.kit.r_cfifa_attempt`, where it would cover
+# every unit and every worked example rather than these two. It is here,
+# twice, because MRB-297's lanes hold `kit.py`. Lift it and delete both
+# copies.
+#
+# A Fine-tune line may legitimately be prose ("Nothing needed converting"),
+# so a line that does not MATCH the shape is passed over; only a line that
+# claims a sum is held to it. The claim is judged at the precision it is
+# written to, so a line that rounds ("1.2 / 0.35 = 3.4") passes and one
+# that has the sign or the order wrong does not.
+
+_ARITH_N = (r"[-+−]?\d[\d \u00a0\u2009,]*(?:\.\d+)?"
+            r"(?:[eE][-+]?\d+)?")
+_ARITH_U = r"(?:\s*[A-Za-z°%/µΩ²³]+)?"
+_ARITH = _re.compile(
+    r"^\s*(%s)%s\s*([\u00d7x*\u00f7/+\u2212-])\s*(%s)%s"
+    r"\s*=\s*(%s)%s(?![\d.])"
+    % (_ARITH_N, _ARITH_U, _ARITH_N, _ARITH_U, _ARITH_N, _ARITH_U))
+
+
+def _arith_num(s):
+    s = s.replace("\u2212", "-")
+    for junk in ("\u00a0", "\u2009", " ", ","):
+        s = s.replace(junk, "")
+    return float(s)
+
+
+def _check_arithmetic(act_id, where, line):
+    """Fail the build on a line that states a sum and states it wrongly."""
+    m = _ARITH.match(line or "")
+    if not m:
+        return
+    a, op, b, c = (_arith_num(m.group(1)), m.group(2),
+                   _arith_num(m.group(3)), _arith_num(m.group(4)))
+    if op in ("\u00d7", "x", "*"):
+        got = a * b
+    elif op in ("\u00f7", "/"):
+        if b == 0:
+            return
+        got = a / b
+    elif op == "+":
+        got = a + b
+    else:
+        got = a - b
+    # Judged at the precision the line is WRITTEN to, so a line that
+    # rounds ("1.2 / 0.35 = 3.4") and one that truncates ("1.20 / 0.84 =
+    # 1.4285...") both pass, and a line with the sign or the order the
+    # wrong way round does not: "2.4 - 10 = 7.6" is out by 15.2.
+    tail = m.group(4).split(".")[1] if "." in m.group(4) else ""
+    dp = len(tail.split("e")[0].split("E")[0])
+    if abs(got - c) >= max(10.0 ** -dp, abs(c) * 1e-3):
+        raise ValueError(
+            "cfifa-attempt %r, %s, states %r. %s %s %s is %s, not %s. A "
+            "model line a student writes their own working against has to "
+            "be true as written."
+            % (act_id, where, line.strip(), m.group(1), op, m.group(3),
+               ("%%.%df" % dp) % got, m.group(4)))
+
+
+def _check_attempt_arithmetic(a, act_id):
+    """Every line of every question, with question 1's tokens resolved.
+
+    Question 1 is live on the bench, so its lines carry `{token}`s; the
+    payload's `rest` block is the state the page ships in and is the one
+    set of values a build can see. Question 2 is fixed and is checked as
+    written.
+    """
+    rest = a.get("rest") or {}
+    for qi, q in enumerate(a.get("questions") or []):
+        for si, st in enumerate(q.get("steps") or []):
+            line = st.get("line") or ""
+            if qi == 0:
+                for k, v in rest.items():
+                    line = line.replace("{%s}" % k, str(v))
+            if "{" in line:
+                continue          # a token no resting value supplies
+            _check_arithmetic(
+                act_id, "question %d step %d (%s)"
+                % (qi + 1, si + 1, st.get("label")), line)
+
+
 def r_p5_attempt(a, act_id):
     """⊕ P5's half of Design's `Cfifa`: the student's own five lines.
 
@@ -908,6 +1014,7 @@ def r_p5_attempt(a, act_id):
     # this activity's eyebrow in Design's `.ks3-blockhead`; the kit helper
     # printed it again. `None` tells the helper it is already on the page
     # (the P7 opt-out, applied here after it was measured on live pages).
+    _check_attempt_arithmetic(a, act_id)
     return r_cfifa_attempt(dict(a, eyebrow=None), act_id, "p5cfa")
 
 

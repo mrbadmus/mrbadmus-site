@@ -1156,6 +1156,14 @@ COMPONENTS = [
     # and pinning today's rendering at least means it cannot drift in silence
     # while Design's screen is outstanding. When that screen arrives these
     # rows get re-pointed at it, and the comment goes.
+    #
+    # ⊕ 30 Aug 2026 — AND THAT IS NOW TRUE OF THE TWO RESTING ROWS ONLY. The
+    # two CHOSEN rows below stopped being a translation on the day Mide ruled
+    # that selection moves to the accent token: their colour is a DECISION,
+    # not a placeholder, and a Design screen arriving later with amber in it
+    # would be the thing that needs re-pointing, not these rows. The sentence
+    # above about "orange on ink is illegible" also no longer reaches the
+    # chosen state — it is why the accent is a BORDER here and never a fill.
     dict(name="dark-block option resting (translated)", on=LESSON,
          sel=".ks3-dark .ks3-option",
          props={"background-color": "#3E3730", "border-top-color": "#C6B9A7",
@@ -1163,14 +1171,29 @@ COMPONENTS = [
     dict(name="dark-block option resting badge (translated)", on=LESSON,
          sel=".ks3-dark .ks3-option .ks3-opt-mark",
          props={"background-color": "#C6B9A7", "color": "#221E1B"}),
-    dict(name="dark-block option CHOSEN (translated)", on=LESSON,
+    # ⊕ THESE TWO ROWS ARE NO LONGER A TRANSLATION — THEY ARE A RULING.
+    # Mide ruled on 30 Aug 2026 (audit P10-26 / Mide-pile M6) that SELECTION
+    # moves to the accent token on BOTH grounds: amber is reserved for warning
+    # and loss, and a colour meaning "careful" must not also mean "you picked
+    # this". So the amber these two rows used to assert is not a stand-in
+    # awaiting Design's screen any more — it is gone by decision, and a future
+    # screen showing amber here would be the thing that is wrong.
+    #
+    # The chosen state is an accent BORDER over the dark panel, not an accent
+    # slab, and that is forced by contrast rather than chosen: ink on an accent
+    # fill is 4.49:1, under the 4.5:1 body floor, while the border needs only
+    # the 3:1 of WCAG 1.4.11 and gets 3.18:1 on the panel. The badge gains a
+    # 2px accent border for the same reason (it was a solid amber fill), which
+    # costs it no width because `styles.css` sets `box-sizing: border-box`.
+    dict(name="dark-block option CHOSEN (RULED 30 Aug 2026)", on=LESSON,
          drive="dark-option-chosen",
          sel='.ks3-dark .ks3-option[aria-pressed="true"]',
-         props={"background-color": "#3E3730", "border-top-color": "#FFC53D"}),
-    dict(name="dark-block option CHOSEN badge (translated)", on=LESSON,
+         props={"background-color": "#3E3730", "border-top-color": "#E4572E"}),
+    dict(name="dark-block option CHOSEN badge (RULED 30 Aug 2026)", on=LESSON,
          drive="dark-option-chosen",
          sel='.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark',
-         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+         props={"background-color": "#3E3730", "border-top-color": "#E4572E",
+                "color": "#FBF3E6"}),
 
     # ── ladder options. SPEC.md §5's table, all four rows. This is the only
     # surface in the key stage allowed to say right or wrong (R3), so it is
@@ -1552,6 +1575,30 @@ COMPONENTS = [
          sel=".ks3-fit-part",
          props={"border-top-left-radius": "999px", "min-height": "48px",
                 "border-top-color": "#C6B9A7", "color": "#FBF3E6"}),
+    # ⊕ MRB-297 · 1 Sep 2026 — AND THE CHOSEN CHIP'S BADGE, WHICH NOTHING
+    # WATCHED. The row above measures a chip at rest and `.ks3-part-num` is
+    # pinned on `animal-and-plant-cells.html` in its resting form; the badge
+    # inside a CHOSEN chip was moved from `--ks3-alert` to the accent by
+    # Mide's 30 Aug ruling and had no row at all, so the gate could have
+    # reported green over any drift in the one state a student creates.
+    # Driven, because a row that measured an unpressed chip would be
+    # reporting coverage it does not have.
+    # ⚠️ THE BORDER COLOUR IS PINNED AND THE BORDER WIDTH IS NOT, and that is
+    # a finding rather than an oversight: `.ks3-fit-part .ks3-part-num` sets
+    # `border: 0`, so the accent `border-color` this state declares resolves
+    # correctly and renders at ZERO WIDTH. Measured: 0px, chosen and
+    # unchosen alike. The state still reads — the badge goes from the panel
+    # (#3E3730) to the ink slab (#221E1B) and its glyph from muted to on-dark,
+    # and the chip around it does take a real accent border — so this row
+    # pins the three properties that are actually doing the work and reports
+    # the zeroed border rather than asserting 0px as correct. `shared/ks3.css`
+    # is not this lane's to change; named in the MRB-297 report.
+    dict(name="an installed fit chip's badge is the accent slab, not amber",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         drive="b1-fit-part-installed",
+         sel='.ks3-dark .ks3-fit-part[aria-pressed="true"] .ks3-part-num',
+         props={"background-color": "#221E1B", "border-color": "#E4572E",
+                "color": "#FBF3E6"}),
     dict(name="the fit job panel is the dark nested panel, not a cream inset",
          on="biology/cells-and-organisation/animal-and-plant-cells.html",
          sel=".ks3-fit-job", props={"background-color": "#3E3730"}),
@@ -2022,11 +2069,27 @@ COMPONENTS = [
     # pressed state, measured in the state through the rig's own controls.
     # Amber here is not a verdict on the student: it marks which test is on the
     # bench, and the outcome paragraph is one tone whichever answer they gave.
-    dict(name="the running gap test is alert amber with ink on it",
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    # ⚠️ THE "ALERT GROUND, NOT THE PLATFORM'S ALERT BORDER" HALF IS
+    # ALSO GONE. This control now takes the platform's own chosen
+    # treatment — the dark panel carrying a 2px accent border —
+    # because an accent SLAB cannot hold ink at body size (4.49:1,
+    # under the 4.5:1 floor). One unit still narrows it: B7's four
+    # benches add an accent fill at .22 under the same border, for
+    # legibility across four dials at once, and that narrowing is
+    # documented at its own rule in `shared/ks3.css`.
+    dict(name="the running gap test takes the accent border on the dark panel",
          on=C1_MODEL, drive="gap-tested",
          sel='.ks3-gap-test[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "border-top-color": "#FFC53D"}),
+         props={"background-color": "#3E3730", "color": "#FBF3E6",
+                "border-top-color": "#E4572E"}),
 # ks3_parity.py — halving-bench (c1-01 #s-cut)
 #
 # 1. PAGE CONSTANT — add beside C2_ATOM / C2_ELEM (~line 357):
@@ -2817,14 +2880,40 @@ COMPONENTS = [
     # rule. ⚖️ Amber here is CHOSEN, never wrong — nothing in this instrument
     # marks a mistake, and this row pins the colour to the pressed state so a
     # later pass cannot quietly repurpose it.
-    dict(name="a chosen band is alert with ink text", on=B3_DIET,
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    # ⚠️ THE "ALERT GROUND, NOT THE PLATFORM'S ALERT BORDER" HALF IS
+    # ALSO GONE. This control now takes the platform's own chosen
+    # treatment — the dark panel carrying a 2px accent border —
+    # because an accent SLAB cannot hold ink at body size (4.49:1,
+    # under the 4.5:1 floor). One unit still narrows it: B7's four
+    # benches add an accent fill at .22 under the same border, for
+    # legibility across four dials at once, and that narrowing is
+    # documented at its own rule in `shared/ks3.css`.
+    dict(name="a chosen band takes the accent border on the dark panel", on=B3_DIET,
          drive="plate-opened", sel='.ks3-plate-band[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "border-top-color": "#FFC53D", "min-height": "44px"}),
+         props={"background-color": "#3E3730", "color": "#FBF3E6",
+                "border-top-color": "#E4572E", "min-height": "44px"}),
     # The row is the ONLY thing in the block that reports whether the student
     # had it, and it does so with the block's own lit rule rather than with a
     # marking colour. If this row ever resolves to `--ks3-ok` #12A150 or
     # `--ks3-ok-tint` #E4F7EB, an activity has started marking (R3).
+    # ⊕ MRB-297 · 1 Sep 2026 — RE-EXAMINED UNDER THE 30 AUG RULING AND LEFT
+    # AMBER, DELIBERATELY, AND RAISED FOR MIDE. The ruling moves SELECTION to
+    # the accent and reserves amber for warning and loss. This row is
+    # neither: nothing was picked — it reports an OUTCOME, a food that
+    # landed in the right band — so the ruling as written gives it no
+    # instruction and no destination. It cannot go accent without accent
+    # starting to mean "correct", and it cannot go green without the
+    # activity starting to mark, which R3 forbids and which the paragraph
+    # above exists to catch. Amber-as-the-block's-lit-rule is what is left,
+    # and it is what Design drew. Changing it needs a ruling, not a sweep.
     dict(name="a correctly placed row is the dark panel on an alert rule",
          on=B3_DIET, drive="plate-opened",
          sel='.ks3-plate-row[data-state="hit"]',
@@ -3121,12 +3210,15 @@ COMPONENTS = [
          props={"font-family": "DM Mono", "font-size": "22px",
                 "color": "#FBF3E6"}),
     # A food with portions on it takes the same lit treatment as a chosen tab —
-    # alert on ink — because adding a portion IS a selection. Pinned so the two
-    # cannot drift into two different "on" colours in one block.
+    # ⊕ 30 Aug 2026, the accent border on the dark panel, not the old amber —
+    # because adding a portion IS a selection, and Mide's ruling of that date
+    # moves selection to the accent on both grounds. Pinned so the two cannot
+    # drift into two different "on" colours in one block, which is the whole
+    # reason this row exists and is the reason it had to move WITH the tab.
     dict(name="a food with portions on it takes the lit treatment",
          on=B3_ENERGY, drive="ledger-matched",
          sel='.ks3-ledger-food[data-count]:not([data-count="0"])',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
+         props={"background-color": "#3E3730", "color": "#FBF3E6",
                 "min-height": "44px"}),
 # ── PAGE CONSTANT ────────────────────────────────────────────────────────
 # One drawn instance, on b3-02.
@@ -3172,10 +3264,26 @@ COMPONENTS = [
                 "width": "62px", "height": "168px"}),
     # Design's dark tab pair, shared with band-commit and person-ledger: lit is
     # alert with ink text, resting transparent on the muted rule.
-    dict(name="a chosen bench tab is alert with ink text", on=B3_TESTS,
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    # ⚠️ THE "ALERT GROUND, NOT THE PLATFORM'S ALERT BORDER" HALF IS
+    # ALSO GONE. This control now takes the platform's own chosen
+    # treatment — the dark panel carrying a 2px accent border —
+    # because an accent SLAB cannot hold ink at body size (4.49:1,
+    # under the 4.5:1 floor). One unit still narrows it: B7's four
+    # benches add an accent fill at .22 under the same border, for
+    # legibility across four dials at once, and that narrowing is
+    # documented at its own rule in `shared/ks3.css`.
+    dict(name="a chosen bench tab takes the accent border on the dark panel", on=B3_TESTS,
          sel='.ks3-tbench-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     # ═══ END B3 ═══ rows
     # ═══ BEGIN B4 ═══ rows
     #
@@ -3231,11 +3339,19 @@ COMPONENTS = [
     # ⚖️ A CHOSEN PREDICTION IS ALERT AND NOTHING ELSE. R3: nothing marks while
     # the prediction is being made. If this row ever resolves to `--ks3-ok`
     # #12A150 an activity has started marking.
-    dict(name="a chosen gas prediction is alert with ink text", on=B4_BAGS,
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    dict(name="a chosen gas prediction takes the accent border on the dark panel", on=B4_BAGS,
          sel='.ks3-gas-choice[aria-pressed="true"]',
          drive="gas-revealed",
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
 
     # ── bell-jar (b4-02 #s-model) ──
     #
@@ -3409,10 +3525,18 @@ COMPONENTS = [
     # ⚖️ THE CHOSEN DRUG TAB IS ALERT AND NOTHING ELSE. R3: choosing a drug is
     # not answering anything, so if this row ever resolves to `--ks3-ok`
     # #12A150 the block has started marking a control that has no right answer.
-    dict(name="the chosen drug tab is alert with ink text", on=B6_DOSE,
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    dict(name="the chosen drug tab takes the accent border on the dark panel", on=B6_DOSE,
          sel='.ks3-route-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
 
     # ── clearance-clock (b6-02 #s-clock) ──
     #
@@ -3445,10 +3569,18 @@ COMPONENTS = [
     # ⚖️ A CHOSEN FIX IS ALERT AND NOTHING ELSE — never `--ks3-ok`, never
     # `--ks3-danger`. Picking "black coffee" is not a wrong answer; the bench
     # does not mark, and the note is what tells the student what it did.
-    dict(name="the chosen fix is alert with ink text, and is not marked",
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    dict(name="the chosen fix takes the accent border, and is not marked",
          on=B6_CLOCK, sel='.ks3-clock-fix[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     # ⚖️ A DRINK NEVER LATCHES. Design draws every drink unpressed always: it
     # is an action, not a selection. If a drink ever resolves to the alert
     # ground it has become a choice the student appears to have made.
@@ -3489,15 +3621,25 @@ COMPONENTS = [
     # option is not a right one. If either of these two rows ever resolves to
     # `--ks3-ok` or `--ks3-danger`, the bench has started marking and the house
     # rule Design states on the page has been lost.
-    dict(name="a chosen fault is alert-bordered and its label does not move",
+    # ⊕ MRB-297 · 1 Sep 2026 — "ALERT BORDER AND ALERT LETTER" IS NOW ACCENT
+    # ON BOTH. Mide's 30 Aug ruling moves selection to the accent. The
+    # sentence above is kept because the half that matters is untouched: the
+    # LABEL colour still does not move, and neither row may go green or red.
+    # ⚠️ The 30 Aug pass moved the BUTTON row and left the LETTER row on
+    # #FFC53D, so for two days these two rows pinned two different "on"
+    # colours in one block — the exact thing the note at the head of this
+    # section says these rows exist to prevent. The letter now carries the
+    # accent as its BORDER and `--ks3-on-dark` as its glyph, because #E4572E
+    # is 4.49:1 on ink at 14px/800 and cannot be the glyph itself.
+    dict(name="a chosen fault is accent-bordered and its label does not move",
          on=B6_CLAIMS, drive="claims-checked",
          sel='.ks3-ccheck-fault[aria-pressed="true"]',
-         props={"border-color": "#FFC53D", "color": "#FBF3E6",
+         props={"border-color": "#E4572E", "color": "#FBF3E6",
                 "min-height": "44px"}),
-    dict(name="the chosen fault's letter is alert, and is not a tick",
+    dict(name="the chosen fault's letter is accent-bordered, and is not a tick",
          on=B6_CLAIMS, drive="claims-checked",
          sel='.ks3-ccheck-fault[aria-pressed="true"] .ks3-ccheck-mark',
-         props={"color": "#FFC53D", "border-color": "#FFC53D"}),
+         props={"color": "#FBF3E6", "border-color": "#E4572E"}),
     # ⚖️ THE FAULTS THAT WERE NOT PICKED DIM; THEY ARE NOT STRUCK THROUGH AND
     # THEY ARE NOT RECOLOURED. Every one of them is a TRUE statement about
     # evidence — the pool is one-to-one — so nothing here may present them as
@@ -3599,10 +3741,10 @@ COMPONENTS = [
          on=B5_PARTS, sel=".ks3-b5c-opt",
          props={"background-color": "#3E3730", "color": "#FBF3E6",
                 "min-height": "44px"}),
-    dict(name="a chosen option is alert-bordered and its label does not move",
+    dict(name="a chosen option is accent-bordered and its label does not move",
          on=B5_PARTS, drive="b5-item-checked",
          sel='.ks3-b5c-opt[aria-pressed="true"]',
-         props={"border-color": "#FFC53D", "color": "#FBF3E6"}),
+         props={"border-color": "#E4572E", "color": "#FBF3E6"}),
 
     # ── b5-05's week window, inside that cream panel ──
     #
@@ -3673,10 +3815,18 @@ COMPONENTS = [
     # to look at is not answering anything, so if this row ever resolves to
     # `--ks3-ok` #12A150 the bench has started marking a control that has no
     # right answer.
-    dict(name="the chosen tab is alert with dark-panel text", on=B5_JOBS,
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    dict(name="the chosen tab takes the accent border on the dark panel", on=B5_JOBS,
          sel='.ks3-b5c-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#3E3730",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="an unchosen tab is transparent and stays on-dark body",
          on=B5_JOBS, sel='.ks3-b5c-tab[aria-pressed="false"]',
          props={"background-color": "rgba(0, 0, 0, 0)", "color": "#E7DECE",
@@ -3787,10 +3937,10 @@ COMPONENTS = [
          sel=".ks3-dial-celllabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "12px"}),
-    dict(name="a chosen cycle length is alert, and is not marked", on=B5_DIAL,
+    dict(name="a chosen cycle length takes the accent border, and is not marked", on=B5_DIAL,
          sel='.ks3-dial-len[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#3E3730",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     # ⚖️ THE STEP BUTTONS ARE A 44px TAP TARGET. They exist for keyboard and
     # for a phone, where a 12px slider thumb is not operable — so their size is
     # the assertion, not their colour.
@@ -3879,15 +4029,24 @@ COMPONENTS = [
     dict(name="the bench panel is the nested dark panel, not the page ground",
          on=B7_BENCH, sel=".ks3-rr-panel",
          props={"background-color": "#3E3730"}),
-    # ⚖️ A CHOSEN DIAL SETTING IS THE ALERT GROUND — Design's own `seg()`, and
-    # a NARROWING of the platform's `.ks3-dark .ks3-option[aria-pressed]`,
-    # which gives an alert border on the dark panel. Four dials with four thin
-    # borders do not read as a state at a glance. If this row ever resolves to
-    # #3E3730 the narrowing has been lost to source order and every bench in
-    # the unit is showing its settings the platform's way.
-    dict(name="a chosen dial setting is the alert ground with ink on it",
+    # ⚖️ A CHOSEN DIAL SETTING IS A FILLED STATE, NOT A BARE OUTLINE — a
+    # NARROWING of the platform's `.ks3-dark .ks3-option[aria-pressed]`,
+    # which gives an accent border on the dark panel. Four dials with four
+    # thin borders do not read as a state at a glance. If this row ever
+    # resolves to #3E3730 the narrowing has been lost to source order and
+    # every bench in the unit is showing its settings the platform's way.
+    # ⊕ MRB-297 · 1 Sep 2026 — the ground was `--ks3-alert`, Design's own
+    # `seg()`, until Mide's 30 Aug ruling moved selection to the accent. The
+    # recolour then set THIS ROW to #3E3730 — the exact value the tripwire
+    # two lines up exists to catch — so the gate spent two days asserting the
+    # failure state as correct. Both ends are fixed: the fill is the accent
+    # at .22, and the border is pinned as well, because on the platform rule
+    # the border is the only thing separating chosen from unchosen and it was
+    # the one property no row measured.
+    dict(name="a chosen dial setting is an accent fill, not a bare border",
          on=B7_BENCH, sel='.ks3-rr-opt[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
+         props={"background-color": "rgba(228, 87, 46, 0.22)",
+                "border-color": "#E4572E", "color": "#FBF3E6",
                 "min-height": "44px"}),
     dict(name="an unchosen dial setting stays on the dark panel",
          on=B7_BENCH, sel='.ks3-rr-opt[aria-pressed="false"]',
@@ -4004,9 +4163,15 @@ COMPONENTS = [
     # benches' dials, and measuring it on b7-01 alone would pass a b7-02 that
     # had been given a treatment of its own — which is the direction drift goes
     # when four instruments are written in one pass.
-    dict(name="the tuner's chosen setting is the same alert ground",
+    # ⊕ MRB-297 · 1 Sep 2026 — SAME NARROWING AS THE REMOVER'S DIALS, and it
+    # was lost the same way. See the note on `.ks3-rr-opt` above: a chosen
+    # setting on these four benches is an accent FILL, because four thin
+    # borders on one ground do not read as a state at a glance. If this ever
+    # resolves to #3E3730 the narrowing has gone back to source order.
+    dict(name="the tuner's chosen setting is an accent fill, not a bare border",
          on=B7_TUNER, sel='.ks3-lt-opt[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
+         props={"background-color": "rgba(228, 87, 46, 0.22)",
+                "border-color": "#E4572E", "color": "#FBF3E6",
                 "min-height": "44px"}),
     # ⚖️ THE OAK BUTTON IS THE REVEAL, so the panel is measured once more AFTER
     # it — the only state on this instrument that a student reaches by pressing
@@ -4063,6 +4228,24 @@ COMPONENTS = [
          on=B7_METHOD, sel=".ks3-mb-num",
          props={"color": "#C6B9A7", "border-top-color": "#C6B9A7",
                 "font-family": "Bricolage Grotesque"}),
+    # ⊕ MRB-297 · 1 Sep 2026 — THE FOURTH OF B7'S FOUR BENCHES, FINALLY
+    # PINNED. `shared/ks3.css` and the coverage manifest both describe
+    # `.ks3-dark .ks3-mb-opt[aria-pressed="true"]` as one of the four
+    # selection states that moved from amber to the accent on 30 Aug; the
+    # other three — `rr-opt`, `lt-opt`, `tb-tab` — each got a row and this one
+    # did not, so a recolour nobody could see had nothing watching it. Same
+    # values as the dial row on `the-photosynthesis-reaction`, because it is
+    # the same rule and the same ruling: an accent FILL at .22 rather than a
+    # bare border, since four steps with four thin borders do not read as a
+    # state at a glance. If this ever resolves to #3E3730 the narrowing has
+    # been lost to source order and every bench in the unit is showing its
+    # settings the platform's way.
+    dict(name="a chosen method step is an accent fill, not a bare border",
+         on=B7_METHOD, drive="b7-method-step-chosen",
+         sel='.ks3-dark .ks3-mb-opt[aria-pressed="true"]',
+         props={"background-color": "rgba(228, 87, 46, 0.22)",
+                "border-color": "#E4572E", "color": "#FBF3E6",
+                "min-height": "44px"}),
     dict(name="the run button is inverted on ink, not ink on ink",
          on=B7_METHOD, sel=".ks3-mb-run",
          props={"background-color": "#FBF3E6", "color": "#221E1B",
@@ -4113,9 +4296,12 @@ COMPONENTS = [
          sel=".ks3-tb-tabslabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "14px"}),
-    dict(name="the chosen food tab is the same alert ground", on=B7_TRACE,
-         sel='.ks3-tb-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
+    # ⊕ MRB-297 · 1 Sep 2026 — the fourth member of the B7 narrowing; see
+    # the note on `.ks3-rr-opt`. An accent fill, not a bare border.
+    dict(name="the chosen food tab is an accent fill, not a bare border",
+         on=B7_TRACE, sel='.ks3-tb-tab[aria-pressed="true"]',
+         props={"background-color": "rgba(228, 87, 46, 0.22)",
+                "border-color": "#E4572E", "color": "#FBF3E6",
                 "min-height": "44px"}),
     dict(name="the step button is inverted on ink, not ink on ink",
          on=B7_TRACE, sel=".ks3-tb-back",
@@ -4195,10 +4381,26 @@ COMPONENTS = [
     # ⚖️ A CHOSEN TAB IS THE ALERT GROUND, which is Design's `seg()` and NOT
     # the platform's alert border. Still not a mark: it says "this is the
     # chain you are looking at", never "this is correct".
-    dict(name="B9 chain-ledger · the chosen chain tab is the alert ground",
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    # ⚠️ THE "ALERT GROUND, NOT THE PLATFORM'S ALERT BORDER" HALF IS
+    # ALSO GONE. This control now takes the platform's own chosen
+    # treatment — the dark panel carrying a 2px accent border —
+    # because an accent SLAB cannot hold ink at body size (4.49:1,
+    # under the 4.5:1 floor). One unit still narrows it: B7's four
+    # benches add an accent fill at .22 under the same border, for
+    # legibility across four dials at once, and that narrowing is
+    # documented at its own rule in `shared/ks3.css`.
+    dict(name="B9 chain-ledger · the chosen chain tab takes the accent border on the dark panel",
          on=B9_CHAIN, sel='.ks3-cl-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B9 chain-ledger · an unchosen tab stays on the panel ground",
          on=B9_CHAIN, sel='.ks3-cl-tab[aria-pressed="false"]',
          props={"background-color": "#3E3730", "color": "#FBF3E6"}),
@@ -4397,10 +4599,10 @@ COMPONENTS = [
     dict(name="B9 remove-a-species · the remove label is muted mono",
          on=B9_REMOVE, sel=".ks3-rs-tabslabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono"}),
-    dict(name="B9 remove-a-species · the chosen species tab is the alert ground",
+    dict(name="B9 remove-a-species · the chosen species tab takes the accent border on the dark panel",
          on=B9_REMOVE, sel='.ks3-rs-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B9 remove-a-species · the consequences sit on the dark panel",
          on=B9_REMOVE, sel=".ks3-rs-body",
          props={"background-color": "#3E3730"}),
@@ -4549,10 +4751,10 @@ COMPONENTS = [
          on=B9_TOXIC, sel=".ks3-ba-tabslabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "14px"}),
-    dict(name="B9 bioaccumulation · the chosen setting is the alert ground",
+    dict(name="B9 bioaccumulation · the chosen setting takes the accent border on the dark panel",
          on=B9_TOXIC, sel='.ks3-ba-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     # ⚖️ THE SAME LADDER AS b9-01, THE SAME WAY UP. Water at the bottom,
     # ospreys at the top, because this bench is b9-01's arithmetic run in the
     # other direction and the two are deliberately the same shape.
@@ -4639,10 +4841,10 @@ COMPONENTS = [
          on=B9_QUADRAT, sel=".ks3-qb-diallabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "14px"}),
-    dict(name="B9 quadrat-bench · the chosen method is the alert ground",
+    dict(name="B9 quadrat-bench · the chosen method takes the accent border on the dark panel",
          on=B9_QUADRAT, sel='.ks3-qb-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B9 quadrat-bench · the field is a square grid, capped at 460px",
          on=B9_QUADRAT, sel=".ks3-qb-grid",
          props={"display": "grid", "max-width": "460px"}),
@@ -4741,10 +4943,26 @@ COMPONENTS = [
     # ⚖️ A CHOSEN TAB IS THE ALERT GROUND, which is Design's own `seg()` and
     # NOT the platform's alert border. Still not a mark: it says "this is the
     # characteristic on the bench", never "this is correct".
-    dict(name="B10 variation-plotter · the chosen characteristic is the alert ground",
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    # ⚠️ THE "ALERT GROUND, NOT THE PLATFORM'S ALERT BORDER" HALF IS
+    # ALSO GONE. This control now takes the platform's own chosen
+    # treatment — the dark panel carrying a 2px accent border —
+    # because an accent SLAB cannot hold ink at body size (4.49:1,
+    # under the 4.5:1 floor). One unit still narrows it: B7's four
+    # benches add an accent fill at .22 under the same border, for
+    # legibility across four dials at once, and that narrowing is
+    # documented at its own rule in `shared/ks3.css`.
+    dict(name="B10 variation-plotter · the chosen characteristic takes the accent border on the dark panel",
          on=B10_PLOT, sel='.ks3-vp-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B10 variation-plotter · an unchosen characteristic stays on the panel ground",
          on=B10_PLOT, sel='.ks3-vp-tab[aria-pressed="false"]',
          props={"background-color": "#3E3730", "color": "#FBF3E6"}),
@@ -4775,10 +4993,11 @@ COMPONENTS = [
          props={"background-color": "#FBF3E6", "color": "#221E1B",
                 "min-height": "44px"}),
     # ── driven: one characteristic predicted and plotted ──
-    dict(name="B10 variation-plotter · the chosen prediction takes the alert ground",
+    dict(name="B10 variation-plotter · the chosen prediction takes the accent border on the dark panel",
          on=B10_PLOT, drive="b10-plot-run",
          sel='[data-vp-charpanel]:not([hidden]) .ks3-vp-pred[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6"}),
     # ⚖️⚖️ THE GAP IS THE LESSON, and it is asserted on PAINTED GEOMETRY inside
     # `b10-plot-both`, not here. A continuous characteristic's bars fill their
     # column and MEET; a discontinuous one's are 6px narrower and stand apart.
@@ -4925,10 +5144,10 @@ COMPONENTS = [
     # ⛔ A PRESSED QUESTION TAB SAYS WHICH QUESTION IS BEING LOOKED AT, and
     # nothing else. This panel gates nothing and marks nothing: every answer is
     # visible the moment its question is chosen, and there is no right one.
-    dict(name="B10 zoom-bench · the chosen question is the alert ground",
+    dict(name="B10 zoom-bench · the chosen question takes the accent border on the dark panel",
          on=B10_ZOOM, sel='.ks3-zb-qtab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B10 zoom-bench · an unchosen question stays on the panel ground",
          on=B10_ZOOM, sel='.ks3-zb-qtab[aria-pressed="false"]',
          props={"background-color": "#3E3730", "color": "#FBF3E6"}),
@@ -5010,10 +5229,26 @@ COMPONENTS = [
     # is the model on the bench" — the bench opens on PAULING'S WRONG MODEL
     # with all three dials pressed, so a dial that read as a verdict would open
     # by telling the student their model was right.
-    dict(name="B10 model-builder · the chosen dial is the alert ground",
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    # ⚠️ THE "ALERT GROUND, NOT THE PLATFORM'S ALERT BORDER" HALF IS
+    # ALSO GONE. This control now takes the platform's own chosen
+    # treatment — the dark panel carrying a 2px accent border —
+    # because an accent SLAB cannot hold ink at body size (4.49:1,
+    # under the 4.5:1 floor). One unit still narrows it: B7's four
+    # benches add an accent fill at .22 under the same border, for
+    # legibility across four dials at once, and that narrowing is
+    # documented at its own rule in `shared/ks3.css`.
+    dict(name="B10 model-builder · the chosen dial takes the accent border on the dark panel",
          on=B10_MODEL, sel='.ks3-dh-opt[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B10 model-builder · an unchosen dial stays on the panel ground",
          on=B10_MODEL, sel='.ks3-dh-opt[aria-pressed="false"]',
          props={"background-color": "#3E3730", "color": "#FBF3E6"}),
@@ -5083,10 +5318,10 @@ COMPONENTS = [
          on=B10_CROSS, sel=".ks3-pc-parentname",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "14px", "text-transform": "uppercase"}),
-    dict(name="B10 pea-cross · the chosen genotype is the alert ground",
+    dict(name="B10 pea-cross · the chosen genotype takes the accent border on the dark panel",
          on=B10_CROSS, sel='.ks3-pc-geno[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B10 pea-cross · an unchosen genotype stays on the panel ground",
          on=B10_CROSS, sel='.ks3-pc-geno[aria-pressed="false"]',
          props={"background-color": "#3E3730", "color": "#FBF3E6"}),
@@ -5154,10 +5389,10 @@ COMPONENTS = [
          on=B10_SPECIES, sel=".ks3-sc-tabslabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "14px", "text-transform": "uppercase"}),
-    dict(name="B10 species-cases · the chosen case is the alert ground",
+    dict(name="B10 species-cases · the chosen case takes the accent border on the dark panel",
          on=B10_SPECIES, sel='.ks3-sc-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B10 species-cases · the bench sits on the nested dark panel",
          on=B10_SPECIES, sel=".ks3-sc-panel",
          props={"background-color": "#3E3730"}),
@@ -5189,11 +5424,27 @@ COMPONENTS = [
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "15px"}),
     # ── driven: one case committed and checked ──
-    dict(name="B10 species-cases · the chosen verdict takes the alert outline",
+    dict(name="B10 species-cases · the chosen verdict takes the accent outline",
          on=B10_SPECIES, drive="b10-species-checked",
          sel='[data-sc-panel]:not([hidden]) .ks3-sc-verdict[aria-pressed="true"]',
-         props={"border-top-color": "#FFC53D", "border-top-width": "2px",
+         props={"border-top-color": "#E4572E", "border-top-width": "2px",
                 "background-color": "rgba(255, 255, 255, 0.1)"}),
+    # ⊕ MRB-297 · 1 Sep 2026 — AND ITS LETTER, WHICH NOTHING WATCHED. The
+    # only `.ks3-sc-letter` row is the one above it, which pins the UNCHOSEN
+    # letter at #C6B9A7; the chosen letter was moved from `--ks3-alert` to the
+    # accent border plus an on-dark glyph by the same 30 Aug ruling, and had
+    # no row. Both halves of the control are now pinned, which is the point:
+    # the fault letter in B6 drifted precisely because its button was watched
+    # and it was not. The glyph is `--ks3-on-dark` rather than the accent
+    # because #E4572E on the panel is 4.49:1 at 14px/800, under the floor —
+    # so the selection is carried by the 2px border, and this row asserts
+    # both, since chosen and unchosen must differ in more than one property.
+    dict(name="B10 species-cases · the chosen verdict's letter follows its button",
+         on=B10_SPECIES, drive="b10-species-checked",
+         sel=('[data-sc-panel]:not([hidden]) '
+              '.ks3-sc-verdict[aria-pressed="true"] .ks3-sc-letter'),
+         props={"border-top-color": "#E4572E", "border-top-width": "2px",
+                "color": "#FBF3E6"}),
     # ⛔ AND THE UNCHOSEN VERDICTS DIM RATHER THAN BEING MARKED. No green on
     # the right one, no red on the wrong one, no badge — the bench says whether
     # the commitment held in WORDS on the cream panel (schema §0.6) and the
@@ -5243,10 +5494,26 @@ COMPONENTS = [
     # ⚖️ A CHOSEN CONDITION IS THE ALERT GROUND, which is Design's own `seg()`
     # and NOT the platform's alert border. Still not a mark: it says "this is
     # the world the bench is standing in", never "this is correct".
-    dict(name="B11 advantage-bench · the chosen condition is the alert ground",
+    # ⊕ MRB-297 · 1 Sep 2026 — THE COLOUR MOVED, THE ARGUMENT DID NOT.
+    # Mide ruled on 30 Aug 2026 that SELECTION takes `--ks3-accent` and
+    # that amber is kept for warning and loss. The sentence above is
+    # kept rather than deleted because the half of it that matters —
+    # this is a CHOICE and never a mark — is precisely what the ruling
+    # protects, and it is the sentence a later reader needs before the
+    # colour makes sense. The row below pins the accent; amber
+    # resolving here again would mean the ruling had been undone.
+    # ⚠️ THE "ALERT GROUND, NOT THE PLATFORM'S ALERT BORDER" HALF IS
+    # ALSO GONE. This control now takes the platform's own chosen
+    # treatment — the dark panel carrying a 2px accent border —
+    # because an accent SLAB cannot hold ink at body size (4.49:1,
+    # under the 4.5:1 floor). One unit still narrows it: B7's four
+    # benches add an accent fill at .22 under the same border, for
+    # legibility across four dials at once, and that narrowing is
+    # documented at its own rule in `shared/ks3.css`.
+    dict(name="B11 advantage-bench · the chosen condition takes the accent border on the dark panel",
          on=B11_ADV, sel='.ks3-ab-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     # ⚖️ AN UNCHOSEN TAB IS THE PANEL GROUND, NOT TRANSPARENT — the platform's
     # `.ks3-dark .ks3-option` against Design's `seg(false)`, which paints
     # `background: transparent`. The platform wins on all five B10 benches and
@@ -5347,10 +5614,10 @@ COMPONENTS = [
          on=B11_SEL, sel=".ks3-nr-tabslabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "14px", "text-transform": "uppercase"}),
-    dict(name="B11 selection-runner · the chosen bark is the alert ground",
+    dict(name="B11 selection-runner · the chosen bark takes the accent border on the dark panel",
          on=B11_SEL, sel='.ks3-nr-tab[aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
     dict(name="B11 selection-runner · an unchosen bark stays on the block ground",
          on=B11_SEL, sel='.ks3-nr-tab[aria-pressed="false"]',
          props={"background-color": "#3E3730", "color": "#FBF3E6"}),
@@ -5414,13 +5681,14 @@ COMPONENTS = [
          on=B11_PRESS, sel=".ks3-pb-tabslabel",
          props={"color": "#C6B9A7", "font-family": "DM Mono",
                 "font-size": "14px", "text-transform": "uppercase"}),
-    dict(name="B11 pressure-bench · the chosen species is the alert ground",
+    dict(name="B11 pressure-bench · the chosen species takes the accent border on the dark panel",
          on=B11_PRESS, sel='.ks3-pb-tab[data-pb-species][aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B",
-                "min-height": "44px"}),
-    dict(name="B11 pressure-bench · the chosen pressure is the alert ground too",
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6", "min-height": "44px"}),
+    dict(name="B11 pressure-bench · the chosen pressure takes the accent border on the dark panel too",
          on=B11_PRESS, sel='.ks3-pb-tab[data-pb-pressure][aria-pressed="true"]',
-         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+         props={"background-color": "#3E3730", "border-color": "#E4572E",
+                "color": "#FBF3E6"}),
     dict(name="B11 pressure-bench · an unchosen tab stays on the block ground",
          on=B11_PRESS, sel='.ks3-pb-tab[aria-pressed="false"]',
          props={"background-color": "#3E3730", "color": "#FBF3E6"}),
@@ -6265,15 +6533,25 @@ CONTRAST = [
     dict(name="MARK dark-block badge letter on its fill", on=LESSON,
          fg=".ks3-dark .ks3-option .ks3-opt-mark",
          bg=".ks3-dark .ks3-option .ks3-opt-mark", need=3.0),
-    dict(name="MARK dark-block CHOSEN badge letter on alert", on=LESSON,
+    # ⊕ 30 Aug 2026 — the floor on this row RISES from 3.0 to 4.5, and that is
+    # the ruling paying for itself rather than costing. While the chosen badge
+    # was a solid amber fill the letter on it was a MARK on a fill, so 3:1 was
+    # the honest bar. Mide's ruling moved selection to the accent, ink on an
+    # accent fill measures 4.49:1 — under AA — so the badge could not stay a
+    # fill at all: it is now the dark panel with an accent border and a cream
+    # letter, which is ordinary body text on a panel and owes the full 4.5:1.
+    # It clears it at 10.63:1.
+    dict(name="MARK dark-block CHOSEN badge letter on its panel", on=LESSON,
          drive="dark-option-chosen",
          fg='.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark',
          bg='.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark',
-         need=3.0),
+         need=4.5),
     # On the dark surface the CHOSEN state is carried by the border alone —
     # the ground does not change — so that border is the state-bearing mark
     # and has to clear 3:1 against the panel behind it, or the state is
-    # invisible to anyone who cannot pick the amber out.
+    # invisible to anyone who cannot pick the accent out. (⊕ 30 Aug 2026: that
+    # border was amber until Mide moved selection to the accent; it measures
+    # 4.49:1 against the ink ground of the `.ks3-practical` block.)
     dict(name="MARK dark-block CHOSEN border on dark panel", on=LESSON,
          drive="dark-option-chosen",
          fg='.ks3-dark .ks3-option[aria-pressed="true"]',
@@ -8064,6 +8342,47 @@ DRIVES = {
   var first = document.querySelector('.ks3-dark .ks3-option');
   if (!first) { return "no option on an ink-dark block"; }
   first.click();
+  return "";
+})()
+""",
+    # ⊕ MRB-297 · 1 Sep 2026 — ONE NUMBERED PART INSTALLED, BY PRESSING IT.
+    # The badge inside a CHOSEN fit chip was recoloured by the amber→accent
+    # ruling and no row watched it, so the gate would have reported green over
+    # any drift in it. A row that measured an UNPRESSED chip would report
+    # coverage it does not have, which is the same defect one layer down —
+    # hence a drive, and hence the check below that the element the row will
+    # go on to measure is the one this drive pressed. The chips are rendered
+    # by `renderParts()` and are NOT in the served html, so the scope is the
+    # block rather than the bench wrapper: `[data-fit]` is on the four
+    # specimen TABS as well, and scoping to it finds a tab and no parts.
+    "b1-fit-part-installed": r"""
+(function () {
+  var blk = document.querySelector('[data-fitblock]');
+  if (!blk) { return "no build-a-cell bench on the page"; }
+  var parts = blk.querySelectorAll('.ks3-fit-part');
+  if (!parts.length) { return "the bench rendered no parts to install"; }
+  var want = null;
+  for (var i = 0; i < parts.length; i++) {
+    if (parts[i].querySelector('.ks3-part-num') &&
+        parts[i].getAttribute('aria-pressed') === 'false') {
+      want = parts[i]; break;
+    }
+  }
+  if (!want) { return "no unpressed part carries the numbered badge"; }
+  var id = want.getAttribute('data-part');
+  want.click();
+  // ⚠️ `renderParts()` REBUILDS THE LIST, so the pressed chip is a NEW
+  // element and cannot be compared by identity. Compared by part id instead.
+  var got = document.querySelector('.ks3-fit-part[aria-pressed="true"]');
+  if (!got) { return "the part was pressed and nothing is installed"; }
+  if (got.getAttribute('data-part') !== id) {
+    return "the first installed part is " + got.getAttribute('data-part') +
+      " and this drive pressed " + id + " — the row would measure a chip " +
+      "this drive never touched";
+  }
+  if (!got.querySelector('.ks3-part-num')) {
+    return "the installed chip lost its numbered badge";
+  }
   return "";
 })()
 """,
@@ -10701,6 +11020,40 @@ DRIVES = {
     # precedence is read from the page, that the result is withheld until the
     # iodine goes on, that changing a step un-runs it, and that the four-state
     # readout fills its own placeholder.
+    # ⊕ MRB-297 · 1 Sep 2026 — ONE METHOD STEP CHOSEN, BY PRESSING IT.
+    # `.ks3-dark .ks3-mb-opt[aria-pressed="true"]` is one of B7's four benches
+    # in the stylesheet and in the coverage manifest, and it was the one of the
+    # four with no row: `rr-opt`, `lt-opt` and `tb-tab` were all pinned and
+    # this was not. The bench SERVES a pressed option at every step, so a row
+    # with no drive would have measured a state nobody had entered; this drive
+    # presses one and then checks that the pressed option the row will measure
+    # — `document.querySelector`, so the first in document order — is the one
+    # it pressed.
+    "b7-method-step-chosen": r"""
+(function () {
+  var w = document.querySelector('[data-mb]');
+  if (!w) { return "no method breaker on the page"; }
+  var opts = w.querySelectorAll('.ks3-mb-opt');
+  if (!opts.length) { return "the bench draws no step settings"; }
+  var want = null;
+  for (var i = 0; i < opts.length; i++) {
+    if (opts[i].getAttribute('aria-pressed') === 'false') {
+      want = opts[i]; break;
+    }
+  }
+  if (!want) { return "every step setting is already chosen"; }
+  want.click();
+  if (want.getAttribute('aria-pressed') !== 'true') {
+    return "a step setting was pressed and did not take the chosen state";
+  }
+  var got = document.querySelector('.ks3-dark .ks3-mb-opt[aria-pressed="true"]');
+  if (got !== want) {
+    return "the first chosen setting in the document is not the one this " +
+      "drive pressed, so the row would measure a setting nobody touched";
+  }
+  return "";
+})()
+""",
     "b7-method-run": r"""
 (function () {
   var sec = document.querySelector('[data-mbblock]');

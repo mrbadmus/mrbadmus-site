@@ -121,8 +121,10 @@ LESSON = {
         "options": [
             "Nothing at all — the comb changes the space around it, and the "
             "water responds to that",
-            "Air, pushed sideways by the charge on the comb",
-            "A thin thread of charge travelling from the comb to the water",
+            "Air, pushed sideways by the charge on the comb, which then "
+            "shoves the stream over",
+            "A thin thread of charge travelling from the comb to the water "
+            "and pulling on it",
             # ⚠️ MRB-177 — Design's distractor, FINISHED. It ended at "and
             # the two attract directly" (13 words) against a 17-word correct
             # option, which is a tell at the ≥4-word threshold. On a hook that
@@ -130,8 +132,27 @@ LESSON = {
             # never commits, and a belief nobody commits to cannot be
             # confronted. Remedied at the distractor, and the added clause is
             # the wrong rule stated completely rather than padding.
-            "Nothing — the water must already be charged, and two opposite "
-            "charges pull on each other directly across the gap",
+            # ⊕ CORRECTED MRB-297 · 1 Sep 2026 — THE COMMENT ABOVE DESCRIBES
+            # THE OPPOSITE OF WHAT THE OPTION UNDERNEATH IT NOW DOES, and it
+            # never described this text: no revision of this distractor ends
+            # "and the two attract directly". Measured on both revisions:
+            #   origin/main  "…and two opposite charges pull on each other
+            #                directly across the gap"   112 chars, 20 words
+            #   here         "…and two opposite charges pull across the gap"
+            #                                            84 chars, 15 words
+            # So this run SHORTENED the distractor by 28 characters and five
+            # words, while the comment above claims a clause was added to
+            # lengthen it. Kept rather than deleted, because a later reader
+            # who trusted it would go looking for padding to remove.
+            # ⚠️ The shortening also left the correct option (85) longest of
+            # the four — [85, 81, 79, 84] — which is the tell MRB-177 was
+            # about, by a margin of 1 rather than the old 27. Below
+            # `verify_answer_lengths.MARGIN` of 6, so no gate sees it, but it
+            # is still rank 1. Left as it stands: the option texts are
+            # Design's science and this run has already rewritten them once
+            # in the wrong direction. Flagged for the run that owns P9 hooks.
+            "Nothing — the water is already charged, and two opposite charges "
+            "pull across the gap",
         ],
         "answer": 0,
         "reveal": "Nothing crosses the gap. The comb fills the space around "
@@ -293,7 +314,32 @@ LESSON = {
                          "depends on anything being in it: the arrows were "
                          "there before you put the test point down."},
              "dipole": {
-                 "sub": "from the positive charge towards the negative one",
+                 # ⊕ 31 Aug 2026 (P9-14). This used to read "from the
+                 # positive charge towards the negative one", which is only
+                 # true BETWEEN the two charges. The tile above it is
+                 # computed, so outside the pair the two contradicted each
+                 # other: the reading said "to the left" while the caption
+                 # asserted a rule that would point right. The caption is one
+                 # fixed string per arrangement, so it now states the thing
+                 # that is true at every position; the note below carries the
+                 # region detail. The three-way region split ruled for this
+                 # tile needs the branch chooser in `shared/ks3.js`
+                 # `wireFieldGrid`, which this lane may not edit.
+                 # ⊕ MRB-297 · 1 Sep 2026 — THE REPLACEMENT CAPTION WAS AS
+                 # WRONG AS THE ONE IT REPLACED, IN THE OPPOSITE DIRECTION.
+                 # It read "set by whichever charge you are nearer". Between
+                 # two UNLIKE charges the field runs + → − whichever one you
+                 # are nearer, which is what the note directly below says.
+                 # Worse, the bench OPENS on the one position where "nearer"
+                 # has no answer at all: `start_setup: 2` is this dipole,
+                 # charges at x=350 and x=650, and `x0` 80 + `start` 12 ×
+                 # `dx` 35 puts the test point at x=500 — the exact
+                 # mid-point. The caption is one fixed string per
+                 # arrangement, so it now states the field-line fact that
+                 # holds at every position: arrows begin on the positive
+                 # charge and end on the negative one. The region detail
+                 # stays in the note below, where it has room.
+                 "sub": "arrows leave the positive and land on the negative",
                  "note": "With a positive charge on the left and a negative "
                          "one on the right, every arrow in the middle runs "
                          "from the positive towards the negative, and the "
@@ -301,9 +347,13 @@ LESSON = {
                          "the two contributions point the same way and add. "
                          "At your point it is {strength}, {rel} on this "
                          "scale, and it points {dir}. Slide out beyond "
-                         "either charge and the arrows thin out fast — there "
-                         "is no distance at which they stop, only distances "
-                         "where they are too small to matter."},
+                         "either charge and that rule stops holding: the "
+                         "nearer charge decides, so left of the positive "
+                         "charge the field points away from the positive, "
+                         "and right of the negative charge it points towards "
+                         "the negative. The arrows thin out fast out there — "
+                         "there is no distance at which they stop, only "
+                         "distances where they are too small to matter."},
              "two_positive": {
                  "sub": "away from the nearer charge",
                  "note": "Two equal positive charges, so the arrows sweep "
@@ -614,6 +664,15 @@ LESSON = {
     "ks4_becomes": "Field lines for point charges and parallel plates, field "
                    "strength as force per unit charge, and the link between "
                    "field and potential difference.",
+
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "It is the metal shell that protects you, so this only "
+                   "works in a car with a metal roof and metal sides. A "
+                   "convertible, a fibreglass boat or an open tractor cab "
+                   "will not do it, and you should not touch metal inside the "
+                   "car while the storm is overhead. If you are caught "
+                   "outside in a storm, get indoors or into a car — never "
+                   "shelter under a tree.",
 
     "convention_note": "The bench is a teaching model. Charges are treated "
                        "as points of equal size, and the field is calculated "

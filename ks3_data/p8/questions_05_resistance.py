@@ -174,10 +174,13 @@ QUESTIONS = [
              "why": "R = V ÷ I always applies; what is not always true is "
                     "that the answer stays put. A lamp is the standard "
                     "counter-example."},
-            {"text": "It falls, because more p.d. drives more current",
-             "correct": False,
+            # ⊕ MRB-297 · 1 Sep 2026 — the third option was widened so the
+            # correct answer stops being resolvable as the second-longest.
+            {"text": "It falls, because more p.d. drives more current, so "
+                     "V ÷ I drops", "correct": False,
              "why": "More current would lower the ratio if the p.d. had not "
-                    "risen too. It has, and by more."},
+                    "risen too. It has, and by more — so V ÷ I goes up, not "
+                    "down."},
             {"text": "It cannot be calculated for a lamp at all",
              "correct": False,
              "why": "It can, at every setting. Each answer is the lamp's "
@@ -243,20 +246,24 @@ QUESTIONS = [
                 "metal and carry similar currents. Why must one resist much "
                 "more than the other?",
         "options": [
-            {"text": "The flex must resist more, so that the current reaching "
-                     "the kettle is limited to a safe value", "correct": False,
+            {"text": "The flex must resist more, so that the current it lets "
+                     "through to the kettle is limited to a safe amount",
+             "correct": False,
              "why": "That is the wrong way round. A cable that resisted "
                     "would waste energy heating itself, which is the danger."},
-            {"text": "Neither has to — the resistance is decided by the "
-                     "metal, and they are the same metal", "correct": False,
+            {"text": "Neither has to — the resistance is decided only by "
+                     "the metal, and the two of them are made of the same "
+                     "metal",
+             "correct": False,
              "why": "The metal sets the resistance per unit of shape. The "
                     "shape — long and thin against short and thick — is what "
                     "the manufacturer chooses."},
             {"text": "The element must resist more, because energy has to be "
                      "transferred to heat in it and almost none in the "
                      "cable", "correct": True},
-            {"text": "The element must resist less, so that it can draw "
-                     "enough current to get hot", "correct": False,
+            {"text": "The element must resist less, so that it can draw a "
+                     "big enough current to get properly hot",
+             "correct": False,
              "why": "A very low resistance draws a huge current and is a "
                     "short circuit. What makes an element hot is the energy "
                     "given up in it."},

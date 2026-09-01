@@ -99,12 +99,74 @@ LESSON = {
         "commit": "Commit to what that tells you about energy.",
         # ⚑ MRB-177 — four accounts a real student gives, at one length.
         # Design's four, verbatim and in her order.
+        # ── ⚖️ SCIENCE · TWO OF DESIGN'S FOUR HAD TO GO, AND FOR OPPOSITE
+        # REASONS.
+        #
+        # Her option B read "Energy has no mass — it is a number, not a
+        # substance". That is false: 40 kJ is 4.4 × 10⁻¹³ kg by E = mc², so a
+        # flat power bank really is lighter, just not by anything a balance
+        # can find. And her option A — "the balance is not sensitive enough"
+        # — was the physically CORRECT account, offered as one of three
+        # wrong ones, with the milligram premise chosen to make it correct.
+        #
+        # Mass–energy equivalence has no place at KS3, and this is not an
+        # attempt to teach it. The fix is to stop asserting its negation:
+        # B now says only what the lesson actually needs (energy is a
+        # number, not stuff you can pour), and A is replaced by a distractor
+        # that is genuinely wrong. Order and length are Design's.
+        # ⊕ AMENDED MRB-297, 31 Aug 2026 — "four accounts ... at one length"
+        # and "Order and length are Design's" are no longer true of the
+        # distractors, and were never gated: as delivered the four ran 44 /
+        # 75 / 43 / 34 characters, so the correct one was the visibly longest
+        # and the hook could be answered without reading any physics. The
+        # hook's `answer` index now exists, so `verify_answer_lengths`
+        # measures it. THE CORRECT OPTION IS UNCHANGED, byte for byte, as is
+        # the ORDER; only the three distractors were lengthened to the
+        # answer's length, and each is still a wrong account a real student
+        # gives. Kept rather than deleted so the provenance is not silently
+        # overstated.
+        # ⊕ CORRECTED MRB-297 · 1 Sep 2026 — THE PARAGRAPH ABOVE IS WRONG
+        # ON EVERY MEASURED CLAIM, AND IT CONTRADICTS THE PARAGRAPH ABOVE
+        # ITSELF, which already records that option B was rewritten and
+        # option A replaced. Both revisions re-measured by importing them:
+        #   origin/main  [48, 52, 43, 34]   answer: absent
+        #   here         [78, 75, 71, 76]   answer: 1
+        # · "44 / 75 / 43 / 34" is not the delivered set. The delivered set
+        #   was 48 / 52 / 43 / 34; the 75 quoted as an OLD length is in fact
+        #   the NEW length of option 1.
+        # · "THE CORRECT OPTION IS UNCHANGED, byte for byte" is false. It
+        #   went from "Energy has no mass — it is a number, not a substance"
+        #   to "Energy is not a substance — it is a number, so there is
+        #   nothing to pour out".
+        # · "only the three distractors were lengthened" is false: all four
+        #   options changed.
+        # · "the correct one was the visibly longest" is false as the gate
+        #   defines visible. At 52 against 48 the margin was 4, inside
+        #   `verify_answer_lengths.MARGIN` of 6, so the delivered set was
+        #   never a margin-gate finding — it was a rank-1 finding, which is
+        #   the real reason to have fixed it.
+        # The CONTENT is sound and untouched: at [78, 75, 71, 76] the
+        # correct option is third longest, which is where this run's rule
+        # wants it. Only the provenance claim was false, and only it moves.
         "options": [
-            "The balance is not sensitive enough to detect it",
-            "Energy has no mass — it is a number, not a substance",
-            "The energy is still in there, just unusable",
-            "Air rushed in to replace what left",
+            "Batteries are sealed, so nothing can get out — energy needs "
+            "a hole to leave by",
+            "Energy is not a substance — it is a number, so there is "
+            "nothing to pour out",
+            "The energy is still in there, just too spread out for the "
+            "device to use",
+            "Air rushed in through the case and replaced exactly what "
+            "left, gram for gram",
         ],
+        # ⊕ MRB-297 — THE HOOK'S ANSWER INDEX, ADDED SO THE GATES CAN SEE IT.
+        # P1's eight hooks were the only ones in physics with no `answer`,
+        # which is why `verify_answer_lengths` and any position check skipped
+        # them: the audit recorded them as "the 8 that do not resolve". They
+        # resolve perfectly well — every reveal names one option — so the key
+        # is written down rather than left to prose-matching. It is INERT to
+        # the page: `data-correct` is emitted only by `_rung_marked`, the
+        # ladder renderer, and nothing in build_ks3 reads `phenomenon.answer`.
+        "answer": 1,
         "reveal": "Energy is not stuff. Nothing was poured out of the "
                   "battery and nothing was consumed. The chemicals inside "
                   "were rearranged, and a number you can calculate about "

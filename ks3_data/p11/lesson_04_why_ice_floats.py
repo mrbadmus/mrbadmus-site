@@ -248,8 +248,15 @@ LESSON = {
          "words": {
              "float_verdict": "floats",
              "sink_verdict": "sinks",
-             "float_sub": "solid is the lighter of the two",
-             "sink_sub": "solid is the heavier of the two",
+             # ⚖️ P11-18. These two read "solid is the lighter/heavier of
+             # the two" until MRB-297. That is PART-20 verbatim — the
+             # misconception the hook marks wrong and the think-again
+             # answers — printed on the one part of the page a student
+             # operates and therefore trusts. Say DENSE, which is the word
+             # the page has defined, and the card confronts the belief
+             # instead of vouching for it.
+             "float_sub": "the solid is the LESS DENSE of the two",
+             "sink_sub": "the solid is the DENSER of the two",
              "expands": "density falls, so the solid expands",
              "contracts": "density rises, so the solid contracts",
          },

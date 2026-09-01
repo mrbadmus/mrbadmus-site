@@ -513,14 +513,25 @@ LESSON = {
     "ladder": {
         "recall": {
             "title": "Rung 1 · Read the result",
-            "q": "A student crushes a peanut, shakes it with ethanol, pours "
-                 "the ethanol into water and gets a thick white cloud. What "
+            # ⚖️ MRB-297, 30 Aug 2026 — a BIOLOGY change made under a
+            # PHYSICS ruling. Mide ruled the peanut out of P2's burning-food
+            # practical, and the ruling sweeps the estate: this is a
+            # different practical, but it is still a nut a child handles.
+            # Double cream replaces it — the standard school positive for
+            # the ethanol emulsion test, an unmistakable dense white
+            # cloud, and a food students actually test. It is a liquid, so
+            # "crushes" goes; nothing else about the rung moves. The
+            # correct option is still index 2 for the same reason, the
+            # options are in the same order, and every option keeps its
+            # word count, so the length-parity note above still holds.
+            "q": "A student shakes double cream with ethanol, pours the "
+                 "ethanol into water and gets a thick white cloud. What "
                  "may they write down?",
             "options": [
-                "The peanut is high in fat",
-                "The peanut contains lipid and no protein",
-                "The peanut contains lipid",
-                "The peanut is unhealthy",
+                "The cream is high in fat",
+                "The cream contains lipid and no protein",
+                "The cream contains lipid",
+                "The cream is unhealthy",
             ],
             "answer": 2,
             "feedback": {

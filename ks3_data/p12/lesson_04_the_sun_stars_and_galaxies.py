@@ -4,7 +4,13 @@ Authored against Claude Design's approved page,
 `docs/ks3/design-reference/p12/p12-04-the-sun-stars-and-galaxies.dc.html`.
 
 Her page wins outright. The star you can see in daylight, the five rungs
-of the distance ladder and all four rungs of the mastery ladder are hers.
+of the ladder of scale and all four rungs of the mastery ladder are hers.
+
+⊕ MRB-297 · 1 Sep 2026 — this said "the distance ladder", which this
+branch renamed "the ladder of scale" at #s-bench below. The prose follows
+the rename. ⚠️ The MODEL KEY at :241 stays `distance-ladder` — it is the
+dispatch string `shared/ks3.js` matches on, and the note at :27 explains
+it.
 
 ── ⚖️ `#s-think` IS THE THIRD RAIL STOP, ON HER OWN PREDICATE ────────
 
@@ -41,12 +47,20 @@ ten per cent. Both are fixed and her VALUES are untouched. Registered in
 
 Her tab note reads *"Measured out to Neptune. Sunlight takes about four
 hours to cross it."* while the same tab's `ly` value is 0.00126, which the
-distance readout renders as **11.0 light hours**. Four hours is the light
+distance readout rendered as **11.0 light hours**. Four hours is the light
 time from the Sun to Neptune; 11 light hours is about 80 astronomical
-units, well beyond it. 5A.1's rule settles which side moves — *the
-instrument is the measurement and the prose is what changes* — so the note
-now names the boundary the readout actually computes. Her `ly` and her
-`dia` are untouched. Registered.
+units, well beyond it.
+
+⊕ **REOPENED AND SETTLED THE OTHER WAY, MRB-297 cold double-check, 1 Sep
+2026.** 5A.1's rule — *the instrument is the measurement and the prose is
+what changes* — assumed the readout was measuring one thing. P12-09's fix
+broke that assumption: relabelling this readout from a DISTANCE to a WIDTH
+put two widths of the same object on one tab, 0.00126 ly (11.0 light hours,
+11 900 million km) against a `dia` of 9000 million km captioned *"across its
+widest part"* — 32% apart, and no rule about which side moves can reconcile
+two figures for the same measurement. So `ly` is now **0.000951**, the light
+crossing time of `dia` itself (9e9 ÷ 299 792.458 ÷ 3600 = 8.34 hours), and
+both readouts describe Neptune's orbit. `dia` is untouched; `ly` moved.
 
 ── ⚠️ MRB-278 · POSITION IS AUTHORED ─────────────────────────────────
 
@@ -63,6 +77,45 @@ All three distractors are FINISHED into complete wrong rules; the correct
 answer and every correction are untouched.
 
 ── ⚠️ NO SAFEGUARDING BLOCK. NO DRAFT MARKINGS. ──────────────────────
+
+── ⚖️ MRB-297 · P12-09 · TWO OF THE FIVE FIGURES ARE SIZES ──────────
+
+The panel was captioned *"Distance from Earth in light years"* and the
+second readout card *"DISTANCE FROM EARTH · how long its light has been
+travelling"*. Two of the five objects are things the Earth is INSIDE, and
+for both of them the `ly` value is the object's WIDTH: the solar system at
+8.3 light hours, and the Milky Way at 100 thousand ly — which is the
+galaxy's diameter, as the SIZE card immediately beside it says. The rung
+note then asserted *"At 100 thousand ly from Earth, the light reaching you
+from the Milky Way set out that long ago"*, which is false in every
+reading; the light reaching us from stars in our own galaxy has been
+travelling between about four years and about eighty thousand.
+
+Mide ruled option (a): SPLIT the card rather than invent distances to
+things we are inside, because "the distance to the Milky Way" means
+choosing between its edge and its centre and that is a harder idea than
+this lesson wants.
+
+What that costs here, and what it does NOT reach:
+
+  · the panel caption, the `aria-label`, the lead and the eyebrow are
+    payload, and now cover both quantities;
+  · the false "look into the past" sentence was GLOBAL — one template for
+    all five rungs — so it is gone from the template and lives in the three
+    per-tab notes where it is true (the Sun at 8.3 light minutes, Proxima
+    already carried its own, Andromeda at 2.5 million years). The two
+    inside-objects' notes say in as many words that their figure is a
+    width;
+  · ⚠️ THE READOUT CARD'S LABEL CANNOT VARY BY TAB FROM HERE. Design's
+    `p12ModelLadder` in `shared/ks3.js` returns no `labels` key, and the
+    sub-label comes from one `distance_sub` word, so the card label is one
+    string for all five rungs. It is therefore written to be true of all
+    five rather than left saying "Distance from Earth" on a width. The
+    ruled per-tab split — "Distance from Earth" on the Sun, Proxima and
+    Andromeda, "How far across" on the other two — wants ONE change this
+    lane may not make: `p12ModelLadder` returning
+    `labels: {distance: {word: …}}` per tab, which `r_space_bench` already
+    ships the `data-template` and `data-spbench-tlabel` hooks for.
 """
 
 LESSON = {
@@ -178,18 +231,19 @@ LESSON = {
                  "trillion other galaxies, and the whole lot together is the "
                  "<strong>universe</strong>."},
 
-        # ── #s-bench · five rungs of the distance ladder ────────────────
+        # ── #s-bench · five rungs of the ladder of scale ────────────────
         {"type": "space-bench",
          "id": "bench",
          "anchor": "s-bench",
-         "eyebrow": "At the bench · five rungs of the distance ladder",
+         "eyebrow": "At the bench · five rungs of the ladder of scale",
          "heading": "Every step is a huge jump, and the ladder does not stop.",
          "progress": {"idle": "Change a control to begin",
                       "live": "Controls live"},
-         "lead": "Pick something and see how far away it is, how big it is, "
-                 "and how long its light has been travelling. The bars are on "
-                 "a scale where each step is ten times the last — otherwise "
-                 "the first two would be invisible.",
+         "lead": "Pick something and see how big it is, and how far its "
+                 "light has to travel — to reach you, or right across it if "
+                 "you are inside it. The bars are on a scale where each step "
+                 "is ten times the last — otherwise the first two would be "
+                 "invisible.",
          "model": "distance-ladder",
          # Design's own log placement, in her own constants. Eleven orders of
          # magnitude on one axis; there is no honest linear way to do it.
@@ -212,18 +266,29 @@ LESSON = {
               "kind": "a star", "ly": 0.0000158, "dia": 1.39e6,
               "count": "1 star",
               "note": "An ordinary yellow dwarf, and the only star close "
-                      "enough to look like a disc rather than a point."},
+                      "enough to look like a disc rather than a point. The "
+                      "light on your hands left it 8.3 minutes ago."},
              {"id": "system", "label": "The solar system",
               "name": "the solar system",
               "kind": "one star and everything bound to it",
-              "ly": 0.00126, "dia": 9e9, "count": "1 star, 8 planets",
+              "ly": 0.000951, "dia": 9e9, "count": "1 star, 8 planets",
               # ⚠️ HER NOTE SAID "Measured out to Neptune. Sunlight takes
-              # about four hours to cross it." — which disagrees with the
+              # about four hours to cross it." — which disagreed with the
               # `ly` value beside it, and it is the READOUT that is the
               # measurement (5A.1). See the module note.
-              "note": "Measured out well beyond Neptune, whose orbit alone "
-                      "is 9000 million km across. Light crosses the whole of "
-                      "this in hours rather than years."},
+              # ⊕ MRB-297 COLD DOUBLE-CHECK, 1 Sep 2026 — `ly` WAS 0.00126,
+              # and P12-09's fix is what made that a contradiction. Relabelling
+              # this readout from "distance from Earth" to a WIDTH put two
+              # widths of the SAME object on one tab, 32% apart: 0.00126 ly is
+              # 11.0 light hours (11 900 million km), while `dia` is 9000
+              # million km and its readout is captioned "across its widest
+              # part". Both are now Neptune's orbit, which is the figure `dia`
+              # already held and the one a school uses: 9000 million km, and
+              # 9e9 / 299 792.458 / 3600 = 8.34 light hours = 0.000951 ly.
+              "note": "Measured across Neptune's orbit, 9000 million km from "
+                      "side to side. That figure is a width and not a "
+                      "distance — you are inside this one — and light "
+                      "crosses it in hours rather than years."},
              {"id": "proxima", "label": "Proxima Centauri",
               "name": "Proxima Centauri",
               "kind": "the nearest star to the Sun",
@@ -234,20 +299,43 @@ LESSON = {
               "name": "the Milky Way", "kind": "our galaxy",
               "ly": 100000, "dia": 9.5e17,
               "count": "about 200 billion stars",
-              "note": "A barred spiral. The Sun is one star in it, about two "
-                      "thirds of the way out."},
+              # ⊕ MRB-297 · 1 Sep 2026. This said the Sun sits "about two
+              # thirds of the way out". The `where-the-sun-sits` stretch on
+              # this same page puts it 26 000 ly from the centre of a disc
+              # 100 000 ly ACROSS — a radius of 50 000, so 26 000 is 52%.
+              # About halfway, not two thirds.
+              "note": "A barred spiral. The Sun is one star in it, about "
+                      "halfway out from the centre. This figure is a width "
+                      "too, not a distance: light from the other stars in "
+                      "it has been on its way for anything from four years "
+                      "to eighty thousand."},
              {"id": "andromeda", "label": "Andromeda",
               "name": "the Andromeda galaxy",
               "kind": "the nearest large galaxy",
               "ly": 2500000, "dia": 2e18,
               "count": "about a trillion stars",
               "note": "The furthest thing you can see with your eyes alone, "
-                      "on a dark night."},
+                      "on a dark night. The light doing that left 2.5 "
+                      "million years ago, long before there was anyone here "
+                      "to look."},
          ],
-         "bars_caption": "Distance from Earth in light years — each bar step "
-                         "is ten times the one before",
-         "bars_alt": "Five bars on a ten-times scale showing distance from "
-                     "Earth: {list}. {label} is highlighted.",
+         # ⊕ MRB-297 · 1 Sep 2026. This read "each bar step is ten times
+         # the one before", which names the OBJECTS: read plainly, it says
+         # each bar is ten times the bar before it. Off the `ly` values the
+         # four steps are ×60, ×4459, ×23585 and ×25, so that was false on
+         # every one of them, and it contradicted the rung note below and
+         # `bars_alt` beside it — all three render inside `[data-spbench]`
+         # on all five tabs. It is the AXIS that steps by ten, which is
+         # what `bars_alt` and the `lead` already say and what
+         # `scale.log_span` draws. The caption now names the scale.
+         # ⚠️ Not "gridline": the bench draws no ticks or gridlines at all,
+         # only proportional fills, so a caption naming them would point at
+         # something not on screen.
+         "bars_caption": "How big, and how far — the bars are drawn on a "
+                         "ten-times scale",
+         "bars_alt": "Five bars on a ten-times scale, each one a distance "
+                     "from Earth or a width in light-travel terms: {list}. "
+                     "{label} is highlighted.",
          "bars": [
              {"id": "sun",       "label": "The Sun"},
              {"id": "system",    "label": "The solar system"},
@@ -257,26 +345,47 @@ LESSON = {
          ],
          "readouts": [
              {"id": "what",     "label": "What it is"},
-             {"id": "distance", "label": "Distance from Earth"},
+             {"id": "distance", "label": "How far light travels"},
              {"id": "size",     "label": "Size"},
              {"id": "stars",    "label": "Stars in it"},
          ],
          "words": {
              "what_sub":     "what kind of object this is",
-             "distance_sub": "how long its light has been travelling",
+             "distance_sub": "to reach you — or to cross it, if you are "
+                             "inside it",
              "size_sub":     "across its widest part",
              "stars_sub":    "counted or estimated",
              "list_join":    "and",
          },
+         # ⊕ MRB-297 · 1 Sep 2026. This note ended "Each rung is not a
+         # little further than the last. It is thousands of times
+         # further", and it prints on all five tabs. Off the `ly` values
+         # above, the four steps are ×60, ×4459, ×23585 and ×25 — so two
+         # of the four are tens, not thousands, and the claim was false on
+         # half the ladder. It is now the four figures themselves, which
+         # make the real point better: the steps are wildly unequal.
+         # ⊕ MRB-297 · 1 Sep 2026 (second pass, same figure). The four
+         # ratios are right, but they were attached to the OBJECTS — "sixty
+         # times from the Sun to the whole solar system" — and on the first
+         # step that compares two different kinds of quantity. The Sun's
+         # `ly` is a distance from Earth (8.3 light minutes); the solar
+         # system's is a width (light crossing Neptune's orbit). Under the
+         # P12-09 ruling this ladder carries both kinds on purpose, so no
+         # rewording can make that pair a size-against-size comparison.
+         # What every bar DOES plot is one quantity — "How far light
+         # travels", to reach you or to cross it — so the ratios are now
+         # stated as ratios of that, bar against bar, which is like with
+         # like on all four steps. The four numbers are unchanged.
          "notes": {
-             "rung": "{note} At {dist} from Earth, the light reaching you "
-                     "from {name} set out that long ago — so every one of "
-                     "these bars is also a look into the past. Notice the "
-                     "shape of the ladder: the whole solar system is a "
-                     "rounding error next to the gap to the nearest star, and "
-                     "that gap is a rounding error next to the width of one "
-                     "galaxy. Each rung is not a little further than the "
-                     "last. It is thousands of times further.",
+             "rung": "{note} Notice the shape of the ladder: the whole "
+                     "solar system is a rounding error next to the gap "
+                     "to the nearest star, and that gap is a rounding "
+                     "error next to the width of one galaxy. Compare "
+                     "each bar with the one before and the steps are "
+                     "nowhere near equal: light goes about sixty times "
+                     "as far, then four and a half thousand times as "
+                     "far, then twenty-four thousand, and then only "
+                     "twenty-five.",
          }},
 
         {"type": "key-fact", "ref": "what-sits-inside-what"},
@@ -436,8 +545,13 @@ LESSON = {
                 "gravity, and ours is the Milky Way. The universe holds "
                 "around two trillion galaxies. The steps between these scales "
                 "are not small — the nearest star is about 270 000 times "
-                "further away than the Sun, and one galaxy is tens of "
-                "thousands of light years across.",
+                # ⊕ MRB-297 · 1 Sep 2026. This ended "one galaxy is tens
+                # of thousands of light years across". The bench, the tab
+                # note and the stretch on this page all say the Milky Way
+                # is 100 000 ly across, so the key note was the only place
+                # disagreeing with the rest of the lesson.
+                "further away than the Sun, and one galaxy is about a "
+                "hundred thousand light years across.",
 
     "stretch": [
         {"id": "where-the-sun-sits",
@@ -492,6 +606,13 @@ LESSON = {
                    "dwarf or supernova, nuclear fusion as the source of a "
                    "star’s energy, and red shift as evidence for an expanding "
                    "universe.",
+
+    # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    "safety_note": "Never look at the Sun — not with your eyes, not through "
+                   "binoculars, not through a telescope, and not through "
+                   "sunglasses. It damages your sight in a way you cannot "
+                   "feel happening and cannot repair. Everything on this page "
+                   "is about the night sky.",
 
     "convention_note": "The bench is a teaching model. Distances and sizes "
                        "are accepted current figures rounded for display: the "

@@ -7,9 +7,11 @@ The discriminations:
 
   · every speed is measured relative to SOMETHING, usually the ground and
     usually unsaid (`FORCE-09`, `FORCE-11`);
-  · same way, SUBTRACT; opposite ways, ADD (`FORCE-10`) — and nothing
-    here is ever a multiplication, which is why the lesson has no formula
-    triangle;
+  · for how fast one passes the other: same way, SUBTRACT; opposite
+    ways, ADD (`FORCE-10`) — and nothing here is ever a multiplication,
+    which is why the lesson has no formula triangle. ⚠️ The rule is
+    SCOPED (P3-20): a walk inside a moving frame, or a plane in moving
+    air, is a composition and adds when the two go the same way;
   · changing who measures changes the number and never the object;
   · a relative speed decides how long a pass TAKES, which is why
     overtaking feels slow and a head-on pass is a blur.
@@ -72,13 +74,13 @@ QUESTIONS = [
         "text": "When two objects travel in the SAME direction, their "
                 "relative speed is found by…",
         "options": [
-            {"text": "adding the two speeds", "correct": False,
+            {"text": "adding the two speeds together", "correct": False,
              "why": "Adding is for opposite directions, where the gap closes "
                     "from both ends."},
-            {"text": "multiplying the two speeds", "correct": False,
-             "why": "Nothing in this lesson multiplies — which is why "
-                    "it carries no formula triangle."},
-            {"text": "averaging the two speeds", "correct": False,
+            {"text": "multiplying the two speeds together", "correct": False,
+             "why": "Nothing in this lesson multiplies — which is why it "
+                    "carries no formula triangle."},
+            {"text": "taking the average of the two speeds", "correct": False,
              "why": "An average of the two would sit between them, and a "
                     "relative speed can be zero."},
             {"text": "subtracting one speed from the other", "correct": True},
@@ -132,21 +134,24 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why does overtaking on a motorway seem to take so long?",
         "options": [
-            {"text": "Because cars slow down while overtaking",
+            {"text": "Because cars slow down while they are overtaking each "
+                     "other",
              "correct": False,
              "why": "An overtaking car usually speeds up. The feeling is not "
                     "about either car's own speed."},
-            {"text": "Because the road is moving underneath both of them",
+            {"text": "Because the road is moving underneath both of the "
+                     "vehicles",
              "correct": False,
              "why": "The road is not moving relative to the ground. The "
                     "relevant comparison is between the two vehicles."},
-            {"text": "Because the relative speed is small, often only "
-                     "walking pace",
+            {"text": "Because the relative speed is small, often only walking "
+                     "pace",
              "correct": True},
-            {"text": "Because both vehicles are travelling very fast",
+            {"text": "Because both of the vehicles are travelling very fast "
+                     "indeed",
              "correct": False,
-             "why": "Both being fast is exactly why the DIFFERENCE is small "
-                    "— but it is the difference that decides the time."},
+             "why": "Both being fast is exactly why the DIFFERENCE is small — "
+                    "but it is the difference that decides the time."},
         ],
         "figure": None,
     },
@@ -179,18 +184,21 @@ QUESTIONS = [
             {"text": "She is doing 30 m/s relative to the ground and 0 m/s "
                      "relative to the train",
              "correct": True},
-            {"text": "She is not really moving; only the train is",
+            {"text": "She is not moving at all, because it is only the train "
+                     "that is moving",
              "correct": False,
              "why": "Relative to the ground she covers 30 m every second, "
                     "seat and all."},
-            {"text": "She is doing 30 m/s and the train's viewpoint is an "
-                     "illusion",
+            {"text": "She is doing 30 m/s, and the train's viewpoint is "
+                     "simply an illusion",
              "correct": False,
-             "why": "The train's viewpoint is as good as the ground's "
-                    "— which is why she can read a book."},
-            {"text": "She is doing 30 m/s relative to the train",
+             "why": "The train's viewpoint is as good as the ground's — which "
+                    "is why she can read a book."},
+            {"text": "She is doing 30 m/s relative to the train and 0 m/s "
+                     "relative to the ground",
              "correct": False,
-             "why": "Relative to the train she is not moving at all."},
+             "why": "That is the pair the wrong way round. Relative to the "
+                    "train she is not moving at all."},
         ],
         "figure": None,
     },
@@ -203,22 +211,24 @@ QUESTIONS = [
                 "pass head-on, but ten seconds when one overtakes the other "
                 "on the next line. What changed?",
         "options": [
-            {"text": "One of the trains was travelling faster in the second "
-                     "case",
+            {"text": "One of the two trains must have been going a good deal "
+                     "faster in the second case",
              "correct": False,
              "why": "Neither train's own speed changed. Both are still doing "
                     "100 km/h."},
-            {"text": "Nothing about either train — only the relative "
-                     "speed, from 200 km/h to nearly zero",
+            {"text": "Nothing about either train — only the relative speed, "
+                     "from 200 km/h to nearly zero",
              "correct": True},
-            {"text": "The overtaking train was on a longer stretch of track",
+            {"text": "The overtaking train was on a much longer stretch of "
+                     "track than the other one",
              "correct": False,
              "why": "The length of track has nothing to do with how long one "
                     "train takes to pass another."},
-            {"text": "Head-on passes look faster because of the noise",
+            {"text": "A head-on pass only looks faster because of the noise "
+                     "and the sudden rush of air",
              "correct": False,
-             "why": "The difference is measurable, not an impression: "
-                    "200 km/h against a few km/h."},
+             "why": "The difference is measurable, not an impression: 200 "
+                    "km/h against a few km/h."},
         ],
         "figure": None,
     },
@@ -249,16 +259,18 @@ QUESTIONS = [
                 "back against it at 200 m/s. Why does the round trip take "
                 "LONGER than in still air?",
         "options": [
-            {"text": "Because the wind slows the plane's engines on the "
-                     "return leg",
+            {"text": "Because the headwind holds the plane's engines back on "
+                     "the whole return leg",
              "correct": False,
              "why": "The plane still does 250 m/s through the air both ways. "
                     "The engines are unaffected."},
-            {"text": "Because 300 and 200 do not average to 250",
+            {"text": "Because 300 m/s out and 200 m/s back do not average out "
+                     "to 250 m/s at all",
              "correct": False,
-             "why": "They do average to 250 — which is exactly why "
-                    "averaging the SPEEDS is the wrong move here."},
-            {"text": "Because the plane travels further on the way back",
+             "why": "They do average to 250 — which is exactly why averaging "
+                    "the SPEEDS is the wrong move here."},
+            {"text": "Because the plane has a longer way to travel on the "
+                     "return leg against the wind",
              "correct": False,
              "why": "It is the same distance each way. Only the time "
                     "differs."},
@@ -274,23 +286,25 @@ QUESTIONS = [
         "text": "Why does physics not simply pick one truly stationary thing "
                 "and measure every speed against it?",
         "options": [
-            {"text": "Because no experiment inside a smoothly moving room "
-                     "can tell you how fast the room is going, so there is "
-                     "no way to identify one",
+            {"text": "Because no experiment inside a smoothly moving room can "
+                     "tell you how fast the room is going, so there is no way "
+                     "to identify one",
              "correct": True},
-            {"text": "Because the ground is already that thing, and everyone "
-                     "uses it",
+            {"text": "Because the ground is already that thing: it holds "
+                     "still while everything else moves, so every speed can "
+                     "be measured against it",
              "correct": False,
-             "why": "The ground is a convenient choice, not a stationary "
-                    "one — it is orbiting the Sun at about 30 km per "
-                    "second."},
-            {"text": "Because instruments are not yet accurate enough to "
-                     "find it",
+             "why": "The ground is a convenient choice, not a stationary one "
+                    "— it is orbiting the Sun at about 30 km per second."},
+            {"text": "Because instruments are not yet accurate enough to find "
+                     "it, though better ones may well settle the question one "
+                     "day",
              "correct": False,
              "why": "Accuracy is not the obstacle. People searched for two "
                     "hundred years with steadily better instruments."},
-            {"text": "Because speeds would then all be far too large to work "
-                     "with",
+            {"text": "Because every speed would then come out far too large "
+                     "to work with, and the numbers would be useless in "
+                     "everyday life",
              "correct": False,
              "why": "Awkward numbers would be a nuisance, not a reason. The "
                     "reason is that no such frame can be identified at all."},

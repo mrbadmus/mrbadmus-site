@@ -95,12 +95,14 @@ LESSON = {
                   "and touch nothing else. What has changed about what the "
                   "cone is doing?",
         "options": [
-            "The cone moves further and goes to and fro more times a "
-            "second, because a louder note needs more of both",
-            "The cone pushes the sound out faster, so it reaches you sooner",
+            "The cone moves further and goes to and fro more times a second, "
+            "because loudness needs both",
+            "The cone pushes the sound out faster, so it reaches your ear "
+            "sooner and seems louder",
             "The cone moves further from its rest place each time, and goes "
             "to and fro just as often",
-            "The cone goes to and fro more times a second",
+            "The cone goes to and fro more times a second, without moving any "
+            "further each time",
         ],
         "answer": 2,
         "reveal": "Louder means the cone moves FURTHER each time — a bigger "
@@ -578,8 +580,8 @@ LESSON = {
                  "built on multiplying rather than adding: every 10 dB is "
                  "ten times the energy arriving, and roughly twice as loud "
                  "to a listener. A whisper sits near 30 dB, a conversation "
-                 "near 60 dB, and a road drill near 100 dB — a million "
-                 "times the energy of the whisper, and nothing like a "
+                 "near 60 dB, and a road drill near 100 dB — ten million "
+                 "times the energy of the whisper, and nothing like ten "
                  "million times as loud."},
     ],
 
