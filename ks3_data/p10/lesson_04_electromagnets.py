@@ -637,6 +637,31 @@ LESSON = {
                    "coil's changing field induces a voltage in another.",
 
     # ⚖️ MRB-297 · Mide's wording, approved 30 Aug 2026. Not to be edited.
+    #
+    # ⚠️ ⊕ 1 Sep 2026 — RAISED FOR MIDE, AND DELIBERATELY NOT ACTED ON.
+    # A reviewer found that this note names apparatus this lesson has not
+    # got: `grep -i "spin|rotat|revolv"` over all 668 lines returns only the
+    # line below, and every `turns` on the page is turns-of-coil. The note is
+    # byte-identical to the one on `lesson_05_how_a_motor_works.py`, which
+    # does have a spinning part.
+    #
+    # THE EVIDENCE THAT MAKES IT A QUESTION RATHER THAN A QUIBBLE. The audit
+    # that prompted the safety work splits the two rigs by hazard —
+    # `docs/ks3/audits/2026-08-28-ks3-physics/records/p10.md:312-314`:
+    #     "Electromagnet rigs: hot coils, short-circuited cells, low-voltage
+    #      supplies only. Motor rigs: bare wires, spinning parts, eye
+    #      protection."
+    # "Spinning parts" sits under MOTOR rigs alone, and the electromagnet's
+    # own listed hazard — short-circuited cells — is absent from the note.
+    #
+    # ⚠️ AND IT IS STILL NOT THIS RUN'S TO CHANGE. Mide's own instruction
+    # named the approved text as covering "P10 electromagnets and the motor",
+    # one text for both lessons, and the rule for the run is that an approved
+    # safety line goes in verbatim or not at all — never adapted. So the note
+    # stays exactly as he wrote it and the conflict is recorded here instead:
+    # it is between his heading and the audit's hazard split, and only he can
+    # settle it. Written down so the next audit finds the reasoning rather
+    # than re-opening the finding.
     "safety_note": "Eye protection on. The coil gets hot within a minute, so "
                    "switch off between tries and let it cool. Keep fingers, "
                    "hair and loose sleeves clear of the spinning part. Use "

@@ -4,7 +4,13 @@ Authored against Claude Design's approved page,
 `docs/ks3/design-reference/p12/p12-04-the-sun-stars-and-galaxies.dc.html`.
 
 Her page wins outright. The star you can see in daylight, the five rungs
-of the distance ladder and all four rungs of the mastery ladder are hers.
+of the ladder of scale and all four rungs of the mastery ladder are hers.
+
+⊕ MRB-297 · 1 Sep 2026 — this said "the distance ladder", which this
+branch renamed "the ladder of scale" at #s-bench below. The prose follows
+the rename. ⚠️ The MODEL KEY at :241 stays `distance-ladder` — it is the
+dispatch string `shared/ks3.js` matches on, and the note at :27 explains
+it.
 
 ── ⚖️ `#s-think` IS THE THIRD RAIL STOP, ON HER OWN PREDICATE ────────
 

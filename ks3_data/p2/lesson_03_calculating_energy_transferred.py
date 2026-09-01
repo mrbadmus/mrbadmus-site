@@ -503,9 +503,19 @@ LESSON = {
                 "Calculates the oven at about 1.65 kWh per day.",
                 "Calculates the fridge at about 1.08 kWh per day.",
                 "Calculates the lamps at about 0.36 kWh per day in total.",
+                # ⊕ MRB-297 · 1 Sep 2026 — THIS CRITERION MISCOUNTED ITS OWN
+                # THREE APPLIANCES. It read "the fridge comes that close on
+                # the lowest rating of the three". The three are a 2200 W
+                # oven, a 90 W fridge and eight 9 W LED lamps, which is 72 W
+                # as a bank and 9 W each — so the fridge is the SECOND
+                # lowest either way you count the lamps, never the lowest.
+                # The same file's bench close already has it right: "The
+                # fridge — 90 W, the second-lowest rating on the bench".
+                # A marker following the list would have credited a student
+                # for calling 90 W the smallest of 2200, 90 and 72.
                 "Ranks the oven first and the fridge second, and notes "
-                "that the fridge comes that close on the lowest rating of "
-                "the three — it is the hours that do it.",
+                "that the fridge comes that close on the second-lowest "
+                "rating of the three — it is the hours that do it.",
                 "Gives advice that follows from the numbers — and notes "
                 "that the fridge cannot simply be switched off, so the "
                 "realistic saving is elsewhere.",

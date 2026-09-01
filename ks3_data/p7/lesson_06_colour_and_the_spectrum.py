@@ -514,9 +514,22 @@ LESSON = {
                        "gaps and no boundaries. Screen colours can only "
                        "approximate spectral colours, and the band in the "
                        "figure is an illustration rather than a measurement. "
-                       "The recombining prism is shown returning the beam "
-                       "exactly to white, which a real pair of prisms does "
-                       "only approximately.",
+                       # ⊕ MRB-297 · 1 Sep 2026 — THIS SENTENCE DESCRIBED A
+                       # BENCH THAT NO LONGER EXISTS, AND IT WAS THIS RUN
+                       # THAT CHANGED THE BENCH. It read "The recombining
+                       # prism is shown returning the beam exactly to
+                       # white, which a real pair of prisms does only
+                       # approximately." The "Blue and red" input added on
+                       # this branch sends "one pinky-purple beam" through
+                       # the second prism, not white, so a student who
+                       # chose it read a convention note denying what was
+                       # on the screen in front of them. The honest point
+                       # about real prisms is kept.
+                       "The recombining prism is shown putting the beam "
+                       "back together exactly — to white when the whole "
+                       "spectrum went in, and to one blended colour when "
+                       "only part of it did. A real pair of prisms manages "
+                       "that only approximately.",
 
     "ws": ["measurement"],
 }

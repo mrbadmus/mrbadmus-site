@@ -112,20 +112,32 @@ QUESTIONS = [
     {
         "id": "p2-02-s01",
         "band": "standard",
-        "text": "A 9 W router runs all day. A 900 W microwave runs for two "
-                "minutes. Which transfers more energy in that day?",
+        # ⊕ MRB-297 · 1 Sep 2026 — TWO DIFFERENT ROUTERS ON ONE LESSON. The
+        # P2-09 rename put a router into the lesson's own hook at 15 W left
+        # on for eight hours a night; this question already had one at 9 W
+        # running all day. A student met the same appliance twice with two
+        # ratings and two duties, on the same page, with nothing to say
+        # which was theirs. The lesson's 15 W router is load-bearing — the
+        # crossover, its `data-w` and three captions all derive from it, and
+        # the whole point of the P2-09 rename was an appliance that really
+        # does draw its rating all night — so the QUESTION moves instead.
+        # A fish-tank pump genuinely runs the full 24 hours. The arithmetic
+        # is unchanged and re-checked: 9 × 86 400 = 777.6 kJ against
+        # 900 × 120 = 108 kJ, a ratio of 7.2, so "about seven times" holds.
+        "text": "A 9 W fish-tank pump runs all day. A 900 W microwave runs "
+                "for two minutes. Which transfers more energy in that day?",
         "options": [
             {"text": "The microwave, because 900 W is a hundred times more",
              "correct": False,
-             "why": "900 × 120 s = 108 kJ. The router gets "
+             "why": "900 × 120 s = 108 kJ. The pump gets "
                     "9 × 86 400 s = 778 kJ. The rating is not the "
                     "whole calculation."},
             # ⊕ MRB-297 · 1 Sep 2026 — this was the only one of the four
             # with no reason attached, and so the shortest by a clear margin.
             # The reason is added; the claim itself is unchanged.
-            {"text": "The router, by about seven times", "correct": True},
+            {"text": "The pump, by about seven times", "correct": True},
             {"text": "They are equal", "correct": False,
-             "why": "Work both products out — the router comes out about "
+             "why": "Work both products out — the pump comes out about "
                     "seven times ahead."},
             {"text": "It cannot be decided without knowing the voltage",
              "correct": False,

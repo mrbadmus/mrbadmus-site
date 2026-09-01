@@ -32,13 +32,34 @@ by reading her §4 table, and the two agree exactly:
 
     track-pair       5 × 5 objects × 6 gaps       150   nothing 102 · repel 12
                                                         attract 12 · induced 24
-    compass-plot     4 layouts × 25 positions     100   on the metal 4
-                                                        neutral point 1 · 95 readings
+    compass-plot     4 layouts × 25 positions     100   on the metal 15
+                                                        neutral point 1 · 84 readings
     dip-circle       9 lats × 3 objects × 2 mounts  54   magnet 18 · steel 4
                                                         flat 16 · tipped 15 · pole 1
     solenoid-bench   5 × 5 × 3 cores × 2 switch   150   off 75 · iron 25
                                                         air 25 · plastic 25
     motor-coil       2 × 2 × 2 × 4 currents        32   never 8 · keeps 12 · stops 12
+
+⊕ MRB-297 · 1 Sep 2026 — THE COMPASS-PLOT ROW WAS RIGHT WHEN WRITTEN AND
+WAS MADE STALE BY A FIX IN THIS RUN. It used to read "on the metal 4 /
+neutral point 1 · 95 readings". Kept rather than deleted, because 4/1/95
+is not a miscount: it is the exact split under the OLD `onMagnet` test,
+which was `fieldAt` returning null and so only caught a spot within 10
+units of a pole centre. The 31 Aug correction to `insideBar` in
+`shared/ks3.js` made a spot on the DRAWN metal return no reading either,
+which is what the readout had always claimed, and that moved eleven spots
+out of the readings column.
+
+Re-measured by enumerating all four layouts over the 5 × 5 spot lattice
+against the shipped `data-poles` / `data-bars` / `data-nullratio` (0.02):
+
+    attract  metal  1 · neutral 0 · readings 24
+    unlike   metal  4 · neutral 0 · readings 21
+    like     metal  4 · neutral 1 · readings 20
+    pair     metal  6 · neutral 0 · readings 19
+
+The neutral point is still exactly one, in `like`, which is the claim the
+bench is built on. Re-derive here if a layout's bars or poles move.
 
 ⚠️ **THREE OF HER BRANCH PREDICATES DO NOT DIVIDE THE STATE SPACE THE WAY
 THEIR OWN SENTENCES CLAIM, AND ALL THREE ARE CORRECTED HERE.** Each is a

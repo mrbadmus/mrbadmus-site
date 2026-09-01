@@ -154,10 +154,21 @@ def _count_word_agrees(text, n, act_id, family, where):
 def r_store_audit(a, act_id):
     """⊕ p1-01 `#s-audit` — five scenarios, one ledger, eight stores a side.
 
-    Design's block. A student picks a scenario, ticks which stores hold energy
-    at the START and which hold it at the END, and presses Check. The ledger is
-    balanced only when BOTH columns match exactly — a superset does not count,
-    because the claim being taught is that the count does not go up.
+    Design's block. A student picks a scenario, ticks which stores EMPTY and
+    which stores FILL, and presses Check. The ledger is balanced only when
+    BOTH columns match exactly — a superset does not count, because the
+    claim being taught is that the count does not go up.
+
+    ⊕ MRB-297 · 1 Sep 2026 — THE LEDGER ASKS WHICH STORES CHANGE, NOT WHICH
+    STORES HOLD. This used to say the student "ticks which stores hold
+    energy at the START and which hold it at the END". Kept rather than
+    deleted, because HOLD is the reading that marks true answers wrong —
+    a braking car does hold a chemical store, it has a fuel tank — and the
+    `before`/`after` lists underneath have only ever encoded which store
+    empties and which fills. The reframe is P1-1, written up on the
+    activity in `ks3_data/p1/lesson_01_energy_stores.py`; the two column
+    defaults below were part of the same old framing and are corrected with
+    it.
 
     ⚖️ **THE RAIL STOP TICKS AT THREE OF FIVE, WHICH IS DESIGN'S NUMBER.**
     Her `DONE('s-audit')` is `Object.keys(s.solved).length >= 3` against a set
@@ -307,8 +318,18 @@ def r_store_audit(a, act_id):
             '<p class="ks3-saudit-vlabel" data-saudit-vlabel></p>%s</div>'
             '</div></div>'
             % (len(scenarios), target, picks, texts,
-               column("before", a.get("before_title") or "Filled at the start"),
-               column("after", a.get("after_title") or "Filled at the end"),
+               # ⊕ MRB-297 · 1 Sep 2026 — THESE DEFAULTS ARE LIVE, NOT
+               # PROVENANCE. They read "Filled at the start" / "Filled at
+               # the end", which is the pre-P1-1 framing the docstring
+               # above records: on the EMPTIES/FILLS ledger those labels
+               # put the old, wrong question over the new, right columns.
+               # The one shipped store-audit supplies `before_title`
+               # "Emptied" and `after_title` "Filled", so nothing on the
+               # live site rendered the old strings — but a second
+               # store-audit that omitted either key would have, silently
+               # and in a student's face. Defaults now match the ruling.
+               column("before", a.get("before_title") or "Emptied"),
+               column("after", a.get("after_title") or "Filled"),
                t(a.get("check_label") or "Check the ledger"),
                t(a.get("clear_label") or "Clear it"),
                verdicts))

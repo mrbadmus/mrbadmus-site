@@ -61,7 +61,11 @@ QUESTIONS = [
                     "they are named for the direction each one seeks."},
             {"text": "Its north-seeking pole and its south-seeking pole",
              "correct": True},
-            {"text": "Its magnetic end and its ordinary, unmagnetic end",
+            # ⊕ MRB-297 · 1 Sep 2026 — "unmagnetic" is not a word a student
+            # will meet anywhere else; the standard term is "non-magnetic",
+            # and it is the term this estate uses everywhere else. This was
+            # the only occurrence in ks3_data.
+            {"text": "Its magnetic end and its ordinary, non-magnetic end",
              "correct": False,
              "why": "Both ends are magnetic and both are the same steel. "
                     "What differs is which way each one points."},

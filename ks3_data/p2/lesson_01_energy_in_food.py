@@ -247,6 +247,20 @@ LESSON = {
          # and the capture fractions are all hers and all unchanged, and
          # because the measured kJ/g divides the mass back out, no number
          # this lesson teaches moves.
+         # ⊕ CORRECTED MRB-297 · 1 Sep 2026 — "the foods and the capture
+         # fractions are all hers and all unchanged" stopped being true in
+         # this same commit, a few hundred lines below, where Mide's ruling
+         # of 30 Aug 2026 took the peanut out. Design's second sample was a
+         # peanut at 24.5 kJ/g with her own capture fraction; the cheese
+         # puff that replaced it carries 0.38, which is this repository's
+         # number and not hers, and her 0.46 left with the peanut. The four
+         # now on the bench are 0.42 / 0.38 / 0.34 / 0.30. Three of the four
+         # foods and three of the four fractions are hers, character for
+         # character; the fourth of each is ours, and D-P2-02 says so. The
+         # sentence is kept rather than deleted because it is what the
+         # provenance record claimed, and the claim needs to be visibly
+         # withdrawn rather than quietly dropped. The water, the constant
+         # and the kJ/g arithmetic are untouched, exactly as it says.
          "mass_min": 0.10,
          "mass_max": 0.50,
          "mass_step": 0.05,

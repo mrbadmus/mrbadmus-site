@@ -1008,13 +1008,36 @@ def r_eye_camera(a, act_id):
 # runtime does nothing but read the attributes and join them into path
 # strings. The check runs at import, on every build, for free.
 #
-# ⚠️ THE DRAWING IS A SCHEMATIC AND SAYS SO. A real 60° prism deviates a
-# horizontal ray by about 43° and separates red from violet by under a
-# degree; drawn to scale on this 1000×420 canvas the fan would leave the
-# frame and the six colours would be one line. So the SEPARATION is
-# exaggerated — about eighteen-fold — while the three things a student can
-# be wrong about are exact: every colour bends toward the BASE, violet bends
-# furthest and red least, and the light bends TWICE, once at each face.
+# ⚠️ THE DRAWING IS A SCHEMATIC AND SAYS SO. A real 60° crown-glass
+# prism at minimum deviation bends the beam by about 38° and separates red
+# from violet by about 2.2°; drawn to scale on this 1000×420 canvas the fan
+# would leave the frame and the six colours would be one line. So the
+# SEPARATION is exaggerated — about four-fold — while the three things a
+# student can be wrong about are exact: every colour bends toward the BASE,
+# violet bends furthest and red least, and the light bends TWICE, once at
+# each face.
+#
+# ⊕ MRB-297 · 1 Sep 2026 — BOTH REAL-PRISM FIGURES IN THAT PARAGRAPH WERE
+# WRONG, AND SO WAS THE EXAGGERATION FACTOR. It used to read "A real 60°
+# prism deviates a horizontal ray by about 43° and separates red from
+# violet by under a degree … exaggerated — about eighteen-fold". Kept
+# rather than deleted, because "under a degree" is exactly the figure that
+# makes an eighteen-fold stretch sound like a considered drawing decision
+# instead of a number nobody checked.
+#
+# Crown glass is n = 1.514 red and 1.539 violet. At minimum deviation on a
+# 60° prism, D = 2·asin(n·sin 30°) − 60, which is 38.40° for red and 40.62°
+# for violet — a spread of 2.22°, not "under a degree". The drawn fan spans
+# 8.68° (from the exit face red runs 9.13° below the horizontal and violet
+# 17.81°), so the exaggeration is 3.9×. "A horizontal ray" was also the
+# wrong framing: a truly horizontal ray on this geometry meets the second
+# face at 41°, within a degree of the critical angle, and leaves grazing.
+# Minimum deviation is the case the textbook figure describes.
+#
+# ⚠️ THE COMMENT CONTRADICTED THE PAGE IT DESCRIBES. The student-visible
+# `convention_note` in `ks3_data/p7/lesson_06_colour_and_the_spectrum.py`
+# says "a spread of a couple of degrees", which is right. Re-derive from
+# P7_FAN and P7_INSIDE if these landings ever move.
 
 P7_APEX = (300.0, 90.0)          # her prism: M300 90 L400 270 L200 270 Z
 P7_BASE_Y = 270.0
@@ -1616,9 +1639,22 @@ def _band_straw(spec, act_id):
     RIGHT of the refraction point, out through the right-hand wall of the
     glass, ending in mid-air. It is meant to be the emergent ray continued
     straight BACKWARDS. That ray is `M520 140 L800 90`, so backwards from
-    (520, 140) the direction is (−280, +50): up the page and to the left,
-    the opposite quadrant to the one drawn. Continued 128 units back in x
+    (520, 140) the direction is (−280, +50): to the LEFT and, because SVG
+    y grows downward, gently DOWN the page. Continued 128 units back in x
     it reaches (392, 162.9), which is `M520 140 L392 163`.
+
+    ⊕ MRB-297 · 1 Sep 2026 — THIS PARAGRAPH DESCRIBED ITS OWN VECTOR
+    BACKWARDS. It used to read "(−280, +50): up the page and to the left,
+    the opposite quadrant to the one drawn". Kept rather than deleted,
+    because reading +50 in a viewBox as "up" is the standard way to get an
+    SVG figure wrong, and this is a figure whose entire job is a direction.
+    In SVG y increases DOWNWARD, so +50 is down; the drawn endpoint (392,
+    163) is below the refraction point at y = 140, as the emitted path at
+    the bottom of this function shows. Nor was it the opposite quadrant:
+    the wrong line ran (+220, +156), right and down, and the right one runs
+    left and down. Only the horizontal sense flipped — the line is mirrored
+    about the vertical, not reversed. The DRAWING was always correct; only
+    this account of it was wrong.
 
     ⚖️ **AND THE MARKER WAS ON THE WRONG LINE.** *WHERE IT LOOKS* sat at
     (452, 253), which is not on the back-projection and never was — it is

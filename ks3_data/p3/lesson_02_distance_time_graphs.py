@@ -247,8 +247,20 @@ LESSON = {
          # ⚖️ THE CLAMP AT 0 m SAYS SO. The walker cannot go back past the
          # start, and a refusal that draws a flat line without a word is a
          # walking walker drawn as a stopped one.
+         # ⊕ MRB-297 · 1 Sep 2026 — THE REFUSAL WAS ONLY TRUE OF A FULL
+         # CLAMP, AND IT FIRES ON A PARTIAL ONE TOO. It said "a walk-back
+         # block moved nothing". `points()` in `shared/ks3.js` sets
+         # `refused` from `raw < 0` and then clamps `d` to `max(0, raw)`,
+         # so Walk then Walk back gives raw = 3 − 6 = −3: refused, and the
+         # walker is moved from 3 m to 0 m. The graph visibly falls three
+         # metres while the readout — which REPLACES the distance on a
+         # refused block — states that nothing moved. On the page whose key
+         # fact is "A flat line is not slow. It is stopped", that is the
+         # exact confusion the instrument exists to kill. The clamp is
+         # right and stays; the sentence now describes it.
          "back_refused": "The walker cannot go back past the start, so a "
-                         "walk-back block moved nothing.",
+                         "walk-back block stops at 0 m rather than going "
+                         "below it.",
          "alt": "A corridor with a walker, above a distance–time graph. A "
                 "dashed target line is drawn from 0 to 12 seconds, and the "
                 "walker's own line is drawn in as it moves.",

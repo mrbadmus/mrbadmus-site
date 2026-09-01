@@ -113,6 +113,14 @@ did: 2000 W × 180 s = 360 000 J, 15 W × 28 800 s = 432 000 J, crossover at
 past-crossover caption — "The 15 W charger has now transferred more energy
 than the 2000 W kettle did all day" — inside the power-bench wiring. It
 still says charger, and this lane may not edit that file.
+
+⊕ CORRECTED MRB-297 · 1 Sep 2026 — the warning above is STALE on both of
+its claims, and is kept rather than deleted because acting on it would
+mean re-opening a file that is already right. `shared/ks3.js` now reads
+"the 15 W router has now transferred more energy than the 2000 W kettle"
+in the power-bench wiring, and carries its own note above it recording the
+P2-09 change. So the caption does not still say charger, and the file was
+edited. Nothing is outstanding at that site.
 """
 
 LESSON = {

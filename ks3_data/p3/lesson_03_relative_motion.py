@@ -189,8 +189,17 @@ LESSON = {
          "anchor": "s-frames",
          "eyebrow": "Same road, same two cars, three different answers",
          "heading": "Change who is watching.",
+         # ⊕ MRB-297 · 1 Sep 2026 — THE FIRST SENTENCE ON THIS SECTION
+         # DENIED THE SECTION. It read "Nothing about the cars changes when
+         # you switch viewpoint, and neither do the numbers." The eyebrow
+         # directly above it promises "three different answers", the
+         # `key_note` says "Changing who measures changes the number, never
+         # the object", and the gate below has the same two cars reading
+         # 0 m/s from each other and 25 m/s from the verge. So a Year 7 read
+         # "the numbers do not change" and then met three numbers. The half
+         # that is true — the cars themselves are untouched — is kept.
          "prompt": "Nothing about the cars changes when you switch "
-                   "viewpoint, and neither do the numbers. What changes is "
+                   "viewpoint, but the numbers do. What changes is "
                    "which reading is the one you are sitting in — and that "
                    "reading is always zero.",
          "gate": {
@@ -437,9 +446,23 @@ LESSON = {
             "success": [
                 "Gives 250 + 50 = 300 m/s for the leg with the wind.",
                 "Gives 250 − 50 = 200 m/s for the leg against it.",
-                "Says the speed is now being measured relative to the air "
-                "first, and then relative to the ground, so the plane's "
-                "speed and the wind's add rather than subtract.",
+                # ⊕ MRB-297 · 1 Sep 2026 — THIS CRITERION CREDITED THE
+                # WRONG RULE, AND IT WAS THIS RUN THAT ADDED IT. Commit
+                # `e4334e228` appended ", so the plane's speed and the wind's
+                # add rather than subtract" to a criterion that had ended at
+                # "…and then relative to the ground". They add on ONE leg.
+                # Two lines above, criterion 2 requires 250 − 50 = 200 for the
+                # other. So a marker following the list credited "they add" as
+                # the general rule while the same list demanded a subtraction,
+                # and a student who wrote the true thing — that the wind is
+                # taken off on the way back — met a criterion telling them
+                # otherwise. What the clause was reaching for is real and is
+                # now stated correctly: it is the CHANGE OF FRAME that makes
+                # the two speeds combine at all, and the direction of travel
+                # that decides the sign.
+                "Says the speed is quoted relative to the air first and then "
+                "relative to the ground, so the wind is added going with it "
+                "and taken off coming back.",
                 "Says the slow leg takes more extra time than the fast leg "
                 "saves, because the slow leg lasts longer.",
                 "Uses total distance ÷ total time for the round trip "

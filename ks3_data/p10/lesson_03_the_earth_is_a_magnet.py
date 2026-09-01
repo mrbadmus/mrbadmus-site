@@ -445,9 +445,23 @@ LESSON = {
                  "note": "Hung freely at {place} the needle stays level, "
                          "because here the Earth’s field runs along the "
                          "ground rather than into it. This is the one "
+                         # ⊕ MRB-297 · 1 Sep 2026 — THIS BRANCH IS NEW ON
+                         # THIS RUN AND IT ONLY DESCRIBED THE NORTHERN HALF.
+                         # It read "Go north or south from here and the
+                         # field starts to run into the ground, and the
+                         # needle follows it over." The bench carries three
+                         # southern latitudes (−60, −40, −20) and `ks3.js`
+                         # branches `deg >= 0 ? "north_down" : "north_up"`,
+                         # so at 40° south the drawing tips the NORTH end UP
+                         # while this sentence told the student the field
+                         # was running into the ground. The sibling `tipped`
+                         # branch in this same file already says it
+                         # correctly: "it comes out of the ground in the far
+                         # south and goes into it in the far north."
                          "latitude where a freely hung needle and a clamped "
-                         "one agree. Go north or south from here and the "
-                         "field starts to run into the ground, and the needle "
+                         "one agree. Go north from here and the field "
+                         "starts to run into the ground; go south and it "
+                         "starts to come out of it. Either way the needle "
                          "follows it over. The sideways pull is {horiz} on "
                          "this scale, which is as large as it gets anywhere "
                          "on the planet, because here the whole of the field "

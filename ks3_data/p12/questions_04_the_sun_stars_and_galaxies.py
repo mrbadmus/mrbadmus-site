@@ -1,7 +1,13 @@
 """P12 lesson 04 — The Sun, stars and galaxies: twelve questions (MRB-223).
 
 Written against Design's page. The star you can see in daylight and the
-five rungs of the distance ladder are hers.
+five rungs of the ladder of scale are hers.
+
+⊕ MRB-297 · 1 Sep 2026 — this said "the distance ladder", which this
+branch renamed "the ladder of scale" on the page itself
+(`lesson_04_the_sun_stars_and_galaxies.py` #s-bench). The prose follows
+the rename. ⚠️ The MODEL KEY stays `distance-ladder`: it is the dispatch
+string `shared/ks3.js` matches on, and `ks3_art/p12.py` says so.
 
 The discriminations, in the order the lesson builds them:
 

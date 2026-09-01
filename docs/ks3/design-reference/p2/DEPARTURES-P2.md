@@ -50,6 +50,47 @@ pasta, 33 °C for crisps and 30 °C for the cheese puff, and the highest
 `kJperG × capture` is the crisps' 9.24 rather than the peanut's 11.27 — so
 the boiling-point margin this row bought is wider now, not narrower.
 
+⊕ **CORRECTED 1 Sep 2026 (MRB-297) — the amendment above quietly changed
+the QUANTITY, and so read as a correction of figures that were never
+wrong.** It is kept above rather than rewritten in place, because the two
+sets of numbers look like a disagreement and are not one, and a later
+reader who "reconciles" them will break the row's argument.
+
+**Both sets are right. They are different quantities.** The engine's
+`riseNow()` is `consumed × kJperG × capture × scatter × 1000 / (WATER ×
+SHC)`, and `paint()` prints TWO readouts from it: `rise`, and `temp` which
+is `START + rise` with `START` = 20 °C. At 0.30 g into 20 g of water at
+scatter 1.0:
+
+| food | `kJperG × capture` | rise | temp = 20 + rise |
+|---|---|---|---|
+| Cheese (17.0 × 0.30) | 5.10 | 18.30 °C | **38.30 °C** |
+| Dry pasta (15.0 × 0.34) | 5.10 | 18.30 °C | **38.30 °C** |
+| Crisps (22.0 × 0.42) | 9.24 | 33.16 °C | **53.16 °C** |
+| Cheese puff (21.6 × 0.38) | 8.21 | 29.45 °C | **49.45 °C** |
+| Peanut, retired (24.5 × 0.46) | 11.27 | 40.44 °C | **60.44 °C** |
+
+So the original row's "38 °C for cheese and dry pasta, 53 °C for crisps,
+60 °C for peanut" are the FINAL TEMPERATURES, and are exact. The 31 Aug
+amendment's "18 °C … 33 °C … 30 °C" are the RISES for three of the same
+states, and are also right (the cheese puff is 29.45, so 29 rather than
+30). Nothing about the peanut swap moved cheese or pasta, and nothing
+could have: neither food's constants were touched.
+
+⚠️ **AND THE ROW'S ARGUMENT ONLY WORKS ON THE TEMPERATURE.** The claim
+being made is that every combination "stays below boiling". A rise of
+18 °C is not a fact about boiling; 38.30 °C is. Restated as rises, the
+sentence stops supporting its own conclusion. The conclusion still holds
+at the top of the scatter band, which is the case it was chosen for: at
+scatter 1.1 the hottest state on today's bench is the crisps at 56.47 °C,
+and even the retired peanut only reached 64.49 °C.
+
+What the amendment was right about stands: the peanut is out, and the
+highest `kJperG × capture` a student can now reach is the crisps' 9.24
+rather than the peanut's 11.27, so the boiling-point margin is wider than
+when D-P2-01 was written. **D-P2-01 needed no correction of its figures —
+only that note about the margin.**
+
 ---
 
 ### D-P2-02 · `p2-01 energy-in-food` · the peanut comes out of the practical

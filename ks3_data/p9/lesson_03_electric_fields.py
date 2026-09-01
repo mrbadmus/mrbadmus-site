@@ -132,6 +132,25 @@ LESSON = {
             # never commits, and a belief nobody commits to cannot be
             # confronted. Remedied at the distractor, and the added clause is
             # the wrong rule stated completely rather than padding.
+            # ⊕ CORRECTED MRB-297 · 1 Sep 2026 — THE COMMENT ABOVE DESCRIBES
+            # THE OPPOSITE OF WHAT THE OPTION UNDERNEATH IT NOW DOES, and it
+            # never described this text: no revision of this distractor ends
+            # "and the two attract directly". Measured on both revisions:
+            #   origin/main  "…and two opposite charges pull on each other
+            #                directly across the gap"   112 chars, 20 words
+            #   here         "…and two opposite charges pull across the gap"
+            #                                            84 chars, 15 words
+            # So this run SHORTENED the distractor by 28 characters and five
+            # words, while the comment above claims a clause was added to
+            # lengthen it. Kept rather than deleted, because a later reader
+            # who trusted it would go looking for padding to remove.
+            # ⚠️ The shortening also left the correct option (85) longest of
+            # the four — [85, 81, 79, 84] — which is the tell MRB-177 was
+            # about, by a margin of 1 rather than the old 27. Below
+            # `verify_answer_lengths.MARGIN` of 6, so no gate sees it, but it
+            # is still rank 1. Left as it stands: the option texts are
+            # Design's science and this run has already rewritten them once
+            # in the wrong direction. Flagged for the run that owns P9 hooks.
             "Nothing — the water is already charged, and two opposite charges "
             "pull across the gap",
         ],
@@ -306,7 +325,21 @@ LESSON = {
                  # region detail. The three-way region split ruled for this
                  # tile needs the branch chooser in `shared/ks3.js`
                  # `wireFieldGrid`, which this lane may not edit.
-                 "sub": "set by whichever charge you are nearer",
+                 # ⊕ MRB-297 · 1 Sep 2026 — THE REPLACEMENT CAPTION WAS AS
+                 # WRONG AS THE ONE IT REPLACED, IN THE OPPOSITE DIRECTION.
+                 # It read "set by whichever charge you are nearer". Between
+                 # two UNLIKE charges the field runs + → − whichever one you
+                 # are nearer, which is what the note directly below says.
+                 # Worse, the bench OPENS on the one position where "nearer"
+                 # has no answer at all: `start_setup: 2` is this dipole,
+                 # charges at x=350 and x=650, and `x0` 80 + `start` 12 ×
+                 # `dx` 35 puts the test point at x=500 — the exact
+                 # mid-point. The caption is one fixed string per
+                 # arrangement, so it now states the field-line fact that
+                 # holds at every position: arrows begin on the positive
+                 # charge and end on the negative one. The region detail
+                 # stays in the note below, where it has room.
+                 "sub": "arrows leave the positive and land on the negative",
                  "note": "With a positive charge on the left and a negative "
                          "one on the right, every arrow in the middle runs "
                          "from the positive towards the negative, and the "

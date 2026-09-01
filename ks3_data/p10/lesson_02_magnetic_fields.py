@@ -299,11 +299,27 @@ LESSON = {
               # across with 220-unit magnets, so the model refuses it — the
               # compass in the middle reads 34.0 against 100.0 beside the two
               # faces, and eight readable spots beat the middle.
+              # ⊕ MRB-297 · 1 Sep 2026 — THE CORRECTION ABOVE WAS RIGHT AND
+              # ITS LAST CLAUSE COLLIDED WITH THE LIVE QUESTION BANK.
+              # `p10-02-h01` asks "two bar magnets a few centimetres apart,
+              # N facing S — where is the field strongest?" and keys "in the
+              # gap between them", against "the far ends", "out at the sides"
+              # and "nowhere in particular". That keying is correct against
+              # those three, at ANY gap width, because THE TWO POLE FACES ARE
+              # THEMSELVES IN THE GAP. But "thinning out towards the middle
+              # of a gap this wide" reads as "the gap is not the strongest
+              # place", and a student who took it that way met a bank
+              # question keyed exactly that — and the bank row is live on
+              # production. The bench measurement stands (34.0 in the middle
+              # against 100.0 beside the faces, on a 300-unit gap between
+              # 220-unit magnets); what changes is that the faces are now
+              # located INSIDE the gap rather than set against it.
               "note": "With a north pole facing a south pole the lines run "
-                      "straight across the gap from one to the other — and "
-                      "they are strongest right at the two pole faces, "
-                      "thinning out towards the middle of a gap this "
-                      "wide."},
+                      "straight across the gap from one to the other. The "
+                      "gap is where the field is concentrated, and it is "
+                      "strongest right at the two pole faces on either side "
+                      "of it, thinning towards the middle when the gap is as "
+                      "wide as this one."},
              {"id": "like", "label": "Two magnets, N facing N",
               "word": "two bar magnets end to end with their north poles "
                       "facing each other across the gap",

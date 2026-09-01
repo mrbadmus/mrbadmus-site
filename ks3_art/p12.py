@@ -165,8 +165,16 @@ _MODELS = {
         "slider": True,
         "needs": (),
     },
-    # p12-04 · five rungs of the distance ladder. No slider: her `SLIDER` is
-    # the empty array, so `hasSlider` is false and the component draws none.
+    # p12-04 · five rungs of the LADDER OF SCALE. No slider: her `SLIDER`
+    # is the empty array, so `hasSlider` is false and the component draws
+    # none.
+    #
+    # ⊕ MRB-297 · 1 Sep 2026 — this said "the distance ladder", which is
+    # what the page called it before this run renamed it. Kept rather than
+    # deleted so the rename is findable from either name. ⚠️ The MODEL KEY
+    # below is still `distance-ladder`, and must stay: it is the string
+    # `shared/ks3.js` dispatches on and the payload authors. The rename was
+    # to the student-visible wording only.
     "distance-ladder": {
         "branches": ("rung",),
         "words": ("what_sub", "distance_sub", "size_sub", "stars_sub",

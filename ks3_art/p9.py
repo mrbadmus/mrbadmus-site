@@ -957,11 +957,21 @@ def _ladder(spec, act_id):
             "them the figure is a list of seven materials." % act_id)
 
     # ⚖️ THREE BADGE TONES, AND THEY ARE A CHANNEL RATHER THAN DECORATION.
-    # Design paints the top three badges in the accent tint, the middling one
-    # in the band, and the bottom three in the blue tint — so the SPLIT the
+    # Design paints the top four badges in the accent tint, the middling one
+    # in the band, and the bottom two in the blue tint — so the SPLIT the
     # list is about is visible before a word is read. Every row still carries
     # its number and its name, and the two rows the tone is a claim about
     # carry that claim in words as well, so the hue is never the only channel.
+    #
+    # ⊕ MRB-297 · 1 Sep 2026 — THE SPLIT IS 4/1/2, NOT 3/1/3. This said
+    # "the top three … the middling one … the bottom three". Kept rather
+    # than deleted because 3/1/3 is a symmetry a reader will believe on
+    # sight and then preserve when editing the rows. The shipped ladder in
+    # `ks3_data/p9/lesson_01_charging_by_rubbing.py` is hair, glass,
+    # acetate and wool `loses`; cotton `middle`; polythene and PVC `gains`.
+    # Seven rows either way, so the raise below is unaffected — but the
+    # ladder is NOT symmetric about its middle, and that is the triboelectric
+    # series as it really runs, not a drafting slip to be tidied.
     for r in rows:
         if r.get("tone") not in ("loses", "middle", "gains"):
             raise ValueError(

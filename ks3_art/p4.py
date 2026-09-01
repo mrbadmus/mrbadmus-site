@@ -1741,8 +1741,33 @@ def r_p4_spring_beam(fig):
 
 # ── the arithmetic gate on the five lines ────────────────────────────────
 #
-# ⊕ P5-12, 31 Aug 2026 — EVERY LINE OF THE SHAPE `a op b = c` IS EVALUATED
-# AT BUILD TIME, and a false one fails the build.
+# ⊕ P5-12, 31 Aug 2026 — EVERY LINE OF THE SHAPE `a op b = c` IN A
+# `p4-attempt` PANEL IS EVALUATED AT BUILD TIME, and a false one fails the
+# build.
+#
+# ⊕ MRB-297 · 1 Sep 2026 — THE CLAIM WAS WIDER THAN THE GATE. It used to
+# open "EVERY LINE OF THE SHAPE `a op b = c` IS EVALUATED AT BUILD TIME",
+# with no scope on it. Kept rather than deleted, because an unqualified
+# "every" is the sentence that stops the next person looking — and what is
+# NOT covered is the larger half of P4.
+#
+# `_check_attempt_arithmetic` is called from exactly one place,
+# `r_p4_attempt`, so it sees the FOUR `p4-attempt` activities in P4
+# (lessons 02, 03, 07 and 08) and nothing else. The EIGHT `worked-example`
+# activities in the same unit — including ones on the very same pages,
+# directly above the attempt panel — render through the engine's own
+# `worked-example` branch, carry lines of the identical `a op b = c`
+# shape, and are NOT checked by anything. Neither is any other unit: the
+# only other copy of this gate is `ks3_art/p5.py`, guarding P5's four
+# `p5-attempt` panels. Everything else in KS3 is unguarded.
+#
+# That is still the argument for the lift below. The P2 defect named in
+# the next paragraph was caught BY HAND, by an auditor reading the page,
+# because no gate was watching it — and lifting this one into
+# `ks3_art.kit.r_cfifa_attempt` still would not watch it, since a worked
+# example does not go through the attempt renderer at all. Covering those
+# eight panels is a SECOND piece of work, and this note is here so that it
+# is not mistaken for one already done.
 #
 # The bench printed "2.4 − 10 = 7.6" on the one step whose entire job is to
 # be the arithmetic, in three reachable states, and nothing caught it: the

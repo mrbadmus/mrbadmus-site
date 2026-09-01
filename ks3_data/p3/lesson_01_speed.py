@@ -255,9 +255,20 @@ LESSON = {
                   "every time. That scatter is why one reading is never "
                   "enough — and the mean of the three times is what you "
                   "divide into.",
+         # ⊕ MRB-297 · 1 Sep 2026 — THE REFUSAL GAVE A REASON THAT IS FALSE
+         # IN HALF THE STATES IT FIRES IN. It said "there is no single
+         # distance to divide by the mean". `sameSetup()` in `shared/ks3.js`
+         # returns false if EITHER the ramp or the gate separation differs
+         # between recorded rows, so change only the RAMP and the refusal
+         # appears over three runs that do share one distance — and a
+         # student who checked, correctly, that the gates had not moved was
+         # told they had. The refusal itself is right: three runs down
+         # different ramps are not repeats of one measurement, so their
+         # mean is not a time for anything. That is what it now says, and
+         # it is true whichever part of the setup moved.
          "close_mixed": "You changed the setup between runs, so these times "
-                        "are not repeats of one measurement — there is no "
-                        "single distance to divide by the mean. Set the "
+                        "are not repeats of one measurement, and the mean "
+                        "of them is not a time for anything. Set the "
                         "gates and the ramp once, then take three runs."},
 
         {"type": "key-fact", "ref": "two-measurements-one-number"},

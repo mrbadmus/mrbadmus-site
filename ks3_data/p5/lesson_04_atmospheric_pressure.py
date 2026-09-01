@@ -580,7 +580,17 @@ LESSON = {
                 "66 667 N — divide the pressure by the area",
                 "150 000 Pa — the air is pressing, so the answer is a "
                 "pressure",
-                "150 000 N — 100 000 Pa acting on each of 1.5 m²",
+                # ⊕ MRB-297 · 1 Sep 2026 — THE CORRECT OPTION DID NOT PARSE.
+                # It read "150 000 N — 100 000 Pa acting on each of 1.5 m²",
+                # which puts the whole pressure on each of one and a half
+                # square metres and reads as nonsense. Its three siblings in
+                # P5 use the working form — "600 N shared over 0.30 m²",
+                # "1500 N shared over 0.05 m²" — and this rung's own
+                # feedback already says it properly: "each square metre
+                # carries 100 000 N, so the two multiply". The wording now
+                # matches the feedback; the number and the answer index are
+                # untouched.
+                "150 000 N — 100 000 N on each of the 1.5 m²",
                 "0.000015 N — divide the area by the pressure",
             ],
             "answer": 2,

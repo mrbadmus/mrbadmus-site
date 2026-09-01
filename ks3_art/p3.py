@@ -620,11 +620,21 @@ def r_journey_match(a, act_id):
 # ═══ p3-03 · #s-frames · change who watches ══════════════════════════════
 
 def r_relative_frames(a, act_id):
-    """⊕ p3-03 `#s-frames` — two cars, three viewpoints, four readings.
+    """⊕ p3-03 `#s-frames` — two cars, three viewpoints, five readings.
 
     ⚖️ **EVERY READING IS COMPUTED FROM THE TWO SLIDERS.** `v − v_observer`,
-    every time. Authoring any of the four would let a viewpoint show a
+    every time. Authoring any of the five would let a viewpoint show a
     number that does not follow from the speeds above it.
+
+    ⊕ MRB-297 · 1 Sep 2026 — FIVE READINGS, NOT FOUR. Both lines above
+    said "four". Kept in this note rather than left in place, because four
+    is the count the renderer's `want` set still enforces and a reader who
+    trusts the summary will not look for the fifth. `self` was added by
+    P3-18 below and is now REQUIRED — the raise at the foot of this
+    function refuses a payload without it — so the bench ships five tiles.
+    The `want` set and its "All four have to be on screen together" message
+    are still correct as written: they name the four frame-labelled
+    readouts only, and `self` is checked separately just after them.
 
     ⚖️ **ONE READING IS ALWAYS ZERO — WHICHEVER BELONGS TO THE CURRENT
     VIEWPOINT.** That is the lesson: nothing about either car changed, and

@@ -222,9 +222,21 @@ LESSON = {
          # kettle (every nucleus in it). That marks the lesson's own key
          # fact wrong. The framing is now `changes`, which is what the
          # `before`/`after` lists have always meant.
-         "heading": "Which store empties, and which store fills?",
-         "prompt": "Pick a scenario. Tick the store that empties and the "
-                   "store that fills. Then check.",
+         # ⊕ MRB-297 · 1 Sep 2026 — SINGULAR HERE MARKS A STUDENT WRONG.
+         # The P1-1 fix earlier in this run reframed this ledger from which
+         # stores HOLD energy to which EMPTY and FILL, which was right and
+         # stays. What it also did was make both strings singular — "the
+         # store that empties and the store that fills". Scenario `sc5` two
+         # hundred lines below has `"after": ["el", "therm"]`, TWO stores,
+         # and its own verdict calls the thermal one "the interesting tick";
+         # `shared/ks3.js` marks this ledger on an EXACT SET match and names
+         # any required chip left unticked as one "you missed". So a student
+         # who obeyed the printed instruction and ticked one was marked wrong
+         # on the single scenario the page most wants them to get. Plural
+         # restored, framing kept.
+         "heading": "Which stores empty, and which stores fill?",
+         "prompt": "Pick a scenario. Tick the stores that empty and the "
+                   "stores that fill. Then check.",
          "head_counter": {"format": "{n} of 5 ledgers balanced", "total": 5,
                           "start": 0},
          # ⚖️ THREE OF FIVE, WHICH IS DESIGN'S OWN NUMBER — her

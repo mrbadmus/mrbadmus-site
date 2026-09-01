@@ -75,9 +75,17 @@ LESSON = {
     "references": [],
     "ks4_links": [],
 
+    # ⊕ MRB-297 · 1 Sep 2026 — THE LAST "SCALD" IN THE ESTATE, AND THIS
+    # RUN'S OWN RULING SAYS IT IS WRONG. P11-13 was corrected earlier today
+    # to "a bath is RUN at 37-40 degrees; scalding needs about 50 and up",
+    # and it named THIS lesson as the calibration it was matching. The sweep
+    # never reached here: the same file's `big_question` and `prompt` were
+    # fixed and the `meta_description` was not, so one page carried both
+    # readings. 40 degrees is a normal bath.
     "meta_description": "A spark at 1500 °C lands on your hand and barely "
-                        "stings; a bath at 40 °C can scald. Temperature and "
-                        "energy are two different quantities — learn to "
+                        "stings; a bath at 40 °C, barely above body "
+                        "temperature, already feels properly hot. "
+                        "Temperature and energy are two different quantities — learn to "
                         "separate them, and which way heating goes.",
 
     "big_question": "A sparkler throws sparks at 1500 °C and they do not "
