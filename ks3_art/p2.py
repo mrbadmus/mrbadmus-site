@@ -121,12 +121,18 @@ def r_calorimeter(a, act_id):
     sample a step at a time, and a table that records what each run
     measured — deliberately well below the label.
 
-    ⚖️ **THE CAPTURE FRACTIONS ARE THE LESSON AND THEY ARE HERS,
-    UNCHANGED.** 0.30 to 0.46, so the bench reads 30–46% of the packet
-    figure. Rung 3's fifth criterion — that repeating a measurement does
-    nothing about a systematic leak — can only be answered by a student who
-    has watched their own value come out low. The renderer refuses a capture
-    fraction of 1.0 for that reason.
+    ⚖️ **THE CAPTURE FRACTIONS ARE THE LESSON.** 0.30 to 0.42, so the bench
+    reads 30–42% of the packet figure. Rung 3's fifth criterion — that
+    repeating a measurement does nothing about a systematic leak — can
+    only be answered by a student who has watched their own value come out
+    low. The renderer refuses a capture fraction of 1.0 for that reason.
+
+    ⊕ MRB-297 · 1 Sep 2026 — this said "AND THEY ARE HERS, UNCHANGED. 0.30
+    to 0.46, so the bench reads 30–46%". Three of the four are still hers
+    and unchanged; the 0.46 was the peanut's, and the peanut was ruled out
+    of the practical on 30 Aug 2026. The cheese puff that replaced it
+    carries 0.38, so the set is 0.30, 0.34, 0.38, 0.42 and the range closes
+    at 0.42. See D-P2-02.
 
     ⚖️ **THE MEASURED PER-GRAM VALUE IS COMPUTED, NEVER AUTHORED.**
     `measured = (rise × water × shc / 1000) ÷ consumed`, which reduces to

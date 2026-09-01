@@ -7319,15 +7319,46 @@
     var MAXT = parseFloat(wrap.getAttribute("data-maxt")) || 1;
 
     /* Each appliance's wattage and running time come off its own power bar,
-       which the renderer labelled with them. */
+       which the renderer labelled with them.
+
+       ⊕ MRB-297 · 1 Sep 2026 — AND SO DOES ITS NAME, NOW. See the caption
+       note in `paint` below: the three sentences under the bench used to
+       spell out both wattages as literal text, so this loop read `data-w`
+       for the bars while the prose beside them did not. */
     var APPS = [];
     var RUNS = {};
     each(pows, function (el) {
       var id = el.getAttribute("data-pbench-pow");
+      var app = el.closest ? el.closest(".ks3-pbench-app") : null;
+      var nm = app ? app.querySelector(".ks3-pbench-name") : null;
       APPS.push({ id: id,
-                  w: parseFloat(el.getAttribute("data-w")) || 0 });
+                  w: parseFloat(el.getAttribute("data-w")) || 0,
+                  name: nm ? nm.textContent.trim() : id });
       RUNS[id] = parseFloat(el.getAttribute("data-runs")) || 0;
     });
+
+    /* ⚠️ WHICH APPLIANCE IS WHICH IS DERIVED, NEVER NAMED. The one that
+       overtakes is the one still drawing power when the other has stopped,
+       so the LONGER RUNNING TIME picks it out. Deliberately not the id:
+       "kettle" and "router" are content slugs from `ks3_data/p2`, and a
+       shared engine that keys on them is the same coupling this fix
+       removes from the prose. */
+    var LONG = null;
+    var SHORT = null;
+    each(APPS, function (ap) {
+      if (!LONG || RUNS[ap.id] > RUNS[LONG.id]) { LONG = ap; }
+    });
+    each(APPS, function (ap) {
+      if (ap !== LONG && (!SHORT || RUNS[ap.id] < RUNS[SHORT.id])) {
+        SHORT = ap;
+      }
+    });
+
+    /* "15 W router" — the same number that scaled the bar and derived the
+       crossover, so one wattage edit moves all three together. */
+    function watted(ap) {
+      return String(ap.w) + " W " + ap.name.toLowerCase();
+    }
 
     var t = 0;
     var running = false;
@@ -7382,19 +7413,85 @@
          read "has now transferred MORE" over two totals printed EQUAL.
          Equality is now its own branch, and it is the best moment on the
          bench: it is the instant the answer changes. */
-      if (t > CROSS && CROSS > 0) { seen = true; }
+      /* ⊕ MRB-297 · 1 Sep 2026 — "JUMP TO THE CROSSOVER" NOW AWARDS THE
+         CROSSOVER, AND THE CAPTIONS NAME NO WATTAGE OF THEIR OWN.
+
+         WHAT WAS WRONG (1). This guard was tightened from `t >= CROSS` to
+         `t > CROSS` earlier in this run, to give equality its own caption.
+         The caption branch was right and the guard was not: the bench ships
+         a button that jumps to EXACTLY `CROSS` (`data-pbench-jump` and
+         `data-cross` are the same double, 24000), so the one control named
+         after the milestone was the one control that could not award it.
+         WHAT A STUDENT SAW: they pressed "Jump to the crossover", read
+         "The crossover, exactly", saw both totals print 360 kJ — and the
+         closing panel stayed hidden and the `crossover_seen` rail stop did
+         not fire. It fired before this run. Measured in a browser: at
+         t = 24000 the panel was hidden and `data-stage-done` was "0"; one
+         step later, at 24480, both came good.
+         WHAT IT DOES NOW: `seen` is earned at `t >= CROSS` again, so
+         landing on the crossover awards it; the equality CAPTION is tested
+         first and separately, so the "has now transferred more" sentence
+         can never print over two totals that are equal. Both branches are
+         wanted; they are now two questions rather than one.
+
+         WHAT WAS WRONG (2). All three sentences spelled out "the 15 W
+         router" and "the 2000 W kettle" as literal text, while `CROSS` and
+         `MAXT` beside them were read off the markup. The header at the top
+         of this block promises that a wattage edit "moves the marker and
+         the readout together, or fails the build" — true of the marker and
+         the readout, false of these strings, and nothing compared them to
+         `ks3_data/p2/lesson_02_power_ratings_in_watts.py`. WHAT A STUDENT
+         WOULD HAVE SEEN after such an edit: a bar captioned with the new
+         wattage and a sentence underneath still quoting the old one — the
+         same shape as the P2-09 defect this run was fixing.
+         WHAT IT DOES NOW: both wattages and both names are composed from
+         `data-w` and `.ks3-pbench-name`, which is where the bars and the
+         crossover already get them.
+
+         ⚠️ STILL HARDCODED, DELIBERATELY, AND REPORTED: "over a hundred
+         times taller" in the third sentence is the power RATIO (2000/15 =
+         133). It is a content claim rather than a figure, so re-wording it
+         is Mide's call, not this file's. */
+      /* ⊕ MRB-297 · 1 Sep 2026 — THE ONE HARDCODED NUMBER LEFT IN THESE
+         CAPTIONS, DERIVED. And a near-miss recorded, because the near-miss
+         is the more useful half.
+
+         ⚠️ THIS BENCH DRAWS TWO BARS PER APPLIANCE — `.ks3-pbench-pow`,
+         the rating, which never moves, and `.ks3-pbench-nrg`, the running
+         total, which does. "The kettle's bar is over a hundred times
+         taller" names the RATING bar: 2000 W against 15 W is 133, true at
+         every moment of the run, and it is the lesson — a tall bar that
+         stops early loses to a short bar that does not. The closing line
+         says so outright: "a rating is a height; the bill is an area."
+
+         The first version of this fix read "bar" as the ENERGY bar, whose
+         ratio really does fall from 133 to 1 across the run, and rewrote
+         the caption to track it. That would have put the caption in direct
+         contradiction with the closing line three inches below it, on the
+         one comparison the lesson exists to draw. Caught by driving the
+         bench and reading BOTH sentences on the page rather than the one
+         being edited. The sentence was never false; only the 133 was
+         typed rather than computed, and that is all that changes here. */
+      function beforeNote() {
+        var ratio = LONG.w ? SHORT.w / LONG.w : 0;
+        return "The " + SHORT.name.toLowerCase() + "'s bar is about "
+             + Math.round(ratio) + " times taller and it has already "
+             + "stopped. Keep going.";
+      }
+
+      if (t >= CROSS && CROSS > 0) { seen = true; }
       if (note) {
-        note.textContent = !t
+        note.textContent = (!t || !LONG || !SHORT)
           ? ""
-          : (seen
-              ? "Past the crossover. The 15 W router has now transferred "
-                + "more energy than the 2000 W kettle did all day."
-              : (CROSS > 0 && t === CROSS
-                  ? "The crossover, exactly. The 15 W router has just drawn "
-                    + "level with the 2000 W kettle — and the router is "
-                    + "still running."
-                  : "The kettle's bar is over a hundred times taller and it "
-                    + "has already stopped. Keep going."));
+          : ((CROSS > 0 && t === CROSS)
+              ? "The crossover, exactly. The " + watted(LONG) + " has just "
+                + "drawn level with the " + watted(SHORT) + " — and the "
+                + LONG.name.toLowerCase() + " is still running."
+              : (seen
+                  ? "Past the crossover. The " + watted(LONG) + " has now "
+                    + "transferred more energy than the " + watted(SHORT)
+                    + " did all day."
+                  : beforeNote()));
       }
       if (runBtn) {
         runBtn.textContent = running ? "Pause" : (t > 0 ? "Keep running"
@@ -8804,11 +8901,39 @@
         head.textContent = fillTokens(head.getAttribute("data-template"),
                                       vals);
       }
+      /* ⊕ MRB-297 · 1 Sep 2026 — A BLOCKED STATE COMPOSES NO MODEL LINES.
+         PORTED FROM `paintAttemptP8`, which fixed exactly this in P8 during
+         this run and was not carried across to P4 — while P4's spring bench
+         was given two brand-new blocked states in the same run.
+
+         WHAT WAS WRONG. Only `.ks3-cfa-rows` was hidden when the panel
+         refused. `.ks3-cfa-reveal` is a SIBLING of it, not a child (see
+         `ks3_art/kit.py`), and the five model lines live in the REVEAL — so
+         hiding the rows hid the input boxes and left every model line on
+         screen, still being recomputed for the refused state.
+         WHAT A STUDENT SAW, measured in a browser on
+         `springs-and-hookes-law.html`: Check at 4 N, then slide to 8 N. The
+         refusal reads "there is no ratio to scale up and no prediction to
+         make from it" and sits DIRECTLY ABOVE five composed lines making
+         exactly that prediction — "extension ÷ load is the same for every
+         reading", "184 ÷ 8 = 23 mm for each newton", "16 N × 23 mm/N =
+         368 mm". The page contradicted itself within one screen, and 368 mm
+         is wrong against the bench's own 440 mm because proportionality has
+         given out. Same on P12's `gravity-and-weight.html`: deep space says
+         "every weight comes out as nothing … the five lines come back"
+         over five visible lines ending "W = 0 N".
+         WHAT IT DOES NOW: while blocked the lines and step-notes are blank
+         and the reveal is hidden, so no future wiring change has anything
+         left to expose. */
       each(toArray(q.querySelectorAll("[data-p4cfa-line]")), function (el) {
-        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+        el.textContent = blocked
+          ? ""
+          : fillTokens(el.getAttribute("data-template"), vals);
       });
       each(toArray(q.querySelectorAll("[data-p4cfa-note]")), function (el) {
-        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+        el.textContent = blocked
+          ? ""
+          : fillTokens(el.getAttribute("data-template"), vals);
       });
       var close = q.querySelector("[data-p4cfa-close]");
       if (close) {
@@ -8828,7 +8953,43 @@
         setHidden(block, !blocked);
       }
       if (rows) { setHidden(rows, !!blocked); }
+      /* ⊕ MRB-297 · 1 Sep 2026 — AND THE MARKED PANEL GOES BEHIND THE GUARD
+         WITH IT. A student who marks Q1 on a readable state and then moves
+         the bench into a refused one was otherwise left looking at a marked
+         panel for a state the page had just said has no prediction in it.
+
+         ⚠️ AND IT COMES BACK WHEN THE REFUSAL DOES NOT APPLY. The spring
+         bench is the first of these that a student can walk back OUT of —
+         4 N, then 8 N, then 4 N again — so hiding on the way in without
+         restoring on the way out would destroy a panel they had earned and
+         leave the Check button reading "Marked" with nothing to show. The
+         reveal is restored only when the state is NOT blocked and only when
+         it was actually marked, so this never opens the reveal early: that
+         is the empty-attempt contract, and it is untouched. */
+      var rev = q.querySelector("[data-p4cfa-reveal]");
+      if (rev && blocked) { setHidden(rev, true); }
+      else if (rev && q.getAttribute("data-marked") === "1") {
+        setHidden(rev, false);
+      }
       if (chk && blocked) { chk.setAttribute("disabled", ""); }
+      /* The button's real state is recomputed from the boxes, never
+         asserted — see the note on the same line in `paintAttemptP8`. A
+         bare `removeAttribute` here would run on every bench's FIRST paint
+         and leave Check live with nothing typed.
+
+         ⊕ MRB-297 · 1 Sep 2026 — `&& !blocked` REMOVED, and it is why the
+         blocked readout never appeared. `repaintBtn` is the only thing that
+         writes the hint beside the button, and it was called on every paint
+         EXCEPT the blocked ones — so entering a refusal disabled Check and
+         left the hint saying "5 of 5 written", which is true of the boxes
+         and no answer at all to "why does pressing do nothing?". The guard
+         was never needed: `repaintBtn` computes `isBlocked()` itself and
+         handles both directions, which is precisely why it can be trusted
+         with the one direction it was being kept away from. Driven at
+         0 N, 6 N, 8 N and 10 N on `springs-and-hookes-law`. */
+      if (chk && chk.textContent !== "Marked" && q.repaintBtn) {
+        q.repaintBtn();
+      }
     });
   }
 
@@ -8854,6 +9015,7 @@
       var reveal = q.querySelector("[data-p4cfa-reveal]");
       var tally = q.querySelector("[data-p4cfa-tally]");
       var ticks = toArray(q.querySelectorAll("[data-p4cfa-tick]"));
+      var blockEl = q.querySelector("[data-p4cfa-blocked]");
       if (!btn) { return; }
 
       function written() {
@@ -8861,16 +9023,42 @@
         each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
         return n;
       }
+      /* ⊕ MRB-297 · 1 Sep 2026 — THE REFUSAL GUARD IS AUTHORITATIVE, AND IT
+         IS AN AND RATHER THAN AN OR. Ported from `wireCfifaAttemptP8`.
+         `paintAttempt` disabled Check while the bench had no honest
+         prediction, and this handler re-enabled it on the first character
+         typed into any box — so the guard held only until the student did
+         the very thing the panel invites. WHAT A STUDENT SAW: one character
+         at 8 N bought all five model lines for a state the page had just
+         said has no prediction in it. The panel is blocked exactly when its
+         blocked paragraph is showing, which is the same signal a reader
+         has. */
+      function isBlocked() {
+        return !!(blockEl && !blockEl.hidden);
+      }
       function repaintBtn() {
-        var n = written();
-        if (n) { btn.removeAttribute("disabled"); }
+        if (btn.textContent === "Marked") { return; }
+        var n = written(), stop = isBlocked();
+        if (n && !stop) { btn.removeAttribute("disabled"); }
         else { btn.setAttribute("disabled", ""); }
         if (hint) {
-          hint.textContent = n
-            ? n + " of " + inputs.length + " written"
-            : "Write at least one line first";
+          /* ⚠️ NO BLOCKED WORDING IS INVENTED HERE. P8 reads its
+             `blockedProgress` off the wrapper; P4's renderer does not emit
+             one yet, so when the attribute is absent the readout keeps
+             saying what it always said rather than this file making up a
+             sentence for a student. Named in the MRB-297 report. */
+          var bp = wrap.getAttribute("data-blocked-progress");
+          hint.textContent = (stop && bp)
+            ? bp
+            : n
+              ? n + " of " + inputs.length + " written"
+              : "Write at least one line first";
         }
       }
+      /* Handed to `paintAttempt` so a question that stops being blocked
+         gets its button back without the student having to guess that
+         touching a field will do it. Mirrors P12's copy. */
+      q.repaintBtn = repaintBtn;
       function retally() {
         var got = 0;
         each(ticks, function (t) {
@@ -8890,7 +9078,10 @@
       });
 
       btn.addEventListener("click", function () {
-        if (!written()) { return; }
+        /* ⊕ MRB-297 · 1 Sep 2026 — the same AND again, on the press itself:
+           a keyboard activation of a stale button must not get past the
+           guard either. */
+        if (!written() || isBlocked()) { return; }
         each(inputs, function (i, k) {
           var yours = q.querySelector('[data-p4cfa-yours="' + k + '"]');
           var line = q.querySelector('[data-p4cfa-yourline="' + k + '"]');
@@ -8904,6 +9095,11 @@
         setHidden(reveal, false);
         btn.setAttribute("disabled", "");
         btn.textContent = "Marked";
+        /* ⊕ MRB-297 · 1 Sep 2026 — recorded so `paintAttempt` can put an
+           EARNED reveal back after the bench leaves a refused state. Set
+           here and nowhere else, so it can only ever mean "this student
+           pressed Check on a state that had a prediction in it". */
+        q.setAttribute("data-marked", "1");
         retally();
         markStage(sec, true);          /* attempt_checked */
       });
@@ -13070,25 +13266,51 @@
               "M" + (CX - L * Math.sin(rad(a))).toFixed(1) + " " +
               (CY - L * Math.cos(rad(a))).toFixed(1) + " L" + CX + " " + CY);
 
-      var refs = "";
+      /* ⊕ MRB-297 · 1 Sep 2026 — ONE RAY PER PATH ELEMENT.
+         These five rays used to be five `M…L…` subpaths of ONE path, which
+         then needed `marker-mid` to get a head on each — and `marker-mid`
+         puts a marker at every interior vertex, which on that path meant
+         the four `moveto`s, ALL OF THEM AT THE POINT OF INCIDENCE. White
+         paper and matt black card drew four arrowheads stacked on the
+         reflection point, over the incident ray's own head, as a blob
+         exactly where a reader looks to tell incident from reflected.
+         `marker-end` could not fix it on one element: it marks the last
+         vertex of the whole path, so four of the five rays would have gone
+         bare. `ks3_art/p7.py` now emits five path elements with one
+         `marker-end` each, and this fills whichever are there. The
+         specular case draws one ray and blanks the other four. */
+      var rays = [];
       if (spread === 0) {
-        refs = "M" + CX + " " + CY + " L" +
-          (CX + L * Math.sin(rad(a))).toFixed(1) + " " +
-          (CY - L * Math.cos(rad(a))).toFixed(1);
+        rays.push(a);
       } else {
         for (var k = -2; k <= 2; k += 1) {
-          var cl = Math.max(-80, Math.min(80, a + k * (spread / 2)));
-          refs += "M" + CX + " " + CY + " L" +
-            (CX + L * Math.sin(rad(cl))).toFixed(1) + " " +
-            (CY - L * Math.cos(rad(cl))).toFixed(1) + " ";
+          rays.push(Math.max(-80, Math.min(80, a + k * (spread / 2))));
         }
       }
-      var out = wrap.querySelector("[data-rsurf-refrays]");
-      if (out) {
-        out.setAttribute("d", refs.replace(/\s+$/, ""));
-        out.setAttribute("class",
+      var slots = ["[data-rsurf-refrays]", "[data-rsurf-refray2]",
+                   "[data-rsurf-refray3]", "[data-rsurf-refray4]",
+                   "[data-rsurf-refray5]"];
+      each(slots, function (sel, i) {
+        var el = wrap.querySelector(sel);
+        if (!el) { return; }
+        var live = i < rays.length;
+        /* ⚠️ AN UNUSED RAY IS HIDDEN, NOT BLANKED TO "M0 0". A marker is
+           painted at the end of whatever path there is, and the end of
+           "M0 0" is the SVG's own origin — so parking the four spare rays
+           there put four arrowheads in the top-left corner of the plane
+           mirror, which is the one state that uses a single ray. Seen in
+           a screenshot after the first version of this fix; `display` is
+           an SVG presentation attribute and takes the element out of the
+           render entirely, markers included. */
+        el.setAttribute("display", live ? "inline" : "none");
+        el.setAttribute("d", live
+          ? "M" + CX + " " + CY + " L" +
+            (CX + L * Math.sin(rad(rays[i]))).toFixed(1) + " " +
+            (CY - L * Math.cos(rad(rays[i]))).toFixed(1)
+          : "M0 0");
+        el.setAttribute("class",
           "ks3-rsurf-out" + (back < 20 ? " is-faint" : ""));
-      }
+      });
 
       setPath(wrap, "[data-rsurf-arcs]",
               "M" + CX + " " + (CY - ARC) + " A" + ARC + " " + ARC +
@@ -13418,7 +13640,57 @@
          camera's lens barrel (y 120–280) — and the opening is clamped ten
          units inside it so there is always a blade left to see. */
       var HALF = eye ? 72 : 74;
-      var rPx = Math.max(5, Math.min(eye ? mm * 7.75 : mm * 1.28, HALF - 10));
+
+      /* ⊕ MRB-297 · 1 Sep 2026 — THE APERTURE WAS PAINTED SHUT, WITH LIGHT
+         DRAWN THROUGH IT. The note above says `rPx` is the half-OPENING.
+         It was not: it was the position of the blade's END POINT, and the
+         blades are stroked round-capped, so each cap paints half a
+         stroke-width PAST its end point and eats into the hole from both
+         sides. The drawn opening was `2 × rPx − strokeWidth`, never `2 × rPx`.
+
+         WHAT A STUDENT SAW, measured in a browser rather than worked out on
+         paper — `isPointInStroke` on the blade path, at the ray's own
+         waypoints, across all ten shipped states:
+           camera 3.0 mm  · opening −2 · THE AXIS ITSELF PAINTED — shut
+           camera 6.0 mm  · opening 3.5 · both rays inside the blade
+           camera 12.0 mm · opening 19  · both rays inside the blade
+           eye 2.0 mm     · opening 19  · both rays inside the blade
+         Four of ten states drew light passing through opaque metal, and the
+         brightest camera state — the one the lesson uses to say the
+         aperture closes down in bright light — was a solid bar with two
+         rays crossing it. The readout beside it said "3.0 mm across".
+
+         WHAT IT DOES NOW. The OPENING is the quantity that is scaled and
+         clamped, and the blade end point is derived from it by adding the
+         cap back on — so the drawn hole is what `open` says it is, and it
+         can never be negative. The cap is measured off the live element
+         rather than assumed, because the stroke lives in `shared/ks3.css`
+         (`.ks3-eyecam-stop`, currently `stroke-width: 12` and
+         `stroke-linecap: round`) which this file does not own: if that
+         width is ever changed the geometry follows it instead of silently
+         going wrong again. A butt cap paints nothing past the end, so it
+         contributes no inset at all.
+
+         ⚠️ THE OUTER EXTENT IS DELIBERATELY UNCHANGED. `rPx` still tops out
+         at `HALF - 10`, so the widest states draw exactly where they drew
+         before and the blade is still clamped ten units inside the case
+         wall. Only the small end moves. */
+      var stopEl = wrap.querySelector("[data-eyecam-stop]");
+      var CAP = 6;
+      if (stopEl && window.getComputedStyle) {
+        var scs = window.getComputedStyle(stopEl);
+        var sw = parseFloat(scs.strokeWidth);
+        if (sw > 0) {
+          CAP = (scs.strokeLinecap === "round"
+                 || scs.strokeLinecap === "square") ? sw / 2 : 0;
+        }
+      }
+      /* The floor is on the OPENING, so the smallest aperture is a narrow
+         slit a reader can see light through — not a hairline, and never a
+         closed bar. */
+      var open = Math.max(4, Math.min(eye ? mm * 7.75 : mm * 1.28,
+                                      HALF - 10 - CAP));
+      var rPx = open + CAP;
       var bx = eye ? CX + 108 : 840;
 
       each(systems, function (b) {
@@ -13440,15 +13712,17 @@
       setPath(wrap, "[data-eyecam-back]", eye
         ? "M" + (CX + 100) + " 90 A140 140 0 0 1 " + (CX + 100) + " 310"
         : "M840 110 V290");
-      /* 0.7 of the half-opening is INSIDE the hole now. While `rPx` was the
-         half-blade these two waypoints landed inside the opaque marks at
-         every setting, so the drawing also had light passing through the
-         iris. */
+      /* ⊕ MRB-297 · 1 Sep 2026 — the rays are aimed at 0.7 of the TRUE
+         opening, not of `rPx`. Aiming at `0.7 × rPx` put them inside the
+         painted blade whenever `rPx` was 20 or less, because the cap had
+         already taken the outer 6 of the hole; `0.7 × open` is inside the
+         hole at every setting by construction, whatever the stroke width
+         is. */
       setPath(wrap, "[data-eyecam-rays]",
               "M120 90 L" + (CX - 118) + " " +
-              (200 - rPx * 0.7).toFixed(1) + " L" + bx + " 255 " +
+              (200 - open * 0.7).toFixed(1) + " L" + bx + " 255 " +
               "M120 200 L" + (CX - 118) + " " +
-              (200 + rPx * 0.7).toFixed(1) + " L" + bx + " 200");
+              (200 + open * 0.7).toFixed(1) + " L" + bx + " 200");
       setPath(wrap, "[data-eyecam-img]",
               "M" + bx + " 200 V255 M" + bx + " 255 l-9 -15 M" + bx +
               " 255 l9 -15");
@@ -18688,11 +18962,26 @@
         head.textContent = fillTokens(head.getAttribute("data-template"),
                                       vals);
       }
+      /* ⊕ MRB-297 · 1 Sep 2026 — A BLOCKED STATE COMPOSES NO MODEL LINES.
+         The P12 half of the same repair made in `paintAttempt` (P4) and
+         `paintAttemptP8`. WHAT A STUDENT SAW, measured in a browser on
+         `gravity-and-weight.html`: Check on Earth, then the Deep space tab.
+         The refusal reads "every weight comes out as nothing … the five
+         lines come back" while the five lines were still on screen, still
+         composed, reading "W = 50 kg × 0.0 N/kg" and "W = 0 N" — the lines
+         the sentence had just said had gone. Hiding `.ks3-cfa-rows` never
+         touched them: they live in `.ks3-cfa-reveal`, which is its SIBLING.
+         WHAT IT DOES NOW: while blocked they are blank and the reveal is
+         hidden. */
       each(toArray(q.querySelectorAll("[data-p12cfa-line]")), function (el) {
-        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+        el.textContent = blocked
+          ? ""
+          : fillTokens(el.getAttribute("data-template"), vals);
       });
       each(toArray(q.querySelectorAll("[data-p12cfa-note]")), function (el) {
-        el.textContent = fillTokens(el.getAttribute("data-template"), vals);
+        el.textContent = blocked
+          ? ""
+          : fillTokens(el.getAttribute("data-template"), vals);
       });
       var close = q.querySelector("[data-p12cfa-close]");
       if (close) {
@@ -18708,6 +18997,16 @@
         ? wrap.parentNode.querySelector("[data-p12cfa-blockhint]") : null;
       setHidden(block, !blocked);
       if (rows) { setHidden(rows, !!blocked); }
+      /* ⊕ MRB-297 · 1 Sep 2026 — and the marked panel goes behind the guard
+         with it, then comes back. A student tabs Earth → Deep space → Earth
+         freely, so this one has to restore as well as hide: `data-marked`
+         is already set by the press below, and the reveal is reopened only
+         when the state is NOT blocked and only when it was earned. */
+      var rev = q.querySelector("[data-p12cfa-reveal]");
+      if (rev && blocked) { setHidden(rev, true); }
+      else if (rev && q.getAttribute("data-marked") === "1") {
+        setHidden(rev, false);
+      }
       if (chk) {
         if (blocked) { chk.setAttribute("disabled", ""); }
         else if (q.getAttribute("data-marked") !== "1" && q.repaintBtn) {
@@ -18750,6 +19049,7 @@
       var reveal = q.querySelector("[data-p12cfa-reveal]");
       var tally = q.querySelector("[data-p12cfa-tally]");
       var ticks = toArray(q.querySelectorAll("[data-p12cfa-tick]"));
+      var blockEl = q.querySelector("[data-p12cfa-blocked]");
       if (!btn) { return; }
 
       function written() {
@@ -18757,14 +19057,30 @@
         each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
         return n;
       }
+      /* ⊕ MRB-297 · 1 Sep 2026 — the refusal guard is authoritative here
+         too, and it is an AND. `paintAttemptP12` disabled Check in deep
+         space and this handler re-enabled it on the first character typed,
+         so one keystroke bought all five lines for the state the page had
+         just said has no field to multiply by. */
+      function isBlocked() {
+        return !!(blockEl && !blockEl.hidden);
+      }
       function repaintBtn() {
-        var n = written();
-        if (n) { btn.removeAttribute("disabled"); }
+        if (btn.textContent === "Marked") { return; }
+        var n = written(), stop = isBlocked();
+        if (n && !stop) { btn.removeAttribute("disabled"); }
         else { btn.setAttribute("disabled", ""); }
         if (hint) {
-          hint.textContent = n
-            ? n + " of " + inputs.length + " lines written"
-            : "Write at least one line first";
+          /* Her `blockedProgress` — "No field to multiply by" — is carried
+             beside the panel as `data-p12cfa-blockhint`, and it is the same
+             sentence `paintAttemptP12` puts here. */
+          var bh = wrap.parentNode
+            ? wrap.parentNode.querySelector("[data-p12cfa-blockhint]") : null;
+          hint.textContent = (stop && bh)
+            ? (bh.getAttribute("data-text") || "")
+            : n
+              ? n + " of " + inputs.length + " lines written"
+              : "Write at least one line first";
         }
       }
       /* Handed to `paintAttemptP12` so a question that stops being blocked
@@ -18791,7 +19107,9 @@
       });
 
       btn.addEventListener("click", function () {
-        if (!written()) { return; }
+        /* ⊕ MRB-297 · 1 Sep 2026 — the same AND on the press itself, so a
+           keyboard activation of a stale button cannot get past it. */
+        if (!written() || isBlocked()) { return; }
         each(inputs, function (i, k) {
           var yours = q.querySelector('[data-p12cfa-yours="' + k + '"]');
           var line = q.querySelector('[data-p12cfa-yourline="' + k + '"]');

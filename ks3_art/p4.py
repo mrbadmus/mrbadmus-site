@@ -1850,7 +1850,24 @@ def r_p4_attempt(a, act_id):
     # printed it again. `None` tells the helper it is already on the page
     # (the P7 opt-out, applied here after it was measured on live pages).
     _check_attempt_arithmetic(a, act_id)
-    return r_cfifa_attempt(dict(a, eyebrow=None), act_id, "p4cfa")
+    html = r_cfifa_attempt(dict(a, eyebrow=None), act_id, "p4cfa")
+    # ⊕ MRB-297 · 1 Sep 2026 — THE READOUT WHILE THE PANEL IS BLOCKED.
+    #
+    # P4's Check button can now refuse — at zero load, and past this spring's
+    # limit of proportionality — and while it refused, the readout beside the
+    # disabled button went on saying "5 of 5 written", which is true of the
+    # boxes and useless as an account of why nothing happens when you press.
+    # `shared/ks3.js` deliberately invents no wording when the attribute is
+    # absent (it says so, at its own read), so the sentence is authored here,
+    # in the lesson, exactly as P8's is. Same key name, same mechanism, one
+    # copy of the idea.
+    q1 = (a.get("questions") or [{}])[0]
+    if q1.get("blocked_progress"):
+        html = html.replace(
+            '<div class="ks3-cfa" data-p4cfa ',
+            '<div class="ks3-cfa" data-p4cfa data-blocked-progress="%s" '
+            % e(q1["blocked_progress"]), 1)
+    return html
 
 
 # ═══ registration ════════════════════════════════════════════════════════

@@ -293,11 +293,16 @@ LESSON = {
               "name": "the Milky Way", "kind": "our galaxy",
               "ly": 100000, "dia": 9.5e17,
               "count": "about 200 billion stars",
-              "note": "A barred spiral. The Sun is one star in it, about two "
-                      "thirds of the way out. This figure is a width too, "
-                      "not a distance: light from the other stars in it has "
-                      "been on its way for anything from four years to "
-                      "eighty thousand."},
+              # ⊕ MRB-297 · 1 Sep 2026. This said the Sun sits "about two
+              # thirds of the way out". The `where-the-sun-sits` stretch on
+              # this same page puts it 26 000 ly from the centre of a disc
+              # 100 000 ly ACROSS — a radius of 50 000, so 26 000 is 52%.
+              # About halfway, not two thirds.
+              "note": "A barred spiral. The Sun is one star in it, about "
+                      "halfway out from the centre. This figure is a width "
+                      "too, not a distance: light from the other stars in "
+                      "it has been on its way for anything from four years "
+                      "to eighty thousand."},
              {"id": "andromeda", "label": "Andromeda",
               "name": "the Andromeda galaxy",
               "kind": "the nearest large galaxy",
@@ -334,13 +339,23 @@ LESSON = {
              "stars_sub":    "counted or estimated",
              "list_join":    "and",
          },
+         # ⊕ MRB-297 · 1 Sep 2026. This note ended "Each rung is not a
+         # little further than the last. It is thousands of times
+         # further", and it prints on all five tabs. Off the `ly` values
+         # above, the four steps are ×60, ×4459, ×23585 and ×25 — so two
+         # of the four are tens, not thousands, and the claim was false on
+         # half the ladder. It is now the four figures themselves, which
+         # make the real point better: the steps are wildly unequal.
          "notes": {
              "rung": "{note} Notice the shape of the ladder: the whole "
                      "solar system is a rounding error next to the gap "
                      "to the nearest star, and that gap is a rounding "
-                     "error next to the width of one galaxy. Each rung "
-                     "is not a little further than the last. It is "
-                     "thousands of times further.",
+                     "error next to the width of one galaxy. The steps "
+                     "are nowhere near equal — about sixty times from "
+                     "the Sun to the whole solar system, four and a half "
+                     "thousand times from there to the nearest star, "
+                     "twenty-four thousand more to the width of the "
+                     "galaxy, and then only twenty-five to Andromeda.",
          }},
 
         {"type": "key-fact", "ref": "what-sits-inside-what"},
@@ -500,8 +515,13 @@ LESSON = {
                 "gravity, and ours is the Milky Way. The universe holds "
                 "around two trillion galaxies. The steps between these scales "
                 "are not small — the nearest star is about 270 000 times "
-                "further away than the Sun, and one galaxy is tens of "
-                "thousands of light years across.",
+                # ⊕ MRB-297 · 1 Sep 2026. This ended "one galaxy is tens
+                # of thousands of light years across". The bench, the tab
+                # note and the stretch on this page all say the Milky Way
+                # is 100 000 ly across, so the key note was the only place
+                # disagreeing with the rest of the lesson.
+                "further away than the Sun, and one galaxy is about a "
+                "hundred thousand light years across.",
 
     "stretch": [
         {"id": "where-the-sun-sits",

@@ -29,8 +29,16 @@ two copies.
 ── ⚖️ RULED · THE CALORIMETER READS LOW ON PURPOSE ──────────────────────
 
 Design's science flag 1 asks for a ruling and this is it: the capture
-fractions stay exactly as she set them (0.30–0.46), and the bench keeps
-reading 30–46% of the label figure.
+fractions stay low, and the bench keeps reading well under half the label
+figure.
+
+⊕ MRB-297 · 1 Sep 2026 — this read "stay exactly as she set them
+(0.30–0.46), and the bench keeps reading 30–46% of the label figure",
+which stopped being true when the peanut left. Her 0.46 went with it. The
+four now on the bench are 0.42, 0.38, 0.34 and 0.30, so the range is
+0.30–0.42 and the bench reads 30–42% of the label. Three of the four are
+still hers, character for character; the cheese puff's 0.38 is this
+repository's, and D-P2-02 says so.
 
 That gap IS the lesson. Rung 3's fifth criterion is that repeating a
 measurement does nothing about a systematic leak, and it can only be
@@ -45,11 +53,18 @@ cannot be answered from it.
 
 Design's flag 3 offers 4.2 for arithmetic simplicity. Kept at 4.18, for a
 reason internal to the page rather than to taste: her hook quotes a real
-packet, 229 kcal and 958 kJ, and 229 × 4.18 = 957.2, which rounds to the
-958 printed. At 4.2 it gives 961.8 and the hook's own arithmetic stops
-landing on the number the student can read off the bag. The constant and
-the worked example are the same constant, so it cannot be changed in one
-place only.
+packet, 229 kcal and 958 kJ, and 4.2 gives 961.8, so the hook's own
+arithmetic stops landing on the number the student can read off the bag.
+
+⊕ MRB-297 · 1 Sep 2026 — THE PARAGRAPH ABOVE USED TO FINISH THE SUM AND
+GET IT WRONG. It read "229 × 4.18 = 957.2, which rounds to the 958
+printed". 957.2 rounds to 957 at every precision there is; it is not 958,
+and this is the answer to the question the page opens with. The label's
+own conversion factor is 4.184 — the figure the food-labelling rules set
+— and 229 × 4.184 = 958.1, which is where the packet's 958 comes from.
+So the hook now prints the sum with 4.184 and tells the student to round
+to 4.18 for their own working. Everywhere else on the page 4.18 stands:
+it IS 4.184 to three figures, and no other sentence here multiplies by it.
 
 ── ⚖️ MRB-204 · TRIANGLE, AND IT IS THE RIGHT SHAPE ────────────────────
 
@@ -163,11 +178,16 @@ LESSON = {
             "The kJ figure counts the packaging as well as the food itself",
         ],
         "answer": 1,
+        # ⊕ MRB-297 · 1 Sep 2026. This printed "229 × 4.18 gives 957 —
+        # which rounds to the 958 on the packet". 957.2 does not round to
+        # 958. The label's own conversion factor is 4.184, and
+        # 229 × 4.184 = 958.1, which is the 958 the packet prints.
         "reveal": "They are the same amount of energy in two different units, "
-                  "like 6 feet and 1.83 metres. One kilocalorie is 4.18 "
-                  "kilojoules, and 229 × 4.18 gives 957 — which "
-                  "rounds to the 958 on the packet. The joule is the "
-                  "scientific unit; the calorie survives on labels because "
+                  "like 6 feet and 1.83 metres. One kilocalorie is 4.184 "
+                  "kilojoules, and 229 × 4.184 gives 958 — the "
+                  "figure on the packet. Round it to 4.18 for your own "
+                  "working. The joule is the scientific unit; "
+                  "the calorie survives on labels because "
                   "people are used to it. <strong>Nothing about the crisps "
                   "changes.</strong>",
     },
@@ -260,7 +280,10 @@ LESSON = {
              # is a property of the bench, not of the food. A puffed snack
              # is mostly air, so it flares fast and more of what it
              # releases goes sideways into the room than a dense peanut's
-             # did — below the peanut's 0.46, inside the ruled 0.30–0.46.
+             # did — below the peanut's 0.46, and above the other three.
+             # ⊕ MRB-297 · 1 Sep 2026 — this line ended "inside the ruled
+             # 0.30–0.46", quoting a range the peanut's departure had
+             # already closed. The four fractions now run 0.30 to 0.42.
              {"id": "puff",   "label": "Cheese puff", "kj_per_g": 21.6,
               "capture": 0.38,
               "note": "Mostly fat and air. It lights at once and burns "
@@ -603,10 +626,16 @@ LESSON = {
     "stretch": [
         {"id": "every-error-runs-one-way",
          "type": "explainer",
-         "text": "Your school calorimeter will read low — usually 20 to "
-                 "60 per cent below the label — and every source of "
-                 "that error is worth naming, because they are all in the "
-                 "same direction. Energy escapes from the flame into the "
+         # ⊕ MRB-297 · 1 Sep 2026. This said "usually 20 to 60 per cent
+         # below the label". The bench's four capture fractions are 0.42,
+         # 0.38, 0.34 and 0.30, so a reading is 30 to 42 per cent OF the
+         # label — 58 to 70 per cent below it. The old band did not
+         # contain a single value the bench can produce.
+         "text": "Your school calorimeter will read low — usually only "
+                 "30 to 42 per cent of the label figure — and every "
+                 "source of that error is worth naming, because they are "
+                 "all in the same direction. "
+                 "Energy escapes from the flame into the "
                  "room instead of the water. The glass of the tube absorbs "
                  "some. The sample often stops burning before it is fully "
                  "consumed. None of these could ever make the reading too "

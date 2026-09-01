@@ -1395,6 +1395,14 @@ body.rd[data-mode="ks3"] {
 /* On the ink-dark practical block, Design's own pair: the lit state is the
    alert yellow with ink text, the resting state transparent on the muted
    rule.
+   ⊕ MRB-297 · 1 Sep 2026 — THE LIT STATE IS NO LONGER THE ALERT YELLOW.
+   Mide ruled on 30 Aug 2026 that selection takes `--ks3-accent`; amber is
+   kept for warning and loss. Design's pair is recorded above as drawn,
+   because it is the provenance for the SHAPE — a lit half and a resting
+   half, one segmented control — and the shape is what MRB-242 below is
+   about. Only the lit colour moved, and it moved to a 2px accent border on
+   the dark panel rather than to an accent slab: ink on the accent measures
+   4.49:1, just under the 4.5:1 body floor.
    ⊕ MRB-242 — `.ks3-seg-btn` was missing from BOTH of these, so the ruling
    three comments up ("one segmented control, two class names, one set of
    values") held for the light branch and broke for the dark one. Every
@@ -4072,9 +4080,22 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   background: var(--ks3-dark-panel);
   color: var(--ks3-on-dark-muted);
 }
+/* ⊕ MRB-297 · 1 Sep 2026 — THE BADGE FOLLOWS ITS BUTTON. This read
+   `color: var(--ks3-alert)` on the ink ground, which was right while a chosen
+   option was amber. The button above moved to `--ks3-accent` on 30 Aug and
+   the badge did not, so the two halves of one control disagreed: an accent
+   border round an amber number. The amber is retired here, not the ink.
+   ⚠️ The accent is NOT available as the glyph colour at 15px/800 — #E4572E
+   on `--ks3-ink` is 4.49:1, under the 4.5:1 floor — so the selection is
+   carried by the border, exactly as the platform's own migrated badge does
+   at `.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark`, and the
+   glyph takes `--ks3-on-dark` at 15.0:1. The light-ground sibling at
+   `.ks3-part[aria-pressed="true"] .ks3-part-num` is an accent slab with ink
+   on it and stays as it is: ink on accent measures 8.6:1 the other way up. */
 .ks3-dark .ks3-fit-part[aria-pressed="true"] .ks3-part-num {
   background: var(--ks3-ink);
-  color: var(--ks3-alert);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 
 /* ⊕ CORRECTED FROM THE SHIPPED STYLESHEET, and reported. `.ks3-reveal-btn` is
@@ -6440,14 +6461,68 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
      THE FIX, and why it is a scale and not a hide. The brand stops being
      the thing that gives way (`flex-shrink: 0` + `min-width: max-content`,
      so overprinting is impossible by construction rather than by arithmetic)
-     and instead comes down to the trail's own 17px on a phone. Measured, the
-     trail keeps the width it had — 104.4px against 107.6px before — so
-     nothing about the trail gets worse, and the wordmark becomes legible.
+     and instead comes down to the trail's own 17px on a phone.
+
+     ⊕ CORRECTED 1 Sep 2026 — this paragraph used to read "the trail keeps
+     the width it had — 104.4px against 107.6px before". Re-measured on
+     `temperature-and-internal-energy` at 390px, from the built pages either
+     side of the fix, and 107.6 does not reproduce. It is not a trail width
+     at all: 107.6 and 104.4 are two rows of the audit's own overprint table
+     (`records/p10.md`, "ink overflows box by") for `magnets-and-poles` and
+     `magnetic-fields` — two different lessons, one column, neither of them
+     before-and-after. The 104.4 the fix genuinely produces here is a
+     coincidence with the second row, which is what made the misreading
+     survive. What the trail actually does, and it is worth stating honestly
+     because it is the cost of this rule:
+
+         as shipped   trail BOX 192.4px, of which the wordmark paints over
+                      the first 98.4px — so ~94px is legible, the parent
+                      crumb is destroyed outright and the leaf crumb
+                      (104.5px) is half buried
+         after        trail BOX 104.4px, ALL of it legible; the parent crumb
+                      renders at 30.7px and the leaf at 50.0px, both
+                      ellipsised
+
+     So the box does shrink, by 88px, and the leaf crumb halves. What goes UP
+     is the part a reader can actually read: 94px to 104.4px, with nothing
+     overprinted. That is the trade, stated as it measures rather than as it
+     was first written.
+
+     ⚠️ AND IT WAS MEASURED AT ONE VIEWPORT, ON ONE SUBJECT. Re-driven over
+     all 185 KS3 lesson pages at three widths:
+
+         viewport   overprint   brand    trail
+           390px      0/185     140.6px  104.4px
+           360px      0/185     140.6px   74.4px
+           320px      0/185     140.6px   34.4px
+
+     The overprint is gone at every width, on all three subjects — that part
+     of the claim is stronger than it was stated, not weaker. But the brand is
+     now a fixed, unshrinkable 140.6px at EVERY width, which is 44% of a 320px
+     viewport, and the trail is whatever is left. That is why the trail is now
+     identical on all 185 pages: it no longer depends on the title at all.
+
+     ⚠️ **34.4px at 320px is about two glyphs and an ellipsis for the whole
+     trail**, and nobody looked at 320 or 360 before this shipped. It is not a
+     REGRESSION — the pre-fix rule overprinted at those widths too — but it is
+     a real cost and it is unruled. The audit's own fallback (hide the wordmark
+     below 420px) would give the trail ~140px back at 320. That is Mide's
+     call, not a second unilateral design decision on top of the first: this
+     block already picks 17px over 22px on his behalf, and one such choice per
+     run is enough. **OPEN ITEM FOR MIDE.**
+
+     Also measured and NOT caused here: `ks3/chemistry/mixtures-and-separation/
+     chromatography.html` has `scrollWidth` 326 at a 320px viewport, before
+     and after, which breaks MRB-229's "the page never scrolls sideways". It
+     is the only one of the 185.
+
      Holding the brand at 22px and making it unshrinkable also fixes the
-     overprint, but costs the trail 36px and cuts the last crumb to 15px,
-     which is the trade this rule declines. Design's mark is unchanged: same
-     chevron, same wordmark, same weight, scaled — MRB-197 governs the
-     composition of the mark, not its size at every viewport.
+     overprint, but leaves the trail 68.0px — 36px less than this rule — and
+     cuts the last crumb to 15px, which is the trade this rule declines.
+
+     Design's mark is unchanged: same chevron, same wordmark, same weight,
+     scaled — MRB-197 governs the composition of the mark, not its size at
+     every viewport.
 
      ⚠️ `ks3_parity`'s row "nav brand wordmark (MRB-197)" pins 22px. Verified
      it still passes: that harness pins no viewport and lands at 756px, where
@@ -11411,14 +11486,26 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 /* ⚖️ THE ONLY STATE A FAULT BUTTON HAS. Alert border, alert letter, a lifted
    ground — and the label colour does not move, because a chosen option is not
    a right one. If a rule below this line ever resolves to `--ks3-ok` #12A150
-   or `--ks3-danger` #FF6B6B, the bench has started marking. */
+   or `--ks3-danger` #FF6B6B, the bench has started marking.
+
+   ⊕ MRB-297 · 1 Sep 2026 — "ALERT BORDER, ALERT LETTER" IS NOW ACCENT
+   BORDER, ACCENT-BORDERED LETTER. Mide's 30 Aug ruling moves selection to
+   the accent; the paragraph above is kept because the part that matters —
+   the label colour does not move, and nothing here marks — is untouched by
+   it. The 30 Aug pass moved the BUTTON and left the LETTER on amber, so the
+   block ran for two days with two different "on" colours in it, which is the
+   precise thing `ks3_parity`'s own note on these rows exists to stop.
+   ⚠️ The accent is not available as a 14px/800 glyph colour (4.49:1 on ink,
+   3.18:1 on the panel), so the letter carries the accent as its BORDER and
+   takes `--ks3-on-dark` as its glyph — the platform's migrated-badge shape
+   at `.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark`. */
 .ks3-dark .ks3-ccheck-fault[aria-pressed="true"] {
   border-color: var(--ks3-accent);
   background: rgba(255, 255, 255, .10);
 }
 .ks3-dark .ks3-ccheck-fault[aria-pressed="true"] .ks3-ccheck-mark {
-  border-color: var(--ks3-alert);
-  color: var(--ks3-alert);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 /* ⚠️ (0,2,0), FOUR TIMES. All four sit on the CREAM ground inside the ink
    block; unscoped, `.ks3-dark p` paints each of them #E7DECE on #FBF3E6 at
@@ -12151,13 +12238,41 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    of it.
 
    ⚠️ AND IT IS STILL NOT A MARK (MRB-196 R10). Alert is "this is the setting
-   you have chosen", never "this is correct". ⊕ SUPERSEDED 30 Aug 2026 — selection is now the ACCENT (see the platform block at `.ks3-dark .ks3-option`); this paragraph is kept for its reasoning, not its colour. Nothing on these benches is
-   right or wrong; only the ladder marks. */
+   you have chosen", never "this is correct". Nothing on these benches is
+   right or wrong; only the ladder marks.
+
+   ⊕ SUPERSEDED 30 Aug 2026 — THE COLOUR, NOT THE ARGUMENT. Mide's ruling
+   moves selection to `--ks3-accent`; amber is warning and loss. Both
+   paragraphs above are kept for their reasoning, which still holds, and not
+   for their colour, which does not.
+
+   ⊕ MRB-297 · 1 Sep 2026 — AND THE ARGUMENT WENT WITH THE COLOUR. The
+   30 Aug recolour dropped the narrowing as well as the amber, so these four
+   dials fell through to the platform rule and shipped as the very thing the
+   first paragraph rejects: a thin outline on the same ground as its unchosen
+   siblings, chosen and unchosen both `--ks3-dark-panel`. Driven at 1280px
+   and screenshotted before and after.
+
+   What is restored is the NARROWING, at the ruled colour. The fill is the
+   accent at .22 over the ink block — an alpha the file already carries at
+   `.ks3-oflow-body.is-hot`, so no colour is introduced. Measured on the
+   composite (#4D2B1F): the `--ks3-on-dark` label lands 11.3:1, and the 2px
+   accent border 3.4:1 on the fill and 4.5:1 on the ink ground behind, both
+   clear of the 3:1 non-text floor (WCAG 1.4.11).
+
+   ⚠️ AN ACCENT SLAB IS NOT AVAILABLE HERE, and that is measurement rather
+   than taste: `--ks3-ink` on `--ks3-accent` is 4.49:1, under the 4.5:1 floor
+   for a 16px/700 label. See the amendment on `--ks3-alert` in
+   `shared/tokens.css`. The estate's lifted-ground idiom
+   (`rgba(255, 255, 255, .06)`, the #4A433C tile) was tried first, as the
+   cheaper fix, and rendered indistinguishable from the outline: a 1.17:1
+   lift is not a state at a glance. .30 was tried too and dropped — it takes
+   the border to 3.03:1, which passes with no margin at all. */
 .ks3-dark .ks3-rr-opt[aria-pressed="true"],
 .ks3-dark .ks3-lt-opt[aria-pressed="true"],
 .ks3-dark .ks3-mb-opt[aria-pressed="true"],
 .ks3-dark .ks3-tb-tab[aria-pressed="true"] {
-  background: var(--ks3-dark-panel);
+  background: rgba(228, 87, 46, .22);
   border-color: var(--ks3-accent);
   color: var(--ks3-on-dark);
 }
@@ -15121,9 +15236,15 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   border-color: var(--ks3-on-dark-muted);
   color: var(--ks3-on-dark-muted);
 }
+/* ⊕ MRB-297 · 1 Sep 2026 — THE LETTER FOLLOWS ITS VERDICT BUTTON, which
+   moved to `--ks3-accent` on 30 Aug while this did not. Same correction and
+   same reason as the fault letter in B6: the accent cannot be the glyph at
+   14px/800, so it is the border, and the glyph takes `--ks3-on-dark`. The
+   unchosen letter stays muted on both counts, so chosen and unchosen still
+   differ in two properties and not one. */
 .ks3-dark .ks3-sc-verdict[aria-pressed="true"] .ks3-sc-letter {
-  border-color: var(--ks3-alert);
-  color: var(--ks3-alert);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-on-dark);
 }
 .ks3-dark .ks3-sc-check {
   background: var(--ks3-on-dark);
@@ -15760,7 +15881,25 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    8.2:1, better than ink on the amber it replaces was obliged to be, and the
    tab keeps its 44px target. The two LOSS states below stay amber, which is
    the same ruling read the other way: they are caution, and caution is what
-   amber is now for. */
+   amber is now for.
+
+   ⊕ MRB-297 · 1 Sep 2026 — RE-EXAMINED UNDER THE 30 AUG RULING AND KEPT AT
+   `--ks3-data`. That ruling moves SELECTION to `--ks3-accent` and leaves
+   CATEGORY on `--ks3-data`, and a review of this file read the headline
+   above — "THIS IS A SELECTION, NOT A WARNING" — as putting this tab in the
+   half that moves. It does not. That headline was written against the amber
+   question of 19 Aug, where the only thing being asked was "is this a
+   caution?", and the paragraph under it then answers the later question
+   ahead of time, in the amendment's own words: "which field am I looking
+   at". These four tabs SHOW AND HIDE PANELS — one field's varieties at a
+   time, `data-bb-field` against a hidden sibling — so nothing is committed
+   to by pressing one, and the next tab press undoes it with no cost. That
+   is a view switch, which is category.
+   ⚠️ `shared/tokens.css` states the trap in as many words: "Recolouring a
+   CATEGORY under cover of this ruling is the one way to get it wrong." Left
+   deliberately. Raised for Mide in the MRB-297 report rather than changed,
+   because a tab strip is the one shape where the two halves of his ruling
+   genuinely touch. */
 .ks3-dark .ks3-bb-tab[aria-pressed="true"] {
   background: var(--ks3-data);
   border-color: var(--ks3-data);
@@ -28839,8 +28978,19 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
 .ks3-cplot-pole[data-on-north="0"] { color: var(--ks3-on-dark-muted); }
 
 /* The five-by-five grid of positions. A 44px target each, which is what a
-   thumb needs, and the selection takes `--ks3-data` because selection is
-   exactly what that token was minted for. */
+   thumb needs.
+
+   ⊕ MRB-297 · 1 Sep 2026 — THE SELECTION IS THE ACCENT. This used to end
+   "and the selection takes `--ks3-data` because selection is exactly what
+   that token was minted for". That sentence was true when it was written and
+   is not now: Mide's ruling of 30 Aug 2026 splits the token's two jobs and
+   moves SELECTION to `--ks3-accent`, leaving `--ks3-data` for CATEGORY only
+   (see the amendment on `--ks3-data` in `shared/tokens.css`). Picking where
+   to stand the compass is "you picked this", not "this column rather than
+   that one", so it moves. The kept sentence is the reason the run that made
+   the ruling walked past its own physics unit without applying it.
+   The spot carries no text — only an `aria-label` — so the fill has the 3:1
+   non-text bar to clear and no text bar at all. */
 .ks3-cplot-grid-btns {
   display: grid; grid-template-columns: repeat(5, 44px); gap: 6px;
 }
@@ -28850,7 +29000,7 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   border: 2px solid var(--ks3-on-dark-muted);
 }
 .ks3-cplot-spot[aria-pressed="true"] {
-  background: var(--ks3-data); border-color: var(--ks3-data);
+  background: var(--ks3-accent); border-color: var(--ks3-accent);
 }
 
 /* ── p10-03 · the dip circle ─────────────────────────────────────────── */

@@ -220,11 +220,18 @@ LESSON = {
          "anchor": "s-bill",
          "eyebrow": "Build the bill · a sum of products",
          "heading": "Set the household's habits and watch the total.",
+         # ⊕ MRB-297 · 1 Sep 2026. This said the motor "only runs about
+         # half" the day, and the row below started at 12 h. At 90 W that
+         # is 1.08 kWh a day, which is about twice a real fridge-freezer
+         # (0.4-0.55 kWh) and 2.25 times what this page's own CFIFA
+         # teaches a few blocks down (120 W for 4.0 h = 0.48 kWh). The
+         # CFIFA is the one that is right, so the bench moved to it: the
+         # row now starts at 5 h, giving 0.45 kWh a day.
          "prompt": "Five appliances, five sliders. Each row is a product; "
                    "the bottom line is their sum, plus a standing charge "
                    "that no slider can touch. The hours are the hours a "
                    "thing is drawing power — a fridge is plugged in all "
-                   "day, but its motor only runs about half of it.",
+                   "day, but its motor only runs a few hours of it.",
          "gate": {
              "prompt": "Commit first. In a typical UK home, which of these "
                        "is usually the largest single item on the "
@@ -263,8 +270,9 @@ LESSON = {
              {"id": "kettle", "name": "Kettle",          "watts": 2000,
               "min": 0, "max": 60,  "start": 12, "unit": "min/day",
               "per_hour": 60},
+             # ⊕ MRB-297 · 1 Sep 2026 — `start` was 12. See the prompt.
              {"id": "fridge", "name": "Fridge-freezer",  "watts": 90,
-              "min": 0, "max": 24,  "start": 12, "unit": "h/day",
+              "min": 0, "max": 24,  "start": 5, "unit": "h/day",
               "per_hour": 1},
              {"id": "lights", "name": "Lighting, whole house", "watts": 72,
               "min": 0, "max": 24,  "start": 5,  "unit": "h/day",

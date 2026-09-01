@@ -33,23 +33,33 @@ subject identity only.
 
 | | Count | What it renders as |
 |---|---|---|
-| Fully authored lessons | **6** | A real lesson page with all its content |
-| Unwritten slots | **176** | A short "Coming soon" placeholder page |
-| Cross-reference slots | **1** | No page of its own — it links to another discipline's lesson |
+| Fully authored lessons | **185** | A real lesson page with all its content |
+| Unwritten slots | **0** | A short "Coming soon" placeholder page |
 
-All six authored lessons are the same unit: **C1, "Particles and their behaviour"** (Chemistry,
-typically Year 7). All six are marked `draft`, meaning not yet checked for scientific accuracy, so
-all six currently show an under-review marker.
+⊕ **MRB-297 · 1 Sep 2026 — THE WHOLE KEY STAGE IS AUTHORED, and this table said 6.** The three
+rows above read "Fully authored **6** · Unwritten slots **176** · Cross-reference slots **1**",
+and the paragraph under them read:
 
-**Consequence for the design work.** There are only six real lesson pages in existence to design
-against, and they are all one unit of one science. The other 177 slots are placeholders. A design
-that only looks right on Chemistry particle lessons will break when Biology systems lessons and
-Physics calculation lessons are written. Sections 1, 2 and 3 therefore describe the **full
-vocabulary the generator can render**, not only what is currently on screen, and mark clearly which
-parts have never yet been exercised by real content.
+> All six authored lessons are the same unit: **C1, "Particles and their behaviour"** (Chemistry,
+> typically Year 7) … There are only six real lesson pages in existence to design against, and
+> they are all one unit of one science. The other 177 slots are placeholders.
 
-**Total pages the generator writes: 294.** That is 1 KS3 landing page + 3 discipline hubs + 33 unit
-index pages + 182 lesson pages + 75 browse-layer index pages.
+That was true when it was written and has not been true for some time; every one of the 185 slots
+now carries a real page, across all 33 units of all three disciplines. It is kept rather than
+deleted because it is the premise of the whole document — the reason sections 1, 2 and 3 describe
+"the full vocabulary the generator can render" rather than only what was on screen. That reason no
+longer applies, and a reader who does not know the premise has expired will read the coverage
+claims far too conservatively. The "Cross-reference slots" row is dropped: no lesson carries a
+cross-reference key any more, and 185 slots resolve to 185 authored pages with none left over.
+
+Sections 1, 2 and 3 still describe the full vocabulary, which is now the right thing for a
+different reason: the vocabulary is exercised rather than hypothetical.
+
+⚠️ Counted, not estimated: `find ks3_data -name 'lesson_*.py'` gives 185, and
+`ks3_data.KS3_UNITS` reports 185 slots of which 185 are `authored`.
+
+**Total pages the generator writes: 297.** That is 1 KS3 landing page + 3 discipline hubs + 33 unit
+index pages + 185 lesson pages + 75 browse-layer index pages.
 
 **Where the code lives.** The generator is `build_ks3.py`; the page behaviour is `shared/ks3.js`;
 the styling is `shared/ks3.css`; the content is the `ks3_data/` folder; the governing design
@@ -70,17 +80,24 @@ shapes.** A lesson built around a simulation looks different from a lesson built
 step-by-step mechanism, and that is deliberate. A design that assumes one page skeleton will fight
 the system.
 
-| Family | What it means, in one line | Lessons carrying it (of 183) | Named example |
+| Family | What it means, in one line | Lessons carrying it (of 185) | Named example |
 |---|---|---|---|
-| **MODEL** | One idea explains a whole class of behaviour. | **49** — Biology 8, Chemistry 17, Physics 24 | *The particle model* (unit C1) — **authored, viewable today** |
+| **MODEL** | One idea explains a whole class of behaviour. | **51** — Biology 8, Chemistry 19, Physics 24 | *The particle model* (unit C1) — **authored, viewable today** |
 | **PROCESS** | A mechanism unfolds in steps. | **34** — Biology 12, Chemistry 15, Physics 7 | *Changes of state* (unit C1) — **authored, viewable today** |
 | **SYSTEM** | Parts working together, and what happens when one part fails. | **32** — Biology 21, Chemistry 2, Physics 9 | *The digestive system* (unit B3) — not yet written |
-| **CONTRAST** | Two things, one difference that discriminates between them. | **18** — Biology 4, Chemistry 7, Physics 7 | *Solids, liquids and gases* (unit C1) — **authored, viewable today** |
-| **INVESTIGATION** | The scientific skill itself is the subject (fair testing, graphs, measurement error). | **18** — Biology 7, Chemistry 5, Physics 6 | *Testing the model: does it explain everything?* (unit C1) — **authored, viewable today** |
+| **CONTRAST** | Two things, one difference that discriminates between them. | **19** — Biology 4, Chemistry 8, Physics 7 | *Solids, liquids and gases* (unit C1) — **authored, viewable today** |
+| **INVESTIGATION** | The scientific skill itself is the subject (fair testing, graphs, measurement error). | **17** — Biology 7, Chemistry 4, Physics 6 | *Testing the model: does it explain everything?* (unit C1) — **authored, viewable today** |
 | **QUANTITATIVE** | A calculation carries the concept. | **17** — Biology 2, Chemistry 2, Physics 13 | *Speed* (unit P3) — not yet written |
 | **CLASSIFY** | Decide which category, fast, and know why. | **15** — Biology 4, Chemistry 7, Physics 4 | *Acids and alkalis* (unit C6) — not yet written |
 
-Counts sum to 183.
+Counts sum to 185.
+
+⊕ **MRB-297 · 1 Sep 2026 — this table summed to 183 and three of its rows were wrong.** MODEL read
+49 (Chemistry 17), CONTRAST 18 (Chemistry 7) and INVESTIGATION 18 (Chemistry 5). Measured from the
+`"family"` key of all 185 lesson files, the true split is MODEL 51 (Chemistry 19), CONTRAST 19
+(Chemistry 8) and INVESTIGATION 17 (Chemistry 4). Pre-existing drift, not this run's: the counts
+were written by hand and the lesson files kept moving. §10.1's Slots column carried the same drift
+from a different starting point and is corrected there too.
 
 **Three families have never been rendered with real content:** SYSTEM (32 lessons), QUANTITATIVE
 (17) and CLASSIFY (15). That is 64 of 183 lessons — just over a third of the course — whose page
@@ -453,13 +470,36 @@ border, which is where the alert accent comes from: orange on ink cannot be read
 drew the **chosen** state of a dark option button. The values below are what the build renders
 today, registered so they cannot drift while that screen is outstanding.
 
+⊕ **MRB-297 · 1 Sep 2026 — the paragraph above no longer explains the Chosen row, and the row
+itself was stale.** Two corrections, and the first is why the second went unnoticed for two days.
+
+1. **The Chosen row said `--ks3-alert` `#FFC53D` and the build has not rendered that since
+   30 August**, when Mide ruled that selection moves to `--ks3-accent`. The row is corrected
+   below. This document's promise is "what the build renders today", so a stale row is not a
+   small error here — it is the document failing at the one job it claims.
+2. **"Orange on ink cannot be read" is still true, and is now the reason for the shape rather
+   than an argument against the colour.** The accent is the BORDER and never the fill:
+   `--ks3-ink` on an `--ks3-accent` slab measures 4.49:1, just under the 4.5:1 body floor,
+   while a border answers only to the 3:1 of WCAG 1.4.11 and gets 3.18:1 on the panel. So the
+   sentence survives the ruling; it changed which half of the control it governs.
+
+The badge moved with it: it was a solid amber fill and is now the dark panel with a 2px accent
+border and an `--ks3-on-dark` glyph, which costs no width because `styles.css` sets
+`box-sizing: border-box`. Pinned at `ks3_parity.py`'s two `dark-block option CHOSEN` rows.
+
 | State | Signal | Ground | Border | Badge fill / glyph |
 |---|---|---|---|---|
 | **Resting** | `aria-pressed="false"` | `--ks3-dark-panel` `#3E3730` | `--ks3-on-dark-muted` `#C6B9A7` | `--ks3-on-dark-muted` / `--ks3-ink` |
-| **Chosen** | `aria-pressed="true"` | `--ks3-dark-panel` (unchanged) | `--ks3-alert` `#FFC53D` | `--ks3-alert` / `--ks3-ink` |
+| **Chosen** | `aria-pressed="true"` | `--ks3-dark-panel` (unchanged) | `--ks3-accent` `#E4572E` | `--ks3-dark-panel` + `2px` `--ks3-accent` / `--ks3-on-dark` `#FBF3E6` |
 
 On this surface the chosen state is carried by the **border alone**, so that border is a
 state-bearing mark and is held to 3:1 against the panel behind it.
+
+⚠️ **One unit narrows this rule and is allowed to.** B7's four benches
+(`.ks3-rr-opt`, `.ks3-lt-opt`, `.ks3-mb-opt`, `.ks3-tb-tab`) add an accent FILL at .22 under the
+same accent border, because four dials each showing a thin border on one ground do not read as a
+state at a glance. That narrowing is documented at its rule in `shared/ks3.css` and pinned in
+`ks3_parity.py`. It changes the fill, never the selection colour.
 
 ### Prediction-gate states (activities that are not simulations)
 
@@ -909,13 +949,20 @@ and the build fails naming the family.
 
 | Family | Slots | Reference screen | Approved |
 |---|---|---|---|
-| MODEL | 50 | `docs/ks3/design-reference/b1/b1-03-animal-and-plant-cells.dc.html` | Mide, 12 Aug 2026 |
+| MODEL | 51 | `docs/ks3/design-reference/b1/b1-03-animal-and-plant-cells.dc.html` | Mide, 12 Aug 2026 |
 | PROCESS | 34 | `docs/ks3/design-reference/KS3 Reference Set (offline).html` | Mide, 8 Aug 2026 |
 | SYSTEM | 32 | `docs/ks3/design-reference/b1/b1-04-specialised-cells.dc.html` | Mide, 12 Aug 2026 |
-| INVESTIGATION | 18 | `docs/ks3/design-reference/b1/b1-02-using-a-microscope.dc.html` | Mide, 12 Aug 2026 |
-| CONTRAST | 18 | `docs/ks3/design-reference/b1/b1-06-unicellular-organisms.dc.html` | Mide, 12 Aug 2026 |
+| INVESTIGATION | 17 | `docs/ks3/design-reference/b1/b1-02-using-a-microscope.dc.html` | Mide, 12 Aug 2026 |
+| CONTRAST | 19 | `docs/ks3/design-reference/b1/b1-06-unicellular-organisms.dc.html` | Mide, 12 Aug 2026 |
 | CLASSIFY | 15 | `docs/ks3/design-reference/b1/b1-01-life-processes.dc.html` | Mide, 12 Aug 2026 |
 | QUANTITATIVE | 17 | `docs/ks3/design-reference/b2/b2-04-biomechanics-forces-in-the-body.dc.html` | Design delivered 15 Aug 2026 · **awaiting Mide** |
+
+⊕ **MRB-297 · 1 Sep 2026 — the Slots column summed to 184 and should sum to 185.** MODEL read 50,
+INVESTIGATION 18 and CONTRAST 18; measured from the `"family"` key of all 185 lesson files they are
+51, 17 and 19. Pre-existing drift, corrected in §1's table at the same time. ⚠️ The Slots column is
+NOT read by the build — `check_design_coverage` takes only the Family and Reference-screen columns
+from this table — so this drift could never have gone red. It is documentation, and it was wrong
+for as long as it took someone to add up a column.
 
 ⊕ **QUANTITATIVE rowed 16 Aug 2026 (MRB-220). It was the last unrowed family.** Design's B2/C1/C2
 delivery includes two QUANTITATIVE pages — `b2-04 biomechanics-forces-in-the-body` and

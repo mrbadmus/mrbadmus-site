@@ -50,9 +50,27 @@ rather than extending an old one.
 | `ks3_overflow` | nothing escapes its box | nothing does |
 | `ks3_smoke` | no `undefined`, no unsubstituted placeholder | every string is fully substituted; they are substituted with a falsehood |
 | `verify_questions` | the bank's structure — twelve, four options, one correct, a real `why` | captions are not questions and are not in the bank |
-| `verify_answer_positions`, `verify_answer_lengths` | no MCQ corpus lets position or shape answer the question | a caption is not an MCQ |
+| `verify_answer_positions` | no MCQ corpus lets one option POSITION hold the answer | a caption is not an MCQ |
+| `verify_answer_lengths` | nothing new, and no scope worse than the state it inherited — see the note below | a caption is not an MCQ |
 | `ks3_mutation` | a deliberate defect injected into the source is caught by some gate | it only catches what some gate already watches — this class is precisely the gap, so mutation testing is silent about it too |
 | the per-drawer `raise ValueError` guards in `ks3_art/` | the **payload** is well-formed before drawing | they run at build time on authored data. Most of these captions do not exist at build time: they are composed in `shared/ks3.js` at runtime from bench state |
+
+⊕ **MRB-297 · 1 Sep 2026 — the two rows above used to be one, and it overclaimed.**
+It read: *"`verify_answer_positions`, `verify_answer_lengths` | no MCQ corpus
+lets position or shape answer the question"*. The first half is what
+`verify_answer_positions` promises. The second half is not what
+`verify_answer_lengths` promises and never was: that gate BASELINES several
+corpora as known live defects and holds them to "no worse", so on those
+scopes length still does help answer the question and the gate says so out
+loud, printing the count of baselined scopes that remain exploitable. Its own
+pass line is "nothing new, and no scope worse than the state it inherited".
+
+The overclaim mattered here specifically. This table is the argument for
+building a NEW gate, and it argues by showing that every existing gate is
+watching something real and this defect still slips past. An existing gate
+credited with more than it does weakens that argument rather than
+strengthening it: a reader who trusts the old wording would conclude the
+shape of an answer is already handled, and it is not.
 
 The last row is the crux and it is worth stating on its own.
 

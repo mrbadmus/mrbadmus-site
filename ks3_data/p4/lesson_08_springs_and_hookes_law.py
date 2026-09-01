@@ -428,6 +428,11 @@ LESSON = {
                       "held.",
               "blocked_lead": "Put a load on the spring first — a zero "
                               "reading has nothing to scale up.",
+              # ⊕ MRB-297 · 1 Sep 2026 — see the note on the same key in
+              # `lesson_02_drawing_and_adding_forces.py`. This panel refuses
+              # in two states, zero load and past the limit, and one line
+              # covers both: neither gives a reading to scale up.
+              "blocked_progress": "Waiting on a reading to scale up",
               "steps": [
                   {"letter": "C", "label": "Convert",
                    "placeholder": "anything to convert?",

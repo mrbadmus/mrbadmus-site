@@ -31,9 +31,15 @@ nothing cannot pull.
 
 101, 90, 75, 50, 31 and 23 kPa at 0, 1000, 2500, 5500, 8850 and 11 000 m
 — each within a kilopascal of the international standard atmosphere. The
-boiling points (100, 97, 92, 82, 71, 65 °C) follow from them. Real
-pressure moves several kilopascals with the weather, which is what makes
-a barometer useful at all, and the foot line says so. `r_altitude_column`
+boiling points (100, 97, 92, 82, 71, 63 °C) follow from them.
+
+⊕ MRB-297 · 1 Sep 2026 — the last one read 65 °C and is now 63 °C. Water's
+saturation pressure is 22.9 kPa at 63 °C and 25.0 kPa at 65 °C, so 23 kPa
+boils at 63, and 65 was two degrees out. Every other row is within about a
+degree of its own pressure, so this one was also the odd row out.
+
+Real pressure moves several kilopascals with the weather, which is what
+makes a barometer useful at all, and the foot line says so. `r_altitude_column`
 asserts that the pressure FALLS at every step, because that is the
 statement this lesson owns.
 
@@ -79,10 +85,23 @@ LESSON = {
 
     # ── ⚠️ NO `safety_note` ON THIS LESSON, AND THE ABSENCE IS DELIBERATE ──
     #
-    # ⊕ MRB-297, 31 Aug 2026. Mide approved twelve safety notes on 30 Aug and
-    # eleven were placed. The twelfth was for THIS lesson and reads
-    # "Teacher demonstration only — never try this one yourself. …". It is
-    # NOT here, and it is not to be added without his say-so.
+    # ⊕ MRB-297, 31 Aug 2026. Mide approved eleven safety notes on 30 Aug.
+    # TEN of them were placed, across TWELVE lessons — the P7 Sun line goes
+    # on two lessons and the P10 coil line on two, character for character
+    # identical each time.
+    #
+    # ⊕ CORRECTED 1 Sep 2026. This used to say "twelve safety notes … and
+    # eleven were placed", which is wrong twice over and the same wrong
+    # count stands in commit a60252844's message. Counted from the tree:
+    # thirteen physics lessons carry a `safety_note`, but one of them,
+    # `p4-08 springs-and-hookes-law`, had its note long before this run
+    # started and is not Mide's 30 Aug work. That leaves twelve placements
+    # of TEN distinct texts, not eleven. Ten placed plus this one withheld
+    # is ELEVEN approved.
+    #
+    # The eleventh was for THIS lesson and reads
+    # "Teacher demonstration only — never try this one yourself. …".
+    # It is NOT here, and it is not to be added without his say-so.
     #
     # Why: the note assumes the crushed can is a teacher demonstration, and
     # this lesson's own `meta_description` and `big_question` were written as
@@ -246,9 +265,11 @@ LESSON = {
              {"id": "h8850", "label": "8850 m",
               "name": "the summit of Everest", "m": 8850, "kpa": 31,
               "boil": 71},
+             # ⊕ MRB-297 · 1 Sep 2026 — `boil` was 65. 23 kPa is the
+             # saturation pressure of water at about 63 °C. See the note.
              {"id": "h11000", "label": "11 000 m",
               "name": "cruising height for an airliner", "m": 11000,
-              "kpa": 23, "boil": 65},
+              "kpa": 23, "boil": 63},
          ],
          "cases": [
              {"id": "bag", "label": "Sealed bag", "tile": "The bag",

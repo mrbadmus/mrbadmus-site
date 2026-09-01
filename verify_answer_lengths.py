@@ -46,9 +46,25 @@ student receives.
                giveaway, and was live to students for two days. The pools were
                repaired on 1 Sep and re-verified row by row against source.
   · `ladder` — the four rungs baked into every lesson page. LIVE.
-  · `hook`   — `phenomenon.options` on the lesson dict. LIVE. Carries an
-               integer `answer` index in `ks3_data` on **70 of 70** physics
-               lessons, so none is skipped.
+  · `hook`   — `phenomenon.options` on the lesson dict. Carries an integer
+               `answer` index in `ks3_data` on **70 of 70** physics lessons,
+               so none is skipped.
+               ⚠️ **NOT GRADED, AND THIS GATE USED TO SAY IT WAS.** ⊕ CORRECTED
+               1 Sep 2026 by the fourth cold double-check. `r_activity_options`
+               in `ks3_art/kit.py` is one line of design law — *"R3: chosen,
+               never correct. No data-correct, no green, never disabled."* The
+               built markup bears it out: a hook option carries `data-i` and
+               `aria-pressed` and nothing else, and the reveal opens the same
+               whichever one is pressed. **The `answer` index never reaches the
+               page.** It is read by this file and by nothing else in the repo.
+               So a hook length tell is not worth marks and cannot be exploited
+               for any, and the claim in this run's own commits — "a giveaway
+               on eight live pages" — was wrong. It is measured and PRINTED
+               here, because a corpus where the right answer systematically
+               looks different still teaches a habit that transfers to the
+               ladder, which IS graded. It does not gate. ⚠️ If R3 is ever
+               reversed (Design's R10, unruled), the hook ships graded and this
+               must gate again — see `HOOK_GATES` below.
                ⊕ This paragraph used to read "62 of 70 … the 8 that do not
                resolve are all of P1". That was true when this gate was
                written and P1's eight hooks were the estate's only unwatched
@@ -177,7 +193,130 @@ RANK_BASELINE = {
     # is fixed rather than recorded. Rank 1 is where the work went and it
     # shows: physics bank rank 1 went 52.3% -> 24.7% and the whole physics
     # bank distribution's chi-square fell from 186 to 37.
+    #
+    # ⊕ CORRECTED 1 Sep 2026 — "IS FIXED" WAS NOT TRUE, AND THIS COMMENT IS
+    # THE REASON THE GATE STAYED GREEN OVER IT. Nine sets were moved and the
+    # single-margin figures came down to 34.6% and 34.3% — which passes only
+    # because `HI` is 0.35. A fourth cold reviewer re-measured at every margin
+    # and found the physics bank's rank 2 fires this gate's OWN giveaway rule
+    # at margins 7, 8, 9 and 10. The gate was green in a two-value window and
+    # red on either side of it, which is not a measurement, it is a coincidence
+    # with a constant.
+    #
+    # ⚠️ SO THE SINGLE-MARGIN RANK CHECK BELOW NO LONGER GATES ANYTHING ON ITS
+    # OWN. It prints, because the table is readable. Two measures gate now, and
+    # neither can be tuned by choosing a threshold:
+    #
+    #   `RANK_ALL_BASELINE`  the rank distribution over EVERY set, no margin
+    #                        filter at all. The denominator is the whole corpus
+    #                        — 840 physics bank questions, always — so it
+    #                        cannot be moved by edits that push sets in or out
+    #                        of a filtered pool, which is exactly what made the
+    #                        earlier before/after comparisons unreadable.
+    #   `SWEEP_BASELINE`     the WORST rate at any rank at any margin from 3 to
+    #                        10. If a fix only works at one margin, this sees it.
 }
+
+# ── the two measures that actually gate · added 1 Sep 2026 ──────────────
+#
+# ⚠️ READ THIS BEFORE TOUCHING EITHER TABLE. Both are measured at this run's
+# branch point, `834624da7` — the state the branch INHERITED — by `git archive`
+# and re-running this file's own functions over the extracted tree. A baseline
+# taken after the work would let the work grade itself.
+
+# 1 · THE RANK DISTRIBUTION OVER EVERY SET, WITH NO MARGIN FILTER.
+#
+# The filtered measure has a moving denominator: an edit that changes any
+# option's length can push a whole set into or out of the measured pool, so a
+# rate can rise while the number of exploitable questions falls, and fall while
+# it rises. Both happened in this run and both were misread. Over the whole
+# corpus the denominator is fixed — 840 physics bank questions, 140 physics
+# ladder rungs, every time — so a change in the rate is a change in the thing.
+#
+# Chance is 25% at every rank. Rows only for scopes that are RED TODAY at the
+# branch point; a row is a debt, never permission to decay.
+RANK_ALL_BASELINE = {
+    # bio/chem — untouched by this run, live on production, its own lane's debt
+    ("bank",   "BIO+CHEM", 0): (1380, 493),   # 35.7% at rank 1
+    ("ladder", "BIO+CHEM", 0): (230, 101),    # 43.9% at rank 1
+    # physics bank — the tell the audit found, at the state it was found in
+    ("bank",   "PHYSICS", 0): (840, 317),     # 37.7% at rank 1
+    # physics ladder rank 3 — inherited, not made here
+    ("ladder", "PHYSICS", 2): (140, 15),      # 10.7% at rank 3, the mirror
+    # physics hooks — NOT GATED (see HOOK_GATES); rows kept so the printed
+    # line can say what it inherited rather than only what it is
+    ("hook", "PHYSICS", 0): (62, 31),         # 50.0% at rank 1
+    ("hook", "PHYSICS", 1): (62, 25),         # 40.3% at rank 2
+    ("hook", "PHYSICS", 2): (62, 5),          #  8.1% at rank 3, mirror
+    ("hook", "PHYSICS", 3): (62, 1),          #  1.6% at rank 4, mirror
+}
+
+# 2 · THE WORST RATE AT ANY RANK AT ANY MARGIN FROM 3 TO 10.
+#
+# `MARGIN` is a judgement about what a reader can see, and a fix aimed at one
+# value of it is a fix aimed at a constant. Sweeping is the answer: whatever a
+# student's threshold of perception actually is, it is somewhere in 3..10, and
+# the gate holds the worst case across all of them.
+SWEEP_BASELINE = {
+    ("bank",   "BIO+CHEM"): 0.692,   # rank 1 at margin 8, 139/201
+    ("bank",   "PHYSICS"):  0.534,   # rank 1 at margin 7, 173/324
+    ("ladder", "BIO+CHEM"): 0.810,   # rank 1 at margin 10, 34/42
+    ("ladder", "PHYSICS"):  0.348,   # rank 4 at margin 9, 24/69
+    ("hook",   "PHYSICS"):  0.647,   # rank 1 at margin 6, 22/34
+}
+SWEEP_MARGINS = range(3, 11)
+
+# ⚠️ THE HOOK CORPUS IS MEASURED AND PRINTED BUT DOES NOT GATE, because it is
+# not graded — see the docstring. Flip this to True the day design law R3 is
+# reversed and a hook option starts carrying a correctness marker; the
+# baselines above are already recorded for that day.
+HOOK_GATES = False
+
+# ── PROVED TO FIRE, 1 Sep 2026 ──────────────────────────────────────────
+# A gate that has never gone red for a reason is a gate nobody has tested.
+# Each check below was run against `collect()`'s real output with one defect
+# injected, and each caught the defect it exists for:
+#
+#   M1  90 physics bank answers pushed from rank 1 to rank 2 by lengthening
+#       the runner-up past the correct option — the EXACT edit this run made
+#       nine times. Distribution 268/249/148/175 -> 178/339/148/175.
+#       `report_ranks_all` RED on bank/PHYSICS rank 2. The old single-margin
+#       check was green on this.
+#   M2  40 physics ladder answers padded 25 characters. Both checks RED.
+#   M3  45 physics ladder answers padded 9 characters — small enough that the
+#       single-margin table at MARGIN 6 absorbs much of it.
+#       `report_ranks_all` RED on ladder/PHYSICS rank 1.
+#
+# ⚠️ The sweep stayed green on M1, correctly: its baseline is the 53.4% worst
+# case this branch INHERITED, and M1 is still better than that. The two checks
+# cover different things and both are needed — that is why there are two.
+
+
+def worse_than_baseline(n, k, base_rate, hot):
+    """Is this scope DETECTABLY worse than the state it inherited?
+
+    ⚠️ NOT `rate > base_rate`, which is what the first version of this rule
+    was, and it is the wrong test on a proportion. On a 95-set scope a strict
+    inequality fires on two sets, which is inside sampling noise — and a gate
+    that goes red on noise is a gate people learn to re-run rather than read.
+    It also fired the other way: an improvement of one set in 140 was failed,
+    because the direction of "no worse" is opposite for the two tells.
+
+    So the question asked here is the one that has an answer: given the
+    baseline's own rate, would a scope this size land this far the wrong side
+    of it by chance? A one-sided binomial against the BASELINE rate, at the
+    same `ALPHA` as everything else. Being at or the right side of the
+    baseline always passes; being worse fails only when the corpus is big
+    enough for "worse" to mean anything.
+    """
+    if hot == "GIVEAWAY":
+        if k <= base_rate * n:
+            return False
+        return binom_tail_ge(k, n, base_rate) < ALPHA
+    if k >= base_rate * n:
+        return False
+    return binom_tail_le(k, n, base_rate) < ALPHA
+
 
 PHYS = {"P%d" % i for i in range(1, 13)}
 FAIL = []
@@ -289,7 +428,9 @@ def rank_of(opts, ans):
     the visibly longest. That is one exploit of four, and a fix aimed at it
     does not remove the information, it MOVES it. That is not hypothetical:
     MRB-297 widened one distractor in each of six hooks to push the correct
-    answer off rank 1, and measured on the same 70 sets
+    answer off rank 1 — ⚠️ chasing an exploit that does not exist, because the
+    hook is ungraded (R3); see the corpus list in the docstring — and measured
+    on the same 70 sets
 
         pick the longest      34.3% -> 25.7%   (fixed)
         pick the 2nd longest  34.3% -> 42.9%   p = 0.0008   (created)
@@ -328,6 +469,131 @@ def rank_of(opts, ans):
     return r
 
 
+def rank_all(opts, ans):
+    """The correct option's rank by length, with NO margin filter.
+
+    Ties broken by authored order, which is arbitrary and therefore fair: it
+    cannot be steered by an edit. The point of this measure is its fixed
+    denominator — every four-option set counts, always — so a rate here means
+    the same thing before and after a change. See `RANK_ALL_BASELINE`.
+    """
+    return sorted(range(len(opts)), key=lambda j: (-len(opts[j]), j)).index(ans)
+
+
+def _hot(n, k):
+    """"GIVEAWAY" / "MIRROR" / "" for k of n against chance, both conditions."""
+    if n == 0:
+        return ""
+    rate = k / n
+    if rate > HI and binom_tail_ge(k, n, CHANCE) < ALPHA:
+        return "GIVEAWAY"
+    if rate < LO and binom_tail_le(k, n, CHANCE) < ALPHA:
+        return "MIRROR"
+    return ""
+
+
+def report_ranks_all(tally):
+    """PRIMARY CHECK — the whole-corpus rank distribution, fixed denominator."""
+    bad = []
+    print("  RANK OVER EVERY SET — no margin filter, so the denominator is the")
+    print("  whole corpus and a rate means the same thing before and after a")
+    print("  change. This is the measure that gates. Chance is 25% at each rank.")
+    for (corpus, grp) in sorted(tally):
+        cnt = tally[(corpus, grp)]
+        n = sum(cnt)
+        if n < 20:
+            continue
+        gates = HOOK_GATES if corpus == "hook" else True
+        cells, fails = [], False
+        for r, k in enumerate(cnt):
+            hot = _hot(n, k)
+            tag = ""
+            if hot:
+                base = RANK_ALL_BASELINE.get((corpus, grp, r))
+                if base is None:
+                    tag = " " + hot
+                    if gates:
+                        fails = True
+                        bad.append("%s/%s rank %d (whole corpus)"
+                                   % (corpus, grp, r + 1))
+                else:
+                    br = base[1] / base[0]
+                    if worse_than_baseline(n, k, br, hot):
+                        tag = " %s WORSE THAN ITS BASELINE %.1f%%" % (hot, 100 * br)
+                        if gates:
+                            fails = True
+                            bad.append("%s/%s rank %d (whole corpus)"
+                                       % (corpus, grp, r + 1))
+                    else:
+                        tag = " %s BASELINED %.1f%%" % (hot, 100 * br)
+            cells.append("r%d %4d/%d=%5.1f%%%s" % (r + 1, k, n, 100 * k / n, tag))
+        mark = "✅" if not fails else "❌"
+        note = "" if gates else "   (measured, not gated — R3: hooks are ungraded)"
+        print("  %s %-16s %s%s" % (mark, "%s %s" % (corpus, grp),
+                                   " · ".join(cells), note))
+    return bad
+
+
+def report_sweep(sets):
+    """PRIMARY CHECK — the worst rate at any rank at any margin in 3..10.
+
+    A fix shaped to one `MARGIN` shows up here as a rate that is fine at the
+    value the gate ships and bad two either side of it. That is precisely what
+    this run did to its own headline number, and nothing could see it.
+    """
+    bad = []
+    worst = {}
+    for M in SWEEP_MARGINS:
+        tal = collections.defaultdict(lambda: [0, 0, 0, 0])
+        for corpus, unit, _w, opts, ans in sets:
+            if len(opts) != 4:
+                continue
+            grp = "PHYSICS" if unit in PHYS else "BIO+CHEM"
+            order = sorted(range(4), key=lambda j: (-len(opts[j]), j))
+            r = order.index(ans)
+            lens = [len(opts[j]) for j in order]
+            if r > 0 and lens[r - 1] - lens[r] < M:
+                continue
+            if r < 3 and lens[r] - lens[r + 1] < M:
+                continue
+            tal[(corpus, grp)][r] += 1
+        for key, cnt in tal.items():
+            n = sum(cnt)
+            if n < 20:
+                continue
+            for r, k in enumerate(cnt):
+                cur = worst.get(key)
+                if cur is None or k / n > cur[0]:
+                    worst[key] = (k / n, M, r, n, k)
+    print()
+    print("  WORST RATE AT ANY RANK AT ANY MARGIN 3..10 — a fix that only works")
+    print("  at the margin this file happens to ship is not a fix. This gates.")
+    for key in sorted(worst):
+        corpus, grp = key
+        rate, M, r, n, k = worst[key]
+        gates = HOOK_GATES if corpus == "hook" else True
+        hot = _hot(n, k)
+        tag = ""
+        fails = False
+        if hot:
+            br = SWEEP_BASELINE.get(key)
+            if br is None:
+                tag = " " + hot
+                fails = gates
+            elif worse_than_baseline(n, k, br, hot):
+                tag = " %s WORSE THAN ITS BASELINE %.1f%%" % (hot, 100 * br)
+                fails = gates
+            else:
+                tag = " %s BASELINED %.1f%%" % (hot, 100 * br)
+        if fails:
+            bad.append("%s/%s worst-across-margins" % (corpus, grp))
+        note = "" if gates else "   (measured, not gated)"
+        print("  %s %-16s rank %d at margin %2d: %3d/%-4d = %5.1f%%%s%s"
+              % ("✅" if not fails else "❌", "%s %s" % (corpus, grp),
+                 r + 1, M, k, n, 100 * rate, tag, note))
+    return bad
+
+
 def report_ranks(rank_tally):
     """The full rank distribution, per corpus per group. Fails like the rest."""
     bad = []
@@ -364,9 +630,14 @@ def report_ranks(rank_tally):
                     br = base[1] / base[0]
                     excused = (rate <= br + 1e-9 if hot == "GIVEAWAY"
                                else rate >= br - 1e-9)
-                if excused:
-                    pass                    # a recorded debt, no worse
-                else:
+                # ⊕ 1 Sep 2026 — THIS TABLE NO LONGER GATES. It is read at
+                # one value of `MARGIN`, and a fix aimed at one value of a
+                # judgement constant is a fix aimed at the constant. What
+                # gates is `report_ranks_all` (no filter, fixed denominator)
+                # and `report_sweep` (worst across margins 3..10). This stays
+                # because it is the most readable view of the distribution,
+                # and because the two that gate are harder to eyeball.
+                if not excused:
                     bad.append("%s/%s rank %d" % (corpus, grp, r + 1))
             cells.append("r%d %2d/%d=%4.1f%%%s"
                          % (r + 1, k, n, 100 * rate,
@@ -374,9 +645,11 @@ def report_ranks(rank_tally):
                             if hot else ""))
         fails = any(("GIVEAWAY" in c or "MIRROR" in c) and "BASELINED" not in c
                     for c in cells)
-        print("  %s %-9s %s" % ("❌" if fails else "✅",
+        print("  %s %-9s %s" % ("‼️" if fails else "· ",
                                 "%s %s" % (corpus, grp), " · ".join(cells)))
-    return bad
+    print("  (‼️ marks a hot cell at this one margin. It does not fail the "
+          "run — see the two checks above.)")
+    return []
 
 
 def report_skipped(skipped):
@@ -438,10 +711,13 @@ def main():
 
     tally = collections.defaultdict(lambda: [0, 0])   # (corpus, scope)->[n,k]
     ranks = collections.defaultdict(lambda: [0, 0, 0, 0])
+    ranks_all = collections.defaultdict(lambda: [0, 0, 0, 0])
     skipped = {}
-    for corpus, unit, _where, opts, ans in collect(skipped):
+    sets = list(collect(skipped))
+    for corpus, unit, _where, opts, ans in sets:
         grp = "PHYSICS" if unit in PHYS else "BIO+CHEM"
         if len(opts) == 4:
+            ranks_all[(corpus, grp)][rank_all(opts, ans)] += 1
             r = rank_of(opts, ans)
             if r is not None:
                 ranks[(corpus, grp)][r] += 1
@@ -454,14 +730,25 @@ def main():
 
     print()
     report_skipped(skipped)
-    FAIL.extend(report_ranks(ranks))
+    FAIL.extend(report_ranks_all(ranks_all))
+    FAIL.extend(report_sweep(sets))
+    print()
+    report_ranks(ranks)
     print()
 
     for corpus in ("bank", "ladder", "hook"):
         keys = [k for k in tally if k[0] == corpus]
-        if not keys:
-            continue
         print()
+        if not keys:
+            # ⚠️ ⊕ 1 Sep 2026 — THIS USED TO BE `continue`, AND SILENCE READ AS
+            # CLEAN. A corpus with no visibly-longest option anywhere printed
+            # no line at all, so "measured and found nothing" and "not
+            # measured" looked identical in the output — which is the exact
+            # defect this whole file exists to catch, sitting in the file.
+            # `verdict()` has had the right words for `n == 0` all along and
+            # was never reached.
+            print("  ✅ %s" % verdict(corpus, "whole corpus", 0, 0)[1])
+            continue
 
         def sortkey(k):
             s = k[1]
@@ -480,8 +767,18 @@ def main():
         print("verify_answer_lengths: ❌ FAIL — %d scope(s): %s"
               % (len(FAIL), ", ".join(FAIL)))
         return 1
-    print("verify_answer_lengths: OK — no corpus or unit lets option length "
-          "answer the question.")
+    # ⚠️ ⊕ 1 Sep 2026 — THIS LINE USED TO SAY "no corpus or unit lets option
+    # length answer the question", WHICH IS NOT WHAT GREEN MEANS HERE. Five
+    # scopes are baselined giveaways: they DO let length answer the question
+    # and they pass because they are recorded debts that have not got worse.
+    # `docs/ks3/gate-caption-agreement.md` quoted the old wording as a
+    # guarantee. Green means "no scope is worse than what it inherited, and
+    # nothing new has appeared" — which is a real thing, and a smaller one.
+    debts = len(BASELINE) + len(RANK_ALL_BASELINE) + len(SWEEP_BASELINE)
+    print("verify_answer_lengths: OK — nothing new, and no scope worse than "
+          "the state it inherited.")
+    print("  ⚠️  %d baselined scope(s) still let length answer the question. "
+          "Green is not clean." % debts)
     return 0
 
 

@@ -422,10 +422,19 @@ LESSON = {
                   {"letter": "F", "label": "Fine-tune",
                    "line": "300 000 000 × 1320 = 396 000 000 000",
                    "note": "Metres per second times seconds leaves metres."},
+                  # ⊕ MRB-297 · 1 Sep 2026. The note said the wrong insert
+                  # puts the probe "closer than the Moon". It does not:
+                  # 3.0 × 10^8 × 22 = 6.6 × 10^9 m, and the Moon is
+                  # 3.84 × 10^8 m away on this page's own first worked
+                  # example, so it lands seventeen times FURTHER out. What
+                  # is true is the factor the slip costs — 1320 ÷ 22 = 60 —
+                  # and 6.6 × 10^9 m is exactly 22 light seconds, which
+                  # names the mistake better than a wrong comparison did.
                   {"letter": "A", "label": "Answer",
                    "line": "d = 3.96 × 10^11 m",
-                   "note": "Insert 22 instead of 1320 and the probe comes out "
-                           "closer than the Moon."},
+                   "note": "Insert 22 instead of 1320 and the answer comes "
+                           "out sixty times too small — 22 light "
+                           "seconds away instead of 22 light minutes."},
               ],
               "close": "The five lines give 3.96 × 10^11 m — about 396 "
                        "million km, and the reason a rover cannot be driven "

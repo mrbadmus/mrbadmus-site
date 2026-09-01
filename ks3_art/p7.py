@@ -478,6 +478,21 @@ def r_ray_surface(a, act_id):
     `data-rsurf-arcs` · `data-rsurf-fill` · `data-rsurf-out` (valued with
     a readout id) · `data-rsurf-sub` · `data-rsurf-note`.
 
+    ⊕ MRB-297 · 1 Sep 2026 — FIVE PATHS, NOT ONE, AND `marker-end` ON
+    EACH. `data-rsurf-refrays` used to carry the whole scattered fan as one
+    path of five `M…L…` subpaths, marked `marker-mid marker-end`. SVG puts
+    a mid marker at EVERY interior vertex, and the four interior vertices
+    of that path are its four `moveto`s — all of them at the point of
+    incidence. So the scattering surfaces (white paper, matt black card)
+    drew FOUR ARROWHEADS STACKED ON THE POINT OF INCIDENCE, on top of the
+    incident ray's own head, as a blue blob exactly where a reader looks to
+    tell the incident ray from the reflected ones. Confirmed by screenshot,
+    not inferred. `marker-end` alone was not an option on one element — it
+    marks the last vertex of the PATH, not of each subpath, so four of the
+    five rays would have lost their heads. Five elements, one ray each, one
+    `marker-end` each. `wireRefractionSurface` fills whichever exist, so
+    the specular case (one ray) leaves the other four empty.
+
     ⚠️ THE REFLECTED-RAY PATH IS `data-rsurf-refrays`, NOT
     `data-rsurf-out`. A bare `data-<hook>-out` sits in the SAME attribute
     namespace as the readout tiles, whose hook is `data-<hook>-out="id"`,
@@ -546,10 +561,15 @@ def r_ray_surface(a, act_id):
         '<text class="ks3-rsurf-normallabel" x="510" y="52">%s</text>'
         '<path class="ks3-rsurf-in" data-rsurf-in d="M0 0"%s/>'
         '<path class="ks3-rsurf-out" data-rsurf-refrays d="M0 0"%s/>'
+        '<path class="ks3-rsurf-out" data-rsurf-refray2 d="M0 0" display="none"%s/>'
+        '<path class="ks3-rsurf-out" data-rsurf-refray3 d="M0 0" display="none"%s/>'
+        '<path class="ks3-rsurf-out" data-rsurf-refray4 d="M0 0" display="none"%s/>'
+        '<path class="ks3-rsurf-out" data-rsurf-refray5 d="M0 0" display="none"%s/>'
         '<path class="ks3-rsurf-arcs" data-rsurf-arcs d="M0 0"/></svg>'
         % (_rayhead("rsurf", 6, "var(--ks3-blue-light)"),
            t(a.get("normal_label", "NORMAL")),
-           _head("rsurf"), _head("rsurf", "mid", "end")))
+           _head("rsurf"), _head("rsurf"), _head("rsurf"),
+           _head("rsurf"), _head("rsurf"), _head("rsurf")))
 
     fills = "".join(
         '<span class="ks3-rsurf-fill ks3-rsurf-%s" data-rsurf-fill="%s">'
