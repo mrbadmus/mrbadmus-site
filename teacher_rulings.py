@@ -4756,6 +4756,165 @@ componentDidUpdate() {
      "k && k.id })",
      "the \"Worth a shoutout\" chip for the most improved student (the "
      "second row of node 270's loop)."),
+
+    # ══ ⊕ 2 Sep 2026 (MRB-306 Phase 2a, screen 4) ═══════════════════════
+    #    THE STUDENT'S TILES DID NOT AGREE WITH THE ROWS UNDER THEM
+    #
+    # Appended, not inserted, for the reason the two blocks above give: LOGIC
+    # entries are named by INDEX in every brief written about this port.
+    #
+    # ── 1. `lateState` NEVER REACHED THE ROW ────────────────────────────
+    #
+    # ⚑ FOUND BY LOOKING AT THE PAGE, NOT BY READING IT. Every gate was
+    # green. The screenshot showed an ON TIME tile reading "—" over the
+    # caption "10 timing unknown · 1 not submitted", sitting directly above
+    # eight rows each carrying a green ON TIME chip and two carrying a red
+    # LATE chip. The tile and the rows were describing the same eleven
+    # submissions and disagreeing about every one of them.
+    #
+    # The cause is one missing word. The ruling four hundred lines above
+    # introduced the tri-state and its note says "the tri-state is carried on
+    # the row now, so the chip and the tile can both see it" — but it
+    # declares `lateState` as a LOCAL `const` inside `kPapers.map(…)` and
+    # never adds it to the object that map RETURNS. The chip can see it,
+    # because the chip is computed inside the closure. The tile cannot,
+    # because the tile filters the returned rows:
+    #
+    #     const stOnTime = stMarked.filter(h => h.lateState === false).length;
+    #     const stLate   = stMarked.filter(h => h.lateState === true).length;
+    #
+    # `h.lateState` is `undefined` on every row, so BOTH counts are always 0,
+    # `stUnknown` is always the whole of `stMarked`, and `MRB_ONTIME_VALUE(0,
+    # 0)` returns an em dash by design. The tile could not have shown a
+    # number, for any student, on any data, ever.
+    #
+    # ⚠️ THE FIXTURE COULD HAVE CAUGHT THIS AND NO GATE ASKED IT TO. Design's
+    # sample carries real booleans in `late[]` — nine false, two true — so a
+    # working tile reads "8" and "2 late". Nothing compares the tile with the
+    # rows, and every check that does exist passed.
+    # ⚠️ SOURCE-ANCHORED, AND NOT `dict(builder="stHistory", key="late, pct")`
+    # — WHICH WAS TRIED FIRST AND IS A TRAP. v3 writes this line as the
+    # shorthand pair `late, pct: …`, so `key="late, pct"` looks like the
+    # obvious anchor. `resolve_anchor` accepted it and returned a span of
+    # 6,008 CHARACTERS: from `late,` to the end of the enclosing structure,
+    # swallowing `submitted`, `score`, `status`, all four tone fields,
+    # `stMarked`, `stOnTime`, `stTimeSub` and `stSummary`. Replacing that span
+    # with this one line would have DELETED about six kilobytes of Design's
+    # logic.
+    #
+    # ⛔ AND IT WOULD HAVE BUILT GREEN. Nothing measures how much a resolved
+    # anchor spans. It was caught only because the NEXT ruling in this block
+    # anchors on `stSummary`, which the deletion had just removed, so the
+    # build refused with "appears 0 times" — pointing at the innocent entry,
+    # not the guilty one. A shorter block here would have shipped it.
+    # Reported to Mide as a hazard in the anchor mechanism itself.
+    ("        late, pct: open ? null : pct,",
+     "        late, lateState, pct: open ? null : pct,",
+     "the tri-state, PUT ON THE ROW. `lateState` was a local const the "
+     "returned object never carried, so the two tile counts that filter on "
+     "it were both permanently 0 and the On-time tile was permanently an em "
+     "dash. One word, and it is the difference between a tile that reports "
+     "the rows and a tile that contradicts them."),
+
+    # ── 2. "OPEN" WAS A POSITION, NOT A DEADLINE ────────────────────────
+    #
+    # `const open = i === 0` says the newest paper is the open one. That is
+    # true in Design's fiction — her sample is one paper a week with exactly
+    # one still running — and `shared/teacher-live.js` warns about it in
+    # terms, above `buildMatrix`:
+    #
+    #     ⚠️ COLUMN 0 IS NOT NECESSARILY THE ONLY OPEN PAPER. Design assumes
+    #     exactly one — index 0 open, 1..n marked — and reaches for
+    #     `.slice(1)` when it wants "the marked ones". Real classes have none
+    #     open, or three.
+    #
+    # Index 0 is merely the newest by `due_at`; whether it is open is a
+    # DEADLINE test, and `buildPapers` already did it — `when` is `upcoming`
+    # or `marked`. The `assignments` table on the class screen reads
+    # `p.when === 'marked'`; the student's history was the one list left
+    # reading a position instead.
+    #
+    # ⚑ WHAT IT COSTS ON REAL DATA, which is the only place it bites. When
+    # the newest paper's deadline HAS passed, row 0 is forced down the open
+    # branch: its mark is replaced by an em dash, its chip reads "In
+    # progress" or "Nothing in", and — because `stMarked` is built from these
+    # rows — it is dropped from Submissions, from On time and from Avg score.
+    # A child's most recent marked paper disappears from the page and from
+    # every number on it. Today only `8r/Sc1` has assignments at all, and
+    # both of them are past their deadline the moment the first one closes.
+    (dict(builder="stHistory", key="const open"),
+     "      const open = p.when === 'upcoming';",
+     "\"open\" is whether the DEADLINE has passed, not whether the paper is "
+     "first in the list. Design's `i === 0` is her one-open-paper fiction, "
+     "the seam warns about it by name above `buildMatrix`, and `buildPapers` "
+     "already answers it as `when`. A real class has none open, or three."),
+
+    # ── 3. AND THE DENOMINATOR THAT ASSUMED THE SAME THING ──────────────
+    #
+    # `Math.max(0, kPapers.length - 1)` is "all the papers except the open
+    # one", spelled as arithmetic. It is the third of the three captions the
+    # #11 block lists as saying more than their figure knows, and the class
+    # and digest screens were both corrected to `kMx.markedIdx.length` on
+    # 24 Aug; the student screen's two occurrences were missed. Same defect,
+    # same fix, same key — `markedIdx` is the indices actually closed, so the
+    # denominator is counted rather than assumed, and it agrees with the rows
+    # because `open` above is now the same test.
+    ("          { label: 'Submissions', value: String(stMarked.length), "
+     "sub: 'Of ' + Math.max(0, kPapers.length - 1) + ' marked this term' },",
+     "          { label: 'Submissions', value: String(stMarked.length),\n"
+     "            sub: 'Of ' + kMx.markedIdx.length + ' marked this term' },",
+     "the Submissions tile's denominator. `kPapers.length - 1` assumes "
+     "exactly one open paper; `markedIdx` counts the closed ones."),
+
+    ("      ? (stMarked.length + ' of ' + Math.max(0, kPapers.length - 1) "
+     "+ ' marked sets handed in'",
+     "      ? (stMarked.length + ' of ' + kMx.markedIdx.length "
+     "+ ' marked sets handed in'",
+     "the summary sentence's denominator — the same assumption as the tile "
+     "above it, in words. Both now count the closed papers."),
+
+    # ── 4. "SEND A REMINDER" SENT NOTHING ───────────────────────────────
+    #
+    # Design draws the button (node 341), gates it on `student.flagged`, and
+    # hands it `this.ping('Reminder sent to ' + st.name)`. It was pressed on
+    # the fixture before this ruling and it said, in a toast, "Reminder sent
+    # to Jasmine Okafor". No row was written, no child was told, and the
+    # teacher had no way to know.
+    #
+    # This is the same defect the shoutout composer had — a `ping` standing
+    # in for a write — and it is corrected the same way, through a helper
+    # beside the six that wired the composer, so the page keeps Design's
+    # button and Design's toast surface and gains the write behind them.
+    #
+    # ⚠️ THE BACKEND ALREADY EXISTED AND IS NOT NEW HERE. `student_notifications`
+    # is a live table with an RLS policy (`teacher_send`, gated on
+    # `sent_by = auth.uid() AND auth_user_teaches_class(class_id)`) and a
+    # unique index `(student_id, assignment_id, sent_on)`.
+    # `MrBadmusTeacherData.sendReminders` and `remindersForClass` have driven
+    # the class screen's "Remind all N" since MRB-306 WS-3. `MRB_REMIND_STUDENT`
+    # calls that same function with a one-element list; it does not
+    # reimplement any of it.
+    #
+    # ⚠️ AND IT DOES NOT ENFORCE THE RATE LIMIT — the database does. A second
+    # press upserts with `ignoreDuplicates`, writes nothing, and returns an
+    # empty array, which is reported as "already reminded today". A control
+    # that claimed to have sent a second reminder would be lying twice.
+    ("      remindStudent: () => this.ping('Reminder sent to ' + "
+     "(st ? st.name : 'student')),",
+     "      remindStudent: () => MRB_REMIND_STUDENT(k && k.id,\n"
+     "        kPapers[0] && kPapers[0].id, st && st.id).then((r) => {\n"
+     "          if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }\n"
+     "          if (r.already) {\n"
+     "            this.ping((st ? st.name : 'They')\n"
+     "              + ' has already been reminded about this today');\n"
+     "            return;\n"
+     "          }\n"
+     "          this.ping('Reminder sent to ' + (st ? st.name : 'student'));\n"
+     "        }),",
+     "the per-student reminder. Design's handler toasted a send that never "
+     "happened; this writes to `student_notifications` through the same "
+     "`sendReminders` the class screen's control uses, and says which of the "
+     "three things actually occurred."),
 )
 
 

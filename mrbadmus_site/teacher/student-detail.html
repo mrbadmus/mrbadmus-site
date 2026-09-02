@@ -289,6 +289,74 @@ function MRB_SEND_SHOUTOUTS(classId, ids, templateKey, message){
               error:errs[0]||null};});
   }, no);}
 
+/* == THE PER-STUDENT REMINDER, WIRED ====================================
+
+   ⊕ MRB-306 Phase 2a screen 4, 2 Sep 2026.
+
+   Design draws "Send a reminder" on the student page, gated on
+   `student.flagged`, and her handler is `this.ping('Reminder sent to ' +
+   st.name)` - a confirmation of a write that never happened. Exactly the
+   shape the shoutout composer was in before it was wired, and it was pressed
+   and photographed in this state before this helper existed.
+
+   ⚠️ THIS DOES NOT RE-IMPLEMENT THE CLASS SCREEN'S CONTROL. `teacher-live.js`
+   already owns the reminder machinery - `drawRemindControl`, and behind it
+   `MrBadmusTeacherData.sendReminders` / `remindersForClass` - and this calls
+   the SAME data layer with a one-element list. The class control chases
+   everyone who has not handed this week's work in; this one chases the child
+   whose page is open. Two surfaces, one write path, one rate limit.
+
+   THE RATE LIMIT IS THE DATABASE'S, and it is a unique index on
+   `(student_id, assignment_id, sent_on)` - one reminder per child per
+   assignment per day, across ALL teachers of a co-taught class. This does
+   not test it and must not: `sendReminders` upserts with `ignoreDuplicates`,
+   so a second press writes NOTHING and comes back with an empty array. That
+   is the honest signal, and it is reported as "already reminded today"
+   rather than as a fresh send. Nothing here decides who may be reminded;
+   RLS's `teacher_send` policy does.
+
+   WHICH ASSIGNMENT: `kPapers[0]`, this week's work - the same paper
+   `drawRemindControl` chases on, so the two controls cannot disagree about
+   what a child is being reminded OF, and so both presses hit the same
+   rate-limit key. A student with no papers is never flagged, so the button
+   Design gates on `flagged` cannot be reached with no assignment to name.
+
+   WARNING: IT NEVER REJECTS, like the six shoutout helpers above. Resolves
+   `{ok, already, error}` and the caller says a sentence for each. */
+function MRB_REMIND_STUDENT(classId, assignmentId, studentId){
+  var no=function(e){return Promise.resolve({ok:0,already:false,error:e});};
+  if(!classId){return no(new Error('teacher page: no class'));}
+  if(!assignmentId){return no(new Error('teacher page: no assignment'));}
+  if(!studentId){return no(new Error('teacher page: no student'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.sendReminders){
+    return no(new Error('teacher page: no data layer'));}
+  return TD.sendReminders({classId:classId, assignmentId:assignmentId,
+      studentIds:[studentId], teacherId:MRB_ME()||null})
+    .then(function(wrote){
+      /* Report what was WRITTEN, not what was attempted - `drawRemindControl`
+         takes the same care and for the same reason. An upsert that ignored
+         a duplicate sent nothing, and saying otherwise overstates what the
+         child actually got. */
+      var n=(wrote&&wrote.length)||0;
+      return {ok:n, already:n===0, error:null};},
+      function(e){return {ok:0,already:false,error:e};});}
+
+/* Why a reminder failed, in a sentence a teacher can act on. The companion
+   to MRB_SHOUTOUT_WHY, and separate for the same reason: a different verb
+   and a different set of refusals. */
+function MRB_REMIND_WHY(e){
+  var m=(e&&e.message)||'';
+  if(/row-level security|permission|policy/i.test(m))
+    return "Couldn't send - you may no longer teach this class.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't send - this page is not signed in. Reload and try again.";
+  if(/no assignment/i.test(m))
+    return "Couldn't send - there is no work set to remind them about.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't send - no connection just now. Try again in a moment.";
+  return "Couldn't send the reminder. Try again.";}
+
 /* The feed a teacher has just written to, re-read. `teacher-live.js` does not
    memoise `FEED` - it is the one thing `base()` deliberately leaves out of
    the cache, for exactly this - so `load()` returns the new row and the rest
@@ -1067,7 +1135,7 @@ class Component extends DCLogic {
     /* ── Student ── */
     const stRow = st ? kMx.byId[st.id] : null;
     const stHistory = st && kPapers.length ? kPapers.map((p, i) => {
-      const open = i === 0;
+      const open = p.when === 'upcoming';
       const sc = stRow ? stRow.scores[i] : null;
       const lateState = (!open && sc != null) ? stRow.late[i] : null;
       const late = lateState === true;
@@ -1079,7 +1147,7 @@ class Component extends DCLogic {
       return {
         marked: !open && sc != null,
         missing: !open && sc == null,
-        late, pct: open ? null : pct,
+        late, lateState, pct: open ? null : pct,
         title: p.title,
         due: p.due.replace('Due ', ''),
         submitted: open ? (sc != null ? st.last : 'Not yet') : (stampS || '—'),
@@ -1114,7 +1182,7 @@ class Component extends DCLogic {
     const stAvg = stMarked.length ? Math.round(stMarked.reduce((a, h) => a + h.pct, 0) / stMarked.length) : null;
     const stFlagged = !!(st && st.flag);
     const stSummary = st
-      ? (stMarked.length + ' of ' + Math.max(0, kPapers.length - 1) + ' marked sets handed in'
+      ? (stMarked.length + ' of ' + kMx.markedIdx.length + ' marked sets handed in'
         + (stMissing ? ' · ' + stMissing + ' never submitted' : '')
         + (stLate ? ' · ' + stLate + ' late' : '')
         + (stAvg != null ? ' · averaging ' + stAvg + '% against a class mean of ' + (kMean == null ? '—' : kMean + '%') : '')
@@ -1314,7 +1382,8 @@ class Component extends DCLogic {
         summaryBc: stFlagged ? 'var(--st-chip-tint-border)' : 'var(--st-rule-soft)',
         subLine: stHistory.length + ' assignments',
         tiles: [
-          { label: 'Submissions', value: String(stMarked.length), sub: 'Of ' + Math.max(0, kPapers.length - 1) + ' marked this term' },
+          { label: 'Submissions', value: String(stMarked.length),
+            sub: 'Of ' + kMx.markedIdx.length + ' marked this term' },
           { label: 'On time', value: MRB_ONTIME_VALUE(stOnTime, stLate),
             sub: stTimeSub },
           { label: 'Avg score', value: stAvg == null ? '—' : stAvg + '%', sub: 'Class mean ' + (kMean == null ? '—' : kMean + '%') },
@@ -1322,7 +1391,16 @@ class Component extends DCLogic {
         ],
         history: stHistory
       },
-      remindStudent: () => this.ping('Reminder sent to ' + (st ? st.name : 'student')),
+      remindStudent: () => MRB_REMIND_STUDENT(k && k.id,
+        kPapers[0] && kPapers[0].id, st && st.id).then((r) => {
+          if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+          if (r.already) {
+            this.ping((st ? st.name : 'They')
+              + ' has already been reminded about this today');
+            return;
+          }
+          this.ping('Reminder sent to ' + (st ? st.name : 'student'));
+        }),
 
       paper: pp ? {
         title: pp.title,

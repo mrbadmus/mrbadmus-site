@@ -690,6 +690,12 @@ _IDENT = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
 _PATH = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*(\.[A-Za-z_$][A-Za-z0-9_$]*)+$")
 
 
+# The ceiling on a resolved anchor span. Every anchored ruling in
+# teacher_rulings.py spans at most seven lines; see the note in
+# `resolve_anchor` for the 97-line runaway this exists to refuse.
+_MAX_ANCHOR_LINES = 40
+
+
 def resolve_anchor(logic, spec, refusal=_nav_refusal):
     """(start, end) of the source span one `anchor` names.
 
@@ -797,6 +803,60 @@ def resolve_anchor(logic, spec, refusal=_nav_refusal):
     n = _one_line(lines, lo, hi, want, decl, scope, refuse)
     end = (_prop_span_end(lines, n, want, refuse) if prop
            else _stmt_span_end(lines, n, want, refuse))
+
+    # ── ⊕ MRB-306, 2 Sep 2026 — HOW FAR DID THE SPAN ACTUALLY REACH? ─────
+    #
+    # Everything above finds WHERE a ruling applies and nothing measured HOW
+    # MUCH it would replace. That gap nearly deleted six kilobytes of
+    # Design's logic in silence.
+    #
+    # `dict(builder="stHistory", key="late, pct")` is the obvious anchor for
+    # a line v3 writes as a shorthand pair, and it resolved — to NINETY-SEVEN
+    # LINES, 5,414 characters, starting at `late, pct:`, escaping `stHistory`
+    # entirely and ending inside the nav-tab code. A one-line ruling
+    # replacing that span deletes all of it AND THE BUILD GOES GREEN: every
+    # other ruling still matches, the page still renders, and the loss shows
+    # up as behaviour nobody wired.
+    #
+    # The cause is that a STATEMENT ends "at the first line back at base
+    # depth ending `;`", and inside an object literal there is no such line
+    # until long after the builder has closed. So the two guards below are
+    # different questions, and both are needed:
+    #
+    #   CONTAINMENT — a scoped anchor must not resolve past its own scope.
+    #     This is the precise one. `builder=`/`method=`/a dotted path all
+    #     narrow to `hi`, and a span that crosses it has stopped describing
+    #     the thing the ruling named.
+    #   EXTENT — an unscoped anchor has no `hi` to cross, so it gets a
+    #     ceiling instead. All 47 anchored rulings in this file span at most
+    #     SEVEN lines (the state initialiser); 40 is far above anything
+    #     legitimate and far below a runaway.
+    #
+    # Both refuse rather than warn. A span this wrong is never what was
+    # meant, and the whole value of this machinery is that it stops instead
+    # of guessing.
+    if scope and end >= hi:
+        raise refuse(
+            "resolves a span that ESCAPES its own scope — it starts at line "
+            "%d and runs to line %d, past the end of %s at line %d. A "
+            "statement anchor inside an object literal does this: it looks "
+            "for a `;` at base depth and does not find one until long after "
+            "the scope has closed. Replacing that span would delete "
+            "everything in between and still build green. Anchor on the "
+            "property (`key=\"%s\"`) rather than the shorthand pair, or "
+            "give the ruling a verbatim `frm`"
+            % (n + 1, end + 1, scope[-1], hi, last.split(",")[0].strip()))
+
+    if (end - n + 1) > _MAX_ANCHOR_LINES:
+        raise refuse(
+            "resolves a span of %d lines, and nothing this file anchors is "
+            "longer than seven. That is a runaway, not a ruling: the span "
+            "starts at line %d with `%s` and ends at line %d with `%s`. "
+            "Replacing it would delete everything in between and the build "
+            "would still be green"
+            % (end - n + 1, n + 1, lines[n][2].strip()[:60],
+               end + 1, lines[end][2].strip()[:60]))
+
     return lines[n][0], lines[end][1]
 
 
@@ -1698,6 +1758,21 @@ const c = new Component();
 const out = { CLASSES: c.CLASSES, MATRIX: {}, ROSTER: {}, PAPERS: {},
               WEEKS: {}, GRID: {}, FEED: {} };
 
+/* Design's own month labels and Design's own `lab()` format, so a shifted
+   stamp is written exactly the way every other date in this fixture is.
+   The year is Design's: `weeks()` seeds `new Date(2026, 8, 2)` and the whole
+   sample runs Jun–Sep of that one year, so a ±2-day shift can roll a month
+   but never a year. Returns the input unchanged if it is not a "D Mon". */
+const FX_M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function fxShiftShort(short, days) {
+  if (!short) { return null; }
+  const m = /^(\d+)\s+([A-Za-z]{3})$/.exec(short);
+  if (!m || FX_M.indexOf(m[2]) < 0) { return short; }
+  const d = new Date(2026, FX_M.indexOf(m[2]), parseInt(m[1], 10) + days);
+  return d.getDate() + ' ' + FX_M[d.getMonth()];
+}
+
 function adaptMatrix(k, mx, papers) {
   const cols = papers.length;
   const markedIdx = papers.filter(p => p.when === 'marked').map(p => p.idx);
@@ -1705,13 +1780,40 @@ function adaptMatrix(k, mx, papers) {
     const max = r.scores.map(v => (v == null ? null : 8));
     const pct = r.scores.map(v => (v == null ? null : Math.round((v / 8) * 100)));
     const submitted = r.scores.map(v => v != null);
-    /* The date Design's own history row rendered for this cell: the DEADLINE
-       when on time and the end of the week when late. On the live page this
-       is `completed_at`; here it is the only stamp Design's sample has, and
-       it keeps the fixture rendering what Design drew. */
+    /* ⊕ MRB-306 Phase 2a screen 4, 2 Sep 2026 — A STAMP THE CLOCK COULD
+       ACTUALLY HAVE PRODUCED.
+
+       ⛔ THIS USED TO BE `r.late[i] ? papers[i].lateShort : papers[i].dueShort`
+       with the note "it keeps the fixture rendering what Design drew". That
+       was the wrong goal, and it made the fixture model a state real data
+       cannot reach.
+
+       Design's `lateShort` is `due − 5 days` — the FRIDAY BEFORE the
+       Wednesday deadline, the end of the week the work was SET in. It is not
+       a submission date at all. So every LATE row in this fixture carried a
+       stamp EARLIER than its own deadline: "Energy stores and transfers, due
+       Wed 26 Aug, submitted 21 Aug, LATE". And every on-time row carried the
+       deadline itself, to the day, for nine rows running.
+
+       The live seam cannot produce either. `buildMatrix` takes the stamp from
+       `completed_at`/`submitted_at`, and where `is_late` is null it DERIVES
+       lateness as `stamp > paper.due_at` — so a late stamp is after the
+       deadline by construction, and an on-time one is not.
+
+       ⚠️ AND IT MADE THE GATE BLIND TO ITS OWN RULING. #11's whole point is
+       that the SUBMITTED column must show the real stamp rather than the
+       deadline. A fixture that feeds it the deadline anyway renders exactly
+       what the unfixed code rendered, so no gate could tell the ruling had
+       been applied.
+
+       So the stamp is now derived from the deadline CONSISTENTLY WITH `late`:
+       a day before it when the work was on time, two days after when it was
+       late. Still Design's dates, still invented like everything else here —
+       but no longer self-contradictory, and now distinguishable from
+       `dueShort`, which is the whole thing the ruling is about. */
     const stampShort = r.scores.map(function (v, i) {
       if (v == null || !papers[i]) { return null; }
-      return r.late[i] ? papers[i].lateShort : papers[i].dueShort;
+      return fxShiftShort(papers[i].dueShort, r.late[i] ? 2 : -1);
     });
     return { sid: r.sid, scores: r.scores, max: max, pct: pct,
              late: r.late.slice(), stampShort: stampShort,
@@ -2013,7 +2115,23 @@ def fixture_payload(data, templates, class_id):
         searchPlaceholder="Search students across all %d classes"
                           % len(classes),
         classId=class_id,
-        studentId=class_id + "-3",
+        # ⊕ MRB-306 Phase 2a screen 4, 2 Sep 2026 — WAS `-3`, AND `-3` LEFT
+        # THE SCREEN'S ONLY WRITE CONTROL UNDRIVEN.
+        #
+        # The index is this port's arbitrary pick, not Design's. `-3` is Ben
+        # Whitcombe, whose `flag` is false — and Design gates "Send a
+        # reminder" on `student.flagged`, so the button did not exist on any
+        # fixture. `teacher_behaviour` reported "20/20 control(s) pressed"
+        # and had never once pressed the reminder, because a control that
+        # does not render cannot be counted as missing.
+        #
+        # `-12` is Kaleb Anderson, and he is chosen for COVERAGE rather than
+        # for being flagged alone: 5 marked, 2 of them late, 6 never
+        # submitted and row 0 open. That is every history state the screen
+        # can draw — on time, late, nothing in, in progress — where `-3` had
+        # only one missing row and no reminder. Strictly more states, none
+        # lost.
+        studentId=class_id + "-12",
         # Design's `paperId` was `'8rsc1:p1'` — index 1.
         paperIdx=1,
         screen="classes",
@@ -2687,6 +2805,74 @@ function MRB_SEND_SHOUTOUTS(classId, ids, templateKey, message){
       return {ok:ids.length-errs.length, fail:errs.length,
               error:errs[0]||null};});
   }, no);}
+
+/* == THE PER-STUDENT REMINDER, WIRED ====================================
+
+   ⊕ MRB-306 Phase 2a screen 4, 2 Sep 2026.
+
+   Design draws "Send a reminder" on the student page, gated on
+   `student.flagged`, and her handler is `this.ping('Reminder sent to ' +
+   st.name)` - a confirmation of a write that never happened. Exactly the
+   shape the shoutout composer was in before it was wired, and it was pressed
+   and photographed in this state before this helper existed.
+
+   ⚠️ THIS DOES NOT RE-IMPLEMENT THE CLASS SCREEN'S CONTROL. `teacher-live.js`
+   already owns the reminder machinery - `drawRemindControl`, and behind it
+   `MrBadmusTeacherData.sendReminders` / `remindersForClass` - and this calls
+   the SAME data layer with a one-element list. The class control chases
+   everyone who has not handed this week's work in; this one chases the child
+   whose page is open. Two surfaces, one write path, one rate limit.
+
+   THE RATE LIMIT IS THE DATABASE'S, and it is a unique index on
+   `(student_id, assignment_id, sent_on)` - one reminder per child per
+   assignment per day, across ALL teachers of a co-taught class. This does
+   not test it and must not: `sendReminders` upserts with `ignoreDuplicates`,
+   so a second press writes NOTHING and comes back with an empty array. That
+   is the honest signal, and it is reported as "already reminded today"
+   rather than as a fresh send. Nothing here decides who may be reminded;
+   RLS's `teacher_send` policy does.
+
+   WHICH ASSIGNMENT: `kPapers[0]`, this week's work - the same paper
+   `drawRemindControl` chases on, so the two controls cannot disagree about
+   what a child is being reminded OF, and so both presses hit the same
+   rate-limit key. A student with no papers is never flagged, so the button
+   Design gates on `flagged` cannot be reached with no assignment to name.
+
+   WARNING: IT NEVER REJECTS, like the six shoutout helpers above. Resolves
+   `{ok, already, error}` and the caller says a sentence for each. */
+function MRB_REMIND_STUDENT(classId, assignmentId, studentId){
+  var no=function(e){return Promise.resolve({ok:0,already:false,error:e});};
+  if(!classId){return no(new Error('teacher page: no class'));}
+  if(!assignmentId){return no(new Error('teacher page: no assignment'));}
+  if(!studentId){return no(new Error('teacher page: no student'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.sendReminders){
+    return no(new Error('teacher page: no data layer'));}
+  return TD.sendReminders({classId:classId, assignmentId:assignmentId,
+      studentIds:[studentId], teacherId:MRB_ME()||null})
+    .then(function(wrote){
+      /* Report what was WRITTEN, not what was attempted - `drawRemindControl`
+         takes the same care and for the same reason. An upsert that ignored
+         a duplicate sent nothing, and saying otherwise overstates what the
+         child actually got. */
+      var n=(wrote&&wrote.length)||0;
+      return {ok:n, already:n===0, error:null};},
+      function(e){return {ok:0,already:false,error:e};});}
+
+/* Why a reminder failed, in a sentence a teacher can act on. The companion
+   to MRB_SHOUTOUT_WHY, and separate for the same reason: a different verb
+   and a different set of refusals. */
+function MRB_REMIND_WHY(e){
+  var m=(e&&e.message)||'';
+  if(/row-level security|permission|policy/i.test(m))
+    return "Couldn't send - you may no longer teach this class.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't send - this page is not signed in. Reload and try again.";
+  if(/no assignment/i.test(m))
+    return "Couldn't send - there is no work set to remind them about.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't send - no connection just now. Try again in a moment.";
+  return "Couldn't send the reminder. Try again.";}
 
 /* The feed a teacher has just written to, re-read. `teacher-live.js` does not
    memoise `FEED` - it is the one thing `base()` deliberately leaves out of
