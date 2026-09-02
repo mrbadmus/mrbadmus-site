@@ -57,13 +57,34 @@ import sys
 
 import gate_registry
 
-RECEIPTS = ".gate-receipts"
+# ⊕ MRB-306, 3 Sep 2026 — ANCHORED TO THIS FILE, NOT TO THE PROCESS CWD.
+#
+# This read `RECEIPTS = ".gate-receipts"` and `_git()` ran with no `cwd`, so
+# BOTH the receipt location and the tree being attested followed whatever
+# directory the process happened to start in. Invoke it from anywhere but the
+# repo root and it records a receipt for a DIFFERENT tree, or reads one — and
+# it does that while printing a PASS.
+#
+# It was caught in the wild: a `--record verify_ks3` returned in seconds
+# announcing "receipt written for tree 2b2c66db284e", a tree two commits
+# behind HEAD, while no receipt file appeared in this worktree at all. The
+# re-run took minutes and wrote the right one. A gate that can attest the
+# wrong tree is worse than no gate, because it fails GREEN — and this is the
+# file every push in the project trusts.
+#
+# Every other gate in the estate already derives its root from `__file__`
+# (`leaderboard_seam`, `leaderboard_tells`, `student_page_drive`, …); this
+# brings the arbiter into line with the things it arbitrates.
+_REPO = os.path.dirname(os.path.abspath(__file__))
+RECEIPTS = os.path.join(_REPO, ".gate-receipts")
 OVERRIDE = "GATE-OVERRIDE:"
 
 
 def _git(*args):
+    # `cwd=_REPO` is load-bearing: without it the tree this gate attests is
+    # whatever repo the caller's shell was sitting in. See the note by RECEIPTS.
     return subprocess.run(["git"] + list(args), capture_output=True,
-                          text=True).stdout.strip()
+                          text=True, cwd=_REPO).stdout.strip()
 
 
 def _tracked_dirty():
