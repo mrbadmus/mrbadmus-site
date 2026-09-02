@@ -127,8 +127,22 @@ EMPTY_SHAPE = {
     # child answers. See EMPTY_SHAPES["class-detail.html"] for why it is
     # justified as a RECURRING shape rather than as any class's shape today.
     ("class-detail", "nosubs"): "a live class with work set and nobody in yet",
+    ("class-detail", "gridmissing"):
+        "no grid fetched at all — which is every class-detail render in "
+        "production",
     ("student-detail", "empty"): "a student with no submissions",
     ("assignment", "empty"): "a paper nobody has submitted",
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) — THE TWO THE SET HAD NO
+    # ANSWER FOR. `written` is the only paper in the estate that is not eight
+    # questions out of eight marks, which is what makes the `/max` ruling
+    # visible at all; the two `gridmissing` shapes are key-ABSENT, which is a
+    # different branch of `gridFor` from `insights-empty`'s key-present-null
+    # and is the branch that threw live on 26 Aug 2026.
+    ("assignment", "written"):
+        "5 questions out of 7 marks, Q4 written, and the lowest-scoring "
+        "question carrying no stem text",
+    ("assignment", "gridmissing"):
+        "one open assignment and no grid fetched — the key is absent",
     ("digest", "empty"): "no live classes to digest",
     ("insights", "empty"): "nothing marked to chart",
 }

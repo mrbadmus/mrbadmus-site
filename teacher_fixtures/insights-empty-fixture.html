@@ -817,7 +817,7 @@ class Component extends DCLogic {
   cellStyle(v) {
     if (v === 1) return { w: 9, h: 9, r: '50%', bg: 'var(--ks3-ok)', bd: 'none' };
     if (v === 0) return { w: 9, h: 9, r: '50%', bg: 'transparent', bd: '1.5px solid var(--st-rule-strong)' };
-    if (v === 3) return { w: 9, h: 9, r: '2px', bg: 'var(--st-hatch-b)', bd: '1.5px solid var(--st-hatch-b)' };
+    if (v === 3) return { w: 9, h: 9, r: '2px', bg: 'var(--st-caption)', bd: '1.5px solid var(--st-caption)' };
     return { w: 9, h: 2, r: '1px', bg: 'var(--st-rule-strong)', bd: 'none' };
   }
 
@@ -1357,7 +1357,10 @@ class Component extends DCLogic {
         title: pp.title,
         eyebrow: k.code + ' · Set ' + pp.set + ' · Due ' + pp.due.replace('Due ', ''),
         hasReteach: !!worst && pp.when === 'marked' && worst.pct < 55,
-        reteachLine: worst ? worst.id + ' — ' + worst.text.toLowerCase() + '. Only ' + worst.pct + '% of the class got it right.' : '',
+        reteachLine: worst ? worst.id
+          + (worst.text ? ' — ' + worst.text.toLowerCase() : '')
+          + '. Only ' + worst.pct + '% of the class got it right.'
+          : '',
         tiles: [
           { label: 'Submitted', value: pp.sub, sub: pp.when === 'upcoming' ? 'Still open' : 'Marked automatically' },
           { label: 'Class mean', value: pp.mean, sub: pGrid ? pGrid.qLine : '' },
@@ -1377,8 +1380,14 @@ class Component extends DCLogic {
             : (qq.pct < 50 ? 'var(--st-accent)' : (qq.pct < 70 ? 'var(--st-hatch-b)' : 'var(--ks3-ok)'))
         })),
         qids: questions.map(qq => ({ id: qq.id })),
+        cols: '225px repeat(' + (questions.length || 1) + ',1fr) 92px',
+        hasQuestions: questions.length > 0,
+        noQuestions: questions.length === 0,
+        labelCol: scored.length === questions.length ? '90px' : '112px',
         grid
-      } : { title: '—', eyebrow: k.code, hasReteach: false, reteachLine: '', tiles: [], questions: [], qids: [], grid: [] },
+      } : { title: '—', eyebrow: k.code, hasReteach: false, reteachLine: '', tiles: [], questions: [], qids: [], grid: [],
+          cols: '225px repeat(1,1fr) 92px',
+          hasQuestions: false, noQuestions: true, labelCol: '90px' },
 
       insSub: chartScope === 'all'
         ? liveClasses.length + ' active classes · ' + totalStudents + ' students on roll'

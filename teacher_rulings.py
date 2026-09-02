@@ -1108,6 +1108,89 @@ BIND_ATTR = {
     # overlay's `bulkStudents` rows carry `s.id` and `MRB_SEND_SHOUTOUTS`
     # takes ids — so nothing regressed to sending a name. See
     # `SHOUTOUT_COMPOSER_DROPPED`.
+    # ── "NOT MARKED" DOES NOT FIT IN DESIGN'S PERCENTAGE COLUMN ────────
+    #
+    # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a screen 5). The question-breakdown
+    # row's last track is 90px, which is exactly right for the only thing
+    # Design ever puts in it: `q.pct + '%'`, four characters, measured at
+    # 43.2px. The port's `qpct == null` ruling puts "Not marked" there
+    # instead — the label for a question nothing was machine-marked on — and
+    # that measures 108px in the same 18px mono. Measured, not guessed, on
+    # `assignment-written-fixture.html` at 1280px: the cell was 90px wide and
+    # 43px TALL where every other cell in the table was 22px, i.e. wrapped
+    # onto two lines, and it wrapped mid-phrase ("Not / marked") in a column
+    # of right-aligned numerals.
+    #
+    # ⚠️ THE COLUMN WIDENS RATHER THAN THE TEXT SHORTENING. "Not marked" is
+    # the honest label and it is a COMMON state, not a rare one: a paper
+    # nobody has answered yet shows it on every row (see
+    # `assignment-empty-fixture.html`, where all eight wrapped). 112px fits
+    # it with four pixels to spare; nothing else in the row moves, because
+    # the flexible track is the `1fr` stem column.
+    #
+    # ⚠️ AND IT WIDENS ONLY WHEN THE PAPER NEEDS IT — `paper.labelCol` is
+    # 112px when any question is unmarked and Design's own 90px otherwise.
+    # Two reasons, and the second is the one that decided it. Design's
+    # geometry is right for Design's content, and a fully-marked paper has
+    # nothing in that column but "54%". And the row template is ALREADY
+    # over-constrained at a 390px viewport — `56 + 180 + 90` plus three 14px
+    # gaps exceeds the available width, so the `1fr` stem column collapses
+    # and the bar paints over the question text — which is the known missing
+    # `@media` on these six pages and is not this unit's to solve. Pinning
+    # 112px unconditionally would have added 22px to that overflow on every
+    # paper in the estate, including the ones that never show the long label.
+    #
+    # ⛔ `auto` WAS THE OBVIOUS ANSWER AND IT IS WRONG HERE. The template
+    # sits on the ROW, not on a shared table, so each row is its own grid
+    # container: `auto` would size the last track per row, and a column of
+    # right-aligned numerals would have a ragged right edge.
+    392: ("style",
+          "display:grid;grid-template-columns:56px 1fr 180px 90px;"
+          "align-items:center;gap:14px;padding:13px 18px;"
+          "border-top:1px solid var(--st-rule-fact)",
+          {"parts": ["display:grid;grid-template-columns:56px 1fr 180px ",
+                     {"e": "paper.labelCol"},
+                     ";align-items:center;gap:14px;padding:13px 18px;"
+                     "border-top:1px solid var(--st-rule-fact)"]},
+          "the question-breakdown row, widened only on a paper that carries "
+          "the port's own \"Not marked\" label."),
+
+    # ── THE CLASS-BY-QUESTION TABLE IS EIGHT COLUMNS WIDE ──────────────
+    #
+    # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a screen 5). Both halves of the
+    # marking grid — Design's header row (413) and her student row (419) —
+    # hardcode `repeat(8,1fr)`. The reasoning is with the `paper.cols` entry
+    # in `LOGIC`; in short, eight is `STEMS.length` and real papers are not
+    # eight questions (the only TEST assignment with question rows has four).
+    #
+    # ⚠️ THE TWO MUST NEVER DISAGREE, which is why they interpolate one key
+    # rather than computing the same string twice. A header on eight tracks
+    # over rows on four is worse than both being wrong together: the column
+    # headings would name questions the cells underneath are not.
+    413: ("style",
+          "display:grid;grid-template-columns:225px repeat(8,1fr) 92px;"
+          "background:var(--st-num-well);"
+          "border-bottom:1px solid var(--st-rule-soft)",
+          {"parts": ["display:grid;grid-template-columns:",
+                     {"e": "paper.cols"},
+                     ";background:var(--st-num-well);"
+                     "border-bottom:1px solid var(--st-rule-soft)"]},
+          "the marking grid's header row: one track per question the paper "
+          "actually has."),
+    419: ("style",
+          "display:grid;grid-template-columns:225px repeat(8,1fr) 92px;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);"
+          "cursor:pointer",
+          {"parts": ["display:grid;grid-template-columns:",
+                     {"e": "paper.cols"},
+                     ";align-items:center;"
+                     "border-top:1px solid var(--st-rule-fact);"
+                     "cursor:pointer"]},
+          "the marking grid's student row. `paper.cols` resolves through the "
+          "loop scope's prototype chain — `student-runtime`'s `for` builds "
+          "each iteration with `Object.create(scope)` — so the row inside "
+          "`<for paper.grid>` reads the same key the header does."),
+
     662: ("placeholder",
           "Search students across all 12 classes",
           {"parts": [{"e": "searchPlaceholder"}]},
@@ -1326,8 +1409,15 @@ RETEXT_AT = {
 # became the pair that actually identifies an insertion: where it goes, and
 # what it goes after.
 
+# ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) — 12px → 13px. Design's three
+# legend keys are `font:400 13px/1.2 var(--st-mono)` (source lines 621-623),
+# and the ruling that uses this constant says the fourth key stands "in the
+# register of the three keys beside it". It did not: measured on
+# `assignment-empty-fixture.html` at 1280px, the three read 13px/15.6px and
+# the fourth read 12px/14.4px, so the one key a teacher has never seen before
+# was also the smallest thing in the row.
 _LEGEND_KEY = ("display:flex;align-items:center;gap:6px;"
-               "font:400 12px/1.2 var(--st-mono);letter-spacing:.12em;"
+               "font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;"
                "text-transform:uppercase;color:var(--st-caption)")
 
 # ── ⊕ MRB-287 E1 · the year selector's two treatments ────────────────────
@@ -1517,6 +1607,40 @@ def _wk_chevron(handler, label, path, colour, cursor, marker):
 
 
 INSERT_AT = {
+    # ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) · NOTHING TO BREAK DOWN ─
+    #
+    # ⛔ THE ONE STATE THIS SCREEN IS REQUIRED TO SURVIVE HAD NO WORDS. When
+    # `gridFor` returns null — a grid key that is absent, which is what
+    # happens whenever a class's papers are all still open and `load()`
+    # therefore prefetched nothing — `questions` is `[]` and Design's
+    # `sc-for` renders zero rows. Nothing throws. What a teacher gets is the
+    # heading "Question breakdown", a hairline, and empty space.
+    #
+    # ⚠️ THE SENTENCE DOES NOT SAY "NOT FETCHED", and that is deliberate.
+    # Which of the two causes produced the empty list is a fact about the
+    # prefetch policy, not about the class: on this screen a null grid is
+    # only ever reachable when nothing on the paper has been marked, so
+    # "no marks yet" is true in both cases and is the half a teacher can act
+    # on. It also stays true if the policy changes.
+    #
+    # ⚠️ IT IS INSIDE THE CARD, AFTER THE `sc-for` (node 391), so it cannot
+    # appear beside rows: the `if` and the `for` are exclusive by
+    # construction — `noQuestions` is `questions.length === 0` and the `for`
+    # is over the same list.
+    (390, 391): ({
+        "t": "if", "e": "paper.noQuestions",
+        "c": [{
+            "t": "div",
+            "a": {"style": "padding:26px 18px;"
+                           "font:400 17px/1.45 var(--st-ui);"
+                           "color:var(--st-muted)"},
+            "c": [{"t": "#",
+                   "v": "No question-by-question marks for this paper yet."}],
+        }]},
+        "the marking screen's question breakdown, with no grid. Design drew "
+        "no empty state here because her sample always has eight marked "
+        "questions."),
+
     # ── ⊕ RULED BY MIDE, 1 Sep 2026 · THE WEEK BAR ─────────────────────
     #
     # See `WEEK_BAR_RESTORED` at the top of this file for the ruling and for
@@ -1715,12 +1839,36 @@ INSERT_AT = {
     # "Self-marked or written" — the two things the state actually is, in
     # Design's own uppercase mono, in the register of the three keys beside
     # it.
+    #
+    # ⊕ RECOLOURED 2 Sep 2026 (MRB-306 Phase 2a screen 5) — AND THE COLOUR WAS
+    # THE WHOLE POINT OF THE STATE.
+    #
+    # ⛔ IT WAS `--st-hatch-b`, CHOSEN AS "PRESENT-BUT-NEUTRAL". It is not
+    # neutral. `--st-hatch-b: #B33E1C` is declared INSIDE the accent block of
+    # `src-styles-tokens.css`, between `--st-accent: #E4572E` and
+    # `--st-accent-text: #A93411`, and on this very page that hue is the
+    # vocabulary of alarm: the "Reteach next lesson" banner, the RETEACH tag,
+    # the chase line, the late chip, the flagged child.
+    #
+    # ⚠️ FOUND BY LOOKING, NOT BY READING. On
+    # `assignment-empty-fixture.html` the fourth state rendered as a row of
+    # eight rust squares against one child's name, and it reads louder than
+    # the hollow ring that actually MEANS incorrect. The state exists to stop
+    # a written answer being reported as a wrong one; drawn in the accent it
+    # reported it as something worse.
+    #
+    # `--st-caption` (#7A6E5F) is a neutral warm grey from the cream block —
+    # the legend row's own ink, so the swatch reads as a marker rather than as
+    # a status — and it stays plainly distinct from the dash's much lighter
+    # `--st-rule-strong` (#D6C6A8). Geometry is unchanged: still the 9x9
+    # square with 2px corners, so the state is still told apart by SHAPE and
+    # not only by colour.
     (403, 408): ({
         "t": "span", "a": {"style": _LEGEND_KEY},
         "c": [
             {"t": "span", "a": {"style": "width:9px;height:9px;"
                                          "border-radius:2px;"
-                                         "background:var(--st-hatch-b)"}},
+                                         "background:var(--st-caption)"}},
             {"t": "#", "v": "Self-marked or written"},
         ]},
         "the fourth key on the class-by-question legend. The swatch is "
@@ -2090,6 +2238,25 @@ WRAP = {
     "class-detail.html": {
         215: "canWrite",
         276: "canWrite",
+    },
+    # ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) ────────────────────────
+    #
+    # ⛔ THE CLASS-BY-QUESTION SECTION DRAWS ITS CHROME WHETHER OR NOT IT HAS
+    # A GRID. With no grid — the key-absent state this screen must survive,
+    # reachable whenever a class's papers are all still open — node 401 still
+    # renders the heading and the whole four-key legend, and node 410 still
+    # renders the card with its STUDENT / MARK header strip, over nothing.
+    # Seen on `assignment-gridmissing-fixture.html`: a legend explaining four
+    # glyphs none of which are on the page, above an empty box.
+    #
+    # ⚠️ THE HEADING GOES WITH IT, WHICH IS THE POINT. Leaving "Class by
+    # question" up over a hidden table is the same claim the empty table
+    # makes. The Question-breakdown card above keeps ITS heading because the
+    # `INSERT_AT` note lands inside it and answers for it; this section has
+    # no such note and would be a heading with nothing underneath.
+    "assignment.html": {
+        401: "paper.hasQuestions",
+        410: "paper.hasQuestions",
     },
 }
 
@@ -2486,7 +2653,7 @@ METHODS = {
         "    if (v === 0) return { w: 9, h: 9, r: '50%', bg: 'transparent', "
         "bd: '1.5px solid var(--st-rule-strong)' };\n"
         "    if (v === 3) return { w: 9, h: 9, r: '2px', bg: "
-        "'var(--st-hatch-b)', bd: '1.5px solid var(--st-hatch-b)' };\n"
+        "'var(--st-caption)', bd: '1.5px solid var(--st-caption)' };\n"
         "    return { w: 9, h: 2, r: '1px', bg: 'var(--st-rule-strong)', bd: "
         "'none' };",
         "⊕ THE FOURTH GRID STATE. Design's grid has three: 1 correct, 0 "
@@ -2504,10 +2671,21 @@ METHODS = {
         "wrong answers were available: a RING is Design's incorrect, a DOT is "
         "Design's correct, a DASH is Design's not-attempted. So it is a "
         "filled SQUARE — the same 9x9 footprint as the two circles so the "
-        "grid keeps its rhythm, 2px corners rather than 50% so it differs in "
-        "SHAPE and not only in colour, and `--st-hatch-b` rather than green "
-        "or the rule ink so it reads as present-but-neutral. Distinguishable "
-        "without colour, which the ring/dot pair already is not."),
+        "grid keeps its rhythm, and 2px corners rather than 50% so it differs "
+        "in SHAPE and not only in colour. Distinguishable without colour, "
+        "which the ring/dot pair already is not.\n"
+        "\n"
+        "        ⊕ RECOLOURED 2 Sep 2026 — `--st-hatch-b` → `--st-caption`. "
+        "The first draft picked `--st-hatch-b` and called it "
+        "present-but-neutral. It is #B33E1C, declared inside the ACCENT block "
+        "of the token sheet between `--st-accent` and `--st-accent-text`, and "
+        "on this page that hue means Reteach, late, chase, flagged. Driven "
+        "and looked at, one child's eight self-marked answers rendered as a "
+        "row of rust squares that reads louder than the ring that actually "
+        "means wrong — the exact misreport the state was invented to "
+        "prevent, in a different direction. `--st-caption` (#7A6E5F) is the "
+        "legend's own neutral ink and is far darker than the dash's "
+        "`--st-rule-strong`, so present and unscored is what it says."),
 }
 del METHODS["rosterFor_noop"]
 
@@ -4915,6 +5093,100 @@ componentDidUpdate() {
      "happened; this writes to `student_notifications` through the same "
      "`sendReminders` the class screen's control uses, and says which of the "
      "three things actually occurred."),
+
+    # ══ ⊕ 2 Sep 2026 · A RETEACH LINE WITH NO QUESTION IN IT ════════════
+    #
+    # ⛔ `worst.text` CAN BE EMPTY, AND DESIGN'S SENTENCE ASSUMES IT NEVER IS.
+    # `assignment_question_attempts.question_text` is NULLABLE — it is a
+    # denormalised snapshot of the stem as the child was served it
+    # (`20260501212106_schools_layer.sql:325`, `20260818231152:7`) — and
+    # `buildGrid` deliberately leaves a column's `text` as `""` when no
+    # attempt carried one, because "an unanswered question has no snapshot
+    # and so no text — blank, not a placeholder".
+    #
+    # Design's line then reads:
+    #
+    #     Q4 — . Only 23% of the class got it right.
+    #
+    # in 19px on the accent panel at the top of the screen, which is the
+    # first thing a teacher sees on the page. The em-dash clause is the part
+    # that has nothing to say, so the em-dash clause is what goes; the
+    # sentence that survives ("Q4. Only 23% of the class got it right.")
+    # still names the question and still gives the number.
+    #
+    # ⚠️ THE TILE BELOW IT ALREADY HANDLED THIS and that is why it was easy
+    # to read past — `{ label: 'Lowest', … sub: worst ? worst.text : '' }`
+    # renders an empty sub perfectly well. Only the banner concatenates.
+    ("        reteachLine: worst ? worst.id + ' \u2014 ' + "
+     "worst.text.toLowerCase() + '. Only ' + worst.pct + '% of the class got "
+     "it right.' : '',",
+     "        reteachLine: worst ? worst.id\n"
+     "          + (worst.text ? ' \u2014 ' + worst.text.toLowerCase() : '')\n"
+     "          + '. Only ' + worst.pct + '% of the class got it right.'\n"
+     "          : '',",
+     "the reteach banner, on a paper whose worst question carries no stem "
+     "snapshot."),
+
+    # ══ ⊕ 2 Sep 2026 · THE CLASS-BY-QUESTION GRID IS EIGHT WIDE ═════════
+    #
+    # ⛔ `grid-template-columns:225px repeat(8,1fr) 92px`, TWICE — Design's
+    # header row (node 413) and her student row (node 419). Eight is the
+    # length of `STEMS`, the sample's one question list for every paper in
+    # every subject, and it is welded into the LAYOUT rather than into the
+    # data, so the `pGrid.stems.length` ruling that freed the question COUNT
+    # left the table still eight columns wide.
+    #
+    # ⚠️ REAL PAPERS ARE NOT EIGHT QUESTIONS. Measured on the TEST project,
+    # 2 Sep 2026: the only assignment carrying `assignment_questions` rows has
+    # FOUR, and every `assignment_submissions.max_score` in the database is
+    # TEN. A four-question paper draws four cells into an eight-column
+    # template — four empty columns, and "Mark" nowhere near the right-hand
+    # edge it is right-aligned to. A twelve-question paper is worse: the
+    # extra cells create implicit auto-width columns, so the row and the
+    # header disagree about where every column starts and the marks column
+    # is pushed off the end of the scroll area.
+    #
+    # The template is therefore built from the paper, in `renderVals`, and
+    # both nodes interpolate it (`BIND_ATTR` 413 and 419). `paper.cols` is a
+    # STRING because a grid template is one; `questions.length || 1` because
+    # `repeat(0,1fr)` is invalid CSS and an invalid track list drops the whole
+    # declaration — which would turn the not-fetched state, the one state
+    # this screen must survive, into an unstyled stack.
+    #
+    # ── AND THE TWO SECTIONS HAVE TO BE ABLE TO SAY THEY ARE EMPTY ──────
+    #
+    # ⛔ A GRID KEY THAT IS NOT THERE IS THE STATE THIS SCREEN MUST SURVIVE,
+    # AND IT SURVIVED IT SILENTLY. `gridFor` returns null, `questions` and
+    # `grid` are both `[]`, nothing throws — and the page then draws the
+    # heading "Question breakdown" over a hairline and nothing else, and
+    # under it "Class by question" with a legend and a STUDENT / MARK header
+    # strip over an empty card. Driven on
+    # `assignment-gridmissing-fixture.html` and looked at: it reads as a page
+    # that failed, not as a page with nothing to show.
+    #
+    # `hasQuestions` / `noQuestions` are the pair. Both, rather than one and
+    # a negation at each site, because `student-runtime` has no `unless`.
+    ("        qids: questions.map(qq => ({ id: qq.id })),\n"
+     "        grid\n"
+     "      } : { title: '\u2014', eyebrow: k.code, hasReteach: false, "
+     "reteachLine: '', tiles: [], questions: [], qids: [], grid: [] },",
+     "        qids: questions.map(qq => ({ id: qq.id })),\n"
+     "        cols: '225px repeat(' + (questions.length || 1) + ',1fr) "
+     "92px',\n"
+     "        hasQuestions: questions.length > 0,\n"
+     "        noQuestions: questions.length === 0,\n"
+     "        labelCol: scored.length === questions.length ? '90px' "
+     ": '112px',\n"
+     "        grid\n"
+     "      } : { title: '\u2014', eyebrow: k.code, hasReteach: false, "
+     "reteachLine: '', tiles: [], questions: [], qids: [], grid: [],\n"
+     "          cols: '225px repeat(1,1fr) 92px',\n"
+     "          hasQuestions: false, noQuestions: true, "
+     "labelCol: '90px' },",
+     "the class-by-question table's column template, and the pair of flags "
+     "the two empty states hang on. The no-paper branch carries all three: "
+     "every one of the six pages computes this object, so a key that exists "
+     "on only one branch is a missing binding on the others."),
 )
 
 

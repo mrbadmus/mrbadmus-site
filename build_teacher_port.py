@@ -2246,7 +2246,24 @@ EMPTY_SHAPES = {
       "on this screen where the chase list is the WHOLE class and nothing "
       "is marked, so `lastP`, `worstTwo` and `praise` are all empty at "
       "once.",
-      lambda p: _shape_no_submissions(p)),),
+      lambda p: _shape_no_submissions(p)),
+
+     # ── ⊕ THE SIXTEENTH, 2 Sep 2026 (screen 5) — THE 26 AUG SHAPE ──────
+     #
+     # ⚠️ NOT AN EDGE CASE. `load()` prefetches a grid for the marking screen
+     # and the questions chart and for nothing else, so EVERY class-detail
+     # render in production has `GRID: {}`. The other three class-detail
+     # fixtures ship a populated map, which this page can never have — which
+     # is exactly why the gate was green through the outage.
+     ("gridmissing",
+      "no grid fetched at all — `GRID: {}`, which is what this screen "
+      "ALWAYS has in production. `renderVals` computes the marking screen's "
+      "`paper` block here too, so this is the shape that threw mid-mount on "
+      "26 Aug 2026 and put \"Your classes could not be loaded\" over the one "
+      "class in the school with work set. It also shows the assignments "
+      "table's weak column as it really is on this page: an em-dash on "
+      "every row, because the grids it would need are not here.",
+      lambda p: _shape_grid_absent(p)),),
     "digest.html": (("empty",
         "a class with students and no work set — `PAPERS: []`, `WEEKS: []`, "
         "`state: 'nowork'`. Design's README: \"classes with no work set have "
@@ -2256,11 +2273,36 @@ EMPTY_SHAPES = {
         "a paper nobody submitted — the grid is present, `submitted: 0` and "
         "every `qpct` is null. This is where \"blanks over invented numbers\" "
         "is tested: nothing may render as 0%, as `null%`, or as a full bar. "
-        "⊕ AND IT CARRIES THE FOURTH GLYPH: one row's `raw` holds a 3, "
-        "because `is_correct IS NULL` cannot occur in Design's sample at all "
-        "and `cellStyle(3)` would otherwise be unexercised by every fixture "
-        "in the set.",
-        lambda p: _shape_no_submissions(p)),),
+        "⊕ 2 Sep 2026 — IT NO LONGER CARRIES THE FOURTH GLYPH, and the "
+        "reason is in `_shape_no_submissions`: a whole ROW of "
+        "`is_correct IS NULL` is a shape the seam cannot produce, and it "
+        "contradicted this fixture's own SUBMITTED 0/16 tile.",
+        lambda p: _shape_no_submissions(p)),
+
+     # ── ⊕ THE FOURTEENTH FIXTURE, 2 Sep 2026 (screen 5) ─────────────────
+     ("written",
+      "a REAL-SHAPED paper: FIVE questions, SEVEN marks, and Q4 written. "
+      "It is the only fixture in the set whose `max` is not 8 and whose "
+      "question count is not 8, so it is the only one that can tell the "
+      "`/max` ruling apart from the `/8` hardcode it replaced, the only one "
+      "that renders `qLine`'s \"N questions, M marks\" branch, and the only "
+      "one that puts a column template other than eight on the class grid. "
+      "It also carries the fourth grid state where the seam really puts it "
+      "— one COLUMN, every child who submitted — and a lowest-scoring "
+      "question with NO stem snapshot, which is what drives the reteach "
+      "banner's empty-text guard.",
+      lambda p: _shape_written_paper(p)),
+
+     # ── ⊕ THE FIFTEENTH, 2 Sep 2026 (screen 5) ─────────────────────────
+     ("gridmissing",
+      "ONE assignment, still open, and no grid fetched for it — so "
+      "`gridFor` asks for a key that is NOT IN THE MAP. Key-absent is a "
+      "different branch from `insights-empty`'s key-present-null, and it is "
+      "the branch that threw live on 26 Aug 2026. Reachable here because "
+      "`load()` prefetches `newestMarkedIdx(papers)` and skips the fetch at "
+      "-1, while `paper()` falls back to `list[0]` — a class whose papers "
+      "are all still open lands between the two.",
+      lambda p: _shape_no_marked_paper(p)),),
     "insights.html": (("empty",
         "a grid that was never prefetched — `GRID[key]: null`, the seam's "
         "deliberate \"not fetched yet\". It must render as PENDING and never "
@@ -2468,18 +2510,282 @@ def _shape_no_submissions(p):
             continue
         g["submitted"] = 0
         g["qpct"] = [None] * len(g["stems"])
+        g["qCorrect"] = [0] * len(g["stems"])
+        g["qMarked"] = [0] * len(g["stems"])
+        g["qUnmarkable"] = [0] * len(g["stems"])
+        g["qBlank"] = [0] * len(g["stems"])
         for row in g["rows"]:
             row["raw"] = [2] * len(g["stems"])
             row["score"] = "—"
             row["submitted"] = False
-        # ⊕ THE FOURTH GLYPH, on one row, because nothing else in the set can
-        # produce it: `is_correct IS NULL` is a state Design's sample cannot
-        # express, so without this `cellStyle(3)` ships undriven.
-        if g["rows"]:
-            g["rows"][0]["raw"] = [3] * len(g["stems"])
-            g["rows"][0]["submitted"] = True
-            g["submitted"] = 1
+        # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) — THE FOURTH GLYPH WAS
+        # PARKED HERE AND IT COULD NOT BE HERE.
+        #
+        # ⛔ WHAT THIS USED TO DO: `g["rows"][0]["raw"] = [3] * len(stems)`,
+        # `submitted = True`, `g["submitted"] = 1`. Two things were wrong with
+        # it, and the second is the one that matters.
+        #
+        # It contradicted its own screen. This shape is "a paper NOBODY
+        # submitted"; the tile above the grid read SUBMITTED 0/16 while the
+        # grid underneath showed one child with eight answered cells.
+        #
+        # And a WHOLE ROW of `is_correct IS NULL` is a shape the seam cannot
+        # produce. Whether an answer can be machine-marked is a property of
+        # the QUESTION — a written or self-marked question is written for
+        # every child who answers it — so NULL clusters in a COLUMN. One
+        # child self-marking all eight of eight machine-markable questions
+        # is Design-fiction geometry, and it was the only place any gate had
+        # ever seen `cellStyle(3)`.
+        #
+        # The fourth state now lives on `assignment-written-fixture.html`, as
+        # Q4 of a five-question paper, for every child who handed it in. See
+        # `_shape_written_paper`.
     p["FEED"] = {cid: []}
+    return p
+
+
+def _mean(vals):
+    """Design's own averages are recomputed with ONE formula, not two.
+
+    Design rounds a percentage per cell and then averages, and its
+    `studentAvg` disagrees with the mean of its own `pct[]` on 9 of 16 rows.
+    That is harmless in a sample nobody adds up; it is not harmless in a
+    fixture that exists to prove a number on screen came from the row beneath
+    it. Every average a reshaped fixture touches is therefore rebuilt from the
+    cells with this one function, so the fixture cannot disagree with itself.
+    """
+    vals = [v for v in vals if v is not None]
+    return round(sum(vals) / len(vals)) if vals else None
+
+
+def _reaverage(p, cid):
+    """Recompute every average in one class from its own matrix cells."""
+    mx = p["MATRIX"][cid]
+    for c in range(mx["cols"]):
+        mx["colMean"][c] = _mean([r["pct"][c] for r in mx["rows"]])
+        mx["colSub"][c] = sum(1 for r in mx["rows"] if r["submitted"][c])
+    mx["studentAvg"] = {r["sid"]: _mean(r["pct"]) for r in mx["rows"]}
+    mx["classMean"] = _mean(mx["colMean"])
+    marked = mx["markedIdx"]
+    mx["markedSub"] = sum(mx["colSub"][i] for i in marked)
+    mx["markedOnTime"] = sum(mx["colOnTime"][i] for i in marked)
+    mx["markedLate"] = sum(mx["colLate"][i] for i in marked)
+    mx["markedLateUnknown"] = sum(mx["colLateUnknown"][i] for i in marked)
+    mx["markedPct"] = (round(mx["markedOnTime"] / mx["markedSub"] * 100)
+                       if mx["markedSub"] else None)
+    mx["byId"] = {r["sid"]: r for r in mx["rows"]}
+    for r in p["ROSTER"][cid]:
+        r["avg"] = mx["studentAvg"].get(r["id"])
+    return p
+
+
+# ⚑ THE PAPER THAT IS NOT EIGHT QUESTIONS OUT OF EIGHT MARKS ─────────────
+#
+# ⛔ EVERY OTHER FIXTURE IN THE SET IS 8 QUESTIONS, 8 MARKS, 1 MARK EACH,
+# because Design's `STEMS` is one list of eight used for every paper in every
+# subject and its every score is `n/8`. Three separate rulings exist to take
+# that apart — `qLine` built from the paper, `score` over the row's own `max`,
+# and the grid's column template — and NONE of them could be told apart from
+# the hardcode it replaced, because on 8-questions-out-of-8 the right answer
+# and the wrong one print the same characters. A gate cannot see a fix it
+# cannot distinguish from the bug.
+#
+# ⚠️ MEASURED, NOT GUESSED. On the TEST project, 2 Sep 2026: every
+# `assignment_submissions.max_score` in the database is 10, and the only
+# assignment carrying `assignment_questions` rows has FOUR of them. So a real
+# paper is neither eight questions nor out of eight, and the branch that says
+# "5 questions, 7 marks" — the one real data takes — had never been rendered
+# anywhere.
+#
+# ⚠️ AND IT CARRIES THE FOURTH GRID STATE, WHICH USED TO SIT SOMEWHERE IT
+# COULD NOT REALLY BE. `_shape_no_submissions` put `is_correct IS NULL` on one
+# CHILD'S WHOLE ROW. Whether an answer can be machine-marked is a property of
+# the QUESTION, not of the child: a written or self-marked question is written
+# for everyone who answers it, so NULL clusters in a COLUMN and never in a
+# row. (It also sat under a tile reading "SUBMITTED 0/16" while the grid it
+# was in said one child had submitted.) Here it is Q4, for every child who
+# handed the paper in, which is the shape the seam actually produces.
+#
+# ⚠️ AND Q2 CARRIES NO STEM TEXT. `assignment_question_attempts.question_text`
+# is nullable and `buildGrid` leaves a column's `text` empty rather than
+# inventing a placeholder. Q2 is also the lowest-scoring question, so this is
+# the fixture that drives the reteach banner with nothing to name — the
+# "Q4 — . Only 23% …" sentence.
+#
+# WHERE THE MARKS COME FROM, stated rather than implied: Q1-Q3 are worth 2
+# each and Q5 is worth 1, so the paper's automatic total is 7. Q4 is the
+# written question and contributes NOTHING to it — which is what the
+# SUBMITTED tile's own subtitle, "Marked automatically", means. Nothing here
+# invents a self-mark.
+_WRITTEN_TARIFF = (2, 2, 2, None, 1)          # None = the written question
+_WRITTEN_FROM = (0, 3, 2, None, 7)            # which of Design's 8 each maps
+
+
+def _shape_written_paper(p):
+    """A 5-question paper out of 7 marks, with one written question."""
+    p = json.loads(json.dumps(p))
+    cid = p["classId"]
+    idx = p["paperIdx"]
+    key = "%s:%d" % (cid, idx)
+    g = p["GRID"][key]
+    mx = p["MATRIX"][cid]
+    n = len(_WRITTEN_TARIFF)
+    max_score = sum(t for t in _WRITTEN_TARIFF if t is not None)
+
+    stems = []
+    for i, src in enumerate(_WRITTEN_FROM):
+        old = g["stems"][src] if src is not None else g["stems"][3]
+        stems.append(dict(old, id="Q%d" % (i + 1), idx=i))
+    # Q2's snapshot was never written. Q4 is the written question and its own
+    # stem text is Design's; only its ANSWERS are unmarkable.
+    stems[1]["text"] = ""
+
+    correct = [0] * n
+    marked = [0] * n
+    unmarkable = [0] * n
+    blank = [0] * n
+    rows, submitted = [], 0
+    for old in g["rows"]:
+        if not old["submitted"]:
+            # ⚠️ `qBlank` COUNTS BLANKS AMONG THE CHILDREN WHO HANDED IN, and
+            # not the children who did not. `buildGrid` increments it only
+            # inside its submitted branch, so a fixture that counted the
+            # absentees here would carry a number the seam cannot produce —
+            # which is the whole failure mode this fixture exists to correct.
+            rows.append(dict(old, raw=[2] * n, score="—"))
+            continue
+        submitted += 1
+        raw, score = [], 0
+        for qi, src in enumerate(_WRITTEN_FROM):
+            if src is None:                       # the written question
+                raw.append(3)
+                unmarkable[qi] += 1
+                continue
+            v = old["raw"][src]
+            raw.append(v)
+            if v == 1:
+                correct[qi] += 1
+                marked[qi] += 1
+                score += _WRITTEN_TARIFF[qi]
+            elif v == 0:
+                marked[qi] += 1
+            else:
+                blank[qi] += 1
+        rows.append(dict(old, raw=raw,
+                         score="%d/%d" % (score, max_score)))
+
+    qpct = [round(correct[i] / marked[i] * 100) if marked[i] else None
+            for i in range(n)]
+    p["GRID"] = {key: dict(
+        rows=rows, qpct=qpct, stems=stems, submitted=submitted,
+        roster=g["roster"], qcount=n, maxScore=max_score,
+        qCorrect=correct, qMarked=marked,
+        qUnmarkable=unmarkable, qBlank=blank,
+        # The seam's own sentence, on the branch `maxScore != qcount` takes.
+        qLine="%d questions, %d marks" % (n, max_score),
+    )}
+
+    # The matrix column and the paper row have to agree with those cells.
+    for r in mx["rows"]:
+        gr = [x for x in rows if x["id"] == r["sid"]][0]
+        if gr["score"] == "—":
+            r["scores"][idx] = r["max"][idx] = r["pct"][idx] = None
+            r["submitted"][idx] = False
+        else:
+            got = int(gr["score"].split("/")[0])
+            r["scores"][idx] = got
+            r["max"][idx] = max_score
+            r["pct"][idx] = round(got / max_score * 100)
+            r["submitted"][idx] = True
+    _reaverage(p, cid)
+    paper = p["PAPERS"][cid][idx]
+    paper["sub"] = "%d/%d" % (submitted, mx["colAsked"][idx])
+    paper["mean"] = "%d%%" % mx["colMean"][idx]
+    return p
+
+
+# ⚑ A GRID KEY THAT IS NOT THERE AT ALL ──────────────────────────────────
+#
+# ⛔ THIS IS THE 26 AUGUST 2026 BREAKAGE, AND NO FIXTURE HELD IT.
+# `insights-empty` covers key-PRESENT-and-null; nothing covered key-ABSENT,
+# which is a different branch of `gridFor` and was the one that threw.
+# `renderVals` computes the marking screen's `paper` block on EVERY screen,
+# `load()` prefetches grids only for marking and insights, and the first
+# `gridFor` body read `MRB_PICK('GRID', key)` — which throws on an absent key.
+# So opening class-detail on any class WITH an assignment died mid-mount and
+# showed "Your classes could not be loaded". It hit the one class in the
+# school that had work set, which is the only class anybody opened.
+#
+# ⚠️ AND `GRID: {}` IS NOT AN EDGE CASE ON THIS SCREEN — IT IS THE ONLY STATE
+# IT EVER HAS. `load()` fetches a grid for the marking screen and for the
+# questions chart, and for nothing else. Every class-detail render in
+# production therefore has an EMPTY grid map. The populated class-detail
+# fixtures ship a full one, which that page cannot have, and that is precisely
+# why `teacher_behaviour` could be green through the outage.
+def _shape_grid_absent(p):
+    """No grid fetched at all — every class-detail render in production."""
+    p = json.loads(json.dumps(p))
+    p["GRID"] = {}
+    return p
+
+
+# ⚑ THE MARKING SCREEN'S OWN KEY-ABSENT STATE ────────────────────────────
+#
+# ⛔ AND IT IS REACHABLE, WHICH TOOK FINDING. On marking, `load()` prefetches
+# `asked == null ? newestMarkedIdx(papers) : asked`, and skips the fetch
+# entirely when that is -1. `METHODS["paper"]` then falls back to
+# `newestMarkedIdx(list) >= 0 ? list[n] : list[0]` — so a class whose papers
+# are ALL still open prefetches nothing and then asks for `<class>:0`. The
+# seam and the page disagree by exactly one paper, and the answer has to be
+# the documented null rather than a throw.
+#
+# ⚠️ ONE PAPER, NOT TWELVE. The obvious shaping — flip all twelve of Design's
+# papers to `when: 'upcoming'` — encodes a state real data cannot hold: their
+# deadlines run backwards a week at a time, so eleven of the twelve would be
+# "still open" with a due date already past. A class with ONE open paper is
+# both the honest reading and the real one: it is `8r/Sc1` in the week work
+# is first set, and on 2 Sep 2026 that class's newest paper is due tomorrow
+# with both children already in.
+#
+# Everything downstream of "nothing is past its deadline" follows: nothing is
+# marked, nothing can be late, and `markedIdx` is empty.
+def _shape_no_marked_paper(p):
+    """One assignment, still open, and no grid fetched for it."""
+    p = json.loads(json.dumps(p))
+    cid = p["classId"]
+    papers = p["PAPERS"][cid]
+    keep = 0
+    for i, pr in enumerate(papers):
+        if pr["when"] == "upcoming":
+            keep = i
+            break
+    paper = dict(papers[keep], idx=0, weekIdx=0, weekOfYear=1)
+    p["PAPERS"][cid] = [paper]
+
+    mx = p["MATRIX"][cid]
+    for r in mx["rows"]:
+        for f in ("scores", "max", "pct", "stampShort", "submitted", "late"):
+            r[f] = [r[f][keep]]
+        # An open paper cannot be late: there is no deadline behind it yet.
+        r["late"] = [False if r["submitted"][0] else None]
+    mx["cols"] = 1
+    for f in ("colSub", "colMean", "colOnTime", "colAsked",
+              "colLate", "colLateUnknown"):
+        mx[f] = [mx[f][keep]]
+    mx["colOnTime"] = [mx["colSub"][0]]
+    mx["colLate"] = [0]
+    mx["colLateUnknown"] = [0]
+    mx["markedIdx"] = []
+    _reaverage(p, cid)
+
+    wks = p["WEEKS"].get(cid) or []
+    if wks:
+        p["WEEKS"][cid] = [dict(wks[0], idx=0, weekOfYear=1, label="Week 1",
+                                range=paper["range"], now=True)]
+    # Nothing fetched, and no paper asked for — the two facts together are
+    # what makes `gridFor` reach for a key that is not there.
+    p["GRID"] = {}
+    p["paperIdx"] = None
     return p
 
 

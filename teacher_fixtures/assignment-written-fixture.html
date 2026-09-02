@@ -9,35 +9,15 @@
   GENERATED — do not edit. `python3 build_teacher_port.py`
   ══════════════════════════════════════════════════════════════════════════
 
-  Assignment, PORTED: Claude Design's own template and Design's own logic class,
-  rendered by shared/student-runtime.js. No React and none of Design's
-  `support.js` ships here — that was ruled on 20 Aug 2026 for the student
-  pages and this port follows it.
+  Assignment, PORTED — THE FIXTURE PAGE. The same file as assignment.html but for this comment and
+  the script tags at the end: this one loads Design's own extracted example
+  data and mounts, that one loads the live data source and does not.
 
-  The markup is not retyped and neither is the behaviour. Both are extracted
-  from docs/ks3/design-reference/teacher/ by student_template.py, so the only
-  way this can differ from Design's file is if Design's file changed.
-
-  ⊕ THIS IS THE LIVE PAGE, as of 24 Aug 2026 (MRB-287). It follows that this
-  file is NOT hand-editable, and the warning above is not a formality: a fix
-  typed in here survives exactly until the next build. Changes to Design's
-  logic belong in teacher_rulings.py, changes to what the page renders belong
-  in shared/teacher-live.js, and changes to the markup belong to Design.
-
-  THERE IS NO DATA IN THIS FILE. Design's delivery is a SAMPLE — twelve
-  invented classes, fifty-four invented children and every mark on every
-  screen derived from an FNV hash of a class id. All of it has been lifted out
-  into `window.__MRB_DATA__`, and every read of it goes through `MRB_DATA(k)`
-  or `MRB_PICK(map, id)`, both of which THROW when what they ask for is
-  absent. So this page cannot show a teacher a class they do not teach: with
-  no data source loaded it renders nothing at all and says why. The data
-  arrives from teacher-live.js, and from nowhere else.
-
-  Its twin, assignment-fixture.html, is this same file with two differences and no others — this
-  comment, and the script tags at the end, where it loads Design's own
-  extracted example values and mounts. That twin is what the gates drive,
-  which is how Design's sample can still be exercised in full without being
-  reachable from here.
+  ⛔ NOT A CANDIDATE FOR ANY LIVE PATH, and not because it is unfinished — it
+  is twelve invented classes and fifty-four invented children, hard-coded, for
+  every visitor. It exists so the gates have something with known values to
+  drive. A gate that drove the production page would be asserting against
+  whatever the database happened to hold that morning.
   ══════════════════════════════════════════════════════════════════════════
 -->
 <link rel="stylesheet" href="/shared/teacher-ds.css?v=fba5f719">
@@ -1645,6 +1625,7 @@ window.__MRB_MOUNT__ = function () {
 </script>
 <script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"06f24811","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"f05eeaa9","teacher-guard.js":"2efdc820","teacher-live.js":"bf830283"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
-<script src="/shared/teacher-live.js?v=bf830283"></script>
+<script src="teacher-fixture-assignment-written.js"></script>
+<script>window.__MRB_MOUNT__();</script>
 </body>
 </html>
