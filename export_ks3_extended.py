@@ -29,14 +29,20 @@ came from here. The lesson page still renders its own ladder from the
 authored file, unchanged, and still marks these two rungs the way it always
 has — against the criteria, by the student.
 
-⚠️ MARKS ARE DERIVED, AND THAT IS A CODE DECISION AWAITING MIDE'S RULING.
-`marks = min(6, max(2, len(success)))`. A success criterion is not a mark
-point: an author wrote them to help a thirteen-year-old check their own
-answer, not to tariff it, and four criteria does not reliably mean four
-marks. It is the only signal in the record that scales with the demand of
-the question, so it is what the tariff is taken from tonight. If Mide rules
-differently — a flat 4, a per-rung tariff, or hand-tariffed per lesson —
-the change is one line here and a re-run of the seeder.
+⊕ MARKS ARE A PER-RUNG TARIFF — RULED BY MIDE, 2 Sep 2026 (MRB-313, Night 3).
+An `explain` rung is **4 marks** and a `produce` rung is **6 marks**. The
+success criteria are the marking points, and the marker applies best-fit
+against them: an answer is placed by how much of the criteria it meets,
+not by counting ticks one-to-one.
+
+This REPLACES the Night 2 derivation `marks = min(6, max(2, len(success)))`,
+which was a code decision awaiting this ruling. Why it was wrong: a success
+criterion is written to help a thirteen-year-old check their own answer,
+not to tariff the question, so four criteria never reliably meant four
+marks — and it left the KS3 pool with no 6-markers at all, so Design's
+"6 marks" filter on the child's exam-questions screen returned nothing at
+KS3. The tariff now lives in `MARKS` below; changing it is one line and a
+re-run of `scripts/seed-exam-questions.js` (idempotent upsert on `id`).
 """
 
 import argparse
@@ -55,6 +61,10 @@ sys.path.insert(0, REPO)
 EXTENDED_RUNGS = ("explain", "produce")
 
 COMMAND = {"explain": "Explain", "produce": "Produce"}
+
+# The tariff. Ruled by Mide 2 Sep 2026 — see the module docstring. The
+# `exam_questions.marks` CHECK is `between 2 and 6`; both values sit inside it.
+MARKS = {"explain": 4, "produce": 6}
 
 # A KS3 unit code's first letter is its science. There are exactly three.
 SUBJECT = {"B": "Biology", "C": "Chemistry", "P": "Physics"}
@@ -127,14 +137,15 @@ def rows():
                 "subject": subject,
                 "topic": titles.get(unit_code, unit_code),
                 "unit_code": unit_code,
-                # ⚠️ DERIVED. See the module docstring — awaiting Mide.
-                "marks": min(6, max(2, len(success))),
+                # Per-rung tariff, ruled. See MARKS and the module docstring.
+                "marks": MARKS[rung],
                 "command": COMMAND[rung],
                 "text": q,
                 "stem": None,
-                # A success criterion is authored as something the student
-                # can tick, so nothing here is `essential`: an answer that
-                # misses one is a lower mark, not a zero.
+                # The success criteria ARE the marking points (Mide, 2 Sep
+                # 2026). Nothing here is `essential`: the marker places the
+                # answer by best fit against the set, so missing one point is
+                # a lower mark, never a zero.
                 "scheme": [{"text": s, "essential": False} for s in success],
                 "levels": None,
                 "indicative": None,

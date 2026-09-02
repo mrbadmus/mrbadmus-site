@@ -3,181 +3,397 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#F7F1E5"/>
+  <meta name="theme-color" content="#FBF3E6"/>
   <title>Exam questions — MrBadmus</title>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
   <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <style>
+  /* ── consumer/exam.html — Design's `Child Exam Questions.dc.html`, live ──
+     Her per-element inline styles transcribed; the repeated ones lifted here
+     with an `ex-` prefix. Every value is a --ks3-* token. Four screens on one
+     page — pick, write, marking, result — because they are one task, and a
+     child who has just written six marks' worth should not lose the page to
+     a navigation. Single column at every width. */
+
+  body { padding: 0; margin: 0; background: #FBF3E6; }
+
+  /* ⚠️ LOAD-BEARING, and it looks redundant. An AUTHOR `display` beats the UA
+     stylesheet's `[hidden] { display: none }` regardless of specificity — the
+     same trap shared/ks3.css documents at `.ks3-ticks[hidden]`. Every screen
+     switch on this page is `el.hidden = …` over a class that sets its own
+     `display` (flex/grid), so without this line the hidden screen renders
+     anyway: found by screenshotting it, 2 Sep 2026. */
+  [hidden] { display: none !important; }
+
+  .ex-root {
+    min-height: 100vh;
+    background: var(--ks3-ground);
+    color: var(--ks3-ink);
+    font-family: var(--ks3-font-body);
+    font-size: 19px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  @keyframes ex-spin { to { transform: rotate(360deg); } }
+
+  /* ── header ── */
+  .ex-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 20px 14px; border-bottom: 2px solid var(--ks3-ink);
+  }
+  .ex-back {
+    display: grid; place-items: center; width: 40px; height: 40px;
+    margin-left: -8px; border: 0; border-radius: 12px;
+    background: none; color: var(--ks3-ink); cursor: pointer; text-decoration: none;
+  }
+  .ex-back .ks3-mark { width: 22px; height: 22px; }
+  .ex-title {
+    flex: 1; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 20px; letter-spacing: -.02em;
+  }
+  .ex-quota-chip {
+    padding: 6px 12px; border-radius: 99px;
+    border: 2px solid var(--ks3-rule-strong); background: var(--ks3-band);
+    font-family: var(--ks3-font-mono); font-size: 12px; letter-spacing: .06em;
+    color: var(--ks3-ink-muted); white-space: nowrap;
+  }
+
+  .ex-main { max-width: 600px; margin: 0 auto; padding: 26px 20px 80px; }
+
+  /* ── pick ── */
+  .ex-h1 {
+    margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 38px; line-height: 1; letter-spacing: -.035em;
+  }
+  .ex-lede { margin: 12px 0 0; font-size: 17px; color: var(--ks3-ink-body); }
+  .ex-filters { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .ex-filters .ks3-option {
+    width: auto; min-height: 40px; padding: 8px 14px;
+    border-radius: 99px; font-size: 15px;
+  }
+  .ex-list { margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .ex-card {
+    text-align: left; display: block; width: 100%; padding: 18px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-card); box-shadow: var(--ks3-shadow-block);
+    color: var(--ks3-ink); font: inherit; cursor: pointer;
+  }
+  .ex-card.is-done { background: var(--ks3-row-dim); box-shadow: none; }
+  .ex-card-top { display: flex; align-items: center; gap: 10px; }
+  .ex-dot {
+    width: 10px; height: 10px; border-radius: 99px;
+    border: 2px solid var(--ks3-ink); background: var(--ks3-band);
+  }
+  .ex-topic {
+    font-family: var(--ks3-font-mono); font-size: 12px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .ex-marks {
+    margin-left: auto; display: grid; place-items: center;
+    width: 38px; height: 30px; border-radius: 9px;
+    border: 2px solid var(--ks3-ink); background: var(--ks3-band);
+    font-family: var(--ks3-font-display); font-weight: 800; font-size: 15px;
+  }
+  .ex-card p { margin: 10px 0 0; font-size: 18px; font-weight: 600; line-height: 1.35; }
+  .ex-done-pill {
+    margin: 10px 0 0; display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 99px;
+    background: var(--ks3-ok-tint); border: 2px solid var(--ks3-ok);
+    font-size: 13px; font-weight: 700; color: var(--ks3-ok-text);
+  }
+
+  /* ── write ── */
+  .ex-eyebrow-row { display: flex; align-items: center; gap: 10px; }
+  .ex-eyebrow {
+    font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .ex-marks-wide {
+    margin-left: auto; display: grid; place-items: center;
+    min-width: 52px; height: 34px; padding: 0 8px; border-radius: 10px;
+    border: 2px solid var(--ks3-ink); background: var(--ks3-band);
+    font-family: var(--ks3-font-display); font-weight: 800; font-size: 16px;
+    white-space: nowrap;
+  }
+  .ex-q {
+    margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 28px; line-height: 1.15; letter-spacing: -.03em;
+  }
+  .ex-stem {
+    margin: 12px 0 0; padding: 14px 16px;
+    border: 2px solid var(--ks3-rule-strong); border-radius: var(--ks3-r-panel);
+    background: var(--ks3-inset); font-size: 17px; color: var(--ks3-ink-body);
+  }
+  .ex-meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 8px; font-size: 14px; color: var(--ks3-ink-muted);
+  }
+  .ex-primary {
+    margin-top: 20px; width: 100%; min-height: 56px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    font: inherit; font-weight: 700; font-size: 19px; cursor: pointer;
+  }
+  .ex-primary[disabled] { opacity: .45; cursor: default; }
+
+  /* ── marking ── */
+  .ex-marking { margin-top: 60px; text-align: center; }
+  .ex-spinner {
+    margin: 0 auto; width: 56px; height: 56px; border-radius: 99px;
+    border: 4px solid var(--ks3-rule); border-top-color: var(--ks3-accent);
+    animation: ex-spin 1s linear infinite;
+  }
+  .ex-marking p {
+    margin: 22px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 26px; letter-spacing: -.03em;
+  }
+
+  /* ── result ── */
+  .ex-result-q {
+    margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 24px; line-height: 1.2; letter-spacing: -.03em; color: var(--ks3-ink-body);
+  }
+  .ex-ladder { margin-top: 20px; padding: 24px; }
+  .ex-score-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .ex-score-label {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .ex-score {
+    margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 56px; line-height: .95; letter-spacing: -.04em;
+  }
+  .ex-score span { font-size: 28px; color: var(--ks3-ink-muted); }
+  .ex-verdict {
+    margin: 0; font-size: 16px; font-weight: 700; color: var(--ks3-ok-text);
+    text-align: right; max-width: 50%;
+  }
+  .ex-point { display: flex; gap: 12px; align-items: flex-start; font-size: 17px; line-height: 1.5; }
+  .ex-point-mark {
+    display: grid; place-items: center; flex: 0 0 26px; height: 26px;
+    margin-top: 2px; border-radius: 8px;
+    border: 2px solid var(--ks3-rule-strong); background: var(--ks3-card);
+    color: var(--ks3-ink-muted);
+  }
+  .ex-point.is-hit .ex-point-mark {
+    border-color: var(--ks3-ok); background: var(--ks3-ok); color: #fff;
+  }
+  .ex-point-mark .ks3-mark { width: 14px; height: 14px; }
+  .ex-point-n { font-family: var(--ks3-font-mono); font-size: 11px; }
+  .ex-point-text { color: var(--ks3-ink-muted); }
+  .ex-point.is-hit .ex-point-text { color: var(--ks3-ink); }
+  .ex-note { margin-top: 18px; }
+  .ex-note-label {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .ex-note p { margin: 8px 0 0; font-size: 17px; line-height: 1.6; }
+
+  .ex-wrote {
+    margin-top: 18px; padding: 18px;
+    border: 2px solid var(--ks3-option-border); border-radius: var(--ks3-r-panel);
+    background: var(--ks3-card);
+  }
+  .ex-wrote p:last-child {
+    margin: 8px 0 0; font-size: 16px; line-height: 1.55;
+    color: var(--ks3-ink-body); white-space: pre-wrap;
+  }
+
+  .ex-dark {
+    margin-top: 18px; padding: 20px; border-radius: var(--ks3-r-dark);
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    box-shadow: 6px 6px 0 var(--ks3-accent);
+  }
+  .ex-dark-eyebrow {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-alert);
+  }
+  .ex-dark p.ex-dark-body { margin: 8px 0 0; font-size: 17px; color: var(--ks3-on-dark-body); }
+  .ex-dark-btn {
+    margin-top: 14px; width: 100%; min-height: 52px;
+    border: 2px solid var(--ks3-on-dark); border-radius: var(--ks3-r-control);
+    background: var(--ks3-on-dark); color: var(--ks3-ink);
+    font: inherit; font-weight: 700; font-size: 17px; cursor: pointer;
+  }
+  .ex-dark-btn[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+  .ex-quota-line {
+    margin: 10px 0 0; font-size: 14px; color: var(--ks3-on-dark-muted); text-align: center;
+  }
+  .ex-quota-out {
+    margin-top: 18px; padding: 16px 18px;
+    border: 2px dashed var(--ks3-rule-strong); border-radius: var(--ks3-r-panel);
+    background: var(--ks3-inset); font-size: 16px; color: var(--ks3-ink-body);
+  }
+  .ex-quota-out strong { color: var(--ks3-ink); }
+  .ex-sent {
+    margin-top: 18px; padding: 18px;
+    border: 2px solid var(--ks3-ok); border-radius: var(--ks3-r-panel);
+    background: var(--ks3-ok-tint);
+  }
+  .ex-sent p:first-child {
+    margin: 0; display: flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: 17px; color: var(--ks3-ok-text);
+  }
+  .ex-sent p:last-child { margin: 6px 0 0; font-size: 16px; color: var(--ks3-ink-body); }
+  .ex-human-score {
+    margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 44px; line-height: 1; letter-spacing: -.04em;
+  }
+  .ex-human-score span { font-size: 22px; color: var(--ks3-on-dark-muted); }
+  .ex-human-date { margin: 4px 0 0; font-size: 14px; color: var(--ks3-on-dark-muted); }
+  .ex-human-fb { margin: 14px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body); }
+  .ex-sign {
+    margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 16px; letter-spacing: -.02em;
+  }
+
+  .ex-pair { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ex-pair button, .ex-pair a {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 50px; border: 2px solid var(--ks3-ink);
+    border-radius: var(--ks3-r-control); background: var(--ks3-card);
+    color: var(--ks3-ink); font: inherit; font-weight: 700; font-size: 16px;
+    cursor: pointer; text-decoration: none;
+  }
+  .ex-pair .ex-solid { background: var(--ks3-ink); color: var(--ks3-on-dark); }
+  .ex-pair button[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+
+  /* Every failure a nine-year-old can read, in her panel language. */
+  .ex-oops {
+    margin-top: 18px; padding: 18px 20px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-alert-tint); font-size: 17px;
+  }
+  .ex-oops p { margin: 0; }
+  .ex-empty {
+    margin-top: 18px; padding: 24px 22px;
+    border: 2px dashed var(--ks3-rule-strong); border-radius: var(--ks3-r-card);
+    background: var(--ks3-inset);
+  }
+  .ex-empty h3 {
+    margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 22px; letter-spacing: -.02em;
+  }
+  .ex-empty p { margin: 6px 0 0; font-size: 17px; color: var(--ks3-ink-body); }
+  </style>
 </head>
 <body>
 
-<div id="c-nav"></div>
+<div class="rd ex-root" data-mode="ks3" id="c-main">
+  <header class="ex-head">
+    <a class="ex-back" id="ex-back-link" href="/consumer/today.html" aria-label="Back to today">
+      <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </a>
+    <button class="ex-back" id="ex-back-btn" type="button" aria-label="Back" hidden>
+      <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <span class="ex-title">Exam questions</span>
+    <span class="ex-quota-chip" id="ex-quota-chip"></span>
+  </header>
 
-<div class="container" id="c-main">
-  <div class="page-header"><h1>Exam questions</h1></div>
-  <div class="page-sub" id="sub">…</div>
-
-  <div id="locked"></div>
-  <div class="c-msg" id="msg"></div>
-
-  <div class="card" id="list-card">
-    <h2>Pick a question</h2>
-    <div class="c-radios" id="filters">
-      <button class="btn btn-small sel" type="button" data-filter="all">All</button>
-      <button class="btn btn-small" type="button" data-filter="4">4 marks</button>
-      <button class="btn btn-small" type="button" data-filter="6">6 marks</button>
-      <button class="btn btn-small" type="button" data-filter="todo">Not done</button>
-    </div>
-    <div id="list"><p class="empty">Loading…</p></div>
-  </div>
-
-  <div class="card" id="one-card" style="display:none;">
-    <h2 id="one-head">Your answer</h2>
-    <div id="one"></div>
-  </div>
+  <main class="ex-main" id="ex-main"></main>
 </div>
 
 <script src="/shared/config.js?v=d1fecb43"></script>
 <script src="/consumer/consumer-common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
-   consumer/exam.html — write an answer, get it marked. MRB-313, Night 2.
-   SCAFFOLD.
+   consumer/exam.html — write an answer, get it marked. MRB-317 Night 3.
+   Design's `Child Exam Questions.dc.html`, on the Night 2 marking routes.
 
    ── THE MARK SCHEME IS ONLY EVER SHOWN AFTER AN ANSWER IS SUBMITTED ────
    `scheme` arrives in the list payload, and this page does not render it
    until a mark comes back. That is not a display preference: a six-mark
    question with its mark scheme printed underneath is not a question, and
    a child who reads the scheme first has learnt to copy rather than to
-   answer. The panel that shows scheme points tick-by-tick is the FEEDBACK,
-   and it only exists after `POST /mark` has replied.
+   answer. The tick-by-tick panel is the FEEDBACK, and it exists only after
+   `POST /mark` has replied.
+
+   ── THE STUB IS NOT ANNOUNCED TO A CHILD ───────────────────────────────
+   ⚠️ Deliberate, and it reverses the Night 2 scaffold. `provider: 'stub'`
+   means this environment has no Anthropic key and the marker fell back to
+   keyword overlap. That is a fact about a deployment. A child reading
+   "(marked by the practice marker, not the real one)" learns only that
+   something they cannot see is broken, and it is meta-text about the
+   platform on a nine-year-old's screen — forbidden on these surfaces. The
+   provider is still on the response for anyone reading the network tab;
+   it is simply not rendered.
 
    ── TWO MARKERS, AND THEY MUST NEVER BE CONFUSED FOR EACH OTHER ────────
-   The AI marks in seconds and is provisional. Mr Badmus marks in person, in
-   his own time, and is the real thing. So they are two visually separate
-   blocks with two different labels, and when a human mark exists it is
-   shown FIRST and the AI one is demoted to "what the AI said at the time".
-   A child must never be able to read the AI's 4/6 and believe their teacher
-   gave it.
+   The instant mark is provisional. Mr Badmus marks in person, in his own
+   time, and is the real thing. Design gives them two visually opposite
+   treatments — the instant one on the light ladder panel, his on the ink
+   card with the orange shadow and his signature. A child must never be
+   able to read the instant 4/6 and believe their teacher gave it.
 
    ── QUOTA IS A NUMBER OF ASKS, NOT AN ERROR CONDITION ──────────────────
-   `quotaLeft` / `quotaTotal` / `resetDate` are shown before the button is
-   pressed, in words, so that running out is a thing the child watched
-   coming rather than a refusal that arrives out of nowhere. When the 429
-   does land, `quota_reached` is rendered as the sentence, never the code.
+   `quotaLeft` / `quotaTotal` / `resetDate` are in the header chip from the
+   first paint, so running out is a thing the child watched coming rather
+   than a refusal that arrives out of nowhere. When the 429 does land,
+   `quota_reached` is rendered as Design's sentence, never as the code.
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   var C = window.MrBadmusConsumer;
 
-  var questions = [];
-  var filter = 'all';
-  var openId = null;
+  var SUBJECT_DOT = {
+    Biology: 'var(--ks3-biology)',
+    Chemistry: 'var(--ks3-chemistry)',
+    Physics: 'var(--ks3-physics)'
+  };
+  var FILTERS = ['All', '4-markers', '6-markers', 'Not done yet'];
+  var WORDS = { 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six' };
 
-  /* ⊕ FOUND BY DRIVING IT, 2 Sep 2026. Marking wrote the score into `#result`
-     and then called `load()` to refresh the list — which re-rendered the open
-     card and wiped the score the child had been looking at for half a second.
+  /* Design's thresholds and Design's four sentences. ⊕ The backend also
+     sends a `verdict` ('nearly there', 'halfway', …); hers are used instead
+     because they are the copy on this screen — two words from the API and
+     a full sentence from the design are not the same register, and the
+     register is what a child reads. The NUMBER is always the backend's. */
+  /* ⊕ FOUND BY SCREENSHOTTING IT, 2 Sep 2026. Design's mock reads "Marked
+     Thursday"; the API sends `mb_marked_at`, which is an ISO timestamp, and
+     the first render printed "2026-09-02T06:17:24.725+00:00" onto a
+     nine-year-old's screen. Anything that parses as a date is formatted;
+     anything that does not is already words and is left alone, because the
+     parent-facing `answers[]` shape sends `humanDate` pre-worded. */
+  function humanDate(v) {
+    if (!v) { return ''; }
+    var d = new Date(v);
+    return isNaN(d.getTime()) ? String(v) : ('Marked ' + C.fmtDate(v));
+  }
 
-     The score is NOT in the exam-questions payload (that carries the answer,
-     the scheme, the hits and the feedback, but no number), so a reload
-     genuinely cannot show it again, and deriving one from `hits.length` would
-     be this page inventing a mark. So the backend's own reply is kept here,
-     by question id, and re-rendered after the reload. It is the same number
-     the backend sent; it is just remembered rather than recomputed. */
-  var lastMark = {};
-  var writable = false;
-  var quota = { left: null, total: null, reset: null };
+  function verdictFor(score, max) {
+    if (!max) { return ''; }
+    if (score === max) { return 'Full marks.'; }
+    if (score >= max * 0.66) { return 'Solid. The rest is precision.'; }
+    if (score >= max * 0.4) { return 'Halfway. Read the note.'; }
+    return 'A start. Read the note, then go again.';
+  }
 
   C.boot({ requireSession: true, run: function (ctx) {
-    document.getElementById('c-nav').innerHTML = C.navHtml(
-      '<a href="' + C.escapeHtml(C.href('/consumer/today.html')) + '">Today</a>' +
-      '<a href="#" id="signout">Sign out</a>'
-    );
-    document.getElementById('signout').addEventListener('click', function (e) {
-      e.preventDefault();
-      ctx.sb.auth.signOut().then(function () { C.go('/consumer/child-login.html'); });
+    var main = document.getElementById('ex-main');
+    var backLink = document.getElementById('ex-back-link');
+    var backBtn  = document.getElementById('ex-back-btn');
+
+    var questions = [];
+    var quota = { left: null, total: null, reset: null };
+    var writable = false;
+
+    var screen = 'pick';          // pick | write | marking | result
+    var filter = 'All';
+    var openId = new URLSearchParams(window.location.search).get('q');
+    var draft = '';               // survives a 503 — see markAnswer()
+    var result = null;            // the LAST mark for the open question
+    var justSent = false;
+
+    backLink.href = C.href('/consumer/today.html');
+    backBtn.addEventListener('click', function () {
+      screen = 'pick'; result = null; justSent = false; draft = '';
+      paint();
     });
 
-    var msgEl = document.getElementById('msg');
-
-    function load() {
-      return C.api('/api/consumer/child/exam-questions', { token: ctx.token }).then(function (d) {
-        questions = (d && d.questions) || [];
-        quota = { left: d && d.quotaLeft, total: d && d.quotaTotal, reset: d && d.resetDate };
-
-        var g = C.lockedBanner(document.getElementById('locked'), d && d.access, 'child');
-        writable = g.writable;
-
-        renderSub();
-        renderList();
-        if (openId) { openOne(openId); }
-      });
-    }
-
-    function renderSub() {
-      var bits = [questions.length + (questions.length === 1 ? ' question' : ' questions')];
-      if (quota.left != null) {
-        bits.push(quota.left === 0
-          ? 'No Mr Badmus marks left'
-          : (quota.left + (quota.left === 1 ? ' Mr Badmus mark left' : ' Mr Badmus marks left') +
-             (quota.total != null ? (' of ' + quota.total) : '')));
-      }
-      if (quota.reset) { bits.push('resets on ' + quota.reset); }
-      document.getElementById('sub').textContent = bits.join('  ·  ');
-    }
-
-    function passes(q) {
-      if (filter === 'all')  { return true; }
-      if (filter === 'todo') { return !q.done; }
-      return String(q.marks) === filter;
-    }
-
-    function renderList() {
-      var host = document.getElementById('list');
-      var shown = questions.filter(passes);
-      if (!shown.length) {
-        host.innerHTML = '<p class="empty">' + (questions.length
-          ? 'Nothing matches that filter. Try “All”.'
-          : 'No exam questions for your year yet. They appear as you work through ' +
-            'the units.') + '</p>';
-        return;
-      }
-      host.innerHTML = shown.map(function (q) {
-        var state = q.human || (q.done === 'human')
-          ? '<span class="tag ok">Marked by Mr Badmus</span>'
-          : (q.waiting ? '<span class="tag warn">With Mr Badmus</span>'
-            : (q.done ? '<span class="tag">Marked by the AI</span>' : ''));
-        return '<div class="c-item"><div class="c-item-main">' +
-          '<div class="c-item-title">' + C.escapeHtml(q.text || q.stem || 'Question') + '</div>' +
-          '<div class="c-item-sub">' +
-            [q.subject || null, q.topic || null,
-             q.marks != null ? (q.marks + ' marks') : null]
-              .filter(Boolean).map(C.escapeHtml).join(' · ') +
-          '</div></div>' +
-          '<div class="c-item-acts">' + state +
-            '<button class="btn btn-small" type="button" data-open="' +
-            C.escapeHtml(q.id) + '">' + (q.done ? 'Look again' : 'Answer it') + '</button>' +
-          '</div></div>';
-      }).join('');
-
-      host.onclick = function (e) {
-        var btn = e.target.closest ? e.target.closest('button[data-open]') : null;
-        if (!btn) { return; }
-        openOne(btn.getAttribute('data-open'));
-      };
-    }
-
-    document.getElementById('filters').addEventListener('click', function (e) {
-      var btn = e.target.closest ? e.target.closest('button[data-filter]') : null;
-      if (!btn) { return; }
-      filter = btn.getAttribute('data-filter');
-      Array.prototype.forEach.call(this.querySelectorAll('button'), function (b) {
-        b.className = 'btn btn-small' + (b === btn ? ' sel' : '');
-      });
-      renderList();
-    });
-
-    /* ── one question ───────────────────────────────────────────────────── */
+    function esc(s) { return C.escapeHtml(s); }
     function find(id) {
       for (var i = 0; i < questions.length; i++) {
         if (String(questions[i].id) === String(id)) { return questions[i]; }
@@ -185,183 +401,400 @@
       return null;
     }
 
-    function schemeHtml(scheme, hits) {
-      scheme = scheme || [];
-      hits = hits || [];
-      if (!scheme.length) { return ''; }
-      var got = {};
-      hits.forEach(function (i) { got[Number(i)] = true; });
-      return '<ul class="c-scheme">' + scheme.map(function (point, i) {
-        return '<li class="' + (got[i] ? 'hit' : 'miss') + '">' +
-          '<span class="mk">' + (got[i] ? '✓' : '✗') + '</span>' +
-          '<span>' + C.escapeHtml(C.schemePoint(point)) + '</span></li>';
-      }).join('') + '</ul>';
+    /* ── the one read ──────────────────────────────────────────────────── */
+    function load() {
+      return C.api('/api/consumer/child/exam-questions', { token: ctx.token })
+        .then(function (d) {
+          d = d || {};
+          questions = d.questions || [];
+          quota = { left: d.quotaLeft, total: d.quotaTotal, reset: d.resetDate };
+          writable = C.guard(d.access, 'child').writable;
+          paintChip();
+        });
     }
 
-    function openOne(id) {
+    function paintChip() {
+      var chip = document.getElementById('ex-quota-chip');
+      if (quota.left == null || quota.total == null) { chip.textContent = ''; return; }
+      chip.textContent = 'Mr Badmus: ' + quota.left + ' of ' + quota.total + ' left';
+    }
+
+    /* ── paint ─────────────────────────────────────────────────────────── */
+    function paint() {
+      backLink.hidden = screen !== 'pick';
+      backBtn.hidden  = screen === 'pick';
+      if (screen === 'pick')    { return paintPick(); }
+      if (screen === 'write')   { return paintWrite(); }
+      if (screen === 'marking') { return paintMarking(); }
+      return paintResult();
+    }
+
+    function passes(q) {
+      if (filter === 'All') { return true; }
+      if (filter === 'Not done yet') { return !q.done; }
+      if (filter === '4-markers') { return Number(q.marks) === 4; }
+      if (filter === '6-markers') { return Number(q.marks) === 6; }
+      return true;
+    }
+
+    function paintPick() {
+      var shown = questions.filter(passes);
+
+      var html =
+        '<h1 class="ex-h1">Pick a question</h1>' +
+        '<p class="ex-lede">Write it like you’re in the exam. It’s marked against ' +
+        'the real mark scheme the moment you finish.</p>' +
+        '<div class="ex-filters" id="ex-filters">' +
+          FILTERS.map(function (f) {
+            return '<button class="ks3-option" type="button" aria-pressed="' +
+              (filter === f) + '" data-filter="' + esc(f) + '">' + esc(f) + '</button>';
+          }).join('') +
+        '</div>';
+
+      if (!shown.length) {
+        html += '<div class="ex-empty"><h3>' +
+          (questions.length ? 'Nothing here yet' : 'No questions yet') + '</h3><p>' +
+          (questions.length
+            ? 'Nothing matches that. Try “All”.'
+            : 'Exam questions appear as you work through the units. There will be ' +
+              'some here soon.') +
+          '</p></div>';
+      } else {
+        html += '<div class="ex-list" id="ex-list">' + shown.map(function (q) {
+          var doneLabel = q.done === 'human' ? 'Marked by Mr Badmus' : 'Marked';
+          return '<button class="ex-card' + (q.done ? ' is-done' : '') +
+            '" type="button" data-open="' + esc(q.id) + '">' +
+            '<span class="ex-card-top">' +
+              '<span class="ex-dot" style="background:' +
+                (SUBJECT_DOT[q.subject] || 'var(--ks3-band)') + '"></span>' +
+              '<span class="ex-topic">' + esc(q.topic || q.subject || '') + '</span>' +
+              '<span class="ex-marks">' + esc(q.marks == null ? '' : q.marks) + '</span>' +
+            '</span>' +
+            '<p>' + esc(q.text || '') + '</p>' +
+            (q.done
+              ? ('<span class="ex-done-pill">' +
+                 '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+                 '<path d="M5 12.5l4.5 4.5L19 7"/></svg>' + esc(doneLabel) + '</span>')
+              : (q.waiting
+                  ? '<span class="ex-done-pill">With Mr Badmus</span>'
+                  : '')) +
+          '</button>';
+        }).join('') + '</div>';
+      }
+
+      main.innerHTML = html;
+
+      document.getElementById('ex-filters').addEventListener('click', function (e) {
+        var b = e.target.closest ? e.target.closest('button[data-filter]') : null;
+        if (!b) { return; }
+        filter = b.getAttribute('data-filter');
+        paintPick();
+      });
+      var list = document.getElementById('ex-list');
+      if (list) {
+        list.addEventListener('click', function (e) {
+          var b = e.target.closest ? e.target.closest('button[data-open]') : null;
+          if (!b) { return; }
+          openQuestion(b.getAttribute('data-open'));
+        });
+      }
+    }
+
+    /* Opening a question that has already been answered goes straight to the
+       result — the child wants the marking back, not a blank box. Design does
+       exactly this in `openQ`. */
+    function openQuestion(id) {
       var q = find(id);
       if (!q) { return; }
       openId = id;
-      var card = document.getElementById('one-card');
-      var host = document.getElementById('one');
-      card.style.display = 'block';
-      document.getElementById('one-head').textContent =
-        (q.marks != null ? (q.marks + ' marks') : 'Question') +
-        (q.topic ? (' · ' + q.topic) : '');
-
-      /* The human mark comes first when it exists — see the header. The AI
-         block below it is explicitly labelled as what the AI said. */
-      var human = q.human
-        ? '<div class="c-sub">Mr Badmus marked this</div>' +
-          '<p><strong>' + C.escapeHtml(String(q.human.score)) +
-          (q.marks != null ? ('/' + q.marks) : '') + '</strong>' +
-          (q.human.date ? (' · ' + C.escapeHtml(C.fmtDate(q.human.date))) : '') + '</p>' +
-          (q.human.feedback
-            ? '<p style="margin-top:8px;white-space:pre-wrap;">' +
-              C.escapeHtml(q.human.feedback) + '</p>' : '')
-        : (q.waiting
-            ? '<div class="c-sub">With Mr Badmus</div>' +
-              '<p class="empty">You’ve sent this one in. He marks them himself, so it ' +
-              'takes a little while — it will be here when he has.</p>'
-            : '');
-
-      var marked = (q.answer != null && q.answer !== '');
-      var ai = marked
-        ? '<div class="c-sub">' + (q.human ? 'What the AI said at the time' : 'The AI marked this') +
-          '</div>' +
-          '<p class="empty" style="white-space:pre-wrap;">' + C.escapeHtml(q.answer) + '</p>' +
-          schemeHtml(q.scheme, q.hits) +
-          (q.feedback ? ('<p>' + C.escapeHtml(q.feedback) + '</p>') : '')
-        : '';
-
-      var sendBtn = (marked && !q.human && !q.waiting)
-        ? '<button class="btn btn-small" id="btn-send-mb" type="button" data-write ' +
-          'data-answer="' + C.escapeHtml(q.answer_id || '') + '">Send to Mr Badmus</button>' +
-          '<p class="hint" style="margin-top:8px;">' +
-          (quota.left != null
-            ? (quota.left > 0
-                ? ('You have ' + quota.left + ' left' +
-                   (quota.reset ? (', and they come back on ' + quota.reset) : '') + '.')
-                : ('You’ve used all of yours for now' +
-                   (quota.reset ? ('. More on ' + quota.reset) : '') + '.'))
-            : 'He marks it himself and writes back.') + '</p>'
-        : '';
-
-      var recent = lastMark[String(q.id)];
-
-      host.innerHTML =
-        '<p style="font-size:1.05rem;white-space:pre-wrap;">' +
-          C.escapeHtml(q.stem || q.text || '') + '</p>' +
-        (q.stem && q.text && q.stem !== q.text
-          ? '<p style="margin-top:8px;white-space:pre-wrap;">' + C.escapeHtml(q.text) + '</p>' : '') +
-
-        '<div class="c-sub">' + (marked ? 'Have another go' : 'Your answer') + '</div>' +
-        '<div class="c-send">' +
-          '<textarea id="ans" data-write placeholder="Write your answer in full sentences…" ' +
-            'style="min-height:150px;"></textarea>' +
-        '</div>' +
-        '<p style="margin-top:12px;">' +
-          '<button class="btn btn-primary" id="btn-mark" type="button" data-write ' +
-            'style="width:auto;">Mark my answer</button>' +
-        '</p>' +
-        '<div id="result">' + (recent ? markHtml(q, recent) : '') + '</div>' +
-        human + ai +
-        (sendBtn ? ('<p style="margin-top:14px;">' + sendBtn + '</p>') : '');
-
-      C.applyWritable(host, writable);
-      host.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      document.getElementById('btn-mark').addEventListener('click', function () {
-        markAnswer(q, this);
-      });
-      var sb = document.getElementById('btn-send-mb');
-      if (sb) { sb.addEventListener('click', function () { sendToMb(this); }); }
-    }
-
-    function markHtml(q, d) {
-      return '<div class="c-sub">Marked</div>' +
-        '<p><strong>' + C.escapeHtml(String(d.score)) + '/' +
-          C.escapeHtml(String(d.max != null ? d.max : (q.marks != null ? q.marks : '?'))) +
-        '</strong>' + (d.verdict ? (' · ' + C.escapeHtml(d.verdict)) : '') + '</p>' +
-        schemeHtml(q.scheme, d.hits) +
-        (d.feedback ? ('<p style="margin-top:8px;white-space:pre-wrap;">' +
-                       C.escapeHtml(d.feedback) + '</p>') : '') +
-        (d.provider === 'stub'
-          ? '<p class="empty" style="margin-top:8px;">(Marked by the practice marker, ' +
-            'not the real one — this environment has no AI key.)</p>' : '');
-    }
-
-    function markAnswer(q, btn) {
-      var text = document.getElementById('ans').value.trim();
-      if (!text) {
-        return C.setMsg(msgEl, 'Write something first — even a couple of sentences.', 'error');
+      justSent = !!q.waiting;
+      if (q.done && q.answer) {
+        result = { score: scoreOf(q), max: q.marks, hits: q.hits || [],
+                   feedback: q.feedback, answer: q.answer };
+        screen = 'result';
+      } else {
+        draft = '';
+        result = null;
+        screen = 'write';
       }
-      C.setMsg(msgEl, '');
-      C.setBusy(btn, true, 'Marking…');
-      C.api('/api/consumer/mark', {
-        method: 'POST', token: ctx.token, body: { question_id: q.id, answer: text }
-      }).then(function (d) {
-        C.setBusy(btn, false);
-        d = d || {};
-        lastMark[String(q.id)] = d;
-        document.getElementById('result').innerHTML = markHtml(q, d);
-        // Reload so the list, the quota and the answer id are the backend's;
-        // `lastMark` carries the score through the re-render.
-        return load();
-      }).catch(function (e) {
-        C.setBusy(btn, false);
-        if (e.code === 'cap_reached') {
-          var dd = e.data || {};
-          return C.setMsg(msgEl, e.message ||
-            ('You’ve had all your AI marking for now' +
-             (dd.resets_at ? (' — it comes back on ' + C.fmtDate(dd.resets_at)) : '') + '.'), 'error');
-        }
-        if (e.code === 'org_locked') {
-          return C.setMsg(msgEl, e.message ||
-            'Your account is paused, so nothing can be marked at the moment. ' +
-            'Ask your grown-up.', 'error');
-        }
-        if (e.code === 'rate_limited') {
-          return C.setMsg(msgEl, 'That was a lot at once — wait a minute and try again.', 'error');
-        }
-        C.setMsg(msgEl, e.message, 'error');
+      paint();
+    }
+
+    /* `aiScore` arrives as the string "4/6". The numerator is the score; if
+       it is not there, the hit count is NOT substituted — that would be this
+       page inventing a mark out of a list of ticks. */
+    function scoreOf(q) {
+      if (!q.aiScore) { return null; }
+      var n = parseInt(String(q.aiScore).split('/')[0], 10);
+      return isNaN(n) ? null : n;
+    }
+
+    function paintWrite() {
+      var q = find(openId) || {};
+      var words = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+      var tooShort = words < 3;
+
+      main.innerHTML =
+        '<div class="ex-eyebrow-row">' +
+          '<span class="ex-eyebrow">' + esc(q.topic || q.subject || '') + '</span>' +
+          '<span class="ex-marks-wide">' + esc(q.marks == null ? '' : q.marks) +
+          ' marks</span>' +
+        '</div>' +
+        '<h1 class="ex-q">' + esc(q.text || '') + '</h1>' +
+        (q.stem ? ('<p class="ex-stem">' + esc(q.stem) + '</p>') : '') +
+        '<label class="ks3-answer-label" for="ex-answer" style="margin-top:22px">Your answer</label>' +
+        '<textarea class="ks3-answer" id="ex-answer" rows="7" data-write ' +
+          'placeholder="Start writing. Aim for one point per mark."></textarea>' +
+        '<div class="ex-meta-row"><span id="ex-words">' + words + ' words</span>' +
+          '<span>' + (q.marks ? (q.marks + ' marks · about ' + q.marks + ' points') : '') +
+        '</span></div>' +
+        (writable ? '' :
+          '<div class="ex-oops"><p>Handing work in is off just now. You can still ' +
+          'read your marked answers. Ask your grown-up.</p></div>') +
+        '<button class="ex-primary" id="ex-mark" type="button" data-write' +
+          (tooShort ? ' disabled' : '') + '>Mark my answer</button>' +
+        '<div id="ex-error"></div>';
+
+      var ta = document.getElementById('ex-answer');
+      ta.value = draft;
+      ta.addEventListener('input', function () {
+        draft = ta.value;
+        var n = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+        document.getElementById('ex-words').textContent = n + ' words';
+        document.getElementById('ex-mark').disabled = (n < 3) || !writable;
       });
+      C.applyWritable(main, writable);
+      if (tooShort) { document.getElementById('ex-mark').disabled = true; }
+
+      document.getElementById('ex-mark').addEventListener('click', function () {
+        markAnswer(q);
+      });
+    }
+
+    function paintMarking() {
+      main.innerHTML =
+        '<div class="ex-marking"><div class="ex-spinner"></div>' +
+        '<p>Checking against the mark scheme</p></div>';
+    }
+
+    function markAnswer(q) {
+      var text = draft.trim();
+      if (text.split(/\s+/).length < 3) { return; }
+      screen = 'marking';
+      paint();
+
+      C.api('/api/consumer/mark', {
+        method: 'POST', token: ctx.token,
+        body: { question_id: q.id, answer: text }
+      }).then(function (d) {
+        d = d || {};
+        result = { score: d.score, max: d.max, hits: d.hits || [],
+                   feedback: d.feedback, answer: text, answer_id: d.answer_id };
+        if (d.quotaLeft != null) { quota.left = d.quotaLeft; }
+        if (d.quotaTotal != null) { quota.total = d.quotaTotal; }
+        if (d.resetDate) { quota.reset = d.resetDate; }
+        justSent = false;
+        paintChip();
+        /* Refresh the list so the question carries its `answer_id`, its done
+           state and its scheme for the next visit. The score itself is not
+           in that payload, so `result` above is what the screen renders. */
+        return load().then(function () { screen = 'result'; paint(); },
+                           function () { screen = 'result'; paint(); });
+      }).catch(function (e) {
+        /* Back to the writing screen with the answer still in the box.
+           Ten minutes of work must survive every one of these. */
+        screen = 'write';
+        paint();
+        var host = document.getElementById('ex-error');
+        var msg;
+        if (e.status === 503 || e.code === 'marking_unavailable') {
+          msg = 'The marking isn’t working just now. Your answer is still here — ' +
+                'try again in a minute.';
+        } else if (e.code === 'cap_reached' || e.status === 429) {
+          msg = e.message || 'That’s all the marking for now. Try again later.';
+        } else if (e.code === 'org_locked' || e.status === 423) {
+          msg = 'Handing work in is off just now. Your answer is still here. ' +
+                'Ask your grown-up.';
+        } else {
+          msg = e.message;
+        }
+        host.innerHTML = '<div class="ex-oops"><p>' + esc(msg) + '</p></div>';
+      });
+    }
+
+    function paintResult() {
+      var q = find(openId) || {};
+      var r = result || {};
+      var max = r.max != null ? r.max : q.marks;
+      var human = q.human || null;
+
+      var scheme = q.scheme || [];
+      var hits = {};
+      (r.hits || []).forEach(function (i) { hits[Number(i)] = true; });
+
+      var points = scheme.map(function (pt, i) {
+        var ok = !!hits[i];
+        return '<li class="ex-point' + (ok ? ' is-hit' : '') + '">' +
+          '<span class="ex-point-mark">' +
+            (ok
+              ? '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+                '<path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+              : '<span class="ex-point-n">' + (i + 1) + '</span>') +
+          '</span>' +
+          '<span class="ex-point-text">' + esc(C.schemePoint(pt)) + '</span>' +
+        '</li>';
+      }).join('');
+
+      /* Send-to-Mr-Badmus: three mutually exclusive states, Design's own. */
+      var answerId = r.answer_id || q.answer_id || '';
+      var canSend  = !justSent && !human && quota.left > 0 && !!answerId;
+      var quotaOut = !justSent && !human && quota.left === 0;
+
+      var quotaLine = justSent
+        ? (quota.left === 0
+            ? ('That was your last one this month.' +
+               (quota.reset ? (' Resets ' + quota.reset + '.') : ''))
+            : (quota.left + ' left this month.'))
+        : ('Uses 1 of your ' + quota.left + ' left this month.');
+
+      var totalWord = WORDS[quota.total] || String(quota.total);
+
+      main.innerHTML =
+        '<div class="ex-eyebrow-row"><span class="ex-eyebrow">' +
+          esc(q.topic || q.subject || '') +
+          (max != null ? (' · ' + max + ' marks') : '') + '</span></div>' +
+        '<h1 class="ex-result-q">' + esc(q.text || '') + '</h1>' +
+
+        '<div class="ks3-ladder ex-ladder">' +
+          '<div class="ex-score-row">' +
+            '<div>' +
+              '<p class="ex-score-label">Your mark</p>' +
+              '<p class="ex-score">' + esc(r.score == null ? '—' : r.score) +
+                '<span>/' + esc(max == null ? '?' : max) + '</span></p>' +
+            '</div>' +
+            '<p class="ex-verdict">' + esc(verdictFor(r.score, max)) + '</p>' +
+          '</div>' +
+          (points ? ('<ul class="ks3-ticks">' + points + '</ul>') : '') +
+          (r.feedback
+            ? ('<div class="ks3-feedback ex-note">' +
+               '<p class="ex-note-label">Examiner’s note</p>' +
+               '<p>' + esc(r.feedback) + '</p></div>')
+            : '') +
+        '</div>' +
+
+        '<div class="ex-wrote">' +
+          '<p class="ex-note-label">You wrote</p>' +
+          '<p>' + esc(r.answer || q.answer || '') + '</p>' +
+        '</div>' +
+
+        (canSend
+          ? ('<div class="ex-dark">' +
+             '<p class="ex-dark-eyebrow">Want a second opinion?</p>' +
+             '<p class="ex-dark-body">Mr Badmus can mark this one himself and write ' +
+             'back. Takes up to three school days.</p>' +
+             '<button class="ex-dark-btn" id="ex-send" type="button" data-write ' +
+             'data-answer="' + esc(answerId) + '">Send to Mr Badmus</button>' +
+             '<p class="ex-quota-line">' + esc(quotaLine) + '</p></div>')
+          : '') +
+
+        (quotaOut
+          ? ('<div class="ex-quota-out"><strong>Mr Badmus has your ' +
+             esc(totalWord) + ' for this month.</strong> You can send another from ' +
+             esc(quota.reset || 'next month') +
+             '. Your instant mark still counts.</div>')
+          : '') +
+
+        (justSent && !human
+          ? ('<div class="ex-sent">' +
+             '<p><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+             '<path d="M5 12.5l4.5 4.5L19 7"/></svg>Sent to Mr Badmus</p>' +
+             '<p>His mark and note will show up here, and on your Today screen, ' +
+             'when he’s done. ' + esc(quotaLine) + '</p></div>')
+          : '') +
+
+        (human
+          ? ('<div class="ex-dark">' +
+             '<div class="ex-score-row">' +
+               '<div>' +
+                 '<p class="ex-dark-eyebrow">Mr Badmus marked this</p>' +
+                 '<p class="ex-human-date">' + esc(humanDate(human.date)) + '</p>' +
+               '</div>' +
+               '<p class="ex-human-score">' + esc(human.score) +
+                 '<span>/' + esc(max == null ? '?' : max) + '</span></p>' +
+             '</div>' +
+             '<p class="ex-human-fb">' + esc(human.feedback || '') + '</p>' +
+             '<p class="ex-sign">— Mr Badmus</p></div>')
+          : '') +
+
+        '<div id="ex-error"></div>' +
+
+        '<div class="ex-pair">' +
+          '<button type="button" id="ex-again" data-write>Have another go</button>' +
+          '<button type="button" id="ex-another" class="ex-solid">Another question</button>' +
+        '</div>';
+
+      C.applyWritable(main, writable);
+
+      var s = document.getElementById('ex-send');
+      if (s) { s.addEventListener('click', function () { sendToMb(this); }); }
+      document.getElementById('ex-again').addEventListener('click', function () {
+        draft = ''; result = null; screen = 'write'; paint();
+      });
+      document.getElementById('ex-another').addEventListener('click', function () {
+        screen = 'pick'; result = null; justSent = false; draft = ''; paint();
+      });
+      window.scrollTo(0, 0);
     }
 
     function sendToMb(btn) {
       var answerId = btn.getAttribute('data-answer');
-      if (!answerId) {
-        return C.setMsg(msgEl, 'Get it marked by the AI first, then you can send it on.', 'error');
-      }
+      if (!answerId) { return; }
       C.setBusy(btn, true, 'Sending…');
       C.api('/api/consumer/exam-answers/' + encodeURIComponent(answerId) + '/send-to-mb',
             { method: 'POST', token: ctx.token })
         .then(function (d) {
-          C.setBusy(btn, false);
-          C.setMsg(msgEl, 'Sent. Mr Badmus marks these himself, so give him a day or two' +
-            (d && d.quotaLeft != null
-              ? ('. You have ' + d.quotaLeft + ' left.') : '.'), 'ok');
-          return load();
+          d = d || {};
+          if (d.quotaLeft != null) { quota.left = d.quotaLeft; }
+          if (d.quotaTotal != null) { quota.total = d.quotaTotal; }
+          if (d.resetDate) { quota.reset = d.resetDate; }
+          justSent = true;
+          paintChip();
+          return load().then(function () { paint(); }, function () { paint(); });
         })
         .catch(function (e) {
           C.setBusy(btn, false);
-          if (e.code === 'quota_reached') {
-            return C.setMsg(msgEl, e.message ||
-              ('You’ve used all your Mr Badmus marks for now' +
-               (quota.reset ? ('. More on ' + quota.reset) : '') + '.'), 'error');
+          if (e.code === 'quota_reached' || e.status === 429) {
+            /* Her quota-used state, not an error line: the child is being
+               told how the month works, not that they did something wrong. */
+            var dd = e.data || {};
+            quota.left = 0;
+            if (dd.limit != null) { quota.total = dd.limit; }
+            if (dd.resetDate) { quota.reset = dd.resetDate; }
+            paintChip();
+            return paint();
           }
-          if (e.code === 'org_locked') {
-            return C.setMsg(msgEl, e.message ||
-              'Your account is paused, so this can’t be sent right now.', 'error');
+          if (e.code === 'already_sent' || e.status === 409) {
+            justSent = true;
+            return paint();
           }
-          C.setMsg(msgEl, e.message, 'error');
+          var msg = (e.code === 'org_locked' || e.status === 423)
+            ? 'Sending is off just now. Your mark is still here. Ask your grown-up.'
+            : e.message;
+          var host = document.getElementById('ex-error');
+          if (host) { host.innerHTML = '<div class="ex-oops"><p>' + esc(msg) + '</p></div>'; }
         });
     }
 
-    return load().catch(function (e) {
-      C.fail(document.getElementById('list'), e.message,
-             'Try again in a moment, or ask your grown-up to check the account.');
-      document.getElementById('sub').textContent = '';
+    return load().then(function () {
+      /* Today's exam item links here as ?q=<question_id>. Landing straight
+         on the question is the point of that link. */
+      if (openId && find(openId)) { return openQuestion(openId); }
+      openId = null;
+      paint();
+    }).catch(function (e) {
+      main.innerHTML = '<div class="ex-oops"><p>' + esc(e.message) + '</p>' +
+        '<p style="margin-top:6px">Try again in a moment, or ask your grown-up ' +
+        'to check the account.</p></div>';
     });
   }});
 })();

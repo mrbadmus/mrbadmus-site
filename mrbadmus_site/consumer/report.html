@@ -2,77 +2,170 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#F7F1E5"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#FBF3E6"/>
   <title>Termly report — MrBadmus</title>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
   <link rel="stylesheet" href="/consumer/consumer.css"/>
   <style>
-  /* ═══════════════════════════════════════════════════════════════════
-     PRINT. This page has a second life on paper: a home-educating parent
-     files these, and some hand them to a local authority. So the printed
-     artefact is the deliverable, not a screenshot of a web page.
+  /* ═══════════════════════════════════════════════════════════════════════
+     consumer/report.html — Claude Design's `Termly Report.dc.html`.
+     MRB-317 Night 3.
 
-     What print removes: the nav, the buttons, the card chrome, every
-     shadow and rounded corner, and the page background — an A4 sheet of
-     cream costs a whole ink cartridge and reads worse than white.
+     ── DESIGN'S <doc-page> IS REPLACED BY PLAIN PRINT CSS ─────────────────
+     Her file wraps the report in `<doc-page margin="0.7in" size="a4">`, a
+     39KB web component that paints an A4 sheet on screen and rewrites the
+     page box at print time. The geometry is worth keeping and the component
+     is not: it is one more script on a page whose whole job is to reach a
+     printer, and a home-educating parent filing this for a local authority
+     needs it to print from any browser, offline, with nothing to load.
 
-     What print adds: an explicit A4 page with a real margin, and
-     break-inside rules so a unit's row or the summary paragraph is never
-     sliced across a page fold. `break-inside` and the old `page-break-
-     inside` are both set because Safari still wants the old spelling.
-     ═══════════════════════════════════════════════════════════════════ */
-  .rp { max-width: 880px; margin: 0 auto; }
-  .rp-head { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;
-             align-items: flex-start; margin-bottom: var(--sp-5); }
-  .rp-title { font-family: var(--font-serif); font-weight: 600; font-size: 1.6rem;
-              line-height: var(--lh-title); }
-  .rp-meta { color: var(--muted); font-size: 0.86rem; text-align: right; }
-  .rp-sec { margin-top: var(--sp-6); break-inside: avoid; page-break-inside: avoid; }
-  .rp-sec h3 { font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.08em;
-               text-transform: uppercase; color: var(--muted); margin-bottom: var(--sp-3); }
-  .rp-sec p { line-height: var(--lh-body); }
-  .rp-sec ul { margin: 0 0 0 1.2em; }
-  .rp-sec li { margin-bottom: 5px; line-height: var(--lh-body); }
-  .rp-note { border-left: 3px solid var(--accent); padding-left: 14px; font-style: italic; }
+     So the geometry is transcribed and the component dropped:
+       • A4, 210mm × 297mm
+       • 0.7in of margin on every edge
+       • 12.5pt body — a POINT size, because this is paper
+       • `.rpt-keep` never split across a fold
+
+     `@page { margin: 0 }` plus the sheet's own 0.7in padding, which is what
+     doc-page.js does and for the same two reasons: Chrome draws its date/
+     URL/page-number furniture in the page's margin box, so a zero margin
+     box removes it; and a margin the SHEET owns applies to every page of a
+     flowing document rather than only the first.
+
+     ── WHAT PRINT REMOVES ─────────────────────────────────────────────────
+     The action bar, and only the action bar. Everything else on this page
+     is the document.
+     ═══════════════════════════════════════════════════════════════════════ */
+  body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: #A93411; text-decoration: none; }
+  a:hover { color: #7F2408; }
+
+  .rpt-root {
+    font-family: var(--ks3-font-body);
+    color: var(--ks3-ink);
+    -webkit-font-smoothing: antialiased;
+    background: var(--ks3-ground);
+    min-height: 100vh;
+    padding: 40px 16px 96px;
+    box-sizing: border-box;
+  }
+
+  /* The sheet. On screen it is a piece of A4 lying on the ground colour. */
+  .rpt-sheet {
+    width: 210mm;
+    min-height: 297mm;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 0.7in;
+    background: #FFFCF5;
+    box-shadow: 0 2px 18px rgba(34, 30, 27, 0.14);
+    font-size: 12.5pt;
+    line-height: 1.5;
+  }
+  .rpt-keep { break-inside: avoid; page-break-inside: avoid; }
+
+  .rpt-h2 {
+    margin: 22pt 0 0;
+    font-family: 'Bricolage Grotesque', var(--ks3-font-display), sans-serif;
+    font-weight: 800;
+    font-size: 17pt;
+    letter-spacing: -.025em;
+    padding-bottom: 5pt;
+    border-bottom: 1.5pt solid #221E1B;
+  }
+  .rpt-mono {
+    font-family: 'DM Mono', var(--ks3-font-mono), monospace;
+  }
+  .rpt-kicker {
+    font-family: 'DM Mono', var(--ks3-font-mono), monospace;
+    font-size: 8.5pt;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #5F564F;
+  }
+  .rpt-grid-u {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr .7fr .8fr 1.3fr;
+    gap: 6pt;
+  }
+  .rpt-grid-a {
+    display: grid;
+    grid-template-columns: .7fr 4fr .9fr;
+    gap: 6pt;
+  }
+
+  .rpt-actions {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 12px 16px;
+    background: #FFFCF5;
+    border-top: 2px solid #221E1B;
+    z-index: 5;
+  }
+  .rpt-btn {
+    min-height: 46px;
+    padding: 0 20px;
+    border: 2px solid var(--ks3-ink);
+    border-radius: 14px;
+    background: var(--ks3-ink);
+    color: var(--ks3-on-dark);
+    font: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .rpt-btn-quiet {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 18px;
+    border: 2px solid var(--ks3-ink);
+    border-radius: 14px;
+    background: var(--ks3-card);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ks3-ink);
+    text-decoration: none;
+  }
+  .rpt-btn-quiet:hover { color: var(--ks3-ink); text-decoration: none; }
+
+  /* A4 is 210mm; below that the sheet has to give, or a phone scrolls
+     sideways through a document. It keeps its proportions and its point
+     sizes — this is still the artefact, just narrower on glass. */
+  @media (max-width: 820px) {
+    .rpt-root { padding: 16px 10px 96px; }
+    .rpt-sheet { width: 100%; min-height: 0; padding: 22px 18px; }
+  }
 
   @media print {
-    @page { size: A4; margin: 16mm 14mm; }
-    html, body { background: #fff !important; color: #000; padding: 0 !important; }
-    body { display: block !important; font-size: 10.5pt; }
-    .c-nav, .no-print, .c-msg, .c-locked { display: none !important; }
-    .container { max-width: none; }
-    .card { border: none !important; box-shadow: none !important; background: #fff !important;
-            padding: 0 !important; margin: 0 0 10mm 0 !important;
-            break-inside: avoid; page-break-inside: avoid; }
-    .c-table { font-size: 9.5pt; }
-    .c-table th, .c-table td { white-space: normal; border-bottom: 1px solid #ccc; }
-    .c-scroll { overflow: visible; }
-    .rp-sec { break-inside: avoid; page-break-inside: avoid; }
-    .stat { border: 1px solid #ccc !important; background: #fff !important; }
-    a { color: #000; text-decoration: none; }
+    @page { size: A4; margin: 0; }
+    html, body { background: #fff; }
+    .rpt-root { background: #fff; padding: 0; min-height: 0; }
+    .rpt-sheet {
+      width: auto;
+      min-height: 0;
+      margin: 0;
+      padding: 0.7in;
+      box-shadow: none;
+      background: #fff;
+    }
+    .rpt-actions { display: none !important; }
   }
   </style>
 </head>
 <body>
 
-<div id="c-nav" class="no-print"></div>
-
-<div class="container wide" id="c-main">
-  <div class="no-print" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px;">
-    <button class="btn" id="btn-print" type="button">Print or save as PDF</button>
-    <select id="term-sel" style="padding:10px 12px;border:1px solid var(--border-strong);
-            border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:0.95rem;
-            background:var(--card);color:var(--text);"></select>
-    <a class="btn" id="back" href="#">Back to the child</a>
-  </div>
-
-  <div class="c-msg no-print" id="msg"></div>
-
-  <div class="card">
-    <div class="rp" id="report"><p class="empty">Loading…</p></div>
+<div class="rd rpt-root" data-mode="ks3" id="rpt-root">
+  <div class="rpt-sheet" id="c-main"></div>
+  <div class="rpt-actions" id="rpt-actions" hidden>
+    <button class="rpt-btn" data-act="print" type="button">Print or save as PDF</button>
+    <a class="rpt-btn-quiet" id="rpt-back" href="#">Back</a>
   </div>
 </div>
 
@@ -80,202 +173,274 @@
 <script src="/consumer/consumer-common.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
-   consumer/report.html — the termly report. MRB-312, Night 2. SCAFFOLD.
+   consumer/report.html — the termly report. MRB-317 Night 3.
 
    ── THE BACKEND WRITES THE REPORT; THIS PAGE SETS IT ───────────────────
    `summary`, `progressNote`, `strengths`, `nextSteps` and `teacherNote` are
-   sentences somebody (or something) composed about a real child. This page
-   escapes them and lays them out. It does not summarise, truncate, join,
-   pluralise or "tidy" any of them — a report that a parent may hand to a
-   local authority cannot contain a sentence the frontend improvised.
+   sentences about a real child. This page escapes them and lays them out.
+   It does not summarise, truncate, join, pluralise or tidy any of them: a
+   document a parent may hand to a local authority cannot contain a sentence
+   the frontend improvised.
 
-   An absent section is OMITTED rather than rendered empty. A heading called
-   "Strengths" with nothing under it reads as a judgement.
+   An absent section is OMITTED, never rendered empty. A heading reading
+   "Strengths" with nothing under it is itself a judgement. `checksAvg`
+   comes back null when no unit check was sat — that renders as "—", never
+   as "null%", and the note beneath it stops claiming an average.
 
-   ── THE TERM IS A CHOICE, WITH A SENSIBLE DEFAULT ──────────────────────
-   `?term=` wins; otherwise today's date decides, on the calendar the
-   contract gives (autumn 1 Sep–19 Dec, spring 1 Jan–Easter, summer to
-   31 Aug). The dropdown offers this academic year's three so a parent can
-   look back without editing a URL.
+   ── THE TERM ──────────────────────────────────────────────────────────
+   `?term=` wins. Without it the contract's own calendar decides: autumn
+   1 Sep–19 Dec, spring 1 Jan–31 Mar, summer 1 Apr–31 Aug, and 20–31
+   December belongs to autumn (the term that has just finished is the one a
+   parent asking over Christmas means). The key is `<name>-<calendar year>`.
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   var C = window.MrBadmusConsumer;
+  var esc = C.escapeHtml;
 
   var q = new URLSearchParams(window.location.search);
-  var childId = q.get('id');
+  /* `child` is the parameter every Night 3 surface uses; `id` is what the
+     Night 1 scaffold linked with, and old links exist. Both are read. */
+  var childId = q.get('child') || q.get('id');
 
-  /* The academic year a date belongs to: September starts one. So 1 Sep 2026
-     through 31 Aug 2027 are all "2026". The term names follow the contract's
-     `autumn-2026` shape, and the YEAR in that string is always the September
-     one — spring 2027 is `spring-2026` — because otherwise a parent looking
-     for "this year's spring report" would have to know which convention we
-     picked. Flagged as an assumption; one constant to change if report.js
-     names them differently. */
-  function academicYear(d) {
-    return d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1;
-  }
   function defaultTerm(d) {
-    var m = d.getMonth();                    // 0-based
-    var y = academicYear(d);
-    if (m >= 8 || (m === 11 && d.getDate() <= 19)) { return 'autumn-' + y; }
-    if (m <= 2 || m === 3) { return 'spring-' + y; }
-    return 'summer-' + y;
+    var m = d.getMonth(), day = d.getDate(), y = d.getFullYear();
+    if (m >= 8 && (m < 11 || day <= 19)) { return 'autumn-' + y; }   // 1 Sep – 19 Dec
+    if (m === 11) { return 'autumn-' + y; }                          // 20–31 Dec → autumn
+    if (m <= 2) { return 'spring-' + y; }                            // 1 Jan – 31 Mar
+    return 'summer-' + y;                                            // 1 Apr – 31 Aug
   }
+  var term = q.get('term') || defaultTerm(new Date());
+
+  function h2(t) { return '<h2 class="rpt-h2">' + esc(t) + '</h2>'; }
+
+  function statBox(label, value, note) {
+    return '<div style="padding:10pt 12pt;border:1.5pt solid #221E1B;border-radius:12pt;' +
+      'background:#FFFCF5">' +
+      '<div class="rpt-kicker">' + esc(label) + '</div>' +
+      '<div style="margin-top:3pt;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:800;' +
+        'font-size:22pt;letter-spacing:-.02em;line-height:1">' + esc(value) + '</div>' +
+      (note ? ('<div style="margin-top:2pt;font-size:9.5pt;color:#5F564F">' + esc(note) +
+               '</div>') : '') + '</div>';
+  }
+
+  function render(d) {
+    var r = (d && d.report) || {};
+    var kid = r.child || {};
+    var name = [kid.name, kid.surname].filter(Boolean).join(' ');
+    document.title = (name || 'Termly report') + ' — MrBadmus';
+
+    /* ── the four stats. Each renders only when its number exists. ────── */
+    var stats = [];
+    if (r.sessions && (r.sessions.done != null || r.sessions.set != null)) {
+      stats.push(statBox('Sessions',
+        (r.sessions.done != null ? r.sessions.done : '—') + '/' +
+        (r.sessions.set != null ? r.sessions.set : '—'), 'completed of set'));
+    }
+    if (r.minutes != null) {
+      var hrs = Math.floor(r.minutes / 60), mins = r.minutes % 60;
+      /* Design's note read "over 16 weeks". The report payload carries no
+         week count, so the note says which stretch of time it is instead of
+         inventing a number of weeks. */
+      stats.push(statBox('Time on task', hrs + 'h ' + mins + 'm', 'this term'));
+    }
+    /* ⚠️ checksAvg is null when nothing was sat. "null%" on a document a
+       council may read is the failure this line exists to prevent. */
+    var avg = (r.checksAvg == null) ? '—' : (r.checksAvg + '%');
+    var count = r.checksCount;
+    stats.push(statBox('Unit checks', avg,
+      count ? ('average of ' + count) : 'none sat yet'));
+    if (r.streakBest != null) {
+      stats.push(statBox('Best streak', String(r.streakBest), 'weeks in a row'));
+    }
+
+    /* ── units ───────────────────────────────────────────────────────── */
+    var units = Array.isArray(r.units) ? r.units : [];
+    var unitsBlock = units.length
+      ? (h2('What was covered') +
+         '<p style="margin:6pt 0 0;font-size:10.5pt;color:#5F564F">Each unit maps to the National ' +
+           'Curriculum science programme of study for Key Stage ' + esc(String(kid.ks)) + '. The ' +
+           'unit check is a timed test taken at the end of the unit.</p>' +
+         '<div style="margin-top:10pt;font-size:11pt">' +
+         '<div class="rpt-grid-u rpt-kicker" style="padding:5pt 0;border-bottom:1pt solid #221E1B">' +
+           '<span>Unit</span><span>Subject</span><span>Lessons</span><span>Check</span>' +
+           '<span>Status</span></div>' +
+         units.map(function (u) {
+           return '<div class="rpt-grid-u rpt-keep" style="padding:7pt 0;' +
+             'border-bottom:1pt solid #E0D2B9;align-items:baseline">' +
+             '<span style="font-weight:600">' + esc(u.name || '') + '</span>' +
+             '<span style="color:#3B342E">' + esc(u.subject || '') + '</span>' +
+             '<span class="rpt-mono" style="font-size:10.5pt">' + esc(u.lessons || '') + '</span>' +
+             /* `check` arrives as "55%" or the em-dash the backend chose.
+                Rendered as sent — the dash is its answer, not a missing
+                value this page gets to reinterpret. */
+             '<span class="rpt-mono" style="font-size:10.5pt">' + esc(u.check || '') + '</span>' +
+             '<span style="color:#3B342E">' + esc(u.status || '') + '</span></div>';
+         }).join('') + '</div>')
+      : '';
+
+    /* ── the progress chart ──────────────────────────────────────────── */
+    var bars = units.filter(function (u) {
+      return u.check && /^\d/.test(String(u.check));
+    });
+    var chart = '';
+    if (bars.length) {
+      chart = h2('Progress over the term') +
+        '<div class="rpt-keep" style="margin-top:12pt;display:flex;align-items:flex-end;gap:10pt;' +
+          'height:110pt;border-bottom:1.5pt solid #221E1B;padding-bottom:2pt">' +
+        bars.map(function (u, i) {
+          var pct = parseInt(u.check, 10);
+          var h = Math.max(6, Math.round(pct * 0.85));
+          return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;' +
+            'justify-content:flex-end;height:100%">' +
+            '<span class="rpt-mono" style="font-size:9.5pt">' + esc(u.check) + '</span>' +
+            '<div style="width:100%;margin-top:3pt;border:1.5pt solid #221E1B;' +
+              'border-radius:5pt 5pt 0 0;background:' +
+              (i === bars.length - 1 ? '#E4572E' : '#F4E9D8') + ';height:' + h + 'pt"></div></div>';
+        }).join('') + '</div>' +
+        '<div style="display:flex;gap:10pt;margin-top:4pt">' +
+        bars.map(function (u) {
+          return '<div style="flex:1;text-align:center;font-size:9pt;color:#5F564F;line-height:1.2">' +
+            esc(u.name || '') + '</div>';
+        }).join('') + '</div>' +
+        (r.progressNote ? ('<p style="margin:10pt 0 0;color:#3B342E">' + esc(r.progressNote) +
+                           '</p>') : '');
+    }
+
+    /* ── strengths / next steps ──────────────────────────────────────── */
+    var strengths = Array.isArray(r.strengths) ? r.strengths : [];
+    var nextSteps = Array.isArray(r.nextSteps) ? r.nextSteps : [];
+    function listBox(title, items, bg, fg) {
+      return '<div style="padding:12pt 14pt;border:1.5pt solid #221E1B;border-radius:12pt;' +
+        'background:' + bg + '">' +
+        '<p class="rpt-kicker" style="margin:0;color:' + fg + '">' + esc(title) + '</p>' +
+        '<ul style="margin:6pt 0 0;padding-left:14pt;font-size:11pt;color:#3B342E;display:flex;' +
+          'flex-direction:column;gap:3pt">' +
+        items.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+    }
+    var boxes = [];
+    if (strengths.length) { boxes.push(listBox('Strengths', strengths, '#E4F7EB', '#0A6B36')); }
+    if (nextSteps.length) { boxes.push(listBox('Next steps', nextSteps, '#FFF3D4', '#5A430A')); }
+    var sn = boxes.length
+      ? ('<div class="rpt-keep" style="margin-top:18pt;display:grid;grid-template-columns:' +
+         (boxes.length === 2 ? '1fr 1fr' : '1fr') + ';gap:10pt">' + boxes.join('') + '</div>')
+      : '';
+
+    /* ── extended writing ────────────────────────────────────────────── */
+    var answers = Array.isArray(r.answers) ? r.answers : [];
+    var writing = answers.length
+      ? (h2('Extended writing') +
+         '<p style="margin:6pt 0 0;font-size:10.5pt;color:#5F564F">Exam-style 4- and 6-mark ' +
+           'questions, marked against the published mark scheme. Answers marked “MB” were marked ' +
+           'by Mr Badmus personally.</p>' +
+         '<div style="margin-top:10pt;font-size:11pt">' +
+         '<div class="rpt-grid-a rpt-kicker" style="padding:5pt 0;border-bottom:1pt solid #221E1B">' +
+           '<span>Date</span><span>Question</span><span style="text-align:right">Mark</span></div>' +
+         answers.map(function (a) {
+           return '<div class="rpt-grid-a rpt-keep" style="padding:6pt 0;' +
+             'border-bottom:1pt solid #E0D2B9;align-items:baseline">' +
+             '<span class="rpt-mono" style="font-size:10pt;white-space:nowrap">' +
+               esc(a.date || '') + '</span>' +
+             '<span style="color:#3B342E">' + esc(a.q || '') + '</span>' +
+             '<span class="rpt-mono" style="font-size:10.5pt;text-align:right;white-space:nowrap">' +
+               esc(a.mark || '') + '</span></div>';
+         }).join('') + '</div>')
+      : '';
+
+    /* ── the teacher's note, and the provenance strip under it ───────── */
+    var note = r.teacherNote ? String(r.teacherNote).trim() : '';
+    var noteBlock = '<div class="rpt-keep" style="margin-top:24pt;padding:14pt 16pt;' +
+      'border:1.5pt solid #221E1B;border-radius:12pt;background:#FFFCF5">' +
+      (note
+        ? ('<p class="rpt-kicker" style="margin:0">Teacher’s note</p>' +
+           '<p style="margin:6pt 0 0;color:#3B342E;font-style:italic">' + esc(note) + '</p>')
+        : '') +
+      '<div style="' + (note ? 'margin-top:12pt;' : '') + 'display:flex;align-items:flex-end;' +
+        'justify-content:space-between;gap:12pt">' +
+        '<div><p style="margin:0;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:800;' +
+          'font-size:13pt;letter-spacing:-.02em">Mide Badmus</p>' +
+          '<p style="margin:0;font-size:10pt;color:#5F564F">Science teacher · AQA examiner · ' +
+          'mrbadmus.com</p></div>' +
+        '<p style="margin:0;font-size:9.5pt;color:#5F564F;text-align:right;max-width:46%">' +
+          'Attendance and marks are recorded automatically from ' + esc(kid.name || 'this child') +
+          '’s work on the platform. Written feedback marked MB is the teacher’s own.</p>' +
+      '</div></div>';
+
+    var headerMeta = [
+      kid.year != null ? ('Year ' + kid.year) : null,
+      kid.mode === 'home' ? 'Home education' : (kid.mode === 'school' ? 'Alongside school' : null),
+      kid.dates || null
+    ].filter(Boolean).join(' · ');
+
+    document.getElementById('c-main').innerHTML =
+      '<div style="display:flex;align-items:center;gap:8pt;padding:0 0 8pt;margin-bottom:16pt;' +
+        'border-bottom:1.5pt solid #221E1B">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">' +
+          '<path d="M4 4l8 8-8 8" fill="none" stroke="#E4572E" stroke-width="3.2" ' +
+            'stroke-linecap="round" stroke-linejoin="round"/>' +
+          '<path d="M12 4l8 8-8 8" fill="none" stroke="#E4572E" stroke-opacity=".34" ' +
+            'stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '<span style="font-family:\'Bricolage Grotesque\',sans-serif;font-weight:800;font-size:13pt;' +
+          'letter-spacing:-.02em;color:#221E1B">MrBadmus</span>' +
+        (r.ref ? ('<span class="rpt-kicker" style="margin-left:auto">Report ref ' + esc(r.ref) +
+                  '</span>') : '') + '</div>' +
+      '<p class="rpt-mono" style="margin:0;font-size:10pt;letter-spacing:.14em;' +
+        'text-transform:uppercase;color:#5F564F">Science progress report · ' +
+        esc(r.term || term) + '</p>' +
+      '<h1 style="margin:6pt 0 0;font-family:\'Bricolage Grotesque\',sans-serif;font-weight:800;' +
+        'font-size:34pt;line-height:1;letter-spacing:-.035em">' + esc(name || 'This child') + '</h1>' +
+      (headerMeta ? ('<p style="margin:8pt 0 0;font-size:12.5pt;color:#3B342E">' + esc(headerMeta) +
+                     '</p>') : '') +
+
+      (stats.length
+        ? ('<div class="rpt-keep" style="margin-top:18pt;display:grid;grid-template-columns:repeat(' +
+           stats.length + ',1fr);gap:8pt">' + stats.join('') + '</div>')
+        : '') +
+
+      (r.summary ? (h2('Summary') + '<p style="margin:9pt 0 0;color:#3B342E">' + esc(r.summary) +
+                    '</p>') : '') +
+      unitsBlock + chart + sn + writing + noteBlock +
+
+      '<p style="margin:16pt 0 0;padding-top:8pt;border-top:1pt solid #E0D2B9;display:flex;' +
+        'justify-content:space-between;font-family:\'DM Mono\',monospace;font-size:8.5pt;' +
+        'letter-spacing:.08em;text-transform:uppercase;color:#5F564F">' +
+        '<span>' + (r.produced ? ('Produced ' + esc(r.produced) + ' · ') : '') +
+          'mrbadmus.com</span>' +
+        '<span>' + esc((kid.name || '') + (r.term ? (' · ' + r.term) : '')) + '</span></p>';
+
+    document.getElementById('rpt-actions').hidden = false;
+  }
+
+  document.getElementById('rpt-root').addEventListener('click', function (ev) {
+    var el = ev.target.closest ? ev.target.closest('[data-act="print"]') : null;
+    if (!el) { return; }
+    ev.preventDefault();
+    window.print();
+  });
 
   C.boot({ requireSession: true, run: function (ctx) {
-    document.getElementById('c-nav').innerHTML = C.navHtml(
-      '<a href="' + C.escapeHtml(C.href('/consumer/overview.html')) + '">Your family</a>'
-    );
-    document.getElementById('back').href = childId
-      ? C.href('/consumer/child.html', { id: childId })
+    var host = document.getElementById('c-main');
+    document.getElementById('rpt-back').href = childId
+      ? C.href('/consumer/overview.html', { child: childId, view: 'child' })
       : C.href('/consumer/overview.html');
-    document.getElementById('btn-print').addEventListener('click', function () {
-      window.print();
-    });
-
-    var msgEl = document.getElementById('msg');
-    var host  = document.getElementById('report');
 
     if (!childId) {
+      document.getElementById('rpt-actions').hidden = false;
       C.fail(host, 'This page needs to know whose report to show.',
              'Open it from a child’s page and it will bring their name with it.');
       return;
     }
 
-    var now = new Date();
-    var year = academicYear(now);
-    var term = q.get('term') || defaultTerm(now);
-
-    var sel = document.getElementById('term-sel');
-    sel.innerHTML = [
-      { v: 'autumn-' + year, l: 'Autumn ' + year },
-      { v: 'spring-' + year, l: 'Spring ' + (year + 1) },
-      { v: 'summer-' + year, l: 'Summer ' + (year + 1) }
-    ].map(function (o) {
-      return '<option value="' + o.v + '"' + (o.v === term ? ' selected' : '') + '>' +
-             C.escapeHtml(o.l) + '</option>';
-    }).join('');
-    sel.addEventListener('change', function () { term = sel.value; load(); });
-
-    function list(title, items) {
-      if (!items || !items.length) { return ''; }
-      return '<div class="rp-sec"><h3>' + C.escapeHtml(title) + '</h3><ul>' +
-        items.map(function (s) { return '<li>' + C.escapeHtml(s) + '</li>'; }).join('') +
-        '</ul></div>';
-    }
-    function para(title, text) {
-      if (!text) { return ''; }
-      return '<div class="rp-sec"><h3>' + C.escapeHtml(title) + '</h3><p>' +
-        C.escapeHtml(text) + '</p></div>';
-    }
-
-    function render(d) {
-      var r = (d && d.report) || {};
-      var kid = r.child || {};
-      var name = [kid.name, kid.surname].filter(Boolean).join(' ') || 'This child';
-      document.title = name + ' — termly report — MrBadmus';
-
-      var units = (r.units || []).map(function (u) {
-        return '<tr>' +
-          '<td>' + C.escapeHtml(u.name || '') + '</td>' +
-          '<td>' + C.escapeHtml(u.subject || '') + '</td>' +
-          '<td>' + C.escapeHtml(u.lessons || '') + '</td>' +
-          '<td>' + C.escapeHtml(u.check || '—') + '</td>' +
-          '<td>' + C.escapeHtml(u.status || '') + '</td>' +
-        '</tr>';
-      }).join('');
-
-      var answers = (r.answers || []).map(function (a) {
-        return '<tr>' +
-          '<td>' + C.escapeHtml(a.date || '') + '</td>' +
-          '<td style="white-space:normal;">' + C.escapeHtml(a.q || '') + '</td>' +
-          '<td>' + C.escapeHtml(a.mark || '') + '</td>' +
-        '</tr>';
-      }).join('');
-
-      var stats = [];
-      if (r.sessions) {
-        stats.push(['' + (r.sessions.done != null ? r.sessions.done : '—') + ' / ' +
-                    (r.sessions.set != null ? r.sessions.set : '—'), 'Sessions done']);
-      }
-      if (r.minutes != null)    { stats.push([String(r.minutes), 'Minutes of work']); }
-      if (r.streakBest != null) { stats.push([String(r.streakBest), 'Best streak']); }
-      if (r.checksAvg != null)  { stats.push([String(r.checksAvg), 'Unit check average']); }
-
-      host.innerHTML =
-        '<div class="rp-head">' +
-          '<div>' +
-            '<div class="rp-title">' + C.escapeHtml(name) + '</div>' +
-            '<div class="rp-meta" style="text-align:left;">' +
-              [kid.year != null ? ('Year ' + kid.year) : null,
-               /* The backend sends the key stage as a bare 3 or 4. "Year 8 · 3"
-                  reads as a typo on a document a parent may file with a local
-                  authority; "KS3" is the same value, spelled. A ks that is
-                  already a string keeps its own words. */
-               kid.ks == null || kid.ks === ''
-                 ? null
-                 : (/^\d+$/.test(String(kid.ks)) ? ('KS' + kid.ks) : String(kid.ks)),
-               kid.mode === 'home' ? 'Home education'
-                 : (kid.mode === 'school' ? 'Alongside school' : null),
-               kid.dates || null
-              ].filter(Boolean).map(C.escapeHtml).join(' · ') +
-            '</div>' +
-          '</div>' +
-          '<div class="rp-meta">' +
-            '<div><strong>' + C.escapeHtml(r.term || term) + '</strong></div>' +
-            (r.produced ? ('<div>Produced ' + C.escapeHtml(r.produced) + '</div>') : '') +
-            (r.ref ? ('<div>Ref ' + C.escapeHtml(r.ref) + '</div>') : '') +
-            '<div>MrBadmus</div>' +
-          '</div>' +
-        '</div>' +
-
-        (stats.length
-          ? ('<div class="stats">' + stats.map(function (s) {
-              return '<div class="stat"><div class="n">' + C.escapeHtml(s[0]) +
-                     '</div><div class="l">' + C.escapeHtml(s[1]) + '</div></div>';
-            }).join('') + '</div>')
-          : '') +
-
-        para('Summary', r.summary) +
-        para('Progress', r.progressNote) +
-
-        (units
-          ? ('<div class="rp-sec"><h3>Units covered</h3><div class="c-scroll">' +
-             '<table class="c-table"><thead><tr><th>Unit</th><th>Subject</th>' +
-             '<th>Lessons</th><th>Unit check</th><th>Status</th></tr></thead>' +
-             '<tbody>' + units + '</tbody></table></div></div>')
-          : '') +
-
-        list('Strengths', r.strengths) +
-        list('What to work on next', r.nextSteps) +
-
-        (answers
-          ? ('<div class="rp-sec"><h3>Exam answers marked</h3><div class="c-scroll">' +
-             '<table class="c-table"><thead><tr><th>Date</th><th>Question</th>' +
-             '<th>Mark</th></tr></thead><tbody>' + answers + '</tbody></table></div></div>')
-          : '') +
-
-        (r.teacherNote
-          ? ('<div class="rp-sec"><h3>A note from Mr Badmus</h3>' +
-             '<p class="rp-note">' + C.escapeHtml(r.teacherNote) + '</p></div>')
-          : '');
-    }
-
-    function load() {
-      host.innerHTML = '<p class="empty">Loading…</p>';
-      C.setMsg(msgEl, '');
-      return C.api('/api/consumer/children/' + encodeURIComponent(childId) +
-                   '/report?term=' + encodeURIComponent(term), { token: ctx.token })
-        .then(render)
-        .catch(function (e) {
-          C.fail(host, e.message,
-            'Reports are written from a term’s work — if this term has only just ' +
-            'started there may be nothing in it yet.');
-        });
-    }
-
-    return load();
-  }});
+    host.innerHTML = '<p style="color:#5F564F">Loading…</p>';
+    return C.api('/api/consumer/children/' + encodeURIComponent(childId) +
+                 '/report?term=' + encodeURIComponent(term), { token: ctx.token })
+      .then(render)
+      .catch(function (e) {
+        document.getElementById('rpt-actions').hidden = false;
+        C.fail(host, e.message,
+          'A report is written from a term’s work — if this term has only just started there may ' +
+          'be nothing in it yet.');
+      });
+  } });
 })();
 </script>
 </body>

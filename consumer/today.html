@@ -3,53 +3,359 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#F7F1E5"/>
+  <meta name="theme-color" content="#FBF3E6"/>
   <title>Today — MrBadmus</title>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
   <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <style>
+  /* ── consumer/today.html — Design's `Child Today.dc.html`, live ─────────
+     Her per-element inline styles are the design. The repeated ones are
+     lifted here with a `td-` prefix, exactly as she prefixes her own pages
+     (`pb-`, `dk-`, `su-`). Every value is a --ks3-* token out of
+     /shared/tokens.css; nothing new is invented and no --ks3 value is
+     retyped as a hex. Single column at every width — a child surface never
+     gains a desktop layout (MANIFEST, "Responsive"). */
+
+  /* consumer.css dresses the Night-1 scaffolds (padded body, --bg ground).
+     Design's child screens are full-bleed on the KS3 ground, so those are
+     undone. `display:none` is NOT undone — it is the flag gate, and only
+     boot() lifts it. */
+  body { padding: 0; margin: 0; background: #FBF3E6; }
+
+  /* ⚠️ LOAD-BEARING, and it looks redundant. An AUTHOR `display` beats the UA
+     stylesheet's `[hidden] { display: none }` regardless of specificity — the
+     same trap shared/ks3.css documents at `.ks3-ticks[hidden]`. Every screen
+     switch on this page is `el.hidden = …` over a class that sets its own
+     `display` (flex/grid), so without this line the hidden screen renders
+     anyway: found by screenshotting it, 2 Sep 2026. */
+  [hidden] { display: none !important; }
+
+  .td-root {
+    min-height: 100vh;
+    background: var(--ks3-ground);
+    color: var(--ks3-ink);
+    font-family: var(--ks3-font-body);
+    font-size: 19px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── header ── */
+  .td-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 20px 14px;
+    border-bottom: 2px solid var(--ks3-ink);
+  }
+  .td-head .td-brandmark svg { width: 26px; height: 26px; }
+  .td-word {
+    font-family: var(--ks3-font-display);
+    font-weight: 800; font-size: 22px; letter-spacing: -.02em;
+  }
+  .td-head-title {
+    font-family: var(--ks3-font-display);
+    font-weight: 800; font-size: 20px; letter-spacing: -.02em;
+  }
+  .td-back {
+    display: grid; place-items: center; width: 40px; height: 40px;
+    margin-left: -8px; border: 0; border-radius: 12px;
+    background: none; color: var(--ks3-ink); cursor: pointer;
+  }
+  .td-back .ks3-mark { width: 22px; height: 22px; }
+  .td-spacer { flex: 1; }
+  .td-msg-btn {
+    position: relative; display: grid; place-items: center;
+    width: 44px; height: 44px;
+    border: 2px solid var(--ks3-ink); border-radius: 14px;
+    background: var(--ks3-card); color: var(--ks3-ink); cursor: pointer;
+  }
+  .td-msg-btn .ks3-mark { width: 22px; height: 22px; }
+  .td-msg-count {
+    position: absolute; top: -8px; right: -8px;
+    display: grid; place-items: center; min-width: 24px; height: 24px;
+    padding: 0 6px; border-radius: 99px;
+    border: 2px solid var(--ks3-ground); background: var(--ks3-accent-text);
+    color: #fff; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+  }
+
+  /* ── today screen ── */
+  .td-main { max-width: 560px; margin: 0 auto; padding: 26px 20px 60px; }
+  .td-date {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .td-greet {
+    margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 40px; line-height: .98; letter-spacing: -.035em;
+  }
+
+  .td-stats { margin-top: 18px; display: flex; gap: 8px; }
+  .td-stat {
+    flex: 1; display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; border: 2px solid var(--ks3-ink);
+    border-radius: 16px; background: var(--ks3-card);
+  }
+  .td-stat-chip {
+    display: grid; place-items: center; width: 36px; height: 36px;
+    border-radius: 11px; border: 2px solid var(--ks3-ink);
+    font-family: var(--ks3-font-display); font-weight: 800;
+  }
+  .td-stat-streak { background: var(--ks3-accent); font-size: 18px; }
+  .td-stat-best   { background: var(--ks3-ok); font-size: 15px; color: #fff; }
+  .td-stat-text { font-size: 15px; line-height: 1.3; }
+  .td-stat-text span { color: var(--ks3-ink-muted); }
+
+  /* Design's dark "{parent} wrote" card. Reused for the marked-answer
+     notifications too — see the note in the script. */
+  .td-dark-card {
+    margin-top: 18px; width: 100%; text-align: left;
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 16px 18px; border-radius: var(--ks3-r-panel);
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    border: 0; box-shadow: 5px 5px 0 var(--ks3-accent);
+    font: inherit; cursor: pointer;
+  }
+  .td-dark-avatar {
+    display: grid; place-items: center; flex: 0 0 36px; height: 36px;
+    border-radius: 11px; background: var(--ks3-dark-panel);
+    font-family: var(--ks3-font-display); font-weight: 800; font-size: 16px;
+  }
+  .td-dark-body { flex: 1; min-width: 0; }
+  .td-dark-eyebrow {
+    display: block; font-family: var(--ks3-font-mono); font-size: 12px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-alert);
+  }
+  .td-dark-line {
+    display: block; margin-top: 4px; font-size: 17px;
+    color: var(--ks3-on-dark-body);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .td-h2 {
+    margin: 28px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 26px; letter-spacing: -.025em;
+  }
+  .td-nothing {
+    margin-top: 12px; padding: 24px 22px;
+    border: 2px dashed var(--ks3-rule-strong); border-radius: var(--ks3-r-card);
+    background: var(--ks3-inset);
+  }
+  .td-nothing h3 {
+    margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 22px; letter-spacing: -.02em;
+  }
+  .td-nothing p { margin: 6px 0 0; font-size: 17px; color: var(--ks3-ink-body); }
+
+  .td-items { margin-top: 12px; display: flex; flex-direction: column; gap: 12px; }
+  /* Her row, with one addition: the done control sits on a second line
+     inside the same card rather than competing with the tag chip for width
+     at 390px. Everything on the FIRST line is hers, unchanged. */
+  .td-item {
+    display: flex; flex-direction: column;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-card); box-shadow: var(--ks3-shadow-block);
+  }
+  .td-item.is-done { background: var(--ks3-row-dim); box-shadow: none; opacity: .75; }
+  .td-item-top {
+    display: flex; align-items: center; gap: 14px;
+    padding: 18px; color: var(--ks3-ink); text-decoration: none;
+  }
+  .td-item-top:hover { text-decoration: none; color: var(--ks3-ink); }
+  .td-item-icon {
+    display: grid; place-items: center; flex: 0 0 44px; height: 44px;
+    border-radius: 13px; border: 2px solid var(--ks3-ink);
+    background: var(--ks3-band); color: var(--ks3-ink);
+  }
+  .td-item.is-done .td-item-icon { background: var(--ks3-ok); color: #fff; }
+  .td-item-icon .ks3-mark { width: 22px; height: 22px; }
+  .td-item-mins { font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; }
+  .td-item-body { flex: 1; min-width: 0; }
+  .td-item-title {
+    display: block; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 20px; letter-spacing: -.02em; line-height: 1.15;
+  }
+  .td-item-sub {
+    display: block; margin-top: 4px; font-size: 14px; color: var(--ks3-ink-muted);
+  }
+  .td-tag {
+    flex: 0 0 auto; padding: 5px 10px; border-radius: 99px;
+    border: 2px solid var(--ks3-rule-strong); background: var(--ks3-band);
+    font-size: 12px; font-weight: 700; color: var(--ks3-ink-muted); white-space: nowrap;
+  }
+  .td-tag.is-parent {
+    border-color: var(--ks3-accent); background: var(--ks3-accent-tint);
+    color: var(--ks3-accent-text);
+  }
+  .td-done-btn {
+    margin: 0 18px 18px; min-height: var(--ks3-tap);
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+    background: var(--ks3-band); color: var(--ks3-ink);
+    font: inherit; font-weight: 700; font-size: 16px; cursor: pointer;
+  }
+  .td-done-btn[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+
+  .td-h2-later {
+    margin: 30px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 22px; letter-spacing: -.025em; color: var(--ks3-ink-muted);
+  }
+  .td-later {
+    margin: 10px 0 0; padding: 0; list-style: none;
+    border: 2px solid var(--ks3-rule-strong); border-radius: var(--ks3-r-card);
+    background: var(--ks3-card); overflow: hidden;
+  }
+  .td-later li {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-bottom: 1px solid var(--ks3-rule); font-size: 16px;
+  }
+  .td-later li:last-child { border-bottom: 0; }
+  .td-later-day {
+    flex: 0 0 40px; font-family: var(--ks3-font-mono); font-size: 13px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .td-later-title { flex: 1; }
+  .td-later-tag { font-size: 13px; color: var(--ks3-ink-muted); }
+
+  .td-quick { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .td-quick a {
+    display: flex; flex-direction: column; gap: 4px; padding: 16px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-card); color: var(--ks3-ink); text-decoration: none;
+  }
+  .td-quick a:hover { text-decoration: none; color: var(--ks3-ink); }
+  .td-quick strong { font-weight: 700; font-size: 17px; }
+  .td-quick span { font-size: 14px; color: var(--ks3-ink-muted); }
+
+  /* ── chat screen ── */
+  .td-chat-main {
+    max-width: 560px; margin: 0 auto; padding: 20px 20px 110px;
+    min-height: calc(100vh - 200px); display: flex; flex-direction: column;
+  }
+  .td-chat-empty {
+    margin: auto 0; padding: 26px 22px;
+    border: 2px dashed var(--ks3-rule-strong); border-radius: var(--ks3-r-card);
+    background: var(--ks3-inset); text-align: center;
+  }
+  .td-chat-empty h3 {
+    margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 22px; letter-spacing: -.02em;
+  }
+  .td-chat-empty p { margin: 6px 0 0; font-size: 16px; color: var(--ks3-ink-body); }
+  .td-thread { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .td-bubble-wrap { display: flex; flex-direction: column; align-items: flex-start; }
+  .td-bubble-wrap.mine { align-items: flex-end; }
+  .td-bubble {
+    max-width: 82%; padding: 12px 16px;
+    border: 2px solid var(--ks3-ink); border-radius: 18px;
+    background: var(--ks3-card); color: var(--ks3-ink);
+    font-size: 17px; line-height: 1.45; white-space: pre-wrap;
+  }
+  .td-bubble-wrap.mine .td-bubble { background: var(--ks3-ink); color: var(--ks3-on-dark); }
+  .td-bubble-meta {
+    margin-top: 4px; font-family: var(--ks3-font-mono); font-size: 11px;
+    color: var(--ks3-ink-muted);
+  }
+  .td-composer {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    padding: 12px 20px 20px;
+    background: var(--ks3-ground); border-top: 2px solid var(--ks3-ink);
+  }
+  .td-composer-inner {
+    max-width: 560px; margin: 0 auto; display: flex; gap: 8px; padding: 8px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-card);
+  }
+  .td-composer input {
+    flex: 1; min-width: 0; min-height: 44px; padding: 8px 12px;
+    border: 0; background: none; font: inherit; font-size: 18px;
+    color: var(--ks3-ink); outline: none;
+  }
+  .td-composer input::placeholder { color: var(--ks3-ink-ghost); }
+  .td-send {
+    display: grid; place-items: center; width: 44px; height: 44px;
+    border: 2px solid var(--ks3-ink); border-radius: 12px;
+    background: var(--ks3-ink); color: var(--ks3-on-dark); cursor: pointer;
+  }
+  .td-send[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+
+  /* A failure is a sentence a nine-year-old can read, in her panel. */
+  .td-oops {
+    margin-top: 18px; padding: 20px 22px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-alert-tint); font-size: 17px;
+  }
+  .td-oops p { margin: 0; }
+  .td-oops p + p { margin-top: 6px; color: var(--ks3-ink-body); font-size: 16px; }
+  </style>
 </head>
 <body>
 
-<div id="c-nav"></div>
+<div class="rd td-root" data-mode="ks3" id="c-main">
 
-<div class="container" id="c-main">
-  <div class="page-header"><h1 id="head">Today</h1></div>
-  <div class="page-sub" id="sub"></div>
+  <header class="td-head">
+    <span class="td-brandmark" id="td-brandmark"></span>
+    <span class="td-word" id="td-word">MrBadmus</span>
+    <button class="td-back" id="td-back" type="button" aria-label="Back" hidden>
+      <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <span class="td-head-title" id="td-head-title" hidden></span>
+    <span class="td-spacer"></span>
+    <button class="td-msg-btn" id="td-msg-btn" type="button" aria-label="Messages">
+      <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
+      <span class="td-msg-count" id="td-msg-count" hidden></span>
+    </button>
+  </header>
 
-  <div id="locked"></div>
-  <div class="c-msg" id="msg"></div>
+  <main class="td-main" id="td-today">
+    <p class="td-date" id="td-date"></p>
+    <h1 class="td-greet" id="td-greet">Hello.</h1>
 
-  <div class="card" id="notifications-card" style="display:none;">
-    <h2>New</h2>
-    <div id="notifications"></div>
-  </div>
-
-  <div class="card">
-    <h2>Your work today</h2>
-    <div id="items"><p class="empty">Loading…</p></div>
-  </div>
-
-  <div class="card" id="later-card" style="display:none;">
-    <h2>Later this week</h2>
-    <div id="later"></div>
-  </div>
-
-  <div class="card" id="cards-card" style="display:none;">
-    <h2>Flashcards to go over</h2>
-    <div id="flashcards"></div>
-  </div>
-
-  <div class="card">
-    <h2 id="chat-head">Messages</h2>
-    <div class="c-chat" id="chat"><p class="empty">Loading…</p></div>
-    <div class="c-send">
-      <textarea id="chat-text" maxlength="1000" placeholder="Write a message…" data-write></textarea>
-      <button class="btn" id="chat-send" type="button" data-write>Send</button>
+    <div class="td-stats">
+      <div class="td-stat">
+        <span class="td-stat-chip td-stat-streak" id="td-streak">0</span>
+        <span class="td-stat-text"><strong id="td-streak-label">day streak</strong><br>
+          <span id="td-streak-note">keep it going this week</span></span>
+      </div>
+      <div class="td-stat">
+        <span class="td-stat-chip td-stat-best" id="td-best">—</span>
+        <span class="td-stat-text"><strong>personal best</strong><br>
+          <span id="td-best-note"></span></span>
+      </div>
     </div>
-    <div class="c-count" id="chat-count">0 / 1000</div>
-  </div>
+
+    <div id="td-flags"></div>
+
+    <h2 class="td-h2">Today</h2>
+    <div id="td-nothing"></div>
+    <div class="td-items" id="td-items"></div>
+
+    <div id="td-later-block"></div>
+
+    <div class="td-quick">
+      <a id="td-quick-exam" href="/consumer/exam.html">
+        <strong>Exam questions</strong><span>Write one, get it marked</span>
+      </a>
+      <a id="td-quick-check" href="/consumer/unit-check.html">
+        <strong>Unit check</strong><span id="td-check-note">None due</span>
+      </a>
+    </div>
+  </main>
+
+  <main class="td-chat-main" id="td-chat" hidden>
+    <div id="td-chat-empty"></div>
+    <div class="td-thread" id="td-thread"></div>
+    <div class="td-composer">
+      <div class="td-composer-inner">
+        <input id="td-draft" type="text" maxlength="1000" placeholder="Write a message" data-write/>
+        <button class="td-send" id="td-send" type="button" aria-label="Send" data-write>
+          <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
 </div>
 
 <script src="/shared/config.js?v=d1fecb43"></script>
@@ -57,147 +363,272 @@
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/today.html — the child's whole product, on one screen.
-   MRB-310/311, Night 2. SCAFFOLD.
+   MRB-317 Night 3: Design's `Child Today.dc.html` (both of her screens,
+   Today and Chat) compiled onto the Night 2 plumbing.
 
    ── ONE READ, AND IT IS THE READ THAT DECIDES EVERYTHING ───────────────
    `GET /api/consumer/child/today` returns the items, the later list, the
-   streak, the flashcards, the notifications, the messages AND the access
+   streak, the personal best, the messages, the unread count AND the access
    state. The whole page is that object. Nothing here computes a streak,
    works out whose turn it is, or decides which day an item belongs to —
    the backend already knows, and two implementations of "is this today"
    would disagree at midnight, which is exactly when a child is looking.
 
    ── EVERY ITEM SAYS WHO SET IT ─────────────────────────────────────────
-   `by` is 'mb' or 'parent', and `byName` is the parent's actual name. A
-   child seeing "Mum said do this one" is the entire point of the parent
-   controls; an unlabelled list is just homework from a computer.
+   ⚠️ THE FALLBACK CHAIN IS NOT DECORATION. `by` is 'mb' or 'parent'; when
+   it is 'parent' the label needs a NAME. On a real account `byName` carries
+   the parent's first name. On an account where nobody filled one in — every
+   test fixture, and a real parent who signed up with Google and skipped the
+   field — it is null, and the chain falls to the thread partner's name and
+   only then to Design's warm generic. It NEVER falls back to a username or
+   an email: those are the two strings a child should not be reading back to
+   themselves, and one of them is their parent's login.
 
-   ── THE DONE BUTTON IS THE ONLY THING THAT CAN BE PRESSED WHEN LOCKED ──
-   …and it cannot. `requireWritable` refuses it with a 423, so the button
-   carries `data-write` and greys out with everything else, and the banner
-   above says why in words a child can read. A ticked box that silently
-   fails is worse than a greyed one that explains itself.
+   ── DESIGN DID NOT DRAW A DONE CONTROL, AND THE PRODUCT NEEDS ONE ──────
+   Her item is a single `<a>` covering the whole row, and the tick in the
+   left icon is a STATE, not a button. Ticking is how a streak happens, so
+   a control was added — on a second line inside her card rather than
+   squeezed between the tag chip and the edge, because at 390px the chip
+   ("Set by Funmi") and a button cannot both sit on that line without the
+   title collapsing to five words a line. Her first line is unchanged.
 
-   ── THIS PAGE ASSUMES A CHILD SESSION AND NOTHING ELSE ─────────────────
-   It boots with `requireSession`, so a signed-out child is bounced. It does
-   NOT check that the session is a child's — the backend's `requireChild`
-   does that, and a parent who opens this URL gets a readable refusal rather
-   than a page pretending to be theirs.
+   ── WHAT IS LOCKED IS LOCKED, AND IT IS SAID IN HER WORDS ──────────────
+   `access !== 'full'` disables every `[data-write]` control and shows her
+   'Nothing new right now' panel. It does NOT show `guard()`'s sentence:
+   that copy names subscriptions and grown-ups sorting things out, which is
+   meta-text about the platform's commercial state and belongs on the
+   parent's screen, not a child's. A child is told what they can do.
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   var C = window.MrBadmusConsumer;
 
+  var DAY_FULL = {
+    Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday',
+    Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday'
+  };
+
   C.boot({ requireSession: true, run: function (ctx) {
-    document.getElementById('c-nav').innerHTML = C.navHtml(
-      '<a href="' + C.escapeHtml(C.href('/consumer/exam.html')) + '">Exam questions</a>' +
-      '<a href="#" id="signout">Sign out</a>'
-    );
-    document.getElementById('signout').addEventListener('click', function (e) {
-      e.preventDefault();
-      ctx.sb.auth.signOut().then(function () { C.go('/consumer/child-login.html'); });
-    });
+    var el = function (id) { return document.getElementById(id); };
 
-    var msgEl   = document.getElementById('msg');
-    var chatEl  = document.getElementById('chat');
-    var textEl  = document.getElementById('chat-text');
-    var countEl = document.getElementById('chat-count');
+    el('td-brandmark').innerHTML = C.BRANDMARK;
 
-    var parent = null;
+    var screen   = 'today';
+    var data     = null;
+    var parent   = null;
     var writable = false;
     var readMarked = false;
 
-    function syncCount() {
-      var n = textEl.value.length;
-      countEl.textContent = n + ' / 1000';
-      countEl.className = 'c-count' + (n >= 1000 ? ' over' : '');
-    }
-    textEl.addEventListener('input', syncCount);
-    syncCount();
+    var draftEl = el('td-draft');
+    var sendEl  = el('td-send');
 
+    /* ── screens ───────────────────────────────────────────────────────
+       Design keeps Today and Chat in one file and swaps on `screen`, and
+       so does this: the chat thread is already in the payload, so a second
+       page would be a second round trip for data that has arrived. */
+    function show(which) {
+      screen = which;
+      var isToday = which === 'today';
+      el('td-today').hidden = !isToday;
+      el('td-chat').hidden = isToday;
+      el('td-brandmark').hidden = !isToday;
+      el('td-word').hidden = !isToday;
+      el('td-back').hidden = isToday;
+      el('td-head-title').hidden = isToday;
+      el('td-msg-btn').style.visibility = isToday ? 'visible' : 'hidden';
+      if (!isToday) { markRead(); draftEl.focus(); }
+      window.scrollTo(0, 0);
+    }
+
+    el('td-msg-btn').addEventListener('click', function () { show('chat'); });
+    el('td-back').addEventListener('click', function () { show('today'); });
+
+    function markRead() {
+      if (readMarked || !parent || !parent.id) { return; }
+      readMarked = true;                        // once per visit to the thread
+      C.api('/api/consumer/chat/read', {
+        method: 'POST', token: ctx.token, body: { with: parent.id }
+      }).then(function () {
+        /* The badge is the only thing that changes, and it changes now
+           rather than on the next full read: the child has just looked at
+           the messages, so a badge still showing "1" is wrong the moment
+           they see it. */
+        el('td-msg-count').hidden = true;
+      }).catch(function (e) { console.error('[today/chat-read]', e); });
+    }
+
+    /* ── render ────────────────────────────────────────────────────────── */
     function render(d) {
-      d = d || {};
-      var kid = d.child || {};
-      parent = d.parent || null;
+      data = d || {};
+      parent = data.parent || null;
 
-      document.getElementById('head').textContent =
-        kid.name ? ('Hello, ' + kid.name) : 'Today';
-
-      var bits = [];
-      if (kid.streak != null) {
-        bits.push(kid.streak + (kid.streak === 1 ? ' day in a row' : ' days in a row'));
-      }
-      if (kid.best) {
-        bits.push('Best unit check ' + kid.best + (kid.bestUnit ? (' — ' + kid.bestUnit) : ''));
-      }
-      document.getElementById('sub').textContent = bits.join('  ·  ');
-
-      var g = C.lockedBanner(document.getElementById('locked'), d.access, 'child');
+      var kid = data.child || {};
+      var g = C.guard(data.access, 'child');
       writable = g.writable;
+
+      /* Design's date label, her format exactly. Local time on purpose —
+         a child in Britain looking at a page that says yesterday because
+         a server is on UTC is a bug they cannot diagnose. */
+      el('td-date').textContent = new Date().toLocaleDateString('en-GB', {
+        weekday: 'long', day: 'numeric', month: 'long'
+      });
+
+      var hour = new Date().getHours();
+      var partOfDay = hour < 12 ? 'Morning' : (hour < 18 ? 'Afternoon' : 'Evening');
+      el('td-greet').textContent = kid.name
+        ? (partOfDay + ', ' + kid.name + '.')
+        : (partOfDay + '.');
+
+      renderStats(kid);
+      renderFlags();
+      renderItems();
+      renderLater();
+      renderQuick();
+      renderChat();
+
       C.applyWritable(document, writable);
-
-      renderNotifications(d.notifications || []);
-      renderItems(d.items || []);
-      renderLater(d.later || []);
-      renderCards(d.flashcards || []);
-      renderChat(d.messages || []);
     }
 
-    function renderNotifications(list) {
-      var card = document.getElementById('notifications-card');
-      if (!list.length) { card.style.display = 'none'; return; }
-      card.style.display = 'block';
-      document.getElementById('notifications').innerHTML = list.map(function (n) {
-        return '<div class="c-item"><div class="c-item-main">' +
-          '<div class="c-item-title">' + C.escapeHtml(n.title || 'Something new') + '</div>' +
-          '<div class="c-item-sub">' + C.escapeHtml(n.body || '') +
-          (n.created_at ? (' · ' + C.escapeHtml(C.fmtDate(n.created_at))) : '') +
-          '</div></div></div>';
-      }).join('');
-    }
+    function renderStats(kid) {
+      var streak = kid.streak == null ? 0 : Number(kid.streak);
+      el('td-streak').textContent = String(streak);
+      /* ⊕ DEVIATION FROM DESIGN, and it is a correction rather than a
+         preference. Her label reads "week streak"; the number the backend
+         computes is consecutive LONDON DAYS with at least one item done
+         (API-CONTRACT §6). Printing a day count under the word "week" tells
+         a child who worked three days running that they have a three-WEEK
+         streak, which is a lie the product would be telling on its busiest
+         screen. The note underneath is hers, unchanged. */
+      el('td-streak-label').textContent = streak === 1 ? 'day streak' : 'day streak';
+      el('td-streak-note').textContent = 'keep it going this week';
 
-    function renderItems(items) {
-      var host = document.getElementById('items');
-      if (!items.length) {
-        host.innerHTML = '<p class="empty">Nothing set for today. If you want to get ' +
-          'ahead, the exam questions are always there.</p>';
-        return;
+      /* `best` and `bestUnit` are null until a first unit check lands.
+         Design drew no null state for either, so this is written in her
+         voice: the chip keeps its shape and says nothing it cannot back up. */
+      if (kid.best) {
+        el('td-best').textContent = kid.best;
+        el('td-best-note').textContent = kid.bestUnit || 'unit check';
+      } else {
+        el('td-best').textContent = '—';
+        el('td-best-note').textContent = 'no unit check yet';
       }
-      host.innerHTML = items.map(function (it) {
-        /* The label. `byName` when a parent set it, "Mr Badmus" otherwise —
-           and never a bare "parent", which is not what anyone is called.
+    }
 
-           ⚠️ THE FALLBACK CHAIN IS NOT DECORATION. On a real account the
-           parent has a first name and `byName` carries it. On an account
-           where nobody filled one in — every test fixture, and a real
-           parent who signed up with Google and skipped the field — it is
-           empty, and the chain falls to the thread partner's name from
-           /chat/threads (which the backend already resolves) and only then
-           to a warm generic. It NEVER falls back to a username or an
-           email: those are the two strings a child should not be reading
-           back to themselves, and one of them is their parent's login. */
-        var who = (it.by === 'parent')
-          ? ('Set by ' + (it.byName || (parent && parent.name) || 'your grown-up'))
-          : 'From Mr Badmus';
-        var sub = [who, it.mins != null ? (it.mins + ' min') : null, it.kind || null]
-          .filter(Boolean).map(C.escapeHtml).join(' · ');
+    /* Design's dark card, drawn once for "{parent} wrote". It is reused
+       here for the in-app flags too — a mark from Mr Badmus landing is the
+       other thing that arrives while a child is away, and her exam screen
+       promises it "will show up here, and on your Today screen". Reusing
+       the component she drew for arrivals beats inventing a second one. */
+    function renderFlags() {
+      var host = el('td-flags');
+      host.innerHTML = '';
 
-        var open = it.href
-          ? '<a class="btn btn-small" href="' + C.escapeHtml(it.href) + '">Open</a>'
-          : '';
-        var done = it.done
-          ? '<span class="tag ok">Done</span>'
-          : '<button class="btn btn-small" type="button" data-write data-done="' +
-            C.escapeHtml(it.id) + '">Done</button>';
+      var unread = Number(data.unread || 0);
+      var parentName = (parent && parent.name) || 'your grown-up';
+      var initial = (parent && parent.initial) ||
+                    (parentName ? parentName.charAt(0).toUpperCase() : '?');
 
-        return '<div class="c-item' + (it.done ? ' done' : '') + '">' +
-          '<div class="c-item-main">' +
-            '<div class="c-item-title">' + C.escapeHtml(it.title || 'Work') + '</div>' +
-            '<div class="c-item-sub">' + (it.sub ? (C.escapeHtml(it.sub) + ' · ') : '') + sub +
-            '</div>' +
-          '</div>' +
-          '<div class="c-item-acts">' + open + done + '</div>' +
-        '</div>';
-      }).join('');
+      el('td-msg-count').hidden = !(unread > 0);
+      if (unread > 0) { el('td-msg-count').textContent = String(unread); }
+
+      if (unread > 0) {
+        var last = null;
+        (data.messages || []).forEach(function (m) {
+          if (m.who === 'them' || m.mine === false) { last = m; }
+        });
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'td-dark-card';
+        b.innerHTML =
+          '<span class="td-dark-avatar">' + C.escapeHtml(initial) + '</span>' +
+          '<span class="td-dark-body">' +
+            '<span class="td-dark-eyebrow">' + C.escapeHtml(parentName) + ' wrote</span>' +
+            '<span class="td-dark-line">' + C.escapeHtml(last ? (last.text || '') : '') + '</span>' +
+          '</span>';
+        b.addEventListener('click', function () { show('chat'); });
+        host.appendChild(b);
+      }
+
+      (data.notifications || []).forEach(function (n) {
+        var card = document.createElement(n.ref && n.ref.href ? 'a' : 'div');
+        card.className = 'td-dark-card';
+        if (n.ref && n.ref.href) { card.href = n.ref.href; }
+        card.innerHTML =
+          '<span class="td-dark-avatar">' + C.BRANDMARK + '</span>' +
+          '<span class="td-dark-body">' +
+            '<span class="td-dark-eyebrow">' + C.escapeHtml(n.title || 'Something new') + '</span>' +
+            '<span class="td-dark-line">' + C.escapeHtml(n.body || '') + '</span>' +
+          '</span>';
+        host.appendChild(card);
+      });
+    }
+
+    function itemHtml(it) {
+      /* The label. `byName` when a parent set it, "From Mr Badmus"
+         otherwise — never a bare "parent", which is not what anyone is
+         called. See the fallback-chain note in the header. */
+      var isParent = it.by === 'parent';
+      var who = isParent
+        ? ('Set by ' + (it.byName || (parent && parent.name) || 'your grown-up'))
+        : 'From Mr Badmus';
+
+      var icon = it.done
+        ? '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+        : '<span class="td-item-mins">' + C.escapeHtml(it.mins == null ? '' : it.mins) + '</span>';
+
+      var body =
+        '<span class="td-item-icon">' + icon + '</span>' +
+        '<span class="td-item-body">' +
+          '<span class="td-item-title">' + C.escapeHtml(it.title || 'Work') + '</span>' +
+          '<span class="td-item-sub">' + C.escapeHtml(it.sub || '') + '</span>' +
+        '</span>' +
+        '<span class="td-tag' + (isParent ? ' is-parent' : '') + '">' +
+          C.escapeHtml(who) + '</span>';
+
+      /* An item with no href is not a link. A dead <a href="#"> that scrolls
+         to the top is worse than a row that simply does not move. */
+      var top = it.href
+        ? '<a class="td-item-top" href="' + C.escapeHtml(C.href(it.href)) + '">' + body + '</a>'
+        : '<div class="td-item-top">' + body + '</div>';
+
+      var done = it.done ? '' :
+        '<button class="td-done-btn" type="button" data-write data-done="' +
+        C.escapeHtml(it.id) + '">' +
+        '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M5 12.5l4.5 4.5L19 7"/></svg>Mark as done</button>';
+
+      return '<div class="td-item' + (it.done ? ' is-done' : '') + '">' + top + done + '</div>';
+    }
+
+    function renderItems() {
+      var items = data.items || [];
+      var later = data.later || [];
+      var host  = el('td-items');
+      var nothing = el('td-nothing');
+
+      /* Design's two empty states, verbatim, and the rule that picks
+         between them: `no-new-work` is an access state, `nothing-today` is
+         an empty day. On a locked account her copy is deliberately about
+         what IS still there rather than about the account, so the item list
+         below stays rendered — that is what "your finished work is still
+         here" means. */
+      if (!writable) {
+        nothing.innerHTML =
+          '<div class="td-nothing"><h3>Nothing new right now</h3>' +
+          '<p>Your finished work and marked answers are still here. ' +
+          'Exam questions are open below.</p></div>';
+      } else if (!items.length) {
+        var nextDay = later.length ? (DAY_FULL[later[0].day] || later[0].day) : null;
+        nothing.innerHTML =
+          '<div class="td-nothing"><h3>Nothing set for today</h3><p>' +
+          (nextDay
+            ? ('Next up is ' + C.escapeHtml(nextDay) + '. Fancy an exam question anyway?')
+            : 'Nothing more this week. Fancy an exam question anyway?') +
+          '</p></div>';
+      } else {
+        nothing.innerHTML = '';
+      }
+
+      host.innerHTML = items.map(itemHtml).join('');
       C.applyWritable(host, writable);
 
       host.onclick = function (e) {
@@ -207,120 +638,150 @@
         C.setBusy(btn, true, 'Saving…');
         C.api('/api/consumer/child/work/' + encodeURIComponent(id) + '/done',
               { method: 'POST', token: ctx.token })
-          .then(function (r) {
-            C.setMsg(msgEl, (r && r.streak != null)
-              ? ('Nice one — that’s ' + r.streak + (r.streak === 1 ? ' day' : ' days') + ' in a row.')
-              : 'Nice one.', 'ok');
-            return load();
-          })
-          .catch(function (err) { C.setBusy(btn, false); C.setMsg(msgEl, err.message, 'error'); });
+          .then(function () { return load(); })
+          .catch(function (err) {
+            C.setBusy(btn, false);
+            oops(err.message, 'Try again in a moment.');
+          });
       };
     }
 
-    function renderLater(list) {
-      var card = document.getElementById('later-card');
-      if (!list.length) { card.style.display = 'none'; return; }
-      card.style.display = 'block';
-      document.getElementById('later').innerHTML = list.map(function (l) {
-        return '<div class="c-item"><div class="c-item-main">' +
-          '<div class="c-item-title">' + C.escapeHtml(l.title || 'Work') + '</div>' +
-          '<div class="c-item-sub">' +
-            [l.day || null, l.tag || null].filter(Boolean).map(C.escapeHtml).join(' · ') +
-          '</div></div></div>';
-      }).join('');
+    function renderLater() {
+      var later = data.later || [];
+      var host = el('td-later-block');
+      if (!later.length) { host.innerHTML = ''; return; }
+      host.innerHTML =
+        '<h2 class="td-h2-later">Later this week</h2>' +
+        '<ul class="td-later">' + later.map(function (l) {
+          return '<li>' +
+            '<span class="td-later-day">' + C.escapeHtml(l.day || '') + '</span>' +
+            '<span class="td-later-title">' + C.escapeHtml(l.title || 'Work') + '</span>' +
+            '<span class="td-later-tag">' + C.escapeHtml(l.tag || '') + '</span>' +
+          '</li>';
+        }).join('') + '</ul>';
     }
 
-    function renderCards(list) {
-      var card = document.getElementById('cards-card');
-      if (!list.length) { card.style.display = 'none'; return; }
-      card.style.display = 'block';
-      document.getElementById('flashcards').innerHTML = list.map(function (f) {
-        return '<div class="c-item"><div class="c-item-main">' +
-          '<div class="c-item-title">' + C.escapeHtml(f.title || f.lesson_slug || 'Flashcards') +
-          '</div></div></div>';
-      }).join('');
-    }
+    /* Design's two quick-action cards. The unit-check one carries the
+       week's unit when there is one — her note reads "Health and disease ·
+       Friday", so it is the unit NAME and the DAY, out of the week's own
+       unit-check item.
 
-    function renderChat(msgs) {
-      document.getElementById('chat-head').textContent =
-        parent && parent.name ? ('Messages with ' + parent.name) : 'Messages';
+       ⚠️ `later[]` carries no `kind` and no `href` (API-CONTRACT §6), only
+       a title, so a unit check later in the week is recognised by its
+       generated title prefix. `items[]` does carry `kind`, and is tried
+       first. When neither has one, her "None due" stands and the card
+       still opens the picker-less page, which says which unit it needs. */
+    function renderQuick() {
+      el('td-quick-exam').href = C.href('/consumer/exam.html');
 
-      if (!msgs.length) {
-        chatEl.innerHTML = '<p class="empty">No messages yet. You can write to ' +
-          (parent && parent.name ? parent.name : 'your grown-up') + ' here.</p>';
-      } else {
-        chatEl.innerHTML = msgs.map(function (m) {
-          var mine = (m.who === 'you');
-          return '<div class="c-bubble' + (mine ? ' mine' : '') + '">' +
-            '<div class="c-bubble-text">' + C.escapeHtml(m.text || '') + '</div>' +
-            '<div class="c-bubble-meta">' +
-              (!mine && m.unread ? '<span class="c-unread-dot"></span>' : '') +
-              '<span>' + C.escapeHtml(m.time || C.fmtTime(m.created_at)) + '</span>' +
-              (mine ? '<button type="button" data-del="' + C.escapeHtml(m.id) +
-                      '">Delete</button>' : '') +
-            '</div>' +
-          '</div>';
-        }).join('');
-        chatEl.scrollTop = chatEl.scrollHeight;
+      var items = data.items || [];
+      var later = data.later || [];
+      var href = null, note = null;
+
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].kind === 'unit_check') {
+          href = items[i].href || null;
+          note = stripPrefix(items[i].title) + ' · today';
+          break;
+        }
+      }
+      if (!href) {
+        for (var j = 0; j < later.length; j++) {
+          var t = String(later[j].title || '');
+          if (t.indexOf('Unit check:') === 0) {
+            note = stripPrefix(t) + ' · ' + (DAY_FULL[later[j].day] || later[j].day);
+            break;
+          }
+        }
       }
 
-      if (!readMarked && parent && parent.id) {
-        readMarked = true;                       // once, on open
-        C.api('/api/consumer/chat/read', {
-          method: 'POST', token: ctx.token, body: { with: parent.id }
-        }).catch(function (e) { console.error('[today/chat-read]', e); });
+      el('td-quick-check').href = href ? C.href(href) : C.href('/consumer/unit-check.html');
+      el('td-check-note').textContent = note || 'None due';
+    }
+
+    function stripPrefix(title) {
+      var t = String(title || '');
+      var at = t.indexOf(':');
+      return at >= 0 ? t.slice(at + 1).trim() : t;
+    }
+
+    /* ── chat ──────────────────────────────────────────────────────────── */
+    function renderChat() {
+      var msgs = data.messages || [];
+      var parentName = (parent && parent.name) || 'your grown-up';
+      el('td-head-title').textContent = parentName;
+
+      el('td-chat-empty').innerHTML = msgs.length ? '' :
+        '<div class="td-chat-empty"><h3>Say hi to ' + C.escapeHtml(parentName) + '</h3>' +
+        '<p>Only the two of you can see this.</p></div>';
+
+      el('td-thread').innerHTML = msgs.map(function (m) {
+        var mine = (m.who === 'you') || m.mine === true;
+        return '<div class="td-bubble-wrap' + (mine ? ' mine' : '') + '">' +
+          '<div class="td-bubble">' + C.escapeHtml(m.text || '') + '</div>' +
+          '<span class="td-bubble-meta">' +
+            C.escapeHtml(mine ? 'You' : parentName) + ' · ' +
+            C.escapeHtml(m.time || C.fmtTime(m.created_at)) +
+          '</span>' +
+        '</div>';
+      }).join('');
+
+      if (screen === 'chat') {
+        window.scrollTo(0, document.body.scrollHeight);
       }
     }
 
-    chatEl.addEventListener('click', function (e) {
-      var btn = e.target.closest ? e.target.closest('button[data-del]') : null;
-      if (!btn) { return; }
-      if (!window.confirm('Delete this message?')) { return; }
-      C.api('/api/consumer/chat/messages/' + encodeURIComponent(btn.getAttribute('data-del')),
-            { method: 'DELETE', token: ctx.token })
-        .then(function () { return load(); })
-        .catch(function (err) { C.setMsg(msgEl, err.message, 'error'); });
-    });
-
-    document.getElementById('chat-send').addEventListener('click', function () {
-      var btn = this;
-      var text = textEl.value.trim();
+    function send() {
+      var text = draftEl.value.trim();
       if (!text) { return; }
       if (!parent || !parent.id) {
-        return C.setMsg(msgEl,
-          'There’s nobody to message on this account yet. Ask your grown-up.', 'error');
+        return oops('There’s nobody to message on this account yet.',
+                    'Ask your grown-up.');
       }
-      if (text.length > 1000) {
-        return C.setMsg(msgEl, 'That’s a bit long — 1000 letters is the most.', 'error');
-      }
-      C.setBusy(btn, true, 'Sending…');
+      draftEl.disabled = true; sendEl.disabled = true;
       C.api('/api/consumer/chat/send', {
         method: 'POST', token: ctx.token, body: { to: parent.id, text: text }
       }).then(function () {
-        C.setBusy(btn, false);
-        textEl.value = ''; syncCount();
+        draftEl.value = '';
         return load();
       }).catch(function (e) {
-        C.setBusy(btn, false);
-        C.setMsg(msgEl, e.message, 'error');
+        oops(e.message, 'Try again in a moment.');
+      }).then(function () {
+        draftEl.disabled = !writable; sendEl.disabled = !writable;
+        if (writable) { draftEl.focus(); }
       });
+    }
+    sendEl.addEventListener('click', send);
+    draftEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); send(); }
     });
 
-    /* Live. A message from the parent lands while the child is on the page —
-       and the whole page is one read, so the cheapest correct refresh is to
-       do that read again rather than splice a row in by hand. */
-    var rt = C.subscribeMessages(ctx.sb, function () { load(); });
+    /* Live. A message from the parent lands while the child is on the page
+       — and the whole page is one read, so the cheapest correct refresh is
+       to do that read again rather than splice a row in by hand. */
+    var rt = C.subscribeMessages(ctx.sb, function () {
+      /* A message arriving while the thread is OPEN is already read; do the
+         read receipt again so the parent's screen clears too. */
+      if (screen === 'chat') { readMarked = false; }
+      load().then(function () { if (screen === 'chat') { markRead(); } });
+    });
     window.addEventListener('beforeunload', function () { rt.unsubscribe(); });
+
+    function oops(message, hint) {
+      var host = screen === 'chat' ? el('td-chat-empty') : el('td-flags');
+      host.innerHTML = '<div class="td-oops"><p>' + C.escapeHtml(message) + '</p>' +
+        (hint ? '<p>' + C.escapeHtml(hint) + '</p>' : '') + '</div>';
+    }
 
     function load() {
       return C.api('/api/consumer/child/today', { token: ctx.token }).then(render);
     }
 
+    show('today');
     return load().catch(function (e) {
-      C.fail(document.getElementById('items'), e.message,
-             'Try again in a moment, or ask your grown-up to check the account.');
-      C.fail(chatEl, 'We couldn’t load your messages.');
-      document.getElementById('sub').textContent = '';
+      el('td-items').innerHTML =
+        '<div class="td-oops"><p>' + C.escapeHtml(e.message) + '</p>' +
+        '<p>Try again in a moment, or ask your grown-up to check the account.</p></div>';
     });
   }});
 })();

@@ -701,6 +701,77 @@ BEGIN
 END $$;
 
 -- =====================================================================
+-- SECTION F — NIGHT 3 (MRB-317/318): the deletion-request ledger is sealed
+-- like every other family table, and a group class is tellable apart.
+-- =====================================================================
+-- Night 3 added one table (account_deletion_requests) and one column
+-- (classes.consumer_kind). The table is read by the parent who asked and
+-- by nobody else; it is written by the service role only — a parent who
+-- could write their own execute_after could shorten their own grace.
+INSERT INTO public.account_deletion_requests (org_id, requested_by, execute_after)
+VALUES ((SELECT id FROM fam_a_t), 'a0000000-0000-0000-0000-000000000001', now() + interval '30 days');
+
+DO $$
+DECLARE
+  fam_a uuid; fam_b uuid; r_teacher uuid;
+  pa  uuid := 'a0000000-0000-0000-0000-000000000001';
+  pb  uuid := 'b0000000-0000-0000-0000-000000000001';
+  ca1 uuid := 'a0000000-0000-0000-0000-000000000011';
+  sc  uuid := 'c0000000-0000-0000-0000-000000000001';
+BEGIN
+  SELECT id INTO fam_a FROM fam_a_t;
+  SELECT id INTO fam_b FROM fam_b_t;
+  SELECT id INTO r_teacher FROM public.profiles
+    WHERE role='teacher' AND school_id=(SELECT id FROM public.schools WHERE code='RHS') LIMIT 1;
+
+  PERFORM pg_temp.login_as(pa);
+  PERFORM pg_temp.assert_count('F: PA sees own family''s deletion request', 1,
+    (SELECT count(*)::int FROM public.account_deletion_requests));
+  BEGIN
+    UPDATE public.account_deletion_requests SET execute_after = now() WHERE org_id = fam_a;
+    PERFORM pg_temp.assert_count('F: PA cannot shorten own grace (service role writes only)', 1,
+      (SELECT count(*)::int FROM public.account_deletion_requests WHERE org_id = fam_a AND execute_after > now() + interval '29 days'));
+  EXCEPTION WHEN OTHERS THEN
+    PERFORM pg_temp.assert_count('F: PA cannot shorten own grace (service role writes only)', 1, 1);
+  END;
+  BEGIN
+    INSERT INTO public.account_deletion_requests (org_id, requested_by, execute_after) VALUES (fam_b, pa, now());
+    PERFORM pg_temp.assert_count('F: PA cannot file a request against family B', 1, 0);
+  EXCEPTION WHEN OTHERS THEN
+    PERFORM pg_temp.assert_count('F: PA cannot file a request against family B', 1, 1);
+  END;
+
+  PERFORM pg_temp.login_as(ca1);
+  PERFORM pg_temp.assert_count('F: child A1 sees the family''s request (same org, read-only)', 1,
+    (SELECT count(*)::int FROM public.account_deletion_requests));
+  PERFORM pg_temp.login_as(pb);
+  PERFORM pg_temp.assert_count('F: PB sees 0 of family A''s deletion request', 0,
+    (SELECT count(*)::int FROM public.account_deletion_requests));
+  PERFORM pg_temp.login_as(sc);
+  PERFORM pg_temp.assert_count('F: council staff sees 0 family deletion requests', 0,
+    (SELECT count(*)::int FROM public.account_deletion_requests));
+  PERFORM pg_temp.login_as(r_teacher);
+  PERFORM pg_temp.assert_count('F: Rainford teacher sees 0 deletion requests', 0,
+    (SELECT count(*)::int FROM public.account_deletion_requests));
+  PERFORM pg_temp.logout();
+  PERFORM pg_temp.assert_count('F: anon sees 0 deletion requests', 0,
+    (SELECT count(*)::int FROM public.account_deletion_requests));
+
+  -- classes.consumer_kind: present, constrained, and NULL on every school class
+  PERFORM set_config('role','postgres',true);
+  PERFORM pg_temp.assert_count('F: classes.consumer_kind exists', 1,
+    (SELECT count(*)::int FROM information_schema.columns WHERE table_schema='public' AND table_name='classes' AND column_name='consumer_kind'));
+  PERFORM pg_temp.assert_count('F: every school-kind class has NULL consumer_kind', 0,
+    (SELECT count(*)::int FROM public.classes c JOIN public.schools s ON s.id=c.school_id WHERE s.kind='school' AND c.consumer_kind IS NOT NULL));
+  BEGIN
+    UPDATE public.classes SET consumer_kind = 'caseload' WHERE id = (SELECT id FROM public.classes LIMIT 1);
+    PERFORM pg_temp.assert_count('F: consumer_kind refuses a value outside child|group', 1, 0);
+  EXCEPTION WHEN check_violation THEN
+    PERFORM pg_temp.assert_count('F: consumer_kind refuses a value outside child|group', 1, 1);
+  END;
+END $$;
+
+-- =====================================================================
 -- RESULTS
 -- =====================================================================
 SELECT CASE WHEN passed THEN 'PASS' ELSE 'FAIL' END AS status,

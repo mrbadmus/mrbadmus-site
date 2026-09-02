@@ -163,3 +163,57 @@ than admits. `who` picks the parent or the child wording.
 That is a courtesy layer only: **the backend refuses the same writes with 423
 `org_locked`, and the RLS policies refuse them again underneath that.** Never
 treat the frontend guard as the enforcement.
+
+### Night 3 (MRB-317 / MRB-318) — what landed on this side
+
+Design's nineteen surfaces compiled onto the Night 1–2 plumbing. Three new
+page trees, each behind `CONSUMER_SIGNUP_ENABLED` exactly like `consumer/`, and
+each copied and round-tripped by `generate_site_v5.py` (they are on its
+safety-net list — a file added to one of them that the build has not seen is a
+loud abort, not a silent deletion):
+
+```
+parents/   the public front door — index, how-it-works, pricing, home-education, sign-in
+go/        the child's login at mrbadmus.com/go
+org/       organisation staff — sign-in, index (the dashboard)
+consumer/  Design's parent + child app (signup, verify, checkout-return, overview,
+           account, report, today, exam, unit-check); add-child, child and
+           child-login RETIRED
+teacher/admin.html   Design's Admin Accounts + Marking Queue inside the consumer card
+```
+
+**Design system:** nothing from her `_ds/` bundle is vendored. Her token files
+are byte-identical to `shared/tokens.css` and `shared/ks3.css` apart from font
+URL prefixes, so every consumer page loads those two plus `consumer/consumer.css`
+with `class="rd" data-mode="ks3"` on the root. The admin dark-room `--st-*`
+tokens are inlined in `teacher/admin.html`.
+
+**Three more migrations**, applied to TEST and recovered onto disk the same way:
+
+```
+supabase/migrations/20260902053725_mrb317_account_deletion_requests.sql
+supabase/migrations/20260902053731_mrb318_classes_consumer_kind.sql
+supabase/migrations/20260902070608_mrb317_parent_update_child_pathway.sql
+```
+
+**Gate 0011 grew a Section F** (the deletion ledger is sealed; `consumer_kind`
+is constrained and NULL on every school class). **Gate 0001's B11.1 was
+rewritten**: it asserted an EMPTY scheme of work, a Stage-1 fixture assumption
+that had silently become a test of the seed; it now asserts a student sees every
+row.
+
+**Two commander harnesses** for the built tree: `night3_selfreview.py`
+(flag-off zero-request sweep, Rainford regression, cold greps) and
+`night3_flagon_smoke.py` (real sessions over `mrbadmus_site/` with the flag
+turned on for that browser only, by a setter on `window.MrBadmusConfig`).
+Both serve on a port the backend's CORS allowlist knows (5500), or one named in
+`EXTRA_CORS_ORIGINS` on the backend instance.
+
+**The flag is off in all three places** (`shared/config.js` both blocks, the
+backend `.env`, the `platform_flags` row). Turning it on for a drive means the
+DB row AND `CONSUMER_SIGNUP_ENABLED=true` on the backend's command line — never
+edit `.env` — AND either the config block or the browser-side setter.
+
+The runbook is `docs/b2c/night3-prod-apply.md`; the executor contract for the
+backend additions is `docs/b2c/night3-api.md` (superseded where it disagrees
+with `API-CONTRACT.md` §v3.6).

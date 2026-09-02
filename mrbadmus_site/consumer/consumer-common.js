@@ -250,7 +250,32 @@
     function start() {
       if (!ENABLED) { return notFound(); }
 
-      loadSdk().then(function () {
+      /* ── MRB-317 Night 3 (PUBLIC lane) — `public` and `sessionOptional` ──
+         A public page ships `<meta name="robots" content="noindex">` in its
+         STATIC html, so a crawler that reads bytes without running JS sees
+         noindex — and so does everyone, for as long as the flag is off. The
+         tag is removed here, on the enabled path and nowhere else, which
+         makes "is the product launched" and "may Google index it" one
+         decision taken in one place instead of two that can disagree. */
+      if (opts.public) {
+        var robots = document.querySelector('meta[name="robots"]');
+        if (robots && robots.parentNode) { robots.parentNode.removeChild(robots); }
+      }
+
+      /* And a public page with no session need is the one page family on the
+         estate that must not fetch the Supabase SDK at all. It is auth
+         machinery for a marketing page: nobody on /parents/pricing.html is
+         signed in, nothing on it reads a session, and every byte a stranger
+         pulls is a byte we chose to make them pull.
+
+         `sessionOptional` is the middle case — the SDK loads and `run` is
+         handed `session|null` rather than being bounced to signup. It is what
+         a page needs when a signed-in parent should see "Your family" where a
+         stranger sees "Start free", and neither is an error. */
+      var needsSdk = !opts.public || opts.requireSession || opts.sessionOptional;
+
+      (needsSdk ? loadSdk() : Promise.resolve()).then(function () {
+        if (!needsSdk) { return { session: null }; }
         client = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
         if (opts.anonymous) { return { session: null }; }
         return client.auth.getSession().then(function (r) {
@@ -545,6 +570,62 @@
     return weekStart(d);
   }
 
+  /* ══ NIGHT 3 — PRICING, FROM THE BACKEND AND NOWHERE ELSE (MRB-317) ═══
+     Every price a parent reads — the public pricing calculator, the two
+     sentences on the home page, the plan step of signup — comes from
+     `GET /api/consumer/pricing`, which reads the same `stripe.TIER` object
+     that prices the seats on the invoice.
+
+     ⚠️ NO PAGE HOLDS A PRICE CONSTANT. Design's files each carry their own
+     `PRICE = { monthlyFirst: 9.99, … }`, and transcribing those would put
+     five copies of the price on the estate — one of which is eventually
+     edited alone, and the family is then quoted one number on the pricing
+     page and charged another by Stripe. That is the single worst class of
+     bug this product can ship, so the constant does not exist here at all:
+     a page that cannot reach the endpoint shows "…" and says so, which is
+     honest, rather than a stale number, which is not.
+
+     Memoised on SUCCESS only. A page that failed once must be able to ask
+     again — otherwise one blip at load freezes every price at "…" for the
+     rest of the session. */
+  var pricingPromise = null;
+  function pricing() {
+    if (pricingPromise) { return pricingPromise; }
+    pricingPromise = api('/api/consumer/pricing').then(function (d) {
+      if (!d || !d.tiers) {
+        throw new Error('We couldn’t load today’s prices just now.');
+      }
+      return d;
+    }, function (e) {
+      pricingPromise = null;
+      throw e;
+    });
+    return pricingPromise;
+  }
+
+  /* Graduated seat maths, in whole pence, done once. `tiers` accepts either
+     the whole `pricing()` payload or its `.tiers` — the two are confused
+     often enough that reading both is cheaper than the bug.
+
+     Integer pence throughout: `9.99 * 3` in floating point is 29.970000000000002,
+     and a total that renders as £29.97 on one page and £29.98 on another is
+     a support email. */
+  function price(tiers, interval, n) {
+    var key = interval === 'year' ? 'year' : 'month';
+    var t = (tiers && tiers[key]) || (tiers && tiers.tiers && tiers.tiers[key]) || null;
+    if (!t) { return null; }
+    var first = Number(t.first), rest = Number(t.rest);
+    if (!isFinite(first) || !isFinite(rest)) { return null; }
+    var count = Math.max(1, Math.round(Number(n) || 1));
+    return { first: first, rest: rest, total_pence: first + rest * (count - 1) };
+  }
+
+  /* The address a child types, in ONE place. It is short because a nine-year
+     old types it from a piece of paper, and it is here because it appears in
+     an email, on the signup hand-over card and on the sign-in chooser — three
+     places that must never disagree about where a child goes. */
+  var CHILD_LOGIN_URL = '/go/';
+
   window.MrBadmusConsumer = {
     ENABLED: ENABLED,
     BRANDMARK: BRANDMARK,
@@ -571,6 +652,11 @@
     section: section,
     subscribeMessages: subscribeMessages,
     weekStart: weekStart,
-    shiftWeek: shiftWeek
+    shiftWeek: shiftWeek,
+
+    // Night 3 (MRB-317) — see the pricing note above.
+    pricing: pricing,
+    price: price,
+    childLoginUrl: CHILD_LOGIN_URL
   };
 })();

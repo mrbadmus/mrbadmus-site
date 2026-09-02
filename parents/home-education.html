@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>Home education — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+<style>
+.pb-two   { display: grid; gap: 20px; }
+.pb-three { display: grid; gap: 14px; }
+@media (min-width: 900px) {
+  .pb-two   { grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+  .pb-three { grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+}
+</style>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<div id="pb-nav"></div>
+
+<main class="pb-wrap" style="max-width:1100px;margin:0 auto;padding:56px 20px 80px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">For home educators</p>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,5.5vw,64px);line-height:.95;letter-spacing:-.04em;max-width:15em;text-wrap:balance">Science covered, properly, by someone who has taught it.</h1>
+  <p style="margin:22px 0 0;font-size:20px;color:var(--ks3-ink-body);max-width:36em;text-wrap:pretty">The full Key Stage 3 and GCSE scheme of work, sequenced and set four or five days a week. Marked, tracked, and written up each term in a report you can hand to the local authority.</p>
+
+  <div class="pb-three" id="pillars" style="margin-top:44px"></div>
+
+  <section style="margin-top:64px">
+    <div class="pb-two">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">The scheme of work</p>
+        <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Start anywhere. Nothing before it is skipped.</h2>
+        <p style="margin:16px 0 0;font-size:18px;color:var(--ks3-ink-body);text-wrap:pretty">Pick the unit to start from. Everything earlier is treated as covered but keeps turning up in recall questions, so gaps show themselves. Year 9 bridges into GCSE content; Years 10 and 11 follow your board, route and tier.</p>
+      </div>
+      <div style="border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);overflow:hidden">
+        <div id="years" style="display:flex;gap:6px;padding:12px 14px;border-bottom:2px solid var(--ks3-ink);background:var(--ks3-band)"></div>
+        <ul id="units" style="margin:0;padding:0;list-style:none"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-top:64px;padding:clamp(28px,4vw,44px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+    <div class="pb-two">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">The termly report</p>
+        <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Evidence of learning, on one side of A4.</h2>
+        <p style="margin:16px 0 0;font-size:18px;color:var(--ks3-on-dark-body);text-wrap:pretty">Units covered mapped to the National Curriculum, lessons completed, every unit-check score, extended writing marks, strengths, next steps, and a signed note from a qualified teacher. Produced automatically at the end of each term. Prints cleanly, saves as PDF.</p>
+        <a id="report-link" href="#" style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--ks3-alert)">See a sample report <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <ul id="report-has" style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px"></ul>
+    </div>
+  </section>
+
+  <section style="margin-top:64px">
+    <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Asked by home-educating parents</h2>
+    <div id="faqs" style="margin-top:20px;display:flex;flex-direction:column;border-top:2px solid var(--ks3-ink)"></div>
+  </section>
+
+  <div style="margin-top:56px;text-align:center">
+    <a id="cta" href="#" style="display:inline-flex;align-items:center;min-height:58px;padding:0 30px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:19px;box-shadow:5px 5px 0 var(--ks3-accent)">Start a free week</a>
+    <p style="margin:14px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Choose "Home education" when you add your child. Same price as everyone else.</p>
+  </div>
+</main>
+
+<div id="pb-footer"></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/home-education.html — MRB-317 Night 3.
+   Design's `Public Home Education.dc.html`, transcribed.
+
+   ── WHY THE SCHEME OF WORK IS STATIC HERE, AND WHERE THE LIVE ONE IS ───
+   The unit browser is the one list on this page that looks like app data.
+   It is not, and it deliberately does not read one.
+
+   `GET /api/consumer/children/:id/picker` is the live scheme of work, and
+   it is per CHILD: it needs a child id, a guardian JWT, and a year group
+   read off that child's profile. Nobody on this page has any of the three
+   — this is a marketing page read by a stranger — and there is no public,
+   unauthenticated route that lists the curriculum. Inventing one would put
+   the whole scheme of work behind an anonymous endpoint for the sake of a
+   marketing list.
+
+   So Design's `UNITS` map is transcribed as CURRICULUM COPY. That is what
+   it is: the same fact as "Biology, chemistry and physics, sequenced across
+   the year", written out in units. It is a prospectus, not a plan — the
+   plan a child actually gets is picked from the live picker during signup,
+   two screens after this one.
+
+   ⚠️ If the scheme of work changes, this list is edited by hand. Flagged
+   in the run report so it is a known cost rather than a discovered one.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var esc = C.escapeHtml;
+
+  var PILLARS = [
+    { eyebrow: 'Coverage', title: 'The whole programme of study.', body: 'Biology, chemistry and physics, sequenced across the year the way a good department would. Four or five sessions a week.' },
+    { eyebrow: 'Rigour', title: 'Marked like the exam.', body: 'Written answers are marked point by point against the published schemes. Unit checks are timed. Mr Badmus marks two answers a month himself.' },
+    { eyebrow: 'Evidence', title: 'A report each term.', body: 'Mapped to the National Curriculum, signed by a qualified teacher, printable. Written for a local authority reader.' }
+  ];
+
+  // [half-term code, unit name, subject] — Design's list, verbatim.
+  var UNITS = {
+    7: [['A1', 'Cells and organisation', 'Biology'], ['A1', 'The particle model', 'Chemistry'], ['A2', 'Forces and motion', 'Physics'], ['A2', 'Atoms, elements and compounds', 'Chemistry'], ['S1', 'Reproduction', 'Biology'], ['S1', 'Energy stores', 'Physics'], ['S2', 'Acids and alkalis', 'Chemistry'], ['S2', 'Sound and light', 'Physics'], ['M1', 'Ecosystems', 'Biology'], ['M1', 'Space', 'Physics'], ['M2', 'Chemical reactions', 'Chemistry']],
+    8: [['A1', 'Breathing and digestion', 'Biology'], ['A1', 'The periodic table', 'Chemistry'], ['A2', 'Electricity and magnetism', 'Physics'], ['A2', 'Separating mixtures', 'Chemistry'], ['S1', 'Photosynthesis and respiration', 'Biology'], ['S1', 'Pressure and moments', 'Physics'], ['S2', 'Metals and reactivity', 'Chemistry'], ['S2', 'Waves', 'Physics'], ['M1', 'Adaptation and inheritance', 'Biology'], ['M1', 'The Earth', 'Chemistry'], ['M2', 'Heating and cooling', 'Physics']],
+    9: [['A1', 'Health and disease', 'Biology'], ['A1', 'Rates of reaction', 'Chemistry'], ['A2', 'Motion and forces', 'Physics'], ['A2', 'Energy changes in reactions', 'Chemistry'], ['S1', 'Genetics and evolution', 'Biology'], ['S1', 'Electric circuits', 'Physics'], ['S2', 'Materials and the Earth', 'Chemistry'], ['S2', 'Radiation', 'Physics'], ['M1', 'Ecology in depth', 'Biology'], ['M1', 'Space physics', 'Physics'], ['M2', 'Bridging to GCSE', 'All three']],
+    10: [['A1', 'Cell biology', 'Biology'], ['A1', 'Atomic structure', 'Chemistry'], ['A2', 'Energy', 'Physics'], ['A2', 'Bonding and structure', 'Chemistry'], ['S1', 'Organisation', 'Biology'], ['S1', 'Electricity', 'Physics'], ['S2', 'Quantitative chemistry', 'Chemistry'], ['S2', 'Particle model of matter', 'Physics'], ['M1', 'Infection and response', 'Biology'], ['M1', 'Chemical changes', 'Chemistry'], ['M2', 'Atomic structure (physics)', 'Physics']],
+    11: [['A1', 'Homeostasis and response', 'Biology'], ['A1', 'Rate and extent of change', 'Chemistry'], ['A2', 'Forces', 'Physics'], ['A2', 'Organic chemistry', 'Chemistry'], ['S1', 'Inheritance and evolution', 'Biology'], ['S1', 'Waves', 'Physics'], ['S2', 'Chemical analysis and the atmosphere', 'Chemistry'], ['S2', 'Magnetism', 'Physics'], ['M1', 'Ecology', 'Biology'], ['M1', 'Revision', 'All three']]
+  };
+
+  var REPORT_HAS = [
+    'Units covered, mapped to the National Curriculum',
+    'Sessions set and completed, time on task',
+    'Every unit-check score, charted across the term',
+    'Extended writing log with marks',
+    'Strengths and next steps',
+    'Signed note from a qualified science teacher'
+  ];
+
+  var FAQS = [
+    { q: 'Will the council accept the report?', a: 'Local authorities ask for evidence that a suitable, efficient education is taking place. The report shows curriculum coverage, completed work and assessed outcomes, signed by a qualified teacher. Families have used earlier versions in informal enquiries; it is designed for exactly that reader.' },
+    { q: 'Can I see the work before my child does it?', a: 'Yes. The dashboard lists next week’s sessions from Sunday evening and you can open any lesson yourself. You can also remove a session or add your own.' },
+    { q: 'What about practicals?', a: 'Lessons include the required practicals as demonstrations with data to analyse, plus a short list of ones that are safe to do at a kitchen table. Nothing depends on lab equipment.' },
+    { q: 'We don’t follow school years. Does it matter?', a: 'No. Pick the year whose content fits, start from whichever unit you like, and change year at any point. The report records what was actually covered.' }
+  ];
+
+  C.boot({ public: true, run: function () {
+    P.chrome('homeEd');
+    document.getElementById('cta').href = P.url('signUp');
+
+    /* The sample report is the REAL report page. A parent who is not signed
+       in will be asked to sign in when they open it, and that is correct:
+       a termly report is a named child's work, and a public "sample" would
+       have to be either a fake child or a real one. */
+    document.getElementById('report-link').href = C.href('/consumer/report.html');
+
+    document.getElementById('pillars').innerHTML = PILLARS.map(function (p) {
+      return '<div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);' +
+        'background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">' +
+        '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;' +
+        'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(p.eyebrow) + '</p>' +
+        '<h2 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;' +
+        'letter-spacing:-.025em;line-height:1.1">' + esc(p.title) + '</h2>' +
+        '<p style="margin:10px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(p.body) + '</p></div>';
+    }).join('');
+
+    document.getElementById('report-has').innerHTML = REPORT_HAS.map(function (r) {
+      return '<li style="display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:12px;' +
+        'background:var(--ks3-dark-panel);font-size:16px;color:var(--ks3-on-dark-body)">' +
+        P.mark(P.PATH.tick, 'flex:0 0 auto;color:var(--ks3-alert)') + esc(r) + '</li>';
+    }).join('');
+
+    P.faqList(document.getElementById('faqs'), FAQS);
+
+    // Design lands on Year 8 — mid-KS3, so both directions are visible.
+    var year = 8;
+    var elYears = document.getElementById('years');
+    var elUnits = document.getElementById('units');
+
+    function render() {
+      elYears.innerHTML = P.yearTabs([7, 8, 9, 10, 11], year);
+      elUnits.innerHTML = (UNITS[year] || []).map(function (row) {
+        var code = row[0], name = row[1], subject = row[2];
+        return '<li style="display:flex;align-items:center;gap:12px;padding:12px 16px;' +
+          'border-bottom:1px solid var(--ks3-rule);font-size:16px">' +
+          '<span style="flex:0 0 30px;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.06em;' +
+          'color:var(--ks3-ink-muted)">' + esc(code) + '</span>' +
+          '<span style="width:10px;height:10px;border-radius:99px;border:2px solid var(--ks3-ink);background:' +
+          (P.SUBJECT_DOT[subject] || 'var(--ks3-band)') + ';flex:0 0 auto"></span>' +
+          '<span style="flex:1">' + esc(name) + '</span>' +
+          '<span style="font-size:13px;color:var(--ks3-ink-muted)">' + esc(subject) + '</span></li>';
+      }).join('');
+    }
+
+    elYears.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-year]');
+      if (!b) { return; }
+      year = Number(b.getAttribute('data-year'));
+      render();
+    });
+
+    render();
+  }});
+})();
+</script>
+</body>
+</html>

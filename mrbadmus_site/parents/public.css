@@ -1,0 +1,111 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/public.css — the five public pages, MRB-317 Night 3.
+
+   Claude Design drew the public front door as five `.dc.html` files whose
+   design lives almost entirely in per-element inline `style=` attributes.
+   Those are transcribed onto the pages verbatim, because they ARE the
+   design. This file holds only the handful of rules she repeated in a
+   `<style>` block on every one of the four content pages, plus the two
+   overrides the shipped estate needs.
+
+   ── WHY THIS FILE EXISTS AT ALL, AND WHY IT IS SHORT ────────────────────
+   Four copies of "the nav links hide under 900px" is four chances to write
+   the fourth one at 960. The breakpoint is a shared fact about the design,
+   so it is written once. Everything that genuinely differs per page — each
+   page's own grid columns above 900 — stays in that page's own `<style>`,
+   where a reader looking at the page can see it.
+
+   ── THE TWO OVERRIDES, AND WHY THEY ARE NEEDED ──────────────────────────
+   These pages load `/consumer/consumer.css` before this file, for exactly
+   one reason: `body { display: none }`. That declaration is how the launch
+   flag fails closed (see the header of consumer-common.js) and a public
+   page must fail closed the same way every consumer page does.
+
+   Everything ELSE in consumer.css is Night 1 scaffold styling for a
+   dashboard — 84px of top padding for a fixed nav, a different font stack,
+   a different ground — and none of it belongs on Design's pages. So the
+   body is re-stated here.
+
+   ⚠️ On a CLASS, not on `body`. consumer.css re-states its padding inside
+   `@media (max-width: 560px)`, and an element selector inside a media query
+   beats a bare element selector outside one — so `body { padding: 0 }` here
+   would be correct at 900px and silently wrong at 390px, which is the width
+   the whole design was drawn at. `.pb-body` wins at every width without an
+   `!important` anywhere.
+
+   ⚠️ `display` is deliberately NOT set here. Only `boot()` reveals the page.
+
+   ── COLOURS ARE LITERALS HERE, ON PURPOSE ───────────────────────────────
+   The `--ks3-*` tokens are declared on `.rd[data-mode="ks3"]` in
+   shared/tokens.css, not on `:root`. `body` is OUTSIDE that element, so a
+   `var(--ks3-ground)` on the body would resolve to nothing and the page
+   would sit on a white gutter below the fold. Design wrote the literal
+   `#FBF3E6` in her own body rule for the same reason; it is kept.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.pb-body {
+  margin: 0;
+  padding: 0;
+  background: #FBF3E6;
+  min-height: 100vh;
+}
+
+/* Design's link colour, on every public page. */
+.pb-body a { color: #A93411; text-decoration: none; }
+.pb-body a:hover { color: #7F2408; }
+
+/* Form controls inherit the page's type rather than the platform's. */
+.pb-body input,
+.pb-body select,
+.pb-body textarea,
+.pb-body button { font: inherit; }
+.pb-body input::placeholder { color: #9A8F86; }
+
+/* ── the shared nav, and the one breakpoint it turns on ─────────────────
+   Below 900px the three section links collapse and only the brand, "Sign
+   in" and the "Start free" button remain — Design's rule, and the reason
+   the CTA is the thing that survives: a phone-width visitor who has read
+   enough to act must never have to find a menu first. */
+.pb-nav-links { display: none; }
+
+@media (min-width: 900px) {
+  .pb-nav-links { display: flex; }
+  .pb-wrap { padding-left: 48px !important; padding-right: 48px !important; }
+}
+
+/* The spinner Design uses on the Stripe hand-off. Declared here rather than
+   in the signup page's own block because the checkout-return page shows the
+   same one while it waits for the webhook. */
+@keyframes pb-spin { to { transform: rotate(360deg); } }
+
+/* ── the signup shell ───────────────────────────────────────────────────
+   Design's signup layout: phone-first, a thin header carrying the brand and
+   "Step 2 of 4"; at 960 the header is replaced by a sticky step rail down
+   the left, so a parent halfway through can see how much is left.
+
+   Shared between `consumer/signup.html` and `consumer/checkout-return.html`
+   because the return screen is the LAST step of the same flow — Design's
+   own `startStep: 'welcome'` — and it must not arrive wearing a different
+   shell than the four screens before it. Written once for the same reason
+   the nav is: two copies is one copy that gets edited.
+
+   ⚠️ #221E1B and #FFFCF5 are Design's literals, kept as literals. This
+   rule targets a wrapper that is INSIDE `.rd[data-mode="ks3"]`, so the
+   tokens would resolve — but she wrote hex here and the rail's cream is a
+   half-step off `--ks3-card`, which is the point of it. */
+.su-rail { display: none; }
+@media (min-width: 960px) {
+  .su-root { display: grid; grid-template-columns: 320px 1fr; }
+  .su-head { display: none !important; }
+  .su-rail {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    border-right: 2px solid #221E1B;
+    background: #FFFCF5;
+  }
+  .su-main { max-width: 640px !important; padding: 64px 56px 96px !important; margin: 0 !important; }
+}

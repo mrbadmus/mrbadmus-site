@@ -1,38 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#F7F1E5"/>
-  <title>Payment — MrBadmus</title>
-  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
-  <link rel="stylesheet" href="/consumer/consumer.css"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>You’re in — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
 </head>
-<body>
+<body class="pb-body">
 
-<div id="c-nav"></div>
+<div class="rd su-root" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased">
 
-<div class="container" id="c-main">
-  <div class="page-header"><h1 id="head">One moment…</h1></div>
-  <div class="page-sub" id="sub"></div>
-
-  <div class="card">
-    <div id="body"><p class="empty">Checking with our payment provider…</p></div>
-    <p style="margin-top:20px;">
-      <a class="btn" id="onward" href="#">Go to your family</a>
-      <a class="btn" id="account" href="#">Account &amp; billing</a>
-    </p>
+<aside class="su-rail" style="padding:28px 28px 32px">
+  <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
+  <ol id="rail-steps" style="margin:48px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px"></ol>
+  <div style="margin-top:auto;padding:18px 20px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:5px 5px 0 var(--ks3-accent)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Free for seven days</p>
+    <p style="margin:8px 0 0;font-size:16px;color:var(--ks3-on-dark-body)">Work is set every Sunday. Marked against the mark scheme. Cancel before the week is up and you pay nothing.</p>
   </div>
+</aside>
+
+<header class="su-head" style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+  <span id="head-brand" style="display:flex;align-items:center;gap:10px"></span>
+  <span style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ks3-ink-muted)">You’re in</span>
+</header>
+
+<main class="su-main" id="su-main" style="max-width:520px;margin:0 auto;padding:28px 20px 80px"></main>
 </div>
 
 <script src="/shared/config.js?v=d1fecb43"></script>
 <script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    consumer/checkout-return.html — where Stripe sends the parent back.
-   MRB-309, Night 2. SCAFFOLD.
+   MRB-317 Night 3. This is Design's `startStep: 'welcome'` screen, on the
+   URL Stripe actually returns to.
 
    ── WHY THIS PAGE POLLS INSTEAD OF JUST SAYING "THANK YOU" ─────────────
    Stripe redirects the browser the instant Checkout completes. The
@@ -42,124 +51,251 @@
    a while much longer — in which the parent has genuinely paid and the
    product still believes they have not.
 
-   A page that navigated straight to the overview would land them on
+   A page that navigated straight to the dashboard would land them on
    "Start a subscription", immediately after they started one. That is the
-   single worst sentence this product could show at that moment: it reads
-   as "your money went nowhere", and the rational response is to pay again.
+   single worst sentence this product could show at that moment: it reads as
+   "your money went nowhere", and the rational response is to pay again.
 
    So this page waits for OUR state to catch up with Stripe's, reading
    `GET /api/consumer/family` until `billing.state` is trialing or active.
 
-   ── AND WHY IT GIVES UP AFTER 20 SECONDS, WITHOUT LYING ────────────────
-   The timeout does not say "something went wrong", because nothing has:
-   the payment is Stripe's and Stripe took it. It says the confirmation is
-   still coming, and offers the way onward. A webhook that is thirty seconds
-   late is a slow evening, not a failed payment, and the page must not
-   convert one into the other in the parent's head.
+   ── AND THEN IT GENERATES THE FIRST WEEK, HERE, ON PURPOSE ─────────────
+   Design's return screen shows each child's first week, by day, with times.
+   The Sunday scheduler would produce that — next Sunday. A parent who has
+   just paid and is standing in front of the screen will not wait five days
+   to find out whether anything happens, so `POST /children/:id/generate` is
+   fired for THIS week, per child, before the screen is drawn.
 
-   ── ?state=cancel IS NOT AN ERROR EITHER ───────────────────────────────
+   `generate` is idempotent through the `work_generation_runs` ledger, so
+   a refresh does not double a child's week, and a child the Sunday cron has
+   already reached is left exactly as they are.
+
+   ── ?state=cancel IS NOT AN ERROR ──────────────────────────────────────
    A parent who pressed "back" on the Stripe page has done nothing wrong and
-   owes nobody an explanation. One sentence saying no money was taken, and
-   the door back in.
+   owes nobody an explanation. They go back to the plan step they came from,
+   which still says everything it said before — no new screen, no new copy,
+   nothing that reads as a telling-off.
    ═══════════════════════════════════════════════════════════════════════ */
 (function () {
   var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var esc = C.escapeHtml;
 
-  var POLL_MS  = 1500;
-  var GIVE_UP_MS = 20000;
+  var POLL_MS = 2000;
+  var GIVE_UP_MS = 90000;
   // The two states that mean "Stripe told us, and we wrote it down".
   var SETTLED = { trialing: true, active: true };
 
+  function $(id) { return document.getElementById(id); }
+
+  function chrome() {
+    var mark = P.brand(26) +
+      '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
+      'letter-spacing:-.02em">MrBadmus</span>';
+    $('rail-brand').innerHTML = mark;
+    $('head-brand').innerHTML = mark;
+
+    // Design's rail at `welcome`: every step behind you, none current.
+    $('rail-steps').innerHTML =
+      ['Your account', 'Your child', 'Anyone else?', 'Plan and card'].map(function (label) {
+        return '<li style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;' +
+          'background:transparent;border:2px solid transparent">' +
+          '<span style="display:grid;place-items:center;width:30px;height:30px;border-radius:9px;' +
+          'border:2px solid var(--ks3-ink);background:var(--ks3-ok);color:#fff;' +
+          'font-family:var(--ks3-font-display);font-weight:800;font-size:14px">' +
+          P.mark(P.PATH.tick, 'width:14px;height:14px') + '</span>' +
+          '<span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:16px;' +
+          'color:var(--ks3-ink)">' + esc(label) + '</span></span></li>';
+      }).join('');
+  }
+
+  function waiting(head, body) {
+    $('su-main').innerHTML =
+      '<div style="margin-top:40px;text-align:center">' +
+      '<div style="margin:0 auto;width:56px;height:56px;border-radius:99px;border:4px solid var(--ks3-rule);' +
+      'border-top-color:var(--ks3-accent);animation:pb-spin 1s linear infinite"></div>' +
+      '<h1 style="margin:24px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;' +
+      'line-height:1.05;letter-spacing:-.03em">' + esc(head) + '</h1>' +
+      '<p style="margin:12px 0 0;font-size:17px;color:var(--ks3-ink-body)">' + esc(body) + '</p></div>';
+  }
+
+  /* Design's "9 September". Same formatter the plan step used, so the date
+     the parent agreed to and the date they are shown are the same string. */
+  function trialEndLabel(iso) {
+    if (!iso) { return null; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return null; }
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+  }
+
   C.boot({ requireSession: true, run: function (ctx) {
-    document.getElementById('c-nav').innerHTML = C.navHtml(
-      '<a href="' + C.escapeHtml(C.href('/consumer/overview.html')) + '">Your family</a>'
-    );
-
-    var headEl = document.getElementById('head');
-    var subEl  = document.getElementById('sub');
-    var bodyEl = document.getElementById('body');
-    var onward = document.getElementById('onward');
-    var acct   = document.getElementById('account');
-
-    onward.href = C.href('/consumer/overview.html');
-    acct.href   = C.href('/consumer/account.html');
+    chrome();
 
     var state = new URLSearchParams(window.location.search).get('state') || 'success';
 
     if (state === 'cancel') {
-      document.title = 'Payment cancelled — MrBadmus';
-      headEl.textContent = 'No payment was taken';
-      subEl.textContent  = 'You stopped before the end, so nothing has been charged.';
-      bodyEl.innerHTML =
-        '<p>Everything you have set up is still here — your children, their ' +
-        'usernames, all of it. You can start the subscription whenever you ' +
-        'are ready, and nothing is lost in the meantime.</p>';
-      acct.textContent = 'Start a subscription';
-      return;
+      /* Straight back to the plan step. Nothing was charged, nothing was
+         lost, and there is no sentence worth interrupting them with — the
+         screen they left says everything it said before. */
+      return C.go('/consumer/signup.html', { step: 'plan' });
     }
 
-    document.title = 'Thank you — MrBadmus';
-    headEl.textContent = 'Thank you';
-    subEl.textContent  = 'We’re just confirming it with our payment provider.';
+    waiting('Taking the payment details', 'We’re just confirming it with Stripe.');
 
     var started = Date.now();
-    var timer = null;
-
-    function settled(billing) {
-      if (timer) { clearTimeout(timer); timer = null; }
-      var interval = billing.interval === 'year' ? 'yearly' :
-                     (billing.interval === 'month' ? 'monthly' : null);
-      headEl.textContent = billing.state === 'trialing' ? 'Your trial has started'
-                                                        : 'You’re all set';
-      subEl.textContent = '';
-      bodyEl.innerHTML =
-        '<p>' +
-          (billing.state === 'trialing'
-            ? ('Your free trial is running' +
-               (billing.trial_end ? (' and ends on ' + C.escapeHtml(C.fmtDate(billing.trial_end))) : '') +
-               '. Nothing is charged until then.')
-            : 'Your subscription is active.') +
-        '</p>' +
-        (interval ? '<p class="empty" style="margin-top:10px;">Billed ' + interval +
-                    (billing.quantity ? (', for ' + billing.quantity +
-                     (billing.quantity === 1 ? ' child' : ' children')) : '') + '.</p>' : '') +
-        '<p style="margin-top:12px;">Your children can sign in now with the ' +
-        'usernames you set up.</p>';
-    }
-
-    function stillWaiting() {
-      if (timer) { clearTimeout(timer); timer = null; }
-      headEl.textContent = 'Thank you — your payment went through';
-      subEl.textContent = '';
-      bodyEl.innerHTML =
-        '<p>Our side is still catching up with the payment provider, which ' +
-        'occasionally takes a minute. Nothing is wrong and you do not need ' +
-        'to pay again.</p>' +
-        '<p class="empty" style="margin-top:10px;">Open your family page in a ' +
-        'moment and it will be there. If it still isn’t after ten minutes, ' +
-        'email hello@mrbadmus.com and we’ll sort it out.</p>';
-    }
 
     function poll() {
       C.api('/api/consumer/family', { token: ctx.token }).then(function (d) {
         var billing = (d && d.billing) || {};
-        if (SETTLED[String(billing.state || '').toLowerCase()]) { return settled(billing); }
+        if (SETTLED[String(billing.state || '').toLowerCase()]) { return arrived(d); }
         if (Date.now() - started >= GIVE_UP_MS) { return stillWaiting(); }
-        timer = setTimeout(poll, POLL_MS);
+        setTimeout(poll, POLL_MS);
       }).catch(function (e) {
         /* The READ failed — which says nothing at all about the payment, so
            this must not be reported as a payment problem. Keep polling until
-           the deadline; the endpoint may simply not be up yet. */
+           the deadline. */
         console.error('[checkout-return]', e);
-        if (Date.now() - started >= GIVE_UP_MS) {
-          headEl.textContent = 'Thank you — your payment went through';
-          subEl.textContent = '';
-          return C.fail(bodyEl, e.message,
-            'Your payment is safe with our payment provider. Open your family ' +
-            'page in a moment, or email hello@mrbadmus.com.');
-        }
-        timer = setTimeout(poll, POLL_MS);
+        if (Date.now() - started >= GIVE_UP_MS) { return stillWaiting(e.message); }
+        setTimeout(poll, POLL_MS);
       });
+    }
+
+    function stillWaiting(why) {
+      $('su-main').innerHTML =
+        '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:36px;' +
+        'line-height:1;letter-spacing:-.035em">Your payment went through</h1>' +
+        '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">Our side is still catching up with Stripe, which occasionally takes a minute. Nothing is wrong and you do not need to pay again.</p>' +
+        (why ? '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' + esc(why) + '</p>' : '') +
+        '<p style="margin:10px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Open your family page in a moment and it will be there. If it still isn’t after ten minutes, email hello@mrbadmus.com and we’ll sort it out.</p>' +
+        dashboardBtn();
+    }
+
+    function dashboardBtn() {
+      return '<p style="margin:24px 0 0"><a href="' + esc(C.href('/consumer/overview.html')) +
+        '" style="display:flex;align-items:center;justify-content:center;min-height:54px;' +
+        'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
+        'color:var(--ks3-on-dark);font-weight:700;font-size:18px;text-decoration:none">' +
+        'Go to my dashboard</a></p>';
+    }
+
+    /* Stripe has been mirrored. Generate this week for every child, read it
+       back, and draw Design's screen. */
+    function arrived(fam) {
+      var children = (fam && fam.children) || [];
+      var billing = (fam && fam.billing) || {};
+      var week = C.weekStart();
+
+      waiting('Setting the first week', 'Mr Badmus is picking this week’s sessions.');
+
+      var work = {};
+      var chain = children.reduce(function (p, c) {
+        return p.then(function () {
+          return C.api('/api/consumer/children/' + c.id + '/generate', {
+            method: 'POST', token: ctx.token, body: { week_start: week }
+          }).catch(function (e) {
+            // A child whose week could not be generated still gets a card,
+            // with nothing in it and a sentence saying so. Losing the whole
+            // screen over one of them would be worse.
+            console.error('[checkout-return] generate', c.id, e);
+          }).then(function () {
+            return C.api('/api/consumer/children/' + c.id + '/work?week=' + encodeURIComponent(week),
+                         { token: ctx.token });
+          }).then(function (w) {
+            work[c.id] = (w && w.items) || [];
+          }, function (e) {
+            console.error('[checkout-return] work', c.id, e);
+            work[c.id] = null;
+          });
+        });
+      }, Promise.resolve());
+
+      chain.then(function () { draw(children, billing, work); });
+    }
+
+    function draw(children, billing, work) {
+      var trialEnd = trialEndLabel(billing.trial_end);
+      var one = children.length === 1;
+
+      var h = '';
+
+      /* Design's pill. It names the date, because "free trial started" is a
+         claim and "free until 9 September" is a fact the parent can diary.
+         With no trial_end from Stripe the date half is dropped rather than
+         guessed — see the omission note in the run report. */
+      h += '<div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;' +
+        'border:2px solid var(--ks3-ok);border-radius:var(--ks3-r-pill);background:var(--ks3-ok-tint);' +
+        'font-weight:700;font-size:14px;color:var(--ks3-ok-text)">' +
+        P.mark(P.PATH.tick) +
+        esc(trialEnd ? ('Card added · free until ' + trialEnd) : 'Card added') + '</div>';
+
+      h += '<h1 style="margin:16px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;' +
+        'line-height:1;letter-spacing:-.035em">' +
+        esc(one ? (children[0].first_name + '’s first week is ready') : 'Their first week is ready') +
+        '</h1>' +
+        '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">Work is set every Sunday evening for the week ahead. Nothing needs doing on your side tonight.</p>';
+
+      h += '<div style="margin-top:26px;display:flex;flex-direction:column;gap:18px">' +
+        children.map(function (c) {
+          var items = work[c.id];
+          var mode = c.mode === 'home_education' ? 'Home education' : 'Alongside school';
+          var body;
+          if (items === null) {
+            body = '<p style="margin:16px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' +
+              'We couldn’t read this week’s sessions just now. They’ll be on the dashboard in a moment.</p>';
+          } else if (!items.length) {
+            body = '<p style="margin:16px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' +
+              'This week’s sessions are still being set. They’ll appear on the dashboard shortly.</p>';
+          } else {
+            body = '<ul style="margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">' +
+              items.map(function (s) {
+                return '<li style="display:flex;gap:12px;align-items:baseline;padding:10px 0;' +
+                  'border-top:1px solid var(--ks3-rule)">' +
+                  '<span style="flex:0 0 42px;font-family:var(--ks3-font-mono);font-size:13px;' +
+                  'letter-spacing:.06em;text-transform:uppercase;color:var(--ks3-ink-muted)">' +
+                  esc(s.day || '') + '</span>' +
+                  '<span style="flex:1;font-size:16px">' + esc(s.title || '') + '</span>' +
+                  '<span style="font-family:var(--ks3-font-mono);font-size:13px;color:var(--ks3-ink-muted)">' +
+                  esc(s.mins ? (s.mins + ' min') : '') + '</span></li>';
+              }).join('') + '</ul>' +
+              '<p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Set by Mr Badmus. You can pause it or add your own from the dashboard.</p>';
+          }
+          return '<div style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);' +
+            'background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">' +
+            '<div style="display:flex;align-items:center;gap:12px">' +
+            '<span style="display:grid;place-items:center;width:40px;height:40px;border-radius:12px;' +
+            'background:var(--ks3-accent);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);' +
+            'font-weight:800;font-size:18px">' + esc((c.first_name || '?').charAt(0).toUpperCase()) + '</span>' +
+            '<span style="flex:1;min-width:0">' +
+            '<span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
+            'letter-spacing:-.02em">' + esc(c.first_name) + '’s first week</span>' +
+            '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' +
+            esc('Year ' + c.year_group + ' · ' + mode) + '</span></span></div>' +
+            body + '</div>';
+        }).join('') + '</div>';
+
+      /* The hand-over. The username, never the password — the password was
+         shown once, on the screen where the parent typed it, and this page
+         is one a child could be standing behind. */
+      h += '<div style="margin-top:26px;padding:20px 22px;border-radius:var(--ks3-r-dark);' +
+        'background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:6px 6px 0 var(--ks3-accent)">' +
+        '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;' +
+        'text-transform:uppercase;color:var(--ks3-alert)">Next: hand over the login</p>' +
+        '<p style="margin:8px 0 0;font-size:17px;color:var(--ks3-on-dark-body)">' +
+        esc(one ? (children[0].first_name + ' logs in with the username you chose. Show it to them when you’re both ready.')
+                : 'Each child logs in with the username you chose. Show them when you’re both ready.') + '</p>' +
+        '<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">' +
+        children.map(function (c) {
+          return '<div style="display:flex;justify-content:space-between;gap:12px;padding:10px 14px;' +
+            'border-radius:12px;background:var(--ks3-dark-panel);font-size:16px">' +
+            '<span style="color:var(--ks3-on-dark-muted)">' + esc(c.first_name) + '</span>' +
+            '<span style="font-family:var(--ks3-font-mono);font-weight:500">' + esc(c.username) + '</span></div>';
+        }).join('') + '</div>' +
+        '<p style="margin:12px 0 0;font-size:14px;color:var(--ks3-on-dark-muted)">They sign in at mrbadmus.com/go with the username and the password you set.</p>' +
+        '</div>';
+
+      h += dashboardBtn();
+
+      $('su-main').innerHTML = h;
     }
 
     poll();

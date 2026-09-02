@@ -461,13 +461,24 @@ $$;
 
 -- ─── B11. Scheme of work entries: globally readable ──────────────────
 
+-- The unfiltered total, read as postgres BEFORE becoming the student, so the
+-- comparison below is student-count against true-count and not a tautology.
+SELECT set_config('role', 'postgres', true);
+CREATE TEMP TABLE sow_total AS SELECT count(*)::int AS n FROM public.scheme_of_work_entries;
+GRANT SELECT ON sow_total TO anon, authenticated;  -- the assertion's argument is evaluated AS the student
+
 SELECT pg_temp.login_as('a0000006-0000-0000-0000-000000000006');  -- student
 
--- (No SoW entries seeded yet — Stage 4 populates them. So count is 0,
--- but the access *itself* should not error. Verify the SELECT runs cleanly.)
+-- (Written when no SoW entries were seeded — see the note inside the assertion.)
 SELECT pg_temp.assert_count(
-  'B11.1 Student can SELECT from sow_entries (read access works, table empty)',
-  0,
+  -- ⊕ 2 Sep 2026 (Night 3). This used to expect 0 and be labelled "table
+  -- empty": the SOW was empty when Stage 1 was written, and the assertion
+  -- silently became a test of the fixture rather than of the policy the
+  -- moment the scheme was seeded (1050 rows on TEST tonight). "Globally
+  -- readable" means a student sees EVERY row, so the expectation is the
+  -- unfiltered count read as postgres, whatever it happens to be.
+  'B11.1 Student can SELECT from sow_entries (globally readable: sees every row)',
+  (SELECT n FROM sow_total),
   (SELECT count(*)::int FROM public.scheme_of_work_entries)
 );
 
