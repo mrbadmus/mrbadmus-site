@@ -1996,6 +1996,13 @@ def fixture_payload(data, templates, class_id):
     # be twelve chances to disagree with `yearLabel`, and the card meta's
     # whole defect was a year that disagreed with the class it described.
     classes = [dict(c, yearName=DESIGN_SCALARS["yearLabel"]) for c in classes]
+    # ⊕ MRB-306 Phase 2a — AND A CLASS THAT IS NOT LIVE HAS NO ACTIVITY.
+    # Design's `11h/Sc5` is `state: 'nowork'` with `last: '2 days ago'`, which
+    # is a class with no work set and a submission against it. The seam cannot
+    # produce it (no papers means no matrix columns means no stamps), so the
+    # populated fixture would otherwise be the ONLY classes page in existence
+    # where the non-live activity line is never drawn. See `_no_activity`.
+    classes = [c if c["state"] == "live" else _no_activity(c) for c in classes]
     payload["CLASSES"] = classes
     payload.update(
         TEMPLATES=templates,
@@ -2086,10 +2093,35 @@ EMPTY_SHAPES = {
 }
 
 
+def _no_activity(k):
+    """Design's `last` string, corrected where the seam could not produce it.
+
+    ⊕ MRB-306 Phase 2a, 2 Sep 2026. `last` is `relativeTime(lastIso)` OR the
+    words "No activity yet", and `teacher-live.js` derives `lastIso` from the
+    newest submission across the roster. A class with no roster has no
+    submissions, and a class with no papers has no matrix columns to hold a
+    submission stamp — so for BOTH non-live states the seam can only ever
+    produce the words.
+
+    Design's sample says otherwise: her `nowork` class carries "2 days ago",
+    which is a class with no work set and a submission against it. That is not
+    a value the live page can reach, and a fixture that carries it hides every
+    defect on the path that renders the words — which is how "Last activity No
+    activity yet" survived a week of green gates. See the `cards`/`activity`
+    ruling.
+
+    ⚠️ THE `live` PATH IS NOT COVERED BY THIS. A class with students and work
+    set that nobody has handed in yet is `live` with `lastIso` null, and no
+    fixture in the set holds that shape — Design's twelve are all populated.
+    Stated rather than implied.
+    """
+    return dict(k, last="No activity yet")
+
+
 def _blank_class(payload, cid, state, keep_papers):
     k = [c for c in payload["CLASSES"] if c["id"] == cid][0]
-    k = dict(k, state=state, n=0 if state == "empty" else k["n"],
-             week=[0, 0] if state != "live" else k["week"])
+    k = _no_activity(dict(k, state=state, n=0 if state == "empty" else k["n"],
+                          week=[0, 0] if state != "live" else k["week"]))
     payload["CLASSES"] = [k if c["id"] == cid else c
                           for c in payload["CLASSES"]]
     if state == "empty":

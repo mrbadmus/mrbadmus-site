@@ -847,8 +847,10 @@ class Component extends DCLogic {
     if (hideEmpty) list = list.filter(c => c.n > 0);
     if (s.sort === 'activity') {
       list = list.slice().sort((a, b) => {
-        const ga = a.state === 'live' ? (a.week[1] - a.week[0]) : -1;
-        const gb = b.state === 'live' ? (b.week[1] - b.week[0]) : -1;
+        const ga = a.state === 'live' ? (a.week[1] - a.week[0])
+          : (a.state === 'nowork' ? -1 : -2);
+        const gb = b.state === 'live' ? (b.week[1] - b.week[0])
+          : (b.state === 'nowork' ? -1 : -2);
         return gb - ga;
       });
     }
@@ -856,8 +858,9 @@ class Component extends DCLogic {
       const chase = this.chaseFor(c);
       return {
         code: c.code,
-        meta: [c.n ? c.n + ' students' : 'No students yet',
-          c.subject, c.yearName].filter(Boolean).join(' · '),
+        meta: [c.year ? 'Year ' + c.year : '', c.ks,
+          c.n ? c.n + ' students' : 'No students yet',
+          c.subject, c.yearName].filter(Boolean).join('\u00A0\u00B7 '),
         live: c.state === 'live',
         noWork: c.state === 'nowork',
         empty: c.state === 'empty',
@@ -868,7 +871,9 @@ class Component extends DCLogic {
           : 'Everyone in — nothing to chase',
         weekSubFg: chase.length ? 'var(--st-accent-text)' : 'var(--st-muted)',
         emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',
-        activity: c.state === 'empty' ? c.last : 'Last activity ' + c.last,
+        activity: c.last === 'No activity yet'
+          ? c.last
+          : 'Last activity ' + c.last,
         open: () => MRB_GO(c.n > 0 ? 'class' : 'import', { 'class': c.id, year: MRB_DATA('yearParam') }),
         act: (e) => { e.stopPropagation(); MRB_GO('import', { 'class': c.id }); }
       };
@@ -1228,7 +1233,10 @@ class Component extends DCLogic {
         rosterLine: k.n + ' students · not submitted shown first',
         hasWork: kPapers.length > 0,
         noWork: kPapers.length === 0,
-        noWorkLine: k.n + ' students are enrolled and waiting. Last activity ' + k.last + '.',
+        noWorkLine: k.n + ' students are enrolled and waiting. '
+          + (k.last === 'No activity yet'
+            ? 'No activity yet.'
+            : 'Last activity ' + k.last + '.'),
         paperLine: !kPapers.length ? 'None set'
           : (wPapers.length
             ? wPapers.length + (wPapers.length === 1 ? ' assignment' : ' assignments') + ' · ' + kPapers.length + ' this term'

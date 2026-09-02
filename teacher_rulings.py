@@ -1115,6 +1115,54 @@ BIND_ATTR = {
           "with twelve classes; a teacher with three would be invited to "
           "search across twelve. teacher-live.js computes the whole sentence "
           "— including the singular form for a teacher with one class."),
+
+    # ── THE CLASS CARD'S META LINE MUST BE ALLOWED TO WRAP ──────────────
+    #
+    # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a). Design's node 182 is the caption
+    # under the class code, and she gives it `white-space:nowrap` and no
+    # overflow treatment at all. A nowrap child inside an `auto-fit,
+    # minmax(310px,1fr)` grid does not truncate and does not ellipsise — it
+    # widens its own column until the document overflows the window, and the
+    # text is then clipped at the WINDOW edge rather than the card's.
+    #
+    # ⚠️ THIS WAS ALREADY BROKEN BEFORE PHASE 2a TOUCHED THE LINE. Measured
+    # on `classes-fixture.html` at a 1280px viewport, 2 Sep: the meta of
+    # `11r/Sc1` ("No students yet · Combined Science · 2026–27") laid out
+    # from x=870 to x=1293 and `document.scrollWidth` was 1293 against a
+    # 1280 client width — the last five characters of the academic year were
+    # off-screen, on the fixture the gates have been driving for a week. It
+    # is the longest of Design's twelve; the shorter eleven hid it.
+    #
+    # Mide's Phase 2a brief adds the year group and key stage to that same
+    # line (see the `cards`/`meta` ruling in LOGIC), which takes the worst
+    # case from 40 characters to 56 and would clip most of the estate rather
+    # than one card. So the two are one change: the line gains the pair, and
+    # the caption is allowed to wrap.
+    #
+    # WHY WRAP RATHER THAN TRUNCATE. Every part of this line is identifying
+    # — which year group, which key stage, how many children, which subject,
+    # which academic year — and E1's whole reason for the academic year is
+    # that `10h/Ph1` and `11h/Ph1` are the same children a year apart. An
+    # ellipsis eats the trailing part first, which is precisely the part
+    # that ruling exists to keep. A second line is cheap; a wrong card is
+    # not.
+    #
+    # ONLY TWO PROPERTIES CHANGE, and nothing else in the string is
+    # touched: `white-space:nowrap` is dropped, and the line-height goes
+    # 1.2 → 1.5 so a wrapped uppercase mono caption has room to breathe.
+    # Design's margin, font, tracking, transform and colour are hers.
+    182: ("style",
+          "margin-top:8px;font:400 13px/1.2 var(--st-mono);"
+          "letter-spacing:.14em;text-transform:uppercase;"
+          "color:var(--st-caption);white-space:nowrap",
+          "margin-top:8px;font:400 13px/1.5 var(--st-mono);"
+          "letter-spacing:.14em;text-transform:uppercase;"
+          "color:var(--st-caption)",
+          "the class card's meta caption. nowrap on a grid child does not "
+          "truncate — it widens the column and clips at the window edge, "
+          "which it already did on the longest of Design's own twelve "
+          "cards. The line is identifying end to end, so it wraps rather "
+          "than being cut."),
 }
 
 
@@ -2640,15 +2688,104 @@ LOGIC = (
     # it stays; the academic year is Mide's E1 ruling and it stays too. The
     # anchor names the card builder and the key, so the next time Design
     # appends something to this line the ruling still finds it.
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 2a) — YEAR GROUP AND KEY STAGE COME BACK,
+    # AND THIS REVERSES THE 26 AUG NOTE DIRECTLY ABOVE. That note said "Year
+    # group and key stage do NOT come back: they were v1's drawing, not part
+    # of the ruling, and v2's KS filter tabs already answer the key-stage
+    # question." It is kept above rather than deleted because it is the
+    # reasoning a future reader would otherwise re-derive — but it was a
+    # PORTER'S reading of what the ruling required, not one of Mide's, and
+    # Mide's Phase 2a brief names the card's contents explicitly: "class
+    # code, year + key stage, submissions this week, last activity".
+    #
+    # "Year" there is the YEAR GROUP, not the academic year: the brief pairs
+    # it with key stage, lists the academic year separately as ruling 3, and
+    # the pair it asks for is v1's own drawing (`'Year ' + c.year + ' · ' +
+    # c.ks`) minus the welded literal E1 replaced.
+    #
+    # ⚠️ AND THE FILTER TABS ARE NOT AN ANSWER TO IT. "All" is the tab a
+    # teacher lands on and the one they stay on, so on the default view the
+    # tabs say nothing about any individual card.
+    #
+    # Design's own pair — the student count and the subject — keeps its
+    # order and its adjacency; the year group and key stage are prepended and
+    # the academic year still trails. Every part is still dropped rather than
+    # printed when it is missing: `year_group` and `key_stage` are both
+    # nullable, and "Year null · undefined" is worse than a shorter line.
+    #
+    # ⚠️ THE LINE NO LONGER FITS ON ONE ROW AND MUST NOT TRY TO. It did not
+    # fit BEFORE this change either — measured 2 Sep at a 1280px viewport,
+    # `11r/Sc1`'s meta ran from x=870 to x=1293 and was clipped at the
+    # window edge, because Design's node 182 carries `white-space:nowrap`
+    # and nothing else. See the `182` row in `BIND_ATTR`, which is the other
+    # half of this ruling: without it, restoring the pair makes a
+    # pre-existing clip worse on every card.
+    #
+    # ⚠️ THE SEPARATOR IS GLUED TO THE PART BEFORE IT — ` · `,
+    # a NO-BREAK SPACE then the middot then an ordinary space. Design joins
+    # on ` · `, which on a line that never wrapped was the same thing. Now
+    # that it wraps, an ordinary space on BOTH sides of the middot lets the
+    # break land in front of it, and a line then OPENS with "· 2026–27" —
+    # which on a wall of sixty-nine cards reads as a bullet rather than as a
+    # separator. Gluing it backwards means every wrapped line ENDS with the
+    # middot, which is the convention a reader already knows. The parts
+    # themselves keep ordinary spaces, so "Combined Science" and "28
+    # students" can still break internally on a narrow card.
     (dict(builder="cards", key="meta"),
-     "      meta: [c.n ? c.n + ' students' : 'No students yet',\n"
-     "        c.subject, c.yearName].filter(Boolean).join(' · '),",
+     "      meta: [c.year ? 'Year ' + c.year : '', c.ks,\n"
+     "        c.n ? c.n + ' students' : 'No students yet',\n"
+     "        c.subject, c.yearName].filter(Boolean).join('\\u00A0\\u00B7 '),",
      "the class card's meta line — v2's student count, plus the card's OWN "
      "academic year (Mide's E1 ruling), not the dashboard's. "
      "⊕ 1 Sep 2026 (MRB-306) — moved off `frm` onto "
      "`builder=\"cards\", key=\"meta\"`, and v3's `c.subject` is folded into "
      "the same `.filter(Boolean)` list rather than concatenated, so an "
-     "unnamed academic year drops out instead of printing a bare separator."),
+     "unnamed academic year drops out instead of printing a bare separator. "
+     "⊕ 2 Sep 2026 (MRB-306 Phase 2a) — year group and key stage restored "
+     "to the front of the same list, per Mide's Phase 2a brief; both are "
+     "nullable and both drop rather than print."),
+
+    # ══ "LAST ACTIVITY NO ACTIVITY YET" ═════════════════════════════════
+    #
+    # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a). Design wrote the card's activity
+    # line as
+    #
+    #     activity: c.state === 'empty' ? c.last : 'Last activity ' + c.last,
+    #
+    # which prefixes the string for every class that HAS a roster. But
+    # `c.last` is not a date — it is `relativeTime(lastIso)` OR the words
+    # "No activity yet", and `teacher-live.js` produces the words whenever
+    # `lastIso` is null. `lastIso` is the newest submission across the
+    # roster, so it is null for:
+    #
+    #   · a class with students and no work set (`state: 'nowork'` — no
+    #     papers means no matrix columns means no submission stamps), and
+    #   · a class with students and work set that nobody has handed in yet
+    #     (`state: 'live'`).
+    #
+    # Both render "Last activity No activity yet". Design's own sample can
+    # never show it — her `nowork` class carries an invented "2 days ago",
+    # which is a shape the seam cannot produce — so it was invisible to
+    # every gate.
+    #
+    # ⚠️ IT IS THE COMMON CASE ON THE REAL YEAR, NOT AN EDGE. Measured on
+    # prod for 2026-27: 69 classes, 3 with any members, 1 with any
+    # assignments. That is 66 `empty` (correct today, via the branch below),
+    # 2 `nowork` and 1 `live` — i.e. all three classes a teacher can
+    # actually do anything with read as broken English.
+    #
+    # The branch was conditioned on the wrong thing. Whether to prefix is a
+    # question about the ACTIVITY, not about the class's state, so it is
+    # asked of the activity. Empty classes are unaffected: they have no
+    # roster, so `c.last` is the same string and the same branch is taken.
+    (dict(builder="cards", key="activity"),
+     "      activity: c.last === 'No activity yet'\n"
+     "        ? c.last\n"
+     "        : 'Last activity ' + c.last,",
+     "the class card's last-activity line — the prefix is conditioned on "
+     "whether there IS any activity, not on `state === 'empty'`. A class "
+     "with a roster and no submissions read \"Last activity No activity "
+     "yet\"; on the working year that is every class with members."),
 
     # ══ THE ROSTER ROW: /8, AND \"on time\" FOR AN UNKNOWN ══════════════
     #
@@ -2984,6 +3121,96 @@ LOGIC = (
     # named and `year_group` is nullable, and a dropped part beats
     # "Year null · undefined". With both present the rendered string is v3's,
     # character for character, plus the year.
+    # ══ "MOST MISSING" BURIES THE CLASSES THAT NEED SOMETHING ═══════════
+    #
+    # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a). Design ranks the cards by the
+    # week's shortfall and gives every non-live class the same `-1`:
+    #
+    #     const ga = a.state === 'live' ? (a.week[1] - a.week[0]) : -1;
+    #
+    # A tie keeps class-code order, so `nowork` and `empty` interleave. On
+    # Design's twelve that is invisible — three non-live cards at the end of
+    # one screen. On the working year it is the whole page: measured on prod
+    # for 2026-27, 69 classes, 3 with any members, 1 with any assignments. A
+    # sixty-card wall in which `11h/Ph1` (17 children enrolled, no work set)
+    # and `11r/Sc1` (33) sit at positions 47 and 55, below fifty-seven
+    # classes with nobody in them at all.
+    #
+    # Both genuinely have nothing MISSING — nobody was asked for anything —
+    # so this is not a correction to the arithmetic. It is the tie-break,
+    # which Design left to alphabetical order, and the teacher's question
+    # under this sort is "where do I need to go". A class with 17 children
+    # and no work set is the answer; an empty class is a roster import.
+    #
+    # Design's own logic already draws that distinction one screen away:
+    # `setupRows` splits exactly these two states, offering "Import" for
+    # `empty` and "Set work" for `nowork`. The ranking now agrees with it.
+    #
+    #     live, by shortfall (descending) → nowork → empty
+    #
+    # ⚠️ A JUDGEMENT CALL AND EASILY REVERSED: put both back to `-1` and the
+    # old order returns. Mide's brief names the sort ("code or most missing")
+    # and does not rule the tie-break.
+    # ⚠️ TWO ENTRIES, ONE FOR EACH SIDE OF THE COMPARATOR, and it has to be
+    # two. A statement anchor on `if (s.sort === 'activity')` ends at the
+    # first line back at its own depth that terminates with `;` — and an
+    # `if` block's closing brace does not — so that anchor runs straight on
+    # and swallows the whole `const cards` builder after it. It was tried;
+    # the E1 byte guard caught it, which is the guard working. Design writes
+    # the same ternary twice, so the ruling mirrors her and each entry is one
+    # self-identifying line.
+    (dict(method="renderVals", key="const ga"),
+     "        const ga = a.state === 'live' ? (a.week[1] - a.week[0])\n"
+     "          : (a.state === 'nowork' ? -1 : -2);",
+     "the \"most missing\" tie-break, left side. Design gives every non-live "
+     "class -1, so a class with 17 children and no work set sorts among "
+     "fifty-seven empty ones. Nothing is missing in either, but only one of "
+     "them has children waiting."),
+    (dict(method="renderVals", key="const gb"),
+     "        const gb = b.state === 'live' ? (b.week[1] - b.week[0])\n"
+     "          : (b.state === 'nowork' ? -1 : -2);",
+     "the \"most missing\" tie-break, right side. Design writes the same "
+     "ternary twice; so does the ruling."),
+
+    # ══ "ENROLLED AND WAITING. LAST ACTIVITY NO ACTIVITY YET." ══════════
+    #
+    # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a). THE SAME DEFECT AS THE CARD'S
+    # `activity` LINE, one screen along, and this one fires EVERY TIME the
+    # line is drawn rather than only on some classes.
+    #
+    # `noWorkLine` is the class page's empty state for `noWork`, which is
+    # `kPapers.length === 0`. With no papers there are no matrix columns, so
+    # no submission stamp can be read, so `lastIso` is null for every child
+    # on the roster, so `k.last` is the words "No activity yet" — always.
+    # Design's sentence welds "Last activity " in front of it, so the state
+    # this line exists to explain reads, without exception:
+    #
+    #     "25 students are enrolled and waiting. Last activity No activity
+    #      yet."
+    #
+    # No fixture could show it: Design's own class is `live`, and her
+    # `nowork` sample carries an invented "2 days ago" that the seam cannot
+    # produce (see `_no_activity` in build_teacher_port.py).
+    #
+    # The branch is kept rather than collapsed to the one arm that can fire
+    # today. It costs nothing, and it states the rule — say what the stamp
+    # says, or say there is none — rather than encoding a coupling between
+    # `noWork` and `lastIso` that a later change to `buildRoster` would
+    # silently break.
+    #
+    # ⚠️ THIS IS THE CLASS-DETAIL SCREEN, NOT SCREEN 1, and it is fixed here
+    # anyway: it is one line, it is the same sentence, and the alternative is
+    # leaving a known fabrication in the tree for the next unit to meet.
+    (dict(method="renderVals", key="klass.noWorkLine"),
+     "        noWorkLine: k.n + ' students are enrolled and waiting. '\n"
+     "          + (k.last === 'No activity yet'\n"
+     "            ? 'No activity yet.'\n"
+     "            : 'Last activity ' + k.last + '.'),",
+     "the class screen's no-work line. `noWork` means no papers, no papers "
+     "means no submission stamps, so `k.last` is ALWAYS the words \"No "
+     "activity yet\" here and the sentence always read \"Last activity No "
+     "activity yet.\""),
+
     (dict(method="renderVals", key="klass.meta"),
      "        meta: [k.yearName,\n"
      "          k.n + (k.n === 1 ? ' student' : ' students'),\n"
