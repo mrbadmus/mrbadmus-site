@@ -18,7 +18,7 @@
  *                  than the layout's.
  *
  * ⚠️ Everything here is layer 2 of defence-in-depth. The RLS policies in
- * migration 20260902204500_mrb322_seating_plans.sql are the real boundary; this
+ * migration 20260902214105_mrb322_seating_plans.sql are the real boundary; this
  * module exists so the page can render the right thing rather than firing
  * requests it knows will come back empty. `canEditLayout` / `canEditPlan` in
  * particular are NOT security — they decide whether a control is drawn at all,

@@ -53,7 +53,7 @@ BACKEND = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/server.js"
 ROOMS = ["S01", "S02a", "S02b", "S02c", "S04",
          "S08a", "S08b", "S08c", "S09a", "S09b", "S010"]
 
-MIGRATION = "supabase/migrations/20260902204500_mrb322_seating_plans.sql"
+MIGRATION = "supabase/migrations/20260902214105_mrb322_seating_plans.sql"
 DATA_JS = "shared/seating-data.js"
 PHOTO_JS = "shared/seating-photo.js"
 PAGE = "teacher/seating.html"
