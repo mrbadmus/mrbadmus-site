@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Exam questions — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container" id="c-main">
+  <div class="page-header"><h1>Exam questions</h1></div>
+  <div class="page-sub" id="sub">…</div>
+
+  <div id="locked"></div>
+  <div class="c-msg" id="msg"></div>
+
+  <div class="card" id="list-card">
+    <h2>Pick a question</h2>
+    <div class="c-radios" id="filters">
+      <button class="btn btn-small sel" type="button" data-filter="all">All</button>
+      <button class="btn btn-small" type="button" data-filter="4">4 marks</button>
+      <button class="btn btn-small" type="button" data-filter="6">6 marks</button>
+      <button class="btn btn-small" type="button" data-filter="todo">Not done</button>
+    </div>
+    <div id="list"><p class="empty">Loading…</p></div>
+  </div>
+
+  <div class="card" id="one-card" style="display:none;">
+    <h2 id="one-head">Your answer</h2>
+    <div id="one"></div>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/exam.html — write an answer, get it marked. MRB-313, Night 2.
+   SCAFFOLD.
+
+   ── THE MARK SCHEME IS ONLY EVER SHOWN AFTER AN ANSWER IS SUBMITTED ────
+   `scheme` arrives in the list payload, and this page does not render it
+   until a mark comes back. That is not a display preference: a six-mark
+   question with its mark scheme printed underneath is not a question, and
+   a child who reads the scheme first has learnt to copy rather than to
+   answer. The panel that shows scheme points tick-by-tick is the FEEDBACK,
+   and it only exists after `POST /mark` has replied.
+
+   ── TWO MARKERS, AND THEY MUST NEVER BE CONFUSED FOR EACH OTHER ────────
+   The AI marks in seconds and is provisional. Mr Badmus marks in person, in
+   his own time, and is the real thing. So they are two visually separate
+   blocks with two different labels, and when a human mark exists it is
+   shown FIRST and the AI one is demoted to "what the AI said at the time".
+   A child must never be able to read the AI's 4/6 and believe their teacher
+   gave it.
+
+   ── QUOTA IS A NUMBER OF ASKS, NOT AN ERROR CONDITION ──────────────────
+   `quotaLeft` / `quotaTotal` / `resetDate` are shown before the button is
+   pressed, in words, so that running out is a thing the child watched
+   coming rather than a refusal that arrives out of nowhere. When the 429
+   does land, `quota_reached` is rendered as the sentence, never the code.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  var questions = [];
+  var filter = 'all';
+  var openId = null;
+
+  /* ⊕ FOUND BY DRIVING IT, 2 Sep 2026. Marking wrote the score into `#result`
+     and then called `load()` to refresh the list — which re-rendered the open
+     card and wiped the score the child had been looking at for half a second.
+
+     The score is NOT in the exam-questions payload (that carries the answer,
+     the scheme, the hits and the feedback, but no number), so a reload
+     genuinely cannot show it again, and deriving one from `hits.length` would
+     be this page inventing a mark. So the backend's own reply is kept here,
+     by question id, and re-rendered after the reload. It is the same number
+     the backend sent; it is just remembered rather than recomputed. */
+  var lastMark = {};
+  var writable = false;
+  var quota = { left: null, total: null, reset: null };
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/today.html')) + '">Today</a>' +
+      '<a href="#" id="signout">Sign out</a>'
+    );
+    document.getElementById('signout').addEventListener('click', function (e) {
+      e.preventDefault();
+      ctx.sb.auth.signOut().then(function () { C.go('/consumer/child-login.html'); });
+    });
+
+    var msgEl = document.getElementById('msg');
+
+    function load() {
+      return C.api('/api/consumer/child/exam-questions', { token: ctx.token }).then(function (d) {
+        questions = (d && d.questions) || [];
+        quota = { left: d && d.quotaLeft, total: d && d.quotaTotal, reset: d && d.resetDate };
+
+        var g = C.lockedBanner(document.getElementById('locked'), d && d.access, 'child');
+        writable = g.writable;
+
+        renderSub();
+        renderList();
+        if (openId) { openOne(openId); }
+      });
+    }
+
+    function renderSub() {
+      var bits = [questions.length + (questions.length === 1 ? ' question' : ' questions')];
+      if (quota.left != null) {
+        bits.push(quota.left === 0
+          ? 'No Mr Badmus marks left'
+          : (quota.left + (quota.left === 1 ? ' Mr Badmus mark left' : ' Mr Badmus marks left') +
+             (quota.total != null ? (' of ' + quota.total) : '')));
+      }
+      if (quota.reset) { bits.push('resets on ' + quota.reset); }
+      document.getElementById('sub').textContent = bits.join('  ·  ');
+    }
+
+    function passes(q) {
+      if (filter === 'all')  { return true; }
+      if (filter === 'todo') { return !q.done; }
+      return String(q.marks) === filter;
+    }
+
+    function renderList() {
+      var host = document.getElementById('list');
+      var shown = questions.filter(passes);
+      if (!shown.length) {
+        host.innerHTML = '<p class="empty">' + (questions.length
+          ? 'Nothing matches that filter. Try “All”.'
+          : 'No exam questions for your year yet. They appear as you work through ' +
+            'the units.') + '</p>';
+        return;
+      }
+      host.innerHTML = shown.map(function (q) {
+        var state = q.human || (q.done === 'human')
+          ? '<span class="tag ok">Marked by Mr Badmus</span>'
+          : (q.waiting ? '<span class="tag warn">With Mr Badmus</span>'
+            : (q.done ? '<span class="tag">Marked by the AI</span>' : ''));
+        return '<div class="c-item"><div class="c-item-main">' +
+          '<div class="c-item-title">' + C.escapeHtml(q.text || q.stem || 'Question') + '</div>' +
+          '<div class="c-item-sub">' +
+            [q.subject || null, q.topic || null,
+             q.marks != null ? (q.marks + ' marks') : null]
+              .filter(Boolean).map(C.escapeHtml).join(' · ') +
+          '</div></div>' +
+          '<div class="c-item-acts">' + state +
+            '<button class="btn btn-small" type="button" data-open="' +
+            C.escapeHtml(q.id) + '">' + (q.done ? 'Look again' : 'Answer it') + '</button>' +
+          '</div></div>';
+      }).join('');
+
+      host.onclick = function (e) {
+        var btn = e.target.closest ? e.target.closest('button[data-open]') : null;
+        if (!btn) { return; }
+        openOne(btn.getAttribute('data-open'));
+      };
+    }
+
+    document.getElementById('filters').addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('button[data-filter]') : null;
+      if (!btn) { return; }
+      filter = btn.getAttribute('data-filter');
+      Array.prototype.forEach.call(this.querySelectorAll('button'), function (b) {
+        b.className = 'btn btn-small' + (b === btn ? ' sel' : '');
+      });
+      renderList();
+    });
+
+    /* ── one question ───────────────────────────────────────────────────── */
+    function find(id) {
+      for (var i = 0; i < questions.length; i++) {
+        if (String(questions[i].id) === String(id)) { return questions[i]; }
+      }
+      return null;
+    }
+
+    function schemeHtml(scheme, hits) {
+      scheme = scheme || [];
+      hits = hits || [];
+      if (!scheme.length) { return ''; }
+      var got = {};
+      hits.forEach(function (i) { got[Number(i)] = true; });
+      return '<ul class="c-scheme">' + scheme.map(function (point, i) {
+        return '<li class="' + (got[i] ? 'hit' : 'miss') + '">' +
+          '<span class="mk">' + (got[i] ? '✓' : '✗') + '</span>' +
+          '<span>' + C.escapeHtml(C.schemePoint(point)) + '</span></li>';
+      }).join('') + '</ul>';
+    }
+
+    function openOne(id) {
+      var q = find(id);
+      if (!q) { return; }
+      openId = id;
+      var card = document.getElementById('one-card');
+      var host = document.getElementById('one');
+      card.style.display = 'block';
+      document.getElementById('one-head').textContent =
+        (q.marks != null ? (q.marks + ' marks') : 'Question') +
+        (q.topic ? (' · ' + q.topic) : '');
+
+      /* The human mark comes first when it exists — see the header. The AI
+         block below it is explicitly labelled as what the AI said. */
+      var human = q.human
+        ? '<div class="c-sub">Mr Badmus marked this</div>' +
+          '<p><strong>' + C.escapeHtml(String(q.human.score)) +
+          (q.marks != null ? ('/' + q.marks) : '') + '</strong>' +
+          (q.human.date ? (' · ' + C.escapeHtml(C.fmtDate(q.human.date))) : '') + '</p>' +
+          (q.human.feedback
+            ? '<p style="margin-top:8px;white-space:pre-wrap;">' +
+              C.escapeHtml(q.human.feedback) + '</p>' : '')
+        : (q.waiting
+            ? '<div class="c-sub">With Mr Badmus</div>' +
+              '<p class="empty">You’ve sent this one in. He marks them himself, so it ' +
+              'takes a little while — it will be here when he has.</p>'
+            : '');
+
+      var marked = (q.answer != null && q.answer !== '');
+      var ai = marked
+        ? '<div class="c-sub">' + (q.human ? 'What the AI said at the time' : 'The AI marked this') +
+          '</div>' +
+          '<p class="empty" style="white-space:pre-wrap;">' + C.escapeHtml(q.answer) + '</p>' +
+          schemeHtml(q.scheme, q.hits) +
+          (q.feedback ? ('<p>' + C.escapeHtml(q.feedback) + '</p>') : '')
+        : '';
+
+      var sendBtn = (marked && !q.human && !q.waiting)
+        ? '<button class="btn btn-small" id="btn-send-mb" type="button" data-write ' +
+          'data-answer="' + C.escapeHtml(q.answer_id || '') + '">Send to Mr Badmus</button>' +
+          '<p class="hint" style="margin-top:8px;">' +
+          (quota.left != null
+            ? (quota.left > 0
+                ? ('You have ' + quota.left + ' left' +
+                   (quota.reset ? (', and they come back on ' + quota.reset) : '') + '.')
+                : ('You’ve used all of yours for now' +
+                   (quota.reset ? ('. More on ' + quota.reset) : '') + '.'))
+            : 'He marks it himself and writes back.') + '</p>'
+        : '';
+
+      var recent = lastMark[String(q.id)];
+
+      host.innerHTML =
+        '<p style="font-size:1.05rem;white-space:pre-wrap;">' +
+          C.escapeHtml(q.stem || q.text || '') + '</p>' +
+        (q.stem && q.text && q.stem !== q.text
+          ? '<p style="margin-top:8px;white-space:pre-wrap;">' + C.escapeHtml(q.text) + '</p>' : '') +
+
+        '<div class="c-sub">' + (marked ? 'Have another go' : 'Your answer') + '</div>' +
+        '<div class="c-send">' +
+          '<textarea id="ans" data-write placeholder="Write your answer in full sentences…" ' +
+            'style="min-height:150px;"></textarea>' +
+        '</div>' +
+        '<p style="margin-top:12px;">' +
+          '<button class="btn btn-primary" id="btn-mark" type="button" data-write ' +
+            'style="width:auto;">Mark my answer</button>' +
+        '</p>' +
+        '<div id="result">' + (recent ? markHtml(q, recent) : '') + '</div>' +
+        human + ai +
+        (sendBtn ? ('<p style="margin-top:14px;">' + sendBtn + '</p>') : '');
+
+      C.applyWritable(host, writable);
+      host.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      document.getElementById('btn-mark').addEventListener('click', function () {
+        markAnswer(q, this);
+      });
+      var sb = document.getElementById('btn-send-mb');
+      if (sb) { sb.addEventListener('click', function () { sendToMb(this); }); }
+    }
+
+    function markHtml(q, d) {
+      return '<div class="c-sub">Marked</div>' +
+        '<p><strong>' + C.escapeHtml(String(d.score)) + '/' +
+          C.escapeHtml(String(d.max != null ? d.max : (q.marks != null ? q.marks : '?'))) +
+        '</strong>' + (d.verdict ? (' · ' + C.escapeHtml(d.verdict)) : '') + '</p>' +
+        schemeHtml(q.scheme, d.hits) +
+        (d.feedback ? ('<p style="margin-top:8px;white-space:pre-wrap;">' +
+                       C.escapeHtml(d.feedback) + '</p>') : '') +
+        (d.provider === 'stub'
+          ? '<p class="empty" style="margin-top:8px;">(Marked by the practice marker, ' +
+            'not the real one — this environment has no AI key.)</p>' : '');
+    }
+
+    function markAnswer(q, btn) {
+      var text = document.getElementById('ans').value.trim();
+      if (!text) {
+        return C.setMsg(msgEl, 'Write something first — even a couple of sentences.', 'error');
+      }
+      C.setMsg(msgEl, '');
+      C.setBusy(btn, true, 'Marking…');
+      C.api('/api/consumer/mark', {
+        method: 'POST', token: ctx.token, body: { question_id: q.id, answer: text }
+      }).then(function (d) {
+        C.setBusy(btn, false);
+        d = d || {};
+        lastMark[String(q.id)] = d;
+        document.getElementById('result').innerHTML = markHtml(q, d);
+        // Reload so the list, the quota and the answer id are the backend's;
+        // `lastMark` carries the score through the re-render.
+        return load();
+      }).catch(function (e) {
+        C.setBusy(btn, false);
+        if (e.code === 'cap_reached') {
+          var dd = e.data || {};
+          return C.setMsg(msgEl, e.message ||
+            ('You’ve had all your AI marking for now' +
+             (dd.resets_at ? (' — it comes back on ' + C.fmtDate(dd.resets_at)) : '') + '.'), 'error');
+        }
+        if (e.code === 'org_locked') {
+          return C.setMsg(msgEl, e.message ||
+            'Your account is paused, so nothing can be marked at the moment. ' +
+            'Ask your grown-up.', 'error');
+        }
+        if (e.code === 'rate_limited') {
+          return C.setMsg(msgEl, 'That was a lot at once — wait a minute and try again.', 'error');
+        }
+        C.setMsg(msgEl, e.message, 'error');
+      });
+    }
+
+    function sendToMb(btn) {
+      var answerId = btn.getAttribute('data-answer');
+      if (!answerId) {
+        return C.setMsg(msgEl, 'Get it marked by the AI first, then you can send it on.', 'error');
+      }
+      C.setBusy(btn, true, 'Sending…');
+      C.api('/api/consumer/exam-answers/' + encodeURIComponent(answerId) + '/send-to-mb',
+            { method: 'POST', token: ctx.token })
+        .then(function (d) {
+          C.setBusy(btn, false);
+          C.setMsg(msgEl, 'Sent. Mr Badmus marks these himself, so give him a day or two' +
+            (d && d.quotaLeft != null
+              ? ('. You have ' + d.quotaLeft + ' left.') : '.'), 'ok');
+          return load();
+        })
+        .catch(function (e) {
+          C.setBusy(btn, false);
+          if (e.code === 'quota_reached') {
+            return C.setMsg(msgEl, e.message ||
+              ('You’ve used all your Mr Badmus marks for now' +
+               (quota.reset ? ('. More on ' + quota.reset) : '') + '.'), 'error');
+          }
+          if (e.code === 'org_locked') {
+            return C.setMsg(msgEl, e.message ||
+              'Your account is paused, so this can’t be sent right now.', 'error');
+          }
+          C.setMsg(msgEl, e.message, 'error');
+        });
+    }
+
+    return load().catch(function (e) {
+      C.fail(document.getElementById('list'), e.message,
+             'Try again in a moment, or ask your grown-up to check the account.');
+      document.getElementById('sub').textContent = '';
+    });
+  }});
+})();
+</script>
+</body>
+</html>

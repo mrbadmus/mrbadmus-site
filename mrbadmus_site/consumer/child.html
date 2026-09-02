@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Child — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container wide" id="c-main">
+  <div class="page-header"><h1 id="head">…</h1></div>
+  <div class="page-sub" id="sub"></div>
+
+  <div id="locked"></div>
+  <div class="c-msg" id="msg"></div>
+
+  <div class="card">
+    <h2>How it’s going</h2>
+    <div class="stats" id="stats"><p class="empty">Loading…</p></div>
+  </div>
+
+  <div class="card">
+    <h2>Their plan</h2>
+    <div id="plan"><p class="empty">Loading…</p></div>
+  </div>
+
+  <div class="card">
+    <h2>This week’s work</h2>
+    <div class="row" style="border:none;padding-top:0;">
+      <button class="btn btn-small" id="week-prev" type="button">← Previous week</button>
+      <span class="meta" id="week-label">…</span>
+      <button class="btn btn-small" id="week-next" type="button">Next week →</button>
+      <span class="right">
+        <button class="btn btn-small" id="btn-generate" type="button" data-write>Generate this week</button>
+      </span>
+    </div>
+    <div id="work"><p class="empty">Loading…</p></div>
+
+    <div class="c-sub">Add something yourself</div>
+    <div class="field-row">
+      <div class="field">
+        <label for="add-kind">What</label>
+        <select id="add-kind">
+          <option value="lesson">A lesson</option>
+          <option value="practice">Practice questions</option>
+          <option value="exam">An exam question</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="add-unit">Unit</label>
+        <select id="add-unit"><option value="">Loading…</option></select>
+      </div>
+      <div class="field">
+        <label for="add-lesson">Lesson</label>
+        <select id="add-lesson"><option value="">Any in this unit</option></select>
+      </div>
+      <div class="field">
+        <label for="add-date">Day</label>
+        <input type="date" id="add-date"/>
+      </div>
+    </div>
+    <div class="field">
+      <label for="add-note">Note for them (optional)</label>
+      <input type="text" id="add-note" maxlength="200" placeholder="e.g. do this one before Thursday"/>
+    </div>
+    <button class="btn" id="btn-add" type="button" data-write>Add to their week</button>
+  </div>
+
+  <div class="card">
+    <h2>Messages</h2>
+    <div class="c-chat" id="chat"><p class="empty">Loading…</p></div>
+    <div class="c-send">
+      <textarea id="chat-text" maxlength="1000" placeholder="Write a message…" data-write></textarea>
+      <button class="btn" id="chat-send" type="button" data-write>Send</button>
+    </div>
+    <div class="c-count" id="chat-count">0 / 1000</div>
+  </div>
+
+  <div class="card">
+    <h2>Exam answers</h2>
+    <div id="answers"><p class="empty">Loading…</p></div>
+  </div>
+
+  <div class="card">
+    <h2>Unit checks</h2>
+    <div id="checks"><p class="empty">Loading…</p></div>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/child.html — one child, seen by their grown-up.
+   MRB-310/311/312/313, Night 2. SCAFFOLD.
+
+   ── SIX ENDPOINTS, SIX INDEPENDENT PANELS ──────────────────────────────
+   The plan, the week's work, the chat, the answers, the unit checks and the
+   family read are six separate calls, written by four different people on
+   the same evening. They are wired through `C.section`, which never
+   rejects: a panel whose endpoint is not up yet says so, inside itself, and
+   the other five carry on working. A page that awaited all six in one chain
+   would be a blank page every time any one of them was mid-build, and would
+   teach nothing about the five that work.
+
+   ── "FROM MR BADMUS" vs "SET BY <NAME>" IS THE POINT OF THE WORK LIST ───
+   The whole promise of the parent controls is that a parent can add
+   something and the child will know it came from them. So the source label
+   is rendered from the backend's `source` string verbatim — not rebuilt
+   here from `byParent`, which would be a second implementation of the same
+   sentence that could disagree with the child's screen. `byParent` is used
+   only to decide whether the remove button appears sensible, never to write
+   words.
+
+   ── THE REMOVE BUTTON REFUSES ON DONE WORK ─────────────────────────────
+   The contract says a done item cannot be removed, and the button is simply
+   not rendered for one. Not rendered-and-disabled: a disabled Remove next
+   to a finished lesson invites the parent to wonder what they did wrong.
+
+   ── CHAT: MARK READ ON OPEN, AND ONLY ON OPEN ──────────────────────────
+   `POST /chat/read` fires once, after the first successful load. Firing it
+   on every poll would keep marking messages read that arrived while the
+   parent was looking at another tab, which is the mechanism by which a
+   parent misses a message their child sent.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  var MODE_LABEL = { alongside_school: 'Alongside school', home_education: 'Home education' };
+  var INTENSITY = [
+    { v: 'light',  label: 'Light — one lesson, two sessions a week' },
+    { v: 'steady', label: 'Steady — two lessons, three sessions a week' },
+    { v: 'full',   label: 'Full — all three sciences, five sessions a week' }
+  ];
+  var STATUS_WORD = {
+    active: 'Going well', paused: 'Paused',
+    never:  'Not started yet', quiet: 'Quiet lately'
+  };
+  var STATUS_TONE = { active: 'ok', paused: 'warn', never: '', quiet: 'warn' };
+
+  var childId = new URLSearchParams(window.location.search).get('id');
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/overview.html')) + '">Your family</a>' +
+      '<a href="' + C.escapeHtml(C.href('/consumer/account.html')) + '">Account</a>'
+    );
+
+    var msgEl = document.getElementById('msg');
+
+    if (!childId) {
+      document.getElementById('head').textContent = 'Which child?';
+      C.fail(document.getElementById('stats'),
+        'This page needs to know which child to show.',
+        'Go back to your family page and choose one from the list.');
+      return;
+    }
+
+    var child = null;
+    var access = 'none';
+    var writable = false;
+    var week = C.weekStart();
+    var picker = null;
+    var readMarked = false;
+    var rt = null;
+
+    function path(suffix) {
+      return '/api/consumer/children/' + encodeURIComponent(childId) + suffix;
+    }
+
+    /* ── the family read: identity, access, and the child's own summary ── */
+    function loadFamily() {
+      return C.api('/api/consumer/family', { token: ctx.token }).then(function (d) {
+        var kids = (d && d.children) || [];
+        child = null;
+        for (var i = 0; i < kids.length; i++) {
+          if (String(kids[i].id) === String(childId)) { child = kids[i]; break; }
+        }
+        access = (d && d.billing && d.billing.access) || 'none';
+        var g = C.lockedBanner(document.getElementById('locked'), access, 'parent');
+        writable = g.writable;
+        C.applyWritable(document, writable);
+
+        if (!child) {
+          document.getElementById('head').textContent = 'Child not found';
+          C.fail(document.getElementById('stats'),
+            'We couldn’t find that child on your account.',
+            'They may have been removed. Go back to your family page to check.');
+          return;
+        }
+        renderHeader();
+        renderPlan();
+      });
+    }
+
+    function renderHeader() {
+      var name = child.first_name || 'Your child';
+      document.title = name + ' — MrBadmus';
+      document.getElementById('head').textContent = name;
+
+      var bits = [
+        child.year_group != null ? ('Year ' + child.year_group) : null,
+        MODE_LABEL[child.mode] || child.mode || null,
+        child.username ? ('Signs in as ' + child.username) : null
+      ].filter(Boolean).map(C.escapeHtml).join('<span class="sep">·</span>');
+      document.getElementById('sub').innerHTML = bits +
+        '<span class="sep">·</span><a href="' +
+        C.escapeHtml(C.href('/consumer/report.html', { id: childId })) + '">Termly report</a>';
+
+      var st = String(child.status || '').toLowerCase();
+      var cells = [];
+      cells.push('<div class="stat"><div class="n"><span class="tag ' +
+        (STATUS_TONE[st] || '') + '">' +
+        C.escapeHtml(STATUS_WORD[st] || child.status || 'Not reported') +
+        '</span></div><div class="l">Status</div></div>');
+      if (child.streak != null) {
+        cells.push('<div class="stat"><div class="n">' + C.escapeHtml(String(child.streak)) +
+          '</div><div class="l">Day streak</div></div>');
+      }
+      if (child.unread != null) {
+        cells.push('<div class="stat"><div class="n">' + C.escapeHtml(String(child.unread)) +
+          '</div><div class="l">Unread messages</div></div>');
+      }
+      if (child.humanLeft != null) {
+        cells.push('<div class="stat"><div class="n">' + C.escapeHtml(String(child.humanLeft)) +
+          '</div><div class="l">Mr Badmus marks left</div></div>');
+      }
+      if (child.weak) {
+        cells.push('<div class="stat"><div class="n" style="font-size:0.95rem;">' +
+          C.escapeHtml(child.weak) + '</div><div class="l">Weakest area</div></div>');
+      }
+      cells.push('<div class="stat"><div class="n" style="font-size:0.95rem;">' +
+        C.escapeHtml(child.lastActive ? (C.fmtDate(child.lastActive) + ', ' +
+                     C.fmtTime(child.lastActive)) : 'Not yet') +
+        '</div><div class="l">Last seen</div></div>');
+      document.getElementById('stats').innerHTML = cells.join('');
+    }
+
+    /* ── the plan: pause, intensity, position ───────────────────────────── */
+    function renderPlan() {
+      var pos = child.position || {};
+      var labels = pos.labels || {};
+      var whereBits = Object.keys(labels).map(function (subj) {
+        return C.escapeHtml(subj) + ': ' + C.escapeHtml(labels[subj]);
+      });
+
+      document.getElementById('plan').innerHTML =
+        '<div class="c-item">' +
+          '<div class="c-item-main">' +
+            '<div class="c-item-title">' + (child.paused ? 'Paused' : 'Running') + '</div>' +
+            '<div class="c-item-sub">' + (child.paused
+              ? 'No new work is being set, and their streak is frozen rather than broken.'
+              : 'New work is set every Sunday evening for the week ahead.') + '</div>' +
+          '</div>' +
+          '<div class="c-item-acts">' +
+            '<button class="btn btn-small" id="btn-pause" type="button" data-write>' +
+            (child.paused ? 'Start again' : 'Pause for now') + '</button>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="c-sub">How much a week</div>' +
+        '<div class="field"><select id="sel-intensity" data-write>' +
+          INTENSITY.map(function (o) {
+            return '<option value="' + o.v + '"' +
+              (child.intensity === o.v ? ' selected' : '') + '>' +
+              C.escapeHtml(o.label) + '</option>';
+          }).join('') +
+        '</select><p class="hint">Saves as soon as you change it.</p></div>' +
+
+        '<div class="c-sub">Where they are up to</div>' +
+        '<p class="empty" id="pos-now">' +
+          (whereBits.length ? whereBits.join(' · ') : 'Not set yet.') + '</p>' +
+        '<div class="field" style="margin-top:12px;">' +
+          '<label for="sel-unit">Move them to the start of a unit</label>' +
+          '<select id="sel-unit" data-write><option value="">Loading units…</option></select>' +
+          '<p class="hint">Only the subject you pick moves. The other two stay where they are.</p>' +
+        '</div>' +
+        '<button class="btn btn-small" id="btn-position" type="button" data-write>Move them there</button>';
+
+      C.applyWritable(document.getElementById('plan'), writable);
+
+      document.getElementById('btn-pause').addEventListener('click', function () {
+        var btn = this, want = !child.paused;
+        C.setBusy(btn, true, 'Saving…');
+        C.api(path('/pause'), { method: 'POST', token: ctx.token, body: { paused: want } })
+          .then(function (d) {
+            child.paused = (d && d.paused != null) ? d.paused : want;
+            child.status = child.paused ? 'paused' : 'active';
+            C.setMsg(msgEl, child.paused
+              ? (child.first_name + '’s plan is paused. Nothing new will be set until you start it again.')
+              : (child.first_name + '’s plan is running again.'), 'ok');
+            renderHeader(); renderPlan(); fillUnitSelects();
+          })
+          .catch(function (e) { C.setBusy(btn, false); C.setMsg(msgEl, e.message, 'error'); });
+      });
+
+      document.getElementById('sel-intensity').addEventListener('change', function () {
+        var sel = this, want = sel.value;
+        sel.disabled = true;
+        C.api(path('/intensity'), { method: 'POST', token: ctx.token, body: { intensity: want } })
+          .then(function () {
+            sel.disabled = false;
+            child.intensity = want;
+            C.setMsg(msgEl, 'Saved. The change applies to next week’s work.', 'ok');
+          })
+          .catch(function (e) {
+            sel.value = child.intensity || 'steady';   // put it back; see account.html
+            sel.disabled = false;
+            C.setMsg(msgEl, e.message, 'error');
+          });
+      });
+
+      document.getElementById('btn-position').addEventListener('click', function () {
+        var btn = this;
+        var unit = document.getElementById('sel-unit').value;
+        if (!unit) { return C.setMsg(msgEl, 'Choose a unit first.', 'error'); }
+        C.setBusy(btn, true, 'Moving…');
+        C.api(path('/position'), { method: 'POST', token: ctx.token, body: { unit_code: unit } })
+          .then(function (d) {
+            C.setBusy(btn, false);
+            child.position = { cursors: d && d.cursors, labels: (d && d.labels) || {} };
+            renderPlan(); fillUnitSelects();
+            C.setMsg(msgEl, 'Moved. Next week’s lessons start from there.', 'ok');
+          })
+          .catch(function (e) { C.setBusy(btn, false); C.setMsg(msgEl, e.message, 'error'); });
+      });
+    }
+
+    /* ── the picker feeds two selects: "move them" and "add work" ───────── */
+    function loadPicker() {
+      return C.api(path('/picker'), { token: ctx.token }).then(function (d) {
+        picker = (d && d.units) || [];
+        fillUnitSelects();
+      }).catch(function (e) {
+        picker = [];
+        fillUnitSelects(e.message);
+      });
+    }
+
+    function fillUnitSelects(errMessage) {
+      var opts = errMessage
+        ? '<option value="">' + C.escapeHtml(errMessage) + '</option>'
+        : (picker && picker.length
+            ? '<option value="">Choose a unit…</option>' + picker.map(function (u) {
+                return '<option value="' + C.escapeHtml(u.unit_code) + '">' +
+                  C.escapeHtml((u.subject ? (u.subject + ' · ') : '') + (u.name || u.unit_code)) +
+                  '</option>';
+              }).join('')
+            : '<option value="">No units available</option>');
+
+      ['sel-unit', 'add-unit'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) { el.innerHTML = opts; }
+      });
+      fillLessonSelect();
+    }
+
+    function fillLessonSelect() {
+      var unitEl = document.getElementById('add-unit');
+      var lessonEl = document.getElementById('add-lesson');
+      if (!unitEl || !lessonEl) { return; }
+      var code = unitEl.value;
+      var unit = null;
+      (picker || []).forEach(function (u) { if (u.unit_code === code) { unit = u; } });
+      var lessons = (unit && unit.lessons) || [];
+      lessonEl.innerHTML = '<option value="">Any lesson in this unit</option>' +
+        lessons.map(function (l) {
+          return '<option value="' + C.escapeHtml(l.slug) + '">' +
+            C.escapeHtml(l.title || l.slug) + '</option>';
+        }).join('');
+    }
+    document.getElementById('add-unit').addEventListener('change', fillLessonSelect);
+
+    /* ── the week's work ────────────────────────────────────────────────── */
+    function weekWord(iso) {
+      var thisWeek = C.weekStart();
+      if (iso === thisWeek) { return 'This week'; }
+      if (iso === C.shiftWeek(thisWeek, 1)) { return 'Next week'; }
+      if (iso === C.shiftWeek(thisWeek, -1)) { return 'Last week'; }
+      return 'Week of ' + C.fmtDate(iso + 'T12:00:00');
+    }
+
+    function loadWork() {
+      document.getElementById('week-label').textContent = weekWord(week);
+      var host = document.getElementById('work');
+      host.innerHTML = '<p class="empty">Loading…</p>';
+      return C.section(host,
+        C.api(path('/work') + '?week=' + encodeURIComponent(week), { token: ctx.token }),
+        renderWork,
+        'Weekly work may not be switched on for this environment yet.');
+    }
+
+    function renderWork(d) {
+      var items = (d && d.items) || [];
+      var host = document.getElementById('work');
+      if (!items.length) {
+        host.innerHTML = '<p class="empty">Nothing set for this week yet. ' +
+          'Work is set on Sunday evening — or use “Generate this week” to do it now, ' +
+          'or add something yourself below.</p>';
+        return;
+      }
+      host.innerHTML = items.map(function (it) {
+        var sub = [
+          it.day || null,
+          it.scheduled_for ? C.fmtDate(it.scheduled_for + 'T12:00:00', '') : null,
+          it.source || null,                       // verbatim; see the header
+          it.mins != null ? (it.mins + ' min') : null,
+          it.kind || null
+        ].filter(Boolean).map(C.escapeHtml).join(' · ');
+
+        return '<div class="c-item' + (it.done ? ' done' : '') + '">' +
+          '<div class="c-item-main">' +
+            '<div class="c-item-title">' +
+              (it.done ? '<span aria-hidden="true">✓ </span>' : '') +
+              C.escapeHtml(it.title || 'Work') + '</div>' +
+            '<div class="c-item-sub">' + (it.sub ? (C.escapeHtml(it.sub) + ' · ') : '') +
+              sub + '</div>' +
+          '</div>' +
+          '<div class="c-item-acts">' +
+            (it.done
+              ? '<span class="tag ok">Done</span>'
+              : '<button class="btn btn-small btn-danger" type="button" data-write ' +
+                'data-remove="' + C.escapeHtml(it.id) + '">Remove</button>') +
+          '</div>' +
+        '</div>';
+      }).join('');
+      C.applyWritable(host, writable);
+
+      host.onclick = function (e) {
+        var btn = e.target.closest ? e.target.closest('button[data-remove]') : null;
+        if (!btn) { return; }
+        var id = btn.getAttribute('data-remove');
+        if (!window.confirm('Take this off their week? They won’t see it any more.')) { return; }
+        C.setBusy(btn, true, 'Removing…');
+        C.api(path('/work/' + encodeURIComponent(id)), { method: 'DELETE', token: ctx.token })
+          .then(function () { C.setMsg(msgEl, 'Removed.', 'ok'); return loadWork(); })
+          .catch(function (err) { C.setBusy(btn, false); C.setMsg(msgEl, err.message, 'error'); });
+      };
+    }
+
+    document.getElementById('week-prev').addEventListener('click', function () {
+      week = C.shiftWeek(week, -1); loadWork();
+    });
+    document.getElementById('week-next').addEventListener('click', function () {
+      week = C.shiftWeek(week, 1); loadWork();
+    });
+
+    document.getElementById('btn-generate').addEventListener('click', function () {
+      var btn = this;
+      C.setBusy(btn, true, 'Setting work…');
+      C.api(path('/generate'), { method: 'POST', token: ctx.token, body: { week_start: week } })
+        .then(function () {
+          C.setBusy(btn, false);
+          C.setMsg(msgEl, 'Work set for ' + weekWord(week).toLowerCase() + '.', 'ok');
+          return loadWork();
+        })
+        .catch(function (e) { C.setBusy(btn, false); C.setMsg(msgEl, e.message, 'error'); });
+    });
+
+    document.getElementById('btn-add').addEventListener('click', function () {
+      var btn = this;
+      var body = { kind: document.getElementById('add-kind').value };
+      var unit = document.getElementById('add-unit').value;
+      var lesson = document.getElementById('add-lesson').value;
+      var date = document.getElementById('add-date').value;
+      var note = document.getElementById('add-note').value.trim();
+      if (unit) { body.unit_code = unit; }
+      if (lesson) { body.lesson_slug = lesson; }
+      if (date) { body.scheduled_for = date; }
+      if (note) { body.note = note; }
+      if (!unit && !lesson) {
+        return C.setMsg(msgEl, 'Choose a unit — that’s how we know what to set.', 'error');
+      }
+      C.setBusy(btn, true, 'Adding…');
+      C.api(path('/work'), { method: 'POST', token: ctx.token, body: body })
+        .then(function () {
+          C.setBusy(btn, false);
+          document.getElementById('add-note').value = '';
+          C.setMsg(msgEl, 'Added. ' + (child ? child.first_name : 'They') +
+            ' will see it with your name on it.', 'ok');
+          return loadWork();
+        })
+        .catch(function (e) { C.setBusy(btn, false); C.setMsg(msgEl, e.message, 'error'); });
+    });
+
+    /* ── chat ───────────────────────────────────────────────────────────── */
+    var chatEl  = document.getElementById('chat');
+    var textEl  = document.getElementById('chat-text');
+    var countEl = document.getElementById('chat-count');
+
+    function syncCount() {
+      var n = textEl.value.length;
+      countEl.textContent = n + ' / 1000';
+      countEl.className = 'c-count' + (n >= 1000 ? ' over' : '');
+    }
+    textEl.addEventListener('input', syncCount);
+    syncCount();
+
+    function renderChat(d) {
+      var msgs = (d && d.messages) || [];
+      if (!msgs.length) {
+        chatEl.innerHTML = '<p class="empty">No messages yet. Anything you send here ' +
+          'appears on their Today page when they next sign in.</p>';
+        return;
+      }
+      chatEl.innerHTML = msgs.map(function (m) {
+        var mine = (m.who === 'you');
+        return '<div class="c-bubble' + (mine ? ' mine' : '') + '">' +
+          '<div class="c-bubble-text">' + C.escapeHtml(m.text || '') + '</div>' +
+          '<div class="c-bubble-meta">' +
+            (!mine && !m.read_at ? '<span class="c-unread-dot"></span>' : '') +
+            '<span>' + C.escapeHtml(m.time || C.fmtTime(m.created_at)) + '</span>' +
+            (mine ? '<button type="button" data-del="' + C.escapeHtml(m.id) +
+                    '">Delete</button>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+      chatEl.scrollTop = chatEl.scrollHeight;
+
+      if (!readMarked) {
+        readMarked = true;                 // once, on open. See the header.
+        C.api('/api/consumer/chat/read', {
+          method: 'POST', token: ctx.token, body: { with: childId }
+        }).catch(function (e) { console.error('[child/chat-read]', e); });
+      }
+    }
+
+    function loadChat() {
+      return C.section(chatEl,
+        C.api('/api/consumer/chat/messages?with=' + encodeURIComponent(childId) + '&limit=50',
+              { token: ctx.token }),
+        renderChat,
+        'Messages may not be switched on for this environment yet.');
+    }
+
+    chatEl.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('button[data-del]') : null;
+      if (!btn) { return; }
+      if (!window.confirm('Delete this message?')) { return; }
+      C.api('/api/consumer/chat/messages/' + encodeURIComponent(btn.getAttribute('data-del')),
+            { method: 'DELETE', token: ctx.token })
+        .then(function () { return loadChat(); })
+        .catch(function (err) { C.setMsg(msgEl, err.message, 'error'); });
+    });
+
+    document.getElementById('chat-send').addEventListener('click', function () {
+      var btn = this;
+      var text = textEl.value.trim();
+      if (!text) { return; }
+      if (text.length > 1000) {
+        return C.setMsg(msgEl, 'That message is too long — 1000 characters is the limit.', 'error');
+      }
+      C.setBusy(btn, true, 'Sending…');
+      C.api('/api/consumer/chat/send', {
+        method: 'POST', token: ctx.token, body: { to: childId, text: text }
+      }).then(function () {
+        C.setBusy(btn, false);
+        textEl.value = ''; syncCount();
+        return loadChat();
+      }).catch(function (e) {
+        C.setBusy(btn, false);
+        C.setMsg(msgEl, e.message, 'error');
+      });
+    });
+
+    /* ── answers ────────────────────────────────────────────────────────── */
+    function renderAnswers(d) {
+      var list = (d && d.answers) || [];
+      var host = document.getElementById('answers');
+      if (!list.length) {
+        host.innerHTML = '<p class="empty">No exam answers yet. When they write one, ' +
+          'the AI marks it against the mark scheme and it appears here.</p>';
+        return;
+      }
+      host.innerHTML = list.map(function (a) {
+        var points = (a.points || []).map(function (p) {
+          return '<li class="' + (p.ok ? 'hit' : 'miss') + '">' +
+            '<span class="mk">' + (p.ok ? '✓' : '✗') + '</span>' +
+            '<span>' + C.escapeHtml(p.text || C.schemePoint(p)) + '</span></li>';
+        }).join('');
+
+        var human = a.human || a.humanScore
+          ? ('<p style="margin-top:8px;"><span class="tag ok">Mr Badmus</span> ' +
+             C.escapeHtml(a.humanScore || '') +
+             (a.humanDate ? (' · ' + C.escapeHtml(C.fmtDate(a.humanDate))) : '') +
+             (a.humanFeedback ? ('<br/>' + C.escapeHtml(a.humanFeedback)) : '') + '</p>')
+          : (a.waiting
+              ? '<p style="margin-top:8px;"><span class="tag warn">With Mr Badmus</span> ' +
+                'Sent in and waiting to be marked by a person.</p>'
+              : '');
+
+        return '<div class="c-item"><div class="c-item-main">' +
+          '<div class="c-item-title">' + C.escapeHtml(a.question || a.topic || 'Exam question') + '</div>' +
+          '<div class="c-item-sub">' +
+            [a.date ? C.fmtDate(a.date) : null,
+             a.topic || null,
+             a.marks != null ? (a.marks + ' marks') : null,
+             a.aiScore ? ('AI: ' + a.aiScore) : null
+            ].filter(Boolean).map(C.escapeHtml).join(' · ') +
+          '</div>' +
+          (a.answer ? ('<p class="empty" style="margin-top:8px;white-space:pre-wrap;">' +
+                       C.escapeHtml(a.answer) + '</p>') : '') +
+          (points ? ('<ul class="c-scheme">' + points + '</ul>') : '') +
+          (a.aiFeedback ? ('<p class="empty">' + C.escapeHtml(a.aiFeedback) + '</p>') : '') +
+          human +
+        '</div></div>';
+      }).join('');
+    }
+
+    /* ── unit checks ────────────────────────────────────────────────────── */
+    function renderChecks(d) {
+      var list = (d && d.attempts) || [];
+      var host = document.getElementById('checks');
+      if (!list.length) {
+        host.innerHTML = '<p class="empty">No unit checks yet. One is set at the end of ' +
+          'each unit, and it takes about fifteen minutes.</p>';
+        return;
+      }
+      host.innerHTML = list.map(function (a) {
+        var pct = (a.pct != null) ? (a.pct + '%') : ((a.score != null && a.max != null)
+          ? (a.score + '/' + a.max) : '—');
+        return '<div class="c-item"><div class="c-item-main">' +
+          '<div class="c-item-title">' +
+            C.escapeHtml(a.unit_name || a.unit || a.unit_code || 'Unit check') + '</div>' +
+          '<div class="c-item-sub">' +
+            [a.date ? C.fmtDate(a.date) : (a.created_at ? C.fmtDate(a.created_at) : null),
+             a.subject || null,
+             a.weakest ? ('Weakest: ' + a.weakest) : null
+            ].filter(Boolean).map(C.escapeHtml).join(' · ') +
+          '</div></div>' +
+          '<div class="c-item-acts"><strong>' + C.escapeHtml(pct) + '</strong>' +
+            (a.is_record ? ' <span class="tag ok">Best yet</span>' : '') +
+          '</div></div>';
+      }).join('');
+    }
+
+    /* ── live messages ──────────────────────────────────────────────────── */
+    rt = C.subscribeMessages(ctx.sb, function (row) {
+      /* RLS already decided this row is ours; all that is left is whether it
+         belongs to THIS child's thread. Both directions carry the child's id
+         in one of the two ends. */
+      if (!row) { return; }
+      if (String(row.sender_id) === String(childId) ||
+          String(row.recipient_id) === String(childId) ||
+          String(row.child_id) === String(childId)) {
+        loadChat();
+      }
+    });
+    window.addEventListener('beforeunload', function () { if (rt) { rt.unsubscribe(); } });
+
+    /* Family first (it decides `writable`, which every other panel reads),
+       then the five panels in parallel — none of which can reject. */
+    return loadFamily().catch(function (e) {
+      C.fail(document.getElementById('stats'), e.message,
+             'Refresh in a moment. If it keeps happening, email hello@mrbadmus.com.');
+      C.fail(document.getElementById('plan'), 'We couldn’t load their plan.');
+    }).then(function () {
+      return Promise.all([
+        loadPicker(),
+        loadWork(),
+        loadChat(),
+        C.section(document.getElementById('answers'),
+                  C.api(path('/answers'), { token: ctx.token }), renderAnswers,
+                  'Exam marking may not be switched on for this environment yet.'),
+        C.section(document.getElementById('checks'),
+                  C.api(path('/unit-checks'), { token: ctx.token }), renderChecks,
+                  'Unit checks may not be switched on for this environment yet.')
+      ]);
+    });
+  }});
+})();
+</script>
+</body>
+</html>

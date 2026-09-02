@@ -198,6 +198,85 @@
     }
     .notice p { color: var(--muted); font-size: 1rem; line-height: 1.6; }
     .notice a { color: var(--accent); font-weight: 700; }
+
+    /* ── MRB-313/314/315, Night 2: the operator sections of the consumer
+       card. This page had no form controls at all before tonight, because
+       everything on it was read-only or a `prompt()`.
+
+       ⚠️ PHONE-FIRST, AND THAT IS A WORKING FACT RATHER THAN A PREFERENCE.
+       The Mr Badmus queue is where Mide marks a child's exam answer, and he
+       does that between lessons, on a phone, standing up. So: one column at
+       every width, 44px minimum on anything you press, 16px on every text
+       input (below 16px iOS Safari zooms the whole page on focus, which
+       throws away the layout mid-mark), and no table that has to be
+       scrolled sideways to find the number you were reading. */
+    .cx-sub {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      margin: 30px 0 12px; padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .cx-block {
+      border-top: 1px solid var(--border);
+      padding: 16px 0;
+    }
+    .cx-block:first-child { border-top: none; }
+    .cx-block .cx-t { font-weight: 700; }
+    .cx-block .cx-m { color: var(--muted); font-size: 0.84rem; margin-top: 3px; }
+    .cx-q {
+      background: var(--sunken); border: 1px solid var(--border);
+      border-radius: 8px; padding: 12px 14px; margin: 10px 0;
+      white-space: pre-wrap; font-size: 0.92rem; line-height: 1.55;
+    }
+    .cx-scheme { list-style: none; margin: 8px 0; padding: 0; }
+    .cx-scheme li { padding: 4px 0; font-size: 0.88rem; display: flex; gap: 8px; }
+    .cx-scheme .mk { font-weight: 800; }
+    .cx-scheme li.hit .mk { color: var(--success); }
+    .cx-scheme li.miss .mk { color: var(--danger); }
+    .cx-fields { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .cx-fields > label { flex: 1 1 130px; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+    .cx-in, .cx-ta {
+      display: block; width: 100%; margin-top: 5px;
+      padding: 12px 13px;
+      /* 16px exactly. See the note above. */
+      font-family: var(--font-sans); font-size: 16px;
+      color: var(--text); background: var(--card);
+      border: 1px solid var(--border-strong); border-radius: 8px;
+      min-height: 44px;
+    }
+    .cx-ta { min-height: 96px; resize: vertical; line-height: 1.5; }
+    .cx-in:focus, .cx-ta:focus { outline: 2px solid var(--accent-border); border-color: var(--accent); }
+    .cx-btn {
+      margin-top: 12px; min-height: 44px; padding: 11px 20px;
+      font-family: var(--font-sans); font-size: 0.95rem; font-weight: 700;
+      background: var(--accent); color: var(--on-accent);
+      border: 1px solid var(--accent); border-radius: 8px; cursor: pointer;
+    }
+    .cx-btn:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .cx-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .cx-btn.plain { background: var(--card); color: var(--text); border-color: var(--border-strong); }
+    .cx-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 6px; }
+    .cx-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .cx-table th, .cx-table td {
+      text-align: left; padding: 8px 10px; white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+    .cx-table th {
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--muted); font-weight: 700;
+    }
+    .cx-table td.num { font-variant-numeric: tabular-nums; }
+    .cx-note { color: var(--muted); font-size: 0.86rem; margin-top: 10px; }
+    /* The checkbox row. Measured at 22px on a 390px viewport before this
+       existed — the box was the tap target and the words beside it were not,
+       which on a phone is a control you poke at three times. The LABEL is
+       44px tall and the whole row is the target. */
+    .cx-check {
+      display: flex; gap: 12px; align-items: center;
+      margin-top: 12px; min-height: 44px; cursor: pointer;
+    }
+    .cx-check input { width: 24px; height: 24px; flex: 0 0 auto; }
   </style>
 </head>
 <body>
@@ -240,6 +319,38 @@
     <h2>Consumer accounts</h2>
     <div id="consumer-list"></div>
     <div class="empty" id="consumer-empty" style="display:none;">No consumer accounts yet.</div>
+
+    <!-- MRB-313 · answers a child asked a person to mark. -->
+    <h3 class="cx-sub">Mr Badmus queue</h3>
+    <div id="cx-queue"><p class="empty">Loading…</p></div>
+
+    <!-- MRB-315 · what the AI cost, and the caps that stop it. -->
+    <h3 class="cx-sub">AI usage</h3>
+    <div id="cx-usage"><p class="empty">Loading…</p></div>
+
+    <!-- MRB-314 · the email log, including dry runs. -->
+    <h3 class="cx-sub">Emails</h3>
+    <div id="cx-emails"><p class="empty">Loading…</p></div>
+
+    <!-- MRB-312 · a sentence from Mide on a child's termly report. -->
+    <h3 class="cx-sub">Note on a termly report</h3>
+    <div id="cx-report-note">
+      <div class="cx-fields">
+        <label>Child id
+          <input class="cx-in" id="cx-note-child" type="text" autocapitalize="off"
+                 autocorrect="off" spellcheck="false" placeholder="uuid"/>
+        </label>
+        <label>Term
+          <input class="cx-in" id="cx-note-term" type="text" autocapitalize="off"
+                 placeholder="autumn-2026"/>
+        </label>
+      </div>
+      <label class="cx-sub" style="border:none;padding:0;margin:12px 0 0;">The note</label>
+      <textarea class="cx-ta" id="cx-note-text"
+        placeholder="Written in your voice — it appears on the report as “A note from Mr Badmus”."></textarea>
+      <button class="cx-btn" id="cx-note-save" type="button">Save the note</button>
+      <p class="cx-note" id="cx-note-msg"></p>
+    </div>
   </div>
 </div>
 
@@ -917,6 +1028,347 @@ async function renderConsumer() {
     list.innerHTML = '<p class="empty">' + escapeHtml(e.message) +
                      ' Refresh in a moment to try again.</p>';
   }
+
+  /* The four Night 2 sections. In parallel, each already catching its own
+     failure inside `cxSection`, so this `await` can never reject and the
+     accounts list above is never affected by any of them. */
+  cxWireReportNote();
+  await Promise.all([cxRenderQueue(), cxRenderUsage(), cxRenderEmails()]);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MRB-312/313/314/315 — THE FOUR OPERATOR SECTIONS.
+
+   All four hang off the same `consumerApi` helper and the same launch-flag
+   gate as the accounts list above: with the flag off, `renderConsumer`
+   returns before any of this runs and none of it makes a request.
+
+   ── EACH SECTION FAILS ALONE ───────────────────────────────────────────
+   Four endpoints, written by four people, on the night they are being
+   written. `cxSection` catches per-section, so a queue that is not up yet
+   says so inside its own heading while usage, emails and the note form
+   carry on. The accounts list above them cannot be taken down by any of
+   them, and the SCHOOL view above that cannot be taken down by the card.
+
+   ── THE QUEUE IS A MARKING SURFACE, NOT A REPORT ───────────────────────
+   It shows, for each pending answer: the question, the mark scheme, what
+   the child wrote, and what the AI provisionally gave — because a marker
+   who cannot see the scheme next to the answer is guessing, and one who
+   cannot see the AI's mark cannot tell whether they are correcting it or
+   agreeing with it.
+
+   ⚠️ THE AI'S SCORE IS NOT PRE-FILLED INTO THE SCORE BOX. It is displayed
+   beside it, and the box starts empty. A pre-filled number is a default,
+   and a default on a marking form is a mark nobody gave — press Save
+   without reading and the AI has just marked a child's work under a
+   teacher's name. Making the human type the digit is the whole point.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+function cxEl(id) { return document.getElementById(id); }
+
+function cxFail(host, message, hint) {
+  host.innerHTML = '<p class="empty">' + escapeHtml(message) +
+    (hint ? (' ' + escapeHtml(hint)) : '') + '</p>';
+}
+
+/* Never rejects. See the header. */
+async function cxSection(hostId, load) {
+  var host = cxEl(hostId);
+  if (!host) { return; }
+  try {
+    await load(host);
+  } catch (e) {
+    console.error('[admin/consumer/' + hostId + ']', e);
+    cxFail(host, e.message, 'Refresh in a moment to try again.');
+  }
+}
+
+/* ⊕ FOUND BY DRIVING IT, 2 Sep 2026. The contract says the mark scheme is
+   `scheme: [strings]`, and on `/child/exam-questions` it is. On
+   `/admin/mb-queue` the same field arrives as an array of OBJECTS, and the
+   first render of this queue printed four lines of `[object Object]` where
+   the mark scheme should have been — on the one screen whose entire job is
+   to show a marker the scheme next to the answer.
+
+   Rather than betting on one shape, read both. A string is itself; an object
+   gives up its text under whichever of the conventional keys it uses. A
+   shape with none of them renders as nothing rather than as `[object
+   Object]`, because a blank line is at least honest. */
+function cxSchemeText(pt) {
+  if (pt == null) { return ''; }
+  if (typeof pt === 'string') { return pt; }
+  return String(pt.text || pt.point || pt.criterion || pt.description || '');
+}
+
+/* The usage rows carry the org as a plain string; the queue rows carry it as
+   an object. Both spellings, in one place, so the two readers cannot drift. */
+function cxOrgName(r, fallback) {
+  if (!r) { return fallback || '—'; }
+  if (r.org && typeof r.org === 'object' && r.org.name) { return r.org.name; }
+  if (typeof r.org === 'string' && r.org) { return r.org; }
+  return r.name || fallback || '—';
+}
+
+function cxPence(p) {
+  if (p == null || isNaN(Number(p))) { return '—'; }
+  var n = Math.round(Number(p));
+  return '£' + Math.floor(n / 100) + '.' + (n % 100 < 10 ? '0' : '') + (n % 100);
+}
+function cxNum(n) { return (n == null) ? '—' : String(n); }
+
+/* ── MRB-313 · the Mr Badmus queue ───────────────────────────────────── */
+async function cxRenderQueue() {
+  return cxSection('cx-queue', async function (host) {
+    var d = await consumerApi('/api/consumer/admin/mb-queue');
+    var pending = (d && d.pending) || [];
+    if (!pending.length) {
+      host.innerHTML = '<p class="empty">Nothing waiting to be marked.</p>';
+      return;
+    }
+    host.innerHTML = pending.map(function (a) {
+      var q = a.question || {};
+      var ai = a.ai || {};
+      var kid = a.child || {};
+      var hits = {};
+      (ai.hits || []).forEach(function (i) { hits[Number(i)] = true; });
+
+      var scheme = (q.scheme || []).map(function (pt, i) {
+        return '<li class="' + (hits[i] ? 'hit' : 'miss') + '">' +
+          '<span class="mk">' + (hits[i] ? '✓' : '✗') + '</span>' +
+          '<span>' + escapeHtml(cxSchemeText(pt)) + '</span></li>';
+      }).join('');
+
+      return '<div class="cx-block" data-answer="' + escapeHtml(a.id) + '">' +
+        '<div class="cx-t">' + escapeHtml(kid.name || 'A child') +
+          (kid.year != null ? (' · Year ' + escapeHtml(String(kid.year))) : '') + '</div>' +
+        '<div class="cx-m">' +
+          [a.org || null,
+           q.marks != null ? (q.marks + ' marks') : null,
+           a.sent_at ? ('Sent ' + dateLabel(a.sent_at)) : null
+          ].filter(Boolean).map(escapeHtml).join(' · ') +
+        '</div>' +
+        '<div class="cx-q">' + escapeHtml(q.text || '') + '</div>' +
+        (scheme ? ('<ul class="cx-scheme">' + scheme + '</ul>') : '') +
+        '<div class="cx-m">What they wrote</div>' +
+        '<div class="cx-q">' + escapeHtml(a.answer || '') + '</div>' +
+        '<div class="cx-m">The AI gave ' + escapeHtml(cxNum(ai.score)) + '/' +
+          escapeHtml(cxNum(ai.max != null ? ai.max : q.marks)) +
+          (ai.feedback ? (' — ' + escapeHtml(ai.feedback)) : '') + '</div>' +
+        '<div class="cx-fields">' +
+          '<label>Your mark' +
+            '<input class="cx-in" type="number" inputmode="numeric" min="0" ' +
+            'max="' + escapeHtml(String(q.marks != null ? q.marks : 20)) + '" ' +
+            'data-score placeholder="out of ' + escapeHtml(cxNum(q.marks)) + '"/>' +
+          '</label>' +
+        '</div>' +
+        '<textarea class="cx-ta" data-feedback ' +
+          'placeholder="What they did well, and the one thing to fix."></textarea>' +
+        '<button class="cx-btn" type="button" data-mark>Save this mark</button>' +
+        '<p class="cx-note" data-msg></p>' +
+      '</div>';
+    }).join('');
+
+    host.onclick = function (ev) {
+      var btn = ev.target.closest ? ev.target.closest('button[data-mark]') : null;
+      if (!btn) { return; }
+      var block = btn.closest('.cx-block');
+      var id = block.getAttribute('data-answer');
+      var scoreEl = block.querySelector('[data-score]');
+      var fbEl = block.querySelector('[data-feedback]');
+      var msgEl = block.querySelector('[data-msg]');
+      var raw = String(scoreEl.value).trim();
+
+      /* Validated here as well as on the backend, for the same reason the
+         comp date is: an empty score box posted as `null` would land on a
+         child's report as a mark of nothing, and this is the last place
+         anyone would look for it. */
+      if (!/^\d+$/.test(raw)) {
+        msgEl.textContent = 'Type a whole-number mark first — nothing was saved.';
+        return;
+      }
+      btn.disabled = true;
+      msgEl.textContent = 'Saving…';
+      consumerApi('/api/consumer/admin/exam-answers/' + encodeURIComponent(id) + '/mb-mark', {
+        method: 'POST', body: { score: Number(raw), feedback: fbEl.value.trim() }
+      }).then(function () {
+        msgEl.textContent = 'Saved. They and their grown-up have been told.';
+        return cxRenderQueue();
+      }).catch(function (e) {
+        btn.disabled = false;
+        msgEl.textContent = e.message;
+      });
+    };
+  });
+}
+
+/* ── MRB-315 · usage and caps ─────────────────────────────────────────── */
+async function cxRenderUsage() {
+  return cxSection('cx-usage', async function (host) {
+    var d = await consumerApi('/api/consumer/admin/usage');
+    var rows = (d && (d.usage || d.orgs || d.rows)) || (Array.isArray(d) ? d : []);
+    if (!rows.length) {
+      host.innerHTML = '<p class="empty">No AI usage recorded yet this month.</p>';
+      return;
+    }
+
+    var table =
+      '<div class="cx-scroll"><table class="cx-table"><thead><tr>' +
+        '<th>Account</th><th>Tutor</th><th>Marks</th><th>Explains</th>' +
+        '<th>Tokens in</th><th>Tokens out</th><th>Cost (est.)</th>' +
+      '</tr></thead><tbody>' +
+      rows.map(function (r) {
+        return '<tr>' +
+          '<td>' + escapeHtml(cxOrgName(r)) +
+            (r.kind ? (' <span class="tag">' + escapeHtml(r.kind) + '</span>') : '') + '</td>' +
+          '<td class="num">' + escapeHtml(cxNum(r.tutor_turns)) + '</td>' +
+          '<td class="num">' + escapeHtml(cxNum(r.ai_marks)) + '</td>' +
+          '<td class="num">' + escapeHtml(cxNum(r.explains)) + '</td>' +
+          '<td class="num">' + escapeHtml(cxNum(r.input_tokens)) + '</td>' +
+          '<td class="num">' + escapeHtml(cxNum(r.output_tokens)) + '</td>' +
+          '<td class="num">' + escapeHtml(cxPence(r.cost_pence_estimate)) + '</td>' +
+        '</tr>';
+      }).join('') + '</tbody></table></div>' +
+      '<p class="cx-note">Cost is an ESTIMATE, from token counts at the ' +
+      'published rate — not an invoice.</p>';
+
+    /* The editors sit under the table rather than inside it, because a row
+       of number inputs inside a horizontally-scrolling table is a form you
+       cannot see while you fill it in on a phone. */
+    var editors = rows.map(function (r) {
+      var id = (r.org && r.org.id) || r.org_id || r.id;
+      var lim = r.limits || {};
+      if (!id) { return ''; }
+      return '<div class="cx-block" data-org="' + escapeHtml(id) + '">' +
+        '<div class="cx-t">' + escapeHtml(cxOrgName(r, id)) + '</div>' +
+        '<div class="cx-fields">' +
+          '<label>Tutor turns a day<input class="cx-in" type="number" min="0" ' +
+            'inputmode="numeric" data-lim="tutor_turns_per_day" value="' +
+            escapeHtml(lim.tutor_turns_per_day != null ? String(lim.tutor_turns_per_day) : '') +
+            '" placeholder="platform default"/></label>' +
+          '<label>AI marks a month<input class="cx-in" type="number" min="0" ' +
+            'inputmode="numeric" data-lim="ai_marks_per_month" value="' +
+            escapeHtml(lim.ai_marks_per_month != null ? String(lim.ai_marks_per_month) : '') +
+            '" placeholder="platform default"/></label>' +
+          '<label>Mr Badmus marks a month<input class="cx-in" type="number" min="0" ' +
+            'inputmode="numeric" data-lim="mb_marks_per_month" value="' +
+            escapeHtml(lim.mb_marks_per_month != null ? String(lim.mb_marks_per_month) : '') +
+            '" placeholder="platform default"/></label>' +
+        '</div>' +
+        '<label class="cx-check">' +
+          '<input type="checkbox" data-enforce' +
+          ((r.enforce || lim.enforce) ? ' checked' : '') + '/>' +
+          '<span>Actually refuse when a cap is reached</span>' +
+        '</label>' +
+        '<button class="cx-btn plain" type="button" data-limits>Save limits</button>' +
+        '<p class="cx-note" data-msg></p>' +
+      '</div>';
+    }).join('');
+
+    host.innerHTML = table +
+      '<h3 class="cx-sub" style="border:none;padding-top:14px;">Caps</h3>' + editors;
+
+    host.onclick = function (ev) {
+      var btn = ev.target.closest ? ev.target.closest('button[data-limits]') : null;
+      if (!btn) { return; }
+      var block = btn.closest('.cx-block');
+      var id = block.getAttribute('data-org');
+      var msgEl = block.querySelector('[data-msg]');
+      var body = { enforce: block.querySelector('[data-enforce]').checked };
+      var bad = false;
+      Array.prototype.forEach.call(block.querySelectorAll('[data-lim]'), function (el) {
+        var v = String(el.value).trim();
+        /* ⚠️ `validity.badInput` FIRST, and it is not belt-and-braces. These
+           are `type="number"` inputs, and a number input containing "abc"
+           reports `value === ''` — the letters are on screen, and the DOM
+           says the field is empty. Without this check the branch below reads
+           that as "blank", which means "use the platform default", so typing
+           nonsense into a cap would have cleared the cap and reported
+           "Saved." Driving it found exactly that. */
+        if (el.validity && el.validity.badInput) { bad = true; return; }
+        /* Blank means "use the platform default", and is sent as null so the
+           backend can tell it apart from a deliberate zero — which means
+           "none at all" and is a completely different instruction. */
+        if (v === '') { body[el.getAttribute('data-lim')] = null; return; }
+        if (!/^\d+$/.test(v)) { bad = true; return; }
+        body[el.getAttribute('data-lim')] = Number(v);
+      });
+      if (bad) {
+        msgEl.textContent = 'Limits must be whole numbers (or blank for the default). Nothing was saved.';
+        return;
+      }
+      btn.disabled = true;
+      msgEl.textContent = 'Saving…';
+      consumerApi('/api/consumer/admin/orgs/' + encodeURIComponent(id) + '/limits', {
+        method: 'POST', body: body
+      }).then(function () {
+        btn.disabled = false;
+        msgEl.textContent = 'Saved.';
+      }).catch(function (e) {
+        btn.disabled = false;
+        msgEl.textContent = e.message;
+      });
+    };
+  });
+}
+
+/* ── MRB-314 · the email log ──────────────────────────────────────────── */
+async function cxRenderEmails() {
+  return cxSection('cx-emails', async function (host) {
+    var d = await consumerApi('/api/consumer/admin/emails?limit=50');
+    var rows = (d && (d.emails || d.log || d.rows)) || (Array.isArray(d) ? d : []);
+    if (!rows.length) {
+      host.innerHTML = '<p class="empty">No emails logged yet.</p>';
+      return;
+    }
+    host.innerHTML =
+      '<div class="cx-scroll"><table class="cx-table"><thead><tr>' +
+        '<th>When</th><th>Type</th><th>To</th><th>Subject</th><th>Outcome</th>' +
+      '</tr></thead><tbody>' +
+      rows.map(function (r) {
+        var out = String(r.outcome || r.status || '');
+        var tone = out === 'sent' ? 'tag' :
+                   (out === 'error' ? 'tag pending' : 'tag');
+        return '<tr>' +
+          '<td>' + escapeHtml(r.created_at ? dateLabel(r.created_at) : '—') + '</td>' +
+          '<td>' + escapeHtml(r.type || '—') + '</td>' +
+          '<td>' + escapeHtml(r.recipient_email || r.to_email || r.to || '—') + '</td>' +
+          '<td style="white-space:normal;">' + escapeHtml(r.subject || '—') + '</td>' +
+          '<td><span class="' + tone + '">' + escapeHtml(out || '—') + '</span></td>' +
+        '</tr>';
+      }).join('') + '</tbody></table></div>' +
+      '<p class="cx-note">“dry_run” means no email key is configured in this ' +
+      'environment, so the message was rendered and logged but never sent. ' +
+      '“skipped” means the recipient was a child — we never email children.</p>';
+  });
+}
+
+/* ── MRB-312 · a note on a termly report ──────────────────────────────── */
+function cxWireReportNote() {
+  var btn = cxEl('cx-note-save');
+  if (!btn) { return; }
+  btn.addEventListener('click', function () {
+    var child = cxEl('cx-note-child').value.trim();
+    var term  = cxEl('cx-note-term').value.trim();
+    var text  = cxEl('cx-note-text').value.trim();
+    var msg   = cxEl('cx-note-msg');
+    if (!child) { msg.textContent = 'A child id is needed — nothing was saved.'; return; }
+    if (!/^[a-z]+-\d{4}$/i.test(term)) {
+      msg.textContent = 'The term looks like “autumn-2026”. Nothing was saved.';
+      return;
+    }
+    if (!text) { msg.textContent = 'Write the note first — nothing was saved.'; return; }
+    btn.disabled = true;
+    msg.textContent = 'Saving…';
+    consumerApi('/api/consumer/admin/children/' + encodeURIComponent(child) + '/report-note', {
+      method: 'POST', body: { term: term, note: text }
+    }).then(function () {
+      btn.disabled = false;
+      msg.textContent = 'Saved. It appears on that term’s report.';
+    }).catch(function (e) {
+      btn.disabled = false;
+      msg.textContent = e.message;
+    });
+  });
 }
 
 /* Write failures land under the card heading rather than in an alert. One

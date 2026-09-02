@@ -58,9 +58,9 @@
    there is nothing for the SDK to sign in WITH. The backend owns the
    username→account resolution and mints the session with its service
    credentials; this page receives the token pair and hands it to the SDK
-   via `setSession`, which is what makes every downstream page — including
-   /student/class.html — see an ordinary Supabase session and need no
-   special case at all.
+   via `setSession`, which is what makes every downstream page — the child's
+   own Today page, and any school page a pupil reaches — see an ordinary
+   Supabase session and need no special case at all.
 
    `boot({ anonymous: true })` is load-bearing: this page must not read,
    inherit or care about a parent session that happens to be in the same
@@ -122,7 +122,17 @@
               C.setBusy(btn, false);
               return C.setMsg(msgEl, 'Something went wrong signing you in. Please try again in a moment.', 'error');
             }
-            window.location.href = '/student/class.html';
+            /* ⊕ MRB-310, Night 2. This used to land on /student/class.html,
+               which is the SCHOOL product's class page: it wants a class, a
+               teacher and an assignment feed, none of which a family child
+               has. A consumer child now lands on their own Today page.
+
+               `C.go` rather than a literal, so `?env=test` and `?api=` come
+               with them — a child who signed in against the test backend
+               must not arrive on a page talking to production, which would
+               reject the session they just got and read as "your password
+               is wrong". */
+            C.go('/consumer/today.html');
           });
       }).catch(function (e) {
         C.setBusy(btn, false);

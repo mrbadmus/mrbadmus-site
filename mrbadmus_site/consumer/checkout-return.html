@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Payment — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container" id="c-main">
+  <div class="page-header"><h1 id="head">One moment…</h1></div>
+  <div class="page-sub" id="sub"></div>
+
+  <div class="card">
+    <div id="body"><p class="empty">Checking with our payment provider…</p></div>
+    <p style="margin-top:20px;">
+      <a class="btn" id="onward" href="#">Go to your family</a>
+      <a class="btn" id="account" href="#">Account &amp; billing</a>
+    </p>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/checkout-return.html — where Stripe sends the parent back.
+   MRB-309, Night 2. SCAFFOLD.
+
+   ── WHY THIS PAGE POLLS INSTEAD OF JUST SAYING "THANK YOU" ─────────────
+   Stripe redirects the browser the instant Checkout completes. The
+   subscription row in OUR database is written by the WEBHOOK, which arrives
+   on a different connection, a moment later, and occasionally several
+   seconds later. So there is a window — usually under two seconds, once in
+   a while much longer — in which the parent has genuinely paid and the
+   product still believes they have not.
+
+   A page that navigated straight to the overview would land them on
+   "Start a subscription", immediately after they started one. That is the
+   single worst sentence this product could show at that moment: it reads
+   as "your money went nowhere", and the rational response is to pay again.
+
+   So this page waits for OUR state to catch up with Stripe's, reading
+   `GET /api/consumer/family` until `billing.state` is trialing or active.
+
+   ── AND WHY IT GIVES UP AFTER 20 SECONDS, WITHOUT LYING ────────────────
+   The timeout does not say "something went wrong", because nothing has:
+   the payment is Stripe's and Stripe took it. It says the confirmation is
+   still coming, and offers the way onward. A webhook that is thirty seconds
+   late is a slow evening, not a failed payment, and the page must not
+   convert one into the other in the parent's head.
+
+   ── ?state=cancel IS NOT AN ERROR EITHER ───────────────────────────────
+   A parent who pressed "back" on the Stripe page has done nothing wrong and
+   owes nobody an explanation. One sentence saying no money was taken, and
+   the door back in.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  var POLL_MS  = 1500;
+  var GIVE_UP_MS = 20000;
+  // The two states that mean "Stripe told us, and we wrote it down".
+  var SETTLED = { trialing: true, active: true };
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/overview.html')) + '">Your family</a>'
+    );
+
+    var headEl = document.getElementById('head');
+    var subEl  = document.getElementById('sub');
+    var bodyEl = document.getElementById('body');
+    var onward = document.getElementById('onward');
+    var acct   = document.getElementById('account');
+
+    onward.href = C.href('/consumer/overview.html');
+    acct.href   = C.href('/consumer/account.html');
+
+    var state = new URLSearchParams(window.location.search).get('state') || 'success';
+
+    if (state === 'cancel') {
+      document.title = 'Payment cancelled — MrBadmus';
+      headEl.textContent = 'No payment was taken';
+      subEl.textContent  = 'You stopped before the end, so nothing has been charged.';
+      bodyEl.innerHTML =
+        '<p>Everything you have set up is still here — your children, their ' +
+        'usernames, all of it. You can start the subscription whenever you ' +
+        'are ready, and nothing is lost in the meantime.</p>';
+      acct.textContent = 'Start a subscription';
+      return;
+    }
+
+    document.title = 'Thank you — MrBadmus';
+    headEl.textContent = 'Thank you';
+    subEl.textContent  = 'We’re just confirming it with our payment provider.';
+
+    var started = Date.now();
+    var timer = null;
+
+    function settled(billing) {
+      if (timer) { clearTimeout(timer); timer = null; }
+      var interval = billing.interval === 'year' ? 'yearly' :
+                     (billing.interval === 'month' ? 'monthly' : null);
+      headEl.textContent = billing.state === 'trialing' ? 'Your trial has started'
+                                                        : 'You’re all set';
+      subEl.textContent = '';
+      bodyEl.innerHTML =
+        '<p>' +
+          (billing.state === 'trialing'
+            ? ('Your free trial is running' +
+               (billing.trial_end ? (' and ends on ' + C.escapeHtml(C.fmtDate(billing.trial_end))) : '') +
+               '. Nothing is charged until then.')
+            : 'Your subscription is active.') +
+        '</p>' +
+        (interval ? '<p class="empty" style="margin-top:10px;">Billed ' + interval +
+                    (billing.quantity ? (', for ' + billing.quantity +
+                     (billing.quantity === 1 ? ' child' : ' children')) : '') + '.</p>' : '') +
+        '<p style="margin-top:12px;">Your children can sign in now with the ' +
+        'usernames you set up.</p>';
+    }
+
+    function stillWaiting() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      headEl.textContent = 'Thank you — your payment went through';
+      subEl.textContent = '';
+      bodyEl.innerHTML =
+        '<p>Our side is still catching up with the payment provider, which ' +
+        'occasionally takes a minute. Nothing is wrong and you do not need ' +
+        'to pay again.</p>' +
+        '<p class="empty" style="margin-top:10px;">Open your family page in a ' +
+        'moment and it will be there. If it still isn’t after ten minutes, ' +
+        'email hello@mrbadmus.com and we’ll sort it out.</p>';
+    }
+
+    function poll() {
+      C.api('/api/consumer/family', { token: ctx.token }).then(function (d) {
+        var billing = (d && d.billing) || {};
+        if (SETTLED[String(billing.state || '').toLowerCase()]) { return settled(billing); }
+        if (Date.now() - started >= GIVE_UP_MS) { return stillWaiting(); }
+        timer = setTimeout(poll, POLL_MS);
+      }).catch(function (e) {
+        /* The READ failed — which says nothing at all about the payment, so
+           this must not be reported as a payment problem. Keep polling until
+           the deadline; the endpoint may simply not be up yet. */
+        console.error('[checkout-return]', e);
+        if (Date.now() - started >= GIVE_UP_MS) {
+          headEl.textContent = 'Thank you — your payment went through';
+          subEl.textContent = '';
+          return C.fail(bodyEl, e.message,
+            'Your payment is safe with our payment provider. Open your family ' +
+            'page in a moment, or email hello@mrbadmus.com.');
+        }
+        timer = setTimeout(poll, POLL_MS);
+      });
+    }
+
+    poll();
+  }});
+})();
+</script>
+</body>
+</html>

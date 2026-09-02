@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Termly report — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <style>
+  /* ═══════════════════════════════════════════════════════════════════
+     PRINT. This page has a second life on paper: a home-educating parent
+     files these, and some hand them to a local authority. So the printed
+     artefact is the deliverable, not a screenshot of a web page.
+
+     What print removes: the nav, the buttons, the card chrome, every
+     shadow and rounded corner, and the page background — an A4 sheet of
+     cream costs a whole ink cartridge and reads worse than white.
+
+     What print adds: an explicit A4 page with a real margin, and
+     break-inside rules so a unit's row or the summary paragraph is never
+     sliced across a page fold. `break-inside` and the old `page-break-
+     inside` are both set because Safari still wants the old spelling.
+     ═══════════════════════════════════════════════════════════════════ */
+  .rp { max-width: 880px; margin: 0 auto; }
+  .rp-head { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+             align-items: flex-start; margin-bottom: var(--sp-5); }
+  .rp-title { font-family: var(--font-serif); font-weight: 600; font-size: 1.6rem;
+              line-height: var(--lh-title); }
+  .rp-meta { color: var(--muted); font-size: 0.86rem; text-align: right; }
+  .rp-sec { margin-top: var(--sp-6); break-inside: avoid; page-break-inside: avoid; }
+  .rp-sec h3 { font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.08em;
+               text-transform: uppercase; color: var(--muted); margin-bottom: var(--sp-3); }
+  .rp-sec p { line-height: var(--lh-body); }
+  .rp-sec ul { margin: 0 0 0 1.2em; }
+  .rp-sec li { margin-bottom: 5px; line-height: var(--lh-body); }
+  .rp-note { border-left: 3px solid var(--accent); padding-left: 14px; font-style: italic; }
+
+  @media print {
+    @page { size: A4; margin: 16mm 14mm; }
+    html, body { background: #fff !important; color: #000; padding: 0 !important; }
+    body { display: block !important; font-size: 10.5pt; }
+    .c-nav, .no-print, .c-msg, .c-locked { display: none !important; }
+    .container { max-width: none; }
+    .card { border: none !important; box-shadow: none !important; background: #fff !important;
+            padding: 0 !important; margin: 0 0 10mm 0 !important;
+            break-inside: avoid; page-break-inside: avoid; }
+    .c-table { font-size: 9.5pt; }
+    .c-table th, .c-table td { white-space: normal; border-bottom: 1px solid #ccc; }
+    .c-scroll { overflow: visible; }
+    .rp-sec { break-inside: avoid; page-break-inside: avoid; }
+    .stat { border: 1px solid #ccc !important; background: #fff !important; }
+    a { color: #000; text-decoration: none; }
+  }
+  </style>
+</head>
+<body>
+
+<div id="c-nav" class="no-print"></div>
+
+<div class="container wide" id="c-main">
+  <div class="no-print" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px;">
+    <button class="btn" id="btn-print" type="button">Print or save as PDF</button>
+    <select id="term-sel" style="padding:10px 12px;border:1px solid var(--border-strong);
+            border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:0.95rem;
+            background:var(--card);color:var(--text);"></select>
+    <a class="btn" id="back" href="#">Back to the child</a>
+  </div>
+
+  <div class="c-msg no-print" id="msg"></div>
+
+  <div class="card">
+    <div class="rp" id="report"><p class="empty">Loading…</p></div>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/report.html — the termly report. MRB-312, Night 2. SCAFFOLD.
+
+   ── THE BACKEND WRITES THE REPORT; THIS PAGE SETS IT ───────────────────
+   `summary`, `progressNote`, `strengths`, `nextSteps` and `teacherNote` are
+   sentences somebody (or something) composed about a real child. This page
+   escapes them and lays them out. It does not summarise, truncate, join,
+   pluralise or "tidy" any of them — a report that a parent may hand to a
+   local authority cannot contain a sentence the frontend improvised.
+
+   An absent section is OMITTED rather than rendered empty. A heading called
+   "Strengths" with nothing under it reads as a judgement.
+
+   ── THE TERM IS A CHOICE, WITH A SENSIBLE DEFAULT ──────────────────────
+   `?term=` wins; otherwise today's date decides, on the calendar the
+   contract gives (autumn 1 Sep–19 Dec, spring 1 Jan–Easter, summer to
+   31 Aug). The dropdown offers this academic year's three so a parent can
+   look back without editing a URL.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  var q = new URLSearchParams(window.location.search);
+  var childId = q.get('id');
+
+  /* The academic year a date belongs to: September starts one. So 1 Sep 2026
+     through 31 Aug 2027 are all "2026". The term names follow the contract's
+     `autumn-2026` shape, and the YEAR in that string is always the September
+     one — spring 2027 is `spring-2026` — because otherwise a parent looking
+     for "this year's spring report" would have to know which convention we
+     picked. Flagged as an assumption; one constant to change if report.js
+     names them differently. */
+  function academicYear(d) {
+    return d.getMonth() >= 8 ? d.getFullYear() : d.getFullYear() - 1;
+  }
+  function defaultTerm(d) {
+    var m = d.getMonth();                    // 0-based
+    var y = academicYear(d);
+    if (m >= 8 || (m === 11 && d.getDate() <= 19)) { return 'autumn-' + y; }
+    if (m <= 2 || m === 3) { return 'spring-' + y; }
+    return 'summer-' + y;
+  }
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/overview.html')) + '">Your family</a>'
+    );
+    document.getElementById('back').href = childId
+      ? C.href('/consumer/child.html', { id: childId })
+      : C.href('/consumer/overview.html');
+    document.getElementById('btn-print').addEventListener('click', function () {
+      window.print();
+    });
+
+    var msgEl = document.getElementById('msg');
+    var host  = document.getElementById('report');
+
+    if (!childId) {
+      C.fail(host, 'This page needs to know whose report to show.',
+             'Open it from a child’s page and it will bring their name with it.');
+      return;
+    }
+
+    var now = new Date();
+    var year = academicYear(now);
+    var term = q.get('term') || defaultTerm(now);
+
+    var sel = document.getElementById('term-sel');
+    sel.innerHTML = [
+      { v: 'autumn-' + year, l: 'Autumn ' + year },
+      { v: 'spring-' + year, l: 'Spring ' + (year + 1) },
+      { v: 'summer-' + year, l: 'Summer ' + (year + 1) }
+    ].map(function (o) {
+      return '<option value="' + o.v + '"' + (o.v === term ? ' selected' : '') + '>' +
+             C.escapeHtml(o.l) + '</option>';
+    }).join('');
+    sel.addEventListener('change', function () { term = sel.value; load(); });
+
+    function list(title, items) {
+      if (!items || !items.length) { return ''; }
+      return '<div class="rp-sec"><h3>' + C.escapeHtml(title) + '</h3><ul>' +
+        items.map(function (s) { return '<li>' + C.escapeHtml(s) + '</li>'; }).join('') +
+        '</ul></div>';
+    }
+    function para(title, text) {
+      if (!text) { return ''; }
+      return '<div class="rp-sec"><h3>' + C.escapeHtml(title) + '</h3><p>' +
+        C.escapeHtml(text) + '</p></div>';
+    }
+
+    function render(d) {
+      var r = (d && d.report) || {};
+      var kid = r.child || {};
+      var name = [kid.name, kid.surname].filter(Boolean).join(' ') || 'This child';
+      document.title = name + ' — termly report — MrBadmus';
+
+      var units = (r.units || []).map(function (u) {
+        return '<tr>' +
+          '<td>' + C.escapeHtml(u.name || '') + '</td>' +
+          '<td>' + C.escapeHtml(u.subject || '') + '</td>' +
+          '<td>' + C.escapeHtml(u.lessons || '') + '</td>' +
+          '<td>' + C.escapeHtml(u.check || '—') + '</td>' +
+          '<td>' + C.escapeHtml(u.status || '') + '</td>' +
+        '</tr>';
+      }).join('');
+
+      var answers = (r.answers || []).map(function (a) {
+        return '<tr>' +
+          '<td>' + C.escapeHtml(a.date || '') + '</td>' +
+          '<td style="white-space:normal;">' + C.escapeHtml(a.q || '') + '</td>' +
+          '<td>' + C.escapeHtml(a.mark || '') + '</td>' +
+        '</tr>';
+      }).join('');
+
+      var stats = [];
+      if (r.sessions) {
+        stats.push(['' + (r.sessions.done != null ? r.sessions.done : '—') + ' / ' +
+                    (r.sessions.set != null ? r.sessions.set : '—'), 'Sessions done']);
+      }
+      if (r.minutes != null)    { stats.push([String(r.minutes), 'Minutes of work']); }
+      if (r.streakBest != null) { stats.push([String(r.streakBest), 'Best streak']); }
+      if (r.checksAvg != null)  { stats.push([String(r.checksAvg), 'Unit check average']); }
+
+      host.innerHTML =
+        '<div class="rp-head">' +
+          '<div>' +
+            '<div class="rp-title">' + C.escapeHtml(name) + '</div>' +
+            '<div class="rp-meta" style="text-align:left;">' +
+              [kid.year != null ? ('Year ' + kid.year) : null,
+               /* The backend sends the key stage as a bare 3 or 4. "Year 8 · 3"
+                  reads as a typo on a document a parent may file with a local
+                  authority; "KS3" is the same value, spelled. A ks that is
+                  already a string keeps its own words. */
+               kid.ks == null || kid.ks === ''
+                 ? null
+                 : (/^\d+$/.test(String(kid.ks)) ? ('KS' + kid.ks) : String(kid.ks)),
+               kid.mode === 'home' ? 'Home education'
+                 : (kid.mode === 'school' ? 'Alongside school' : null),
+               kid.dates || null
+              ].filter(Boolean).map(C.escapeHtml).join(' · ') +
+            '</div>' +
+          '</div>' +
+          '<div class="rp-meta">' +
+            '<div><strong>' + C.escapeHtml(r.term || term) + '</strong></div>' +
+            (r.produced ? ('<div>Produced ' + C.escapeHtml(r.produced) + '</div>') : '') +
+            (r.ref ? ('<div>Ref ' + C.escapeHtml(r.ref) + '</div>') : '') +
+            '<div>MrBadmus</div>' +
+          '</div>' +
+        '</div>' +
+
+        (stats.length
+          ? ('<div class="stats">' + stats.map(function (s) {
+              return '<div class="stat"><div class="n">' + C.escapeHtml(s[0]) +
+                     '</div><div class="l">' + C.escapeHtml(s[1]) + '</div></div>';
+            }).join('') + '</div>')
+          : '') +
+
+        para('Summary', r.summary) +
+        para('Progress', r.progressNote) +
+
+        (units
+          ? ('<div class="rp-sec"><h3>Units covered</h3><div class="c-scroll">' +
+             '<table class="c-table"><thead><tr><th>Unit</th><th>Subject</th>' +
+             '<th>Lessons</th><th>Unit check</th><th>Status</th></tr></thead>' +
+             '<tbody>' + units + '</tbody></table></div></div>')
+          : '') +
+
+        list('Strengths', r.strengths) +
+        list('What to work on next', r.nextSteps) +
+
+        (answers
+          ? ('<div class="rp-sec"><h3>Exam answers marked</h3><div class="c-scroll">' +
+             '<table class="c-table"><thead><tr><th>Date</th><th>Question</th>' +
+             '<th>Mark</th></tr></thead><tbody>' + answers + '</tbody></table></div></div>')
+          : '') +
+
+        (r.teacherNote
+          ? ('<div class="rp-sec"><h3>A note from Mr Badmus</h3>' +
+             '<p class="rp-note">' + C.escapeHtml(r.teacherNote) + '</p></div>')
+          : '');
+    }
+
+    function load() {
+      host.innerHTML = '<p class="empty">Loading…</p>';
+      C.setMsg(msgEl, '');
+      return C.api('/api/consumer/children/' + encodeURIComponent(childId) +
+                   '/report?term=' + encodeURIComponent(term), { token: ctx.token })
+        .then(render)
+        .catch(function (e) {
+          C.fail(host, e.message,
+            'Reports are written from a term’s work — if this term has only just ' +
+            'started there may be nothing in it yet.');
+        });
+    }
+
+    return load();
+  }});
+})();
+</script>
+</body>
+</html>

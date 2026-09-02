@@ -18,11 +18,15 @@
   <div class="page-header"><h1 id="family-name">Your family</h1></div>
   <div class="page-sub" id="family-sub">…</div>
 
+  <div id="locked"></div>
   <div class="c-msg" id="msg"></div>
 
   <div class="card">
     <h2>Subscription</h2>
     <div class="stats" id="sub-stats"></div>
+    <p style="margin-top:18px;">
+      <a class="btn" id="account-link" href="#">Account &amp; billing</a>
+    </p>
   </div>
 
   <div class="card">
@@ -61,6 +65,24 @@
    teacher/admin.html uses for `pending_staff`: degrade to silence and a
    next step, never to an error.
 
+   ── ⊕ MRB-309/310, NIGHT 2: `billing` AND THE PER-CHILD SUMMARY ────────
+   Night 1 read a flat subscription status off the family object because
+   that was all there was. `GET /api/consumer/family` now returns a whole
+   `billing` object — an access state distinct from the billing state, a
+   graduated per-seat price list, trial and grace countdowns — and each
+   child carries their own `status`, `streak`, `unread` and this week's
+   `work`.
+
+   Both readings are kept. The new one wins where it exists, the Night 1
+   fallback stays underneath, and the reason is the same one the tolerant
+   `data.family || data.org || data` line was written for: five people are
+   building this API tonight and a page that renders blank against the
+   half of it that has landed teaches nothing about the half that has.
+
+   ⚠️ `billing.access` — NOT `billing.state` — decides whether the family
+   can write. They are different words for different questions and a card
+   that failed yesterday is `past_due` and still `full`. See `guard()`.
+
    ── THE THREE PER-CHILD ACTIONS ────────────────────────────────────────
    Edit / Reset password / Remove. Their paths were written as assumptions
    and have since been CONFIRMED against the backend (1 Sep 2026) — see the
@@ -90,6 +112,13 @@
   };
   var INTENSITY_LABEL = { light: 'Light', steady: 'Steady', full: 'Full' };
 
+  /* Design's per-child `status` words, in the parent's language. MRB-310. */
+  var STATUS_WORD = {
+    active: 'Going well', paused: 'Paused',
+    never:  'Not started', quiet: 'Quiet lately'
+  };
+  var STATUS_TONE = { active: 'ok', paused: 'warn', never: '', quiet: 'warn' };
+
   function dash(v) { return (v == null || v === '') ? 'Not set' : String(v); }
 
   function dateLabel(iso) {
@@ -115,9 +144,11 @@
     var msgEl = document.getElementById('msg');
     document.getElementById('c-nav').innerHTML = C.navHtml(
       '<a href="' + C.escapeHtml(C.href('/consumer/add-child.html')) + '">Add a child</a>' +
+      '<a href="' + C.escapeHtml(C.href('/consumer/account.html')) + '">Account</a>' +
       '<a href="#" id="signout">Sign out</a>'
     );
     document.getElementById('add-child-link').href = C.href('/consumer/add-child.html');
+    document.getElementById('account-link').href = C.href('/consumer/account.html');
     document.getElementById('signout').addEventListener('click', function (e) {
       e.preventDefault();
       ctx.sb.auth.signOut().then(function () { C.go('/consumer/signup.html'); });
@@ -141,21 +172,44 @@
         '<span class="sep">·</span>' +
         C.escapeHtml(fam.kind === 'organisation' ? 'Organisation' : 'Family');
 
-      var status = fam.subscription_status || fam.status;
-      var trialEnd = fam.trial_ends_at || fam.trial_end;
-      var periodEnd = fam.current_period_end || fam.period_end;
+      var billing = data.billing || {};
 
-      var tone = statusTone(status);
-      document.getElementById('sub-stats').innerHTML =
+      // The banner reads `access`, never `state`. See the header note.
+      C.lockedBanner(document.getElementById('locked'),
+                     billing.access != null ? billing.access : billing, 'parent');
+
+      var status    = billing.state || fam.subscription_status || fam.status;
+      var trialEnd  = billing.trial_end || fam.trial_ends_at || fam.trial_end;
+      var periodEnd = billing.next_payment_at || billing.access_end ||
+                      fam.current_period_end || fam.period_end;
+
+      var cells = [
         '<div class="stat"><div class="n">' +
-          '<span class="tag ' + tone + '">' + C.escapeHtml(dash(status)) + '</span>' +
-        '</div><div class="l">Status</div></div>' +
-        '<div class="stat"><div class="n">' + C.escapeHtml(dateLabel(trialEnd)) +
-        '</div><div class="l">Trial ends</div></div>' +
-        (periodEnd
-          ? '<div class="stat"><div class="n">' + C.escapeHtml(dateLabel(periodEnd)) +
-            '</div><div class="l">Renews</div></div>'
-          : '');
+          '<span class="tag ' + statusTone(status) + '">' +
+          C.escapeHtml(dash(status)) + '</span>' +
+        '</div><div class="l">Status</div></div>'
+      ];
+      if (billing.state === 'trialing' || trialEnd) {
+        cells.push('<div class="stat"><div class="n">' + C.escapeHtml(dateLabel(trialEnd)) +
+          '</div><div class="l">Trial ends</div></div>');
+      }
+      if (billing.days_left != null) {
+        cells.push('<div class="stat"><div class="n">' + C.escapeHtml(String(billing.days_left)) +
+          '</div><div class="l">' + (billing.days_left === 1 ? 'Day left' : 'Days left') +
+          '</div></div>');
+      }
+      if (periodEnd) {
+        cells.push('<div class="stat"><div class="n">' + C.escapeHtml(dateLabel(periodEnd)) +
+          '</div><div class="l">' +
+          (billing.access_end && !billing.next_payment_at ? 'Access until' : 'Renews') +
+          '</div></div>');
+      }
+      if (billing.monthly_total_pence != null) {
+        cells.push('<div class="stat"><div class="n">' +
+          C.escapeHtml(C.money(billing.monthly_total_pence)) +
+          '</div><div class="l">A month</div></div>');
+      }
+      document.getElementById('sub-stats').innerHTML = cells.join('');
 
       var listEl  = document.getElementById('children');
       var emptyEl = document.getElementById('children-empty');
@@ -181,16 +235,59 @@
           k.class_name || k.class || null
         ].filter(Boolean).map(C.escapeHtml).join(' · ');
 
+        /* The summary pills. Each is rendered only when the backend sent
+           the field — a streak of "0" is a real answer and shows, but a
+           streak the backend never mentioned is not a zero and does not. */
+        var st = String(k.status || '').toLowerCase();
+        var pills = '';
+        if (k.status) {
+          pills += ' <span class="tag ' + (STATUS_TONE[st] || '') + '">' +
+                   C.escapeHtml(STATUS_WORD[st] || k.status) + '</span>';
+        }
+        if (k.streak != null) {
+          pills += ' <span class="tag">' + C.escapeHtml(String(k.streak)) +
+                   (k.streak === 1 ? ' day' : ' days') + '</span>';
+        }
+        if (k.unread) {
+          pills += ' <span class="tag warn">' + C.escapeHtml(String(k.unread)) +
+                   ' unread</span>';
+        }
+
+        /* This week, with the source label VERBATIM out of `source`. Rebuilt
+           here from `byParent` it would be a second copy of a sentence the
+           child's own screen already renders, free to disagree with it. */
+        var work = Array.isArray(k.work) ? k.work : null;
+        var workHtml = work
+          ? (work.length
+              ? ('<div style="flex-basis:100%;margin-top:8px;">' +
+                 work.map(function (w) {
+                   return '<div class="c-item-sub">' +
+                     (w.done ? '✓ ' : '· ') +
+                     C.escapeHtml([w.day, w.title, w.source,
+                                   w.mins != null ? (w.mins + ' min') : null]
+                                  .filter(Boolean).join(' · ')) +
+                   '</div>';
+                 }).join('') + '</div>')
+              : '<div class="c-item-sub" style="flex-basis:100%;margin-top:8px;">' +
+                'Nothing set for this week yet.</div>')
+          : '';
+
         return '<div class="row" data-child="' + C.escapeHtml(k.id) + '">' +
-          '<span class="name">' + C.escapeHtml(dash(k.first_name)) + '</span> ' +
-          '<span class="tag">' + C.escapeHtml(dash(k.username)) + '</span> ' +
+          '<span class="name"><a href="' +
+            C.escapeHtml(C.href('/consumer/child.html', { id: k.id })) + '">' +
+            C.escapeHtml(dash(k.first_name)) + '</a></span> ' +
+          '<span class="tag">' + C.escapeHtml(dash(k.username)) + '</span>' +
+          pills + ' ' +
           '<span class="meta">' + (meta || 'No details set') + '</span>' +
           '<span class="right">' +
+            '<a class="btn btn-small" href="' +
+              C.escapeHtml(C.href('/consumer/child.html', { id: k.id })) + '">Open</a>' +
             '<a class="btn btn-small" href="' +
               C.escapeHtml(C.href('/consumer/add-child.html', { child: k.id })) + '">Edit</a>' +
             '<button class="btn btn-small" type="button" data-act="password">Reset password</button>' +
             '<button class="btn btn-small btn-danger" type="button" data-act="remove">Remove</button>' +
           '</span>' +
+          workHtml +
         '</div>';
       }).join('');
 

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Today — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container" id="c-main">
+  <div class="page-header"><h1 id="head">Today</h1></div>
+  <div class="page-sub" id="sub"></div>
+
+  <div id="locked"></div>
+  <div class="c-msg" id="msg"></div>
+
+  <div class="card" id="notifications-card" style="display:none;">
+    <h2>New</h2>
+    <div id="notifications"></div>
+  </div>
+
+  <div class="card">
+    <h2>Your work today</h2>
+    <div id="items"><p class="empty">Loading…</p></div>
+  </div>
+
+  <div class="card" id="later-card" style="display:none;">
+    <h2>Later this week</h2>
+    <div id="later"></div>
+  </div>
+
+  <div class="card" id="cards-card" style="display:none;">
+    <h2>Flashcards to go over</h2>
+    <div id="flashcards"></div>
+  </div>
+
+  <div class="card">
+    <h2 id="chat-head">Messages</h2>
+    <div class="c-chat" id="chat"><p class="empty">Loading…</p></div>
+    <div class="c-send">
+      <textarea id="chat-text" maxlength="1000" placeholder="Write a message…" data-write></textarea>
+      <button class="btn" id="chat-send" type="button" data-write>Send</button>
+    </div>
+    <div class="c-count" id="chat-count">0 / 1000</div>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/today.html — the child's whole product, on one screen.
+   MRB-310/311, Night 2. SCAFFOLD.
+
+   ── ONE READ, AND IT IS THE READ THAT DECIDES EVERYTHING ───────────────
+   `GET /api/consumer/child/today` returns the items, the later list, the
+   streak, the flashcards, the notifications, the messages AND the access
+   state. The whole page is that object. Nothing here computes a streak,
+   works out whose turn it is, or decides which day an item belongs to —
+   the backend already knows, and two implementations of "is this today"
+   would disagree at midnight, which is exactly when a child is looking.
+
+   ── EVERY ITEM SAYS WHO SET IT ─────────────────────────────────────────
+   `by` is 'mb' or 'parent', and `byName` is the parent's actual name. A
+   child seeing "Mum said do this one" is the entire point of the parent
+   controls; an unlabelled list is just homework from a computer.
+
+   ── THE DONE BUTTON IS THE ONLY THING THAT CAN BE PRESSED WHEN LOCKED ──
+   …and it cannot. `requireWritable` refuses it with a 423, so the button
+   carries `data-write` and greys out with everything else, and the banner
+   above says why in words a child can read. A ticked box that silently
+   fails is worse than a greyed one that explains itself.
+
+   ── THIS PAGE ASSUMES A CHILD SESSION AND NOTHING ELSE ─────────────────
+   It boots with `requireSession`, so a signed-out child is bounced. It does
+   NOT check that the session is a child's — the backend's `requireChild`
+   does that, and a parent who opens this URL gets a readable refusal rather
+   than a page pretending to be theirs.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/exam.html')) + '">Exam questions</a>' +
+      '<a href="#" id="signout">Sign out</a>'
+    );
+    document.getElementById('signout').addEventListener('click', function (e) {
+      e.preventDefault();
+      ctx.sb.auth.signOut().then(function () { C.go('/consumer/child-login.html'); });
+    });
+
+    var msgEl   = document.getElementById('msg');
+    var chatEl  = document.getElementById('chat');
+    var textEl  = document.getElementById('chat-text');
+    var countEl = document.getElementById('chat-count');
+
+    var parent = null;
+    var writable = false;
+    var readMarked = false;
+
+    function syncCount() {
+      var n = textEl.value.length;
+      countEl.textContent = n + ' / 1000';
+      countEl.className = 'c-count' + (n >= 1000 ? ' over' : '');
+    }
+    textEl.addEventListener('input', syncCount);
+    syncCount();
+
+    function render(d) {
+      d = d || {};
+      var kid = d.child || {};
+      parent = d.parent || null;
+
+      document.getElementById('head').textContent =
+        kid.name ? ('Hello, ' + kid.name) : 'Today';
+
+      var bits = [];
+      if (kid.streak != null) {
+        bits.push(kid.streak + (kid.streak === 1 ? ' day in a row' : ' days in a row'));
+      }
+      if (kid.best) {
+        bits.push('Best unit check ' + kid.best + (kid.bestUnit ? (' — ' + kid.bestUnit) : ''));
+      }
+      document.getElementById('sub').textContent = bits.join('  ·  ');
+
+      var g = C.lockedBanner(document.getElementById('locked'), d.access, 'child');
+      writable = g.writable;
+      C.applyWritable(document, writable);
+
+      renderNotifications(d.notifications || []);
+      renderItems(d.items || []);
+      renderLater(d.later || []);
+      renderCards(d.flashcards || []);
+      renderChat(d.messages || []);
+    }
+
+    function renderNotifications(list) {
+      var card = document.getElementById('notifications-card');
+      if (!list.length) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+      document.getElementById('notifications').innerHTML = list.map(function (n) {
+        return '<div class="c-item"><div class="c-item-main">' +
+          '<div class="c-item-title">' + C.escapeHtml(n.title || 'Something new') + '</div>' +
+          '<div class="c-item-sub">' + C.escapeHtml(n.body || '') +
+          (n.created_at ? (' · ' + C.escapeHtml(C.fmtDate(n.created_at))) : '') +
+          '</div></div></div>';
+      }).join('');
+    }
+
+    function renderItems(items) {
+      var host = document.getElementById('items');
+      if (!items.length) {
+        host.innerHTML = '<p class="empty">Nothing set for today. If you want to get ' +
+          'ahead, the exam questions are always there.</p>';
+        return;
+      }
+      host.innerHTML = items.map(function (it) {
+        /* The label. `byName` when a parent set it, "Mr Badmus" otherwise —
+           and never a bare "parent", which is not what anyone is called.
+
+           ⚠️ THE FALLBACK CHAIN IS NOT DECORATION. On a real account the
+           parent has a first name and `byName` carries it. On an account
+           where nobody filled one in — every test fixture, and a real
+           parent who signed up with Google and skipped the field — it is
+           empty, and the chain falls to the thread partner's name from
+           /chat/threads (which the backend already resolves) and only then
+           to a warm generic. It NEVER falls back to a username or an
+           email: those are the two strings a child should not be reading
+           back to themselves, and one of them is their parent's login. */
+        var who = (it.by === 'parent')
+          ? ('Set by ' + (it.byName || (parent && parent.name) || 'your grown-up'))
+          : 'From Mr Badmus';
+        var sub = [who, it.mins != null ? (it.mins + ' min') : null, it.kind || null]
+          .filter(Boolean).map(C.escapeHtml).join(' · ');
+
+        var open = it.href
+          ? '<a class="btn btn-small" href="' + C.escapeHtml(it.href) + '">Open</a>'
+          : '';
+        var done = it.done
+          ? '<span class="tag ok">Done</span>'
+          : '<button class="btn btn-small" type="button" data-write data-done="' +
+            C.escapeHtml(it.id) + '">Done</button>';
+
+        return '<div class="c-item' + (it.done ? ' done' : '') + '">' +
+          '<div class="c-item-main">' +
+            '<div class="c-item-title">' + C.escapeHtml(it.title || 'Work') + '</div>' +
+            '<div class="c-item-sub">' + (it.sub ? (C.escapeHtml(it.sub) + ' · ') : '') + sub +
+            '</div>' +
+          '</div>' +
+          '<div class="c-item-acts">' + open + done + '</div>' +
+        '</div>';
+      }).join('');
+      C.applyWritable(host, writable);
+
+      host.onclick = function (e) {
+        var btn = e.target.closest ? e.target.closest('button[data-done]') : null;
+        if (!btn) { return; }
+        var id = btn.getAttribute('data-done');
+        C.setBusy(btn, true, 'Saving…');
+        C.api('/api/consumer/child/work/' + encodeURIComponent(id) + '/done',
+              { method: 'POST', token: ctx.token })
+          .then(function (r) {
+            C.setMsg(msgEl, (r && r.streak != null)
+              ? ('Nice one — that’s ' + r.streak + (r.streak === 1 ? ' day' : ' days') + ' in a row.')
+              : 'Nice one.', 'ok');
+            return load();
+          })
+          .catch(function (err) { C.setBusy(btn, false); C.setMsg(msgEl, err.message, 'error'); });
+      };
+    }
+
+    function renderLater(list) {
+      var card = document.getElementById('later-card');
+      if (!list.length) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+      document.getElementById('later').innerHTML = list.map(function (l) {
+        return '<div class="c-item"><div class="c-item-main">' +
+          '<div class="c-item-title">' + C.escapeHtml(l.title || 'Work') + '</div>' +
+          '<div class="c-item-sub">' +
+            [l.day || null, l.tag || null].filter(Boolean).map(C.escapeHtml).join(' · ') +
+          '</div></div></div>';
+      }).join('');
+    }
+
+    function renderCards(list) {
+      var card = document.getElementById('cards-card');
+      if (!list.length) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+      document.getElementById('flashcards').innerHTML = list.map(function (f) {
+        return '<div class="c-item"><div class="c-item-main">' +
+          '<div class="c-item-title">' + C.escapeHtml(f.title || f.lesson_slug || 'Flashcards') +
+          '</div></div></div>';
+      }).join('');
+    }
+
+    function renderChat(msgs) {
+      document.getElementById('chat-head').textContent =
+        parent && parent.name ? ('Messages with ' + parent.name) : 'Messages';
+
+      if (!msgs.length) {
+        chatEl.innerHTML = '<p class="empty">No messages yet. You can write to ' +
+          (parent && parent.name ? parent.name : 'your grown-up') + ' here.</p>';
+      } else {
+        chatEl.innerHTML = msgs.map(function (m) {
+          var mine = (m.who === 'you');
+          return '<div class="c-bubble' + (mine ? ' mine' : '') + '">' +
+            '<div class="c-bubble-text">' + C.escapeHtml(m.text || '') + '</div>' +
+            '<div class="c-bubble-meta">' +
+              (!mine && m.unread ? '<span class="c-unread-dot"></span>' : '') +
+              '<span>' + C.escapeHtml(m.time || C.fmtTime(m.created_at)) + '</span>' +
+              (mine ? '<button type="button" data-del="' + C.escapeHtml(m.id) +
+                      '">Delete</button>' : '') +
+            '</div>' +
+          '</div>';
+        }).join('');
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+
+      if (!readMarked && parent && parent.id) {
+        readMarked = true;                       // once, on open
+        C.api('/api/consumer/chat/read', {
+          method: 'POST', token: ctx.token, body: { with: parent.id }
+        }).catch(function (e) { console.error('[today/chat-read]', e); });
+      }
+    }
+
+    chatEl.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('button[data-del]') : null;
+      if (!btn) { return; }
+      if (!window.confirm('Delete this message?')) { return; }
+      C.api('/api/consumer/chat/messages/' + encodeURIComponent(btn.getAttribute('data-del')),
+            { method: 'DELETE', token: ctx.token })
+        .then(function () { return load(); })
+        .catch(function (err) { C.setMsg(msgEl, err.message, 'error'); });
+    });
+
+    document.getElementById('chat-send').addEventListener('click', function () {
+      var btn = this;
+      var text = textEl.value.trim();
+      if (!text) { return; }
+      if (!parent || !parent.id) {
+        return C.setMsg(msgEl,
+          'There’s nobody to message on this account yet. Ask your grown-up.', 'error');
+      }
+      if (text.length > 1000) {
+        return C.setMsg(msgEl, 'That’s a bit long — 1000 letters is the most.', 'error');
+      }
+      C.setBusy(btn, true, 'Sending…');
+      C.api('/api/consumer/chat/send', {
+        method: 'POST', token: ctx.token, body: { to: parent.id, text: text }
+      }).then(function () {
+        C.setBusy(btn, false);
+        textEl.value = ''; syncCount();
+        return load();
+      }).catch(function (e) {
+        C.setBusy(btn, false);
+        C.setMsg(msgEl, e.message, 'error');
+      });
+    });
+
+    /* Live. A message from the parent lands while the child is on the page —
+       and the whole page is one read, so the cheapest correct refresh is to
+       do that read again rather than splice a row in by hand. */
+    var rt = C.subscribeMessages(ctx.sb, function () { load(); });
+    window.addEventListener('beforeunload', function () { rt.unsubscribe(); });
+
+    function load() {
+      return C.api('/api/consumer/child/today', { token: ctx.token }).then(render);
+    }
+
+    return load().catch(function (e) {
+      C.fail(document.getElementById('items'), e.message,
+             'Try again in a moment, or ask your grown-up to check the account.');
+      C.fail(chatEl, 'We couldn’t load your messages.');
+      document.getElementById('sub').textContent = '';
+    });
+  }});
+})();
+</script>
+</body>
+</html>

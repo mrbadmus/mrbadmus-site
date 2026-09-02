@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}
+.pb-nav-links{display:none}
+.pb-two{display:grid;gap:20px}
+@media (min-width:900px){
+  .pb-nav-links{display:flex}
+  .pb-two{grid-template-columns:1.1fr .9fr;gap:32px;align-items:start}
+  .pb-wrap{padding-left:48px!important;padding-right:48px!important}
+}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<header class="pb-wrap" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:2px solid var(--ks3-ink);position:sticky;top:0;background:var(--ks3-ground);z-index:5">
+  <a href="Public Home.dc.html" style="display:flex;align-items:center;gap:10px;color:var(--ks3-ink)">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </a>
+  <nav class="pb-nav-links" style="margin-left:24px;gap:22px;font-weight:600;font-size:16px">
+    <a href="Public How It Works.dc.html" style="color:var(--ks3-ink)">How it works</a>
+    <a href="Public Home Education.dc.html" style="color:var(--ks3-ink)">Home education</a>
+    <a href="Public Pricing.dc.html" style="color:var(--ks3-ink);border-bottom:2px solid var(--ks3-accent)">Pricing</a>
+  </nav>
+  <span style="flex:1"></span>
+  <a href="Public Sign In.dc.html" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>
+  <a href="Parent Signup.dc.html" style="display:flex;align-items:center;min-height:44px;padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>
+</header>
+
+<main class="pb-wrap" style="max-width:1100px;margin:0 auto;padding:56px 20px 80px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Pricing</p>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,5.5vw,64px);line-height:.95;letter-spacing:-.04em;max-width:15em;text-wrap:balance">One plan. Everything in it. Priced per child.</h1>
+
+  <div class="pb-two" style="margin-top:44px">
+    <div style="padding:clamp(22px,3vw,32px);border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+      <div style="display:flex;gap:8px">
+        <sc-for list="{{ cycles }}" as="c" hint-placeholder-count="2">
+          <button class="ks3-option" aria-pressed="{{ c.on }}" onClick="{{ c.pick }}" style="width:auto;flex:1;justify-content:center;padding:12px;font-size:16px">{{ c.label }}</button>
+        </sc-for>
+      </div>
+      <p style="margin:24px 0 0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">How many children?</p>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:14px">
+        <button onClick="{{ dec }}" aria-label="Fewer" style="display:grid;place-items:center;width:48px;height:48px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-band);color:var(--ks3-ink);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <span style="min-width:40px;text-align:center;font-family:var(--ks3-font-display);font-weight:800;font-size:36px;letter-spacing:-.03em">{{ count }}</span>
+        <button onClick="{{ inc }}" aria-label="More" style="display:grid;place-items:center;width:48px;height:48px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-band);color:var(--ks3-ink);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+      <div style="margin-top:24px;display:flex;flex-direction:column;gap:8px;font-size:17px">
+        <sc-for list="{{ lines }}" as="l" hint-placeholder-count="1">
+          <div style="display:flex;justify-content:space-between;gap:12px"><span>{{ l.label }}</span><span style="font-family:var(--ks3-font-mono);font-weight:500">{{ l.amount }}</span></div>
+        </sc-for>
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:2px solid var(--ks3-rule);display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+        <span style="font-weight:700">{{ totalLabel }}</span>
+        <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:44px;letter-spacing:-.04em;line-height:1">{{ total }}</span>
+      </div>
+      <sc-if value="{{ saving }}" hint-placeholder-val="{{ false }}"><p style="margin:8px 0 0;font-size:15px;font-weight:700;color:var(--ks3-ok-text);text-align:right">{{ saving }}</p></sc-if>
+      <a href="Parent Signup.dc.html" style="margin-top:22px;display:flex;align-items:center;justify-content:center;min-height:56px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;box-shadow:5px 5px 0 var(--ks3-accent)">Start a free week</a>
+      <p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">Seven days free. Then {{ total }} {{ per }}. Cancel any time.</p>
+    </div>
+
+    <div>
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Every child gets</p>
+      <ul style="margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;font-size:17px">
+        <sc-for list="{{ includes }}" as="i" hint-placeholder-count="7">
+          <li style="display:flex;gap:12px;align-items:flex-start"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="flex:0 0 auto;margin-top:5px;color:var(--ks3-ok-text)"><path d="M5 12.5l4.5 4.5L19 7"/></svg><span>{{ i }}</span></li>
+        </sc-for>
+      </ul>
+      <div style="margin-top:28px;padding:20px 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-band)">
+        <p style="margin:0;font-weight:700;font-size:17px">Compared with a tutor</p>
+        <p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">An hour a week with a science tutor in England is typically £30 to £45. That's £120 to £180 a month for one child, for one hour of contact. This is £9.99 for the week's work set, marked and reported, every week of the year.</p>
+      </div>
+    </div>
+  </div>
+
+  <section style="margin-top:64px">
+    <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Money questions</h2>
+    <div style="margin-top:20px;display:flex;flex-direction:column;border-top:2px solid var(--ks3-ink)">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+        <div style="padding:18px 0;border-bottom:1px solid var(--ks3-rule)">
+          <p style="margin:0;font-weight:700;font-size:19px">{{ f.q }}</p>
+          <p style="margin:8px 0 0;font-size:17px;color:var(--ks3-ink-body);max-width:60em">{{ f.a }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</main>
+
+<footer style="border-top:2px solid var(--ks3-ink);background:var(--ks3-card)">
+  <div class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:28px 20px;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;font-size:15px;color:var(--ks3-ink-muted)">
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;color:var(--ks3-ink)">MrBadmus</span>
+    <a href="Public How It Works.dc.html">How it works</a><a href="Public Home Education.dc.html">Home education</a><a href="Public Pricing.dc.html">Pricing</a><a href="Public Sign In.dc.html">Sign in</a>
+    <span style="margin-left:auto">Mr Badmus Education Ltd · England</span>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PRICE = { monthlyFirst: 9.99, monthlyExtra: 5.99, annualFirst: 79, annualExtra: 49 };
+const INCLUDES = ['Work set every Sunday, matched to the unit school is on', 'Lessons, recall questions and exam questions for Years 7 to 11', 'Every answer marked instantly against the mark scheme', 'Two written answers a month marked by Mr Badmus personally', 'Timed unit checks with a named weak area', 'Sunday email to you and a printable termly report', 'Parent-to-child messaging and the ability to set extra work'];
+const FAQS = [
+  { q: 'Why is the card needed for a free week?', a: 'So the week runs the same as a paid one and switches over without a gap. Nothing is charged for seven days and cancelling before then costs nothing. You get an email two days before the first payment.' },
+  { q: 'What does the annual plan save?', a: '£79 a year for the first child against £119.88 monthly, and £49 against £71.88 for each extra child. About a third off.' },
+  { q: 'Can I add or remove a child mid-month?', a: 'Yes. Adding one is pro-rated to your billing date. Removing one takes effect at the end of the current period.' },
+  { q: 'Is there a school or tutor rate?', a: 'Yes. Schools and tutoring centres run on organisation accounts with per-pupil pricing and a staff dashboard. Write to hello@mrbadmus.com.' },
+  { q: 'Do prices include VAT?', a: 'Yes. What you see is what you pay.' },
+];
+const fmt = (n) => '\u00a3' + (Number.isInteger(n) ? n.toFixed(0) : n.toFixed(2));
+class Component extends DCLogic {
+  state = { cycle: 'monthly', count: 1 };
+  renderVals() {
+    const { cycle, count } = this.state; const annual = cycle === 'annual';
+    const first = annual ? PRICE.annualFirst : PRICE.monthlyFirst, extra = annual ? PRICE.annualExtra : PRICE.monthlyExtra;
+    const total = first + extra * (count - 1); const monthlyTotal = PRICE.monthlyFirst + PRICE.monthlyExtra * (count - 1);
+    const lines = [{ label: 'First child', amount: fmt(first) }]; if (count > 1) lines.push({ label: `${count - 1} more ${count - 1 === 1 ? 'child' : 'children'} × ${fmt(extra)}`, amount: fmt(extra * (count - 1)) });
+    return {
+      brandSize: 26, cycles: ['monthly', 'annual'].map((c) => ({ label: c === 'monthly' ? 'Monthly' : 'Annual', on: String(cycle === c), pick: () => this.setState({ cycle: c }) })),
+      count, dec: () => this.setState({ count: Math.max(1, count - 1) }), inc: () => this.setState({ count: Math.min(6, count + 1) }),
+      lines, total: fmt(total), totalLabel: annual ? 'Per year' : 'Per month', per: annual ? 'a year' : 'a month',
+      saving: annual ? `Saves ${fmt(Math.round(monthlyTotal * 12 - total))} a year` : '', includes: INCLUDES, faqs: FAQS,
+    };
+  }
+}
+</script>
+</body>
+</html>

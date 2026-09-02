@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Unit check — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container" id="c-main">
+  <div class="page-header"><h1 id="head">Unit check</h1></div>
+  <div class="page-sub" id="sub"></div>
+
+  <div id="locked"></div>
+  <div class="c-msg" id="msg"></div>
+
+  <!-- three screens, one at a time -->
+  <div class="card" id="screen-start"><p class="empty">Loading…</p></div>
+  <div class="card" id="screen-run" style="display:none;"></div>
+  <div class="card" id="screen-result" style="display:none;"></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/unit-check.html — ten questions, fifteen minutes, one unit.
+   MRB-312, Night 2. SCAFFOLD.
+
+   ── THE ANSWERS ARE NOT ON THIS PAGE, AND THAT IS THE DESIGN ───────────
+   `/unit-check/start` returns stems and options and nothing else — no
+   correct index, no scheme. The marking happens on `/submit`. A child with
+   DevTools open finds nothing in the payload worth finding, which is the
+   only version of "don't cheat" that is actually true. Do not add a
+   client-side score for responsiveness; it would require the answers.
+
+   ── THE CLOCK IS A DEADLINE, NOT A DISPLAY ─────────────────────────────
+   It counts from `time_limit_s` and at zero it SUBMITS, with whatever has
+   been chosen so far. A timer that expires and then waits politely for a
+   click is not a time limit, and a child who steps away mid-check must not
+   come back to an attempt that silently never counted.
+
+   ⚠️ `elapsed_s` is sent as the wall-clock difference since start, not as
+   `limit - remaining`, because the two disagree whenever the tab is
+   backgrounded and the browser throttles setInterval. The backend is the
+   authority on whether that elapsed time was legitimate.
+
+   ── ONE QUESTION AT A TIME ─────────────────────────────────────────────
+   Ten questions on one scrollable page invites a child to answer the easy
+   three and lose the rest to a clock they cannot see. One at a time, with
+   "3 of 10" and the clock always visible, is a check they can pace.
+
+   ⊕ CONFIRMED by driving it, 2 Sep 2026. `answers[].chosen` is the option's
+   INDEX (0–3). The contract said `{ id, chosen }` without saying which; the
+   index was chosen because every answer comparison on this estate runs on
+   indices rather than rendered text (CLAUDE.md, MRB-302), and a submitted
+   run came back with a real score and a per-topic breakdown, which an
+   unrecognised `chosen` could not have produced.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  var unitCode = new URLSearchParams(window.location.search).get('unit');
+  var workItem = new URLSearchParams(window.location.search).get('work');
+
+  var unit = null;
+  var writable = false;
+  var attempt = null;      // { attempt_id, time_limit_s, qs: [] }
+  var chosen = {};         // question id → option index
+  var at = 0;              // which question is on screen
+  var startedAt = 0;
+  var ticker = null;
+  var submitting = false;
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/today.html')) + '">Today</a>'
+    );
+
+    var msgEl = document.getElementById('msg');
+    var startEl  = document.getElementById('screen-start');
+    var runEl    = document.getElementById('screen-run');
+    var resultEl = document.getElementById('screen-result');
+
+    function show(which) {
+      startEl.style.display  = which === 'start'  ? 'block' : 'none';
+      runEl.style.display    = which === 'run'    ? 'block' : 'none';
+      resultEl.style.display = which === 'result' ? 'block' : 'none';
+    }
+
+    if (!unitCode) {
+      document.getElementById('head').textContent = 'Which unit?';
+      C.fail(startEl, 'This page needs to know which unit to check.',
+             'Open it from your Today page and it will bring the unit with it.');
+      return;
+    }
+
+    /* ── start screen ───────────────────────────────────────────────────── */
+    function loadStart() {
+      return C.api('/api/consumer/child/unit-check?unit=' + encodeURIComponent(unitCode),
+                   { token: ctx.token }).then(function (d) {
+        unit = (d && d.unit) || {};
+        var g = C.lockedBanner(document.getElementById('locked'), d && d.access, 'child');
+        writable = g.writable;
+
+        document.title = (unit.name || 'Unit check') + ' — MrBadmus';
+        document.getElementById('head').textContent = unit.name || 'Unit check';
+        document.getElementById('sub').textContent = [
+          unit.subject || null,
+          unit.year != null ? ('Year ' + unit.year) : null,
+          unit.lessons != null ? (unit.lessons + ' lessons') : null
+        ].filter(Boolean).join('  ·  ');
+
+        var prev = (d && d.previous) || null;
+        startEl.innerHTML =
+          '<p>' + (unit.count != null ? unit.count : 10) + ' questions, about ' +
+          (unit.minutes != null ? unit.minutes : 15) + ' minutes. They come from ' +
+          'everything in this unit, so it is a check of the whole thing rather ' +
+          'than the last lesson.</p>' +
+          (prev
+            ? ('<div class="c-sub">Last time</div><p>' +
+               C.escapeHtml(C.fmtDate(prev.date)) + ' · <strong>' +
+               C.escapeHtml(prev.pct != null ? (prev.pct + '%') : '—') + '</strong>' +
+               (prev.is_record ? ' <span class="tag ok">Your best</span>' : '') + '</p>')
+            : '<p class="empty" style="margin-top:12px;">You haven’t done this one before.</p>') +
+          '<p style="margin-top:18px;">' +
+            '<button class="btn btn-primary" id="btn-start" type="button" data-write ' +
+            'style="width:auto;">' + (prev ? 'Have another go' : 'Start the check') +
+            '</button></p>';
+
+        C.applyWritable(startEl, writable);
+        show('start');
+        document.getElementById('btn-start').addEventListener('click', function () {
+          begin(this);
+        });
+      });
+    }
+
+    /* ── the run ────────────────────────────────────────────────────────── */
+    function begin(btn) {
+      C.setBusy(btn, true, 'Getting ready…');
+      var body = { unit_code: unitCode };
+      if (workItem) { body.work_item_id = workItem; }
+      C.api('/api/consumer/child/unit-check/start',
+            { method: 'POST', token: ctx.token, body: body })
+        .then(function (d) {
+          C.setBusy(btn, false);
+          attempt = d || {};
+          if (!attempt.qs || !attempt.qs.length) {
+            return C.setMsg(msgEl,
+              'There are no questions ready for this unit yet. Try again tomorrow.', 'error');
+          }
+          chosen = {}; at = 0;
+          startedAt = Date.now();
+          show('run');
+          renderQuestion();
+          startClock();
+        })
+        .catch(function (e) {
+          C.setBusy(btn, false);
+          if (e.code === 'org_locked') {
+            return C.setMsg(msgEl, e.message ||
+              'Your account is paused, so you can’t start a check right now.', 'error');
+          }
+          C.setMsg(msgEl, e.message, 'error');
+        });
+    }
+
+    function remaining() {
+      var limit = Number(attempt.time_limit_s || 900);
+      return Math.max(0, limit - Math.floor((Date.now() - startedAt) / 1000));
+    }
+
+    function clockText(s) {
+      var m = Math.floor(s / 60);
+      var r = s % 60;
+      return m + ':' + (r < 10 ? '0' : '') + r;
+    }
+
+    function startClock() {
+      if (ticker) { clearInterval(ticker); }
+      ticker = setInterval(function () {
+        var s = remaining();
+        var el = document.getElementById('clock');
+        if (el) {
+          el.textContent = clockText(s);
+          el.className = 'c-clock' + (s <= 60 ? ' low' : '');
+        }
+        if (s <= 0) { clearInterval(ticker); ticker = null; submit(true); }
+      }, 1000);
+    }
+
+    function renderQuestion() {
+      var q = attempt.qs[at];
+      var picked = chosen[q.id];
+      runEl.innerHTML =
+        '<div class="row" style="border:none;padding-top:0;">' +
+          '<span class="c-progress">Question ' + (at + 1) + ' of ' + attempt.qs.length +
+          (q.topic ? (' · ' + C.escapeHtml(q.topic)) : '') + '</span>' +
+          '<span class="right"><span class="c-clock" id="clock">' +
+          clockText(remaining()) + '</span></span>' +
+        '</div>' +
+        '<p style="font-size:1.05rem;margin-top:10px;white-space:pre-wrap;">' +
+          C.escapeHtml(q.text || '') + '</p>' +
+        '<div class="c-options">' +
+          (q.options || []).map(function (opt, i) {
+            return '<button class="btn' + (picked === i ? ' sel' : '') +
+              '" type="button" data-opt="' + i + '">' + C.escapeHtml(opt) + '</button>';
+          }).join('') +
+        '</div>' +
+        '<div class="row" style="margin-top:18px;">' +
+          '<button class="btn btn-small" id="btn-back" type="button"' +
+            (at === 0 ? ' disabled' : '') + '>← Back</button>' +
+          '<span class="right">' +
+            (at === attempt.qs.length - 1
+              ? '<button class="btn btn-primary" id="btn-submit" type="button" ' +
+                'style="width:auto;">Hand it in</button>'
+              : '<button class="btn btn-small" id="btn-next" type="button">Next →</button>') +
+          '</span>' +
+        '</div>' +
+        '<p class="empty" style="margin-top:12px;">' +
+          Object.keys(chosen).length + ' of ' + attempt.qs.length + ' answered. ' +
+          'When the clock runs out it hands itself in.</p>';
+
+      runEl.onclick = function (e) {
+        var t = e.target.closest ? e.target.closest('button') : null;
+        if (!t) { return; }
+        if (t.hasAttribute('data-opt')) {
+          chosen[q.id] = Number(t.getAttribute('data-opt'));
+          return renderQuestion();
+        }
+        if (t.id === 'btn-next') { at = Math.min(at + 1, attempt.qs.length - 1); return renderQuestion(); }
+        if (t.id === 'btn-back') { at = Math.max(at - 1, 0); return renderQuestion(); }
+        if (t.id === 'btn-submit') { return submit(false); }
+      };
+    }
+
+    /* ── submit ─────────────────────────────────────────────────────────── */
+    function submit(auto) {
+      if (submitting) { return; }          // the clock and a click can race
+      submitting = true;
+      if (ticker) { clearInterval(ticker); ticker = null; }
+
+      var answers = attempt.qs.map(function (q) {
+        // The option INDEX — confirmed against the backend. See the header.
+        return { id: q.id, chosen: (chosen[q.id] != null ? chosen[q.id] : null) };
+      });
+      var elapsed = Math.floor((Date.now() - startedAt) / 1000);
+
+      runEl.innerHTML = '<p class="empty">' +
+        (auto ? 'Time’s up — handing it in…' : 'Marking…') + '</p>';
+
+      C.api('/api/consumer/child/unit-check/submit', {
+        method: 'POST', token: ctx.token,
+        body: { attempt_id: attempt.attempt_id, answers: answers, elapsed_s: elapsed }
+      }).then(function (d) {
+        submitting = false;
+        renderResult(d || {}, auto);
+      }).catch(function (e) {
+        submitting = false;
+        show('run');
+        /* The attempt is not lost — the backend has it. Say so, and give
+           them the button back, rather than leaving them on a dead screen
+           wondering whether fifteen minutes just evaporated. */
+        runEl.innerHTML = '<div class="c-fail"><p>' + C.escapeHtml(e.message) + '</p>' +
+          '<p class="c-fail-hint">Your answers are still here on this page. ' +
+          'Press the button to try handing them in again.</p></div>' +
+          '<p style="margin-top:14px;"><button class="btn" id="btn-retry" type="button">' +
+          'Try again</button></p>';
+        document.getElementById('btn-retry').addEventListener('click', function () {
+          submit(auto);
+        });
+      });
+    }
+
+    function renderResult(d, auto) {
+      show('result');
+      var breakdown = (d.breakdown || []).map(function (b) {
+        return '<tr><td>' + C.escapeHtml(b.topic || '') + '</td>' +
+          '<td>' + C.escapeHtml(String(b.got)) + ' / ' + C.escapeHtml(String(b.of)) + '</td></tr>';
+      }).join('');
+
+      resultEl.innerHTML =
+        '<h2>How you did</h2>' +
+        (auto ? '<p class="empty" style="margin-bottom:12px;">The clock ran out, so this ' +
+                'was handed in for you.</p>' : '') +
+        '<div class="stats">' +
+          '<div class="stat"><div class="n">' +
+            C.escapeHtml(d.pct != null ? (d.pct + '%') : '—') +
+          '</div><div class="l">Score</div></div>' +
+          '<div class="stat"><div class="n">' +
+            C.escapeHtml(String(d.score != null ? d.score : '—')) + ' / ' +
+            C.escapeHtml(String(d.max != null ? d.max : '—')) +
+          '</div><div class="l">Right</div></div>' +
+          (d.is_record
+            ? '<div class="stat"><div class="n"><span class="tag ok">Your best yet</span>' +
+              '</div><div class="l">Record</div></div>' : '') +
+        '</div>' +
+        (breakdown
+          ? ('<div class="c-sub">By topic</div><div class="c-scroll"><table class="c-table">' +
+             '<thead><tr><th>Topic</th><th>Right</th></tr></thead><tbody>' +
+             breakdown + '</tbody></table></div>')
+          : '') +
+        (d.weakest
+          ? ('<div class="c-sub">Worth another look</div><p><strong>' +
+             C.escapeHtml(d.weakest) + '</strong></p>' +
+             (d.weak_note ? ('<p class="empty" style="margin-top:6px;">' +
+                             C.escapeHtml(d.weak_note) + '</p>') : ''))
+          : '') +
+        (d.flashcards_seeded
+          ? ('<p style="margin-top:14px;">We’ve put ' + Number(d.flashcards_seeded) +
+             ' flashcard' + (Number(d.flashcards_seeded) === 1 ? '' : 's') +
+             ' on your Today page from the bits you found hard.</p>')
+          : '') +
+        '<p style="margin-top:20px;"><a class="btn" href="' +
+          C.escapeHtml(C.href('/consumer/today.html')) + '">Back to Today</a></p>';
+    }
+
+    window.addEventListener('beforeunload', function () {
+      if (ticker) { clearInterval(ticker); }
+    });
+
+    return loadStart().catch(function (e) {
+      C.fail(startEl, e.message,
+             'Try again in a moment, or go back to your Today page.');
+      document.getElementById('sub').textContent = '';
+    });
+  }});
+})();
+</script>
+</body>
+</html>

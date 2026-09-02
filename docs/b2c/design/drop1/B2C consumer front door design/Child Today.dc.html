@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408;text-decoration:underline}
+input,button{font:inherit}
+input::placeholder{color:#9A8F86}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:19px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<header style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+  <sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </sc-if>
+  <sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ goToday }}" aria-label="Back" style="display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;border:0;border-radius:12px;background:none;color:var(--ks3-ink);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">{{ parentName }}</span>
+  </sc-if>
+  <span style="flex:1"></span>
+  <button onClick="{{ goChat }}" aria-label="Messages" style="position:relative;display:grid;place-items:center;width:44px;height:44px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-card);color:var(--ks3-ink);cursor:pointer">
+    <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px"><path d="M4 5h16v11H9l-5 4z"/></svg>
+    <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-8px;right:-8px;display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:99px;border:2px solid var(--ks3-ground);background:var(--ks3-accent-text);color:#fff;font-family:var(--ks3-font-mono);font-size:12px;font-weight:500">{{ unread }}</span></sc-if>
+  </button>
+</header>
+
+<sc-if value="{{ isToday }}" hint-placeholder-val="{{ true }}">
+<main style="max-width:560px;margin:0 auto;padding:26px 20px 60px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ dateLabel }}</p>
+  <h1 style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:.98;letter-spacing:-.035em">{{ greeting }}</h1>
+
+  <div style="margin-top:18px;display:flex;gap:8px">
+    <div style="flex:1;display:flex;align-items:center;gap:10px;padding:12px 14px;border:2px solid var(--ks3-ink);border-radius:16px;background:var(--ks3-card)">
+      <span style="display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--ks3-accent);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);font-weight:800;font-size:18px">{{ streak }}</span>
+      <span style="font-size:15px;line-height:1.3"><strong>week streak</strong><br><span style="color:var(--ks3-ink-muted)">{{ streakNote }}</span></span>
+    </div>
+    <div style="flex:1;display:flex;align-items:center;gap:10px;padding:12px 14px;border:2px solid var(--ks3-ink);border-radius:16px;background:var(--ks3-card)">
+      <span style="display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--ks3-ok);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);font-weight:800;font-size:15px;color:#fff">{{ best }}</span>
+      <span style="font-size:15px;line-height:1.3"><strong>personal best</strong><br><span style="color:var(--ks3-ink-muted)">{{ bestNote }}</span></span>
+    </div>
+  </div>
+
+  <sc-if value="{{ hasUnread }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ goChat }}" style="margin-top:18px;width:100%;text-align:left;display:flex;gap:12px;align-items:flex-start;padding:16px 18px;border-radius:var(--ks3-r-panel);background:var(--ks3-ink);color:var(--ks3-on-dark);border:0;box-shadow:5px 5px 0 var(--ks3-accent);cursor:pointer">
+      <span style="display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:11px;background:var(--ks3-dark-panel);font-family:var(--ks3-font-display);font-weight:800;font-size:16px">{{ parentInitial }}</span>
+      <span style="flex:1;min-width:0">
+        <span style="display:block;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-alert)">{{ parentName }} wrote</span>
+        <span style="display:block;margin-top:4px;font-size:17px;color:var(--ks3-on-dark-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ lastParentMsg }}</span>
+      </span>
+    </button>
+  </sc-if>
+
+  <h2 style="margin:28px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:26px;letter-spacing:-.025em">Today</h2>
+  <sc-if value="{{ nothingToday }}" hint-placeholder-val="{{ false }}">
+    <div style="margin-top:12px;padding:24px 22px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-card);background:var(--ks3-inset)">
+      <p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">{{ nothingHeading }}</p>
+      <p style="margin:6px 0 0;font-size:17px;color:var(--ks3-ink-body)">{{ nothingBody }}</p>
+    </div>
+  </sc-if>
+  <div style="margin-top:12px;display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ items }}" as="it" hint-placeholder-count="2">
+      <a href="{{ it.href }}" style="display:flex;align-items:center;gap:14px;padding:18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:{{ it.bg }};box-shadow:{{ it.shadow }};color:var(--ks3-ink);text-decoration:none;opacity:{{ it.opacity }}">
+        <span style="display:grid;place-items:center;flex:0 0 44px;height:44px;border-radius:13px;border:2px solid var(--ks3-ink);background:{{ it.iconBg }};color:{{ it.iconFg }}">
+          <sc-if value="{{ it.done }}" hint-placeholder-val="{{ false }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px"><path d="M5 12.5l4.5 4.5L19 7"/></svg></sc-if>
+          <sc-if value="{{ it.todo }}" hint-placeholder-val="{{ true }}"><span style="font-family:var(--ks3-font-mono);font-size:13px;font-weight:500">{{ it.mins }}</span></sc-if>
+        </span>
+        <span style="flex:1;min-width:0">
+          <span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1.15">{{ it.title }}</span>
+          <span style="display:block;margin-top:4px;font-size:14px;color:var(--ks3-ink-muted)">{{ it.sub }}</span>
+        </span>
+        <span style="flex:0 0 auto;padding:5px 10px;border-radius:99px;border:2px solid {{ it.tagBorder }};background:{{ it.tagBg }};font-size:12px;font-weight:700;color:{{ it.tagFg }};white-space:nowrap">{{ it.tag }}</span>
+      </a>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ hasLater }}" hint-placeholder-val="{{ true }}">
+    <h2 style="margin:30px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.025em;color:var(--ks3-ink-muted)">Later this week</h2>
+    <ul style="margin:10px 0 0;padding:0;list-style:none;border:2px solid var(--ks3-rule-strong);border-radius:var(--ks3-r-card);background:var(--ks3-card);overflow:hidden">
+      <sc-for list="{{ later }}" as="l" hint-placeholder-count="2">
+        <li style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ks3-rule);font-size:16px">
+          <span style="flex:0 0 40px;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ l.day }}</span>
+          <span style="flex:1">{{ l.title }}</span>
+          <span style="font-size:13px;color:var(--ks3-ink-muted)">{{ l.tag }}</span>
+        </li>
+      </sc-for>
+    </ul>
+  </sc-if>
+
+  <div style="margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <a href="Child Exam Questions.dc.html" style="display:flex;flex-direction:column;gap:4px;padding:16px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);color:var(--ks3-ink);text-decoration:none"><span style="font-weight:700;font-size:17px">Exam questions</span><span style="font-size:14px;color:var(--ks3-ink-muted)">Write one, get it marked</span></a>
+    <a href="Child Unit Check.dc.html" style="display:flex;flex-direction:column;gap:4px;padding:16px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);color:var(--ks3-ink);text-decoration:none"><span style="font-weight:700;font-size:17px">Unit check</span><span style="font-size:14px;color:var(--ks3-ink-muted)">{{ unitCheckNote }}</span></a>
+  </div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
+<main style="max-width:560px;margin:0 auto;padding:20px 20px 110px;min-height:calc(100vh - 200px);display:flex;flex-direction:column">
+  <sc-if value="{{ chatEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="margin:auto 0;padding:26px 22px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-card);background:var(--ks3-inset);text-align:center">
+      <p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">Say hi to {{ parentName }}</p>
+      <p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-body)">Only the two of you can see this.</p>
+    </div>
+  </sc-if>
+  <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ messages }}" as="m" hint-placeholder-count="4">
+      <div style="display:flex;flex-direction:column;align-items:{{ m.align }}">
+        <div style="max-width:82%;padding:12px 16px;border:2px solid var(--ks3-ink);border-radius:18px;background:{{ m.bg }};color:{{ m.fg }};font-size:17px;line-height:1.45">{{ m.text }}</div>
+        <span style="margin-top:4px;font-family:var(--ks3-font-mono);font-size:11px;color:var(--ks3-ink-muted)">{{ m.who }} · {{ m.time }}</span>
+      </div>
+    </sc-for>
+  </div>
+  <div style="position:fixed;left:0;right:0;bottom:0;padding:12px 20px 20px;background:var(--ks3-ground);border-top:2px solid var(--ks3-ink)">
+    <div style="max-width:560px;margin:0 auto;display:flex;gap:8px;padding:8px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+      <input value="{{ draft }}" onChange="{{ setDraft }}" onKeyDown="{{ draftKey }}" placeholder="Write a message" style="flex:1;min-width:0;min-height:44px;padding:8px 12px;border:0;background:none;font-size:18px;color:var(--ks3-ink);outline:none">
+      <button onClick="{{ send }}" aria-label="Send" style="display:grid;place-items:center;width:44px;height:44px;border:2px solid var(--ks3-ink);border-radius:12px;background:var(--ks3-ink);color:var(--ks3-on-dark);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</main>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;scenario&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;nothing-today&quot;,&quot;no-new-work&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Edge states&quot;}}">
+const CHILD = { name: 'Amara', streak: 6, best: '78%', bestUnit: 'Health and disease' };
+const PARENT = { name: 'Mum', initial: 'M' };
+const ITEMS = [
+  { id: 1, title: 'Health and disease: lesson 3', sub: 'Vaccines and memory cells', mins: '20', done: true, by: 'mb', href: '#lesson' },
+  { id: 2, title: 'Explain it: 4-mark practice', sub: 'One question, marked straight away', mins: '15', done: false, by: 'mb', href: 'Child Exam Questions.dc.html' },
+  { id: 3, title: 'Rates of reaction: quick questions', sub: '8 questions', mins: '10', done: false, by: 'parent', href: '#retrieval' },
+];
+const LATER = [{ day: 'Thu', title: 'Retrieval: 8 quick questions', tag: 'Mr Badmus' }, { day: 'Fri', title: 'Unit check: Health and disease', tag: 'Mr Badmus' }];
+const MESSAGES = [
+  { who: 'you', text: 'done the disease lesson, the vaccine bit was actually interesting', time: 'Tue 7.42pm' },
+  { who: 'parent', text: 'Nice one. What was the interesting bit?', time: 'Tue 8.10pm' },
+  { who: 'you', text: 'memory cells. they just wait around for years', time: 'Tue 8.15pm' },
+  { who: 'parent', text: 'Ha, like me waiting for you to tidy your room. Proud of you for keeping the streak going x', time: 'Tue 9.02pm', unread: true },
+];
+const TAG = { mb: { tag: 'From Mr Badmus', border: 'var(--ks3-rule-strong)', bg: 'var(--ks3-band)', fg: 'var(--ks3-ink-muted)' }, parent: { tag: `Set by ${PARENT.name}`, border: 'var(--ks3-accent)', bg: 'var(--ks3-accent-tint)', fg: 'var(--ks3-accent-text)' } };
+
+class Component extends DCLogic {
+  state = { screen: 'today', items: ITEMS, messages: MESSAGES, draft: '', readAll: false };
+  renderVals() {
+    const s = this.state; const scenario = this.props.scenario ?? 'normal';
+    const items = scenario === 'nothing-today' || scenario === 'no-new-work' ? [] : s.items;
+    const unread = s.readAll ? 0 : s.messages.filter((m) => m.unread).length;
+    const hour = new Date().getHours();
+    const send = () => { const t = s.draft.trim(); if (!t) return; this.setState({ messages: [...s.messages, { who: 'you', text: t, time: 'Just now' }], draft: '' }); };
+    const lastParent = [...s.messages].reverse().find((m) => m.who === 'parent');
+    return {
+      brandSize: 26, isToday: s.screen === 'today', isChat: s.screen === 'chat', goToday: () => this.setState({ screen: 'today' }), goChat: () => this.setState({ screen: 'chat', readAll: true }),
+      parentName: PARENT.name, parentInitial: PARENT.initial, hasUnread: unread > 0, unread, lastParentMsg: lastParent ? lastParent.text : '',
+      dateLabel: new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }), greeting: `${hour < 12 ? 'Morning' : hour < 18 ? 'Afternoon' : 'Evening'}, ${CHILD.name}.`,
+      streak: CHILD.streak, streakNote: 'keep it going this week', best: CHILD.best, bestNote: CHILD.bestUnit,
+      nothingToday: items.length === 0, nothingHeading: scenario === 'no-new-work' ? 'Nothing new right now' : 'Nothing set for today', nothingBody: scenario === 'no-new-work' ? 'Your finished work and marked answers are still here. Exam questions are open below.' : 'Next up is Thursday. Fancy an exam question anyway?',
+      items: items.map((it) => ({ ...it, todo: !it.done, bg: it.done ? 'var(--ks3-row-dim)' : 'var(--ks3-card)', shadow: it.done ? 'none' : 'var(--ks3-shadow-block)', opacity: it.done ? 0.75 : 1, iconBg: it.done ? 'var(--ks3-ok)' : 'var(--ks3-band)', iconFg: it.done ? '#fff' : 'var(--ks3-ink)', ...TAG[it.by], tagBorder: TAG[it.by].border, tagBg: TAG[it.by].bg, tagFg: TAG[it.by].fg })),
+      hasLater: scenario === 'normal', later: LATER, unitCheckNote: scenario === 'normal' ? 'Health and disease · Friday' : 'None due',
+      chatEmpty: s.messages.length === 0,
+      messages: s.messages.map((m) => ({ ...m, align: m.who === 'you' ? 'flex-end' : 'flex-start', bg: m.who === 'you' ? 'var(--ks3-ink)' : 'var(--ks3-card)', fg: m.who === 'you' ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)', who: m.who === 'you' ? 'You' : PARENT.name })),
+      draft: s.draft, setDraft: (e) => this.setState({ draft: e.target.value }), draftKey: (e) => { if (e.key === 'Enter') send(); }, send,
+    };
+  }
+}
+</script>
+</body>
+</html>

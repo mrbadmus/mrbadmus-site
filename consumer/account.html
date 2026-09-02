@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Account &amp; billing — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+</head>
+<body>
+
+<div id="c-nav"></div>
+
+<div class="container" id="c-main">
+  <div class="page-header"><h1>Account &amp; billing</h1></div>
+  <div class="page-sub" id="sub">…</div>
+
+  <div id="locked"></div>
+  <div class="c-msg" id="msg"></div>
+
+  <div class="card">
+    <h2>Subscription</h2>
+    <div id="billing"><p class="empty">Loading…</p></div>
+  </div>
+
+  <div class="card" id="seats-card" style="display:none;">
+    <h2>What you pay for</h2>
+    <div id="seats"></div>
+    <p class="empty" id="totals" style="margin-top:14px;"></p>
+  </div>
+
+  <div class="card" id="checkout-card" style="display:none;">
+    <h2>Start a subscription</h2>
+    <div class="c-radios" id="intervals">
+      <label class="c-radio sel" data-interval="month">
+        <input type="radio" name="interval" value="month" checked/>
+        <span><strong>Monthly</strong><br/><span class="empty" id="price-month">—</span></span>
+      </label>
+      <label class="c-radio" data-interval="year">
+        <input type="radio" name="interval" value="year"/>
+        <span><strong>Yearly</strong><br/><span class="empty" id="price-year">—</span></span>
+      </label>
+    </div>
+    <p class="empty" id="trial-note" style="margin-bottom:14px;"></p>
+    <button class="btn btn-primary" id="btn-checkout" type="button">Start subscription</button>
+  </div>
+
+  <div class="card" id="portal-card" style="display:none;">
+    <h2>Manage billing</h2>
+    <p class="empty" style="margin-bottom:14px;">
+      Change your card, switch between monthly and yearly, download receipts,
+      or cancel — all on our payment provider’s own secure page.
+    </p>
+    <button class="btn" id="btn-portal" type="button">Manage billing</button>
+  </div>
+
+  <div class="card">
+    <h2>What we email you</h2>
+    <div id="prefs"><p class="empty">Loading…</p></div>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/account.html — the money page. MRB-309/314, Night 2. SCAFFOLD.
+
+   ── EVERY NUMBER ON THIS PAGE CAME FROM THE BACKEND ────────────────────
+   overview.html's rule, and it matters more here than anywhere: this is the
+   page where a parent decides whether they are being charged fairly. A
+   total this page computed itself — even correctly — is a number nobody can
+   trace to an invoice, and the first time the graduated per-seat price
+   changes it becomes a number that is quietly wrong. So `monthly_total_pence`
+   and `annual_total_pence` are RENDERED, never derived, and the per-seat
+   prices are the ones the backend attached to each seat.
+
+   The one arithmetic this page does is `money()` turning pence into pounds,
+   which is a format, not a calculation.
+
+   ── THE TWO BUTTONS ARE MUTUALLY EXCLUSIVE, AND THE BACKEND DECIDES ────
+   `can_checkout` and `can_portal` are fields, not inferences. There is a
+   real state where both are true (a cancelled subscription whose period has
+   ended, on an account that still has a Stripe customer) and a real state
+   where neither is — and a frontend that tried to work out which from
+   `state` would get that pair wrong in exactly the case that matters.
+
+   ── WHY THE PREFS SAVE ON CHANGE, NOT ON A SAVE BUTTON ─────────────────
+   Three checkboxes with a Save button below them is three chances to tick
+   the box, feel finished, and walk away. Each box posts itself, reverts
+   itself visibly if the post fails, and says so. Nothing to forget.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  /* Design's billing words, in the parent's language. A state we have not
+     seen renders as itself — see overview.html's `statusTone` for the same
+     policy. Never "unknown". */
+  var STATE_WORD = {
+    none:      'Not started',
+    trialing:  'Free trial',
+    active:    'Active',
+    past_due:  'Payment failed',
+    cancelled: 'Cancelling',
+    canceled:  'Cancelling',
+    locked:    'Paused'
+  };
+  var STATE_TONE = {
+    trialing: 'ok', active: 'ok',
+    past_due: 'warn', cancelled: 'warn', canceled: 'warn',
+    locked: 'danger', none: ''
+  };
+
+  var PREFS = [
+    { key: 'digest',         label: 'Sunday summary',
+      hint: 'What each child did last week, and what is coming up.' },
+    { key: 'messages_email', label: 'New messages',
+      hint: 'When a child messages you and you have not read it for a while.' },
+    { key: 'marking_email',  label: 'Marked work',
+      hint: 'When Mr Badmus marks an answer one of your children sent in.' }
+  ];
+
+  C.boot({ requireSession: true, run: function (ctx) {
+    document.getElementById('c-nav').innerHTML = C.navHtml(
+      '<a href="' + C.escapeHtml(C.href('/consumer/overview.html')) + '">Your family</a>' +
+      '<a href="#" id="signout">Sign out</a>'
+    );
+    document.getElementById('signout').addEventListener('click', function (e) {
+      e.preventDefault();
+      ctx.sb.auth.signOut().then(function () { C.go('/consumer/signup.html'); });
+    });
+
+    var msgEl = document.getElementById('msg');
+    var billing = {};
+
+    function stat(n, l) {
+      return '<div class="stat"><div class="n">' + n + '</div><div class="l">' +
+             C.escapeHtml(l) + '</div></div>';
+    }
+
+    function renderBilling(data) {
+      var fam = (data && data.family) || {};
+      billing = (data && data.billing) || {};
+      var st = String(billing.state || 'none').toLowerCase();
+
+      document.getElementById('sub').innerHTML =
+        C.escapeHtml(fam.name || 'Your family') + '<span class="sep">·</span>' +
+        C.escapeHtml(fam.kind === 'organisation' ? 'Organisation' : 'Family');
+
+      C.lockedBanner(document.getElementById('locked'), billing, 'parent');
+
+      /* ── the dates, in the order that answers the parent's question ────
+         Which question they are asking depends entirely on the state, so
+         the panel is assembled per-state rather than printing every field
+         it has. "Retry date" on a healthy account is noise; on a failed one
+         it is the only thing they want. */
+      var cells = [];
+      cells.push(stat('<span class="tag ' + (STATE_TONE[st] || '') + '">' +
+                      C.escapeHtml(STATE_WORD[st] || st) + '</span>', 'Status'));
+
+      if (billing.interval) {
+        cells.push(stat(C.escapeHtml(billing.interval === 'year' ? 'Yearly' : 'Monthly'), 'Billed'));
+      }
+      if (billing.quantity != null) {
+        cells.push(stat(C.escapeHtml(String(billing.quantity)),
+                        billing.quantity === 1 ? 'Child' : 'Children'));
+      }
+      if (st === 'trialing') {
+        cells.push(stat(C.escapeHtml(C.fmtDate(billing.trial_end)), 'Trial ends'));
+        if (billing.days_left != null) {
+          cells.push(stat(C.escapeHtml(String(billing.days_left)),
+                          billing.days_left === 1 ? 'Day left' : 'Days left'));
+        }
+      }
+      if (billing.next_payment_at && (st === 'active' || st === 'trialing')) {
+        cells.push(stat(C.escapeHtml(C.fmtDate(billing.next_payment_at)), 'Next payment'));
+      }
+      if (st === 'past_due') {
+        cells.push(stat(C.escapeHtml(C.fmtDate(billing.failed_at)), 'Payment failed'));
+        cells.push(stat(C.escapeHtml(C.fmtDate(billing.retry_at, 'Soon')), 'We try again'));
+        if (billing.grace_days_left != null) {
+          cells.push(stat(C.escapeHtml(String(billing.grace_days_left)),
+                          billing.grace_days_left === 1 ? 'Day of access left'
+                                                        : 'Days of access left'));
+        }
+      }
+      if (billing.access_end) {
+        cells.push(stat(C.escapeHtml(C.fmtDate(billing.access_end)),
+                        st === 'locked' ? 'Paused on' : 'Access until'));
+      }
+
+      var note = '';
+      if (billing.cancel_at_period_end && billing.access_end) {
+        note = '<p class="empty" style="margin-top:14px;">This subscription is set ' +
+               'to end on ' + C.escapeHtml(C.fmtDate(billing.access_end)) +
+               '. Everything keeps working until then, and you can restart it ' +
+               'from Manage billing at any point before that.</p>';
+      } else if (st === 'past_due') {
+        note = '<p class="empty" style="margin-top:14px;">The last payment didn’t go ' +
+               'through. Updating your card under Manage billing fixes it — nothing ' +
+               'is deleted while we sort it out.</p>';
+      } else if (st === 'none') {
+        note = '<p class="empty" style="margin-top:14px;">Nothing has been charged. ' +
+               'Start a subscription below and the first week is free.</p>';
+      }
+
+      document.getElementById('billing').innerHTML =
+        '<div class="stats">' + cells.join('') + '</div>' + note;
+
+      renderSeats();
+      renderButtons();
+    }
+
+    function renderSeats() {
+      var seats = billing.seats || [];
+      var card = document.getElementById('seats-card');
+      if (!seats.length) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+
+      document.getElementById('seats').innerHTML = seats.map(function (s) {
+        return '<div class="c-item">' +
+          '<div class="c-item-main">' +
+            '<div class="c-item-title">' + C.escapeHtml(s.name || 'A child') + '</div>' +
+            '<div class="c-item-sub">' +
+              (s.year != null ? ('Year ' + C.escapeHtml(String(s.year))) : 'Year not set') +
+            '</div>' +
+          '</div>' +
+          '<div class="c-item-acts"><strong>' + C.escapeHtml(C.money(s.price_pence)) +
+          '</strong></div>' +
+        '</div>';
+      }).join('');
+
+      /* Both totals, always, whichever interval they are on — because the
+         question this card actually answers is "would the other one be
+         cheaper", and a page that shows only what you already pay cannot
+         answer it. */
+      var bits = [];
+      if (billing.monthly_total_pence != null) {
+        bits.push(C.money(billing.monthly_total_pence) + ' a month');
+      }
+      if (billing.annual_total_pence != null) {
+        bits.push(C.money(billing.annual_total_pence) + ' a year');
+      }
+      document.getElementById('totals').textContent = bits.length
+        ? (bits.join('  ·  ') + '. The first child is the full price; every child after ' +
+           'that is less.')
+        : '';
+
+      var pm = document.getElementById('price-month');
+      var py = document.getElementById('price-year');
+      if (pm) { pm.textContent = billing.monthly_total_pence != null
+        ? (C.money(billing.monthly_total_pence) + ' a month') : 'Monthly'; }
+      if (py) { py.textContent = billing.annual_total_pence != null
+        ? (C.money(billing.annual_total_pence) + ' a year') : 'Yearly'; }
+    }
+
+    function renderButtons() {
+      document.getElementById('checkout-card').style.display =
+        billing.can_checkout ? 'block' : 'none';
+      document.getElementById('portal-card').style.display =
+        billing.can_portal ? 'block' : 'none';
+      document.getElementById('trial-note').textContent =
+        'The first seven days are free. We ask for a card up front and take ' +
+        'nothing until the trial ends — cancel any time before that and you ' +
+        'are not charged.';
+    }
+
+    // ── the interval radios ────────────────────────────────────────────
+    var radios = document.getElementById('intervals');
+    radios.addEventListener('change', function () {
+      Array.prototype.forEach.call(radios.querySelectorAll('.c-radio'), function (l) {
+        var input = l.querySelector('input');
+        l.className = 'c-radio' + (input.checked ? ' sel' : '');
+      });
+    });
+    function chosenInterval() {
+      var el = radios.querySelector('input[name="interval"]:checked');
+      return el ? el.value : 'month';
+    }
+
+    // ── checkout ───────────────────────────────────────────────────────
+    document.getElementById('btn-checkout').addEventListener('click', function () {
+      var btn = this;
+      C.setMsg(msgEl, '');
+      C.setBusy(btn, true, 'Opening…');
+      C.api('/api/consumer/checkout', {
+        method: 'POST', token: ctx.token, body: { interval: chosenInterval() }
+      }).then(function (d) {
+        if (d && d.url) {
+          /* A whole-page navigation, not a popup. Stripe's hosted page needs
+             the address bar showing stripe.com — that padlock IS the trust,
+             and an iframe or a popup takes it away at the exact moment the
+             parent is typing a card number. */
+          window.location.href = d.url;
+          return;
+        }
+        C.setBusy(btn, false);
+        C.setMsg(msgEl, 'We couldn’t open the payment page. Please try again in a moment.', 'error');
+      }).catch(function (e) {
+        C.setBusy(btn, false);
+        /* Two refusals deserve their own sentence rather than the raw one:
+           a family with no children yet (nothing to charge for) and an
+           account that is already subscribed. */
+        if (e.code === 'no_children') {
+          return C.setMsg(msgEl,
+            'Add a child first — the subscription is priced per child, so there’s ' +
+            'nothing to start yet.', 'error');
+        }
+        if (e.code === 'already_subscribed') {
+          return C.setMsg(msgEl,
+            'This account already has a subscription. Use Manage billing to change it.', 'error');
+        }
+        if (e.code === 'organisation') {
+          return C.setMsg(msgEl,
+            'Organisation accounts are invoiced directly rather than through this page. ' +
+            'Email hello@mrbadmus.com and we’ll sort it out.', 'error');
+        }
+        C.setMsg(msgEl, e.message, 'error');
+      });
+    });
+
+    // ── portal ─────────────────────────────────────────────────────────
+    document.getElementById('btn-portal').addEventListener('click', function () {
+      var btn = this;
+      C.setMsg(msgEl, '');
+      C.setBusy(btn, true, 'Opening…');
+      C.api('/api/consumer/portal', {
+        method: 'POST', token: ctx.token,
+        body: { return_url: window.location.origin + C.href('/consumer/account.html') }
+      }).then(function (d) {
+        if (d && d.url) { window.location.href = d.url; return; }
+        C.setBusy(btn, false);
+        C.setMsg(msgEl, 'We couldn’t open the billing page. Please try again in a moment.', 'error');
+      }).catch(function (e) {
+        C.setBusy(btn, false);
+        if (e.code === 'no_customer') {
+          return C.setMsg(msgEl,
+            'There’s no billing account to manage yet — start a subscription first.', 'error');
+        }
+        C.setMsg(msgEl, e.message, 'error');
+      });
+    });
+
+    // ── notification prefs ─────────────────────────────────────────────
+    function renderPrefs(prefs) {
+      prefs = prefs || {};
+      var host = document.getElementById('prefs');
+      host.innerHTML = PREFS.map(function (p) {
+        return '<div class="c-check">' +
+          '<input type="checkbox" id="pref-' + p.key + '" data-pref="' + p.key + '"' +
+          (prefs[p.key] === false ? '' : ' checked') + '/>' +
+          '<label for="pref-' + p.key + '">' + C.escapeHtml(p.label) +
+          '<span class="hint">' + C.escapeHtml(p.hint) + '</span></label>' +
+        '</div>';
+      }).join('') +
+      '<p class="empty" id="prefs-note" style="margin-top:10px;"></p>' +
+      '<p class="empty" style="margin-top:10px;">We never email children. ' +
+      'Everything here goes to you.</p>';
+
+      host.addEventListener('change', function (e) {
+        var box = e.target;
+        if (!box || !box.getAttribute || !box.getAttribute('data-pref')) { return; }
+        var key = box.getAttribute('data-pref');
+        var want = box.checked;
+        var note = document.getElementById('prefs-note');
+        box.disabled = true;
+        note.textContent = 'Saving…';
+        var body = {}; body[key] = want;
+        C.api('/api/consumer/prefs', { method: 'POST', token: ctx.token, body: body })
+          .then(function () { box.disabled = false; note.textContent = 'Saved.'; })
+          .catch(function (err) {
+            /* Put the tick back where it was. A checkbox that stays where
+               the parent left it, having saved nothing, is a lie told
+               silently — this one moves back and says why. */
+            box.checked = !want;
+            box.disabled = false;
+            note.textContent = err.message;
+          });
+      });
+    }
+
+    return C.api('/api/consumer/family', { token: ctx.token })
+      .then(function (d) {
+        renderBilling(d);
+        renderPrefs(d && d.prefs);
+      })
+      .catch(function (e) {
+        C.fail(document.getElementById('billing'), e.message,
+               'Refresh in a moment. If it keeps happening, email hello@mrbadmus.com.');
+        document.getElementById('sub').textContent = '';
+        C.fail(document.getElementById('prefs'), 'We couldn’t load your email settings.');
+      });
+  }});
+})();
+</script>
+</body>
+</html>

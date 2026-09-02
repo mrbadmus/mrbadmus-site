@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}
+input,select,button{font:inherit}
+input::placeholder{color:#9A8F86}
+.og-side{display:none}
+.og-row{display:grid;grid-template-columns:1fr;gap:6px}
+.og-hd{display:none}
+@media (min-width:960px){
+  .og-root{display:grid;grid-template-columns:260px 1fr}
+  .og-side{display:flex;flex-direction:column;position:sticky;top:0;height:100vh;box-sizing:border-box;border-right:2px solid #221E1B;background:#FFFCF5}
+  .og-mhead{display:none!important}
+  .og-main{padding:40px 48px 80px!important}
+  .og-row,.og-hd{display:grid;grid-template-columns:2fr 1.1fr 1.2fr 1fr 1fr 1.1fr;gap:12px;align-items:center}
+  .og-hd{display:grid}
+  .og-stats{grid-template-columns:repeat(4,1fr)!important}
+}
+</style>
+</helmet>
+<div class="rd og-root" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<aside class="og-side" style="padding:22px 20px 24px">
+  <div style="display:flex;align-items:center;gap:10px;padding:0 4px">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </div>
+  <div style="margin-top:18px;padding:12px 14px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-band)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ org.kind }}</p>
+    <p style="margin:4px 0 0;font-weight:700;font-size:16px;line-height:1.25">{{ org.name }}</p>
+  </div>
+  <nav style="margin-top:22px;display:flex;flex-direction:column;gap:4px">
+    <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+      <button onClick="{{ n.go }}" style="display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border:2px solid {{ n.border }};border-radius:14px;background:{{ n.bg }};font-weight:700;font-size:15px;color:var(--ks3-ink);cursor:pointer;text-align:left"><span style="flex:1">{{ n.label }}</span><sc-if value="{{ n.badge }}" hint-placeholder-val="{{ false }}"><span style="display:grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:var(--ks3-accent-text);color:#fff;font-family:var(--ks3-font-mono);font-size:11px">{{ n.badge }}</span></sc-if></button>
+    </sc-for>
+  </nav>
+  <div style="margin-top:auto;font-size:14px;color:var(--ks3-ink-muted);padding:0 4px">
+    <p style="margin:0"><strong style="color:var(--ks3-ink)">{{ org.seatsUsed }}</strong> of {{ org.seats }} seats used</p>
+    <div style="margin-top:6px;height:8px;border:2px solid var(--ks3-ink);border-radius:99px;background:var(--ks3-card);overflow:hidden"><div style="height:100%;width:{{ org.seatPct }};background:var(--ks3-accent)"></div></div>
+    <p style="margin:12px 0 0">{{ staff.name }} · <a href="#">Sign out</a></p>
+  </div>
+</aside>
+
+<div style="min-width:0">
+<header class="og-mhead" style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+  <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+  <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">{{ org.name }}</span>
+  <select onChange="{{ mobileNav }}" value="{{ screen }}" style="margin-left:auto;min-height:40px;padding:0 10px;border:2px solid var(--ks3-ink);border-radius:10px;background:var(--ks3-card);font-weight:700;font-size:14px;color:var(--ks3-ink)">
+    <option value="pupils">Pupils</option><option value="groups">Groups</option><option value="work">Work set</option><option value="account">Account</option>
+  </select>
+</header>
+
+<main class="og-main" style="max-width:1200px;padding:24px 20px 60px">
+
+<!-- PUPILS -->
+<sc-if value="{{ isPupils }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px">
+    <div style="flex:1;min-width:240px">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ weekLabel }}</p>
+      <h1 style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:34px;line-height:1;letter-spacing:-.035em">Pupils</h1>
+    </div>
+    <button onClick="{{ openAdd }}" style="min-height:46px;padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:15px;cursor:pointer">Add pupils</button>
+  </div>
+
+  <div class="og-stats" style="margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+      <div style="padding:14px 16px;border:2px solid var(--ks3-ink);border-radius:16px;background:var(--ks3-card)">
+        <div style="font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ s.label }}</div>
+        <div style="margin-top:4px;font-family:var(--ks3-font-display);font-weight:800;font-size:30px;letter-spacing:-.03em;line-height:1">{{ s.value }}</div>
+        <div style="margin-top:2px;font-size:13px;color:var(--ks3-ink-muted)">{{ s.note }}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:22px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+    <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search pupils" style="flex:1;min-width:180px;min-height:44px;padding:0 14px;border:2px solid var(--ks3-option-border);border-radius:12px;background:var(--ks3-card);font-size:15px;color:var(--ks3-ink)">
+    <sc-for list="{{ groupFilters }}" as="g" hint-placeholder-count="4">
+      <button class="ks3-option" aria-pressed="{{ g.on }}" onClick="{{ g.pick }}" style="width:auto;min-height:40px;padding:6px 14px;border-radius:99px;font-size:14px">{{ g.label }}</button>
+    </sc-for>
+    <sc-for list="{{ flagFilters }}" as="g" hint-placeholder-count="2">
+      <button class="ks3-option" aria-pressed="{{ g.on }}" onClick="{{ g.pick }}" style="width:auto;min-height:40px;padding:6px 14px;border-radius:99px;font-size:14px;margin-left:auto">{{ g.label }}</button>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:14px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);overflow:hidden">
+    <div class="og-hd" style="padding:10px 18px;border-bottom:2px solid var(--ks3-ink);background:var(--ks3-band);font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ks3-ink-muted)">
+      <span>Pupil</span><span>Group</span><span>This week</span><span>Last check</span><span>Streak</span><span>Last active</span>
+    </div>
+    <sc-if value="{{ noneMatch }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:28px 18px;text-align:center;color:var(--ks3-ink-muted)">No pupils match.</p></sc-if>
+    <sc-for list="{{ pupils }}" as="p" hint-placeholder-count="8">
+      <button onClick="{{ p.open }}" class="og-row" style="width:100%;text-align:left;padding:12px 18px;border:0;border-bottom:1px solid var(--ks3-rule);background:{{ p.bg }};color:var(--ks3-ink);cursor:pointer">
+        <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="display:grid;place-items:center;flex:0 0 32px;height:32px;border-radius:10px;border:2px solid var(--ks3-ink);background:var(--ks3-accent);font-family:var(--ks3-font-display);font-weight:800;font-size:14px">{{ p.initial }}</span><span style="min-width:0"><span style="display:block;font-weight:700;font-size:15px">{{ p.name }}</span><span style="display:block;font-size:12px;color:var(--ks3-ink-muted);font-family:var(--ks3-font-mono)">{{ p.user }}</span></span><sc-if value="{{ p.flag }}" hint-placeholder-val="{{ false }}"><span style="margin-left:6px;padding:3px 8px;border-radius:99px;border:2px solid var(--ks3-alert-border);background:var(--ks3-alert-tint);font-size:11px;font-weight:700;color:var(--ks3-alert-text);white-space:nowrap">{{ p.flag }}</span></sc-if></span>
+        <span style="font-size:14px;color:var(--ks3-ink-body)">{{ p.group }}</span>
+        <span style="display:flex;gap:3px"><sc-for list="{{ p.days }}" as="d" hint-placeholder-count="7"><span style="flex:1;max-width:16px;height:14px;border-radius:4px;border:1.5px solid var(--ks3-ink);background:{{ d }}"></span></sc-for></span>
+        <span style="font-family:var(--ks3-font-mono);font-size:14px">{{ p.last }}</span>
+        <span style="font-family:var(--ks3-font-mono);font-size:14px">{{ p.streak }}</span>
+        <span style="font-size:13px;color:var(--ks3-ink-muted)">{{ p.active }}</span>
+      </button>
+    </sc-for>
+  </div>
+</sc-if>
+
+<!-- PUPIL DETAIL -->
+<sc-if value="{{ isPupil }}" hint-placeholder-val="{{ false }}">
+  <button onClick="{{ backPupils }}" style="display:inline-flex;align-items:center;gap:6px;padding:0;border:0;background:none;font-weight:700;font-size:15px;color:var(--ks3-accent-text);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M15 5l-7 7 7 7"/></svg>All pupils</button>
+  <div style="margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:14px">
+    <span style="display:grid;place-items:center;width:52px;height:52px;border-radius:16px;background:var(--ks3-accent);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);font-weight:800;font-size:24px">{{ pd.initial }}</span>
+    <div style="flex:1;min-width:200px"><h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;line-height:1;letter-spacing:-.035em">{{ pd.name }}</h1><p style="margin:4px 0 0;font-size:14px;color:var(--ks3-ink-muted)">{{ pd.meta }}</p></div>
+    <div style="display:flex;gap:8px">
+      <button onClick="{{ resetPass }}" style="min-height:42px;padding:0 14px;border:2px solid var(--ks3-rule-strong);border-radius:10px;background:var(--ks3-band);font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">{{ resetLabel }}</button>
+      <button onClick="{{ goSetWork }}" style="min-height:42px;padding:0 14px;border:2px solid var(--ks3-ink);border-radius:10px;background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:14px;cursor:pointer">Set work</button>
+    </div>
+  </div>
+  <sc-if value="{{ newPass }}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;padding:12px 16px;border:2px solid var(--ks3-ok);border-radius:14px;background:var(--ks3-ok-tint);font-size:15px"><strong style="color:var(--ks3-ok-text)">New password, shown once:</strong> <span style="font-family:var(--ks3-font-mono);font-size:18px">{{ newPass }}</span></div></sc-if>
+  <div style="margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;align-items:start">
+    <section style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">This week</p>
+      <div style="margin-top:12px;display:flex;gap:6px"><sc-for list="{{ pd.days }}" as="d" hint-placeholder-count="7"><span style="flex:1;height:32px;border-radius:9px;border:2px solid var(--ks3-ink);background:{{ d }}"></span></sc-for></div>
+      <ul style="margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15px">
+        <sc-for list="{{ pd.work }}" as="w" hint-placeholder-count="3"><li style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--ks3-rule)"><span>{{ w.title }}</span><span style="font-family:var(--ks3-font-mono);font-size:13px;color:{{ w.fg }}">{{ w.state }}</span></li></sc-for>
+      </ul>
+    </section>
+    <section style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Unit checks</p>
+      <div style="margin-top:14px;display:flex;align-items:flex-end;gap:8px;height:90px;border-bottom:2px solid var(--ks3-ink)">
+        <sc-for list="{{ pd.scores }}" as="s" hint-placeholder-count="5"><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%"><span style="font-family:var(--ks3-font-mono);font-size:11px;color:var(--ks3-ink-muted)">{{ s.pct }}</span><div style="width:100%;margin-top:3px;border:2px solid var(--ks3-ink);border-radius:6px 6px 0 0;background:{{ s.bg }};height:{{ s.h }}"></div></div></sc-for>
+      </div>
+      <p style="margin:12px 0 0;padding:10px 12px;border-radius:10px;background:var(--ks3-alert-tint);border:2px solid var(--ks3-alert-border);font-size:14px;color:var(--ks3-alert-text)"><strong>Weak spot:</strong> {{ pd.weak }}</p>
+    </section>
+    <section style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Written answers</p>
+      <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;font-size:15px">
+        <sc-for list="{{ pd.answers }}" as="a" hint-placeholder-count="3"><li style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--ks3-rule)"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.q }}</span><span style="font-family:var(--ks3-font-mono);font-size:13px;white-space:nowrap">{{ a.mark }}</span></li></sc-for>
+      </ul>
+      <p style="margin:10px 0 0;font-size:13px;color:var(--ks3-ink-muted)">Human marks this month: {{ pd.humanUsed }} of 2. Staff can send answers on the pupil's behalf.</p>
+    </section>
+  </div>
+  <p style="margin:18px 0 0;font-size:14px;color:var(--ks3-ink-muted)">No parent is attached to this pupil. Messages and the Sunday email go to {{ staff.name }}. <a href="#">Invite a parent</a>.</p>
+</sc-if>
+
+<!-- GROUPS -->
+<sc-if value="{{ isGroups }}" hint-placeholder-val="{{ false }}">
+  <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:34px;line-height:1;letter-spacing:-.035em">Groups</h1>
+  <p style="margin:10px 0 0;font-size:16px;color:var(--ks3-ink-body);max-width:56em">A group shares a year, a unit position and an intensity. Mr Badmus sets the same week for everyone in it. Move a pupil between groups any time; nothing done is lost.</p>
+  <div style="margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
+    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+      <div style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">
+        <div style="display:flex;align-items:baseline;gap:10px"><h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;letter-spacing:-.025em">{{ g.name }}</h2><span style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:13px;color:var(--ks3-ink-muted)">{{ g.count }} pupils</span></div>
+        <ul style="margin:12px 0 0;padding:0;list-style:none;font-size:15px;display:flex;flex-direction:column;gap:6px">
+          <li style="display:flex;justify-content:space-between"><span style="color:var(--ks3-ink-muted)">Year</span><span>{{ g.year }}</span></li>
+          <li style="display:flex;justify-content:space-between"><span style="color:var(--ks3-ink-muted)">Current unit</span><span style="text-align:right">{{ g.unit }}</span></li>
+          <li style="display:flex;justify-content:space-between"><span style="color:var(--ks3-ink-muted)">Intensity</span><span>{{ g.intensity }}</span></li>
+          <li style="display:flex;justify-content:space-between"><span style="color:var(--ks3-ink-muted)">Done this week</span><span style="font-family:var(--ks3-font-mono)">{{ g.done }}</span></li>
+        </ul>
+        <div style="margin-top:14px;display:flex;gap:8px"><button onClick="{{ g.view }}" style="flex:1;min-height:42px;border:2px solid var(--ks3-ink);border-radius:10px;background:var(--ks3-band);font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">View pupils</button><button onClick="{{ g.setWork }}" style="flex:1;min-height:42px;border:2px solid var(--ks3-ink);border-radius:10px;background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:14px;cursor:pointer">Set work</button></div>
+      </div>
+    </sc-for>
+    <button onClick="{{ addGroup }}" style="min-height:120px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-card);background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">New group</button>
+  </div>
+</sc-if>
+
+<!-- WORK SET -->
+<sc-if value="{{ isWork }}" hint-placeholder-val="{{ false }}">
+  <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:34px;line-height:1;letter-spacing:-.035em">Set work</h1>
+  <p style="margin:10px 0 0;font-size:16px;color:var(--ks3-ink-body)">Goes on top of Mr Badmus's week. Pupils see it labelled "set by {{ staff.name }}".</p>
+  <div style="margin-top:22px;max-width:640px">
+    <p style="margin:0 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Who</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ targets }}" as="t" hint-placeholder-count="4"><button class="ks3-option" aria-pressed="{{ t.on }}" onClick="{{ t.pick }}" style="width:auto;min-height:40px;padding:8px 14px;border-radius:99px;font-size:15px">{{ t.label }}</button></sc-for></div>
+    <p style="margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">What</p>
+    <div style="display:flex;flex-direction:column;gap:8px"><sc-for list="{{ kinds }}" as="k" hint-placeholder-count="3"><button class="ks3-option" aria-pressed="{{ k.on }}" onClick="{{ k.pick }}" style="padding:12px 16px"><span style="flex:1">{{ k.label }}</span><span style="font-size:13px;color:var(--ks3-ink-muted)">{{ k.mins }}</span></button></sc-for></div>
+    <p style="margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Topic</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ topics }}" as="t" hint-placeholder-count="6"><button class="ks3-option" aria-pressed="{{ t.on }}" onClick="{{ t.pick }}" style="width:auto;min-height:40px;padding:8px 14px;border-radius:99px;font-size:15px">{{ t.label }}</button></sc-for></div>
+    <p style="margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Due</p>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px"><sc-for list="{{ dues }}" as="d" hint-placeholder-count="5"><button class="ks3-option" aria-pressed="{{ d.on }}" onClick="{{ d.pick }}" style="justify-content:center;padding:10px 4px;font-size:15px">{{ d.label }}</button></sc-for></div>
+    <button onClick="{{ submitWork }}" style="margin-top:24px;width:100%;min-height:52px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">{{ workCta }}</button>
+    <sc-if value="{{ workDone }}" hint-placeholder-val="{{ false }}"><p style="margin:12px 0 0;padding:12px 16px;border:2px solid var(--ks3-ok);border-radius:14px;background:var(--ks3-ok-tint);font-size:15px;font-weight:700;color:var(--ks3-ok-text)">{{ workDone }}</p></sc-if>
+  </div>
+</sc-if>
+
+<!-- ACCOUNT -->
+<sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}">
+  <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:34px;line-height:1;letter-spacing:-.035em">Organisation</h1>
+  <div style="margin-top:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start">
+    <section style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Plan</p>
+      <p style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:26px;letter-spacing:-.03em;line-height:1.05">{{ org.seats }} seats · invoiced termly</p>
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">{{ org.seatsUsed }} in use. £{{ org.perSeat }} per seat per term. Next invoice {{ org.nextInvoice }}, payable by BACS within 30 days.</p>
+      <div style="margin-top:14px;display:flex;gap:8px"><a href="#" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:15px;color:var(--ks3-ink)">Invoices</a><a href="#" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);font-weight:700;font-size:15px;color:var(--ks3-on-dark)">Add seats</a></div>
+    </section>
+    <section style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Staff</p>
+      <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;font-size:15px">
+        <sc-for list="{{ staffList }}" as="s" hint-placeholder-count="3"><li style="display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--ks3-rule)"><span><strong>{{ s.name }}</strong> <span style="color:var(--ks3-ink-muted)">· {{ s.role }}</span></span><span style="font-size:13px;color:var(--ks3-ink-muted)">{{ s.groups }}</span></li></sc-for>
+      </ul>
+      <button style="margin-top:12px;min-height:42px;padding:0 14px;border:2px dashed var(--ks3-rule-strong);border-radius:10px;background:none;font-weight:700;font-size:14px;color:var(--ks3-accent-text);cursor:pointer">Invite staff</button>
+    </section>
+    <section style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Data and safeguarding</p>
+      <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:15px">
+        <li style="display:flex;justify-content:space-between"><span>Data processing agreement</span><a href="#" style="font-weight:700">PDF</a></li>
+        <li style="display:flex;justify-content:space-between"><span>Pupil-to-staff messages</span><span style="color:var(--ks3-ink-muted)">Off for organisations</span></li>
+        <li style="display:flex;justify-content:space-between"><span>Export all pupil data</span><a href="#" style="font-weight:700">CSV</a></li>
+        <li style="display:flex;justify-content:space-between"><span>Remove a leaver</span><span style="color:var(--ks3-ink-muted)">From the pupil page</span></li>
+      </ul>
+    </section>
+  </div>
+</sc-if>
+
+<!-- ADD PUPILS -->
+<sc-if value="{{ isAdd }}" hint-placeholder-val="{{ false }}">
+  <button onClick="{{ backPupils }}" style="display:inline-flex;align-items:center;gap:6px;padding:0;border:0;background:none;font-weight:700;font-size:15px;color:var(--ks3-accent-text);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M15 5l-7 7 7 7"/></svg>Pupils</button>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:34px;line-height:1;letter-spacing:-.035em">Add pupils</h1>
+  <p style="margin:10px 0 0;font-size:16px;color:var(--ks3-ink-body);max-width:56em">One per line: first name, year, group. Usernames and passwords are generated and can be printed as login slips. No pupil email addresses are collected.</p>
+  <div style="margin-top:22px;max-width:640px">
+    <textarea value="{{ bulk }}" onChange="{{ setBulk }}" rows="8" placeholder="Amara, 9, 9X&#10;Leo, 7, 7B" style="display:block;width:100%;box-sizing:border-box;padding:14px 16px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-family:var(--ks3-font-mono);font-size:15px;color:var(--ks3-ink);resize:vertical"></textarea>
+    <div style="margin-top:10px;display:flex;justify-content:space-between;font-size:14px;color:var(--ks3-ink-muted)"><span>{{ bulkCount }}</span><span>{{ seatsLeft }} seats free</span></div>
+    <sc-if value="{{ bulkError }}" hint-placeholder-val="{{ false }}"><p style="margin:10px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">{{ bulkError }}</p></sc-if>
+    <button onClick="{{ submitBulk }}" style="margin-top:16px;width:100%;min-height:52px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">Create logins and print slips</button>
+  </div>
+</sc-if>
+
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+const ORG = { name: 'Brookfield Tuition Centre', kind: 'Tutoring centre', seats: 40, seatsUsed: 31, perSeat: 18, nextInvoice: '6 January' };
+const STAFF = { name: 'Ms Okafor' };
+const STAFF_LIST = [{ name: 'Ms Okafor', role: 'Admin', groups: 'All groups' }, { name: 'Mr Patel', role: 'Tutor', groups: '9X, 10 Triple' }, { name: 'Dr Lee', role: 'Tutor', groups: '7B, 8A' }];
+const GROUPS = [{ id: '7B', name: '7B', year: 7, unit: 'Cells and organisation', intensity: 'Standard · 3/wk', count: 9 }, { id: '8A', name: '8A', year: 8, unit: 'The periodic table', intensity: 'Standard · 3/wk', count: 8 }, { id: '9X', name: '9X', year: 9, unit: 'Health and disease', intensity: 'Light · 2/wk', count: 8 }, { id: '10T', name: '10 Triple', year: 10, unit: 'Atomic structure', intensity: 'Full · 4/wk', count: 6 }];
+const OK = 'var(--ks3-ok)', BAND = 'var(--ks3-band)', NONE = 'var(--ks3-card)';
+const NAMES = ['Amara', 'Leo', 'Zainab', 'Tom', 'Priya', 'Kwame', 'Ella', 'Yusuf', 'Maya', 'Oscar', 'Fatima', 'Ben', 'Chloe', 'Ibrahim', 'Grace', 'Noah', 'Aisha', 'Sam', 'Rosa', 'Daniel', 'Hana', 'Jack', 'Nia', 'Alfie', 'Sofia', 'Kai', 'Lily', 'Omar', 'Evie', 'Ravi', 'Mia'];
+const rnd = (seed) => { let x = seed * 9301 + 49297; return () => { x = (x * 9301 + 49297) % 233280; return x / 233280; }; };
+const PUPILS = NAMES.map((name, i) => { const r = rnd(i + 3); const g = GROUPS[i % 4]; const done = Math.floor(r() * 4); const days = [0, 1, 2, 3, 4, 5, 6].map((d) => (d < 4 ? (r() < 0.5 && done ? OK : BAND) : NONE)); const scores = [0, 1, 2, 3, 4].map(() => 45 + Math.floor(r() * 45)); const never = i === 5 || i === 17; const quiet = !never && r() < 0.2;
+  return { id: 'p' + i, name, initial: name[0], user: `${name.toLowerCase()}-${['comet', 'orbit', 'prism', 'magnet'][i % 4]}`, group: g.name, groupId: g.id, year: g.year, days: never ? days.map(() => NONE) : quiet ? days.map((d, k) => (k < 4 ? BAND : NONE)) : days, last: never ? '–' : scores[4] + '%', streak: never ? 0 : 1 + Math.floor(r() * 8), active: never ? 'Never' : quiet ? '9 days ago' : ['Today', 'Yesterday', '2 days ago', '3 days ago'][Math.floor(r() * 4)], flag: never ? 'Not started' : quiet ? 'Quiet' : '', scores, weak: ['Naming the term rather than describing it', 'Units on calculated answers', 'Two-step explanations', 'Reading values off graphs'][i % 4], humanUsed: Math.floor(r() * 3) }; });
+const TOPICS = ['Health and disease', 'Rates of reaction', 'Motion and forces', 'Cells', 'Particle model', 'Energy'];
+const KINDS = [{ id: 'lesson', label: 'A lesson', mins: '20 min' }, { id: 'retrieval', label: 'Quick questions', mins: '10 min' }, { id: 'exam', label: 'An exam question', mins: '15 min' }];
+const gen = () => { const w = ['comet', 'saturn', 'magnet', 'fossil', 'prism', 'orbit']; return w[Math.floor(Math.random() * 6)] + '-' + w[Math.floor(Math.random() * 6)] + '-' + Math.floor(10 + Math.random() * 89); };
+
+class Component extends DCLogic {
+  state = { screen: 'pupils', q: '', group: 'All', flag: 'All', pupilId: null, newPass: '', target: 'All', kind: 'retrieval', topic: TOPICS[0], due: 'Fri', workDone: '', bulk: '', bulkError: '' };
+  go(screen, extra) { this.setState({ screen, ...extra }); window.scrollTo(0, 0); }
+  renderVals() {
+    const s = this.state;
+    const filtered = PUPILS.filter((p) => (s.group === 'All' || p.groupId === s.group) && (s.flag === 'All' || p.flag) && (!s.q || p.name.toLowerCase().includes(s.q.toLowerCase())));
+    const pd0 = PUPILS.find((p) => p.id === s.pupilId) || PUPILS[0];
+    const doneCount = PUPILS.filter((p) => p.days.some((d) => d === OK)).length;
+    const navItems = [{ id: 'pupils', label: 'Pupils' }, { id: 'groups', label: 'Groups' }, { id: 'work', label: 'Set work' }, { id: 'account', label: 'Account', badge: '' }];
+    const bulkLines = s.bulk.split('\n').map((l) => l.trim()).filter(Boolean);
+    return {
+      brandSize: 26, org: { ...ORG, seatPct: Math.round(ORG.seatsUsed / ORG.seats * 100) + '%' }, staff: STAFF, staffList: STAFF_LIST, screen: s.screen,
+      nav: navItems.map((n) => { const on = s.screen === n.id || (n.id === 'pupils' && (s.screen === 'pupil' || s.screen === 'add')); return { ...n, badge: n.id === 'pupils' ? String(PUPILS.filter((p) => p.flag).length) : '', border: on ? 'var(--ks3-ink)' : 'transparent', bg: on ? 'var(--ks3-band)' : 'transparent', go: () => this.go(n.id) }; }),
+      mobileNav: (e) => this.go(e.target.value),
+      isPupils: s.screen === 'pupils', isPupil: s.screen === 'pupil', isGroups: s.screen === 'groups', isWork: s.screen === 'work', isAccount: s.screen === 'account', isAdd: s.screen === 'add',
+      weekLabel: 'Week of ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }),
+      stats: [{ label: 'Pupils', value: ORG.seatsUsed, note: `${ORG.seats - ORG.seatsUsed} seats free` }, { label: 'Active this week', value: doneCount, note: `${ORG.seatsUsed - doneCount} not yet` }, { label: 'Need attention', value: PUPILS.filter((p) => p.flag).length, note: 'not started or quiet' }, { label: 'Avg last check', value: Math.round(PUPILS.reduce((a, p) => a + p.scores[4], 0) / PUPILS.length) + '%', note: 'across all groups' }],
+      q: s.q, setQ: (e) => this.setState({ q: e.target.value }),
+      groupFilters: ['All', ...GROUPS.map((g) => g.id)].map((g) => ({ label: g === 'All' ? 'All groups' : GROUPS.find((x) => x.id === g).name, on: String(s.group === g), pick: () => this.setState({ group: g }) })),
+      flagFilters: [{ id: 'Flag', label: 'Needs attention' }].map((f) => ({ label: f.label, on: String(s.flag === f.id), pick: () => this.setState({ flag: s.flag === f.id ? 'All' : f.id }) })),
+      noneMatch: filtered.length === 0, pupils: filtered.map((p) => ({ ...p, bg: p.flag ? 'var(--ks3-inset)' : 'var(--ks3-card)', open: () => this.go('pupil', { pupilId: p.id, newPass: '' }) })),
+      openAdd: () => this.go('add'), backPupils: () => this.go('pupils'),
+      pd: { ...pd0, meta: `Year ${pd0.year} · ${pd0.group} · @${pd0.user}`, work: [{ title: 'Lesson 3', state: pd0.days[1] === OK ? 'Done Tue' : 'Due Tue', fg: pd0.days[1] === OK ? 'var(--ks3-ok-text)' : 'var(--ks3-ink-muted)' }, { title: 'Quick questions', state: pd0.days[3] === OK ? 'Done Thu' : 'Due Thu', fg: pd0.days[3] === OK ? 'var(--ks3-ok-text)' : 'var(--ks3-ink-muted)' }, { title: '4-mark practice', state: 'Due Sat', fg: 'var(--ks3-ink-muted)' }],
+        scores: pd0.scores.map((v, i) => ({ pct: v + '%', h: Math.round(v * 0.65) + 'px', bg: i === 4 ? 'var(--ks3-accent)' : 'var(--ks3-band)' })), answers: [{ q: 'Explain how vaccination protects…', mark: '4/6' }, { q: 'Describe two ways the body stops pathogens…', mark: '4/4' }, { q: 'Explain why a loaded car needs more force…', mark: '2/4 MB' }] },
+      resetPass: () => this.setState({ newPass: gen() }), resetLabel: s.newPass ? 'Password reset' : 'Reset password', newPass: s.newPass, goSetWork: () => this.go('work', { target: pd0.id }),
+      groups: GROUPS.map((g) => ({ ...g, done: `${PUPILS.filter((p) => p.groupId === g.id && p.days.some((d) => d === OK)).length}/${PUPILS.filter((p) => p.groupId === g.id).length}`, view: () => this.go('pupils', { group: g.id }), setWork: () => this.go('work', { target: g.id }) })), addGroup: () => {},
+      targets: [{ id: 'All', label: 'Everyone' }, ...GROUPS.map((g) => ({ id: g.id, label: g.name })), ...(PUPILS.some((p) => p.id === s.target) ? [{ id: s.target, label: PUPILS.find((p) => p.id === s.target).name + ' only' }] : [])].map((t) => ({ ...t, on: String(s.target === t.id), pick: () => this.setState({ target: t.id }) })),
+      kinds: KINDS.map((k) => ({ ...k, on: String(s.kind === k.id), pick: () => this.setState({ kind: k.id }) })), topics: TOPICS.map((t) => ({ label: t, on: String(s.topic === t), pick: () => this.setState({ topic: t }) })),
+      dues: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d) => ({ label: d, on: String(s.due === d), pick: () => this.setState({ due: d }) })),
+      workCta: `Set for ${s.due}`, submitWork: () => this.setState({ workDone: `Set. ${s.target === 'All' ? 'All pupils' : (GROUPS.find((g) => g.id === s.target) || {}).name || PUPILS.find((p) => p.id === s.target).name} will see it on their Today screen labelled "set by ${STAFF.name}".` }), workDone: s.workDone,
+      bulk: s.bulk, setBulk: (e) => this.setState({ bulk: e.target.value, bulkError: '' }), bulkCount: `${bulkLines.length} ${bulkLines.length === 1 ? 'pupil' : 'pupils'}`, seatsLeft: ORG.seats - ORG.seatsUsed, bulkError: s.bulkError,
+      submitBulk: () => { if (!bulkLines.length) return this.setState({ bulkError: 'Add at least one line.' }); if (bulkLines.length > ORG.seats - ORG.seatsUsed) return this.setState({ bulkError: `Only ${ORG.seats - ORG.seatsUsed} seats free. Add seats from Account, or remove leavers first.` }); this.go('pupils', { bulk: '' }); },
+    };
+  }
+}
+</script>
+</body>
+</html>
