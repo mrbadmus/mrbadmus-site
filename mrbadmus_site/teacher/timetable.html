@@ -8,23 +8,34 @@
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <!-- ⊕ MRB-306 Phase 2a — v3's design system, the same sheet the six
+       GENERATED teacher screens load. It carries the --st-* tokens this
+       page's chrome is drawn from. It also re-ships an older copy of
+       tokens.css; every value in that copy is IDENTICAL to the live file
+       (measured — it is a strict subset), so the order of these two links
+       changes nothing, and its later @font-face block points at the same
+       /shared/fonts/ URLs. -->
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=fba5f719"/>
   <style>
-    html { background: var(--bg); }
+    html { background: var(--st-ground); }
     :root {
-      --darker: var(--bg);
-      --dark:   var(--sunken);
-      --card2:  var(--sunken);
-      --shadow: var(--shadow-card);
+      --darker: var(--st-ground);
+      --dark:   var(--st-num-well);
+      --card2:  var(--st-num-well);
+      --shadow: none;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--darker);
-      color: var(--text);
-      font-family: var(--font-sans);
+      background: var(--st-ground);
+      color: var(--st-ink);
+      font: 400 18px/1.5 var(--st-ui);
       min-height: 100vh;
-      padding: 80px 20px 60px;
+      /* ⊕ MRB-306 — the bar is STICKY now, not fixed, exactly as v3 draws it,
+         so it takes its own space in the flow and the old 80px top pad that
+         cleared a fixed bar would be 80px of empty cream. */
+      padding: 0 0 60px;
       /* Hidden until the guard's onAllowed fires AND the admin-scope check
          answers. Fail-closed: if the guard bounces, the scope check refuses,
          or JS fails outright, the page never reveals school-wide staff data.
@@ -34,88 +45,129 @@
       display: none;
     }
 
-    nav.top-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      padding: 12px 24px;
+    /* ── v3's top bar ────────────────────────────────────────────────────
+       Values are Design's own, read out of the RENDERED topbar of
+       teacher/classes-fixture.html rather than retyped from the template
+       source. See the markup comment in <nav> for what is deliberately NOT
+       carried across. */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      z-index: 10;
+      gap: 12px;
+      height: 62px;
+      padding: 0 22px;
+      background: var(--st-paper);
+      border-bottom: 1px solid var(--st-rule);
     }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 0.7rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+    .tb-brand {
+      flex: none;
+      font: 600 23px/1 var(--st-display);
+      letter-spacing: -0.025em;
+      color: var(--st-ink);
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
-    .pill.env-prod { background: var(--sunken); color: var(--muted); }
-    .signout-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 5px 12px;
+    /* teacher-ds.css styles bare `a:hover` rust; the brand and the tabs are
+       chrome and do not change colour on hover in Design's bar. */
+    .tb-brand:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-seg {
+      display: flex;
+      gap: 3px;
+      padding: 3px;
+      flex: none;
+      margin-right: auto;
+      background: var(--st-seg-bg);
+      border-radius: 10px;
+    }
+    .tb-tab {
+      padding: 7px 15px;
       border-radius: 8px;
-      font-family: var(--font-sans);
-      font-weight: 700;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.15s;
+      font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-caption);
+      background: transparent;
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+    .tb-tab:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-tab.is-on { background: var(--st-paper); color: var(--st-ink); }
 
-    .container { max-width: 980px; margin: 0 auto; }
-    .page-header { margin-bottom: 10px; }
-    .page-header h1 {
-      font-family: var(--font-serif);
-      font-optical-sizing: auto;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      font-size: 1.7rem;
+    /* The environment badge. ⚠️ NOTHING ON THIS PAGE EVER REVEALS IT — no
+       script here touches `#env-pill` (admin.html and import.html each have
+       their own that does). Kept as it was found, hidden, and restyled so it
+       is v3-shaped the day something wires it. */
+    .pill {
+      flex: none;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font: 500 12px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--st-caption);
+      background: var(--st-num-well);
     }
-    .page-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .pill.env-test { color: var(--st-accent-text); }
+    .pill.env-prod { color: var(--st-caption); }
+    .signout {
+      flex: none;
+      height: 32px;
+      padding: 0 12px;
+      font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-muted);
+      background: transparent;
+      border: 1px solid var(--st-btn-border);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+    .signout:hover { color: var(--st-ink); border-color: var(--st-edge); }
+    /* The class Design's bar carries. It is defined in the six generated
+       pages' own inline <style> and in NEITHER stylesheet, so without
+       this line `noprint` on the <nav> above would do nothing at all. */
+    @media print { .noprint { display: none !important; } }
+
+    .container { max-width: 1460px; margin: 0 auto; padding: 24px 40px 40px; }
+    .page-header { margin-bottom: 8px; }
+    .page-header h1 {
+      font: 600 52px/1 var(--st-display);
+      letter-spacing: -0.035em;
+      color: var(--st-ink);
+      overflow-wrap: break-word;
+    }
+    .page-sub { font: 400 18px/1.5 var(--st-ui); color: var(--st-muted); margin-bottom: 28px; }
     .page-sub .sep { padding: 0 6px; opacity: 0.6; }
 
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 26px 30px;
-      margin-bottom: 22px;
+      background: var(--st-paper);
+      border: 1px solid var(--st-rule-soft);
+      border-radius: var(--st-r-card);
+      padding: 16px 18px;
+      margin-bottom: 16px;
     }
     .card h2 {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      font: 500 13px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 16px;
+      color: var(--st-caption);
+      margin-bottom: 14px;
     }
 
     /* At a glance */
     .stats { display: flex; flex-wrap: wrap; gap: 12px; }
     .stat {
       flex: 1 1 150px;
-      background: var(--card2);
-      border: 1px solid var(--border);
+      background: var(--st-num-well);
+      border: 1px solid var(--st-rule-soft);
       border-radius: 10px;
       padding: 14px 16px;
     }
-    .stat .n { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+    .stat .n { font: 500 28px/1.1 var(--st-mono); color: var(--st-ink); }
     .stat .l {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
+      font: 500 13px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--st-caption);
       margin-top: 4px;
     }
 
@@ -127,11 +179,11 @@
       gap: 10px 14px;
       flex-wrap: wrap;
       padding: 12px 0;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--st-rule-fact);
     }
     .row:first-of-type { border-top: none; }
-    .row .name { font-weight: 700; font-size: 1rem; }
-    .row .meta { color: var(--muted); font-size: 0.84rem; }
+    .row .name { font: 600 17.5px/1.2 var(--st-ui); color: var(--st-ink); }
+    .row .meta { color: var(--st-muted); font: 400 15.5px/1.4 var(--st-ui); }
     .row .right { margin-left: auto; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 
     /* Classes card: one heading per year group, each a fresh "table" of
@@ -139,167 +191,221 @@
        (`.row:first-of-type` is scoped per parent), so the heading is the
        only divider between one year and the next. */
     .year-heading {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
+      font: 500 13px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--st-caption);
       margin-top: 22px;
       padding: 16px 0 8px;
-      border-top: 2px solid var(--text);
+      border-top: 1px solid var(--st-rule);
     }
     .year-group:first-child .year-heading { border-top: none; margin-top: 0; padding-top: 0; }
-    @media (max-width: 560px) {
-      body { padding: 76px 14px 50px; }
-      .card { padding: 20px 16px; }
-      .row .right { margin-left: 0; width: 100%; }
-      /* At 390px the nav has no room to be generous. Without these three the
-         wordmark and "My classes" run into each other with no gap at all, and
-         "Sign out" wraps onto a second line — which makes the bar two rows
-         tall and tucks the page heading underneath the fixed nav. The
-         `gap` separates them, `nowrap` keeps each control on one line. */
-      nav.top-nav { padding: 10px 14px; gap: 12px; }
-      nav.top-nav > a { white-space: nowrap; }
-      .nav-right { gap: 8px; }
-      .nav-right a, .signout-btn { white-space: nowrap; }
-    }
 
     .tag {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
+      font: 500 12px/1.2 var(--st-mono);
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      background: var(--sunken);
-      color: var(--muted);
-      border: 1px solid var(--border);
+      background: var(--st-num-well);
+      color: var(--st-caption);
+      border: 1px solid var(--st-rule-soft);
     }
-    .tag.pending { background: var(--higher-soft); color: var(--higher); border-color: transparent; }
-    .tag.you     { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+    .tag.pending { background: var(--st-note-bg); color: var(--st-body); border-color: var(--st-note-border); }
+    .tag.you     { background: var(--st-chip-tint); color: var(--st-accent-text); border-color: var(--st-chip-tint-border); }
 
-    .classlist { color: var(--muted); font-size: 0.84rem; }
-    .count { font-variant-numeric: tabular-nums; font-weight: 700; }
-    .muted { color: var(--muted); }
-    .empty { color: var(--muted); font-size: 0.9rem; }
+    .classlist { color: var(--st-muted); font: 400 15.5px/1.4 var(--st-ui); }
+    .count { font-family: var(--st-mono); font-variant-numeric: tabular-nums; }
+    .muted { color: var(--st-muted); }
+    .empty { color: var(--st-muted); font: 400 16px/1.5 var(--st-ui); }
 
-    a.classlink { color: var(--text); text-decoration: none; font-weight: 700; }
-    a.classlink:hover { color: var(--accent); text-decoration: underline; }
+    a.classlink { color: var(--st-ink); text-decoration: none; font-weight: 600; }
+    a.classlink:hover { color: var(--st-accent-text); text-decoration: underline; }
 
     /* The refusal, and the honest-failure state. Plain words, no codes. */
     .notice { max-width: 620px; margin: 40px auto; text-align: center; }
     .notice h1 {
-      font-family: var(--font-serif);
-      font-optical-sizing: auto;
-      font-weight: 600;
-      font-size: 1.5rem;
+      font: 600 34px/1.1 var(--st-display);
+      letter-spacing: -0.03em;
+      color: var(--st-ink);
       margin-bottom: 10px;
     }
-    .notice p { color: var(--muted); font-size: 1rem; line-height: 1.6; }
-    .notice a { color: var(--accent); font-weight: 700; }
-  
+    .notice p { color: var(--st-muted); font: 400 18px/1.6 var(--st-ui); }
+    .notice a { color: var(--st-accent-text); font-weight: 600; }
+
     /* ── ⊕ MRB-306 WS-2 — Today ──────────────────────────────────────────
        Today's own additions. Everything above is admin.html's, copied so the
-       two hand-written staff pages cannot drift apart. */
+       two hand-written staff pages cannot drift apart.
+       ⊕ 2 Sep 2026 (MRB-306 Phase 2a) — that copy is now DIVERGED, and
+       deliberately: this page and timetable.html took v3's chrome and type;
+       admin.html and import.html did not, and are outside this unit. */
 
     .lesson {
       display: flex; align-items: flex-start; gap: 16px;
-      padding: 16px 0; border-bottom: 1px solid var(--border);
+      padding: 14px 0; border-bottom: 1px solid var(--st-rule-fact);
       text-decoration: none; color: inherit;
     }
     .lesson:last-child { border-bottom: none; }
-    .lesson:hover .lesson-code { color: var(--accent); }
+    .lesson:hover .lesson-code { color: var(--st-accent-text); }
     .lesson-period {
-      flex: none; min-width: 84px;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--muted); padding-top: 3px;
+      flex: none; min-width: 96px;
+      font: 500 13px/1.2 var(--st-mono); letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--st-caption); padding-top: 5px;
     }
     .lesson-body { flex: 1; min-width: 0; }
-    .lesson-code { font-weight: 700; font-size: 1.02rem; }
-    .lesson-meta { color: var(--muted); font-size: 0.86rem; margin-top: 3px; }
-    .lesson-state { font-size: 0.86rem; margin-top: 6px; }
-    .lesson-state.chase { color: var(--danger); font-weight: 700; }
-    .lesson-state.clear { color: var(--muted); }
-
-    .daybar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
-    .daybar span {
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 6px 11px; border-radius: 999px;
-      background: var(--sunken); color: var(--muted);
+    /* ⚠️ NO `text-transform` ON ANY OF THESE THREE. `today_drive` reads
+       `innerText`, which in Chrome reflects the RENDERED case, and asserts
+       "8r/Sc1", "Science", "Physics", "1 of 3 in" and "No work set this week."
+       case-sensitively. A restyle must not change what the page says. */
+    .lesson-code {
+      font: 600 20px/1.3 var(--st-display); letter-spacing: -0.02em;
+      color: var(--st-ink);
     }
-    .daybar span.on { background: var(--accent); color: #fff; }
+    .lesson-meta { color: var(--st-muted); font: 400 15.5px/1.4 var(--st-ui); margin-top: 2px; }
+    .lesson-state { font: 400 15.5px/1.4 var(--st-ui); margin-top: 5px; }
+    /* v3's own answer for this exact line — `weekSubFg` on the class card is
+       `var(--st-accent-text)` when there is anyone to chase and
+       `var(--st-muted)` when there is not. Not `--danger`: owing homework is
+       not an error state. */
+    .lesson-state.chase { color: var(--st-accent-text); font-weight: 600; }
+    .lesson-state.clear { color: var(--st-muted); }
+
+    .daybar { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 22px;
+              padding: 3px; background: var(--st-seg-bg); border-radius: 10px;
+              align-self: flex-start; width: max-content; max-width: 100%; }
+    .daybar span {
+      font: 500 13px/1.2 var(--st-mono); letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 7px 13px; border-radius: 8px;
+      background: transparent; color: var(--st-caption);
+    }
+    .daybar span.on { background: var(--st-paper); color: var(--st-ink); }
 
     /* Skeletons: the class page's pattern — never a bare heading on empty
        ground while the reads are in flight. */
-    .skel { background: var(--sunken); border-radius: 6px; animation: pulse 1.4s ease-in-out infinite; }
+    .skel { background: var(--st-num-well); border-radius: 6px; animation: pulse 1.4s ease-in-out infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
-    .skel-row { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+    .skel-row { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--st-rule-fact); }
     .skel-row:last-child { border-bottom: none; }
 
     .prompt { padding: 4px 0 2px; }
-    .prompt p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 14px; }
+    .prompt p { color: var(--st-muted); font: 400 17px/1.6 var(--st-ui); margin-bottom: 14px; max-width: 60ch; }
+    /* v3's outline button. ⚠️ NO `height` — `Edit timetable` is sized by an
+       inline `padding`/`font-size`/`min-height:0` from this page's own JS,
+       which a fixed height would defeat. The JS is untouched by this unit. */
     .btn {
-      display: inline-block; padding: 11px 16px; min-height: 40px;
-      border: 1px solid var(--border); border-radius: 9px;
-      background: transparent; color: var(--accent);
-      font: inherit; font-weight: 700; font-size: 0.9rem;
-      cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px 16px; min-height: 40px;
+      border: 1px solid var(--st-btn-border); border-radius: var(--st-r-btn);
+      background: var(--st-paper); color: var(--st-ink);
+      font: 600 17px/1.2 var(--st-ui);
+      cursor: pointer; text-decoration: none; white-space: nowrap;
     }
-    .btn:disabled { opacity: 0.55; cursor: default; color: var(--muted); }
+    .btn:hover { border-color: var(--st-edge); color: var(--st-ink); text-decoration: none; }
+    .btn:disabled { opacity: 0.55; cursor: default; color: var(--st-muted); }
     .remind-row {
       display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--st-rule-fact);
     }
-    .remind-row .who { flex: 1; min-width: 200px; color: var(--muted); font-size: 0.9rem; }
+    .remind-row .who { flex: 1; min-width: 200px; color: var(--st-muted); font: 400 16px/1.4 var(--st-ui); }
+
+    @media (max-width: 560px) {
+      .container { padding: 18px 14px 40px; }
+      .card { padding: 14px 14px; }
+      .row .right { margin-left: 0; width: 100%; }
+      .page-header h1 { font-size: 34px; letter-spacing: -0.02em; }
+      /* ⚠️ THE BAR WRAPS RATHER THAN OVERFLOWING, and that is deliberate.
+         v3's top bar has no @media rule at all and measures 953px wide inside
+         a 390px viewport on all six generated pages. `today_drive`'s
+         "390px: no horizontal overflow" check is a PUSH GATE on this page, and
+         this page has always held that property (the rules below are the
+         descendants of the ones that did). Importing the defect to match the
+         six would be a regression on a live page, so the bar keeps its own
+         narrow-viewport behaviour until the cross-screen responsive unit
+         gives all eight pages one answer. */
+      .topbar { height: auto; min-height: 62px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+      .tb-brand { font-size: 19px; }
+      .tb-seg { margin-right: 0; }
+      .tb-tab { padding: 6px 11px; font-size: 14px; }
+    }
 
     @media (max-width: 560px) {
       .lesson { gap: 12px; }
-      .lesson-period { min-width: 62px; font-size: 0.68rem; }
+      .lesson-period { min-width: 68px; letter-spacing: 0.1em; }
     }
 
     /* ── ⊕ MRB-306 — the timetable editor ───────────────────────────────── */
     .grid-wrap { overflow-x: auto; }
     table.grid { border-collapse: collapse; width: 100%; min-width: 640px; }
     table.grid th, table.grid td {
-      border: 1px solid var(--border); padding: 6px; vertical-align: middle;
+      border: 1px solid var(--st-rule-soft); padding: 6px; vertical-align: middle;
     }
     table.grid th {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--muted); background: var(--sunken);
+      font: 500 13px/1.2 var(--st-mono); letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--st-caption); background: var(--st-num-well);
     }
     table.grid th.rowhead { text-align: left; white-space: nowrap; width: 92px; }
     table.grid select {
       width: 100%; min-height: 40px; padding: 6px 8px;
-      border: 1px solid var(--border); border-radius: 7px;
-      background: var(--card); color: var(--text);
-      font-family: var(--font-sans); font-size: 0.85rem;
+      border: 1px solid var(--st-btn-border); border-radius: var(--st-r-btn);
+      background: var(--st-paper); color: var(--st-ink);
+      font: 400 15.5px/1.2 var(--st-ui);
     }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
-    .msg { font-size: 0.9rem; margin-top: 12px; }
-    .msg.ok  { color: var(--foundation, #4a7); font-weight: 700; }
-    .msg.bad { color: var(--danger); font-weight: 700; }
-    .rows { margin-top: 14px; font-size: 0.88rem; }
-    .rows .row { padding: 7px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; }
+    .actions { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
+    .msg { font: 400 16px/1.4 var(--st-ui); margin-top: 12px; }
+    /* `--ks3-ok` is a MARK-only green (3.0:1); `--ks3-ok-text` is the token
+       the design system reserves for body-size green on a light ground. */
+    .msg.ok  { color: var(--ks3-ok-text); font-weight: 600; }
+    .msg.bad { color: var(--danger); font-weight: 600; }
+    .rows { margin-top: 14px; font: 400 15.5px/1.5 var(--st-ui); }
+    .rows .row { padding: 7px 0; border-bottom: 1px solid var(--st-rule-fact); display: flex; gap: 10px; }
     .rows .row:last-child { border-bottom: none; }
-    .rows .row .w { flex: none; width: 86px; color: var(--muted); }
-    .rows .row.bad .why { color: var(--danger); font-weight: 700; }
+    .rows .row .w { flex: none; width: 86px; color: var(--st-caption); font-family: var(--st-mono); font-size: 13px; }
+    .rows .row.bad .why { color: var(--danger); font-weight: 600; }
     .drop {
-      border: 1px dashed var(--border); border-radius: 10px;
-      padding: 18px; text-align: center; color: var(--muted); font-size: 0.92rem;
+      border: 1px dashed var(--st-rule-strong); border-radius: var(--st-r-card);
+      padding: 18px; text-align: center; color: var(--st-muted);
+      font: 400 16px/1.5 var(--st-ui); background: var(--st-note-bg);
     }
-    .drop input[type=file] { margin-top: 10px; }
+    .drop input[type=file] { margin-top: 10px; font: 400 15px/1.4 var(--st-ui); }
   </style>
 </head>
 <body>
 
-<nav class="top-nav">
-  <a href="/index.html" style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:-0.01em;">MrBadmusAI</a>
-  <div class="nav-right">
-    <a href="/teacher/classes.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">My classes</a>
-    <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
-    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+<!-- ── ⊕ MRB-306 Phase 2a — v3's top bar, STATIC ────────────────────────
+     These two pages are hand-written and carry no student-runtime, so the
+     strip Design draws through `__MRB_TPL__` is reproduced here as plain
+     markup using her own values, read out of the RENDERED topbar of
+     teacher/classes-fixture.html rather than retyped from the template.
+
+     ⚠️ `data-port-region="topbar"` is load-bearing, and the old
+     `class="top-nav"` / `.signout-btn` pair is gone BECAUSE of it.
+     `shared/teacher-admin-nav.js` has two hosts: "Host A" anchors on
+     `nav.top-nav .signout-btn` and injects with the pre-v3 muted styling,
+     "Host B" anchors on `[data-port-region="topbar"]` and injects with v3's.
+     `inject()` runs Host A FIRST, so leaving either class in place would put
+     the Admin link into a v3 bar wearing the old type.
+
+     ⚠️ `data-mrb-today-nav` on the Today tab is that same module's OWN
+     idempotence marker. Without it `injectTodayTopbar()` appends a SECOND
+     "Today" control to this bar — which is exactly what it does today on the
+     six generated pages, whose tab strip became a real navigation in Phase 1c
+     while the injected link was never retired. Reported, not fixed here.
+
+     NOT carried across, and each for a stated reason:
+     · Design's "Find a student" search — no search is built on these two
+       pages, and a dead control never ships.
+     · Her Charts button — it is a navigation these pages have never had, and
+       adding one is a behaviour change on a function-frozen page.
+     · The crumb and the teacher's name — nothing here computes either. -->
+<nav class="topbar noprint" data-port-region="topbar">
+  <a class="tb-brand" href="/index.html">MrBadmusAI</a>
+  <div class="tb-seg">
+    <a class="tb-tab" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
+    <a class="tb-tab" href="/teacher/classes.html">My classes</a>
   </div>
+  <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
+  <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
 </nav>
 
 <div class="container" id="main" style="display:none;">
@@ -353,7 +459,7 @@
 <script src="/shared/class-entry.js?v=d47329ae"></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
 <script src="/shared/teacher-data.js?v=f05eeaa9"></script>
-<script src="/shared/teacher-admin-nav.js?v=6549c6a4"></script>
+<script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
    MRB-306 — THE TIMETABLE EDITOR

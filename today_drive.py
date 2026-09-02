@@ -280,7 +280,14 @@ def run_case(b, base, name, when, tables, packs, shots, width=1280,
                   "var v=[];"
                   "if(m&&getComputedStyle(m).display!=='none'){v.push(m.innerText);}"
                   "if(n&&getComputedStyle(n).display!=='none'){v.push(n.innerText);}"
-                  "var nav=document.querySelector('nav.top-nav');"
+                  # ⊕ 2 Sep 2026 (MRB-306 Phase 2a) — BOTH selectors, because the bar
+                  # changed shape. today.html and timetable.html took v3's top bar,
+                  # whose region marker is `data-port-region="topbar"`; the old
+                  # `nav.top-nav` is kept so this drive still reads admin.html and
+                  # import.html's bar if it is ever pointed at them. Widening the
+                  # selector keeps the nav's text inside every assertion below —
+                  # dropping it would have made this read silently return nothing.
+                  "var nav=document.querySelector('nav.top-nav,[data-port-region=\"topbar\"]');"
                   "if(nav){v.push(nav.innerText);}"
                   "return v.join('\\n');})()")
     shot = os.path.join(shots, name + ".png")
