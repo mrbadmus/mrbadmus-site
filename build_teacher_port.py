@@ -287,7 +287,30 @@ PAGES = [
          empty_out="digest-empty-fixture.html",
          empty_js="teacher-fixture-digest-empty.js",
          title="Weekly digest \u00b7 MrBadmusAI",
-         overlays=("hasToast",),
+         # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 6) — `searchOpen` ADDED.
+         # This page kept only the toast, and the topbar's "Find a student"
+         # button — which is on all six pages, because the top bar is one
+         # piece of chrome — calls `openSearch`, which sets `modal: 'search'`,
+         # which redraws a page with no search overlay in it. Pressing it did
+         # nothing at all: no sheet, no error, no toast.
+         #
+         # It is the 24 Aug `bulkOpen` ruling seen from the other side. That
+         # one removed a SHEET NOBODY COULD OPEN from classes.html; this is an
+         # OPENER WITH NO SHEET, and the same sentence applies — a control
+         # that cannot do its job is not a feature in waiting.
+         #
+         # The sheet is kept rather than the button dropped: the button
+         # belongs to the shared top bar and four of the six pages open it, so
+         # removing it here would make the chrome differ page to page. The
+         # data is already on the page — `renderVals` reads
+         # `MRB_DATA('searchPool')` unconditionally on every page, and the
+         # seam supplies it (a digest that did not have it would throw at
+         # mount, and does not).
+         #
+         # ⚠️ `insights.html` HAS THE IDENTICAL DEFECT and is NOT changed
+         # here: it is its own screen in this phase and the fix is this same
+         # one word. Written up in the screen 6 report rather than folded in.
+         overlays=("searchOpen", "hasToast"),
          retire=None),
     # ⛔ THERE IS NO `import` ROW HERE, AND ITS ABSENCE IS A RULING.
     # See `IMPORT_NOT_PORTED` in teacher_rulings.py: `teacher/import.html` is
@@ -2268,7 +2291,24 @@ EMPTY_SHAPES = {
         "a class with students and no work set — `PAPERS: []`, `WEEKS: []`, "
         "`state: 'nowork'`. Design's README: \"classes with no work set have "
         "no week bar\", so the rail must be ABSENT and not drawn empty.",
-        lambda p: _shape_no_work(p)),),
+        lambda p: _shape_no_work(p)),
+
+     # ── ⊕ THE SIXTEENTH, 2 Sep 2026 (MRB-306 Phase 2a screen 6) ─────────
+     ("nolive",
+      "NOT ONE LIVE CLASS — every class has a roster and none has work set "
+      "yet, so `liveClasses` is EMPTY. This is the digest a teacher opens in "
+      "the first week of September, and on 2 Sep 2026 it is what all but one "
+      "teacher in the school would see: of the working year's 69 classes, "
+      "three have members and exactly one has any assignments.\n\n"
+      "It exists because the guards for this shape were UNTESTABLE. Two "
+      "rulings put an em dash on the Mean-score and On-time tiles when there "
+      "is nothing to average, and a third stops `Math.round(0/0)` printing "
+      "`NaN%` — and no fixture in the set could reach any of them, because "
+      "`digest-empty` blanks ONE class and leaves seven live. The gate's own "
+      "note in `teacher_behaviour.EMPTY_SHAPE` claimed this state was "
+      "already covered ('no live classes to digest'); it was not, and the "
+      "note is corrected there.",
+      lambda p: _shape_no_live_classes(p)),),
     "assignment.html": (("empty",
         "a paper nobody submitted — the grid is present, `submitted: 0` and "
         "every `qpct` is null. This is where \"blanks over invented numbers\" "
@@ -2384,6 +2424,30 @@ def _blank_class(payload, cid, state, keep_papers):
     if state == "empty":
         payload["ROSTER"][cid] = []
     if not keep_papers:
+        # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 6) — THE ROSTER HAS TO FOLLOW
+        # THE PAPERS OUT, and it did not.
+        #
+        # Taking the papers away emptied `MATRIX[cid].byId`, and `buildRoster`
+        # reads exactly that: `flag` is `!row ? false : …`, `avg` is
+        # `studentAvg[id]`, `inWeek` is `!!(row && row.inWeek)` and `lastIso`
+        # is the newest stamp on the row. With no matrix row there IS no row,
+        # so a class with no work set has every child unflagged, unaveraged,
+        # not in this week and never active. The seam cannot produce anything
+        # else.
+        #
+        # The fixture kept the flags and the averages from before the
+        # blanking, which put "Needs a look — 4 · Nothing in this week, and
+        # behind" on the class report of a class with ZERO assignments. The
+        # by-class table hides it (its `needs` cell tests `state === 'nowork'`
+        # first and prints "No work set"), so it only shows on the report —
+        # and this is the seventh fixture in this run found asserting a state
+        # real data cannot reach.
+        for r in payload["ROSTER"].get(cid) or []:
+            r["flag"] = False
+            r["avg"] = None
+            r["inWeek"] = False
+            r["last"] = "No activity yet"
+            r["lastIso"] = None
         payload["PAPERS"][cid] = []
         payload["WEEKS"][cid] = []
         payload["MATRIX"][cid] = dict(
@@ -2455,6 +2519,44 @@ def _shape_no_work(p):
     cid = p["classId"]
     p = _blank_class(p, cid, "nowork", keep_papers=False)
     p["FEED"] = {cid: []}
+    p["studentId"] = None
+    return p
+
+
+def _shape_no_live_classes(p):
+    """Rosters imported, nothing set yet — `liveClasses` empty.
+
+    ⚑ THE SHAPE THE WHOLE-SCHOOL DIGEST DIVIDES BY. Every tile on the
+    unscoped digest reduces over `liveClasses`, and three of them divide by
+    its length or by a sum taken across it. `digest-empty` cannot reach the
+    zero case: it blanks one class and leaves seven.
+
+    Every class becomes `nowork` rather than `empty`, and that is the point —
+    `empty` would take the rosters away too, and then "227 students" would
+    vanish from the sub-heading along with the live classes, which is a
+    different (and rarer) state. Rosters imported and no work set is the
+    ordinary start of a school year.
+
+    `_blank_class` already does exactly this per class, including the
+    `week: [0, 0]` and the "No activity yet" that the seam is structurally
+    obliged to produce for a class with no papers.
+
+    ⚠️ A CLASS WITH NO ROSTER STAYS `empty`, NOT `nowork`, because that is
+    the order the seam resolves them in: `state = pack.members.length === 0 ?
+    "empty" : (papers.length === 0 ? "nowork" : "live")`. No roster BEATS no
+    work — a class with neither needs the roster first, and its row says
+    "Roster not imported" rather than "No work set".
+
+    Blanking all twelve to `nowork` was the first version of this shaper and
+    it printed "No work set" against three classes that have no students at
+    all, which the seam cannot produce. Caught by reading the print render,
+    not by any gate.
+    """
+    p = json.loads(json.dumps(p))
+    for k in list(p["CLASSES"]):
+        keep = "empty" if not (p["ROSTER"].get(k["id"]) or []) else "nowork"
+        p = _blank_class(p, k["id"], keep, keep_papers=False)
+    p["FEED"] = {k["id"]: [] for k in p["CLASSES"]}
     p["studentId"] = None
     return p
 
@@ -3023,6 +3125,26 @@ function MRB_ONTIME_SUB(onTime, late, unknown, noun){
        ', timing not recorded')
     : 'Nothing submitted yet'; }
   return MRB_LATE_LINE(late, unknown, known, noun || 'submitted');}
+/* ⊕ MRB-306 Phase 2a screen 6 — THIS WEEK'S RETURN, WRITTEN ONCE.
+   "How many of this class handed in this week's work" is asked in three
+   places — the class card on My classes, the digest's by-class row, and the
+   class report's Submissions tile — and it had TWO answers. `c.week` is the
+   seam's own count (`buildMatrix` marks the papers whose `due_at` falls in
+   the class's current teaching week, `buildRoster` sets `inWeek` per child,
+   and `week[0]` counts them); the class report instead read `colSub[0]`,
+   which is PAPER INDEX 0 — the newest paper by `due_at DESC`, whatever week
+   it belongs to, and with NULL deadlines sorting FIRST it can be a paper
+   that has no deadline at all and so is in no week.
+   In Design's fiction every class has exactly one paper, due this week, at
+   index 0, so the two agree on every fixture and the divergence is invisible
+   by construction. On real data they part the moment a class has a paper due
+   later than this week, or none due this week at all.
+   `week` is the source, this is the only rendering of it, and both readers
+   call it. The em dash matches the row: a class with no roster or no work
+   set was not ASKED for anything, and "0/16" would be an accusation. */
+function MRB_WEEK_IN(c){
+  if(!c || c.state !== 'live'){ return '—'; }
+  return (c.week && c.week[0]) + '/' + (c.week && c.week[1]);}
 
 /* == THE SHOUTOUT COMPOSER, WIRED =======================================
 
@@ -3374,7 +3496,54 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "a:hover{color:var(--ks3-accent-hover)}"
         "button{font-family:inherit}"
         "#mrb-teacher-live-regions[hidden]{display:none}"
-        "@media print{.noprint{display:none!important}}"
+        # ⊕ MRB-306 Phase 2a screen 6 — THE PRINT RULES, MEASURED NOT
+        # ASSUMED. `.noprint` alone was not enough to make the digest a
+        # report a teacher can hand to a head of department.
+        #
+        # `flex-wrap` — every row's first cell is one of Design's flex
+        # cells: a title span beside a `flex:none` status badge. Neither can
+        # shrink below its longest word, and at A4 the two OVERLAP. Rendered
+        # at the real printable width (717px: A4 portrait less 0.4in margins)
+        # the class report printed "MA13/16" where "Photosynthesis — the
+        # basics" ran under "MARKED 13/16", and did the same on four more
+        # rows. Nothing is clipped at 1280 or 1460, which is why every
+        # screenshot the port has ever taken looked correct.
+        #
+        # ⚠️ `min-width:0` WAS THE FIRST ATTEMPT AND IT WAS WRONG — noted
+        # because it looked right. It let the title shrink instead of
+        # overlapping, which removed the collision and replaced it with the
+        # title spilling out of a 60px box: measured, `clientWidth` 60 against
+        # `scrollWidth` 130. Overlap became overflow. `flex-wrap` is the
+        # mechanism that actually fits: the badge drops to a second line when
+        # it will not fit beside the title, the title then has the whole
+        # column, and it wraps on spaces the way Design's `text-wrap:pretty`
+        # already asks it to. `overflow-wrap:break-word` is the backstop for
+        # a single word longer than the column.
+        #
+        # ⚠️ NOT `anywhere`, and the difference is visible on the sheet.
+        # `anywhere` counts toward a box's MIN-CONTENT width, so the browser
+        # is free to make the column narrower than the longest word and then
+        # break it: the first render of this fix split "Photosynthesis" as
+        # "Photosynthes / is" over two lines with room to spare beside it.
+        # `break-word` breaks only a word that genuinely cannot fit.
+        #
+        # `break-inside:avoid` — a twelve-row table crosses the page break,
+        # and a row split down the middle puts a class's figures on one sheet
+        # and its "needs a look" sentence on the next.
+        #
+        # SCOPED TO THE PRINT SHEET, deliberately. The same overlap happens
+        # on a narrow SCREEN, and that is Design's responsive question about
+        # a five-column table rather than this unit's: at 390px the last two
+        # columns are outside the viewport entirely, which `min-width:0` does
+        # not address and must not be made to look as though it does.
+        "@media print{"
+        ".noprint{display:none!important}"
+        "[data-port-region] [style*=\"--rowpad\"][style*=\"display:flex\"]"
+        "{flex-wrap:wrap}"
+        "[data-port-region] [style*=\"--rowpad\"] *{overflow-wrap:break-word}"
+        "[data-port-region] [style*=\"grid-template-columns\"]"
+        "{break-inside:avoid;page-break-inside:avoid}"
+        "}"
         "</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-teacher\" style=\"background:var(--st-ground);"

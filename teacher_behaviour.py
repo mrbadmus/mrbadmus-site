@@ -143,7 +143,17 @@ EMPTY_SHAPE = {
         "question carrying no stem text",
     ("assignment", "gridmissing"):
         "one open assignment and no grid fetched — the key is absent",
-    ("digest", "empty"): "no live classes to digest",
+    # ⊕ CORRECTED 2 Sep 2026 (MRB-306 Phase 2a screen 6). This read "no live
+    # classes to digest", which is not what the shaper makes and not what the
+    # fixture shows: `_shape_no_work` blanks ONE class and SEVEN stay live.
+    # The sentence mattered — it is the reason the zero-live-classes guards
+    # (the em dash on Mean score and On time, and the `NaN%` guard) were
+    # believed covered when nothing exercised them. `nolive` below is the
+    # fixture that actually reaches them.
+    ("digest", "empty"): "one class with students and no work set — seven "
+                         "still live",
+    ("digest", "nolive"): "no live class at all: rosters imported, nothing "
+                          "set yet — the first week of a school year",
     ("insights", "empty"): "nothing marked to chart",
 }
 

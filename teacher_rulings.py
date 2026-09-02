@@ -3449,6 +3449,26 @@ LOGIC = (
      "real timetable data, this is the part that comes back."),
 
     # ══ THE DIGEST ══════════════════════════════════════════════════════
+    #
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 6) — ONE RENDERING OF THIS WEEK'S
+    # RETURN, and the flag count carried rather than counted twice.
+    ("""        code: c.code, ks: c.ks,
+        sub: live ? c.week[0] + '/' + c.week[1] : '—',""",
+     """        code: c.code, ks: c.ks, flagN: fl,
+        sub: MRB_WEEK_IN(c),""",
+     "the by-class row's Submitted cell. The expression is unchanged in "
+     "meaning — `MRB_WEEK_IN` is this line, lifted — and that is the point: "
+     "the class report's Submissions tile was computing the same figure a "
+     "different way (`colSub[0]`, paper index 0) and the two only agreed "
+     "because Design's sample makes them agree. There is one renderer now "
+     "and both call it.\n"
+     "\n"
+     "        `flagN` is the row's own \"students to chase\" count, kept on "
+     "the row so the Needs-a-look TILE can sum the rows instead of "
+     "re-walking every roster with a second copy of the same filter. Not a "
+     "rendered field — the row markup names `code`, `ks`, `sub`, `mean`, "
+     "`ontime`, `needs` and `open`, and an extra key is inert."),
+
     ("          : (c.state === 'nowork' ? 'No work set for two weeks' : (fl ? "
      "(fl === 1 ? '1 student to chase' : fl + ' students to chase') : "
      "'Nothing outstanding')),",
@@ -3468,17 +3488,114 @@ LOGIC = (
         { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + ' active classes' },
         { label: 'Mean score', value: Math.round(liveClasses.reduce((a, c) => a + (this.meanOf(c) || 0), 0) / liveClasses.length) + '%', sub: 'Mean of ' + liveClasses.length + ' class means' },""",
      """      digestTiles: isClassReport ? [
-        { label: 'Submissions', value: kAsked(0), sub: 'This week' },
+        { label: 'Submissions', value: MRB_WEEK_IN(k), sub: 'This week' },
         { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' marked assignment' : ' marked assignments') },
-        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_LATE_LINE(kMx.markedLate, kMx.markedLateUnknown, kMx.markedSub, 'marked') },
+        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'marked') },
         { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
       ] : [
         { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
-        { label: 'Mean score', value: liveClasses.length ? Math.round(liveClasses.reduce((a, c) => a + (this.meanOf(c) || 0), 0) / liveClasses.length) + '%' : '—', sub: 'Mean of ' + liveClasses.length + (liveClasses.length === 1 ? ' class mean' : ' class means') },""",
+        { label: 'Mean score', value: dgMeans.length ? Math.round(dgMeans.reduce((a, m) => a + m, 0) / dgMeans.length) + '%' : '—', sub: 'Mean of ' + dgMeans.length + (dgMeans.length === 1 ? ' class mean' : ' class means') },""",
      "the digest's four tiles. The same three corrections as the class "
      "screen's, plus the division by `liveClasses.length` — which is ZERO for "
      "a teacher whose classes have no work set yet, and `NaN%` was what a "
-     "teacher saw on their first day."),
+     "teacher saw on their first day.\n"
+     "\n"
+     "        ⊕ 2 Sep 2026 — ON TIME, ON THE CLASS REPORT, takes "
+     "`MRB_ONTIME_SUB` rather than `MRB_LATE_LINE` directly. The two differ "
+     "only in the case this screen kept hitting: with nothing marked, "
+     "`MRB_LATE_LINE(0, 0, 0, 'marked')` printed the words \"0 late of 0 "
+     "marked\" underneath an em dash, which reads as a measurement of a "
+     "class that has never been set any work. `MRB_ONTIME_SUB` has the arm "
+     "for it — \"Nothing submitted yet\" — and the whole-school tile two "
+     "lines below was already calling it.\n"
+     "\n"
+     "        ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 6) — TWO OF THESE FOUR "
+     "WERE STILL A SECOND SOURCE.\n"
+     "\n"
+     "        **Submissions, on the class report.** `kAsked(0)` is "
+     "`colSub[0]/colAsked[0]` — PAPER INDEX 0, which `buildPapers` sorts "
+     "`due_at DESC NULLS FIRST`. It is the newest paper, not this week's, and "
+     "a paper with no deadline at all sorts ahead of every dated one. The "
+     "tile is captioned \"This week\" and the digest's own by-class row for "
+     "the SAME class reads `c.week`, the seam's real current-teaching-week "
+     "count. Two derivations, one caption. They agree on every fixture "
+     "because Design's fiction gives every class exactly one paper due this "
+     "week at index 0 — which is precisely why nothing caught it. Driven at "
+     "A4 the tile read \"11/16 · This week\" directly above a table whose "
+     "first row said that 11/16 belonged to \"Particle model — recall and "
+     "apply\", an OPEN assignment. Both readers now call `MRB_WEEK_IN`.\n"
+     "\n"
+     "        **Mean score.** `(this.meanOf(c) || 0)` turns a class with "
+     "nothing marked into a 0% class mean and LEAVES IT IN THE DENOMINATOR, "
+     "while the by-class row three inches below prints \"—\" for that same "
+     "class. The `liveClasses.length ? … : '—'` guard added earlier stops the "
+     "NaN and does nothing about this. `dgMeans` is the classes that HAVE a "
+     "mean, so the value and the caption's count describe the same "
+     "population, and the caption now agrees with the rows a reader can "
+     "count."),
+
+    # ── the whole-school Needs-a-look tile: summed off the rows ──────────
+    ("        { label: 'Needs a look', value: String(liveClasses.reduce("
+     "(a, c) => a + this.rosterFor(c).filter(r => r.flag).length, 0)), "
+     "sub: 'Students with nothing in' }",
+     "        { label: 'Needs a look', value: String(dgFlagged), "
+     "sub: 'Students with nothing in' }",
+     "the tile walked every roster and re-applied the flag filter, and the "
+     "table under it walked them again with its own copy of the same "
+     "expression. They agree today because the two expressions are "
+     "character-for-character the same predicate — which is exactly the "
+     "arrangement that stops agreeing the day one of them is edited, and "
+     "\"57\" over rows that sum to something else is unfalsifiable by any "
+     "gate we have. `dgFlagged` sums the rows, so the tile is now a total "
+     "OF the table rather than a second opinion about it."),
+
+    # ── the class report's On-time column: a percentage, like every other ──
+    ("        ontime: p.when === 'upcoming' ? '—' : "
+     "String(kMx.colOnTime[p.idx]),",
+     "        ontime: p.when === 'upcoming' ? '—' : kOnTimePct(p.idx),",
+     "the same column header — \"ON TIME\" — carried a PERCENTAGE on the "
+     "by-class table (`matrixFor(c).markedPct + '%'`) and a BARE COUNT here. "
+     "Driven, the by-class table read 80% / 93% / 84% and the by-assignment "
+     "table read 11 / 8 / 12 under the identical heading; a reader with the "
+     "class report in front of them has no way to tell that \"6\" in the "
+     "On-time column of a row whose Submitted cell says 11/16 is six "
+     "children rather than six percent.\n"
+     "\n"
+     "        And the count is the raw `colOnTime`, which is the defect "
+     "`MRB_ONTIME_VALUE` exists to prevent: `is_late` is NULL on every "
+     "submission written before 22 Aug 2026, so a paper can have thirteen "
+     "submissions with nothing known about the timing of any of them and "
+     "this cell printed \"0\" — nobody was on time. Every fixture in the set "
+     "has `colLateUnknown` all zeros, so no gate could see it.\n"
+     "\n"
+     "        `kOnTimePct` is not new: it was written beside `kAsked` by the "
+     "ruling on `const flagged`, it divides by the population whose lateness "
+     "is KNOWN and returns an em dash when that population is empty — the "
+     "same definition `markedPct` carries in the seam — and it was DEAD "
+     "CODE, called from nowhere. The correct derivation already existed and "
+     "the screen was not using it."),
+
+    # ── "this term" is a claim the list cannot support ───────────────────
+    ("        ? k.n + ' students · ' + kPapers.length + ' assignments this "
+     "term'",
+     "        ? k.n + ' students · ' + kPapers.length + (kPapers.length === 1 "
+     "? ' assignment' : ' assignments')",
+     "`papersFor` returns the class's assignments for the academic year in "
+     "view, which `buildPapers` takes from the whole `pack.assignments` list "
+     "— there is no term filter anywhere in the chain. In September \"12 "
+     "assignments this term\" over a list that spans the year is a number "
+     "with the wrong noun on it, and the plural was unguarded besides."),
+
+    # ── one population for the Submissions tile and its own caption ──────
+    ("    const totalSubs = this.CLASSES.reduce((a, c) => a + c.week[0], 0);",
+     "    const totalSubs = liveClasses.reduce((a, c) => a + c.week[0], 0);",
+     "the tile reads `String(totalSubs)` under the caption \"Across N active "
+     "classes\", and `totalSubs` was summed over ALL classes. The figure is "
+     "unchanged — a class that is not live has an empty roster or no papers, "
+     "so no child of it can have `inWeek` set and its `week[0]` is "
+     "structurally 0 — but the value and the caption were describing two "
+     "different populations and only happened to coincide. An invariant that "
+     "holds by accident is one nobody will notice breaking."),
 
     ("""      const missing = k.n - kMx.colSub[p.idx];""",
      """      const missing = Math.max(0, (kMx.colAsked[p.idx] || 0) - kMx.colSub[p.idx]);""",
@@ -4247,7 +4364,15 @@ componentDidUpdate() {
      "this.matrixFor(c).markedLateUnknown, 0);\n"
      "    const dgKnown = dgOnTime + dgLate;\n"
      "    const dgOnPct = dgKnown ? Math.round((dgOnTime / dgKnown) * 100) "
-     ": null;",
+     ": null;\n"
+     "    /* ⊕ MRB-306 screen 6 — the two figures the tiles used to derive\n"
+     "       for themselves, derived ONCE here instead. `dgMeans` is the\n"
+     "       live classes that actually HAVE a class mean; `dgFlagged` is\n"
+     "       summed off `digestRows`, so the tile cannot count a child the\n"
+     "       table below it does not. */\n"
+     "    const dgMeans = liveClasses.map(c => this.meanOf(c))\n"
+     "                               .filter(m => m != null);\n"
+     "    const dgFlagged = digestRows.reduce((a, d) => a + d.flagN, 0);",
      "the digest's cross-class lateness. `markedSub - markedOnTime` folds "
      "every unknown into LATE, and dividing by `markedSub` counts them "
      "against the on-time percentage as well — the same population "

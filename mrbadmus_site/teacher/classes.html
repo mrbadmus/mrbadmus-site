@@ -41,7 +41,7 @@
   ══════════════════════════════════════════════════════════════════════════
 -->
 <link rel="stylesheet" href="/shared/teacher-ds.css?v=fba5f719">
-<style>body{margin:0;background:var(--st-ground,#FBF3E6)}a{color:var(--ks3-accent-text);text-decoration:none}a:hover{color:var(--ks3-accent-hover)}button{font-family:inherit}#mrb-teacher-live-regions[hidden]{display:none}@media print{.noprint{display:none!important}}</style>
+<style>body{margin:0;background:var(--st-ground,#FBF3E6)}a{color:var(--ks3-accent-text);text-decoration:none}a:hover{color:var(--ks3-accent-hover)}button{font-family:inherit}#mrb-teacher-live-regions[hidden]{display:none}@media print{.noprint{display:none!important}[data-port-region] [style*="--rowpad"][style*="display:flex"]{flex-wrap:wrap}[data-port-region] [style*="--rowpad"] *{overflow-wrap:break-word}[data-port-region] [style*="grid-template-columns"]{break-inside:avoid;page-break-inside:avoid}}</style>
 </head>
 <body>
 <div id="mrb-teacher" style="background:var(--st-ground);min-height:100vh"></div>
@@ -204,6 +204,26 @@ function MRB_ONTIME_SUB(onTime, late, unknown, noun){
        ', timing not recorded')
     : 'Nothing submitted yet'; }
   return MRB_LATE_LINE(late, unknown, known, noun || 'submitted');}
+/* ⊕ MRB-306 Phase 2a screen 6 — THIS WEEK'S RETURN, WRITTEN ONCE.
+   "How many of this class handed in this week's work" is asked in three
+   places — the class card on My classes, the digest's by-class row, and the
+   class report's Submissions tile — and it had TWO answers. `c.week` is the
+   seam's own count (`buildMatrix` marks the papers whose `due_at` falls in
+   the class's current teaching week, `buildRoster` sets `inWeek` per child,
+   and `week[0]` counts them); the class report instead read `colSub[0]`,
+   which is PAPER INDEX 0 — the newest paper by `due_at DESC`, whatever week
+   it belongs to, and with NULL deadlines sorting FIRST it can be a paper
+   that has no deadline at all and so is in no week.
+   In Design's fiction every class has exactly one paper, due this week, at
+   index 0, so the two agree on every fixture and the divergence is invisible
+   by construction. On real data they part the moment a class has a paper due
+   later than this week, or none due this week at all.
+   `week` is the source, this is the only rendering of it, and both readers
+   call it. The em dash matches the row: a class with no roster or no work
+   set was not ASKED for anything, and "0/16" would be an accusation. */
+function MRB_WEEK_IN(c){
+  if(!c || c.state !== 'live'){ return '—'; }
+  return (c.week && c.week[0]) + '/' + (c.week && c.week[1]);}
 
 /* == THE SHOUTOUT COMPOSER, WIRED =======================================
 
@@ -888,7 +908,7 @@ class Component extends DCLogic {
     const pp = this.paper();
     const liveClasses = this.CLASSES.filter(c => c.state === 'live');
     const totalStudents = this.CLASSES.reduce((a, c) => a + c.n, 0);
-    const totalSubs = this.CLASSES.reduce((a, c) => a + c.week[0], 0);
+    const totalSubs = liveClasses.reduce((a, c) => a + c.week[0], 0);
     const kMean = this.meanOf(k);
 
     const pill = (on) => on
@@ -1201,8 +1221,8 @@ class Component extends DCLogic {
       const m = live ? this.meanOf(c) : null;
       const fl = live ? this.rosterFor(c).filter(r => r.flag).length : 0;
       return {
-        code: c.code, ks: c.ks,
-        sub: live ? c.week[0] + '/' + c.week[1] : '—',
+        code: c.code, ks: c.ks, flagN: fl,
+        sub: MRB_WEEK_IN(c),
         mean: m == null ? '—' : m + '%',
         ontime: live && this.matrixFor(c).markedPct != null ? this.matrixFor(c).markedPct + '%' : '—',
         needs: c.state === 'empty'
@@ -1217,7 +1237,7 @@ class Component extends DCLogic {
         code: p.title,
         ks: p.when === 'upcoming' ? 'Open' : 'Marked',
         sub: p.sub, mean: p.mean,
-        ontime: p.when === 'upcoming' ? '—' : String(kMx.colOnTime[p.idx]),
+        ontime: p.when === 'upcoming' ? '—' : kOnTimePct(p.idx),
         needs: missing === 0
           ? 'Everyone submitted'
           : (p.when === 'upcoming'
@@ -1232,6 +1252,14 @@ class Component extends DCLogic {
     const dgUnknown = liveClasses.reduce((a, c) => a + this.matrixFor(c).markedLateUnknown, 0);
     const dgKnown = dgOnTime + dgLate;
     const dgOnPct = dgKnown ? Math.round((dgOnTime / dgKnown) * 100) : null;
+    /* ⊕ MRB-306 screen 6 — the two figures the tiles used to derive
+       for themselves, derived ONCE here instead. `dgMeans` is the
+       live classes that actually HAVE a class mean; `dgFlagged` is
+       summed off `digestRows`, so the tile cannot count a child the
+       table below it does not. */
+    const dgMeans = liveClasses.map(c => this.meanOf(c))
+                               .filter(m => m != null);
+    const dgFlagged = digestRows.reduce((a, d) => a + d.flagN, 0);
 
     /* ── Search ── */
     const pool = MRB_DATA('searchPool');
@@ -1474,21 +1502,21 @@ class Component extends DCLogic {
       digestTableTitle: isClassReport ? 'By assignment' : 'By class',
       digestColTitle: isClassReport ? 'Assignment' : 'Class',
       digestSub: isClassReport
-        ? k.n + ' students · ' + kPapers.length + ' assignments this term'
+        ? k.n + ' students · ' + kPapers.length + (kPapers.length === 1 ? ' assignment' : ' assignments')
         : this.CLASSES.length + ' classes · ' + totalStudents + ' students · ' + totalSubs + ' submissions',
       digestTiles: isClassReport ? [
-        { label: 'Submissions', value: kAsked(0), sub: 'This week' },
+        { label: 'Submissions', value: MRB_WEEK_IN(k), sub: 'This week' },
         { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' marked assignment' : ' marked assignments') },
-        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_LATE_LINE(kMx.markedLate, kMx.markedLateUnknown, kMx.markedSub, 'marked') },
+        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'marked') },
         { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
       ] : [
         { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
-        { label: 'Mean score', value: liveClasses.length ? Math.round(liveClasses.reduce((a, c) => a + (this.meanOf(c) || 0), 0) / liveClasses.length) + '%' : '—', sub: 'Mean of ' + liveClasses.length + (liveClasses.length === 1 ? ' class mean' : ' class means') },
+        { label: 'Mean score', value: dgMeans.length ? Math.round(dgMeans.reduce((a, m) => a + m, 0) / dgMeans.length) + '%' : '—', sub: 'Mean of ' + dgMeans.length + (dgMeans.length === 1 ? ' class mean' : ' class means') },
         { label: 'On time',
           value: dgOnPct == null ? '—' : dgOnPct + '%',
           sub: MRB_ONTIME_SUB(dgOnTime, dgLate, dgUnknown,
                               'marked submissions') },
-        { label: 'Needs a look', value: String(liveClasses.reduce((a, c) => a + this.rosterFor(c).filter(r => r.flag).length, 0)), sub: 'Students with nothing in' }
+        { label: 'Needs a look', value: String(dgFlagged), sub: 'Students with nothing in' }
       ],
       digestRows: isClassReport ? classReportRows : digestRows,
 
