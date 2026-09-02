@@ -3602,6 +3602,27 @@ LOGIC = (
      "`classReportRows`. Same denominator defect: `k.n` is the CURRENT "
      "roster, and a departed student who submitted makes this negative."),
 
+    # ── the SECOND copy of the `CLASSES[3]` fallback ────────────────────
+    ("""    const k = all ? null : (this.klassById(scope) || this.CLASSES[3]);""",
+     """    const k = all ? null : this.klass();""",
+     "`chartFor` carried its OWN copy of the fallback the `klass` ruling "
+     "exists to remove: a scope that does not resolve falls back to THE "
+     "FOURTH CLASS IN THE LIST. The `klass` ruling says why that is not "
+     "acceptable — on a real URL it is one teacher's class shown under "
+     "another teacher's scope, silently — and it is no better for being in "
+     "a chart. It is also a crash on a short list: `CLASSES[3]` is "
+     "`undefined` for a teacher with three classes or fewer, and `k.code` "
+     "is dereferenced eleven lines later. A teacher with three classes is "
+     "the ordinary case in this school, not the edge.\n"
+     "\n"
+     "        `this.klass()` is the ruled resolver and resolves the SAME "
+     "input: `chartScope` is `MRB_Q('class') || 'all'` and `state.classId` "
+     "is the seam's `classId`, which `load()` also takes from `?class=`. So "
+     "this is not a new answer — it is the existing one, called instead of "
+     "copied. Set-but-missing throws with the class id in the message; "
+     "absent returns the first class, or `MRB_NO_CLASS()` for a teacher "
+     "with none."),
+
     # ══ chartFor: FIVE CRASH PATHS AND FOUR READS OF A DELETED FIELD ════
     #
     # ⚑ EVERY ONE OF THESE IS REACHABLE ON A TEACHER'S FIRST DAY, which is
@@ -3644,7 +3665,7 @@ LOGIC = (
           const min = Math.min.apply(null, scored);
           const qi = g.qpct.indexOf(min);
           const st = g.stems[qi] || { id: '—', text: '' };
-          return { label: c.code, sub: st.id + ' · ' + st.text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi };
+          return { label: c.code, sub: st.id + ' · ' + st.text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi, stem: st, qkey: st.question_ref || st.text || '' };
         }).filter(r => r);
         if (!rows.length) { return { ...base, title: 'Weakest question per class, last marked set', note: 'No class has a marked paper yet' }; }""",
      "`questions / all`. FOUR defects in five lines: `gridFor(c, 1)` assumes "
@@ -3683,19 +3704,93 @@ LOGIC = (
      "one-paper class, plus `k.n` as the submitted denominator, plus "
      "`STEMS[qi].text.toLowerCase()` on a stem that no longer exists."),
 
+    # ── the tiles and note of `questions / all`: A DELETED FIELD, TWICE ──
+    ("""        const tally = {};
+        rows.forEach(r => { tally[r.qi] = (tally[r.qi] || 0) + 1; });
+        const keys = Object.keys(tally).sort((a, b) => tally[b] - tally[a]);
+        const uniqueTop = keys.length === 1 || tally[keys[0]] > tally[keys[1]];
+        const worst = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+        const under50 = rows.filter(r => r.pct < 50).length;
+        return { ...base, title: 'Weakest question per class, last marked set', rows,
+          tiles: [tile('Classes', rows.length, 'With marked work'), tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
+            uniqueTop
+              ? tile('Most common', this.STEMS[keys[0]].id, this.STEMS[keys[0]].text)
+              : tile('Weak points', keys.length + ' questions', 'No single common gap')],
+          note: uniqueTop
+            ? this.STEMS[keys[0]].text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
+            : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + ' classes fall below 50% on theirs' };""",
+     """        const tally = {};
+        rows.forEach(r => { if (r.qkey) { tally[r.qkey] = (tally[r.qkey] || 0) + 1; } });
+        const keys = Object.keys(tally).sort((a, b) => tally[b] - tally[a]);
+        const top = keys.length ? rows.filter(r => r.qkey === keys[0])[0].stem : null;
+        const uniqueTop = !!top && rows.length > 1 &&
+          (keys.length === 1 || tally[keys[0]] > tally[keys[1]]);
+        const worst = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+        const under50 = rows.filter(r => r.pct < 50).length;
+        return { ...base, title: 'Weakest question per class, last marked set', rows,
+          tiles: [tile('Classes', rows.length, rows.length === 1 ? 'With a marked paper' : 'With marked work'),
+            tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
+            uniqueTop
+              ? tile('Most common', top.id, top.text)
+              : tile('Weak points', keys.length + (keys.length === 1 ? ' question' : ' questions'),
+                     rows.length < 2 ? 'Only one class to look at' : 'No single common gap')],
+          note: uniqueTop
+            ? top.text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
+            : (rows.length < 2
+               ? 'One class has a marked paper — nothing to compare it with yet'
+               : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + (under50 === 1 ? ' class falls' : ' classes fall') + ' below 50% on theirs') };""",
+     "⛔ THIS ONE KILLED THE PAGE, AND IT WAS SHIPPING. `STEMS` is DELETED "
+     "by `DROP_FIELDS` — eight invented question stems held as a class "
+     "field. The ruling above replaced the four reads in this branch's ROWS "
+     "and the four in the class branch, and left the TWO here. "
+     "`this.STEMS[keys[0]]` on `undefined` throws `TypeError: Cannot read "
+     "properties of undefined (reading '3')`, `renderVals` never returns, "
+     "and the Charts page goes blank the moment a teacher presses Question "
+     "difficulty on All classes. Driven on the delivery's OWN POPULATED "
+     "FIXTURE on 2 Sep 2026 — the one every gate already had — and "
+     "reachable in production the moment one class has one marked paper, "
+     "which on the working year is `8r/Sc1` and nothing else.\n"
+     "\n"
+     "        ⚠️ AND THE TALLY WAS KEYED ON THE WRONG THING. `r.qi` is the "
+     "question's INDEX WITHIN ITS OWN PAPER, and every class in this chart "
+     "is on a DIFFERENT paper — `MRB_NEWEST_MARKED` picks each class's own "
+     "newest marked set. Counting how many classes share index 3 compares "
+     "question 4 of a chemistry paper with question 4 of a physics one and "
+     "calls the coincidence \"the most common gap\". It reads as a finding "
+     "and it is arithmetic on unrelated things. In Design's fiction there "
+     "is ONE `STEMS` array behind every paper in the school, so the index "
+     "IS the question and the defect cannot exist. The key is now the "
+     "question's own identity — `question_ref` where the snapshot carries "
+     "one, its text otherwise — and a row with neither is left OUT of the "
+     "tally rather than counted as a match with every other blank.\n"
+     "\n"
+     "        `rows.length > 1` is the third correction. With one class the "
+     "top of the tally is unanimous by construction, and \"X is the weakest "
+     "question in 1 of 1 classes\" has the shape of a finding and none of "
+     "the content. One class is the whole school today."),
+
     ("""      const rows = live.map(c => {
         const m = mx(c);
         const pct = c.n ? Math.round((m.colSub[0] / c.n) * 100) : 0;
         return { label: c.code, sub: c.ks, value: m.colSub[0] + '/' + c.n, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
       });""",
      """      const rows = live.map(c => {
-        const m = mx(c);
-        const asked = m.colAsked[0] || 0;
-        const pct = asked ? Math.round((m.colSub[0] / asked) * 100) : 0;
-        return { label: c.code, sub: c.ks, value: m.colSub[0] + '/' + asked, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+        const w = c.week || [0, 0];
+        const pct = w[1] ? Math.round((w[0] / w[1]) * 100) : 0;
+        return { label: c.code, sub: c.ks, value: MRB_WEEK_IN(c), pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
       });""",
      "`submissions / all`. `c.n` is the current roster; a class where two "
-     "pupils left after submitting read \"31/29\"."),
+     "pupils left after submitting read \"31/29\".\n"
+     "\n"
+     "        \u2295 2 Sep 2026 (MRB-306 Phase 2a screen 7) \u2014 AND "
+     "`colSub[0]` IS NOT THIS WEEK EITHER. The `colAsked` denominator fixed "
+     "the impossible fraction and left the row plotting PAPER INDEX 0 under "
+     "a chart titled \"Submissions this week\". Correcting the tiles above "
+     "it to `c.week` and leaving the rows on `colSub[0]` would have made a "
+     "card whose total disagreed with the bars beneath it \u2014 on "
+     "`insights-single` the tile read 0/2 above a row reading 1/2, which is "
+     "the two-sources defect reappearing INSIDE one chart. `MRB_WEEK_IN` is "
+     "the one renderer of this figure and the rows call it too."),
 
     ("""    const rows = this.papersFor(k).map(p => {
       const pct = k.n ? Math.round((m.colSub[p.idx] / k.n) * 100) : 0;
@@ -3710,6 +3805,86 @@ LOGIC = (
      "`p.sub`, which the seam has already built as `colSub/colAsked` — one "
      "answer rather than two."),
 
+    # ══ THE HANDED-OVER DEFECT: "This week", A THIRD TIME ═══════════════
+    ("""      tiles: [tile('This week', m.colSub[0] + '/' + k.n, 'Open assignment'), tile('Outstanding', k.n - m.colSub[0], 'Students yet to submit'), tile('Assignments', rows.length, 'Set this term')],""",
+     """      tiles: [tile('Submissions', MRB_WEEK_IN(k), 'This week'),
+        tile('Outstanding', k.state === 'live' ? Math.max(0, (k.week[1] || 0) - (k.week[0] || 0)) : '—', 'Students yet to submit'),
+        tile('Assignments', rows.length, rows.length === 1 ? 'Set so far this year' : 'Set so far this year')],""",
+     "⊕ HANDED OVER BY SCREEN 6, and it is the WORST of the three "
+     "renderings of this week's return. Two faults in one expression and a "
+     "third in the caption beside it.\n"
+     "\n"
+     "        **`colSub[0]` is not this week.** `buildPapers` sorts "
+     "`due_at DESC NULLS FIRST`, so index 0 is the NEWEST paper — whatever "
+     "week it belongs to — and a paper with no deadline at all sorts ahead "
+     "of every dated one and so belongs to no week. Design's fiction gives "
+     "every class exactly one paper, due this week, at index 0, which is why "
+     "three independent derivations of one figure agreed on every fixture in "
+     "the set. Driven on `insights-single` — one class, one paper, set in an "
+     "EARLIER teaching week — the tile read \"1/2\" under the caption \"This "
+     "week\" while the seam's own `week` said 0, and the single row "
+     "underneath it said \"Marked · due Wed 26 Aug\".\n"
+     "\n"
+     "        **`k.n` is the roster denominator MRB-38 ruled against.** It is "
+     "the CURRENT roll; `colSub` counts every submission including a "
+     "departed student's, so `k.n - colSub[0]` GOES NEGATIVE the moment a "
+     "child who submitted has left. \"Outstanding: −1\" tells a teacher "
+     "nothing except that the page is wrong. `week[0]` and `week[1]` cannot "
+     "do that: `buildRoster` maps over `pack.members`, so `week[0]` counts a "
+     "subset of `week[1]` by construction and the subtraction has a floor "
+     "whether or not the `Math.max` is there.\n"
+     "\n"
+     "        **\"Open assignment\" was a claim about paper index 0.** On "
+     "`insights-single` the only paper is MARKED and the caption said Open. "
+     "The sub is now the word the digest's own Submissions tile carries, so "
+     "the two screens read identically.\n"
+     "\n"
+     "        `MRB_WEEK_IN` is screen 6's helper and this is its third "
+     "caller. NOT a fourth derivation — the point of the helper is that "
+     "there is one renderer of this figure and every reader of it calls "
+     "that renderer.\n"
+     "\n"
+     "        The tile is LABELLED \"Submissions\" and captioned \"This "
+     "week\" \u2014 which is the digest\u2019s class-report tile, word for "
+     "word. Design labelled it \"This week\" and captioned it \"Open "
+     "assignment\"; with the caption corrected, label and caption both read "
+     "\"This week\", which on screen looks like a rendering fault. Two "
+     "screens showing one figure now show it under one name.\n"
+     "\n"
+     "        \"Set this term\" goes for the reason already ruled on the "
+     "digest's sub-heading: `papersFor` returns the assignments for the "
+     "academic year in view and there is no term filter anywhere in the "
+     "chain.\n"
+     "\n"
+     "        ⚠️ ONE THING THIS DOES NOT FIX, STATED RATHER THAN HIDDEN. "
+     "`week[1]` is the whole roster whether or not anything was DUE this "
+     "week, so a live class with no paper due this week reads \"0/16\" — "
+     "which looks like an accusation and is really \"nobody was asked\". "
+     "That is a property of the shared helper and of the seam's `week` "
+     "tuple, so it is the same on the class cards and the digest, and "
+     "fixing it HERE would put this screen back to disagreeing with the "
+     "other two. It belongs to `MRB_WEEK_IN` and is in the screen 7 "
+     "report."),
+
+    # ── and the same chart with NOTHING to plot ─────────────────────────
+    ("""    const lowP = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+    return { ...base, title: k.code + ' — submissions by assignment', rows,""",
+     """    const lowP = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+    if (!rows.length) {
+      return { ...base, title: k.code + ' — submissions by assignment',
+        note: k.state === 'empty' ? 'No students on the roster yet'
+                                  : 'No work set for this class yet' };
+    }
+    return { ...base, title: k.code + ' — submissions by assignment', rows,""",
+     "`submissions / class` WITH NO PAPERS, which is 68 of the working "
+     "year's 69 classes on 2 Sep 2026. `m.colSub[0]` on an empty column "
+     "array is `undefined`, so the tile rendered the literal string "
+     "**\"undefined/16\"** and the one beside it rendered **\"NaN\"** — both "
+     "photographed on `insights-noroster` and `insights-nolive` before this "
+     "guard. Three zero-width bars and two nonsense words is not an empty "
+     "state; it is the page failing where a teacher cannot tell that it "
+     "has."),
+
     ("""        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedSub }))
         : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colSub[p.idx] }));""",
      """        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedOnTime + mx(c).markedLate }))
@@ -3717,6 +3892,206 @@ LOGIC = (
      "the on-time chart. `markedSub` includes the submissions whose lateness "
      "is UNKNOWN, so the bar counted every unknown as late — the same error "
      "as the roster row's, in a graph, where it is harder to see."),
+
+    ("""      note: lowP ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };""",
+     """      note: (rows.length > 1 && lowP) ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };""",
+     "the class chart's caption, ON ONE ASSIGNMENT. \"Weakest return: "
+     "Energy stores and transfers at 50%\" under a chart with exactly one "
+     "bar in it is a ranking with one entrant, and it reads as a judgement "
+     "on the only piece of work the class has done. One class with one "
+     "paper is the working year's entire assignment history on 2 Sep 2026."),
+
+    # ══ `submissions / all`: THE SAME FIGURE, THE SAME TWO FAULTS ═══════
+    ("""      const subs = live.reduce((a, c) => a + mx(c).colSub[0], 0);
+      const seats = live.reduce((a, c) => a + c.n, 0);
+      const done = live.filter(c => mx(c).colSub[0] === c.n).length;
+      const low = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+      return { ...base, title: 'Submissions this week', rows,
+        tiles: [tile('Submitted', subs + '/' + seats, 'Across ' + live.length + ' classes'), tile('Outstanding', seats - subs, 'Students yet to submit'), tile('Everyone in', done + '/' + live.length, 'Classes complete')],
+        note: low ? 'Lowest return: ' + low.label + ' at ' + low.pct + '% (' + low.value + ')' : '' };""",
+     """      if (!rows.length) {
+        return { ...base, title: 'Submissions this week',
+          note: 'No class has work set yet' };
+      }
+      const subs = live.reduce((a, c) => a + ((c.week || [0, 0])[0]), 0);
+      const seats = live.reduce((a, c) => a + ((c.week || [0, 0])[1]), 0);
+      const done = live.filter(c => c.week && c.week[1] && c.week[0] === c.week[1]).length;
+      const low = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+      return { ...base, title: 'Submissions this week', rows,
+        tiles: [tile('Submitted', subs + '/' + seats, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')),
+          tile('Outstanding', Math.max(0, seats - subs), 'Students yet to submit'),
+          tile('Everyone in', done + '/' + live.length, 'Classes complete')],
+        note: rows.length < 2 ? ''
+          : (low ? 'Lowest return: ' + low.label + ' at ' + low.pct + '% (' + low.value + ')' : '') };""",
+     "the whole-school half of the same tile, and it had the same two "
+     "faults: `colSub[0]` for \"this week\" and `c.n` for the denominator. "
+     "Summed over eight classes the negative cannot be SEEN — it is "
+     "absorbed by the other seven — which is worse than the class-scoped "
+     "one, not better.\n"
+     "\n"
+     "        Both now read `c.week`, the seam's current-teaching-week "
+     "count, which is what the ROWS of this same chart read (see the "
+     "ruling below) and what the digest's by-class Submitted column reads. "
+     "One question, one answer, four callers.\n"
+     "\n"
+     "        The empty guard is the September case: with no live class the "
+     "tiles read \"0/0 · Across 0 classes\", \"Outstanding 0\" and "
+     "\"Everyone in 0/0\" over a blank axis — a school that submitted "
+     "nothing, rather than a school that has not been asked. Photographed "
+     "on `insights-nolive`.\n"
+     "\n"
+     "        And \"Lowest return\" is dropped at one class: naming the "
+     "only class in the school as the lowest is a ranking with one entrant."),
+
+    # ── spread: five bands of zero is not an empty state ────────────────
+    ("""      const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));""",
+     """      if (!avgs.length) {
+        return { ...base, title: (all ? 'Score spread, all classes' : k.code + ' — score spread'),
+          note: all ? 'No student has marked work yet'
+                    : (k.state === 'empty' ? 'No students on the roster yet'
+                                           : 'Nothing marked for this class yet') };
+      }
+      const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));""",
+     "`spread`, both scopes. With no marked work anywhere the chart drew "
+     "its five bands at zero, three tiles reading 0, and the caption "
+     "\"0 of 0 students sit below 55%, 0 at 70% or above\" — a labelled "
+     "axis with no series, which reads as a measurement of a school where "
+     "nobody scores anything rather than a school that has not marked "
+     "anything. Photographed on `insights-nolive` and `insights-noroster`; "
+     "reachable on 68 of the working year's 69 classes."),
+
+    # ── on time: an empty legend under an empty chart ───────────────────
+    ("""      const on = src.reduce((a, x) => a + x.on, 0);
+      const tot = src.reduce((a, x) => a + x.tot, 0);""",
+     """      if (!src.length) {
+        return { ...base, title: (all ? 'On time vs late, marked work' : k.code + ' — on time by assignment'),
+          note: all ? 'No class has marked work yet' : 'Nothing marked for this class yet' };
+      }
+      const on = src.reduce((a, x) => a + x.on, 0);
+      const tot = src.reduce((a, x) => a + x.tot, 0);""",
+     "`ontime`, both scopes. The tiles already carried em dashes from the "
+     "unknown-lateness ruling, so this looked handled — but the CHART did "
+     "not: an On time / Late key still drew under a card with no bars in "
+     "it, and \"Late — · Still marked\" describes marked work that does not "
+     "exist. A legend for a series that is not there is the chart claiming "
+     "to have measured something."),
+
+    # ── engagement: "everyone" when there is nobody ─────────────────────
+    ("""      const rows = this.rosterFor(k);
+      const b = this.bucketsOf(rows);
+      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);""",
+     """      const rows = this.rosterFor(k);
+      if (!rows.length) {
+        return { ...base, title: k.code + ' — last seen',
+          note: 'No students on the roster yet' };
+      }
+      const b = this.bucketsOf(rows);
+      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);""",
+     "⚑ `engagement / class` ON A CLASS WITH NO ROSTER SAID **\"Everyone "
+     "has opened something this week\"** — about nobody — over three "
+     "columns of zero and a tile reading \"Students 0 · On the roster\". "
+     "Photographed on `insights-noroster`, which is the shape 66 of the "
+     "working year's 69 classes are in today. \"Everyone\" over an empty "
+     "set is the most confident sentence on the page and the least "
+     "supported."),
+
+    ("""      note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Everyone has opened something this week' };""",
+     """      note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Nobody in this class has been quiet for two weeks or more' };""",
+     "\u201cEveryone has opened something this week\u201d IS NOT WHAT THIS "
+     "CHART MEASURED. `bucketsOf` reads `r.hours`, and `buildRoster` sets "
+     "`hours` from the newest SUBMISSION stamp \u2014 or, for a child who "
+     "has never submitted anything, from how long they have been ON THE "
+     "ROLL. So a class whose roster was imported this morning and which has "
+     "never been set any work buckets every child as \u201cactive today\u201d "
+     "and was told that all of them had opened something. Photographed on "
+     "`insights-nolive`, where the class has sixteen children, no "
+     "assignments, and therefore not one submission in existence.\n"
+     "\n"
+     "        The replacement claims exactly what `cold` counts and nothing "
+     "more \u2014 `cold` is `hours >= 168`, so an empty `cold` genuinely "
+     "means nobody has been quiet for a fortnight, and that stays true for a "
+     "never-active child however long they have been on the roll. No new "
+     "derivation and no new field: the same number, described honestly.\n"
+     "\n"
+     "        \u26a0\ufe0f WHAT IS NOT FIXED HERE. The TILE still reads "
+     "\u201cActive today\u201d over children who have never opened anything, "
+     "because that is the bucket LABELS being wrong for a never-active "
+     "student rather than this caption being wrong \u2014 and "
+     "`teacher-live.js` already records it as a handover item beside "
+     "`hours` (\u201cthe bucket labels still say last seen, which is not "
+     "quite what this measures\u201d). Re-deriving it here would be a second "
+     "answer to a question the seam has already parked."),
+
+    ("""        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,""",
+     """        if (!stacks.length) {
+          return { ...base, title: 'Last seen, by class',
+            note: 'No class has work set yet' };
+        }
+        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,""",
+     "`engagement / all`. With no live class the card drew a Today / This "
+     "week / 2+ weeks key under nothing, three zero tiles, and the caption "
+     "\"0 students have not opened anything for two weeks or more\" — which "
+     "is a reassurance, and there was nobody it could be about."),
+
+    ("""          tiles: [tile('Active today', totals.today, 'Across ' + live.length + ' classes'), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],""",
+     """          tiles: [tile('Active today', totals.today, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],""",
+     "\"Across 1 classes\" — the unguarded plural, on the shape the working "
+     "year is actually in."),
+
+    # ── means: a cohort of one is not a cohort ──────────────────────────
+    ("""        return { ...base, title: 'Class means, marked work', tiles: [
+          tile('Cohort mean', cohort + '%', 'Mean of ' + raw.length + ' class means'),
+          tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
+          tile('Lowest', sorted[sorted.length - 1].code + ' · ' + sorted[sorted.length - 1].mean + '%', '')
+        ], note: below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',""",
+     """        return { ...base, title: 'Class means, marked work', tiles: (raw.length < 2 ? [
+          tile('Class mean', cohort + '%', sorted[0].code + ' — the only class with marked work')
+        ] : [
+          tile('Cohort mean', cohort + '%', 'Mean of ' + raw.length + ' class means'),
+          tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
+          tile('Lowest', sorted[sorted.length - 1].code + ' · ' + sorted[sorted.length - 1].mean + '%', '')
+        ]), note: raw.length < 2 ? '' : below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',""",
+     "`means / all` WITH ONE CLASS, which is the whole school today. "
+     "`sorted[0]` and `sorted[sorted.length - 1]` are the SAME ROW, so the "
+     "card printed **Highest 8r/Sc1 · 63%** and **Lowest 8r/Sc1 · 63%** "
+     "side by side, under a \"Cohort mean\" that is that one class's own "
+     "mean, over the caption \"0 of 1 classes sit below the 63% cohort "
+     "mean\". Photographed on `insights-single`. Four tiles, one number, "
+     "and the word \"cohort\" doing all the lying: a mean of one class is "
+     "that class."),
+
+    ("""        tiles: [tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Excluded', 'Not marked yet')],
+        note: 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
+     """        tiles: (ps.length < 2 ? [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one marked assignment'),
+          tile('Open work', 'Excluded', 'Not marked yet')
+        ] : [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Excluded', 'Not marked yet')
+        ]),
+        note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
+     "`means / class` WITH ONE MARKED PAPER. `best` and `worst` are the "
+     "same paper, so the card read **Strongest 63% · Energy stores and "
+     "transfers** beside **Weakest 63% · Energy stores and transfers**, and "
+     "the caption named it the weakest set of one. \"Across 1 marked "
+     "assignments\" was the unguarded plural in the same row. One class, one "
+     "marked paper is the entirety of the working year's data."),
+
+    # ── the sub-heading's plurals ───────────────────────────────────────
+    ("""      insSub: chartScope === 'all'
+        ? liveClasses.length + ' active classes · ' + totalStudents + ' students on roll'
+        : k.code + ' · ' + k.n + ' students · ' + kPapers.length + ' assignments',""",
+     """      insSub: chartScope === 'all'
+        ? liveClasses.length + (liveClasses.length === 1 ? ' active class · ' : ' active classes · ') + totalStudents + (totalStudents === 1 ? ' student on roll' : ' students on roll')
+        : [k.code, k.n + (k.n === 1 ? ' student' : ' students'),
+           kPapers.length + (kPapers.length === 1 ? ' assignment' : ' assignments')].join(' · '),""",
+     "the Charts sub-heading, three unguarded plurals. \"1 active classes · "
+     "2 students on roll\" is the working year's real line."),
 
     # ══ the shoutout feed, the search pool, the import wizard ═══════════
     ("""      feed: [
@@ -4427,10 +4802,20 @@ componentDidUpdate() {
 
     ("        note: worst ? 'Weakest: ' + worst.label + ' at ' + (worst.tot ? "
      "Math.round((worst.on / worst.tot) * 100) : 0) + '% on time' : '' };",
-     "        note: (worst && worst.tot) ? 'Weakest: ' + worst.label + ' at "
-     "' + Math.round((worst.on / worst.tot) * 100) + '% on time' : '' };",
+     "        note: (src.length > 1 && worst && worst.tot) ? 'Weakest: ' + "
+     "worst.label + ' at ' + Math.round((worst.on / worst.tot) * 100) + "
+     "'% on time' : '' };",
      "the on-time chart's caption. With no recorded deadlines anywhere it "
-     "named a class and said it was at 0% on time."),
+     "named a class and said it was at 0% on time.\n"
+     "\n"
+     "        ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — AND ON ONE ROW IT "
+     "NAMED THE ONLY CLASS IN THE SCHOOL \"Weakest\", at 100% on time. The "
+     "arithmetic is real and the superlative is a ranking with one entrant; "
+     "photographed on `insights-single`. The guard is `src.length > 1`, the "
+     "same correction the Highest/Lowest and Strongest/Weakest pairs take "
+     "two rulings above. Amended in place rather than added below, because "
+     "`LOGIC` applies IN ORDER and a second ruling on this line would have "
+     "had to anchor on this one's output."),
 
     # ══ the Set-work sheet's leftovers ══════════════════════════════════
     #

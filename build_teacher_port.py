@@ -323,7 +323,15 @@ PAGES = [
          empty_out="insights-empty-fixture.html",
          empty_js="teacher-fixture-insights-empty.js",
          title="Charts \u00b7 MrBadmusAI",
-         overlays=("hasToast",),
+         # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — `searchOpen` ADDED, and
+         # it is the SAME ONE WORD screen 6 added to `digest.html`. Screen 6
+         # found the defect on both pages, fixed the digest and left this one
+         # named in a comment because it is this screen. Verified by driving
+         # it: the topbar's "Find a student" button calls `openSearch`, which
+         # sets `modal: 'search'`, and with the sheet pruned the press did
+         # nothing at all — no sheet, no error, no toast. `teacher_behaviour`
+         # drove FOUR search states on every other page and ZERO here.
+         overlays=("searchOpen", "hasToast"),
          retire=None),
 ]
 
@@ -2347,7 +2355,37 @@ EMPTY_SHAPES = {
         "a grid that was never prefetched — `GRID[key]: null`, the seam's "
         "deliberate \"not fetched yet\". It must render as PENDING and never "
         "as a grid of zeros.",
-        lambda p: _shape_grid_pending(p)),),
+        lambda p: _shape_grid_pending(p)),
+
+     # ── ⊕ THE SEVENTEENTH AND EIGHTEENTH, 2 Sep 2026 (screen 7) ─────────
+     ("nolive",
+      "NOT ONE LIVE CLASS — rosters imported, no work set anywhere, so "
+      "`live` is EMPTY and so is the class scope. Five of the six chart "
+      "kinds had NO empty-scope fixture at all: `insights-empty` only "
+      "withholds a GRID, which reaches the `questions` kind and nothing "
+      "else, so `spread`, `ontime`, `engagement` and `submissions` were "
+      "rendering Design's eight populated classes in BOTH of this page's "
+      "fixtures. This is the page a teacher opens in the first week of "
+      "September, and on 2 Sep 2026 it is what all but one teacher in the "
+      "school sees.",
+      lambda p: _shape_no_live_classes(p)),
+
+     ("single",
+      "ONE class, ONE paper, TWO children — the whole of the working "
+      "year's real data on 2 Sep 2026. Every superlative on this screen is "
+      "then a superlative over a set of one, and the single paper sits in "
+      "an EARLIER teaching week than the current one, which makes "
+      "`colSub[0]` and the seam's `week[0]` disagree by construction. See "
+      "`_shape_one_of_everything`.",
+      lambda p: _shape_one_of_everything(p)),
+
+     ("noroster",
+      "THE SCOPED CLASS HAS NO ROSTER — `ROSTER: []`, `n: 0`, "
+      "`state: 'empty'`. It is the shape 66 of the working year's 69 "
+      "classes are in on 2 Sep 2026, and it is the only one that empties "
+      "the `engagement` and `spread` charts on the CLASS scope: `nolive` "
+      "keeps every roster and so leaves both of them fully populated.",
+      lambda p: _shape_no_roster(p)),),
     "student-detail.html": (("empty",
         "a student with no submissions at all, on a class that has papers — "
         "every cell null, so the history renders four \"Nothing in\" rows "
@@ -2558,6 +2596,162 @@ def _shape_no_live_classes(p):
         p = _blank_class(p, k["id"], keep, keep_papers=False)
     p["FEED"] = {k["id"]: [] for k in p["CLASSES"]}
     p["studentId"] = None
+    return p
+
+
+def _shape_one_of_everything(p):
+    """ONE class, ONE paper, TWO children — September's real shape.
+
+    ⚑ THIS IS NOT A CONTRIVED MINIMUM. Measured on prod on 2 Sep 2026, the
+    working year 2026-27 has 69 classes, THREE with any members, and exactly
+    ONE (`8r/Sc1`, two children) with any assignments. A teacher opening
+    Charts today gets one class, a handful of children and at most a couple
+    of papers, and every superlative on this screen — "Highest", "Lowest",
+    "Weakest", "Most common", "cohort mean" — is then a superlative over a
+    set of ONE.
+
+    Design's sample can never say anything about that: eight live classes,
+    twelve assignments each, sixteen children. Every `Math.max` has something
+    to choose between, every plural is plural, and `sorted[0]` and
+    `sorted[sorted.length - 1]` are different rows. This fixture is the one
+    where they are the same row.
+
+    ⚑ AND IT FORCES THE DIVERGENCE THE `colSub[0]` DEFECT NEEDS. The single
+    paper is kept in the week it was actually SET, which is NOT the current
+    teaching week — so `colSub[0]` (paper index 0, whatever week it is in) is
+    1 while `week[0]` (children who handed in THIS week's work) is 0. In
+    Design's sample the two are equal on every class, which is exactly why
+    three separate renderings of "this week" could disagree for a fortnight
+    without any gate noticing. Here they disagree by construction, so a tile
+    captioned "This week" that still reads `colSub[0]` prints a different
+    number from the one that reads the seam.
+
+    Everything below is derived from the base pack rather than typed, so no
+    value here is a claim this port invented.
+    """
+    p = json.loads(json.dumps(p))
+    cid = p["classId"]
+    # ⚠️ PAPER INDEX 2, AND THE INDEX IS THE WHOLE POINT. The paper kept has
+    # to be due OUTSIDE the current teaching week, or `week[0]` and
+    # `colSub[0]` agree again and the fixture proves nothing. The base pack's
+    # current week is 24–28 Aug (`WEEKS[0].now`); index 1 is due Wed 26 Aug,
+    # which is INSIDE it, and the first draft of this shaper used index 1 and
+    # then asserted `week: [0, 2]` anyway — a class where a child submitted
+    # this week's work and was not counted as having submitted it, which
+    # `buildRoster` cannot produce. Index 2 is due Wed 19 Aug, an earlier
+    # week, so nothing is due this week and `week[0]` is 0 honestly.
+    src = 2
+    g = p["GRID"]["%s:%d" % (cid, src)]
+    mx = p["MATRIX"][cid]
+
+    # One child who handed this paper in and one who did not — both real rows
+    # of the base pack, so their cells are the seam's own and not invented.
+    took = [r for r in mx["rows"] if r["submitted"][src]][0]
+    miss = [r for r in mx["rows"] if not r["submitted"][src]][0]
+
+    def one(r):
+        return dict(sid=r["sid"],
+                    scores=[r["scores"][src]], max=[r["max"][src]],
+                    pct=[r["pct"][src]], late=[r["late"][src]],
+                    stampShort=[r["stampShort"][src]],
+                    submitted=[r["submitted"][src]],
+                    # ⚠️ NOT IN THIS WEEK. The paper was set in an earlier
+                    # teaching week, so no child is `inWeek` — see the
+                    # divergence note above.
+                    inWeek=False)
+
+    rows = [one(took), one(miss)]
+    late = rows[0]["late"][0]
+    pct = rows[0]["pct"][0]
+    p["MATRIX"][cid] = dict(
+        rows=rows, cols=1,
+        colSub=[1], colAsked=[2], colMean=[pct],
+        colOnTime=[1 if late is False else 0],
+        colLate=[1 if late is True else 0],
+        colLateUnknown=[1 if late is None else 0],
+        markedIdx=[0],
+        studentAvg={rows[0]["sid"]: pct},
+        markedSub=1,
+        markedOnTime=1 if late is False else 0,
+        markedLate=1 if late is True else 0,
+        markedLateUnknown=1 if late is None else 0,
+        markedPct=(100 if late is False else 0) if late is not None else None,
+        classMean=pct,
+        byId={r["sid"]: r for r in rows})
+
+    old = [q for q in p["PAPERS"][cid] if q["idx"] == src][0]
+    # `idx` is the position in `due_at DESC` and there is only one paper, so
+    # it is 0. `weekIdx` is the TEACHING WEEK it was set in and keeps its own
+    # value — the two are different questions, and conflating them is what
+    # the week-bar ruling of 1 Sep exists to stop.
+    p["PAPERS"][cid] = [dict(old, idx=0, sub="1/2", mean="%d%%" % pct)]
+
+    # ⚠️ THE GRID FOLLOWS THE ROSTER, AND THE FIRST DRAFT OF THIS SHAPER LEFT
+    # IT BEHIND. Keeping the base pack's thirteen grid rows against a roster
+    # of two put "Paper mean 63% · 13 of 2 submitted" on the question chart —
+    # a submitted count larger than the class, which is the eighth fixture in
+    # this run found asserting a state real data cannot reach. `buildGrid`
+    # writes one row per child who was asked, so two children is two rows.
+    grid_by_id = {r["id"]: r for r in g["rows"]}
+    qn = g["qcount"]
+    grows, correct, marked, blank = [], [0] * qn, [0] * qn, [0] * qn
+    for r in rows:
+        base = grid_by_id.get(r["sid"])
+        if not r["submitted"][0] or not base:
+            # Design's own not-submitted cell, as `_shape_written_paper` uses.
+            grows.append(dict(base or {"id": r["sid"], "name": "", "initials": "",
+                                       "hue": g["rows"][0]["hue"]},
+                              raw=[2] * qn, score="\u2014", submitted=False))
+            continue
+        grows.append(dict(base))
+        for qi, v in enumerate(base["raw"]):
+            if v == 1:
+                correct[qi] += 1
+                marked[qi] += 1
+            elif v == 0:
+                marked[qi] += 1
+            else:
+                blank[qi] += 1
+    p["GRID"] = {"%s:0" % cid: dict(
+        g,
+        rows=grows,
+        qpct=[round(correct[i] / marked[i] * 100) if marked[i] else None
+              for i in range(qn)],
+        submitted=sum(1 for r in rows if r["submitted"][0]),
+        roster=len(rows),
+        qCorrect=correct, qMarked=marked, qBlank=blank,
+        qUnmarkable=[0] * qn)}
+    p["paperIdx"] = 0
+
+    keep_ids = [r["sid"] for r in rows]
+    roster = [r for r in p["ROSTER"][cid] if r["id"] in keep_ids]
+    roster.sort(key=lambda r: keep_ids.index(r["id"]))
+    roster[0].update(avg=pct, inWeek=False, flag=False)
+    # No paper due this week AND a marked paper never handed in — Design's own
+    # "needs a look" rule, on this shape.
+    # No submission anywhere in this shape, so `lastIso` is null and the seam
+    # falls back to TIME ON ROLL for `hours` (see `buildRoster`). A child on
+    # the roll for a fortnight who has handed in nothing buckets as 2+ weeks,
+    # which is the honest reading and the only thing that exercises the
+    # engagement chart's `cold` branch on a two-child class.
+    roster[1].update(avg=None, inWeek=False, flag=True,
+                     last="No activity yet", hours=24 * 14)
+    p["ROSTER"][cid] = roster
+
+    k = [c for c in p["CLASSES"] if c["id"] == cid][0]
+    k = dict(k, n=2, week=[0, 2], state="live")
+    p.update(CLASSES=[k],
+             MATRIX={cid: p["MATRIX"][cid]},
+             ROSTER={cid: roster},
+             PAPERS={cid: p["PAPERS"][cid]},
+             WEEKS={cid: p["WEEKS"][cid]},
+             FEED={cid: []},
+             studentId=roster[0]["id"],
+             classCount=1, liveClassCount=1, studentCount=2,
+             searchPool=[s for s in p["searchPool"]
+                         if s.get("classId") == cid][:2],
+             searchPlaceholder="Search students across all 1 class")
+    p["searchPoolCount"] = len(p["searchPool"])
     return p
 
 

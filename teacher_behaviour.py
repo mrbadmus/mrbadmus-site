@@ -131,6 +131,24 @@ EMPTY_SHAPE = {
         "no grid fetched at all — which is every class-detail render in "
         "production",
     ("student-detail", "empty"): "a student with no submissions",
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — THE THREE THE CHARTS
+    # SCREEN HAD NO ANSWER FOR. `insights-empty` withholds a GRID, which
+    # reaches ONE of the six chart kinds; the other five were rendering
+    # Design's eight populated classes in both of this page's fixtures, so
+    # "empty scopes honest" was untested for `submissions`, `spread`,
+    # `ontime`, `means` and `engagement` in either scope. Between them these
+    # three are the three shapes the working year is actually in.
+    ("insights", "nolive"):
+        "rosters imported and no work set anywhere — `live` is empty, and "
+        "so is the class scope",
+    ("insights", "noroster"):
+        "the scoped class has no roster at all — 66 of the working year's "
+        "69 classes",
+    ("insights", "single"):
+        "one class, one marked paper set in an EARLIER teaching week, two "
+        "children — every superlative is over a set of one, and `week[0]` "
+        "and `colSub[0]` disagree by construction",
+
     ("assignment", "empty"): "a paper nobody has submitted",
     # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) — THE TWO THE SET HAD NO
     # ANSWER FOR. `written` is the only paper in the estate that is not eight
@@ -536,6 +554,85 @@ RENDER_TELLS = ["null%", "NaN", "undefined", "-Infinity", "Infinity",
                 "[object Object]", "null/", "/null", "null students"]
 
 
+# ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — THE CHART CROSS PRODUCT.
+#
+# ⚑ THE SWEEP ABOVE PRESSES EVERY CONTROL ONCE, IN DOM ORDER, AND ON THIS
+# SCREEN THAT COVERS HALF THE PAGE. The insights region runs
+# [Back] [All classes] [8r/Sc1] [Print] then the six chart chips — so the
+# sweep presses BOTH scope tabs before it reaches the first chip, leaves the
+# scope on the CLASS, and then draws all six charts scoped to that class. The
+# six whole-school charts are never drawn at all.
+#
+# That is not a hypothetical. `chartFor`'s `questions / all` branch read
+# `this.STEMS`, a class field `DROP_FIELDS` deletes, and threw
+# `TypeError: Cannot read properties of undefined` — taking the entire Charts
+# page down — on the delivery's own populated fixture. This gate drove that
+# fixture, on load and after a reload, and passed it, printing "the console
+# stayed quiet". The defect was found by pressing the chips by hand. It was
+# then RE-INTRODUCED deliberately, on 2 Sep 2026, to check whether this file
+# could see it: five insights fixtures, still all green. It could not.
+#
+# So the chart kinds are driven as a CROSS PRODUCT — every scope re-pressed
+# before every kind, so each of the twelve cells is drawn from a known state
+# and after a redraw — and each cell is then asked the question this screen
+# exists to answer: a chart with nothing to plot must SAY SO. A card with no
+# tiles and no series and no caption is a chart drawn as zero.
+_CHART_JS = r"""
+(async function(){
+  var out = {cells: [], err: null};
+  try {
+    /* ⚠️ RE-QUERIED EVERY TIME, NEVER HELD. The runtime REPLACES the
+       `[data-port-region]` element on a redraw, so a reference taken once
+       goes detached on the first press: the buttons found through it are no
+       longer in the document, clicking them changes nothing a reader can
+       see, and reading the title back through it returns the card as it was
+       before any of this started. The first version of this probe did hold
+       it, reported twelve clean cells, and every one of the twelve was the
+       SAME cell — the chart the page happened to open on. It passed a page
+       carrying three deliberately re-introduced defects. */
+    var reg = function(){ return document.querySelector('[data-port-region="insights"]'); };
+    if(!reg()){ out.err = 'no [data-port-region="insights"] on the page'; return JSON.stringify(out); }
+    var txt = function(e){ return e ? (e.textContent||'').replace(/\s+/g,' ').trim() : ''; };
+    var frame = function(){ return new Promise(function(r){
+      requestAnimationFrame(function(){ setTimeout(r, 40); }); }); };
+    var buttons = function(){ var r = reg();
+      return r ? Array.prototype.slice.call(r.querySelectorAll('button')) : []; };
+    var labels = buttons().map(txt);
+    var pi = labels.indexOf('Print');
+    if(pi < 1){ out.err = 'the Print button is not in the insights region, so the scope tabs cannot be located'; return JSON.stringify(out); }
+    var scopes = labels.slice(Math.max(0, pi - 2), pi);
+    var kinds = labels.slice(pi + 1);
+    if(!scopes.length || !kinds.length){ out.err = 'found ' + scopes.length + ' scope tab(s) and ' + kinds.length + ' chart chip(s)'; return JSON.stringify(out); }
+    out.scopes = scopes; out.kinds = kinds;
+    var press = async function(label){
+      var b = buttons().filter(function(e){ return txt(e) === label; })[0];
+      if(!b){ return false; }
+      b.click(); await frame(); await frame(); return true;
+    };
+    for(var si = 0; si < scopes.length; si++){
+      for(var ki = 0; ki < kinds.length; ki++){
+        var cell = {scope: scopes[si], kind: kinds[ki]};
+        if(!(await press(scopes[si]))){ cell.miss = 'scope tab vanished'; out.cells.push(cell); continue; }
+        if(!(await press(kinds[ki]))){ cell.miss = 'chart chip vanished'; out.cells.push(cell); continue; }
+        var r = reg();
+        var h2 = r ? r.querySelector('h2') : null;
+        var card = h2 ? h2.parentElement.parentElement : null;
+        if(!card){ cell.miss = 'no chart card'; out.cells.push(cell); continue; }
+        var kids = Array.prototype.slice.call(card.children);
+        cell.title = txt(h2);
+        cell.note = txt(kids[1]);
+        cell.tiles = kids[2] ? kids[2].children.length : 0;
+        cell.body = kids.slice(3).map(txt).join('').length;
+        cell.text = txt(card);
+        out.cells.push(cell);
+      }
+    }
+  } catch(e){ out.err = String((e && e.stack) || e); }
+  return JSON.stringify(out);
+})()
+"""
+
+
 def _wired_handlers(path):
     """Every handler name an un-pruned node in this page's template calls."""
     body = open(path, encoding="utf-8").read()
@@ -745,7 +842,7 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
     """Problems, as strings, for one fixture. Driven twice — load and reload."""
     problems = []
     tally = {"found": 0, "pressed": 0, "added": 0, "search": 0,
-             "nosev": 0}
+             "nosev": 0, "charts": 0}
     # ⚠️ THE TEMPLATE, NOT THE SOURCE. Every page ships the WHOLE logic
     # class — all six screens' `renderVals` — and prunes only the MARKUP. So
     # `doPrint` is a string in all six files while the Print BUTTON exists on
@@ -981,9 +1078,15 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
             have = all(search_nodes.get(k) is not None
                        for k in ("opener", "input", "foot", "row"))
             if not have:
-                # The legitimate absence is the WHOLE overlay being pruned —
-                # `searchOpen` is not in digest's or insights' `overlays`, so
-                # only the top-bar opener survives there. The absence that is
+                # The legitimate absence is the WHOLE overlay being pruned.
+                # ⊕ CORRECTED 2 Sep 2026 — this named digest.html and
+                # insights.html as the two pages without `searchOpen`, and
+                # BOTH have it now: screen 6 added it to the digest and
+                # screen 7 to insights, because on both of them the top bar's
+                # "Find a student" button shipped with no sheet to open and
+                # pressing it did nothing at all. No page in the set prunes
+                # the overlay today; the branch stays because a future one
+                # may. The absence that is
                 # NOT legitimate is the overlay being present with its caption
                 # or its result row missing: the probe would then run on
                 # nothing and this fixture would report a clean sweep.
@@ -1011,6 +1114,80 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
                         tally["search"] += len(got_s["cases"])
                         if not got_s.get("several"):
                             tally["nosev"] += 1
+
+            # 7c. ⊕ THE CHART CROSS PRODUCT — see the note beside _CHART_JS.
+            #     Six kinds x both scopes, each drawn from a re-pressed scope
+            #     so every cell is a redraw, and each one asked whether it
+            #     says what it has.
+            if page == "insights":
+                got_c = json.loads(pg.eval(_CHART_JS))
+                if got_c.get("err"):
+                    problems.append("%s: the chart sweep could not run — %s"
+                                    % (what, got_c["err"]))
+                else:
+                    cells = got_c.get("cells") or []
+                    want = len(got_c.get("scopes") or []) * len(
+                        got_c.get("kinds") or [])
+                    if len(cells) != want or want < 12:
+                        problems.append(
+                            "%s: the chart sweep drew %d of %d cell(s) — %d "
+                            "scope(s) x %d kind(s). Six kinds and two scopes "
+                            "is twelve." % (what, len(cells), want,
+                                            len(got_c.get("scopes") or []),
+                                            len(got_c.get("kinds") or [])))
+                    # ⚑ SIX KINDS, SIX TITLES. A chart whose `renderVals`
+                    #   THREW never redraws, so the card still shows the
+                    #   PREVIOUS kind — the page looks fine and the chip
+                    #   looks pressed. A repeated title inside one scope is
+                    #   that, and it is what the STEMS crash looked like from
+                    #   the outside before it was found by hand.
+                    for sc in (got_c.get("scopes") or []):
+                        seen = {}
+                        for c in cells:
+                            if c.get("scope") != sc or c.get("miss"):
+                                continue
+                            seen.setdefault(c.get("title"), []).append(
+                                c.get("kind"))
+                        for t, ks in seen.items():
+                            if len(ks) > 1:
+                                problems.append(
+                                    "%s: under %r, %s all draw the SAME card "
+                                    "(%r). A chart that does not redraw is a "
+                                    "chart whose render threw."
+                                    % (what, sc, " and ".join(ks), t))
+                    for c in cells:
+                        where = "%s / %s" % (c.get("scope"), c.get("kind"))
+                        if c.get("miss"):
+                            problems.append("%s: chart %s — %s"
+                                            % (what, where, c["miss"]))
+                            continue
+                        if pass_n == 1:
+                            tally["charts"] += 1
+                        if not c.get("title"):
+                            problems.append(
+                                "%s: chart %s drew no title. The card is "
+                                "there and it does not say what it is."
+                                % (what, where))
+                        # ⚑ "EMPTY SCOPES HONEST", AS A CHECK RATHER THAN A
+                        #   HOPE. No tiles, no series and no caption is an
+                        #   empty card, and an empty card reads as zero.
+                        if (not c.get("tiles") and not c.get("body")
+                                and not c.get("note")):
+                            problems.append(
+                                "%s: chart %s has nothing to plot and says "
+                                "nothing — no tile, no series, no caption. "
+                                "An empty chart must state that it is empty."
+                                % (what, where))
+                        # ⚑ AND NOTHING MAY RENDER AS A COMPUTATION THAT
+                        #   FAILED. `undefined/16` and `NaN` were both on
+                        #   this screen on 2 Sep 2026, on a class with no
+                        #   papers, in the two tiles a teacher reads first.
+                        for bad in ("undefined", "NaN", "null%", "Infinity",
+                                    "[object "):
+                            if bad in (c.get("text") or ""):
+                                problems.append(
+                                    "%s: chart %s renders %r on screen"
+                                    % (what, where, bad))
 
             # 8. And the console stayed quiet. A page can render correctly and
             #    still be throwing on every state change — the throw happens
@@ -1058,7 +1235,7 @@ def main(argv):
     server, port = cdp.serve(REPO)
     failed = 0
     total = {"found": 0, "pressed": 0, "added": 0, "search": 0,
-             "nosev": 0}
+             "nosev": 0, "charts": 0}
     try:
         for page, path, is_empty, slug in todo:
             problems, tally = drive(page, path, is_empty, cdp, port, shots,
@@ -1068,6 +1245,7 @@ def main(argv):
             total["added"] += tally["added"]
             total["search"] += tally["search"]
             total["nosev"] += tally["nosev"]
+            total["charts"] += tally["charts"]
             tag = (slug or "empty") if is_empty else "full "
             if problems:
                 failed += 1
@@ -1080,12 +1258,14 @@ def main(argv):
                 if len(problems) > 10:
                     print("        · … and %d more" % (len(problems) - 10))
             else:
-                print("     %-16s %s ✅  %d/%d control(s) pressed%s%s"
+                print("     %-16s %s ✅  %d/%d control(s) pressed%s%s%s"
                       % (page, tag, tally["pressed"], tally["found"],
                          (" · %d addition(s) pressed by name"
                           % tally["added"]) if tally["added"] else "",
                          (" · %d search state(s)"
-                          % tally["search"]) if tally["search"] else ""))
+                          % tally["search"]) if tally["search"] else "",
+                         (" · %d chart cell(s)"
+                          % tally["charts"]) if tally["charts"] else ""))
     finally:
         server.shutdown()
 

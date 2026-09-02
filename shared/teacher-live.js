@@ -1867,18 +1867,39 @@
       var asked = paperIndex(params.paperIdx);
       var pi = asked == null ? newestMarkedIdx(papers) : asked;
       if (pi >= 0 && papers[pi]) { await grid(classId, pi); }
-    } else if (screen === "insights" && params.chartKind === "questions") {
+    } else if (screen === "insights") {
+      /* ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — UNCONDITIONAL, AND IT HAD
+         TO BECOME SO. This branch used to be gated on
+         `params.chartKind === "questions"` and on `params.chartScope`, and
+         BOTH of those are read from query parameters that NOTHING ON THE SITE
+         EVER SETS: `chartKind` is `q.get("chart")`, the page's own state
+         initialiser hardcodes `chartKind: 'submissions'`, and pressing a
+         chart chip is a `setState` with no navigation and no fetch. So the
+         gate never opened, no grid was ever prefetched, and the Question
+         difficulty chart drew "No class has a marked paper yet" on both
+         scopes FOREVER — for a school with any amount of marked work.
+         One of the six charts could not show data at all.
+
+         (`params.chartScope` is `q.get("scope")` while the page reads
+         `?class=`, so the two never agreed either. That mismatch is now
+         moot here and is written up in the screen 7 report.)
+
+         Every live class's newest marked grid, in ONE batched round trip —
+         `grids()` exists for exactly this — because BOTH scopes of the
+         question chart need it: the all-scope draws a row per class, and the
+         class scope draws whichever class the teacher then picks. Fetching
+         only the scoped class would make switching to All classes show one
+         row out of eight and call it "per class".
+
+         The cost is one batched query on an insights load for a teacher who
+         never presses Question difficulty. The alternative was a chart that
+         never worked. */
       var pairs = [];
-      if (params.chartScope && params.chartScope !== "all") {
-        var one = newestMarkedIdx(c.PAPERS[params.chartScope] || []);
-        if (one >= 0) { pairs.push({ classId: params.chartScope, idx: one }); }
-      } else {
-        c.CLASSES.forEach(function (k) {
-          if (k.state !== "live") { return; }
-          var i = newestMarkedIdx(c.PAPERS[k.id] || []);
-          if (i >= 0) { pairs.push({ classId: k.id, idx: i }); }
-        });
-      }
+      c.CLASSES.forEach(function (k) {
+        if (k.state !== "live") { return; }
+        var i = newestMarkedIdx(c.PAPERS[k.id] || []);
+        if (i >= 0) { pairs.push({ classId: k.id, idx: i }); }
+      });
       await grids(pairs);
     }
 

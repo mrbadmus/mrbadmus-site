@@ -667,7 +667,7 @@ class Component extends DCLogic {
   chartFor(kind, scope) {
     const all = scope === 'all';
     const live = this.CLASSES.filter(c => c.state === 'live');
-    const k = all ? null : (this.klassById(scope) || this.CLASSES[3]);
+    const k = all ? null : this.klass();
     const mx = (c) => this.matrixFor(c);
     const tile = (label, value, sub) => ({ label, value: String(value), sub: sub || '' });
     const base = { type: 'bars', title: '', note: '', tiles: [], rows: [], cols: [], stacks: [], legend: [] };
@@ -679,11 +679,13 @@ class Component extends DCLogic {
         const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));
         const below = raw.filter(r => r.mean < cohort).length;
         const sorted = raw.slice().sort((a, b) => b.mean - a.mean);
-        return { ...base, title: 'Class means, marked work', tiles: [
+        return { ...base, title: 'Class means, marked work', tiles: (raw.length < 2 ? [
+          tile('Class mean', cohort + '%', sorted[0].code + ' — the only class with marked work')
+        ] : [
           tile('Cohort mean', cohort + '%', 'Mean of ' + raw.length + ' class means'),
           tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
           tile('Lowest', sorted[sorted.length - 1].code + ' · ' + sorted[sorted.length - 1].mean + '%', '')
-        ], note: below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',
+        ]), note: raw.length < 2 ? '' : below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',
           rows: sorted.map(r => ({ label: r.code, sub: r.ks + (r.mean < cohort ? ' · below cohort' : ''), value: r.mean + '%', pct: r.mean, fill: r.mean < cohort ? 'var(--st-accent)' : 'var(--st-hatch-b)' })) };
       }
       const m = mx(k);
@@ -694,16 +696,27 @@ class Component extends DCLogic {
       const worst = ps[means.indexOf(Math.min.apply(null, means))];
       return { ...base, type: 'cols', title: k.code + ' — mean by assignment',
         cols: this.colsFrom(ps.map(p => ({ label: p.due.replace('Due ', ''), value: m.colMean[p.idx] + '%', raw: m.colMean[p.idx], flag: p.idx === worst.idx })), 100),
-        tiles: [tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
+        tiles: (ps.length < 2 ? [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one marked assignment'),
+          tile('Open work', 'Excluded', 'Not marked yet')
+        ] : [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
           tile('Strongest', Math.max.apply(null, means) + '%', best.title),
           tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
-          tile('Open work', 'Excluded', 'Not marked yet')],
-        note: 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };
+          tile('Open work', 'Excluded', 'Not marked yet')
+        ]),
+        note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };
     }
 
     if (kind === 'spread') {
       const src = all ? live : [k];
       const avgs = src.reduce((a, c) => a.concat(this.rosterFor(c).map(r => r.avg).filter(v => v != null)), []);
+      if (!avgs.length) {
+        return { ...base, title: (all ? 'Score spread, all classes' : k.code + ' — score spread'),
+          note: all ? 'No student has marked work yet'
+                    : (k.state === 'empty' ? 'No students on the roster yet'
+                                           : 'Nothing marked for this class yet') };
+      }
       const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));
       const low = bands.filter(b => b.lo < 55).reduce((a, b) => a + b.n, 0);
       const high = bands.filter(b => b.lo >= 70).reduce((a, b) => a + b.n, 0);
@@ -721,6 +734,10 @@ class Component extends DCLogic {
       const src = all
         ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedOnTime + mx(c).markedLate }))
         : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colOnTime[p.idx] + mx(k).colLate[p.idx] }));
+      if (!src.length) {
+        return { ...base, title: (all ? 'On time vs late, marked work' : k.code + ' — on time by assignment'),
+          note: all ? 'No class has marked work yet' : 'Nothing marked for this class yet' };
+      }
       const on = src.reduce((a, x) => a + x.on, 0);
       const tot = src.reduce((a, x) => a + x.tot, 0);
       const worst = src.slice().sort((a, b) => (a.tot ? a.on / a.tot : 1) - (b.tot ? b.on / b.tot : 1))[0];
@@ -744,7 +761,7 @@ class Component extends DCLogic {
                          : 'No marked submission has a recorded deadline'),
                 tile('Late', tot ? tot - on : '—', 'Still marked'),
                 tile('Open work', 'Excluded', 'Not due yet')],
-        note: (worst && worst.tot) ? 'Weakest: ' + worst.label + ' at ' + Math.round((worst.on / worst.tot) * 100) + '% on time' : '' };
+        note: (src.length > 1 && worst && worst.tot) ? 'Weakest: ' + worst.label + ' at ' + Math.round((worst.on / worst.tot) * 100) + '% on time' : '' };
     }
 
     if (kind === 'questions') {
@@ -757,23 +774,29 @@ class Component extends DCLogic {
           const min = Math.min.apply(null, scored);
           const qi = g.qpct.indexOf(min);
           const st = g.stems[qi] || { id: '—', text: '' };
-          return { label: c.code, sub: st.id + ' · ' + st.text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi };
+          return { label: c.code, sub: st.id + ' · ' + st.text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi, stem: st, qkey: st.question_ref || st.text || '' };
         }).filter(r => r);
         if (!rows.length) { return { ...base, title: 'Weakest question per class, last marked set', note: 'No class has a marked paper yet' }; }
         const tally = {};
-        rows.forEach(r => { tally[r.qi] = (tally[r.qi] || 0) + 1; });
+        rows.forEach(r => { if (r.qkey) { tally[r.qkey] = (tally[r.qkey] || 0) + 1; } });
         const keys = Object.keys(tally).sort((a, b) => tally[b] - tally[a]);
-        const uniqueTop = keys.length === 1 || tally[keys[0]] > tally[keys[1]];
+        const top = keys.length ? rows.filter(r => r.qkey === keys[0])[0].stem : null;
+        const uniqueTop = !!top && rows.length > 1 &&
+          (keys.length === 1 || tally[keys[0]] > tally[keys[1]]);
         const worst = rows.slice().sort((a, b) => a.pct - b.pct)[0];
         const under50 = rows.filter(r => r.pct < 50).length;
         return { ...base, title: 'Weakest question per class, last marked set', rows,
-          tiles: [tile('Classes', rows.length, 'With marked work'), tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
+          tiles: [tile('Classes', rows.length, rows.length === 1 ? 'With a marked paper' : 'With marked work'),
+            tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
             uniqueTop
-              ? tile('Most common', this.STEMS[keys[0]].id, this.STEMS[keys[0]].text)
-              : tile('Weak points', keys.length + ' questions', 'No single common gap')],
+              ? tile('Most common', top.id, top.text)
+              : tile('Weak points', keys.length + (keys.length === 1 ? ' question' : ' questions'),
+                     rows.length < 2 ? 'Only one class to look at' : 'No single common gap')],
           note: uniqueTop
-            ? this.STEMS[keys[0]].text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
-            : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + ' classes fall below 50% on theirs' };
+            ? top.text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
+            : (rows.length < 2
+               ? 'One class has a marked paper — nothing to compare it with yet'
+               : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + (under50 === 1 ? ' class falls' : ' classes fall') + ' below 50% on theirs') };
       }
       const gi = MRB_NEWEST_MARKED(this.papersFor(k));
       const g = gi < 0 ? null : this.gridFor(k, gi);
@@ -803,34 +826,48 @@ class Component extends DCLogic {
           return { label: c.code, sub: c.ks, right: b.today + ' today · ' + b.stale + ' cold',
             segs: [{ pct: Math.round((b.today / t) * 100), fill: 'var(--ks3-ok)' }, { pct: Math.round((b.week / t) * 100), fill: 'var(--st-hatch-b)' }, { pct: Math.round((b.stale / t) * 100), fill: 'var(--st-rule-strong)' }] };
         });
+        if (!stacks.length) {
+          return { ...base, title: 'Last seen, by class',
+            note: 'No class has work set yet' };
+        }
         return { ...base, type: 'stack', title: 'Last seen, by class', stacks,
           legend: [{ label: 'Today', fill: 'var(--ks3-ok)' }, { label: 'This week', fill: 'var(--st-hatch-b)' }, { label: '2+ weeks', fill: 'var(--st-rule-strong)' }],
-          tiles: [tile('Active today', totals.today, 'Across ' + live.length + ' classes'), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],
+          tiles: [tile('Active today', totals.today, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],
           note: totals.stale + ' students have not opened anything for two weeks or more' };
       }
       const rows = this.rosterFor(k);
+      if (!rows.length) {
+        return { ...base, title: k.code + ' — last seen',
+          note: 'No students on the roster yet' };
+      }
       const b = this.bucketsOf(rows);
       const cold = rows.filter(r => r.hours >= 168).map(r => r.name);
       return { ...base, type: 'cols', title: k.code + ' — last seen',
         cols: this.colsFrom([{ label: 'Today', value: String(b.today), raw: b.today }, { label: 'This week', value: String(b.week), raw: b.week }, { label: '2+ weeks', value: String(b.stale), raw: b.stale, flag: b.stale > 0 }]),
         tiles: [tile('Students', k.n, 'On the roster'), tile('Active today', b.today, ''), tile('2+ weeks', b.stale, cold.length ? 'Worth chasing' : 'None')],
-        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Everyone has opened something this week' };
+        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Nobody in this class has been quiet for two weeks or more' };
     }
 
     if (all) {
       const rows = live.map(c => {
-        const m = mx(c);
-        const asked = m.colAsked[0] || 0;
-        const pct = asked ? Math.round((m.colSub[0] / asked) * 100) : 0;
-        return { label: c.code, sub: c.ks, value: m.colSub[0] + '/' + asked, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+        const w = c.week || [0, 0];
+        const pct = w[1] ? Math.round((w[0] / w[1]) * 100) : 0;
+        return { label: c.code, sub: c.ks, value: MRB_WEEK_IN(c), pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
       });
-      const subs = live.reduce((a, c) => a + mx(c).colSub[0], 0);
-      const seats = live.reduce((a, c) => a + c.n, 0);
-      const done = live.filter(c => mx(c).colSub[0] === c.n).length;
+      if (!rows.length) {
+        return { ...base, title: 'Submissions this week',
+          note: 'No class has work set yet' };
+      }
+      const subs = live.reduce((a, c) => a + ((c.week || [0, 0])[0]), 0);
+      const seats = live.reduce((a, c) => a + ((c.week || [0, 0])[1]), 0);
+      const done = live.filter(c => c.week && c.week[1] && c.week[0] === c.week[1]).length;
       const low = rows.slice().sort((a, b) => a.pct - b.pct)[0];
       return { ...base, title: 'Submissions this week', rows,
-        tiles: [tile('Submitted', subs + '/' + seats, 'Across ' + live.length + ' classes'), tile('Outstanding', seats - subs, 'Students yet to submit'), tile('Everyone in', done + '/' + live.length, 'Classes complete')],
-        note: low ? 'Lowest return: ' + low.label + ' at ' + low.pct + '% (' + low.value + ')' : '' };
+        tiles: [tile('Submitted', subs + '/' + seats, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')),
+          tile('Outstanding', Math.max(0, seats - subs), 'Students yet to submit'),
+          tile('Everyone in', done + '/' + live.length, 'Classes complete')],
+        note: rows.length < 2 ? ''
+          : (low ? 'Lowest return: ' + low.label + ' at ' + low.pct + '% (' + low.value + ')' : '') };
     }
     const m = mx(k);
     const rows = this.papersFor(k).map(p => {
@@ -839,9 +876,16 @@ class Component extends DCLogic {
       return { label: p.title, sub: (p.when === 'upcoming' ? 'Open · due ' + p.due.replace('Due ', '') : 'Marked · due ' + p.due), value: p.sub, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
     });
     const lowP = rows.slice().sort((a, b) => a.pct - b.pct)[0];
+    if (!rows.length) {
+      return { ...base, title: k.code + ' — submissions by assignment',
+        note: k.state === 'empty' ? 'No students on the roster yet'
+                                  : 'No work set for this class yet' };
+    }
     return { ...base, title: k.code + ' — submissions by assignment', rows,
-      tiles: [tile('This week', m.colSub[0] + '/' + k.n, 'Open assignment'), tile('Outstanding', k.n - m.colSub[0], 'Students yet to submit'), tile('Assignments', rows.length, 'Set this term')],
-      note: lowP ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };
+      tiles: [tile('Submissions', MRB_WEEK_IN(k), 'This week'),
+        tile('Outstanding', k.state === 'live' ? Math.max(0, (k.week[1] || 0) - (k.week[0] || 0)) : '—', 'Students yet to submit'),
+        tile('Assignments', rows.length, rows.length === 1 ? 'Set so far this year' : 'Set so far this year')],
+      note: (rows.length > 1 && lowP) ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };
   }
 
   paper() {
@@ -1451,8 +1495,9 @@ class Component extends DCLogic {
           hasQuestions: false, noQuestions: true, labelCol: '90px' },
 
       insSub: chartScope === 'all'
-        ? liveClasses.length + ' active classes · ' + totalStudents + ' students on roll'
-        : k.code + ' · ' + k.n + ' students · ' + kPapers.length + ' assignments',
+        ? liveClasses.length + (liveClasses.length === 1 ? ' active class · ' : ' active classes · ') + totalStudents + (totalStudents === 1 ? ' student on roll' : ' students on roll')
+        : [k.code, k.n + (k.n === 1 ? ' student' : ' students'),
+           kPapers.length + (kPapers.length === 1 ? ' assignment' : ' assignments')].join(' · '),
       insScopeTabs: [{ id: 'all', label: 'All classes' }, { id: k.id, label: k.code }].map(o => ({
         label: o.label,
         ...(chartScope === o.id
@@ -1684,7 +1729,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"06f24811","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"f05eeaa9","teacher-guard.js":"2efdc820","teacher-live.js":"bf830283"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"06f24811","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"f05eeaa9","teacher-guard.js":"2efdc820","teacher-live.js":"e4548a4c"};</script>
 <script src="teacher-fixture-class-detail-nosubs.js"></script>
 <script>window.__MRB_MOUNT__();</script>
 </body>
