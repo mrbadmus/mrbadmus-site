@@ -101,7 +101,10 @@ STUB = r"""
     return {
       id: id || 'stub-plan', class_id: 'stub-class', room_layout_id: 'stub-layout',
       room_code: r.room_code, layout: r.layout, layout_retired: false,
-      name: 'ZZ Test-Fixture plan', assignments: {},
+      // `d9:0` is an assignment on a desk this layout does not contain — the
+      // shape a plan takes when somebody edits the room after it was made.
+      name: 'ZZ Test-Fixture plan',
+      assignments: { 'd9:0': 'stub-pupil-1' },
       created_by: r.created_by, author_name: r.author_name,
       created_at: r.created_at, updated_at: r.updated_at,
       seated_count: 0, can_edit: MINE
@@ -269,6 +272,11 @@ def disarm(page):
       window.addEventListener('beforeunload', function (e) {
         e.stopImmediatePropagation();
       }, true);
+      // The page also guards HASH navigation with a real confirm(), which a
+      // native dialog blocks CDP on. Answer it the way a teacher who meant to
+      // leave would, and count the asks so the gate can prove it was asked.
+      window.__confirms = 0;
+      window.confirm = function () { window.__confirms++; return true; };
     })()""")
 
 
@@ -365,6 +373,9 @@ def main():
             disarm(p)
             click(p, "a.sp-btn--quiet")
             time.sleep(0.7)
+            ok("leaving unsaved work asks first, on hash navigation too",
+               p.eval("window.__confirms") >= 1,
+               "beforeunload never fires on a hash change, so the page asks itself")
             ok("a link still navigates after a drag",
                p.eval("location.hash") == "#/layouts",
                "reached %s" % p.eval("location.hash"))
@@ -411,7 +422,9 @@ def main():
 
             ok("a room with fewer chairs than pupils says so",
                q.eval("""(function(){
-                 var n = document.querySelector('.sp-note--warn');
+                 // scoped to the roster panel: the orphan banner above is also
+                 // a .sp-note--warn and sits earlier in the document
+                 var n = document.querySelector('.sp-side .sp-note--warn');
                  return !!n && /fewer chairs/i.test(n.textContent);
                })()"""), "6 chairs, 8 pupils")
 
@@ -434,6 +447,22 @@ def main():
                  var t = h.textContent || '';
                  return /7z\\/Sc9/.test(t) && /S02a/.test(t);
                })()"""))
+
+            # ── the orphan case ─────────────────────────────────────────
+            # A pupil stored against a seat that no longer exists must be back
+            # on the list and COUNTED as unseated. Counting them as seated is
+            # what let a plan read "0 unseated" with children standing up.
+            ok("a seat that no longer exists does not count as seated",
+               q.eval("document.querySelectorAll('.sc-seat-label').length") == 1,
+               "only the pupil we just seated is drawn")
+            ok("the vanished seat is reported, not silently dropped",
+               q.eval("/no longer exist/i.test(document.body.textContent)"))
+
+            # ── labels ──────────────────────────────────────────────────
+            labels = q.eval("""[].slice.call(document.querySelectorAll('.sc-seat-label'))
+                 .map(function(t){return t.textContent;})""")
+            ok("an ordinary name is drawn whole", labels and "…" not in labels[0],
+               repr(labels[0]) if labels else "no label")
 
             q.screenshot(os.path.join(SHOTS, "plan-1280.png"), 1280, 900)
             errs += q.console_errors()

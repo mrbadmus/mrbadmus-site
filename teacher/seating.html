@@ -71,7 +71,7 @@
      load-bearing across every page that reads a class list. -->
 <script src="/shared/class-entry.js?v=d47329ae"></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/seating-canvas.js?v=06337412"></script>
+<script src="/shared/seating-canvas.js?v=66ace40a"></script>
 <script src="/shared/seating-data.js?v=bc287d2f"></script>
 <script src="/shared/seating-photo.js?v=de93bec8"></script>
 <script>
@@ -92,7 +92,7 @@
   var S = {
     canvas: null, layout: null, plan: null, cls: null,
     roster: [], held: null, me: null, dirty: false, mode: 'edit',
-    lastSource: 'manual'
+    lastSource: 'manual', saving: false
   };
 
   function esc(s) {
@@ -143,23 +143,36 @@
 
   function go(hash) { location.hash = hash; }
 
+  /* Every view writes into #sp-main AFTER awaiting the database, so two fast
+     navigations can interleave and the slower one paints over the newer view.
+     Each run takes a token and checks it is still the current one before it
+     touches the DOM. */
+  var routeToken = 0;
+  function stale(token) { return token !== routeToken; }
+
   async function route() {
+    var token = ++routeToken;
     teardownCanvas();
     S.held = null;
+    // These are per-view state. Leaving them set leaked a 'template' source
+    // onto the next hand-drawn layout, and left the unsaved-changes prompt
+    // armed on screens that have nothing to save.
+    S.dirty = false;
+    S.lastSource = 'manual';
     printhead.innerHTML = '';
     var r = parseHash();
     var view = r.parts[0] || 'layouts';
 
     try {
-      if (view === 'layouts') return await viewLayouts();
+      if (view === 'layouts') return await viewLayouts(token);
       if (view === 'layout') {
-        if (r.parts[1] === 'new') return await viewLayoutBuilder(null, r.q);
-        return await viewLayoutBuilder(r.parts[1], r.q);
+        if (r.parts[1] === 'new') return await viewLayoutBuilder(null, r.q, token);
+        return await viewLayoutBuilder(r.parts[1], r.q, token);
       }
-      if (view === 'class') return await viewClass(r.parts[1]);
+      if (view === 'class') return await viewClass(r.parts[1], token);
       if (view === 'plan') {
-        if (r.parts[1] === 'new') return await viewPlan(null, r.q);
-        return await viewPlan(r.parts[1], r.q);
+        if (r.parts[1] === 'new') return await viewPlan(null, r.q, token);
+        return await viewPlan(r.parts[1], r.q, token);
       }
       go('#/layouts');
     } catch (err) {
@@ -174,7 +187,7 @@
 
   // ── View: browse layouts ───────────────────────────────────────────────
 
-  async function viewLayouts() {
+  async function viewLayouts(token) {
     main.innerHTML =
       '<div class="sp-head">' +
         '<div><p class="sp-head__eyebrow">Seating</p>' +
@@ -191,6 +204,7 @@
       '<div id="sp-list"></div>';
 
     var layouts = await D.listRoomLayouts();
+    if (stale(token)) return;
     var byRoom = {};
     layouts.forEach(function (l) { (byRoom[l.room_code] = byRoom[l.room_code] || []).push(l); });
 
@@ -264,7 +278,7 @@
 
   // ── View: layout builder ───────────────────────────────────────────────
 
-  async function viewLayoutBuilder(id, q) {
+  async function viewLayoutBuilder(id, q, token) {
     var existing = null;
     if (id) {
       existing = await D.loadRoomLayout(id);
@@ -274,7 +288,11 @@
     var canEdit = existing ? existing.can_edit : true;
     S.mode = canEdit ? 'edit' : 'view';
 
-    var room = existing ? existing.room_code : (q.room || D.ROOMS[0]);
+    // A room code off the hash is user input. An unknown one used to leave
+    // the dropdown showing S01 while `room` still held the bogus value, so
+    // Save failed naming a room the screen was not displaying.
+    var wanted = existing ? existing.room_code : (q.room || '');
+    var room = D.ROOMS.indexOf(wanted) !== -1 ? wanted : D.ROOMS[0];
     var name = existing ? (existing.name || '') : '';
 
     main.innerHTML =
@@ -500,6 +518,10 @@
     }
 
     async function onSave() {
+      // Two clicks used to make two rows. Neither button is ever disabled —
+      // the guard is a flag, not a greyed-out control.
+      if (S.saving) return;
+      S.saving = true;
       say('');
       try {
         var layout = S.canvas.getLayout();
@@ -523,10 +545,11 @@
 
   // ── View: one class's seating plans ────────────────────────────────────
 
-  async function viewClass(classId) {
+  async function viewClass(classId, token) {
     var cls = await D.loadClass(classId);
     if (!cls) throw new Error('That class could not be found.');
     var plans = await D.listPlansForClass(classId);
+    if (stale(token)) return;
 
     main.innerHTML =
       '<div class="sp-head">' +
@@ -579,7 +602,7 @@
 
   // ── View: the plan editor ──────────────────────────────────────────────
 
-  async function viewPlan(planId, q) {
+  async function viewPlan(planId, q, token) {
     S.me = await D.me();
     var plan = null, classId = q.class || null, layoutId = q.layout || null;
 
@@ -684,20 +707,80 @@
       onAssign: function () { S.dirty = true; paintRoster(); }
     });
 
-    // Rehydrate the saved seating. An id whose pupil has since left the class
-    // is dropped here rather than drawn as a name nobody recognises.
+    /*
+      Rehydrating a saved plan is where two kinds of rot show up, and both used
+      to pass silently.
+
+      A seat id is DERIVED from a desk — `d3:2` is the third chair at desk d3 —
+      so it stops existing the moment somebody edits that room down from four
+      chairs to two, or deletes the desk. The assignment survives in the row.
+      It draws nothing, because nothing renders a chair that is not there; and
+      it used to be COUNTED AS SEATED, because the tally walked the whole map.
+      A teacher could reduce a desk, reopen the plan, read "0 unseated", print
+      it, and walk into a lesson with two children standing up.
+
+      The other is a pupil id the roster cannot resolve — usually someone who
+      has left the class, but it is indistinguishable from a roster read that
+      came back SHORT because the reader is not allowed to see the pupils. That
+      second case is the dangerous one: save is a whole-object overwrite, so a
+      reader with an empty roster and a live Save button would have written
+      `{}` over the whole plan and been told "Saved."
+
+      So: seats that no longer exist are dropped and reported; pupils that
+      cannot be resolved are reported; and if NONE of them resolved while the
+      plan clearly holds some, the page decides it is not looking at the whole
+      truth and refuses to let anyone write over it.
+    */
+    var lostSeats = 0, unresolved = 0;
     if (plan && plan.assignments) {
+      var liveSeats = {};
+      S.canvas.seatIds().forEach(function (id) { liveSeats[id] = 1; });
       var byId = {};
       S.roster.forEach(function (s) { byId[s.id] = s; });
       var map = {};
       Object.keys(plan.assignments).forEach(function (seatId) {
         var sid = plan.assignments[seatId];
-        if (byId[sid]) map[seatId] = { id: sid, label: byId[sid].label };
+        if (!liveSeats[seatId]) { lostSeats++; return; }
+        if (!byId[sid]) { unresolved++; return; }
+        map[seatId] = { id: sid, label: byId[sid].label };
       });
+      var stored = Object.keys(plan.assignments).length;
+      if (stored > 0 && Object.keys(map).length === 0 && unresolved > 0) {
+        rosterBlocked = true;
+        canEdit = false;
+        S.mode = 'view';
+        S.canvas.setMode('view');
+      }
       S.canvas.setAssignments(map);
     }
 
+    // The Save button is created before rehydration, so if rehydration decided
+    // this reader is not seeing the whole plan, take it away again.
+    if (!canEdit) {
+      var live = actions.querySelectorAll('button');
+      [].slice.call(live).forEach(function (b) {
+        if (/save plan/i.test(b.textContent)) b.remove();
+      });
+    }
+
     paintRoster();
+    if (lostSeats || unresolved) {
+      say(
+        (lostSeats
+          ? lostSeats + ' seat' + (lostSeats === 1 ? '' : 's') + ' in this plan ' +
+            'no longer exist' + (lostSeats === 1 ? 's' : '') + ' — the room was ' +
+            'changed after the plan was made, so those pupils are back on the list. '
+          : '') +
+        (unresolved
+          ? unresolved + ' seat' + (unresolved === 1 ? '' : 's') + ' held someone ' +
+            'this class list does not contain' +
+            (rosterBlocked
+              ? ', and none of the names could be read — this plan is shown ' +
+                'read-only rather than risk saving over it.'
+              : ' — saving will clear those seats.')
+          : ''),
+        'warn');
+    }
     fillPrintHead(cls, layoutRow.room_code);
 
     function seatedIds() {
@@ -817,6 +900,8 @@
     }
 
     async function onSavePlan() {
+      if (S.saving) return;
+      S.saving = true;
       say('');
       try {
         var a = S.canvas.getAssignments();
@@ -833,6 +918,8 @@
         say(err.code === 'not_permitted'
               ? 'This plan belongs to someone else, so it cannot be changed here.'
               : (err.message || 'Could not save.'), 'warn');
+      } finally {
+        S.saving = false;
       }
     }
 
@@ -925,13 +1012,41 @@
 
   // ── Boot ───────────────────────────────────────────────────────────────
 
+  /*
+    Unsaved work is guarded in TWO places, because the page has two ways of
+    leaving a screen and `beforeunload` only sees one of them.
+
+    Closing the tab fires beforeunload. Clicking "Rooms" does not — every
+    navigation here is a hash change, and a hash change fires nothing the
+    browser will pause on. So dragging three desks and clicking away used to
+    discard the lot without a word, while the flag it left set armed a
+    "Leave site?" prompt on the next unrelated screen. Wrong in both
+    directions, from one missing reset.
+
+    hashchange fires AFTER the address has already changed, so the guard puts
+    the old hash back when the teacher says no — and ignores the hashchange
+    that restoring it causes.
+  */
+  var lastHash = location.hash || '#/layouts';
+  var restoring = false;
+
   window.addEventListener('beforeunload', function (ev) {
     if (!S.dirty) return;
     ev.preventDefault();
     ev.returnValue = '';
   });
 
-  window.addEventListener('hashchange', route);
+  window.addEventListener('hashchange', function () {
+    if (restoring) { restoring = false; return; }
+    if (S.dirty && !window.confirm(
+          'This room has changes you have not saved. Leave without saving?')) {
+      restoring = true;
+      location.hash = lastHash;
+      return;
+    }
+    lastHash = location.hash;
+    route();
+  });
 
   MrBadmusTeacherGuard.requireTeacherRole({
     onAllowed: function () {

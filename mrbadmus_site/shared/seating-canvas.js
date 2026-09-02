@@ -100,8 +100,18 @@
   var NUDGE = 0.004;            // arrow key, in normalised room units
   var NUDGE_BIG = 5;            // Shift multiplier
 
-  var FRONTS = { top: 1, right: 1, bottom: 1, left: 1 };
-  var SHAPES = { rect: 1, round: 1 };
+  /* ⚠️ ARRAYS, not object maps, and `indexOf`, not a property lookup.
+     `SHAPES["toString"]` is truthy on an object literal, so a desk arriving
+     from the vision model with shape "constructor" walked straight through
+     validation, was rebuilt into the output layout, drew as a rectangle and
+     PERSISTED — the database CHECK constrains `front` but not per-desk shape.
+     `validate()` is a security boundary for model-generated JSON, so its
+     membership tests must not be inherited-property lookups. */
+  var FRONTS = ['top', 'right', 'bottom', 'left'];
+  var SHAPES = ['rect', 'round'];
+  function isOneOf(list, v) {
+    return typeof v === 'string' && list.indexOf(v) !== -1;
+  }
 
   /* A desk id ends up inside a CSS attribute selector and inside a seat id, so
      it is whitelisted rather than escaped. ':' is banned outright — it is the
@@ -377,7 +387,7 @@
     if (front === undefined || front === null) {
       warnings.push("front missing; assumed 'top'");
       front = 'top';
-    } else if (typeof front !== 'string' || !FRONTS[front]) {
+    } else if (!isOneOf(FRONTS, front)) {
       errors.push('unknown front: ' + JSON.stringify(input.front));
       front = 'top';
     }
@@ -437,7 +447,7 @@
       errors.push('too many desks: ' + desks.length + ' (max ' + MAX_DESKS + ')');
     }
 
-    var seen = {};
+    var seen = Object.create(null);
     desks.forEach(function (d, i) {
       var where = 'desk[' + i + ']';
       if (!d || typeof d !== 'object' || Array.isArray(d)) {
@@ -458,7 +468,7 @@
       where = 'desk ' + id;
 
       var shape = d.shape === undefined || d.shape === null ? 'rect' : d.shape;
-      if (typeof shape !== 'string' || !SHAPES[shape]) {
+      if (!isOneOf(SHAPES, shape)) {
         errors.push(where + ': unknown shape ' + JSON.stringify(d.shape)); return;
       }
 
@@ -493,7 +503,10 @@
     return {
       ok: true,
       warnings: warnings,
-      layout: { v: 1, front: front, teacher_desk: td, desks: outDesks }
+      // `seq` rides along so the monotonic desk-id counter survives a
+      // save/reload; absent on older rows, derived from the desks then.
+      layout: { v: 1, seq: num(input.seq) || 0, front: front,
+                teacher_desk: td, desks: outDesks }
     };
   }
 
@@ -1697,7 +1710,7 @@
 
       setShapeForSelected: function (shape) {
         if (!selected) return api;
-        if (!SHAPES[shape]) throw new Error('setShapeForSelected: unknown shape ' + shape);
+        if (!isOneOf(SHAPES, shape)) throw new Error('setShapeForSelected: unknown shape ' + shape);
         var d = deskById(selected);
         if (!d || d.shape === shape) return api;
         var before = snapshot();
@@ -1715,7 +1728,7 @@
          front wall, so the whole room re-seats itself. The desks do not move —
          the furniture is where it is; it is the board that has changed wall. */
       setFront: function (edge) {
-        if (!FRONTS[edge]) throw new Error('setFront: unknown edge ' + edge);
+        if (!isOneOf(FRONTS, edge)) throw new Error('setFront: unknown edge ' + edge);
         if (layout.front === edge) return api;
         var before = snapshot();
         layout.front = edge;
