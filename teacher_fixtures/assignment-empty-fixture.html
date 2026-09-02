@@ -886,8 +886,10 @@ class Component extends DCLogic {
     const wMean = wMeans.length
       ? Math.round(wMeans.reduce((a, v) => a + v, 0) / wMeans.length) : null;
     const openP = wPapers[0] || null;
-    const lastP = kMx.markedIdx.length ? (kPapers[kMx.markedIdx[0]] || null) : null;
-    const kChase = this.chaseFor(k);
+    const lastMarked = kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0);
+    const lastP = lastMarked.length ? (kPapers[lastMarked[0]] || null) : null;
+    const kChase = (!k || k.state !== 'live' || !wIdxs.length) ? []
+      : kRoster.filter(r => wTally[r.id].in < wTally[r.id].asked);
     /* ⊕ MRB-306: no timetable data exists; see DROP_FIELDS. */
     const lessonToday = null;
     const g1 = lastP ? this.gridFor(k, lastP.idx) : null;
@@ -934,7 +936,7 @@ class Component extends DCLogic {
       })),
       remindLabel: 'Remind all ' + kChase.length,
       remind: () => this.ping('Reminder sent to ' + kChase.length + ' students in ' + k.code),
-      lastTitle: lastP ? lastP.title : '—',
+      lastTitle: lastP ? lastP.title : 'Nothing marked yet',
       lastLine: lastP ? 'Marked · class mean ' + lastP.mean + ' · ' + lastP.sub + ' submitted' : '',
       worstTwo: worstTwo.map(q => ({ id: q.id, text: q.text, pct: q.pct + '%', bar: q.pct, fill: q.pct < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)' })),
       openMarking: () => MRB_GO('marking', { 'class': k && k.id, paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id)) }),
@@ -946,7 +948,8 @@ class Component extends DCLogic {
     };
 
     /* Not-submitted first (flagged among them highest), then everyone in. */
-    const rosterWeight = (r) => (kPapers.length && !r.inWeek ? 2 : 0) + (r.flag ? 1 : 0);
+    const rosterWeight = (r) => ((wTally[r.id] && wTally[r.id].asked
+      && wTally[r.id].in < wTally[r.id].asked) ? 2 : 0) + (r.flag ? 1 : 0);
     const rosterSorted = kRoster.slice().sort((a, b) => rosterWeight(b) - rosterWeight(a));
     const roster = rosterSorted.map(r => ({
       id: r.id,

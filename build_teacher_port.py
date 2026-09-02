@@ -2036,8 +2036,27 @@ def fixture_payload(data, templates, class_id):
 # ⛔ NOT A CANDIDATE FOR ANY LIVE PATH, for the same reason the populated
 # fixtures are not, and one more: several of these are shapes a real teacher's
 # data could never be in at the same time.
+# ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 2) — ONE FILE, N EMPTY SHAPES ──
+#
+# ⚑ THE CONTRACT CHANGED FROM ONE SHAPER PER FILE TO ONE OR MORE, and the
+# value is now a TUPLE OF `(slug, note, shaper)` TRIPLES rather than a bare
+# `(note, shaper)` pair. Every page still MUST appear here — the build reads
+# `EMPTY_SHAPES[spec["out"]]` and a missing page is still a KeyError, which is
+# the refusal that made the old shape worth having — but a page may now name
+# more than one empty state.
+#
+# ⚠️ `slug` NAMES THE FILE, so it is not decoration. The slug `empty` is
+# special: it keeps the spec's OWN `empty_out`/`empty_js`, so all twelve
+# existing fixture filenames are byte-identical to what they were and nothing
+# downstream moves. Any other slug derives
+# `<stem>-<slug>-fixture.html` / `teacher-fixture-<stem>-<slug>.js`.
+#
+# ⚠️ EXACTLY ONE `empty` SLUG PER PAGE, asserted below. Two would both claim
+# the same filename and the second would silently overwrite the first — which
+# is precisely the failure the one-shaper-per-file rule was protecting
+# against, so the protection is kept rather than dropped along with the rule.
 EMPTY_SHAPES = {
-    "classes.html": (
+    "classes.html": (("empty",
         "no classes IN THE YEAR BEING VIEWED, and that year is a PAST one. "
         "⊕ MRB-287 E1 — THIS FIXTURE CARRIES TWO PROPERTIES, deliberately, "
         "and they are the same teacher: someone whose classes are all last "
@@ -2051,8 +2070,8 @@ EMPTY_SHAPES = {
         "students\" is ABSENT because a finished year is read-only. It is "
         "also the only fixture in the set where `canWrite` is false on the "
         "classes screen.",
-        lambda p: _shape_past_year(_shape_no_classes(p))),
-    "class-detail.html": (
+        lambda p: _shape_past_year(_shape_no_classes(p))),),
+    "class-detail.html": (("empty",
         "a class with no roster — `ROSTER: []`, `n: 0`, `state: 'empty'`. "
         "Design DREW this one (\"No students yet\" and an Import action), so "
         "it should render Design's own empty state rather than a blank. "
@@ -2066,12 +2085,56 @@ EMPTY_SHAPES = {
         "skipped on this fixture, so nothing that was pressed here stops "
         "being pressed.",
         lambda p: _shape_past_year(_shape_no_roster(p))),
-    "digest.html": (
+
+     # ── ⊕ THE THIRTEENTH FIXTURE, 2 Sep 2026 (MRB-306 Phase 2a screen 2) ──
+     #
+     # A LIVE class, with a roster, with work set, and NOBODY HAS HANDED
+     # ANYTHING IN. It is the state every class is in between the moment a
+     # teacher sets work and the moment the first child answers — so on a
+     # normal week it is what this screen looks like on Monday morning — and
+     # until now NO fixture in the set held it on THIS screen.
+     #
+     # ⚠️ WHAT IT ACTUALLY EXERCISES, and why the hole mattered: on this
+     # shape `openIn` is "0 of N in", `wMean` is null, `lastP` is null
+     # (nothing is marked, so `markedIdx` is empty), `worstTwo` is `[]`,
+     # `best` and `imp` are both null so `praise` is empty, and `kChase` is
+     # EVERY CHILD IN THE CLASS. Half a dozen null and divide-by-length paths
+     # that the populated fixture never reaches and the no-roster fixture
+     # cannot reach either — it has no roster to divide by.
+     #
+     # ⚠️ MY BRIEF SAID THIS IS "`8r/Sc1`'S EXACT SHAPE ON PROD". IT IS NOT,
+     # and the fixture is justified WITHOUT that claim rather than on top of
+     # it. Measured on prod 2 Sep 2026, `8r/Sc1` (2 members, 2 papers) has
+     # submissions on BOTH papers: "Particle model" 1 of 2 in, and
+     # "Breathing and gas exchange" 2 of 2 in — the latter from three
+     # submission ROWS, because one child has `attempt_no` 1 and 2 and
+     # `pickFirstAttempts` collapses them to the earlier. So no class in the
+     # working year is currently in this state. It is added because it is a
+     # SHAPE THE SEAM REALLY PRODUCES on any ordinary week, not because a
+     # class is sitting in it today — which is the honest reason, and the
+     # only kind that survives the data changing.
+     #
+     # ⚠️ AND IT REUSES `_shape_no_submissions` RATHER THAN INVENTING ONE.
+     # That shaper already zeroes the matrix AND rewrites each paper's `sub`
+     # to "0/N" and `mean` to an em-dash, because a fixture whose paper row
+     # says "13/16 · 67%" over a matrix holding nothing is a state no real
+     # data can produce. That is exactly the scepticism this fixture is
+     # supposed to be built with, already written down and already tested by
+     # the assignment screen.
+     ("nosubs",
+      "a LIVE class with a roster and work set that NOBODY has handed in "
+      "\u2014 `colSub: 0`, every cell null, every paper `0/N` and a class "
+      "mean of `\u2014`. The Monday-morning shape. It is the only fixture "
+      "on this screen where the chase list is the WHOLE class and nothing "
+      "is marked, so `lastP`, `worstTwo` and `praise` are all empty at "
+      "once.",
+      lambda p: _shape_no_submissions(p)),),
+    "digest.html": (("empty",
         "a class with students and no work set — `PAPERS: []`, `WEEKS: []`, "
         "`state: 'nowork'`. Design's README: \"classes with no work set have "
         "no week bar\", so the rail must be ABSENT and not drawn empty.",
-        lambda p: _shape_no_work(p)),
-    "assignment.html": (
+        lambda p: _shape_no_work(p)),),
+    "assignment.html": (("empty",
         "a paper nobody submitted — the grid is present, `submitted: 0` and "
         "every `qpct` is null. This is where \"blanks over invented numbers\" "
         "is tested: nothing may render as 0%, as `null%`, or as a full bar. "
@@ -2079,18 +2142,52 @@ EMPTY_SHAPES = {
         "because `is_correct IS NULL` cannot occur in Design's sample at all "
         "and `cellStyle(3)` would otherwise be unexercised by every fixture "
         "in the set.",
-        lambda p: _shape_no_submissions(p)),
-    "insights.html": (
+        lambda p: _shape_no_submissions(p)),),
+    "insights.html": (("empty",
         "a grid that was never prefetched — `GRID[key]: null`, the seam's "
         "deliberate \"not fetched yet\". It must render as PENDING and never "
         "as a grid of zeros.",
-        lambda p: _shape_grid_pending(p)),
-    "student-detail.html": (
+        lambda p: _shape_grid_pending(p)),),
+    "student-detail.html": (("empty",
         "a student with no submissions at all, on a class that has papers — "
         "every cell null, so the history renders four \"Nothing in\" rows "
         "rather than a fabricated date.",
-        lambda p: _shape_no_submissions(p)),
+        lambda p: _shape_no_submissions(p)),),
 }
+
+# ⚠️ THE `empty` SLUG IS UNIQUE PER PAGE, AND THE BUILD REFUSES OTHERWISE.
+# Two `empty` variants on one page would both resolve to that page's
+# `empty_out`, and the second would overwrite the first with no error at all
+# — a fixture silently replaced by a different one, which is the exact class
+# of failure the one-shaper-per-file rule used to make impossible. Dropping
+# that rule without replacing its guarantee would have been a downgrade, so
+# the guarantee is asserted here instead.
+for _out, _variants in EMPTY_SHAPES.items():
+    _slugs = [v[0] for v in _variants]
+    if len(_slugs) != len(set(_slugs)):
+        raise SystemExit(
+            "build_teacher_port.py: EMPTY_SHAPES[%r] names the same slug "
+            "twice (%s). Each slug names a filename, so a duplicate "
+            "overwrites a fixture rather than adding one." % (_out, _slugs))
+    if _slugs.count("empty") != 1:
+        raise SystemExit(
+            "build_teacher_port.py: EMPTY_SHAPES[%r] must name exactly one "
+            "`empty` variant — that is the one keeping the spec's own "
+            "`empty_out`/`empty_js` filenames — and it names %d."
+            % (_out, _slugs.count("empty")))
+
+
+def variant_files(spec, slug):
+    """(page filename, data filename) for one empty variant of one screen.
+
+    `empty` keeps the spec's own names so the twelve original fixtures do not
+    move; anything else derives from the page's stem.
+    """
+    if slug == "empty":
+        return spec["empty_out"], spec["empty_js"]
+    stem = spec["out"][:-len(".html")]
+    return ("%s-%s-fixture.html" % (stem, slug),
+            "teacher-fixture-%s-%s.js" % (stem, slug))
 
 
 def _no_activity(k):
@@ -2863,10 +2960,15 @@ def _verify_stamps(stamped):
     # The check is NOT weakened: each fixture asset is still hashed and still
     # compared, in the one tree its page is served from. A fixture asset that
     # went missing from `shared/` would still stop the build.
+    # ⊕ 2 Sep 2026 — EVERY empty variant's data file, not just `empty_js`.
+    # Derived from EMPTY_SHAPES through `variant_files`, the same call the
+    # build writes them with, so a new variant cannot be added without this
+    # set knowing about it.
     fixture_assets = set()
     for spec in PAGES:
         fixture_assets.add(spec["fixture_js"])
-        fixture_assets.add(spec["empty_js"])
+        for slug, _note, _shaper in EMPTY_SHAPES[spec["out"]]:
+            fixture_assets.add(variant_files(spec, slug)[1])
 
     bad = []
     for name, want in sorted(stamped.items()):
@@ -3123,9 +3225,14 @@ def build():
             mine["FEED"] = {}
         js = _fixture_js(mine)
 
-        note, shaper = EMPTY_SHAPES[spec["out"]]
-        empty_js = _fixture_js(shaper(dict(mine)), empty=True)
-        empty_report[spec["empty_out"]] = note
+        # ⊕ 2 Sep 2026 — ONE OR MORE empty variants per screen. `empty` is
+        # first and keeps the spec's own filenames; see EMPTY_SHAPES.
+        variants = []
+        for slug, note, shaper in EMPTY_SHAPES[spec["out"]]:
+            v_out, v_js_name = variant_files(spec, slug)
+            variants.append((slug, v_out, v_js_name,
+                             _fixture_js(shaper(dict(mine)), empty=True)))
+            empty_report[v_out] = note
 
         # The fixture DATA follows the fixture PAGES out of the published
         # tree. Unpublishing the HTML alone would have left twelve JS files
@@ -3137,7 +3244,7 @@ def build():
         # round-tripped — so the invented data reached the public site and
         # the correction then risked deleting it from source.
         os.makedirs(FIXTURE_OUT, exist_ok=True)
-        for stale in (spec["fixture_js"], spec["empty_js"]):
+        for stale in ([spec["fixture_js"]] + [v[2] for v in variants]):
             for tree in (SHARED_OUT, "shared"):
                 gone = os.path.join(tree, stale)
                 if os.path.exists(gone):
@@ -3145,20 +3252,24 @@ def build():
         with open(os.path.join(FIXTURE_OUT, spec["fixture_js"]), "w",
                   encoding="utf-8") as fh:
             fh.write(js)
-        with open(os.path.join(FIXTURE_OUT, spec["empty_js"]), "w",
-                  encoding="utf-8") as fh:
-            fh.write(empty_js)
+        for _slug, _v_out, v_js_name, v_js in variants:
+            with open(os.path.join(FIXTURE_OUT, v_js_name), "w",
+                      encoding="utf-8") as fh:
+                fh.write(v_js)
         page_versions = dict(versions)
         page_versions[spec["fixture_js"]] = asset_hash(js)
-        page_versions[spec["empty_js"]] = asset_hash(empty_js)
+        for _slug, _v_out, v_js_name, v_js in variants:
+            page_versions[v_js_name] = asset_hash(v_js)
         stamped.update(page_versions)
 
         body = page_html(spec, shipped, table, page_logic, tpl["imports"],
                          None, page_versions, regions)
         fix = page_html(spec, shipped, table, page_logic, tpl["imports"],
                         spec["fixture_js"], page_versions, regions)
-        mt = page_html(spec, shipped, table, page_logic, tpl["imports"],
-                       spec["empty_js"], page_versions, regions)
+        empties = [(v_out, page_html(spec, shipped, table, page_logic,
+                                     tpl["imports"], v_js_name,
+                                     page_versions, regions))
+                   for _slug, v_out, v_js_name, _v_js in variants]
         # ⚠️ THE LIVE PAGE IS PUBLISHED; THE FIXTURES ARE NOT.
         #
         # `mrbadmus_site/` is what Cloudflare serves, and `/teacher/*` has no
@@ -3189,14 +3300,15 @@ def build():
         # something removes it. Unpublishing has to delete, not just stop
         # writing — otherwise the change is invisible until the next full
         # `generate_site_v5` wipe, and reads as done when it is not.
-        for stale in (spec["fixture_out"], spec["empty_out"]):
+        for stale in ([spec["fixture_out"]] + [v[0] for v in variants]):
             gone = os.path.join(SITE_OUT, stale)
             if os.path.exists(gone):
                 os.remove(gone)
         write(os.path.join(SITE_OUT, spec["out"]), body)
         write(os.path.join(MIRROR_OUT, spec["out"]), body)
         write(os.path.join(FIXTURE_OUT, spec["fixture_out"]), fix)
-        write(os.path.join(FIXTURE_OUT, spec["empty_out"]), mt)
+        for v_out, v_body in empties:
+            write(os.path.join(FIXTURE_OUT, v_out), v_body)
 
         # ── ⊕ MRB-287 · the additions, asserted against the BYTES ──────
         #
@@ -3342,8 +3454,9 @@ def build():
               % (spec["out"], len(body), stats["pruned"], stats["inserted"],
                  stats["wrapped"], stats["retargeted"], len(table),
                  stats["retexted"], stats["attred"], len(region_ids)))
-        print("        %-26s %7d  ·  %-26s %7d"
-              % (spec["fixture_out"], len(fix), spec["empty_out"], len(mt)))
+        print("        %-30s %7d" % (spec["fixture_out"], len(fix)))
+        for v_out, v_body in empties:
+            print("        %-30s %7d" % (v_out, len(v_body)))
 
     # ⚠️ EVERY NAVIGATION NODE MUST HAVE BEEN CHECKED ON AT LEAST ONE PAGE.
     # `apply_rulings` skips a node pruned with its screen, which is correct

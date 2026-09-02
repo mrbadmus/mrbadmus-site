@@ -2055,18 +2055,42 @@ WRAP = {
     # (the whole single-student composer), wrapped in `canWrite` so a PAST
     # academic year could not be written to. Design's v3 deleted both nodes.
     #
-    # ⚠️ SO MRB-261'S READ-ONLY GUARANTEE NOW HAS A HOLE ON THIS PAGE, and it
-    # is stated rather than left to be discovered: the shoutout write surface
-    # that survives v3 is the BULK OVERLAY, opened from node 215 ("Shoutouts")
-    # and node 276 ("Send a shoutout"), and NEITHER IS WRAPPED. On a past year
-    # a teacher can still open the sheet and press Send. The insert is refused
-    # further down — `insertClassShoutout` writes against the class's own
-    # academic year and the year is what the page is scoped by — so this is a
-    # control that lies rather than a control that corrupts, which is the
-    # lesser of the two and still not right. Closing it means wrapping 215 and
-    # 276, and that is a behaviour change on a live page rather than a remap,
-    # so it is written up for Mide instead of taken here.
-    # See `SHOUTOUT_COMPOSER_DROPPED`.
+    # ⚠️ SO MRB-261'S READ-ONLY GUARANTEE HAD A HOLE ON THIS PAGE. The
+    # shoutout write surface that survives v3 is the BULK OVERLAY, opened
+    # from node 215 ("Shoutouts") and node 276 ("Send a shoutout"), and
+    # NEITHER WAS WRAPPED. On a past year a teacher could still open the
+    # sheet and press Send. The insert is refused further down —
+    # `insertClassShoutout` writes against the class's own academic year and
+    # the year is what the page is scoped by — so it was a control that LIED
+    # rather than one that corrupted, which is the lesser of the two and
+    # still not right.
+    #
+    # ⊕ CLOSED 2 Sep 2026 (MRB-306 Phase 2a screen 2). Both are wrapped on
+    # `canWrite` below, and the two rows carry the same predicate as the four
+    # on `classes.html` above.
+    #
+    # ⚠️ THIS IS NOT A RESTORATION OF THE DELETED COMPOSER AND MUST NOT BE
+    # READ AS ONE. Whether v3's deletion of nodes 183/185 is accepted or
+    # reversed is Mide's open call and is parked in
+    # `SHOUTOUT_COMPOSER_DROPPED`. This row changes nothing about WHICH
+    # controls exist — it applies MRB-261's EXISTING read-only rule to the
+    # two openers that survived, exactly as that rule already applies to
+    # every other write path on the teacher surface. A past year offers no
+    # write controls; these were write controls; they were missed because
+    # the nodes they used to hang off were deleted underneath the ruling.
+    #
+    # ⚠️ WHAT DRIVING SHOWED, and why this was not merely theoretical: on
+    # `class-detail-empty-fixture.html` — which IS the past-year read-only
+    # shape, `canWrite: false`, `readOnlyLine: "2025–26 is read-only"` — the
+    # rendered page carried a live "Shoutouts" button in its header. The
+    # docstring of `teacher_behaviour.py` asserted the opposite ("the
+    # shoutout composer and the bulk opener absent"); that sentence was
+    # written against v2 and had silently stopped being true. It is
+    # corrected there in the same change.
+    "class-detail.html": {
+        215: "canWrite",
+        276: "canWrite",
+    },
 }
 
 
@@ -4240,6 +4264,68 @@ componentDidUpdate() {
       name: r.name,""",
      "the roster row's `id`, for the shoutout composer. Part of #6."),
 
+    # ── ⚑ THE TWO CONSUMERS OF `r.inWeek` THE WEEK BAR MISSED ───────────
+    #
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 2). The week-bar unit ruled that
+    # `r.inWeek` is "hard-wired to the current week window" and re-derived
+    # the roster row's `week`, `weekFg` and `dot` off `wTally` — the
+    # per-child, per-SELECTED-week count built beside the week scope. It
+    # left two OTHER readers of the same flag on this screen, and both are
+    # visible defects on any week but the current one. FOUND BY DRIVING, not
+    # by reading: every gate on this page was green with both in place.
+    #
+    # ⚠️ WHAT A TEACHER ACTUALLY SAW, on `class-detail-fixture.html`, with
+    # the numbers beside the names:
+    #
+    #   week 0  (24–28 Aug)  card "11 of 16 in"  chips: Jasmine, Kaleb,
+    #                        Leila, Marcus, Nia          — 5 names, correct
+    #   week 1  (17–21 Aug)  card "13 of 16 in"  chips: THE SAME FIVE
+    #                        roster column says: Chidi, Hana, Idris
+    #   week 11 (8–12 Jun)   card "10 of 16 in"  chips: THE SAME FIVE
+    #                        roster column says: Jasmine, Kaleb, Marcus,
+    #                        Clara, Amara, Farida
+    #
+    # So on every week but the open one the chase chips CONTRADICT both the
+    # count printed directly above them and the roster table printed
+    # directly below them, and they name children who did hand the work in.
+    # Leila and Nia are chased in week 11 having submitted; Chidi, Hana and
+    # Idris are the three who actually owe week 1 and are never named. This
+    # is not a cosmetic mismatch — the chips are a chase list, each one is a
+    # link into that child's record, and `kChase.length` is what "Remind all
+    # N" counts.
+    #
+    # ⚠️ AND IT IS WHY THE REMINDER CONTROL MUST NOT BE WIRED TO `kChase` AS
+    # DESIGN WROTE IT. See DEAD's note on node 236: the working control is
+    # the one `shared/teacher-live.js` injects, and it computes its own
+    # chase from `papers[0]` — the open week — so it was never exposed to
+    # this. Wiring Design's node to `kChase` before this correction would
+    # have sent real reminders to the wrong children.
+    (dict(method="renderVals", key="const kChase"),
+     """    const kChase = (!k || k.state !== 'live' || !wIdxs.length) ? []
+      : kRoster.filter(r => wTally[r.id].in < wTally[r.id].asked);""",
+     "the class screen's chase list, on the SELECTED week rather than on "
+     "`r.inWeek`. `chaseFor()` itself is left alone — the classes screen "
+     "calls it too, and there the current week is the right question. Part "
+     "of #13."),
+
+    # ⚠️ "NOT SUBMITTED FIRST" HAS TO MEAN THE WEEK BEING LOOKED AT. The
+    # sort read `r.inWeek` as well, so on any earlier week the children
+    # floated to the top of the table were the ones behind on THIS week's
+    # work while the rows actually reading "Not in yet" sat wherever the
+    # roster happened to put them. Driving week 1 showed the first row as
+    # "In · on time" with all three genuinely-missing children further down.
+    #
+    # ⚠️ A WEEK NOBODY WAS ASKED ANYTHING IN MUST NOT SORT EVERYONE TO THE
+    # TOP, which is why `asked` is tested and not just `in`. That is the
+    # same care the `week` property's ruling states: the column reads
+    # "Nothing set", not "Not in yet", and the sort has to agree with it or
+    # the table is ordered by an accusation the data does not support.
+    (dict(method="renderVals", key="const rosterWeight"),
+     """    const rosterWeight = (r) => ((wTally[r.id] && wTally[r.id].asked
+      && wTally[r.id].in < wTally[r.id].asked) ? 2 : 0) + (r.flag ? 1 : 0);""",
+     "the roster sort, on the SELECTED week rather than on `r.inWeek`. Part "
+     "of #6 and #13."),
+
     # ── "the last marked set" stops meaning "the second paper" ──────────
     #
     # ⛔ `kPapers[1]` IS THE ONE-OPEN-PAPER-AT-INDEX-0 ASSUMPTION, and it is
@@ -4248,12 +4334,56 @@ componentDidUpdate() {
     # property of Design's sample. A real class has none open, or three. The
     # matrix already publishes `markedIdx` — which columns have closed,
     # newest first — so the answer exists and does not have to be guessed.
+    # ⊕ EXTENDED 2 Sep 2026 (MRB-306 Phase 2a screen 2) — AND SOMEBODY HAS
+    # TO HAVE SAT IT.
+    #
+    # ⚠️ `markedIdx` IS NOT "PAPERS THAT WERE MARKED". It is papers whose
+    # DEADLINE HAS PASSED — `buildPapers` sets `when = 'marked'` on
+    # `due_at <= now` and consults no submission at all — so a paper closes
+    # on time whether sixteen children sat it or none did. On the `nosubs`
+    # fixture (a live class, work set, nobody in) that produced a card
+    # reading:
+    #
+    #     RETEACH FROM THE LAST SET
+    #     Energy stores and transfers
+    #     Marked · class mean — · 0/16 submitted
+    #
+    # with an empty body under it and a live "Open the full breakdown" link.
+    # A teacher is told to reteach a topic on the evidence of a paper NOBODY
+    # SAT, and the evidence panel is blank because there is none. That is a
+    # recommendation manufactured out of an empty column, and a deadline
+    # passing with nothing handed in is an ordinary week, not an edge case.
+    #
+    # So the newest CLOSED paper somebody actually sat is the one there is
+    # anything to reteach from. `colSub[i] > 0` is the same submitted count
+    # the card itself prints, so the card and its own subtitle cannot
+    # disagree.
+    #
+    # ⚠️ FOUND BY THE THIRTEENTH FIXTURE ON ITS FIRST RUN, and unreachable
+    # without it: the populated fixture has marked papers with submissions,
+    # and the no-roster fixture has no papers. Neither could express "closed,
+    # and empty".
     ("    const lastP = kPapers[1] || null;",
-     "    const lastP = kMx.markedIdx.length "
-     "? (kPapers[kMx.markedIdx[0]] || null) : null;",
+     "    const lastMarked = kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0);\n"
+     "    const lastP = lastMarked.length "
+     "? (kPapers[lastMarked[0]] || null) : null;",
      "the class screen's \"last marked set\". Part of #13: `kPapers[1]` is "
      "the index-0 assumption, and `markedIdx` is the seam's own answer to "
-     "the same question."),
+     "the same question — narrowed to the closed papers somebody actually "
+     "sat, because `markedIdx` is a deadline test and not a submission "
+     "one."),
+
+    # ⚠️ AND THE CARD NEEDS WORDS FOR THAT STATE. `lastTitle` fell back to a
+    # bare em-dash, which under the heading "Reteach from the last set" reads
+    # as a value that failed to load rather than as an answer. `openTitle`
+    # three lines above already solves the identical problem with a sentence
+    # ("No work set in this week"), so this is that pattern applied to its
+    # neighbour rather than a new one.
+    (dict(method="renderVals", key="lastTitle"),
+     """      lastTitle: lastP ? lastP.title : 'Nothing marked yet',""",
+     "the reteach card's empty state. A class whose closed papers nobody sat "
+     "has nothing to reteach FROM, and must say so rather than render a "
+     "dash. Part of #13."),
 
     ("    const g1 = lastP ? this.gridFor(k, 1) : null;",
      "    const g1 = lastP ? this.gridFor(k, lastP.idx) : null;",
