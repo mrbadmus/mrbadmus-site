@@ -42,7 +42,7 @@
 <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/shared/teacher-ds.css?v=fba5f719">
-<link rel="stylesheet" href="/shared/seating.css?v=7b999eda">
+<link rel="stylesheet" href="/shared/seating.css?v=1ca5298c">
 </head>
 <body class="sp-body">
 
@@ -767,12 +767,15 @@
     if (lostSeats || unresolved) {
       say(
         (lostSeats
-          ? lostSeats + ' seat' + (lostSeats === 1 ? '' : 's') + ' in this plan ' +
-            'no longer exist' + (lostSeats === 1 ? 's' : '') + ' — the room was ' +
-            'changed after the plan was made, so those pupils are back on the list. '
+          ? (lostSeats === 1
+              ? 'One seat in this plan no longer exists — the room was changed ' +
+                'after the plan was made, so that pupil is back on the list. '
+              : lostSeats + ' seats in this plan no longer exist — the room was ' +
+                'changed after the plan was made, so those pupils are back on ' +
+                'the list. ')
           : '') +
         (unresolved
-          ? unresolved + ' seat' + (unresolved === 1 ? '' : 's') + ' held someone ' +
+          ? (unresolved === 1 ? 'One seat held someone ' : unresolved + ' seats held people ') +
             'this class list does not contain' +
             (rosterBlocked
               ? ', and none of the names could be read — this plan is shown ' +

@@ -348,6 +348,15 @@ nav.sp-nav {
 }
 @media (max-width: 460px) {
   body.sp-body { padding-top: 60px; font-size: 14.5px; }
+  /* The nav is three links and a wordmark. At 390 it used to wrap "My classes"
+     and "Sign out" onto two lines each, which reads as a broken header rather
+     than a tight one. Tighten the gaps and let the row scroll instead. */
+  nav.sp-nav { padding: 9px 12px; }
+  .sp-nav__right { gap: 10px; }
+  .sp-nav__link, .sp-nav__right .sp-btn { white-space: nowrap; font-size: 0.8rem; }
+  .sp-nav__right .sp-btn { padding: 0 9px; }
+  /* and the stage should not reserve desk space the room does not use */
+  .sp-stage { min-height: 0; }
   .sp-wrap { padding: 0 14px; }
   .sp-head { padding: 20px 0 14px; }
   .sp-head__actions { width: 100%; }
