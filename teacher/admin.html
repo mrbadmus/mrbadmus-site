@@ -8,23 +8,34 @@
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <!-- ⊕ MRB-306 Phase 2a — v3's design system, the same sheet the six
+       GENERATED teacher screens load. It carries the --st-* tokens this
+       page's chrome is drawn from. It also re-ships an older copy of
+       tokens.css; every value in that copy is IDENTICAL to the live file
+       (measured — it is a strict subset), so the order of these two links
+       changes nothing, and its later @font-face block points at the same
+       /shared/fonts/ URLs. -->
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=fba5f719"/>
   <style>
-    html { background: var(--bg); }
+    html { background: var(--st-ground); }
     :root {
-      --darker: var(--bg);
-      --dark:   var(--sunken);
-      --card2:  var(--sunken);
-      --shadow: var(--shadow-card);
+      --darker: var(--st-ground);
+      --dark:   var(--st-num-well);
+      --card2:  var(--st-num-well);
+      --shadow: none;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--darker);
-      color: var(--text);
-      font-family: var(--font-sans);
+      background: var(--st-ground);
+      color: var(--st-ink);
+      font: 400 18px/1.5 var(--st-ui);
       min-height: 100vh;
-      padding: 80px 20px 60px;
+      /* ⊕ MRB-306 — the bar is STICKY now, not fixed, exactly as v3 draws it,
+         so it takes its own space in the flow and the old 80px top pad that
+         cleared a fixed bar would be 80px of empty cream. */
+      padding: 0 0 60px;
       /* Hidden until the guard's onAllowed fires AND the admin-scope check
          answers. Fail-closed: if the guard bounces, the scope check refuses,
          or JS fails outright, the page never reveals school-wide staff data.
@@ -34,88 +45,129 @@
       display: none;
     }
 
-    nav.top-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      padding: 12px 24px;
+    /* ── v3's top bar ────────────────────────────────────────────────────
+       Values are Design's own, read out of the RENDERED topbar of
+       teacher/classes-fixture.html rather than retyped from the template
+       source. See the markup comment in <nav> for what is deliberately NOT
+       carried across. */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      z-index: 10;
+      gap: 12px;
+      height: 62px;
+      padding: 0 22px;
+      background: var(--st-paper);
+      border-bottom: 1px solid var(--st-rule);
     }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 0.7rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+    .tb-brand {
+      flex: none;
+      font: 600 23px/1 var(--st-display);
+      letter-spacing: -0.025em;
+      color: var(--st-ink);
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
-    .pill.env-prod { background: var(--sunken); color: var(--muted); }
-    .signout-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 5px 12px;
+    /* teacher-ds.css styles bare `a:hover` rust; the brand and the tabs are
+       chrome and do not change colour on hover in Design's bar. */
+    .tb-brand:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-seg {
+      display: flex;
+      gap: 3px;
+      padding: 3px;
+      flex: none;
+      margin-right: auto;
+      background: var(--st-seg-bg);
+      border-radius: 10px;
+    }
+    .tb-tab {
+      padding: 7px 15px;
       border-radius: 8px;
-      font-family: var(--font-sans);
-      font-weight: 700;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.15s;
+      font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-caption);
+      background: transparent;
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+    .tb-tab:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-tab.is-on { background: var(--st-paper); color: var(--st-ink); }
 
-    .container { max-width: 980px; margin: 0 auto; }
-    .page-header { margin-bottom: 10px; }
-    .page-header h1 {
-      font-family: var(--font-serif);
-      font-optical-sizing: auto;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      font-size: 1.7rem;
+    /* The environment badge. ⚠️ NOTHING ON THIS PAGE EVER REVEALS IT — no
+       script here touches `#env-pill` (admin.html and import.html each have
+       their own that does). Kept as it was found, hidden, and restyled so it
+       is v3-shaped the day something wires it. */
+    .pill {
+      flex: none;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font: 500 12px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--st-caption);
+      background: var(--st-num-well);
     }
-    .page-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+    .pill.env-test { color: var(--st-accent-text); }
+    .pill.env-prod { color: var(--st-caption); }
+    .signout {
+      flex: none;
+      height: 32px;
+      padding: 0 12px;
+      font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-muted);
+      background: transparent;
+      border: 1px solid var(--st-btn-border);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+    .signout:hover { color: var(--st-ink); border-color: var(--st-edge); }
+    /* The class Design's bar carries. It is defined in the six generated
+       pages' own inline <style> and in NEITHER stylesheet, so without
+       this line `noprint` on the <nav> above would do nothing at all. */
+    @media print { .noprint { display: none !important; } }
+
+    .container { max-width: 1460px; margin: 0 auto; padding: 24px 40px 40px; }
+    .page-header { margin-bottom: 8px; }
+    .page-header h1 {
+      font: 600 52px/1 var(--st-display);
+      letter-spacing: -0.035em;
+      color: var(--st-ink);
+      overflow-wrap: break-word;
+    }
+    .page-sub { font: 400 18px/1.5 var(--st-ui); color: var(--st-muted); margin-bottom: 28px; }
     .page-sub .sep { padding: 0 6px; opacity: 0.6; }
 
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 26px 30px;
-      margin-bottom: 22px;
+      background: var(--st-paper);
+      border: 1px solid var(--st-rule-soft);
+      border-radius: var(--st-r-card);
+      padding: 16px 18px;
+      margin-bottom: 16px;
     }
     .card h2 {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+      font: 500 13px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 16px;
+      color: var(--st-caption);
+      margin-bottom: 14px;
     }
 
     /* At a glance */
     .stats { display: flex; flex-wrap: wrap; gap: 12px; }
     .stat {
       flex: 1 1 150px;
-      background: var(--card2);
-      border: 1px solid var(--border);
+      background: var(--st-num-well);
+      border: 1px solid var(--st-rule-soft);
       border-radius: 10px;
       padding: 14px 16px;
     }
-    .stat .n { font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+    .stat .n { font: 500 28px/1.1 var(--st-mono); color: var(--st-ink); }
     .stat .l {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
+      font: 500 13px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--st-caption);
       margin-top: 4px;
     }
 
@@ -127,11 +179,11 @@
       gap: 10px 14px;
       flex-wrap: wrap;
       padding: 12px 0;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--st-rule-fact);
     }
     .row:first-of-type { border-top: none; }
-    .row .name { font-weight: 700; font-size: 1rem; }
-    .row .meta { color: var(--muted); font-size: 0.84rem; }
+    .row .name { font: 600 17.5px/1.2 var(--st-ui); color: var(--st-ink); }
+    .row .meta { color: var(--st-muted); font: 400 15.5px/1.4 var(--st-ui); }
     .row .right { margin-left: auto; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 
     /* Classes card: one heading per year group, each a fresh "table" of
@@ -139,76 +191,107 @@
        (`.row:first-of-type` is scoped per parent), so the heading is the
        only divider between one year and the next. */
     .year-heading {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
+      font: 500 13px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--st-caption);
       margin-top: 22px;
       padding: 16px 0 8px;
-      border-top: 2px solid var(--text);
+      border-top: 1px solid var(--st-rule);
     }
     .year-group:first-child .year-heading { border-top: none; margin-top: 0; padding-top: 0; }
-    @media (max-width: 560px) {
-      body { padding: 76px 14px 50px; }
-      .card { padding: 20px 16px; }
-      .row .right { margin-left: 0; width: 100%; }
-      /* At 390px the nav has no room to be generous. Without these three the
-         wordmark and "My classes" run into each other with no gap at all, and
-         "Sign out" wraps onto a second line — which makes the bar two rows
-         tall and tucks the page heading underneath the fixed nav. The
-         `gap` separates them, `nowrap` keeps each control on one line. */
-      nav.top-nav { padding: 10px 14px; gap: 12px; }
-      nav.top-nav > a { white-space: nowrap; }
-      .nav-right { gap: 8px; }
-      .nav-right a, .signout-btn { white-space: nowrap; }
-    }
 
     .tag {
       display: inline-block;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 999px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
+      font: 500 12px/1.2 var(--st-mono);
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      background: var(--sunken);
-      color: var(--muted);
-      border: 1px solid var(--border);
+      background: var(--st-num-well);
+      color: var(--st-caption);
+      border: 1px solid var(--st-rule-soft);
     }
-    .tag.pending { background: var(--higher-soft); color: var(--higher); border-color: transparent; }
-    .tag.you     { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+    .tag.pending { background: var(--st-note-bg); color: var(--st-body); border-color: var(--st-note-border); }
+    .tag.you     { background: var(--st-chip-tint); color: var(--st-accent-text); border-color: var(--st-chip-tint-border); }
 
-    .classlist { color: var(--muted); font-size: 0.84rem; }
-    .count { font-variant-numeric: tabular-nums; font-weight: 700; }
-    .muted { color: var(--muted); }
-    .empty { color: var(--muted); font-size: 0.9rem; }
+    .classlist { color: var(--st-muted); font: 400 15.5px/1.4 var(--st-ui); }
+    .count { font-family: var(--st-mono); font-variant-numeric: tabular-nums; }
+    .muted { color: var(--st-muted); }
+    .empty { color: var(--st-muted); font: 400 16px/1.5 var(--st-ui); }
 
-    a.classlink { color: var(--text); text-decoration: none; font-weight: 700; }
-    a.classlink:hover { color: var(--accent); text-decoration: underline; }
+    a.classlink { color: var(--st-ink); text-decoration: none; font-weight: 600; }
+    a.classlink:hover { color: var(--st-accent-text); text-decoration: underline; }
 
     /* The refusal, and the honest-failure state. Plain words, no codes. */
     .notice { max-width: 620px; margin: 40px auto; text-align: center; }
     .notice h1 {
-      font-family: var(--font-serif);
-      font-optical-sizing: auto;
-      font-weight: 600;
-      font-size: 1.5rem;
+      font: 600 34px/1.1 var(--st-display);
+      letter-spacing: -0.03em;
+      color: var(--st-ink);
       margin-bottom: 10px;
     }
-    .notice p { color: var(--muted); font-size: 1rem; line-height: 1.6; }
-    .notice a { color: var(--accent); font-weight: 700; }
+    .notice p { color: var(--st-muted); font: 400 18px/1.6 var(--st-ui); }
+    .notice a { color: var(--st-accent-text); font-weight: 600; }
+
+    @media (max-width: 560px) {
+      .container { padding: 18px 14px 40px; }
+      .card { padding: 14px 14px; }
+      .row .right { margin-left: 0; width: 100%; }
+      .page-header h1 { font-size: 34px; letter-spacing: -0.02em; }
+      /* ⚠️ THE BAR WRAPS RATHER THAN OVERFLOWING, and that is deliberate.
+         v3's top bar has no @media rule at all and measures 953px wide inside
+         a 390px viewport on all six generated pages. `today_drive`'s
+         "390px: no horizontal overflow" check is a PUSH GATE on this page, and
+         this page has always held that property (the rules below are the
+         descendants of the ones that did). Importing the defect to match the
+         six would be a regression on a live page, so the bar keeps its own
+         narrow-viewport behaviour until the cross-screen responsive unit
+         gives all eight pages one answer. */
+      .topbar { height: auto; min-height: 62px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+      .tb-brand { font-size: 19px; }
+      .tb-seg { margin-right: 0; }
+      .tb-tab { padding: 6px 11px; font-size: 14px; }
+    }
   </style>
 </head>
 <body>
 
-<nav class="top-nav">
-  <a href="/index.html" style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:-0.01em;">MrBadmusAI</a>
-  <div class="nav-right">
-    <a href="/teacher/classes.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">My classes</a>
-    <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
-    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+<!-- ── ⊕ MRB-306 Phase 2a — v3's top bar, STATIC ────────────────────────
+     Same construction as today.html and timetable.html: this page is
+     hand-written and carries no student-runtime, so the strip Design draws
+     through `__MRB_TPL__` is reproduced as plain markup using her own
+     values, read out of the RENDERED topbar of classes-fixture.html.
+
+     ⚠️ `class="top-nav"` and `.signout-btn` are GONE ON PURPOSE.
+     `shared/teacher-admin-nav.js` has two hosts and `inject()` runs Host A
+     (`nav.top-nav .signout-btn`, pre-v3 muted type) BEFORE Host B
+     (`[data-port-region="topbar"]`, v3 type). Keeping either class would put
+     an injected link into a v3 bar wearing the old 0.85rem muted styling.
+
+     ⚠️ `data-mrb-today-nav` is that module's OWN idempotence marker, and the
+     static Today tab below is why this bar does not grow a SECOND "Today":
+     Today is NOT scope-gated, so it is injected on every page that is not
+     Today itself. The tab REPLACES that injected link — same href, same
+     destination, v3's type instead of the old muted one. Nothing is added
+     and nothing is removed.
+
+     ⚠️ NO "Admin" tab, and none is wanted: `boot()` returns early through
+     `isHere()` on this page — "never link a page to itself".
+
+     NOT carried across, each for a stated reason:
+     · Design's "Find a student" search — no search is built on this page.
+     · Her Charts button — a navigation this page has never had, and adding
+       one is a behaviour change on a function-frozen page.
+     · The crumb and the teacher's name — nothing here computes either. -->
+<nav class="topbar noprint" data-port-region="topbar">
+  <a class="tb-brand" href="/index.html">MrBadmusAI</a>
+  <div class="tb-seg">
+    <a class="tb-tab" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
+    <a class="tb-tab" href="/teacher/classes.html">My classes</a>
   </div>
+  <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
+  <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
 </nav>
 
 <div class="container" id="main" style="display:none;">
