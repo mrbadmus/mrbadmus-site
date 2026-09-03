@@ -1946,15 +1946,24 @@ __IDS__.forEach(function (id) {
      fixture where every row is deletable proves the control renders and
      proves nothing about the author check, and one where none is leaves
      `teacher_behaviour` with no button to press. */
+  /* ⊕ 3 Sep 2026 — `by`, THE BYLINE, on both rows. `teacher-live.buildFeed`
+     computes it off the read RPC's own author join, so a fixture without it
+     would render an unresolved binding on the one field the restored feed
+     added — invisible on screen, because a miss draws nothing.
+     ⚑ THE TWO BYLINES ARE DIFFERENT PEOPLE, and that is the point of the
+     pair: the first row is the signed-in teacher's (`__MRB_FIXTURE_ME__`,
+     deletable) and the second is a colleague's (`__MRB_FIXTURE_OTHER__`, not
+     deletable). A fixture where both said the same name would render a feed
+     that cannot be told apart from one with no attribution at all. */
   out.FEED[id] = [
     { id: id + ':shout-1', author_id: '__MRB_FIXTURE_ME__',
-      name: pick(9), when: '2 days ago',
+      name: pick(9), by: 'by Mr Badmus', when: '2 days ago',
       template: 'Top of the class this week',
       body: 'Highest mean in ' + k.code + ' on the last set — and showed ' +
             'working on every question.',
       initials: c.initials(pick(9)), hue: c.hueFor(pick(9)) },
     { id: id + ':shout-2', author_id: '__MRB_FIXTURE_OTHER__',
-      name: pick(12), when: '1 week ago',
+      name: pick(12), by: 'by Ms Ademola', when: '1 week ago',
       template: 'Bounced back strong',
       body: 'Went from 38% to 74% after one reteach of the lowest-scoring ' +
             'question.',
@@ -2294,7 +2303,44 @@ EMPTY_SHAPES = {
       "class in the school with work set. It also shows the assignments "
       "table's weak column as it really is on this page: an em-dash on "
       "every row, because the grids it would need are not here.",
-      lambda p: _shape_grid_absent(p)),),
+      lambda p: _shape_grid_absent(p)),
+
+     # ── ⊕ THE SEVENTEENTH, 3 Sep 2026 (MRB-306 Phase 2b/3) ────────────
+     #
+     # ⛔ THE ONE SHAPE THE RESTORED SHOUTOUT SURFACE HAS TO BE PROVED ON,
+     # and no existing fixture could reach it. Mide ruled the composer and
+     # the feed back onto this screen on 3 Sep 2026 (see
+     # `SHOUTOUT_SURFACE_RESTORED`), and restoring a write surface is the
+     # obvious place to reopen the hole MRB-261 had just been closed on.
+     #
+     # ⚠️ WHY `class-detail-empty` IS NOT ENOUGH. It IS a past year, and it
+     # proves the composer is absent — but its class has NO ROSTER and
+     # `FEED[cid]` is `[]`, so there is no feed row on it and therefore
+     # nothing to carry a Remove control. It cannot tell "the delete
+     # affordance is correctly withheld on a finished year" apart from
+     # "there was no feed to put one on", which are the two answers a
+     # read-only check most needs to distinguish.
+     #
+     # ⚑ THIS IS A PAST YEAR WITH EVERYTHING ELSE INTACT: a live class, a
+     # roster, work set, marks, and TWO shoutouts of which one is the
+     # signed-in teacher's own. On the working year that first row draws a
+     # Remove; here it must not. Both halves of `f.canDelete` — the author
+     # check and `canWrite` — are exercised by one fixture.
+     #
+     # ⚠️ IT IS ALSO THE MOST ORDINARY SHAPE ON THIS LIST, which is worth
+     # saying because most fixtures here are edges. Today is 3 Sep 2026:
+     # every class every teacher in this school taught until 31 August is in
+     # exactly this state, and looking one up is a thing teachers do in the
+     # first fortnight of a year constantly.
+     ("readonly",
+      "a FINISHED academic year, with everything else intact — a live "
+      "class, a roster, work set, marks, and two shoutouts. It is the only "
+      "fixture in the set that is read-only AND populated, so it is the "
+      "only one that can prove MRB-261's rule on the restored shoutout "
+      "surface: the composer ABSENT (not disabled), the feed still "
+      "READABLE, and the Remove control withheld on a row that would carry "
+      "one in the working year.",
+      lambda p: _shape_past_year(p)),),
     "digest.html": (("empty",
         "a class with students and no work set — `PAPERS: []`, `WEEKS: []`, "
         "`state: 'nowork'`. Design's README: \"classes with no work set have "

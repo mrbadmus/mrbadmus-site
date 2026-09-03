@@ -211,90 +211,185 @@ OVERLAYS = {
     "hasToast":    671,
 }
 
-# ── ⛔ OPEN ON MIDE, 2 Sep 2026 (MRB-306 Phase 1c) ───────────────────────
+# ── ⊕ RULED BY MIDE, 3 Sep 2026 · THE SHOUTOUT SURFACE COMES BACK ───────
 #
-# **DESIGN'S v3 DELETED THE CLASS SCREEN'S SHOUTOUT COMPOSER AND ITS FEED.**
-# This constant exists for the same reason `WEEK_BAR_RESTORED` and
-# `IMPORT_NOT_PORTED` do: so the next reader finds a RECORDED DECISION rather
-# than a gap they close by reading the drawing. The difference is that Mide
-# has ruled on the week bar and has NOT ruled on this — so nothing is
-# restored here, and nothing is quietly accepted either.
+# **THIS SUPERSEDES `SHOUTOUT_COMPOSER_DROPPED` AND `SHOUTOUT_MARKUP_PARKED`,
+# which stood here from 2 Sep 2026 to 3 Sep 2026 and recorded the deletion as
+# accepted-and-open.** Both names are written out in full here so that a
+# reader who greps for either lands on this ruling rather than on nothing.
+# They are GONE, not renamed: leaving them in place would have left the file
+# saying two contradictory things about the same markup, which is the exact
+# failure mode this file exists to prevent.
 #
-# ── WHAT WAS THERE, AND WHAT IS THERE NOW ───────────────────────────────
+# ── WHAT THEY SAID, AND WHY IT IS NO LONGER TRUE ────────────────────────
 #
-# v2's class screen carried, below the assignments table:
+# `SHOUTOUT_COMPOSER_DROPPED` recorded that Design's v3 deleted v2's nodes
+# 181-208 — the "Shoutouts" heading, the single-student composer and the
+# whole feed — and listed three ways the port could go, of which it took
+# none, because the choice was Mide's and he had not made it. It named three
+# rulings left without a surface:
 #
-#     181  "Shoutouts" heading
-#     183  "Send to several students"  → the bulk overlay
-#     185  the composer: recipient <select> (187) over the roster, six
-#          template buttons (194), a message <textarea> (196), a character
-#          count and "Send shoutout" (199)
-#     200  the FEED — every shoutout already written about this class, each
-#          card carrying who, when, which template and the body (203-208)
+#     Mide 2026-08-24 — a teacher who can post a shoutout can remove one
+#     MRB-287       — the recipient is an id, not a name
+#     MRB-261       — a past academic year is read-only
 #
-# v3 has NONE of it. In its place is the `glance` block (nodes 222-276): the
-# open homework, who has not submitted, the two weakest questions from the
-# last marked set, students to keep an eye on, students worth praising, and
-# ONE button — "Send a shoutout" (276) — which opens the BULK sheet.
+# `SHOUTOUT_MARKUP_PARKED` held the two `INSERT_AT` subtrees for the Remove
+# control and its confirm sheet, verbatim, against the day the feed came back.
 #
-# ── WHAT SURVIVES, MEASURED RATHER THAN ASSUMED ─────────────────────────
+# **Mide ruled on 3 Sep 2026: RESTORE, as a deliberate divergence from v3.**
+# His 1 Sep free-text ruling — that a teacher may write their own words to a
+# child, alongside the six templates — POSTDATES Design's deletion and
+# supersedes it. A composer that can only be reached through a bulk sheet,
+# with no feed to read back, is not the surface that ruling describes.
 #
-#   · SENDING still works. The bulk overlay is intact (628-654) and v3 even
-#     ADDS a free-text `<textarea>` to it (651) that v2 did not have. Its
-#     rows carry real ids and `MRB_SEND_SHOUTOUTS` takes ids, so nothing
-#     regressed to sending a name. A teacher can still send to one child by
-#     selecting one child.
-#   · READING does not. There is no feed on any of the six pages, so a
-#     teacher cannot see what has already been written about a class — by
-#     them or by a colleague.
-#   · REMOVING does not, and that is a RULING with nothing to hang on:
-#     Mide, 24 Aug 2026 — "a teacher who can post a shoutout can remove one."
-#     `softDeleteClassShoutout` has existed since MRB-46 and is now reachable
-#     from nowhere in the ported estate.
-#   · MRB-261'S READ-ONLY GUARANTEE has a hole: `WRAP["class-detail.html"]`
-#     is empty, because both nodes it wrapped are gone, and the two controls
-#     that open the surviving bulk sheet (215, 276) are NOT wrapped. On a
-#     past academic year a teacher can open the sheet and press Send. See
-#     the note in `WRAP`.
+# ⚠️ SO THIS IS DIVERGENCE-BY-RULING, NOT A DESIGN OMISSION, and the
+# distinction is the whole reason this constant exists. v3 IS DRAWN WITHOUT A
+# COMPOSER AND WITHOUT A FEED. A future port that reads the drawing, finds no
+# composer on the page and removes one will be helping, carefully, and will be
+# destroying a ruling. `WEEK_BAR_RESTORED` is the precedent and this follows
+# it exactly: the drawing is not the authority here, Mide is.
 #
-# ── WHAT IS PARKED, SO NOTHING HAS TO BE RE-DERIVED ─────────────────────
+# ── WHAT IS RESTORED, AND WHERE ─────────────────────────────────────────
 #
-#   `SHOUTOUT_MARKUP_PARKED`   the two INSERT_AT subtrees (the Remove control
-#                              and its confirm sheet), verbatim.
-#   retired in place            SET_ATTR 187/196, BIND_ATTR 190, WRAP 183/185,
-#                              the four `AMENDED_ADDITIONS` rows — each left
-#                              as a comment where it was, with its reasoning.
-#   still lifted               `LIVE_REGIONS["class-detail.html"]` keeps
-#                              `compose-error` and `shoutouts-loadmore`. They
-#                              are id-anchored in the RETIRED hand-written
-#                              page, not on a Design node, so they still
-#                              carry; they are now a safety net with no
-#                              surface above them.
+#   `INSERT_AT[(208, 306)]`   the "Shoutouts" section — heading, the composer
+#                             card and the feed column — placed AFTER the
+#                             assignments table (node 306), which is where v2
+#                             drew it: below the work, at the foot of the
+#                             class.
+#   `INSERT_AT[(208, None)]`  the confirm sheet in front of the removal.
+#                             Re-anchored from the parked `(81, None)`; 81 was
+#                             v2's class-screen root and 208 is v3's. The
+#                             markup itself is unchanged.
 #
-# ── THE THREE WAYS THIS COULD GO, AND WHY NONE WAS TAKEN HERE ───────────
+# ── IT IS DRAWN IN v3'S LANGUAGE, NOT TRANSPLANTED FROM v2 ──────────────
 #
-#   1. Restore the composer and feed as an `INSERT_AT`, the way the week bar
-#      was restored. That is a Mide ruling, and he has not made it.
-#   2. Accept v3 and drop the delete ruling. That withdraws a ruling of his,
-#      which is not this port's to do.
-#   3. Move the feed somewhere Design DID draw. There is no such place.
+# ⚑ v3 HAS ITS OWN SHOUTOUT COMPOSER AND THIS IS BUILT OUT OF IT. The bulk
+# sheet (nodes 646-651) is Design's v3 drawing of exactly this control —
+# a `.16em` mono caption at `margin-top:22px`, a template grid at
+# `repeat(auto-fit,minmax(240px,1fr))` with `gap:8px;margin-top:12px`, her
+# template button at `padding:12px 13px;font:600 16.5px/1.25`, and a
+# free-text `<textarea>` at `min-height:70px` under "Or write a message"
+# that v2 did not have at all. Every one of those strings is read off v3
+# rather than off v2. The section heading is node 283's (`margin:26px 0 12px`,
+# a 33px display `h2`), the cards are the roster and assignments cards'
+# (`border-radius:11px`), and the feed row's avatar is `glance.praise`'s
+# (node 271, `font:600 11.5px/1 var(--st-mono)`) rather than v2's 12px one.
 #
-# So: recorded, parked, and reported. ⚠️ DO NOT close this by reading the
-# drawing — v3 is drawn without a feed, and re-deriving from the drawing is
-# how a ruling gets deleted as drift.
-SHOUTOUT_COMPOSER_DROPPED = dict(
+# What is v2's, deliberately, is the SHAPE: a composer beside a feed in a
+# two-column auto-fit grid, because that is the arrangement Mide is restoring
+# and there is no v3 counterpart to read it off.
+#
+# ⚠️ THE RECIPIENT IS A `<select>`, AND v3 CONTAINS NO OTHER ONE. Checked
+# rather than assumed: v3's only form controls are the bulk textarea (651)
+# and the search input (662). The select is Design's own, from v2's node 187,
+# and three things make it the right restoration rather than the lazy one —
+# Design's SURVIVING handler `pickRecipient: (e) => this.setState({recipient:
+# e.target.value})` reads `e.target.value` and so needs a valued field;
+# `MRB_COMPOSE_RESET` clears `[data-compose-field]` by `.value` for the same
+# reason; and v3's own student picker is a MULTI-select chip row, which is a
+# different control answering a different question. A chip row here would
+# have meant rewriting a handler Design kept.
+#
+# ── THE THREE RULINGS THAT GET THEIR SURFACE BACK ───────────────────────
+#
+#   · **Mide, 24 Aug 2026 — a teacher who can post a shoutout can remove
+#     one.** `softDeleteClassShoutout` has existed since MRB-46 and has been
+#     reachable from nowhere in the ported estate since 2 Sep. The feed row
+#     carries the Remove control again and `MRB_DELETE_SHOUTOUT` is live.
+#   · **MRB-287 — the recipient is an id, not a name.** v2 needed `BIND_ATTR`
+#     to fix Design's `value="{{ s.name }}"`; the restored option is written
+#     with `{"e": "s.id"}` from the start, so there is nothing to correct
+#     after the fact. `insertClassShoutout` needs `recipient_id`, RLS checks
+#     the recipient is a CURRENT member of the class, and two children in one
+#     class can share a name.
+#   · **MRB-261 — a past academic year is read-only.** See below; it is the
+#     one that had to be built differently rather than merely restored.
+#
+# ── ⛔ THE READ-ONLY YEAR, AND WHY `WRAP` COULD NOT DO IT ───────────────
+#
+# `WRAP` is keyed by DESIGN'S node index, and every node in this restoration
+# is inserted markup carrying no `i` at all — that is `INSERT_AT`'s own rule,
+# so that Design's numbering never moves. There is no index to wrap.
+#
+# So the gate is an `<if>` on `canWrite` INSIDE the inserted subtree, at the
+# composer card, and it is the same predicate `WRAP` puts on nodes 215 and
+# 276. Three write surfaces, one key, and they cannot disagree.
+#
+# ⚠️ THE FEED IS NOT INSIDE THAT `if`, AND MUST NOT BE. MRB-261 makes a
+# finished year READ-ONLY, not invisible: what a teacher wrote about a child
+# last year is still theirs to read. The DELETE control inside the feed is
+# separately gated — `f.canDelete` already reads `MRB_DATA('canWrite')` (see
+# the `feed:` entry in LOGIC), so the destructive half goes with the composer
+# and the readable half stays.
+#
+# ⚠️ AND IT IS ASSERTED NOW, NOT MERELY DESCRIBED. `teacher_behaviour`'s own
+# docstring records what the previous shape of this cost: it DESCRIBED the
+# read-only guarantee and asserted nothing, so when v3's deletion took the
+# wrapped nodes away the guarantee quietly stopped holding and every gate
+# stayed green. The `needs_write` flag on the four composer additions is the
+# fix — on a read-only fixture the gate now requires those markers to be
+# ABSENT from the DOM, and says so by name when they are not.
+#
+# ── THE GUARDRAILS, AND WHERE EACH ONE ACTUALLY LIVES ───────────────────
+#
+#   auditable          the feed is on the class page for every teacher of the
+#                      class, and Mide's ruling 2 of 3 Sep widened
+#                      `class_shoutouts` RLS so a school admin reads
+#                      school-wide. Nothing here is private to its author.
+#   one-way            THERE IS NO STUDENT REPLY PATH AND NONE IS ADDED. The
+#                      student surface (`student/class.html`) renders
+#                      shoutouts through `shoutouts.js` READ-ONLY; there is
+#                      no student INSERT policy on `class_shoutouts` and this
+#                      restoration adds no control, no field and no write
+#                      that a student can reach.
+#   context-bound      every row is `(class_id, recipient_id)`. There is no
+#                      general inbox and no way to compose one from here: the
+#                      composer's recipient list IS this class's roster.
+#   attributed         the feed row says who wrote it — `f.by`, added to
+#                      `buildFeed` in `shared/teacher-live.js` off the RPC's
+#                      own author join. Before this it carried `author_id`
+#                      and no name, so a colleague's shoutout was unsigned.
+#   retained           removal is a SOFT delete (`deleted_at`); the body is
+#                      never overwritten and there is no edit path at all, so
+#                      there is no prior body to keep. Stated rather than
+#                      implied: the retention guardrail is satisfied by the
+#                      absence of an editor, not by a column.
+#   plain text         `student-runtime` writes every interpolation with
+#                      `document.createTextNode` (student-runtime.js:138).
+#                      There is no `innerHTML` on this path, no markdown pass
+#                      and no linkifier anywhere in the estate.
+#   links inert        follows from the line above and is checked rather than
+#                      assumed: a body of "see https://example.com" renders
+#                      as those characters inside a `<span class="sc-interp">`
+#                      and produces no `<a>`. ⛔ DO NOT ADD ONE. A teacher's
+#                      shoutout is read by a child; an anchor in it is a
+#                      link an adult put in front of a child that nobody
+#                      reviewed.
+#   length cap         500 characters, which is `class_shoutouts_message_
+#                      length_chk` in the database. `noteCount` renders
+#                      "N / 500" and `sendShoutout` refuses above it. ⚠️ NOT
+#                      2000 — that is `submission_feedback`, a different
+#                      table with a different cap.
+SHOUTOUT_SURFACE_RESTORED = dict(
     screen="teacher/class-detail.html",
-    found_by="MRB-306 Phase 1c, 2026-09-02",
-    what="Design's v3 removed the single-student shoutout composer (v2 nodes "
-         "185-199) and the shoutout feed (v2 nodes 200-208) from the class "
-         "screen. The bulk overlay survives and gained a free-text field.",
-    rulings_left_without_a_surface=(
+    ruled_by="Mide",
+    ruled_on="2026-09-03",
+    against="Design's v3 delivery, which deleted the composer and the feed",
+    supersedes=("SHOUTOUT_COMPOSER_DROPPED", "SHOUTOUT_MARKUP_PARKED"),
+    markup="INSERT_AT[(208, 306)] the section; INSERT_AT[(208, None)] the "
+           "confirm sheet",
+    logic="the `feed:` entry and the `sendShoutout` / `closeModal` entries in "
+          "LOGIC, all of which already applied — Design kept the HANDLERS in "
+          "v3 and deleted only the markup",
+    seam="shared/teacher-live.js — buildFeed, which now carries `by`",
+    read_only="an `<if>` on `canWrite` inside the inserted subtree, because "
+              "WRAP is keyed by Design's node indices and inserted markup "
+              "has none; asserted by teacher_behaviour's `needs_write`",
+    rulings_given_a_surface_again=(
         "Mide 2026-08-24 — a teacher who can post a shoutout can remove one",
-        "MRB-287 — the recipient is an id, not a name (BIND_ATTR 190)",
-        "MRB-261 — a past academic year is read-only (WRAP 183/185)",
+        "MRB-287 — the recipient is an id, not a name",
+        "MRB-261 — a past academic year is read-only",
     ),
-    still_works="sending, via the bulk sheet (nodes 628-654)",
-    open_on="Mide",
 )
 
 
@@ -1051,9 +1146,13 @@ SET_ATTR = {
     # and there is nothing in v3 to re-anchor them onto: Design's v3 DELETED
     # the class screen's single-student shoutout composer and the shoutout
     # feed under it (v2 nodes 181–208) outright, and replaced them with the
-    # `glance` block. See `SHOUTOUT_COMPOSER_DROPPED`. `MRB_COMPOSE_RESET`
-    # still queries `[data-compose-field]` and now matches nothing, which is
-    # a no-op rather than an error; the bulk overlay clears its own fields.
+    # `glance` block.
+    # ⊕ 3 Sep 2026 — AND THEY DO NOT COME BACK HERE. Mide ruled the composer
+    # restored (`SHOUTOUT_SURFACE_RESTORED`), but the restored fields are
+    # INSERTED markup and carry no `i`, so `SET_ATTR` — which is keyed by
+    # Design's node index — cannot reach them. `data-compose-field` is
+    # written directly into the subtree in `INSERT_AT[(208, 306)]` instead,
+    # and `MRB_COMPOSE_RESET` finds both fields again.
 
     # ⚠️ THE FIVE `data-import-slot` ROWS BELOW APPLY TO NO EMITTED PAGE. They
     # are the import screen's nodes and the import screen is not ported (see
@@ -1106,8 +1205,14 @@ BIND_ATTR = {
     # has no such node: Design deleted the whole single-student composer. The
     # id-not-name principle survives where the write still happens — the bulk
     # overlay's `bulkStudents` rows carry `s.id` and `MRB_SEND_SHOUTOUTS`
-    # takes ids — so nothing regressed to sending a name. See
-    # `SHOUTOUT_COMPOSER_DROPPED`.
+    # takes ids — so nothing regressed to sending a name.
+    # ⊕ 3 Sep 2026 — THE SELECT IS BACK AND THIS ROW STILL DOES NOT RETURN.
+    # Mide ruled the composer restored (`SHOUTOUT_SURFACE_RESTORED`) and its
+    # `<option>` is written with `{"e": "s.id"}` FROM THE START, in
+    # `INSERT_AT[(208, 306)]`. There is no Design attribute left to correct,
+    # which is the better place for the ruling to live: v2 needed this table
+    # because Design wrote `value="{{ s.name }}"` and the port had to
+    # overwrite it after the fact.
     # ── "NOT MARKED" DOES NOT FIT IN DESIGN'S PERCENTAGE COLUMN ────────
     #
     # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a screen 5). The question-breakdown
@@ -1606,6 +1711,129 @@ def _wk_chevron(handler, label, path, colour, cursor, marker):
                             "stroke-linejoin": "round"}}]}]}
 
 
+# ── ⊕ MIDE, 3 Sep 2026 · the restored shoutout surface's style strings ───
+#
+# See `SHOUTOUT_SURFACE_RESTORED` at the top of this file for the ruling.
+# ⚑ EVERY STRING HERE IS READ OFF A v3 NODE, and the node is named. That is
+# the difference between "restored in v3's language" and "pasted back from
+# v2": v3 draws this exact control in the bulk sheet (nodes 638-654) and
+# draws this exact card, heading and avatar elsewhere on the same screen.
+# Only the two-column SHAPE is v2's, because v3 deleted the arrangement and
+# there is nothing of hers left to read it off.
+_SO_HEAD = ("display:flex;align-items:baseline;justify-content:space-between;"
+            "gap:12px;margin:26px 0 12px")                       # node 283
+_SO_H2 = ("margin:0;font:600 33px/1 var(--st-display);"
+          "letter-spacing:-0.03em;color:var(--st-ink)")          # node 284
+# ⚠️ ONE DECLARATION DIFFERENT FROM NODE 285, AND IT IS A DEFECT NOT
+# COPIED. Design's caption carries `white-space:nowrap`, and hers is "16
+# STUDENTS · NOT SUBMITTED SHOWN FIRST" — 375px of it — beside a 33px
+# heading in a 310px content box at 390px wide. Measured: it overflows the
+# page by 171px. This one says "2 SHOUTOUTS · NEWEST FIRST" and would do the
+# same thing 80px smaller. It wraps instead, right-aligned so the ragged edge
+# is the one against the heading. Design's node is hers and is left alone;
+# repeating its one bad declaration on new markup is not fidelity.
+_SO_COUNT = ("font:500 13px/1.2 var(--st-mono);letter-spacing:.14em;"
+             "text-transform:uppercase;color:var(--st-caption);"
+             "text-align:right")                                 # node 285
+
+# ⚠️ `390px` AND NOT v3'S 330px. Node 223's glance grid is three tiles and
+# wants three columns; this is two panels and must be two — at 330px the
+# 1460px page would fit four and the composer would sit in a quarter-width
+# column beside three empty ones. 390 is v2's own figure for this
+# arrangement.
+#
+# ⛔ `min(100%, 390px)` AND NOT A BARE `390px`, AND THIS WAS MEASURED RATHER
+# THAN REASONED. A bare `minmax(390px,1fr)` makes the TRACK at least 390px
+# wide however narrow the page is — and node 208's own padding is
+# `20px 40px 40px`, so at a 390px viewport the content box is 310px and every
+# card in this section hung 80px off the right-hand edge of the page.
+# Photographed: fifteen elements over the edge, the composer card, all six
+# template buttons and both feed cards among them.
+#
+# ⚠️ AND DESIGN'S OWN GRIDS DO EXACTLY THIS, which is why it is worth
+# spelling out. Node 223's `minmax(330px,1fr)` overflows the same 310px box
+# by 20px, and the roster table's five fixed tracks force 896px on their own,
+# so this screen already scrolls sideways at 390px. That is Design's and it
+# is reported, not silently patched here. What is NOT acceptable is adding a
+# sixteenth, seventeenth and eighteenth reason for the same scrollbar on
+# markup this port wrote.
+_SO_GRID = ("display:grid;grid-template-columns:repeat(auto-fit,"
+            "minmax(min(100%,390px),1fr));gap:16px;align-items:start")
+_SO_CARD = ("padding:20px;background:var(--st-paper);"
+            "border:1px solid var(--st-rule-soft);border-radius:11px")
+_SO_CAP = ("font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+           "text-transform:uppercase;color:var(--st-caption)")   # node 640
+_SO_CAP2 = "margin-top:22px;" + _SO_CAP                          # node 646
+
+# ⚠️ THE ONE STRING WITH NO v3 COUNTERPART, and it is Design's from v2 (node
+# 187). v3 contains exactly two form controls — the bulk textarea and the
+# search input — and neither is a select. See the ruling for why this stays a
+# select rather than becoming a chip row.
+_SO_SELECT = ("width:100%;margin-top:10px;height:42px;padding:0 12px;"
+              "font:600 17px/1.2 var(--st-ui);color:var(--st-ink);"
+              "background:var(--st-paper);border:1px solid "
+              "var(--st-btn-border);border-radius:10px")
+_SO_TPL_GRID = ("display:grid;grid-template-columns:repeat(auto-fit,"
+                "minmax(240px,1fr));gap:8px;margin-top:12px")     # node 647
+_SO_TPL_BTN = ("text-align:left;white-space:normal;padding:12px 13px;"
+               "font:600 16.5px/1.25 var(--st-ui);border-radius:10px;"
+               "cursor:pointer;color:")                           # node 649
+_SO_NOTE = ("width:100%;margin-top:10px;min-height:70px;padding:12px;"
+            "font:400 17px/1.5 var(--st-ui);color:var(--st-ink);"
+            "background:var(--st-paper);border:1px solid "
+            "var(--st-btn-border);border-radius:10px;resize:vertical")  # 651
+_SO_FOOT = ("display:flex;align-items:center;justify-content:space-between;"
+            "gap:10px;margin-top:14px")
+_SO_COUNTER = ("font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;"
+               "text-transform:uppercase;color:var(--st-ghost)")
+_SO_SEND = ("flex:none;height:38px;padding:0 18px;"
+            "font:600 16.5px/1.2 var(--st-ui);color:var(--st-paper);"
+            "background:var(--st-accent-text);border:none;"
+            "border-radius:9px;cursor:pointer")                   # node 654
+
+_SO_FEED_COL = "display:flex;flex-direction:column;gap:12px"
+_SO_FEED_CARD = ("padding:16px 18px;background:var(--st-paper);"
+                 "border:1px solid var(--st-rule-soft);border-radius:11px")
+_SO_FEED_TOP = "display:flex;align-items:center;gap:10px"
+_SO_AVATAR = ("flex:none;width:26px;height:26px;border-radius:50%;"
+              "display:flex;align-items:center;justify-content:center;"
+              "font:600 11.5px/1 var(--st-mono);color:var(--st-paper);"
+              "background:")                                      # node 271
+_SO_FEED_NAME = "font:600 16px/1.2 var(--st-ui);color:var(--st-ink)"   # 273
+# ⊕ THE ATTRIBUTION LINE. Design drew no counterpart on a feed card at all —
+# v2's card says who it is ABOUT and never who WROTE it — so the treatment is
+# node 274's, the second line of a `glance.praise` row, in `--st-muted`
+# because it is a byline rather than a verdict.
+# ⊕ AND THE TIME IS ON IT, WHICH IS A CHANGE FROM v2 AND WAS FORCED BY
+# LOOKING AT 390px. v2 put the relative time in a third element on the top
+# row, `margin-left:auto`, in uppercase mono — three items competing for one
+# line. Photographed at 390px with the Remove control present: "Hana
+# Pretorius" broke across two lines, "2 DAYS AGO" sat against the second of
+# them, and "by Mr Badmus" fell to a third. Folded into the byline the row is
+# avatar + two lines + control, which is EXACTLY node 270's shape — the
+# `glance.praise` row this treatment already came from — and it holds at
+# every width.
+_SO_FEED_BY = ("margin-top:2px;font:400 13.5px/1.3 var(--st-ui);"
+               "color:var(--st-muted)")                           # node 274
+_SO_FEED_TPL = ("margin-top:11px;font:500 16.5px/1.45 var(--st-ui);"
+                "color:var(--st-accent-text)")
+# ⚠️ `pre-wrap` AND `overflow-wrap:anywhere` ARE BOTH LOAD-BEARING, and
+# neither is decoration.
+#   · `pre-wrap` — this is FREE TEXT a teacher typed into a textarea, and a
+#     textarea takes newlines. Collapsed, a three-line note about a child
+#     runs together into one paragraph that the teacher did not write.
+#   · `overflow-wrap:anywhere` — a pasted URL is one unbroken 80-character
+#     token. Links render as INERT TEXT here (see the ruling), and inert text
+#     still has to wrap: without this it pushes the card wider than its
+#     column and takes the page's horizontal scroll with it. Photographed at
+#     390px with a long URL in the body before this was added.
+_SO_FEED_BODY = ("margin-top:6px;font:400 17px/1.55 var(--st-ui);"
+                 "color:var(--st-body);white-space:pre-wrap;"
+                 "overflow-wrap:anywhere")
+_SO_FEED_EMPTY = ("padding:26px 18px;background:var(--st-paper);"
+                  "border:1px dashed var(--st-rule-soft);border-radius:11px;"
+                  "font:400 17px/1.45 var(--st-ui);color:var(--st-muted)")
+
 INSERT_AT = {
     # ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) · NOTHING TO BREAK DOWN ─
     #
@@ -2000,63 +2228,228 @@ INSERT_AT = {
         "from 1 September and wrong on day one for any school whose "
         "previous year is not 2025-26."),
 
-    # ── ⊕ AMENDED ADDITION · the shoutout a teacher wrote, removable ────
+    # ══ ⊕ RULED BY MIDE, 3 Sep 2026 · THE SHOUTOUT SECTION ══════════════
     #
-    # ⛔ ONLY ON A SHOUTOUT THIS TEACHER WROTE. The RLS UPDATE policy on
-    # `class_shoutouts` is `author_id = auth.uid() AND
-    # auth_user_teaches_class(class_id)`, so a control offered on anybody
-    # else's shoutout would look pressable, be pressed, and be refused by the
-    # database. `f.canDelete` compares the row's `author_id` — which
-    # `buildFeed` in teacher-live.js already carries on every entry — against
-    # `MRB_ME()`, the signed-in teacher's own id, which now travels through
-    # the seam like everything else on this page.
+    # ⛔ THIS IS A DELIBERATE DIVERGENCE FROM DESIGN'S v3, NOT A GAP BEING
+    # FILLED. v3 IS DRAWN WITH NO COMPOSER AND NO FEED. Read
+    # `SHOUTOUT_SURFACE_RESTORED` at the top of this file BEFORE removing any
+    # of this as drift — it is the ruling, and the drawing is not the
+    # authority for this section. The same treatment `WEEK_BAR_RESTORED` got,
+    # for the same reason.
     #
-    # ⚠️ THE WORD IS "REMOVE", NOT "DELETE", and it is not a euphemism. The
-    # write is a soft delete (`deleted_at`), and the read RPC
-    # `class_shoutouts_for_viewer` filters `deleted_at IS NULL` — so the row
-    # leaves the feed for EVERYONE, the author included. What a teacher sees
-    # is a real removal, which is what the word says; "delete" would promise
-    # something about the database that the database does not do.
-    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — TWO ENTRIES RETIRED FROM HERE, and
-    # they are the shoutout-delete pair. Their markup is PARKED, not deleted,
-    # in `SHOUTOUT_MARKUP_PARKED` immediately below; the build does not read
-    # it. See `SHOUTOUT_COMPOSER_DROPPED` for why, and for what is open on
-    # Mide.
+    # ⚠️ PLACED AFTER NODE 306 — the assignments table — so it is the LAST
+    # thing on the class screen. That is where v2 drew it (below the work),
+    # and it is where it belongs against v3's reorganisation: the glance
+    # tiles are what a teacher opens this page to act on, and node 267's
+    # "Worth a shoutout" list ends with node 276's "Send a shoutout". A
+    # teacher who follows that reads down into this section rather than
+    # scrolling back up past the roster.
+    #
+    # ⚠️ THE COMPOSER IS INSIDE AN `if canWrite` AND THE FEED IS NOT. MRB-261
+    # makes a finished academic year READ-ONLY, not invisible: what was
+    # written about a child last year is still readable, and the two controls
+    # that could CHANGE it — this composer and the feed's Remove — are the
+    # ones that go. `canWrite` is the same key `WRAP` puts on nodes 215 and
+    # 276, so the three write surfaces on this screen cannot disagree.
+    # ⛔ THE `if` CANNOT BE A `WRAP` ROW. `WRAP` is keyed by Design's node
+    # index and every node here is inserted markup with no `i` — that is
+    # `INSERT_AT`'s own rule, so Design's numbering never moves — so there is
+    # no index to key on. The conditional has to be in the subtree.
+    #
+    # ⚠️ THE RIGHT-HAND SIDE OF THE HEADING IS A CAPTION, NOT A THIRD BULK
+    # OPENER. v2 put "Send to several students" there (its node 183). v3
+    # already opens the bulk sheet from node 215 in the header AND node 276
+    # at the foot of the watch tile; a third would be the same control three
+    # times on one screen. The count is what the heading has to say instead,
+    # in node 285's treatment.
+    (208, 306): ({
+        "t": "div",
+        "c": [
+            {"t": "div", "a": {"style": _SO_HEAD}, "c": [
+                {"t": "h2", "a": {"style": _SO_H2},
+                 "c": [{"t": "#", "v": "Shoutouts"}]},
+                {"t": "span", "a": {"style": _SO_COUNT},
+                 "c": [{"t": "#", "v": {"parts": [{"e": "feedCount"}]}}]},
+            ]},
+            {"t": "div", "a": {"style": _SO_GRID}, "c": [
 
-}
+                # ── the composer, on a year that can be written to ──────
+                {"t": "if", "e": "canWrite", "c": [
+                    {"t": "div", "a": {"class": "noprint",
+                                       "style": _SO_CARD}, "c": [
+                        {"t": "div", "a": {"style": _SO_CAP},
+                         "c": [{"t": "#", "v": "Send a shoutout to"}]},
+                        # ⚠️ THE OPTION CARRIES `s.id`, NOT `s.name`.
+                        # MRB-287's ruling, written in from the start rather
+                        # than corrected afterwards by `BIND_ATTR` the way
+                        # v2's had to be: `insertClassShoutout` stores
+                        # `recipient_id`, RLS checks the recipient is a
+                        # CURRENT member of this class, and two children in
+                        # one class can share a first name and a surname.
+                        # The visible LABEL is still `s.name`.
+                        # ⚠️ `data-compose-field` IS WHAT `MRB_COMPOSE_RESET`
+                        # QUERIES. Design's fields are uncontrolled and
+                        # `student-runtime` carries field values across a
+                        # redraw on purpose, so clearing the state alone
+                        # leaves the typed text on screen.
+                        {"t": "select",
+                         "a": {"data-mrb-added": "shoutout-recipient",
+                               "data-compose-field": "recipient",
+                               "aria-label": "Send a shoutout to",
+                               "style": _SO_SELECT},
+                         "onch": "pickRecipient",
+                         "c": [
+                             {"t": "option", "a": {"value": ""},
+                              "c": [{"t": "#", "v": "Select a student"}]},
+                             {"t": "for", "e": "roster", "as": "s", "c": [
+                                 {"t": "option",
+                                  "a": {"value": {"parts": [{"e": "s.id"}]}},
+                                  "c": [{"t": "#", "v": {"parts": [
+                                      {"e": "s.name"}]}}]},
+                             ]},
+                         ]},
+                        {"t": "div", "a": {"style": _SO_CAP2},
+                         "c": [{"t": "#", "v": "Pick a template"}]},
+                        {"t": "div", "a": {"style": _SO_TPL_GRID}, "c": [
+                            {"t": "for", "e": "templates", "as": "t", "c": [
+                                {"t": "button",
+                                 "a": {"type": "button",
+                                       "data-mrb-added": "shoutout-template",
+                                       "style": {"parts": [
+                                           _SO_TPL_BTN, {"e": "t.fg"},
+                                           ";background:", {"e": "t.bg"},
+                                           ";border:1px solid ",
+                                           {"e": "t.bc"}]}},
+                                 "on": "t.pick",
+                                 "c": [{"t": "#", "v": {"parts": [
+                                     {"e": "t.label"}]}}]},
+                            ]},
+                        ]},
+                        {"t": "div", "a": {"style": _SO_CAP2},
+                         "c": [{"t": "#", "v": "Or write a message"}]},
+                        # ⚠️ `maxlength` IS THE DATABASE'S NUMBER. 500 is
+                        # `class_shoutouts_message_length_chk`, and it is
+                        # here as well as in `sendShoutout` because a cap a
+                        # teacher discovers by being refused after writing
+                        # is not a cap, it is a rejection. `noteCount`
+                        # counts up to it in Design's own foot.
+                        {"t": "textarea",
+                         "a": {"data-mrb-added": "shoutout-note",
+                               "data-compose-field": "note",
+                               "maxlength": "500",
+                               "aria-label": "Write a message",
+                               "placeholder": "Something specific you want "
+                                              "to recognise",
+                               "style": _SO_NOTE},
+                         "onch": "setNote"},
+                        {"t": "div", "a": {"style": _SO_FOOT}, "c": [
+                            {"t": "span", "a": {"style": _SO_COUNTER},
+                             "c": [{"t": "#", "v": {"parts": [
+                                 {"e": "noteCount"}]}}]},
+                            {"t": "button",
+                             "a": {"type": "button",
+                                   "data-mrb-added": "shoutout-send",
+                                   "style": _SO_SEND},
+                             "hov": "background:var(--st-accent-hover)",
+                             "on": "sendShoutout",
+                             "c": [{"t": "#", "v": "Send shoutout"}]},
+                        ]},
+                    ]},
+                ]},
 
-
-# ── ⊕ PARKED, 2 Sep 2026 (MRB-306 Phase 1c) ─────────────────────────────
-#
-# The two `INSERT_AT` subtrees that drew Mide's shoutout-delete control and
-# its confirm sheet. They came out of `INSERT_AT` because Design's v3 deleted
-# the class screen's shoutout FEED, and a delete control on a feed that is
-# not on the page is markup nobody can reach.
-#
-# ⚠️ KEPT RATHER THAN DELETED, because Mide RULED this control into existence
-# on 24 Aug 2026 ("a teacher who can post a shoutout can remove one") and
-# that ruling has not been withdrawn — only its host has gone. If the feed
-# comes back, these two go straight back into `INSERT_AT` against the feed
-# card's new indices and nothing has to be re-derived. NOTHING IN THE BUILD
-# READS THIS NAME.
-SHOUTOUT_MARKUP_PARKED = {
-    (203, 206): ({
-        "t": "if", "e": "f.canDelete",
-        "c": [{
-            "t": "button",
-            "a": {"type": "button",
-                  "data-mrb-added": "shoutout-delete",
-                  "aria-label": "Remove this shoutout",
-                  "style": _DEL_TEXT_BTN},
-            "hov": "color:var(--st-ink)",
-            "on": "f.del",
-            "c": [{"t": "#", "v": "Remove"}],
-        }]},
-        "the delete control on a shoutout the signed-in teacher wrote. "
-        "Design drew no delete affordance anywhere in the feed; this is "
-        "Mide's instruction of 24 Aug 2026, registered in "
-        "AMENDED_ADDITIONS. The treatment is Design's own low-emphasis "
-        "text button, copied verbatim off the \"Back to <class>\" control."),
+                # ── the feed, on every year ─────────────────────────────
+                {"t": "div", "a": {"style": _SO_FEED_COL}, "c": [
+                    {"t": "for", "e": "feed", "as": "f", "c": [
+                        {"t": "div", "a": {"style": _SO_FEED_CARD}, "c": [
+                            {"t": "div", "a": {"style": _SO_FEED_TOP}, "c": [
+                                {"t": "div",
+                                 "a": {"style": {"parts": [
+                                     _SO_AVATAR, {"e": "f.hue"}]}},
+                                 "c": [{"t": "#", "v": {"parts": [
+                                     {"e": "f.initials"}]}}]},
+                                {"t": "div",
+                                 "a": {"style": "min-width:0;flex:1 1 auto"},
+                                 "c": [
+                                     {"t": "div",
+                                      "a": {"style": _SO_FEED_NAME},
+                                      "c": [{"t": "#", "v": {"parts": [
+                                          {"e": "f.name"}]}}]},
+                                     # ⊕ ATTRIBUTED. See the guardrail table
+                                     # in SHOUTOUT_SURFACE_RESTORED: a feed
+                                     # a teacher shares with colleagues has
+                                     # to say whose sentence each one is.
+                                     {"t": "div",
+                                      "a": {"style": _SO_FEED_BY},
+                                      "c": [{"t": "#", "v": {"parts": [
+                                          {"e": "f.by"}, " \u00b7 ",
+                                          {"e": "f.when"}]}}]},
+                                 ]},
+                                # ⛔ ONLY ON A SHOUTOUT THIS TEACHER WROTE,
+                                # AND ONLY ON A YEAR THAT CAN BE WRITTEN TO.
+                                # `f.canDelete` is both halves at once — see
+                                # the `feed:` entry in LOGIC, which reads
+                                # `MRB_DATA('canWrite')` and compares
+                                # `f.author_id` to `MRB_ME()` — so the
+                                # control is offered exactly where RLS would
+                                # allow it, rather than looking pressable
+                                # and being refused.
+                                # ⚠️ THE WORD IS "REMOVE", NOT "DELETE". The
+                                # write is a soft delete (`deleted_at`) and
+                                # the read RPC filters it out, so the row
+                                # leaves the feed for EVERYONE including its
+                                # author. That is a real removal, which is
+                                # what the word says.
+                                {"t": "if", "e": "f.canDelete", "c": [
+                                    {"t": "button",
+                                     "a": {"type": "button",
+                                           "class": "noprint",
+                                           "data-mrb-added": "shoutout-"
+                                                             "delete",
+                                           "aria-label": "Remove this "
+                                                         "shoutout",
+                                           "style": "flex:none;margin-left:"
+                                                    "auto;" + _DEL_TEXT_BTN},
+                                     "hov": "color:var(--st-ink)",
+                                     "on": "f.del",
+                                     "c": [{"t": "#", "v": "Remove"}]},
+                                ]},
+                            ]},
+                            {"t": "if", "e": "f.template", "c": [
+                                {"t": "div", "a": {"style": _SO_FEED_TPL},
+                                 "c": [{"t": "#", "v": {"parts": [
+                                     {"e": "f.template"}]}}]},
+                            ]},
+                            # ⚠️ THE BODY IS INSIDE AN `if` AND v2'S WAS NOT.
+                            # `class_shoutouts_content_chk` requires a
+                            # template OR a message, so a template-only
+                            # shoutout is a real and common row — and v2
+                            # drew its empty body div regardless, which is
+                            # eleven pixels of margin under a card that has
+                            # nothing more to say. The same `if` is on the
+                            # template line for the mirror-image row.
+                            {"t": "if", "e": "f.body", "c": [
+                                {"t": "div", "a": {"style": _SO_FEED_BODY},
+                                 "c": [{"t": "#", "v": {"parts": [
+                                     {"e": "f.body"}]}}]},
+                            ]},
+                        ]},
+                    ]},
+                    # ⚠️ THE EMPTY STATE'S SENTENCE DEPENDS ON `canWrite`,
+                    # and that is not decoration. "No shoutouts yet" invites
+                    # an action; on a finished year there is no action to
+                    # take and the composer above it is gone. `feedEmptyLine`
+                    # is computed in LOGIC for that reason.
+                    {"t": "if", "e": "feedNone", "c": [
+                        {"t": "div", "a": {"style": _SO_FEED_EMPTY},
+                         "c": [{"t": "#", "v": {"parts": [
+                             {"e": "feedEmptyLine"}]}}]},
+                    ]},
+                ]},
+            ]},
+        ]},
+        "the shoutout composer and the feed, restored by Mide's ruling of "
+        "3 Sep 2026 against Design's v3, which deleted both. See "
+        "SHOUTOUT_SURFACE_RESTORED."),
 
     # ── ⊕ AMENDED ADDITION · the confirm step ──────────────────────────
     #
@@ -2070,13 +2463,19 @@ SHOUTOUT_MARKUP_PARKED = {
     # plainly, and "This cannot be undone" is true: there is no UPDATE path
     # that clears `deleted_at` anywhere in this codebase.
     #
-    # ⚠️ APPENDED TO THE CLASS SCREEN'S ROOT (node 88) AND NOT TO NODE 9,
-    # where Design's own four overlays live. Node 9 is on all six pages;
-    # node 88 is pruned everywhere but class-detail, which is the only page
-    # with a feed. An inert overlay on five pages that can never open it is
-    # markup a teacher can never reach, which is what LIVE_REGIONS just had
-    # one of removed for.
-    (81, None): ({
+    # ⚠️ APPENDED TO THE CLASS SCREEN'S ROOT AND NOT TO NODE 9, where
+    # Design's own four overlays live. Node 9 is on all six pages; the class
+    # screen's root is pruned everywhere but class-detail, which is the only
+    # page with a feed. An inert overlay on five pages that can never open it
+    # is markup a teacher can never reach, which is what LIVE_REGIONS had one
+    # of removed for.
+    #
+    # ⊕ 3 Sep 2026 — RE-ANCHORED FROM `(81, None)` TO `(208, None)`, and
+    # NOTHING ELSE CHANGED. 81 was v2's class-screen root and 208 is v3's;
+    # this markup came out of `INSERT_AT` on 2 Sep when v3's deletion left it
+    # hanging off a feed that was not on the page, was parked verbatim, and
+    # is back verbatim. That parking is why the restoration cost one index.
+    (208, None): ({
         "t": "if", "e": "delOpen",
         "c": [{
             "t": "div", "a": {"style": _DEL_SCRIM}, "on": "cancelDelete",
@@ -2219,8 +2618,15 @@ WRAP = {
     #
     # ⚠️ THIS IS NOT A RESTORATION OF THE DELETED COMPOSER AND MUST NOT BE
     # READ AS ONE. Whether v3's deletion of nodes 183/185 is accepted or
-    # reversed is Mide's open call and is parked in
-    # `SHOUTOUT_COMPOSER_DROPPED`. This row changes nothing about WHICH
+    # reversed was Mide's open call when this was written.
+    # ⊕ 3 Sep 2026 — HE MADE IT: RESTORE. See `SHOUTOUT_SURFACE_RESTORED`.
+    # These two rows are UNAFFECTED and stay exactly as they are — they gate
+    # the two openers of Design's own BULK sheet, which v3 kept and which
+    # were never part of the deletion. The restored composer carries its own
+    # `canWrite` gate inside the inserted subtree, because `WRAP` is keyed by
+    # Design's node indices and inserted markup has none. Three write
+    # surfaces on this screen, one predicate.
+    # This row changes nothing about WHICH
     # controls exist — it applies MRB-261's EXISTING read-only rule to the
     # two openers that survived, exactly as that rule already applies to
     # every other write path on the teacher surface. A past year offers no
@@ -2345,19 +2751,114 @@ AMENDED_ADDITIONS = (
              "year and cannot open it. MRB-261 is explicit that the history "
              "stays reachable; this is what makes the strip a control "
              "instead of a caption."),
-    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — THE FOUR SHOUTOUT-DELETE ROWS WERE
-    # HERE AND ARE RETIRED. They registered `shoutout-delete` on the feed card
-    # and the three buttons of its confirm sheet. Design's v3 deleted the
-    # class screen's shoutout FEED and its single-student composer outright,
-    # so all four hung off markup that no longer exists.
+    # ══ ⊕ RULED BY MIDE, 3 Sep 2026 · THE SHOUTOUT SURFACE, REGISTERED ══
     #
-    # ⚠️ MIDE'S RULING OF 24 AUG 2026 IS NOT WITHDRAWN — "a teacher who can
-    # post a shoutout can remove one" still stands, and there is now nowhere
-    # on the ported pages to post one FROM except the bulk sheet, and nowhere
-    # at all to see what was posted. That is a product regression, not a
-    # numbering change, and it is written up in `SHOUTOUT_COMPOSER_DROPPED`
-    # for Mide rather than papered over here. The markup is parked in
-    # `SHOUTOUT_MARKUP_PARKED` so restoring it costs nothing.
+    # ⊕ 3 Sep 2026 — THESE ROWS REPLACE A RETIRAL. From 2 Sep to 3 Sep this
+    # spot held a comment recording that the four `shoutout-delete` rows had
+    # been retired because Design's v3 deleted the feed they hung off, and
+    # that Mide's 24 Aug ruling was "a product regression, not a numbering
+    # change". He has now ruled: the surface comes back. The four delete rows
+    # are below, unchanged, and four composer rows are new. See
+    # `SHOUTOUT_SURFACE_RESTORED`.
+    #
+    # ── ⊕ `needs_write`, AND WHY IT IS NOT `needs_data` ─────────────────
+    #
+    # ⚑ A NEW FLAG, BECAUSE THE EXISTING ONE WOULD HAVE BEEN A LIE THAT
+    # PASSED. `needs_data` means "there is legitimately nothing to press on
+    # an empty fixture", and `teacher_behaviour` SKIPS such a row there. The
+    # composer is not absent for want of data — it is absent because MRB-261
+    # makes a finished academic year READ-ONLY, and it is absent on a
+    # populated past-year class exactly as much as on an empty one.
+    #
+    # ⚠️ AND THE DIFFERENCE IS THAT `needs_write` ASSERTS. A skip proves
+    # nothing; `teacher_behaviour` requires a `needs_write` marker to be
+    # PRESENT and pressable wherever `canWrite` is true, and to be ABSENT
+    # from the DOM wherever it is false — by name, on both passes. That is
+    # the guarantee this gate previously only DESCRIBED, and its own
+    # docstring records what describing it cost: v3 deleted the two wrapped
+    # nodes, the read-only rule quietly stopped holding on this screen, and
+    # every gate stayed green until somebody opened the page and read it.
+    #
+    # ⚠️ `shoutout-delete` CARRIES BOTH FLAGS, and needs both. It hangs off a
+    # feed row (so there is nothing to press on an empty feed) AND it is a
+    # write (so it must be gone on a finished year). `f.canDelete` is
+    # literally the conjunction — see the `feed:` entry in LOGIC.
+    #
+    # ⛔ AND THEY CARRY NO `opener_tpl` EITHER. That field names one of
+    # DESIGN'S nodes by template index, and `teacher_behaviour` presses it
+    # with `[data-dc-tpl="<index>"]`. Nothing of Design's reveals this sheet —
+    # the thing that opens it is `shoutout-delete`, which is an ADDITION, and
+    # the probe's reveal loop already presses earlier additions in register
+    # order until the wanted control appears. Naming a marker in a field that
+    # takes an index would query a selector that matches nothing, fall
+    # through to the loop that was going to work anyway, and read like
+    # coverage.
+    #
+    # ⛔ THE CONFIRM SHEET'S THREE BUTTONS DELIBERATELY DO NOT CARRY
+    # `needs_write`. They live inside `if delOpen`, which is false at rest on
+    # every fixture in the set, so an absence assertion on them would pass
+    # everywhere and prove nothing — a green check that measures nothing is
+    # worse than no check, because it reads like coverage. They keep
+    # `needs_data` and `opener_tpl`, which is the mechanism that actually
+    # reveals and presses them.
+    dict(marker="shoutout-recipient", pages=("class-detail.html",),
+         node=306, needs_write=True,
+         label="Send a shoutout to",
+         why="the composer's recipient select. Design's v3 deleted the "
+             "single-student composer outright and Mide ruled it back on "
+             "3 Sep 2026; the OPTION carries the roster row's real id "
+             "because `insertClassShoutout` stores `recipient_id` and two "
+             "children in one class can share a name."),
+    dict(marker="shoutout-template", pages=("class-detail.html",),
+         node=306, needs_write=True,
+         label="<one of the six templates>",
+         why="the six template quick-picks, read from the locked enum in "
+             "shared/shoutouts.js that mirrors the DB CHECK "
+             "`class_shoutouts_template_key_chk`. Never retyped here: a "
+             "seventh key or a stale one would gate green and fail on "
+             "insert."),
+    dict(marker="shoutout-note", pages=("class-detail.html",),
+         node=306, needs_write=True,
+         label="Something specific you want to recognise",
+         why="the free-text field. Mide's ruling of 1 Sep 2026 is that a "
+             "teacher may write their own words alongside the templates, and "
+             "that ruling POSTDATES Design's deletion of this control, which "
+             "is what makes the restoration a divergence-by-ruling. Capped "
+             "at 500 characters, which is the database's own "
+             "`class_shoutouts_message_length_chk`."),
+    dict(marker="shoutout-send", pages=("class-detail.html",),
+         node=306, needs_write=True,
+         label="Send shoutout",
+         why="the send. `sendShoutout` reaches `MRB_SEND_SHOUTOUTS` and a "
+             "real INSERT; Design's own handler was a toast in front of no "
+             "write at all."),
+    dict(marker="shoutout-delete", pages=("class-detail.html",),
+         node=306, needs_data=True, needs_write=True,
+         label="Remove",
+         why="the delete control on a shoutout the signed-in teacher wrote. "
+             "Design drew no delete affordance anywhere in the feed; this is "
+             "Mide's instruction of 24 Aug 2026. The treatment is Design's "
+             "own low-emphasis text button, copied verbatim off the \"Back "
+             "to <class>\" control."),
+    dict(marker="shoutout-delete-close", pages=("class-detail.html",),
+         node=208, needs_data=True,
+         label="Keep the shoutout",
+         why="the confirm sheet's close X. The sheet is Design's bulk-sheet "
+             "chrome at her own measurements; the confirm itself is the "
+             "control, because a one-press delete eight pixels from a "
+             "child's name is the shape of an accident."),
+    dict(marker="shoutout-delete-cancel", pages=("class-detail.html",),
+         node=208, needs_data=True,
+         label="Keep it",
+         why="the confirm sheet's cancel. It clears `delId` and writes "
+             "nothing."),
+    dict(marker="shoutout-delete-confirm", pages=("class-detail.html",),
+         node=208, needs_data=True,
+         label="Remove shoutout",
+         why="the confirm sheet's primary. It reaches "
+             "`softDeleteClassShoutout`, which sets `deleted_at` and forces "
+             "RETURNING so an RLS refusal cannot come back looking like a "
+             "success."),
 )
 
 
@@ -4127,7 +4628,25 @@ LOGIC = (
      "        canDelete: !!(MRB_DATA('canWrite') && f.id && f.author_id &&\n"
      "                      f.author_id === MRB_ME()),\n"
      "        del: () => this.setState({ delId: f.id, delName: f.name }),\n"
-     "      })),",
+     "      })),\n"
+     # ⊕ 3 Sep 2026 — THREE KEYS THE RESTORED FEED NEEDS AND DESIGN HAS
+     # NO COUNTERPART FOR, added here rather than as a fourth LOGIC entry
+     # because they are derived from the SAME list and a second entry
+     # would read `FEED` twice.
+     #
+     # ⚠️ `feedEmptyLine` BRANCHES ON `canWrite` AND THAT IS THE POINT.
+     # "No shoutouts yet" is an invitation, and on a finished academic
+     # year there is nothing to accept it with — the composer above it is
+     # gone under MRB-261. Read through `MRB_DATA` for the same reason the
+     # `canDelete` line above is: `canWrite` is a KEY of the object being
+     # built here, not a local in scope.
+     "      feedCount: ((MRB_DATA('FEED')[k && k.id] || []).length === 1\n"
+     "        ? '1 shoutout' : (MRB_DATA('FEED')[k && k.id] || []).length +\n"
+     "          ' shoutouts') + ' \u00b7 newest first',\n"
+     "      feedNone: !(MRB_DATA('FEED')[k && k.id] || []).length,\n"
+     "      feedEmptyLine: MRB_DATA('canWrite')\n"
+     "        ? 'No shoutouts yet \u2014 the first one you send appears here.'\n"
+     "        : 'No shoutouts were written for this class.',",
      "⚑ TWO COMPLETE FABRICATED SHOUTOUTS, and they are NOT in the template "
      "so no literal sweep finds them: a real child's name off the roster, a "
      "relative time, a template label and a written body — \"Went from 38% to "
@@ -4491,6 +5010,47 @@ componentDidUpdate() {
      "the classes grid's empty state. Design drew none because Design's "
      "sample always has both key stages in it."),
 
+    # ══ ⊕ RULED BY MIDE, 3 Sep 2026 · A TEMPLATE CAN BE UNPICKED ═══════
+    #
+    # ⛔ WITHOUT THIS, "FREE TEXT ALONGSIDE THE TEMPLATES" CANNOT BE SENT.
+    # Design's `pick` only ever SETS: `pick: () => this.setState({ boTpl:
+    # t.id })`. There is no value of `boTpl` a teacher can reach that is
+    # empty, and the port's own `state` ruling opens the composer with the
+    # FIRST template already selected — which was right when the only
+    # consumer was the bulk sheet, where a template is what you are sending.
+    #
+    # ⚠️ SO EVERY FREE-TEXT SHOUTOUT WOULD HAVE CARRIED A TEMPLATE NOBODY
+    # CHOSE. Photographed before this ruling on `class-detail-fixture.html`:
+    # the composer opens with "Top of the class this week" tinted, and a
+    # teacher who ignores the templates and writes their own sentence about a
+    # child sends `template_key='top_of_class'` with it. The child then reads
+    # 🌟 Top of the class this week above words that say something else — and
+    # `class_shoutouts_content_chk` is satisfied, so nothing anywhere
+    # complains. Mide's ruling of 1 Sep 2026 is that a teacher may write
+    # their OWN words; a template they cannot take off is that ruling not
+    # being delivered.
+    #
+    # ⚠️ A TOGGLE, NOT A CLEARED DEFAULT. The default stays — `boTpl` is
+    # shared with Design's bulk sheet, where opening with nothing selected
+    # would be the "no template selected and no way to tell that from a bug"
+    # state the `state` ruling records — and pressing the SELECTED template
+    # unpicks it. Design's own tint is already the read-out: selected is
+    # `--st-chip-tint` on `--st-accent-text`, unselected is paper, so the
+    # toggle needs no new affordance and no new key.
+    #
+    # ⚠️ AND `sendBulk` GAINS THE GUARD THAT GOES WITH IT, below. Once a
+    # template can be empty, `sendBulk` — which sends `message: null` — can
+    # reach `insertClassShoutout` with neither, and
+    # `class_shoutouts_content_chk` refuses the row. That would surface as
+    # "the message is too long, or the template is not one this school uses",
+    # which is true of neither. It is refused in front of the write instead.
+    ("        pick: () => this.setState({ boTpl: t.id })",
+     "        pick: () => this.setState({ boTpl: s.boTpl === t.id ? '' "
+     ": t.id })",
+     "the template quick-picks. Design's only ever SET, so with the port's "
+     "first-template default there was no way to send a shoutout WITHOUT a "
+     "template — and Mide's free-text ruling of 1 Sep 2026 requires one."),
+
     # ══ ⊕ 24 Aug 2026 · THE SHOUTOUT COMPOSER, WIRED ════════════════════
     #
     # ⛔ A COMPOSER THAT LOOKS LIKE IT SENDS AND DOES NOT IS WORSE THAN NO
@@ -4570,6 +5130,18 @@ componentDidUpdate() {
      "        const ids = (s.boSel || []).slice();\n"
      "        if (!ids.length) {\n"
      "          return this.ping('Pick at least one student'); }\n"
+     # ⊕ 3 Sep 2026 — THE GUARD THAT COMES WITH THE UNPICKABLE TEMPLATE.
+     # This sheet sends `message: null`, so with no template there is
+     # nothing to send and `class_shoutouts_content_chk` refuses every row.
+     # ⚠️ THE SENTENCE DOES NOT MENTION WRITING A MESSAGE, unlike the
+     # composer's, because this sheet's own textarea IS NOT SENT — that is
+     # a defect of Design's v3 that predates this ruling and is written up
+     # in the report rather than fixed here, since `s.note` is shared with
+     # the composer and picking it up would send text the sheet may not be
+     # showing. Telling a teacher to write a message in a field that
+     # discards it would be the worse of the two.
+     "        if (!s.boTpl) {\n"
+     "          return this.ping('Pick a template'); }\n"
      "        this.ping('Sending to ' + ids.length + '…');\n"
      "        const cid = k && k.id;\n"
      "        MRB_SEND_SHOUTOUTS(cid, ids, s.boTpl, null).then((r) => {\n"

@@ -1537,7 +1537,7 @@ class Component extends DCLogic {
         fg: s.boTpl === t.id ? 'var(--st-accent-text)' : 'var(--st-ink)',
         bg: s.boTpl === t.id ? 'var(--st-chip-tint)' : 'var(--st-paper)',
         bc: s.boTpl === t.id ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
-        pick: () => this.setState({ boTpl: t.id })
+        pick: () => this.setState({ boTpl: s.boTpl === t.id ? '' : t.id })
       })),
       bulkStudents: kRoster.map(r => {
         const on = s.boSel.indexOf(r.id) > -1;
@@ -1556,6 +1556,8 @@ class Component extends DCLogic {
         const ids = (s.boSel || []).slice();
         if (!ids.length) {
           return this.ping('Pick at least one student'); }
+        if (!s.boTpl) {
+          return this.ping('Pick a template'); }
         this.ping('Sending to ' + ids.length + '…');
         const cid = k && k.id;
         MRB_SEND_SHOUTOUTS(cid, ids, s.boTpl, null).then((r) => {
@@ -1594,6 +1596,13 @@ class Component extends DCLogic {
                       f.author_id === MRB_ME()),
         del: () => this.setState({ delId: f.id, delName: f.name }),
       })),
+      feedCount: ((MRB_DATA('FEED')[k && k.id] || []).length === 1
+        ? '1 shoutout' : (MRB_DATA('FEED')[k && k.id] || []).length +
+          ' shoutouts') + ' · newest first',
+      feedNone: !(MRB_DATA('FEED')[k && k.id] || []).length,
+      feedEmptyLine: MRB_DATA('canWrite')
+        ? 'No shoutouts yet — the first one you send appears here.'
+        : 'No shoutouts were written for this class.',
       noteCount: (s.note || '').length + ' / 500',
 
       searchPlaceholder: MRB_DATA('searchPlaceholder'),
@@ -1696,7 +1705,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"06f24811","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"f05eeaa9","teacher-guard.js":"2efdc820","teacher-live.js":"e4548a4c"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"06f24811","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"f05eeaa9","teacher-guard.js":"2efdc820","teacher-live.js":"0fd90b9a"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script src="teacher-fixture-digest-nolive.js"></script>
 <script>window.__MRB_MOUNT__();</script>

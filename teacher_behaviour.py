@@ -75,6 +75,27 @@ again; see `WRAP["class-detail.html"]` for the ruling.
 the read-only guarantee, it describes it, and no other gate on the page
 noticed either. The absence was found by opening the page and reading it.
 
+⊕ 3 Sep 2026 (MRB-306 Phase 2b/3) — IT ASSERTS IT NOW, and the paragraph
+above is kept because it is the reason. Mide ruled the shoutout composer and
+feed back onto the class screen against Design's v3, which is precisely the
+kind of change that reopens a read-only hole in a new place: the wrapped
+nodes MRB-261 relied on had already gone once, silently. So the register
+gained a flag, `needs_write`, and this gate does two things with it that a
+skip never could —
+
+    on a fixture whose `canWrite` is TRUE  · every such marker must be on
+                                             the page and must move when
+                                             pressed;
+    on a fixture whose `canWrite` is FALSE · every such marker must be
+                                             ABSENT FROM THE DOM at rest,
+                                             and is named if it is not.
+
+And the set gained the fixture that makes the second half mean something:
+`class-detail-readonly`, a finished year with a live class, a roster, work
+set and two shoutouts. The existing past-year fixture on this screen has no
+roster and an empty feed, so it could never have told a withheld Remove
+control apart from a feed with no rows in it.
+
 ── THE RELOAD ───────────────────────────────────────────────────────────
 
 Every page is driven, RELOADED, and driven again. This is not padding: a
@@ -130,6 +151,17 @@ EMPTY_SHAPE = {
     ("class-detail", "gridmissing"):
         "no grid fetched at all — which is every class-detail render in "
         "production",
+    # ⊕ THE SEVENTEENTH, 3 Sep 2026 (MRB-306 Phase 2b/3). The only fixture in
+    # the set that is READ-ONLY AND POPULATED. `class-detail-empty` is also a
+    # past year, but its class has no roster and an empty feed, so it cannot
+    # tell "the Remove control is correctly withheld on a finished year"
+    # apart from "there was no feed row to put one on". This one has two
+    # shoutouts, one of them the signed-in teacher's own.
+    ("class-detail", "readonly"):
+        "a FINISHED academic year with everything else intact — a live "
+        "class, a roster, work set and two shoutouts. MRB-261's rule on the "
+        "restored shoutout surface: composer absent, feed readable, Remove "
+        "withheld",
     ("student-detail", "empty"): "a student with no submissions",
     # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — THE THREE THE CHARTS
     # SCREEN HAD NO ANSWER FOR. `insights-empty` withholds a GRID, which
@@ -211,9 +243,18 @@ def fixtures():
     cannot be added without this gate picking it up.
 
     ⚠️ EVERY VARIANT COUNTS AS `is_empty`. That flag gates the `needs_data`
-    additions — the four shoutout-delete controls that hang off a feed row —
-    and every empty shaper in the set leaves `FEED[cid]` empty, so there is
-    correctly nothing to delete on any of them.
+    additions — the shoutout-delete control and the three buttons of its
+    confirm sheet, all of which hang off a feed row.
+
+    ⊕ 3 Sep 2026 — AND THE SENTENCE THAT USED TO FOLLOW IT IS NO LONGER
+    TRUE. It read "every empty shaper in the set leaves `FEED[cid]` empty, so
+    there is correctly nothing to delete on any of them". The `readonly`
+    variant added with Mide's restored shoutout surface is POPULATED — it is
+    a finished academic year and nothing else about it is empty — so it has
+    two feed rows and `is_empty` skips the delete additions on it anyway.
+    That is still the right outcome and now for a DIFFERENT reason: the
+    control must be absent there because the year is read-only, which
+    `needs_write` asserts by name rather than skipping.
     """
     import build_teacher_port as BTP
     by_out = {sp["out"]: sp for sp in BTP.PAGES}
@@ -364,6 +405,44 @@ _DRIVE_JS = r"""
     return out;
   }
 
+  /* ⊕ 3 Sep 2026 — ONE PRESS, TWO LOOPS. A `<select>` does nothing when it
+     is `.click()`ed and a `<textarea>` does nothing when it is clicked
+     either, so the ordinal sweep has always driven them by VALUE + event
+     instead. The additions loop below was written when every registered
+     addition was a button, and it clicked unconditionally — so the first
+     addition that was a field would have been reported DEAD while working
+     perfectly. Mide's restored shoutout composer registers two of them (the
+     recipient select and the free-text note), which is what surfaced this.
+     ⚠️ IT IS THE SAME FUNCTION IN BOTH PLACES ON PURPOSE. Two copies is how
+     the additions loop came to disagree with the sweep in the first place. */
+  function pressEl(el) {
+    var tg = el.tagName.toLowerCase();
+    if (tg === 'input' || tg === 'textarea') {
+      el.focus();
+      el.value = 'zz';
+      el.dispatchEvent(new Event('input', {bubbles: true}));
+    } else if (tg === 'select') {
+      el.focus();
+      if (el.options && el.options.length > 1) { el.selectedIndex = 1; }
+      el.dispatchEvent(new Event('change', {bubbles: true}));
+    } else {
+      el.click();
+    }
+  }
+
+  /* ⊕ RULED BY MIDE, 3 Sep 2026 — THE READ-ONLY CENSUS, AND IT IS TAKEN
+     BEFORE ANYTHING IS PRESSED. `needs_write` additions are the write
+     controls MRB-261 requires to be ABSENT — not disabled — on a finished
+     academic year, and "absent" is a claim about the page AT REST. Taken
+     after the sweep it would be a claim about the page after four hundred
+     presses, which is a different and much weaker thing. */
+  var WRITEONLY = __WRITEONLY__, writeSeen = [];
+  for (var q = 0; q < WRITEONLY.length; q++) {
+    if (host.querySelector('[data-mrb-added="' + WRITEONLY[q] + '"]')) {
+      writeSeen.push(WRITEONLY[q]);
+    }
+  }
+
   var dead = [], blanked = [], pressed = 0, errors = [], seen = {};
   var present = [];
   var found = clickable().length;
@@ -397,18 +476,7 @@ _DRIVE_JS = r"""
     var before = snap();
     var navsBefore = navs.length;
     try {
-      var tg = c.tagName.toLowerCase();
-      if (tg === 'input' || tg === 'textarea') {
-        c.focus();
-        c.value = 'zz';
-        c.dispatchEvent(new Event('input', {bubbles: true}));
-      } else if (tg === 'select') {
-        c.focus();
-        if (c.options && c.options.length > 1) { c.selectedIndex = 1; }
-        c.dispatchEvent(new Event('change', {bubbles: true}));
-      } else {
-        c.click();
-      }
+      pressEl(c);
       pressed++;
     } catch (e) {
       errors.push(idx + ' ' + label + ': ' + e.message);
@@ -491,7 +559,7 @@ _DRIVE_JS = r"""
     for (var u = 0; u < t && !el; u++) {
       var opener = host.querySelector('[data-mrb-added="' + ADDED[u] + '"]');
       if (!opener) { continue; }
-      opener.click();
+      pressEl(opener);
       await frame();
       el = host.querySelector(sel);
     }
@@ -500,7 +568,7 @@ _DRIVE_JS = r"""
                  .slice(0, 40).replace(/\s+/g, ' ').trim();
     var aBefore = snap(), aNavs = navs.length;
     try {
-      el.click();
+      pressEl(el);
       added.push(want + '|' + aLabel);
     } catch (e) {
       errors.push(want + ' ' + aLabel + ': ' + e.message);
@@ -535,6 +603,7 @@ _DRIVE_JS = r"""
     added: added,
     addedDead: addedDead,
     addedGone: addedGone,
+    writeSeen: writeSeen,
     addedNav: addedNav,
     errors: errors
   });
@@ -866,6 +935,23 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
     added_here = [a["marker"] for a in R.AMENDED_ADDITIONS
                   if page + ".html" in a["pages"]
                   and not (is_empty and a.get("needs_data"))]
+    # ⊕ RULED BY MIDE, 3 Sep 2026 — THE WRITE CONTROLS, AND THE YEAR THEY
+    # MAY NOT APPEAR ON. `needs_write` names an addition that exists only
+    # where `canWrite` is true: MRB-261 makes a finished academic year
+    # read-only, and the retired hand-written page's own `applyWriteControls`
+    # set the standard — the controls are ABSENT, not present-and-disabled,
+    # because "setting homework against a class that no longer runs is not a
+    # mistake worth leaving available".
+    #
+    # ⚑ THIS IS AN ASSERTION AND NOT A SKIP, and the difference is the whole
+    # reason the flag is not `needs_data`. `needs_data` says "there is
+    # nothing here to press and that is fine"; this says "if this is here at
+    # all, the read-only guarantee is broken, and name it". The docstring at
+    # the top of this file records what merely DESCRIBING that guarantee
+    # cost: v3 deleted the two nodes `WRAP` held it on, the rule silently
+    # stopped applying to this screen, and every gate stayed green.
+    write_only = [a["marker"] for a in R.AMENDED_ADDITIONS
+                  if page + ".html" in a["pages"] and a.get("needs_write")]
     added_why = {a["marker"]: a for a in R.AMENDED_ADDITIONS}
     # ⊕ MRB-287 E1 — additions revealed by one of DESIGN'S nodes rather than
     # by an earlier addition. See the probe's note beside OPENERS.
@@ -899,10 +985,20 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
                                       if is_empty else ""))
                 pg.screenshot(out, full_page=True)
 
+            # ⚠️ ASKED OF THE PAGE, NOT OF THE FIXTURE FILE. `canWrite` is
+            # what the runtime actually rendered against, and a shaper that
+            # set it and a page that ignored it would agree on disk and
+            # disagree on screen — which is the class of defect this whole
+            # file exists for.
+            can_write = json.loads(pg.eval(
+                "JSON.stringify(!!(window.__MRB_DATA__ || {}).canWrite)"))
+            here_now = [m for m in added_here
+                        if can_write or m not in write_only]
             probe = (_DRIVE_JS
                      .replace("__EXEMPT__",
                               json.dumps(sorted(EXEMPT_LABELS.values())))
-                     .replace("__ADDED__", json.dumps(added_here))
+                     .replace("__ADDED__", json.dumps(here_now))
+                     .replace("__WRITEONLY__", json.dumps(write_only))
                      .replace("__OPENERS__", json.dumps(openers)))
             got = json.loads(pg.eval(probe))
             if got.get("error"):
@@ -1002,6 +1098,49 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
                     "than a missing one."
                     % (what, d["i"], d["tag"], d["label"]))
 
+            # 5b-ii. ⊕ RULED BY MIDE, 3 Sep 2026 — MRB-261, ASSERTED.
+            #
+            # ⛔ ON A FINISHED ACADEMIC YEAR THE WRITE CONTROLS ARE NOT ON
+            # THE PAGE. Not dimmed, not refused on press — absent. Every
+            # marker registered `needs_write` is looked for by name in the
+            # DOM at rest, and finding one here is the hole MRB-261 closed
+            # reopening in a new place.
+            seen_w = got.get("writeSeen") or []
+            if not can_write and seen_w:
+                problems.append(
+                    "%s: this fixture is a READ-ONLY academic year "
+                    "(`canWrite` false) and the write control(s) %s are on "
+                    "the page. MRB-261: a finished year offers no write "
+                    "controls — absent, not disabled. A composer that is "
+                    "present and refused by RLS on press is a control that "
+                    "lies." % (what, ", ".join(repr(m) for m in seen_w)))
+            # ⚠️ AND THE POSITIVE HALF IS TAKEN OVER `here_now`, NOT OVER
+            # `write_only`. Written the other way it demanded
+            # `shoutout-delete` on `class-detail-nosubs` — a WORKING-year
+            # fixture whose feed is empty — and the check was right that the
+            # control was missing and wrong that it should have been there:
+            # that marker carries `needs_data` as well, and there is no
+            # shoutout on that fixture to remove. Caught by this gate on the
+            # first run of the change that added it, which is the correct
+            # place for it to have been caught.
+            #
+            # ⚑ IT IS NOT REDUNDANT WITH `addedGone`, which is the obvious
+            # objection. That check reveals a control by pressing earlier
+            # additions until it appears; this one looks at the page AT REST.
+            # A write control that only exists behind a sheet would satisfy
+            # `addedGone` and fail here, and it should: "absent on a finished
+            # year" is a claim about what a teacher sees when they arrive.
+            if can_write:
+                missing_w = [m for m in write_only
+                             if m in here_now and m not in seen_w]
+                if missing_w:
+                    problems.append(
+                        "%s: this fixture CAN be written to and the write "
+                        "control(s) %s are not on the page. A `needs_write` "
+                        "addition is absent only on a read-only year; here "
+                        "it is simply gone."
+                        % (what, ", ".join(repr(m) for m in missing_w)))
+
             # 5c. ⊕ MRB-287 E1 — AND IT WENT WHERE IT SAID IT WOULD.
             #
             # ⚑ "MOVED" IS NOT "WORKED" FOR A CONTROL THAT NAVIGATES. The
@@ -1019,7 +1158,7 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
             # computed nothing navigates to the working year and looks
             # exactly like a working control.
             navs_seen = got.get("addedNav") or {}
-            for m in added_here:
+            for m in here_now:
                 want_nav = (added_why.get(m) or {}).get("expect_nav")
                 if not want_nav:
                     continue

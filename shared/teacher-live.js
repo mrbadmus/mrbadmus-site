@@ -1784,10 +1784,26 @@
       .forEach(function (t) { tpl[t.key] = t.label; });
     return (out.shoutouts || []).map(function (s) {
       var r = s.recipient || {};
+      var a = s.author || {};
       var name = fullName(r.first_name, r.last_name);
+      /* ⊕ RULED BY MIDE, 3 Sep 2026 — ATTRIBUTED. The restored feed says
+         whose sentence each shoutout is, and until now this map carried
+         `author_id` and no name at all: a colleague's shoutout was unsigned,
+         and on a co-taught class that is most of the feed. The RPC
+         `class_shoutouts_for_viewer` already resolves the author's profile
+         across the RLS gap — that is the whole reason it exists (teachers
+         cannot read other teachers' profiles through a FK join, which
+         surfaced as em-dash names) — so this is a field being READ, not a
+         second query.
+         ⚠️ THE FALLBACK IS "A teacher", NOT AN EM DASH. A row whose author
+         profile could not be resolved is still a shoutout somebody wrote;
+         "—" in a byline slot reads as a bug, and this line sits under a
+         child's name where a bug is what a teacher will assume. */
+      var by = fullName(a.first_name, a.last_name);
       return {
         id: s.id,
         name: name || "—",
+        by: "by " + (by || "a teacher"),
         initials: initialsOf(r.first_name, r.last_name),
         hue: hueFor(name),
         when: relativeTime(s.created_at, now),
