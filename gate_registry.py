@@ -562,6 +562,28 @@ GATES = [
              "desk and costs exactly one undo, that view mode renders no "
              "handles AT ALL rather than disabled ones, and that the "
              "unseated count is drawn even when it is inconvenient."),
+
+    dict(name="consumer_flag_off",
+         cmd=["python3", "night3_selfreview.py",
+              "--site", "mrbadmus_site", "--api", "http://localhost:3120"],
+         speed="slow",
+         needs="mrbadmus_site/parents/index.html",
+         why="MRB-317/321. The consumer estate ships to production with "
+             "CONSUMER_SIGNUP_ENABLED off, so 21 pages sit in "
+             "mrbadmus_site/ that NOBODY MAY SEE YET, and the only thing "
+             "standing between a paying-customer front door and 135 "
+             "students is one boot() branch on each of them. This drives "
+             "the BUILT tree with the Network domain recording every "
+             "request and asserts all 21 render 'Not found' having asked "
+             "for nothing — not the API, not Supabase, not a CDN. A static "
+             "grep cannot do it: the page ships the real markup and the "
+             "flag decides at runtime, so the bytes look identical either "
+             "way. It also carries the RAINFORD REGRESSION (teacher "
+             "landing, today, admin with the consumer card absent, the "
+             "student class page, the leaderboard) and the brand greps, "
+             "which is why it is here rather than scoped to one lane. "
+             "⚠️ Needs a backend on :3120; it signs in as the hz_* TEST "
+             "fixtures and skips, loudly, without their passwords."),
 ]
 
 
@@ -735,6 +757,50 @@ EXCLUDED = {
         "verifies mrbadmus.com's KS4 and root pages AFTER a push, including "
         "the cache-bust stamps (MRB-290). It cannot run before the thing it "
         "checks exists.",
+
+    # ── MRB-308…321 · the B2C nights' two generators ────────────────────
+    #
+    # Both arrived with the consumer work and neither was registered, which
+    # is the gap this registry exists to make loud. They are EXCLUDED for
+    # the reason every other generator here is: writing is the job, and the
+    # gate on their output is somewhere else.
+    "ks4_seed_sow.py":
+        "a GENERATOR of one tracked seed file "
+        "(supabase/seeds/20260902001000_ks4_default_sequence.sql), which it "
+        "rewrites whole from generate_site_v5.PATHWAY_TOPIC_MAP and the "
+        "all_subtopics_* modules. Exactly the shape of ks3_seed_sow.py "
+        "above. What its output must satisfy is asserted by the database "
+        "itself — scheme_of_work_entries_academic_week_check, which MRB-310 "
+        "had to widen to 52 for KS4 precisely because the seed ran into it.",
+    "export_ks3_extended.py":
+        "an EXPORTER: the KS3 ladder's `explain` and `produce` rungs as "
+        "JSON on stdout, feeding the exam_questions seed. It asserts "
+        "nothing about the estate and writes no tracked file. Its sibling "
+        "export_ks3_questions.py is a gate because it MIRRORS three pools "
+        "and can drift from them; this one has no mirror to drift from.",
+
+    # ── MRB-317/321 · the two consumer drives that assert and are STILL
+    # excluded, on exactly the P1 reasoning above. The third one,
+    # night3_selfreview.py, IS registered (`consumer_flag_off`), because it
+    # is estate-wide and it is what stands between a customer front door and
+    # 135 students. These two are not.
+    "night3_flagon_smoke.py":
+        "the flag-ON pass. It asserts plenty, and it is excluded because it "
+        "CREATES A REAL FAMILY on the shared TEST project through the API "
+        "— a parent, two children, a subscription — and tears them down "
+        "again. As a push gate it would have every lane writing fixtures "
+        "into one database at once, which is the collision Night 3 already "
+        "hit twice (two lanes marking each other's answers through the "
+        "platform-wide mb-queue). A gate that corrupts other lanes' runs to "
+        "prove a page renders is worse than no gate.",
+    "night4_laneC_drive.py":
+        "Lane C's public-surface drive — the nine /parents/ pages at 390 "
+        "and 1280, the reset-password flow against a real Supabase "
+        "recovery link, the org dashboard, and the price/brand cold greps. "
+        "Lane-scoped and needs Chrome plus a backend; its flag-off "
+        "assertions are a SUBSET of consumer_flag_off's, which is "
+        "registered. Same trade as p1_drive.py above: real value, run "
+        "deliberately, not a cost every push from every lane pays.",
 }
 
 # The KS4 subtopic corpora are DATA, not scripts: one module each of AQA spec
