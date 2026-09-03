@@ -393,6 +393,115 @@ SHOUTOUT_SURFACE_RESTORED = dict(
 )
 
 
+# ── ⊕ RULED BY MIDE, 3 Sep 2026 · WRITTEN FEEDBACK IS A NEW SURFACE ──────
+#
+# ⛔ DESIGN DREW NO PER-SUBMISSION FEEDBACK UI, ANYWHERE, IN ANY VERSION.
+# This is not a control she drew and removed — the way the week bar and the
+# shoutout composer were — and there is therefore no drawing to be faithful
+# to and none to check this against. `WEEK_BAR_RESTORED` and
+# `SHOUTOUT_SURFACE_RESTORED` are RESTORATIONS; this is an ADDITION, and it
+# is written down here for exactly the reason those two are: the next port
+# reads Design's delivery, finds no feedback surface, and — without this —
+# removes it as drift.
+#
+# ⚑ MIDE'S BRIEF: feedback is "authored from student detail or marking,
+# attached to that submission", and the student reads it under their
+# automated marking with the teacher's display name.
+#
+# ── THE GUARDRAILS, AND WHERE EACH ONE IS ACTUALLY ENFORCED ─────────────
+#
+# These are Mide's defaults. He may loosen them; this build may not. Two of
+# the six are not enforceable in a browser at all, which is why they are in
+# the database and not here:
+#
+#   auditable ...... `submission_feedback_select` admits school admins and
+#                    (ruling 3, 3 Sep) `slt`, school-wide. DATABASE.
+#   ONE-WAY ........ there is no student INSERT policy. DATABASE — and
+#                    nothing in this port offers a reply either, not a
+#                    disabled one and not one behind a flag. See below.
+#   context-bound .. `submission_id` NOT NULL and no second binding, so
+#                    there is no inbox this can be reached from. DATABASE.
+#   attributed ..... `teacher_id`. The TEACHER side renders "You" or
+#                    "Another teacher"; the STUDENT side renders the
+#                    teacher's display name where it can prove one. See the
+#                    limitation below — it is real and it is reported.
+#   retained ....... `CHECK ((edited_at IS NULL) = (prior_body IS NULL))`.
+#                    DATABASE, and it is the good kind: the client cannot
+#                    forget to keep the prior body, because a write that
+#                    forgot is refused.
+#   plain text ..... every render is a text node. `student-runtime` writes
+#                    interpolations with `createTextNode`; there is no
+#                    `innerHTML` on this path, no markdown and no linkifier,
+#                    so a URL a teacher types renders as characters. PROVEN
+#                    BY INJECTION on this surface rather than carried over
+#                    from the shoutout unit.
+#   length cap ..... 2000 (`submission_feedback_body_length_chk`), on the
+#                    textarea's `maxlength`, in the counter and in front of
+#                    the write. NOT 500 — that is `class_shoutouts`.
+#
+# ── ⛔ ONE-WAY MEANS ONE-WAY, AND IT IS A PROPERTY RATHER THAN A CHOICE ──
+#
+# There is no reply control on the student side. Not a disabled one, not a
+# hidden one, and not a field that a flag could turn on later: the student
+# read is a READ — `shared/student-live.js` fetches the row and draws text —
+# and there is no student write path in `student-data.js` for one to be
+# wired to. A control a child could see and could not use would be a promise
+# the RLS refuses, and it would be a promise made to a child.
+#
+# ── ⚠️ THE ONE THING THIS SURFACE CANNOT DO, STATED ─────────────────────
+#
+# A TEACHER cannot be shown a COLLEAGUE's NAME on this screen, and a STUDENT
+# cannot be shown the author's name on a CO-TAUGHT class. Both have the same
+# cause, measured rather than assumed: neither role has a SELECT policy on
+# another teacher's `profiles` row, so a `teacher:profiles(display_name)`
+# join comes back NULL with no error at all.
+#
+# The estate already has the answer and has used it twice — a SECURITY
+# DEFINER RPC (`class_teachers_for_viewer`, `student_reminders_for_viewer`)
+# — and a third of the same shape would close this. It is not written here
+# because it is a change to a LIVE database and this unit was scoped to
+# build to a store that already exists. So:
+#
+#   teacher side ... "You" / "Another teacher". Both true, neither invented.
+#   student side ... the class's teacher's display name, taken from
+#                    `class_teachers_for_viewer`, WHERE THE CLASS HAS EXACTLY
+#                    ONE TEACHER — which is unambiguous. Where it is
+#                    co-taught, "Your teacher", the same restraint
+#                    `teacherName` already takes on the class page. A name
+#                    that might be the wrong teacher's is worse than no name.
+#
+# ⚠️ DO NOT "FIX" THIS BY PICKING THE FIRST TEACHER IN THE LIST. The RPC
+# returns names WITHOUT ids, ordered by subject then name; there is no
+# mapping from `teacher_id` to any of them, and guessing would attribute one
+# teacher's words to another in front of a child.
+FEEDBACK_SURFACE_ADDED = dict(
+    screens=("teacher/student-detail.html", "teacher/assignment.html",
+             "student/assignment.html"),
+    ruled_by="Mide",
+    ruled_on="2026-09-03",
+    against="Design's v3 delivery, which draws no feedback surface at all",
+    store="submission_feedback — migration 20260902221216, widened for `slt` "
+          "by 20260903200007. LIVE ON PRODUCTION.",
+    markup="INSERT_AT[(366, 367)] and [(420, 422)] the row controls; "
+           "INSERT_AT[(330, None)] and [(370, None)] the sheet, from one "
+           "builder",
+    logic="the three feedback entries at the end of LOGIC, plus the six "
+          "`fb*` keys in the state initialiser",
+    seam="shared/teacher-live.js — buildFeedback and the `subId` arrays on "
+         "the matrix and the grid; shared/teacher-data.js — four functions",
+    student_read="shared/student-live.js — drawFeedback, after the mount, "
+                 "under the automated marking. A READ and nothing else: no "
+                 "save path, no offline queue, no submission write.",
+    one_way="no reply control exists on the student side, disabled or "
+            "otherwise, and there is no student INSERT policy to wire one to",
+    limitation="a colleague's NAME is not reachable from a teacher session, "
+               "and the author's name is not reachable from a student "
+               "session on a CO-TAUGHT class. Both want a "
+               "`submission_feedback_for_viewer` SECURITY DEFINER RPC, which "
+               "is a live-database change and is in the handover.",
+)
+
+
 # ── ⊕ RULED, MRB-287 · THE IMPORT WIZARD IS NOT PORTED ───────────────────
 #
 # ⛔ `teacher/import.html` IS HAND-WRITTEN SOURCE AND STAYS HAND-WRITTEN.
@@ -660,8 +769,19 @@ SET_ON = {
 # stayed green. `goToday` itself is NOT left dangling: it is still carried by
 # node 210 ("Back to today", class screen) and given a real destination in
 # `NAV["goToday"]`.
+# ⊕ 3 Sep 2026 (MRB-306 Phase 2b) — THE VALUE NAMES ITS SLOT.
+#
+# `(slot, expected handler, new handler, why)`. `slot` is the key on the
+# compiled node — `"on"` for Design's `onClick`, `"onch"` for her `onChange`.
+#
+# ⚠️ IT IS NOT A DEFAULT, ON PURPOSE. A table that assumed `"on"` would have
+# read node 651's missing `on` as "no handler at all" and refused a correct
+# ruling — or, if it had written into `on` instead, would have wired a second
+# handler onto the node and left `onch` pointing exactly where it did before:
+# a green build, a control that still discards what a teacher typed, and
+# nothing anywhere saying so.
 RETARGET_ON = {
-    11: ("goToday", "goHome",
+    11: ("on", "goToday", "goHome",
          "the brand mark in the sticky top bar, on all six pages. In v2 "
          "Design shared `goClasses` between it and the class screen's Back; "
          "in v3 she hangs `goToday` on it and shares that with the class "
@@ -669,6 +789,45 @@ RETARGET_ON = {
          "\"MrBadmusAI\" is the site's name, not the dashboard's, and on "
          "classes.html it was a press that reloaded the page a teacher was "
          "already on."),
+
+    # ══ ⊕ 3 Sep 2026 (MRB-306 Phase 2b) · THE BULK SHEET'S OWN NOTE ══════
+    #
+    # ⛔ A TEACHER TYPED A MESSAGE, PRESSED SEND, AND THE WORDS VANISHED.
+    # Design's v3 draws a free-text textarea in the bulk sheet (node 651)
+    # under her own caption "Or write a message", wires it to `setNote`, and
+    # the port's `sendBulk` sends `message: null`. Nothing errored; nothing
+    # in the UI said the message had been dropped; the six children got a
+    # template and no words. That is directly against Mide's free-text ruling
+    # of 1 Sep 2026, and there is no reading in which it is intended.
+    #
+    # ⚠️ THE FIX IS A SEPARATE STATE KEY, AND THE PREVIOUS UNIT WAS RIGHT TO
+    # STOP RATHER THAN REACH FOR `s.note`. `note` is the SINGLE-STUDENT
+    # composer's field: it is what `noteCount` counts, what `setNote` writes
+    # and what `sendShoutout` sends. Picking it up in `sendBulk` would have
+    # sent, to a class-sized list of children, text typed into a composer the
+    # sheet is not showing — a sheet that is a modal ON TOP of that composer,
+    # so the teacher cannot even see what they are about to broadcast.
+    #
+    # ⚠️ EVERY READER OF `s.note` WAS CHECKED BEFORE THIS KEY WAS ADDED, not
+    # after — that omission is how the composer's own template bug happened.
+    # There are exactly three in the shipped logic, and this ruling touches
+    # none of them:
+    #
+    #     noteCount     `(s.note || '').length + ' / 500'`   composer counter
+    #     setNote       writes `note`                        composer field
+    #     sendShoutout  reads `s.note`                       composer send
+    #
+    # plus `MRB_COMPOSE_RESET`, which clears by the DOM attribute
+    # `data-compose-field` and NOT by state name — node 651 carried no such
+    # attribute, so it was never in that sweep either. It gets one now
+    # (`SET_ATTR`), under its own name `bulk-note`, and `MRB_COMPOSE_RESET`
+    # takes a list so that a successful bulk send clears the sheet's field
+    # WITHOUT wiping a half-written single shoutout underneath it.
+    651: ("onch", "setNote", "setBulkNote",
+          "the bulk sheet's free-text message. It was writing into the "
+          "single-student composer's state key, which `sendBulk` never "
+          "read — so the words were discarded in silence. Now its own key "
+          "(`boNote`), its own reset name, and actually sent."),
 }
 
 
@@ -1167,6 +1326,25 @@ SET_ATTR = {
     502: {"data-import-slot": "matchedCount"},
     505: {"data-import-slot": "attentionCount"},
     515: {"data-import-slot": "confirm"},
+
+    # ── ⊕ 3 Sep 2026 (MRB-306 Phase 2b) · THE BULK SHEET'S TEXTAREA ──────
+    #
+    # It is now SENT (see `RETARGET_ON[651]`), so it needs the two things
+    # every other sending field on this screen has and it did not:
+    #
+    #   · `data-compose-field`, so `MRB_COMPOSE_RESET(['bulk-note'])` can
+    #     empty it after a successful send. Design's fields are uncontrolled
+    #     and `student-runtime` carries their values across a redraw on
+    #     purpose, so clearing `s.boNote` alone would leave the sent words
+    #     sitting in the box looking unsent. Its OWN name, not `note`: the
+    #     single-student composer is underneath this modal and its half-typed
+    #     text must survive an action about other children.
+    #   · `maxlength`, which is the DATABASE's number
+    #     (`class_shoutouts_message_length_chk`, 500). A cap a teacher
+    #     discovers by being refused after writing is not a cap, it is a
+    #     rejection — the same sentence the composer's own textarea carries,
+    #     and Design gave this one no cap at all.
+    651: {"data-compose-field": "bulk-note", "maxlength": "500"},
 }
 
 
@@ -1833,6 +2011,398 @@ _SO_FEED_BODY = ("margin-top:6px;font:400 17px/1.55 var(--st-ui);"
 _SO_FEED_EMPTY = ("padding:26px 18px;background:var(--st-paper);"
                   "border:1px dashed var(--st-rule-soft);border-radius:11px;"
                   "font:400 17px/1.45 var(--st-ui);color:var(--st-muted)")
+
+# ══ ⊕ RULED BY MIDE, 3 Sep 2026 · WRITTEN FEEDBACK — THE STYLE STRINGS ══
+#
+# See `FEEDBACK_SURFACE_ADDED` at the top of this file for the ruling.
+#
+# ⚑ DESIGN DREW NO PER-SUBMISSION FEEDBACK UI AT ALL. Her only `<textarea>`
+# in the whole v3 delivery is the bulk sheet's, and there is no comment
+# affordance on the student screen, the marking grid or anywhere else. So —
+# unlike `WEEK_BAR_RESTORED` and `SHOUTOUT_SURFACE_RESTORED`, both of which
+# put back something Design had drawn and removed — there is no drawing to be
+# faithful to here.
+#
+# ⚠️ THAT IS NOT A LICENCE TO INVENT A REGISTER. Every string below is read
+# off a v3 node and the node is named, exactly as the shoutout strings are:
+# the sheet is Design's bulk-sheet chrome (629-654, already extracted as the
+# `_DEL_*` family), the caption is her mono caption (640), the textarea is her
+# textarea (651) with a taller minimum because 2000 characters is a paragraph
+# and 500 is a sentence, and the row control is her own low-emphasis text
+# button (the "Back to <class>" control, already extracted as `_DEL_TEXT_BTN`).
+# Nothing here is a new idiom; this port has ONE dialog and this is it.
+
+# The row control, on the student screen's history table and on the marking
+# grid. `_DEL_TEXT_BTN`'s register, with the colour bound so a row that
+# already HAS a comment reads in the ink Design uses for a live value and an
+# empty one in the muted register she uses for an action.
+# ⚠️ `display:block`, WHICH IT DID NOT HAVE AND WHICH THE SCREENSHOT
+# SETTLED. Design's status chip (367) is `display:inline-flex`, so an inline
+# button after it sat ON THE SAME LINE — "LATE Edit feedback", two different
+# things reading as one phrase — and `margin-top` on an inline element does
+# nothing at all, so the declaration that was supposed to separate them was
+# inert. Block, and the margin then works.
+_FB_ROW_BTN = ("display:block;margin-top:7px;font:600 14.5px/1.2 var(--st-ui);"
+               "background:none;border:none;padding:0;cursor:pointer;"
+               "text-align:left;white-space:nowrap;color:")
+
+# ⛔ THE MARKING GRID GETS A GLYPH AND NOT A WORD, AND THAT IS A MEASUREMENT
+# RATHER THAN A PREFERENCE. Design's student cell (420) sits in a HARD 225px
+# track — `225px repeat(8,1fr) 92px`, declared on the header (413) and on the
+# row (419) — holding a 30px avatar, a 10px gap and a name that already
+# carries `text-overflow:ellipsis`. Photographed with a text button in it,
+# every name with a comment beside it was cut to "Clara…" and "Kale…" while
+# the rows WITHOUT one still read in full: the control was eating the one
+# thing a teacher reads the column for, and only on the rows that mattered
+# most.
+#
+# The alternatives were all worse. The mark cell (426) is 92px and would have
+# to grow, which means rewriting a track list Design declares twice. Wrapping
+# inside 420 needs `flex-wrap` on one of Design's own style strings, and
+# `SET_ATTR` refuses to overwrite one — correctly.
+#
+# So it is a 22px speech mark, `flex:none`, with the full sentence in
+# `aria-label` and in `title`. It costs the name 32px instead of ~110px, it
+# is TINTED where a comment exists and ghosted where it does not — which
+# makes "who has been written to" scannable down the column in a way a
+# repeated word never is — and it is the same builder, the same handler and
+# the same sheet as the student screen's. One implementation, two
+# affordances, because the two cells are different sizes.
+_FB_CELL_BTN = ("flex:none;margin-left:auto;width:22px;height:22px;"
+                "display:flex;align-items:center;justify-content:center;"
+                "background:none;border:none;padding:0;cursor:pointer;"
+                "color:")
+
+# The sheet's own body. `_DEL_BODY` is the pad; these are what sits in it.
+_FB_CAP = _SO_CAP                                                # node 640
+_FB_CAP2 = "margin-top:20px;" + _SO_CAP
+
+_FB_ON = ("font:400 15.5px/1.5 var(--st-ui);color:var(--st-body)")
+
+# ⚠️ TALLER THAN THE COMPOSER'S, AND THE NUMBER IS THE DATABASE'S REASON.
+# `submission_feedback_body_length_chk` allows 2000 characters where
+# `class_shoutouts_message_length_chk` allows 500 — feedback on a piece of
+# work is a paragraph, a shoutout is a sentence — and a 70px box for 2000
+# characters is a control that hides most of what has been written in it.
+# Every other declaration is node 651's, verbatim.
+_FB_NOTE = ("width:100%;margin-top:10px;min-height:150px;padding:12px;"
+            "font:400 17px/1.5 var(--st-ui);color:var(--st-ink);"
+            "background:var(--st-paper);border:1px solid var(--st-btn-border);"
+            "border-radius:10px;resize:vertical")
+
+# A colleague's comment, which this teacher may read and may not change (RLS:
+# `submission_feedback_update` is `teacher_id = auth.uid()`). Design's own
+# note ground, and `white-space:pre-wrap` + `overflow-wrap:anywhere` for the
+# same two reasons the shoutout feed's body carries them: a teacher's
+# paragraph has newlines in it, and an INERT url has to wrap rather than push
+# the sheet sideways.
+_FB_READ = ("margin-top:10px;padding:14px;background:var(--st-note-bg);"
+            "border:1px solid var(--st-rule-soft);border-radius:10px;"
+            "font:400 17px/1.55 var(--st-ui);color:var(--st-body);"
+            "white-space:pre-wrap;overflow-wrap:anywhere")
+
+_FB_BY = ("margin-top:10px;font:400 13px/1.4 var(--st-mono);"
+          "letter-spacing:.12em;text-transform:uppercase;"
+          "color:var(--st-caption)")
+
+# The validation line. `--st-accent-text` is Design's own colour for anything
+# that needs attention on this surface (the overdue chips, the reteach note).
+_FB_ERR = ("margin-top:10px;font:400 15.5px/1.45 var(--st-ui);"
+           "color:var(--st-accent-text)")
+
+_FB_COUNTER = _SO_COUNTER
+
+# ⛔ THE FOOTER WRAPS, AND A 390px SCREENSHOT IS WHAT SAID SO. `_DEL_FOOT` is
+# Design's bulk-sheet footer and it is `justify-content:space-between` with no
+# wrap — correct for the shoutout confirm, whose note is the four words "This
+# cannot be undone". This sheet's note is a whole sentence, and a flex item's
+# default `min-width:auto` will not shrink below its content: at 390 the note
+# took its min-content width, the Remove/Save pair was pushed off the panel's
+# right edge, and "Save changes" was reachable only by scrolling the panel
+# SIDEWAYS.
+#
+# ⚠️ AND NO GATE COULD SEE IT. The overflow probe counts elements whose right
+# edge passes the DOCUMENT's width; this one passed the PANEL's, and the panel
+# is `overflow:auto`, so nothing overflowed the page and every measurement
+# came back clean. It was found by looking at the picture.
+#
+# `_DEL_FOOT` itself is NOT changed — it is shared with the shoutout confirm,
+# which does not have the problem and has already been photographed without
+# it. This sheet gets its own, wrapping, with the actions pushed right on
+# whichever line they end up on.
+_FB_FOOT = _DEL_FOOT + ";flex-wrap:wrap"
+_FB_ACTIONS = "display:flex;align-items:center;gap:12px;margin-left:auto"
+
+
+def _fb_open_button(row, style, glyph=False):
+    """The control that opens the feedback sheet, for one row of one table.
+
+    ⚑ ONE BUILDER, TWO SURFACES, WHICH IS THE POINT. Mide's brief is that
+    feedback is authored "from student detail or marking" — both, and one
+    implementation. The row scope differs (`h` on the student screen's
+    submission history, `r` on the marking screen's class-by-question grid)
+    and nothing else does: the same label, the same handler shape, the same
+    sheet behind it, and the same `data-mrb-added` marker so
+    `teacher_behaviour` presses it on both pages.
+
+    ⚠️ IT IS INSIDE AN `<if>` ON `<row>.fbCan`. A row with no submission has
+    nothing to attach a comment to — `submission_feedback.submission_id` is
+    NOT NULL and there is no other binding — so the control is ABSENT rather
+    than present-and-refusing. That is the same reading MRB-261's read-only
+    rule takes, and the retired page's `applyWriteControls` states the
+    standard: absent, not disabled.
+
+    ⚠️ AND IT IS NOT A WRITE CONTROL, which is why it carries no `canWrite`
+    gate and no `needs_write` in the register. On a finished academic year a
+    teacher may still READ what was written about a child — MRB-261 makes a
+    past year read-only, not invisible — and the two controls inside the sheet
+    that would CHANGE anything are the ones that go.
+    """
+    return {
+        "t": "if", "e": row + ".fbCan",
+        "c": [{
+            "t": "button",
+            "a": {"type": "button",
+                  "data-mrb-added": "feedback-open",
+                  "aria-label": {"parts": [{"e": row + ".fbAria"}]},
+                  "title": {"parts": [{"e": row + ".fbAria"}]},
+                  "style": {"parts": [style, {"e": row + ".fbFg"}]}},
+            "hov": "color:var(--st-ink)",
+            # ⚠️ STOPS THE PRESS FROM REACHING THE ROW. Both rows Design drew
+            # are themselves clickable — the history row navigates to the
+            # marking screen, the grid row to the student screen — so without
+            # `stopPropagation` inside the closure, opening a comment would
+            # simultaneously navigate away from the page the sheet just opened
+            # on. The closure does it (see the `fbOpen` entries in LOGIC)
+            # rather than Design's `stop` handler, because `stop` alone would
+            # swallow the press and open nothing.
+            "on": row + ".openFb",
+            # ⚠️ THE GLYPH CARRIES THE SAME `aria-label` THE WORDS WOULD
+            # HAVE. `title` as well, because a mouse user gets no accessible
+            # name read to them and "what is this button" must not need a
+            # screen reader to answer.
+            "c": ([{"t": "svg",
+                    "a": {"width": "16", "height": "16",
+                          "viewBox": "0 0 16 16", "fill": "none",
+                          "aria-hidden": "true"},
+                    "c": [{"t": "path",
+                           "a": {"d": "M2.6 3.2h10.8v7.2H7.4L4.4 13v-2.6H2.6z",
+                                 "stroke": "currentColor",
+                                 "stroke-width": "1.4",
+                                 "stroke-linejoin": "round",
+                                 "fill": {"parts": [{"e": row + ".fbFill"}]}}}]}]
+                  if glyph else
+                  [{"t": "#", "v": {"parts": [{"e": row + ".fbLabel"}]}}]),
+        }]}
+
+
+def _fb_sheet():
+    """The one feedback sheet, emitted on the student screen and on marking.
+
+    ⚠️ EMITTED TWICE, WRITTEN ONCE. `INSERT_AT` is keyed by the parent node
+    and the two screens have different roots (330 and 370), so there are two
+    entries — but they are two calls to this function, not two subtrees, and a
+    change to the sheet cannot land on one screen and miss the other.
+
+    ⚠️ NOT APPENDED TO NODE 9. Design's own four overlays live there and node
+    9 is on all six pages; a feedback sheet hung off it would be markup on
+    four pages that can never open it. The shoutout confirm was moved off node
+    9 for exactly this and the reasoning is recorded at `INSERT_AT[(208,
+    None)]`.
+
+    ── ⛔ THERE IS NO REPLY PATH, AND THERE IS NOT A DISABLED ONE ─────────
+    #
+    Mide's guardrail is that v1 is ONE-WAY. `submission_feedback` has no
+    student INSERT policy at all, so a reply control — even greyed out, even
+    behind a flag — would be a promise to a child that the database will
+    refuse. The footer says so in words instead, to the TEACHER, because the
+    person who needs to know the child cannot answer is the person writing.
+
+    ── the three states this sheet has ──────────────────────────────────
+      · nothing written yet ......... caption, empty textarea, Save
+      · this teacher's own comment .. byline, the text in the textarea to
+                                      edit, Save, and Remove behind a
+                                      second press
+      · a colleague's comment ....... byline, the text as READ-ONLY prose,
+                                      and neither Save nor Remove — RLS's
+                                      update policy is `teacher_id =
+                                      auth.uid()`, so offering either would
+                                      be offering a refusal
+    A past year removes the writing half of all three (`canWrite`), and
+    leaves the reading half, for the reason above.
+    """
+    return {
+        "t": "if", "e": "fbOpen",
+        "c": [{
+            "t": "div", "a": {"style": _DEL_SCRIM}, "on": "closeFeedback",
+            "c": [{
+                "t": "div", "a": {"style": _DEL_PANEL}, "on": "stop",
+                "c": [
+                    {"t": "div", "a": {"style": _DEL_HEAD}, "c": [
+                        {"t": "div", "c": [
+                            {"t": "div", "a": {"style": _DEL_KICKER}, "c": [
+                                {"t": "#", "v": {"parts": [
+                                    {"e": "fbKicker"}]}}]},
+                            {"t": "div", "a": {"style": _DEL_TITLE}, "c": [
+                                {"t": "#", "v": {"parts": [
+                                    {"e": "fbTitle"}]}}]},
+                        ]},
+                        {"t": "button",
+                         "a": {"type": "button",
+                               "data-mrb-added": "feedback-close",
+                               "aria-label": "Close without saving",
+                               "style": _DEL_CLOSE},
+                         "on": "closeFeedback",
+                         "c": [{"t": "svg",
+                                "a": {"width": "12", "height": "12",
+                                      "viewBox": "0 0 12 12", "fill": "none",
+                                      "aria-hidden": "true"},
+                                "c": [{"t": "path",
+                                       "a": {"d": "M2.5 2.5l7 7M9.5 2.5l-7 7",
+                                             "stroke": "currentColor",
+                                             "stroke-width": "1.6",
+                                             "stroke-linecap": "round"}}]}]},
+                    ]},
+                    {"t": "div", "a": {"style": _DEL_BODY}, "c": [
+                        # Which piece of work this is about. The binding is
+                        # the whole of "context-bound": there is no inbox
+                        # here, and the sheet says which submission it is
+                        # attached to rather than leaving a teacher to
+                        # remember which row they pressed.
+                        {"t": "div", "a": {"style": _FB_ON},
+                         "c": [{"t": "#", "v": {"parts": [{"e": "fbOn"}]}}]},
+
+                        # ATTRIBUTED. "You", or "Another teacher" — see
+                        # `buildFeedback` in teacher-live.js for why a
+                        # colleague's NAME is not reachable from a teacher
+                        # session and why a blank byline was not an option.
+                        {"t": "if", "e": "fbByLine", "c": [
+                            {"t": "div", "a": {"style": _FB_BY},
+                             "c": [{"t": "#", "v": {"parts": [
+                                 {"e": "fbByLine"}]}}]},
+                        ]},
+
+                        # ⛔ THE WORDS, WHEREVER THEY CANNOT BE EDITED — and
+                        # the condition is NOT "somebody else wrote it",
+                        # which is what it said until a read-only fixture was
+                        # driven. A teacher opening their OWN comment on a
+                        # FINISHED academic year got the byline, the footer
+                        # and no text at all: `fbTheirs` was false (it is
+                        # theirs) and `fbCanEdit` was false (`canWrite` is),
+                        # so neither branch drew and the sheet said who wrote
+                        # it and not what they wrote.
+                        #
+                        # MRB-261 is READ-ONLY, NOT INVISIBLE. The predicate
+                        # is therefore "there is a comment and there is no
+                        # editor for it", which covers both ways that
+                        # happens: a colleague's (RLS's update policy is
+                        # `teacher_id = auth.uid()`) and a finished year.
+                        #
+                        # It renders through a TEXT NODE — `student-runtime`
+                        # writes every interpolation with `createTextNode` —
+                        # so a URL a teacher typed is inert here as well.
+                        {"t": "if", "e": "fbReadBody", "c": [
+                            {"t": "div", "a": {"style": _FB_READ},
+                             "c": [{"t": "#", "v": {"parts": [
+                                 {"e": "fbBodyText"}]}}]},
+                        ]},
+
+                        {"t": "if", "e": "fbCanEdit", "c": [
+                            {"t": "div", "c": [
+                                {"t": "div", "a": {"style": _FB_CAP2},
+                                 "c": [{"t": "#", "v": {"parts": [
+                                     {"e": "fbFieldCap"}]}}]},
+                                # ⛔ THE EXISTING TEXT IS PUT IN BY
+                                # `MRB_FB_FILL`, NOT BY AN INTERPOLATION, AND
+                                # THIS WAS FOUND BY LOOKING RATHER THAN BY
+                                # READING. The first version rendered
+                                # `{{ fbBody }}` as the textarea's child —
+                                # correct for HTML, where a textarea's content
+                                # IS its value — and the box came up EMPTY on
+                                # every existing comment, under a caption
+                                # reading "YOUR FEEDBACK". A teacher would
+                                # have pressed Save on an empty box and
+                                # replaced what they wrote.
+                                #
+                                # The cause is `student-runtime.build`: an
+                                # INTERPOLATION in text position is wrapped in
+                                # `<span class="sc-interp">` (Design's own
+                                # compiler does it, and the parity gate counts
+                                # those spans), so the textarea's child was an
+                                # ELEMENT, and a textarea's default value
+                                # comes only from child TEXT. `textContent`
+                                # read correctly and `value` was "".
+                                #
+                                # So the field is uncontrolled, like Design's
+                                # other three, and `openFb` fills it in
+                                # `setState`'s completion callback — which
+                                # runs AFTER the draw that creates it.
+                                # `restoreFields` carries it over every later
+                                # redraw, which is the same mechanism the
+                                # shoutout composer relies on.
+                                # ⚠️ `maxlength` IS THE DATABASE'S NUMBER —
+                                # `submission_feedback_body_length_chk`, 2000.
+                                # A cap a teacher discovers by being refused
+                                # after writing a paragraph is not a cap.
+                                {"t": "textarea",
+                                 "a": {"data-mrb-added": "feedback-body",
+                                       "data-compose-field": "feedback",
+                                       "maxlength": "2000",
+                                       "aria-label": "Write feedback",
+                                       "placeholder": "What they did well, "
+                                                      "and the one thing to "
+                                                      "work on next",
+                                       "style": _FB_NOTE},
+                                 "onch": "setFbBody"},
+                            ]},
+                        ]},
+
+                        {"t": "if", "e": "fbErr", "c": [
+                            {"t": "div", "a": {"style": _FB_ERR,
+                                               "role": "alert"},
+                             "c": [{"t": "#", "v": {"parts": [
+                                 {"e": "fbErr"}]}}]},
+                        ]},
+                    ]},
+                    {"t": "div", "a": {"style": _FB_FOOT}, "c": [
+                        {"t": "div", "a": {"style": _DEL_FOOT_NOTE},
+                         "c": [{"t": "#", "v": {"parts": [
+                             {"e": "fbFootNote"}]}}]},
+                        {"t": "div", "a": {"style": _FB_ACTIONS}, "c": [
+                            {"t": "if", "e": "fbCanRemove", "c": [
+                                # ⚠️ TWO PRESSES, NOT A SECOND SHEET. The
+                                # shoutout delete gets a confirm dialog
+                                # because it sits eight pixels from a child's
+                                # name in a feed. This one is already inside a
+                                # sheet the teacher deliberately opened, with
+                                # the words they are about to remove on screen
+                                # above it — so the protection is the button
+                                # changing to say what it will do, and a
+                                # dialog on top of a dialog would be a second
+                                # idiom for the same job.
+                                {"t": "button",
+                                 "a": {"type": "button",
+                                       "data-mrb-added": "feedback-remove",
+                                       "style": _DEL_TEXT_BTN},
+                                 "hov": "color:var(--st-ink)",
+                                 "on": "removeFeedback",
+                                 "c": [{"t": "#", "v": {"parts": [
+                                     {"e": "fbRemoveLabel"}]}}]},
+                            ]},
+                            {"t": "if", "e": "fbCanEdit", "c": [
+                                {"t": "button",
+                                 "a": {"type": "button",
+                                       "data-mrb-added": "feedback-save",
+                                       "style": _DEL_PRIMARY},
+                                 "hov": "background:var(--st-accent-hover)",
+                                 "on": "saveFeedback",
+                                 "c": [{"t": "#", "v": {"parts": [
+                                     {"e": "fbSaveLabel"}]}}]},
+                            ]},
+                        ]},
+                    ]},
+                ]}]}]}
+
 
 INSERT_AT = {
     # ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) · NOTHING TO BREAK DOWN ─
@@ -2542,6 +3112,56 @@ INSERT_AT = {
         "sheet (nodes 513-537) supplies the scrim, the panel, the header, "
         "the close X, the body pad, the footer bar and the primary button, "
         "at her own measurements. Registered in AMENDED_ADDITIONS."),
+
+    # ══ ⊕ RULED BY MIDE, 3 Sep 2026 · WRITTEN FEEDBACK ══════════════════
+    #
+    # ⛔ THIS IS NOT A GAP BEING FILLED AND IT IS NOT DRIFT. Design's v3
+    # contains no per-submission feedback UI of any kind — no comment
+    # control, no sheet, and her only `<textarea>` in the file is the bulk
+    # shoutout sheet's. Read `FEEDBACK_SURFACE_ADDED` at the top of this file
+    # BEFORE removing any of this: the drawing is not the authority here,
+    # Mide is, and the store it writes to is live on production.
+    #
+    # ⚠️ FOUR ENTRIES, ONE SURFACE. Two row controls (one per authoring
+    # screen) and the sheet, twice, because `INSERT_AT` is keyed by parent
+    # node and the two screens have different roots. All four come out of two
+    # builders — `_fb_open_button` and `_fb_sheet` — so the two screens
+    # cannot drift apart.
+    #
+    # ⚠️ WHERE EACH ROW CONTROL GOES, AND WHY IT IS NOT A NEW COLUMN. The
+    # student screen's history table is a five-track CSS grid declared twice
+    # (the header at 354 and the row at 361); a sixth cell would need both
+    # track lists rewritten and would push a five-column table past 390px in
+    # a place Design sized. So the control goes INSIDE the Status cell (366,
+    # after her chip at 367), where there is vertical room and where "was
+    # this marked, and did anyone say anything" reads as one column. On the
+    # marking screen it goes inside her student cell (420, after the name at
+    # 422), pushed right by `margin-left:auto` — the cell is already a flex
+    # row and already has the space.
+    (366, 367): (_fb_open_button("h", _FB_ROW_BTN),
+                 "the feedback control on one row of the student screen's "
+                 "submission history. Design drew no comment affordance "
+                 "anywhere; this is Mide's ruling of 3 Sep 2026, and it is "
+                 "inside her Status cell rather than in a sixth column "
+                 "because her table's track list is declared twice and sized "
+                 "for five."),
+    (420, 422): (_fb_open_button("r", _FB_CELL_BTN, glyph=True),
+                 "the same control on one row of the marking screen's "
+                 "class-by-question grid — the second of Mide's two "
+                 "authoring surfaces, the same builder, the same handler and "
+                 "the same sheet. A GLYPH rather than words: Design's "
+                 "student cell is a hard 225px track and a text button in it "
+                 "cut every name that had a comment beside it. See "
+                 "`_FB_CELL_BTN`."),
+    (330, None): (_fb_sheet(),
+                  "the feedback sheet, on the student screen. Design's "
+                  "bulk-sheet chrome at her own measurements; this port has "
+                  "one dialog idiom and this is it. Appended to the SCREEN "
+                  "root rather than to node 9, so it is not markup on four "
+                  "pages that can never open it."),
+    (370, None): (_fb_sheet(),
+                  "the same sheet on the marking screen. One builder, two "
+                  "parents, because INSERT_AT is keyed by parent node."),
 }
 
 
@@ -2859,6 +3479,77 @@ AMENDED_ADDITIONS = (
              "`softDeleteClassShoutout`, which sets `deleted_at` and forces "
              "RETURNING so an RLS refusal cannot come back looking like a "
              "success."),
+
+    # ══ ⊕ RULED BY MIDE, 3 Sep 2026 · WRITTEN FEEDBACK, REGISTERED ══════
+    #
+    # See `FEEDBACK_SURFACE_ADDED`. Design drew NONE of this — not a comment
+    # control, not a sheet, not a textarea outside her bulk sheet — so every
+    # row here is an addition against her delivery and this register is what
+    # makes the build assert them against the emitted bytes.
+    #
+    # ⚠️ ORDER MATTERS AND IT IS NOT COSMETIC. `feedback-open` is registered
+    # FIRST because it is what reveals the other three: the probe's reveal
+    # loop presses earlier additions in REGISTER ORDER until the control it
+    # wants appears, and the sheet is `<if fbOpen>` — nothing of Design's
+    # opens it, so `opener_tpl` (which takes one of DESIGN's node indices)
+    # has nothing to name.
+    #
+    # ⚠️ `needs_write` IS ON THE OPENER AND ON NEITHER OF THE WRITES, which
+    # looks backwards and is not. The flag asserts a marker is PRESENT where
+    # `canWrite` is true and ABSENT where it is false, at rest. The three
+    # controls inside the sheet are inside `<if fbOpen>`, which is false at
+    # rest on every fixture in the set, so an absence assertion on them would
+    # pass everywhere and measure nothing — the same reasoning the shoutout
+    # confirm sheet's three buttons carry. And the OPENER is not a write
+    # either: MRB-261 makes a past year read-only, not unreadable, and a
+    # teacher may still open a comment written last year. So it carries
+    # `needs_data` alone, and the read-only behaviour of the WRITE halves is
+    # asserted by `fbCanEdit`/`fbCanRemove` reading `MRB_DATA('canWrite')`
+    # and by the drive in the report, which is where a state behind an `if`
+    # can honestly be measured.
+    dict(marker="feedback-open",
+         pages=("student-detail.html", "assignment.html"),
+         node=330, needs_data=True,
+         label="Add feedback / Edit feedback / Read feedback",
+         why="the control that opens the feedback sheet, on a submission "
+             "history row and on a marking grid row. Two surfaces, ONE "
+             "builder (`_fb_open_button`), because Mide's brief asks for "
+             "both and a second implementation is how they come to "
+             "disagree. Absent on a row with no submission: "
+             "`submission_feedback.submission_id` is NOT NULL and there is "
+             "nothing to attach a comment to."),
+    dict(marker="feedback-close",
+         pages=("student-detail.html", "assignment.html"),
+         node=330, needs_data=True,
+         label="Close without saving",
+         why="the sheet's close X, in Design's own bulk-sheet chrome. It "
+             "writes nothing and clears the draft."),
+    dict(marker="feedback-body",
+         pages=("student-detail.html", "assignment.html"),
+         node=330, needs_data=True,
+         label="What they did well, and the one thing to work on next",
+         why="the comment itself. Capped at 2000, which is "
+             "`submission_feedback_body_length_chk` — not 500, which is "
+             "class_shoutouts. The existing text is the textarea's CHILD "
+             "rather than a `value` attribute, because a textarea's content "
+             "IS its value and `value=` on one does nothing."),
+    dict(marker="feedback-save",
+         pages=("student-detail.html", "assignment.html"),
+         node=330, needs_data=True,
+         label="Save feedback / Save changes",
+         why="the write. INSERT where there is nothing yet, UPDATE where "
+             "there is — and the UPDATE carries `prior_body`, because the "
+             "database refuses an edit that does not keep the wording it "
+             "replaced."),
+    dict(marker="feedback-remove",
+         pages=("student-detail.html", "assignment.html"),
+         node=330, needs_data=True,
+         label="Remove",
+         why="the soft delete, behind a second press that says what it will "
+             "do. Drawn only on a comment the signed-in teacher wrote, "
+             "because `submission_feedback_update` is `teacher_id = "
+             "auth.uid()` and offering it elsewhere would be offering a "
+             "refusal."),
 )
 
 
@@ -3264,6 +3955,15 @@ LOGIC = (
     #   · the ported keys, all of them — MRB_SCREEN, the three MRB_DATA
     #     reads, MRB_FIRST_TEMPLATE for `boTpl`, `digestScope`/`chartScope`
     #     off the URL via MRB_Q, and `yearsOpen`.
+    #   · ⊕ 3 Sep 2026 (Phase 2b) — `boNote` and the six `fb*` keys.
+    #     `boNote` is the BULK SHEET's own message, separate from the
+    #     composer's `note` (see `RETARGET_ON[651]` for the three readers
+    #     that made sharing one key unsafe). The `fb*` six are the feedback
+    #     sheet's whole state: which submission is open, the child's name and
+    #     the paper's title as they were when it opened, the text being
+    #     typed, the validation line, and whether Remove has been pressed
+    #     once. Nothing about a person is in any of them beyond what is
+    #     already on the screen that opened the sheet.
     #   · `weekIdx: 0`, RESTORED. v3 deleted it with the week rail; Mide
     #     ruled the week bar back in on 1 Sep 2026, so the state key belongs
     #     here even though the rail's own markup lands in a later unit. A
@@ -3280,7 +3980,10 @@ LOGIC = (
     classId: MRB_DATA('classId'), studentId: MRB_DATA('studentId'),
     paperIdx: MRB_DATA('paperIdx'), weekIdx: 0,
     ks: 'All', sort: 'code', modal: null, toast: '',
-    boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', search: '',
+    boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', boNote: '',
+    search: '',
+    fbSub: null, fbName: '', fbPaper: '', fbBody: '', fbErr: '',
+    fbConfirm: false,
     importStep: 1, ttStep: 1,
     digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
     chartKind: 'submissions', chartScope: MRB_Q('class') || 'all',
@@ -5102,7 +5805,14 @@ componentDidUpdate() {
      "            /* Design's fields are uncontrolled and the runtime carries\n"
      "               their values over a redraw, so the DOM is cleared before\n"
      "               the state is. */\n"
-     "            MRB_COMPOSE_RESET();\n"
+     # ⊕ 3 Sep 2026 (Phase 2b) — NAMED, not bare. There are three
+     # composing fields in this logic now (`recipient`, `note`, and the
+     # bulk sheet's `bulk-note`) and a fourth on two other pages (the
+     # feedback sheet's `feedback`). A bare reset clears whatever it
+     # finds; naming its own two means this send can never empty
+     # somebody else's half-written text, on this page or on a page
+     # this handler is not even drawn on.
+     "            MRB_COMPOSE_RESET(['recipient', 'note']);\n"
      "            MRB_REFRESH_FEED(cid).then(() => {\n"
      "              this.setState({ recipient: '', note: '', toast: '' });\n"
      "            });\n"
@@ -5131,38 +5841,317 @@ componentDidUpdate() {
      "        if (!ids.length) {\n"
      "          return this.ping('Pick at least one student'); }\n"
      # ⊕ 3 Sep 2026 — THE GUARD THAT COMES WITH THE UNPICKABLE TEMPLATE.
-     # This sheet sends `message: null`, so with no template there is
-     # nothing to send and `class_shoutouts_content_chk` refuses every row.
-     # ⚠️ THE SENTENCE DOES NOT MENTION WRITING A MESSAGE, unlike the
-     # composer's, because this sheet's own textarea IS NOT SENT — that is
-     # a defect of Design's v3 that predates this ruling and is written up
-     # in the report rather than fixed here, since `s.note` is shared with
-     # the composer and picking it up would send text the sheet may not be
-     # showing. Telling a teacher to write a message in a field that
-     # discards it would be the worse of the two.
-     "        if (!s.boTpl) {\n"
-     "          return this.ping('Pick a template'); }\n"
+     # With neither a template nor a message there is nothing to send and
+     # `class_shoutouts_content_chk` refuses every row — which would surface
+     # as "the message is too long, or the template is not one this school
+     # uses", true of neither. Refused in front of the write instead.
+     #
+     # ⊕ 3 Sep 2026 (Phase 2b) — AND THE MESSAGE IS ACTUALLY SENT NOW.
+     # This block used to read `if (!s.boTpl) return this.ping('Pick a
+     # template')` with a note saying the sheet's own textarea was NOT sent
+     # and that saying so would be worse than staying silent. It was not
+     # worse: a teacher typed a message, pressed send, and the words were
+     # discarded with no error anywhere. `boNote` is the sheet's own state
+     # key (see RETARGET_ON[651] for why it is not `s.note`), it is capped
+     # at the database's own 500, and the sentence now names both ways of
+     # having something to say.
+     "        const bulkBody = String(s.boNote || '').trim();\n"
+     "        if (!s.boTpl && !bulkBody) {\n"
+     "          return this.ping('Pick a template, or write a message'); }\n"
+     "        if (bulkBody.length > 500) {\n"
+     "          return this.ping('Message too long — 500 characters at "
+     "most'); }\n"
      "        this.ping('Sending to ' + ids.length + '…');\n"
      "        const cid = k && k.id;\n"
-     "        MRB_SEND_SHOUTOUTS(cid, ids, s.boTpl, null).then((r) => {\n"
-     "          if (!r.ok) {\n"
-     "            return this.ping(MRB_SHOUTOUT_WHY(r.error)); }\n"
-     "          if (r.fail) {\n"
-     "            /* The sheet stays open and the selection stays put: some "
-     "of\n"
-     "               these children were told and some were not, and the "
+     "        MRB_SEND_SHOUTOUTS(cid, ids, s.boTpl, bulkBody || null)\n"
+     "          .then((r) => {\n"
+     "            if (!r.ok) {\n"
+     "              return this.ping(MRB_SHOUTOUT_WHY(r.error)); }\n"
+     "            if (r.fail) {\n"
+     "              /* The sheet stays open and the selection stays put: "
+     "some of\n"
+     "                 these children were told and some were not, and the "
      "teacher\n"
-     "               is the only one who can decide what to do about it. */\n"
-     "            return this.ping('Sent to ' + r.ok + ' of ' + ids.length +\n"
-     "              ' — ' + MRB_SHOUTOUT_WHY(r.error)); }\n"
-     "          MRB_REFRESH_FEED(cid).then(() => {\n"
-     "            this.setState({ modal: null, boSel: [],\n"
-     "              toast: 'Shoutout sent to ' + r.ok +\n"
-     "                (r.ok === 1 ? ' student' : ' students') });\n"
+     "                 is the only one who can decide what to do about "
+     "it. */\n"
+     "              return this.ping('Sent to ' + r.ok + ' of ' + "
+     "ids.length +\n"
+     "                ' — ' + MRB_SHOUTOUT_WHY(r.error)); }\n"
+     # ⚠️ THE DOM FIELD IS EMPTIED BEFORE THE STATE, and BY NAME. Design's
+     # textarea is uncontrolled and `student-runtime` carries field values
+     # across a redraw on purpose, so clearing `boNote` alone leaves the
+     # sent words on screen looking unsent. `['bulk-note']` and not a bare
+     # reset: the single-student composer is UNDERNEATH this modal, and a
+     # bulk send must not wipe a half-written shoutout about somebody else.
+     "            MRB_COMPOSE_RESET(['bulk-note']);\n"
+     "            MRB_REFRESH_FEED(cid).then(() => {\n"
+     "              this.setState({ modal: null, boSel: [], boNote: '',\n"
+     "                toast: 'Shoutout sent to ' + r.ok +\n"
+     "                  (r.ok === 1 ? ' student' : ' students') });\n"
+     "            });\n"
+     "          });\n"
+     "      },",
+     "the bulk shoutout sheet. Same defect as the composer, N times over."),
+
+    # ══ ⊕ 3 Sep 2026 (MRB-306 Phase 2b) · THE SHEET'S OWN NOTE HANDLER ══
+    #
+    # `setNote` stays exactly as Design wrote it and keeps writing `note` —
+    # it is the single-student composer's field and three things read it.
+    # This is its twin for the bulk sheet, added BESIDE it rather than
+    # replacing it, and node 651 is moved onto it by `RETARGET_ON`.
+    ("      setNote: (e) => this.setState({ note: e.target.value }),",
+     "      setNote: (e) => this.setState({ note: e.target.value }),\n"
+     "      setBulkNote: (e) => this.setState({ boNote: e.target.value }),",
+     "the bulk sheet's own free-text handler. Design wires her sheet's "
+     "textarea to the COMPOSER's `setNote`, so the two surfaces shared one "
+     "state key and only one of them sent it."),
+
+    # ⚠️ AND THE SUMMARY LINE HAS TO SAY SO. Design's reads "6 selected · Top
+    # of the class this week", which was complete when a template was the
+    # only thing being sent. Now that a message goes too, a line that names
+    # only the template is the same silence in a smaller font — a teacher
+    # would read it as confirmation that the words are not going.
+    ("      bulkSummary: s.boSel.length + ' selected · ' + "
+     "(this.TEMPLATES.filter(t => t.id === s.boTpl)[0] || "
+     "{ label: 'no template' }).label,",
+     "      bulkSummary: s.boSel.length + ' selected · ' +\n"
+     "        (this.TEMPLATES.filter(t => t.id === s.boTpl)[0] ||\n"
+     "          { label: 'no template' }).label +\n"
+     "        (String(s.boNote || '').trim() ? ' · and your message' : ''),",
+     "the bulk sheet's summary line. It named the template and never the "
+     "message, which was accurate only while the message was being thrown "
+     "away."),
+
+    # ══ ⊕ RULED BY MIDE, 3 Sep 2026 · WRITTEN FEEDBACK — THE ROWS ═══════
+    #
+    # See `FEEDBACK_SURFACE_ADDED`. These three entries are the logic half of
+    # `INSERT_AT`'s four markup entries; neither half is any use alone, and
+    # the failure of shipping only one is silent in both directions — markup
+    # with no keys renders an invisible control, keys with no markup are a
+    # handler nothing calls.
+    #
+    # ⚠️ `MRB_FEEDBACK` READS THE PAYLOAD, IT DOES NOT FETCH. It is called
+    # once per row of a thirty-child grid inside `renderVals`, which is
+    # synchronous; `shared/teacher-live.js` does the reading, once, in
+    # `load()`.
+    ("      const stampS = stRow ? stRow.stampShort[i] : null;",
+     "      const stampS = stRow ? stRow.stampShort[i] : null;\n"
+     "      /* ⊕ MRB-306 Phase 2b — the submission this row is about, and\n"
+     "         whatever has already been written on it. `subId` is null where\n"
+     "         the child has not handed in: there is nothing to attach a\n"
+     "         comment to, and the control is not drawn. */\n"
+     "      const fbSub = stRow ? stRow.subId[i] : null;\n"
+     "      const fbRow = MRB_FEEDBACK(fbSub);",
+     "the student screen's history rows, given the submission id and the "
+     "comment on it. Design's rows carry neither, because Design's delivery "
+     "has no concept of a submission id and no feedback at all."),
+
+    ("        stDotR: tone === 'warn' ? '1px' : '50%',",
+     "        stDotR: tone === 'warn' ? '1px' : '50%',\n"
+     "        fbCan: !!fbSub,\n"
+     "        fbLabel: !fbRow ? 'Add feedback'\n"
+     "          : (fbRow.mine ? 'Edit feedback' : 'Read feedback'),\n"
+     "        fbFg: fbRow ? 'var(--st-accent-text)' : 'var(--st-muted)',\n"
+     "        fbAria: (!fbRow ? 'Add feedback on '\n"
+     "          : (fbRow.mine ? 'Edit your feedback on '\n"
+     "            : 'Read the feedback on ')) + p.title +\n"
+     "          ' for ' + (st ? st.name : 'this student'),\n"
+     "        /* ⚠️ `stopPropagation` FIRST. Design's whole row (361) carries\n"
+     "           `h.open` and navigates to the marking screen, so without\n"
+     "           this the press would open the sheet and leave the page it\n"
+     "           opened on in the same gesture. */\n"
+     "        openFb: (e) => {\n"
+     "          if (e && e.stopPropagation) { e.stopPropagation(); }\n"
+     "          if (e && e.preventDefault) { e.preventDefault(); }\n"
+     "          const had = (fbRow && fbRow.body) || '';\n"
+     "          this.setState({ fbSub: fbSub, fbName: st ? st.name : '',\n"
+     "            fbPaper: p.title, fbBody: had,\n"
+     "            fbErr: '', fbConfirm: false },\n"
+     "            () => MRB_FB_FILL(had));\n"
+     "        },",
+     "the student screen's feedback control, per history row. Mide's ruling "
+     "of 3 Sep 2026: feedback is authored from student detail or from "
+     "marking, attached to that submission."),
+
+    # ⚠️ THE SAME KEYS ON THE MARKING GRID, and it is deliberately the same
+    # NAMES rather than a second vocabulary: the markup that reads them is
+    # one builder (`_fb_open_button`) taking the row alias, so two spellings
+    # would mean two subtrees and the two screens drifting apart.
+    ("      cells: r.raw.map(v => this.cellStyle(v)),\n"
+     "      score: r.score,",
+     "      cells: r.raw.map(v => this.cellStyle(v)),\n"
+     "      score: r.score,\n"
+     "      fbCan: !!r.subId,\n"
+     "      fbLabel: !MRB_FEEDBACK(r.subId) ? 'Add feedback'\n"
+     "        : (MRB_FEEDBACK(r.subId).mine ? 'Edit feedback'\n"
+     "          : 'Read feedback'),\n"
+     "      fbFg: MRB_FEEDBACK(r.subId) ? 'var(--st-accent-text)'\n"
+     "        : 'var(--st-ghost)',\n"
+     # The glyph is FILLED where a comment exists and hollow where it does
+     # not, so "who has been written to" is scannable down a thirty-child
+     # column. `none` and not `transparent`: an SVG fill of `none` is no
+     # paint at all, which is what a hollow speech mark is.
+     "      fbFill: MRB_FEEDBACK(r.subId) ? 'currentColor' : 'none',\n"
+     "      fbAria: (!MRB_FEEDBACK(r.subId) ? 'Add feedback for '\n"
+     "        : (MRB_FEEDBACK(r.subId).mine ? 'Edit your feedback for '\n"
+     "          : 'Read the feedback for ')) + r.name,\n"
+     "      openFb: (e) => {\n"
+     "        if (e && e.stopPropagation) { e.stopPropagation(); }\n"
+     "        if (e && e.preventDefault) { e.preventDefault(); }\n"
+     "        const row = MRB_FEEDBACK(r.subId);\n"
+     "        const had = (row && row.body) || '';\n"
+     "        this.setState({ fbSub: r.subId, fbName: r.name,\n"
+     "          fbPaper: pp ? pp.title : '', fbBody: had,\n"
+     "          fbErr: '', fbConfirm: false },\n"
+     "          () => MRB_FB_FILL(had));\n"
+     "      },",
+     "the marking screen's feedback control, per grid row — the second of "
+     "Mide's two authoring surfaces. The grid row already carries `subId` "
+     "from `buildGrid`; Design's carries a student id and a mark and "
+     "nothing that identifies the submission."),
+
+    # ══ ⊕ RULED BY MIDE, 3 Sep 2026 · WRITTEN FEEDBACK — THE SHEET ══════
+    #
+    # ⚠️ EVERY KEY BELOW IS READ BY AN `<if>` OR AN INTERPOLATION IN
+    # `_fb_sheet()`, and `student-runtime` evaluates an `<if>` with `lookup(…,
+    # null)` — WITHOUT the miss recorder — so a key that does not exist is
+    # not an error, it is silently FALSE. A typo here takes the sheet off both
+    # screens with every gate green and nothing in the console. They are
+    # driven rather than trusted; see the report.
+    #
+    # ⚠️ `canWrite` IS READ THROUGH `MRB_DATA`, NOT AS A BARE NAME, for the
+    # reason `f.canDelete` records: inside `renderVals` there is no local
+    # called `canWrite` — the renderVals KEY of that name is not in scope
+    # while the object is still being built — so a bare reference is
+    # `undefined`, which is falsy, which would silently take the composing
+    # half of this sheet off every screen including the ones that can write.
+    #
+    # ⚠️ AND THE READING HALF IS NOT GATED ON IT. MRB-261 makes a finished
+    # year READ-ONLY, not invisible: what was written about a child last year
+    # is still readable, and only Save and Remove go.
+    ("      backToClass: 'Back to ' + k.code,",
+     "      backToClass: 'Back to ' + k.code,\n"
+     "\n"
+     "      /* ── ⊕ MRB-306 Phase 2b · the feedback sheet ──────────────── */\n"
+     "      fbOpen: !!s.fbSub,\n"
+     "      fbKicker: k.code + ' \\u00b7 Feedback',\n"
+     "      fbTitle: 'Feedback for ' + (s.fbName || 'this student'),\n"
+     "      fbOn: s.fbPaper ? 'On ' + s.fbPaper : 'On this submission',\n"
+     "      fbBody: s.fbBody || '',\n"
+     "      fbErr: s.fbErr || '',\n"
+     "      /* ATTRIBUTED, in the only terms a teacher session can prove.\n"
+     "         `buildFeedback` records why this is \"You\" / \"Another\n"
+     "         teacher\" and not a name: a teacher has no read policy on\n"
+     "         another teacher's profile row, so a name would either be an\n"
+     "         em dash (which reads as a bug) or a guess. */\n"
+     "      fbByLine: (function () {\n"
+     "        const r = MRB_FEEDBACK(s.fbSub);\n"
+     "        if (!r) { return ''; }\n"
+     "        return r.by + ' \\u00b7 ' + r.when +\n"
+     "          (r.edited ? ' \\u00b7 edited ' + r.editedWhen : '');\n"
+     "      })(),\n"
+     "      /* ⛔ THE WORDS, WHENEVER THERE IS NO EDITOR FOR THEM — a\n"
+     "         colleague's comment (RLS: `submission_feedback_update` is\n"
+     "         `teacher_id = auth.uid()`, so offering an editor would be\n"
+     "         offering a refusal) OR this teacher's own on a FINISHED year.\n"
+     "         ⚠️ IT USED TO READ `!mine` ALONE, and a read-only drive found\n"
+     "         what that cost: on a past year a teacher opened their own\n"
+     "         comment and saw the byline with no text under it. MRB-261 is\n"
+     "         read-only, not invisible. */\n"
+     "      fbReadBody: !!(MRB_FEEDBACK(s.fbSub) &&\n"
+     "        (!MRB_FEEDBACK(s.fbSub).mine || !MRB_DATA('canWrite'))),\n"
+     "      fbBodyText: (MRB_FEEDBACK(s.fbSub) &&\n"
+     "        (!MRB_FEEDBACK(s.fbSub).mine || !MRB_DATA('canWrite')))\n"
+     "        ? MRB_FEEDBACK(s.fbSub).body : '',\n"
+     "      fbCanEdit: !!(MRB_DATA('canWrite') &&\n"
+     "        (!MRB_FEEDBACK(s.fbSub) || MRB_FEEDBACK(s.fbSub).mine)),\n"
+     "      fbCanRemove: !!(MRB_DATA('canWrite') && MRB_FEEDBACK(s.fbSub) &&\n"
+     "        MRB_FEEDBACK(s.fbSub).mine),\n"
+     "      fbFieldCap: MRB_FEEDBACK(s.fbSub) ? 'Your feedback'\n"
+     "        : 'Write feedback',\n"
+     "      fbSaveLabel: MRB_FEEDBACK(s.fbSub) ? 'Save changes'\n"
+     "        : 'Save feedback',\n"
+     "      /* TWO PRESSES. The first says what the second will do; nothing\n"
+     "         is written until the second. There is no undo — there is no\n"
+     "         UPDATE path anywhere in this codebase that clears\n"
+     "         `deleted_at` — so the label says so rather than a dialog\n"
+     "         saying it on top of a dialog. */\n"
+     "      fbRemoveLabel: s.fbConfirm\n"
+     "        ? 'Remove it \\u2014 this cannot be undone' : 'Remove',\n"
+     "      /* ⛔ THE ONE-WAY GUARDRAIL, IN WORDS, TO THE PERSON WRITING.\n"
+     "         There is no reply control anywhere on the student side and\n"
+     "         there is no student INSERT policy on the table, so a child\n"
+     "         cannot answer this — and the teacher composing it is the one\n"
+     "         who needs to know that before they phrase a question. */\n"
+     "      fbFootNote: MRB_DATA('canWrite')\n"
+     "        ? 'They read this under their marking. They cannot reply.'\n"
+     "        : 'This year is read-only.',\n"
+     "      closeFeedback: () => this.setState({ fbSub: null, fbBody: '',\n"
+     "        fbErr: '', fbConfirm: false }),\n"
+     "      setFbBody: (e) => this.setState({ fbBody: e.target.value,\n"
+     "        fbErr: '' }),\n"
+     "      /* INSERT where there is nothing yet, UPDATE where there is — and\n"
+     "         the UPDATE carries the body it replaces, because the database\n"
+     "         refuses an edit that does not\n"
+     "         (`(edited_at IS NULL) = (prior_body IS NULL)`). Retention is\n"
+     "         not remembered here; it is unavoidable. */\n"
+     "      saveFeedback: () => {\n"
+     "        const sub = s.fbSub;\n"
+     "        const row = MRB_FEEDBACK(sub);\n"
+     "        const body = String(s.fbBody || '').trim();\n"
+     "        if (!sub) { return; }\n"
+     "        if (!body) {\n"
+     "          return this.setState({ fbErr: 'Write something first.' }); }\n"
+     "        if (body.length > MRB_FB_MAX()) {\n"
+     "          return this.setState({ fbErr: 'Too long \\u2014 ' +\n"
+     "            MRB_FB_MAX() + ' characters at most.' }); }\n"
+     # ⚠️ AN UNCHANGED SAVE WRITES NOTHING, AND THAT IS ABOUT THE CHILD.
+     # An UPDATE stamps `edited_at`, and the student's own read renders
+     # "· EDITED" from it — so a teacher who opens their comment, changes
+     # their mind, and presses Save anyway would tell a child their
+     # feedback had been rewritten when not one character moved. It closes
+     # instead, and says so.
+     "        if (row && body === String(row.body || '')) {\n"
+     "          return this.setState({ fbSub: null, fbBody: '', fbErr: '',\n"
+     "            fbConfirm: false, toast: 'No change' }); }\n"
+     "        this.ping('Saving\\u2026');\n"
+     "        MRB_SAVE_FEEDBACK(sub, body, row).then((res) => {\n"
+     "          if (!res.ok) {\n"
+     "            const why = MRB_FEEDBACK_WHY(res.error);\n"
+     "            this.setState({ fbErr: why });\n"
+     "            return this.ping(why);\n"
+     "          }\n"
+     "          MRB_REFRESH_FEEDBACK(s.screen, { classId: s.classId,\n"
+     "            studentId: s.studentId, paperIdx: s.paperIdx }).then(() => {\n"
+     "            this.setState({ fbSub: null, fbBody: '', fbErr: '',\n"
+     "              fbConfirm: false,\n"
+     "              toast: row ? 'Feedback updated' : 'Feedback saved' });\n"
+     "          });\n"
+     "        });\n"
+     "      },\n"
+     "      removeFeedback: () => {\n"
+     "        const row = MRB_FEEDBACK(s.fbSub);\n"
+     "        if (!row || !row.id) { return; }\n"
+     "        if (!s.fbConfirm) { return this.setState({ fbConfirm: true }); }\n"
+     "        this.ping('Removing\\u2026');\n"
+     "        MRB_REMOVE_FEEDBACK(row.id).then((res) => {\n"
+     "          if (!res.ok) {\n"
+     "            const why = MRB_FEEDBACK_WHY(res.error);\n"
+     "            this.setState({ fbErr: why, fbConfirm: false });\n"
+     "            return this.ping(why);\n"
+     "          }\n"
+     "          MRB_REFRESH_FEEDBACK(s.screen, { classId: s.classId,\n"
+     "            studentId: s.studentId, paperIdx: s.paperIdx }).then(() => {\n"
+     "            this.setState({ fbSub: null, fbBody: '', fbErr: '',\n"
+     "              fbConfirm: false, toast: 'Feedback removed' });\n"
      "          });\n"
      "        });\n"
      "      },",
-     "the bulk shoutout sheet. Same defect as the composer, N times over."),
+     "the feedback sheet's keys and its four handlers. Design drew no "
+     "feedback surface at all, so there is no handler of hers being "
+     "replaced here — this is an addition, ruled by Mide on 3 Sep 2026 and "
+     "registered in FEEDBACK_SURFACE_ADDED and AMENDED_ADDITIONS."),
+
 
     # ══ ⊕ 24 Aug 2026 · \"ON TIME\" WHERE THE TIMING IS UNKNOWN ═══════════
     #

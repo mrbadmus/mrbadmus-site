@@ -1536,21 +1536,28 @@ def apply_rulings(spec, roots, logic):
     # is a control wired to nothing — caught by `teacher_behaviour`'s
     # `data-mrb-misses` check, but only after the page had been written. This
     # is the same guard step 6 makes for `WRAP`, for the same reason.
+    # ⊕ 3 Sep 2026 (MRB-306 Phase 2b) — THE SLOT IS NAMED, because not every
+    # handler Design writes is an `onClick`. Node 651's is `onch` (an
+    # `onChange` on the bulk sheet's textarea), and a table that could only
+    # read `on` would have found "no handler at all" there and refused a
+    # ruling that is correct — or, worse, written the new handler into `on`
+    # and left `onch` pointing where it always did, which builds green and
+    # changes nothing.
     retargeted = 0
-    for node, (expect, handler, why) in R.RETARGET_ON.items():
+    for node, (slot, expect, handler, why) in R.RETARGET_ON.items():
         if node not in here:
             continue
-        on = here[node].get("on")
+        on = here[node].get(slot)
         if on != expect:
             raise SystemExit(
                 "build_teacher_port.py: the MRB-304 ruling moves template "
-                "node %s from %r to %r, and that node carries %r.\n"
+                "node %s's `%s` from %r to %r, and that node carries %r.\n"
                 "  Design has redrawn it, or the index now names a different "
                 "control. Re-anchor teacher_rulings.RETARGET_ON: applied to "
                 "the wrong node this repoints one of Design's own controls at "
                 "somewhere it was never meant to go, and the page still "
                 "builds. (%s)"
-                % (node, expect, handler, on or "no handler at all",
+                % (node, slot, expect, handler, on or "no handler at all",
                    why.split(".")[0]))
         if not re.search(r"\b%s\b\s*:" % re.escape(handler), logic):
             raise SystemExit(
@@ -1561,7 +1568,7 @@ def apply_rulings(spec, roots, logic):
                 "Unchecked, this ships a control that resolves to nothing — a "
                 "brand mark a teacher presses and nothing happens. (%s)"
                 % (node, handler, why.split(".")[0]))
-        here[node]["on"] = handler
+        here[node][slot] = handler
         retargeted += 1
 
     # ── 5. the navigation rewires, asserted at their NODES ───────────────
@@ -1787,7 +1794,7 @@ class DCLogic { constructor(){ this.props = {}; } setState(){} }
 /*__DESIGN_LOGIC__*/
 const c = new Component();
 const out = { CLASSES: c.CLASSES, MATRIX: {}, ROSTER: {}, PAPERS: {},
-              WEEKS: {}, GRID: {}, FEED: {} };
+              WEEKS: {}, GRID: {}, FEED: {}, FEEDBACK: {} };
 
 /* Design's own month labels and Design's own `lab()` format, so a shifted
    stamp is written exactly the way every other date in this fixture is.
@@ -1846,9 +1853,21 @@ function adaptMatrix(k, mx, papers) {
       if (v == null || !papers[i]) { return null; }
       return fxShiftShort(papers[i].dueShort, r.late[i] ? 2 : -1);
     });
+    /* ⊕ MRB-306 Phase 2b — A SUBMISSION ID PER CELL, because the live
+       matrix carries one and written feedback binds to nothing else.
+       Design's sample has no concept of a submission row at all, so this is
+       DERIVED from what she does have — the class, the student and the paper
+       index — and it is deliberately not uuid-shaped, on the same terms as
+       FIXTURE_ME: every real `assignment_submissions.id` is a uuid, so this
+       cannot be mistaken for a row or pasted into a query that would match
+       one. `null` where nothing was handed in, which is the state the
+       control is absent in. */
+    const subId = submitted.map(function (yes, i) {
+      return yes ? (k.id + ':' + r.sid + ':p' + i) : null;
+    });
     return { sid: r.sid, scores: r.scores, max: max, pct: pct,
              late: r.late.slice(), stampShort: stampShort,
-             submitted: submitted, inWeek: r.inWeek };
+             subId: subId, submitted: submitted, inWeek: r.inWeek };
   });
   const colAsked = [], colLate = [], colLateUnknown = [];
   for (let p = 0; p < cols; p++) {
@@ -1922,7 +1941,13 @@ __IDS__.forEach(function (id) {
     out.GRID[id + ':' + i] = {
       rows: g.rows.map(function (r) {
         return { id: r.id, name: r.name, initials: r.initials, hue: r.hue,
-                 raw: r.raw, score: r.score, submitted: r.score !== '—' };
+                 raw: r.raw, score: r.score, submitted: r.score !== '—',
+                 /* ⊕ Phase 2b — the SAME derivation as the matrix's, so a
+                    comment written from the marking screen is the same row
+                    the student screen shows. Two spellings here would put
+                    one comment on two ids and make the fixture prove the
+                    opposite of what it is for. */
+                 subId: r.score !== '—' ? (id + ':' + r.id + ':p' + i) : null };
       }),
       qpct: g.qpct, stems: stems, submitted: g.submitted,
       roster: k.n, qcount: stems.length, maxScore: stems.length,
@@ -1930,6 +1955,56 @@ __IDS__.forEach(function (id) {
       qLine: stems.length + ' questions, 1 mark each'
     };
   });
+});
+
+/* ⊕ MRB-306 Phase 2b — TWO COMMENTS, ON IDS THIS RUN ACTUALLY PRODUCED.
+
+   Design's delivery has no feedback of any kind, so these are invented like
+   everything else in this file — but the SHAPE is the seam's
+   (`buildFeedback` in shared/teacher-live.js) and the ids are the ones the
+   matrix and the grid just derived, so the fixture cannot render a comment
+   against a submission that is not on the page.
+
+   ⚑ ONE IS MINE AND ONE IS A COLLEAGUE'S, deliberately, on the same
+   reasoning as the two sample shoutouts below: a fixture where every comment
+   is editable proves the sheet renders and proves nothing about the author
+   check, and one where none is leaves `teacher_behaviour` with no Save and
+   no Remove to press. */
+__IDS__.forEach(function (id) {
+  const mx = out.MATRIX[id];
+  const stRow = mx.byId[id + '-12'];      // the fixture's signed-in student
+  const mine = stRow ? stRow.subId.filter(Boolean)[0] : null;
+  const theirs = stRow ? stRow.subId.filter(Boolean)[1] : null;
+  if (mine) {
+    out.FEEDBACK[mine] = {
+      id: mine + ':fb-1', body:
+        'Your working on the energy question was the clearest in the class ' +
+        '— you wrote the equation down before substituting. Next time, ' +
+        'check the units before you write the final line.',
+      teacher_id: '__MRB_FIXTURE_ME__', mine: true, by: 'You',
+      when: '2 days ago', edited: false, editedWhen: '' };
+  }
+  if (theirs) {
+    out.FEEDBACK[theirs] = {
+      id: theirs + ':fb-2', body:
+        'Good recovery on the second half. Come and see me about question 4 ' +
+        'before the next set.',
+      teacher_id: '__MRB_FIXTURE_OTHER__', mine: false, by: 'Another teacher',
+      when: '1 week ago', edited: true, editedWhen: '5 days ago' };
+  }
+  /* And one on the MARKING screen's own paper, so that screen has a comment
+     to open without depending on which of Kaleb's papers happens to be
+     index 1. */
+  const g = out.GRID[id + ':1'];
+  const first = g ? (g.rows.filter(function (r) { return r.subId; })[0]) : null;
+  if (first && !out.FEEDBACK[first.subId]) {
+    out.FEEDBACK[first.subId] = {
+      id: first.subId + ':fb-3', body:
+        'You knew the definition and lost the mark on the description. ' +
+        'Say what changes, not just what it is called.',
+      teacher_id: '__MRB_FIXTURE_ME__', mine: true, by: 'You',
+      when: '3 days ago', edited: false, editedWhen: '' };
+  }
 });
 
 /* Design's two sample shoutouts, against the roster the run just computed. */
@@ -2432,11 +2507,34 @@ EMPTY_SHAPES = {
       "the `engagement` and `spread` charts on the CLASS scope: `nolive` "
       "keeps every roster and so leaves both of them fully populated.",
       lambda p: _shape_no_roster(p)),),
-    "student-detail.html": (("empty",
-        "a student with no submissions at all, on a class that has papers — "
-        "every cell null, so the history renders four \"Nothing in\" rows "
-        "rather than a fabricated date.",
-        lambda p: _shape_no_submissions(p)),),
+    "student-detail.html": (
+        ("empty",
+         "a student with no submissions at all, on a class that has papers — "
+         "every cell null, so the history renders four \"Nothing in\" rows "
+         "rather than a fabricated date.",
+         lambda p: _shape_no_submissions(p)),
+        # ⊕ 3 Sep 2026 (MRB-306 Phase 2b) — A PAST YEAR, ON THIS SCREEN TOO.
+        #
+        # ⛔ WITHOUT IT, MRB-261's RULE WAS UNTESTED ON THE ONE SURFACE THIS
+        # UNIT ADDED. `class-detail-readonly` proves the shoutout composer
+        # disappears on a finished year; nothing proved the same of the
+        # feedback sheet, because the sheet is on student-detail and marking
+        # and neither had a read-only fixture at all.
+        #
+        # ⚠️ AND WHAT IT ASSERTS IS ASYMMETRIC, WHICH IS THE POINT. A past
+        # year is READ-ONLY, not invisible: the opener stays (a teacher may
+        # still read what was written about a child last year — that is what
+        # MRB-261 exists for) and Save and Remove go, because they are the
+        # only two controls that could change it. `fbCanEdit` and
+        # `fbCanRemove` both read `MRB_DATA('canWrite')`, and this is the
+        # fixture that makes that a measurement rather than a claim.
+        ("readonly",
+         "the same student, in a FINISHED academic year — `canWrite` false. "
+         "The feedback opener survives and the sheet's Save and Remove do "
+         "not, which is MRB-261's rule (read-only, not invisible) applied to "
+         "the surface Phase 2b added.",
+         lambda p: _shape_past_year(p)),
+    ),
 }
 
 # ⚠️ THE `empty` SLUG IS UNIQUE PER PAGE, AND THE BUILD REFUSES OTHERWISE.
@@ -2701,6 +2799,15 @@ def _shape_one_of_everything(p):
                     pct=[r["pct"][src]], late=[r["late"][src]],
                     stampShort=[r["stampShort"][src]],
                     submitted=[r["submitted"][src]],
+                    # ⊕ 3 Sep 2026 (Phase 2b). WITHOUT THIS THE PAGE WAS
+                    # BLANK: `stHistory` reads `stRow.subId[i]`, this shaper
+                    # builds its rows by hand rather than by copying, and a
+                    # row with no `subId` array threw a TypeError inside
+                    # `renderVals` — which happens before the first paint,
+                    # so `insights-single` rendered nothing at all. Caught by
+                    # `teacher_behaviour`, which is the gate that reads
+                    # `data-mrb-renders` rather than a screenshot.
+                    subId=[r["subId"][src]],
                     # ⚠️ NOT IN THIS WEEK. The paper was set in an earlier
                     # teaching week, so no child is `inWeek` — see the
                     # divergence note above.
@@ -2747,7 +2854,11 @@ def _shape_one_of_everything(p):
             # Design's own not-submitted cell, as `_shape_written_paper` uses.
             grows.append(dict(base or {"id": r["sid"], "name": "", "initials": "",
                                        "hue": g["rows"][0]["hue"]},
-                              raw=[2] * qn, score="\u2014", submitted=False))
+                              raw=[2] * qn, score="\u2014", submitted=False,
+                              # No submission means no row to attach a
+                              # comment to, which is exactly the state the
+                              # feedback control is absent in.
+                              subId=None))
             continue
         grows.append(dict(base))
         for qi, v in enumerate(base["raw"]):
@@ -2813,6 +2924,15 @@ def _shape_no_submissions(p):
         r["pct"] = [None] * n
         r["stampShort"] = [None] * n
         r["submitted"] = [False] * n
+        # ⊕ 3 Sep 2026 (Phase 2b) — AND NO SUBMISSION MEANS NO SUBMISSION ID.
+        # `buildMatrix` fills `subId[p]` only where a submission row exists,
+        # so a fixture that blanked the scores and kept the ids would be
+        # modelling a state real data cannot reach — and it would offer
+        # "Add feedback" on eleven rows with nothing to attach a comment to,
+        # on the one fixture that exists to prove the empty case. This is the
+        # fixture hazard exactly: consistent with the fiction, impossible in
+        # the seam, and invisible to every gate.
+        r["subId"] = [None] * n
         # ⚠️ TRI-STATE, AND THE FIXTURE HAS TO CARRY THE THIRD VALUE. `null`
         # is "no stamp and no deadline", which is every pre-22-Aug-2026 row —
         # and Design's sample has none, so nothing else in the set drives the
@@ -2860,6 +2980,9 @@ def _shape_no_submissions(p):
             row["raw"] = [2] * len(g["stems"])
             row["score"] = "—"
             row["submitted"] = False
+            # Same reason as the matrix above: `buildGrid` writes `subId`
+            # only on a row that handed in.
+            row["subId"] = None
         # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) — THE FOURTH GLYPH WAS
         # PARKED HERE AND IT COULD NOT BE HERE.
         #
@@ -3033,6 +3156,11 @@ def _shape_written_paper(p):
         if gr["score"] == "—":
             r["scores"][idx] = r["max"][idx] = r["pct"][idx] = None
             r["submitted"][idx] = False
+            # ⊕ 3 Sep 2026 (Phase 2b) — the two have to agree. `buildMatrix`
+            # writes `subId[p]` only where a submission row exists, so a cell
+            # this shaper has just emptied must lose its id too, or the
+            # fixture offers a comment control on a paper nobody handed in.
+            r["subId"][idx] = None
         else:
             got = int(gr["score"].split("/")[0])
             r["scores"][idx] = got
@@ -3106,7 +3234,13 @@ def _shape_no_marked_paper(p):
 
     mx = p["MATRIX"][cid]
     for r in mx["rows"]:
-        for f in ("scores", "max", "pct", "stampShort", "submitted", "late"):
+        # ⊕ 3 Sep 2026 (Phase 2b) — `subId` IS ON THIS LIST, and it had to
+        # be. Every per-cell array on a matrix row has to be sliced to the
+        # one column this shaper keeps; a row left holding the base pack's
+        # full-length `subId` would index a submission from a paper the
+        # fixture no longer has.
+        for f in ("scores", "max", "pct", "stampShort", "submitted", "late",
+                  "subId"):
             r[f] = [r[f][keep]]
         # An open paper cannot be late: there is no deadline behind it yet.
         r["late"] = [False if r["submitted"][0] else None]
@@ -3447,10 +3581,25 @@ function MRB_COMPOSE_ERROR(msg){
 /* Design's select and textarea are UNCONTROLLED, and `student-runtime` now
    carries field values ACROSS a redraw on purpose - it had to, because every
    keystroke schedules one. So clearing `s.note` clears the STATE and leaves
-   the typed text on screen. The DOM is cleared first, then the state. */
-function MRB_COMPOSE_RESET(){
-  var els=document.querySelectorAll('[data-compose-field]'), i;
-  for(i=0;i<els.length;i++){els[i].value='';}}
+   the typed text on screen. The DOM is cleared first, then the state.
+
+   ⊕ 3 Sep 2026 (MRB-306 Phase 2b) - IT TAKES NAMES NOW, AND IT HAD TO.
+   There are THREE composing surfaces on the class screen since the bulk
+   sheet's own free text started being sent: the single-student composer
+   (`recipient`, `note`) and the bulk sheet (`bulk-note`). A bare
+   "clear every [data-compose-field]" would mean a successful bulk send wipes
+   a half-written single shoutout the teacher had not sent yet - text they
+   typed, removed by an action about somebody else.
+
+   No argument still means all of them, so the existing caller is unchanged
+   and this cannot have altered anything by being added. */
+function MRB_COMPOSE_RESET(names){
+  var want=(names==null)?null:(typeof names==='string'?[names]:names);
+  var els=document.querySelectorAll('[data-compose-field]'), i, n;
+  for(i=0;i<els.length;i++){
+    n=els[i].getAttribute('data-compose-field');
+    if(want && want.indexOf(n)<0){continue;}
+    els[i].value='';}}
 
 /* N inserts, one per recipient, and an honest count back. Resolves
    `{ok, fail, error}` - never rejects, and never reports a bare success. */
@@ -3650,6 +3799,158 @@ function MRB_DELETE_SHOUTOUT(shoutoutId){
     return TD.softDeleteClassShoutout(shoutoutId).then(
       function(){return {ok:true,error:null};}, no);
   }catch(e){return no(e);}}
+
+/* == WRITTEN FEEDBACK ON ONE SUBMISSION =================================
+
+   ⊕ MRB-306 Phase 2b, 3 Sep 2026. Mide's guardrails, and which of them is
+   enforced WHERE, because two of the six are not this file's to enforce:
+
+     auditable ...... the SELECT policy admits school admins and `slt`
+                      school-wide. Database.
+     ONE-WAY ........ there is no student INSERT policy, and there is no
+                      student write path in `shared/student-live.js` or
+                      `shared/student-data.js` either. Nothing here offers a
+                      reply, not even a disabled one: a control a child can
+                      see and cannot use is a promise the RLS will refuse.
+     context-bound .. `submission_id` is NOT NULL and there is no other
+                      binding. There is no inbox to reach this from.
+     attributed ..... `teacher_id`, compared to the signed-in id. See
+                      `buildFeedback` in teacher-live.js for why it is not a
+                      name.
+     retained ....... `CHECK ((edited_at IS NULL) = (prior_body IS NULL))`.
+                      The database refuses an edit that drops the old body,
+                      so `MRB_SAVE_FEEDBACK` passes it rather than
+                      remembering to.
+     plain text ..... `body` is text and every render of it is a text node.
+                      No innerHTML on this path, no markdown, no linkifier,
+                      so a URL a teacher types is INERT. Proven by injection
+                      in the report rather than assumed from the shoutout
+                      unit.
+     length cap ..... 2000, which is `submission_feedback_body_length_chk`.
+                      NOT 500 - that is class_shoutouts.
+
+   WARNING: NOTHING HERE REJECTS, on the same terms as the shoutout helpers
+   above. Every one resolves; the callers are Design's synchronous
+   `renderVals` closures and an escaping rejection is a console error in
+   front of a sheet that still looks like it saved. */
+
+/* The database's own cap, in one place, so the textarea's `maxlength`, the
+   counter and the guard in front of the write cannot disagree with each
+   other or with the CHECK. */
+function MRB_FB_MAX(){return 2000;}
+
+/* Put an existing comment INTO the sheet's textarea, once, when the sheet
+   opens. Called from `setState`'s completion callback, which runs after the
+   draw that created the field.
+
+   ⛔ WHY THIS EXISTS AT ALL, because the obvious thing does not work.
+   Rendering `{{ fbBody }}` as the textarea's child is correct HTML — a
+   textarea's content IS its default value — and it produced an EMPTY box on
+   every existing comment. `student-runtime.build` wraps an INTERPOLATION in
+   `<span class="sc-interp">` (Design's own compiler does, and the parity gate
+   counts those spans), so the child was an ELEMENT and the default value came
+   from no child TEXT at all. `textContent` read the comment back perfectly;
+   `value` was "". A teacher would have opened their own paragraph, seen an
+   empty box under a caption saying "YOUR FEEDBACK", typed a line and replaced
+   the lot.
+
+   ⚠️ ONLY ON OPEN. Every later redraw is carried by `student-runtime`'s
+   `restoreFields`, which is what keeps a half-typed comment through the
+   redraw each keystroke schedules. Calling this on every draw would put the
+   SAVED text back over what is being typed. */
+function MRB_FB_FILL(text){
+  var el=document.querySelector('[data-mrb-added="feedback-body"]');
+  if(el){el.value=text||'';}}
+
+/* This submission's live comment, or null. Read out of the payload rather
+   than fetched, because it is consulted inside `renderVals` for every row of
+   a thirty-child grid and `renderVals` is not async. */
+function MRB_FEEDBACK(subId){
+  if(!subId){return null;}
+  var m=MRB_DATA('FEEDBACK')||{};
+  return m[subId]||null;}
+
+/* Why a save failed, in a sentence a teacher can act on. `prior_body` and
+   `no_rows_affected` are named because both are real refusals with a real
+   cause: the first is this client failing to keep the retention promise, the
+   second is RLS matching no row and the UPDATE coming back looking like a
+   success. */
+function MRB_FEEDBACK_WHY(e){
+  var m=(e&&e.message)||'', c=(e&&e.code)||'';
+  if(c==='no_rows_affected')
+    return "Couldn't save - only the teacher who wrote a comment can " +
+           "change it, and only while they still teach this class.";
+  if(c==='prior_body_required')
+    return "Couldn't save - the edit did not keep the previous wording. " +
+           "Reload the page and try again.";
+  if(/row-level security/i.test(m))
+    return "Couldn't save - you may have lost access to this class.";
+  if(/check constraint/i.test(m))
+    return "Couldn't save - the comment is empty, or longer than " +
+           MRB_FB_MAX() + " characters.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't save - this page is not signed in. Reload and try again.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't save - no connection just now. Try again in a moment.";
+  return "Couldn't save the comment. Try again.";}
+
+/* Write it: an INSERT where there is nothing yet, an UPDATE where there is.
+   ⚠️ THE EDIT CARRIES THE PRIOR BODY, ALWAYS, and it is taken from the row
+   that was on screen rather than re-read - the row IS what the teacher was
+   looking at when they pressed save, which is exactly the body being
+   replaced. Resolves {ok, error}. */
+function MRB_SAVE_FEEDBACK(subId, body, existing){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  var text=String(body==null?'':body).trim();
+  if(!subId){return no(new Error('teacher page: no submission'));}
+  if(!text){return no(new Error('teacher page: empty comment'));}
+  if(text.length>MRB_FB_MAX()){
+    return no(new Error('check constraint: body too long'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.insertSubmissionFeedback){
+    return no(new Error('teacher page: no data layer'));}
+  try{
+    if(existing&&existing.id){
+      return TD.updateSubmissionFeedback({id:existing.id, body:text,
+        priorBody:existing.body}).then(
+        function(){return {ok:true,error:null};}, no);
+    }
+    return MRB_AUTHOR_ID().then(function(tid){
+      return TD.insertSubmissionFeedback({submissionId:subId, teacherId:tid,
+        body:text}).then(function(){return {ok:true,error:null};}, no);
+    }, no);
+  }catch(e){return no(e);}}
+
+/* Remove it. Soft, because there is no DELETE policy at all - and real to
+   every reader but its author and a school admin, which is the retention
+   half of the guardrail meeting the audit half. The word on the control is
+   therefore "Remove", not "Delete", and the confirm says what actually
+   happens. Resolves {ok, error}. */
+function MRB_REMOVE_FEEDBACK(id){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  if(!id){return no(new Error('teacher page: no comment'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.softDeleteSubmissionFeedback){
+    return no(new Error('teacher page: no data layer'));}
+  try{
+    return TD.softDeleteSubmissionFeedback(id).then(
+      function(){return {ok:true,error:null};}, no);
+  }catch(e){return no(e);}}
+
+/* The comments re-read after a write, so the row on screen is the row in the
+   database rather than an optimistic copy of what was typed.
+   ⚠️ ON A DEADLINE AND IT ALWAYS SETTLES, exactly as MRB_REFRESH_FEED is: the
+   write has already happened, and the only thing waiting on this is the sheet
+   closing. Eight seconds, then it closes anyway with a stale row - a stale
+   row is a refresh away and a stuck sheet is not. */
+function MRB_REFRESH_FEEDBACK(screen, params){
+  var L=window.MrBadmusTeacherLive, D=window.__MRB_DATA__;
+  if(!L||!L.load||!D){return Promise.resolve(false);}
+  return Promise.race([
+    L.load(screen, params||{}).then(function(d){
+      D.FEEDBACK = d.FEEDBACK; return true;}, function(){return false;}),
+    new Promise(function(r){setTimeout(function(){r(false);}, 8000);})
+  ]);}
 """
 
 

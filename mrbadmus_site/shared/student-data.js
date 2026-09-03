@@ -831,10 +831,116 @@ window.MrBadmusStudentData = (function () {
     }
   }
 
+
+  /**
+   * loadSubmissionFeedback(assignmentId, viewingStudentId) — MRB-306 Phase 2b.
+   *
+   * The teacher's written comment on this student's work for this assignment,
+   * or null. Two SELECTs and nothing else.
+   *
+   * ⛔ THIS IS A READ. It is the only thing this feature adds to the student
+   * surface: there is no insert, no update, no reply, and no student write
+   * path anywhere behind it. `submission_feedback` HAS NO STUDENT INSERT
+   * POLICY — v1 is one-way by Mide's ruling and by the database at once — so
+   * a write here would be refused even if one existed. It must also never be
+   * routed through the answer sink or the offline queue: those belong to a
+   * child's work, and a comment they are only reading has no business in the
+   * same queue.
+   *
+   * ⚠️ EVERY ATTEMPT'S SUBMISSION, NOT JUST THE CURRENT ONE, and that is
+   * measured rather than tidy. The teacher screens attach a comment to the
+   * FIRST attempt (`pickFirstAttempts`, both in teacher-data.js and in the
+   * teacher's grid), and a student who re-sits a paper is looking at a LATER
+   * attempt. Reading only `progress.submission` would therefore show nothing
+   * to exactly the children who were asked to have another go — the ones
+   * most likely to have been written to. RLS scopes this read to the
+   * student's own rows (`submissions_self_all`), so asking for all of them
+   * costs one small query and cannot reach anybody else's.
+   *
+   * Returns `{ body, teacherId, createdAt, editedAt }` or null. NEVER throws:
+   * a comment is one block of one screen and a child's marks must render
+   * whatever happens to it.
+   */
+  async function loadSubmissionFeedback(assignmentId, viewingStudentId) {
+    if (!assignmentId || !viewingStudentId) return null;
+    const guard = window.MrBadmusStudentGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return null;
+    try {
+      const subs = await sb.from('assignment_submissions')
+        .select('id')
+        .eq('assignment_id', assignmentId)
+        .eq('student_id', viewingStudentId)
+        .is('deleted_at', null);
+      if (subs.error) throw subs.error;
+      const ids = (subs.data || []).map(function (r) { return r.id; });
+      if (!ids.length) return null;
+
+      const fb = await sb.from('submission_feedback')
+        .select('id, submission_id, teacher_id, body, created_at, edited_at')
+        .in('submission_id', ids)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      if (fb.error) throw fb.error;
+      const row = (fb.data || [])[0];
+      if (!row) return null;
+      return {
+        body: row.body || '',
+        teacherId: row.teacher_id,
+        createdAt: row.created_at,
+        editedAt: row.edited_at,
+      };
+    } catch (err) {
+      console.warn('[student-data] feedback unavailable', err);
+      return null;
+    }
+  }
+
+  /**
+   * loadClassTeacherNames(classId) — MRB-306 Phase 2b.
+   *
+   * The display names of the teachers of this class, through the SECURITY
+   * DEFINER RPC that exists precisely because a student has no read policy on
+   * a teacher's `profiles` row (`class_teachers_for_viewer`, migration
+   * 20260820001231).
+   *
+   * ⚠️ THE RPC RETURNS NAMES WITHOUT IDS. That is deliberate on its side — "a
+   * student surface has no use for an identifier it cannot act on" — and it
+   * is the whole reason the caller can only name the author of a comment when
+   * the class has EXACTLY ONE teacher. With two, there is no mapping from
+   * `submission_feedback.teacher_id` to either name, and picking the first
+   * would attribute one teacher's words to another in front of a child.
+   *
+   * Returns an array of display names, possibly empty. Never throws.
+   */
+  async function loadClassTeacherNames(classId) {
+    if (!classId) return [];
+    const guard = window.MrBadmusStudentGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return [];
+    try {
+      const { data, error } = await sb.rpc('class_teachers_for_viewer',
+                                           { p_class_id: classId });
+      if (error) throw error;
+      const rows = (data && data.teachers) || [];
+      return rows.map(function (t) { return t.display_name; })
+                 .filter(Boolean);
+    } catch (err) {
+      console.warn('[student-data] class teachers unavailable', err);
+      return [];
+    }
+  }
+
   return {
     loadStudentClass: loadStudentClass,
     loadStudentClasses: loadStudentClasses,
     loadStudentClassShoutouts: loadStudentClassShoutouts,
     saveBenchTheme: saveBenchTheme,
+    // ⊕ MRB-306 Phase 2b — the student's READ of a teacher's written
+    // feedback, and the name to sign it with. Reads only; this feature
+    // adds no write path to any student surface.
+    loadSubmissionFeedback: loadSubmissionFeedback,
+    loadClassTeacherNames: loadClassTeacherNames,
   };
 })();

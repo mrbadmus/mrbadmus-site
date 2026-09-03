@@ -293,7 +293,19 @@ PAGES = [
          # the fixture keeps exercising a PRESSABLE "Open lesson" — matching
          # Design's own always-visible button — rather than silently gating
          # it off on every gate run.
+         # ⊕ 3 Sep 2026 (MRB-306 Phase 2b) — FOUR MORE, AND ALL FOUR ARE
+         # EMPTY. `MRB_DATA` throws on a key the fixture was never given and
+         # `renderVals` reads all four unconditionally, so a page that mounts
+         # is not evidence they were optional. Empty is not a placeholder
+         # here: it is the state Design's own delivery is in — her sample has
+         # no teacher's comment on it, because she drew no feedback surface
+         # at all — so `feedbackHas` is false, the inserted `<if>` renders
+         # nothing, and the fixture is byte-identical to what it was. That is
+         # what keeps `student_behaviour`'s visible-text comparison against
+         # Design's own file green with no divergence to register.
          constants=dict(weekLabel="'WEEK 04'", lateText="'2 days late'",
+                        feedbackHas="false", feedbackBody="''",
+                        feedbackBy="''", feedbackWhen="''",
                         assignmentLessonHref=
                         "'/ks3/biology/breathing-and-gas-exchange/"
                         "the-gas-exchange-system.html'")),
@@ -1953,6 +1965,80 @@ def apply_rulings(page, logic, roots, donor=None):
     # section must not find an `<if>` where it expects the grid. Every index
     # is asserted present, so an entry that goes stale stops the build rather
     # than silently leaving a surface on screen in a state it contradicts.
+    # ── markup ADDED where Design drew no counterpart at all ─────────────
+    #
+    # ⊕ 3 Sep 2026 (MRB-306 Phase 2b) — THE NINTH MECHANISM. See `INSERT_AT`
+    # in student_rulings.py for the ruling and for why none of the other
+    # eight can express it; the short version is that all eight work on
+    # something Design DREW, and Design drew no feedback surface.
+    #
+    # This is `teacher_rulings.INSERT_AT`'s implementation, ported rather than
+    # reinvented, including both of its refusals:
+    #
+    #   · a parent that is not in the template stops the build. On the teacher
+    #     port an absent parent is SKIPPED, because that port emits six pages
+    #     out of one file and most parents are on one of them; here there are
+    #     two pages and each has its own ruling dict, so an absent parent is
+    #     always a stale anchor and never a page it does not apply to.
+    #   · `after` must match EXACTLY ONE direct child. Appended to the wrong
+    #     place, an insertion lands in the middle of a screen and the page
+    #     still builds — which is the failure that looks like success.
+    #
+    # ⚠️ IT RUNS BEFORE `WRAP`, which is deliberate and is the opposite of
+    # the teacher port's ordering question. `WRAP` replaces a node IN ITS
+    # PARENT by an `<if>` wrapper, so a `WRAP` on node 314 would leave this
+    # insertion's `after` anchor no longer a direct child of 290 — the
+    # wrapper would be. Nothing wraps 314 today; running first means nothing
+    # has to remember not to.
+    #
+    # ⚠️ AND AFTER THE GRAFTS, so an insertion can anchor on a grafted node if
+    # one is ever wanted, exactly as `WRAP` can.
+    inserts = dict(student_rulings.INSERT_AT.get(page, {}))
+    inserted = [0]
+    if inserts:
+        by_i = {}
+
+        def _note(n):
+            if isinstance(n, dict):
+                if n.get("i") is not None:
+                    by_i[n["i"]] = n
+                for kid in n.get("c") or []:
+                    _note(kid)
+
+        for root in roots:
+            _note(root)
+
+        for (parent, after_node), (subtree, why) in sorted(
+                inserts.items(),
+                key=lambda kv: (kv[0][0], kv[0][1] is not None,
+                                kv[0][1] or 0)):
+            if parent not in by_i:
+                raise SystemExit(
+                    "build_student_port.py: the insertion on %r goes inside "
+                    "template node %s, and that node is not in Design's "
+                    "template.\n  Design has redrawn it; re-anchor "
+                    "student_rulings.INSERT_AT rather than dropping the "
+                    "ruling. (%s)" % (page, parent, why.split(".")[0]))
+            kids = by_i[parent].setdefault("c", [])
+            pos = len(kids)
+            if after_node is not None:
+                hit = [j for j, kid in enumerate(kids)
+                       if isinstance(kid, dict)
+                       and kid.get("i") == after_node]
+                if len(hit) != 1:
+                    raise SystemExit(
+                        "build_student_port.py: the insertion into node %s "
+                        "goes after node %s, and that node is %d of node "
+                        "%s's children, not one.\n  Re-anchor "
+                        "student_rulings.INSERT_AT. Appended to the wrong "
+                        "place this puts a teacher's words in the middle of "
+                        "a child's marks, and the page still builds. (%s)"
+                        % (parent, after_node, len(hit), parent,
+                           why.split(".")[0]))
+                pos = hit[0] + 1
+            kids.insert(pos, json.loads(json.dumps(subtree)))
+            inserted[0] += 1
+
     wraps = dict(student_rulings.WRAP.get(page, {}))
     wrapped = [0]
 
@@ -1985,7 +2071,8 @@ def apply_rulings(page, logic, roots, donor=None):
             "green." % (page, sorted(wraps)))
 
     return (logic, roots, len(reps), removed[0], wired[0],
-            grafted[0], attred[0], exprd[0], wrapped[0], moved[0])
+            grafted[0], attred[0], exprd[0], wrapped[0], moved[0],
+            inserted[0])
 
 
 # ── lifting Design's data out of Design's logic ───────────────────────────
@@ -3407,7 +3494,8 @@ def build():
         # the term label belongs, and it would look like a data bug.
         donor_tpl = tpls.get(DONOR_PAGE)
         (logic, ruled_roots, n_rep, n_pruned, n_wired,
-         n_grafted, n_attred, n_exprd, n_wrapped, n_moved) = apply_rulings(
+         n_grafted, n_attred, n_exprd, n_wrapped, n_moved,
+         n_inserted) = apply_rulings(
             spec["page"], tpl["logic"], tpl["roots"],
             donor=(donor_tpl or {}).get("roots"))
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
@@ -3507,11 +3595,12 @@ def build():
                   "%d template subtree(s) pruned, %d handler(s) attached, "
                   "%d subtree(s) grafted from the amendments, %d node(s) "
                   "named for the themes, %d loop expression(s) renamed, "
-                  "%d node(s) made conditional, %d handler(s) retargeted — "
+                  "%d node(s) made conditional, %d handler(s) retargeted, "
+                  "%d subtree(s) inserted where Design drew none — "
                   "from student_rulings.py, not from a hand edit to the "
                   "built page"
                   % (n_rep, n_pruned, n_wired, n_grafted, n_attred, n_exprd,
-                     n_wrapped, n_moved))
+                     n_wrapped, n_moved, n_inserted))
         print("     ✅ %-24s %7d bytes  (%d template node(s), "
               "%d chars of Design's logic, 0 bytes of data)"
               % (spec["out"], len(body), count_nodes(roots), len(logic)))

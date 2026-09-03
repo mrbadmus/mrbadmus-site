@@ -163,6 +163,20 @@ EMPTY_SHAPE = {
         "restored shoutout surface: composer absent, feed readable, Remove "
         "withheld",
     ("student-detail", "empty"): "a student with no submissions",
+    # ⊕ THE EIGHTEENTH, 3 Sep 2026 (MRB-306 Phase 2b). The read-only year on
+    # the screen written feedback is AUTHORED from. `class-detail-readonly`
+    # proves MRB-261's rule on the shoutout surface; nothing proved it on the
+    # feedback surface, because the feedback sheet is on student-detail and
+    # on marking and neither page had a past-year fixture at all.
+    #
+    # ⚠️ WHAT IT SHOWS IS ASYMMETRIC, WHICH IS THE RULE ITSELF. Read-only is
+    # not invisible: the control that OPENS a comment survives — a teacher
+    # may still read what was written about a child last year — and the two
+    # inside the sheet that could CHANGE it do not.
+    ("student-detail", "readonly"):
+        "the same student in a FINISHED academic year. MRB-261's rule on the "
+        "feedback surface: the opener survives, Save and Remove are "
+        "withheld",
     # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — THE THREE THE CHARTS
     # SCREEN HAD NO ANSWER FOR. `insights-empty` withholds a GRID, which
     # reaches ONE of the six chart kinds; the other five were rendering

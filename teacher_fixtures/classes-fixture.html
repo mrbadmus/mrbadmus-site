@@ -266,10 +266,25 @@ function MRB_COMPOSE_ERROR(msg){
 /* Design's select and textarea are UNCONTROLLED, and `student-runtime` now
    carries field values ACROSS a redraw on purpose - it had to, because every
    keystroke schedules one. So clearing `s.note` clears the STATE and leaves
-   the typed text on screen. The DOM is cleared first, then the state. */
-function MRB_COMPOSE_RESET(){
-  var els=document.querySelectorAll('[data-compose-field]'), i;
-  for(i=0;i<els.length;i++){els[i].value='';}}
+   the typed text on screen. The DOM is cleared first, then the state.
+
+   ⊕ 3 Sep 2026 (MRB-306 Phase 2b) - IT TAKES NAMES NOW, AND IT HAD TO.
+   There are THREE composing surfaces on the class screen since the bulk
+   sheet's own free text started being sent: the single-student composer
+   (`recipient`, `note`) and the bulk sheet (`bulk-note`). A bare
+   "clear every [data-compose-field]" would mean a successful bulk send wipes
+   a half-written single shoutout the teacher had not sent yet - text they
+   typed, removed by an action about somebody else.
+
+   No argument still means all of them, so the existing caller is unchanged
+   and this cannot have altered anything by being added. */
+function MRB_COMPOSE_RESET(names){
+  var want=(names==null)?null:(typeof names==='string'?[names]:names);
+  var els=document.querySelectorAll('[data-compose-field]'), i, n;
+  for(i=0;i<els.length;i++){
+    n=els[i].getAttribute('data-compose-field');
+    if(want && want.indexOf(n)<0){continue;}
+    els[i].value='';}}
 
 /* N inserts, one per recipient, and an honest count back. Resolves
    `{ok, fail, error}` - never rejects, and never reports a bare success. */
@@ -469,6 +484,158 @@ function MRB_DELETE_SHOUTOUT(shoutoutId){
     return TD.softDeleteClassShoutout(shoutoutId).then(
       function(){return {ok:true,error:null};}, no);
   }catch(e){return no(e);}}
+
+/* == WRITTEN FEEDBACK ON ONE SUBMISSION =================================
+
+   ⊕ MRB-306 Phase 2b, 3 Sep 2026. Mide's guardrails, and which of them is
+   enforced WHERE, because two of the six are not this file's to enforce:
+
+     auditable ...... the SELECT policy admits school admins and `slt`
+                      school-wide. Database.
+     ONE-WAY ........ there is no student INSERT policy, and there is no
+                      student write path in `shared/student-live.js` or
+                      `shared/student-data.js` either. Nothing here offers a
+                      reply, not even a disabled one: a control a child can
+                      see and cannot use is a promise the RLS will refuse.
+     context-bound .. `submission_id` is NOT NULL and there is no other
+                      binding. There is no inbox to reach this from.
+     attributed ..... `teacher_id`, compared to the signed-in id. See
+                      `buildFeedback` in teacher-live.js for why it is not a
+                      name.
+     retained ....... `CHECK ((edited_at IS NULL) = (prior_body IS NULL))`.
+                      The database refuses an edit that drops the old body,
+                      so `MRB_SAVE_FEEDBACK` passes it rather than
+                      remembering to.
+     plain text ..... `body` is text and every render of it is a text node.
+                      No innerHTML on this path, no markdown, no linkifier,
+                      so a URL a teacher types is INERT. Proven by injection
+                      in the report rather than assumed from the shoutout
+                      unit.
+     length cap ..... 2000, which is `submission_feedback_body_length_chk`.
+                      NOT 500 - that is class_shoutouts.
+
+   WARNING: NOTHING HERE REJECTS, on the same terms as the shoutout helpers
+   above. Every one resolves; the callers are Design's synchronous
+   `renderVals` closures and an escaping rejection is a console error in
+   front of a sheet that still looks like it saved. */
+
+/* The database's own cap, in one place, so the textarea's `maxlength`, the
+   counter and the guard in front of the write cannot disagree with each
+   other or with the CHECK. */
+function MRB_FB_MAX(){return 2000;}
+
+/* Put an existing comment INTO the sheet's textarea, once, when the sheet
+   opens. Called from `setState`'s completion callback, which runs after the
+   draw that created the field.
+
+   ⛔ WHY THIS EXISTS AT ALL, because the obvious thing does not work.
+   Rendering `{{ fbBody }}` as the textarea's child is correct HTML — a
+   textarea's content IS its default value — and it produced an EMPTY box on
+   every existing comment. `student-runtime.build` wraps an INTERPOLATION in
+   `<span class="sc-interp">` (Design's own compiler does, and the parity gate
+   counts those spans), so the child was an ELEMENT and the default value came
+   from no child TEXT at all. `textContent` read the comment back perfectly;
+   `value` was "". A teacher would have opened their own paragraph, seen an
+   empty box under a caption saying "YOUR FEEDBACK", typed a line and replaced
+   the lot.
+
+   ⚠️ ONLY ON OPEN. Every later redraw is carried by `student-runtime`'s
+   `restoreFields`, which is what keeps a half-typed comment through the
+   redraw each keystroke schedules. Calling this on every draw would put the
+   SAVED text back over what is being typed. */
+function MRB_FB_FILL(text){
+  var el=document.querySelector('[data-mrb-added="feedback-body"]');
+  if(el){el.value=text||'';}}
+
+/* This submission's live comment, or null. Read out of the payload rather
+   than fetched, because it is consulted inside `renderVals` for every row of
+   a thirty-child grid and `renderVals` is not async. */
+function MRB_FEEDBACK(subId){
+  if(!subId){return null;}
+  var m=MRB_DATA('FEEDBACK')||{};
+  return m[subId]||null;}
+
+/* Why a save failed, in a sentence a teacher can act on. `prior_body` and
+   `no_rows_affected` are named because both are real refusals with a real
+   cause: the first is this client failing to keep the retention promise, the
+   second is RLS matching no row and the UPDATE coming back looking like a
+   success. */
+function MRB_FEEDBACK_WHY(e){
+  var m=(e&&e.message)||'', c=(e&&e.code)||'';
+  if(c==='no_rows_affected')
+    return "Couldn't save - only the teacher who wrote a comment can " +
+           "change it, and only while they still teach this class.";
+  if(c==='prior_body_required')
+    return "Couldn't save - the edit did not keep the previous wording. " +
+           "Reload the page and try again.";
+  if(/row-level security/i.test(m))
+    return "Couldn't save - you may have lost access to this class.";
+  if(/check constraint/i.test(m))
+    return "Couldn't save - the comment is empty, or longer than " +
+           MRB_FB_MAX() + " characters.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't save - this page is not signed in. Reload and try again.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't save - no connection just now. Try again in a moment.";
+  return "Couldn't save the comment. Try again.";}
+
+/* Write it: an INSERT where there is nothing yet, an UPDATE where there is.
+   ⚠️ THE EDIT CARRIES THE PRIOR BODY, ALWAYS, and it is taken from the row
+   that was on screen rather than re-read - the row IS what the teacher was
+   looking at when they pressed save, which is exactly the body being
+   replaced. Resolves {ok, error}. */
+function MRB_SAVE_FEEDBACK(subId, body, existing){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  var text=String(body==null?'':body).trim();
+  if(!subId){return no(new Error('teacher page: no submission'));}
+  if(!text){return no(new Error('teacher page: empty comment'));}
+  if(text.length>MRB_FB_MAX()){
+    return no(new Error('check constraint: body too long'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.insertSubmissionFeedback){
+    return no(new Error('teacher page: no data layer'));}
+  try{
+    if(existing&&existing.id){
+      return TD.updateSubmissionFeedback({id:existing.id, body:text,
+        priorBody:existing.body}).then(
+        function(){return {ok:true,error:null};}, no);
+    }
+    return MRB_AUTHOR_ID().then(function(tid){
+      return TD.insertSubmissionFeedback({submissionId:subId, teacherId:tid,
+        body:text}).then(function(){return {ok:true,error:null};}, no);
+    }, no);
+  }catch(e){return no(e);}}
+
+/* Remove it. Soft, because there is no DELETE policy at all - and real to
+   every reader but its author and a school admin, which is the retention
+   half of the guardrail meeting the audit half. The word on the control is
+   therefore "Remove", not "Delete", and the confirm says what actually
+   happens. Resolves {ok, error}. */
+function MRB_REMOVE_FEEDBACK(id){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  if(!id){return no(new Error('teacher page: no comment'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.softDeleteSubmissionFeedback){
+    return no(new Error('teacher page: no data layer'));}
+  try{
+    return TD.softDeleteSubmissionFeedback(id).then(
+      function(){return {ok:true,error:null};}, no);
+  }catch(e){return no(e);}}
+
+/* The comments re-read after a write, so the row on screen is the row in the
+   database rather than an optimistic copy of what was typed.
+   ⚠️ ON A DEADLINE AND IT ALWAYS SETTLES, exactly as MRB_REFRESH_FEED is: the
+   write has already happened, and the only thing waiting on this is the sheet
+   closing. Eight seconds, then it closes anyway with a stale row - a stale
+   row is a refresh away and a stuck sheet is not. */
+function MRB_REFRESH_FEEDBACK(screen, params){
+  var L=window.MrBadmusTeacherLive, D=window.__MRB_DATA__;
+  if(!L||!L.load||!D){return Promise.resolve(false);}
+  return Promise.race([
+    L.load(screen, params||{}).then(function(d){
+      D.FEEDBACK = d.FEEDBACK; return true;}, function(){return false;}),
+    new Promise(function(r){setTimeout(function(){r(false);}, 8000);})
+  ]);}
 var DCLogic = window.MrBadmusStudentRuntime.MrbLogic;
 var StreamableLogic = DCLogic;
 class Component extends DCLogic {
@@ -477,7 +644,10 @@ class Component extends DCLogic {
     classId: MRB_DATA('classId'), studentId: MRB_DATA('studentId'),
     paperIdx: MRB_DATA('paperIdx'), weekIdx: 0,
     ks: 'All', sort: 'code', modal: null, toast: '',
-    boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', search: '',
+    boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', boNote: '',
+    search: '',
+    fbSub: null, fbName: '', fbPaper: '', fbBody: '', fbErr: '',
+    fbConfirm: false,
     importStep: 1, ttStep: 1,
     digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
     chartKind: 'submissions', chartScope: MRB_Q('class') || 'all',
@@ -1177,6 +1347,26 @@ class Component extends DCLogic {
       name: r.name, initials: r.initials, hue: r.hue,
       cells: r.raw.map(v => this.cellStyle(v)),
       score: r.score,
+      fbCan: !!r.subId,
+      fbLabel: !MRB_FEEDBACK(r.subId) ? 'Add feedback'
+        : (MRB_FEEDBACK(r.subId).mine ? 'Edit feedback'
+          : 'Read feedback'),
+      fbFg: MRB_FEEDBACK(r.subId) ? 'var(--st-accent-text)'
+        : 'var(--st-ghost)',
+      fbFill: MRB_FEEDBACK(r.subId) ? 'currentColor' : 'none',
+      fbAria: (!MRB_FEEDBACK(r.subId) ? 'Add feedback for '
+        : (MRB_FEEDBACK(r.subId).mine ? 'Edit your feedback for '
+          : 'Read the feedback for ')) + r.name,
+      openFb: (e) => {
+        if (e && e.stopPropagation) { e.stopPropagation(); }
+        if (e && e.preventDefault) { e.preventDefault(); }
+        const row = MRB_FEEDBACK(r.subId);
+        const had = (row && row.body) || '';
+        this.setState({ fbSub: r.subId, fbName: r.name,
+          fbPaper: pp ? pp.title : '', fbBody: had,
+          fbErr: '', fbConfirm: false },
+          () => MRB_FB_FILL(had));
+      },
       open: () => MRB_GO('student', { student: r.id, 'class': k && k.id })
     })) : [];
 
@@ -1189,6 +1379,12 @@ class Component extends DCLogic {
       const late = lateState === true;
       const pct = stRow ? stRow.pct[i] : null;
       const stampS = stRow ? stRow.stampShort[i] : null;
+      /* ⊕ MRB-306 Phase 2b — the submission this row is about, and
+         whatever has already been written on it. `subId` is null where
+         the child has not handed in: there is nothing to attach a
+         comment to, and the control is not drawn. */
+      const fbSub = stRow ? stRow.subId[i] : null;
+      const fbRow = MRB_FEEDBACK(fbSub);
       const tone = open ? 'neutral'
         : (sc == null || late ? 'warn'
           : (lateState === false ? 'ok' : 'neutral'));
@@ -1210,6 +1406,27 @@ class Component extends DCLogic {
         stBc: tone === 'neutral' ? 'var(--st-rule-soft)' : (tone === 'warn' ? 'var(--st-chip-tint-border)' : 'var(--ks3-ok-tint)'),
         stDot: tone === 'neutral' ? 'var(--st-rule-strong)' : (tone === 'warn' ? 'var(--st-accent)' : 'var(--ks3-ok)'),
         stDotR: tone === 'warn' ? '1px' : '50%',
+        fbCan: !!fbSub,
+        fbLabel: !fbRow ? 'Add feedback'
+          : (fbRow.mine ? 'Edit feedback' : 'Read feedback'),
+        fbFg: fbRow ? 'var(--st-accent-text)' : 'var(--st-muted)',
+        fbAria: (!fbRow ? 'Add feedback on '
+          : (fbRow.mine ? 'Edit your feedback on '
+            : 'Read the feedback on ')) + p.title +
+          ' for ' + (st ? st.name : 'this student'),
+        /* ⚠️ `stopPropagation` FIRST. Design's whole row (361) carries
+           `h.open` and navigates to the marking screen, so without
+           this the press would open the sheet and leave the page it
+           opened on in the same gesture. */
+        openFb: (e) => {
+          if (e && e.stopPropagation) { e.stopPropagation(); }
+          if (e && e.preventDefault) { e.preventDefault(); }
+          const had = (fbRow && fbRow.body) || '';
+          this.setState({ fbSub: fbSub, fbName: st ? st.name : '',
+            fbPaper: p.title, fbBody: had,
+            fbErr: '', fbConfirm: false },
+            () => MRB_FB_FILL(had));
+        },
         open: () => MRB_GO('marking', { 'class': k && k.id, paper: p.idx })
       };
     }) : [];
@@ -1427,6 +1644,116 @@ class Component extends DCLogic {
       weekBackCursor: wi >= kWeeks.length - 1 ? 'default' : 'pointer',
       weekFwdCursor: wi <= 0 ? 'default' : 'pointer',
       rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) : 'This week',
+
+      /* ── ⊕ MRB-306 Phase 2b · the feedback sheet ──────────────── */
+      fbOpen: !!s.fbSub,
+      fbKicker: k.code + ' \u00b7 Feedback',
+      fbTitle: 'Feedback for ' + (s.fbName || 'this student'),
+      fbOn: s.fbPaper ? 'On ' + s.fbPaper : 'On this submission',
+      fbBody: s.fbBody || '',
+      fbErr: s.fbErr || '',
+      /* ATTRIBUTED, in the only terms a teacher session can prove.
+         `buildFeedback` records why this is "You" / "Another
+         teacher" and not a name: a teacher has no read policy on
+         another teacher's profile row, so a name would either be an
+         em dash (which reads as a bug) or a guess. */
+      fbByLine: (function () {
+        const r = MRB_FEEDBACK(s.fbSub);
+        if (!r) { return ''; }
+        return r.by + ' \u00b7 ' + r.when +
+          (r.edited ? ' \u00b7 edited ' + r.editedWhen : '');
+      })(),
+      /* ⛔ THE WORDS, WHENEVER THERE IS NO EDITOR FOR THEM — a
+         colleague's comment (RLS: `submission_feedback_update` is
+         `teacher_id = auth.uid()`, so offering an editor would be
+         offering a refusal) OR this teacher's own on a FINISHED year.
+         ⚠️ IT USED TO READ `!mine` ALONE, and a read-only drive found
+         what that cost: on a past year a teacher opened their own
+         comment and saw the byline with no text under it. MRB-261 is
+         read-only, not invisible. */
+      fbReadBody: !!(MRB_FEEDBACK(s.fbSub) &&
+        (!MRB_FEEDBACK(s.fbSub).mine || !MRB_DATA('canWrite'))),
+      fbBodyText: (MRB_FEEDBACK(s.fbSub) &&
+        (!MRB_FEEDBACK(s.fbSub).mine || !MRB_DATA('canWrite')))
+        ? MRB_FEEDBACK(s.fbSub).body : '',
+      fbCanEdit: !!(MRB_DATA('canWrite') &&
+        (!MRB_FEEDBACK(s.fbSub) || MRB_FEEDBACK(s.fbSub).mine)),
+      fbCanRemove: !!(MRB_DATA('canWrite') && MRB_FEEDBACK(s.fbSub) &&
+        MRB_FEEDBACK(s.fbSub).mine),
+      fbFieldCap: MRB_FEEDBACK(s.fbSub) ? 'Your feedback'
+        : 'Write feedback',
+      fbSaveLabel: MRB_FEEDBACK(s.fbSub) ? 'Save changes'
+        : 'Save feedback',
+      /* TWO PRESSES. The first says what the second will do; nothing
+         is written until the second. There is no undo — there is no
+         UPDATE path anywhere in this codebase that clears
+         `deleted_at` — so the label says so rather than a dialog
+         saying it on top of a dialog. */
+      fbRemoveLabel: s.fbConfirm
+        ? 'Remove it \u2014 this cannot be undone' : 'Remove',
+      /* ⛔ THE ONE-WAY GUARDRAIL, IN WORDS, TO THE PERSON WRITING.
+         There is no reply control anywhere on the student side and
+         there is no student INSERT policy on the table, so a child
+         cannot answer this — and the teacher composing it is the one
+         who needs to know that before they phrase a question. */
+      fbFootNote: MRB_DATA('canWrite')
+        ? 'They read this under their marking. They cannot reply.'
+        : 'This year is read-only.',
+      closeFeedback: () => this.setState({ fbSub: null, fbBody: '',
+        fbErr: '', fbConfirm: false }),
+      setFbBody: (e) => this.setState({ fbBody: e.target.value,
+        fbErr: '' }),
+      /* INSERT where there is nothing yet, UPDATE where there is — and
+         the UPDATE carries the body it replaces, because the database
+         refuses an edit that does not
+         (`(edited_at IS NULL) = (prior_body IS NULL)`). Retention is
+         not remembered here; it is unavoidable. */
+      saveFeedback: () => {
+        const sub = s.fbSub;
+        const row = MRB_FEEDBACK(sub);
+        const body = String(s.fbBody || '').trim();
+        if (!sub) { return; }
+        if (!body) {
+          return this.setState({ fbErr: 'Write something first.' }); }
+        if (body.length > MRB_FB_MAX()) {
+          return this.setState({ fbErr: 'Too long \u2014 ' +
+            MRB_FB_MAX() + ' characters at most.' }); }
+        if (row && body === String(row.body || '')) {
+          return this.setState({ fbSub: null, fbBody: '', fbErr: '',
+            fbConfirm: false, toast: 'No change' }); }
+        this.ping('Saving\u2026');
+        MRB_SAVE_FEEDBACK(sub, body, row).then((res) => {
+          if (!res.ok) {
+            const why = MRB_FEEDBACK_WHY(res.error);
+            this.setState({ fbErr: why });
+            return this.ping(why);
+          }
+          MRB_REFRESH_FEEDBACK(s.screen, { classId: s.classId,
+            studentId: s.studentId, paperIdx: s.paperIdx }).then(() => {
+            this.setState({ fbSub: null, fbBody: '', fbErr: '',
+              fbConfirm: false,
+              toast: row ? 'Feedback updated' : 'Feedback saved' });
+          });
+        });
+      },
+      removeFeedback: () => {
+        const row = MRB_FEEDBACK(s.fbSub);
+        if (!row || !row.id) { return; }
+        if (!s.fbConfirm) { return this.setState({ fbConfirm: true }); }
+        this.ping('Removing\u2026');
+        MRB_REMOVE_FEEDBACK(row.id).then((res) => {
+          if (!res.ok) {
+            const why = MRB_FEEDBACK_WHY(res.error);
+            this.setState({ fbErr: why, fbConfirm: false });
+            return this.ping(why);
+          }
+          MRB_REFRESH_FEEDBACK(s.screen, { classId: s.classId,
+            studentId: s.studentId, paperIdx: s.paperIdx }).then(() => {
+            this.setState({ fbSub: null, fbBody: '', fbErr: '',
+              fbConfirm: false, toast: 'Feedback removed' });
+          });
+        });
+      },
       student: {
         name: st ? st.name : '—',
         initials: st ? this.initials(st.name) : '',
@@ -1583,31 +1910,39 @@ class Component extends DCLogic {
           toggle: () => this.setState({ boSel: on ? s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })
         };
       }),
-      bulkSummary: s.boSel.length + ' selected · ' + (this.TEMPLATES.filter(t => t.id === s.boTpl)[0] || { label: 'no template' }).label,
+      bulkSummary: s.boSel.length + ' selected · ' +
+        (this.TEMPLATES.filter(t => t.id === s.boTpl)[0] ||
+          { label: 'no template' }).label +
+        (String(s.boNote || '').trim() ? ' · and your message' : ''),
       bulkTop: () => this.setState({ boSel: kRoster.filter(r => r.inWeek).map(r => r.id) }),
       sendBulk: () => {
         const ids = (s.boSel || []).slice();
         if (!ids.length) {
           return this.ping('Pick at least one student'); }
-        if (!s.boTpl) {
-          return this.ping('Pick a template'); }
+        const bulkBody = String(s.boNote || '').trim();
+        if (!s.boTpl && !bulkBody) {
+          return this.ping('Pick a template, or write a message'); }
+        if (bulkBody.length > 500) {
+          return this.ping('Message too long — 500 characters at most'); }
         this.ping('Sending to ' + ids.length + '…');
         const cid = k && k.id;
-        MRB_SEND_SHOUTOUTS(cid, ids, s.boTpl, null).then((r) => {
-          if (!r.ok) {
-            return this.ping(MRB_SHOUTOUT_WHY(r.error)); }
-          if (r.fail) {
-            /* The sheet stays open and the selection stays put: some of
-               these children were told and some were not, and the teacher
-               is the only one who can decide what to do about it. */
-            return this.ping('Sent to ' + r.ok + ' of ' + ids.length +
-              ' — ' + MRB_SHOUTOUT_WHY(r.error)); }
-          MRB_REFRESH_FEED(cid).then(() => {
-            this.setState({ modal: null, boSel: [],
-              toast: 'Shoutout sent to ' + r.ok +
-                (r.ok === 1 ? ' student' : ' students') });
+        MRB_SEND_SHOUTOUTS(cid, ids, s.boTpl, bulkBody || null)
+          .then((r) => {
+            if (!r.ok) {
+              return this.ping(MRB_SHOUTOUT_WHY(r.error)); }
+            if (r.fail) {
+              /* The sheet stays open and the selection stays put: some of
+                 these children were told and some were not, and the teacher
+                 is the only one who can decide what to do about it. */
+              return this.ping('Sent to ' + r.ok + ' of ' + ids.length +
+                ' — ' + MRB_SHOUTOUT_WHY(r.error)); }
+            MRB_COMPOSE_RESET(['bulk-note']);
+            MRB_REFRESH_FEED(cid).then(() => {
+              this.setState({ modal: null, boSel: [], boNote: '',
+                toast: 'Shoutout sent to ' + r.ok +
+                  (r.ok === 1 ? ' student' : ' students') });
+            });
           });
-        });
       },
       feed: (MRB_DATA('FEED')[k && k.id] || []).map((f) => ({
         ...f,
@@ -1645,6 +1980,7 @@ class Component extends DCLogic {
       setSearch: (e) => this.setState({ search: e.target.value }),
       pickRecipient: (e) => this.setState({ recipient: e.target.value }),
       setNote: (e) => this.setState({ note: e.target.value }),
+      setBulkNote: (e) => this.setState({ boNote: e.target.value }),
       sendShoutout: () => {
         const rid = s.recipient;
         const body = String(s.note || '').trim();
@@ -1667,7 +2003,7 @@ class Component extends DCLogic {
             /* Design's fields are uncontrolled and the runtime carries
                their values over a redraw, so the DOM is cleared before
                the state is. */
-            MRB_COMPOSE_RESET();
+            MRB_COMPOSE_RESET(['recipient', 'note']);
             MRB_REFRESH_FEED(cid).then(() => {
               this.setState({ recipient: '', note: '', toast: '' });
             });
@@ -1738,7 +2074,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"06f24811","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"f05eeaa9","teacher-guard.js":"2efdc820","teacher-live.js":"0fd90b9a"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"06f24811","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"615378a3","teacher-guard.js":"2efdc820","teacher-live.js":"029b3d08"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script src="teacher-fixture-classes.js"></script>
 <script>window.__MRB_MOUNT__();</script>

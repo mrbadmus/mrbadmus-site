@@ -763,11 +763,19 @@
       var mine = byStudent[sid] || {};
       var scores = blank(), max = blank(), pct = blank(), stamp = blank(),
           stampShort = blank(), status = blank(), late = blank(),
-          submitted = [];
+          subId = blank(), submitted = [];
       var inWeek = false;
       for (var p = 0; p < cols; p++) {
         var c = cellOf(mine[p], papers[p]);
         if (mine[p]) { status[p] = mine[p].status || null; }
+        /* ⊕ MRB-306 Phase 2b — WHICH SUBMISSION ROW THIS CELL IS.
+           Written feedback binds to `assignment_submissions.id` and to
+           nothing else, so the id has to survive the matrix or the student
+           screen has a comment control with no row to attach to. Set BEFORE
+           the `!c` guard on purpose: a submission with no score is still a
+           submission a teacher may want to write about, and `cellOf` returns
+           null for one. */
+        if (mine[p]) { subId[p] = mine[p].id || null; }
         if (!c) { submitted.push(false); continue; }
         /* `submitted[p]` is the honest predicate for "did this student hand
            this in", and it is NOT `scores[p] != null`: a submission with no
@@ -791,7 +799,7 @@
       return {
         sid: sid, scores: scores, max: max, pct: pct, late: late,
         stamp: stamp, stampShort: stampShort, status: status,
-        inWeek: inWeek, submitted: submitted
+        subId: subId, inWeek: inWeek, submitted: submitted
       };
     });
 
@@ -1262,7 +1270,12 @@
         id: r.id,
         name: r.name,
         initials: initialsOf(r.first_name, r.last_name),
-        hue: hueFor(r.name)
+        hue: hueFor(r.name),
+        /* ⊕ MRB-306 Phase 2b — the submission this row is about, so the
+           marking screen can attach written feedback to it. `null` where the
+           student has not handed in: there is no submission to comment on,
+           and the control is not offered. */
+        subId: (s && s.id) || null
       };
       if (!handedIn) {
         return Object.assign(base, {
@@ -1818,6 +1831,67 @@
     });
   }
 
+  /* ⊕ MRB-306 Phase 2b — WRITTEN FEEDBACK ON THE SUBMISSIONS ON SCREEN.
+
+     Design drew no per-submission feedback anywhere in her delivery, so there
+     is nothing of hers this maps INTO. It is a new surface, ruled by Mide and
+     registered in `teacher_rulings.FEEDBACK_SURFACE_ADDED`; the shape here is
+     what that surface reads.
+
+     ⚠️ ATTRIBUTION IS `mine` AND NOT A NAME, and that is measured rather than
+     lazy. A teacher has no SELECT policy on ANOTHER teacher's `profiles` row
+     — the gap `class_shoutouts_for_viewer` exists to bridge — so a
+     `teacher:profiles(display_name)` join comes back NULL with no error, and
+     a colleague's comment would render unsigned in a byline slot where blank
+     reads as a bug. Comparing `teacher_id` to the signed-in id needs no join,
+     cannot silently degrade, and answers the question the surface actually
+     asks: may I edit this, or am I reading somebody else's? The report
+     carries the follow-up (a `submission_feedback_for_viewer` RPC, the third
+     of its kind) that would let it say the colleague's name.
+
+     ⚠️ ONE ROUND TRIP, AND IT IS NOT MEMOISED — same treatment as `FEED`, and
+     for the same reason: a teacher who has just written a comment must see it
+     on the next load rather than the copy taken before they wrote it.
+
+     A failure is logged and returns EMPTY. This is one column of one screen;
+     failing the whole page over it would leave a teacher unable to mark
+     because they could not read a comment. */
+  async function buildFeedback(subIds, viewer) {
+    var ids = (subIds || []).filter(Boolean);
+    var out = {};
+    if (!ids.length) { return out; }
+    var rows;
+    try {
+      rows = await window.MrBadmusTeacherData.loadSubmissionFeedback(ids);
+    } catch (e) {
+      console.error("[teacher-live] written feedback unavailable", e);
+      return out;
+    }
+    Object.keys(rows || {}).forEach(function (sid) {
+      var r = rows[sid];
+      var mine = !!(viewer && r.teacher_id === viewer);
+      out[sid] = {
+        id: r.id,
+        body: r.body || "",
+        teacher_id: r.teacher_id,
+        mine: mine,
+        /* Who wrote it, in the only terms this page can prove. "You" is a
+           fact; a colleague's NAME is not reachable from here (see above),
+           and "Another teacher" is true where an em dash would read as a
+           failed lookup. */
+        by: mine ? "You" : "Another teacher",
+        when: relativeTime(r.created_at, Date.now()),
+        edited: !!r.edited_at,
+        /* The database keeps the body an edit replaced (`prior_body`, forced
+           by CHECK). This page does not show it — that is the audit surface's
+           job, not a marking screen's — but it says that there WAS one, so
+           the retention is visible rather than merely true. */
+        editedWhen: r.edited_at ? relativeTime(r.edited_at, Date.now()) : ""
+      };
+    });
+    return out;
+  }
+
   /* ═════════════════════════════════════════════════════════════════════
      load(screen, params)
      ═════════════════════════════════════════════════════════════════════ */
@@ -1924,6 +1998,34 @@
       FEED[classId] = await buildFeed(classId, now);
     }
 
+    /* ⊕ MRB-306 Phase 2b — the written feedback the two authoring screens
+       need. Scoped to what is on screen and nothing wider: this student's own
+       submissions on the student screen, and the submissions in the grid the
+       marking screen just prefetched. A class-wide read would fetch comments
+       for thirty children to draw one.
+
+       ⚠️ AFTER the grid prefetch above, deliberately — on the marking screen
+       the submission ids come OUT of that grid, so asking earlier would ask
+       for nothing and the comment column would be empty on the one screen
+       that is about a paper. */
+    var FEEDBACK = {};
+    if (classId && screen === "student" && params.studentId) {
+      var stRow = (c.MATRIX[classId] && c.MATRIX[classId].byId)
+        ? c.MATRIX[classId].byId[params.studentId] : null;
+      if (stRow && stRow.subId) {
+        FEEDBACK = await buildFeedback(stRow.subId, viewerId);
+      }
+    } else if (classId && screen === "marking") {
+      var mPapers = c.PAPERS[classId] || [];
+      var mAsked = paperIndex(params.paperIdx);
+      var mIdx = mAsked == null ? newestMarkedIdx(mPapers) : mAsked;
+      var mGrid = (mIdx >= 0) ? c.GRID[classId + ":" + mIdx] : null;
+      if (mGrid && mGrid.rows) {
+        FEEDBACK = await buildFeedback(
+          mGrid.rows.map(function (r) { return r.subId; }), viewerId);
+      }
+    }
+
     var pool = buildSearchPool(c);
     var classCount = c.CLASSES.length;
     var studentCount = c.CLASSES.reduce(function (a, k) { return a + k.n; }, 0);
@@ -2008,6 +2110,10 @@
       WEEKS: c.WEEKS,
       GRID: c.GRID,
       FEED: FEED,
+      /* ⊕ MRB-306 Phase 2b — `{ <submission_id>: comment }` for the
+         submissions this screen draws. EMPTY on every screen that does not
+         author feedback, which is four of the six. */
+      FEEDBACK: FEEDBACK,
 
       /* Who is looking. Design's delivery has no concept of a viewer at all;
          the ported page needs one synchronously, inside `renderVals`, to

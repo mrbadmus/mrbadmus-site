@@ -2151,6 +2151,38 @@ LOGIC = {
             "      assignmentLessonHref: MRB_DATA('assignmentLessonHref'),\n"
             "      openLesson: this.openLesson\n",
         ),
+        # ══ ⊕ RULED BY MIDE, 3 Sep 2026 · WHAT THE TEACHER WROTE ═══════
+        #
+        # ⛔ A READ, ADDED. Mide's guardrail for this half of MRB-306 Phase
+        # 2b is that student-side changes are READS ONLY — no save path, no
+        # offline queue, no submission write — and these four keys are the
+        # whole of what the page gains. The data comes from
+        # `shared/student-live.js` (`loadSubmissionFeedback`, one SELECT pair
+        # and an RPC, none of them on the answer path); the markup is
+        # `INSERT_AT[(290, 314)]` below.
+        #
+        # ⚠️ THEY ARE READ THROUGH `MRB_DATA`, which THROWS on a key the
+        # fixture was never given. That is the behaviour that wants: a page
+        # whose data source has stopped supplying a value refuses to mount
+        # rather than rendering the word "undefined" under a child's marks.
+        # The fixture's four are in `build_student_port.PAGES` under
+        # `constants`, and all four are EMPTY there — so Design's own file
+        # and the fixture render identically and `student_behaviour` has no
+        # divergence to register.
+        #
+        # ⛔ AND THERE IS NO REPLY KEY, because there is no reply. Not
+        # disabled, not hidden, not behind a flag: `submission_feedback` has
+        # no student INSERT policy, and a control a child could press and
+        # could not use would be a promise made to a child that the database
+        # refuses.
+        (
+            "      wrongCount: pad(wrongList.length) + ' OF ' + pad(total),",
+            "      wrongCount: pad(wrongList.length) + ' OF ' + pad(total),\n"
+            "      feedbackHas: MRB_DATA('feedbackHas'),\n"
+            "      feedbackBody: MRB_DATA('feedbackBody'),\n"
+            "      feedbackBy: MRB_DATA('feedbackBy'),\n"
+            "      feedbackWhen: MRB_DATA('feedbackWhen'),",
+        ),
     ],
 }
 
@@ -2575,6 +2607,148 @@ SET_EXPR = {
 # page's 0..403 almost exactly. Adding a fixed base keeps them unique AND
 # keeps them readable: node 10312 on the built page is Design's node 312, and
 # subtracting is how you find it in the delivery.
+# ── ⊕ RULED BY MIDE, 3 Sep 2026 · THE NINTH MECHANISM: MARKUP ADDED ─────
+#
+# ⚑ NONE OF THE EIGHT COULD DO THIS, and the list in `build_student_port.
+# apply_rulings` says so in its own words:
+#
+#   PRUNE        removes a subtree, in every state
+#   GRAFT        adds one — but only by COPYING a subtree out of Design's
+#                AMENDED delivery, which is why it takes a `donor` index and
+#                refuses without a donor tree. There is no donor here.
+#   SET_ON       attaches a handler to a node that has none
+#   RETARGET_ON  moves a node off the handler Design gave it
+#   SET_ATTR     names a node for CSS and for a gate
+#   SET_EXPR     renames a loop's list
+#   BINDINGS     replaces a text node's text
+#   WRAP         makes an existing node conditional
+#
+# Every one of them works on something Design DREW. Mide's ruling is that a
+# student reads their teacher's written feedback under their automated
+# marking, and Design drew no feedback surface on any page in any delivery —
+# so there is nothing to prune, wrap, rename, rebind or copy.
+#
+# ⚠️ IT IS THE TEACHER PORT'S MECHANISM, PORTED, NOT A NEW IDEA.
+# `teacher_rulings.INSERT_AT` has done exactly this since MRB-287 and its
+# rules are kept verbatim, because they are the ones that make an addition
+# safe:
+#
+#   · keyed by `(parent, after)` — a parent-keyed dict silently keeps one of
+#     two insertions into the same parent and drops the other;
+#   · `after` must be a DIRECT child of `parent`, and exactly one node must
+#     match, or the build stops. Appended to the wrong place, an addition
+#     lands in the middle of a screen and the page still builds;
+#   · the inserted subtree carries NO `i`. Design's numbering is what every
+#     other ruling in this file is anchored on, and an inserted index would
+#     move it. It follows that inserted markup carries no `data-dc-tpl` and
+#     so is invisible to `count_nodes` and to any gate that counts Design's
+#     nodes — which is correct: it is not one of Design's nodes.
+#
+# ⚠️ AND THE STUDENT GATES ARE UNAFFECTED, WHICH WAS CHECKED RATHER THAN
+# HOPED. `student_parity` drives the PREVIEW pair, which `build_student.py`
+# writes with NO rulings applied at all, so it cannot see this.
+# `student_behaviour` drives `student/assignment-fixture.html` and compares
+# VISIBLE TEXT against Design's own file — and the fixture's four feedback
+# constants are all EMPTY, so `feedbackHas` is false, the `<if>` renders
+# nothing, and there is no text to diverge. There is no
+# `AMENDED_ADDITIONS` row for the same reason: nothing is added to what the
+# fixture renders.
+#
+# `{page: {(parent, after): (subtree, why)}}`.
+INSERT_AT = {
+    "class view": {},
+    "assignment": {
+        # ── ⊕ RULED BY MIDE, 3 Sep 2026 · WHAT THE TEACHER WROTE ────────
+        #
+        # ⚠️ NODE 314 IS "WHERE IT WENT WRONG" — the automated marking — and
+        # node 343 is the row of actions under it. Inserting AFTER 314 puts
+        # the teacher's words between the two, which is Mide's "under the
+        # automated marking" literally: the machine's account of the paper,
+        # then the person's, then what to do next.
+        #
+        # ⛔ THERE IS NO REPLY CONTROL IN THIS SUBTREE. There is no button, no
+        # field, no anchor and no handler of any kind — it is three text
+        # nodes and their boxes. `submission_feedback` has no student INSERT
+        # policy, so anything that looked like a way to answer would be a
+        # promise to a child that the database refuses; a DISABLED one would
+        # be the same promise with a worse excuse.
+        #
+        # ⚠️ IT DRAWS ONLY WHERE THERE IS SOMETHING TO READ. No empty state,
+        # deliberately: "your teacher has not written anything" is a sentence
+        # about a teacher, delivered to a child, on the screen where they
+        # have just seen their mark. Where nothing was written, the page is
+        # exactly the page it was before this unit.
+        #
+        # ⚠️ EVERY STYLE IS READ OFF A NODE ON THIS SCREEN. The section
+        # margin and the header row are 314/315; the caption class is 316's
+        # own `eyebrow`; the right-hand caption is 317; the card is 320's
+        # border, radius, ground and `overflow:hidden` with 321's padding;
+        # the byline is 328/334's 9px mono; the prose is 330's register.
+        # `white-space:pre-wrap` because a teacher's paragraph has newlines
+        # in it, and `overflow-wrap:anywhere` because a URL a teacher typed
+        # is INERT text and inert text still has to wrap rather than push the
+        # page sideways.
+        (290, 314): ({
+            "t": "if", "e": "feedbackHas",
+            "c": [{
+                "t": "section",
+                "a": {"style": "margin-top:clamp(30px,3.2cqw,46px)"},
+                "c": [
+                    {"t": "div",
+                     "a": {"style": "display:flex;align-items:center;gap:12px;"
+                                    "flex-wrap:wrap;padding-bottom:14px;"
+                                    "border-bottom:1px solid var(--st-rule)"},
+                     "c": [
+                         {"t": "span", "a": {"class": "eyebrow"},
+                          "c": [{"t": "#", "v": "What your teacher said"}]},
+                         {"t": "span",
+                          "a": {"style": "margin-left:auto;font:400 9.5px/1 "
+                                         "var(--st-mono);"
+                                         "letter-spacing:0.11em;"
+                                         "color:var(--st-ghost)"},
+                          "c": [{"t": "#", "v": {"parts": [
+                              {"e": "feedbackWhen"}]}}]},
+                     ]},
+                    {"t": "div",
+                     "a": {"style": "margin-top:clamp(16px,1.8cqw,22px);"
+                                    "min-width:0;"
+                                    "border:1px solid var(--st-rule);"
+                                    "border-radius:var(--st-r-card);"
+                                    "background:var(--st-paper);"
+                                    "overflow:hidden"},
+                     "c": [{
+                         "t": "div",
+                         "a": {"style": "padding:clamp(14px,1.5cqw,18px)"},
+                         "c": [
+                             {"t": "span",
+                              "a": {"style": "display:block;font:400 9px/1 "
+                                             "var(--st-mono);"
+                                             "letter-spacing:0.13em;"
+                                             "text-transform:uppercase;"
+                                             "color:var(--st-ghost)"},
+                              "c": [{"t": "#", "v": {"parts": [
+                                  {"e": "feedbackBy"}]}}]},
+                             {"t": "span",
+                              "a": {"style": "display:block;margin-top:10px;"
+                                             "font:400 clamp(14.5px,1.2cqw,"
+                                             "16px)/1.6 var(--st-ui);"
+                                             "color:var(--st-body);"
+                                             "white-space:pre-wrap;"
+                                             "overflow-wrap:anywhere;"
+                                             "text-wrap:pretty"},
+                              "c": [{"t": "#", "v": {"parts": [
+                                  {"e": "feedbackBody"}]}}]},
+                         ]}]},
+                ]}]},
+         "the teacher's written feedback, on the assignment's done screen, "
+         "between the automated marking (314) and the actions (343). Mide's "
+         "ruling of 3 Sep 2026; Design drew no feedback surface anywhere. "
+         "See teacher_rulings.FEEDBACK_SURFACE_ADDED for the guardrails and "
+         "for the one thing this cannot do."),
+    },
+}
+
+
 GRAFT_BASE = 10000
 
 GRAFT = {
