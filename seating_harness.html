@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seating canvas — manual harness</title>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     seating_harness.html — a DEV HARNESS, not a page of the site.
+
+     It lives at the repo root deliberately: it is not part of any generated
+     tree, it has no auth, it never touches Supabase, and it is meant to be
+     moved or deleted once the seating feature has a real screen. Nothing in
+     mrbadmus_site/ links to it.
+
+     Its whole job is to press every method on shared/seating-canvas.js by
+     hand, and to give the headless-Chrome check something to drive.
+
+     ⚠️ EVERY placeholder name on this page is `ZZ Test-Seat <n>`. The string
+     "ZZ Test-" is the tell: if one of these ever turns up in a screenshot, a
+     database, or a printed plan, it is instantly identifiable as harness
+     output and not a child. No invented real-looking student names, anywhere,
+     for any reason.
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<link rel="stylesheet" href="/shared/teacher-ds.css">
+<style>
+  /* The harness's own chrome. The CANVAS is styled entirely by the engine,
+     which reads --st-* tokens out of teacher-ds.css above — loading that sheet
+     here is half the point of the harness, since it proves the token wiring
+     rather than asserting it. */
+  html, body { height: auto; }
+  body {
+    margin: 0;
+    background: var(--st-ground, #FBF3E6);
+    color: var(--st-ink, #1A1714);
+    font-family: var(--st-ui, system-ui, sans-serif);
+  }
+  .wrap { display: flex; gap: 18px; padding: 18px; align-items: flex-start; }
+  .panel { width: 330px; flex: none; }
+  .stage { flex: 1; min-width: 0; }
+  h1 { font: 600 19px/1.2 var(--st-display, sans-serif); margin: 0 0 4px; }
+  .sub { font: 400 12px/1.4 var(--st-mono, monospace); color: var(--st-caption, #7A6E5F); margin: 0 0 14px; }
+  fieldset {
+    border: 1px solid var(--st-rule, #E0D2B9);
+    border-radius: var(--st-r-card, 11px);
+    background: var(--st-paper, #FFFDF8);
+    margin: 0 0 10px; padding: 8px 10px 10px;
+  }
+  legend {
+    font: 500 10px/1 var(--st-mono, monospace);
+    letter-spacing: .16em; text-transform: uppercase;
+    color: var(--st-caption, #7A6E5F); padding: 0 4px;
+  }
+  .row { display: flex; flex-wrap: wrap; gap: 5px; }
+  button {
+    font: 500 12.5px/1 var(--st-ui, sans-serif);
+    padding: 7px 9px;
+    border: 1px solid var(--st-btn-border, #DECCAE);
+    border-radius: var(--st-r-btn, 9px);
+    background: var(--st-paper, #FFFDF8);
+    color: var(--st-ink, #1A1714);
+    cursor: pointer;
+  }
+  button:hover { border-color: var(--st-accent, #E4572E); }
+  button[aria-pressed="true"] { background: var(--st-chip-tint, #FCEFE9); border-color: var(--st-accent, #E4572E); }
+  textarea, pre {
+    width: 100%; box-sizing: border-box;
+    font: 400 11px/1.45 var(--st-mono, ui-monospace, monospace);
+    border: 1px solid var(--st-rule, #E0D2B9);
+    border-radius: var(--st-r-control, 10px);
+    background: var(--st-paper, #FFFDF8);
+    color: var(--st-body, #3D352C);
+    padding: 8px; margin: 0;
+  }
+  textarea { height: 96px; resize: vertical; }
+  pre { max-height: 260px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+  #status {
+    font: 400 11.5px/1.6 var(--st-mono, monospace);
+    color: var(--st-caption, #7A6E5F);
+    border-top: 1px solid var(--st-rule, #E0D2B9);
+    padding-top: 8px; margin-top: 8px;
+  }
+  #status b { color: var(--st-accent-text, #A93411); font-weight: 500; }
+  @media (max-width: 820px) {
+    .wrap { flex-direction: column; }
+    .panel { width: 100%; }
+    .stage { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="panel">
+    <h1>Seating canvas harness</h1>
+    <p class="sub">shared/seating-canvas.js · dev only · not a site page</p>
+
+    <fieldset><legend>Templates</legend><div class="row">
+      <button data-tpl="rows">rows</button>
+      <button data-tpl="pairedRows">pairedRows</button>
+      <button data-tpl="uShape">uShape</button>
+      <button data-tpl="clusters">clusters</button>
+      <button data-act="empty">empty</button>
+    </div></fieldset>
+
+    <fieldset><legend>Desks</legend><div class="row">
+      <button data-act="add-rect">+ rect desk</button>
+      <button data-act="add-round">+ round desk</button>
+      <button data-act="delete">delete selected</button>
+      <button data-act="shape-rect">→ rect</button>
+      <button data-act="shape-round">→ round</button>
+    </div></fieldset>
+
+    <fieldset><legend>Seats on selected</legend><div class="row">
+      <button data-seats="1">1</button><button data-seats="2">2</button>
+      <button data-seats="3">3</button><button data-seats="4">4</button>
+      <button data-seats="5">5</button><button data-seats="6">6</button>
+    </div></fieldset>
+
+    <fieldset><legend>Rotate selected</legend><div class="row">
+      <button data-rot="-15">− 15°</button>
+      <button data-rot="15">+ 15°</button>
+    </div></fieldset>
+
+    <fieldset><legend>Front wall</legend><div class="row">
+      <button data-front="top">top</button><button data-front="right">right</button>
+      <button data-front="bottom">bottom</button><button data-front="left">left</button>
+      <button data-act="teacher">toggle teacher desk</button>
+    </div></fieldset>
+
+    <fieldset><legend>History</legend><div class="row">
+      <button data-act="undo">undo</button>
+      <button data-act="redo">redo</button>
+    </div></fieldset>
+
+    <fieldset><legend>Mode</legend><div class="row">
+      <button data-mode="edit" id="m-edit">edit</button>
+      <button data-mode="plan" id="m-plan">plan</button>
+      <button data-mode="view" id="m-view">view</button>
+    </div></fieldset>
+
+    <fieldset><legend>Assignments</legend><div class="row">
+      <button data-act="fill">fill seats (ZZ Test-…)</button>
+      <button data-act="clear-assign">clear</button>
+    </div></fieldset>
+
+    <fieldset><legend>Layout JSON</legend>
+      <div class="row" style="margin-bottom:6px">
+        <button data-act="dump">dump →</button>
+        <button data-act="load">← load from textarea</button>
+        <button data-act="overlaps">overlap report</button>
+      </div>
+      <textarea id="io" spellcheck="false" placeholder='paste a layout here, then "load"'></textarea>
+      <pre id="out">—</pre>
+    </fieldset>
+
+    <div id="status"></div>
+  </div>
+
+  <div class="stage"><div id="canvas"></div></div>
+</div>
+
+<script src="/shared/seating-canvas.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var out = document.getElementById('out');
+  var io = document.getElementById('io');
+  var statusEl = document.getElementById('status');
+
+  var sc = SeatingCanvas.create({
+    mount: '#canvas',
+    mode: 'edit',
+    aspect: 1.35,
+    layout: SeatingCanvas.templates.pairedRows(30),
+    onChange: function () { status(); },
+    onSelect: function () { status(); },
+    onSeatActivate: function (seatId) { say('onSeatActivate: ' + seatId); },
+    onAssign: function (seatId, p) { say('onAssign: ' + seatId + ' ← ' + p.label); }
+  });
+
+  function say(s) { out.textContent = s; }
+
+  function status() {
+    var orph = sc.orphanedAssignments();
+    statusEl.innerHTML =
+      'mode <b>' + sc.getMode() + '</b> · selected <b>' + (sc.getSelected() || '—') + '</b><br>' +
+      'desks <b>' + sc.getLayout().desks.length + '</b> · seats <b>' + sc.seatIds().length + '</b>' +
+      ' · front <b>' + sc.getLayout().front + '</b><br>' +
+      'undo <b>' + sc.canUndo() + '</b> · redo <b>' + sc.canRedo() + '</b>' +
+      ' · orphaned <b>' + orph.length + '</b>';
+    ['edit', 'plan', 'view'].forEach(function (m) {
+      document.getElementById('m-' + m).setAttribute('aria-pressed', String(sc.getMode() === m));
+    });
+  }
+
+  document.querySelector('.panel').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    try { handle(b); } catch (err) { say('ERROR: ' + err.message); }
+    status();
+  });
+
+  function handle(b) {
+    var tpl = b.getAttribute('data-tpl');
+    if (tpl) { sc.setLayout(SeatingCanvas.templates[tpl](30)); return; }
+
+    var seats = b.getAttribute('data-seats');
+    if (seats) { sc.setSeatsForSelected(Number(seats)); return; }
+
+    var front = b.getAttribute('data-front');
+    if (front) { sc.setFront(front); return; }
+
+    var mode = b.getAttribute('data-mode');
+    if (mode) { sc.setMode(mode); return; }
+
+    var rot = b.getAttribute('data-rot');
+    if (rot) {
+      /* There is deliberately no rotateSelected() on the engine — the public
+         API is the one the plan pinned, and rotation is a GESTURE there. A
+         button-driven nudge is expressible with the API as it stands, so the
+         harness does it here rather than growing the surface. */
+      var id = sc.getSelected();
+      if (!id) { say('select a desk first'); return; }
+      var l = sc.getLayout();
+      l.desks.forEach(function (d) {
+        if (d.id === id) { d.rotation = ((d.rotation + Number(rot) + 540) % 360) - 180; }
+      });
+      sc.setLayout(l);
+      sc.selectDesk(id);
+      return;
+    }
+
+    switch (b.getAttribute('data-act')) {
+      case 'empty':   sc.setLayout(SeatingCanvas.emptyLayout()); break;
+      case 'add-rect':  say('added ' + sc.addDesk({ shape: 'rect', seats: 2 })); break;
+      case 'add-round': say('added ' + sc.addDesk({ shape: 'round', seats: 4 })); break;
+      case 'delete':  sc.deleteSelected(); break;
+      case 'shape-rect':  sc.setShapeForSelected('rect'); break;
+      case 'shape-round': sc.setShapeForSelected('round'); break;
+      case 'teacher': sc.toggleTeacherDesk(); break;
+      case 'undo':    sc.undo(); break;
+      case 'redo':    sc.redo(); break;
+      case 'fill':    fillSeats(); break;
+      case 'clear-assign': sc.setAssignments({}); break;
+      case 'dump':    io.value = JSON.stringify(sc.getLayout(), null, 2); say('dumped ' + io.value.length + ' bytes'); break;
+      case 'load':    loadJson(); break;
+      case 'overlaps': say(JSON.stringify(SeatingCanvas.overlapReport(sc.getLayout(), 1.35), null, 2) || '[]'); break;
+    }
+  }
+
+  /* Placeholder occupants. `ZZ Test-` is the tell — see the banner. */
+  function fillSeats() {
+    var map = {};
+    sc.seatIds().forEach(function (id, i) {
+      map[id] = { id: 'zz-test-' + (i + 1), label: 'ZZ Test-Seat ' + (i + 1) };
+    });
+    sc.setAssignments(map);
+    say('filled ' + Object.keys(map).length + ' seats with ZZ Test- placeholders');
+  }
+
+  function loadJson() {
+    var parsed;
+    try { parsed = JSON.parse(io.value); }
+    catch (e) { say('not JSON: ' + e.message); return; }
+    var res = SeatingCanvas.validate(parsed);
+    if (!res.ok) { say('validate FAILED:\n- ' + res.errors.join('\n- ')); return; }
+    sc.setLayout(res.layout);
+    say('loaded. warnings:\n' + (res.warnings.length ? '- ' + res.warnings.join('\n- ') : '(none)'));
+  }
+
+  status();
+
+  // Handle for the headless-Chrome check. Dev harness only.
+  window.__SC = { sc: sc, lib: SeatingCanvas, fillSeats: fillSeats };
+})();
+</script>
+</body>
+</html>

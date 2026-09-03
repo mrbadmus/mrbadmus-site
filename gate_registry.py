@@ -524,6 +524,44 @@ GATES = [
          needs="3d-studio/dist",
          why="the mesh renderer in a real browser (MRB-187) — including that "
              "a missing GLB routes to the flat stage. Needs a built studio."),
+
+    dict(name="seating_tells",
+         cmd=["python3", "seating_tells.py"],
+         speed="fast",
+         why="MRB-322 seating plans, static. Five checks, and the two that "
+             "matter most cross a repo boundary. (a) THE ROOM LIST IS ONE "
+             "LIST: the eleven room codes are written in the dropdown, in a "
+             "CHECK constraint, and in the gate — nobody types a room name, "
+             "and a room quietly dropped from the dropdown is indis"
+             "tinguishable from a room nobody has drawn yet. (b) THE PHOTO IS "
+             "NEVER PERSISTED: /api/room-scan holds a photograph of a real "
+             "classroom, in memory, and discards it. This walks that handler "
+             "AND the room-scan.js module it delegates to — in the backend "
+             "repo, by absolute path, as pool_ownership does — and fails on "
+             "any fs write, storage upload, or log line that could carry "
+             "image bytes. (c) the honest degrade: `photo_scan_unconfigured` "
+             "is one string spanning two repos with no shared type, and if "
+             "the two halves drift the 'Photo scan isn't switched on yet' "
+             "branch becomes unreachable rather than wrong-looking. Plus: no "
+             "harness or RLS-rehearsal fixture data in anything shipped, and "
+             "every watched file exists — a gate that goes green because its "
+             "subject is missing is worse than no gate."),
+
+    dict(name="seating_drive",
+         cmd=["python3", "seating_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site/teacher/seating.html",
+         why="MRB-322 seating plans, driven. The canvas is the product — a "
+             "layout that cannot be dragged is not a layout — and nothing "
+             "else in the estate presses it: teacher_behaviour drives a "
+             "FIXED `SCREENS` list and seating.html is not on it, by design, "
+             "because that lane's generator does not own this page. Drives "
+             "the real page in headless Chrome at 1280 and 390 with pointer "
+             "events (the same code path a trackpad and an iPad take), and "
+             "asserts the things a screenshot cannot: that a drag moves a "
+             "desk and costs exactly one undo, that view mode renders no "
+             "handles AT ALL rather than disabled ones, and that the "
+             "unseated count is drawn even when it is inconvenient."),
 ]
 
 
