@@ -10,15 +10,19 @@
  *
  * Two tables, and one rule about each:
  *
- *   room_layouts   the shape of a room. Readable by the whole school, writable
- *                  only by whoever drew it (or a school admin).
- *   seating_plans  a class placed onto a layout. Readable only by people who
- *                  teach that class right now — and a seating plan is a named
- *                  list of children, which is why that boundary is tighter
- *                  than the layout's.
+ *   room_layouts   the shape of a room. Readable by the school's STAFF —
+ *                  teachers and admins, not pupils — and writable only by
+ *                  whoever drew it (or a school admin). Desk geometry, no
+ *                  children, which is why cover reads these and not plans.
+ *   seating_plans  a class placed onto a layout. Readable only by that class's
+ *                  own subject teachers (co-teachers included) and school
+ *                  admins — never by cover, and never by a pupil. A seating
+ *                  plan is a named list of children, which is why that
+ *                  boundary is tighter than the layout's.
  *
  * ⚠️ Everything here is layer 2 of defence-in-depth. The RLS policies in
- * migration 20260902214105_mrb322_seating_plans.sql are the real boundary; this
+ * migration 20260903200144_mrb322_seating_permissions_no_cover.sql (which
+ * supersedes the two before it) are the real boundary; this
  * module exists so the page can render the right thing rather than firing
  * requests it knows will come back empty. `canEditLayout` / `canEditPlan` in
  * particular are NOT security — they decide whether a control is drawn at all,
@@ -465,6 +469,12 @@ window.MrBadmusSeatingData = (function () {
       if (year && c.academic_year_id !== year.id) return;
       // An ended attachment is history, not a class you can seat today.
       if (row.ended_at && new Date(row.ended_at) <= new Date()) return;
+      // Cover is outside seating entirely (ruled 3 Sep 2026), so a class you
+      // are only covering must not be offered here. The policies would refuse
+      // the plan anyway; listing the class would just walk a teacher into a
+      // screen that cannot work, and the house rule is that a control someone
+      // cannot use is absent rather than shown and then apologised for.
+      if (row.role !== 'subject_teacher') return;
       if (seen[c.id]) return;
       seen[c.id] = true;
       out.push({ id: c.id, name: c.name, key_stage: c.key_stage,
