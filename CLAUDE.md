@@ -606,6 +606,23 @@ Four sibling folders under `supabase/`, each with a `README.md`. The Supabase CL
 - **Primary:** `supabase db push` against a linked project. Faster and more durable than the MCP, and produces a clean local migration file as part of the workflow. Use this for all routine forward migrations from MRB-46 Phase 2 onward.
 - **Fallback:** MCP `apply_migration` for one-off ad-hoc SQL where a checked-in migration file isn't warranted (e.g. emergency hotfix). MCP auth is fragile — tokens expire, `remove` + `add` cycles wipe the token. Use sparingly.
 
+### ⚠️ When a migration may touch PRODUCTION (added 3 Sep 2026)
+
+**Migrations are applied to production only at merge time, or when Mide has
+explicitly ruled the migration in the current prompt. Additive-and-unread is
+not a reason. Rehearse on TEST regardless.**
+
+The exception that this rule closes is a tempting one, so it is named: MRB-322
+applied two migrations to prod on an unmerged branch, reasoning that the tables
+were new, empty, and read by nothing until the merge. Both of those things were
+true. It was still wrong — one of the two carried an RLS hole that then sat on
+production for about an hour, on a branch nobody had reviewed, protecting rows
+that only did not leak because nothing had written any yet. "Nothing reads it"
+is a statement about today, and a migration outlives today.
+
+Rehearsing on TEST is not the same as being allowed to ship. Rehearse always;
+ship on the two conditions above.
+
 ### Auth setup for the CLI
 
 The CLI's OAuth flow stores its token in macOS Keychain, which isn't accessible to Claude Code's Bash tool (non-interactive shell can't unlock the keychain). Use a Personal Access Token instead, stashed in a tmp file:
