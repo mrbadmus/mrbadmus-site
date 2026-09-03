@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#EFE5D3}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;padding:40px 24px 80px;color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased">
+  <div style="max-width:1400px;margin:0 auto">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Drop 3 · Transactional email</p>
+    <h1 style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Eight emails a parent receives</h1>
+    <p style="margin:12px 0 0;font-size:17px;color:var(--ks3-ink-body);max-width:60em">600px wide, table-free, system font fallbacks (Bricolage and Instrument Sans where the client loads web fonts, Georgia / Helvetica otherwise). One primary button each. From: Mr Badmus &lt;hello@mrbadmus.com&gt;. Plain-text versions carry the same copy.</p>
+
+    <div style="margin-top:32px;display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:36px 28px;align-items:start">
+      <sc-for list="{{ emails }}" as="e" hint-placeholder-count="6">
+        <div>
+          <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:10px;font-size:14px;color:var(--ks3-ink-muted)"><span style="font-family:var(--ks3-font-mono);letter-spacing:.08em;text-transform:uppercase">{{ e.id }}</span><span>{{ e.trigger }}</span></div>
+          <div style="padding:10px 16px;border:2px solid var(--ks3-ink);border-bottom:0;border-radius:16px 16px 0 0;background:var(--ks3-card);font-size:14px;color:var(--ks3-ink-muted)"><strong style="color:var(--ks3-ink)">Subject:</strong> {{ e.subject }}<br><strong style="color:var(--ks3-ink)">Preview:</strong> {{ e.preview }}</div>
+          <div style="width:600px;max-width:100%;box-sizing:border-box;border:2px solid var(--ks3-ink);border-radius:0 0 16px 16px;background:#FFFCF5;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:8px;padding:20px 32px 16px;border-bottom:2px solid #221E1B">
+              <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l8 8-8 8" fill="none" stroke="#E4572E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 4l8 8-8 8" fill="none" stroke="#E4572E" stroke-opacity=".34" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:19px;letter-spacing:-.02em">MrBadmus</span>
+              <span style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#5F564F">{{ e.tag }}</span>
+            </div>
+            <div style="padding:28px 32px 8px">
+              <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:30px;line-height:1.02;letter-spacing:-.03em">{{ e.h1 }}</h2>
+              <p style="margin:14px 0 0;font-size:17px;color:#3B342E">{{ e.lede }}</p>
+            </div>
+
+            <sc-if value="{{ e.hasChildren }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:16px 32px 0;display:flex;flex-direction:column;gap:12px">
+                <sc-for list="{{ e.children }}" as="c" hint-placeholder-count="2">
+                  <div style="padding:16px 18px;border:2px solid #221E1B;border-radius:14px;background:#FFFFFF">
+                    <div style="display:flex;align-items:baseline;gap:10px"><span style="font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">{{ c.name }}</span><span style="font-size:13px;color:#5F564F">{{ c.meta }}</span></div>
+                    <div style="margin-top:10px;display:flex;gap:6px">
+                      <sc-for list="{{ c.days }}" as="d" hint-placeholder-count="7"><span style="flex:1;height:22px;border-radius:6px;border:2px solid #221E1B;background:{{ d }}"></span></sc-for>
+                    </div>
+                    <p style="margin:10px 0 0;font-size:15px;color:#3B342E">{{ c.line }}</p>
+                    <sc-if value="{{ c.flag }}" hint-placeholder-val="{{ false }}"><p style="margin:8px 0 0;padding:8px 12px;border-radius:10px;background:#FFF3D4;border:2px solid #E9C46A;font-size:14px;color:#5A430A"><strong>Weak spot:</strong> {{ c.flag }}</p></sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ e.hasMark }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:16px 32px 0;padding:18px 20px;border-radius:16px;background:#221E1B;color:#F6EEDF">
+                <p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#F4B860">{{ e.mark.q }}</p>
+                <p style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:34px;line-height:1;letter-spacing:-.03em">{{ e.mark.score }}</p>
+                <p style="margin:10px 0 0;font-size:16px;line-height:1.5;color:#E8DCC6">{{ e.mark.note }}</p>
+                <p style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:15px">— Mr Badmus</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ e.hasFacts }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:16px 32px 0;border:2px solid #221E1B;border-radius:14px;background:#FFFFFF;overflow:hidden">
+                <sc-for list="{{ e.facts }}" as="f" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid #E0D2B9;font-size:15px"><span style="color:#5F564F">{{ f.k }}</span><span style="font-family:var(--ks3-font-mono);font-weight:500">{{ f.v }}</span></div></sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ e.hasMsgs }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:16px 32px 0;display:flex;flex-direction:column;gap:8px">
+                <sc-for list="{{ e.msgs }}" as="m" hint-placeholder-count="2"><div style="padding:12px 16px;border:2px solid #221E1B;border-radius:16px 16px 16px 4px;background:#FFFFFF;font-size:16px;line-height:1.45">{{ m.text }}<span style="display:block;margin-top:4px;font-family:var(--ks3-font-mono);font-size:11px;color:#5F564F">{{ m.who }} · {{ m.time }}</span></div></sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ e.hasLogin }}" hint-placeholder-val="{{ false }}">
+              <div style="margin:16px 32px 0;padding:14px 18px;border:2px dashed #B8A98F;border-radius:14px;background:#F4E9D8;font-size:15px;color:#3B342E">{{ e.loginNote }}</div>
+            </sc-if>
+
+            <div style="padding:22px 32px 8px">
+              <a href="{{ e.ctaHref }}" style="display:inline-block;padding:14px 24px;border:2px solid {{ e.ctaBorder }};border-radius:14px;background:{{ e.ctaBg }};color:{{ e.ctaFg }};font-weight:700;font-size:16px">{{ e.cta }}</a>
+              <sc-if value="{{ e.ctaNote }}" hint-placeholder-val="{{ false }}"><p style="margin:10px 0 0;font-size:14px;color:#5F564F">{{ e.ctaNote }}</p></sc-if>
+            </div>
+            <div style="padding:16px 32px 0"><p style="margin:0;font-size:16px;color:#3B342E">{{ e.signoff }}</p></div>
+            <div style="margin-top:24px;padding:16px 32px 22px;border-top:1px solid #E0D2B9;font-size:12px;line-height:1.6;color:#5F564F">Mr Badmus Education Ltd, England. You're getting this because you have a MrBadmus account for {{ e.footerFor }}. <a href="#" style="color:#5F564F;text-decoration:underline">Email settings</a> · <a href="#" style="color:#5F564F;text-decoration:underline">Unsubscribe from {{ e.unsubWhat }}</a></div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const OK = '#2E9B5F', BAND = '#F4E9D8', NONE = '#FFFFFF';
+const CTA = { ink: { ctaBorder: '#221E1B', ctaBg: '#221E1B', ctaFg: '#F6EEDF' }, accent: { ctaBorder: '#A93411', ctaBg: '#A93411', ctaFg: '#FFFFFF' }, outline: { ctaBorder: '#221E1B', ctaBg: '#FFFCF5', ctaFg: '#221E1B' } };
+const EMAILS = [
+  { id: 'E1', trigger: 'On signup, before anything else', tag: 'Verify', subject: 'Confirm your email to finish setting up', preview: 'One tap, then Amara\u2019s first week is set tonight.', h1: 'One tap and you\u2019re in.', lede: 'Confirm this is your address and the account is yours. The link works for 24 hours.', cta: 'Confirm my email', ctaNote: 'If you didn\u2019t sign up, ignore this and nothing happens.', kind: 'ink', signoff: 'Mide Badmus', footerFor: 'your family', unsubWhat: 'nothing \u2014 this one is required' },
+  { id: 'E2', trigger: 'After the card is added', tag: 'Welcome', subject: 'Amara\u2019s first week is set', preview: 'Tuesday and Thursday, twenty minutes each. Her login is inside.', h1: 'Amara\u2019s first week is set.', lede: 'Two sessions, matched to Health and disease. Nothing needs doing on your side tonight. She logs in at mrbadmus.com/go.', hasLogin: true, loginNote: 'Username: amara-rockets. The password is the one you chose. It isn\u2019t in this email on purpose; you can reset it from the dashboard if it\u2019s forgotten.', hasFacts: true, facts: [{ k: 'Tue', v: 'Lesson · 20 min' }, { k: 'Thu', v: 'Quick questions · 10 min' }, { k: 'Free week ends', v: '8 September' }], cta: 'Open the dashboard', kind: 'ink', signoff: 'I\u2019ll write on Sunday with how it went.\nMide', footerFor: 'Amara', unsubWhat: 'account emails (not possible while subscribed)' },
+  { id: 'E3', trigger: 'Every Sunday, 6pm', tag: 'Sunday', subject: 'This week: Amara 2 of 3, Leo hasn\u2019t started', preview: 'Amara scored 78% on Health and disease. Leo\u2019s login is waiting.', h1: 'Sunday, 14 September.', lede: 'What got done, what the scores were, what\u2019s next. Next week is already set.', hasChildren: true, children: [
+    { name: 'Amara', meta: 'Year 9 · alongside school', days: [BAND, OK, BAND, OK, BAND, NONE, NONE], line: '2 of 3 sessions done. Unit check: 78%, a personal best. Next week: Rates of reaction begins.', flag: 'Six-markers stop one sentence early. Every answer should end with the "so what".' },
+    { name: 'Leo', meta: 'Year 7 · home education', days: [NONE, NONE, NONE, NONE, NONE, NONE, NONE], line: 'Hasn\u2019t logged in yet. Five sessions are waiting. Username leo-lightning at mrbadmus.com/go.' },
+  ], cta: 'See the week in full', kind: 'ink', signoff: 'Mide', footerFor: 'Amara and Leo', unsubWhat: 'the Sunday email' },
+  { id: 'E4', trigger: 'When Mr Badmus marks a sent answer', tag: 'Marked', subject: 'I\u2019ve marked Amara\u2019s answer on vaccination', preview: '4 out of 6. Structure is good; now name things.', h1: 'Amara\u2019s answer, marked.', lede: 'She sent me her six-marker on vaccination. Here\u2019s what I gave it and why. She\u2019s seen this too.', hasMark: true, mark: { q: 'Explain how vaccination protects a person \u00b7 6 marks', score: '4/6', note: 'Agree with the instant mark. Your structure is good \u2014 cause, response, memory. Now name things. Say "antigen" and say "lymphocyte". In the exam the marks are on the nouns.' }, cta: 'Read the full answer', kind: 'ink', signoff: 'She has one more this month if she wants it.\nMide', footerFor: 'Amara', unsubWhat: 'marking emails' },
+  { id: 'E5', trigger: 'Two days before the first charge', tag: 'Billing', subject: 'Your free week ends on Monday', preview: '£15.98 on 8 September for Amara and Leo. Nothing to do if you\u2019re staying.', h1: 'Your free week ends Monday.', lede: 'On 8 September we\u2019ll take the first payment. If that\u2019s fine, there\u2019s nothing to do. If not, cancel before then and you pay nothing.', hasFacts: true, facts: [{ k: 'Amara · Year 9', v: '\u00a39.99' }, { k: 'Leo · Year 7', v: '\u00a35.99' }, { k: 'Monthly, from 8 Sept', v: '\u00a315.98' }], cta: 'Manage billing', kind: 'outline', ctaNote: 'Opens Stripe\u2019s secure portal. Cancel, switch to annual, or change the card.', signoff: 'Mide', footerFor: 'Amara and Leo', unsubWhat: 'account emails (not possible while subscribed)' },
+  { id: 'E6', trigger: 'When a payment fails', tag: 'Billing', subject: 'Your card was declined \u2014 work carries on for 7 days', preview: 'Update the card by 15 September and nothing changes.', h1: 'The payment didn\u2019t go through.', lede: 'Your bank declined the card on 8 September. Amara and Leo\u2019s work carries on as normal until 15 September. We\u2019ll retry on the 11th. If it\u2019s still failing after the 15th, work stops being set and the account pauses. Nothing is deleted.', cta: 'Update the card', kind: 'accent', ctaNote: 'Takes a minute in Stripe. Work carries on the moment it succeeds.', signoff: 'If something\u2019s gone wrong with the card, reply to this email.\nMide', footerFor: 'Amara and Leo', unsubWhat: 'account emails (not possible while subscribed)' },
+  { id: 'E7', trigger: 'On cancellation, immediately', tag: 'Billing', subject: 'Cancelled \u2014 everything works until 3 October', preview: 'No more charges. Reports stay downloadable. Come back any time.', h1: 'Cancelled. Nothing else to do.', lede: 'No further payments will be taken. Amara and Leo\u2019s work carries on exactly as before until 3 October, the end of what you\u2019ve paid for. After that, their logins still open but no new work is set.', hasFacts: true, facts: [{ k: 'Last day of work', v: '3 October' }, { k: 'Termly reports', v: 'Downloadable for a year' }, { k: 'Progress and marked answers', v: 'Kept' }], cta: 'Resume subscription', kind: 'outline', ctaNote: 'Same plan, same card, no setting up again. Each child picks up where they left off.', signoff: 'If something wasn\u2019t working, I\u2019d genuinely like to know. Reply to this email.\nMide', footerFor: 'Amara and Leo', unsubWhat: 'account emails (this is the last one unless you resume)' },
+  { id: 'E8', trigger: 'New messages from a child, batched: at most one email an hour, never between 9pm and 7am', tag: 'Messages', subject: 'Amara sent you 2 messages', preview: '"can i do the 4 marker sat instead of thurs"', h1: 'Amara wrote to you.', lede: 'Two new messages since you last looked. Replies go through the dashboard, not by email, so nothing is lost.', hasMsgs: true, msgs: [{ who: 'Amara', text: 'memory cells. they just wait around for years', time: 'Tue 8.15pm' }, { who: 'Amara', text: 'can i do the 4 marker sat instead of thurs', time: 'Tue 8.16pm' }], cta: 'Reply to Amara', kind: 'ink', signoff: 'Mide', footerFor: 'Amara', unsubWhat: 'message emails' },];
+class Component extends DCLogic {
+  renderVals() { return { emails: EMAILS.map((e) => ({ ...e, ...CTA[e.kind], ctaHref: '#', hasChildren: !!e.hasChildren, hasMark: !!e.hasMark, hasFacts: !!e.hasFacts, hasLogin: !!e.hasLogin, hasMsgs: !!e.hasMsgs, msgs: e.msgs || [], ctaNote: e.ctaNote || '', children: (e.children || []).map((c) => ({ ...c, flag: c.flag || '' })), mark: e.mark || {} })) }; }
+}
+</script>
+</body>
+</html>

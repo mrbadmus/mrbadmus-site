@@ -5401,6 +5401,48 @@ def build_site(output_dir="mrbadmus_site"):
     else:
         print(f"  ⚠️  student/ directory not found — skipping")
 
+    # ── MRB-308 consumer pages tree ──
+    # Mirror of the teacher/ and student/ blocks above. WITHOUT THIS BLOCK
+    # THE WHOLE DIRECTORY IS DEAD: Cloudflare serves mrbadmus_site/, not the
+    # repo root, so a /consumer/* page that is never copied here is a page
+    # that returns 404 in every deployed environment while looking perfectly
+    # correct in the repo — the failure mode that reads as "the flag must
+    # still be off" rather than as "the file was never published".
+    #
+    # ⚠️ Adding the tree here is also what puts it under the round-trip's
+    # rmtree, which is why "consumer" joins the safety-net list below in the
+    # same change. The two lines are one decision; do not keep one without
+    # the other.
+    _consumer_src = "consumer"
+    _consumer_dst = f"{output_dir}/consumer"
+    if _os.path.isdir(_consumer_src):
+        if _os.path.exists(_consumer_dst):
+            _shutil.rmtree(_consumer_dst)
+        _shutil.copytree(_consumer_src, _consumer_dst)
+        print(f"  ✅ consumer/ (directory tree)")
+    else:
+        print(f"  ⚠️  consumer/ directory not found — skipping")
+
+    # ⊕ MRB-317/318 Night 3 — three MORE consumer trees, same rule as above.
+    #   parents/  the public front door (home, how it works, pricing, home
+    #             education, sign-in chooser) — the address a parent is given
+    #   go/       the child's login, at the shortest URL a child can type:
+    #             mrbadmus.com/go — the address printed in the E2 email
+    #   org/      the organisation (council / tutoring centre) staff surface
+    # Every page in all three is behind CONSUMER_SIGNUP_ENABLED exactly as
+    # consumer/ is, and every one joins the safety-net list below for the
+    # same reason consumer/ did.
+    for _tree in ("parents", "go", "org"):
+        _t_src = _tree
+        _t_dst = f"{output_dir}/{_tree}"
+        if _os.path.isdir(_t_src):
+            if _os.path.exists(_t_dst):
+                _shutil.rmtree(_t_dst)
+            _shutil.copytree(_t_src, _t_dst)
+            print(f"  ✅ {_tree}/ (directory tree)")
+        else:
+            print(f"  ⚠️  {_tree}/ directory not found — skipping")
+
     # ── 3D Studio built artifact (MRB-185 recon, MRB-194 integration) ──
     # 3d-studio/ is a Vite app at repo root; its build output (3d-studio/dist/)
     # is the single source of truth for mrbadmus_site/3d/. This block is the
@@ -5627,7 +5669,12 @@ def build_site(output_dir="mrbadmus_site"):
     # JS files added by the bundle were silently deleted from the source tree
     # by the round-trip. See MRB-88 for the architectural follow-up
     # (auto-discovery across all top-level dirs, not just these three).
-    for _dir in ["shared", "teacher", "student"]:
+    # ⊕ MRB-308 — "consumer" joins the list the moment consumer/ becomes a
+    # round-tripped tree. See the copy block above: a tree that is copied to
+    # the root is a tree that can be DELETED from source by the round-trip,
+    # and this net is the only thing that catches a file the generator has
+    # not been told about.
+    for _dir in ["shared", "teacher", "student", "consumer", "parents", "go", "org"]:
         if not os.path.isdir(_dir):
             continue
         _source_files = set(os.listdir(_dir))

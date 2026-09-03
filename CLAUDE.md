@@ -229,6 +229,9 @@ mrbadmus-site/
 ├── triple/                 — Triple Science pages (auto-generated)
 ├── combined/               — Combined Science pages (auto-generated)
 │
+├── consumer/ parents/ go/ org/  — the B2C product (MRB-308…318), behind CONSUMER_SIGNUP_ENABLED;
+│                             copied and round-tripped by generate_site_v5.py like teacher/ and student/.
+│                             See docs/b2c/worktree.md before touching any of them.
 ├── build_all.py            — ⭐ THE ENTRY POINT. Runs all SIX generators, in the correct order.
 ├── generate_site_v5.py     — KS4 generator: topic pages + copies root HTML into mrbadmus_site/
 ├── build_ks3.py            — KS3 generator (ks3/). SEPARATE ON PURPOSE. generate_site_v5.py never builds KS3.

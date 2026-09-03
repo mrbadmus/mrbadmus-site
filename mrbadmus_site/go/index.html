@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#FBF3E6"/>
+  <title>Sign in — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <style>
+  /* ── go/index.html — Design's Child Login, at the URL a child types ─────
+     Her per-element inline styles are the design and are transcribed onto
+     the markup below; the repeated ones are lifted here with a `gl-` prefix
+     exactly as she prefixes her own pages. Every value is a --ks3-* token
+     out of /shared/tokens.css — nothing new is invented. */
+
+  /* consumer.css dresses the Night-1 scaffolds (padded body, --bg ground).
+     Design's login is full-bleed on the KS3 ground, so those three are
+     undone here. `display:none` is NOT undone: it is the flag gate, and
+     only boot() lifts it. */
+  body { padding: 0; margin: 0; background: #FBF3E6; }
+
+  /* ⚠️ LOAD-BEARING, and it looks redundant. An AUTHOR `display` beats the UA
+     stylesheet's `[hidden] { display: none }` regardless of specificity — the
+     same trap shared/ks3.css documents at `.ks3-ticks[hidden]`. Every screen
+     switch on this page is `el.hidden = …` over a class that sets its own
+     `display` (flex/grid), so without this line the hidden screen renders
+     anyway: found by screenshotting it, 2 Sep 2026. */
+  [hidden] { display: none !important; }
+
+  .gl-root {
+    min-height: 100vh;
+    background: var(--ks3-ground);
+    color: var(--ks3-ink);
+    font-family: var(--ks3-font-body);
+    font-size: 19px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+  }
+  .gl-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 24px 14px;
+    border-bottom: 2px solid var(--ks3-ink);
+  }
+  /* BRANDMARK ships at 20px; Design draws this header's at 26. Same SVG,
+     same chevron — sizing it here rather than forking the mark. */
+  .gl-head svg { width: 26px; height: 26px; }
+  .gl-word {
+    font-family: var(--ks3-font-display);
+    font-weight: 800; font-size: 22px; letter-spacing: -.02em;
+  }
+  .gl-main {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+    max-width: 460px; width: 100%; margin: 0 auto;
+    padding: 32px 24px 48px; box-sizing: border-box;
+  }
+  .gl-h1 {
+    margin: 0;
+    font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: clamp(40px, 10vw, 56px); line-height: .96; letter-spacing: -.035em;
+  }
+  .gl-form { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+  .gl-label {
+    display: block; font-weight: 700; font-size: 16px; color: var(--ks3-ink-muted);
+  }
+  .gl-input {
+    margin-top: 6px; display: block; width: 100%; box-sizing: border-box;
+    min-height: 56px; padding: 12px 16px;
+    border: 2px solid var(--ks3-option-border); border-radius: var(--ks3-r-control);
+    background: var(--ks3-card); font: inherit; font-size: 20px; color: var(--ks3-ink);
+  }
+  .gl-input::placeholder { color: var(--ks3-ink-ghost); }
+  .gl-passwrap { position: relative; margin-top: 6px; }
+  .gl-passwrap .gl-input { margin-top: 0; padding-right: 90px; }
+  .gl-show {
+    position: absolute; right: 8px; top: 8px; bottom: 8px; padding: 0 14px;
+    border: 2px solid var(--ks3-rule-strong); border-radius: 10px;
+    background: var(--ks3-band); font: inherit; font-weight: 700; font-size: 14px;
+    color: var(--ks3-ink); cursor: pointer;
+  }
+  .gl-error {
+    margin: 0; padding: 12px 16px;
+    border: 2px solid var(--ks3-ink); border-radius: 14px;
+    background: var(--ks3-alert-tint); font-size: 16px; font-weight: 600;
+  }
+  .gl-go {
+    margin-top: 6px; width: 100%; min-height: 58px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    font: inherit; font-weight: 700; font-size: 20px; cursor: pointer;
+  }
+  .gl-go[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+  .gl-ask { margin: 24px 0 0; font-size: 16px; color: var(--ks3-ink-muted); }
+
+  /* ── Night 4: the "not you?" card ────────────────────────────────────
+     Design drew no such state, so this is invented — but every part of it
+     is hers: the dark ink card with the accent block-shadow is the panel
+     she uses for "Before you start" on the unit check, and the two controls
+     are the pair she uses at the foot of a result screen. It sits ABOVE the
+     form rather than replacing it, because the answer to "not you?" is the
+     form that is already on the page. */
+  .gl-already {
+    margin: 0 0 28px; padding: 20px 22px;
+    border-radius: var(--ks3-r-dark);
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    box-shadow: 6px 6px 0 var(--ks3-accent);
+  }
+  .gl-already-eyebrow {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--ks3-alert);
+  }
+  .gl-already-who {
+    margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 26px; line-height: 1.1; letter-spacing: -.025em;
+  }
+  .gl-already-acts { margin-top: 16px; display: grid; gap: 10px; }
+  .gl-already-acts a, .gl-already-acts button {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 50px; padding: 0 14px;
+    border: 2px solid var(--ks3-on-dark); border-radius: var(--ks3-r-control);
+    font: inherit; font-weight: 700; font-size: 17px; cursor: pointer;
+    text-decoration: none;
+  }
+  .gl-already-acts .gl-already-go {
+    background: var(--ks3-on-dark); color: var(--ks3-ink);
+  }
+  .gl-already-acts .gl-already-out {
+    background: transparent; color: var(--ks3-on-dark);
+  }
+  .gl-already-acts button[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+  </style>
+</head>
+<body>
+
+<div class="rd gl-root" data-mode="ks3" id="c-main">
+  <header class="gl-head">
+    <span id="gl-brand"></span>
+    <span class="gl-word">MrBadmus</span>
+  </header>
+
+  <main class="gl-main">
+    <!-- Night 4 (MRB-317 ruling 3, the /go/ half). A shared family device
+         can arrive here with the LAST child still signed in. Rendered only
+         when that is actually true; see the note in the script. -->
+    <div class="gl-already" id="gl-already" hidden>
+      <p class="gl-already-eyebrow">Already signed in</p>
+      <p class="gl-already-who" id="gl-already-who">Someone is signed in on this device.</p>
+      <div class="gl-already-acts">
+        <a class="gl-already-go" id="gl-already-go" href="/consumer/today.html">Carry on</a>
+        <button class="gl-already-out" id="gl-already-out" type="button">Not you? Sign out</button>
+      </div>
+    </div>
+
+    <h1 class="gl-h1">Hello.<br>Who&rsquo;s this?</h1>
+
+    <form class="gl-form" id="gl-form" novalidate>
+      <label class="gl-label" for="gl-user">Username
+        <input class="gl-input" id="gl-user" type="text" autocomplete="username"
+               autocapitalize="none" autocorrect="off" spellcheck="false"
+               placeholder="your-username"/>
+      </label>
+
+      <label class="gl-label" for="gl-pass">Password
+        <div class="gl-passwrap">
+          <input class="gl-input" id="gl-pass" type="password" autocomplete="current-password"/>
+          <button class="gl-show" id="gl-show" type="button">Show</button>
+        </div>
+      </label>
+
+      <p class="gl-error" id="gl-error" hidden></p>
+
+      <button class="gl-go" id="gl-go" type="submit">Let&rsquo;s go</button>
+    </form>
+
+    <p class="gl-ask">Forgotten it? Ask whoever set up your account. They can give you a new password.</p>
+  </main>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   go/index.html — MRB-317 Night 3. Design's `Child Login.dc.html`, live.
+
+   ── WHY IT LIVES AT /go AND NOT UNDER /consumer ────────────────────────
+   This is the one URL a nine-year-old types from memory, off a slip of
+   paper their parent was handed at signup. `mrbadmus.com/go` is six
+   characters they can hold in their head; `mrbadmus.com/consumer/child-
+   login.html` is a thing an adult copies and pastes. The E2 welcome email
+   prints /go, and so does the login slip. It replaces the Night 1 scaffold
+   `consumer/child-login.html`, which is deleted in this run.
+
+   ── THERE IS NO EMAIL ON THIS PAGE, AND THAT IS THE WHOLE DESIGN ───────
+   Not a hidden field, not a fallback, not "username or email", not the
+   word in a placeholder. A child on MrBadmus does not have an email
+   address, has never been asked for one, and must never be shown a form
+   that implies they should have one. Recovery is the parent's job, which
+   is why there is no reset link either — Design's answer is the sentence
+   at the bottom, and it is the honest one.
+
+   ── ONE MESSAGE FOR EVERY FAILURE ──────────────────────────────────────
+   ⚠️ DESIGN DREW TWO ERROR STRINGS AND THEY ARE COLLAPSED TO ONE HERE,
+   deliberately, on Mide's instruction for this run. Hers were "That
+   username isn't one we know" and "That password isn't right" — perfectly
+   kind copy, and a username oracle: anyone can type a guess and be told
+   whether a child by that name exists on the platform. The backend already
+   refuses to make that distinction (one 401 body, one code path, one
+   bcrypt round for both — API-CONTRACT §v3.4), so a UI that split them
+   would be inventing an answer the server took care not to give.
+
+   The exceptions are the two failures that are NOT about the credentials:
+   a rate limit (the server's own sentence, which names fifteen minutes)
+   and a dead connection (api()'s sentence). Telling a child "check your
+   password" when the wifi is off sends them to re-type a password that
+   was right all along.
+
+   ── boot({ anonymous: true }) IS LOAD-BEARING ──────────────────────────
+   This page must not read, inherit or care about a parent session that
+   happens to be in the same browser. A parent signed in on the family
+   laptop, then a child signing in on it, must produce the CHILD's session.
+
+   ── WHY THE BACKEND ISSUES THE SESSION ─────────────────────────────────
+   Supabase authenticates on email + password. A child has no email, so
+   there is nothing for the SDK to sign in WITH. The backend owns the
+   username→account resolution and mints the session with its service
+   credentials; this page receives the token pair and hands it to the SDK
+   via `setSession`, which is what makes every downstream page see an
+   ordinary Supabase session and need no special case at all.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  /* THE one sentence. See the header — this is a ruling, not a shortcut. */
+  var GENERIC = 'That username and password don’t match. ' +
+                'Check with whoever set up your account.';
+
+  C.boot({ anonymous: true, run: function (ctx) {
+    document.getElementById('gl-brand').innerHTML = C.BRANDMARK;
+
+    /* ── Night 4 (MRB-317 ruling 3) — "not you?" ─────────────────────────
+       A family iPad arrives here with the last child still signed in, and
+       until tonight this page sat silently on top of that session: the form
+       worked, but a child who did not know to use it — or who tapped
+       anything else — was looking at somebody else's day.
+
+       ⚠️ THIS DOES NOT UNDO `anonymous: true`. The page still refuses to
+       LOG IN as whoever is in the store; it reads the session only to offer
+       to end it. A PARENT's session is deliberately left alone and nothing
+       is rendered for it: the parent dashboard is a different product on a
+       different address, and offering to sign a parent out of a page their
+       child types into would be a control aimed at the wrong person.
+       `isChildSession()` is the test, and it is local — the child's own
+       GoTrue address, in their own session, never displayed.
+
+       Every failure here is silent by design. This is an ENHANCEMENT on a
+       page whose one job is a username and a password; a Supabase call that
+       times out must leave the login form working, not put an error above
+       it. */
+    var already = document.getElementById('gl-already');
+    var whoEl   = document.getElementById('gl-already-who');
+    document.getElementById('gl-already-go').href = C.href('/consumer/today.html');
+    document.getElementById('gl-already-out').addEventListener('click', function () {
+      var b = this;
+      b.disabled = true;
+      b.textContent = 'Signing out…';
+      /* Not `C.signOut()`: that lands on /go/, and we are ON /go/. Clearing
+         and reloading is the same end state and it re-renders this page
+         from scratch, so the card disappears because the session really has
+         gone rather than because something hid it. */
+      var after = function () {
+        C.clearLocalState();
+        window.location.reload();
+      };
+      var p = null;
+      try { p = ctx.sb.auth.signOut(); } catch (e) { p = null; }
+      if (p && p.then) { p.then(after, after); } else { after(); }
+    });
+
+    ctx.sb.auth.getSession().then(function (r) {
+      var session = r && r.data && r.data.session;
+      if (!session || !C.isChildSession(session)) { return; }
+      already.hidden = false;
+
+      /* The name makes the question answerable — "Not you?" is a question a
+         child can only answer if the page says who it thinks they are. It
+         is the child's OWN profile row, read with the child's OWN session,
+         so RLS is the permission and there is nothing here a stranger could
+         pull. If the read fails or returns nothing, the card keeps the
+         name-less sentence it shipped with: knowing SOMEBODY is signed in is
+         already the useful half. */
+      return ctx.sb.from('profiles').select('first_name, username')
+        .eq('id', session.user.id).maybeSingle()
+        .then(function (res) {
+          var row = res && res.data;
+          if (!row) { return; }
+          var name = row.first_name || row.username;
+          if (name) {
+            whoEl.textContent = 'You’re signed in as ' + name + '.';
+          }
+        });
+    }).catch(function (e) { console.error('[go/session]', e); });
+
+    var form  = document.getElementById('gl-form');
+    var uEl   = document.getElementById('gl-user');
+    var pEl   = document.getElementById('gl-pass');
+    var errEl = document.getElementById('gl-error');
+    var btn   = document.getElementById('gl-go');
+    var show  = document.getElementById('gl-show');
+
+    function setError(text) {
+      if (!text) { errEl.hidden = true; errEl.textContent = ''; return; }
+      errEl.textContent = text;
+      errEl.hidden = false;
+    }
+
+    /* Design lowercases and trims on every keystroke rather than on submit,
+       so what the child sees in the box is exactly what is sent. A username
+       is citext at the database, so this changes nothing about whether the
+       login works — it changes whether the child can SEE why it did. */
+    uEl.addEventListener('input', function () {
+      var v = uEl.value.toLowerCase().trim();
+      if (v !== uEl.value) { uEl.value = v; }
+      setError('');
+    });
+    pEl.addEventListener('input', function () { setError(''); });
+
+    show.addEventListener('click', function () {
+      var showing = pEl.type === 'text';
+      pEl.type = showing ? 'password' : 'text';
+      show.textContent = showing ? 'Show' : 'Hide';
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var username = uEl.value.toLowerCase().trim();
+      var password = pEl.value;
+
+      /* An empty box is not a wrong password, and saying so would send a
+         child off to check a password they have not typed yet. */
+      if (!username || !password) {
+        return setError('Type your username and your password.');
+      }
+
+      setError('');
+      C.setBusy(btn, true, 'Signing in…');
+
+      C.api('/api/consumer/child/login', {
+        method: 'POST',
+        body: { username: username, password: password }
+      }).then(function (d) {
+        var at = d && (d.access_token || (d.session && d.session.access_token));
+        var rt = d && (d.refresh_token || (d.session && d.session.refresh_token));
+        if (!at || !rt) {
+          /* A 200 with no tokens in it. Not the child's fault and not a
+             wrong password, so it does not get GENERIC — that would send
+             them off to re-type a correct password forever. */
+          C.setBusy(btn, false);
+          return setError('Something went wrong signing you in. Try again in a moment.');
+        }
+        return ctx.sb.auth.setSession({ access_token: at, refresh_token: rt })
+          .then(function (r) {
+            if (r.error) {
+              C.setBusy(btn, false);
+              return setError('Something went wrong signing you in. Try again in a moment.');
+            }
+            /* C.go rather than a literal, so ?env= and ?api= come with them
+               — a child who signed in against the test backend must not
+               arrive on a page talking to production, which would reject the
+               session they just got and read as "your password is wrong". */
+            C.go('/consumer/today.html');
+          });
+      }).catch(function (err) {
+        C.setBusy(btn, false);
+
+        /* Rate limit and dead connection are the two failures that are not
+           about the credentials. Everything else — wrong password, unknown
+           username, removed child, a parent trying to come in this way —
+           is one sentence. */
+        if (err.code === 'rate_limited' || err.status === 429) {
+          return setError(err.message ||
+            'Too many tries. Wait fifteen minutes and try again.');
+        }
+        if (/couldn’t reach MrBadmus/i.test(err.message || '')) {
+          return setError(err.message);
+        }
+        setError(GENERIC);
+      });
+    });
+  }});
+})();
+</script>
+</body>
+</html>

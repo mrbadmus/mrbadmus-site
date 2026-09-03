@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>Terms — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<div id="pb-nav"></div>
+
+<!-- 800px, not the 1100 of the marketing pages. A legal document is read
+     linearly and a 60-character measure is what makes that possible; the
+     wide grid these pages share exists for cards, and there are none. -->
+<main class="pb-wrap" id="legal" style="max-width:800px;margin:0 auto;padding:56px 20px 80px"></main>
+
+<div id="pb-footer"></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script src="/parents/legal.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/terms.html — MRB-317 Night 4, lane C (item C2).
+
+   ⚠️ THE TERMS DO NOT EXIST YET. This page is the finished furniture plus
+   a scaffold; see the header of `parents/legal.js` for why no text was
+   written here and why that was the right call. Mide's ruling 7 on
+   MRB-317; the drafting is an owner item on MRB-319. Beta does not open
+   without it.
+
+   ── THE SECTION LIST IS MRB-319'S CHECKLIST, EXPANDED ──────────────────
+   Mide's own line reads: "Consumer T&Cs: 'MrBadmus is a trading name of
+   3rd Eye Ltd'; 14-day cooling-off; DMCC 2024 subscription rules
+   (pre-contract info, renewal reminder, easy cancel); refund policy; fair-
+   use statement for AI; complaints route + response time." Each of those
+   is a section below, in the order a parent meets them, with the
+   surrounding clauses a subscription contract needs around them.
+
+   ⚠️ The 14-day cooling-off and the DMCC 2024 duties are the two that
+   interact with how the product is actually built, so their notes say what
+   the code already does — a seven-day free week before the first charge,
+   cancel-at-period-end rather than an immediate cut-off, and access that
+   runs to the end of the paid period. The text has to describe THAT, not a
+   generic template, or the document and the software disagree.
+
+   ── THE PATH IS A CONTRACT ─────────────────────────────────────────────
+   `/parents/terms.html` is linked from the signup checkbox and from every
+   public footer. Do not rename it.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var L = window.MrBadmusLegal;
+
+  var SECTIONS = [
+    { h: 'Who you are contracting with',
+      must: 'MrBadmus is a trading name of 3rd Eye Ltd, registered in England. Company number, registered address, and the address for notices and for service.' },
+    { h: 'What the service is, and what it is not',
+      must: 'What is set, marked and reported each week; that it is a revision and practice service and not a school, a tutor, or an examination body; no guarantee of a grade; the ages and years it is built for.' },
+    { h: 'Information given before you subscribe',
+      must: 'The pre-contract information the DMCC 2024 requires, in one place and in plain English: the total price a parent will pay, the billing cycle, when the first charge falls, and what happens at each renewal.' },
+    { h: 'The free week',
+      must: 'Seven days with no charge; that a card is taken at signup and charged only when the free week ends; what a parent must do to stop it, and by when; that the reminder email is sent before the first charge.' },
+    { h: 'Price, billing and renewal',
+      must: 'Price per child and how a second and later child is priced; monthly and annual cycles; that the subscription renews automatically until it is cancelled; the renewal reminder the DMCC 2024 requires before each renewal, and how far ahead it is sent; what happens to price changes.' },
+    { h: 'Your right to change your mind — 14 days',
+      must: 'The statutory 14-day cooling-off period, when it starts, how to exercise it (a plain instruction, plus the model cancellation form), the refund and how long it takes; and how the free week and the cooling-off period sit alongside each other.' },
+    { h: 'Cancelling at any other time',
+      must: 'That cancelling is one control in the account and needs no phone call or email — the DMCC 2024 easy-exit duty; that access runs to the end of the period already paid for and is not cut off on the day; what happens to a child’s work, reports and history afterwards.' },
+    { h: 'Refunds',
+      must: 'When money is returned and when it is not; part-periods; a payment taken in error; the route to ask, and the time we answer in.' },
+    { h: 'Marking: what is automated and what Mr Badmus marks himself',
+      must: 'The fair-use statement. That instant marking is automated against published mark schemes and can be wrong; that a set number of written answers a child sends each month are marked personally by Mide, and the turnaround; the monthly limit and how it resets; that the service is not to be used to generate work to hand in as a pupil’s own.' },
+    { h: 'Your child’s account, and what you are responsible for',
+      must: 'That the account is the parent’s and the child uses it; that the child’s username and password are handed over by the parent; supervision and shared devices; that a parent may pause, remove or reset a child at any time.' },
+    { h: 'Using the service properly',
+      must: 'What is not allowed (sharing a login, reselling access, scraping the content, abusive messages); that lesson and question content is ours and is licensed for one household’s use; what we may suspend and the notice we give first.' },
+    { h: 'Availability, and changes',
+      must: 'That the service is offered as it is, without a guarantee of uninterrupted availability; planned maintenance; how we tell you about a change to the service or to these terms, and a parent’s right to cancel without penalty if a change is material.' },
+    { h: 'If something goes wrong — complaints',
+      must: 'The complaints route (one named address), the time within which we acknowledge and the time within which we answer, and what to do if the answer is unsatisfactory. This is the section MRB-319 asks for by name; it needs a real number of days in it.' },
+    { h: 'Liability',
+      must: 'What is not excluded (death, personal injury, fraud, and anything else the law will not let us exclude); the limits that do apply; and the statutory rights a consumer keeps regardless.' },
+    { h: 'Governing law',
+      must: 'England and Wales, and the courts a consumer may bring a claim in.' }
+  ];
+
+  C.boot({ public: true, run: function () {
+    P.chrome(null);
+    L.render(document.getElementById('legal'), {
+      eyebrow: 'Terms',
+      title: 'Terms of service',
+      intro: 'The agreement between you and 3rd Eye Ltd, trading as MrBadmus, when you subscribe on behalf of your child.',
+      what: 'full terms of service',
+      tailExtra: 'and we will answer any question about these terms in writing.',
+      sections: SECTIONS
+    });
+  }});
+})();
+</script>
+</body>
+</html>

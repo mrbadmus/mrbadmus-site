@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>Sign in — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+<style>
+/* Design's chooser breaks to two columns at 760, NOT at the 900 the four
+   content pages use. Two cards side by side need much less room than a
+   nav with three links plus a CTA, and forcing them to share a breakpoint
+   would leave a phone-and-a-half-wide tablet showing one card per screen
+   for no reason. Her number, kept. */
+.si-two { display: grid; gap: 14px; }
+@media (min-width: 760px) { .si-two { grid-template-columns: 1fr 1fr; gap: 20px; } }
+</style>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column">
+  <header id="si-head" style="display:flex;align-items:center;gap:10px;padding:18px 24px;border-bottom:2px solid var(--ks3-ink)"></header>
+
+  <main style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:820px;width:100%;margin:0 auto;padding:40px 24px 64px;box-sizing:border-box">
+
+    <!-- CHOOSER -->
+    <section id="screen-choose">
+      <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(38px,6vw,56px);line-height:.96;letter-spacing:-.035em">Who's signing in?</h1>
+      <div class="si-two" style="margin-top:28px">
+        <a id="card-child" href="#" style="display:block;padding:26px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);color:var(--ks3-ink);box-shadow:var(--ks3-shadow-block)">
+          <span style="display:grid;place-items:center;width:48px;height:48px;border-radius:14px;border:2px solid var(--ks3-ink);background:var(--ks3-accent);font-family:var(--ks3-font-display);font-weight:800;font-size:22px">A</span>
+          <span style="display:block;margin-top:16px;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1">I'm doing the work</span>
+          <span style="display:block;margin-top:8px;font-size:16px;color:var(--ks3-ink-body)">Sign in with the username you were given.</span>
+        </a>
+        <button type="button" id="card-parent" style="text-align:left;padding:26px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);color:var(--ks3-ink);box-shadow:var(--ks3-shadow-block);cursor:pointer">
+          <span style="display:grid;place-items:center;width:48px;height:48px;border-radius:14px;border:2px solid var(--ks3-ink);background:var(--ks3-band);font-family:var(--ks3-font-display);font-weight:800;font-size:22px">P</span>
+          <span style="display:block;margin-top:16px;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1">I'm the parent</span>
+          <span style="display:block;margin-top:8px;font-size:16px;color:var(--ks3-ink-body)">Email and password, or Google.</span>
+        </button>
+      </div>
+      <p style="margin:28px 0 0;font-size:16px;color:var(--ks3-ink-muted)">New here? <a id="link-signup" href="#" style="font-weight:700">Start a free week</a>. Schools and tutors: <a id="link-org" href="#" style="font-weight:700">organisation sign in</a>.</p>
+    </section>
+
+    <!-- PARENT FORM -->
+    <section id="screen-parent" style="display:none">
+      <div style="max-width:460px">
+        <button type="button" id="back" style="display:inline-flex;align-items:center;gap:6px;padding:0;border:0;background:none;font-weight:700;font-size:15px;color:var(--ks3-accent-text);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M15 5l-7 7 7 7"/></svg>Back</button>
+        <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(36px,5vw,48px);line-height:.98;letter-spacing:-.035em">Sign in</h1>
+        <button type="button" id="google" style="margin-top:24px;width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;gap:12px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:17px;color:var(--ks3-ink);cursor:pointer">
+          <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45 24.5c0-1.6-.1-2.8-.4-4H24v7.6h12.1c-.3 2-1.6 5-4.6 7l7 5.4C42.7 36.6 45 31 45 24.5z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.4l-7-5.4c-1.9 1.3-4.4 2.2-7.5 2.2-5.8 0-10.7-3.9-12.4-9.2l-7.2 5.6C8 41.3 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.6 28.2c-.4-1.3-.7-2.7-.7-4.2s.3-2.9.7-4.2l-7.2-5.6C3 17.1 2 20.4 2 24s1 6.9 2.4 9.8l7.2-5.6z"/><path fill="#EA4335" d="M24 10.6c3.3 0 5.5 1.4 6.8 2.6l6.2-6C33.3 3.7 28.9 2 24 2 15.4 2 8 6.7 4.4 14.2l7.2 5.6c1.7-5.3 6.6-9.2 12.4-9.2z"/></svg>Continue with Google
+        </button>
+        <div style="display:flex;align-items:center;gap:12px;margin:20px 0 16px;color:var(--ks3-ink-muted);font-size:14px"><span style="flex:1;height:2px;background:var(--ks3-rule)"></span>or<span style="flex:1;height:2px;background:var(--ks3-rule)"></span></div>
+        <!-- ⚠️ `novalidate` is deliberate, and it is not laziness. The email
+             box is `type="email"`, so without it Chrome refuses to fire the
+             submit event at all when the address is malformed and shows its
+             own grey bubble instead — which means Design's one error string
+             is never reached, and the parent gets the browser's voice for one
+             kind of mistake and ours for the other. One voice. The check
+             itself is still done, in the handler, in her words. -->
+        <form id="form" novalidate style="display:flex;flex-direction:column;gap:14px">
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Email<input id="email" type="email" autocomplete="email" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)"></label>
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Password<input id="pass" type="password" autocomplete="current-password" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)"></label>
+          <p id="error" style="margin:0;font-size:15px;font-weight:700;color:var(--ks3-accent-text);display:none"></p>
+          <button type="submit" id="submit" style="margin-top:6px;width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">Sign in</button>
+        </form>
+        <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px;font-size:16px">
+          <button type="button" id="forgot" style="align-self:flex-start;padding:0;border:0;background:none;font-weight:700;color:var(--ks3-accent-text);cursor:pointer">Forgotten your password?</button>
+          <span style="color:var(--ks3-ink-muted)">No account? <a id="link-signup-2" href="#" style="font-weight:700">Start a free week</a></span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/sign-in.html — MRB-317 Night 3.
+   Design's `Public Sign In.dc.html`, on real Supabase auth.
+
+   ── THE CHOOSER IS THE POINT OF THE PAGE ───────────────────────────────
+   Two people sign in to this product and they sign in with different KINDS
+   of credential: a parent with an email, a child with a username and no
+   inbox at all. A single form asking for "email or username" would ask
+   every nine-year-old for something they do not have. So the first screen
+   asks who, and then asks the right question — the child leaves for
+   /go, the parent gets a form.
+
+   ── WHY THIS PAGE LOADS THE SDK AND THE OTHER FOUR DO NOT ──────────────
+   `sessionOptional: true`. It genuinely needs Supabase — three calls live
+   here — but it must not BOUNCE a signed-out visitor, which is what
+   `requireSession` would do to everyone who came here to sign in.
+
+   ── AND WHY IT STILL CALLS `family/ensure` AFTER A PASSWORD SIGN-IN ────
+   A parent who signed up but never finished (closed the tab on the verify
+   screen, say) has an auth user and no family. `ensure` is idempotent by
+   contract; calling it on every sign-in is what makes "signed in" and "has
+   a family" the same state instead of two that drift apart.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+
+  /* Design's single error string. It is deliberately one string for a wrong
+     password AND an address with no account: telling a stranger which of the
+     two it was is an account-enumeration oracle, and the parent's next
+     action ("try again or reset it") is identical either way. */
+  var CREDENTIALS = 'That email and password don’t match. Try again or reset it.';
+
+  C.boot({ public: true, sessionOptional: true, run: function (ctx) {
+    var sb = ctx.sb;
+    var esc = C.escapeHtml;
+
+    document.getElementById('si-head').innerHTML =
+      '<a href="' + P.url('home') + '" style="display:flex;align-items:center;gap:10px;color:var(--ks3-ink)">' +
+      P.brand(26) + '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
+      'letter-spacing:-.02em">MrBadmus</span></a>';
+
+    // The child's door. `childLoginUrl` is the one definition of /go on the
+    // estate — the same string the welcome email and the signup hand-over
+    // card use, so the three can never disagree.
+    document.getElementById('card-child').href = C.href(C.childLoginUrl);
+    document.getElementById('link-signup').href = P.url('signUp');
+    document.getElementById('link-signup-2').href = P.url('signUp');
+    /* Design's own wording, unchanged: the label says "organisation sign
+       in", so the link is the staff door, not the marketing page. Drop 2
+       delivered `/parents/organisations.html` and it is now in the nav and
+       the footer of this page — a visitor who wanted to READ about
+       organisations has two routes to it, and a caseworker who wanted to
+       SIGN IN still gets one click. Her drop-2 Org Sign In page closes the
+       loop the other way ("Not set up yet? Contact us"). */
+    document.getElementById('link-org').href = C.href('/org/sign-in.html');
+
+    var chooseEl = document.getElementById('screen-choose');
+    var parentEl = document.getElementById('screen-parent');
+    var errEl    = document.getElementById('error');
+    var emailEl  = document.getElementById('email');
+    var passEl   = document.getElementById('pass');
+    var forgotEl = document.getElementById('forgot');
+
+    function screen(which) {
+      chooseEl.style.display = which === 'choose' ? '' : 'none';
+      parentEl.style.display = which === 'parent' ? '' : 'none';
+      if (which === 'choose') { showError(''); }
+    }
+    function showError(msg) {
+      if (!msg) { errEl.style.display = 'none'; errEl.textContent = ''; return; }
+      errEl.textContent = msg;
+      errEl.style.display = 'block';
+    }
+
+    document.getElementById('card-parent').addEventListener('click', function () { screen('parent'); });
+    document.getElementById('back').addEventListener('click', function () { screen('choose'); });
+    [emailEl, passEl].forEach(function (el) {
+      el.addEventListener('input', function () { showError(''); });
+    });
+
+    /* Where Google sends the browser back. verify.html is the single landing
+       for every arrival that carries tokens in the fragment — the signup
+       confirm link and both OAuth returns — so there is one place that knows
+       how to wait for the SDK to finish the exchange. `C.href` carries
+       ?env / ?api across the round trip, exactly as signup.html does. */
+    function redirectTo() {
+      return window.location.origin + C.href('/consumer/verify.html');
+    }
+
+    document.getElementById('google').addEventListener('click', function () {
+      var btn = this;
+      btn.disabled = true;
+      showError('');
+      sb.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: redirectTo(), scopes: 'openid profile email' }
+      }).then(function (r) {
+        if (r.error) { btn.disabled = false; showError(r.error.message); }
+        // On success the browser leaves for Google and returns to verify.html.
+      }).catch(function (e) {
+        btn.disabled = false;
+        showError('We couldn’t start Google sign-in. Please try again.');
+        console.error('[parents/sign-in]', e);
+      });
+    });
+
+    document.getElementById('form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = emailEl.value.trim();
+      var pass  = passEl.value;
+
+      // Design's validation, exactly: an address without an @ and an empty
+      // password are both "that doesn't match", not two separate lectures.
+      if (email.indexOf('@') === -1 || pass.length < 1) { return showError(CREDENTIALS); }
+
+      var btn = document.getElementById('submit');
+      C.setBusy(btn, true, 'Signing in…');
+      showError('');
+
+      sb.auth.signInWithPassword({ email: email, password: pass }).then(function (r) {
+        if (r.error) {
+          C.setBusy(btn, false);
+          /* A parent who signed up and never opened the email gets a
+             different answer, because "your password is wrong" would be
+             false and would send them to reset a password that works. */
+          if (/email not confirmed/i.test(r.error.message || '')) {
+            return showError('Your email isn’t verified yet. Open the link we sent you and you’ll come straight in.');
+          }
+          return showError(CREDENTIALS);
+        }
+        return C.api('/api/consumer/family/ensure', {
+          method: 'POST', token: r.data.session.access_token
+        }).then(function () {
+          C.go('/consumer/overview.html');
+        });
+      }).catch(function (err) {
+        C.setBusy(btn, false);
+        /* NOT the credentials string. The password was right; something else
+           broke, and telling this parent to reset a working password is the
+           worst advice available. Design has no state for it, so the real
+           sentence goes in her error slot. */
+        console.error('[parents/sign-in]', err);
+        showError((err && err.message) ||
+          'We couldn’t sign you in just now. Please try again in a moment.');
+      });
+    });
+
+    /* Password reset. Design's label swap is the whole feedback: "Reset
+       link sent to <email>" replaces the button's own text.
+
+       ⊕ RULING 6 (Mide, MRB-317, 2 Sept 2026). The link used to land on the
+       estate's `/reset-password.html`, which is the SCHOOL brand —
+       "MrBadmusAI", Fraunces, the gold-to-rust chevron. A parent who has
+       only ever seen this front door was being handed, mid-reset, a page
+       belonging to a different product. It now lands on
+       `/parents/reset-password.html`, which is this one's twin. The school
+       page is untouched and still serves school accounts.
+
+       ⚠️ The redirect target must be on Supabase's redirect-URL allow-list
+       or the link comes back with `otp_expired`. See the run report.
+
+       Deliberately says "sent" whatever Supabase answers for an address with
+       no account — the same enumeration argument as the sign-in error. */
+    forgotEl.addEventListener('click', function () {
+      var email = emailEl.value.trim();
+      if (email.indexOf('@') === -1) {
+        return showError('Put your email address in the box first, then we’ll send you a link.');
+      }
+      forgotEl.disabled = true;
+      showError('');
+      sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + C.href('/parents/reset-password.html')
+      }).then(function () {
+        forgotEl.textContent = 'Reset link sent to ' + email;
+        forgotEl.disabled = false;
+      }).catch(function (e) {
+        console.error('[parents/sign-in] reset', e);
+        forgotEl.textContent = 'Reset link sent to ' + email;
+        forgotEl.disabled = false;
+      });
+    });
+
+    screen('choose');
+  }});
+})();
+</script>
+</body>
+</html>

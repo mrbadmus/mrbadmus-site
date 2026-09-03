@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#FBF3E6"/>
+  <title>Account — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <style>
+  /* ═══════════════════════════════════════════════════════════════════════
+     consumer/account.html — Claude Design's `Parent Account.dc.html`.
+     MRB-317 Night 3. Her inline styles are the design; the repeated ones
+     are lifted under her own `ak-` prefix. No new tokens.
+
+     consumer.css's 84px body padding belongs to the Night 1 scaffold nav
+     and is removed here. `display:none` is NOT touched — it is the flag
+     gate and only boot() may lift it.
+     ═══════════════════════════════════════════════════════════════════════ */
+  body { margin: 0; padding: 0; background: #FBF3E6; font-size: 17px; }
+  a { color: #A93411; text-decoration: none; }
+  a:hover { color: #7F2408; text-decoration: underline; }
+  input, select, textarea, button { font: inherit; }
+  input::placeholder { color: #9A8F86; }
+
+  .ak-root {
+    min-height: 100vh;
+    background: var(--ks3-ground);
+    color: var(--ks3-ink);
+    font-family: var(--ks3-font-body);
+    font-size: 17px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .ak-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px 14px;
+    border-bottom: 2px solid var(--ks3-ink);
+  }
+  .ak-brandword {
+    font-family: var(--ks3-font-display);
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -.02em;
+  }
+  .ak-main { max-width: 560px; margin: 0 auto; padding: 24px 20px 60px; }
+  .ak-kicker {
+    margin: 0;
+    font-family: var(--ks3-font-mono);
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ks3-ink-muted);
+  }
+  .ak-card {
+    padding: 20px 22px;
+    border: 2px solid var(--ks3-ink);
+    border-radius: var(--ks3-r-card);
+    background: var(--ks3-card);
+  }
+  .ak-plan {
+    padding: 22px;
+    border: 2px solid var(--ks3-ink);
+    border-radius: var(--ks3-r-card);
+    background: var(--ks3-card);
+    box-shadow: var(--ks3-shadow-block);
+  }
+  .ak-field {
+    margin-top: 6px;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 10px 14px;
+    border: 2px solid var(--ks3-option-border);
+    border-radius: var(--ks3-r-control);
+    background: var(--ks3-card);
+    font-size: 17px;
+    color: var(--ks3-ink);
+  }
+  .ak-quiet {
+    border: 0;
+    background: none;
+    padding: 0;
+    font-weight: 700;
+    color: var(--ks3-accent-text);
+    cursor: pointer;
+  }
+  .ak-toggle {
+    position: relative;
+    width: 52px;
+    height: 30px;
+    border: 2px solid var(--ks3-ink);
+    border-radius: 99px;
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
+  .ak-knob {
+    position: absolute;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 99px;
+    transition: left .15s;
+  }
+  .ak-datarow { display: flex; justify-content: space-between; gap: 12px; }
+  .ak-btn-ink {
+    width: 100%;
+    min-height: 50px;
+    border: 2px solid var(--ks3-ink);
+    border-radius: var(--ks3-r-control);
+    background: var(--ks3-ink);
+    color: var(--ks3-on-dark);
+    font-weight: 700;
+    font-size: 17px;
+    cursor: pointer;
+  }
+  @media (min-width: 960px) {
+    .ak-main { max-width: 1040px; padding: 44px 48px 80px; }
+    .ak-cols { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 24px; align-items: start; }
+    .ak-first { margin-top: 0 !important; }
+    .ak-head { padding: 16px 48px 14px; }
+  }
+  </style>
+</head>
+<body>
+
+<div class="rd ak-root" data-mode="ks3" id="ak-root">
+  <header class="ak-head" id="ak-head"></header>
+  <main class="ak-main" id="c-main"></main>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/account.html — the money page. MRB-317 Night 3.
+
+   Design's `Parent Account.dc.html`, with her `STATES` table intact and
+   every one of its numbers replaced by a real field.
+
+   ── EVERY NUMBER CAME FROM THE BACKEND ─────────────────────────────────
+   This is where a parent decides whether they are being charged fairly. A
+   total computed here — even correctly — is a number nobody can trace to
+   an invoice, and the first time the graduated per-seat price changes it
+   becomes a number that is quietly wrong. So `monthly_total_pence`,
+   `annual_total_pence` and each seat's `price_pence` are RENDERED, and the
+   only arithmetic on the page is `money()` turning pence into pounds.
+
+   ── THE TWO CTAs ARE FIELDS, NOT INFERENCES ────────────────────────────
+   `can_checkout` and `can_portal` decide which of Design's CTAs is
+   actually clickable. There is a real state where both are true and a real
+   state where neither is; a page working it out from `state` would get
+   that pair wrong in exactly the case that matters.
+
+   ── THE HEADER CARRIES THE BRAND ───────────────────────────────────────
+   Design's Account header has a back arrow and the word "Account" and no
+   mark at all. The mark is added, matching the dashboard's, so a parent
+   arriving from an email lands on a page that says whose it is. Recorded
+   as a deviation in the run report.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var esc = C.escapeHtml;
+
+  /* Design's five states, verbatim. `none` is a sixth that she did not draw
+     — a family that has never checked out — and it takes the locked
+     treatment with the copy that would be untrue replaced. */
+  var STATES = {
+    trialing: {
+      label: 'Free week', badge: 'band',
+      line: 'Full access. Your card is on file and nothing has been charged.',
+      cta: { label: 'Manage card in Stripe', kind: 'outline', act: 'portal',
+             note: 'Opens Stripe’s secure billing portal. Card, receipts and cancellation live there.' }
+    },
+    active: {
+      label: 'Active', badge: 'ok',
+      cta: { label: 'Manage billing in Stripe', kind: 'outline', act: 'portal',
+             note: 'Card, receipts, switch to annual, or cancel. Opens Stripe’s secure portal.' }
+    },
+    past_due: {
+      label: 'Payment failed', badge: 'alert',
+      line: 'The last payment didn’t go through.',
+      cta: { label: 'Update card in Stripe', kind: 'accent', act: 'portal',
+             note: 'Takes a minute. Work carries on the moment it succeeds.' }
+    },
+    cancelled: {
+      label: 'Cancelled', badge: 'band',
+      cta: { label: 'Resume subscription', kind: 'ink', act: 'portal',
+             note: 'Picks up the same plan and card. Nothing to set up again.' }
+    },
+    locked: {
+      label: 'Paused', badge: 'alert',
+      line: 'The subscription ended and work has stopped being set.',
+      cta: { label: 'Restart', kind: 'accent', act: 'checkout',
+             note: 'Seven-day trial doesn’t apply again. Charged today, work set tonight.' }
+    },
+    none: {
+      label: 'Not started', badge: 'band',
+      line: 'Nothing has been charged. The first week is free.',
+      cta: { label: 'Start your free week', kind: 'accent', act: 'checkout',
+             note: 'A card is needed to start. Nothing is taken until the free week ends.' }
+    }
+  };
+  var BADGES = {
+    band:  { border: 'var(--ks3-rule-strong)', bg: 'var(--ks3-band)',       fg: 'var(--ks3-ink-muted)' },
+    ok:    { border: 'var(--ks3-ok)',          bg: 'var(--ks3-ok-tint)',    fg: 'var(--ks3-ok-text)' },
+    alert: { border: 'var(--ks3-alert-border)', bg: 'var(--ks3-alert-tint)', fg: 'var(--ks3-alert-text)' }
+  };
+  var CTAS = {
+    outline: { border: 'var(--ks3-ink)',        bg: 'var(--ks3-card)',        fg: 'var(--ks3-ink)' },
+    ink:     { border: 'var(--ks3-ink)',        bg: 'var(--ks3-ink)',         fg: 'var(--ks3-on-dark)' },
+    accent:  { border: 'var(--ks3-accent-text)', bg: 'var(--ks3-accent-text)', fg: '#FFFFFF' }
+  };
+
+  var MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                     'August', 'September', 'October', 'November', 'December'];
+  function dayMonth(iso) {
+    if (!iso) { return null; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return null; }
+    return d.getDate() + ' ' + MONTHS_LONG[d.getMonth()];
+  }
+  function plusDaysISO(iso, n) {
+    if (!iso) { return null; }
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) { return null; }
+    d.setDate(d.getDate() + n);
+    return d.toISOString();
+  }
+
+  var MARK_BACK = '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" ' +
+    'style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg>';
+  var MARK_OUT = '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" ' +
+    'style="width:16px;height:16px"><path d="M7 17L17 7M9 7h8v8"/></svg>';
+
+  var S = {
+    fam: {}, sub: null, parent: {}, billing: {}, kids: [], prefs: {}, deletion: null,
+    name: '', email: '',
+    digest: true, marking: true,
+    saved: false, passSent: false,
+    deleting: false, confirmText: '',
+    prices: null, busy: false
+  };
+  var ctx = null;
+
+  function tier(interval) {
+    var t = S.prices && S.prices.tiers;
+    if (!t) { return null; }
+    return t[interval === 'year' ? 'year' : 'month'] || null;
+  }
+  function interval() { return S.billing.interval === 'year' ? 'year' : 'month'; }
+  function per() { return interval() === 'year' ? 'a year' : 'a month'; }
+  function totalPence() {
+    return interval() === 'year' ? S.billing.annual_total_pence : S.billing.monthly_total_pence;
+  }
+
+  /* ═══ render ══════════════════════════════════════════════════════════ */
+  function renderHead() {
+    document.getElementById('ak-head').innerHTML =
+      '<a href="' + esc(C.href('/consumer/overview.html')) + '" aria-label="Back to dashboard" ' +
+        'style="display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;' +
+        'border-radius:12px;color:var(--ks3-ink)">' + MARK_BACK + '</a>' +
+      C.BRANDMARK +
+      '<span style="flex:1" class="ak-brandword">Account</span>';
+  }
+
+  function planCard() {
+    var b = S.billing;
+    var st = String(b.state || 'none').toLowerCase();
+    var def = STATES[st] || STATES.none;
+    var badge = BADGES[def.badge];
+    var n = (b.seats || []).length;
+    var cycleWord = interval() === 'year' ? 'Annual' : 'Monthly';
+
+    /* Design's plan title. `cancelled` names the end date; `locked` and
+       `none` have no plan to name. */
+    var title;
+    if (st === 'locked' || st === 'none') {
+      title = 'No active plan';
+    } else if (st === 'cancelled') {
+      var end = dayMonth(b.access_end);
+      title = cycleWord + (end ? (' · ends ' + end) : '');
+    } else {
+      title = cycleWord + ' · ' + n + (n === 1 ? ' child' : ' children');
+    }
+
+    /* Her `line`, with the substitutions she wrote. Two of hers name a date
+       we do not hold: `active` wants the next payment (we have it) and
+       `cancelled` wants the day the parent cancelled — `canceled_at` is not
+       on the billing payload, so that clause is DROPPED rather than
+       guessed. Reported. */
+    var line = def.line || '';
+    if (st === 'active') {
+      var next = dayMonth(b.next_payment_at);
+      line = (next ? ('Next payment ' + next + '. ') : '') +
+             'Receipts go to your email each ' + (interval() === 'year' ? 'year' : 'month') + '.';
+    }
+    if (st === 'cancelled') { line = 'No further charges.'; }
+
+    var body = '';
+    if (st === 'trialing') {
+      var tEnd = dayMonth(b.trial_end);
+      var trialDays = (S.prices && S.prices.trial_days) || null;
+      var pct = (trialDays && b.days_left != null)
+        ? Math.max(0, Math.min(100, Math.round((1 - (b.days_left / trialDays)) * 100)))
+        : null;
+      var price = totalPence() != null ? C.money(totalPence()) : null;
+      body = '<div style="margin-top:16px;padding:14px 16px;border-radius:14px;background:var(--ks3-band)">' +
+        '<div style="display:flex;justify-content:space-between;font-size:15px"><span>Free week ends' +
+          '</span><strong>' + esc(tEnd || 'Not set') + '</strong></div>' +
+        (pct != null
+          ? ('<div style="margin-top:8px;height:10px;border:2px solid var(--ks3-ink);border-radius:99px;' +
+             'background:var(--ks3-card);overflow:hidden"><div style="height:100%;width:' + pct +
+             '%;background:var(--ks3-accent)"></div></div>')
+          : '') +
+        (price
+          ? ('<p style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Then ' + esc(price) +
+             ' ' + per() + '.' + (tEnd ? (' Cancel before ' + esc(tEnd) + ' and nothing is charged.') : '') +
+             '</p>')
+          : '') + '</div>';
+    } else if (st === 'past_due') {
+      /* ⚠️ MIDE'S RULING: dates, never a day count. `failed_at` is when the
+         card was declined, `retry_at` is Stripe's own next attempt, and the
+         grace end is `current_period_end + 7 days` — the moment
+         `org_access_state()` drops the family to read-only. */
+      var failed = dayMonth(b.failed_at);
+      var retry = dayMonth(b.retry_at);
+      var grace = dayMonth(plusDaysISO(S.sub && S.sub.current_period_end, 7));
+      body = '<div style="margin-top:16px;padding:16px;border:2px solid var(--ks3-alert-border);' +
+        'border-radius:14px;background:var(--ks3-alert-tint);color:var(--ks3-alert-text)">' +
+        '<p style="margin:0;font-weight:700;font-size:16px">Your card was declined' +
+          (failed ? (' on ' + esc(failed)) : '') + '.</p>' +
+        '<p style="margin:8px 0 0;font-size:15px">' +
+          (retry ? ('We’ll retry on ' + esc(retry) + '. ') : '') +
+          (grace ? ('Work carries on as normal until <strong>' + esc(grace) + '</strong>. ') : '') +
+          'If it still fails, work stops being set and the account pauses. Nothing is deleted.</p>' +
+        '</div>';
+    } else if (st === 'cancelled') {
+      var ae = dayMonth(b.access_end);
+      /* ⊕ TWO CANCELLED STATES. See overview.html's banner for the whole
+         argument: cancel-at-period-end leaves the row `active` and the access
+         `full` to the period end, while a genuinely `canceled` row is
+         read_only. Both present as `state: 'cancelled'`, so `access` is what
+         separates them. Design's original wording is the `full` branch. */
+      body = '<div style="margin-top:16px;padding:16px;border-radius:14px;background:var(--ks3-band)">' +
+        '<p style="margin:0;font-size:15px;color:var(--ks3-ink-body)">' +
+        (String(b.access || '') === 'full'
+          ? ('Everything works until <strong style="color:var(--ks3-ink)">' +
+             esc(ae || 'the end of the period') + '</strong>. After that, logins open but no new ' +
+             'work is set. Termly reports stay downloadable for a year. Restart any time and each ' +
+             'child picks up where they left off.')
+          : ('Everything already here stays readable, and new work, marking and messages are ' +
+             'paused. On <strong style="color:var(--ks3-ink)">' + esc(ae || 'the end of the period') +
+             '</strong> the account pauses fully. Termly reports stay downloadable for a year. ' +
+             'Restart any time and each child picks up where they left off.')) +
+        '</p></div>';
+    } else if (st === 'locked') {
+      var le = dayMonth(b.access_end);
+      body = '<div style="margin-top:16px;padding:16px;border-radius:14px;background:var(--ks3-band)">' +
+        '<p style="margin:0;font-size:15px;color:var(--ks3-ink-body)">Ended' +
+        (le ? (' ' + esc(le)) : '') + '. Your children’s logins open but show no new work. ' +
+        'Reports, marked answers and chat history are all still here.</p></div>';
+    }
+
+    /* The CTA, gated on the two fields that decide it. */
+    var cta = '';
+    var wantsPortal = def.cta.act === 'portal';
+    var allowed = wantsPortal ? !!b.can_portal : !!b.can_checkout;
+    var label = def.cta.label;
+    if (def.cta.act === 'checkout' && st === 'locked') {
+      var t = tier('month');
+      label = t ? ('Restart · from ' + C.money(t.first) + ' a month') : 'Restart';
+    }
+    if (allowed) {
+      var look = CTAS[def.cta.kind];
+      cta = '<button data-act="' + def.cta.act + '" style="display:flex;align-items:center;' +
+        'justify-content:center;gap:8px;width:100%;min-height:52px;border:2px solid ' + look.border +
+        ';border-radius:var(--ks3-r-control);background:' + look.bg + ';color:' + look.fg +
+        ';font-weight:700;font-size:17px;cursor:pointer">' + esc(label) + ' ' + MARK_OUT + '</button>' +
+        '<p style="margin:0;font-size:13px;color:var(--ks3-ink-muted);text-align:center">' +
+        esc(def.cta.note) + '</p>';
+    } else {
+      cta = '<p style="margin:0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">' +
+        (wantsPortal
+          ? 'There is no billing account to manage yet.'
+          : 'This account can’t start a subscription from here. Email support@mrbadmus.com.') + '</p>';
+    }
+
+    return '<section class="ak-plan">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+        '<p class="ak-kicker">Your plan</p>' +
+        '<span style="margin-left:auto;padding:5px 12px;border-radius:99px;border:2px solid ' +
+          badge.border + ';background:' + badge.bg + ';font-size:13px;font-weight:700;color:' +
+          badge.fg + '">' + esc(def.label) + '</span></div>' +
+      '<p style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:30px;' +
+        'line-height:1.05;letter-spacing:-.03em">' + esc(title) + '</p>' +
+      (line ? ('<p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(line) +
+               '</p>') : '') +
+      body +
+      '<div style="margin-top:18px;display:flex;flex-direction:column;gap:8px">' + cta + '</div>' +
+      '</section>';
+  }
+
+  function seatsCard() {
+    var seats = S.billing.seats || [];
+    if (!seats.length) {
+      return '<section class="ak-card" style="margin-top:16px">' +
+        '<p class="ak-kicker">On this plan</p>' +
+        '<p style="margin:10px 0 0;font-size:16px;color:var(--ks3-ink-body)">No children on the ' +
+        'account yet, so there is nothing to charge for.</p></section>';
+    }
+    var total = totalPence();
+    return '<section class="ak-card" style="margin-top:16px">' +
+      '<p class="ak-kicker">On this plan</p>' +
+      '<ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column">' +
+      seats.map(function (s) {
+        return '<li style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;' +
+          'border-bottom:1px solid var(--ks3-rule);font-size:16px"><span>' + esc(s.name || 'A child') +
+          (s.year != null ? (' <span style="color:var(--ks3-ink-muted)">· Year ' +
+                             esc(String(s.year)) + '</span>') : '') + '</span>' +
+          '<span style="font-family:var(--ks3-font-mono);font-weight:500">' +
+            esc(C.money(s.price_pence)) + '</span></li>';
+      }).join('') +
+      '<li style="display:flex;justify-content:space-between;gap:12px;padding:12px 0 0;font-weight:700;' +
+        'font-size:17px"><span>Total ' + esc(per()) + '</span>' +
+        '<span style="font-family:var(--ks3-font-mono)">' +
+        esc(total != null ? C.money(total) : '—') + '</span></li></ul>' +
+      '<p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Add or remove children ' +
+        'from the dashboard. Changes show on the next bill, pro-rated.</p></section>';
+  }
+
+  function toggle(id, on, label, hint) {
+    var bg = on ? 'var(--ks3-ok)' : 'var(--ks3-band)';
+    var left = on ? '25px' : '3px';
+    var knobBg = on ? '#fff' : 'var(--ks3-ink)';
+    return '<div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;' +
+      'gap:12px;font-size:15px"><span style="flex:1"><strong>' + esc(label) + '</strong><br>' +
+      '<span style="color:var(--ks3-ink-muted)">' + esc(hint) + '</span></span>' +
+      '<button class="ak-toggle" data-act="' + id + '" role="switch" aria-checked="' +
+        (on ? 'true' : 'false') + '" aria-label="' + esc(label) + '" style="background:' + bg + '">' +
+      '<span class="ak-knob" style="left:' + left + ';background:' + knobBg + '"></span></button></div>';
+  }
+
+  function youCard() {
+    return '<section class="ak-card ak-first" style="margin-top:16px">' +
+      '<p class="ak-kicker">You</p>' +
+      '<label style="display:block;margin-top:12px;font-weight:700;font-size:15px;' +
+        'color:var(--ks3-ink-muted)">Name' +
+        '<input id="ak-name" class="ak-field" maxlength="60" value="' + esc(S.name) + '"></label>' +
+      '<p style="margin:6px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Your children see this on ' +
+        'work you set: “set by ' + esc(S.name || 'you') + '”.</p>' +
+      '<label style="display:block;margin-top:14px;font-weight:700;font-size:15px;' +
+        'color:var(--ks3-ink-muted)">Email' +
+        '<input id="ak-email" class="ak-field" type="email" value="' + esc(S.email) + '"></label>' +
+      '<div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;' +
+        'gap:12px;padding:12px 14px;border-radius:12px;background:var(--ks3-band);font-size:15px">' +
+        '<span>Password</span><button class="ak-quiet" data-act="reset-pass">' +
+        (S.passSent ? 'Reset link sent' : 'Send reset link') + '</button></div>' +
+      toggle('toggle-digest', S.digest, 'Sunday digest', 'One email a week, all children.') +
+      toggle('toggle-marking', S.marking, 'Marking emails', 'When Mr Badmus marks an answer.') +
+      '<div id="ak-msg"></div>' +
+      '<button class="ak-btn-ink" data-act="save" style="margin-top:18px">' +
+        (S.saved ? 'Saved' : 'Save') + '</button></section>';
+  }
+
+  function dataCard() {
+    var first = S.kids[0];
+    /* Design's third row is a Privacy notice link. It was omitted on Night 3
+       because no privacy page existed to point it at; /parents/privacy.html
+       exists as of MRB-321, so the row is restored. ⚠️ That page is a SHELL
+       until Mide's text lands — the link is honest about where it goes, but
+       beta does not open until the text is published (MRB-319). */
+    return '<section class="ak-card" style="margin-top:16px">' +
+      '<p class="ak-kicker">Your data</p>' +
+      '<div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;font-size:16px">' +
+      (first
+        ? ('<a class="ak-datarow" href="' + esc(C.href('/consumer/report.html', { child: first.id })) +
+           '">Termly reports, all terms<span style="color:var(--ks3-ink-muted)">Open</span></a>')
+        : ('<span class="ak-datarow" style="color:var(--ks3-ink-muted)">Termly reports, all terms' +
+           '<span>None yet</span></span>')) +
+      '<button class="ak-datarow" data-act="export" style="border:0;background:none;padding:0;' +
+        'font:inherit;color:#A93411;cursor:pointer;text-align:left">Download everything we hold' +
+        '<span style="color:var(--ks3-ink-muted)">JSON</span></button>' +
+      '<a class="ak-datarow" href="/parents/privacy.html" target="_blank" rel="noopener">' +
+        'Privacy notice<span style="color:var(--ks3-ink-muted)">Open</span></a>' +
+      '</div></section>';
+  }
+
+  function cancelCard() {
+    var st = String(S.billing.state || '').toLowerCase();
+    if (st !== 'trialing' && st !== 'active') { return ''; }
+    if (!S.billing.can_portal) { return ''; }
+    return '<section style="margin-top:28px;padding-top:20px;border-top:2px solid var(--ks3-rule)">' +
+      '<p style="margin:0;font-size:15px;color:var(--ks3-ink-body)">Want to stop? Cancelling keeps ' +
+      'everything working until the end of what you’ve paid for. ' +
+      '<button class="ak-quiet" data-act="portal" style="font-weight:700">Cancel in the billing ' +
+      'portal</button>.</p></section>';
+  }
+
+  function deleteCard() {
+    var head = '<section style="margin-top:28px;padding-top:20px;border-top:2px solid var(--ks3-rule)">';
+
+    if (S.deletion) {
+      var when = dayMonth(S.deletion.execute_after);
+      return head + '<div style="padding:18px;border:2px solid var(--ks3-ink);' +
+        'border-radius:var(--ks3-r-panel);background:var(--ks3-band)">' +
+        '<p style="margin:0;font-weight:700;font-size:18px">Account scheduled for deletion</p>' +
+        '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">We’ve emailed ' +
+          esc(S.email) + ' to confirm. Everything is gone on ' + esc(when || 'the scheduled date') +
+          '. You can undo it here at any point before then.</p>' +
+        '<button data-act="undo-delete" style="margin-top:14px;min-height:46px;padding:0 18px;' +
+          'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
+          'font-weight:700;font-size:15px;color:var(--ks3-ink);cursor:pointer">Undo — keep my ' +
+          'account</button>' +
+        '<div id="ak-del-msg"></div></div></section>';
+    }
+
+    if (!S.deleting) {
+      return head + '<button class="ak-quiet" data-act="ask-delete" style="font-size:15px">' +
+        'Delete this account</button></section>';
+    }
+
+    var armed = S.confirmText === 'DELETE';
+    return head + '<div style="padding:18px;border:2px solid var(--ks3-ink);' +
+      'border-radius:var(--ks3-r-panel);background:var(--ks3-alert-tint)">' +
+      '<p style="margin:0;font-weight:700;font-size:18px">Delete your account and every child on it?</p>' +
+      '<ul style="margin:10px 0 0;padding:0 0 0 18px;font-size:15px;color:var(--ks3-ink-body);' +
+        'display:flex;flex-direction:column;gap:4px">' +
+        '<li>The subscription is cancelled today; no further charges.</li>' +
+        '<li>Children’s logins stop working immediately.</li>' +
+        '<li>Progress, reports, answers and messages are deleted after 30 days. Download reports ' +
+          'first if the council needs them.</li></ul>' +
+      '<label style="display:block;margin-top:14px;font-weight:700;font-size:14px;' +
+        'color:var(--ks3-ink-muted)">Type DELETE to confirm' +
+        '<input id="ak-confirm" autocomplete="off" value="' + esc(S.confirmText) + '" ' +
+        'style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;' +
+        'padding:10px 14px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
+        'background:var(--ks3-card);font-family:var(--ks3-font-mono);font-size:17px;' +
+        'color:var(--ks3-ink)"></label>' +
+      '<div id="ak-del-msg"></div>' +
+      '<div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+        '<button data-act="cancel-delete" style="min-height:48px;border:2px solid var(--ks3-ink);' +
+          'border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:15px;' +
+          'color:var(--ks3-ink);cursor:pointer">Keep my account</button>' +
+        '<button data-act="do-delete"' + (armed ? '' : ' disabled') +
+          ' style="min-height:48px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
+          'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:15px;' +
+          'cursor:pointer;opacity:' + (armed ? '1' : '0.45') + '">Delete everything</button>' +
+      '</div></div></section>';
+  }
+
+  function render() {
+    renderHead();
+    document.getElementById('c-main').innerHTML =
+      '<div class="ak-cols"><div>' + planCard() + seatsCard() + '</div>' +
+      '<div>' + youCard() + dataCard() + cancelCard() + deleteCard() + '</div></div>';
+    bindInputs();
+  }
+
+  function bindInputs() {
+    var n = document.getElementById('ak-name');
+    if (n) { n.addEventListener('input', function () { S.name = n.value; S.saved = false; }); }
+    var e = document.getElementById('ak-email');
+    if (e) { e.addEventListener('input', function () { S.email = e.value; S.saved = false; }); }
+    var c = document.getElementById('ak-confirm');
+    if (c) {
+      c.addEventListener('input', function () {
+        var was = S.confirmText === 'DELETE';
+        S.confirmText = c.value;
+        /* Re-render only when the button's armed state actually flips, so
+           typing does not rebuild the field under the caret. */
+        if ((S.confirmText === 'DELETE') !== was) {
+          render();
+          var again = document.getElementById('ak-confirm');
+          if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); }
+        }
+      });
+    }
+  }
+
+  function msg(text, kind, where) {
+    var el = document.getElementById(where || 'ak-msg');
+    if (!el) { return; }
+    if (!text) { el.innerHTML = ''; return; }
+    var alert = kind === 'error';
+    el.innerHTML = '<div style="margin-top:14px;padding:12px 15px;border:2px solid ' +
+      (alert ? 'var(--ks3-alert-border)' : 'var(--ks3-ok)') + ';border-radius:var(--ks3-r-panel);' +
+      'background:' + (alert ? 'var(--ks3-alert-tint)' : 'var(--ks3-ok-tint)') + ';color:' +
+      (alert ? 'var(--ks3-alert-text)' : 'var(--ks3-ok-text)') + ';font-size:15px">' + esc(text) +
+      '</div>';
+  }
+
+  /* ═══ loads ═══════════════════════════════════════════════════════════ */
+  function loadFamily() {
+    return C.api('/api/consumer/family', { token: ctx.token }).then(function (d) {
+      d = d || {};
+      S.fam = d.family || {};
+      S.sub = d.subscription || null;
+      S.parent = d.parent || {};
+      S.billing = d.billing || {};
+      S.kids = d.children || [];
+      S.prefs = d.prefs || {};
+      S.deletion = d.deletion || null;
+      S.name = S.parent.name || '';
+      S.email = S.parent.email || (ctx.session && ctx.session.user && ctx.session.user.email) || '';
+      S.digest = S.prefs.digest !== false;
+      S.marking = S.prefs.marking_email !== false;
+      return d;
+    });
+  }
+  function loadPrices() {
+    var p = (C.pricing ? C.pricing() : C.api('/api/consumer/pricing'));
+    return Promise.resolve(p).then(function (d) { S.prices = d || null; })
+      .catch(function () { S.prices = null; });
+  }
+
+  /* ═══ actions ═════════════════════════════════════════════════════════ */
+  var ACTS = {
+    'toggle-digest':  function () { S.digest = !S.digest; S.saved = false; render(); },
+    'toggle-marking': function () { S.marking = !S.marking; S.saved = false; render(); },
+
+    'reset-pass': function () {
+      if (!S.email) { return msg('We don’t have an email address for this account.', 'error'); }
+      /* MRB-321 ruling 6: a parent resetting a password lands on the
+         CONSUMER-branded page, never the school one. /reset-password.html is
+         the school page (MrBadmusAI, Fraunces) and is left untouched for
+         school staff and students. */
+      ctx.sb.auth.resetPasswordForEmail(S.email, {
+        redirectTo: window.location.origin + '/parents/reset-password.html'
+      }).then(function (r) {
+        if (r && r.error) { return msg(r.error.message, 'error'); }
+        S.passSent = true;
+        render();
+        msg('Check ' + S.email + ' for a link to set a new password.', 'ok');
+      });
+    },
+
+    /* One Save, as Design drew it: the name, the two email preferences and
+       (when it changed) the sign-in address, in that order. Each failure is
+       reported as itself rather than as one blanket "couldn't save". */
+    'save': function (el) {
+      var jobs = [];
+      var emailChanged = S.email && S.parent.email && S.email !== S.parent.email;
+      C.setBusy(el, true, 'Saving…');
+      jobs.push(C.api('/api/consumer/parent', {
+        method: 'PATCH', token: ctx.token, body: { first_name: S.name }
+      }));
+      jobs.push(C.api('/api/consumer/prefs', {
+        method: 'POST', token: ctx.token,
+        body: { digest: S.digest, marking_email: S.marking }
+      }));
+      Promise.all(jobs).then(function () {
+        if (!emailChanged) { return null; }
+        /* The email change is Supabase's own confirm flow — it sends a link
+           to the NEW address and nothing moves until it is clicked. */
+        return ctx.sb.auth.updateUser({ email: S.email }).then(function (r) {
+          if (r && r.error) { throw new Error(r.error.message); }
+          return 'email';
+        });
+      }).then(function (which) {
+        return loadFamily().then(function () {
+          S.saved = true;
+          render();
+          msg(which === 'email'
+            ? 'Saved. Check your new address for a link to confirm the change — the old one keeps ' +
+              'working until you do.'
+            : 'Saved.', 'ok');
+        });
+      }).catch(function (e) {
+        C.setBusy(el, false);
+        msg(e.message, 'error');
+      });
+    },
+
+    'portal': function (el) {
+      C.setBusy(el, true, 'Opening…');
+      C.api('/api/consumer/portal', {
+        method: 'POST', token: ctx.token,
+        body: { return_url: window.location.origin + C.href('/consumer/account.html') }
+      }).then(function (d) {
+        /* A whole-page navigation, never a popup. Stripe's hosted page needs
+           the address bar showing stripe.com — that padlock IS the trust,
+           at the exact moment a parent is typing a card number. */
+        if (d && d.url) { window.location.href = d.url; return; }
+        C.setBusy(el, false);
+        msg('We couldn’t open the billing page. Please try again in a moment.', 'error');
+      }).catch(function (e) {
+        C.setBusy(el, false);
+        msg(e.code === 'no_customer'
+          ? 'There’s no billing account to manage yet — start a subscription first.'
+          : e.message, 'error');
+      });
+    },
+
+    'checkout': function (el) {
+      C.setBusy(el, true, 'Opening…');
+      C.api('/api/consumer/checkout', {
+        method: 'POST', token: ctx.token, body: { interval: interval() }
+      }).then(function (d) {
+        if (d && d.url) { window.location.href = d.url; return; }
+        C.setBusy(el, false);
+        msg('We couldn’t open the payment page. Please try again in a moment.', 'error');
+      }).catch(function (e) {
+        C.setBusy(el, false);
+        if (e.code === 'no_children') {
+          return msg('Add a child first — the subscription is priced per child, so there’s nothing ' +
+                     'to start yet.', 'error');
+        }
+        if (e.code === 'already_subscribed') {
+          return msg('This account already has a subscription. Use Manage billing to change it.', 'error');
+        }
+        msg(e.message, 'error');
+      });
+    },
+
+    /* "Download everything we hold". The route needs the parent's JWT, so
+       it cannot be a plain <a href> — the browser would send an
+       unauthenticated request and get a 401. Fetched with the token and
+       handed to the browser as a Blob, named by the backend's own
+       Content-Disposition so the filename is the server's decision. */
+    'export': function (el) {
+      var base = (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL) || '';
+      C.setBusy(el, true, 'Preparing…');
+      fetch(base + '/api/consumer/family/export', {
+        headers: { Authorization: 'Bearer ' + ctx.token }
+      }).then(function (res) {
+        if (!res.ok) {
+          return res.text().then(function (t) {
+            var j = null; try { j = JSON.parse(t); } catch (e2) { j = null; }
+            throw new Error((j && j.message) ||
+              'We couldn’t put your download together just now.');
+          });
+        }
+        var cd = res.headers.get('Content-Disposition') || '';
+        var m = /filename="?([^";]+)"?/.exec(cd);
+        var name = m ? m[1] : 'mrbadmus-export.json';
+        return res.blob().then(function (blob) {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = name;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+          C.setBusy(el, false);
+          msg('Downloaded ' + name + '.', 'ok');
+        });
+      }).catch(function (e) {
+        C.setBusy(el, false);
+        msg(e.message, 'error');
+      });
+    },
+
+    'ask-delete':    function () { S.deleting = true; S.confirmText = ''; render(); },
+    'cancel-delete': function () { S.deleting = false; S.confirmText = ''; render(); },
+
+    'do-delete': function (el) {
+      if (S.confirmText !== 'DELETE') { return; }
+      C.setBusy(el, true, 'Scheduling…');
+      C.api('/api/consumer/family/delete-request', {
+        method: 'POST', token: ctx.token, body: { confirm: 'DELETE' }
+      }).then(function () {
+        S.deleting = false;
+        S.confirmText = '';
+        return loadFamily();
+      }).then(function () { render(); })
+        .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', 'ak-del-msg'); });
+    },
+
+    'undo-delete': function (el) {
+      C.setBusy(el, true, 'Undoing…');
+      C.api('/api/consumer/family/delete-request', { method: 'DELETE', token: ctx.token })
+        .then(function () { return loadFamily(); })
+        .then(function () { render(); msg('Your account is staying. Nothing was deleted.', 'ok'); })
+        .catch(function (e) { C.setBusy(el, false); msg(e.message, 'error', 'ak-del-msg'); });
+    }
+  };
+
+  document.getElementById('ak-root').addEventListener('click', function (ev) {
+    var el = ev.target.closest ? ev.target.closest('[data-act]') : null;
+    if (!el || el.disabled) { return; }
+    var act = ACTS[el.getAttribute('data-act')];
+    if (!act) { return; }
+    ev.preventDefault();
+    act(el);
+  });
+
+  C.boot({ requireSession: true, run: function (context) {
+    ctx = context;
+    return Promise.all([loadFamily(), loadPrices()])
+      .then(render)
+      .catch(function (e) {
+        renderHead();
+        C.fail(document.getElementById('c-main'), e.message,
+               'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
+      });
+  } });
+})();
+</script>
+</body>
+</html>
