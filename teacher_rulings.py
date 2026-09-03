@@ -2465,6 +2465,22 @@ def _fb_sheet():
                 ]}]}]}
 
 
+# ── ⊕ MRB-322 · the class screen's secondary action treatment ────────────
+#
+# ⚠️ NOT A NEW REGISTER — IT IS `_PICK_ENTRY_BTN` (above), which is itself
+# node 216's style string, character for character. Nodes 215 ("Shoutouts"),
+# 216 ("Charts") and 217 ("Print report") are byte-identical to each other,
+# so the "Seating plan" button — inserted after 217 — has to read as the
+# same fourth-of-a-kind the name picker's entry (`(213, 216)`, above) already
+# is, rather than a fifth register eight pixels from the others.
+# ⊕ 5 Sep 2026 — re-anchored across the MRB-306 v3 renumbering: this used to
+# be its own literal copy of node 90's (pre-v3 numbering) style string; it is
+# now an alias of `_PICK_ENTRY_BTN` rather than a second transcription of the
+# same bytes, so the two fourth-controls in this row cannot drift apart from
+# each other even if they can no longer drift from Design's three.
+_CLASS_ACTION_BTN = _PICK_ENTRY_BTN
+
+
 INSERT_AT = {
     # ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) · NOTHING TO BREAK DOWN ─
     #
@@ -3340,6 +3356,48 @@ INSERT_AT = {
     (370, None): (_fb_sheet(),
                   "the same sheet on the marking screen. One builder, two "
                   "parents, because INSERT_AT is keyed by parent node."),
+
+    # ── ⊕ MRB-322 · THE WAY INTO A CLASS'S SEATING PLAN ─────────────────
+    #
+    # ⛔ THE SEATING PLAN HAD NO DOOR. `teacher/seating.html` has been live
+    # since MRB-322 and nothing on the teacher surface linked to it — the
+    # only way in was to already know the URL and the class's uuid, which is
+    # the same dead end MRB-287 E1 found behind "Previous years".
+    #
+    # ⚠️ IT IS THE FOURTH OF FOUR, NOT A FIFTH REGISTER. Design's action row
+    # (213) is "Set work" (214, primary, DEAD — see `DEAD`) then three
+    # secondaries — 215 ("Shoutouts"), 216 ("Charts") and 217 ("Print
+    # report"). This is inserted after 217 and carries 217's own style
+    # string and 217's own `hov` (`_CLASS_ACTION_BTN` — see its definition
+    # above, aliased to `_PICK_ENTRY_BTN`), read off the compiled tree
+    # rather than retyped, so the row reads as one group of four and not as
+    # three buttons and a newcomer.
+    #
+    # ⊕ 5 Sep 2026 — re-anchored across the MRB-306 v3 renumbering. This was
+    # `(86, 90)` before v3 remapped the class screen's action row to
+    # 213-217; MRB-323's name picker (above, `(213, 216)`) already proved
+    # 213 is the row's new parent and 217 is "Print report"'s new number.
+    # Placed AFTER the picker's insertion (216→217, still inside the row)
+    # rather than reordered relative to it: the picker is an every-lesson
+    # action and belongs ahead of the rare "Print report", and seating stays
+    # the last of the four exactly as it was before the renumbering.
+    #
+    # ⚠️ IT IS ON THE CLASS SCREEN ONLY, AND THAT IS STRUCTURAL RATHER THAN
+    # A CHOICE MADE HERE. Node 213 lives inside the class screen's root, and
+    # every page but `class-detail.html` prunes it — so `INSERT_AT`'s
+    # "parent not on this page" skip does the scoping, and
+    # `AMENDED_ADDITIONS`' absent-elsewhere check proves it did.
+    (213, 217): ({
+        "t": "button",
+        "a": {"type": "button",
+              "data-mrb-added": "class-seating",
+              "style": _CLASS_ACTION_BTN},
+        "hov": "border-color:var(--st-edge)",
+        "on": "goSeating",
+        "c": [{"t": "#", "v": "Seating plan"}]},
+        "the class screen's way into that class's seating plan. The page "
+        "existed and nothing linked to it, so the only route in was a "
+        "hand-typed URL carrying a uuid."),
 }
 
 
@@ -3775,6 +3833,51 @@ AMENDED_ADDITIONS = (
              "no counterpart; the control opens shared/teacher-picker.js "
              "over the class screen, on the roster `renderVals` has already "
              "computed. It reads and never writes."),
+
+    # ⊕ MRB-322 — the way into a class's seating plan.
+    #
+    # ⚠️ `needs_data` IS DELIBERATELY NOT SET, and the warning above is the
+    # reason. This is not a control hanging off a row of real data like the
+    # four shoutout entries: it is in Design's action row, which the class
+    # screen draws in every state including the empty one, and on a class
+    # with no roster `goSeating` still navigates — to the seating page's own
+    # landing rather than to `#/class/` with nothing after it. A control that
+    # is on screen in every state must be pressable in every state.
+    #
+    # ⚠️ NO `opener_tpl`. Nothing reveals it; it is in the action row the
+    # moment the page mounts.
+    #
+    # ⊕ 5 Sep 2026 — re-anchored across the MRB-306 v3 renumbering, `node`
+    # moves from 86 to 217 with the row it sits in (see `INSERT_AT[(213,
+    # 217)]`); nothing else about the ruling below changes.
+    #
+    # ⊕ SUPERSEDED WITHIN THE RUN — this entry first carried a note saying
+    # there could be NO `expect_nav`, because the seating page is not in
+    # `MRB_PAGE` and `goSeating` therefore set `window.location.href` itself,
+    # which `teacher_behaviour` has nothing to stub. That was true, and it was
+    # not survivable: driving the control navigated the fixture away and the
+    # sweep died with "Inspected target navigated or closed". The answer was
+    # the shape `MRB_HOME` already took under MRB-304 — a NAMED helper,
+    # `MRB_SEATING`, which the gate stubs like the other three. The note is
+    # recorded rather than deleted because it names the trap: a new
+    # destination outside `MRB_PAGE` is not free to be an inline
+    # `location.href`, and looks fine until a gate drives it.
+    dict(marker="class-seating", pages=("class-detail.html",), node=217,
+         label="Seating plan",
+         # ⚠️ `screen` ONLY, NO `param`. The param check requires a non-empty
+         # value, and this control is on screen in the EMPTY fixture too,
+         # where there is no class and the id is legitimately blank — the
+         # press then lands on the seating page's own landing, which is the
+         # ruled behaviour rather than a defect. Asserting the destination is
+         # the half that catches a mis-wire; asserting the id would fail the
+         # empty state for being empty.
+         expect_nav=dict(screen="seating"),
+         why="MRB-322 shipped `teacher/seating.html` and nothing linked to "
+             "it. The only way a teacher could reach their own class's "
+             "seating plan was to type the URL and know the class uuid — the "
+             "same dead end MRB-287 E1 found behind \"Previous years\". It "
+             "sits fourth in Design's action row (213), after \"Print "
+             "report\" (217), in node 217's own treatment."),
 )
 
 
@@ -7565,6 +7668,47 @@ componentDidUpdate() {
      "the two keys MRB-323's entry button needs: the `<if>` that keeps a "
      "picker off a class with nobody on it, and the handler that opens it "
      "on the roster this screen has already read."),
+
+    # ══ ⊕ MRB-322 · A HANDLER DESIGN HAS NO COUNTERPART FOR ═════════════
+    #
+    # Every other row in this tuple REWRITES something Design drew. This one
+    # ADDS, because Design's delivery has no seating screen in it at all and
+    # therefore no handler to anchor on. It is still an exactly-once guarded
+    # replacement: the anchor is `goReport`'s POST-`NAV` line — `NAV` runs
+    # first (step 1) and this tuple second (step 2), so anchoring on Design's
+    # original `setState` form would match nothing and hard-fail the build.
+    #
+    # ⚠️ THE HANDLER SHIPS ON ALL SIX PAGES AND IS BOUND ON ONE. The logic
+    # class is shared; the button that calls it is inside the class screen's
+    # action row, which only `class-detail.html` keeps. That is the same
+    # shape `goReport` itself has.
+    #
+    # ⊕ 5 Sep 2026 — re-anchored across the MRB-306 v3 renumbering:
+    # `INSERT_AT[(86, 90)]` is now `INSERT_AT[(213, 217)]`. `goReport`'s own
+    # line is untouched by the renumbering (checked against `NAV["goReport"]`,
+    # which still emits this exact text), so the anchor itself needed no
+    # change — only the node reference in the "why" below.
+    ("      goReport: () => MRB_GO('digest', { 'class': k && k.id }),",
+     "      goReport: () => MRB_GO('digest', { 'class': k && k.id }),\n"
+     "      goSeating: () => MRB_SEATING(k && k.id),",
+     "the class screen's \"Seating plan\" button "
+     "(`INSERT_AT[(213, 217)]`). Design drew no seating screen, so there is "
+     "no handler of hers to rewire and this is a new one — inserted beside "
+     "`goReport`, the neighbouring button's, rather than dropped somewhere "
+     "else in the object. It reads `k && k.id` in exactly `goReport`'s own "
+     "form, so the two buttons take the class from the same place.\n"
+     "  ⚠️ `MRB_SEATING`, AND NEITHER OF THE TWO OBVIOUS ALTERNATIVES. Not "
+     "`MRB_GO`, because `teacher/seating.html` is not one of the six ported "
+     "screens, is not in `MRB_PAGE`, and routes on a HASH (`#/class/<id>`) "
+     "rather than on a query parameter — `MRB_GO` would throw. And not an "
+     "inline `window.location.href`, which is what this ruling said first: "
+     "`teacher_behaviour` stubs the NAMED navigation helpers so it can press "
+     "a navigating control for real without tearing the fixture down "
+     "mid-sweep, and an inline assignment is the one thing that stub cannot "
+     "intercept.\n"
+     "  The destination, the `env` thread and the empty-id fallback all live "
+     "in `MRB_SEATING` (build_teacher_port.py), beside the other navigation "
+     "helpers, rather than being retyped into this handler"),
 )
 
 

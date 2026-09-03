@@ -350,6 +350,7 @@ _DRIVE_JS = r"""
   var navs = [];
   var realGo = window.MRB_GO, realBack = window.MRB_BACK;
   var realHome = window.MRB_HOME;
+  var realSeating = window.MRB_SEATING;
   window.MRB_GO = function (screen, params) {
     navs.push({screen: screen, params: params || null});
   };
@@ -360,6 +361,16 @@ _DRIVE_JS = r"""
      and take every remaining control on the page with it. The press still
      runs the real handler, so it still proves the control is wired. */
   window.MRB_HOME = function () { navs.push({screen: '<home>', params: null}); };
+  /* ⊕ MRB-322 — the class screen's "Seating plan" button. Stubbed for the
+     same reason as the three above, and NOT to make it pass: unstubbed, this
+     press navigated the fixture to /teacher/seating.html and the sweep died
+     with "Inspected target navigated or closed", taking every control after
+     it. Recorded as a nav rather than swallowed, so `expect_nav` can assert
+     WHERE it goes — which makes this control better watched than it would
+     have been as an un-navigating button, not worse. */
+  window.MRB_SEATING = function (id) {
+    navs.push({screen: 'seating', params: {'class': id || ''}});
+  };
 
   function snap() {
     return {
@@ -618,6 +629,7 @@ _DRIVE_JS = r"""
     }
   }
 
+  window.MRB_SEATING = realSeating;
   window.MRB_GO = realGo;
   window.MRB_BACK = realBack;
   window.MRB_HOME = realHome;

@@ -71,8 +71,8 @@
      load-bearing across every page that reads a class list. -->
 <script src="/shared/class-entry.js?v=d47329ae"></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/seating-canvas.js?v=66ace40a"></script>
-<script src="/shared/seating-data.js?v=5767a968"></script>
+<script src="/shared/seating-canvas.js?v=0cabca6f"></script>
+<script src="/shared/seating-data.js?v=e03b0cd2"></script>
 <script src="/shared/seating-photo.js?v=de93bec8"></script>
 <script>
 (function () {
@@ -111,6 +111,25 @@
     if (!iso) return '';
     var d = new Date(iso);
     return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // A teacher cannot read a colleague's profile row, so `author_name` comes
+  // back null, blank, or the placeholder 'Unknown'. This returns '' for all of
+  // those, and EVERY place that names an owner drops its clause rather than
+  // printing the placeholder: the two read-only sentences, both eyebrows
+  // ("· by …") and all three card metas.
+  //
+  // ⚠️ ALL SEVEN, NOT JUST THE SENTENCE. Fixing only the sentence left a page
+  // reading "You can read this plan and print it." under an eyebrow saying
+  // "BY UNKNOWN" — the same defect, one line higher, on the same screen. A
+  // name that cannot be resolved is absent, everywhere, or the fix is theatre.
+  //
+  // Not a permissions change: whether a colleague's name is readable is a
+  // profiles-policy question and deliberately untouched here. This decides
+  // only what to render when the answer is no.
+  function authorName(v) {
+    var n = String(v == null ? '' : v).trim();
+    return n.toLowerCase() === 'unknown' ? '' : n;
   }
 
   function say(msg, kind) {
@@ -257,7 +276,7 @@
             '<p class="sp-card__name">' + esc(l.name || 'Untitled layout') + '</p>' +
             '<div class="sp-card__meta">' +
               '<span>' + l.desk_count + ' desks · ' + l.seat_count + ' seats</span>' +
-              '<span>' + esc(l.author_name) + '</span>' +
+              '<span>' + esc(authorName(l.author_name)) + '</span>' +
             '</div>' +
           '</button>');
         // A still thumbnail of the real layout, in view mode so it renders no
@@ -294,21 +313,27 @@
     var wanted = existing ? existing.room_code : (q.room || '');
     var room = D.ROOMS.indexOf(wanted) !== -1 ? wanted : D.ROOMS[0];
     var name = existing ? (existing.name || '') : '';
+    var ownerName = existing ? authorName(existing.author_name) : '';
 
     main.innerHTML =
       '<div class="sp-head">' +
         '<div><p class="sp-head__eyebrow">' +
-          (existing ? esc(existing.room_code) + ' · by ' + esc(existing.author_name)
-                    : 'New layout') + '</p>' +
+          (existing
+             ? esc(existing.room_code) +
+               (ownerName ? ' · by ' + esc(ownerName) : '')
+             : 'New layout') + '</p>' +
         '<h1 class="sp-head__title">' +
           (existing ? esc(existing.name || 'Untitled layout') : 'Draw the room') + '</h1>' +
         '<p class="sp-head__sub">' +
           (canEdit
             ? 'Drag desks into the shape of the real room. It does not need to ' +
               'be tidy — a skewed room should look skewed.'
-            : 'This layout belongs to ' + esc(existing.author_name) +
-              '. You can place a class on it, but only they or an admin can ' +
-              'change its shape.') +
+            : (ownerName
+                ? 'This layout belongs to ' + esc(ownerName) +
+                  '. You can place a class on it, but only they or an admin can ' +
+                  'change its shape.'
+                : 'You can place a class on it, but only its author or an admin ' +
+                  'can change its shape.')) +
         '</p></div>' +
         '<div class="sp-head__actions" id="sp-head-actions"></div>' +
       '</div>' +
@@ -587,7 +612,9 @@
           '<p class="sp-card__name">' + esc(p.name || 'Untitled plan') + '</p>' +
           '<div class="sp-card__meta">' +
             '<span>' + p.seated_count + ' seated</span>' +
-            '<span>' + esc(p.author_name) + ' · ' + esc(shortDate(p.updated_at)) + '</span>' +
+            '<span>' + (authorName(p.author_name)
+                          ? esc(authorName(p.author_name)) + ' · ' : '') +
+                        esc(shortDate(p.updated_at)) + '</span>' +
           '</div>' +
         '</button>');
       if (p.layout) {
@@ -646,11 +673,13 @@
     S.mode = canEdit ? 'plan' : 'view';
 
     var planName = plan ? (plan.name || '') : (cls.name + ' — ' + layoutRow.room_code);
+    var ownerName = plan ? authorName(plan.author_name) : '';
 
     main.innerHTML =
       '<div class="sp-head">' +
         '<div><p class="sp-head__eyebrow">' + esc(cls.name) + ' · ' +
-          esc(layoutRow.room_code) + (plan ? ' · by ' + esc(plan.author_name) : '') + '</p>' +
+          esc(layoutRow.room_code) +
+          (ownerName ? ' · by ' + esc(ownerName) : '') + '</p>' +
         '<h1 class="sp-head__title">' + esc(planName) + '</h1>' +
         '<p class="sp-head__sub">' +
           (canEdit
@@ -658,8 +687,10 @@
               'pupil up: tap another chair to move them, tap a second ' +
               'pupil to swap the two, or tap their own chair again to ' +
               'take them out of the room.'
-            : 'This plan belongs to ' + esc(plan.author_name) + '. You can read ' +
-              'it and print it.') +
+            : (ownerName
+                ? 'This plan belongs to ' + esc(ownerName) + '. You can read ' +
+                  'it and print it.'
+                : 'You can read this plan and print it.')) +
         '</p></div>' +
         '<div class="sp-head__actions" id="sp-head-actions"></div>' +
       '</div>' +
@@ -982,7 +1013,7 @@
         '<div class="sp-card__thumb"></div>' +
         '<p class="sp-card__name">' + esc(l.name || 'Untitled layout') + '</p>' +
         '<div class="sp-card__meta"><span>' + l.seat_count + ' seats</span><span>' +
-        esc(l.author_name) + '</span></div></button>');
+        esc(authorName(l.author_name)) + '</span></div></button>');
       try { SC.create({ mount: card.querySelector('.sp-card__thumb'), mode: 'view', layout: l.layout }); }
       catch (e) { /* keep the row */ }
       card.addEventListener('click', function () {
