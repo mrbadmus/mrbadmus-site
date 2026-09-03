@@ -28,6 +28,12 @@ import ks3_browser as cdp
 CONSUMER_PAGES = [
     "/parents/index.html", "/parents/how-it-works.html", "/parents/pricing.html",
     "/parents/home-education.html", "/parents/sign-in.html",
+    # ⊕ MRB-321 Night 4. Four pages Night 3 did not have. They are listed here
+    # because a flag gate that does not name a page cannot fail for it: a new
+    # public page that forgot the boot()/Not-found mechanism would have shipped
+    # readable with the flag off, and this harness would still have exited 0.
+    "/parents/terms.html", "/parents/privacy.html",
+    "/parents/organisations.html", "/parents/reset-password.html",
     "/go/index.html",
     "/consumer/signup.html", "/consumer/verify.html", "/consumer/checkout-return.html",
     "/consumer/overview.html", "/consumer/account.html", "/consumer/report.html",
@@ -165,7 +171,18 @@ def cold_greps(site):
         if f == "teacher/admin.html":
             body = card
         check(chevron not in body, "no chevron on staff surface %s" % f)
-    mocks = grep(r"const (ACCOUNTS|CHILDREN|QUESTIONS|ACCTS|PUPILS|MESSAGES|REPORT|EMAILS|GROUPS|ORG|QUEUE) = \[|amara-rockets|Funmi|Brookfield", consumer_files + [admin])
+    # ⊕ MRB-321. "Brookfield" stopped being proof of a leftover fixture when
+    # Design's Drop 2 Organisations page shipped `placeholder="e.g. Brookfield
+    # Tuition Centre"` — her own hint text on the Organisation field, which a
+    # visitor is MEANT to see. The bare-name patterns are therefore matched
+    # everywhere EXCEPT inside a placeholder attribute; the `const X = [`
+    # mock-array patterns stay global, because a mock array is never legitimate
+    # on a shipped page no matter where it sits.
+    mocks = grep(r"const (ACCOUNTS|CHILDREN|QUESTIONS|ACCTS|PUPILS|MESSAGES|REPORT|EMAILS|GROUPS|ORG|QUEUE) = \[", consumer_files + [admin])
+    names = grep(r"amara-rockets|Funmi|Brookfield", consumer_files + [admin])
+    names = [h for h in names if not re.search(
+        r'placeholder="[^"]*(amara-rockets|Funmi|Brookfield)', h)]
+    mocks = mocks + names
     check(not mocks, "no leftover Design mock constants / fixture names", mocks[:8])
     ai_wordmark = grep(r"MrBadmus\s*AI\b|Mr Badmus AI\b", consumer_files)
     check(not ai_wordmark, "no 'AI' wordmark on consumer surfaces", ai_wordmark[:5])

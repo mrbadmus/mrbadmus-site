@@ -39,9 +39,13 @@
     <header class="og-mhead og-noprint">
       <span class="og-word" id="mhead-name" style="font-size:20px;">MrBadmus</span>
       <select class="og-mnav" id="mnav" aria-label="Screen">
+        <!-- ⊕ DROP 2. Design's drop-1 select said "Work set" while her own
+             sidebar for the same screen said "Set work"; her drop-2 file
+             fixes the select to match, and adds Messages. -->
         <option value="pupils">Pupils</option>
         <option value="groups">Groups</option>
-        <option value="work">Work set</option>
+        <option value="work">Set work</option>
+        <option value="messages">Messages</option>
         <option value="account">Account</option>
       </select>
     </header>
@@ -129,7 +133,15 @@
     slips: [],
     data: null,      // the /org payload
     picker: null,    // { childId, units } for the work screen
-    rt: null         // the realtime subscription for the open pupil's chat
+    rt: null,        // the realtime subscription for the open pupil's chat
+
+    /* ⊕ DROP 2 — the Messages screen. `threads` is the whole payload of
+       `GET /api/consumer/chat/threads`, read once at boot because the nav
+       badge needs the unread total before anybody has opened the screen. A
+       badge that only appears after you visit Messages tells you nothing
+       you did not already know by visiting. */
+    threads: null,   // [] from /chat/threads, or null while unknown
+    threadId: null   // whose thread is open in the right-hand pane
   };
 
   var ctx = null;
@@ -241,11 +253,19 @@
     el('who').textContent = staff.name || 'Staff';
 
     var attention = ((d.pupils || []).filter(function (p) { return !!p.flag; })).length;
+    /* ⊕ DROP 2 — her `navItems` grew Messages between "Set work" and
+       "Account", badged with the unread total across every thread exactly
+       as Pupils is badged with the needs-attention count. `S.threads` is
+       null until the read lands (and stays null if it fails), and null is
+       rendered as NO badge rather than as a zero — "0 unread" and "we do
+       not know yet" are different facts and only one of them is true. */
+    var unread = (S.threads || []).reduce(function (a, t) { return a + (t.unread || 0); }, 0);
     var items = [
-      { id: 'pupils',  label: 'Pupils',   badge: attention ? String(attention) : '' },
-      { id: 'groups',  label: 'Groups',   badge: '' },
-      { id: 'work',    label: 'Set work', badge: '' },
-      { id: 'account', label: 'Account',  badge: '' }
+      { id: 'pupils',   label: 'Pupils',   badge: attention ? String(attention) : '' },
+      { id: 'groups',   label: 'Groups',   badge: '' },
+      { id: 'work',     label: 'Set work', badge: '' },
+      { id: 'messages', label: 'Messages', badge: unread ? String(unread) : '' },
+      { id: 'account',  label: 'Account',  badge: '' }
     ];
     el('nav').innerHTML = items.map(function (n) {
       // Her rule: the pupil detail and the add screen both keep Pupils lit.
@@ -446,11 +466,14 @@
         '<span id="move-msg" class="og-note"></span>' +
       '</div>' +
 
-      /* ⊕ Ruling 3: no parent invite in v1, so the invite link is gone and
-         the sentence names the person who actually receives the Sunday
-         email for this pupil. */
-      '<p class="og-foot">No parent is attached to this pupil. Messages and the Sunday email go to ' +
-        esc(staff.name || 'the organisation') + '.</p>';
+      /* ⊕ DROP 2. Ruling 3 had already killed her drop-1 "Invite a parent"
+         link; her drop-2 sentence goes further and leads with the
+         caseworker's NAME rather than with the absence of a parent, which
+         is the fact a member of staff opening this page actually needs.
+         Her wording, with the pupil's name and the staff name filled in. */
+      '<p class="og-foot">Caseworker: <strong style="color:var(--ks3-ink);">' +
+        esc(staff.name || 'the organisation') + '</strong>. ' + esc(p.name || 'This pupil') +
+        '’s messages and the Sunday email go to them. Parent invites aren’t available in v1.</p>';
   }
 
   /* The three per-pupil reads. Each in its own `C.section`, so one that is
@@ -751,7 +774,7 @@
 
   function screenAccount() {
     var d = S.data, org = d.org || {}, list = d.staff_list || [];
-    var mail = 'mailto:hello@mrbadmus.com';
+    var mail = 'mailto:support@mrbadmus.com';
 
     return '' +
       '<h1 class="og-h1">Organisation</h1>' +
@@ -762,17 +785,29 @@
           '<p class="og-eyebrow-sm">Plan</p>' +
           '<p style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:26px;letter-spacing:-.03em;line-height:1.05;">' +
             esc(dash(org.seat_cap)) + ' seats · invoiced annually</p>' +
+          /* ⊕ DROP 2 rewrote this line. Hers now reads "{used} in use
+             against a cap of {cap}. One invoice a year, renews {date},
+             payable by BACS within 30 days. Raising the cap mid-year is
+             pro-rated to the renewal date." — three facts Night 3's
+             paraphrase left out: BACS and its 30 days, and what happens
+             when a cap is raised part-way through a year, which is the
+             question a head of centre asks before they ask anything else.
+             Still no price: `org.renews` in her file is a date, not money. */
           '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body);">' +
-            esc(dash(org.seats_used)) + ' in use. Invoiced annually against the seat cap; this period ends ' +
-            esc(periodDate(org.period_end, 'when the year does')) + '.</p>' +
+            esc(dash(org.seats_used)) + ' in use against a cap of ' + esc(dash(org.seat_cap)) +
+            '. One invoice a year, renews ' + esc(periodDate(org.period_end, 'when the year does')) +
+            ', payable by BACS within 30 days. Raising the cap mid-year is pro-rated to the renewal date.</p>' +
           '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">' +
             /* Both were "#" in Design's file. There is no invoice portal and
                no self-serve seat purchase, so rather than link to a page
                that does not exist, both are the address a human answers. */
             '<a href="' + mail + '?subject=Invoices" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:15px;color:var(--ks3-ink);">Invoices</a>' +
-            '<a href="' + mail + '?subject=Add%20seats" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);font-weight:700;font-size:15px;color:var(--ks3-on-dark);">Add seats</a>' +
+            /* ⊕ DROP 2 renamed this control "Raise the cap". It is the more
+               accurate verb — nothing is bought here; a cap is a number in
+               a contract that goes up. */
+            '<a href="' + mail + '?subject=Raise%20the%20seat%20cap" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);font-weight:700;font-size:15px;color:var(--ks3-on-dark);">Raise the cap</a>' +
           '</div>' +
-          '<p class="og-note">Invoices and extra seats are arranged by email — write to us and we’ll sort it.</p>' +
+          '<p class="og-note">Invoices and a higher cap are arranged by email — write to us and we’ll sort it.</p>' +
         '</section>' +
 
         '<section class="og-card">' +
@@ -799,8 +834,10 @@
                one rather than a link to a file that is not there. */
             '<li><span>Data processing agreement</span><a href="' + mail +
               '?subject=Data%20processing%20agreement" style="font-weight:700;">Request a copy</a></li>' +
-            // ⊕ Ruling 3 — messaging is ON, exactly as for families.
-            '<li><span>Pupil-to-staff messages</span><span style="color:var(--ks3-ink-muted);">On</span></li>' +
+            /* ⊕ DROP 2. Ruling 3 flipped this to "On"; her drop-2 row says
+               who that means — "On · caseworker sees them" — which is the
+               half a safeguarding lead is reading the row for. */
+            '<li><span>Pupil–staff messages</span><span style="color:var(--ks3-ink-muted);">On · caseworker sees them</span></li>' +
             '<li><span>Export all pupil data</span>' +
               '<button type="button" id="export" style="padding:0;border:0;background:none;font:inherit;font-weight:700;color:var(--ks3-accent-text);cursor:pointer;">CSV</button></li>' +
             '<li><span>Remove a leaver</span><span style="color:var(--ks3-ink-muted);">From the pupil page</span></li>' +
@@ -877,6 +914,178 @@
       }).join('') + '</div>';
   }
 
+  /* ── MESSAGES ⊕ DROP 2 ─────────────────────────────────────────────
+     Design's drop-2 Org Dashboard grows a whole screen: a thread list on
+     the left, one conversation on the right. It exists because ruling 3
+     turned pupil–staff messaging ON, and a caseworker with thirty pupils
+     cannot find out who wrote to them by opening thirty pupil pages.
+
+     ── EVERY FIELD SHE DRAWS HAS A REAL SOURCE, AND IT IS ONE CALL ──────
+     `GET /api/consumer/chat/threads` already returns exactly her row:
+     `with.{id,name}`, `last.{text,time,mine}` and `unread`, sorted with
+     the talkative threads newest-first and the silent ones after by name —
+     which is her order. `counterparties()` on the backend resolves to every
+     student in the staff member's org, so an org staff member's thread list
+     is the pupil roll. Nothing here is derived from a mock.
+
+     The one field with no source is the GROUP beside the name; the threads
+     payload does not carry it. It is joined from `S.data.pupils`, which the
+     page already holds, and omitted for a pupil who is in no group rather
+     than printed as "—".
+
+     ⚠️ THE PANE MUST NOT REUSE `paintChat`. That renderer writes into
+     `#pd-chat` and guards on `stillOpen(p, 'pd-chat')`, which is false on
+     this screen — so it would silently render nothing. Two panels, two
+     renderers, one plumbing underneath. */
+
+  function threadRows() {
+    var pupils = (S.data && S.data.pupils) || [];
+    return (S.threads || []).map(function (t) {
+      var who = t.with || {};
+      var p = pupils.filter(function (x) { return x.id === who.id; })[0] || {};
+      return {
+        id: who.id,
+        name: who.name || p.name || 'Pupil',
+        group: p.group || '',
+        last: (t.last && t.last.text) || '',
+        time: (t.last && t.last.time) || '',
+        unread: t.unread || 0
+      };
+    });
+  }
+
+  function openThreadId(rows) {
+    /* Design opens the first thread when none is chosen. Hers is a fixed
+       list; ours can be empty, and it can also still be holding an id for a
+       pupil who has since been removed — so the chosen id is only used if
+       it is still in the list. */
+    var ids = rows.map(function (r) { return r.id; });
+    if (S.threadId && ids.indexOf(S.threadId) !== -1) { return S.threadId; }
+    return rows.length ? rows[0].id : null;
+  }
+
+  function screenMessages() {
+    if (S.threads === null) {
+      return '<h1 class="og-h1">Messages</h1><p class="og-empty">Loading…</p>';
+    }
+    var rows = threadRows();
+    var openId = openThreadId(rows);
+
+    var head = '<h1 class="og-h1">Messages</h1>' +
+      '<p class="og-intro">Pupils write to their caseworker from the Today screen. Same as families: only the two of you can see it. Every thread is logged for safeguarding.</p>';
+
+    if (!rows.length) {
+      /* Not an error and not a failure to load. An organisation with no
+         pupils yet has no threads, and saying so is the whole message. */
+      return head + '<p class="og-empty">No pupils yet, so there is nobody to write to. Add pupils first.</p>';
+    }
+
+    return head +
+      '<div class="og-threads">' +
+        '<div class="og-thread-list">' +
+          rows.map(function (r) {
+            var on = r.id === openId;
+            return '<button type="button" data-thread="' + esc(r.id) + '" class="' + (on ? 'is-on' : '') + '">' +
+              '<span class="og-thread-who"><strong>' + esc(r.name) + '</strong>' +
+                (r.group ? '<span class="og-thread-grp"> · ' + esc(r.group) + '</span>' : '') + '</span>' +
+              /* Her second line is the last message; a thread nobody has
+                 written in yet has none, and gets a sentence saying that
+                 rather than an empty row two pixels high. */
+              '<span class="og-thread-last">' +
+                esc(r.last ? (r.time ? r.time + ' · ' : '') + r.last : 'No messages yet') + '</span>' +
+              (r.unread ? '<span class="og-thread-unread">' + esc(String(r.unread)) + '</span>' : '') +
+              '</button>';
+          }).join('') +
+        '</div>' +
+        '<div class="og-thread-pane" id="thread-pane"><p class="og-note">Loading…</p></div>' +
+      '</div>';
+  }
+
+  /* The open conversation. `who` is the row from `threadRows()`, so the
+     header line is the same name and group the list shows. */
+  function paintThread(who, messages) {
+    var host = el('thread-pane');
+    if (!host || S.screen !== 'messages') { return; }
+
+    host.innerHTML =
+      '<p class="og-thread-head"><strong>' + esc(who.name) + '</strong>' +
+        (who.group ? '<span class="og-thread-grp"> · ' + esc(who.group) + '</span>' : '') + '</p>' +
+      (messages.length
+        ? '<div class="og-chat" id="th-log">' + messages.map(function (m) {
+            return '<div class="og-bubble' + (m.mine ? ' mine' : '') + '">' +
+              esc(m.text || '') + '<time>' + esc(m.time || '') + '</time></div>';
+          }).join('') + '</div>'
+        : '<p class="og-note" id="th-log">Nothing yet. Say hello — ' + esc(who.name) +
+          ' sees it on their Today screen.</p>') +
+      '<div class="og-chat-send">' +
+        '<input id="th-text" placeholder="Reply to ' + esc(who.name) + '" maxlength="1000"/>' +
+        '<button type="button" class="og-cta-sm" id="th-send">Send</button>' +
+      '</div>' +
+      '<p class="og-note" id="th-msg"></p>';
+
+    var log = el('th-log');
+    if (log) { log.scrollTop = log.scrollHeight; }
+
+    el('th-send').onclick = function () {
+      var input = el('th-text');
+      var text = input.value.trim();
+      var msg = el('th-msg');
+      if (!text) { msg.textContent = 'Write something first.'; return; }
+      var btn = el('th-send');
+      C.setBusy(btn, true, 'Sending…');
+      msg.textContent = '';
+      api('/api/consumer/chat/send', { method: 'POST', body: { to: who.id, text: text } })
+        .then(function () {
+          input.value = '';
+          C.setBusy(btn, false);
+          return loadThread(who, { silent: true });
+        })
+        .catch(function (e) { C.setBusy(btn, false); msg.textContent = e.message; });
+    };
+  }
+
+  function loadThread(who, opts) {
+    if (!who) { return Promise.resolve(); }
+    var read = api('/api/consumer/chat/messages?with=' + encodeURIComponent(who.id) + '&limit=50');
+
+    if (opts && opts.silent) {
+      return read.then(function (d) { paintThread(who, (d && d.messages) || []); })
+                 .catch(function () { /* the send already reported */ });
+    }
+
+    C.section(el('thread-pane'), read, function (d) {
+      paintThread(who, (d && d.messages) || []);
+    });
+
+    /* Opening a thread clears its unread, on the server and then in the
+       badge. Fire-and-forget: a mark-read that fails leaves a stale count,
+       which is a wrong number, not a broken screen — so it must never take
+       the conversation down with it. */
+    if (who.unread) {
+      api('/api/consumer/chat/read', { method: 'POST', body: { with: who.id } })
+        .then(function () {
+          (S.threads || []).forEach(function (t) {
+            if (t.with && t.with.id === who.id) { t.unread = 0; }
+          });
+          if (S.screen === 'messages') { renderChrome(); }
+        })
+        .catch(function () { /* see above */ });
+    }
+
+    /* Live, one binding, the staff member's own JWT — the same rule the
+       pupil-page panel follows. RLS decides what arrives, so there is no
+       filter here to get wrong beyond "is it this conversation". */
+    if (!S.rt) {
+      S.rt = C.subscribeMessages(ctx.sb, function (row) {
+        if (!row) { return; }
+        if (S.screen !== 'messages') { return; }
+        if (row.sender_id !== who.id && row.recipient_id !== who.id) { return; }
+        loadThread(who, { silent: true });
+      });
+    }
+    return Promise.resolve();
+  }
+
   /* ── render + wiring ───────────────────────────────────────────────── */
 
   function render() {
@@ -888,6 +1097,7 @@
       S.screen === 'pupil'   ? screenPupil()   :
       S.screen === 'groups'  ? screenGroups()  :
       S.screen === 'work'    ? screenWork()    :
+      S.screen === 'messages' ? screenMessages() :
       S.screen === 'account' ? screenAccount() :
       S.screen === 'add'     ? screenAdd()     :
       S.screen === 'slips'   ? screenSlips()   : '';
@@ -895,7 +1105,8 @@
     host.style.display = 'block';
     el('boot-msg').style.display = 'none';
     document.title = ({ pupils: 'Pupils', pupil: 'Pupil', groups: 'Groups', work: 'Set work',
-                        account: 'Organisation', add: 'Add pupils', slips: 'Login slips' }[S.screen] || 'Pupils') +
+                        messages: 'Messages', account: 'Organisation', add: 'Add pupils',
+                        slips: 'Login slips' }[S.screen] || 'Pupils') +
                      ' — MrBadmus';
     wire();
   }
@@ -906,6 +1117,10 @@
       if (p) { loadPupilPanels(p); }
     }
     if (S.screen === 'work') { ensurePicker(); }
+    if (S.screen === 'messages' && S.threads) {
+      var rows = threadRows();
+      loadThread(rows.filter(function (r) { return r.id === openThreadId(rows); })[0]);
+    }
 
     var q = el('q');
     if (q) {
@@ -978,6 +1193,13 @@
     if ((b = t.closest('[data-unit]')))  { S.unit = b.getAttribute('data-unit'); return render(); }
     if ((b = t.closest('[data-due]')))   { S.due = b.getAttribute('data-due'); return render(); }
     if ((b = t.closest('[data-grename]'))) { return renameGroup(b.getAttribute('data-grename')); }
+    /* ⊕ DROP 2. Through `go()` rather than a bare `render()`, because `go()`
+       drops the realtime subscription — and a binding left pointed at the
+       thread you have just navigated AWAY from repaints the pane with
+       somebody else's conversation. */
+    if ((b = t.closest('[data-thread]'))) {
+      return go('messages', { threadId: b.getAttribute('data-thread') });
+    }
   });
 
   /* ── the writes ────────────────────────────────────────────────────── */
@@ -1229,9 +1451,32 @@
         ctx.sb.auth.signOut().then(function () { C.go('/org/sign-in.html'); });
       };
 
+      /* ⊕ DROP 2 — the thread list, read alongside the org payload rather
+         than when the Messages screen opens, because the nav badge has to
+         carry the unread total from first paint.
+
+         ⚠️ IT IS NOT ALLOWED TO FAIL THE PAGE. `/chat/threads` is a second
+         endpoint and the dashboard's whole reason for existing is the pupil
+         list; a chat read that is down must cost the badge, not the screen.
+         So it is caught here and resolves to an empty list, and `S.threads`
+         stays `null` only until one of the two outcomes lands. */
+      var threads = api('/api/consumer/chat/threads')
+        .then(function (d) { return (d && d.threads) || []; })
+        .catch(function (e) {
+          console.error('[org] threads', e);
+          return [];
+        });
+
       return api('/api/consumer/org').then(function (d) {
         S.data = d;
         render();
+        /* After the first paint, never before it. The org read is what the
+           page is waiting on; making it wait on chat too would put a second
+           endpoint's latency in front of every caseworker's pupil list. */
+        return threads.then(function (list) {
+          S.threads = list;
+          if (S.screen === 'messages') { render(); } else { renderChrome(); }
+        });
       }, function (e) {
         /* A 403 here is "you are signed in, but not as organisation staff",
            and the only useful next step is the sign-in page — which will say
@@ -1241,7 +1486,7 @@
         }
         el('boot-msg').style.display = 'none';
         C.fail(el('main'), e.message,
-          'Refresh in a moment. If it keeps happening, email hello@mrbadmus.com.');
+          'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
       });
     }
   });

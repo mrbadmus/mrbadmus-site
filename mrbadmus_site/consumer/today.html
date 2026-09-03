@@ -133,6 +133,16 @@
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
 
+  /* Night 4: Design's own "See the breakdown" control, borrowed from her
+     unit-check start screen so the two doors onto the same history look the
+     same. Her inline style, verbatim. */
+  .td-see {
+    margin-top: 12px; border: 0; background: none; padding: 0;
+    font: inherit; font-weight: 700; font-size: 16px;
+    color: var(--ks3-accent-text); cursor: pointer;
+    text-decoration: none; display: inline-block;
+  }
+
   .td-h2 {
     margin: 28px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
     font-size: 26px; letter-spacing: -.025em;
@@ -306,6 +316,10 @@
       <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>
       <span class="td-msg-count" id="td-msg-count" hidden></span>
     </button>
+    <!-- Night 4, MRB-317 ruling 3: shared family device, so a child can end
+         their own session. Mounted by signOutControl(); styled in
+         consumer.css so all three child surfaces get one identical control. -->
+    <span id="td-signout"></span>
   </header>
 
   <main class="td-main" id="td-today">
@@ -324,6 +338,12 @@
           <span id="td-best-note"></span></span>
       </div>
     </div>
+
+    <!-- Night 4 (MRB-317 ruling 4). The second door onto the child's own
+         unit-check history; the first is Design's "See the breakdown" on the
+         unit-check start screen. Only rendered when there is a check to
+         look at — see renderStats(). -->
+    <div id="td-see-host"></div>
 
     <div id="td-flags"></div>
 
@@ -407,10 +427,11 @@
     Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday'
   };
 
-  C.boot({ requireSession: true, run: function (ctx) {
+  C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
     var el = function (id) { return document.getElementById(id); };
 
     el('td-brandmark').innerHTML = C.BRANDMARK;
+    C.signOutControl(el('td-signout'), { sb: ctx.sb });
 
     var screen   = 'today';
     var data     = null;
@@ -511,6 +532,19 @@
         el('td-best').textContent = '—';
         el('td-best-note').textContent = 'no unit check yet';
       }
+
+      /* ⊕ Night 4 (MRB-317 ruling 4). `best` is null until the first unit
+         check is finished, so it is also the honest test for "is there
+         anything to look back at" — no extra read, and no link to an empty
+         page. `?view=history` with no unit is every check, newest first,
+         which is the only thing Today can ask for: it knows there IS a
+         personal best, and not which unit's row to open. */
+      var seeHost = el('td-see-host');
+      seeHost.innerHTML = kid.best
+        ? '<a class="td-see" href="' +
+          C.escapeHtml(C.href('/consumer/unit-check.html', { view: 'history' })) +
+          '">See how you did</a>'
+        : '';
     }
 
     /* Design's dark card, drawn once for "{parent} wrote". It is reused

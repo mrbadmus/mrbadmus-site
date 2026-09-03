@@ -283,7 +283,14 @@
         });
       }).then(function (state) {
         if (opts.requireSession && !state.session) {
-          go('/consumer/signup.html');
+          /* ⊕ Night 4. This used to send EVERY session-less page to
+             `/consumer/signup.html`, and on the three child surfaces that
+             was the wrong door: a child who has just signed out — or whose
+             session expired overnight — was put in front of a parent's
+             "Create your account" form, complete with an email box they do
+             not have. `signInPath` lets a page name where its own people
+             sign in; the parent pages pass nothing and keep signup. */
+          go(opts.signInPath || '/consumer/signup.html');
           return;
         }
         document.body.style.display = 'block';
@@ -302,7 +309,7 @@
         var host = document.getElementById('c-main') || document.body;
         fail(host,
           'We couldn’t load this page right now.',
-          'Please refresh in a moment. If it keeps happening, email hello@mrbadmus.com.');
+          'Please refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
       });
     }
 
@@ -439,7 +446,7 @@
       return { state: state || 'unknown', writable: false,
                title: 'Not available',
                message: 'This account isn’t able to send or hand work in ' +
-                        'right now. Please refresh, or email hello@mrbadmus.com.' };
+                        'right now. Please refresh, or email support@mrbadmus.com.' };
     }
     if (state === 'full') {
       return { state: 'full', writable: true, title: '', message: '' };
@@ -491,7 +498,7 @@
       } catch (e) {
         console.error('[consumer/section]', e);
         fail(el, 'We couldn’t show this part of the page.',
-             'Refresh in a moment. If it keeps happening, email hello@mrbadmus.com.');
+             'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
       }
     }, function (e) {
       console.error('[consumer/section]', e);
@@ -626,6 +633,182 @@
      places that must never disagree about where a child goes. */
   var CHILD_LOGIN_URL = '/go/';
 
+  /* ══ NIGHT 4 — LANE B (the child app): SIGNING OUT ═══════════════════════
+     MRB-317 ruling 3, 2 Sep 2026: "Child surfaces get a sign-out control
+     (shared devices)."
+
+     ── WHY IT IS HERE AND NOT ON THE THREE PAGES ───────────────────────────
+     Three copies of "end this session" is three chances to write the third
+     one so that it leaves something behind, and the thing it leaves behind
+     is a nine-year-old's account open on the family iPad. Signing out is one
+     function, in one place, and the three child surfaces call it.
+
+     ── WHAT "SIGNED OUT" HAS TO MEAN ───────────────────────────────────────
+     `auth.signOut()` alone is not enough to rely on. It is a NETWORK call
+     (it revokes the refresh token at GoTrue), so on a dropped connection it
+     rejects — and a child on a shared device who pressed Sign out and was
+     told nothing must not still be signed in. So the local stores are
+     cleared unconditionally, in a `finally`, whatever the network did:
+
+       • the Supabase session key `sb-<project ref>-auth-token`, derived from
+         the CONFIGURED SUPABASE_URL rather than hard-coded, so this is
+         correct on TEST and on production without knowing which it is on;
+       • every other `sb-…-auth-token` in the store, because a browser that
+         has been pointed at both projects holds both keys and clearing only
+         "ours" leaves the other one signed in;
+       • the `mrb.…` keys the consumer app writes (today only the signup
+         draft). A half-finished signup draft is the parent's, not the
+         child's — but this is a SHARED DEVICE and the whole point of the
+         control is that the next person gets nothing of the last one's.
+
+     Both stores, and every read/write wrapped: a private window throws on
+     `localStorage` rather than returning null, and a sign-out that throws is
+     a sign-out that did not happen.
+
+     ── AND THEN /go/, NOT A BLANK PAGE ─────────────────────────────────────
+     `go()` rather than `location.href`, so `?env=` and `?api=` survive: a
+     child signed out of the test universe must land on a login page that is
+     still pointed at it, or their next sign-in silently fails against the
+     wrong backend and reads as "my password is wrong".
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* The suffix the backend mints every child's GoTrue address with
+     (server.js `internalEmail`). It is an implementation detail and is never
+     DISPLAYED — API-CONTRACT is explicit that it must not leak — but a
+     child's own session carries their own address, and testing its suffix is
+     how this file tells a child session from a parent's with no network call
+     and nothing rendered. */
+  var CHILD_EMAIL_SUFFIX = '@children.mrbadmus.internal';
+
+  function isChildSession(session) {
+    var email = session && session.user && session.user.email;
+    return !!email &&
+      String(email).toLowerCase().slice(-CHILD_EMAIL_SUFFIX.length) === CHILD_EMAIL_SUFFIX;
+  }
+
+  function projectRef() {
+    var url = String((CFG && CFG.SUPABASE_URL) || '');
+    var m = url.match(/^https?:\/\/([^.]+)\./);
+    return m ? m[1] : null;
+  }
+
+  /* Everything this browser holds for the consumer app, gone. Never throws:
+     each store and each key is its own try, because one unavailable store
+     must not stop the other one being emptied. */
+  function clearLocalState() {
+    var ref = projectRef();
+    [window.localStorage, window.sessionStorage].forEach(function (store) {
+      var kill = [];
+      try {
+        for (var i = 0; i < store.length; i++) {
+          var k = store.key(i);
+          if (k == null) { continue; }
+          if (k.indexOf('mrb.') === 0) { kill.push(k); continue; }
+          if (/^sb-.*-auth-token/.test(k)) { kill.push(k); continue; }
+          if (ref && k.indexOf('sb-' + ref + '-') === 0) { kill.push(k); }
+        }
+      } catch (e) { return; }              // storage unavailable — nothing to clear
+      kill.forEach(function (k) {
+        try { store.removeItem(k); } catch (e) { /* one key, not the sweep */ }
+      });
+    });
+  }
+
+  function signOut(sb) {
+    var c = sb || client;
+    var done = function () {
+      clearLocalState();
+      go(CHILD_LOGIN_URL);
+    };
+    if (!c || !c.auth || typeof c.auth.signOut !== 'function') { return done(); }
+    var p;
+    /* Default scope: the refresh token is revoked at the server too, which
+       is the difference between "this browser forgot" and "that session is
+       over". On a shared device only the second one is a sign-out. */
+    try { p = c.auth.signOut(); } catch (e) { p = null; }
+    if (!p || typeof p.then !== 'function') { return done(); }
+    return p.then(done, function (e) {
+      console.error('[consumer/signout]', e);
+      done();                              // see the note above: local clear regardless
+    });
+  }
+
+  /* ── the control the three child surfaces mount ──────────────────────────
+     Design drew no sign-out on any child screen, so the BUTTON is invented —
+     but nothing about it is: it is her header's own 44px control (the shape
+     of Today's messages button and Unit check's timer pill), and the confirm
+     panel is her card, her dark ink, her radii.
+
+     It asks first, and that is not ceremony. The three headers put this next
+     to a messages button and a back arrow on a 390px screen; a mis-tap that
+     silently ended the session would cost a child their whole page and they
+     would have no idea why. The safe answer is the one that keeps focus. */
+  var SIGNOUT_ICON =
+    '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M14 4H6a1 1 0 00-1 1v14a1 1 0 001 1h8"/>' +
+    '<path d="M18 15l3-3-3-3M21 12h-9"/></svg>';
+
+  function signOutControl(host, opts) {
+    if (!host) { return; }
+    opts = opts || {};
+    var label = opts.label === undefined ? 'Sign out' : opts.label;
+
+    host.innerHTML =
+      '<button class="c-signout-btn" type="button" aria-label="Sign out">' +
+      SIGNOUT_ICON + (label ? ('<span>' + escapeHtml(label) + '</span>') : '') +
+      '</button>';
+
+    var veil = null;
+    function close() {
+      if (!veil) { return; }
+      document.removeEventListener('keydown', onKey);
+      if (veil.parentNode) { veil.parentNode.removeChild(veil); }
+      veil = null;
+      var b = host.querySelector('button');
+      if (b) { b.focus(); }
+    }
+    function onKey(e) { if (e.key === 'Escape') { close(); } }
+
+    host.querySelector('button').addEventListener('click', function () {
+      if (veil) { return; }
+      veil = document.createElement('div');
+      veil.className = 'c-signout-veil';
+      veil.innerHTML =
+        '<div class="c-signout-card" role="dialog" aria-modal="true" ' +
+        'aria-labelledby="c-signout-h">' +
+          '<h2 id="c-signout-h">Sign out?</h2>' +
+          '<p>You’ll need your username and password to get back in.</p>' +
+          '<div class="c-signout-acts">' +
+            '<button type="button" class="c-signout-stay">Stay signed in</button>' +
+            '<button type="button" class="c-signout-go">Sign out</button>' +
+          '</div>' +
+        '</div>';
+      /* ⚠️ INSIDE THE KS3 ROOT, NOT ON document.body. Every --ks3-* token on
+         these three pages is defined on `.rd[data-mode="ks3"]`, not on
+         :root — the specificity trap shared/ks3.css documents. A panel
+         appended to <body> inherits none of them, so `background:
+         var(--ks3-card)` resolves to nothing and the confirm renders as
+         transparent text lying on top of the page. Found by screenshotting
+         it, 3 Sep 2026. */
+      var themed = document.querySelector('.rd[data-mode="ks3"]') || document.body;
+      themed.appendChild(veil);
+      document.addEventListener('keydown', onKey);
+
+      veil.addEventListener('click', function (e) {
+        if (e.target === veil) { close(); }
+      });
+      veil.querySelector('.c-signout-stay').addEventListener('click', close);
+      veil.querySelector('.c-signout-go').addEventListener('click', function () {
+        var b = this;
+        b.disabled = true;
+        b.textContent = 'Signing out…';
+        signOut(opts.sb);
+      });
+      // The SAFE answer takes focus. A stray Enter must not end the session.
+      veil.querySelector('.c-signout-stay').focus();
+    });
+  }
+
   window.MrBadmusConsumer = {
     ENABLED: ENABLED,
     BRANDMARK: BRANDMARK,
@@ -657,6 +840,12 @@
     // Night 3 (MRB-317) — see the pricing note above.
     pricing: pricing,
     price: price,
-    childLoginUrl: CHILD_LOGIN_URL
+    childLoginUrl: CHILD_LOGIN_URL,
+
+    // Night 4 (MRB-317 ruling 3) — see the signing-out note above.
+    signOut: signOut,
+    signOutControl: signOutControl,
+    isChildSession: isChildSession,
+    clearLocalState: clearLocalState
   };
 })();

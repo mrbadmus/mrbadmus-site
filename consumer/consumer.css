@@ -485,3 +485,80 @@ body {
   .c-item .c-item-acts .btn { flex: 1 1 auto; min-height: 42px; }
   .c-bubble { max-width: 100%; }
 }
+
+/* ══ NIGHT 4 — LANE B (the child app): the sign-out control ═══════════════
+   MRB-317 ruling 3. Mounted by `MrBadmusConsumer.signOutControl()` into the
+   header of today.html, exam.html and unit-check.html, so it is drawn once
+   here rather than three times in three page <style> blocks.
+
+   It lives in consumer.css and not in the pages because the three headers
+   are Design's and are all slightly different — a brandmark and a messages
+   button on Today, a back arrow and a quota chip on Exam, a back arrow and a
+   running clock on Unit check. The control has to look identical on all
+   three, and a rule copied three times is a rule that ends up three
+   different sizes.
+
+   ⚠️ Every value is a --ks3-* token, because these three pages are KS3-mode
+   surfaces (`class="rd" data-mode="ks3"`) and NOT the consumer.css scaffold
+   ground the rest of this file dresses. The tokens resolve on those pages;
+   nothing here is a retyped hex.
+
+   ── AT 390px THE WORD GOES, THE CONTROL STAYS ────────────────────────────
+   Design's headers already carry two controls on a 390px screen. Below
+   400px the label is hidden and the button becomes the same 44px square as
+   her messages button — the tap target is unchanged, which is the part that
+   matters, and the aria-label carries the word for anyone who cannot see the
+   icon. Measured in the browser at 390; the quota chip on exam.html is the
+   element that runs out of room first, so it is allowed to ellipsise rather
+   than push the sign-out off the edge.
+   ════════════════════════════════════════════════════════════════════════ */
+.c-signout-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 44px; padding: 0 12px;
+  border: 2px solid var(--ks3-ink); border-radius: 14px;
+  background: var(--ks3-card); color: var(--ks3-ink);
+  font: inherit; font-weight: 700; font-size: 15px;
+  cursor: pointer; white-space: nowrap; flex: 0 0 auto;
+}
+.c-signout-btn .ks3-mark { width: 20px; height: 20px; flex: 0 0 auto; }
+.c-signout-btn:hover { background: var(--ks3-band); }
+
+@media (max-width: 399px) {
+  .c-signout-btn { width: 44px; padding: 0; justify-content: center; }
+  .c-signout-btn span { display: none; }
+}
+
+/* The confirm. Design's card, her ink, her radii — a full-screen veil rather
+   than an inline panel because the three pages put the button in three
+   different places and an inline answer would appear somewhere different on
+   each one. */
+.c-signout-veil {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+.c-signout-card {
+  width: 100%; max-width: 360px; box-sizing: border-box;
+  padding: 24px 22px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); color: var(--ks3-ink);
+  box-shadow: var(--ks3-shadow-block);
+  font-family: var(--ks3-font-body);
+}
+.c-signout-card h2 {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 28px; letter-spacing: -.03em; line-height: 1.05;
+}
+.c-signout-card p {
+  margin: 10px 0 0; font-size: 17px; line-height: 1.45; color: var(--ks3-ink-body);
+}
+.c-signout-acts { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.c-signout-acts button {
+  min-height: 50px; padding: 0 12px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+  font: inherit; font-weight: 700; font-size: 16px; cursor: pointer;
+}
+.c-signout-acts .c-signout-stay { background: var(--ks3-card); color: var(--ks3-ink); }
+.c-signout-acts .c-signout-go { background: var(--ks3-ink); color: var(--ks3-on-dark); }
+.c-signout-acts button[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }

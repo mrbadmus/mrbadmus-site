@@ -48,9 +48,13 @@
     text-decoration: none;
   }
   .uc-back .ks3-mark { width: 22px; height: 22px; }
+  /* ⊕ Night 4: `min-width:0` so the title yields width to the clock and the
+     sign-out control at 390px instead of overflowing the row. */
   .uc-title {
-    flex: 1; font-family: var(--ks3-font-display); font-weight: 800;
+    flex: 1; min-width: 0;
+    font-family: var(--ks3-font-display); font-weight: 800;
     font-size: 20px; letter-spacing: -.02em;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .uc-timer {
     display: flex; align-items: center; gap: 8px; padding: 6px 12px;
@@ -227,6 +231,51 @@
   }
   .uc-review-text { display: block; font-size: 16px; font-weight: 600; line-height: 1.35; }
   .uc-review-line { display: block; margin-top: 4px; font-size: 14px; color: var(--ks3-ink-muted); }
+  /* ── Night 4: past attempts ──────────────────────────────────────────
+     Design's own controls. `.uc-see` is her "See the breakdown" button, her
+     inline style lifted verbatim; the review tick/cross block is her result
+     screen's `r.border` / `r.bg` / `r.markBg` / `r.markFg` written as two
+     classes instead of four interpolated colours. */
+  .uc-see {
+    margin-top: 12px; border: 0; background: none; padding: 0;
+    font: inherit; font-weight: 700; font-size: 16px;
+    color: var(--ks3-accent-text); cursor: pointer;
+  }
+  .uc-see[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+
+  .uc-review li.is-ok   { border-color: var(--ks3-ok); background: var(--ks3-ok-tint); }
+  .uc-review li.is-miss { border-color: var(--ks3-ink); background: var(--ks3-card); }
+  .uc-review-mark { flex: 0 0 28px; }
+  .uc-review-mark .ks3-mark { width: 14px; height: 14px; }
+  .uc-review li.is-ok   .uc-review-mark { background: var(--ks3-ok); color: #fff; }
+  .uc-review li.is-miss .uc-review-mark { background: var(--ks3-ink); color: var(--ks3-on-dark); }
+
+  .uc-practice-note {
+    margin: 14px 0 0; font-size: 16px; color: var(--ks3-ink-muted);
+  }
+
+  .uc-others {
+    margin: 12px 0 0; padding: 0; list-style: none;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .uc-others button {
+    width: 100%; box-sizing: border-box;
+    display: flex; align-items: center; gap: 12px;
+    min-height: var(--ks3-tap); padding: 12px 14px;
+    border: 2px solid var(--ks3-rule-strong); border-radius: 14px;
+    background: var(--ks3-card); color: var(--ks3-ink);
+    font: inherit; font-size: 16px; text-align: left; cursor: pointer;
+  }
+  .uc-others button.is-on { border-color: var(--ks3-ink); background: var(--ks3-band); }
+  .uc-other-name { flex: 1; min-width: 0; font-weight: 700; }
+  .uc-other-when {
+    font-family: var(--ks3-font-mono); font-size: 12px; color: var(--ks3-ink-muted);
+    white-space: nowrap;
+  }
+  .uc-other-pct {
+    flex: 0 0 auto; font-family: var(--ks3-font-display); font-weight: 800; font-size: 17px;
+  }
+
   .uc-pair { margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .uc-pair button, .uc-pair a {
     display: flex; align-items: center; justify-content: center; min-height: 50px;
@@ -258,6 +307,10 @@
         <circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M10 3h4"/></svg>
       <span id="uc-clock">15:00</span>
     </span>
+    <!-- Night 4, MRB-317 ruling 3. Hidden while the clock is running, for
+         exactly the reason the back arrow is: there is no way out of a
+         running check but handing in. -->
+    <span id="uc-signout"></span>
   </header>
 
   <main class="uc-main" id="uc-main"></main>
@@ -311,13 +364,27 @@
   var params   = new URLSearchParams(window.location.search);
   var unitCode = params.get('unit');
   var workItem = params.get('work');
+  /* Night 4 (MRB-317 ruling 4): `?view=history` opens the child's OWN past
+     attempts instead of the start screen. With `unit` it is that unit's
+     history; without one it is everything, newest first — which is also
+     what makes this page answerable from Today, where no unit is known. */
+  var wantHistory = params.get('view') === 'history';
 
-  C.boot({ requireSession: true, run: function (ctx) {
+  C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
     var main  = document.getElementById('uc-main');
     var timer = document.getElementById('uc-timer');
     var clock = document.getElementById('uc-clock');
     var back  = document.getElementById('uc-back');
     back.href = C.href('/consumer/today.html');
+
+    /* Night 4 (MRB-317 ruling 3). The two ways off this page — the back
+       arrow and signing out — appear and disappear together, because they
+       are the same rule: while the clock is running there is no exit but
+       handing in, and a sign-out button mid-check would be a way to lose
+       fifteen minutes of work by mis-tapping the top-right corner. */
+    var signoutHost = document.getElementById('uc-signout');
+    C.signOutControl(signoutHost, { sb: ctx.sb });
+    function showExits(on) { back.hidden = !on; signoutHost.hidden = !on; }
 
     var unit = {}, previous = null, writable = false;
     var attempt = null;      // { attempt_id, time_limit_s, qs: [] }
@@ -336,7 +403,10 @@
       return m + ':' + (r < 10 ? '0' : '') + r;
     }
 
-    if (!unitCode) {
+    /* `?view=history` needs no unit: without one it is every check the child
+       has finished, newest first, which is exactly what Today's "See how you
+       did" can ask for. So the which-unit refusal below is skipped for it. */
+    if (!unitCode && !wantHistory) {
       /* Design has no state for this — she is always opened with a unit.
          Written in her voice rather than left as a blank screen. */
       main.innerHTML =
@@ -364,7 +434,7 @@
 
     function paintStart() {
       timer.hidden = true;
-      back.hidden = false;
+      showExits(true);
 
       main.innerHTML =
         '<p class="uc-eyebrow">' +
@@ -389,7 +459,13 @@
              '<p class="uc-prev-when">You took this on ' + esc(previous.date || '') + '</p>' +
              '<p class="uc-prev-pct">' + esc(previous.pct || '—') + '</p>' +
              '<p>That score is in your record and your personal best. A second go ' +
-             'is practice: it shows in your own history, not in the record.</p></div>')
+             'is practice: it shows in your own history, not in the record.</p>' +
+             /* ⊕ Night 4 (MRB-317 ruling 4). Design drew this button and
+                Night 3 dropped it: the only route that could answer it was
+                guardian-only, so a child could not see their own marking.
+                Her element, her copy, her styling — restored verbatim. */
+             '<button class="uc-see" id="uc-see" type="button">See the breakdown</button>' +
+             '</div>')
           : '') +
 
         '<div class="uc-rules">' +
@@ -413,6 +489,16 @@
       document.getElementById('uc-start').addEventListener('click', function () {
         begin(this);
       });
+      var see = document.getElementById('uc-see');
+      if (see) {
+        see.addEventListener('click', function () {
+          C.setBusy(see, true, 'Getting it…');
+          loadHistory(unitCode).catch(function (e) {
+            C.setBusy(see, false);
+            showError(e.message);
+          });
+        });
+      }
     }
 
     /* ── the run ───────────────────────────────────────────────────────── */
@@ -433,7 +519,7 @@
           chosen = {}; at = 0;
           autoSubmitted = false;
           startedAt = Date.now();
-          back.hidden = true;          // no way out of a running clock but handing in
+          showExits(false);            // no way out of a running clock but handing in
           paintRun();
           startClock();
         })
@@ -603,7 +689,7 @@
     }
 
     function paintResult() {
-      back.hidden = false;
+      showExits(true);
       var d = result || {};
       var breakdown = d.breakdown || [];
       var isBest = d.is_record === true;
@@ -688,11 +774,241 @@
       window.scrollTo(0, 0);
     }
 
+    /* ══ PAST ATTEMPTS — "See how you did" (Night 4, MRB-317 ruling 4) ═══
+
+       Design drew a "See the breakdown" button on the already-taken card and
+       a full result screen behind it. Night 3 shipped neither, for one
+       reason: the only route that could answer it, `/children/:id/unit-checks`,
+       is guardian-only, so the child who SAT the check was the one person on
+       the estate who could not look at it. `/child/unit-checks` is that same
+       read with the child as the caller.
+
+       ── ONE RENDERER, HERS ───────────────────────────────────────────────
+       This is `paintResult()`'s screen, not a second design: the same score
+       ladder, the same topic bars, the same "Work on next", the same
+       question-by-question list. What a HISTORY row can do that a
+       just-submitted one cannot is mark each question right or wrong —
+       `paintResult()` deliberately shows no tick and no cross because
+       `/unit-check/submit` sends no per-question correctness, and this route
+       does. So the ticks and crosses appear here, as Design drew them, and
+       nothing is invented on either screen.
+
+       ── THE SHAPE IS READ DEFENSIVELY, ON PURPOSE ────────────────────────
+       ⚠️ Two routes now return an attempt and they do NOT agree about names.
+       The guardian route sends `unit` = the unit NAME with `unit_code`
+       beside it, a `date` already in words, `max`, `pct`, `is_record`, and
+       breakdown rows of `{ topic, got, of }`. The child route was specified
+       with `unit` = the CODE and `unit_title` = the name, `taken_at` as an
+       ISO instant, `max_score`, `percent`, `is_best`, and breakdown rows of
+       `{ subtopic, correct, total }`. `normalise()` reads both and this page
+       holds an opinion about neither — the same reason `schemePoint()` in
+       consumer-common.js reads two shapes of a mark-scheme point. If a third
+       arrives, it is one function to widen. */
+
+    var history = null;      // normalised attempts, newest first
+    var historyAt = 0;
+
+    function normalise(a) {
+      a = a || {};
+      /* `unit_title` present means `unit` is the CODE; absent means `unit`
+         is already the name. Nothing else can tell the two apart. */
+      var name = a.unit_title || a.unit_name || (a.unit_title === undefined && a.unit) || null;
+      if (a.unit_title) { name = a.unit_title; }
+      var code = a.unit_code || (a.unit_title ? a.unit : null) || null;
+
+      var pct = a.pct;
+      if (pct == null && a.percent != null) { pct = a.percent + '%'; }
+      var max = a.max != null ? a.max : a.max_score;
+      if (pct == null && max) { pct = Math.round((Number(a.score) / Number(max)) * 100) + '%'; }
+
+      var when = a.date || null;
+      var iso = a.taken_at || a.completed_at || null;
+      if (!when && iso) { when = C.fmtDate(iso, ''); }
+
+      return {
+        id: a.id,
+        name: name || code || 'Unit check',
+        code: code,
+        subject: a.subject || '',
+        when: when || '',
+        score: a.score,
+        max: max,
+        pct: pct,
+        isBest: a.is_record === true || a.is_best === true,
+        isPractice: a.is_practice === true,
+        minutes: a.minutes,
+        weakest: a.weakest || null,
+        weakNote: a.weak_note || null,
+        breakdown: (a.breakdown || []).map(function (b) {
+          return {
+            topic: b.topic || b.subtopic || '',
+            got: b.got != null ? b.got : b.correct,
+            of: b.of != null ? b.of : b.total
+          };
+        }),
+        questions: (a.questions || []).map(function (q) {
+          return {
+            text: q.stem || q.text || q.ref || '',
+            chosen: q.chosen,
+            correct: q.correct,
+            ok: q.is_correct === true
+          };
+        })
+      };
+    }
+
+    function loadHistory(code) {
+      var path = '/api/consumer/child/unit-checks' +
+                 (code ? ('?unit=' + encodeURIComponent(code)) : '');
+      return C.api(path, { token: ctx.token }).then(function (d) {
+        var rows = (d && (d.attempts || d.checks || d.unit_checks)) || [];
+        history = rows.map(normalise);
+        historyAt = 0;
+        if (!history.length) { return paintNoHistory(code); }
+        paintHistory();
+      });
+    }
+
+    function paintNoHistory(code) {
+      showExits(true);
+      timer.hidden = true;
+      main.innerHTML =
+        '<h1 class="uc-h1">Nothing to look at yet</h1>' +
+        '<div class="uc-oops"><p>You haven’t finished a unit check ' +
+        (code ? 'for this unit ' : '') + 'yet. Once you have, your score and ' +
+        'the question-by-question breakdown live here.</p></div>' +
+        '<div class="uc-pair"><button type="button" id="uc-hist-back">Back</button>' +
+        '<a class="uc-solid" href="' + esc(C.href('/consumer/today.html')) +
+        '">Back to today</a></div>';
+      document.getElementById('uc-hist-back').addEventListener('click', backFromHistory);
+    }
+
+    function backFromHistory() {
+      if (unitCode) {
+        return loadStart().catch(function (e) {
+          main.innerHTML = '<div class="uc-oops"><p>' + esc(e.message) + '</p></div>';
+        });
+      }
+      window.location.href = C.href('/consumer/today.html');
+    }
+
+    /* Design's review line, exactly: what the child put, and — only when
+       they got it wrong — what the answer was. A right answer is never
+       followed by "Answer: …", because it would be the same sentence twice. */
+    function reviewLine(q) {
+      var given;
+      if (q.chosen == null || q.chosen === '') { given = 'No answer'; }
+      else if (typeof q.chosen === 'number') { given = 'You chose ' + 'ABCDEFGH'.charAt(q.chosen); }
+      else { given = 'You chose ' + q.chosen; }
+      if (q.ok) { return given; }
+      return q.correct ? (given + '. Answer: ' + q.correct + '.') : given;
+    }
+
+    function paintHistory() {
+      showExits(true);
+      timer.hidden = true;
+      var a = history[historyAt];
+      document.title = (a.name || 'Unit check') + ' — MrBadmus';
+
+      var bars = a.breakdown.map(function (b) {
+        var of = Number(b.of || 0), got = Number(b.got || 0);
+        var ratio = of ? (got / of) : 0;
+        var colour = ratio === 1 ? 'var(--ks3-ok)'
+                   : (ratio >= 0.5 ? 'var(--ks3-accent)' : 'var(--ks3-alert)');
+        return '<div>' +
+          '<div class="uc-bar-top"><span>' + esc(b.topic) + '</span>' +
+          '<span class="uc-bar-frac">' + got + '/' + of + '</span></div>' +
+          '<div class="uc-bar-track"><div class="uc-bar-fill" style="width:' +
+            Math.round(ratio * 100) + '%;background:' + colour + '"></div></div>' +
+        '</div>';
+      }).join('');
+
+      var review = a.questions.map(function (q, i) {
+        var ok = q.ok;
+        var mark = ok
+          ? '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+          : '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+        return '<li class="' + (ok ? 'is-ok' : 'is-miss') + '">' +
+          '<span class="uc-review-n uc-review-mark">' + mark + '</span>' +
+          '<span><span class="uc-review-text">' + esc(q.text) + '</span>' +
+          '<span class="uc-review-line">' + esc(reviewLine(q)) + '</span></span></li>';
+      }).join('');
+
+      /* The other goes. Only rendered when there is more than one, so a
+         child with a single check never reads a list of one. */
+      var others = history.length > 1
+        ? ('<h2 class="uc-h2">Your other goes</h2><ul class="uc-others">' +
+           history.map(function (h, i) {
+             return '<li><button type="button" data-go="' + i + '"' +
+               (i === historyAt ? ' class="is-on" aria-current="true"' : '') + '>' +
+               '<span class="uc-other-name">' + esc(h.name) + '</span>' +
+               '<span class="uc-other-when">' + esc(h.when || '') + '</span>' +
+               '<span class="uc-other-pct">' + esc(h.pct || '—') + '</span>' +
+               '</button></li>';
+           }).join('') + '</ul>')
+        : '';
+
+      main.innerHTML =
+        '<p class="uc-eyebrow">' +
+          esc([a.name, a.when].filter(Boolean).join(' · ')) + '</p>' +
+
+        '<div class="ks3-ladder uc-ladder">' +
+          '<div class="uc-score-row">' +
+            '<div>' +
+              '<p class="uc-score-label">Your score</p>' +
+              '<p class="uc-pct">' + esc(a.pct == null ? '—' : a.pct) + '</p>' +
+              '<p class="uc-score-line">' + esc(a.score == null ? '' :
+                 (a.score + ' of ' + a.max + ' correct')) + '</p>' +
+            '</div>' +
+            (a.isBest ? '<span class="uc-best">Personal best</span>' : '') +
+          '</div>' +
+          (bars ? ('<div class="uc-bars">' + bars + '</div>') : '') +
+        '</div>' +
+
+        (a.isPractice
+          ? '<p class="uc-practice-note">This one was a practice run. It shows in ' +
+            'your own history, not in the record.</p>'
+          : '') +
+
+        (a.weakest
+          ? ('<div class="uc-weak"><p class="uc-weak-label">Work on next</p>' +
+             '<h3>' + esc(a.weakest) + '</h3>' +
+             (a.weakNote ? ('<p>' + esc(a.weakNote) + '</p>') : '') + '</div>')
+          : '') +
+
+        (review
+          ? ('<h2 class="uc-h2">Question by question</h2>' +
+             '<ul class="uc-review">' + review + '</ul>')
+          : '') +
+
+        others +
+
+        '<div class="uc-pair">' +
+          '<button type="button" id="uc-hist-back">' +
+            (unitCode ? 'Take it again' : 'Back') + '</button>' +
+          '<a class="uc-solid" href="' + esc(C.href('/consumer/today.html')) +
+            '">Back to today</a>' +
+        '</div>';
+
+      document.getElementById('uc-hist-back').addEventListener('click', backFromHistory);
+      var list = main.querySelector('.uc-others');
+      if (list) {
+        list.addEventListener('click', function (e) {
+          var b = e.target.closest ? e.target.closest('button[data-go]') : null;
+          if (!b) { return; }
+          historyAt = Number(b.getAttribute('data-go'));
+          paintHistory();
+        });
+      }
+      window.scrollTo(0, 0);
+    }
+
     window.addEventListener('beforeunload', function () {
       if (ticker) { clearInterval(ticker); }
     });
 
-    return loadStart().catch(function (e) {
+    var first = wantHistory ? loadHistory(unitCode) : loadStart();
+    return first.catch(function (e) {
       main.innerHTML = '<div class="uc-oops"><p>' + esc(e.message) + '</p>' +
         '<p>Try again in a moment, or go back to your Today page.</p></div>';
     });

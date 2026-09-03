@@ -772,6 +772,98 @@ BEGIN
 END $$;
 
 -- =====================================================================
+-- SECTION F2 — NIGHT 4 (MRB-321): a sibling's paper, and the terms stamp
+-- =====================================================================
+-- A1 added GET /api/consumer/child/unit-checks, whose ONLY scope is
+-- `child_id = the calling child`. This section states, at the database, what
+-- that route is and is not relying on: whether RLS alone would keep two
+-- siblings apart, and whether a parent or a child can move their own terms
+-- acceptance.
+--
+-- A second sitting, for the OTHER child in family A, so "my sibling's paper"
+-- is a real row rather than a hypothesis.
+INSERT INTO public.unit_check_attempts (org_id, child_id, unit_code, key_stage, question_ids, count, time_limit_s)
+VALUES ((SELECT id FROM fam_a_t), 'a0000000-0000-0000-0000-000000000012', 'B2', 'KS3', '{y}', 10, 900);
+
+DO $$
+DECLARE
+  pa  uuid := 'a0000000-0000-0000-0000-000000000001';
+  ca1 uuid := 'a0000000-0000-0000-0000-000000000011';
+  ca2 uuid := 'a0000000-0000-0000-0000-000000000012';
+  cb1 uuid := 'b0000000-0000-0000-0000-000000000011';
+  n   int;
+BEGIN
+  -- ── the cross-family seal, which IS the database's ──────────────────
+  PERFORM pg_temp.login_as(cb1);
+  PERFORM pg_temp.assert_count('F2: child B1 sees 0 of family A''s unit-check attempts', 0,
+    (SELECT count(*)::int FROM public.unit_check_attempts
+      WHERE child_id IN (ca1, ca2)));
+  PERFORM pg_temp.assert_count('F2: child B1 sees exactly their own one attempt', 1,
+    (SELECT count(*)::int FROM public.unit_check_attempts));
+
+  -- ── the sibling seal, which turns out to be BOTH layers ─────────────
+  -- MEASURED, not assumed. The Night 4 route was written on the assumption
+  -- that RLS here is ORG-scoped — a parent must see every child's sittings,
+  -- and a parent and a child share an org — which would have made the
+  -- route's own `.eq('child_id', profile.id)` the only thing keeping two
+  -- siblings apart. It is not: the policy is own-row-OR-guardian, so a child
+  -- sees exactly their own and a parent sees both. The route's equality is
+  -- therefore a SECOND belt that agrees with the database rather than the
+  -- only one. Asserted here so that a future widening of the policy to the
+  -- org — which would be a perfectly reasonable-looking change — fails a
+  -- gate instead of quietly making a sibling's paper readable.
+  PERFORM pg_temp.login_as(ca1);
+  SELECT count(*)::int INTO n FROM public.unit_check_attempts;
+  PERFORM pg_temp.assert_count(
+    'F2: child A1 sees ONLY their own attempt, not their sibling''s — RLS is child-scoped, and GET /child/unit-checks agrees with it',
+    1, n);
+
+  PERFORM pg_temp.login_as(pa);
+  PERFORM pg_temp.assert_count('F2: parent A sees both children''s attempts', 2,
+    (SELECT count(*)::int FROM public.unit_check_attempts));
+  PERFORM pg_temp.logout();
+  PERFORM pg_temp.assert_count('F2: anon sees 0 unit-check attempts', 0,
+    (SELECT count(*)::int FROM public.unit_check_attempts));
+
+  -- ── A5: the terms stamp ─────────────────────────────────────────────
+  PERFORM set_config('role','postgres',true);
+  PERFORM pg_temp.assert_count('F2: profiles.terms_accepted_at exists and is nullable', 1,
+    (SELECT count(*)::int FROM information_schema.columns
+      WHERE table_schema='public' AND table_name='profiles'
+        AND column_name='terms_accepted_at' AND is_nullable='YES' AND column_default IS NULL));
+  -- No DEFAULT and no back-fill: a profile created by the real functions
+  -- inside this transaction comes out NULL. Scoped to THIS plan's own
+  -- fixtures rather than the whole table, because the TEST project also
+  -- carries live rows from the lane drives, and a live parent who has
+  -- genuinely accepted the terms is not a failure of this assertion.
+  PERFORM pg_temp.assert_count('F2: a profile made by the real functions starts NULL — no DEFAULT, no back-fill', 0,
+    (SELECT count(*)::int FROM public.profiles
+      WHERE terms_accepted_at IS NOT NULL
+        AND id IN (pa, ca1, ca2, cb1, 'b0000000-0000-0000-0000-000000000001'::uuid)));
+
+  -- Only the service role writes it. A parent who could set their own
+  -- acceptance date could set it to any date they liked, which would make
+  -- the column worth nothing as evidence.
+  PERFORM pg_temp.login_as(pa);
+  BEGIN
+    UPDATE public.profiles SET terms_accepted_at = now() WHERE id = pa;
+    PERFORM pg_temp.assert_count('F2: parent cannot stamp their own terms acceptance', 0,
+      (SELECT count(*)::int FROM public.profiles WHERE id = pa AND terms_accepted_at IS NOT NULL));
+  EXCEPTION WHEN OTHERS THEN
+    PERFORM pg_temp.assert_count('F2: parent cannot stamp their own terms acceptance', 0, 0);
+  END;
+  PERFORM pg_temp.login_as(ca1);
+  BEGIN
+    UPDATE public.profiles SET terms_accepted_at = now() WHERE id = pa;
+    PERFORM pg_temp.assert_count('F2: a child cannot stamp their parent''s terms acceptance', 0,
+      (SELECT count(*)::int FROM public.profiles WHERE id = pa AND terms_accepted_at IS NOT NULL));
+  EXCEPTION WHEN OTHERS THEN
+    PERFORM pg_temp.assert_count('F2: a child cannot stamp their parent''s terms acceptance', 0, 0);
+  END;
+  PERFORM pg_temp.logout();
+END $$;
+
+-- =====================================================================
 -- RESULTS
 -- =====================================================================
 SELECT CASE WHEN passed THEN 'PASS' ELSE 'FAIL' END AS status,

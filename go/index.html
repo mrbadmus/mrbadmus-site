@@ -96,6 +96,43 @@
   }
   .gl-go[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
   .gl-ask { margin: 24px 0 0; font-size: 16px; color: var(--ks3-ink-muted); }
+
+  /* ── Night 4: the "not you?" card ────────────────────────────────────
+     Design drew no such state, so this is invented — but every part of it
+     is hers: the dark ink card with the accent block-shadow is the panel
+     she uses for "Before you start" on the unit check, and the two controls
+     are the pair she uses at the foot of a result screen. It sits ABOVE the
+     form rather than replacing it, because the answer to "not you?" is the
+     form that is already on the page. */
+  .gl-already {
+    margin: 0 0 28px; padding: 20px 22px;
+    border-radius: var(--ks3-r-dark);
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    box-shadow: 6px 6px 0 var(--ks3-accent);
+  }
+  .gl-already-eyebrow {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--ks3-alert);
+  }
+  .gl-already-who {
+    margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 26px; line-height: 1.1; letter-spacing: -.025em;
+  }
+  .gl-already-acts { margin-top: 16px; display: grid; gap: 10px; }
+  .gl-already-acts a, .gl-already-acts button {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 50px; padding: 0 14px;
+    border: 2px solid var(--ks3-on-dark); border-radius: var(--ks3-r-control);
+    font: inherit; font-weight: 700; font-size: 17px; cursor: pointer;
+    text-decoration: none;
+  }
+  .gl-already-acts .gl-already-go {
+    background: var(--ks3-on-dark); color: var(--ks3-ink);
+  }
+  .gl-already-acts .gl-already-out {
+    background: transparent; color: var(--ks3-on-dark);
+  }
+  .gl-already-acts button[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
   </style>
 </head>
 <body>
@@ -107,6 +144,18 @@
   </header>
 
   <main class="gl-main">
+    <!-- Night 4 (MRB-317 ruling 3, the /go/ half). A shared family device
+         can arrive here with the LAST child still signed in. Rendered only
+         when that is actually true; see the note in the script. -->
+    <div class="gl-already" id="gl-already" hidden>
+      <p class="gl-already-eyebrow">Already signed in</p>
+      <p class="gl-already-who" id="gl-already-who">Someone is signed in on this device.</p>
+      <div class="gl-already-acts">
+        <a class="gl-already-go" id="gl-already-go" href="/consumer/today.html">Carry on</a>
+        <button class="gl-already-out" id="gl-already-out" type="button">Not you? Sign out</button>
+      </div>
+    </div>
+
     <h1 class="gl-h1">Hello.<br>Who&rsquo;s this?</h1>
 
     <form class="gl-form" id="gl-form" novalidate>
@@ -192,6 +241,69 @@
 
   C.boot({ anonymous: true, run: function (ctx) {
     document.getElementById('gl-brand').innerHTML = C.BRANDMARK;
+
+    /* ── Night 4 (MRB-317 ruling 3) — "not you?" ─────────────────────────
+       A family iPad arrives here with the last child still signed in, and
+       until tonight this page sat silently on top of that session: the form
+       worked, but a child who did not know to use it — or who tapped
+       anything else — was looking at somebody else's day.
+
+       ⚠️ THIS DOES NOT UNDO `anonymous: true`. The page still refuses to
+       LOG IN as whoever is in the store; it reads the session only to offer
+       to end it. A PARENT's session is deliberately left alone and nothing
+       is rendered for it: the parent dashboard is a different product on a
+       different address, and offering to sign a parent out of a page their
+       child types into would be a control aimed at the wrong person.
+       `isChildSession()` is the test, and it is local — the child's own
+       GoTrue address, in their own session, never displayed.
+
+       Every failure here is silent by design. This is an ENHANCEMENT on a
+       page whose one job is a username and a password; a Supabase call that
+       times out must leave the login form working, not put an error above
+       it. */
+    var already = document.getElementById('gl-already');
+    var whoEl   = document.getElementById('gl-already-who');
+    document.getElementById('gl-already-go').href = C.href('/consumer/today.html');
+    document.getElementById('gl-already-out').addEventListener('click', function () {
+      var b = this;
+      b.disabled = true;
+      b.textContent = 'Signing out…';
+      /* Not `C.signOut()`: that lands on /go/, and we are ON /go/. Clearing
+         and reloading is the same end state and it re-renders this page
+         from scratch, so the card disappears because the session really has
+         gone rather than because something hid it. */
+      var after = function () {
+        C.clearLocalState();
+        window.location.reload();
+      };
+      var p = null;
+      try { p = ctx.sb.auth.signOut(); } catch (e) { p = null; }
+      if (p && p.then) { p.then(after, after); } else { after(); }
+    });
+
+    ctx.sb.auth.getSession().then(function (r) {
+      var session = r && r.data && r.data.session;
+      if (!session || !C.isChildSession(session)) { return; }
+      already.hidden = false;
+
+      /* The name makes the question answerable — "Not you?" is a question a
+         child can only answer if the page says who it thinks they are. It
+         is the child's OWN profile row, read with the child's OWN session,
+         so RLS is the permission and there is nothing here a stranger could
+         pull. If the read fails or returns nothing, the card keeps the
+         name-less sentence it shipped with: knowing SOMEBODY is signed in is
+         already the useful half. */
+      return ctx.sb.from('profiles').select('first_name, username')
+        .eq('id', session.user.id).maybeSingle()
+        .then(function (res) {
+          var row = res && res.data;
+          if (!row) { return; }
+          var name = row.first_name || row.username;
+          if (name) {
+            whoEl.textContent = 'You’re signed in as ' + name + '.';
+          }
+        });
+    }).catch(function (e) { console.error('[go/session]', e); });
 
     var form  = document.getElementById('gl-form');
     var uEl   = document.getElementById('gl-user');

@@ -141,7 +141,15 @@ def main():
             visit(p, "/consumer/account.html", "account trialing", a.shots, expect=["Free week"])
             visit(p, "/consumer/report.html?child=%s" % kids[0]["id"], "report", a.shots, expect=["Science progress report"])
             # cancel at period end — the branch nobody has rendered
-            sb_admin("PATCH", "/rest/v1/subscriptions?org_id=eq." + org, {"status": "active", "trial_end": None, "cancel_at_period_end": True, "current_period_end": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() + 19 * 86400))})
+            # ⊕ MRB-321. `stripe_customer_id` is set HERE and not before, because
+            # without it `billingFor` returns can_portal=false and the account
+            # page correctly renders "There is no billing account to manage yet"
+            # instead of Design's "Resume subscription" CTA — a fixture that had
+            # cancelled a subscription which never went through Stripe, which
+            # cannot happen in production. The assertion below was right; the
+            # fixture was not. The id is synthetic: can_portal only tests for
+            # presence, and nothing in this pass presses the button.
+            sb_admin("PATCH", "/rest/v1/subscriptions?org_id=eq." + org, {"status": "active", "trial_end": None, "cancel_at_period_end": True, "stripe_customer_id": "cus_night4smoke", "current_period_end": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() + 19 * 86400))})
             time.sleep(16)
             st, bill = api(API, "GET", "/api/consumer/billing", jwt)
             check(st == 200 and bill["billing"]["state"] == "cancelled" and bill["billing"]["access"] == "full", "billingFor: cancel_at_period_end → state cancelled, access full", bill.get("billing"))

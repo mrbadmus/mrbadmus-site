@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}
+input,textarea,select,button{font:inherit}
+input::placeholder,textarea::placeholder{color:#9A8F86}
+.pb-nav-links{display:none}
+.pb-three{display:grid;gap:14px}
+.pb-two{display:grid;gap:24px}
+.pb-head a{white-space:nowrap}
+@media (min-width:900px){
+  .pb-nav-links{display:flex}
+  .pb-three{grid-template-columns:1fr 1fr 1fr;gap:20px}
+  .pb-two{grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  .pb-wrap{padding-left:48px!important;padding-right:48px!important}
+}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<header class="pb-wrap pb-head" style="display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:2px solid var(--ks3-ink);position:sticky;top:0;background:var(--ks3-ground);z-index:5">
+  <a href="Public Home.dc.html" style="display:flex;align-items:center;gap:10px;color:var(--ks3-ink)">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </a>
+  <nav class="pb-nav-links" style="margin-left:16px;gap:18px;font-weight:600;font-size:15px">
+    <a href="Public How It Works.dc.html" style="color:var(--ks3-ink)">How it works</a>
+    <a href="Public Home Education.dc.html" style="color:var(--ks3-ink)">Home education</a>
+    <a href="Public Pricing.dc.html" style="color:var(--ks3-ink)">Pricing</a>
+    <a href="Public Organisations.dc.html" style="color:var(--ks3-ink);border-bottom:2px solid var(--ks3-accent)">Organisations</a>
+  </nav>
+  <span style="flex:1"></span>
+  <a href="Public Sign In.dc.html" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>
+  <a href="Parent Signup.dc.html" style="display:flex;align-items:center;min-height:44px;padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>
+</header>
+
+<main class="pb-wrap" style="max-width:1100px;margin:0 auto;padding:56px 20px 80px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">For organisations</p>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,5.5vw,64px);line-height:.95;letter-spacing:-.04em;max-width:15em;text-wrap:balance">Science for the pupils who aren't in a science classroom.</h1>
+  <p style="margin:22px 0 0;font-size:20px;color:var(--ks3-ink-body);max-width:36em;text-wrap:pretty">Councils, alternative provision and tutoring centres use MrBadmus to set, mark and evidence science for pupils they're responsible for. One caseworker sees every pupil; each pupil gets the same teacher-set week a family would.</p>
+
+  <div class="pb-three" style="margin-top:44px">
+    <sc-for list="{{ who }}" as="w" hint-placeholder-count="3">
+      <div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ w.eyebrow }}</p>
+        <h2 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;letter-spacing:-.025em;line-height:1.1">{{ w.title }}</h2>
+        <p style="margin:10px 0 0;font-size:16px;color:var(--ks3-ink-body)">{{ w.body }}</p>
+      </div>
+    </sc-for>
+  </div>
+
+  <section style="margin-top:64px;padding:clamp(28px,4vw,44px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+    <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">What an organisation account adds</h2>
+    <ul style="margin:22px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px">
+      <sc-for list="{{ adds }}" as="a" hint-placeholder-count="6">
+        <li style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;background:var(--ks3-dark-panel);font-size:16px;color:var(--ks3-on-dark-body)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="flex:0 0 auto;margin-top:4px;color:var(--ks3-alert)"><path d="M5 12.5l4.5 4.5L19 7"/></svg>{{ a }}</li>
+      </sc-for>
+    </ul>
+    <p style="margin:20px 0 0;font-size:16px;color:var(--ks3-on-dark-muted)">Accounts are set up against a seat cap and invoiced once a year. No cards, no pupil email addresses.</p>
+  </section>
+
+  <section id="contact" style="margin-top:64px">
+    <div class="pb-two">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Contact us</p>
+        <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Tell us who you work with. We'll reply within a school day.</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:var(--ks3-ink-body);text-wrap:pretty">Say roughly how many pupils and which years. Mide reads these himself. If it's a fit, the account is usually open the same week with logins ready to hand out.</p>
+        <p style="margin:16px 0 0;font-size:16px;color:var(--ks3-ink-muted)">Prefer email? <a href="#" style="font-weight:700">hello@mrbadmus.com</a></p>
+      </div>
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <form onSubmit="{{ submit }}" style="padding:clamp(22px,3vw,28px);border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block);display:flex;flex-direction:column;gap:14px">
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Your name<input value="{{ f.name }}" onChange="{{ set.name }}" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:16px;color:var(--ks3-ink)"></label>
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Work email<input type="email" value="{{ f.email }}" onChange="{{ set.email }}" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:16px;color:var(--ks3-ink)"></label>
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Organisation<input value="{{ f.org }}" onChange="{{ set.org }}" placeholder="e.g. Brookfield Tuition Centre" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:16px;color:var(--ks3-ink)"></label>
+          <div>
+            <p style="margin:0 0 6px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">You are a</p>
+            <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ kinds }}" as="k" hint-placeholder-count="4"><button type="button" class="ks3-option" aria-pressed="{{ k.on }}" onClick="{{ k.pick }}" style="width:auto;min-height:40px;padding:6px 14px;border-radius:99px;font-size:14px">{{ k.label }}</button></sc-for></div>
+          </div>
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Pupils and years, roughly<textarea value="{{ f.note }}" onChange="{{ set.note }}" rows="3" placeholder="e.g. 25 pupils, mostly Y9–11, some on reduced timetables" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:16px;color:var(--ks3-ink);resize:vertical"></textarea></label>
+          <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">{{ error }}</p></sc-if>
+          <button type="submit" style="width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">Send</button>
+        </form>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:28px;border:2px solid var(--ks3-ok);border-radius:var(--ks3-r-card);background:var(--ks3-ok-tint)">
+          <p style="margin:0;display:flex;align-items:center;gap:8px;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;letter-spacing:-.02em;color:var(--ks3-ok-text)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Sent</p>
+          <p style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)">Thanks, {{ f.name }}. You'll hear from Mide at {{ f.email }} within a school day.</p>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+</main>
+
+<footer style="border-top:2px solid var(--ks3-ink);background:var(--ks3-card)">
+  <div class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:28px 20px;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;font-size:15px;color:var(--ks3-ink-muted)">
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;color:var(--ks3-ink)">MrBadmus</span>
+    <a href="Public How It Works.dc.html">How it works</a><a href="Public Home Education.dc.html">Home education</a><a href="Public Pricing.dc.html">Pricing</a><a href="Public Organisations.dc.html">Organisations</a><a href="Public Sign In.dc.html">Sign in</a>
+    <span style="margin-left:auto">Mr Badmus Education Ltd · England</span>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const WHO = [
+  { eyebrow: 'Councils', title: 'Children missing education, EOTAS, and looked-after children.', body: 'A caseworker sets up each pupil in minutes, sees whether the work is being done, and gets a signed termly report for the file.' },
+  { eyebrow: 'Alternative provision', title: 'Science when there\u2019s no science teacher on site.', body: 'Groups share a unit position so one week is set for everyone. Staff add their own tasks on top and message pupils in the app.' },
+  { eyebrow: 'Tutoring centres', title: 'The setting and marking, so tutors can teach.', body: 'Pupils arrive having done the week\u2019s work, marked. The tutor sees the weak spot before the session starts.' },
+];
+const ADDS = ['A staff dashboard across every pupil, with groups', 'Bulk pupil creation with printable login slips', 'Pupil-to-caseworker messaging, logged for safeguarding', 'A named caseworker per pupil who gets the Sunday email', 'Termly reports for every pupil, printable and exportable', 'Data processing agreement and full CSV export'];
+const KINDS = ['Council', 'Alternative provision', 'Tutoring centre', 'School', 'Other'];
+class Component extends DCLogic {
+  state = { f: { name: '', email: '', org: '', kind: '', note: '' }, error: '', sent: false };
+  renderVals() {
+    const s = this.state; const set = {}; for (const k of ['name', 'email', 'org', 'note']) set[k] = (e) => this.setState({ f: { ...s.f, [k]: e.target.value }, error: '' });
+    return { brandSize: 26, who: WHO, adds: ADDS, f: s.f, set, error: s.error, notSent: !s.sent, sent: s.sent,
+      kinds: KINDS.map((k) => ({ label: k, on: String(s.f.kind === k), pick: () => this.setState({ f: { ...s.f, kind: k } }) })),
+      submit: (e) => { e.preventDefault(); if (!s.f.name || !s.f.email.includes('@') || !s.f.org) return this.setState({ error: 'Name, work email and organisation, please.' }); this.setState({ sent: true }); } };
+  }
+}
+</script>
+</body>
+</html>

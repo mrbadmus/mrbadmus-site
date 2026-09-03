@@ -41,17 +41,26 @@
         <p class="og-lede">Same work, same marking, same reports. Pupils log in at mrbadmus.com/go with the username on their slip. Staff sign in here with a school email.</p>
         <ul class="og-ticks">
           <li><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Groups share a unit position; one week set for all</li>
-          <!-- ⊕ Ruling 2 (Mide, MRB-316). Design wrote "Per-seat, invoiced
-               termly, no cards". Organisations are invoiced ANNUALLY against
-               a seat cap, and no organisation price appears anywhere on the
-               estate — so the per-seat framing goes with the word "termly". -->
-          <li><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Invoiced annually against a seat cap. No cards.</li>
-          <!-- ⊕ Ruling 3. Design wrote "pupil messaging off by default". It
-               is ON, exactly as it is for families — a pupil's counterparty
-               is their caseworker rather than a parent. -->
-          <li><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>No pupil emails; pupils message their caseworker in the app</li>
+          <!-- ⊕ DROP 2, and it lands exactly where ruling 2 had already put
+               us. Design's drop-1 bullet read "Per-seat, invoiced termly, no
+               cards"; Night 3 replaced it under Mide's ruling because
+               organisations are invoiced ANNUALLY against a seat cap and no
+               organisation price appears anywhere on the estate. Her drop-2
+               file now writes it herself, more tersely than Night 3's
+               paraphrase did — so her words replace ours. -->
+          <li><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Seat cap, one invoice a year, no cards</li>
+          <!-- ⊕ DROP 2, same story as the bullet above. Her drop-1 line said
+               "pupil messaging off by default"; ruling 3 turned it on and
+               Night 3 rewrote it. Her drop-2 line says it and adds the word
+               Night 3's paraphrase left out — "logged" — which is the part a
+               designated safeguarding lead is reading the bullet for. -->
+          <li><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>No pupil emails; pupils message their caseworker, logged</li>
         </ul>
-        <p style="margin:22px 0 0;font-size:15px;color:var(--ks3-ink-muted);">Not set up yet? Write to <a href="mailto:hello@mrbadmus.com" style="font-weight:700;">hello@mrbadmus.com</a> and we’ll open the account within a school day.</p>
+        <!-- ⊕ DROP 2. Her drop-1 line pointed at a mailto because there was
+             no page to point at. There is one now, and it asks the five
+             questions a bare email never contains, so the link goes there.
+             Her drop-2 wording, verbatim. -->
+        <p style="margin:22px 0 0;font-size:15px;color:var(--ks3-ink-muted);">Not set up yet? <a href="/parents/organisations.html" style="font-weight:700;">Contact us</a> and we’ll open the account within a school day.</p>
       </div>
 
       <form class="og-form" id="form" novalidate>
@@ -185,7 +194,7 @@
         return sb.auth.signOut().catch(function () { /* already gone */ })
           .then(function () {
             say(elErr, 'That account isn’t set up for an organisation on ' +
-                       'MrBadmus. If it should be, write to hello@mrbadmus.com.');
+                       'MrBadmus. If it should be, write to support@mrbadmus.com.');
           });
       }
 

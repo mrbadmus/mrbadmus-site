@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408;text-decoration:underline}
+input,select,textarea,button{font:inherit}
+input::placeholder{color:#9A8F86}
+@keyframes spin{to{transform:rotate(360deg)}}
+.su-rail{display:none}
+@media (min-width:960px){
+  .su-root{display:grid;grid-template-columns:320px 1fr}
+  .su-head{display:none!important}
+  .su-rail{display:flex;flex-direction:column;position:sticky;top:0;height:100vh;box-sizing:border-box;border-right:2px solid #221E1B;background:#FFFCF5}
+  .su-main{max-width:640px!important;padding:64px 56px 96px!important;margin:0!important}
+}
+</style>
+</helmet>
+<div class="rd su-root" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<aside class="su-rail" style="padding:28px 28px 32px">
+  <div style="display:flex;align-items:center;gap:10px">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </div>
+  <ol style="margin:48px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px">
+    <sc-for list="{{ railSteps }}" as="r" hint-placeholder-count="4">
+      <li style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;background:{{ r.bg }};border:2px solid {{ r.border }}">
+        <span style="display:grid;place-items:center;width:30px;height:30px;border-radius:9px;border:2px solid var(--ks3-ink);background:{{ r.numBg }};color:{{ r.numFg }};font-family:var(--ks3-font-display);font-weight:800;font-size:14px">
+          <sc-if value="{{ r.done }}" hint-placeholder-val="{{ false }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M5 12.5l4.5 4.5L19 7"/></svg></sc-if>
+          <sc-if value="{{ r.notDone }}" hint-placeholder-val="{{ true }}">{{ r.n }}</sc-if>
+        </span>
+        <span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:16px;color:{{ r.fg }}">{{ r.label }}</span><sc-if value="{{ r.sub }}" hint-placeholder-val="{{ false }}"><span style="display:block;font-size:13px;color:var(--ks3-ink-muted)">{{ r.sub }}</span></sc-if></span>
+      </li>
+    </sc-for>
+  </ol>
+  <div style="margin-top:auto;padding:18px 20px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:5px 5px 0 var(--ks3-accent)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Free for seven days</p>
+    <p style="margin:8px 0 0;font-size:16px;color:var(--ks3-on-dark-body)">Work is set every Sunday. Marked against the mark scheme. Cancel before the week is up and you pay nothing.</p>
+  </div>
+</aside>
+
+<header class="su-head" style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+  <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+  <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  <span style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ stepLabel }}</span>
+</header>
+
+<main class="su-main" style="max-width:520px;margin:0 auto;padding:28px 20px 80px">
+
+<!-- ACCOUNT -->
+<sc-if value="{{ isAccount }}" hint-placeholder-val="{{ true }}">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Free for seven days</p>
+  <h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Create your account</h1>
+  <p style="margin:14px 0 0;font-size:18px;color:var(--ks3-ink-body)">This is the parent account. You'll set up your child's login next.</p>
+
+  <button onClick="{{ goVerify }}" style="margin-top:26px;width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:17px;color:var(--ks3-ink);cursor:pointer">
+    <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45 24.5c0-1.6-.1-2.8-.4-4H24v7.6h12.1c-.3 2-1.6 5-4.6 7l7 5.4C42.7 36.6 45 31 45 24.5z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.4l-7-5.4c-1.9 1.3-4.4 2.2-7.5 2.2-5.8 0-10.7-3.9-12.4-9.2l-7.2 5.6C8 41.3 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.6 28.2c-.4-1.3-.7-2.7-.7-4.2s.3-2.9.7-4.2l-7.2-5.6C3 17.1 2 20.4 2 24s1 6.9 2.4 9.8l7.2-5.6z"/><path fill="#EA4335" d="M24 10.6c3.3 0 5.5 1.4 6.8 2.6l6.2-6C33.3 3.7 28.9 2 24 2 15.4 2 8 6.7 4.4 14.2l7.2 5.6c1.7-5.3 6.6-9.2 12.4-9.2z"/></svg>
+    Continue with Google
+  </button>
+
+  <div style="display:flex;align-items:center;gap:12px;margin:22px 0 18px;color:var(--ks3-ink-muted);font-size:14px"><span style="flex:1;height:2px;background:var(--ks3-rule)"></span>or with email<span style="flex:1;height:2px;background:var(--ks3-rule)"></span></div>
+
+  <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Email
+    <input type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="you@example.com" autocomplete="email" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)">
+  </label>
+  <label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Password
+    <input type="password" value="{{ password }}" onChange="{{ setPassword }}" placeholder="At least 10 characters" autocomplete="new-password" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)">
+  </label>
+  <sc-if value="{{ accountError }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:10px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">{{ accountError }}</p>
+  </sc-if>
+
+  <button onClick="{{ goVerify }}" style="margin-top:22px;width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">Continue</button>
+  <p style="margin:16px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">By continuing you agree to the <a href="#">terms</a> and <a href="#">privacy notice</a>.</p>
+  <p style="margin:26px 0 0;font-size:16px;text-align:center">Already have an account? <a href="#" style="font-weight:700">Sign in</a></p>
+</sc-if>
+
+<!-- VERIFY -->
+<sc-if value="{{ isVerify }}" hint-placeholder-val="{{ false }}">
+  <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Check your inbox</h1>
+  <p style="margin:14px 0 0;font-size:18px;color:var(--ks3-ink-body)">We've sent a link to <strong style="color:var(--ks3-ink)">{{ email }}</strong>. Tap it and come straight back here.</p>
+  <div style="margin-top:26px;padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">While you wait</p>
+    <p style="margin:8px 0 0;font-size:17px;color:var(--ks3-ink-body)">You can carry on setting up your child now. We'll hold your place until the email is verified.</p>
+    <button onClick="{{ goChild }}" style="margin-top:16px;width:100%;min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">Carry on</button>
+  </div>
+  <div style="margin-top:22px;display:flex;flex-direction:column;gap:10px;font-size:16px">
+    <a href="#" onClick="{{ resend }}" style="font-weight:700">{{ resendLabel }}</a>
+    <a href="#" onClick="{{ goAccount }}">Wrong address? Change it</a>
+  </div>
+</sc-if>
+
+<!-- CHILD -->
+<sc-if value="{{ isChild }}" hint-placeholder-val="{{ false }}">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ childOrdinal }}</p>
+  <h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">{{ childHeading }}</h1>
+
+  <label style="display:block;margin-top:24px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">First name
+    <input value="{{ cName }}" onChange="{{ setCName }}" placeholder="What Mr Badmus should call them" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)">
+  </label>
+
+  <p style="margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Year group</p>
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+    <sc-for list="{{ years }}" as="y" hint-placeholder-count="5">
+      <button class="ks3-option" aria-pressed="{{ y.on }}" onClick="{{ y.pick }}" style="justify-content:center;padding:12px 6px;font-size:17px">{{ y.label }}</button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ isGcse }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Exam board</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <sc-for list="{{ boards }}" as="b" hint-placeholder-count="3">
+        <button class="ks3-option" aria-pressed="{{ b.on }}" onClick="{{ b.pick }}" style="justify-content:center;padding:12px 6px;font-size:16px">{{ b.label }}</button>
+      </sc-for>
+    </div>
+    <p style="margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Route</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <sc-for list="{{ routes }}" as="r" hint-placeholder-count="2">
+        <button class="ks3-option" aria-pressed="{{ r.on }}" onClick="{{ r.pick }}" style="flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px"><span style="font-weight:700;font-size:16px">{{ r.label }}</span><span style="font-size:13px;font-weight:400;color:var(--ks3-ink-body)">{{ r.desc }}</span></button>
+      </sc-for>
+    </div>
+    <p style="margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Tier</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3">
+        <button class="ks3-option" aria-pressed="{{ t.on }}" onClick="{{ t.pick }}" style="justify-content:center;padding:12px 6px;font-size:16px">{{ t.label }}</button>
+      </sc-for>
+    </div>
+    <p style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Not sure? Choose "Not decided" and school's choice can be added later.</p>
+  </sc-if>
+
+  <p style="margin:24px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">How will {{ cNameOrChild }} use it?</p>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+      <button class="ks3-option" aria-pressed="{{ m.on }}" onClick="{{ m.pick }}" style="align-items:flex-start;flex-direction:column;gap:4px;padding:16px 18px">
+        <span style="font-size:18px;font-weight:700">{{ m.label }}</span>
+        <span style="font-size:15px;font-weight:400;color:var(--ks3-ink-body);line-height:1.45">{{ m.desc }}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:28px;padding-top:22px;border-top:2px solid var(--ks3-rule)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Their login</p>
+    <p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-body)">{{ cNameOrChild }} signs in with a username, not an email. You choose both.</p>
+    <label style="display:block;margin-top:16px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Username
+      <div style="position:relative;margin-top:6px">
+        <input value="{{ cUser }}" onChange="{{ setCUser }}" placeholder="e.g. amara-rockets" autocomplete="off" autocapitalize="none" style="display:block;width:100%;box-sizing:border-box;min-height:50px;padding:12px 110px 12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)">
+        <button onClick="{{ checkUser }}" style="position:absolute;right:6px;top:6px;bottom:6px;padding:0 14px;border:2px solid var(--ks3-ink);border-radius:10px;background:var(--ks3-band);font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">Is it free?</button>
+      </div>
+    </label>
+    <sc-if value="{{ userFree }}" hint-placeholder-val="{{ false }}">
+      <p style="margin:8px 0 0;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--ks3-ok-text)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>{{ cUser }} is free</p>
+    </sc-if>
+    <sc-if value="{{ userTaken }}" hint-placeholder-val="{{ false }}">
+      <p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)"><strong style="color:var(--ks3-accent-text)">Taken.</strong> How about <button onClick="{{ takeSuggestion }}" style="padding:2px 8px;border:2px solid var(--ks3-accent);border-radius:8px;background:var(--ks3-accent-tint);font-weight:700;font-size:15px;color:var(--ks3-accent-text);cursor:pointer">{{ suggestion }}</button>?</p>
+    </sc-if>
+    <label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Password for {{ cNameOrChild }}
+      <input type="text" value="{{ cPass }}" onChange="{{ setCPass }}" placeholder="Something they can remember" autocomplete="off" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)">
+    </label>
+    <p style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Shown in full so you can write it down. You can reset it any time.</p>
+  </div>
+
+  <sc-if value="{{ childError }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:16px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">{{ childError }}</p>
+  </sc-if>
+  <button onClick="{{ goUnit }}" style="margin-top:22px;width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">Continue</button>
+  <sc-if value="{{ hasChildren }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ cancelExtraChild }}" style="margin-top:10px;width:100%;min-height:48px;border:0;background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">Never mind, back to the list</button>
+  </sc-if>
+</sc-if>
+
+<!-- UNIT PICKER -->
+<sc-if value="{{ isUnit }}" hint-placeholder-val="{{ false }}">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ cName }} · Year {{ cYear }}</p>
+  <h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:38px;line-height:1.02;letter-spacing:-.035em">Where is {{ cName }} up to?</h1>
+  <p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">{{ unitIntro }}</p>
+
+  <div style="margin-top:22px;display:flex;flex-direction:column;gap:22px">
+    <sc-for list="{{ unitGroups }}" as="g" hint-placeholder-count="3">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="display:grid;place-items:center;width:34px;height:34px;border:2px solid var(--ks3-ink);border-radius:10px;background:var(--ks3-band);font-family:var(--ks3-font-display);font-weight:800;font-size:15px">{{ g.code }}</span>
+          <span style="font-weight:700;font-size:16px">{{ g.term }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ g.units }}" as="u" hint-placeholder-count="2">
+            <button class="ks3-option" aria-pressed="{{ u.on }}" onClick="{{ u.pick }}" style="padding:13px 16px">
+              <span style="width:10px;height:10px;border-radius:99px;border:2px solid var(--ks3-ink);background:{{ u.dot }};flex:0 0 auto"></span>
+              <span style="flex:1">{{ u.name }}</span>
+              <span style="font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ u.subject }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:22px;padding:16px 18px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-panel);background:var(--ks3-inset);font-size:15px;color:var(--ks3-ink-body)">Everything before the unit you pick is treated as covered. Mr Badmus still checks it in short retrieval questions, so nothing is lost.</div>
+
+  <button onClick="{{ saveChild }}" style="margin-top:22px;width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">{{ unitCta }}</button>
+  <button onClick="{{ skipUnit }}" style="margin-top:10px;width:100%;min-height:48px;border:0;background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">Not sure, start from the beginning of the year</button>
+</sc-if>
+
+<!-- CHILDREN LIST -->
+<sc-if value="{{ isChildren }}" hint-placeholder-val="{{ false }}">
+  <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">{{ childrenHeading }}</h1>
+  <p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">Each extra child is £5.99 a month on the same plan. Add them now or any time later.</p>
+  <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ childRows }}" as="c" hint-placeholder-count="1">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">
+        <span style="display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--ks3-accent);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);font-weight:800;font-size:20px">{{ c.initial }}</span>
+        <span style="flex:1;min-width:0">
+          <span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">{{ c.name }}</span>
+          <span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">{{ c.meta }}</span>
+        </span>
+        <button onClick="{{ c.edit }}" style="min-height:40px;padding:0 12px;border:2px solid var(--ks3-rule-strong);border-radius:10px;background:var(--ks3-band);font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">Edit</button>
+      </div>
+    </sc-for>
+    <button onClick="{{ addAnother }}" style="min-height:64px;display:flex;align-items:center;justify-content:center;gap:10px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-card);background:none;font-weight:700;font-size:17px;color:var(--ks3-accent-text);cursor:pointer">
+      <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add another child
+    </button>
+  </div>
+  <button onClick="{{ goPlan }}" style="margin-top:26px;width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">Choose a plan</button>
+</sc-if>
+
+<!-- PLAN -->
+<sc-if value="{{ isPlan }}" hint-placeholder-val="{{ false }}">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">One plan · everything included</p>
+  <h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Start your free week</h1>
+  <p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">Seven days free, full access. Your card isn't charged until <strong style="color:var(--ks3-ink)">{{ trialEnd }}</strong>. Cancel any time before then and you pay nothing.</p>
+
+  <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <sc-for list="{{ plans }}" as="p" hint-placeholder-count="2">
+      <button class="ks3-option" aria-pressed="{{ p.on }}" onClick="{{ p.pick }}" style="flex-direction:column;align-items:flex-start;gap:2px;padding:16px">
+        <span style="font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ p.label }}</span>
+        <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1.1">{{ p.price }}</span>
+        <span style="font-size:14px;font-weight:600;color:var(--ks3-ink-body)">{{ p.sub }}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:18px;padding:20px 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ priceLines }}" as="l" hint-placeholder-count="1">
+        <div style="display:flex;justify-content:space-between;gap:12px;font-size:16px"><span>{{ l.label }}</span><span style="font-family:var(--ks3-font-mono);font-weight:500">{{ l.amount }}</span></div>
+      </sc-for>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px;padding-top:14px;border-top:2px solid var(--ks3-rule)">
+      <span style="font-weight:700;font-size:17px">{{ totalLabel }}</span>
+      <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:32px;letter-spacing:-.03em">{{ total }}</span>
+    </div>
+    <p style="margin:6px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:right">{{ totalNote }}</p>
+  </div>
+
+  <ul style="margin:22px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:16px;color:var(--ks3-ink-body)">
+    <li style="display:flex;gap:10px;align-items:baseline"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--ks3-ok-text)"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Work set every week, marked against the mark scheme</li>
+    <li style="display:flex;gap:10px;align-items:baseline"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--ks3-ok-text)"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Two exam answers a month marked by Mr Badmus himself, per child</li>
+    <li style="display:flex;gap:10px;align-items:baseline"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--ks3-ok-text)"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Sunday email and a printable termly report</li>
+  </ul>
+
+  <button onClick="{{ goStripe }}" style="margin-top:24px;width:100%;min-height:56px;border:2px solid var(--ks3-accent-text);border-radius:var(--ks3-r-control);background:var(--ks3-accent-text);color:#FFFFFF;font-weight:700;font-size:18px;cursor:pointer">Add a card and start the free week</button>
+  <p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">Card details are taken securely by Stripe. We never see your card number.</p>
+</sc-if>
+
+<!-- STRIPE HAND-OFF -->
+<sc-if value="{{ isStripe }}" hint-placeholder-val="{{ false }}">
+  <div style="margin-top:40px;text-align:center">
+    <div style="margin:0 auto;width:56px;height:56px;border-radius:99px;border:4px solid var(--ks3-rule);border-top-color:var(--ks3-accent);animation:spin 1s linear infinite"></div>
+    <h1 style="margin:24px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;line-height:1.05;letter-spacing:-.03em">Taking you to Stripe</h1>
+    <p style="margin:12px 0 0;font-size:17px;color:var(--ks3-ink-body)">You'll add a card there and come straight back. Nothing is charged for seven days.</p>
+    <button onClick="{{ goWelcome }}" style="margin-top:28px;min-height:48px;padding:0 20px;border:2px solid var(--ks3-rule-strong);border-radius:var(--ks3-r-control);background:var(--ks3-band);font-weight:700;font-size:15px;color:var(--ks3-ink);cursor:pointer">Simulate return from Stripe</button>
+  </div>
+</sc-if>
+
+<!-- WELCOME / RETURN -->
+<sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ false }}">
+  <div style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:2px solid var(--ks3-ok);border-radius:var(--ks3-r-pill);background:var(--ks3-ok-tint);font-weight:700;font-size:14px;color:var(--ks3-ok-text)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Card added · free until {{ trialEnd }}</div>
+  <h1 style="margin:16px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">{{ welcomeHeading }}</h1>
+  <p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">{{ welcomeBody }}</p>
+
+  <div style="margin-top:26px;display:flex;flex-direction:column;gap:18px">
+    <sc-for list="{{ weekPlans }}" as="w" hint-placeholder-count="1">
+      <div style="padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--ks3-accent);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);font-weight:800;font-size:18px">{{ w.initial }}</span>
+          <span style="flex:1;min-width:0">
+            <span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">{{ w.name }}'s first week</span>
+            <span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">{{ w.meta }}</span>
+          </span>
+        </div>
+        <ul style="margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ w.sessions }}" as="s" hint-placeholder-count="3">
+            <li style="display:flex;gap:12px;align-items:baseline;padding:10px 0;border-top:1px solid var(--ks3-rule)">
+              <span style="flex:0 0 42px;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ s.day }}</span>
+              <span style="flex:1;font-size:16px">{{ s.title }}</span>
+              <span style="font-family:var(--ks3-font-mono);font-size:13px;color:var(--ks3-ink-muted)">{{ s.mins }}</span>
+            </li>
+          </sc-for>
+        </ul>
+        <p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Set by Mr Badmus. You can pause it or add your own from the dashboard.</p>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:26px;padding:20px 22px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:6px 6px 0 var(--ks3-accent)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Next: hand over the login</p>
+    <p style="margin:8px 0 0;font-size:17px;color:var(--ks3-on-dark-body)">{{ loginHandoff }}</p>
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+      <sc-for list="{{ logins }}" as="l" hint-placeholder-count="1">
+        <div style="display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-radius:12px;background:var(--ks3-dark-panel);font-size:16px"><span style="color:var(--ks3-on-dark-muted)">{{ l.name }}</span><span style="font-family:var(--ks3-font-mono);font-weight:500">{{ l.user }}</span></div>
+      </sc-for>
+    </div>
+    <p style="margin:12px 0 0;font-size:14px;color:var(--ks3-on-dark-muted)">They sign in at mrbadmus.com/go with the username and the password you set.</p>
+  </div>
+
+  <a href="Parent Dashboard.dc.html" style="margin-top:24px;display:flex;align-items:center;justify-content:center;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;text-decoration:none">Go to my dashboard</a>
+</sc-if>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;startStep&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;account&quot;,&quot;verify&quot;,&quot;child&quot;,&quot;unit&quot;,&quot;children&quot;,&quot;plan&quot;,&quot;stripe&quot;,&quot;welcome&quot;],&quot;default&quot;:&quot;account&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Flow&quot;}}">
+const PRICE = { monthlyFirst: 9.99, monthlyExtra: 5.99, annualFirst: 79, annualExtra: 49 };
+const YEARS = [7, 8, 9, 10, 11];
+const BOARDS = ['AQA', 'Edexcel', 'OCR'];
+const TIERS = ['Foundation', 'Higher', 'Not decided'];
+const ROUTES = [{ id: 'Combined', label: 'Combined', desc: 'Two GCSEs, all three sciences' }, { id: 'Triple', label: 'Triple', desc: 'Three separate GCSEs' }];
+const MODES = [
+  { id: 'school', label: 'Alongside school', desc: 'A couple of short sessions a week. Tracks what school is covering and keeps it sharp.' },
+  { id: 'home', label: 'Home education', desc: 'The full scheme of work. Four or five sessions a week, unit checks, and a termly report you can hand to the council.' },
+];
+// Illustrative KS3/KS4 sequence — Code swaps in the live scheme of work per year.
+const UNITS = {
+  7: [
+    { code: 'A1', term: 'Autumn 1', units: [{ name: 'Cells and organisation', subject: 'Biology' }, { name: 'The particle model', subject: 'Chemistry' }] },
+    { code: 'A2', term: 'Autumn 2', units: [{ name: 'Forces and motion', subject: 'Physics' }, { name: 'Atoms, elements and compounds', subject: 'Chemistry' }] },
+    { code: 'S1', term: 'Spring 1', units: [{ name: 'Reproduction', subject: 'Biology' }, { name: 'Energy stores', subject: 'Physics' }] },
+    { code: 'S2', term: 'Spring 2', units: [{ name: 'Acids and alkalis', subject: 'Chemistry' }, { name: 'Sound and light', subject: 'Physics' }] },
+    { code: 'M1', term: 'Summer 1', units: [{ name: 'Ecosystems', subject: 'Biology' }, { name: 'Space', subject: 'Physics' }] },
+    { code: 'M2', term: 'Summer 2', units: [{ name: 'Chemical reactions', subject: 'Chemistry' }] },
+  ],
+  8: [
+    { code: 'A1', term: 'Autumn 1', units: [{ name: 'Breathing and digestion', subject: 'Biology' }, { name: 'The periodic table', subject: 'Chemistry' }] },
+    { code: 'A2', term: 'Autumn 2', units: [{ name: 'Electricity and magnetism', subject: 'Physics' }, { name: 'Separating mixtures', subject: 'Chemistry' }] },
+    { code: 'S1', term: 'Spring 1', units: [{ name: 'Photosynthesis and respiration', subject: 'Biology' }, { name: 'Pressure and moments', subject: 'Physics' }] },
+    { code: 'S2', term: 'Spring 2', units: [{ name: 'Metals and reactivity', subject: 'Chemistry' }, { name: 'Waves', subject: 'Physics' }] },
+    { code: 'M1', term: 'Summer 1', units: [{ name: 'Adaptation and inheritance', subject: 'Biology' }, { name: 'The Earth', subject: 'Chemistry' }] },
+    { code: 'M2', term: 'Summer 2', units: [{ name: 'Heating and cooling', subject: 'Physics' }] },
+  ],
+  9: [
+    { code: 'A1', term: 'Autumn 1', units: [{ name: 'Health and disease', subject: 'Biology' }, { name: 'Rates of reaction', subject: 'Chemistry' }] },
+    { code: 'A2', term: 'Autumn 2', units: [{ name: 'Motion and forces', subject: 'Physics' }, { name: 'Energy changes in reactions', subject: 'Chemistry' }] },
+    { code: 'S1', term: 'Spring 1', units: [{ name: 'Genetics and evolution', subject: 'Biology' }, { name: 'Electric circuits', subject: 'Physics' }] },
+    { code: 'S2', term: 'Spring 2', units: [{ name: 'Materials and the Earth', subject: 'Chemistry' }, { name: 'Radiation', subject: 'Physics' }] },
+    { code: 'M1', term: 'Summer 1', units: [{ name: 'Ecology in depth', subject: 'Biology' }, { name: 'Space physics', subject: 'Physics' }] },
+    { code: 'M2', term: 'Summer 2', units: [{ name: 'Bridging to GCSE', subject: 'All three' }] },
+  ],
+};
+UNITS[10] = [
+  { code: 'A1', term: 'Autumn 1', units: [{ name: 'Cell biology', subject: 'Biology' }, { name: 'Atomic structure', subject: 'Chemistry' }] },
+  { code: 'A2', term: 'Autumn 2', units: [{ name: 'Energy', subject: 'Physics' }, { name: 'Bonding and structure', subject: 'Chemistry' }] },
+  { code: 'S1', term: 'Spring 1', units: [{ name: 'Organisation', subject: 'Biology' }, { name: 'Electricity', subject: 'Physics' }] },
+  { code: 'S2', term: 'Spring 2', units: [{ name: 'Quantitative chemistry', subject: 'Chemistry' }, { name: 'Particle model of matter', subject: 'Physics' }] },
+  { code: 'M1', term: 'Summer 1', units: [{ name: 'Infection and response', subject: 'Biology' }, { name: 'Chemical changes', subject: 'Chemistry' }] },
+  { code: 'M2', term: 'Summer 2', units: [{ name: 'Atomic structure (physics)', subject: 'Physics' }] },
+];
+UNITS[11] = [
+  { code: 'A1', term: 'Autumn 1', units: [{ name: 'Homeostasis and response', subject: 'Biology' }, { name: 'Rate and extent of change', subject: 'Chemistry' }] },
+  { code: 'A2', term: 'Autumn 2', units: [{ name: 'Forces', subject: 'Physics' }, { name: 'Organic chemistry', subject: 'Chemistry' }] },
+  { code: 'S1', term: 'Spring 1', units: [{ name: 'Inheritance and evolution', subject: 'Biology' }, { name: 'Waves', subject: 'Physics' }] },
+  { code: 'S2', term: 'Spring 2', units: [{ name: 'Chemical analysis and the atmosphere', subject: 'Chemistry' }, { name: 'Magnetism', subject: 'Physics' }] },
+  { code: 'M1', term: 'Summer 1', units: [{ name: 'Ecology', subject: 'Biology' }, { name: 'Revision', subject: 'All three' }] },
+];
+const SUBJECT_DOT = { Biology: 'var(--ks3-biology)', Chemistry: 'var(--ks3-chemistry)', Physics: 'var(--ks3-physics)', 'All three': 'var(--ks3-band)' };
+const TAKEN = ['amara', 'sam', 'alex', 'leo', 'maya'];
+const STEP_LABELS = { account: 'Step 1 of 4', verify: 'Step 1 of 4', child: 'Step 2 of 4', unit: 'Step 2 of 4', children: 'Step 3 of 4', plan: 'Step 4 of 4', stripe: 'Stripe', welcome: 'You\u2019re in' };
+const COPY = {
+  unitIntroSchool: 'Pick the unit school is on right now. Mr Badmus sets the first week to match, not Year 7 week 1.',
+  unitIntroHome: 'Pick the unit to start from. Everything before it is treated as covered, and the scheme of work runs from here.',
+  welcomeOne: (n) => `${n}\u2019s first week is ready`,
+  welcomeMany: 'Their first week is ready',
+  welcomeBody: 'Work is set every Sunday evening for the week ahead. Nothing needs doing on your side tonight.',
+  handoffOne: (n) => `${n} logs in with the username you chose. Show it to them when you\u2019re both ready.`,
+  handoffMany: 'Each child logs in with the username you chose. Show them when you\u2019re both ready.',
+};
+const blankChild = () => ({ name: '', year: null, board: null, tier: null, route: null, mode: null, user: '', pass: '', unit: null, userStatus: 'idle' });
+
+class Component extends DCLogic {
+  state = { step: this.props.startStep ?? 'account', email: '', password: '', accountError: '', resent: false, children: [], form: blankChild(), editing: -1, plan: 'monthly', childError: '' };
+
+  set(k) { return (e) => this.setState({ [k]: e.target.value }); }
+  setForm(k, v) { this.setState((s) => ({ form: { ...s.form, [k]: v, ...(k === 'user' ? { userStatus: 'idle' } : {}) }, childError: '' })); }
+  go(step) { this.setState({ step, childError: '' }); }
+  fmt(n) { return '\u00a3' + (Number.isInteger(n) ? n.toFixed(0) : n.toFixed(2)); }
+
+  renderVals() {
+    const s = this.state; const f = s.form;
+    const step = s.step;
+    const nameOr = f.name.trim() || 'your child';
+    const yearVal = f.year;
+    const isGcse = yearVal === 10 || yearVal === 11;
+    const count = Math.max(1, s.children.length);
+    const monthly = PRICE.monthlyFirst + PRICE.monthlyExtra * (count - 1);
+    const annual = PRICE.annualFirst + PRICE.annualExtra * (count - 1);
+    const annualSaving = Math.round(monthly * 12 - annual);
+    const isAnnual = s.plan === 'annual';
+    const trialEnd = new Date(Date.now() + 7 * 864e5).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    const groups = (UNITS[yearVal] || UNITS[7]).map((g) => ({ ...g, units: g.units.map((u) => ({ ...u, dot: SUBJECT_DOT[u.subject], on: String(f.unit === u.name), pick: () => this.setForm('unit', u.name) })) }));
+    const priceLines = s.children.length ? s.children.map((c, i) => ({ label: `${c.name} (Year ${c.year})`, amount: this.fmt(i === 0 ? (isAnnual ? PRICE.annualFirst : PRICE.monthlyFirst) : (isAnnual ? PRICE.annualExtra : PRICE.monthlyExtra)) })) : [{ label: 'First child', amount: this.fmt(isAnnual ? PRICE.annualFirst : PRICE.monthlyFirst) }];
+    const weekPlans = s.children.map((c) => ({
+      initial: c.name[0].toUpperCase(), name: c.name,
+      meta: `Year ${c.year} · ${c.mode === 'home' ? 'Home education' : 'Alongside school'}${c.unit ? ' · from ' + c.unit : ''}`,
+      sessions: (c.mode === 'home' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] : ['Tue', 'Thu']).map((day, i) => ({ day, title: i === 0 ? `${c.unit || 'Start of year'}: lesson 1` : i === 1 ? 'Retrieval: 8 quick questions' : i === 2 ? `${c.unit || 'Start of year'}: lesson 2` : i === 3 ? 'Explain it: 4-mark practice' : 'Unit check warm-up', mins: i % 2 ? '10 min' : '20 min' })),
+    }));
+    return {
+      brandSize: 26, stepLabel: STEP_LABELS[step] || '',
+      railSteps: (() => { const order = ['account', 'child', 'children', 'plan']; const idx = { account: 0, verify: 0, child: 1, unit: 1, children: 2, plan: 3, stripe: 3, welcome: 4 }[step]; const labels = ['Your account', 'Your child', 'Anyone else?', 'Plan and card']; const subs = [s.email || '', s.children.length ? s.children.map((c) => c.name).join(', ') : (f.name || ''), s.children.length ? `${s.children.length} ${s.children.length === 1 ? 'child' : 'children'}` : '', step === 'welcome' ? 'Card added' : '']; return order.map((k, i) => { const done = i < idx, on = i === idx; return { n: i + 1, label: labels[i], sub: done ? subs[i] : '', done, notDone: !done, bg: on ? 'var(--ks3-band)' : 'transparent', border: on ? 'var(--ks3-ink)' : 'transparent', numBg: done ? 'var(--ks3-ok)' : on ? 'var(--ks3-ink)' : 'var(--ks3-card)', numFg: done || on ? '#fff' : 'var(--ks3-ink-muted)', fg: on || done ? 'var(--ks3-ink)' : 'var(--ks3-ink-muted)' }; }); })(),
+      isAccount: step === 'account', isVerify: step === 'verify', isChild: step === 'child', isUnit: step === 'unit', isChildren: step === 'children', isPlan: step === 'plan', isStripe: step === 'stripe', isWelcome: step === 'welcome',
+      email: s.email, password: s.password, setEmail: this.set('email'), setPassword: this.set('password'), accountError: s.accountError,
+      goAccount: (e) => { e && e.preventDefault(); this.go('account'); },
+      goVerify: () => { if (!s.email.includes('@')) return this.setState({ accountError: 'Enter the email you want us to write to.' }); if (s.password.length < 10) return this.setState({ accountError: 'Password needs at least 10 characters.' }); this.setState({ accountError: '' }); this.go('verify'); },
+      resend: (e) => { e.preventDefault(); this.setState({ resent: true }); }, resendLabel: s.resent ? 'Sent again. Check spam too.' : 'Send the email again',
+      goChild: () => this.go('child'),
+      childOrdinal: s.editing >= 0 ? 'Editing' : s.children.length ? `Child ${s.children.length + 1}` : 'Your child',
+      childHeading: s.editing >= 0 ? `Update ${f.name}` : s.children.length ? 'Add another child' : 'Tell us about your child',
+      cName: f.name, setCName: (e) => this.setForm('name', e.target.value), cNameOrChild: nameOr, cYear: f.year,
+      years: YEARS.map((y) => ({ label: `Y${y}`, on: String(f.year === y), pick: () => this.setForm('year', y) })),
+      isGcse, boards: BOARDS.map((b) => ({ label: b, on: String(f.board === b), pick: () => this.setForm('board', b) })),
+      routes: ROUTES.map((r) => ({ ...r, on: String(f.route === r.id), pick: () => this.setForm('route', r.id) })),
+      tiers: TIERS.map((t) => ({ label: t, on: String(f.tier === t), pick: () => this.setForm('tier', t) })),
+      modes: MODES.map((m) => ({ ...m, on: String(f.mode === m.id), pick: () => this.setForm('mode', m.id) })),
+      cUser: f.user, setCUser: (e) => this.setForm('user', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')),
+      checkUser: () => { const u = f.user.trim(); if (!u) return; this.setForm('userStatus', TAKEN.includes(u) ? 'taken' : 'free'); },
+      userFree: f.userStatus === 'free', userTaken: f.userStatus === 'taken', suggestion: `${f.user}-${(f.year || 7) * 13 % 97}`,
+      takeSuggestion: () => this.setState((st) => ({ form: { ...st.form, user: `${st.form.user}-${(st.form.year || 7) * 13 % 97}`, userStatus: 'free' } })),
+      cPass: f.pass, setCPass: (e) => this.setForm('pass', e.target.value), childError: s.childError, hasChildren: s.children.length > 0 && s.editing < 0,
+      cancelExtraChild: () => { this.setState({ form: blankChild() }); this.go('children'); },
+      goUnit: () => {
+        if (!f.name.trim()) return this.setState({ childError: 'Add a first name.' });
+        if (!f.year) return this.setState({ childError: 'Pick a year group.' });
+        if (isGcse && !f.route) return this.setState({ childError: 'Choose Combined or Triple.' });
+        if (!f.mode) return this.setState({ childError: 'Choose how they\u2019ll use it.' });
+        if (!f.user) return this.setState({ childError: 'Choose a username.' });
+        if (f.userStatus !== 'free') return this.setState({ childError: 'Check the username is free first.' });
+        if (f.pass.length < 6) return this.setState({ childError: 'Their password needs at least 6 characters.' });
+        this.go('unit');
+      },
+      unitIntro: f.mode === 'home' ? COPY.unitIntroHome : COPY.unitIntroSchool, unitGroups: groups,
+      unitCta: f.unit ? `Start ${f.name} from ${f.unit}` : 'Pick a unit to continue',
+      saveChild: () => { if (!f.unit) return; this.commitChild(); }, skipUnit: () => this.commitChild(),
+      childrenHeading: s.children.length === 1 ? `${s.children[0].name} is set up` : `${s.children.length} children set up`,
+      childRows: s.children.map((c, i) => ({ initial: c.name[0].toUpperCase(), name: c.name, meta: `Year ${c.year}${c.board ? ' · ' + c.board : ''}${c.route ? ' · ' + c.route : ''} · ${c.mode === 'home' ? 'Home education' : 'Alongside school'} · @${c.user}`, edit: () => this.setState({ form: { ...c }, editing: i, step: 'child' }) })),
+      addAnother: () => this.setState({ form: blankChild(), editing: -1, step: 'child' }), goPlan: () => this.go('plan'),
+      trialEnd, plans: [
+        { id: 'monthly', label: 'Monthly', price: this.fmt(monthly), sub: 'a month · cancel any time' },
+        { id: 'annual', label: 'Annual', price: this.fmt(annual), sub: annualSaving > 0 ? `a year · save \u00a3${annualSaving}` : 'a year' },
+      ].map((p) => ({ ...p, on: String(s.plan === p.id), pick: () => this.setState({ plan: p.id }) })),
+      priceLines, totalLabel: isAnnual ? 'Per year, after the free week' : 'Per month, after the free week', total: this.fmt(isAnnual ? annual : monthly),
+      totalNote: `${count} ${count === 1 ? 'child' : 'children'} · everything included · no extras`,
+      goStripe: () => { this.go('stripe'); this._t = setTimeout(() => this.setState({ step: 'welcome' }), 2400); }, goWelcome: () => { clearTimeout(this._t); this.go('welcome'); },
+      welcomeHeading: s.children.length === 1 ? COPY.welcomeOne(s.children[0].name) : COPY.welcomeMany, welcomeBody: COPY.welcomeBody, weekPlans,
+      loginHandoff: s.children.length === 1 ? COPY.handoffOne(s.children[0].name) : COPY.handoffMany,
+      logins: s.children.map((c) => ({ name: c.name, user: c.user })),
+    };
+  }
+  commitChild() {
+    this.setState((s) => { const children = s.children.slice(); if (s.editing >= 0) children[s.editing] = { ...s.form }; else children.push({ ...s.form }); return { children, form: blankChild(), editing: -1, step: 'children', childError: '' }; });
+  }
+  componentDidMount() {
+    if (this.props.startStep === 'welcome' && !this.state.children.length) this.setState({ children: [{ name: 'Amara', year: 9, board: null, tier: null, mode: 'school', user: 'amara-rockets', pass: 'saturn-rings', unit: 'Health and disease', userStatus: 'free' }], email: 'you@example.com' });
+  }
+  componentWillUnmount() { clearTimeout(this._t); }
+}
+</script>
+</body>
+</html>

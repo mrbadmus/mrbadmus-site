@@ -147,6 +147,10 @@
     return BLOCKS[BLOCKS.length - 1];
   }
 
+  /* Night 4 (MRB-317 ruling 7). One string, because the tick gates two
+     buttons and they must refuse in the same words. */
+  var TERMS_REQUIRED = 'Please agree to the terms and privacy policy to carry on.';
+
   function blankChild() {
     return { name: '', year: null, board: null, tier: null, route: null,
              mode: null, user: '', pass: '', unit: null, userStatus: 'idle',
@@ -190,6 +194,15 @@
     session: null,
     token: null,
     verified: false,
+    /* Night 4 (MRB-317 ruling 7 / MRB-319): the parent's acceptance of the
+       terms and the privacy policy. Kept in the draft as well as in state
+       because Google sign-up leaves this page for Google and comes back
+       through verify.html — the tick has to survive the round trip, or the
+       one thing we have to record would be gone by the time there is a
+       session to record it against. */
+    terms: false,
+    termsSent: false,
+    ensured: false,      // /family/ensure has run — see recordTerms()
     busy: false
   };
 
@@ -286,8 +299,40 @@
       '<label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Password' +
       '<input type="password" id="password" placeholder="At least 10 characters" autocomplete="new-password" style="' + input + '"></label>' +
       (S.error ? '<p style="margin:10px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">' + esc(S.error) + '</p>' : '') +
-      primaryBtn('continue', 'Continue') +
-      '<p style="margin:16px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">By continuing you agree to the <a href="#">terms</a> and <a href="#">privacy notice</a>.</p>' +
+      /* ── Night 4 (MRB-317 ruling 7) ────────────────────────────────────
+         Design drew a sentence — "By continuing you agree to the terms and
+         privacy notice" — with two dead `#` links, and Night 3 shipped it as
+         drawn. Two things were wrong with shipping that: the links went
+         nowhere, and continuing is not the same act as agreeing. This is
+         the same words as a REQUIRED tick, with the links pointed at the
+         two pages that now exist, and the acceptance is recorded against
+         the account rather than merely implied by a button press.
+
+         Both buttons on this step are gated, not just this one: signing up
+         with Google creates exactly the same account, and a consent gate
+         with a way round it is not a gate.
+
+         New tab on both links — `rel="noopener"` because `target="_blank"`
+         without it hands the opened page a live handle on this one — so
+         reading the terms cannot cost a parent the email and password they
+         have already typed. Nothing on this step is stored until Continue,
+         so a navigation away IS the form lost. */
+      '<label id="terms-row" style="margin-top:22px;display:flex;gap:12px;align-items:flex-start;' +
+        'padding:14px 16px;border:2px solid ' +
+        (S.terms ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') +
+        ';border-radius:var(--ks3-r-control);background:' +
+        (S.terms ? 'var(--ks3-band)' : 'var(--ks3-card)') + ';cursor:pointer">' +
+        '<input type="checkbox" id="terms"' + (S.terms ? ' checked' : '') +
+          ' style="flex:0 0 auto;width:22px;height:22px;margin:1px 0 0;accent-color:var(--ks3-ink);cursor:pointer"/>' +
+        '<span style="flex:1;min-width:0;font-size:16px;line-height:1.4;color:var(--ks3-ink)">' +
+          'I agree to the <a href="/parents/terms.html" target="_blank" rel="noopener" ' +
+            'style="font-weight:700">terms</a> and <a href="/parents/privacy.html" ' +
+            'target="_blank" rel="noopener" style="font-weight:700">privacy policy</a>.' +
+        '</span>' +
+      '</label>' +
+      '<p id="terms-note" style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)"' +
+        (S.terms ? ' hidden' : '') + '>Tick the box to create your account.</p>' +
+      primaryBtn('continue', 'Continue', S.terms ? '' : ';opacity:.45') +
       '<p style="margin:26px 0 0;font-size:16px;text-align:center">Already have an account? <a href="' +
       P.url('signIn') + '" style="font-weight:700">Sign in</a></p>';
   }
@@ -295,8 +340,34 @@
   function bindAccount() {
     $('email').addEventListener('input', function () { S.email = this.value.trim(); });
 
+    /* ── the terms gate ─────────────────────────────────────────────────
+       ⚠️ This toggles the two buttons IN PLACE and never calls render().
+       A re-render rebuilds the form, and the password box is the one field
+       on this step whose value lives only in the DOM — it is deliberately
+       not mirrored into `S` (see the localStorage note in the header). So a
+       render() here would silently empty the password a parent had already
+       typed, every time they ticked the box. */
+    var termsBox = $('terms');
+    function syncTerms() {
+      var on = !!termsBox.checked;
+      S.terms = on;
+      $('continue').disabled = !on;
+      $('continue').style.opacity = on ? '' : '.45';
+      $('google').disabled = !on;
+      $('google').style.opacity = on ? '' : '.45';
+      $('terms-note').hidden = on;
+      $('terms-row').style.borderColor = on ? 'var(--ks3-ink)' : 'var(--ks3-option-border)';
+      $('terms-row').style.background = on ? 'var(--ks3-band)' : 'var(--ks3-card)';
+      saveDraft();
+    }
+    termsBox.addEventListener('change', syncTerms);
+    syncTerms();
+
     $('google').addEventListener('click', function () {
       var btn = this;
+      // Belt and braces. The button is already disabled without the tick;
+      // this is what stops a re-enabled one being a way round the gate.
+      if (!S.terms) { S.error = TERMS_REQUIRED; return render(); }
       btn.disabled = true;
       sb.auth.signInWithOAuth({
         provider: 'google',
@@ -316,6 +387,7 @@
     $('continue').addEventListener('click', function () {
       var email = $('email').value.trim();
       var password = $('password').value;
+      if (!S.terms) { S.error = TERMS_REQUIRED; return render(); }
       // Design's validation, and her two strings.
       if (email.indexOf('@') === -1) {
         S.error = 'Enter the email you want us to write to.'; return render();
@@ -1159,11 +1231,13 @@
     S.step = step;
     S.childError = '';
     saveDraft();
+    recordTerms();          // see the note on recordTerms — retried, not blocking
     render();
   }
 
   function saveDraft() {
-    writeDraft({ email: S.email, step: S.step, plan: S.plan, pending: S.pending });
+    writeDraft({ email: S.email, step: S.step, plan: S.plan, pending: S.pending,
+                 terms: S.terms });
   }
 
   /* Read the family back. This is the truth about who exists; the list, the
@@ -1200,6 +1274,37 @@
   /* Everything that happens the moment a verified session appears: make the
      family, create anything held on the device, and put the parent on the
      step that is now actually available. */
+  /* ── recording the acceptance (Night 4, MRB-317 ruling 7) ─────────────
+     The tick is taken on the account step, but there is no account to write
+     it against until Supabase has made one — and on the Google path that is
+     a different page load entirely. So it is written at the first moment a
+     parent token exists, which is here, and it is retried on every step
+     transition until it lands (see `go()`).
+
+     ⚠️ It does NOT block. A parent who agreed and whose consent write failed
+     on a flaky connection must not be stuck on a spinner in the middle of
+     signing up: they agreed, we have the tick in the draft, and the retry on
+     the next step is a better answer than a dead button. If it never lands
+     the console says so and the account simply has no timestamp, which is
+     visible and fixable — unlike a parent who gave up. */
+  function recordTerms() {
+    /* ⚠️ `S.ensured` is not belt-and-braces, it is the ORDER. `PATCH /parent`
+       is behind `requireParent`, and requireParent needs a `profiles` row —
+       which does not exist until `/family/ensure` has made one. Called any
+       earlier this 403s with "This is a parent-only area", every time, on
+       every signup. Found by driving it, 3 Sep 2026. The acceptance for a
+       brand-new account is carried on the ensure call itself (below); this
+       is the retry for an account that already had a profile. */
+    if (!S.terms || S.termsSent || !S.token || !S.ensured) { return; }
+    S.termsSent = true;
+    C.api('/api/consumer/parent', {
+      method: 'PATCH', token: S.token, body: { terms_accepted: true }
+    }).catch(function (e) {
+      S.termsSent = false;                 // let the next step try again
+      console.error('[signup] terms', e);
+    });
+  }
+
   function adoptSession(session) {
     S.session = session;
     S.token = session.access_token;
@@ -1207,9 +1312,22 @@
     S.verified = !!session.user.email_confirmed_at;
     if (!S.verified) { return Promise.resolve(); }
 
-    return C.api('/api/consumer/family/ensure', { method: 'POST', token: S.token })
-      .then(loadFamily)
-      .then(flushPending);
+    /* The acceptance rides on the call that CREATES the profile, because
+       that is the first request in the whole flow that is allowed to write
+       one. The backend's stamp is write-once, so sending it on every ensure
+       — this route is idempotent and runs on every sign-in — cannot walk the
+       date forward. */
+    return C.api('/api/consumer/family/ensure', {
+        method: 'POST', token: S.token,
+        body: S.terms ? { terms_accepted: true } : {}
+      })
+      .then(function (d) {
+        S.ensured = true;
+        if (d && d.terms_accepted_at) { S.termsSent = true; }
+        return loadFamily();
+      })
+      .then(flushPending)
+      .then(function () { recordTerms(); });   // retry if ensure did not stamp
   }
 
   function flushPending() {
@@ -1244,6 +1362,7 @@
     S.email   = draft.email || '';
     S.plan    = draft.plan === 'year' ? 'year' : 'month';
     S.pending = draft.pending || [];
+    S.terms   = draft.terms === true;
 
     var wanted = new URLSearchParams(window.location.search).get('step');
 

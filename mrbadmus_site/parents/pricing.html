@@ -129,7 +129,15 @@
       { q: 'Can I add or remove a child mid-month?', a: 'Yes. Adding one is pro-rated to your billing date. Removing one takes effect at the end of the current period.' },
       /* Kept exactly as Design wrote it: it names no price, which is the
          point — organisation pricing is quoted, not published. */
-      { q: 'Is there a school or tutor rate?', a: 'Yes. Schools and tutoring centres run on organisation accounts with per-pupil pricing and a staff dashboard. Write to hello@mrbadmus.com.' },
+      /* ⊕ DROP 2 rewrote this answer, and it is the one string on the five
+         public pages whose WORDS changed rather than its nav. Her drop-1
+         answer said organisation accounts have "per-pupil pricing", which is
+         a price framing on a public page and so falls foul of Mide's ruling
+         2 (no organisation price appears anywhere public) — it survived
+         Night 3 because Night 3 was reading her drop-1 file. Her drop-2
+         answer names the three kinds of organisation, says invoiced
+         annually, and points at the page instead of at an inbox. Verbatim. */
+      { q: 'Is there a school or tutor rate?', a: 'Yes. Councils, alternative provision and tutoring centres run on organisation accounts with a staff dashboard, invoiced annually. See the organisations page and get in touch.' },
       { q: 'Do prices include VAT?', a: 'Yes. What you see is what you pay.' }
     ];
   }
@@ -260,7 +268,7 @@
          nothing honest to render in it, so it says so in words a parent can
          act on rather than sitting on "…" forever. */
       C.fail(document.getElementById('lines'), e.message,
-             'Refresh in a moment, or email hello@mrbadmus.com and we’ll tell you the price.');
+             'Refresh in a moment, or email support@mrbadmus.com and we’ll tell you the price.');
     });
   }});
 })();

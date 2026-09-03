@@ -581,6 +581,58 @@ input::placeholder, textarea::placeholder { color: var(--ks3-ink-muted); }
 .og-slip dd { margin: 0; font-family: var(--ks3-font-mono); user-select: all; }
 .og-slip p { margin: 10px 0 0; font-size: 13px; color: var(--ks3-ink-muted); }
 
+/* ── MESSAGES ⊕ DROP 2 ───────────────────────────────────────────────── */
+/* Design's drop-2 screen: `minmax(220px,300px) 1fr`, 16px apart, top
+   aligned. That is her DESKTOP shape and she drew it inside a page that
+   already has a sidebar — so below 960, where the sidebar collapses into
+   the select header, the two panes stack instead. A 300px thread list and a
+   conversation side by side on a 390px phone is two unusable columns. */
+.og-threads {
+  margin-top: 22px; display: grid; gap: 16px; align-items: start;
+}
+@media (min-width: 960px) {
+  .og-threads { grid-template-columns: minmax(220px, 300px) 1fr; }
+}
+
+.og-thread-list {
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); overflow: hidden;
+}
+.og-thread-list button {
+  width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px;
+  padding: 12px 14px; border: 0;
+  /* Her 3px selected marker, transparent when it is not selected so that
+     nothing moves sideways by three pixels as the selection travels. */
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid var(--ks3-rule);
+  background: none; color: var(--ks3-ink); font: inherit; text-align: left;
+  cursor: pointer;
+}
+.og-thread-list button:last-child { border-bottom: 0; }
+.og-thread-list button.is-on { border-left-color: var(--ks3-ink); background: var(--ks3-band); }
+.og-thread-who  { flex: 1 1 auto; min-width: 0; font-size: 15px; }
+.og-thread-grp  { color: var(--ks3-ink-muted); font-weight: 400; }
+.og-thread-last {
+  flex: 1 0 100%; min-width: 0; font-size: 12px; color: var(--ks3-ink-muted);
+  /* One line, whatever was written. A three-line last message would make
+     every row in the list a different height. */
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.og-thread-unread {
+  display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 99px; background: var(--ks3-accent-text); color: #fff;
+  font-family: var(--ks3-font-mono); font-size: 11px;
+}
+.og-thread-pane {
+  display: flex; flex-direction: column; min-height: 420px; padding: 18px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+  background: var(--ks3-card);
+}
+.og-thread-head { margin: 0 0 12px; font-weight: 700; font-size: 16px; }
+/* The bubble stack takes the slack, so the reply box sits at the bottom of
+   the pane rather than floating under a short conversation. */
+.og-thread-pane .og-chat { flex: 1; }
+
 @media print {
   /* The slips are the only thing worth ink. Everything else on the page —
      the sidebar, the nav, the buttons — is furniture for a screen. */

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>body{margin:0;background:#FBF3E6}a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased">
+  <header style="display:flex;align-items:center;gap:10px;padding:16px 24px 14px;border-bottom:2px solid var(--ks3-ink)">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+    <span style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ks3-ink-muted)">B2C · Drops 1–3</span>
+  </header>
+  <main style="max-width:1100px;margin:0 auto;padding:36px 24px 80px">
+    <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(36px,5vw,56px);line-height:.98;letter-spacing:-.035em">All surfaces</h1>
+    <p style="margin:14px 0 0;font-size:18px;color:var(--ks3-ink-body);max-width:60ch">Consumer screens are mobile-first at 390 with desktop layouts from 960; organisation and admin screens are desktop-first. Each file carries its states as Tweaks (billing state, edge scenarios, quota) so Code can view any state without editing data. Full notes in <span style="font-family:var(--ks3-font-mono)">MANIFEST.md</span>.</p>
+    <sc-for list="{{ groups }}" as="g" hint-placeholder-count="2">
+      <section style="margin-top:36px">
+        <h2 style="margin:0 0 14px;font-family:var(--ks3-font-display);font-weight:800;font-size:26px;letter-spacing:-.025em;padding-bottom:8px;border-bottom:2px solid var(--ks3-ink)">{{ g.title }}</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px">
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+            <a href="{{ it.href }}" style="display:flex;flex-direction:column;gap:6px;padding:18px 20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block);color:var(--ks3-ink)">
+              <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:21px;letter-spacing:-.02em">{{ it.name }}</span>
+              <span style="font-size:15px;color:var(--ks3-ink-body)">{{ it.desc }}</span>
+              <span style="margin-top:auto;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.06em;color:var(--ks3-ink-muted)">{{ it.states }}</span>
+            </a>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const GROUPS = [
+  { title: 'Public site (Drop 2)', items: [
+    { name: 'Home', href: 'Public Home.dc.html', desc: 'Front door. Three parent questions, a week, who marks it, routes to home ed and pricing.', states: 'responsive' },
+    { name: 'How it works', href: 'Public How It Works.dc.html', desc: 'Five steps, then FAQs.', states: 'responsive' },
+    { name: 'Pricing', href: 'Public Pricing.dc.html', desc: 'Live calculator: monthly/annual × children. Money FAQs.', states: 'responsive' },
+    { name: 'Home education', href: 'Public Home Education.dc.html', desc: 'Scheme of work by year, the termly report, LA questions.', states: 'responsive' },
+    { name: 'Organisations', href: 'Public Organisations.dc.html', desc: 'Councils, alternative provision, tutoring centres. Ends in contact us; no price.', states: 'responsive' },
+    { name: 'Sign in', href: 'Public Sign In.dc.html', desc: 'Child or parent chooser, parent form, link to organisations.', states: '2 screens' },
+  ] },
+  { title: 'Emails, organisations, admin (Drop 3)', items: [
+    { name: 'Emails', href: 'Emails.dc.html', desc: 'Eight transactional emails at 600px: verify, welcome, Sunday digest, marked, trial ending, payment failed, cancelled, new messages.', states: 'canvas' },
+    { name: 'Organisation sign in', href: 'Org Sign In.dc.html', desc: 'Staff sign in for schools and tutoring centres.', states: '' },
+    { name: 'Organisation dashboard', href: 'Org Dashboard.dc.html', desc: 'Pupils table, pupil detail, groups, set work, messages, add pupils in bulk, seat cap and annual invoice.', states: 'desktop-first' },
+    { name: 'Admin: marking queue', href: 'Admin Marking Queue.dc.html', desc: 'Mr Badmus marks sent answers: queue, mark scheme toggles, note, send.', states: 'dark room' },
+    { name: 'Admin: accounts', href: 'Admin Accounts.dc.html', desc: 'Every account by billing state, detail, support actions, timeline.', states: 'dark room' },
+  ] },
+  { title: 'Parent', items: [
+    { name: 'Signup and onboarding', href: 'Parent Signup.dc.html', desc: 'Account, verify, add child, unit picker, plan, Stripe hand-off, first-week return screen.', states: 'tweak: startStep' },
+    { name: 'Dashboard', href: 'Parent Dashboard.dc.html', desc: 'Overview, child detail, set work, pause, chat, marked answers, child settings, remove child.', states: 'tweaks: billingState · scenario' },
+    { name: 'Account and billing', href: 'Parent Account.dc.html', desc: 'Plan card for every billing state, Stripe portal surround, settings, delete account.', states: 'tweaks: billingState · annual' },
+    { name: 'Termly report', href: 'Termly Report.dc.html', desc: 'A4, prints from the browser. Evidence of learning for the council.', states: 'print-ready' },
+  ] },
+  { title: 'Child', items: [
+    { name: 'Login', href: 'Child Login.dc.html', desc: 'Username and password. Two error states.', states: 'amara-rockets / saturn-rings' },
+    { name: 'Today and chat', href: 'Child Today.dc.html', desc: 'Labelled items, streak and personal best, parent message card, chat.', states: 'tweak: scenario' },
+    { name: 'Exam questions', href: 'Child Exam Questions.dc.html', desc: 'Pick, write, instant mark, send to Mr Badmus, human result.', states: 'tweak: quotaLeft' },
+    { name: 'Unit check', href: 'Child Unit Check.dc.html', desc: 'Start, timed run, result with breakdown and weak area.', states: 'tweak: alreadyTaken' },
+  ] },
+];
+class Component extends DCLogic { renderVals() { return { brandSize: 26, groups: GROUPS }; } }
+</script>
+</body>
+</html>

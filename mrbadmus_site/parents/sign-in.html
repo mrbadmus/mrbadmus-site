@@ -131,9 +131,13 @@
     document.getElementById('card-child').href = C.href(C.childLoginUrl);
     document.getElementById('link-signup').href = P.url('signUp');
     document.getElementById('link-signup-2').href = P.url('signUp');
-    // No public Organisations page was delivered by Design, so the link goes
-    // straight to the staff sign-in rather than to a page we would have to
-    // invent. Design's own wording, unchanged.
+    /* Design's own wording, unchanged: the label says "organisation sign
+       in", so the link is the staff door, not the marketing page. Drop 2
+       delivered `/parents/organisations.html` and it is now in the nav and
+       the footer of this page — a visitor who wanted to READ about
+       organisations has two routes to it, and a caseworker who wanted to
+       SIGN IN still gets one click. Her drop-2 Org Sign In page closes the
+       loop the other way ("Not set up yet? Contact us"). */
     document.getElementById('link-org').href = C.href('/org/sign-in.html');
 
     var chooseEl = document.getElementById('screen-choose');
@@ -227,10 +231,19 @@
       });
     });
 
-    /* Password reset. The link lands on the estate's existing
-       /reset-password.html, which already knows how to wait for Supabase's
-       recovery-token exchange. Design's label swap is the whole feedback:
-       "Reset link sent to <email>" replaces the button's own text.
+    /* Password reset. Design's label swap is the whole feedback: "Reset
+       link sent to <email>" replaces the button's own text.
+
+       ⊕ RULING 6 (Mide, MRB-317, 2 Sept 2026). The link used to land on the
+       estate's `/reset-password.html`, which is the SCHOOL brand —
+       "MrBadmusAI", Fraunces, the gold-to-rust chevron. A parent who has
+       only ever seen this front door was being handed, mid-reset, a page
+       belonging to a different product. It now lands on
+       `/parents/reset-password.html`, which is this one's twin. The school
+       page is untouched and still serves school accounts.
+
+       ⚠️ The redirect target must be on Supabase's redirect-URL allow-list
+       or the link comes back with `otp_expired`. See the run report.
 
        Deliberately says "sent" whatever Supabase answers for an address with
        no account — the same enumeration argument as the sign-in error. */
@@ -242,7 +255,7 @@
       forgotEl.disabled = true;
       showError('');
       sb.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + C.href('/reset-password.html')
+        redirectTo: window.location.origin + C.href('/parents/reset-password.html')
       }).then(function () {
         forgotEl.textContent = 'Reset link sent to ' + email;
         forgotEl.disabled = false;

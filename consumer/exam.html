@@ -50,11 +50,29 @@
     background: none; color: var(--ks3-ink); cursor: pointer; text-decoration: none;
   }
   .ex-back .ks3-mark { width: 22px; height: 22px; }
+  /* ⊕ Night 4. Four things now want this row: a back arrow, Design's title,
+     her quota chip and the sign-out control. At 390px they need about 410px.
+
+     Measured, then decided: the TITLE is what goes. It is the only one of
+     the four that is redundant — the h1 immediately below it reads "Pick a
+     question", and on the write screen the question itself is the heading —
+     whereas the quota chip is the only place a child is told how many asks
+     of Mr Badmus are left, and truncating THAT to "Mr Badmus: 2 of…" would
+     turn a fact into a tease. Above 440px everything fits and her title is
+     back. `min-width:0` stays on both so nothing can overflow the row at
+     any width in between. */
   .ex-title {
-    flex: 1; font-family: var(--ks3-font-display); font-weight: 800;
+    flex: 1 1 auto; min-width: 0;
+    font-family: var(--ks3-font-display); font-weight: 800;
     font-size: 20px; letter-spacing: -.02em;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  @media (max-width: 439px) {
+    .ex-title { display: none; }
+    .ex-quota-chip { margin-left: auto; }
   }
   .ex-quota-chip {
+    min-width: 0; overflow: hidden; text-overflow: ellipsis;
     padding: 6px 12px; border-radius: 99px;
     border: 2px solid var(--ks3-rule-strong); background: var(--ks3-band);
     font-family: var(--ks3-font-mono); font-size: 12px; letter-spacing: .06em;
@@ -74,7 +92,72 @@
     width: auto; min-height: 40px; padding: 8px 14px;
     border-radius: 99px; font-size: 15px;
   }
-  .ex-list { margin-top: 18px; display: flex; flex-direction: column; gap: 12px; }
+  /* `.ex-list` — the flat list's container — is gone with the flat list.
+     Kept out rather than left as a dead rule: an unused class is the next
+     person's evidence that a second rendering path still exists. */
+
+  /* ── Night 4: the picker is grouped, subject → unit ────────────────────
+     MRB-317 ruling 9. Design drew one flat list, and on real data that list
+     is 370 cards — a child scrolling for a minute to find Photosynthesis.
+     Her CARD is untouched below; what changed is that they now live inside
+     two collapsible levels. Both headers are her own shapes: the subject bar
+     is the band-filled row she uses for a section head, the unit row is her
+     `.ex-card` border at a smaller radius, and the count is the mono chip
+     from the header. */
+  .ex-groups { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .ex-subj {
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-card); overflow: hidden;
+  }
+  .ex-subj-head {
+    width: 100%; box-sizing: border-box;
+    display: flex; align-items: center; gap: 10px;
+    min-height: 56px; padding: 12px 16px;
+    border: 0; background: var(--ks3-band); color: var(--ks3-ink);
+    font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 21px; letter-spacing: -.025em;
+    text-align: left; cursor: pointer;
+  }
+  .ex-subj-body {
+    padding: 10px; display: flex; flex-direction: column; gap: 8px;
+    border-top: 2px solid var(--ks3-ink);
+  }
+  .ex-unit {
+    border: 2px solid var(--ks3-rule-strong); border-radius: 16px;
+    background: var(--ks3-card); overflow: hidden;
+  }
+  .ex-unit-head {
+    width: 100%; box-sizing: border-box;
+    display: flex; align-items: center; gap: 10px;
+    min-height: var(--ks3-tap); padding: 10px 14px;
+    border: 0; background: none; color: var(--ks3-ink);
+    font: inherit; font-weight: 700; font-size: 17px; line-height: 1.25;
+    text-align: left; cursor: pointer;
+  }
+  .ex-unit.is-here { border-color: var(--ks3-accent); }
+  .ex-unit.is-here .ex-unit-head { background: var(--ks3-accent-tint); }
+  .ex-group-name { flex: 1; min-width: 0; }
+  .ex-count {
+    flex: 0 0 auto; display: grid; place-items: center;
+    min-width: 34px; height: 26px; padding: 0 9px; border-radius: 99px;
+    border: 2px solid var(--ks3-rule-strong); background: var(--ks3-card);
+    font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+    color: var(--ks3-ink-muted);
+  }
+  /* Ticks/crosses/arrows are inline SVG, never a typed character — the
+     shipped font subsets do not carry them (KS3 house rule). */
+  .ex-chev {
+    flex: 0 0 auto; width: 20px; height: 20px;
+    transition: transform .15s ease;
+  }
+  [aria-expanded="true"] .ex-chev { transform: rotate(90deg); }
+  .ex-unit-body {
+    padding: 0 12px 12px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .ex-here-note {
+    margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 11px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-accent-text);
+  }
   .ex-card {
     text-align: left; display: block; width: 100%; padding: 18px;
     border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
@@ -292,6 +375,8 @@
     </button>
     <span class="ex-title">Exam questions</span>
     <span class="ex-quota-chip" id="ex-quota-chip"></span>
+    <!-- Night 4, MRB-317 ruling 3. See today.html. -->
+    <span id="ex-signout"></span>
   </header>
 
   <main class="ex-main" id="ex-main"></main>
@@ -371,7 +456,7 @@
     return 'A start. Read the note, then go again.';
   }
 
-  C.boot({ requireSession: true, run: function (ctx) {
+  C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
     var main = document.getElementById('ex-main');
     var backLink = document.getElementById('ex-back-link');
     var backBtn  = document.getElementById('ex-back-btn');
@@ -382,10 +467,19 @@
 
     var screen = 'pick';          // pick | write | marking | result
     var filter = 'All';
+    /* Night 4: which accordion rows are open, keyed 's:<subject>' and
+       'u:<subject>|<unit>'. Survives a filter change and a trip into a
+       question and back, because a child who opened Photosynthesis and
+       answered one should come back to Photosynthesis. */
+    var expanded = {};
+    var expandInit = false;
+    var currentUnit = null;       // the unit name from /child/today, or null
     var openId = new URLSearchParams(window.location.search).get('q');
     var draft = '';               // survives a 503 — see markAnswer()
     var result = null;            // the LAST mark for the open question
     var justSent = false;
+
+    C.signOutControl(document.getElementById('ex-signout'), { sb: ctx.sb });
 
     backLink.href = C.href('/consumer/today.html');
     backBtn.addEventListener('click', function () {
@@ -437,8 +531,143 @@
       return true;
     }
 
+    /* ══ THE PICKER IS GROUPED, SUBJECT → UNIT (Night 4, ruling 9) ═══════
+
+       Design drew one flat list. On her mock it is nine cards; on real data
+       it is 370, and a child looking for Photosynthesis scrolls past a
+       hundred physics questions to reach it. The flat list is GONE — not
+       hidden behind a toggle, because two ways of reading the same 370 rows
+       is two things to maintain and one of them is always the wrong one.
+
+       ── THE SECOND LEVEL IS `topic`, AND THAT IS THE UNIT ────────────────
+       ⚠️ `/child/exam-questions` sends `subject` and `topic` and no unit
+       field, although `exam_questions` has a `unit_code` column. At KS3 the
+       two are one-to-one — every question with `topic = 'Photosynthesis'`
+       has `unit_code = 'B7'`, checked against the table — so grouping on
+       `topic` groups on the unit exactly, without this page asking for a
+       column the contract does not promise. At KS4 there are no unit codes
+       at all and `topic` is the spec topic, which is the same shape of
+       answer. If a unit ever gains two topics the grouping stays correct
+       and merely gets finer; nothing here breaks.
+
+       ── ORDER ────────────────────────────────────────────────────────────
+       The server sends `.order('subject').order('id')`, so the units arrive
+       B1, B10, B11, B2 … — alphabetical on an id, which is not an order a
+       child recognises. Where every question in a unit carries the estate's
+       `ks3-b7-…` id convention the unit is sorted by its letter and NUMBER;
+       where it does not (KS4), first-appearance order stands. The code is
+       used to SORT and is never displayed: it is a convention of an opaque
+       id, not a field anyone promised.
+
+       ── WHAT THE COUNTS COUNT ────────────────────────────────────────────
+       The number on a header is the number of cards inside it AFTER the
+       current filter, computed from the same array the cards are rendered
+       from — one derivation, so the two cannot disagree. A group that
+       filters down to nothing is not rendered at all rather than rendered
+       as a zero.
+       ════════════════════════════════════════════════════════════════════ */
+
+    /* The estate's id convention, used for ordering only. See above. */
+    function unitOrderKey(q) {
+      var m = /^ks\d+-([a-z]+)(\d+)-/i.exec(String(q && q.id || ''));
+      return m ? { letter: m[1].toLowerCase(), n: Number(m[2]) } : null;
+    }
+
+    function groupsOf(list) {
+      var subjects = [];
+      var bySubject = {};
+      list.forEach(function (q) {
+        var sName = q.subject || 'Science';
+        var uName = q.topic || sName;
+        var sub = bySubject[sName];
+        if (!sub) {
+          sub = bySubject[sName] = { name: sName, units: [], byUnit: {}, count: 0 };
+          subjects.push(sub);
+        }
+        var unit = sub.byUnit[uName];
+        if (!unit) {
+          unit = sub.byUnit[uName] = { name: uName, questions: [], order: sub.units.length };
+          sub.units.push(unit);
+        }
+        unit.questions.push(q);
+        sub.count += 1;
+      });
+
+      subjects.forEach(function (sub) {
+        // Only reorder when EVERY unit in the subject yields a key; a
+        // half-sorted list is worse than the order it arrived in.
+        var keys = sub.units.map(function (u) {
+          var k = null;
+          for (var i = 0; i < u.questions.length; i++) {
+            var got = unitOrderKey(u.questions[i]);
+            if (!got) { return null; }
+            if (k && (k.letter !== got.letter || k.n !== got.n)) { return null; }
+            k = got;
+          }
+          return k;
+        });
+        if (keys.every(Boolean)) {
+          sub.units.forEach(function (u, i) { u.key = keys[i]; });
+          sub.units.sort(function (a, b) {
+            return a.key.letter === b.key.letter
+              ? a.key.n - b.key.n
+              : (a.key.letter < b.key.letter ? -1 : 1);
+          });
+        }
+      });
+      return subjects;
+    }
+
+    /* Which unit is the child ON? `/child/exam-questions` does not say, so
+       `/child/today` is asked — the one place that already knows, because it
+       is the page that builds this week's work out of the child's position.
+       Its titles carry the topic in one of two shapes: a lesson is
+       "<topic>: lesson 3" (topic BEFORE the colon), everything else is
+       "Unit check: <topic>" / "Practice: <topic>" (topic AFTER it). Rather
+       than parse which is which, BOTH halves are offered and the one that
+       matches a real group name wins — so the match validates itself and a
+       change to either title shape can only ever make this find nothing,
+       never the wrong unit. Nothing is expanded when nothing matches; a
+       picker with everything shut is usable, a wrong unit opened is a lie. */
+    function currentUnitFrom(today, names) {
+      var pool = (today && today.items || []).concat(today && today.later || []);
+      for (var i = 0; i < pool.length; i++) {
+        var t = String(pool[i].title || '');
+        var at = t.indexOf(':');
+        if (at < 0) { continue; }
+        var before = t.slice(0, at).trim();
+        var after = t.slice(at + 1).trim();
+        if (names[after.toLowerCase()]) { return names[after.toLowerCase()]; }
+        if (names[before.toLowerCase()]) { return names[before.toLowerCase()]; }
+      }
+      return null;
+    }
+
+    function chev() {
+      return '<svg class="ks3-mark ex-chev" viewBox="0 0 24 24" aria-hidden="true">' +
+             '<path d="M9 5l7 7-7 7"/></svg>';
+    }
+
     function paintPick() {
       var shown = questions.filter(passes);
+      var groups = groupsOf(shown);
+
+      /* First paint decides what is open: the child's unit, and the subject
+         it lives in. After that the child's own presses are the authority
+         and a filter change must not shut what they opened. */
+      if (!expandInit) {
+        expandInit = true;
+        if (currentUnit) {
+          groups.forEach(function (sub) {
+            sub.units.forEach(function (u) {
+              if (u.name === currentUnit) {
+                expanded['s:' + sub.name] = true;
+                expanded['u:' + sub.name + '|' + u.name] = true;
+              }
+            });
+          });
+        }
+      }
 
       var html =
         '<h1 class="ex-h1">Pick a question</h1>' +
@@ -460,25 +689,36 @@
               'some here soon.') +
           '</p></div>';
       } else {
-        html += '<div class="ex-list" id="ex-list">' + shown.map(function (q) {
-          var doneLabel = q.done === 'human' ? 'Marked by Mr Badmus' : 'Marked';
-          return '<button class="ex-card' + (q.done ? ' is-done' : '') +
-            '" type="button" data-open="' + esc(q.id) + '">' +
-            '<span class="ex-card-top">' +
+        html += '<div class="ex-groups" id="ex-groups">' + groups.map(function (sub) {
+          var sKey = 's:' + sub.name;
+          var sOpen = !!expanded[sKey];
+          return '<section class="ex-subj">' +
+            '<button class="ex-subj-head" type="button" data-toggle="' + esc(sKey) +
+              '" aria-expanded="' + sOpen + '">' +
               '<span class="ex-dot" style="background:' +
-                (SUBJECT_DOT[q.subject] || 'var(--ks3-band)') + '"></span>' +
-              '<span class="ex-topic">' + esc(q.topic || q.subject || '') + '</span>' +
-              '<span class="ex-marks">' + esc(q.marks == null ? '' : q.marks) + '</span>' +
-            '</span>' +
-            '<p>' + esc(q.text || '') + '</p>' +
-            (q.done
-              ? ('<span class="ex-done-pill">' +
-                 '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
-                 '<path d="M5 12.5l4.5 4.5L19 7"/></svg>' + esc(doneLabel) + '</span>')
-              : (q.waiting
-                  ? '<span class="ex-done-pill">With Mr Badmus</span>'
-                  : '')) +
-          '</button>';
+                (SUBJECT_DOT[sub.name] || 'var(--ks3-band)') + '"></span>' +
+              '<span class="ex-group-name">' + esc(sub.name) + '</span>' +
+              '<span class="ex-count">' + sub.count + '</span>' + chev() +
+            '</button>' +
+            '<div class="ex-subj-body"' + (sOpen ? '' : ' hidden') + '>' +
+              sub.units.map(function (u) {
+                var uKey = 'u:' + sub.name + '|' + u.name;
+                var uOpen = !!expanded[uKey];
+                var here = currentUnit && u.name === currentUnit;
+                return '<section class="ex-unit' + (here ? ' is-here' : '') + '">' +
+                  '<button class="ex-unit-head" type="button" data-toggle="' + esc(uKey) +
+                    '" aria-expanded="' + uOpen + '">' +
+                    '<span class="ex-group-name">' + esc(u.name) + '</span>' +
+                    '<span class="ex-count">' + u.questions.length + '</span>' + chev() +
+                  '</button>' +
+                  '<div class="ex-unit-body"' + (uOpen ? '' : ' hidden') + '>' +
+                    (here ? '<p class="ex-here-note">You’re here now</p>' : '') +
+                    u.questions.map(cardHtml).join('') +
+                  '</div>' +
+                '</section>';
+              }).join('') +
+            '</div>' +
+          '</section>';
         }).join('') + '</div>';
       }
 
@@ -490,14 +730,49 @@
         filter = b.getAttribute('data-filter');
         paintPick();
       });
-      var list = document.getElementById('ex-list');
-      if (list) {
-        list.addEventListener('click', function (e) {
-          var b = e.target.closest ? e.target.closest('button[data-open]') : null;
-          if (!b) { return; }
-          openQuestion(b.getAttribute('data-open'));
+
+      var groupHost = document.getElementById('ex-groups');
+      if (groupHost) {
+        groupHost.addEventListener('click', function (e) {
+          if (!e.target.closest) { return; }
+          var t = e.target.closest('button[data-toggle]');
+          if (t) {
+            var key = t.getAttribute('data-toggle');
+            expanded[key] = !expanded[key];
+            /* Repaint rather than toggle the node in place: the panel that
+               opens has to be the one the counts were computed from, and a
+               single render path is the only way those two can never drift. */
+            var y = window.pageYOffset;
+            paintPick();
+            window.scrollTo(0, y);
+            return;
+          }
+          var b = e.target.closest('button[data-open]');
+          if (b) { openQuestion(b.getAttribute('data-open')); }
         });
       }
+    }
+
+    /* Design's card, unchanged — it just lives inside a group now. */
+    function cardHtml(q) {
+      var doneLabel = q.done === 'human' ? 'Marked by Mr Badmus' : 'Marked';
+      return '<button class="ex-card' + (q.done ? ' is-done' : '') +
+        '" type="button" data-open="' + esc(q.id) + '">' +
+        '<span class="ex-card-top">' +
+          '<span class="ex-dot" style="background:' +
+            (SUBJECT_DOT[q.subject] || 'var(--ks3-band)') + '"></span>' +
+          '<span class="ex-topic">' + esc(q.topic || q.subject || '') + '</span>' +
+          '<span class="ex-marks">' + esc(q.marks == null ? '' : q.marks) + '</span>' +
+        '</span>' +
+        '<p>' + esc(q.text || '') + '</p>' +
+        (q.done
+          ? ('<span class="ex-done-pill">' +
+             '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+             '<path d="M5 12.5l4.5 4.5L19 7"/></svg>' + esc(doneLabel) + '</span>')
+          : (q.waiting
+              ? '<span class="ex-done-pill">With Mr Badmus</span>'
+              : '')) +
+      '</button>';
     }
 
     /* Opening a question that has already been answered goes straight to the
@@ -508,6 +783,12 @@
       if (!q) { return; }
       openId = id;
       justSent = !!q.waiting;
+      /* Coming back from a question must land on the group it came from,
+         open. Set here rather than on the back button so it is true however
+         the child gets back — the header arrow, a mark, a send. */
+      expandInit = true;
+      expanded['s:' + (q.subject || 'Science')] = true;
+      expanded['u:' + (q.subject || 'Science') + '|' + (q.topic || q.subject || 'Science')] = true;
       if (q.done && q.answer) {
         result = { score: scoreOf(q), max: q.marks, hits: q.hits || [],
                    feedback: q.feedback, answer: q.answer };
@@ -785,12 +1066,42 @@
         });
     }
 
+    /* The child's current unit, for the one group that starts open. It is a
+       SECOND read and it is deliberately not awaited as a dependency: the
+       picker is the page, and a slow or missing /child/today must cost the
+       child a pre-opened accordion, never the questions. Failure is a
+       console line and nothing on screen. */
+    function loadCurrentUnit() {
+      return C.api('/api/consumer/child/today', { token: ctx.token })
+        .then(function (today) {
+          var names = {};
+          questions.forEach(function (q) {
+            var n = q.topic || q.subject;
+            if (n) { names[String(n).toLowerCase()] = n; }
+          });
+          currentUnit = currentUnitFrom(today, names);
+        }, function (e) { console.error('[exam/current-unit]', e); });
+    }
+
     return load().then(function () {
       /* Today's exam item links here as ?q=<question_id>. Landing straight
          on the question is the point of that link. */
       if (openId && find(openId)) { return openQuestion(openId); }
       openId = null;
       paint();
+
+      /* THEN the current unit, and a repaint if it changes the answer. The
+         picker is on screen before this call is made, deliberately: a second
+         read must never be something a child waits behind to see their
+         questions. And the repaint is skipped the moment they have pressed
+         anything themselves — `expanded` empty is the test — so this can
+         never shut a group somebody opened. */
+      return loadCurrentUnit().then(function () {
+        if (screen !== 'pick' || !currentUnit) { return; }
+        if (Object.keys(expanded).length) { return; }
+        expandInit = false;
+        paintPick();
+      });
     }).catch(function (e) {
       main.innerHTML = '<div class="ex-oops"><p>' + esc(e.message) + '</p>' +
         '<p style="margin-top:6px">Try again in a moment, or ask your grown-up ' +

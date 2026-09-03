@@ -62,11 +62,19 @@
 .pb-body input::placeholder { color: #9A8F86; }
 
 /* ── the shared nav, and the one breakpoint it turns on ─────────────────
-   Below 900px the three section links collapse and only the brand, "Sign
+   Below 900px the four section links collapse and only the brand, "Sign
    in" and the "Start free" button remain — Design's rule, and the reason
    the CTA is the thing that survives: a phone-width visitor who has read
    enough to act must never have to find a menu first. */
 .pb-nav-links { display: none; }
+
+/* ⊕ DROP 2. Adding "Organisations" made four section links plus "Sign in"
+   plus the CTA, and at exactly 900px — the width the links appear at — the
+   row is tight enough that "How it works" wraps to two lines and doubles
+   the header's height on the one width it was drawn for. Design's fix, in
+   her drop-2 `<style>` block on all five pages: nothing in the header
+   wraps. The links shrink the flex spacer instead. */
+.pb-head a { white-space: nowrap; }
 
 @media (min-width: 900px) {
   .pb-nav-links { display: flex; }

@@ -46,8 +46,22 @@
     how:     { href: '/parents/how-it-works.html',   label: 'How it works' },
     homeEd:  { href: '/parents/home-education.html', label: 'Home education' },
     pricing: { href: '/parents/pricing.html',        label: 'Pricing' },
+    /* ⊕ DROP 2 (MRB-317 Night 4, lane C). Design's second delivery adds a
+       public Organisations page and puts it in the nav of all five content
+       pages, between Pricing and the flex spacer. Night 3's decision D6
+       ("no Public Organisations page — Design did not deliver one") is
+       superseded by the delivery itself. */
+    orgs:    { href: '/parents/organisations.html',  label: 'Organisations' },
     signIn:  { href: '/parents/sign-in.html',        label: 'Sign in' },
-    signUp:  { href: '/consumer/signup.html',        label: 'Start free' }
+    signUp:  { href: '/consumer/signup.html',        label: 'Start free' },
+
+    /* ⊕ NOT DESIGN'S. She drew no legal links; a UK consumer subscription
+       cannot open beta without terms and a privacy policy reachable from
+       every page, and DMCC 2024 wants the pre-contract information findable
+       before the parent pays. Lane B's signup checkbox links to exactly
+       these two paths — they are a contract, do not rename them. */
+    terms:   { href: '/parents/terms.html',          label: 'Terms' },
+    privacy: { href: '/parents/privacy.html',        label: 'Privacy' }
   };
 
   function url(key) { return esc(C.href(PAGES[key].href)); }
@@ -63,11 +77,11 @@
   var ENTITY = '3rd Eye Ltd, trading as MrBadmus · England';
 
   /* ── nav ───────────────────────────────────────────────────────────────
-     `current` is 'home' | 'how' | 'homeEd' | 'pricing' | null. The current
+     `current` is 'home' | 'how' | 'homeEd' | 'pricing' | 'orgs' | null. The current
      section gets Design's 2px accent underline; the home page marks none,
      exactly as her Public Home does.
 
-     The three section links live inside `.pb-nav-links`, which public.css
+     The four section links live inside `.pb-nav-links`, which public.css
      hides below 900px. The brand, "Sign in" and "Start free" are outside
      it and never collapse. */
   function nav(current) {
@@ -77,7 +91,13 @@
         (on ? ';border-bottom:2px solid var(--ks3-accent)' : '') + '">' +
         esc(PAGES[key].label) + '</a>';
     }
-    return '<header class="pb-wrap" style="display:flex;align-items:center;gap:14px;' +
+    /* ⊕ DROP 2 sizing. A fourth section link no longer fits at 900px on
+       Design's original numbers, so she tightened them rather than moving
+       the breakpoint: header gap 14→12, nav margin-left 24→16, nav gap
+       22→18, nav font-size 16→15, and `.pb-head a { white-space: nowrap }`
+       in public.css so "How it works" can never wrap to two lines and
+       double the header's height. Her numbers, kept exactly. */
+    return '<header class="pb-wrap pb-head" style="display:flex;align-items:center;gap:12px;' +
       'padding:18px 20px;border-bottom:2px solid var(--ks3-ink);position:sticky;top:0;' +
       'background:var(--ks3-ground);z-index:5">' +
       '<a href="' + url('home') + '" style="display:flex;align-items:center;gap:10px;color:var(--ks3-ink)">' +
@@ -85,8 +105,8 @@
         '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
         'letter-spacing:-.02em">MrBadmus</span>' +
       '</a>' +
-      '<nav class="pb-nav-links" style="margin-left:24px;gap:22px;font-weight:600;font-size:16px">' +
-        link('how') + link('homeEd') + link('pricing') +
+      '<nav class="pb-nav-links" style="margin-left:16px;gap:18px;font-weight:600;font-size:15px">' +
+        link('how') + link('homeEd') + link('pricing') + link('orgs') +
       '</nav>' +
       '<span style="flex:1"></span>' +
       '<a href="' + url('signIn') + '" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>' +
@@ -107,7 +127,12 @@
       'color:var(--ks3-ink-muted)">' +
       '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:18px;' +
       'letter-spacing:-.02em;color:var(--ks3-ink)">MrBadmus</span>' +
-      link('how') + link('homeEd') + link('pricing') + link('signIn') +
+      link('how') + link('homeEd') + link('pricing') + link('orgs') + link('signIn') +
+      /* Terms and Privacy are ours, not Design's — see PAGES. They sit last
+         in the row so her five links keep her order, and they are in the
+         SAME footer every public page mounts, which is the only way to be
+         sure neither is missing from one of them. */
+      link('terms') + link('privacy') +
       '<span style="margin-left:auto">' + esc(ENTITY) + '</span>' +
       '</div></footer>';
   }
