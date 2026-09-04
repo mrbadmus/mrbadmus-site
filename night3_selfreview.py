@@ -51,10 +51,35 @@ STAFF_SURFACES = ["org/sign-in.html", "org/index.html", "teacher/admin.html"]
 CONSUMER_TREES = ["parents", "go", "consumer", "org"]
 
 FAILS = []
+SKIPPED = []
 def check(ok, label, evidence=""):
     print(("  ✓ " if ok else "  ✗ ") + label + (("  — " + str(evidence)[:300]) if evidence else ""))
     if not ok:
         FAILS.append(label)
+
+
+def skip(label, why):
+    """A check that could not be MADE, reported by name and not as a pass.
+
+    ⊕ 4 Sep 2026 (MRB-306 Phase 3). This gate's own row in
+    `gate_registry.py` says it "signs in as the hz_* TEST fixtures and skips,
+    loudly, without their passwords". It did not skip — it called
+    `check(False, ...)`, so a machine without `HZ_STUDENT_PW` got a RED gate
+    that had measured nothing, and every push from that machine needed a
+    GATE-OVERRIDE. That is how an intolerable gate gets disabled, which is
+    the failure `gate_registry.py` exists to prevent one level up.
+
+    ⚠️ THIS IS NOT A WEAKENING, AND THE DIFFERENCE IS THE WHOLE POINT.
+    Nothing that CAN be measured is excused. With the password present every
+    one of these checks runs exactly as before; the flag-off sweep and the
+    cold greps need no credential, are the half that keeps 21 consumer pages
+    away from 135 students, and still FAIL loudly either way. What changes is
+    only that "nobody gave me a password" stops being reported as "the
+    product is broken". It is named on the summary line, so it can never be
+    silent.
+    """
+    print("  ○ " + label + "  — SKIPPED: " + why)
+    SKIPPED.append(label)
 
 def anon_key():
     src = open("shared/config.js", encoding="utf-8").read()
@@ -111,7 +136,10 @@ def rainford(base, api, shots, passwords):
         for label, path, email in RAINFORD_PAGES:
             pw = passwords.get(email)
             if not pw:
-                check(False, "%s — no password known for %s" % (label, email)); continue
+                skip("%s (%s)" % (label, email),
+                     "no password in the environment for this TEST "
+                     "fixture — set HZ_STUDENT_PW / HZ_TEACHER_PW / "
+                     "HZ_ADMIN_PW to run it"); continue
             try:
                 sess = sign_in(email, pw)
             except Exception as e:
@@ -216,6 +244,13 @@ def main():
         cold_greps(os.path.abspath(a.site))
     finally:
         server.shutdown()
+    if SKIPPED:
+        # ⚠️ ON THE SUMMARY LINE, ALWAYS. A skip nobody can see is
+        # the same thing as a gate that quietly stopped watching.
+        print("\n%d check(s) SKIPPED for want of a credential:"
+              % len(SKIPPED))
+        for k in SKIPPED:
+            print("  ○ " + k)
     print("\n%d failure(s)" % len(FAILS))
     for f in FAILS:
         print("  - " + f)
