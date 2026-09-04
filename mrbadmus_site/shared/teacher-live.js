@@ -763,11 +763,19 @@
       var mine = byStudent[sid] || {};
       var scores = blank(), max = blank(), pct = blank(), stamp = blank(),
           stampShort = blank(), status = blank(), late = blank(),
-          submitted = [];
+          subId = blank(), submitted = [];
       var inWeek = false;
       for (var p = 0; p < cols; p++) {
         var c = cellOf(mine[p], papers[p]);
         if (mine[p]) { status[p] = mine[p].status || null; }
+        /* ⊕ MRB-306 Phase 2b — WHICH SUBMISSION ROW THIS CELL IS.
+           Written feedback binds to `assignment_submissions.id` and to
+           nothing else, so the id has to survive the matrix or the student
+           screen has a comment control with no row to attach to. Set BEFORE
+           the `!c` guard on purpose: a submission with no score is still a
+           submission a teacher may want to write about, and `cellOf` returns
+           null for one. */
+        if (mine[p]) { subId[p] = mine[p].id || null; }
         if (!c) { submitted.push(false); continue; }
         /* `submitted[p]` is the honest predicate for "did this student hand
            this in", and it is NOT `scores[p] != null`: a submission with no
@@ -791,7 +799,7 @@
       return {
         sid: sid, scores: scores, max: max, pct: pct, late: late,
         stamp: stamp, stampShort: stampShort, status: status,
-        inWeek: inWeek, submitted: submitted
+        subId: subId, inWeek: inWeek, submitted: submitted
       };
     });
 
@@ -987,27 +995,176 @@
     });
   }
 
-  /* The week bar. Design derives twelve weeks from a hardcoded first date;
-     these are the class's OWN weeks — one per assignment it actually has,
-     labelled with the teaching week it was set in. A class with no work set
-     has no week bar, which is Design's own rule and now a consequence of the
-     data rather than a special case. */
-  function buildWeeks(papers) {
-    return papers.map(function (p) {
-      return {
-        idx: p.idx,
-        range: p.range,
-        due: p.due.replace(/^Due /, ""),
-        set: p.set,
-        dueShort: p.dueShort,
-        lateShort: p.lateShort,
-        academic_week: p.academic_week,
-        // `academic_week` is what the scheme of work counts in, so where an
-        // assignment carries one it is the honest week number. Null where the
-        // assignment was created outside that path; blank, not guessed.
-        weekLabel: p.academic_week == null ? "" : "Week " + p.academic_week
-      };
+  /* ═════════════════════════════════════════════════════════════════════
+     THE WEEK BAR — INDEXED BY TEACHING WEEK, NOT BY ASSIGNMENT
+     ═════════════════════════════════════════════════════════════════════
+
+     ⚑ RULED BY MIDE, 1 Sep 2026 (MRB-306). Design's v3 deleted the class
+     screen's week rail; Mide overrode that and kept it: "twelve
+     hairline-separated teaching weeks … picking one re-scopes the tiles, the
+     roster column and the assignment tables", dated from real academic-year
+     weeks. The named ruling is `WEEK_BAR_RESTORED` in `teacher_rulings.py`.
+
+     ⛔ WHAT THIS REPLACES, AND WHY IT IS NOT A REFACTOR. Until today
+     `buildWeeks` was `papers.map(...)` — ONE WEEK PER ASSIGNMENT, carrying
+     the assignment's own index. That is Design's model, and inside Design's
+     fiction it is exactly right: her sample class has one assignment per
+     week for twelve weeks, so "week 3" and "the third paper" are the same
+     object and nothing can tell them apart.
+
+     They come apart completely on real data. `8r/Sc1` — the only class in
+     the working year with any assignments at all — has TWO, against a
+     thirty-nine-week year. Carried forward unchanged, the bar would have
+     drawn two chips and called them the year, and a teacher stepping back
+     through it would have been stepping through papers while reading week
+     ranges. Weeks are the axis; papers map ONTO weeks.
+
+     ⚠️ INDEX 0 IS THE WEEK THE BAR OPENS ON, AND THE LIST COUNTS BACKWARDS.
+     That is Design's own direction (`wPast = wi > 0`, back = `wi + 1`,
+     forward = `wi - 1`) and every consumer still reads it that way. While
+     the year is running index 0 is THIS teaching week; in a year that has
+     already finished — a teacher browsing 2025-26, which is read-only — it
+     is that year's last teaching week, because "this week" is not a fact
+     about a year you are only reading.
+
+     ⚠️ NO WEEK FROM BEFORE THE YEAR BEGAN. Twelve is a cap, not a count: a
+     year that is four weeks old has four chips, and on the first day of term
+     it has one, marked "This week". Offering weeks from before the start
+     date would be offering last year's teaching under this year's heading. */
+
+  /* Whole weeks between two Monday-aligned dates.
+
+     ⚠️ ROUNDED, NEVER FLOORED. Two Mondays either side of a clock change are
+     7×24h−1h apart, so a floor divides 6.99 weeks down to 6 and every week
+     label after the October change is off by one. `academicWeekOf` above
+     still floors; that is a pre-existing defect recorded in the handover
+     rather than changed under this ticket. */
+  function weeksBetween(fromMon, toMon) {
+    return Math.round((toMon.getTime() - fromMon.getTime()) / 604800000);
+  }
+
+  /* The teaching weeks of one academic year, newest first, at most twelve.
+
+     `term` and the within-term number come from `seasonFor`'s own Sep–Dec /
+     Jan–Mar / Apr–Aug boundaries applied to each week's OWN Monday, so
+     "Autumn Week 1" is derived from the year's start date and nothing is
+     typed. ⚠️ IT IS AN APPROXIMATION AND IT IS NOT A SMALL ONE: `academic_years`
+     records a start and an end and NOTHING about half terms, and Easter
+     moves, so the count runs straight through the holidays. Half-term weeks
+     are counted as teaching weeks because the data cannot say otherwise. A
+     `terms` table would make it exact; that is Mide's call and it is in the
+     handover. */
+  function buildWeeks(year, now) {
+    if (!year || !year.start_date) { return []; }
+    var startD = new Date(String(year.start_date) + "T00:00:00");
+    if (isNaN(startD.getTime())) { return []; }
+    var startMon = teachingWeek(startD).mon;
+
+    var topMon = teachingWeek(new Date(now)).mon;
+    if (topMon.getTime() < startMon.getTime()) { topMon = startMon; }
+    if (year.end_date) {
+      var endD = new Date(String(year.end_date) + "T00:00:00");
+      if (!isNaN(endD.getTime())) {
+        var lastMon = teachingWeek(endD).mon;
+        if (topMon.getTime() > lastMon.getTime()) { topMon = lastMon; }
+      }
+    }
+    var elapsed = weeksBetween(startMon, topMon) + 1;      // 1 on day one
+    var count = Math.max(1, Math.min(12, elapsed));
+
+    // Term numbering has to be counted FROM THE START OF THE YEAR, not from
+    // the first chip: the twelfth week back is not the first week of its term
+    // just because the bar stops there.
+    var termN = {}, numberOf = {};
+    for (var w = 0; w < elapsed; w += 1) {
+      var m = new Date(startMon);
+      m.setDate(startMon.getDate() + w * 7);
+      var t = seasonFor(ymd(m), year);
+      termN[t] = (termN[t] || 0) + 1;
+      numberOf[ymd(m)] = { term: t, n: termN[t], week: w + 1 };
+    }
+
+    var thisMonYmd = ymd(teachingWeek(new Date(now)).mon);
+    var out = [];
+    for (var i = 0; i < count; i += 1) {
+      var mon = new Date(topMon);
+      mon.setDate(topMon.getDate() - i * 7);
+      var fri = new Date(mon);
+      fri.setDate(mon.getDate() + 4);
+      var meta = numberOf[ymd(mon)] || { term: seasonFor(ymd(mon), year), n: 1, week: 1 };
+      out.push({
+        idx: i,
+        weekOfYear: meta.week,
+        term: meta.term,
+        // "Autumn Week 1" — the chip's second line, and the sentence under
+        // the bar. "This week" replaces it on the week a teacher is in.
+        label: meta.term + " Week " + meta.n,
+        // Design's own range format, which the chips are sized for.
+        range: weekRangeLabel(mon),
+        now: ymd(mon) === thisMonYmd,
+        monYmd: ymd(mon),
+        friYmd: ymd(fri)
+      });
+    }
+    return out;
+  }
+
+  /* Which teaching week each assignment belongs to, written onto the paper as
+     `weekIdx` — the same index the bar is keyed on.
+
+     ⚑ `academic_week` FIRST, BECAUSE IT IS THE AUTHORED INTENT. Where the
+     scheme of work put a number on the assignment, that number is the answer
+     and nothing is derived. Only where it is NULL is the week worked out from
+     the deadline.
+
+     ⚠️ AND THE DERIVATION IS `due_at − 7`, NOT `created_at`. That is this
+     file's own ruling of 24 Aug 2026, recorded on `buildPapers`, and it is
+     the opposite of what the week-bar brief asked for: `created_at` is the
+     row's insert stamp, so a term composed in one sitting gives every
+     assignment in it the same one and the whole bar collapses onto a single
+     week. It fails silently and it fails on exactly the data the platform
+     has. Both rules agree on the two real assignments in the working year, so
+     nothing observable turns on the choice today — but only one of them keeps
+     agreeing once a teacher plans a term in an afternoon.
+
+     ⚠️ A DATE BEFORE THE YEAR STARTS IS WEEK 1 — Mide's ruling, and it is the
+     live default rather than an edge case: both real assignments on `8r/Sc1`
+     were set in late August against a year that began on 1 September.
+
+     ⚠️ A WEEK STILL AHEAD IS A NEGATIVE INDEX, DELIBERATELY. Teachers set work
+     forward; clamping it back onto this week would date it wrongly, and
+     dropping it would hide work that has been set. The class screen buckets
+     everything at or ahead of the current week into the current week's view,
+     so nothing ever vanishes, and the paper's own due date still says when it
+     is for. An assignment with NO deadline and no `academic_week` has no week
+     to be in and is treated the same way: it never closes, so it is open now. */
+  function assignPaperWeeks(papers, weeks, year, now) {
+    var topWeek = weeks.length ? weeks[0].weekOfYear : null;
+    var startMon = null;
+    if (year && year.start_date) {
+      var d = new Date(String(year.start_date) + "T00:00:00");
+      if (!isNaN(d.getTime())) { startMon = teachingWeek(d).mon; }
+    }
+    papers.forEach(function (p) {
+      var wk = null;
+      if (p.academic_week != null) {
+        wk = Math.max(1, Number(p.academic_week));
+      } else if (p.due_at && startMon) {
+        var setD = asDate(p.due_at);
+        if (setD) {
+          setD.setDate(setD.getDate() - 7);
+          wk = Math.max(1, weeksBetween(startMon, teachingWeek(setD).mon) + 1);
+        }
+      }
+      /* NULL, NOT ZERO. A paper with no deadline and no `academic_week` has
+         no week to be in, and saying "week 0" would be a claim rather than an
+         absence. The class screen buckets a null into the current week — it
+         never closes, so it is open now — but it does so knowingly, and
+         anything else reading `weekIdx` can still tell the two apart. */
+      p.weekOfYear = wk;
+      p.weekIdx = (wk == null || topWeek == null) ? null : (topWeek - wk);
     });
+    return papers;
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -1113,7 +1270,12 @@
         id: r.id,
         name: r.name,
         initials: initialsOf(r.first_name, r.last_name),
-        hue: hueFor(r.name)
+        hue: hueFor(r.name),
+        /* ⊕ MRB-306 Phase 2b — the submission this row is about, so the
+           marking screen can attach written feedback to it. `null` where the
+           student has not handed in: there is no submission to comment on,
+           and the control is not offered. */
+        subId: (s && s.id) || null
       };
       if (!handedIn) {
         return Object.assign(base, {
@@ -1413,10 +1575,20 @@
     var now = Date.now();
     var CLASSES = [], MATRIX = {}, ROSTER = {}, PAPERS = {}, WEEKS = {};
 
+    /* ⊕ MRB-306 — ONE WEEK LIST FOR THE WHOLE PAGE, keyed per class because
+       that is the shape `weeks()` reads (`MRB_PICK('WEEKS', k.id)`). The
+       weeks are the VIEWED academic year's, not the working one: a teacher
+       reading 2025-26 is reading that year's teaching weeks, and its last
+       week — not this one — is the week the bar opens on. Every class on a
+       page is in the year being viewed, so the list is computed once and
+       shared by reference rather than rebuilt twelve times. */
+    var yearWeeks = buildWeeks(viewing, now);
+
     classRows.forEach(function (c) {
       var pack = packs[c.id];
       if (!pack) { return; }                       // cannot happen: it throws
       var papers = buildPapers(pack, now);
+      assignPaperWeeks(papers, yearWeeks, viewing, now);
       var mx = buildMatrix(pack, papers, now);
       decoratePapers(papers, mx);      // `sub` / `mean` / `asked`, from the matrix
       var roster = buildRoster(pack, mx, now);
@@ -1424,7 +1596,7 @@
       PAPERS[c.id] = papers;
       MATRIX[c.id] = mx;
       ROSTER[c.id] = roster;
-      WEEKS[c.id] = buildWeeks(papers);
+      WEEKS[c.id] = yearWeeks;
 
       // Which of the three shapes this class is in. Design's states, and the
       // order matters: no roster beats no work, because a class with neither
@@ -1625,10 +1797,26 @@
       .forEach(function (t) { tpl[t.key] = t.label; });
     return (out.shoutouts || []).map(function (s) {
       var r = s.recipient || {};
+      var a = s.author || {};
       var name = fullName(r.first_name, r.last_name);
+      /* ⊕ RULED BY MIDE, 3 Sep 2026 — ATTRIBUTED. The restored feed says
+         whose sentence each shoutout is, and until now this map carried
+         `author_id` and no name at all: a colleague's shoutout was unsigned,
+         and on a co-taught class that is most of the feed. The RPC
+         `class_shoutouts_for_viewer` already resolves the author's profile
+         across the RLS gap — that is the whole reason it exists (teachers
+         cannot read other teachers' profiles through a FK join, which
+         surfaced as em-dash names) — so this is a field being READ, not a
+         second query.
+         ⚠️ THE FALLBACK IS "A teacher", NOT AN EM DASH. A row whose author
+         profile could not be resolved is still a shoutout somebody wrote;
+         "—" in a byline slot reads as a bug, and this line sits under a
+         child's name where a bug is what a teacher will assume. */
+      var by = fullName(a.first_name, a.last_name);
       return {
         id: s.id,
         name: name || "—",
+        by: "by " + (by || "a teacher"),
         initials: initialsOf(r.first_name, r.last_name),
         hue: hueFor(name),
         when: relativeTime(s.created_at, now),
@@ -1641,6 +1829,67 @@
         author_id: s.author_id
       };
     });
+  }
+
+  /* ⊕ MRB-306 Phase 2b — WRITTEN FEEDBACK ON THE SUBMISSIONS ON SCREEN.
+
+     Design drew no per-submission feedback anywhere in her delivery, so there
+     is nothing of hers this maps INTO. It is a new surface, ruled by Mide and
+     registered in `teacher_rulings.FEEDBACK_SURFACE_ADDED`; the shape here is
+     what that surface reads.
+
+     ⚠️ ATTRIBUTION IS `mine` AND NOT A NAME, and that is measured rather than
+     lazy. A teacher has no SELECT policy on ANOTHER teacher's `profiles` row
+     — the gap `class_shoutouts_for_viewer` exists to bridge — so a
+     `teacher:profiles(display_name)` join comes back NULL with no error, and
+     a colleague's comment would render unsigned in a byline slot where blank
+     reads as a bug. Comparing `teacher_id` to the signed-in id needs no join,
+     cannot silently degrade, and answers the question the surface actually
+     asks: may I edit this, or am I reading somebody else's? The report
+     carries the follow-up (a `submission_feedback_for_viewer` RPC, the third
+     of its kind) that would let it say the colleague's name.
+
+     ⚠️ ONE ROUND TRIP, AND IT IS NOT MEMOISED — same treatment as `FEED`, and
+     for the same reason: a teacher who has just written a comment must see it
+     on the next load rather than the copy taken before they wrote it.
+
+     A failure is logged and returns EMPTY. This is one column of one screen;
+     failing the whole page over it would leave a teacher unable to mark
+     because they could not read a comment. */
+  async function buildFeedback(subIds, viewer) {
+    var ids = (subIds || []).filter(Boolean);
+    var out = {};
+    if (!ids.length) { return out; }
+    var rows;
+    try {
+      rows = await window.MrBadmusTeacherData.loadSubmissionFeedback(ids);
+    } catch (e) {
+      console.error("[teacher-live] written feedback unavailable", e);
+      return out;
+    }
+    Object.keys(rows || {}).forEach(function (sid) {
+      var r = rows[sid];
+      var mine = !!(viewer && r.teacher_id === viewer);
+      out[sid] = {
+        id: r.id,
+        body: r.body || "",
+        teacher_id: r.teacher_id,
+        mine: mine,
+        /* Who wrote it, in the only terms this page can prove. "You" is a
+           fact; a colleague's NAME is not reachable from here (see above),
+           and "Another teacher" is true where an em dash would read as a
+           failed lookup. */
+        by: mine ? "You" : "Another teacher",
+        when: relativeTime(r.created_at, Date.now()),
+        edited: !!r.edited_at,
+        /* The database keeps the body an edit replaced (`prior_body`, forced
+           by CHECK). This page does not show it — that is the audit surface's
+           job, not a marking screen's — but it says that there WAS one, so
+           the retention is visible rather than merely true. */
+        editedWhen: r.edited_at ? relativeTime(r.edited_at, Date.now()) : ""
+      };
+    });
+    return out;
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -1708,24 +1957,73 @@
       var asked = paperIndex(params.paperIdx);
       var pi = asked == null ? newestMarkedIdx(papers) : asked;
       if (pi >= 0 && papers[pi]) { await grid(classId, pi); }
-    } else if (screen === "insights" && params.chartKind === "questions") {
+    } else if (screen === "insights") {
+      /* ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — UNCONDITIONAL, AND IT HAD
+         TO BECOME SO. This branch used to be gated on
+         `params.chartKind === "questions"` and on `params.chartScope`, and
+         BOTH of those are read from query parameters that NOTHING ON THE SITE
+         EVER SETS: `chartKind` is `q.get("chart")`, the page's own state
+         initialiser hardcodes `chartKind: 'submissions'`, and pressing a
+         chart chip is a `setState` with no navigation and no fetch. So the
+         gate never opened, no grid was ever prefetched, and the Question
+         difficulty chart drew "No class has a marked paper yet" on both
+         scopes FOREVER — for a school with any amount of marked work.
+         One of the six charts could not show data at all.
+
+         (`params.chartScope` is `q.get("scope")` while the page reads
+         `?class=`, so the two never agreed either. That mismatch is now
+         moot here and is written up in the screen 7 report.)
+
+         Every live class's newest marked grid, in ONE batched round trip —
+         `grids()` exists for exactly this — because BOTH scopes of the
+         question chart need it: the all-scope draws a row per class, and the
+         class scope draws whichever class the teacher then picks. Fetching
+         only the scoped class would make switching to All classes show one
+         row out of eight and call it "per class".
+
+         The cost is one batched query on an insights load for a teacher who
+         never presses Question difficulty. The alternative was a chart that
+         never worked. */
       var pairs = [];
-      if (params.chartScope && params.chartScope !== "all") {
-        var one = newestMarkedIdx(c.PAPERS[params.chartScope] || []);
-        if (one >= 0) { pairs.push({ classId: params.chartScope, idx: one }); }
-      } else {
-        c.CLASSES.forEach(function (k) {
-          if (k.state !== "live") { return; }
-          var i = newestMarkedIdx(c.PAPERS[k.id] || []);
-          if (i >= 0) { pairs.push({ classId: k.id, idx: i }); }
-        });
-      }
+      c.CLASSES.forEach(function (k) {
+        if (k.state !== "live") { return; }
+        var i = newestMarkedIdx(c.PAPERS[k.id] || []);
+        if (i >= 0) { pairs.push({ classId: k.id, idx: i }); }
+      });
       await grids(pairs);
     }
 
     var FEED = {};
     if (classId && (screen === "class" || screen === "student")) {
       FEED[classId] = await buildFeed(classId, now);
+    }
+
+    /* ⊕ MRB-306 Phase 2b — the written feedback the two authoring screens
+       need. Scoped to what is on screen and nothing wider: this student's own
+       submissions on the student screen, and the submissions in the grid the
+       marking screen just prefetched. A class-wide read would fetch comments
+       for thirty children to draw one.
+
+       ⚠️ AFTER the grid prefetch above, deliberately — on the marking screen
+       the submission ids come OUT of that grid, so asking earlier would ask
+       for nothing and the comment column would be empty on the one screen
+       that is about a paper. */
+    var FEEDBACK = {};
+    if (classId && screen === "student" && params.studentId) {
+      var stRow = (c.MATRIX[classId] && c.MATRIX[classId].byId)
+        ? c.MATRIX[classId].byId[params.studentId] : null;
+      if (stRow && stRow.subId) {
+        FEEDBACK = await buildFeedback(stRow.subId, viewerId);
+      }
+    } else if (classId && screen === "marking") {
+      var mPapers = c.PAPERS[classId] || [];
+      var mAsked = paperIndex(params.paperIdx);
+      var mIdx = mAsked == null ? newestMarkedIdx(mPapers) : mAsked;
+      var mGrid = (mIdx >= 0) ? c.GRID[classId + ":" + mIdx] : null;
+      if (mGrid && mGrid.rows) {
+        FEEDBACK = await buildFeedback(
+          mGrid.rows.map(function (r) { return r.subId; }), viewerId);
+      }
     }
 
     var pool = buildSearchPool(c);
@@ -1812,6 +2110,10 @@
       WEEKS: c.WEEKS,
       GRID: c.GRID,
       FEED: FEED,
+      /* ⊕ MRB-306 Phase 2b — `{ <submission_id>: comment }` for the
+         submissions this screen draws. EMPTY on every screen that does not
+         author feedback, which is four of the six. */
+      FEEDBACK: FEEDBACK,
 
       /* Who is looking. Design's delivery has no concept of a viewer at all;
          the ported page needs one synchronously, inside `renderVals`, to

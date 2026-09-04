@@ -2321,6 +2321,201 @@ window.MrBadmusTeacherData = (function () {
     };
   }
 
+
+  /* ══════════════════════════════════════════════════════════════════════
+     MRB-306 Phase 2b — WRITTEN FEEDBACK ON ONE SUBMISSION
+     ══════════════════════════════════════════════════════════════════════
+
+     `submission_feedback` (migration 20260902221216, widened for `slt` by
+     20260903200007). Four functions: one read, one insert, one edit, one
+     removal. Nothing here aggregates and nothing here decides who may write —
+     RLS does, and every one of these is written so that a refusal arrives as
+     an error rather than as a silent no-op.
+
+     ⚠️ THREE PROPERTIES OF THE TABLE ARE RESPECTED RATHER THAN WORKED
+     AROUND, because the database enforces all three and fighting one of them
+     is how a save comes back as "check constraint" with nothing a teacher can
+     do about it:
+
+       · `body` is 1..2000 characters. Not 500 — that is `class_shoutouts`.
+       · `CHECK ((edited_at IS NULL) = (prior_body IS NULL))` — an edit MUST
+         carry the body it is replacing, and only an edit may. So
+         `updateSubmissionFeedback` takes `priorBody` and the caller has no
+         way to forget it: it is a required argument and this refuses without
+         one.
+       · removal is a SOFT delete. There is no DELETE policy at all, so a
+         hard delete is denied by default; `deleted_at` is what "remove"
+         means here, and the row keeps the words.                           */
+
+  /**
+   * loadSubmissionFeedback(submissionIds)
+   *
+   * The live (non-deleted) feedback on each of these submissions, as
+   * `{ <submission_id>: row }`. At most one row per submission is returned —
+   * the newest — because the UI offers one comment per submission and a
+   * second row could only arrive from a second surface writing behind it.
+   *
+   * ⚠️ NO PROFILE JOIN, AND THAT IS MEASURED RATHER THAN AN OMISSION. A
+   * teacher has no SELECT policy on ANOTHER teacher's `profiles` row — the
+   * same gap that made `class_shoutouts_for_viewer` necessary — so
+   * `teacher:profiles(...)` would come back null with no error and a
+   * colleague's comment would render unsigned. The page distinguishes MINE
+   * from A COLLEAGUE'S by comparing `teacher_id` to the signed-in id, which
+   * needs no join and cannot silently degrade.
+   *
+   * Throws on driver error. Caller renders the screen without the feedback
+   * column rather than failing the page.
+   */
+  async function loadSubmissionFeedback(submissionIds) {
+    const ids = (submissionIds || []).filter(Boolean);
+    const out = {};
+    if (ids.length === 0) return out;
+
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    // Chunked for the same reason every other `.in()` here is: PostgREST puts
+    // the list in the query string and a long request line comes back 414
+    // with no useful body.
+    const rows = await inChunks(ids, async function (chunk) {
+      const { data, error } = await sb
+        .from('submission_feedback')
+        .select('id, submission_id, teacher_id, body, created_at, edited_at')
+        .in('submission_id', chunk)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    });
+
+    rows.forEach(function (r) {
+      // Newest first from the order above, so the first one seen wins.
+      if (!out[r.submission_id]) out[r.submission_id] = r;
+    });
+    return out;
+  }
+
+  /**
+   * insertSubmissionFeedback({ submissionId, teacherId, body })
+   *
+   * RLS enforces `teacher_id = auth.uid()`, that the caller teaches the class
+   * the submission belongs to, and that the class is in the caller's school.
+   * `body` is trimmed here so a message of spaces is refused by the length
+   * CHECK rather than stored as whitespace.
+   *
+   * Returns the inserted row. Throws on driver/RLS error.
+   */
+  async function insertSubmissionFeedback(args) {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+    const { data, error } = await sb
+      .from('submission_feedback')
+      .insert({
+        submission_id: args.submissionId,
+        teacher_id:    args.teacherId,
+        body:          String(args.body == null ? '' : args.body).trim(),
+      })
+      .select('id, submission_id, teacher_id, body, created_at, edited_at')
+      .single();
+    if (error) {
+      console.error('[teacher-data] insertSubmissionFeedback failed', error);
+      throw error;
+    }
+    return data;
+  }
+
+  /**
+   * updateSubmissionFeedback({ id, body, priorBody })
+   *
+   * ⚠️ `priorBody` IS REQUIRED, AND THE DATABASE IS WHY. The CHECK
+   * `((edited_at IS NULL) = (prior_body IS NULL))` refuses an edit that does
+   * not keep the body it replaced. So retention is not something this client
+   * has to remember to do — it is something it cannot skip — and this
+   * function refuses in front of the write rather than letting the CHECK
+   * surface as an unexplainable failure.
+   *
+   * `.select()` forces RETURNING so an UPDATE that RLS matched nothing for
+   * cannot come back as `{ data: null, error: null }` and be read as success.
+   * Same discovery as softDeleteClassShoutout (MRB-46 Phase 2).
+   */
+  async function updateSubmissionFeedback(args) {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+    if (!args || !args.id) {
+      throw new Error('[teacher-data] updateSubmissionFeedback: no row id');
+    }
+    if (args.priorBody == null || String(args.priorBody).length === 0) {
+      const e = new Error(
+        '[teacher-data] updateSubmissionFeedback: an edit must carry the body ' +
+        'it replaces. submission_feedback_edited_chk refuses the row without it.');
+      e.code = 'prior_body_required';
+      throw e;
+    }
+    const { data, error } = await sb
+      .from('submission_feedback')
+      .update({
+        body:       String(args.body == null ? '' : args.body).trim(),
+        prior_body: String(args.priorBody),
+        edited_at:  new Date().toISOString(),
+      })
+      .eq('id', args.id)
+      .select('id, submission_id, teacher_id, body, created_at, edited_at');
+    if (error) {
+      console.error('[teacher-data] updateSubmissionFeedback failed', error);
+      throw error;
+    }
+    if (!data || data.length === 0) {
+      const e = new Error('No rows updated — RLS blocked the edit (only the teacher who wrote a comment can change it, and only while they still teach the class).');
+      e.code = 'no_rows_affected';
+      console.error('[teacher-data] updateSubmissionFeedback silent no-op', { id: args.id });
+      throw e;
+    }
+    return data[0];
+  }
+
+  /**
+   * softDeleteSubmissionFeedback(id)
+   *
+   * Sets `deleted_at`. There is no DELETE policy on this table, so this is
+   * the only removal there is — and it is a real one to every reader except
+   * the author and a school admin, whose SELECT arm keeps deleted rows
+   * visible on purpose (that arm is also what stops this UPDATE failing
+   * 42501; see the migration).
+   *
+   * RETURNING forced for the same reason as the edit above.
+   */
+  async function softDeleteSubmissionFeedback(id) {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+    const { data, error } = await sb
+      .from('submission_feedback')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id)
+      .select('id');
+    if (error) {
+      console.error('[teacher-data] softDeleteSubmissionFeedback failed', error);
+      throw error;
+    }
+    if (!data || data.length === 0) {
+      const e = new Error('No rows updated — RLS blocked the removal (caller may not be the author, or no longer teaches this class).');
+      e.code = 'no_rows_affected';
+      console.error('[teacher-data] softDeleteSubmissionFeedback silent no-op', { id: id });
+      throw e;
+    }
+  }
+
   return {
     loadAcademicYears,
     loadTeacherClasses,
@@ -2344,5 +2539,11 @@ window.MrBadmusTeacherData = (function () {
     loadTimetable,
     saveTimetable,
     schoolWeekday,
+    // ⊕ MRB-306 Phase 2b — written feedback on one submission. Additive;
+    // no existing caller changes.
+    loadSubmissionFeedback,
+    insertSubmissionFeedback,
+    updateSubmissionFeedback,
+    softDeleteSubmissionFeedback,
   };
 })();

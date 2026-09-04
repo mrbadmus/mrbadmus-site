@@ -195,11 +195,33 @@ window.MrBadmusAdminScope = (function () {
   }
 
   /* Today, host B — the ported pages' topbar. */
+  /* ⊕ MRB-306, 2 Sep 2026 — DOES THE BAR ALREADY SAY "TODAY"?
+     Phase 1c turned the ported pages' own tab strip into a real
+     `MRB_GO('today')` navigation, and this injector was never retired. The
+     two do not collide in code — different hosts, different marks — so both
+     ran and all six generated pages drew "Today" TWICE: once as the lit tab
+     at the left, once as an injected link over by Sign out.
+
+     `todayIsHere()` cannot catch it: it asks whether we are ON Today, not
+     whether a way to reach Today is already in the bar. The check has to be
+     about the BAR, and it has to re-run on every redraw, because `draw()`
+     empties the host and rebuilds it from the template on every state
+     change — so a one-shot guard would hold until the teacher's first click
+     and then let the duplicate back in. */
+  function todayAlreadyInBar(bar) {
+    var els = bar.querySelectorAll('a, button');
+    for (var i = 0; i < els.length; i++) {
+      if ((els[i].textContent || '').trim() === 'Today') { return true; }
+    }
+    return false;
+  }
+
   function injectTodayTopbar() {
     if (todayIsHere()) { return true; }
     var bar = document.querySelector('[data-port-region="topbar"]');
     if (!bar) { return false; }
     if (bar.querySelector('[' + TODAY_MARK + ']')) { return true; }
+    if (todayAlreadyInBar(bar)) { return true; }
     var buttons = bar.querySelectorAll('button');
     var out = buttons.length ? buttons[buttons.length - 1] : null;
     var link = make(

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """teacher_behaviour.py — the ported teacher pages, driven.
 
-    python3 teacher_behaviour.py                # all twelve fixtures
+    python3 teacher_behaviour.py                # every fixture the port writes
     python3 teacher_behaviour.py classes        # one page (substring match)
     python3 teacher_behaviour.py --shots DIR    # also write screenshots
 
@@ -23,7 +23,13 @@ touches it.
 
 ── WHAT IT DRIVES, AND WHY NOT THE LIVE PAGES ───────────────────────────
 
-The twelve fixtures: six screens x {populated, empty}.
+Every fixture `build_teacher_port.py` writes — six screens, one populated
+and as many named states as each screen has. ⊕ CORRECTED 4 Sep 2026: this
+said "the twelve fixtures: six screens x {populated, empty}" and had been
+wrong since the thirteenth landed on 2 Sep. `fixtures()` has been DERIVED
+from the build since then precisely so the set can grow without anyone
+editing a list — so the number does not belong in prose here, and the run's
+own summary line prints what it actually drove.
 
 ⚠️ IT DOES NOT DRIVE THE LIVE PAGES, and that is a real limit rather than an
 oversight. A live teacher page begins with `requireTeacherRole`, so reaching
@@ -58,8 +64,43 @@ property on one fixture rather than a thirteenth and fourteenth. They are what
 drive MRB-261's read-only rule: a finished year offers no write controls and
 says which year it is. Between them they cover both halves — the classes
 screen (the import action absent, the year selector reachable on an empty
-grid) and the class page (the shoutout composer and the bulk opener absent,
-the feed still readable).
+grid) and the class page (the shoutout write surface absent, the feed still
+readable).
+
+⚠️ ⊕ CORRECTED 2 Sep 2026 (MRB-306 Phase 2a screen 2). The last clause read
+"the shoutout composer and the bulk opener absent". That was true of v2 and
+had SILENTLY STOPPED BEING TRUE: Design's v3 deleted the composer's own two
+nodes, so the `WRAP` rows naming them went with it, and the bulk opener that
+survived (nodes 215 and 276) was never wrapped. Driving the past-year fixture
+showed a live "Shoutouts" button in its header while this paragraph asserted
+it was absent — a docstring describing a guarantee no code was making any
+more. Both nodes are wrapped on `canWrite` now and the sentence is true
+again; see `WRAP["class-detail.html"]` for the ruling.
+
+⚠️ AND NOTE WHAT THAT COST: nothing here FAILED. This gate does not assert
+the read-only guarantee, it describes it, and no other gate on the page
+noticed either. The absence was found by opening the page and reading it.
+
+⊕ 3 Sep 2026 (MRB-306 Phase 2b/3) — IT ASSERTS IT NOW, and the paragraph
+above is kept because it is the reason. Mide ruled the shoutout composer and
+feed back onto the class screen against Design's v3, which is precisely the
+kind of change that reopens a read-only hole in a new place: the wrapped
+nodes MRB-261 relied on had already gone once, silently. So the register
+gained a flag, `needs_write`, and this gate does two things with it that a
+skip never could —
+
+    on a fixture whose `canWrite` is TRUE  · every such marker must be on
+                                             the page and must move when
+                                             pressed;
+    on a fixture whose `canWrite` is FALSE · every such marker must be
+                                             ABSENT FROM THE DOM at rest,
+                                             and is named if it is not.
+
+And the set gained the fixture that makes the second half mean something:
+`class-detail-readonly`, a finished year with a live class, a roster, work
+set and two shoutouts. The existing past-year fixture on this screen has no
+roster and an empty feed, so it could never have told a withheld Remove
+control apart from a feed with no rows in it.
 
 ── THE RELOAD ───────────────────────────────────────────────────────────
 
@@ -103,12 +144,99 @@ EMPTY_SHAPE = {
     # grid, and the write controls absent on a class page. See EMPTY_SHAPES in
     # build_teacher_port.py for the reasoning, and `_shape_past_year` for what
     # it actually changes.
-    "classes": "no classes in the year being viewed, and that year is past",
-    "class-detail": "a class with no roster, in a past (read-only) year",
-    "student-detail": "a student with no submissions",
-    "assignment": "a paper nobody has submitted",
-    "digest": "no live classes to digest",
-    "insights": "nothing marked to chart",
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 2) — KEYED BY (screen, slug),
+    # because a screen may now name more than one empty state. `empty` is the
+    # slug the original twelve carry, so every existing line reads the same.
+    ("classes", "empty"): "no classes in the year being viewed, and that year is past",
+    ("class-detail", "empty"): "a class with no roster, in a past (read-only) year",
+    # ⊕ THE THIRTEENTH. A LIVE class, roster present, work set, nobody in yet
+    # — the state a class is in from the moment work is set until the first
+    # child answers. See EMPTY_SHAPES["class-detail.html"] for why it is
+    # justified as a RECURRING shape rather than as any class's shape today.
+    ("class-detail", "nosubs"): "a live class with work set and nobody in yet",
+    ("class-detail", "gridmissing"):
+        "no grid fetched at all — which is every class-detail render in "
+        "production",
+    # ⊕ THE SEVENTEENTH, 3 Sep 2026 (MRB-306 Phase 2b/3). The only fixture in
+    # the set that is READ-ONLY AND POPULATED. `class-detail-empty` is also a
+    # past year, but its class has no roster and an empty feed, so it cannot
+    # tell "the Remove control is correctly withheld on a finished year"
+    # apart from "there was no feed row to put one on". This one has two
+    # shoutouts, one of them the signed-in teacher's own.
+    ("class-detail", "readonly"):
+        "a FINISHED academic year with everything else intact — a live "
+        "class, a roster, work set and two shoutouts. MRB-261's rule on the "
+        "restored shoutout surface: composer absent, feed readable, Remove "
+        "withheld",
+    ("student-detail", "empty"): "a student with no submissions",
+    # ⊕ THE EIGHTEENTH, 3 Sep 2026 (MRB-306 Phase 2b). The read-only year on
+    # the screen written feedback is AUTHORED from. `class-detail-readonly`
+    # proves MRB-261's rule on the shoutout surface; nothing proved it on the
+    # feedback surface, because the feedback sheet is on student-detail and
+    # on marking and neither page had a past-year fixture at all.
+    #
+    # ⚠️ WHAT IT SHOWS IS ASYMMETRIC, WHICH IS THE RULE ITSELF. Read-only is
+    # not invisible: the control that OPENS a comment survives — a teacher
+    # may still read what was written about a child last year — and the two
+    # inside the sheet that could CHANGE it do not.
+    ("student-detail", "readonly"):
+        "the same student in a FINISHED academic year. MRB-261's rule on the "
+        "feedback surface: the opener survives, Save and Remove are "
+        "withheld",
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — THE THREE THE CHARTS
+    # SCREEN HAD NO ANSWER FOR. `insights-empty` withholds a GRID, which
+    # reaches ONE of the six chart kinds; the other five were rendering
+    # Design's eight populated classes in both of this page's fixtures, so
+    # "empty scopes honest" was untested for `submissions`, `spread`,
+    # `ontime`, `means` and `engagement` in either scope. Between them these
+    # three are the three shapes the working year is actually in.
+    ("insights", "nolive"):
+        "rosters imported and no work set anywhere — `live` is empty, and "
+        "so is the class scope",
+    ("insights", "noroster"):
+        "the scoped class has no roster at all — 66 of the working year's "
+        "69 classes",
+    ("insights", "single"):
+        "one class, one marked paper set in an EARLIER teaching week, two "
+        "children — every superlative is over a set of one, and `week[0]` "
+        "and `colSub[0]` disagree by construction",
+
+    ("assignment", "empty"): "a paper nobody has submitted",
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) — THE TWO THE SET HAD NO
+    # ANSWER FOR. `written` is the only paper in the estate that is not eight
+    # questions out of eight marks, which is what makes the `/max` ruling
+    # visible at all; the two `gridmissing` shapes are key-ABSENT, which is a
+    # different branch of `gridFor` from `insights-empty`'s key-present-null
+    # and is the branch that threw live on 26 Aug 2026.
+    ("assignment", "written"):
+        "5 questions out of 7 marks, Q4 written, and the lowest-scoring "
+        "question carrying no stem text",
+    ("assignment", "gridmissing"):
+        "one open assignment and no grid fetched — the key is absent",
+    # ⊕ THE NINETEENTH, 4 Sep 2026 (MRB-306 Phase 3). The previous unit's own
+    # open note said this was missing and said why it was tolerable — "the
+    # sheet is identical on both screens, so the behaviour is proven; a
+    # second fixture would make it an assertion". It is an assertion now.
+    # ⚠️ AND "IDENTICAL" IS THE REASONING THAT FAILED ON class-detail: a
+    # shared builder is not a shared assertion, the two screens WRAP
+    # different nodes, and this screen's opener is a glyph where the other's
+    # is a word.
+    ("assignment", "readonly"):
+        "the marking screen in a FINISHED academic year, paper and grid "
+        "intact. MRB-261's rule on the screen feedback is AUTHORED from: "
+        "the opener survives, Save and Remove are withheld",
+    # ⊕ CORRECTED 2 Sep 2026 (MRB-306 Phase 2a screen 6). This read "no live
+    # classes to digest", which is not what the shaper makes and not what the
+    # fixture shows: `_shape_no_work` blanks ONE class and SEVEN stay live.
+    # The sentence mattered — it is the reason the zero-live-classes guards
+    # (the em dash on Mean score and On time, and the `NaN%` guard) were
+    # believed covered when nothing exercised them. `nolive` below is the
+    # fixture that actually reaches them.
+    ("digest", "empty"): "one class with students and no work set — seven "
+                         "still live",
+    ("digest", "nolive"): "no live class at all: rosters imported, nothing "
+                          "set yet — the first week of a school year",
+    ("insights", "empty"): "nothing marked to chart",
 }
 
 
@@ -137,10 +265,44 @@ EXEMPT_LABELS = {"signOut": "Sign out", "doPrint": "Print"}
 
 
 def fixtures():
+    """(screen, filename, is_empty, slug) for every fixture the port writes.
+
+    ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 2) — DERIVED FROM THE BUILD, NOT
+    LISTED HERE. This used to hardcode "exactly two per screen", which meant a
+    thirteenth fixture could be generated by `build_teacher_port.py` and never
+    driven by anything, with both scripts green. The build's own
+    `EMPTY_SHAPES` and `variant_files` are the authority now, so a variant
+    cannot be added without this gate picking it up.
+
+    ⚠️ EVERY VARIANT COUNTS AS `is_empty`. That flag gates the `needs_data`
+    additions — the shoutout-delete control and the three buttons of its
+    confirm sheet, all of which hang off a feed row.
+
+    ⊕ 3 Sep 2026 — AND THE SENTENCE THAT USED TO FOLLOW IT IS NO LONGER
+    TRUE. It read "every empty shaper in the set leaves `FEED[cid]` empty, so
+    there is correctly nothing to delete on any of them". The `readonly`
+    variant added with Mide's restored shoutout surface is POPULATED — it is
+    a finished academic year and nothing else about it is empty — so it has
+    two feed rows and `is_empty` skips the delete additions on it anyway.
+    That is still the right outcome and now for a DIFFERENT reason: the
+    control must be absent there because the year is read-only, which
+    `needs_write` asserts by name rather than skipping.
+    """
+    import build_teacher_port as BTP
+    by_out = {sp["out"]: sp for sp in BTP.PAGES}
     out = []
     for s in SCREENS:
-        out.append((s, "%s-fixture.html" % s, False))
-        out.append((s, "%s-empty-fixture.html" % s, True))
+        spec = by_out["%s.html" % s]
+        out.append((s, "%s-fixture.html" % s, False, None))
+        for slug, _note, _shaper in BTP.EMPTY_SHAPES[spec["out"]]:
+            out.append((s, BTP.variant_files(spec, slug)[0], True, slug))
+    unnoted = [(s, g) for s, _f, e, g in out if e and (s, g) not in EMPTY_SHAPE]
+    if unnoted:
+        raise SystemExit(
+            "teacher_behaviour.py: %s has no line in EMPTY_SHAPE.\n"
+            "  Every empty fixture says which state it is showing, so a "
+            "failure names the state rather than just \"empty\"."
+            % ", ".join("%s/%s" % k for k in unnoted))
     return out
 
 
@@ -275,6 +437,44 @@ _DRIVE_JS = r"""
     return out;
   }
 
+  /* ⊕ 3 Sep 2026 — ONE PRESS, TWO LOOPS. A `<select>` does nothing when it
+     is `.click()`ed and a `<textarea>` does nothing when it is clicked
+     either, so the ordinal sweep has always driven them by VALUE + event
+     instead. The additions loop below was written when every registered
+     addition was a button, and it clicked unconditionally — so the first
+     addition that was a field would have been reported DEAD while working
+     perfectly. Mide's restored shoutout composer registers two of them (the
+     recipient select and the free-text note), which is what surfaced this.
+     ⚠️ IT IS THE SAME FUNCTION IN BOTH PLACES ON PURPOSE. Two copies is how
+     the additions loop came to disagree with the sweep in the first place. */
+  function pressEl(el) {
+    var tg = el.tagName.toLowerCase();
+    if (tg === 'input' || tg === 'textarea') {
+      el.focus();
+      el.value = 'zz';
+      el.dispatchEvent(new Event('input', {bubbles: true}));
+    } else if (tg === 'select') {
+      el.focus();
+      if (el.options && el.options.length > 1) { el.selectedIndex = 1; }
+      el.dispatchEvent(new Event('change', {bubbles: true}));
+    } else {
+      el.click();
+    }
+  }
+
+  /* ⊕ RULED BY MIDE, 3 Sep 2026 — THE READ-ONLY CENSUS, AND IT IS TAKEN
+     BEFORE ANYTHING IS PRESSED. `needs_write` additions are the write
+     controls MRB-261 requires to be ABSENT — not disabled — on a finished
+     academic year, and "absent" is a claim about the page AT REST. Taken
+     after the sweep it would be a claim about the page after four hundred
+     presses, which is a different and much weaker thing. */
+  var WRITEONLY = __WRITEONLY__, writeSeen = [];
+  for (var q = 0; q < WRITEONLY.length; q++) {
+    if (host.querySelector('[data-mrb-added="' + WRITEONLY[q] + '"]')) {
+      writeSeen.push(WRITEONLY[q]);
+    }
+  }
+
   var dead = [], blanked = [], pressed = 0, errors = [], seen = {};
   var present = [];
   var found = clickable().length;
@@ -308,18 +508,7 @@ _DRIVE_JS = r"""
     var before = snap();
     var navsBefore = navs.length;
     try {
-      var tg = c.tagName.toLowerCase();
-      if (tg === 'input' || tg === 'textarea') {
-        c.focus();
-        c.value = 'zz';
-        c.dispatchEvent(new Event('input', {bubbles: true}));
-      } else if (tg === 'select') {
-        c.focus();
-        if (c.options && c.options.length > 1) { c.selectedIndex = 1; }
-        c.dispatchEvent(new Event('change', {bubbles: true}));
-      } else {
-        c.click();
-      }
+      pressEl(c);
       pressed++;
     } catch (e) {
       errors.push(idx + ' ' + label + ': ' + e.message);
@@ -402,7 +591,7 @@ _DRIVE_JS = r"""
     for (var u = 0; u < t && !el; u++) {
       var opener = host.querySelector('[data-mrb-added="' + ADDED[u] + '"]');
       if (!opener) { continue; }
-      opener.click();
+      pressEl(opener);
       await frame();
       el = host.querySelector(sel);
     }
@@ -411,7 +600,7 @@ _DRIVE_JS = r"""
                  .slice(0, 40).replace(/\s+/g, ' ').trim();
     var aBefore = snap(), aNavs = navs.length;
     try {
-      el.click();
+      pressEl(el);
       added.push(want + '|' + aLabel);
     } catch (e) {
       errors.push(want + ' ' + aLabel + ': ' + e.message);
@@ -446,6 +635,7 @@ _DRIVE_JS = r"""
     added: added,
     addedDead: addedDead,
     addedGone: addedGone,
+    writeSeen: writeSeen,
     addedNav: addedNav,
     errors: errors
   });
@@ -463,6 +653,85 @@ _DRIVE_JS = r"""
 # still, because they would read it as a fact.
 RENDER_TELLS = ["null%", "NaN", "undefined", "-Infinity", "Infinity",
                 "[object Object]", "null/", "/null", "null students"]
+
+
+# ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — THE CHART CROSS PRODUCT.
+#
+# ⚑ THE SWEEP ABOVE PRESSES EVERY CONTROL ONCE, IN DOM ORDER, AND ON THIS
+# SCREEN THAT COVERS HALF THE PAGE. The insights region runs
+# [Back] [All classes] [8r/Sc1] [Print] then the six chart chips — so the
+# sweep presses BOTH scope tabs before it reaches the first chip, leaves the
+# scope on the CLASS, and then draws all six charts scoped to that class. The
+# six whole-school charts are never drawn at all.
+#
+# That is not a hypothetical. `chartFor`'s `questions / all` branch read
+# `this.STEMS`, a class field `DROP_FIELDS` deletes, and threw
+# `TypeError: Cannot read properties of undefined` — taking the entire Charts
+# page down — on the delivery's own populated fixture. This gate drove that
+# fixture, on load and after a reload, and passed it, printing "the console
+# stayed quiet". The defect was found by pressing the chips by hand. It was
+# then RE-INTRODUCED deliberately, on 2 Sep 2026, to check whether this file
+# could see it: five insights fixtures, still all green. It could not.
+#
+# So the chart kinds are driven as a CROSS PRODUCT — every scope re-pressed
+# before every kind, so each of the twelve cells is drawn from a known state
+# and after a redraw — and each cell is then asked the question this screen
+# exists to answer: a chart with nothing to plot must SAY SO. A card with no
+# tiles and no series and no caption is a chart drawn as zero.
+_CHART_JS = r"""
+(async function(){
+  var out = {cells: [], err: null};
+  try {
+    /* ⚠️ RE-QUERIED EVERY TIME, NEVER HELD. The runtime REPLACES the
+       `[data-port-region]` element on a redraw, so a reference taken once
+       goes detached on the first press: the buttons found through it are no
+       longer in the document, clicking them changes nothing a reader can
+       see, and reading the title back through it returns the card as it was
+       before any of this started. The first version of this probe did hold
+       it, reported twelve clean cells, and every one of the twelve was the
+       SAME cell — the chart the page happened to open on. It passed a page
+       carrying three deliberately re-introduced defects. */
+    var reg = function(){ return document.querySelector('[data-port-region="insights"]'); };
+    if(!reg()){ out.err = 'no [data-port-region="insights"] on the page'; return JSON.stringify(out); }
+    var txt = function(e){ return e ? (e.textContent||'').replace(/\s+/g,' ').trim() : ''; };
+    var frame = function(){ return new Promise(function(r){
+      requestAnimationFrame(function(){ setTimeout(r, 40); }); }); };
+    var buttons = function(){ var r = reg();
+      return r ? Array.prototype.slice.call(r.querySelectorAll('button')) : []; };
+    var labels = buttons().map(txt);
+    var pi = labels.indexOf('Print');
+    if(pi < 1){ out.err = 'the Print button is not in the insights region, so the scope tabs cannot be located'; return JSON.stringify(out); }
+    var scopes = labels.slice(Math.max(0, pi - 2), pi);
+    var kinds = labels.slice(pi + 1);
+    if(!scopes.length || !kinds.length){ out.err = 'found ' + scopes.length + ' scope tab(s) and ' + kinds.length + ' chart chip(s)'; return JSON.stringify(out); }
+    out.scopes = scopes; out.kinds = kinds;
+    var press = async function(label){
+      var b = buttons().filter(function(e){ return txt(e) === label; })[0];
+      if(!b){ return false; }
+      b.click(); await frame(); await frame(); return true;
+    };
+    for(var si = 0; si < scopes.length; si++){
+      for(var ki = 0; ki < kinds.length; ki++){
+        var cell = {scope: scopes[si], kind: kinds[ki]};
+        if(!(await press(scopes[si]))){ cell.miss = 'scope tab vanished'; out.cells.push(cell); continue; }
+        if(!(await press(kinds[ki]))){ cell.miss = 'chart chip vanished'; out.cells.push(cell); continue; }
+        var r = reg();
+        var h2 = r ? r.querySelector('h2') : null;
+        var card = h2 ? h2.parentElement.parentElement : null;
+        if(!card){ cell.miss = 'no chart card'; out.cells.push(cell); continue; }
+        var kids = Array.prototype.slice.call(card.children);
+        cell.title = txt(h2);
+        cell.note = txt(kids[1]);
+        cell.tiles = kids[2] ? kids[2].children.length : 0;
+        cell.body = kids.slice(3).map(txt).join('').length;
+        cell.text = txt(card);
+        out.cells.push(cell);
+      }
+    }
+  } catch(e){ out.err = String((e && e.stack) || e); }
+  return JSON.stringify(out);
+})()
+"""
 
 
 def _wired_handlers(path):
@@ -670,11 +939,11 @@ def _search_problems(what, c):
     return out
 
 
-def drive(page, path, is_empty, cdp, port, shots=None):
+def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
     """Problems, as strings, for one fixture. Driven twice — load and reload."""
     problems = []
     tally = {"found": 0, "pressed": 0, "added": 0, "search": 0,
-             "nosev": 0}
+             "nosev": 0, "charts": 0}
     # ⚠️ THE TEMPLATE, NOT THE SOURCE. Every page ships the WHOLE logic
     # class — all six screens' `renderVals` — and prunes only the MARKUP. So
     # `doPrint` is a string in all six files while the Print BUTTON exists on
@@ -705,7 +974,36 @@ def drive(page, path, is_empty, cdp, port, shots=None):
     added_here = [a["marker"] for a in R.AMENDED_ADDITIONS
                   if page + ".html" in a["pages"]
                   and not (is_empty and a.get("needs_data"))
+                  # ⊕ FROM main, 4 Sep 2026 — an addition the RUNTIME hides
+                  # on a given page is not expected in its DOM there. It is a
+                  # different question from `needs_write` below, which
+                  # asserts an ABSENCE rather than excusing one, so both
+                  # filters apply and both are kept.
+                  # ⚠️ NO ADDITION CARRIES IT ON THE MERGED TREE. Its only
+                  # user was `nav-classes`, retired by the v3 port because
+                  # Design's own `navTabs` strip draws that control — see
+                  # the note at `teacher_rulings.INSERT_AT[(10, 13)]`. The
+                  # filter stays because the QUESTION it answers is a real
+                  # one that will recur, and because a `.get()` with a
+                  # default cannot misfire on a register that never sets it.
                   and page + ".html" not in a.get("runtime_hidden_on", ())]
+    # ⊕ RULED BY MIDE, 3 Sep 2026 — THE WRITE CONTROLS, AND THE YEAR THEY
+    # MAY NOT APPEAR ON. `needs_write` names an addition that exists only
+    # where `canWrite` is true: MRB-261 makes a finished academic year
+    # read-only, and the retired hand-written page's own `applyWriteControls`
+    # set the standard — the controls are ABSENT, not present-and-disabled,
+    # because "setting homework against a class that no longer runs is not a
+    # mistake worth leaving available".
+    #
+    # ⚑ THIS IS AN ASSERTION AND NOT A SKIP, and the difference is the whole
+    # reason the flag is not `needs_data`. `needs_data` says "there is
+    # nothing here to press and that is fine"; this says "if this is here at
+    # all, the read-only guarantee is broken, and name it". The docstring at
+    # the top of this file records what merely DESCRIBING that guarantee
+    # cost: v3 deleted the two nodes `WRAP` held it on, the rule silently
+    # stopped applying to this screen, and every gate stayed green.
+    write_only = [a["marker"] for a in R.AMENDED_ADDITIONS
+                  if page + ".html" in a["pages"] and a.get("needs_write")]
     added_why = {a["marker"]: a for a in R.AMENDED_ADDITIONS}
     # ⊕ MRB-287 E1 — additions revealed by one of DESIGN'S nodes rather than
     # by an earlier addition. See the probe's note beside OPENERS.
@@ -735,13 +1033,24 @@ def drive(page, path, is_empty, cdp, port, shots=None):
             # the frame before any button is pressed.
             if shots and pass_n == 1:
                 out = os.path.join(shots, "%s%s.png"
-                                   % (page, "-empty" if is_empty else ""))
+                                   % (page, ("-" + (slug or "empty"))
+                                      if is_empty else ""))
                 pg.screenshot(out, full_page=True)
 
+            # ⚠️ ASKED OF THE PAGE, NOT OF THE FIXTURE FILE. `canWrite` is
+            # what the runtime actually rendered against, and a shaper that
+            # set it and a page that ignored it would agree on disk and
+            # disagree on screen — which is the class of defect this whole
+            # file exists for.
+            can_write = json.loads(pg.eval(
+                "JSON.stringify(!!(window.__MRB_DATA__ || {}).canWrite)"))
+            here_now = [m for m in added_here
+                        if can_write or m not in write_only]
             probe = (_DRIVE_JS
                      .replace("__EXEMPT__",
                               json.dumps(sorted(EXEMPT_LABELS.values())))
-                     .replace("__ADDED__", json.dumps(added_here))
+                     .replace("__ADDED__", json.dumps(here_now))
+                     .replace("__WRITEONLY__", json.dumps(write_only))
                      .replace("__OPENERS__", json.dumps(openers)))
             got = json.loads(pg.eval(probe))
             if got.get("error"):
@@ -841,6 +1150,49 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                     "than a missing one."
                     % (what, d["i"], d["tag"], d["label"]))
 
+            # 5b-ii. ⊕ RULED BY MIDE, 3 Sep 2026 — MRB-261, ASSERTED.
+            #
+            # ⛔ ON A FINISHED ACADEMIC YEAR THE WRITE CONTROLS ARE NOT ON
+            # THE PAGE. Not dimmed, not refused on press — absent. Every
+            # marker registered `needs_write` is looked for by name in the
+            # DOM at rest, and finding one here is the hole MRB-261 closed
+            # reopening in a new place.
+            seen_w = got.get("writeSeen") or []
+            if not can_write and seen_w:
+                problems.append(
+                    "%s: this fixture is a READ-ONLY academic year "
+                    "(`canWrite` false) and the write control(s) %s are on "
+                    "the page. MRB-261: a finished year offers no write "
+                    "controls — absent, not disabled. A composer that is "
+                    "present and refused by RLS on press is a control that "
+                    "lies." % (what, ", ".join(repr(m) for m in seen_w)))
+            # ⚠️ AND THE POSITIVE HALF IS TAKEN OVER `here_now`, NOT OVER
+            # `write_only`. Written the other way it demanded
+            # `shoutout-delete` on `class-detail-nosubs` — a WORKING-year
+            # fixture whose feed is empty — and the check was right that the
+            # control was missing and wrong that it should have been there:
+            # that marker carries `needs_data` as well, and there is no
+            # shoutout on that fixture to remove. Caught by this gate on the
+            # first run of the change that added it, which is the correct
+            # place for it to have been caught.
+            #
+            # ⚑ IT IS NOT REDUNDANT WITH `addedGone`, which is the obvious
+            # objection. That check reveals a control by pressing earlier
+            # additions until it appears; this one looks at the page AT REST.
+            # A write control that only exists behind a sheet would satisfy
+            # `addedGone` and fail here, and it should: "absent on a finished
+            # year" is a claim about what a teacher sees when they arrive.
+            if can_write:
+                missing_w = [m for m in write_only
+                             if m in here_now and m not in seen_w]
+                if missing_w:
+                    problems.append(
+                        "%s: this fixture CAN be written to and the write "
+                        "control(s) %s are not on the page. A `needs_write` "
+                        "addition is absent only on a read-only year; here "
+                        "it is simply gone."
+                        % (what, ", ".join(repr(m) for m in missing_w)))
+
             # 5c. ⊕ MRB-287 E1 — AND IT WENT WHERE IT SAID IT WOULD.
             #
             # ⚑ "MOVED" IS NOT "WORKED" FOR A CONTROL THAT NAVIGATES. The
@@ -858,7 +1210,7 @@ def drive(page, path, is_empty, cdp, port, shots=None):
             # computed nothing navigates to the working year and looks
             # exactly like a working control.
             navs_seen = got.get("addedNav") or {}
-            for m in added_here:
+            for m in here_now:
                 want_nav = (added_why.get(m) or {}).get("expect_nav")
                 if not want_nav:
                     continue
@@ -917,9 +1269,15 @@ def drive(page, path, is_empty, cdp, port, shots=None):
             have = all(search_nodes.get(k) is not None
                        for k in ("opener", "input", "foot", "row"))
             if not have:
-                # The legitimate absence is the WHOLE overlay being pruned —
-                # `searchOpen` is not in digest's or insights' `overlays`, so
-                # only the top-bar opener survives there. The absence that is
+                # The legitimate absence is the WHOLE overlay being pruned.
+                # ⊕ CORRECTED 2 Sep 2026 — this named digest.html and
+                # insights.html as the two pages without `searchOpen`, and
+                # BOTH have it now: screen 6 added it to the digest and
+                # screen 7 to insights, because on both of them the top bar's
+                # "Find a student" button shipped with no sheet to open and
+                # pressing it did nothing at all. No page in the set prunes
+                # the overlay today; the branch stays because a future one
+                # may. The absence that is
                 # NOT legitimate is the overlay being present with its caption
                 # or its result row missing: the probe would then run on
                 # nothing and this fixture would report a clean sweep.
@@ -947,6 +1305,80 @@ def drive(page, path, is_empty, cdp, port, shots=None):
                         tally["search"] += len(got_s["cases"])
                         if not got_s.get("several"):
                             tally["nosev"] += 1
+
+            # 7c. ⊕ THE CHART CROSS PRODUCT — see the note beside _CHART_JS.
+            #     Six kinds x both scopes, each drawn from a re-pressed scope
+            #     so every cell is a redraw, and each one asked whether it
+            #     says what it has.
+            if page == "insights":
+                got_c = json.loads(pg.eval(_CHART_JS))
+                if got_c.get("err"):
+                    problems.append("%s: the chart sweep could not run — %s"
+                                    % (what, got_c["err"]))
+                else:
+                    cells = got_c.get("cells") or []
+                    want = len(got_c.get("scopes") or []) * len(
+                        got_c.get("kinds") or [])
+                    if len(cells) != want or want < 12:
+                        problems.append(
+                            "%s: the chart sweep drew %d of %d cell(s) — %d "
+                            "scope(s) x %d kind(s). Six kinds and two scopes "
+                            "is twelve." % (what, len(cells), want,
+                                            len(got_c.get("scopes") or []),
+                                            len(got_c.get("kinds") or [])))
+                    # ⚑ SIX KINDS, SIX TITLES. A chart whose `renderVals`
+                    #   THREW never redraws, so the card still shows the
+                    #   PREVIOUS kind — the page looks fine and the chip
+                    #   looks pressed. A repeated title inside one scope is
+                    #   that, and it is what the STEMS crash looked like from
+                    #   the outside before it was found by hand.
+                    for sc in (got_c.get("scopes") or []):
+                        seen = {}
+                        for c in cells:
+                            if c.get("scope") != sc or c.get("miss"):
+                                continue
+                            seen.setdefault(c.get("title"), []).append(
+                                c.get("kind"))
+                        for t, ks in seen.items():
+                            if len(ks) > 1:
+                                problems.append(
+                                    "%s: under %r, %s all draw the SAME card "
+                                    "(%r). A chart that does not redraw is a "
+                                    "chart whose render threw."
+                                    % (what, sc, " and ".join(ks), t))
+                    for c in cells:
+                        where = "%s / %s" % (c.get("scope"), c.get("kind"))
+                        if c.get("miss"):
+                            problems.append("%s: chart %s — %s"
+                                            % (what, where, c["miss"]))
+                            continue
+                        if pass_n == 1:
+                            tally["charts"] += 1
+                        if not c.get("title"):
+                            problems.append(
+                                "%s: chart %s drew no title. The card is "
+                                "there and it does not say what it is."
+                                % (what, where))
+                        # ⚑ "EMPTY SCOPES HONEST", AS A CHECK RATHER THAN A
+                        #   HOPE. No tiles, no series and no caption is an
+                        #   empty card, and an empty card reads as zero.
+                        if (not c.get("tiles") and not c.get("body")
+                                and not c.get("note")):
+                            problems.append(
+                                "%s: chart %s has nothing to plot and says "
+                                "nothing — no tile, no series, no caption. "
+                                "An empty chart must state that it is empty."
+                                % (what, where))
+                        # ⚑ AND NOTHING MAY RENDER AS A COMPUTATION THAT
+                        #   FAILED. `undefined/16` and `NaN` were both on
+                        #   this screen on 2 Sep 2026, on a class with no
+                        #   papers, in the two tiles a teacher reads first.
+                        for bad in ("undefined", "NaN", "null%", "Infinity",
+                                    "[object "):
+                            if bad in (c.get("text") or ""):
+                                problems.append(
+                                    "%s: chart %s renders %r on screen"
+                                    % (what, where, bad))
 
             # 8. And the console stayed quiet. A page can render correctly and
             #    still be throwing on every state change — the throw happens
@@ -984,40 +1416,47 @@ def main(argv):
 
     print("\n🖐  teacher_behaviour — the ported teacher pages, driven and "
           "pressed\n")
-    print("     %d fixture(s): %d screen(s) x {populated, empty}, each driven "
-          "on load\n             AND after a reload\n"
-          % (len(todo), len(SCREENS)))
+    # ⊕ 2 Sep 2026 — no longer "screens x 2": a screen may name more than one
+    # empty state, so the count is reported rather than multiplied out.
+    _empties = sorted({g for _s, _f, e, g in todo if e})
+    print("     %d fixture(s) across %d screen(s): populated + %s, each "
+          "driven\n             on load AND after a reload\n"
+          % (len(todo), len({f[0] for f in todo}), "/".join(_empties)))
 
     server, port = cdp.serve(REPO)
     failed = 0
     total = {"found": 0, "pressed": 0, "added": 0, "search": 0,
-             "nosev": 0}
+             "nosev": 0, "charts": 0}
     try:
-        for page, path, is_empty in todo:
-            problems, tally = drive(page, path, is_empty, cdp, port, shots)
+        for page, path, is_empty, slug in todo:
+            problems, tally = drive(page, path, is_empty, cdp, port, shots,
+                                    slug=slug)
             total["found"] += tally["found"]
             total["pressed"] += tally["pressed"]
             total["added"] += tally["added"]
             total["search"] += tally["search"]
             total["nosev"] += tally["nosev"]
-            tag = "empty" if is_empty else "full "
+            total["charts"] += tally["charts"]
+            tag = (slug or "empty") if is_empty else "full "
             if problems:
                 failed += 1
                 print("     %-16s %s ❌ %d problem(s)"
                       % (page, tag, len(problems)))
                 if is_empty:
-                    print("        (%s)" % EMPTY_SHAPE.get(page, ""))
+                    print("        (%s)" % EMPTY_SHAPE.get((page, slug), ""))
                 for p in problems[:10]:
                     print("        · %s" % p)
                 if len(problems) > 10:
                     print("        · … and %d more" % (len(problems) - 10))
             else:
-                print("     %-16s %s ✅  %d/%d control(s) pressed%s%s"
+                print("     %-16s %s ✅  %d/%d control(s) pressed%s%s%s"
                       % (page, tag, tally["pressed"], tally["found"],
                          (" · %d addition(s) pressed by name"
                           % tally["added"]) if tally["added"] else "",
                          (" · %d search state(s)"
-                          % tally["search"]) if tally["search"] else ""))
+                          % tally["search"]) if tally["search"] else "",
+                         (" · %d chart cell(s)"
+                          % tally["charts"]) if tally["charts"] else ""))
     finally:
         server.shutdown()
 

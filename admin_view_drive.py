@@ -48,7 +48,20 @@
 """
 import argparse, json, os, re, ssl, sys, urllib.request
 
-REPO = "/Users/midebadmus/Documents/GitHub/mrbadmus-site"
+# ⊕ MRB-306, 3 Sep 2026 — THE CHECKOUT IS THIS FILE'S OWN, NOT A HARDCODED ONE.
+#
+# This used to read `REPO = "/Users/midebadmus/Documents/GitHub/mrbadmus-site"`
+# and `os.chdir()` there at import time. Run from a WORKTREE that is the
+# failure this gate exists to prevent, wearing a green tick: it serves the
+# MAIN checkout's pages, drives those, and reports PASS about a tree the
+# session never touched. A teacher-facing change could be verified, shipped
+# and broken without a single red anywhere.
+#
+# Deriving it from `__file__` means the gate always attests the checkout it
+# was invoked from, which is the only tree its verdict can honestly describe.
+# `today_drive.py` was already worktree-safe via a relative
+# `cdp.serve("mrbadmus_site")`; this brings the two into line.
+REPO = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, REPO)
 os.chdir(REPO)
 import ks3_browser as cdp

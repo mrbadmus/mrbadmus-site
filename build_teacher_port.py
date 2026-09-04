@@ -287,7 +287,30 @@ PAGES = [
          empty_out="digest-empty-fixture.html",
          empty_js="teacher-fixture-digest-empty.js",
          title="Weekly digest \u00b7 MrBadmusAI",
-         overlays=("hasToast",),
+         # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 6) — `searchOpen` ADDED.
+         # This page kept only the toast, and the topbar's "Find a student"
+         # button — which is on all six pages, because the top bar is one
+         # piece of chrome — calls `openSearch`, which sets `modal: 'search'`,
+         # which redraws a page with no search overlay in it. Pressing it did
+         # nothing at all: no sheet, no error, no toast.
+         #
+         # It is the 24 Aug `bulkOpen` ruling seen from the other side. That
+         # one removed a SHEET NOBODY COULD OPEN from classes.html; this is an
+         # OPENER WITH NO SHEET, and the same sentence applies — a control
+         # that cannot do its job is not a feature in waiting.
+         #
+         # The sheet is kept rather than the button dropped: the button
+         # belongs to the shared top bar and four of the six pages open it, so
+         # removing it here would make the chrome differ page to page. The
+         # data is already on the page — `renderVals` reads
+         # `MRB_DATA('searchPool')` unconditionally on every page, and the
+         # seam supplies it (a digest that did not have it would throw at
+         # mount, and does not).
+         #
+         # ⚠️ `insights.html` HAS THE IDENTICAL DEFECT and is NOT changed
+         # here: it is its own screen in this phase and the fix is this same
+         # one word. Written up in the screen 6 report rather than folded in.
+         overlays=("searchOpen", "hasToast"),
          retire=None),
     # ⛔ THERE IS NO `import` ROW HERE, AND ITS ABSENCE IS A RULING.
     # See `IMPORT_NOT_PORTED` in teacher_rulings.py: `teacher/import.html` is
@@ -300,7 +323,15 @@ PAGES = [
          empty_out="insights-empty-fixture.html",
          empty_js="teacher-fixture-insights-empty.js",
          title="Charts \u00b7 MrBadmusAI",
-         overlays=("hasToast",),
+         # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — `searchOpen` ADDED, and
+         # it is the SAME ONE WORD screen 6 added to `digest.html`. Screen 6
+         # found the defect on both pages, fixed the digest and left this one
+         # named in a comment because it is this screen. Verified by driving
+         # it: the topbar's "Find a student" button calls `openSearch`, which
+         # sets `modal: 'search'`, and with the sheet pruned the press did
+         # nothing at all — no sheet, no error, no toast. `teacher_behaviour`
+         # drove FOUR search states on every other page and ZERO here.
+         overlays=("searchOpen", "hasToast"),
          retire=None),
 ]
 
@@ -520,6 +551,471 @@ def _balanced(src, start, opener, closer):
                      "in Design's logic." % (opener, start))
 
 
+# ── ⊕ MRB-306 · A NAV RULING ANCHORS ON A NAME, NOT ON ITS NEIGHBOURS ────
+#
+# ⛔ WHAT BROKE. Every `NAV` entry used to carry `frm`: a VERBATIM span of
+# Design's logic, replaced exactly once. Six of the sixteen are loop-scoped
+# closures called `open`, and their bodies are byte-identical to each other —
+# `open: () => this.setState({ screen: 'student', studentId: r.id })` is four
+# different controls in four different builders. So `frm` was PADDED with the
+# lines that happened to follow it (`\n      };\n    });\n\n    const
+# paperRow`) purely to tell them apart.
+#
+# That padding is not part of the ruling. It is a photograph of Design's file
+# at one moment, and it breaks whenever she touches a line NEAR the handler
+# rather than the handler itself. On the v3 delivery ELEVEN of the sixteen
+# stopped matching, and not one of them because the handler had changed: she
+# added a Today screen above them and the neighbours moved.
+#
+# ⚑ WHAT REPLACES IT. `anchor`, in one of these forms:
+#
+#     anchor=dict(key="goClass")                 a top-level handler
+#     anchor=dict(builder="cards", key="open")   a closure inside a `.map(`
+#     anchor=dict(method="renderVals",           a statement inside a method
+#                 key="const flagged")            ⊕ MRB-306
+#     anchor=dict(method="renderVals",           a property inside a property
+#                 key="klass.meta")               ⊕ MRB-306
+#
+# The builder form is the whole point: it says WHICH LIST the row belongs to,
+# which is the thing that actually distinguishes six identical closures, and
+# it is a name Design chose deliberately rather than a line she happened to
+# type underneath. `cards`, `roster`, `assignments`, `grid`, `stHistory`,
+# `digestRows`, `results` all survived v2 → v3 unrenamed while every one of
+# their `frm` spans died.
+#
+# ⚠️ EXACTLY ONE MATCH IS REQUIRED, and that is the safety property, not a
+# convenience. A key form that matched twice would rewire whichever came
+# first and leave the other a dead control; a builder form that matched zero
+# means Design has renamed the list, and the ruling must be re-read by a
+# human before it is re-pointed. Both refuse the build, by name.
+#
+# `frm` still works, unchanged, for any entry that has no `anchor` — this
+# mechanism was added incrementally and the two paths are allowed to coexist.
+#
+# ⊕ 1 Sep 2026 (MRB-306) — `LOGIC` TAKES ANCHORS TOO, and the same failure
+# mode is what put it there. `LOGIC` was 55 exactly-once source replacements
+# and NINE stopped matching on Design's v3. Five of the nine changed nothing
+# a ruling was about: `const swSel` was followed by one blank line instead of
+# two, `const flagged` lost a `.length`, `late: late,` became the `late,`
+# shorthand one line above the span's real target, `state = {` gained a key,
+# `meta` gained a subject. Three genuinely need the week rail rebuilt. One —
+# `longMeta` — was renamed, and is re-expressed onto the key that replaced it.
+#
+# An anchored `LOGIC` entry writes its anchor WHERE `frm` GOES: the first
+# element of the triple is either a string (verbatim source, the old path) or
+# a dict (an anchor). Nothing else about the entry changes, and the 46 whose
+# `frm` is genuinely self-identifying were LEFT ALONE — converting a ruling
+# that already works is risk with no reward.
+
+
+def _logic_lines(logic):
+    """Design's logic as [(start, end, text, depth_after)], one per line.
+
+    `start`/`end` are byte offsets into `logic`; `end` excludes the newline.
+    `depth_after` is the bracket nesting depth at the END of that line.
+
+    ⚠️ STRING- AND COMMENT-AWARE, because a bare bracket count is wrong on
+    this file and wrong QUIETLY. `this.ping('No students in ' + c.code + '
+    yet')` sits inside the digest builder and `/* ── Today ── */` sits
+    between two others; a scan that counts a bracket inside either drifts by
+    one and then swallows every builder after it, so the block it hands back
+    would be the whole rest of the file and the "exactly one match" check
+    would refuse a handler that is perfectly fine.
+    """
+    out, depth, i, n = [], 0, 0, len(logic)
+    in_block_comment = False
+    line_start, line_no_end = 0, None
+    while i <= n:
+        if i == n or logic[i] == "\n":
+            out.append((line_start, i, logic[line_start:i], depth))
+            line_start = i + 1
+            i += 1
+            continue
+        ch = logic[i]
+        if in_block_comment:
+            if logic.startswith("*/", i):
+                in_block_comment = False
+                i += 2
+            else:
+                i += 1
+            continue
+        if logic.startswith("//", i):
+            j = logic.find("\n", i)
+            i = n if j < 0 else j
+            continue
+        if logic.startswith("/*", i):
+            in_block_comment = True
+            i += 2
+            continue
+        if ch in "'\"`":
+            q, i = ch, i + 1
+            while i < n:
+                if logic[i] == "\\":
+                    i += 2
+                    continue
+                if logic[i] == q:
+                    break
+                i += 1
+            i += 1
+            continue
+        if ch in "([{":
+            depth += 1
+        elif ch in ")]}":
+            depth -= 1
+        i += 1
+    return out
+
+
+def _anchor_refusal(head, name, anchor, what, tail):
+    """The one refusal every anchor failure routes through.
+
+    Same shape as the `frm` refusal it replaces: name the ruling, say what
+    was looked for, say what was found, and say where to fix it. The two
+    lists differ ONLY in the closing paragraph, because they fail
+    differently — see the two wrappers below.
+    """
+    return SystemExit(
+        "build_teacher_port.py: %s for %r %s.\n"
+        "    anchor = %r\n"
+        "  %s" % (head, name, what, anchor, tail))
+
+
+def _nav_refusal(handler, anchor, what):
+    """A NAV anchor that resolved to nothing, or to two things.
+
+    A NAV rewire that silently does not happen leaves a button that changes
+    `s.screen` on a page where `s.screen` is fixed — it draws perfectly and
+    does nothing, and no static check downstream can see that.
+    """
+    return _anchor_refusal(
+        "the navigation ruling", handler, anchor, what,
+        "Design has redrawn or renamed that handler. Re-anchor it in "
+        "teacher_rulings.NAV — do NOT drop it, and do NOT widen the anchor "
+        "until it matches something: a skipped rewire is a dead control that "
+        "every gate calls green.")
+
+
+def _logic_refusal(ruling, anchor, what):
+    """⊕ 1 Sep 2026 (MRB-306) — the same failure, for an anchored LOGIC entry.
+
+    Word for word the paragraph the `frm` path has always printed, because
+    the consequence is identical and the reader is the same person: a LOGIC
+    ruling that matches nothing ships a page in which Mide's correction is
+    simply absent, and every gate downstream calls that green.
+    """
+    return _anchor_refusal(
+        "an MRB-287 ruling", ruling, anchor, what,
+        "The ruling is Mide's and still stands. Design has redrawn that "
+        "span; re-anchor it in teacher_rulings.LOGIC rather than dropping "
+        "it, and do NOT hand-edit the built page — that is exactly how the "
+        "MRB-275 rulings were lost.\n"
+        "  ⚠️ SKIPPING IS NOT AVAILABLE. A ruling that silently matched "
+        "nothing is the same failure as the hand-edit it replaces: the "
+        "build goes green and the ruling is not in the page.")
+
+
+# A key segment shaped like a JS identifier is a PROPERTY (`meta` → `meta:`);
+# anything else is a STATEMENT, matched as a literal line prefix (`const
+# flagged`). `_PATH` is the dotted form — a property inside a property.
+_IDENT = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
+_PATH = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*(\.[A-Za-z_$][A-Za-z0-9_$]*)+$")
+
+
+# The ceiling on a resolved anchor span. Every anchored ruling in
+# teacher_rulings.py spans at most seven lines; see the note in
+# `resolve_anchor` for the 97-line runaway this exists to refuse.
+_MAX_ANCHOR_LINES = 40
+
+
+def resolve_anchor(logic, spec, refusal=_nav_refusal):
+    """(start, end) of the source span one `anchor` names.
+
+    `start` is the beginning of the anchored line, at column 0, so the caller
+    can read Design's indentation off it. `end` is just past the last
+    character of the span, excluding its newline.
+
+    ── SCOPES ───────────────────────────────────────────────────────────
+    `method="renderVals"`   the body of that method, closer excluded
+    `builder="cards"`       the `const cards = ….map(…)` declaration
+    both                    the builder, looked for only inside the method
+    neither                 all of Design's logic
+
+    ── KEYS ─────────────────────────────────────────────────────────────
+    `key="open"`            a PROPERTY: the line beginning `open:`
+    `key="klass.meta"`      `meta:` inside the `klass:` object, and nowhere
+                            else — the narrowing that lets one anchor pick
+                            `klass.meta` out of a `renderVals` that returns
+                            four different `meta:` lines
+    `key="const flagged"`   a STATEMENT: the line beginning with that text
+
+    The two shapes END differently, and that is the whole reason they are
+    distinguished. A property ends at the first line back at its starting
+    depth that is FINISHED AS A PROPERTY — it ends with a comma, or the line
+    after it closes the enclosing object. Bracket balance alone is not
+    enough for that, and the class card is the proof:
+
+        open: () => c.n > 0                                     ← balanced
+          ? this.setState({ screen: 'class', classId: c.id })   ← balanced
+          : this.setState({ screen: 'import', importStep: 1 }), ← balanced
+
+    Every line closes what it opens; a depth-only rule would replace the
+    first and leave a ternary with no consequent, which is a syntax error on
+    six pages. A STATEMENT ends at the first line back at its starting depth
+    that ends with `;` — which is what carries `state = { … };` and any
+    other multi-line initialiser across its own closing brace.
+
+    ⚠️ EXACTLY ONE MATCH IS REQUIRED at every step, scopes included. That is
+    the safety property and not a convenience; never widen it, and never add
+    a first-match-wins path.
+    """
+    name = spec.get("_name", "?")
+    anchor = spec["anchor"]
+    key = anchor["key"]
+    lines = _logic_lines(logic)
+
+    def refuse(what):
+        return refusal(name, anchor, what)
+
+    # `decl` is the line that OPENED the current scope — a builder
+    # declaration or a container property. It is never itself the match.
+    # `scope` is how a refusal NAMES where it looked, innermost first.
+    lo, hi, decl, scope = 0, len(lines), None, []
+
+    if "method" in anchor:
+        lo, hi = _method_scope(lines, anchor["method"], refuse)
+        scope.append("`%s()`" % anchor["method"])
+
+    if "builder" in anchor:
+        builder = anchor["builder"]
+        decl_re = re.compile(r"^\s*const\s+%s\s*=" % re.escape(builder))
+        hits = [n for n in range(lo, hi) if decl_re.match(lines[n][2])]
+        # ⚠️ `.map(` IS PART OF THE ANCHOR, not a sanity check. `const
+        # chaseAll = [];` … `forEach(… push(…))` builds rows the same way and
+        # would answer to a bare `const <name> =`; the ruling says a MAP
+        # builder, so a list built some other way must refuse rather than be
+        # silently accepted at the wrong extent.
+        #
+        # ⚠️ AND THE LOOK-AHEAD STOPS AT THE END OF THE DECLARATION, NOT AFTER
+        # SOME NUMBER OF LINES. Design declares `const roster` TWICE — once as
+        # `this.rosterFor(k)` inside `gridFor()` and once as the class
+        # screen's `rosterSorted.map(…)` — and the line directly under the
+        # first is `const diff = this.STEMS.map(…)`. A fixed-window scan sees
+        # that neighbour's `.map(` and calls the wrong `roster` a builder,
+        # which is exactly the neighbour-sensitivity this mechanism removes.
+        mapped = []
+        for n in hits:
+            head = []
+            for _, _, text, _ in lines[n:_builder_block_end(lines, n, refuse,
+                                                            builder)]:
+                head.append(text)
+                if ".map(" in text:
+                    break
+            if ".map(" in "\n".join(head):
+                mapped.append(n)
+        if len(mapped) != 1:
+            raise refuse(
+                "anchors on a `.map(` builder named %r, and Design's logic "
+                "declares %d of them, not one" % (builder, len(mapped)))
+        n = mapped[0]
+        lo, hi, decl = n, _builder_block_end(lines, n, refuse, builder), n
+        scope.append("`const %s`" % builder)
+
+    segs = key.split(".") if _PATH.match(key) else [key]
+    for seg in segs[:-1]:
+        n = _one_line(lines, lo, hi, seg + ":", decl, scope, refuse)
+        lo = n
+        hi = _prop_span_end(lines, n, seg + ":", refuse) + 1
+        decl = n
+        scope.append("`%s`" % seg)
+
+    last = segs[-1]
+    prop = bool(_IDENT.match(last))
+    want = last + ":" if prop else last
+    n = _one_line(lines, lo, hi, want, decl, scope, refuse)
+    end = (_prop_span_end(lines, n, want, refuse) if prop
+           else _stmt_span_end(lines, n, want, refuse))
+
+    # ── ⊕ MRB-306, 2 Sep 2026 — HOW FAR DID THE SPAN ACTUALLY REACH? ─────
+    #
+    # Everything above finds WHERE a ruling applies and nothing measured HOW
+    # MUCH it would replace. That gap nearly deleted six kilobytes of
+    # Design's logic in silence.
+    #
+    # `dict(builder="stHistory", key="late, pct")` is the obvious anchor for
+    # a line v3 writes as a shorthand pair, and it resolved — to NINETY-SEVEN
+    # LINES, 5,414 characters, starting at `late, pct:`, escaping `stHistory`
+    # entirely and ending inside the nav-tab code. A one-line ruling
+    # replacing that span deletes all of it AND THE BUILD GOES GREEN: every
+    # other ruling still matches, the page still renders, and the loss shows
+    # up as behaviour nobody wired.
+    #
+    # The cause is that a STATEMENT ends "at the first line back at base
+    # depth ending `;`", and inside an object literal there is no such line
+    # until long after the builder has closed. So the two guards below are
+    # different questions, and both are needed:
+    #
+    #   CONTAINMENT — a scoped anchor must not resolve past its own scope.
+    #     This is the precise one. `builder=`/`method=`/a dotted path all
+    #     narrow to `hi`, and a span that crosses it has stopped describing
+    #     the thing the ruling named.
+    #   EXTENT — an unscoped anchor has no `hi` to cross, so it gets a
+    #     ceiling instead. All 47 anchored rulings in this file span at most
+    #     SEVEN lines (the state initialiser); 40 is far above anything
+    #     legitimate and far below a runaway.
+    #
+    # Both refuse rather than warn. A span this wrong is never what was
+    # meant, and the whole value of this machinery is that it stops instead
+    # of guessing.
+    if scope and end >= hi:
+        raise refuse(
+            "resolves a span that ESCAPES its own scope — it starts at line "
+            "%d and runs to line %d, past the end of %s at line %d. A "
+            "statement anchor inside an object literal does this: it looks "
+            "for a `;` at base depth and does not find one until long after "
+            "the scope has closed. Replacing that span would delete "
+            "everything in between and still build green. Anchor on the "
+            "property (`key=\"%s\"`) rather than the shorthand pair, or "
+            "give the ruling a verbatim `frm`"
+            % (n + 1, end + 1, scope[-1], hi, last.split(",")[0].strip()))
+
+    if (end - n + 1) > _MAX_ANCHOR_LINES:
+        raise refuse(
+            "resolves a span of %d lines, and nothing this file anchors is "
+            "longer than seven. That is a runaway, not a ruling: the span "
+            "starts at line %d with `%s` and ends at line %d with `%s`. "
+            "Replacing it would delete everything in between and the build "
+            "would still be green"
+            % (end - n + 1, n + 1, lines[n][2].strip()[:60],
+               end + 1, lines[end][2].strip()[:60]))
+
+    return lines[n][0], lines[end][1]
+
+
+def resolve_nav_anchor(logic, spec):
+    """`resolve_anchor` with the NAV refusal. Kept as the NAV entry point."""
+    return resolve_anchor(logic, spec, _nav_refusal)
+
+
+def _scope_words(scope):
+    """How the refusal names the scope it searched, innermost first."""
+    if not scope:
+        return " in Design's logic"
+    return " inside " + " in ".join(reversed(scope))
+
+
+def _one_line(lines, lo, hi, want, decl, scope, refuse):
+    """The single line in [lo, hi) that begins `want`. Refuses on 0 or 2+."""
+    found = [n for n in range(lo, hi)
+             if n != decl and lines[n][2].lstrip().startswith(want)]
+    if len(found) != 1:
+        raise refuse(
+            "anchors on a line beginning `%s`, and there are %d of them%s"
+            % (want, len(found), _scope_words(scope)))
+    return found[0]
+
+
+def _line_delta(lines, n):
+    """The depth CHANGE across line `n`."""
+    before = lines[n - 1][3] if n else 0
+    return lines[n][3] - before
+
+
+def _prop_span_end(lines, n, want, refuse):
+    """The LAST line index of the property that starts at line `n`."""
+    start_depth = lines[n][3] - _line_delta(lines, n)
+    for i in range(n, len(lines)):
+        text = lines[i][2].rstrip()
+        if lines[i][3] == start_depth:
+            nxt = lines[i + 1][2].lstrip() if i + 1 < len(lines) else ""
+            if text.endswith(",") or nxt[:1] in ("}", ")", "]"):
+                return i
+    raise refuse(
+        "anchors on a line beginning `%s` whose arrow body never closes"
+        % want)
+
+
+def _stmt_span_end(lines, n, want, refuse):
+    """The LAST line index of the statement that starts at line `n`.
+
+    Ends on the first line back at the statement's own starting depth that
+    terminates it with `;`. That is what carries a multi-line initialiser —
+    `state = {` opens a brace on its first line and closes it four lines
+    later on `};`, and a depth-only rule would hand back the opening line
+    alone and splice a `to` in on top of an orphaned object literal.
+    """
+    base = lines[n][3] - _line_delta(lines, n)
+    for i in range(n, len(lines)):
+        if lines[i][3] == base and lines[i][2].rstrip().endswith(";"):
+            return i
+    raise refuse(
+        "anchors on a statement beginning `%s` that never ends" % want)
+
+
+def _method_scope(lines, method, refuse):
+    """(lo, hi): the line range of `method`'s BODY, its closer excluded.
+
+    ⊕ 1 Sep 2026 (MRB-306). `builder=` says WHICH LIST a row belongs to;
+    `method=` says WHICH METHOD a statement belongs to, which is the scope a
+    plain statement needs — `const flagged` is not a property of anything
+    and has no builder above it, but it is unambiguously one line of
+    `renderVals`, and `renderVals` is a name Design has never renamed.
+    """
+    decl = re.compile(r"^  %s\s*\(" % re.escape(method))
+    hits = [n for n in range(len(lines)) if decl.match(lines[n][2])]
+    if len(hits) != 1:
+        raise refuse(
+            "anchors inside a method named %r, and Design's class declares "
+            "%d of them, not one" % (method, len(hits)))
+    n = hits[0]
+    base = lines[n][3] - _line_delta(lines, n)
+    if lines[n][3] == base:          # `klass() { return …; }` — one line
+        return n, n + 1
+    for i in range(n + 1, len(lines)):
+        if lines[i][3] == base:
+            return n + 1, i
+    raise refuse("anchors inside `%s()`, whose body never closes" % method)
+
+
+def _builder_block_end(lines, n, refuse, builder):
+    """The line index just past `const <builder> = …;`.
+
+    Ends on the first line that is back at the declaration's own starting
+    depth AND terminates the statement with `;`. The `;` half is load-bearing
+    for a CHAINED builder — `liveClasses.map(…)` on one line, `.filter(…)`
+    and `.sort(…).slice(…).map(…)` on the next three — where the depth is
+    already back to base at the end of the first line and a depth-only rule
+    would hand back a one-line block with no handler in it.
+    """
+    base = lines[n][3] - _line_delta(lines, n)
+    for i in range(n, len(lines)):
+        if lines[i][3] == base and lines[i][2].rstrip().endswith(";"):
+            return i + 1
+    raise refuse(
+        "anchors inside `const %s`, whose declaration never ends" % builder)
+
+
+def _reindent(text, indent):
+    """`to` re-laid at Design's own indentation.
+
+    ⚠️ THE RULING OWNS THE CODE; DESIGN OWNS THE MARGIN. `to` is written once
+    and must survive a redelivery, and Design reindents freely — the class
+    roster's `open` moved from eight spaces to six between v2 and v3 without
+    a character of it changing. Pinning the margin inside `to` would make
+    every such move a hand-edit of the rulings, which is the padding problem
+    this mechanism exists to remove.
+    """
+    body = text.split("\n")
+    lead = len(body[0]) - len(body[0].lstrip())
+    out = []
+    for line in body:
+        if not line.strip():
+            out.append("")
+            continue
+        keep = line[lead:] if line[:lead].strip() == "" else line.lstrip()
+        out.append(indent + keep)
+    return "\n".join(out)
+
+
 def replace_method(logic, name, body, why):
     """Replace a method's whole body, found by balanced-brace scan."""
     m = re.search(r"\n  %s\s*\(" % re.escape(name), logic)
@@ -645,9 +1141,24 @@ def seam_logic(tpl_logic):
     # Design had not touched. Found by the build stopping, which is the check
     # working.
     #
+    # ⊕ 1 Sep 2026 (MRB-306) — AND THAT ORDERING HAZARD IS GONE FOR ANY ENTRY
+    # THAT CARRIES AN `anchor`. The paragraph above is kept because it is the
+    # reason the trailing context existed at all, and because the `frm` path
+    # below still honours it. An `anchor` names the BUILDER and the KEY, so
+    # nothing about the lines around the handler is load-bearing any more —
+    # see `resolve_nav_anchor`. All sixteen entries are anchored today; the
+    # `frm` path stays for the next ruling that needs it.
+    #
     # Same refusal, and the same reason. The NODES these are anchored to are
     # asserted separately, in `apply_rulings` — here it is only the source.
     for handler, spec in R.NAV.items():
+        if "anchor" in spec:
+            start, end = resolve_nav_anchor(logic, dict(spec, _name=handler))
+            span = logic[start:end]
+            indent = span[:len(span) - len(span.lstrip(" \t"))]
+            logic = logic[:start] + _reindent(spec["to"], indent) + logic[end:]
+            counts["nav"] += 1
+            continue
         n = logic.count(spec["frm"])
         if n != 1:
             raise SystemExit(
@@ -664,7 +1175,21 @@ def seam_logic(tpl_logic):
         counts["nav"] += 1
 
     # ── 2. the guarded exactly-once source replacements ──────────────────
+    #
+    # ⊕ 1 Sep 2026 (MRB-306) — the first element is `frm` OR an `anchor`.
+    # A dict means the ruling names the node it corrects rather than
+    # photographing the source around it; see the block comment above
+    # `_logic_lines`. The `frm` branch below is unchanged and still carries
+    # the 46 entries whose span is self-identifying text.
     for frm, to, why in R.LOGIC:
+        if isinstance(frm, dict):
+            spec = dict(anchor=frm, _name=why.split(".")[0][:72])
+            start, end = resolve_anchor(logic, spec, _logic_refusal)
+            span = logic[start:end]
+            indent = span[:len(span) - len(span.lstrip(" \t"))]
+            logic = logic[:start] + _reindent(to, indent) + logic[end:]
+            counts["logic"] += 1
+            continue
         n = logic.count(frm)
         if n != 1:
             raise SystemExit(
@@ -1011,21 +1536,28 @@ def apply_rulings(spec, roots, logic):
     # is a control wired to nothing — caught by `teacher_behaviour`'s
     # `data-mrb-misses` check, but only after the page had been written. This
     # is the same guard step 6 makes for `WRAP`, for the same reason.
+    # ⊕ 3 Sep 2026 (MRB-306 Phase 2b) — THE SLOT IS NAMED, because not every
+    # handler Design writes is an `onClick`. Node 651's is `onch` (an
+    # `onChange` on the bulk sheet's textarea), and a table that could only
+    # read `on` would have found "no handler at all" there and refused a
+    # ruling that is correct — or, worse, written the new handler into `on`
+    # and left `onch` pointing where it always did, which builds green and
+    # changes nothing.
     retargeted = 0
-    for node, (expect, handler, why) in R.RETARGET_ON.items():
+    for node, (slot, expect, handler, why) in R.RETARGET_ON.items():
         if node not in here:
             continue
-        on = here[node].get("on")
+        on = here[node].get(slot)
         if on != expect:
             raise SystemExit(
                 "build_teacher_port.py: the MRB-304 ruling moves template "
-                "node %s from %r to %r, and that node carries %r.\n"
+                "node %s's `%s` from %r to %r, and that node carries %r.\n"
                 "  Design has redrawn it, or the index now names a different "
                 "control. Re-anchor teacher_rulings.RETARGET_ON: applied to "
                 "the wrong node this repoints one of Design's own controls at "
                 "somewhere it was never meant to go, and the page still "
                 "builds. (%s)"
-                % (node, expect, handler, on or "no handler at all",
+                % (node, slot, expect, handler, on or "no handler at all",
                    why.split(".")[0]))
         if not re.search(r"\b%s\b\s*:" % re.escape(handler), logic):
             raise SystemExit(
@@ -1036,7 +1568,7 @@ def apply_rulings(spec, roots, logic):
                 "Unchecked, this ships a control that resolves to nothing — a "
                 "brand mark a teacher presses and nothing happens. (%s)"
                 % (node, handler, why.split(".")[0]))
-        here[node]["on"] = handler
+        here[node][slot] = handler
         retargeted += 1
 
     # ── 5. the navigation rewires, asserted at their NODES ───────────────
@@ -1262,7 +1794,22 @@ class DCLogic { constructor(){ this.props = {}; } setState(){} }
 /*__DESIGN_LOGIC__*/
 const c = new Component();
 const out = { CLASSES: c.CLASSES, MATRIX: {}, ROSTER: {}, PAPERS: {},
-              WEEKS: {}, GRID: {}, FEED: {} };
+              WEEKS: {}, GRID: {}, FEED: {}, FEEDBACK: {} };
+
+/* Design's own month labels and Design's own `lab()` format, so a shifted
+   stamp is written exactly the way every other date in this fixture is.
+   The year is Design's: `weeks()` seeds `new Date(2026, 8, 2)` and the whole
+   sample runs Jun–Sep of that one year, so a ±2-day shift can roll a month
+   but never a year. Returns the input unchanged if it is not a "D Mon". */
+const FX_M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function fxShiftShort(short, days) {
+  if (!short) { return null; }
+  const m = /^(\d+)\s+([A-Za-z]{3})$/.exec(short);
+  if (!m || FX_M.indexOf(m[2]) < 0) { return short; }
+  const d = new Date(2026, FX_M.indexOf(m[2]), parseInt(m[1], 10) + days);
+  return d.getDate() + ' ' + FX_M[d.getMonth()];
+}
 
 function adaptMatrix(k, mx, papers) {
   const cols = papers.length;
@@ -1271,17 +1818,56 @@ function adaptMatrix(k, mx, papers) {
     const max = r.scores.map(v => (v == null ? null : 8));
     const pct = r.scores.map(v => (v == null ? null : Math.round((v / 8) * 100)));
     const submitted = r.scores.map(v => v != null);
-    /* The date Design's own history row rendered for this cell: the DEADLINE
-       when on time and the end of the week when late. On the live page this
-       is `completed_at`; here it is the only stamp Design's sample has, and
-       it keeps the fixture rendering what Design drew. */
+    /* ⊕ MRB-306 Phase 2a screen 4, 2 Sep 2026 — A STAMP THE CLOCK COULD
+       ACTUALLY HAVE PRODUCED.
+
+       ⛔ THIS USED TO BE `r.late[i] ? papers[i].lateShort : papers[i].dueShort`
+       with the note "it keeps the fixture rendering what Design drew". That
+       was the wrong goal, and it made the fixture model a state real data
+       cannot reach.
+
+       Design's `lateShort` is `due − 5 days` — the FRIDAY BEFORE the
+       Wednesday deadline, the end of the week the work was SET in. It is not
+       a submission date at all. So every LATE row in this fixture carried a
+       stamp EARLIER than its own deadline: "Energy stores and transfers, due
+       Wed 26 Aug, submitted 21 Aug, LATE". And every on-time row carried the
+       deadline itself, to the day, for nine rows running.
+
+       The live seam cannot produce either. `buildMatrix` takes the stamp from
+       `completed_at`/`submitted_at`, and where `is_late` is null it DERIVES
+       lateness as `stamp > paper.due_at` — so a late stamp is after the
+       deadline by construction, and an on-time one is not.
+
+       ⚠️ AND IT MADE THE GATE BLIND TO ITS OWN RULING. #11's whole point is
+       that the SUBMITTED column must show the real stamp rather than the
+       deadline. A fixture that feeds it the deadline anyway renders exactly
+       what the unfixed code rendered, so no gate could tell the ruling had
+       been applied.
+
+       So the stamp is now derived from the deadline CONSISTENTLY WITH `late`:
+       a day before it when the work was on time, two days after when it was
+       late. Still Design's dates, still invented like everything else here —
+       but no longer self-contradictory, and now distinguishable from
+       `dueShort`, which is the whole thing the ruling is about. */
     const stampShort = r.scores.map(function (v, i) {
       if (v == null || !papers[i]) { return null; }
-      return r.late[i] ? papers[i].lateShort : papers[i].dueShort;
+      return fxShiftShort(papers[i].dueShort, r.late[i] ? 2 : -1);
+    });
+    /* ⊕ MRB-306 Phase 2b — A SUBMISSION ID PER CELL, because the live
+       matrix carries one and written feedback binds to nothing else.
+       Design's sample has no concept of a submission row at all, so this is
+       DERIVED from what she does have — the class, the student and the paper
+       index — and it is deliberately not uuid-shaped, on the same terms as
+       FIXTURE_ME: every real `assignment_submissions.id` is a uuid, so this
+       cannot be mistaken for a row or pasted into a query that would match
+       one. `null` where nothing was handed in, which is the state the
+       control is absent in. */
+    const subId = submitted.map(function (yes, i) {
+      return yes ? (k.id + ':' + r.sid + ':p' + i) : null;
     });
     return { sid: r.sid, scores: r.scores, max: max, pct: pct,
              late: r.late.slice(), stampShort: stampShort,
-             submitted: submitted, inWeek: r.inWeek };
+             subId: subId, submitted: submitted, inWeek: r.inWeek };
   });
   const colAsked = [], colLate = [], colLateUnknown = [];
   for (let p = 0; p < cols; p++) {
@@ -1312,10 +1898,31 @@ c.CLASSES.forEach(function (k) {
   out.PAPERS[k.id] = papers;
   out.MATRIX[k.id] = mx;
   out.ROSTER[k.id] = c.rosterFor(k);
-  out.WEEKS[k.id] = papers.map(function (p) {
-    return { idx: p.idx, range: p.range, due: p.due.replace(/^Due /, ''),
-             set: p.set, dueShort: p.dueShort, lateShort: p.lateShort,
-             academic_week: null, weekLabel: '' };
+  /* ⊕ MRB-306 — THE FIXTURE'S WEEKS ARE WEEKS, not assignments, because the
+     live seam's are. `buildWeeks` in `shared/teacher-live.js` returns the
+     ACADEMIC YEAR's teaching weeks and papers carry a `weekIdx` onto them;
+     a fixture still shaped like the old one-week-per-paper list would draw a
+     two-chip bar beside a live page's twelve and nothing would say why.
+
+     Design's twelve weeks are twelve papers, so `weekIdx` is the paper's own
+     index — true inside her fiction, and the reason the two models were
+     indistinguishable until real data arrived.
+
+     ⚠️ NO TERM NAME, DELIBERATELY. The live label ("Autumn Week 6") is
+     derived from an `academic_years` row's start date, and Design's sample
+     has no academic year at all — it has a hardcoded first date. Inventing a
+     term here would put a season into a fixture that no data supports, so
+     the chip's second line reads "Week 11" and the newest chip reads "This
+     week", which is Design's own wording. */
+  const wks = c.weeks();
+  out.WEEKS[k.id] = wks.map(function (w, i) {
+    return { idx: i, weekOfYear: wks.length - i, term: '',
+             label: 'Week ' + (wks.length - i), range: w.range,
+             now: i === 0, monYmd: '', friYmd: '' };
+  });
+  papers.forEach(function (p) {
+    p.weekIdx = p.idx;
+    p.weekOfYear = wks.length - p.idx;
   });
 });
 
@@ -1334,7 +1941,13 @@ __IDS__.forEach(function (id) {
     out.GRID[id + ':' + i] = {
       rows: g.rows.map(function (r) {
         return { id: r.id, name: r.name, initials: r.initials, hue: r.hue,
-                 raw: r.raw, score: r.score, submitted: r.score !== '—' };
+                 raw: r.raw, score: r.score, submitted: r.score !== '—',
+                 /* ⊕ Phase 2b — the SAME derivation as the matrix's, so a
+                    comment written from the marking screen is the same row
+                    the student screen shows. Two spellings here would put
+                    one comment on two ids and make the fixture prove the
+                    opposite of what it is for. */
+                 subId: r.score !== '—' ? (id + ':' + r.id + ':p' + i) : null };
       }),
       qpct: g.qpct, stems: stems, submitted: g.submitted,
       roster: k.n, qcount: stems.length, maxScore: stems.length,
@@ -1342,6 +1955,56 @@ __IDS__.forEach(function (id) {
       qLine: stems.length + ' questions, 1 mark each'
     };
   });
+});
+
+/* ⊕ MRB-306 Phase 2b — TWO COMMENTS, ON IDS THIS RUN ACTUALLY PRODUCED.
+
+   Design's delivery has no feedback of any kind, so these are invented like
+   everything else in this file — but the SHAPE is the seam's
+   (`buildFeedback` in shared/teacher-live.js) and the ids are the ones the
+   matrix and the grid just derived, so the fixture cannot render a comment
+   against a submission that is not on the page.
+
+   ⚑ ONE IS MINE AND ONE IS A COLLEAGUE'S, deliberately, on the same
+   reasoning as the two sample shoutouts below: a fixture where every comment
+   is editable proves the sheet renders and proves nothing about the author
+   check, and one where none is leaves `teacher_behaviour` with no Save and
+   no Remove to press. */
+__IDS__.forEach(function (id) {
+  const mx = out.MATRIX[id];
+  const stRow = mx.byId[id + '-12'];      // the fixture's signed-in student
+  const mine = stRow ? stRow.subId.filter(Boolean)[0] : null;
+  const theirs = stRow ? stRow.subId.filter(Boolean)[1] : null;
+  if (mine) {
+    out.FEEDBACK[mine] = {
+      id: mine + ':fb-1', body:
+        'Your working on the energy question was the clearest in the class ' +
+        '— you wrote the equation down before substituting. Next time, ' +
+        'check the units before you write the final line.',
+      teacher_id: '__MRB_FIXTURE_ME__', mine: true, by: 'You',
+      when: '2 days ago', edited: false, editedWhen: '' };
+  }
+  if (theirs) {
+    out.FEEDBACK[theirs] = {
+      id: theirs + ':fb-2', body:
+        'Good recovery on the second half. Come and see me about question 4 ' +
+        'before the next set.',
+      teacher_id: '__MRB_FIXTURE_OTHER__', mine: false, by: 'Another teacher',
+      when: '1 week ago', edited: true, editedWhen: '5 days ago' };
+  }
+  /* And one on the MARKING screen's own paper, so that screen has a comment
+     to open without depending on which of Kaleb's papers happens to be
+     index 1. */
+  const g = out.GRID[id + ':1'];
+  const first = g ? (g.rows.filter(function (r) { return r.subId; })[0]) : null;
+  if (first && !out.FEEDBACK[first.subId]) {
+    out.FEEDBACK[first.subId] = {
+      id: first.subId + ':fb-3', body:
+        'You knew the definition and lost the mark on the description. ' +
+        'Say what changes, not just what it is called.',
+      teacher_id: '__MRB_FIXTURE_ME__', mine: true, by: 'You',
+      when: '3 days ago', edited: false, editedWhen: '' };
+  }
 });
 
 /* Design's two sample shoutouts, against the roster the run just computed. */
@@ -1358,15 +2021,24 @@ __IDS__.forEach(function (id) {
      fixture where every row is deletable proves the control renders and
      proves nothing about the author check, and one where none is leaves
      `teacher_behaviour` with no button to press. */
+  /* ⊕ 3 Sep 2026 — `by`, THE BYLINE, on both rows. `teacher-live.buildFeed`
+     computes it off the read RPC's own author join, so a fixture without it
+     would render an unresolved binding on the one field the restored feed
+     added — invisible on screen, because a miss draws nothing.
+     ⚑ THE TWO BYLINES ARE DIFFERENT PEOPLE, and that is the point of the
+     pair: the first row is the signed-in teacher's (`__MRB_FIXTURE_ME__`,
+     deletable) and the second is a colleague's (`__MRB_FIXTURE_OTHER__`, not
+     deletable). A fixture where both said the same name would render a feed
+     that cannot be told apart from one with no attribution at all. */
   out.FEED[id] = [
     { id: id + ':shout-1', author_id: '__MRB_FIXTURE_ME__',
-      name: pick(9), when: '2 days ago',
+      name: pick(9), by: 'by Mr Badmus', when: '2 days ago',
       template: 'Top of the class this week',
       body: 'Highest mean in ' + k.code + ' on the last set — and showed ' +
             'working on every question.',
       initials: c.initials(pick(9)), hue: c.hueFor(pick(9)) },
     { id: id + ':shout-2', author_id: '__MRB_FIXTURE_OTHER__',
-      name: pick(12), when: '1 week ago',
+      name: pick(12), by: 'by Ms Ademola', when: '1 week ago',
       template: 'Bounced back strong',
       body: 'Went from 38% to 74% after one reteach of the lowest-scoring ' +
             'question.',
@@ -1541,6 +2213,13 @@ def fixture_payload(data, templates, class_id):
     # be twelve chances to disagree with `yearLabel`, and the card meta's
     # whole defect was a year that disagreed with the class it described.
     classes = [dict(c, yearName=DESIGN_SCALARS["yearLabel"]) for c in classes]
+    # ⊕ MRB-306 Phase 2a — AND A CLASS THAT IS NOT LIVE HAS NO ACTIVITY.
+    # Design's `11h/Sc5` is `state: 'nowork'` with `last: '2 days ago'`, which
+    # is a class with no work set and a submission against it. The seam cannot
+    # produce it (no papers means no matrix columns means no stamps), so the
+    # populated fixture would otherwise be the ONLY classes page in existence
+    # where the non-live activity line is never drawn. See `_no_activity`.
+    classes = [c if c["state"] == "live" else _no_activity(c) for c in classes]
     payload["CLASSES"] = classes
     payload.update(
         TEMPLATES=templates,
@@ -1551,7 +2230,23 @@ def fixture_payload(data, templates, class_id):
         searchPlaceholder="Search students across all %d classes"
                           % len(classes),
         classId=class_id,
-        studentId=class_id + "-3",
+        # ⊕ MRB-306 Phase 2a screen 4, 2 Sep 2026 — WAS `-3`, AND `-3` LEFT
+        # THE SCREEN'S ONLY WRITE CONTROL UNDRIVEN.
+        #
+        # The index is this port's arbitrary pick, not Design's. `-3` is Ben
+        # Whitcombe, whose `flag` is false — and Design gates "Send a
+        # reminder" on `student.flagged`, so the button did not exist on any
+        # fixture. `teacher_behaviour` reported "20/20 control(s) pressed"
+        # and had never once pressed the reminder, because a control that
+        # does not render cannot be counted as missing.
+        #
+        # `-12` is Kaleb Anderson, and he is chosen for COVERAGE rather than
+        # for being flagged alone: 5 marked, 2 of them late, 6 never
+        # submitted and row 0 open. That is every history state the screen
+        # can draw — on time, late, nothing in, in progress — where `-3` had
+        # only one missing row and no reminder. Strictly more states, none
+        # lost.
+        studentId=class_id + "-12",
         # Design's `paperId` was `'8rsc1:p1'` — index 1.
         paperIdx=1,
         screen="classes",
@@ -1574,8 +2269,27 @@ def fixture_payload(data, templates, class_id):
 # ⛔ NOT A CANDIDATE FOR ANY LIVE PATH, for the same reason the populated
 # fixtures are not, and one more: several of these are shapes a real teacher's
 # data could never be in at the same time.
+# ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 2) — ONE FILE, N EMPTY SHAPES ──
+#
+# ⚑ THE CONTRACT CHANGED FROM ONE SHAPER PER FILE TO ONE OR MORE, and the
+# value is now a TUPLE OF `(slug, note, shaper)` TRIPLES rather than a bare
+# `(note, shaper)` pair. Every page still MUST appear here — the build reads
+# `EMPTY_SHAPES[spec["out"]]` and a missing page is still a KeyError, which is
+# the refusal that made the old shape worth having — but a page may now name
+# more than one empty state.
+#
+# ⚠️ `slug` NAMES THE FILE, so it is not decoration. The slug `empty` is
+# special: it keeps the spec's OWN `empty_out`/`empty_js`, so all twelve
+# existing fixture filenames are byte-identical to what they were and nothing
+# downstream moves. Any other slug derives
+# `<stem>-<slug>-fixture.html` / `teacher-fixture-<stem>-<slug>.js`.
+#
+# ⚠️ EXACTLY ONE `empty` SLUG PER PAGE, asserted below. Two would both claim
+# the same filename and the second would silently overwrite the first — which
+# is precisely the failure the one-shaper-per-file rule was protecting
+# against, so the protection is kept rather than dropped along with the rule.
 EMPTY_SHAPES = {
-    "classes.html": (
+    "classes.html": (("empty",
         "no classes IN THE YEAR BEING VIEWED, and that year is a PAST one. "
         "⊕ MRB-287 E1 — THIS FIXTURE CARRIES TWO PROPERTIES, deliberately, "
         "and they are the same teacher: someone whose classes are all last "
@@ -1589,8 +2303,8 @@ EMPTY_SHAPES = {
         "students\" is ABSENT because a finished year is read-only. It is "
         "also the only fixture in the set where `canWrite` is false on the "
         "classes screen.",
-        lambda p: _shape_past_year(_shape_no_classes(p))),
-    "class-detail.html": (
+        lambda p: _shape_past_year(_shape_no_classes(p))),),
+    "class-detail.html": (("empty",
         "a class with no roster — `ROSTER: []`, `n: 0`, `state: 'empty'`. "
         "Design DREW this one (\"No students yet\" and an Import action), so "
         "it should render Design's own empty state rather than a blank. "
@@ -1604,42 +2318,352 @@ EMPTY_SHAPES = {
         "skipped on this fixture, so nothing that was pressed here stops "
         "being pressed.",
         lambda p: _shape_past_year(_shape_no_roster(p))),
-    "digest.html": (
+
+     # ── ⊕ THE THIRTEENTH FIXTURE, 2 Sep 2026 (MRB-306 Phase 2a screen 2) ──
+     #
+     # A LIVE class, with a roster, with work set, and NOBODY HAS HANDED
+     # ANYTHING IN. It is the state every class is in between the moment a
+     # teacher sets work and the moment the first child answers — so on a
+     # normal week it is what this screen looks like on Monday morning — and
+     # until now NO fixture in the set held it on THIS screen.
+     #
+     # ⚠️ WHAT IT ACTUALLY EXERCISES, and why the hole mattered: on this
+     # shape `openIn` is "0 of N in", `wMean` is null, `lastP` is null
+     # (nothing is marked, so `markedIdx` is empty), `worstTwo` is `[]`,
+     # `best` and `imp` are both null so `praise` is empty, and `kChase` is
+     # EVERY CHILD IN THE CLASS. Half a dozen null and divide-by-length paths
+     # that the populated fixture never reaches and the no-roster fixture
+     # cannot reach either — it has no roster to divide by.
+     #
+     # ⚠️ MY BRIEF SAID THIS IS "`8r/Sc1`'S EXACT SHAPE ON PROD". IT IS NOT,
+     # and the fixture is justified WITHOUT that claim rather than on top of
+     # it. Measured on prod 2 Sep 2026, `8r/Sc1` (2 members, 2 papers) has
+     # submissions on BOTH papers: "Particle model" 1 of 2 in, and
+     # "Breathing and gas exchange" 2 of 2 in — the latter from three
+     # submission ROWS, because one child has `attempt_no` 1 and 2 and
+     # `pickFirstAttempts` collapses them to the earlier. So no class in the
+     # working year is currently in this state. It is added because it is a
+     # SHAPE THE SEAM REALLY PRODUCES on any ordinary week, not because a
+     # class is sitting in it today — which is the honest reason, and the
+     # only kind that survives the data changing.
+     #
+     # ⚠️ AND IT REUSES `_shape_no_submissions` RATHER THAN INVENTING ONE.
+     # That shaper already zeroes the matrix AND rewrites each paper's `sub`
+     # to "0/N" and `mean` to an em-dash, because a fixture whose paper row
+     # says "13/16 · 67%" over a matrix holding nothing is a state no real
+     # data can produce. That is exactly the scepticism this fixture is
+     # supposed to be built with, already written down and already tested by
+     # the assignment screen.
+     ("nosubs",
+      "a LIVE class with a roster and work set that NOBODY has handed in "
+      "\u2014 `colSub: 0`, every cell null, every paper `0/N` and a class "
+      "mean of `\u2014`. The Monday-morning shape. It is the only fixture "
+      "on this screen where the chase list is the WHOLE class and nothing "
+      "is marked, so `lastP`, `worstTwo` and `praise` are all empty at "
+      "once.",
+      lambda p: _shape_no_submissions(p)),
+
+     # ── ⊕ THE SIXTEENTH, 2 Sep 2026 (screen 5) — THE 26 AUG SHAPE ──────
+     #
+     # ⚠️ NOT AN EDGE CASE. `load()` prefetches a grid for the marking screen
+     # and the questions chart and for nothing else, so EVERY class-detail
+     # render in production has `GRID: {}`. The other three class-detail
+     # fixtures ship a populated map, which this page can never have — which
+     # is exactly why the gate was green through the outage.
+     ("gridmissing",
+      "no grid fetched at all — `GRID: {}`, which is what this screen "
+      "ALWAYS has in production. `renderVals` computes the marking screen's "
+      "`paper` block here too, so this is the shape that threw mid-mount on "
+      "26 Aug 2026 and put \"Your classes could not be loaded\" over the one "
+      "class in the school with work set. It also shows the assignments "
+      "table's weak column as it really is on this page: an em-dash on "
+      "every row, because the grids it would need are not here.",
+      lambda p: _shape_grid_absent(p)),
+
+     # ── ⊕ THE SEVENTEENTH, 3 Sep 2026 (MRB-306 Phase 2b/3) ────────────
+     #
+     # ⛔ THE ONE SHAPE THE RESTORED SHOUTOUT SURFACE HAS TO BE PROVED ON,
+     # and no existing fixture could reach it. Mide ruled the composer and
+     # the feed back onto this screen on 3 Sep 2026 (see
+     # `SHOUTOUT_SURFACE_RESTORED`), and restoring a write surface is the
+     # obvious place to reopen the hole MRB-261 had just been closed on.
+     #
+     # ⚠️ WHY `class-detail-empty` IS NOT ENOUGH. It IS a past year, and it
+     # proves the composer is absent — but its class has NO ROSTER and
+     # `FEED[cid]` is `[]`, so there is no feed row on it and therefore
+     # nothing to carry a Remove control. It cannot tell "the delete
+     # affordance is correctly withheld on a finished year" apart from
+     # "there was no feed to put one on", which are the two answers a
+     # read-only check most needs to distinguish.
+     #
+     # ⚑ THIS IS A PAST YEAR WITH EVERYTHING ELSE INTACT: a live class, a
+     # roster, work set, marks, and TWO shoutouts of which one is the
+     # signed-in teacher's own. On the working year that first row draws a
+     # Remove; here it must not. Both halves of `f.canDelete` — the author
+     # check and `canWrite` — are exercised by one fixture.
+     #
+     # ⚠️ IT IS ALSO THE MOST ORDINARY SHAPE ON THIS LIST, which is worth
+     # saying because most fixtures here are edges. Today is 3 Sep 2026:
+     # every class every teacher in this school taught until 31 August is in
+     # exactly this state, and looking one up is a thing teachers do in the
+     # first fortnight of a year constantly.
+     ("readonly",
+      "a FINISHED academic year, with everything else intact — a live "
+      "class, a roster, work set, marks, and two shoutouts. It is the only "
+      "fixture in the set that is read-only AND populated, so it is the "
+      "only one that can prove MRB-261's rule on the restored shoutout "
+      "surface: the composer ABSENT (not disabled), the feed still "
+      "READABLE, and the Remove control withheld on a row that would carry "
+      "one in the working year.",
+      lambda p: _shape_past_year(p)),),
+    "digest.html": (("empty",
         "a class with students and no work set — `PAPERS: []`, `WEEKS: []`, "
         "`state: 'nowork'`. Design's README: \"classes with no work set have "
         "no week bar\", so the rail must be ABSENT and not drawn empty.",
         lambda p: _shape_no_work(p)),
-    "assignment.html": (
+
+     # ── ⊕ THE SIXTEENTH, 2 Sep 2026 (MRB-306 Phase 2a screen 6) ─────────
+     ("nolive",
+      "NOT ONE LIVE CLASS — every class has a roster and none has work set "
+      "yet, so `liveClasses` is EMPTY. This is the digest a teacher opens in "
+      "the first week of September, and on 2 Sep 2026 it is what all but one "
+      "teacher in the school would see: of the working year's 69 classes, "
+      "three have members and exactly one has any assignments.\n\n"
+      "It exists because the guards for this shape were UNTESTABLE. Two "
+      "rulings put an em dash on the Mean-score and On-time tiles when there "
+      "is nothing to average, and a third stops `Math.round(0/0)` printing "
+      "`NaN%` — and no fixture in the set could reach any of them, because "
+      "`digest-empty` blanks ONE class and leaves seven live. The gate's own "
+      "note in `teacher_behaviour.EMPTY_SHAPE` claimed this state was "
+      "already covered ('no live classes to digest'); it was not, and the "
+      "note is corrected there.",
+      lambda p: _shape_no_live_classes(p)),),
+    "assignment.html": (("empty",
         "a paper nobody submitted — the grid is present, `submitted: 0` and "
         "every `qpct` is null. This is where \"blanks over invented numbers\" "
         "is tested: nothing may render as 0%, as `null%`, or as a full bar. "
-        "⊕ AND IT CARRIES THE FOURTH GLYPH: one row's `raw` holds a 3, "
-        "because `is_correct IS NULL` cannot occur in Design's sample at all "
-        "and `cellStyle(3)` would otherwise be unexercised by every fixture "
-        "in the set.",
+        "⊕ 2 Sep 2026 — IT NO LONGER CARRIES THE FOURTH GLYPH, and the "
+        "reason is in `_shape_no_submissions`: a whole ROW of "
+        "`is_correct IS NULL` is a shape the seam cannot produce, and it "
+        "contradicted this fixture's own SUBMITTED 0/16 tile.",
         lambda p: _shape_no_submissions(p)),
-    "insights.html": (
+
+     # ── ⊕ THE FOURTEENTH FIXTURE, 2 Sep 2026 (screen 5) ─────────────────
+     ("written",
+      "a REAL-SHAPED paper: FIVE questions, SEVEN marks, and Q4 written. "
+      "It is the only fixture in the set whose `max` is not 8 and whose "
+      "question count is not 8, so it is the only one that can tell the "
+      "`/max` ruling apart from the `/8` hardcode it replaced, the only one "
+      "that renders `qLine`'s \"N questions, M marks\" branch, and the only "
+      "one that puts a column template other than eight on the class grid. "
+      "It also carries the fourth grid state where the seam really puts it "
+      "— one COLUMN, every child who submitted — and a lowest-scoring "
+      "question with NO stem snapshot, which is what drives the reteach "
+      "banner's empty-text guard.",
+      lambda p: _shape_written_paper(p)),
+
+     # ── ⊕ THE FIFTEENTH, 2 Sep 2026 (screen 5) ─────────────────────────
+     ("gridmissing",
+      "ONE assignment, still open, and no grid fetched for it — so "
+      "`gridFor` asks for a key that is NOT IN THE MAP. Key-absent is a "
+      "different branch from `insights-empty`'s key-present-null, and it is "
+      "the branch that threw live on 26 Aug 2026. Reachable here because "
+      "`load()` prefetches `newestMarkedIdx(papers)` and skips the fetch at "
+      "-1, while `paper()` falls back to `list[0]` — a class whose papers "
+      "are all still open lands between the two.",
+      lambda p: _shape_no_marked_paper(p)),
+
+     # ── ⊕ THE NINETEENTH, 4 Sep 2026 (MRB-306 Phase 3) ────────────────
+     #
+     # ⛔ THE FIXTURE THE PREVIOUS UNIT WROTE DOWN AS MISSING, IN ITS OWN
+     # "open" NOTE: *"No read-only fixture on the MARKING screen (student
+     # detail has one). The sheet is identical on both, so the behaviour is
+     # proven; a second fixture would make it an assertion."* This makes it
+     # an assertion.
+     #
+     # ⚠️ "IDENTICAL SHEET" IS EXACTLY THE REASONING THAT FAILED ONCE ON
+     # THIS SCREEN. `class-detail`'s read-only guarantee was described in
+     # `teacher_behaviour`'s docstring and asserted by nothing, and when v3
+     # deleted the two nodes `WRAP` held it on, the guarantee silently
+     # stopped applying while every gate stayed green. A shared builder is
+     # not a shared assertion: the two screens WRAP different nodes, the
+     # marking screen's opener is a GLYPH in a 225px track where student
+     # detail's is a word, and a future ruling can wrap one and not the
+     # other. This fixture is what notices.
+     #
+     # ⚑ IT IS A PAST YEAR WITH THE PAPER FULLY INTACT — a marked paper, a
+     # grid, a roster and marks — because the asymmetry is the rule: on a
+     # finished year the control that OPENS a comment SURVIVES (a teacher
+     # may still read what was written about a child last year) and the two
+     # inside the sheet that could CHANGE it do not. An empty read-only
+     # fixture could not tell "Save is correctly withheld" apart from
+     # "there was no comment to save".
+     ("readonly",
+      "the marking screen in a FINISHED academic year — `canWrite` false, "
+      "the paper, grid, roster and marks all intact. MRB-261's rule on the "
+      "surface written feedback is AUTHORED from: the feedback opener "
+      "survives on every row, and the sheet's Save and Remove do not. The "
+      "twin of `student-detail-readonly`, on the other screen the same "
+      "sheet is reached from.",
+      lambda p: _shape_past_year(p)),),
+    "insights.html": (("empty",
         "a grid that was never prefetched — `GRID[key]: null`, the seam's "
         "deliberate \"not fetched yet\". It must render as PENDING and never "
         "as a grid of zeros.",
         lambda p: _shape_grid_pending(p)),
+
+     # ── ⊕ THE SEVENTEENTH AND EIGHTEENTH, 2 Sep 2026 (screen 7) ─────────
+     ("nolive",
+      "NOT ONE LIVE CLASS — rosters imported, no work set anywhere, so "
+      "`live` is EMPTY and so is the class scope. Five of the six chart "
+      "kinds had NO empty-scope fixture at all: `insights-empty` only "
+      "withholds a GRID, which reaches the `questions` kind and nothing "
+      "else, so `spread`, `ontime`, `engagement` and `submissions` were "
+      "rendering Design's eight populated classes in BOTH of this page's "
+      "fixtures. This is the page a teacher opens in the first week of "
+      "September, and on 2 Sep 2026 it is what all but one teacher in the "
+      "school sees.",
+      lambda p: _shape_no_live_classes(p)),
+
+     ("single",
+      "ONE class, ONE paper, TWO children — the whole of the working "
+      "year's real data on 2 Sep 2026. Every superlative on this screen is "
+      "then a superlative over a set of one, and the single paper sits in "
+      "an EARLIER teaching week than the current one, which makes "
+      "`colSub[0]` and the seam's `week[0]` disagree by construction. See "
+      "`_shape_one_of_everything`.",
+      lambda p: _shape_one_of_everything(p)),
+
+     ("noroster",
+      "THE SCOPED CLASS HAS NO ROSTER — `ROSTER: []`, `n: 0`, "
+      "`state: 'empty'`. It is the shape 66 of the working year's 69 "
+      "classes are in on 2 Sep 2026, and it is the only one that empties "
+      "the `engagement` and `spread` charts on the CLASS scope: `nolive` "
+      "keeps every roster and so leaves both of them fully populated.",
+      lambda p: _shape_no_roster(p)),),
     "student-detail.html": (
-        "a student with no submissions at all, on a class that has papers — "
-        "every cell null, so the history renders four \"Nothing in\" rows "
-        "rather than a fabricated date.",
-        lambda p: _shape_no_submissions(p)),
+        ("empty",
+         "a student with no submissions at all, on a class that has papers — "
+         "every cell null, so the history renders four \"Nothing in\" rows "
+         "rather than a fabricated date.",
+         lambda p: _shape_no_submissions(p)),
+        # ⊕ 3 Sep 2026 (MRB-306 Phase 2b) — A PAST YEAR, ON THIS SCREEN TOO.
+        #
+        # ⛔ WITHOUT IT, MRB-261's RULE WAS UNTESTED ON THE ONE SURFACE THIS
+        # UNIT ADDED. `class-detail-readonly` proves the shoutout composer
+        # disappears on a finished year; nothing proved the same of the
+        # feedback sheet, because the sheet is on student-detail and marking
+        # and neither had a read-only fixture at all.
+        #
+        # ⚠️ AND WHAT IT ASSERTS IS ASYMMETRIC, WHICH IS THE POINT. A past
+        # year is READ-ONLY, not invisible: the opener stays (a teacher may
+        # still read what was written about a child last year — that is what
+        # MRB-261 exists for) and Save and Remove go, because they are the
+        # only two controls that could change it. `fbCanEdit` and
+        # `fbCanRemove` both read `MRB_DATA('canWrite')`, and this is the
+        # fixture that makes that a measurement rather than a claim.
+        ("readonly",
+         "the same student, in a FINISHED academic year — `canWrite` false. "
+         "The feedback opener survives and the sheet's Save and Remove do "
+         "not, which is MRB-261's rule (read-only, not invisible) applied to "
+         "the surface Phase 2b added.",
+         lambda p: _shape_past_year(p)),
+    ),
 }
+
+# ⚠️ THE `empty` SLUG IS UNIQUE PER PAGE, AND THE BUILD REFUSES OTHERWISE.
+# Two `empty` variants on one page would both resolve to that page's
+# `empty_out`, and the second would overwrite the first with no error at all
+# — a fixture silently replaced by a different one, which is the exact class
+# of failure the one-shaper-per-file rule used to make impossible. Dropping
+# that rule without replacing its guarantee would have been a downgrade, so
+# the guarantee is asserted here instead.
+for _out, _variants in EMPTY_SHAPES.items():
+    _slugs = [v[0] for v in _variants]
+    if len(_slugs) != len(set(_slugs)):
+        raise SystemExit(
+            "build_teacher_port.py: EMPTY_SHAPES[%r] names the same slug "
+            "twice (%s). Each slug names a filename, so a duplicate "
+            "overwrites a fixture rather than adding one." % (_out, _slugs))
+    if _slugs.count("empty") != 1:
+        raise SystemExit(
+            "build_teacher_port.py: EMPTY_SHAPES[%r] must name exactly one "
+            "`empty` variant — that is the one keeping the spec's own "
+            "`empty_out`/`empty_js` filenames — and it names %d."
+            % (_out, _slugs.count("empty")))
+
+
+def variant_files(spec, slug):
+    """(page filename, data filename) for one empty variant of one screen.
+
+    `empty` keeps the spec's own names so the twelve original fixtures do not
+    move; anything else derives from the page's stem.
+    """
+    if slug == "empty":
+        return spec["empty_out"], spec["empty_js"]
+    stem = spec["out"][:-len(".html")]
+    return ("%s-%s-fixture.html" % (stem, slug),
+            "teacher-fixture-%s-%s.js" % (stem, slug))
+
+
+def _no_activity(k):
+    """Design's `last` string, corrected where the seam could not produce it.
+
+    ⊕ MRB-306 Phase 2a, 2 Sep 2026. `last` is `relativeTime(lastIso)` OR the
+    words "No activity yet", and `teacher-live.js` derives `lastIso` from the
+    newest submission across the roster. A class with no roster has no
+    submissions, and a class with no papers has no matrix columns to hold a
+    submission stamp — so for BOTH non-live states the seam can only ever
+    produce the words.
+
+    Design's sample says otherwise: her `nowork` class carries "2 days ago",
+    which is a class with no work set and a submission against it. That is not
+    a value the live page can reach, and a fixture that carries it hides every
+    defect on the path that renders the words — which is how "Last activity No
+    activity yet" survived a week of green gates. See the `cards`/`activity`
+    ruling.
+
+    ⚠️ THE `live` PATH IS NOT COVERED BY THIS. A class with students and work
+    set that nobody has handed in yet is `live` with `lastIso` null, and no
+    fixture in the set holds that shape — Design's twelve are all populated.
+    Stated rather than implied.
+    """
+    return dict(k, last="No activity yet")
 
 
 def _blank_class(payload, cid, state, keep_papers):
     k = [c for c in payload["CLASSES"] if c["id"] == cid][0]
-    k = dict(k, state=state, n=0 if state == "empty" else k["n"],
-             week=[0, 0] if state != "live" else k["week"])
+    k = _no_activity(dict(k, state=state, n=0 if state == "empty" else k["n"],
+                          week=[0, 0] if state != "live" else k["week"]))
     payload["CLASSES"] = [k if c["id"] == cid else c
                           for c in payload["CLASSES"]]
     if state == "empty":
         payload["ROSTER"][cid] = []
     if not keep_papers:
+        # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 6) — THE ROSTER HAS TO FOLLOW
+        # THE PAPERS OUT, and it did not.
+        #
+        # Taking the papers away emptied `MATRIX[cid].byId`, and `buildRoster`
+        # reads exactly that: `flag` is `!row ? false : …`, `avg` is
+        # `studentAvg[id]`, `inWeek` is `!!(row && row.inWeek)` and `lastIso`
+        # is the newest stamp on the row. With no matrix row there IS no row,
+        # so a class with no work set has every child unflagged, unaveraged,
+        # not in this week and never active. The seam cannot produce anything
+        # else.
+        #
+        # The fixture kept the flags and the averages from before the
+        # blanking, which put "Needs a look — 4 · Nothing in this week, and
+        # behind" on the class report of a class with ZERO assignments. The
+        # by-class table hides it (its `needs` cell tests `state === 'nowork'`
+        # first and prints "No work set"), so it only shows on the report —
+        # and this is the seventh fixture in this run found asserting a state
+        # real data cannot reach.
+        for r in payload["ROSTER"].get(cid) or []:
+            r["flag"] = False
+            r["avg"] = None
+            r["inWeek"] = False
+            r["last"] = "No activity yet"
+            r["lastIso"] = None
         payload["PAPERS"][cid] = []
         payload["WEEKS"][cid] = []
         payload["MATRIX"][cid] = dict(
@@ -1715,6 +2739,213 @@ def _shape_no_work(p):
     return p
 
 
+def _shape_no_live_classes(p):
+    """Rosters imported, nothing set yet — `liveClasses` empty.
+
+    ⚑ THE SHAPE THE WHOLE-SCHOOL DIGEST DIVIDES BY. Every tile on the
+    unscoped digest reduces over `liveClasses`, and three of them divide by
+    its length or by a sum taken across it. `digest-empty` cannot reach the
+    zero case: it blanks one class and leaves seven.
+
+    Every class becomes `nowork` rather than `empty`, and that is the point —
+    `empty` would take the rosters away too, and then "227 students" would
+    vanish from the sub-heading along with the live classes, which is a
+    different (and rarer) state. Rosters imported and no work set is the
+    ordinary start of a school year.
+
+    `_blank_class` already does exactly this per class, including the
+    `week: [0, 0]` and the "No activity yet" that the seam is structurally
+    obliged to produce for a class with no papers.
+
+    ⚠️ A CLASS WITH NO ROSTER STAYS `empty`, NOT `nowork`, because that is
+    the order the seam resolves them in: `state = pack.members.length === 0 ?
+    "empty" : (papers.length === 0 ? "nowork" : "live")`. No roster BEATS no
+    work — a class with neither needs the roster first, and its row says
+    "Roster not imported" rather than "No work set".
+
+    Blanking all twelve to `nowork` was the first version of this shaper and
+    it printed "No work set" against three classes that have no students at
+    all, which the seam cannot produce. Caught by reading the print render,
+    not by any gate.
+    """
+    p = json.loads(json.dumps(p))
+    for k in list(p["CLASSES"]):
+        keep = "empty" if not (p["ROSTER"].get(k["id"]) or []) else "nowork"
+        p = _blank_class(p, k["id"], keep, keep_papers=False)
+    p["FEED"] = {k["id"]: [] for k in p["CLASSES"]}
+    p["studentId"] = None
+    return p
+
+
+def _shape_one_of_everything(p):
+    """ONE class, ONE paper, TWO children — September's real shape.
+
+    ⚑ THIS IS NOT A CONTRIVED MINIMUM. Measured on prod on 2 Sep 2026, the
+    working year 2026-27 has 69 classes, THREE with any members, and exactly
+    ONE (`8r/Sc1`, two children) with any assignments. A teacher opening
+    Charts today gets one class, a handful of children and at most a couple
+    of papers, and every superlative on this screen — "Highest", "Lowest",
+    "Weakest", "Most common", "cohort mean" — is then a superlative over a
+    set of ONE.
+
+    Design's sample can never say anything about that: eight live classes,
+    twelve assignments each, sixteen children. Every `Math.max` has something
+    to choose between, every plural is plural, and `sorted[0]` and
+    `sorted[sorted.length - 1]` are different rows. This fixture is the one
+    where they are the same row.
+
+    ⚑ AND IT FORCES THE DIVERGENCE THE `colSub[0]` DEFECT NEEDS. The single
+    paper is kept in the week it was actually SET, which is NOT the current
+    teaching week — so `colSub[0]` (paper index 0, whatever week it is in) is
+    1 while `week[0]` (children who handed in THIS week's work) is 0. In
+    Design's sample the two are equal on every class, which is exactly why
+    three separate renderings of "this week" could disagree for a fortnight
+    without any gate noticing. Here they disagree by construction, so a tile
+    captioned "This week" that still reads `colSub[0]` prints a different
+    number from the one that reads the seam.
+
+    Everything below is derived from the base pack rather than typed, so no
+    value here is a claim this port invented.
+    """
+    p = json.loads(json.dumps(p))
+    cid = p["classId"]
+    # ⚠️ PAPER INDEX 2, AND THE INDEX IS THE WHOLE POINT. The paper kept has
+    # to be due OUTSIDE the current teaching week, or `week[0]` and
+    # `colSub[0]` agree again and the fixture proves nothing. The base pack's
+    # current week is 24–28 Aug (`WEEKS[0].now`); index 1 is due Wed 26 Aug,
+    # which is INSIDE it, and the first draft of this shaper used index 1 and
+    # then asserted `week: [0, 2]` anyway — a class where a child submitted
+    # this week's work and was not counted as having submitted it, which
+    # `buildRoster` cannot produce. Index 2 is due Wed 19 Aug, an earlier
+    # week, so nothing is due this week and `week[0]` is 0 honestly.
+    src = 2
+    g = p["GRID"]["%s:%d" % (cid, src)]
+    mx = p["MATRIX"][cid]
+
+    # One child who handed this paper in and one who did not — both real rows
+    # of the base pack, so their cells are the seam's own and not invented.
+    took = [r for r in mx["rows"] if r["submitted"][src]][0]
+    miss = [r for r in mx["rows"] if not r["submitted"][src]][0]
+
+    def one(r):
+        return dict(sid=r["sid"],
+                    scores=[r["scores"][src]], max=[r["max"][src]],
+                    pct=[r["pct"][src]], late=[r["late"][src]],
+                    stampShort=[r["stampShort"][src]],
+                    submitted=[r["submitted"][src]],
+                    # ⊕ 3 Sep 2026 (Phase 2b). WITHOUT THIS THE PAGE WAS
+                    # BLANK: `stHistory` reads `stRow.subId[i]`, this shaper
+                    # builds its rows by hand rather than by copying, and a
+                    # row with no `subId` array threw a TypeError inside
+                    # `renderVals` — which happens before the first paint,
+                    # so `insights-single` rendered nothing at all. Caught by
+                    # `teacher_behaviour`, which is the gate that reads
+                    # `data-mrb-renders` rather than a screenshot.
+                    subId=[r["subId"][src]],
+                    # ⚠️ NOT IN THIS WEEK. The paper was set in an earlier
+                    # teaching week, so no child is `inWeek` — see the
+                    # divergence note above.
+                    inWeek=False)
+
+    rows = [one(took), one(miss)]
+    late = rows[0]["late"][0]
+    pct = rows[0]["pct"][0]
+    p["MATRIX"][cid] = dict(
+        rows=rows, cols=1,
+        colSub=[1], colAsked=[2], colMean=[pct],
+        colOnTime=[1 if late is False else 0],
+        colLate=[1 if late is True else 0],
+        colLateUnknown=[1 if late is None else 0],
+        markedIdx=[0],
+        studentAvg={rows[0]["sid"]: pct},
+        markedSub=1,
+        markedOnTime=1 if late is False else 0,
+        markedLate=1 if late is True else 0,
+        markedLateUnknown=1 if late is None else 0,
+        markedPct=(100 if late is False else 0) if late is not None else None,
+        classMean=pct,
+        byId={r["sid"]: r for r in rows})
+
+    old = [q for q in p["PAPERS"][cid] if q["idx"] == src][0]
+    # `idx` is the position in `due_at DESC` and there is only one paper, so
+    # it is 0. `weekIdx` is the TEACHING WEEK it was set in and keeps its own
+    # value — the two are different questions, and conflating them is what
+    # the week-bar ruling of 1 Sep exists to stop.
+    p["PAPERS"][cid] = [dict(old, idx=0, sub="1/2", mean="%d%%" % pct)]
+
+    # ⚠️ THE GRID FOLLOWS THE ROSTER, AND THE FIRST DRAFT OF THIS SHAPER LEFT
+    # IT BEHIND. Keeping the base pack's thirteen grid rows against a roster
+    # of two put "Paper mean 63% · 13 of 2 submitted" on the question chart —
+    # a submitted count larger than the class, which is the eighth fixture in
+    # this run found asserting a state real data cannot reach. `buildGrid`
+    # writes one row per child who was asked, so two children is two rows.
+    grid_by_id = {r["id"]: r for r in g["rows"]}
+    qn = g["qcount"]
+    grows, correct, marked, blank = [], [0] * qn, [0] * qn, [0] * qn
+    for r in rows:
+        base = grid_by_id.get(r["sid"])
+        if not r["submitted"][0] or not base:
+            # Design's own not-submitted cell, as `_shape_written_paper` uses.
+            grows.append(dict(base or {"id": r["sid"], "name": "", "initials": "",
+                                       "hue": g["rows"][0]["hue"]},
+                              raw=[2] * qn, score="\u2014", submitted=False,
+                              # No submission means no row to attach a
+                              # comment to, which is exactly the state the
+                              # feedback control is absent in.
+                              subId=None))
+            continue
+        grows.append(dict(base))
+        for qi, v in enumerate(base["raw"]):
+            if v == 1:
+                correct[qi] += 1
+                marked[qi] += 1
+            elif v == 0:
+                marked[qi] += 1
+            else:
+                blank[qi] += 1
+    p["GRID"] = {"%s:0" % cid: dict(
+        g,
+        rows=grows,
+        qpct=[round(correct[i] / marked[i] * 100) if marked[i] else None
+              for i in range(qn)],
+        submitted=sum(1 for r in rows if r["submitted"][0]),
+        roster=len(rows),
+        qCorrect=correct, qMarked=marked, qBlank=blank,
+        qUnmarkable=[0] * qn)}
+    p["paperIdx"] = 0
+
+    keep_ids = [r["sid"] for r in rows]
+    roster = [r for r in p["ROSTER"][cid] if r["id"] in keep_ids]
+    roster.sort(key=lambda r: keep_ids.index(r["id"]))
+    roster[0].update(avg=pct, inWeek=False, flag=False)
+    # No paper due this week AND a marked paper never handed in — Design's own
+    # "needs a look" rule, on this shape.
+    # No submission anywhere in this shape, so `lastIso` is null and the seam
+    # falls back to TIME ON ROLL for `hours` (see `buildRoster`). A child on
+    # the roll for a fortnight who has handed in nothing buckets as 2+ weeks,
+    # which is the honest reading and the only thing that exercises the
+    # engagement chart's `cold` branch on a two-child class.
+    roster[1].update(avg=None, inWeek=False, flag=True,
+                     last="No activity yet", hours=24 * 14)
+    p["ROSTER"][cid] = roster
+
+    k = [c for c in p["CLASSES"] if c["id"] == cid][0]
+    k = dict(k, n=2, week=[0, 2], state="live")
+    p.update(CLASSES=[k],
+             MATRIX={cid: p["MATRIX"][cid]},
+             ROSTER={cid: roster},
+             PAPERS={cid: p["PAPERS"][cid]},
+             WEEKS={cid: p["WEEKS"][cid]},
+             FEED={cid: []},
+             studentId=roster[0]["id"],
+             classCount=1, liveClassCount=1, studentCount=2,
+             searchPool=[s for s in p["searchPool"]
+                         if s.get("classId") == cid][:2],
+             searchPlaceholder="Search students across all 1 class")
+    p["searchPoolCount"] = len(p["searchPool"])
+    return p
+
+
 def _shape_no_submissions(p):
     """Every cell null, and ONE cell holding the fourth grid state."""
     p = json.loads(json.dumps(p))
@@ -1727,6 +2958,15 @@ def _shape_no_submissions(p):
         r["pct"] = [None] * n
         r["stampShort"] = [None] * n
         r["submitted"] = [False] * n
+        # ⊕ 3 Sep 2026 (Phase 2b) — AND NO SUBMISSION MEANS NO SUBMISSION ID.
+        # `buildMatrix` fills `subId[p]` only where a submission row exists,
+        # so a fixture that blanked the scores and kept the ids would be
+        # modelling a state real data cannot reach — and it would offer
+        # "Add feedback" on eleven rows with nothing to attach a comment to,
+        # on the one fixture that exists to prove the empty case. This is the
+        # fixture hazard exactly: consistent with the fiction, impossible in
+        # the seam, and invisible to every gate.
+        r["subId"] = [None] * n
         # ⚠️ TRI-STATE, AND THE FIXTURE HAS TO CARRY THE THIRD VALUE. `null`
         # is "no stamp and no deadline", which is every pre-22-Aug-2026 row —
         # and Design's sample has none, so nothing else in the set drives the
@@ -1766,18 +3006,296 @@ def _shape_no_submissions(p):
             continue
         g["submitted"] = 0
         g["qpct"] = [None] * len(g["stems"])
+        g["qCorrect"] = [0] * len(g["stems"])
+        g["qMarked"] = [0] * len(g["stems"])
+        g["qUnmarkable"] = [0] * len(g["stems"])
+        g["qBlank"] = [0] * len(g["stems"])
         for row in g["rows"]:
             row["raw"] = [2] * len(g["stems"])
             row["score"] = "—"
             row["submitted"] = False
-        # ⊕ THE FOURTH GLYPH, on one row, because nothing else in the set can
-        # produce it: `is_correct IS NULL` is a state Design's sample cannot
-        # express, so without this `cellStyle(3)` ships undriven.
-        if g["rows"]:
-            g["rows"][0]["raw"] = [3] * len(g["stems"])
-            g["rows"][0]["submitted"] = True
-            g["submitted"] = 1
+            # Same reason as the matrix above: `buildGrid` writes `subId`
+            # only on a row that handed in.
+            row["subId"] = None
+        # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) — THE FOURTH GLYPH WAS
+        # PARKED HERE AND IT COULD NOT BE HERE.
+        #
+        # ⛔ WHAT THIS USED TO DO: `g["rows"][0]["raw"] = [3] * len(stems)`,
+        # `submitted = True`, `g["submitted"] = 1`. Two things were wrong with
+        # it, and the second is the one that matters.
+        #
+        # It contradicted its own screen. This shape is "a paper NOBODY
+        # submitted"; the tile above the grid read SUBMITTED 0/16 while the
+        # grid underneath showed one child with eight answered cells.
+        #
+        # And a WHOLE ROW of `is_correct IS NULL` is a shape the seam cannot
+        # produce. Whether an answer can be machine-marked is a property of
+        # the QUESTION — a written or self-marked question is written for
+        # every child who answers it — so NULL clusters in a COLUMN. One
+        # child self-marking all eight of eight machine-markable questions
+        # is Design-fiction geometry, and it was the only place any gate had
+        # ever seen `cellStyle(3)`.
+        #
+        # The fourth state now lives on `assignment-written-fixture.html`, as
+        # Q4 of a five-question paper, for every child who handed it in. See
+        # `_shape_written_paper`.
     p["FEED"] = {cid: []}
+    return p
+
+
+def _mean(vals):
+    """Design's own averages are recomputed with ONE formula, not two.
+
+    Design rounds a percentage per cell and then averages, and its
+    `studentAvg` disagrees with the mean of its own `pct[]` on 9 of 16 rows.
+    That is harmless in a sample nobody adds up; it is not harmless in a
+    fixture that exists to prove a number on screen came from the row beneath
+    it. Every average a reshaped fixture touches is therefore rebuilt from the
+    cells with this one function, so the fixture cannot disagree with itself.
+    """
+    vals = [v for v in vals if v is not None]
+    return round(sum(vals) / len(vals)) if vals else None
+
+
+def _reaverage(p, cid):
+    """Recompute every average in one class from its own matrix cells."""
+    mx = p["MATRIX"][cid]
+    for c in range(mx["cols"]):
+        mx["colMean"][c] = _mean([r["pct"][c] for r in mx["rows"]])
+        mx["colSub"][c] = sum(1 for r in mx["rows"] if r["submitted"][c])
+    mx["studentAvg"] = {r["sid"]: _mean(r["pct"]) for r in mx["rows"]}
+    mx["classMean"] = _mean(mx["colMean"])
+    marked = mx["markedIdx"]
+    mx["markedSub"] = sum(mx["colSub"][i] for i in marked)
+    mx["markedOnTime"] = sum(mx["colOnTime"][i] for i in marked)
+    mx["markedLate"] = sum(mx["colLate"][i] for i in marked)
+    mx["markedLateUnknown"] = sum(mx["colLateUnknown"][i] for i in marked)
+    mx["markedPct"] = (round(mx["markedOnTime"] / mx["markedSub"] * 100)
+                       if mx["markedSub"] else None)
+    mx["byId"] = {r["sid"]: r for r in mx["rows"]}
+    for r in p["ROSTER"][cid]:
+        r["avg"] = mx["studentAvg"].get(r["id"])
+    return p
+
+
+# ⚑ THE PAPER THAT IS NOT EIGHT QUESTIONS OUT OF EIGHT MARKS ─────────────
+#
+# ⛔ EVERY OTHER FIXTURE IN THE SET IS 8 QUESTIONS, 8 MARKS, 1 MARK EACH,
+# because Design's `STEMS` is one list of eight used for every paper in every
+# subject and its every score is `n/8`. Three separate rulings exist to take
+# that apart — `qLine` built from the paper, `score` over the row's own `max`,
+# and the grid's column template — and NONE of them could be told apart from
+# the hardcode it replaced, because on 8-questions-out-of-8 the right answer
+# and the wrong one print the same characters. A gate cannot see a fix it
+# cannot distinguish from the bug.
+#
+# ⚠️ MEASURED, NOT GUESSED. On the TEST project, 2 Sep 2026: every
+# `assignment_submissions.max_score` in the database is 10, and the only
+# assignment carrying `assignment_questions` rows has FOUR of them. So a real
+# paper is neither eight questions nor out of eight, and the branch that says
+# "5 questions, 7 marks" — the one real data takes — had never been rendered
+# anywhere.
+#
+# ⚠️ AND IT CARRIES THE FOURTH GRID STATE, WHICH USED TO SIT SOMEWHERE IT
+# COULD NOT REALLY BE. `_shape_no_submissions` put `is_correct IS NULL` on one
+# CHILD'S WHOLE ROW. Whether an answer can be machine-marked is a property of
+# the QUESTION, not of the child: a written or self-marked question is written
+# for everyone who answers it, so NULL clusters in a COLUMN and never in a
+# row. (It also sat under a tile reading "SUBMITTED 0/16" while the grid it
+# was in said one child had submitted.) Here it is Q4, for every child who
+# handed the paper in, which is the shape the seam actually produces.
+#
+# ⚠️ AND Q2 CARRIES NO STEM TEXT. `assignment_question_attempts.question_text`
+# is nullable and `buildGrid` leaves a column's `text` empty rather than
+# inventing a placeholder. Q2 is also the lowest-scoring question, so this is
+# the fixture that drives the reteach banner with nothing to name — the
+# "Q4 — . Only 23% …" sentence.
+#
+# WHERE THE MARKS COME FROM, stated rather than implied: Q1-Q3 are worth 2
+# each and Q5 is worth 1, so the paper's automatic total is 7. Q4 is the
+# written question and contributes NOTHING to it — which is what the
+# SUBMITTED tile's own subtitle, "Marked automatically", means. Nothing here
+# invents a self-mark.
+_WRITTEN_TARIFF = (2, 2, 2, None, 1)          # None = the written question
+_WRITTEN_FROM = (0, 3, 2, None, 7)            # which of Design's 8 each maps
+
+
+def _shape_written_paper(p):
+    """A 5-question paper out of 7 marks, with one written question."""
+    p = json.loads(json.dumps(p))
+    cid = p["classId"]
+    idx = p["paperIdx"]
+    key = "%s:%d" % (cid, idx)
+    g = p["GRID"][key]
+    mx = p["MATRIX"][cid]
+    n = len(_WRITTEN_TARIFF)
+    max_score = sum(t for t in _WRITTEN_TARIFF if t is not None)
+
+    stems = []
+    for i, src in enumerate(_WRITTEN_FROM):
+        old = g["stems"][src] if src is not None else g["stems"][3]
+        stems.append(dict(old, id="Q%d" % (i + 1), idx=i))
+    # Q2's snapshot was never written. Q4 is the written question and its own
+    # stem text is Design's; only its ANSWERS are unmarkable.
+    stems[1]["text"] = ""
+
+    correct = [0] * n
+    marked = [0] * n
+    unmarkable = [0] * n
+    blank = [0] * n
+    rows, submitted = [], 0
+    for old in g["rows"]:
+        if not old["submitted"]:
+            # ⚠️ `qBlank` COUNTS BLANKS AMONG THE CHILDREN WHO HANDED IN, and
+            # not the children who did not. `buildGrid` increments it only
+            # inside its submitted branch, so a fixture that counted the
+            # absentees here would carry a number the seam cannot produce —
+            # which is the whole failure mode this fixture exists to correct.
+            rows.append(dict(old, raw=[2] * n, score="—"))
+            continue
+        submitted += 1
+        raw, score = [], 0
+        for qi, src in enumerate(_WRITTEN_FROM):
+            if src is None:                       # the written question
+                raw.append(3)
+                unmarkable[qi] += 1
+                continue
+            v = old["raw"][src]
+            raw.append(v)
+            if v == 1:
+                correct[qi] += 1
+                marked[qi] += 1
+                score += _WRITTEN_TARIFF[qi]
+            elif v == 0:
+                marked[qi] += 1
+            else:
+                blank[qi] += 1
+        rows.append(dict(old, raw=raw,
+                         score="%d/%d" % (score, max_score)))
+
+    qpct = [round(correct[i] / marked[i] * 100) if marked[i] else None
+            for i in range(n)]
+    p["GRID"] = {key: dict(
+        rows=rows, qpct=qpct, stems=stems, submitted=submitted,
+        roster=g["roster"], qcount=n, maxScore=max_score,
+        qCorrect=correct, qMarked=marked,
+        qUnmarkable=unmarkable, qBlank=blank,
+        # The seam's own sentence, on the branch `maxScore != qcount` takes.
+        qLine="%d questions, %d marks" % (n, max_score),
+    )}
+
+    # The matrix column and the paper row have to agree with those cells.
+    for r in mx["rows"]:
+        gr = [x for x in rows if x["id"] == r["sid"]][0]
+        if gr["score"] == "—":
+            r["scores"][idx] = r["max"][idx] = r["pct"][idx] = None
+            r["submitted"][idx] = False
+            # ⊕ 3 Sep 2026 (Phase 2b) — the two have to agree. `buildMatrix`
+            # writes `subId[p]` only where a submission row exists, so a cell
+            # this shaper has just emptied must lose its id too, or the
+            # fixture offers a comment control on a paper nobody handed in.
+            r["subId"][idx] = None
+        else:
+            got = int(gr["score"].split("/")[0])
+            r["scores"][idx] = got
+            r["max"][idx] = max_score
+            r["pct"][idx] = round(got / max_score * 100)
+            r["submitted"][idx] = True
+    _reaverage(p, cid)
+    paper = p["PAPERS"][cid][idx]
+    paper["sub"] = "%d/%d" % (submitted, mx["colAsked"][idx])
+    paper["mean"] = "%d%%" % mx["colMean"][idx]
+    return p
+
+
+# ⚑ A GRID KEY THAT IS NOT THERE AT ALL ──────────────────────────────────
+#
+# ⛔ THIS IS THE 26 AUGUST 2026 BREAKAGE, AND NO FIXTURE HELD IT.
+# `insights-empty` covers key-PRESENT-and-null; nothing covered key-ABSENT,
+# which is a different branch of `gridFor` and was the one that threw.
+# `renderVals` computes the marking screen's `paper` block on EVERY screen,
+# `load()` prefetches grids only for marking and insights, and the first
+# `gridFor` body read `MRB_PICK('GRID', key)` — which throws on an absent key.
+# So opening class-detail on any class WITH an assignment died mid-mount and
+# showed "Your classes could not be loaded". It hit the one class in the
+# school that had work set, which is the only class anybody opened.
+#
+# ⚠️ AND `GRID: {}` IS NOT AN EDGE CASE ON THIS SCREEN — IT IS THE ONLY STATE
+# IT EVER HAS. `load()` fetches a grid for the marking screen and for the
+# questions chart, and for nothing else. Every class-detail render in
+# production therefore has an EMPTY grid map. The populated class-detail
+# fixtures ship a full one, which that page cannot have, and that is precisely
+# why `teacher_behaviour` could be green through the outage.
+def _shape_grid_absent(p):
+    """No grid fetched at all — every class-detail render in production."""
+    p = json.loads(json.dumps(p))
+    p["GRID"] = {}
+    return p
+
+
+# ⚑ THE MARKING SCREEN'S OWN KEY-ABSENT STATE ────────────────────────────
+#
+# ⛔ AND IT IS REACHABLE, WHICH TOOK FINDING. On marking, `load()` prefetches
+# `asked == null ? newestMarkedIdx(papers) : asked`, and skips the fetch
+# entirely when that is -1. `METHODS["paper"]` then falls back to
+# `newestMarkedIdx(list) >= 0 ? list[n] : list[0]` — so a class whose papers
+# are ALL still open prefetches nothing and then asks for `<class>:0`. The
+# seam and the page disagree by exactly one paper, and the answer has to be
+# the documented null rather than a throw.
+#
+# ⚠️ ONE PAPER, NOT TWELVE. The obvious shaping — flip all twelve of Design's
+# papers to `when: 'upcoming'` — encodes a state real data cannot hold: their
+# deadlines run backwards a week at a time, so eleven of the twelve would be
+# "still open" with a due date already past. A class with ONE open paper is
+# both the honest reading and the real one: it is `8r/Sc1` in the week work
+# is first set, and on 2 Sep 2026 that class's newest paper is due tomorrow
+# with both children already in.
+#
+# Everything downstream of "nothing is past its deadline" follows: nothing is
+# marked, nothing can be late, and `markedIdx` is empty.
+def _shape_no_marked_paper(p):
+    """One assignment, still open, and no grid fetched for it."""
+    p = json.loads(json.dumps(p))
+    cid = p["classId"]
+    papers = p["PAPERS"][cid]
+    keep = 0
+    for i, pr in enumerate(papers):
+        if pr["when"] == "upcoming":
+            keep = i
+            break
+    paper = dict(papers[keep], idx=0, weekIdx=0, weekOfYear=1)
+    p["PAPERS"][cid] = [paper]
+
+    mx = p["MATRIX"][cid]
+    for r in mx["rows"]:
+        # ⊕ 3 Sep 2026 (Phase 2b) — `subId` IS ON THIS LIST, and it had to
+        # be. Every per-cell array on a matrix row has to be sliced to the
+        # one column this shaper keeps; a row left holding the base pack's
+        # full-length `subId` would index a submission from a paper the
+        # fixture no longer has.
+        for f in ("scores", "max", "pct", "stampShort", "submitted", "late",
+                  "subId"):
+            r[f] = [r[f][keep]]
+        # An open paper cannot be late: there is no deadline behind it yet.
+        r["late"] = [False if r["submitted"][0] else None]
+    mx["cols"] = 1
+    for f in ("colSub", "colMean", "colOnTime", "colAsked",
+              "colLate", "colLateUnknown"):
+        mx[f] = [mx[f][keep]]
+    mx["colOnTime"] = [mx["colSub"][0]]
+    mx["colLate"] = [0]
+    mx["colLateUnknown"] = [0]
+    mx["markedIdx"] = []
+    _reaverage(p, cid)
+
+    wks = p["WEEKS"].get(cid) or []
+    if wks:
+        p["WEEKS"][cid] = [dict(wks[0], idx=0, weekOfYear=1, label="Week 1",
+                                range=paper["range"], now=True)]
+    # Nothing fetched, and no paper asked for — the two facts together are
+    # what makes `gridFor` reach for a key that is not there.
+    p["GRID"] = {}
+    p["paperIdx"] = None
     return p
 
 
@@ -1921,9 +3439,18 @@ function MRB_ENV(){var c=window.MrBadmusConfig;
    screen (`SCREEN_BY_PAGE`) and prefetches only the grids that screen draws,
    so a link to the wrong file is a page that stays pending for ever with
    nothing in the console. The two maps are inverses and must stay so. */
+/* ⊕ 2 Sep 2026 (MRB-306) — `today` and `timetable` are on this map and are
+   NOT emitted by this generator. They are the two HAND-WRITTEN teacher pages
+   of those names, and v3's chrome links to them: the top-bar tab strip and
+   the class screen's "Back to today". The filenames are the ones the port
+   will emit when Design's Today and Timetable screens are ported, so these
+   links survive that unit unchanged. `teacher-live.js`'s `SCREEN_BY_PAGE`
+   does not name either — it falls back to `"classes"` for an unknown page,
+   which is what those two hand-written pages have always been served. */
 var MRB_PAGE = {classes:'classes.html', 'class':'class-detail.html',
   student:'student-detail.html', marking:'assignment.html',
-  digest:'digest.html', 'import':'import.html', insights:'insights.html'};
+  digest:'digest.html', 'import':'import.html', insights:'insights.html',
+  today:'today.html', timetable:'timetable.html'};
 function MRB_GO(screen, params){
   var f = MRB_PAGE[screen];
   if(!f)throw new Error('teacher page: no page for screen "'+screen+'"');
@@ -2006,6 +3533,26 @@ function MRB_ONTIME_SUB(onTime, late, unknown, noun){
        ', timing not recorded')
     : 'Nothing submitted yet'; }
   return MRB_LATE_LINE(late, unknown, known, noun || 'submitted');}
+/* ⊕ MRB-306 Phase 2a screen 6 — THIS WEEK'S RETURN, WRITTEN ONCE.
+   "How many of this class handed in this week's work" is asked in three
+   places — the class card on My classes, the digest's by-class row, and the
+   class report's Submissions tile — and it had TWO answers. `c.week` is the
+   seam's own count (`buildMatrix` marks the papers whose `due_at` falls in
+   the class's current teaching week, `buildRoster` sets `inWeek` per child,
+   and `week[0]` counts them); the class report instead read `colSub[0]`,
+   which is PAPER INDEX 0 — the newest paper by `due_at DESC`, whatever week
+   it belongs to, and with NULL deadlines sorting FIRST it can be a paper
+   that has no deadline at all and so is in no week.
+   In Design's fiction every class has exactly one paper, due this week, at
+   index 0, so the two agree on every fixture and the divergence is invisible
+   by construction. On real data they part the moment a class has a paper due
+   later than this week, or none due this week at all.
+   `week` is the source, this is the only rendering of it, and both readers
+   call it. The em dash matches the row: a class with no roster or no work
+   set was not ASKED for anything, and "0/16" would be an accusation. */
+function MRB_WEEK_IN(c){
+  if(!c || c.state !== 'live'){ return '—'; }
+  return (c.week && c.week[0]) + '/' + (c.week && c.week[1]);}
 
 /* == THE SHOUTOUT COMPOSER, WIRED =======================================
 
@@ -2068,10 +3615,25 @@ function MRB_COMPOSE_ERROR(msg){
 /* Design's select and textarea are UNCONTROLLED, and `student-runtime` now
    carries field values ACROSS a redraw on purpose - it had to, because every
    keystroke schedules one. So clearing `s.note` clears the STATE and leaves
-   the typed text on screen. The DOM is cleared first, then the state. */
-function MRB_COMPOSE_RESET(){
-  var els=document.querySelectorAll('[data-compose-field]'), i;
-  for(i=0;i<els.length;i++){els[i].value='';}}
+   the typed text on screen. The DOM is cleared first, then the state.
+
+   ⊕ 3 Sep 2026 (MRB-306 Phase 2b) - IT TAKES NAMES NOW, AND IT HAD TO.
+   There are THREE composing surfaces on the class screen since the bulk
+   sheet's own free text started being sent: the single-student composer
+   (`recipient`, `note`) and the bulk sheet (`bulk-note`). A bare
+   "clear every [data-compose-field]" would mean a successful bulk send wipes
+   a half-written single shoutout the teacher had not sent yet - text they
+   typed, removed by an action about somebody else.
+
+   No argument still means all of them, so the existing caller is unchanged
+   and this cannot have altered anything by being added. */
+function MRB_COMPOSE_RESET(names){
+  var want=(names==null)?null:(typeof names==='string'?[names]:names);
+  var els=document.querySelectorAll('[data-compose-field]'), i, n;
+  for(i=0;i<els.length;i++){
+    n=els[i].getAttribute('data-compose-field');
+    if(want && want.indexOf(n)<0){continue;}
+    els[i].value='';}}
 
 /* N inserts, one per recipient, and an honest count back. Resolves
    `{ok, fail, error}` - never rejects, and never reports a bare success. */
@@ -2094,6 +3656,74 @@ function MRB_SEND_SHOUTOUTS(classId, ids, templateKey, message){
       return {ok:ids.length-errs.length, fail:errs.length,
               error:errs[0]||null};});
   }, no);}
+
+/* == THE PER-STUDENT REMINDER, WIRED ====================================
+
+   ⊕ MRB-306 Phase 2a screen 4, 2 Sep 2026.
+
+   Design draws "Send a reminder" on the student page, gated on
+   `student.flagged`, and her handler is `this.ping('Reminder sent to ' +
+   st.name)` - a confirmation of a write that never happened. Exactly the
+   shape the shoutout composer was in before it was wired, and it was pressed
+   and photographed in this state before this helper existed.
+
+   ⚠️ THIS DOES NOT RE-IMPLEMENT THE CLASS SCREEN'S CONTROL. `teacher-live.js`
+   already owns the reminder machinery - `drawRemindControl`, and behind it
+   `MrBadmusTeacherData.sendReminders` / `remindersForClass` - and this calls
+   the SAME data layer with a one-element list. The class control chases
+   everyone who has not handed this week's work in; this one chases the child
+   whose page is open. Two surfaces, one write path, one rate limit.
+
+   THE RATE LIMIT IS THE DATABASE'S, and it is a unique index on
+   `(student_id, assignment_id, sent_on)` - one reminder per child per
+   assignment per day, across ALL teachers of a co-taught class. This does
+   not test it and must not: `sendReminders` upserts with `ignoreDuplicates`,
+   so a second press writes NOTHING and comes back with an empty array. That
+   is the honest signal, and it is reported as "already reminded today"
+   rather than as a fresh send. Nothing here decides who may be reminded;
+   RLS's `teacher_send` policy does.
+
+   WHICH ASSIGNMENT: `kPapers[0]`, this week's work - the same paper
+   `drawRemindControl` chases on, so the two controls cannot disagree about
+   what a child is being reminded OF, and so both presses hit the same
+   rate-limit key. A student with no papers is never flagged, so the button
+   Design gates on `flagged` cannot be reached with no assignment to name.
+
+   WARNING: IT NEVER REJECTS, like the six shoutout helpers above. Resolves
+   `{ok, already, error}` and the caller says a sentence for each. */
+function MRB_REMIND_STUDENT(classId, assignmentId, studentId){
+  var no=function(e){return Promise.resolve({ok:0,already:false,error:e});};
+  if(!classId){return no(new Error('teacher page: no class'));}
+  if(!assignmentId){return no(new Error('teacher page: no assignment'));}
+  if(!studentId){return no(new Error('teacher page: no student'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.sendReminders){
+    return no(new Error('teacher page: no data layer'));}
+  return TD.sendReminders({classId:classId, assignmentId:assignmentId,
+      studentIds:[studentId], teacherId:MRB_ME()||null})
+    .then(function(wrote){
+      /* Report what was WRITTEN, not what was attempted - `drawRemindControl`
+         takes the same care and for the same reason. An upsert that ignored
+         a duplicate sent nothing, and saying otherwise overstates what the
+         child actually got. */
+      var n=(wrote&&wrote.length)||0;
+      return {ok:n, already:n===0, error:null};},
+      function(e){return {ok:0,already:false,error:e};});}
+
+/* Why a reminder failed, in a sentence a teacher can act on. The companion
+   to MRB_SHOUTOUT_WHY, and separate for the same reason: a different verb
+   and a different set of refusals. */
+function MRB_REMIND_WHY(e){
+  var m=(e&&e.message)||'';
+  if(/row-level security|permission|policy/i.test(m))
+    return "Couldn't send - you may no longer teach this class.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't send - this page is not signed in. Reload and try again.";
+  if(/no assignment/i.test(m))
+    return "Couldn't send - there is no work set to remind them about.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't send - no connection just now. Try again in a moment.";
+  return "Couldn't send the reminder. Try again.";}
 
 /* The feed a teacher has just written to, re-read. `teacher-live.js` does not
    memoise `FEED` - it is the one thing `base()` deliberately leaves out of
@@ -2203,6 +3833,158 @@ function MRB_DELETE_SHOUTOUT(shoutoutId){
     return TD.softDeleteClassShoutout(shoutoutId).then(
       function(){return {ok:true,error:null};}, no);
   }catch(e){return no(e);}}
+
+/* == WRITTEN FEEDBACK ON ONE SUBMISSION =================================
+
+   ⊕ MRB-306 Phase 2b, 3 Sep 2026. Mide's guardrails, and which of them is
+   enforced WHERE, because two of the six are not this file's to enforce:
+
+     auditable ...... the SELECT policy admits school admins and `slt`
+                      school-wide. Database.
+     ONE-WAY ........ there is no student INSERT policy, and there is no
+                      student write path in `shared/student-live.js` or
+                      `shared/student-data.js` either. Nothing here offers a
+                      reply, not even a disabled one: a control a child can
+                      see and cannot use is a promise the RLS will refuse.
+     context-bound .. `submission_id` is NOT NULL and there is no other
+                      binding. There is no inbox to reach this from.
+     attributed ..... `teacher_id`, compared to the signed-in id. See
+                      `buildFeedback` in teacher-live.js for why it is not a
+                      name.
+     retained ....... `CHECK ((edited_at IS NULL) = (prior_body IS NULL))`.
+                      The database refuses an edit that drops the old body,
+                      so `MRB_SAVE_FEEDBACK` passes it rather than
+                      remembering to.
+     plain text ..... `body` is text and every render of it is a text node.
+                      No innerHTML on this path, no markdown, no linkifier,
+                      so a URL a teacher types is INERT. Proven by injection
+                      in the report rather than assumed from the shoutout
+                      unit.
+     length cap ..... 2000, which is `submission_feedback_body_length_chk`.
+                      NOT 500 - that is class_shoutouts.
+
+   WARNING: NOTHING HERE REJECTS, on the same terms as the shoutout helpers
+   above. Every one resolves; the callers are Design's synchronous
+   `renderVals` closures and an escaping rejection is a console error in
+   front of a sheet that still looks like it saved. */
+
+/* The database's own cap, in one place, so the textarea's `maxlength`, the
+   counter and the guard in front of the write cannot disagree with each
+   other or with the CHECK. */
+function MRB_FB_MAX(){return 2000;}
+
+/* Put an existing comment INTO the sheet's textarea, once, when the sheet
+   opens. Called from `setState`'s completion callback, which runs after the
+   draw that created the field.
+
+   ⛔ WHY THIS EXISTS AT ALL, because the obvious thing does not work.
+   Rendering `{{ fbBody }}` as the textarea's child is correct HTML — a
+   textarea's content IS its default value — and it produced an EMPTY box on
+   every existing comment. `student-runtime.build` wraps an INTERPOLATION in
+   `<span class="sc-interp">` (Design's own compiler does, and the parity gate
+   counts those spans), so the child was an ELEMENT and the default value came
+   from no child TEXT at all. `textContent` read the comment back perfectly;
+   `value` was "". A teacher would have opened their own paragraph, seen an
+   empty box under a caption saying "YOUR FEEDBACK", typed a line and replaced
+   the lot.
+
+   ⚠️ ONLY ON OPEN. Every later redraw is carried by `student-runtime`'s
+   `restoreFields`, which is what keeps a half-typed comment through the
+   redraw each keystroke schedules. Calling this on every draw would put the
+   SAVED text back over what is being typed. */
+function MRB_FB_FILL(text){
+  var el=document.querySelector('[data-mrb-added="feedback-body"]');
+  if(el){el.value=text||'';}}
+
+/* This submission's live comment, or null. Read out of the payload rather
+   than fetched, because it is consulted inside `renderVals` for every row of
+   a thirty-child grid and `renderVals` is not async. */
+function MRB_FEEDBACK(subId){
+  if(!subId){return null;}
+  var m=MRB_DATA('FEEDBACK')||{};
+  return m[subId]||null;}
+
+/* Why a save failed, in a sentence a teacher can act on. `prior_body` and
+   `no_rows_affected` are named because both are real refusals with a real
+   cause: the first is this client failing to keep the retention promise, the
+   second is RLS matching no row and the UPDATE coming back looking like a
+   success. */
+function MRB_FEEDBACK_WHY(e){
+  var m=(e&&e.message)||'', c=(e&&e.code)||'';
+  if(c==='no_rows_affected')
+    return "Couldn't save - only the teacher who wrote a comment can " +
+           "change it, and only while they still teach this class.";
+  if(c==='prior_body_required')
+    return "Couldn't save - the edit did not keep the previous wording. " +
+           "Reload the page and try again.";
+  if(/row-level security/i.test(m))
+    return "Couldn't save - you may have lost access to this class.";
+  if(/check constraint/i.test(m))
+    return "Couldn't save - the comment is empty, or longer than " +
+           MRB_FB_MAX() + " characters.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't save - this page is not signed in. Reload and try again.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't save - no connection just now. Try again in a moment.";
+  return "Couldn't save the comment. Try again.";}
+
+/* Write it: an INSERT where there is nothing yet, an UPDATE where there is.
+   ⚠️ THE EDIT CARRIES THE PRIOR BODY, ALWAYS, and it is taken from the row
+   that was on screen rather than re-read - the row IS what the teacher was
+   looking at when they pressed save, which is exactly the body being
+   replaced. Resolves {ok, error}. */
+function MRB_SAVE_FEEDBACK(subId, body, existing){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  var text=String(body==null?'':body).trim();
+  if(!subId){return no(new Error('teacher page: no submission'));}
+  if(!text){return no(new Error('teacher page: empty comment'));}
+  if(text.length>MRB_FB_MAX()){
+    return no(new Error('check constraint: body too long'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.insertSubmissionFeedback){
+    return no(new Error('teacher page: no data layer'));}
+  try{
+    if(existing&&existing.id){
+      return TD.updateSubmissionFeedback({id:existing.id, body:text,
+        priorBody:existing.body}).then(
+        function(){return {ok:true,error:null};}, no);
+    }
+    return MRB_AUTHOR_ID().then(function(tid){
+      return TD.insertSubmissionFeedback({submissionId:subId, teacherId:tid,
+        body:text}).then(function(){return {ok:true,error:null};}, no);
+    }, no);
+  }catch(e){return no(e);}}
+
+/* Remove it. Soft, because there is no DELETE policy at all - and real to
+   every reader but its author and a school admin, which is the retention
+   half of the guardrail meeting the audit half. The word on the control is
+   therefore "Remove", not "Delete", and the confirm says what actually
+   happens. Resolves {ok, error}. */
+function MRB_REMOVE_FEEDBACK(id){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  if(!id){return no(new Error('teacher page: no comment'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.softDeleteSubmissionFeedback){
+    return no(new Error('teacher page: no data layer'));}
+  try{
+    return TD.softDeleteSubmissionFeedback(id).then(
+      function(){return {ok:true,error:null};}, no);
+  }catch(e){return no(e);}}
+
+/* The comments re-read after a write, so the row on screen is the row in the
+   database rather than an optimistic copy of what was typed.
+   ⚠️ ON A DEADLINE AND IT ALWAYS SETTLES, exactly as MRB_REFRESH_FEED is: the
+   write has already happened, and the only thing waiting on this is the sheet
+   closing. Eight seconds, then it closes anyway with a stale row - a stale
+   row is a refresh away and a stuck sheet is not. */
+function MRB_REFRESH_FEEDBACK(screen, params){
+  var L=window.MrBadmusTeacherLive, D=window.__MRB_DATA__;
+  if(!L||!L.load||!D){return Promise.resolve(false);}
+  return Promise.race([
+    L.load(screen, params||{}).then(function(d){
+      D.FEEDBACK = d.FEEDBACK; return true;}, function(){return false;}),
+    new Promise(function(r){setTimeout(function(){r(false);}, 8000);})
+  ]);}
 """
 
 
@@ -2289,7 +4071,198 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "a:hover{color:var(--ks3-accent-hover)}"
         "button{font-family:inherit}"
         "#mrb-teacher-live-regions[hidden]{display:none}"
-        "@media print{.noprint{display:none!important}}"
+        # ⊕ MRB-306 Phase 3, 4 Sep 2026 — THE TOP BAR SCROLLS ITSELF INSTEAD
+        # OF DRAGGING THE WHOLE PAGE SIDEWAYS. Found by `teacher_reach.py` on
+        # its first run, on every fixture, at rest.
+        #
+        # Design's node 10 is a 62px sticky flex row whose every child is
+        # `flex:none` — the wordmark, the Today/My-classes/Timetable strip,
+        # the crumb, FIND A STUDENT, the charts button, the teacher's name
+        # and Sign out. At 1460 that is a comfortable bar. At 390 it is
+        # 871–896px of content in a 390px viewport, and because nothing in it
+        # can shrink or wrap, the overflow lands on the DOCUMENT: the whole
+        # page pans sideways, and a teacher scrolling down a class list drags
+        # the content out from under their thumb.
+        #
+        # ⚠️ THIS IS THE PORT'S OWN CHROME, WHICH IS WHY IT IS FIXED HERE AND
+        # THE TABLES ARE NOT. The print note below records the standing
+        # ruling that a five-column table at 390 is Design's responsive
+        # question rather than this port's, and that still holds. The top bar
+        # is different in kind: `navTabs` is v3's addition, it is the only
+        # way BACK from a screen (MRB-306's own note: "the top-bar navTabs
+        # strip is the way back"), and a way back that is off the edge of the
+        # screen is not a way back.
+        #
+        # `overflow-x:auto` makes the bar its own scroll container, so the
+        # overflow stops at the bar: the document is 390 wide again, the
+        # strip scrolls under a thumb the way every mobile tab strip does,
+        # and everything in it is reachable. `overflow-y:hidden` because a
+        # 62px row has nothing to scroll vertically — and it clips nothing,
+        # since all four of Design's overlays and the port's two sheets are
+        # `position:fixed` SIBLINGS of this node, never descendants.
+        # `scrollbar-width:none` because a permanent scrollbar across the
+        # chrome of every screen is a worse answer than the overflow was.
+        "[data-port-region=\"topbar\"]{overflow-x:auto;overflow-y:hidden;"
+        "scrollbar-width:none;-ms-overflow-style:none}"
+        "[data-port-region=\"topbar\"]::-webkit-scrollbar{display:none}"
+        # ⊕ MRB-306 Phase 3, 4 Sep 2026 — THE TWO SECTION HEADERS DESIGN GAVE
+        # `space-between` AND NOT `flex-wrap`. Also found by
+        # `teacher_reach.py` on its first run: with the top bar contained,
+        # class-detail STILL dragged 561px of content across a 390px screen,
+        # and the culprits were nodes 285 and 309 — the mono captions "16
+        # STUDENTS · NOT SUBMITTED SHOWN FIRST" and "1 ASSIGNMENT · 12 THIS
+        # TERM", `white-space:nowrap` beside a heading in a row that cannot
+        # wrap.
+        #
+        # ⚑ IT IS A GAP IN DESIGN'S OWN PATTERN, WHICH IS WHY THE RULE IS
+        # STRUCTURAL RATHER THAN A LIST OF NODE NUMBERS. Every other
+        # heading-plus-caption row in the delivery — 159, 209, 334, 401, 432,
+        # 521 — already carries `flex-wrap:wrap`. Nodes 283 (class detail)
+        # and 350 (student detail) do not, and that is the whole of the
+        # difference. So the selector says exactly that: a `space-between`
+        # flex row inside a ported region that has NOT been given a wrap
+        # rule gets Design's own. A node-number allowlist would be wrong
+        # here for the reason this repo keeps rediscovering — Design renumbers
+        # everything on a re-vendor, and 283 would then mean something else.
+        #
+        # ⚠️ THE CAPTIONS THEMSELVES ARE LEFT `nowrap`, deliberately. At 375px
+        # and 260px they FIT on a 390px screen once they have a line of their
+        # own; forcing them to wrap as well would break "16 STUDENTS · NOT
+        # SUBMITTED SHOWN FIRST" across a middle dot for no gain.
+        #
+        # ⚠️ AND THIS IS NOT THE TABLES. The print note below records the
+        # standing ruling that a five-column table at 390 is Design's
+        # responsive question and not this port's; that is untouched. Every
+        # one of those tables sits in an `overflow:hidden` card, so it clips
+        # rather than dragging the page, and no rule here pretends otherwise.
+        #
+        # ⚠️ AND THE CAPTION STILL HAD TO BE ALLOWED TO WRAP, which the first
+        # attempt did not do and which the gate caught in the same way: the
+        # row wrapped, the document came down from 561px to 415px, and it was
+        # still 25px over. "16 STUDENTS · NOT SUBMITTED SHOWN FIRST" is
+        # 375px wide as one mono line and the screen roots carry Design's
+        # desktop `padding: 20px 40px`, so a 390px phone offers it 310. On
+        # its own line it wraps at a space — "…NOT SUBMITTED / SHOWN FIRST" —
+        # which is a caption on two lines instead of a page a teacher has to
+        # pan. Scoped to the six CONTENT regions by NAME: the top bar's crumb
+        # is also `nowrap` and must stay that way, because that bar is a
+        # 62px scrolling strip, not a column.
+        # ⊕ MRB-306 Phase 3 — A TOAST IS NOT A CONTROL, AND IT WAS EATING
+        # THE PRESS. Third of the three `teacher_reach` found, and the worst
+        # of them, because it is a trap rather than an inconvenience.
+        #
+        # Design's toast (node 672) is `position:fixed; left:50%; bottom:28px;
+        # z-index:80`. The overlays are z-index 60, so the toast is ABOVE
+        # them — correct, a toast should be readable over a modal. At 1460 it
+        # then sits in empty space below a centred 720px sheet. At 390 the
+        # sheet fills the screen and the toast lands exactly on its footer.
+        #
+        # Photographed: press "Send shoutouts" with nobody picked, and
+        # "Pick at least one student" appears directly over the "Send
+        # shoutouts" button. A teacher then picks their students and presses
+        # the button — and the toast takes the click, because it is a
+        # `pointer-events:auto` box over the top of it. The instruction and
+        # the thing you must do to obey it, in the same 195x68 rectangle.
+        #
+        # `pointer-events:none` AT EVERY WIDTH, because it is right at every
+        # width: the toast contains two spans and no control, so nothing in
+        # it is ever a press target, and a message that can swallow a press
+        # is a defect wherever it happens to land.
+        #
+        # And on a phone it MOVES rather than merely letting presses through,
+        # because a teacher also has to SEE the button they are pressing. The
+        # top of the screen is the free space there: below the 62px bar, and
+        # clear of the sheet's own close control, which is at the top LEFT
+        # while the toast is centred.
+        "[data-port-region=\"toast\"]{pointer-events:none}"
+        "@media (max-width:560px){"
+        "[data-port-region] [style*=\"display:flex\"]"
+        "[style*=\"justify-content:space-between\"]:not([style*=\"flex-wrap\"])"
+        "{flex-wrap:wrap}"
+        # ⚠️ `!important` IS LOAD-BEARING HERE AND NOWHERE ELSE IN THIS
+        # BLOCK. `white-space:nowrap` is written INLINE on Design's caption
+        # spans, and an inline declaration beats any selector — which is why
+        # the first attempt at this rule changed nothing and the gate stayed
+        # red at 415px. The `flex-wrap` rule above needs no such thing
+        # because it only ever matches nodes that carry no inline
+        # `flex-wrap` at all; that `:not()` is what keeps it honest.
+        "[data-port-region=\"classes\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"class\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"student\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"marking\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"digest\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"insights\"] [style*=\"white-space:nowrap\"]"
+        "{white-space:normal!important}"
+        "[data-port-region=\"toast\"]{top:74px;bottom:auto}"
+        # ⚑ AND `minmax(330px, 1fr)` IS NOT A MINIMUM A 360px PHONE CAN
+        # KEEP. Fourth and last of the run's findings, and the one that
+        # explains why `auto-fit` is not by itself responsive: a track whose
+        # MINIMUM is 330px stays 330px in a 280px column — `auto-fit` drops
+        # to one track and then that track still does not fit, so the card
+        # sticks 10px past the edge and takes the whole document with it.
+        #
+        # Design uses the pattern five times, at 220/230/240/310/330. Only
+        # the two large ones can overflow a phone, and only class detail's
+        # `glance` trio (330 — chase, reteach, watch) actually does at 360.
+        # Rewriting just that one would leave 310 to fail on the next
+        # narrower device, so the rule is written for the PATTERN: below
+        # 560px every one of these grids is a single column, which is what
+        # `auto-fit` was reaching for and cannot express.
+        #
+        # `!important` for the same reason as the caption rule above — the
+        # template is inline on Design's node, and an inline declaration
+        # beats a selector.
+        "[data-port-region] [style*=\"repeat(auto-fit,minmax(\"]"
+        "{grid-template-columns:minmax(0,1fr)!important}"
+        "}"
+        # ⊕ MRB-306 Phase 2a screen 6 — THE PRINT RULES, MEASURED NOT
+        # ASSUMED. `.noprint` alone was not enough to make the digest a
+        # report a teacher can hand to a head of department.
+        #
+        # `flex-wrap` — every row's first cell is one of Design's flex
+        # cells: a title span beside a `flex:none` status badge. Neither can
+        # shrink below its longest word, and at A4 the two OVERLAP. Rendered
+        # at the real printable width (717px: A4 portrait less 0.4in margins)
+        # the class report printed "MA13/16" where "Photosynthesis — the
+        # basics" ran under "MARKED 13/16", and did the same on four more
+        # rows. Nothing is clipped at 1280 or 1460, which is why every
+        # screenshot the port has ever taken looked correct.
+        #
+        # ⚠️ `min-width:0` WAS THE FIRST ATTEMPT AND IT WAS WRONG — noted
+        # because it looked right. It let the title shrink instead of
+        # overlapping, which removed the collision and replaced it with the
+        # title spilling out of a 60px box: measured, `clientWidth` 60 against
+        # `scrollWidth` 130. Overlap became overflow. `flex-wrap` is the
+        # mechanism that actually fits: the badge drops to a second line when
+        # it will not fit beside the title, the title then has the whole
+        # column, and it wraps on spaces the way Design's `text-wrap:pretty`
+        # already asks it to. `overflow-wrap:break-word` is the backstop for
+        # a single word longer than the column.
+        #
+        # ⚠️ NOT `anywhere`, and the difference is visible on the sheet.
+        # `anywhere` counts toward a box's MIN-CONTENT width, so the browser
+        # is free to make the column narrower than the longest word and then
+        # break it: the first render of this fix split "Photosynthesis" as
+        # "Photosynthes / is" over two lines with room to spare beside it.
+        # `break-word` breaks only a word that genuinely cannot fit.
+        #
+        # `break-inside:avoid` — a twelve-row table crosses the page break,
+        # and a row split down the middle puts a class's figures on one sheet
+        # and its "needs a look" sentence on the next.
+        #
+        # SCOPED TO THE PRINT SHEET, deliberately. The same overlap happens
+        # on a narrow SCREEN, and that is Design's responsive question about
+        # a five-column table rather than this unit's: at 390px the last two
+        # columns are outside the viewport entirely, which `min-width:0` does
+        # not address and must not be made to look as though it does.
+        "@media print{"
+        ".noprint{display:none!important}"
+        "[data-port-region] [style*=\"--rowpad\"][style*=\"display:flex\"]"
+        "{flex-wrap:wrap}"
+        "[data-port-region] [style*=\"--rowpad\"] *{overflow-wrap:break-word}"
+        "[data-port-region] [style*=\"grid-template-columns\"]"
+        "{break-inside:avoid;page-break-inside:avoid}"
+        "}"
         "</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-teacher\" style=\"background:var(--st-ground);"
@@ -2367,10 +4340,15 @@ def _verify_stamps(stamped):
     # The check is NOT weakened: each fixture asset is still hashed and still
     # compared, in the one tree its page is served from. A fixture asset that
     # went missing from `shared/` would still stop the build.
+    # ⊕ 2 Sep 2026 — EVERY empty variant's data file, not just `empty_js`.
+    # Derived from EMPTY_SHAPES through `variant_files`, the same call the
+    # build writes them with, so a new variant cannot be added without this
+    # set knowing about it.
     fixture_assets = set()
     for spec in PAGES:
         fixture_assets.add(spec["fixture_js"])
-        fixture_assets.add(spec["empty_js"])
+        for slug, _note, _shaper in EMPTY_SHAPES[spec["out"]]:
+            fixture_assets.add(variant_files(spec, slug)[1])
 
     bad = []
     for name, want in sorted(stamped.items()):
@@ -2588,6 +4566,10 @@ def build():
     stamped = dict(versions)
     nav_nodes_seen = set()
     retarget_seen = set()
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — the same accumulator, for the four
+    # node-anchored tables that never had one. See `KNOWN_UNAPPLIED`.
+    ruling_seen = {"SET_ATTR": set(), "BIND_ATTR": set(),
+                   "RETEXT_AT": set(), "SET_ON": set()}
     region_report = {}
     empty_report = {}
 
@@ -2632,9 +4614,14 @@ def build():
             mine["FEED"] = {}
         js = _fixture_js(mine)
 
-        note, shaper = EMPTY_SHAPES[spec["out"]]
-        empty_js = _fixture_js(shaper(dict(mine)), empty=True)
-        empty_report[spec["empty_out"]] = note
+        # ⊕ 2 Sep 2026 — ONE OR MORE empty variants per screen. `empty` is
+        # first and keeps the spec's own filenames; see EMPTY_SHAPES.
+        variants = []
+        for slug, note, shaper in EMPTY_SHAPES[spec["out"]]:
+            v_out, v_js_name = variant_files(spec, slug)
+            variants.append((slug, v_out, v_js_name,
+                             _fixture_js(shaper(dict(mine)), empty=True)))
+            empty_report[v_out] = note
 
         # The fixture DATA follows the fixture PAGES out of the published
         # tree. Unpublishing the HTML alone would have left twelve JS files
@@ -2646,7 +4633,7 @@ def build():
         # round-tripped — so the invented data reached the public site and
         # the correction then risked deleting it from source.
         os.makedirs(FIXTURE_OUT, exist_ok=True)
-        for stale in (spec["fixture_js"], spec["empty_js"]):
+        for stale in ([spec["fixture_js"]] + [v[2] for v in variants]):
             for tree in (SHARED_OUT, "shared"):
                 gone = os.path.join(tree, stale)
                 if os.path.exists(gone):
@@ -2654,20 +4641,24 @@ def build():
         with open(os.path.join(FIXTURE_OUT, spec["fixture_js"]), "w",
                   encoding="utf-8") as fh:
             fh.write(js)
-        with open(os.path.join(FIXTURE_OUT, spec["empty_js"]), "w",
-                  encoding="utf-8") as fh:
-            fh.write(empty_js)
+        for _slug, _v_out, v_js_name, v_js in variants:
+            with open(os.path.join(FIXTURE_OUT, v_js_name), "w",
+                      encoding="utf-8") as fh:
+                fh.write(v_js)
         page_versions = dict(versions)
         page_versions[spec["fixture_js"]] = asset_hash(js)
-        page_versions[spec["empty_js"]] = asset_hash(empty_js)
+        for _slug, _v_out, v_js_name, v_js in variants:
+            page_versions[v_js_name] = asset_hash(v_js)
         stamped.update(page_versions)
 
         body = page_html(spec, shipped, table, page_logic, tpl["imports"],
                          None, page_versions, regions)
         fix = page_html(spec, shipped, table, page_logic, tpl["imports"],
                         spec["fixture_js"], page_versions, regions)
-        mt = page_html(spec, shipped, table, page_logic, tpl["imports"],
-                       spec["empty_js"], page_versions, regions)
+        empties = [(v_out, page_html(spec, shipped, table, page_logic,
+                                     tpl["imports"], v_js_name,
+                                     page_versions, regions))
+                   for _slug, v_out, v_js_name, _v_js in variants]
         # ⚠️ THE LIVE PAGE IS PUBLISHED; THE FIXTURES ARE NOT.
         #
         # `mrbadmus_site/` is what Cloudflare serves, and `/teacher/*` has no
@@ -2698,14 +4689,15 @@ def build():
         # something removes it. Unpublishing has to delete, not just stop
         # writing — otherwise the change is invisible until the next full
         # `generate_site_v5` wipe, and reads as done when it is not.
-        for stale in (spec["fixture_out"], spec["empty_out"]):
+        for stale in ([spec["fixture_out"]] + [v[0] for v in variants]):
             gone = os.path.join(SITE_OUT, stale)
             if os.path.exists(gone):
                 os.remove(gone)
         write(os.path.join(SITE_OUT, spec["out"]), body)
         write(os.path.join(MIRROR_OUT, spec["out"]), body)
         write(os.path.join(FIXTURE_OUT, spec["fixture_out"]), fix)
-        write(os.path.join(FIXTURE_OUT, spec["empty_out"]), mt)
+        for v_out, v_body in empties:
+            write(os.path.join(FIXTURE_OUT, v_out), v_body)
 
         # ── ⊕ MRB-287 · the additions, asserted against the BYTES ──────
         #
@@ -2771,11 +4763,35 @@ def build():
         # (`c.yearName` / `k.yearName`) and must not reach for the dashboard's
         # (`MRB_DATA('yearLabel')`), which is what both did until E1 and what
         # made twelve cards out of 2025-26 each say 2026-27.
-        for what, own, line in (
-                ("the class card's meta line", "c.yearName", "meta:"),
-                ("the class header's long meta", "k.yearName", "longMeta:")):
+        # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — BOTH ANCHORS RE-CUT, and the
+        # second one was WATCHING A KEY THAT NO LONGER EXISTS. Design's v3
+        # deleted `longMeta` and rebuilt the class header as `klass.meta`;
+        # the ruling was re-expressed onto `klass.meta` on 1 Sep and this
+        # guard was not, so it searched for a string absent from every page
+        # and refused all six builds. The FIRST anchor was worse: a bare
+        # `find("meta:")` takes whichever `meta:` comes first in the file,
+        # and v3 put the Today screen's lesson meta ahead of the card's — so
+        # for one afternoon it was checking `t.room` for an academic year.
+        #
+        # Each row now names the DECLARATION it belongs under and searches
+        # forward from there, so neither can drift onto a neighbour's key.
+        for what, own, decl, line in (
+                ("the class card's meta line", "c.yearName",
+                 "const cards = ", "meta:"),
+                ("the class header's meta line", "k.yearName",
+                 "      klass: {", "meta:")):
             seg = ""
-            at = page_logic.find(line)
+            base = page_logic.find(decl)
+            if base == -1:
+                raise SystemExit(
+                    "build_teacher_port.py: %s — %s cannot be checked: "
+                    "`%s` is not in the emitted logic.\n"
+                    "  Design has renamed or removed the declaration this "
+                    "guard reads. An E1 check that cannot find its own "
+                    "anchor must refuse; skipping it would let the working "
+                    "year back onto a past year's class."
+                    % (spec["out"], what, decl.strip()))
+            at = page_logic.find(line, base)
             if at != -1:
                 seg = page_logic[at:at + 260]
             if own not in seg:
@@ -2817,6 +4833,9 @@ def build():
         for handler, nav in R.NAV.items():
             nav_nodes_seen |= {n for n in nav["nodes"] if n in here}
         retarget_seen |= {n for n in R.RETARGET_ON if n in here}
+        for _t, _tbl in (("SET_ATTR", R.SET_ATTR), ("BIND_ATTR", R.BIND_ATTR),
+                         ("RETEXT_AT", R.RETEXT_AT), ("SET_ON", R.SET_ON)):
+            ruling_seen[_t] |= {n for n in _tbl if n in here}
 
         print("     ✅ %-24s %7d bytes  (%d node(s) pruned, %d inserted, "
               "%d wrapped, %d retargeted, %d binding(s), %d retext(s), "
@@ -2824,8 +4843,9 @@ def build():
               % (spec["out"], len(body), stats["pruned"], stats["inserted"],
                  stats["wrapped"], stats["retargeted"], len(table),
                  stats["retexted"], stats["attred"], len(region_ids)))
-        print("        %-26s %7d  ·  %-26s %7d"
-              % (spec["fixture_out"], len(fix), spec["empty_out"], len(mt)))
+        print("        %-30s %7d" % (spec["fixture_out"], len(fix)))
+        for v_out, v_body in empties:
+            print("        %-30s %7d" % (v_out, len(v_body)))
 
     # ⚠️ EVERY NAVIGATION NODE MUST HAVE BEEN CHECKED ON AT LEAST ONE PAGE.
     # `apply_rulings` skips a node pruned with its screen, which is correct
@@ -2852,6 +4872,50 @@ def build():
             "on ANY of the six pages, so the ruling anchored on them was "
             "never checked. Design has removed those controls; re-anchor "
             "teacher_rulings.RETARGET_ON." % missed)
+
+    # ── ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · THE UNGUARDED-RULING SWEEP ────
+    #
+    # ⛔ FOUR TABLES HAD NO SWEEP AT ALL. `apply_rulings` skips a node that is
+    # not on the page it is building — right per page, and it meant a node
+    # Design had DELETED was skipped on all six and its ruling checked
+    # nowhere. `NAV` and `RETARGET_ON` were already swept; `SET_ATTR`,
+    # `BIND_ATTR`, `RETEXT_AT` and `SET_ON` were not, and that is the same
+    # silent failure as the hand-edit this file replaced: green build, ruling
+    # not in the page.
+    #
+    # ⚠️ BOTH DIRECTIONS. A node in `KNOWN_UNAPPLIED` that DOES appear on a
+    # page fails too — an exemption list that can only ever excuse is a switch
+    # for turning the guard off.
+    for table, seen in sorted(ruling_seen.items()):
+        named = R.KNOWN_UNAPPLIED.get(table, {})
+        all_nodes = set(getattr(R, table))
+        missed = sorted((all_nodes - seen) - set(named))
+        if missed:
+            raise SystemExit(
+                "build_teacher_port.py: teacher_rulings.%s names node(s) %s "
+                "and NONE of the six pages carries them, so those rulings "
+                "were never applied and never checked.\n"
+                "  Design has redrawn or deleted those nodes. Re-anchor "
+                "them, or — if they belong to a screen this port "
+                "deliberately does not emit — name them in "
+                "teacher_rulings.KNOWN_UNAPPLIED with the reason. A ruling "
+                "that silently applied to nothing is the hand-edit failure "
+                "this file exists to prevent." % (table, missed))
+        rotted = sorted(set(named) & seen)
+        if rotted:
+            raise SystemExit(
+                "build_teacher_port.py: teacher_rulings.KNOWN_UNAPPLIED[%r] "
+                "excuses node(s) %s as unreachable, and they ARE on an "
+                "emitted page.\n"
+                "  The exemption is stale. Remove those rows: an exemption "
+                "list that is never checked back is a way of switching a "
+                "guard off." % (table, rotted))
+    print("     ✅ unguarded-ruling sweep: %d node-anchored ruling(s) across "
+          "6 table(s) proved applied on at least one page; %d named "
+          "unapplied and why"
+          % (len(nav_nodes_seen) + len(retarget_seen)
+             + sum(len(v) for v in ruling_seen.values()),
+             sum(len(v) for v in R.KNOWN_UNAPPLIED.values())))
 
     _verify_stamps(stamped)
 

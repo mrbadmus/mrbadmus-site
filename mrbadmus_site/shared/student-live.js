@@ -3104,6 +3104,81 @@
       if (srcSlug) { assignmentLessonSlug = srcSlug; break; }
     }
 
+    /* ── ⊕ MRB-306 Phase 2b — WHAT THE TEACHER WROTE ───────────────────
+
+       ⛔ A READ, AND ONLY A READ. Mide's instruction for this half of the
+       unit is "student-side changes are reads only": no save path, no
+       offline queue, no submission write. Two SELECTs and an RPC that
+       resolves a name, none of them on the answer path, none of them
+       touching `makeSink`, the queue or the keepalive.
+
+       ⛔ AND THERE IS NO REPLY. Not a disabled control, not a hidden one,
+       not a field behind a flag. `submission_feedback` has no student INSERT
+       policy at all, so anything that looked like a way to answer would be a
+       promise to a child that the database refuses.
+
+       ⚠️ THE TWO CALLS RUN TOGETHER, not one after the other. They have no
+       dependency on each other and MRB-292's whole lesson was that serial
+       waves are where a student's wait comes from. Neither can fail the
+       page: both resolve null/[] on any error, and the block simply does
+       not draw.
+
+       ⚠️ THE NAME IS ONLY SAID WHEN IT CAN BE PROVED. `class_teachers_for_
+       viewer` returns display names WITHOUT ids — deliberately, on its own
+       side — so on a class with exactly one teacher the author is
+       unambiguous and is named, and on a co-taught class it is not knowable
+       from a student session and the line reads "your teacher". The same
+       restraint `teacherName` already takes on the class page, and for the
+       same underlying gap: a student has no read policy on a teacher's
+       profile row. Guessing would put one teacher's name on another
+       teacher's words, in front of a child.
+
+       ── ⊕ RULED BY MIDE, 4 Sep 2026 · AND NOW IT USUALLY CAN BE PROVED ──
+
+       The paragraph above describes what this page did for one unit, and it
+       is kept because it is still exactly what happens when the mapping
+       below is empty. What changed is that there IS a mapping now:
+       `submission_feedback_authors_for_viewer` returns
+       `{ teacher_id: display_name }` for the comments on THIS student's own
+       submissions of THIS assignment, and for nothing else. It closes the
+       co-taught case — 9 of prod's 73 classes, where the byline read "your
+       teacher" — without widening `profiles` RLS by a single row. The
+       reasoning for its shape is in `shared/student-data.js`.
+
+       ⚠️ THE THREE CALLS STILL RUN TOGETHER, and the third joined the
+       existing `Promise.all` rather than adding a wave. MRB-292's lesson was
+       that a student's wait is made of serial round trips, and a caption is
+       not worth one.
+
+       ⚠️ THE ORDER OF PREFERENCE IS MAPPING → SINGLE-TEACHER → "your
+       teacher", AND IT NEVER GUESSES AT ANY STEP. If the mapping has the
+       author's id, that name is a FACT about who wrote these words. If it
+       does not — an older database without the function, a failed request, a
+       profile since deleted — the page falls back to exactly what it did
+       before, which names the teacher only where the class has one. What it
+       must never do is take the first of two co-teachers, which is the one
+       behaviour that would put one teacher's name on another's words in
+       front of a child. */
+    var feedback = null, teacherNames = [], fbAuthors = {};
+    try {
+      var fbPair = await Promise.all([
+        window.MrBadmusStudentData.loadSubmissionFeedback(a.id, userId),
+        window.MrBadmusStudentData.loadClassTeacherNames(klass.id),
+        window.MrBadmusStudentData.loadSubmissionFeedbackAuthors(a.id)
+      ]);
+      feedback = fbPair[0];
+      teacherNames = fbPair[1] || [];
+      fbAuthors = fbPair[2] || {};
+    } catch (err) {
+      console.warn("[student-live] feedback read failed", err);
+    }
+    var fbNamed = (feedback && feedback.teacherId &&
+                   typeof fbAuthors[feedback.teacherId] === "string")
+      ? fbAuthors[feedback.teacherId].trim() : "";
+    var fbAuthor = fbNamed ||
+      ((teacherNames.length === 1 && teacherNames[0])
+        ? teacherNames[0] : "your teacher");
+
     return {
       questions: questions,
 
@@ -3140,6 +3215,34 @@
       className: name,
       backToClass: "Back to " + name,
       topicTitle: a.topic || a.title || "",
+
+      /* ── ⊕ MRB-306 Phase 2b — the teacher's comment, for the done
+         screen, UNDER the automated marking (see student_rulings.INSERT_AT).
+
+         ⚠️ ALL FOUR ARE EMPTY WHERE THERE IS NO COMMENT, and `feedbackHas`
+         is what the `<if>` reads — so a student with nothing written about
+         them sees exactly the page they saw before this unit, with no
+         heading, no empty state and no "your teacher has not said anything",
+         which would be a sentence about a teacher rather than about their
+         work.
+
+         ⚠️ THE BODY IS THE STORED STRING, UNTOUCHED. It is rendered by
+         `student-runtime` through `createTextNode`, so a URL a teacher typed
+         is characters on a page and not a link — there is no `innerHTML` on
+         this path, no markdown and no linkifier. Proven by injection rather
+         than assumed; see the report. */
+      feedbackHas: !!(feedback && feedback.body),
+      feedbackBody: (feedback && feedback.body) || "",
+      feedbackBy: feedback ? ("From " + fbAuthor) : "",
+      /* `agoText` returns Design's own uppercase vocabulary ("2 DAYS AGO"),
+         which is the register every caption on this screen is in. An EDITED
+         comment says so: the database keeps the wording it replaced
+         (`prior_body`, forced by CHECK), and a child reading a changed
+         comment should know it changed. */
+      feedbackWhen: feedback
+        ? (agoText(feedback.editedAt || feedback.createdAt, serverNow) +
+           (feedback.editedAt ? " \u00b7 EDITED" : ""))
+        : "",
 
       /* ⊕ RULED 22 Aug 2026 — W5. The three words that live in Design's
          MARKUP rather than in its logic, bound by path like every other

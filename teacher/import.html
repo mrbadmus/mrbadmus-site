@@ -8,97 +8,172 @@
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <!-- ⊕ MRB-306 Phase 2a — v3's design system, the same sheet the six
+       GENERATED teacher screens load. It carries the --st-* tokens this
+       page's chrome is drawn from. It also re-ships an older copy of
+       tokens.css; every value in that copy is IDENTICAL to the live file
+       (measured — it is a strict subset), so the order of these two links
+       changes nothing, and its later @font-face block points at the same
+       /shared/fonts/ URLs. -->
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=fba5f719"/>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
   <style>
-    html { background: var(--bg); }
+    html { background: var(--st-ground); }
     :root {
-      --darker:    var(--bg);
-      --dark:      var(--sunken);
-      --card2:     var(--sunken);
+      --darker:    var(--st-ground);
+      --dark:      var(--st-num-well);
+      --card2:     var(--st-num-well);
+      /* ⚠️ NOT remapped. `--warning` is this page's DESTRUCTIVE/error colour
+         (a row that will be skipped, a column that failed to map), and v3's
+         palette has no error token — `--st-accent` is the brand rust and
+         means "attention", not "wrong". CLAUDE.md's --chemistry/--danger
+         split exists for exactly this confusion, so the semantic token is
+         kept and only the chrome moves. */
       --warning:   var(--danger);
-      --shadow:    var(--shadow-card);
+      --shadow:    none;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--darker);
-      color: var(--text);
-      font-family: var(--font-sans);
+      background: var(--st-ground);
+      color: var(--st-ink);
+      font: 400 18px/1.5 var(--st-ui);
       min-height: 100vh;
-      padding: 80px 20px 60px;
+      /* ⊕ MRB-306 — the bar is STICKY now, not fixed, exactly as v3 draws
+         it, so it takes its own space in the flow and the old 80px top pad
+         that cleared a fixed bar would be 80px of empty cream. */
+      padding: 0 0 60px;
       /* Hidden until requireTeacherRole's onAllowed callback fires.
          Fail-closed: if the guard bounces or JS fails, the page never
          reveals teacher content. */
       display: none;
     }
 
-    /* ── NAV (matches teacher/class-detail.html exactly) ── */
-    nav.top-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      padding: 12px 24px;
+    /* ── v3's top bar ────────────────────────────────────────────────────
+       ⊕ MRB-306 Phase 2a. The section header used to read "NAV (matches
+       teacher/class-detail.html exactly)" — that is no longer true and the
+       claim is retired rather than left to rot: class-detail.html is one of
+       the six GENERATED screens and draws its bar from Design's template.
+       These values are Design's too, but read out of the RENDERED topbar of
+       teacher_fixtures/classes-fixture.html rather than retyped, which is
+       the same construction today.html and timetable.html took. */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      z-index: 10;
+      gap: 12px;
+      height: 62px;
+      padding: 0 22px;
+      background: var(--st-paper);
+      border-bottom: 1px solid var(--st-rule);
     }
-    .pill {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 0.7rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+    .tb-brand {
+      flex: none;
+      font: 600 23px/1 var(--st-display);
+      letter-spacing: -0.025em;
+      color: var(--st-ink);
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
-    .pill.env-prod { background: var(--sunken); color: var(--muted); }
-    .signout-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 5px 12px;
+    /* teacher-ds.css styles bare `a:hover` rust; the brand and the tabs are
+       chrome and do not change colour on hover in Design's bar. */
+    .tb-brand:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-seg {
+      display: flex;
+      gap: 3px;
+      padding: 3px;
+      flex: none;
+      margin-right: auto;
+      background: var(--st-seg-bg);
+      border-radius: 10px;
+    }
+    .tb-tab {
+      padding: 7px 15px;
       border-radius: 8px;
-      font-family: var(--font-sans);
-      font-weight: 700;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.15s;
+      font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-caption);
+      background: transparent;
+      text-decoration: none;
+      white-space: nowrap;
     }
-    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+    .tb-tab:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-tab.is-on { background: var(--st-paper); color: var(--st-ink); }
+
+    /* The environment badge. ⚠️ UNLIKE today.html's, THIS ONE IS LIVE — the
+       guard's onAllowed sets its text, its title and `env-test`/`env-prod`
+       from MrBadmusConfig on every load, so it always shows. It must never
+       be given a `display` that JS then has to fight. */
+    .pill {
+      flex: none;
+      padding: 5px 8px;
+      border-radius: 6px;
+      font: 500 12px/1.2 var(--st-mono);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--st-caption);
+      background: var(--st-num-well);
+      white-space: nowrap;
+    }
+    .pill.env-test { color: var(--st-accent-text); }
+    .pill.env-prod { color: var(--st-caption); }
+    /* The signed-in teacher's name — this page's own, and kept. */
+    .tb-who {
+      flex: none;
+      font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-muted);
+      white-space: nowrap;
+    }
+    .signout {
+      flex: none;
+      height: 32px;
+      padding: 0 12px;
+      font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-muted);
+      background: transparent;
+      border: 1px solid var(--st-btn-border);
+      border-radius: 9px;
+      cursor: pointer;
+    }
+    .signout:hover { color: var(--st-ink); border-color: var(--st-edge); }
+    /* The class Design's bar carries. It is defined in the six generated
+       pages' own inline <style> and in NEITHER stylesheet, so without this
+       line `noprint` on the <nav> above would do nothing at all. */
+    @media print { .noprint { display: none !important; } }
 
     /* ── PAGE LAYOUT ── */
-    .container { max-width: 1100px; margin: 0 auto; }
+    /* ⚠️ max-width STAYS 1100px. today.html moved to Design's 1460, but the
+       wizard's preview tables and the five-column mapper below are sized
+       against this measure; widening it is a layout change to the CONTENT,
+       which this unit does not touch. The padding is new only because the
+       bar stopped being `fixed` and body lost its 20px side pad with it. */
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px 40px 40px; }
 
     .back-link {
       display: inline-block;
       margin-bottom: 18px;
-      color: var(--muted);
+      color: var(--st-muted);
       text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 600;
+      font: 600 16px/1.4 var(--st-ui);
       transition: color 0.15s;
     }
-    .back-link:hover { color: var(--text); }
+    .back-link:hover { color: var(--st-ink); }
 
     .page-title {
-      font-family: var(--font-serif);
-      font-weight: 800;
-      font-size: 2rem;
-      color: var(--text);
-      letter-spacing: 0.01em;
+      font: 600 52px/1 var(--st-display);
+      color: var(--st-ink);
+      letter-spacing: -0.035em;
       margin-bottom: 6px;
+      overflow-wrap: break-word;
     }
     .page-subtitle {
-      color: var(--muted);
-      font-size: 0.95rem;
-      font-weight: 600;
+      color: var(--st-muted);
+      font: 400 18px/1.5 var(--st-ui);
       margin-bottom: 28px;
-      line-height: 1.5;
+      max-width: 60ch;
     }
 
     /* ── STEP INDICATOR (1 → 2 → 3) ── */
@@ -113,7 +188,7 @@
       align-items: center;
       gap: 10px;
       color: var(--muted);
-      font-family: var(--font-serif);
+      font-family: var(--st-display);
       font-weight: 700;
       font-size: 0.9rem;
     }
@@ -164,7 +239,7 @@
       margin-bottom: 22px;
     }
     .card-title {
-      font-family: var(--font-serif);
+      font-family: var(--st-display);
       font-weight: 700;
       font-size: 1.15rem;
       color: var(--text);
@@ -196,7 +271,7 @@
     }
     .dropzone-icon { font-size: 2.4rem; margin-bottom: 10px; }
     .dropzone-text {
-      font-family: var(--font-serif);
+      font-family: var(--st-display);
       font-weight: 700;
       font-size: 1rem;
       color: var(--text);
@@ -245,7 +320,7 @@
       color: var(--muted);
       padding: 5px 12px;
       border-radius: 8px;
-      font-family: var(--font-sans);
+      font-family: var(--st-ui);
       font-weight: 700;
       font-size: 0.78rem;
       cursor: pointer;
@@ -283,7 +358,7 @@
     .data-table thead th {
       background: var(--card2);
       color: var(--muted);
-      font-family: var(--font-serif);
+      font-family: var(--st-mono);
       font-weight: 600;
       font-size: 0.7rem;
       letter-spacing: 0.06em;
@@ -317,7 +392,7 @@
       color: var(--muted);
       padding: 6px 14px;
       border-radius: 8px;
-      font-family: var(--font-sans);
+      font-family: var(--st-ui);
       font-weight: 700;
       font-size: 0.8rem;
       cursor: pointer;
@@ -341,7 +416,7 @@
     .map-row { }
     .map-label {
       display: block;
-      font-family: var(--font-serif);
+      font-family: var(--st-mono);
       font-weight: 600;
       font-size: 0.72rem;
       letter-spacing: 0.06em;
@@ -357,7 +432,7 @@
       border: 1px solid var(--border-strong);
       border-radius: 8px;
       color: var(--text);
-      font-family: var(--font-sans);
+      font-family: var(--st-ui);
       font-size: 0.92rem;
       font-weight: 600;
       padding: 10px 12px;
@@ -379,7 +454,7 @@
       align-items: center;
       gap: 9px;
       margin-top: 16px;
-      font-family: var(--font-sans);
+      font-family: var(--st-ui);
       font-size: 0.9rem;
       font-weight: 600;
       color: var(--muted);
@@ -413,7 +488,7 @@
       margin-bottom: 14px;
     }
     .class-setting-name {
-      font-family: var(--font-serif);
+      font-family: var(--st-display);
       font-weight: 700;
       font-size: 1.05rem;
       color: var(--text);
@@ -440,7 +515,7 @@
     .setting-block { }
     .setting-block-label {
       display: block;
-      font-family: var(--font-serif);
+      font-family: var(--st-mono);
       font-weight: 600;
       font-size: 0.68rem;
       letter-spacing: 0.06em;
@@ -459,7 +534,7 @@
       border: 2px solid var(--border-strong);
       border-radius: 8px;
       color: var(--text);
-      font-family: var(--font-sans);
+      font-family: var(--st-ui);
       font-weight: 700;
       font-size: 0.85rem;
       cursor: pointer;
@@ -551,7 +626,7 @@
       margin-bottom: 16px;
     }
     .success-title {
-      font-family: var(--font-serif);
+      font-family: var(--st-display);
       font-weight: 800;
       font-size: 1.5rem;
       color: var(--text);
@@ -578,7 +653,7 @@
     .btn {
       padding: 11px 26px;
       border-radius: 24px;
-      font-family: var(--font-sans);
+      font-family: var(--st-ui);
       font-weight: 700;
       font-size: 0.92rem;
       cursor: pointer;
@@ -615,27 +690,69 @@
 
     @media (max-width: 560px) {
       .step-label { display: none; }
-      .page-title { font-size: 1.6rem; }
-      /* MRB-303 J2 added a third nav-right item (Admin, for admin-scoped
-         viewers) on top of the env pill/name/Sign out — at 390px the bar was
-         already tight; a third with no wrap protection collides. Same three
-         rules as teacher/admin.html's own 390px fix. */
-      nav.top-nav { padding: 10px 14px; gap: 12px; }
-      nav.top-nav > a { white-space: nowrap; }
-      .nav-right { gap: 8px; }
-      .nav-right .signout-btn, .nav-right span { white-space: nowrap; }
+      .container { padding: 18px 14px 40px; }
+      .page-title { font-size: 34px; letter-spacing: -0.02em; }
+      /* ⚠️ THE BAR WRAPS RATHER THAN OVERFLOWING, and that is deliberate.
+         v3's top bar has no @media rule at all and measures 953px wide
+         inside a 390px viewport on all six GENERATED screens. This page has
+         never had that defect — MRB-303 J2's follow-up commit
+         (833d99935, "390px nav wrap for the third nav-right item") is the
+         ancestor of these rules and was written precisely to keep the bar
+         inside 390 once Admin became a fourth item. Importing v3's bar
+         wholesale would regress a working page to match a broken one, so
+         the page keeps its own narrow-viewport behaviour until the
+         cross-screen responsive unit gives all eight pages one answer. */
+      .topbar { height: auto; min-height: 62px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+      .tb-brand { font-size: 19px; }
+      .tb-seg { margin-right: 0; }
+      .tb-tab { padding: 6px 11px; font-size: 14px; }
     }
   </style>
 </head>
 <body>
 
-<nav class="top-nav">
-  <a href="/index.html" style="font-family:var(--font-serif);font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
-  <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
-    <span id="env-pill" class="pill env-prod" title=""></span>
-    <span id="nav-user-area" style="color:var(--muted);font-weight:700;font-size:0.85rem;"></span>
-    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+<!-- ── ⊕ MRB-306 Phase 2a — v3's top bar, STATIC ────────────────────────
+     Same construction as today.html, timetable.html and admin.html: this
+     page is hand-written and carries no student-runtime, so the strip
+     Design draws through `__MRB_TPL__` is reproduced as plain markup using
+     her own values, read out of the RENDERED topbar of classes-fixture.html.
+
+     ⚠️ `class="top-nav"`, `.nav-right` and `.signout-btn` are GONE ON
+     PURPOSE. `shared/teacher-admin-nav.js` has two hosts and `inject()`
+     runs Host A (`nav.top-nav .signout-btn`, pre-v3 muted type) BEFORE
+     Host B (`[data-port-region="topbar"]`, v3 type). Keeping any of them
+     would put the injected Admin link into a v3 bar wearing the old
+     0.85rem muted styling. Nothing in this page's JS ever selected these
+     three classes — verified — so only CSS depended on them.
+
+     ⚠️ `data-mrb-today-nav` is that module's OWN idempotence marker, and
+     the static Today tab below is why this bar does not grow a SECOND
+     "Today": Today is not scope-gated, so it is injected on every page
+     that is not Today itself. The tab REPLACES that injected link — same
+     href, same destination, v3's type instead of the old muted one.
+     Nothing is added and nothing is removed.
+
+     ⚠️ "Admin" is still INJECTED here, not static — this page is not
+     admin.html, so `boot()` does not return early, and the link must stay
+     scope-gated. It now lands in Host B and wears v3's type.
+
+     NOT carried across, each for a stated reason:
+     · Design's "Find a student" search — `shared/search.js` IS loaded on
+       this page, but it is an overlay with no trigger here (nothing calls
+       `MRBSearch.open()`), so a search control in the bar would be new
+       behaviour, not a restyle.
+     · Her Charts button — a navigation this page has never had.
+     · A "My classes" tab — the page reaches it through the `back-link` in
+       the body, and a bar tab would be a control ADDED.
+     · The crumb — nothing here computes one. -->
+<nav class="topbar noprint" data-port-region="topbar">
+  <a class="tb-brand" href="/index.html">MrBadmusAI</a>
+  <div class="tb-seg">
+    <a class="tb-tab" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
   </div>
+  <span id="env-pill" class="pill env-prod" title=""></span>
+  <span id="nav-user-area" class="tb-who"></span>
+  <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
 </nav>
 
 <main class="container">
@@ -882,7 +999,7 @@
 <script src="/shared/config.js?v=d1fecb43"></script>
 <script src="/shared/class-entry.js?v=d47329ae" defer></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/teacher-admin-nav.js?v=6549c6a4"></script>
+<script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script>
 (function () {
   // ── Module-scoped Supabase client + page state ─────────────────────────

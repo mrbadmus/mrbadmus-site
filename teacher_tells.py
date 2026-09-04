@@ -170,6 +170,60 @@ HARVEST = [
     ("TOPICS",       "field",  ["name"]),
     ("STEMS",        "field",  ["text"]),
     ("previewRows",  "inline", ["name", "email", "klass"]),
+
+    # ── ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · THE SAMPLE THIS GATE MISSED ────
+    #
+    # `ttRows` — seven rows of Design's timetable-import wizard — shipped
+    # inside all six live pages and this gate PASSED on it, run after run.
+    # It is the same class of sample as everything above: a weekday and
+    # period (`Wed P5`), a clock time (`13:55`), and a source string off an
+    # imaginary MIS export (`11A PHY · LAB1`).
+    #
+    # ⚠️ IT WAS INVISIBLE FOR TWO SEPARATE REASONS, and only fixing both
+    # makes the gate mean what it says.
+    #
+    #   1. Nothing harvested it. `ttRows` and `TODAY_LESSONS` were not on
+    #      this list, so their values were never candidates.
+    #   2. WORSE — being unharvested, they stayed in `kept`, and the
+    #      collision pass then EXCUSED four tells that WERE harvested.
+    #      `8hsc2`, `7rsc3`, `10hph1` and `8rsc1` are Design's synthetic
+    #      class slugs — the one thing the `CLASSES` note above calls
+    #      reliably detectable, "a slug on a page can only have come from
+    #      the sample" — and every one of them was being excused by its own
+    #      appearance in `TODAY_LESSONS.classId` and `ttRows.code`. An
+    #      unharvested sample array does not merely go unwatched; it
+    #      launders every other sample string it happens to contain.
+    #
+    # WHICH KEYS, AND WHY NOT THE OTHERS. The identity/label rule above
+    # decides each one, and two of the six are deliberately left out:
+    #
+    #   · `day`, `time`, `src`, `room` — identity. They name a particular
+    #     slot, a particular clock time and a particular MIS row that
+    #     Design invented. No real page can produce them: there is no
+    #     timetable data in this product at all — no table, no RPC, nothing
+    #     on `teacher-live.js` — which is also why the port DROPS both
+    #     literals outright rather than seaming them.
+    #   · `status` — LABEL, not harvested. `Matched` and `Needs a look` are
+    #     status vocabulary a real matching screen would say too, and
+    #     `take()`'s own comment already names `'Matched'` as the string
+    #     that must not be harvested from nowhere.
+    #   · `stFg` — a CSS custom property. Presentation.
+    #   · ⛔ `code` — REAL CLASS CODES, and harvesting it is the exact
+    #     mistake the `CLASSES` note above records: `8h/Sc2`, `7r/Sc3`,
+    #     `9h/Sc5`, `10h/Ph1`, `8r/Sc1` and `11h/Sc5` are this school's
+    #     actual 2026-27 classes and belong on a correct page. See
+    #     `real_class_codes` below, which now enforces that as a RULE for
+    #     every route into the corpus rather than leaving it to depend on
+    #     which keys somebody remembered not to list.
+    #
+    # Both are harvested on the same footing as `TITLES`/`TOPICS`/`STEMS`:
+    # the port deletes them outright, so their presence in a built page
+    # cannot be a coincidence. The same caveat applies too — if a future
+    # port ever SERVES real times and rooms through the Today or Timetable
+    # screen, these two rows stop being evidence and must be removed with a
+    # stated reason, exactly as that note requires.
+    ("TODAY_LESSONS", "field",  ["time", "room", "classId"]),
+    ("ttRows",        "inline", ["day", "time", "src"]),
 ]
 
 # `TITLES`, `TOPICS` and `STEMS` are a judgement call worth recording: a real
@@ -249,6 +303,24 @@ def inline_literal(logic, name):
     if not m:
         return None
     return _balanced(logic, logic.index("[", m.start()))
+
+
+def real_class_codes(logic):
+    """The `code` values on Design's `CLASSES` — REAL classes, not samples.
+
+    Derived from the delivery like everything else here. See the block in
+    `corpus()` that subtracts these, and the `CLASSES` row in `HARVEST`.
+    """
+    lit = field_literal(logic, "CLASSES")
+    if lit is None:
+        raise SystemExit(
+            "teacher_tells.py: `CLASSES` is not in Design's logic, so the "
+            "real class codes cannot be derived and the corpus cannot be "
+            "cleared of them. Design has renamed the field: re-anchor "
+            "`field_literal`'s name here and in HARVEST. Do NOT type the "
+            "codes in — a typed list of real classes goes stale the term a "
+            "set is renamed, and this gate then fails a correct page.")
+    return set(re.findall(r"\bcode:\s*'([^'\\\n]*)'", lit))
 
 
 def corpus(templates_path=TEMPLATES):
@@ -342,6 +414,38 @@ def corpus(templates_path=TEMPLATES):
 
     collisions = sorted(s2 for s2 in strings if s2 in kept_all)
     strings -= set(collisions)
+
+    # ── ⛔ A REAL CLASS CODE IS NEVER A TELL, BY WHATEVER ROUTE ───────────
+    #
+    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c). The `CLASSES` note above states the
+    # rule — Design's twelve sample classes are named with this school's
+    # REAL codes off the 2026-27 timetable, so `11h/Ph1` on a page is a
+    # class that genuinely exists — and until now the rule was enforced by
+    # nothing but the absence of `code` from one HARVEST row. That is not
+    # enforcement, it is a coincidence, and it had already been broken
+    # twice over:
+    #
+    #   · `previewRows` harvests `klass`, which holds `8r/Sc4` and
+    #     `8r/Sc1` — real codes, entering the corpus by the side door.
+    #   · they went unnoticed only because the collision pass excused them
+    #     against `ttRows.code` in the kept text. Harvesting `ttRows` (see
+    #     HARVEST) removes that accident, and `8r/Sc1` — a live class with
+    #     real members — would have become a tell in the same commit that
+    #     closed the timetable hole. A gate that starts failing correct
+    #     pages is how the docket in the header note shipped.
+    #
+    # So the exclusion is a RULE now, applied after the collision pass and
+    # derived from Design's own `CLASSES` literal — not typed, and not
+    # dependent on which keys a future HARVEST row remembers to omit.
+    #
+    # ⚠️ `markup` IS DELIBERATELY NOT FILTERED. Its entries are whole text
+    # nodes and whole toasts, and the one that carries a code —
+    # `'26 students imported into 8r/Sc4'` — is a tell BECAUSE of the count
+    # and the sentence around it, not because of the code. Stripping codes
+    # there would delete the very string the toast harvest was written to
+    # catch.
+    codes = real_class_codes(logic)
+    strings -= codes
 
     # ── the literals Design wrote into the MARKUP ────────────────────────
     #

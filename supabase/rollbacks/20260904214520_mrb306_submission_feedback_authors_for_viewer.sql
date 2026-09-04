@@ -1,0 +1,22 @@
+-- ROLLBACK for supabase/migrations/20260904214520_mrb306_submission_feedback_authors_for_viewer.sql
+--
+-- Apply MANUALLY. The Supabase CLI never reads this folder.
+--
+-- ⚠️ WHAT REVERTING COSTS, so the decision is made with it in view. Dropping
+-- this function does not break the student's assignment page: the read is
+-- wrapped and returns `{}` on any error, and the byline falls back to
+-- exactly what it said before this unit — the teacher's name where the class
+-- has ONE teacher, and "your teacher" where it is co-taught. On prod that is
+-- 64 classes named and 9 not.
+--
+-- Nothing else in the estate calls it. `shared/student-data.js`'s
+-- `loadSubmissionFeedbackAuthors` is its only caller, and that function
+-- catches, warns to the console and returns `{}`.
+--
+-- ⚠️ THIS IS THE WHOLE OF THE CHANGE. The migration created no table, no
+-- policy and no column, and altered none: it is one `create or replace
+-- function` and four grant statements. Verified on prod immediately after
+-- the apply — `profiles` still 7 policies, `submission_feedback` still 3,
+-- and `submission_feedback` still 0 rows.
+
+drop function if exists public.submission_feedback_authors_for_viewer(uuid);

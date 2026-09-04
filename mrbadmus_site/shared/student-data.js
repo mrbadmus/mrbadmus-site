@@ -831,10 +831,198 @@ window.MrBadmusStudentData = (function () {
     }
   }
 
+
+  /**
+   * loadSubmissionFeedback(assignmentId, viewingStudentId) — MRB-306 Phase 2b.
+   *
+   * The teacher's written comment on this student's work for this assignment,
+   * or null. Two SELECTs and nothing else.
+   *
+   * ⛔ THIS IS A READ. It is the only thing this feature adds to the student
+   * surface: there is no insert, no update, no reply, and no student write
+   * path anywhere behind it. `submission_feedback` HAS NO STUDENT INSERT
+   * POLICY — v1 is one-way by Mide's ruling and by the database at once — so
+   * a write here would be refused even if one existed. It must also never be
+   * routed through the answer sink or the offline queue: those belong to a
+   * child's work, and a comment they are only reading has no business in the
+   * same queue.
+   *
+   * ⚠️ EVERY ATTEMPT'S SUBMISSION, NOT JUST THE CURRENT ONE, and that is
+   * measured rather than tidy. The teacher screens attach a comment to the
+   * FIRST attempt (`pickFirstAttempts`, both in teacher-data.js and in the
+   * teacher's grid), and a student who re-sits a paper is looking at a LATER
+   * attempt. Reading only `progress.submission` would therefore show nothing
+   * to exactly the children who were asked to have another go — the ones
+   * most likely to have been written to. RLS scopes this read to the
+   * student's own rows (`submissions_self_all`), so asking for all of them
+   * costs one small query and cannot reach anybody else's.
+   *
+   * Returns `{ body, teacherId, createdAt, editedAt }` or null. NEVER throws:
+   * a comment is one block of one screen and a child's marks must render
+   * whatever happens to it.
+   */
+  async function loadSubmissionFeedback(assignmentId, viewingStudentId) {
+    if (!assignmentId || !viewingStudentId) return null;
+    const guard = window.MrBadmusStudentGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return null;
+    try {
+      const subs = await sb.from('assignment_submissions')
+        .select('id')
+        .eq('assignment_id', assignmentId)
+        .eq('student_id', viewingStudentId)
+        .is('deleted_at', null);
+      if (subs.error) throw subs.error;
+      const ids = (subs.data || []).map(function (r) { return r.id; });
+      if (!ids.length) return null;
+
+      const fb = await sb.from('submission_feedback')
+        .select('id, submission_id, teacher_id, body, created_at, edited_at')
+        .in('submission_id', ids)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+        .limit(1);
+      if (fb.error) throw fb.error;
+      const row = (fb.data || [])[0];
+      if (!row) return null;
+      return {
+        body: row.body || '',
+        teacherId: row.teacher_id,
+        createdAt: row.created_at,
+        editedAt: row.edited_at,
+      };
+    } catch (err) {
+      console.warn('[student-data] feedback unavailable', err);
+      return null;
+    }
+  }
+
+  /**
+   * loadClassTeacherNames(classId) — MRB-306 Phase 2b.
+   *
+   * The display names of the teachers of this class, through the SECURITY
+   * DEFINER RPC that exists precisely because a student has no read policy on
+   * a teacher's `profiles` row (`class_teachers_for_viewer`, migration
+   * 20260820001231).
+   *
+   * ⚠️ THE RPC RETURNS NAMES WITHOUT IDS. That is deliberate on its side — "a
+   * student surface has no use for an identifier it cannot act on" — and it
+   * is the whole reason the caller can only name the author of a comment when
+   * the class has EXACTLY ONE teacher. With two, there is no mapping from
+   * `submission_feedback.teacher_id` to either name, and picking the first
+   * would attribute one teacher's words to another in front of a child.
+   *
+   * ⊕ 4 Sep 2026 — AND THAT IS NOW THE FALLBACK RATHER THAN THE ANSWER.
+   * `loadSubmissionFeedbackAuthors` below supplies the id → name mapping
+   * this one cannot. This function stays, unchanged, because it is still
+   * what the page falls back to when the mapping is empty — and because it
+   * is what the class page uses for a purpose that has nothing to do with
+   * feedback.
+   *
+   * Returns an array of display names, possibly empty. Never throws.
+   */
+  async function loadClassTeacherNames(classId) {
+    if (!classId) return [];
+    const guard = window.MrBadmusStudentGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return [];
+    try {
+      const { data, error } = await sb.rpc('class_teachers_for_viewer',
+                                           { p_class_id: classId });
+      if (error) throw error;
+      const rows = (data && data.teachers) || [];
+      return rows.map(function (t) { return t.display_name; })
+                 .filter(Boolean);
+    } catch (err) {
+      console.warn('[student-data] class teachers unavailable', err);
+      return [];
+    }
+  }
+
+  /**
+   * loadSubmissionFeedbackAuthors(assignmentId) — MRB-306 Phase 2b/3.
+   *
+   * ⊕ RULED BY MIDE, 4 Sep 2026. `{ <teacher_id>: "<display name>" }` for
+   * exactly the feedback rows on THIS assignment that THIS student may
+   * already read — that is, the comments written on their own submissions,
+   * and nobody else's.
+   *
+   * ⛔ THIS IS A READ, AND THE THIRD OF THREE. Same guarantee as the two
+   * above it: no insert, no update, no reply, no write path of any kind is
+   * added to any student surface by this feature.
+   *
+   * ⚑ WHY IT HAD TO BE AN RPC, AND WHY IT IS NOT A WIDENING. A student has
+   * no read policy on a teacher's `profiles` row — the very gap that made
+   * `class_teachers_for_viewer` and `student_reminders_for_viewer` necessary
+   * — so a name cannot be joined client-side. The three ways of closing it
+   * and why two were rejected:
+   *
+   *   · widen `profiles` RLS so students can read staff rows — REJECTED.
+   *     That is a permanent, estate-wide widening bought to render one
+   *     caption;
+   *   · a general `id → name` RPC over staff — REJECTED. Same widening,
+   *     wearing a function's clothes: any student could enumerate any
+   *     teacher in the school;
+   *   · THIS — a SECURITY DEFINER function scoped, inside the database, to
+   *     `s.student_id = auth.uid()`. A caller learns the name of a teacher
+   *     who has written to them personally, and of nobody else. Passing
+   *     somebody else's assignment id returns `{}`; so does calling it as a
+   *     teacher, an admin, or with a uuid that names nothing.
+   *
+   * ⚠️ AND IT DISCLOSES NOTHING NEW, which was MEASURED and which CORRECTS
+   * the previous unit's premise. `display_name_for(uuid)` has been on prod
+   * all along — STABLE SECURITY DEFINER, it returns the display name of any
+   * teacher who teaches a class the caller is a member of — so the name was
+   * already reachable by this caller, one id at a time. The previous unit's
+   * "there is no mapping from `teacher_id` to a name" was true only of
+   * `class_teachers_for_viewer`, and it was not the only door. This function
+   * is kept over that one because it is STRICTLY TIGHTER (feedback AUTHORS,
+   * not every teacher of the class), because it is one round trip for N
+   * authors rather than N, and because it still names the person who wrote
+   * to a child after they have stopped teaching the class — which
+   * `display_name_for` does not.
+   *
+   * ⚠️ THE FALLBACK IS NOT REMOVED BY THIS. Where the mapping is empty — the
+   * RPC missing on an older database, a network failure, a comment whose
+   * author's profile has gone — the caller falls back to
+   * `loadClassTeacherNames`: the name where the class has exactly one
+   * teacher, "your teacher" where it is co-taught. Never a guess. Putting
+   * one teacher's name on another teacher's words, in front of a child, is
+   * worse than not naming them, and that has not stopped being true now
+   * that the mapping usually exists.
+   *
+   * Returns a plain object, possibly empty. Never throws.
+   */
+  async function loadSubmissionFeedbackAuthors(assignmentId) {
+    if (!assignmentId) return {};
+    const guard = window.MrBadmusStudentGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return {};
+    try {
+      const { data, error } = await sb.rpc(
+        'submission_feedback_authors_for_viewer',
+        { p_assignment_id: assignmentId });
+      if (error) throw error;
+      const authors = data && data.authors;
+      return (authors && typeof authors === 'object') ? authors : {};
+    } catch (err) {
+      console.warn('[student-data] feedback authors unavailable', err);
+      return {};
+    }
+  }
+
   return {
     loadStudentClass: loadStudentClass,
     loadStudentClasses: loadStudentClasses,
     loadStudentClassShoutouts: loadStudentClassShoutouts,
     saveBenchTheme: saveBenchTheme,
+    // ⊕ MRB-306 Phase 2b — the student's READ of a teacher's written
+    // feedback, and the name to sign it with. Reads only; this feature
+    // adds no write path to any student surface.
+    loadSubmissionFeedback: loadSubmissionFeedback,
+    loadClassTeacherNames: loadClassTeacherNames,
+    // ⊕ MRB-306 Phase 2b/3 — the id → name mapping the line above cannot
+    // give, for the student's OWN comments only. Also a read.
+    loadSubmissionFeedbackAuthors: loadSubmissionFeedbackAuthors,
   };
 })();
