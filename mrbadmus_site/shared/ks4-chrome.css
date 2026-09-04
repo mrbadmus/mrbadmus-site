@@ -763,6 +763,26 @@ body[data-chrome="ks4"] .nav-drawer-menu .nav-drawer-link:hover {
   background: var(--k4-sunken-2); color: var(--k4-ink); text-decoration: none;
 }
 body[data-chrome="ks4"] .nav-drawer-auth { border-top: 1.5px solid var(--k4-border); }
+/* ⊕ Mide, 4 Sep 2026 — the drawer's Sign In was rendering invisible: the
+   blanket `body[data-chrome="ks4"] a { color: var(--k4-accent-deep) }` above
+   beats `.btn-signin`'s own `color: var(--on-accent)` on specificity, and
+   `.btn-signin`'s FILL (`background: var(--accent)`, from shared/nav.css)
+   was untouched by any KS4 rule — dark text on a dark fill. `#nav-auth-area`
+   already restyles both buttons for the desktop bar (a few lines up); the
+   drawer needs the identical pair, because `.nav-drawer-auth` is a separate
+   DOM location the ID selector above never reaches. Mirrored exactly, not
+   reinvented: signin stays the neutral pill, signup stays the filled CTA. */
+body[data-chrome="ks4"] .nav-drawer-auth a {
+  display: inline-flex; align-items: center; height: 40px; padding: 0 14px;
+  border-radius: 999px; font-weight: 600; text-decoration: none;
+  background: var(--k4-card); border: 1.5px solid var(--k4-border);
+  color: var(--k4-ink-2);
+}
+body[data-chrome="ks4"] .nav-drawer-auth a:hover { border-color: var(--k4-ink); color: var(--k4-ink-2); text-decoration: none; }
+body[data-chrome="ks4"] .nav-drawer-auth .btn-signup {
+  background: var(--k4-accent-deep); color: var(--k4-on-dark); border-color: var(--k4-accent-deep);
+}
+body[data-chrome="ks4"] .nav-drawer-auth .btn-signup:hover { background: var(--k4-accent-dark); border-color: var(--k4-accent-dark); color: var(--k4-on-dark); }
 body[data-chrome="ks4"] .nav-drawer-close { color: var(--k4-ink); }
 
 /* ── THE MOBILE PASS ────────────────────────────────────────────────────

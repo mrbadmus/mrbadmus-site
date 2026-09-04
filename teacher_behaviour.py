@@ -688,16 +688,24 @@ def drive(page, path, is_empty, cdp, port, shots=None):
     # than listed here, so an addition cannot be made without this gate
     # pressing it. `page` is the screen name; the register's `pages` names the
     # emitted filenames — ⊕ MRB-304, always a tuple, because the "My classes"
-    # link in the top bar is chrome and is on all six.
+    # link in the top bar is chrome and is COMPILED into all six.
     # ⚠️ AND `needs_data` ADDITIONS ARE NOT EXPECTED ON THE EMPTY FIXTURE.
     # The four shoutout-delete controls hang off a feed row; the empty
     # class-detail shape is a class with no roster and `FEED[cid] == []`, so
     # there is nothing to remove and correctly nothing to press. Demanding
     # them there would be demanding a delete button on an empty feed. They
     # are still pressed, by name, on the populated fixture.
+    # ⊕ Mide, 4 Sep 2026 — AND `runtime_hidden_on` ADDITIONS ARE NOT EXPECTED
+    # ON THE SCREENS THEY NAME. `nav-classes` compiles into classes.html
+    # (build_teacher_port.py's byte check demands it does) but is wrapped in
+    # `if showClassesLink`, false only there — the crumb beside it already
+    # says "My classes". `querySelector` finds nothing an `if` didn't render,
+    # so without this the classes fixture would report the control GONE, the
+    # same failure this file reports for markup a page never should have had.
     added_here = [a["marker"] for a in R.AMENDED_ADDITIONS
                   if page + ".html" in a["pages"]
-                  and not (is_empty and a.get("needs_data"))]
+                  and not (is_empty and a.get("needs_data"))
+                  and page + ".html" not in a.get("runtime_hidden_on", ())]
     added_why = {a["marker"]: a for a in R.AMENDED_ADDITIONS}
     # ⊕ MRB-287 E1 — additions revealed by one of DESIGN'S nodes rather than
     # by an earlier addition. See the probe's note beside OPENERS.

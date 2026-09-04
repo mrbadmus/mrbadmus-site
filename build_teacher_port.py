@@ -2613,6 +2613,15 @@ def build():
         # after, it would name the previous run's example data.
         mine = dict(payload)
         mine["screen"] = spec["screen"]
+        # ⊕ Mide, 4 Sep 2026 — mirrors shared/teacher-live.js's `load()`:
+        # the top bar's "My classes" button (INSERT_AT[(10,13)], wrapped in
+        # `if showClassesLink`) hides on the one screen whose own crumb
+        # already says "My classes". Fixtures never run `load()` — this is
+        # the Python side of the same rule, over the same six literal
+        # `spec["screen"]` values PAGES itself defines (`"classes"` and no
+        # other screen ever equals it), so a fixture cannot disagree with
+        # the live page about which one screen that is.
+        mine["showClassesLink"] = spec["screen"] != "classes"
         # ⚠️ `paperIdx` IS NULL EVERYWHERE BUT THE MARKING SCREEN, and that is
         # not tidiness. `paper()` throws on a paper index the class does not
         # have, and a class-detail fixture carrying `paperIdx: 1` would be
