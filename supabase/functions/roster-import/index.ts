@@ -63,6 +63,46 @@ type ClassSpec = {
   subjectId?: string | null;
 };
 
+
+// ── working academic year ────────────────────────────────────────────────
+// The date-based year rule, the same one `workingAcademicYear()` in
+// shared/class-entry.js applies: the EARLIEST year still running past
+// today+30 days, else the latest year. The one deliberate difference is that
+// this copy works in UTC (`setUTCDate`) where the browser copy works in local
+// time — an edge function has no user timezone, and UTC is the only stable
+// answer server-side. The two can differ only for a few hours around midnight
+// on the single day the 30-day horizon crosses a year's end_date.
+//
+// NEVER use `is_current` here: that flag is moved by hand on 1 September and
+// is stale for the whole of the run-up to a new school year — which is
+// exactly when imports happen.
+function lookaheadDate(): string {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + 30);
+  return d.toISOString().slice(0, 10);
+}
+
+function workingAcademicYear<T extends { end_date?: string | null }>(
+  years: T[],
+): T | null {
+  const rows = (years ?? []).filter((y) => y && y.end_date);
+  if (!rows.length) return null;
+  const horizon = lookaheadDate();
+  const live = rows.filter((y) => (y.end_date as string) >= horizon);
+  if (live.length) {
+    return live.reduce(
+      (best: T | null, y) =>
+        !best || (y.end_date as string) < (best.end_date as string) ? y : best,
+      null,
+    );
+  }
+  return rows.reduce(
+    (best: T | null, y) =>
+      !best || (y.end_date as string) > (best.end_date as string) ? y : best,
+    null,
+  );
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json(405, { ok: false, error: "method_not_allowed" });
@@ -108,16 +148,30 @@ Deno.serve(async (req) => {
   const students = Array.isArray(body.students) ? body.students : [];
   if (classes.length === 0) return json(400, { ok: false, error: "no_classes" });
 
-  // ── 3. Resolve the school's current academic year ──
-  let yearQ = admin
+  // ── 3. Resolve the school's WORKING academic year ──
+  //
+  // ⚠️ This used to fall back to `.eq("is_current", true)` when the caller
+  // named no year, and the caller never named one. `academic_years.is_current`
+  // is moved BY HAND on 1 September, so on 1 Sep 2026 it still pointed at
+  // 2025-26 — and an import of 7h/Sc5 enrolled 14 real students into LAST
+  // YEAR's class of the same name. The class list looked right, the counts
+  // looked right, and this year's 7h/Sc5 stayed empty. See MRB-307.
+  //
+  // The rule is the one `workingAcademicYear()` in shared/class-entry.js has
+  // always used, and it is date-based: the EARLIEST year still running past
+  // today+30 days, falling back to the latest year if none qualifies. The
+  // 30-day lookahead is what stops late August — when two years are both
+  // unfinished — resolving to the one that is about to end.
+  const { data: allYears, error: yErr } = await admin
     .from("academic_years")
-    .select("id, name")
+    .select("id, name, end_date")
     .eq("school_id", schoolId)
     .is("deleted_at", null);
-  yearQ = body.academicYearName
-    ? yearQ.eq("name", body.academicYearName)
-    : yearQ.eq("is_current", true);
-  const { data: year } = await yearQ.maybeSingle();
+  if (yErr) return json(400, { ok: false, error: "no_academic_year" });
+
+  const year = body.academicYearName
+    ? (allYears ?? []).find((y) => y.name === body.academicYearName) ?? null
+    : workingAcademicYear(allYears ?? []);
   if (!year) return json(400, { ok: false, error: "no_academic_year" });
   const yearId = year.id as string;
 
@@ -418,5 +472,21 @@ Deno.serve(async (req) => {
     auditId = (aid as string) ?? null;
   }
 
-  return json(200, { ok: true, dryRun, counts, issues, auditId });
+  // The year and the resolved class ids travel back with the counts so the
+  // import page can NAME the year it enrolled into and link straight to the
+  // class. A silent year was how MRB-307 stayed invisible.
+  const importedClasses = classes.map((c) => ({
+    name: c.name,
+    id: classMap.get(c.name) ?? null,
+  }));
+
+  return json(200, {
+    ok: true,
+    dryRun,
+    counts,
+    issues,
+    auditId,
+    academicYear: year.name,
+    classes: importedClasses,
+  });
 });

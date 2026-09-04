@@ -248,6 +248,73 @@ GATES = [
              "for real, is not. The RLS behind it (timetable_entries_own_all) "
              "is proved separately in SQL under real roles.",
          ),
+
+    dict(name="import_year_drive",
+         cmd=["python3", "import_year_drive.py"],
+         speed="slow",
+         needs="teacher/import.html",
+         why="MRB-307 — WHICH SCHOOL YEAR A ROSTER IMPORT LANDS IN. On "
+             "1 September 2026 a real import enrolled 14 real students into "
+             "LAST YEAR's 7h/Sc5 and left this year's empty. The page sent "
+             "`academicYearName: null`, the roster-import edge function fell "
+             "back to `academic_years.is_current`, and that flag is moved BY "
+             "HAND on 1 September — so on the one morning it mattered it "
+             "still said 2025-26. Nothing on screen had ever named a year, "
+             "so nothing on screen could have looked wrong. "
+             "⚠️ THE FIXTURE HOLDS TWO YEARS AND `is_current` POINTS AT THE "
+             "WRONG ONE, and that is the whole gate. Against a single-year "
+             "fixture this defect is INVISIBLE: resolving the year properly, "
+             "reading is_current, and sending null all lead to the only row "
+             "there is, so every check passes on the broken page. Anyone "
+             "tempted to tidy the fixture down to one year is removing the "
+             "gate while leaving its name. "
+             "It drives the real page — real class-entry.js, real rendering "
+             "— with a stubbed client, a stubbed guard, a stubbed PapaParse "
+             "and the clock frozen to 2026-09-04, because "
+             "`workingAcademicYear()` is date-based and an unfrozen drive "
+             "asserts a different fact every day and none at all after "
+             "Aug 2027. "
+             "THE CENTRAL ASSERTION IS NOT A RENDERED STRING: it captures "
+             "the body actually handed to `functions.invoke('roster-import')` "
+             "by both the dry run and the confirmed write. A page can name "
+             "the right year in its note and still send null a screen later "
+             "— the note is what the teacher reads, the body is what enrols "
+             "the children. The screen checks are there so the two can never "
+             "disagree. "
+             "IT ALSO WATCHES THE SUCCESS SCREEN'S DEEP LINK, which is the "
+             "same defect one surface later. The button goes straight to the "
+             "class just filled, and the class ids come from roster-import "
+             "only on the NEW deployment — on the one live today the page "
+             "looks the id up itself, scoped to school + working year + name. "
+             "So the fixture holds TWIN CLASSES: two rows called 7h/Sc5 "
+             "differing only by academic year. Drop the year filter and the "
+             "lookup matches both, refuses to guess, and falls back to the "
+             "class list; filter on the wrong year and it opens last year's "
+             "empty twin, which is the original defect wearing a different "
+             "coat. Both response shapes are driven, because a deep link "
+             "that works on only one of two live deployments is a deep link "
+             "nobody can trust. "
+             "It also runs its OWN NEGATIVE CONTROL: a second pass with the "
+             "predicate forced to return 2025-26, which demands the payload "
+             "follow it. A drive that stubs this much can go vacuously green, "
+             "and a gate that cannot fail is not a gate — if the forced pass "
+             "still yields 2026-27 the payload is not reading the working "
+             "year at all and the whole file exits non-zero. The control "
+             "carries the deep link too — forced onto the stale year it must "
+             "open the STALE twin, which is what proves the year filter is "
+             "choosing between the twins rather than the fixture's row order. "
+             "⚠️ SLOW BY CATEGORY, NOT BY DURATION — it finishes in about "
+             "seven seconds, but it needs headless Chrome, and every browser "
+             "gate here is a receipt gate rather than a hook gate so that a "
+             "machine without Chrome cannot turn every push red. It needs NO "
+             "network and NO credentials: the three CDN hosts are blocked at "
+             "the protocol level and the pages are served from the repo root "
+             "over a local port. `needs` names teacher/import.html — the "
+             "hand-written import wizard, `_REFUSED` by build_teacher_port.py "
+             "— because the repo copy is the source of truth for it and the "
+             "built copy is only a restamped duplicate.",
+         ),
+
     dict(name="teacher_behaviour",
          cmd=["python3", "teacher_behaviour.py"],
          speed="slow",
