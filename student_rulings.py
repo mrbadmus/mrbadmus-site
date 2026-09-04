@@ -2745,6 +2745,149 @@ INSERT_AT = {
          "ruling of 3 Sep 2026; Design drew no feedback surface anywhere. "
          "See teacher_rulings.FEEDBACK_SURFACE_ADDED for the guardrails and "
          "for the one thing this cannot do."),
+
+        # ══ ⊕ RULED BY MIDE, 4 Sep 2026 · AND WHILE THE WORK IS STILL OPEN ══
+        #
+        # ⚑ THE RULING THIS IMPLEMENTS. The previous unit left an open
+        # product edge: *"a teacher can attach a comment to a
+        # started-but-not-handed-in submission. Both surfaces are permissive
+        # identically, so they cannot disagree — but it is a product edge
+        # worth a ruling."* Mide ruled it ALLOWED, **deliberately**:
+        # mid-week intervention — a teacher reading work in progress and
+        # saying something about it before it is handed in — is the point of
+        # the feature, not a hole in it.
+        #
+        # ⚠️ THAT RULING HAS A BINDING CONSEQUENCE ON THE STUDENT SIDE, and
+        # it is the whole of this entry. If a teacher may write on open work,
+        # then the child must be able to READ it while the work is still
+        # open. Until now the comment appeared only under the automated
+        # marking on the done screen (`INSERT_AT[(290, 314)]` above), which a
+        # child reaches only by handing in — so a teacher's mid-week note
+        # was invisible for exactly as long as it was useful, and became
+        # visible at the moment it stopped being actionable.
+        #
+        # ⚠️ NODE 104 IS THE IN-PROGRESS SCREEN (`if onQ`), and it is the
+        # screen a started assignment opens on: `assignment-live.resume`
+        # returns `view: done ? "done" : "q"`, so "started and not handed in"
+        # IS `onQ`. Node 106 is its reading column and node 251 is the
+        # options grid, the last thing in it.
+        #
+        # ⚑ THE PLACEMENT IS THE SAME PLACEMENT AS THE DONE SCREEN'S, stated
+        # in one sentence that covers both: **the teacher's words sit
+        # between the work and what to do next.** On the done screen that is
+        # between the automated marking (314) and the actions (343); here it
+        # is between the answer options (251) and the action bar (node 349,
+        # `if showAction`, which is outside `main` and cannot be inserted
+        # into). A child scrolling from the last option to "Next" passes
+        # through it — in the path rather than across it.
+        #
+        # ⚠️ AND IT IS NOT AT THE TOP, WHICH WAS THE FIRST ATTEMPT AND WAS
+        # REFUSED BY THE BUILD. The obvious anchor was `after 107`, the meta
+        # row above the question eyebrow — but **107 is PRUNED on this page**
+        # (`PRUNE["assignment"] = [107]`, the ruled removal of the due line,
+        # 23 Aug 2026), so it is not among 106's children and the insertion
+        # guard stopped the build by name. That guard is the reason this
+        # entry is correct rather than silently mis-placed. The children that
+        # remain — 111 eyebrow, 112 question, 113 figure, 251 options — are
+        # one reading order for one question, and there is no seam inside it
+        # that does not split a heading from the thing it heads.
+        #
+        # ⛔ IT IS THE SAME READ, NOT A SECOND ONE. `feedbackHas`,
+        # `feedbackBy`, `feedbackWhen` and `feedbackBody` are already
+        # computed once per mount in `buildAssignment` and already exposed
+        # through `renderVals`, which is ONE object serving BOTH screens.
+        # So this costs no query, no key and no branch — `<if>` resolves
+        # through the same render scope on `onQ` as it does on `onDone`.
+        # ⚠️ A NEW key would have had to be named in that object as well as
+        # here, or the `<if>` would be silently false forever; there is no
+        # new key, and that is deliberate.
+        #
+        # ⛔ NO CONTROL, ON THE SCREEN WHERE A CONTROL WOULD BE WORST. Same
+        # guarantee as the done-screen block, and it matters more here: this
+        # is the screen a child is WORKING on, and a "reply" beside a live
+        # question would be both a promise the database refuses
+        # (`submission_feedback` has no student INSERT policy) and a
+        # distraction from the paper. Three text nodes and their boxes; no
+        # button, no field, no anchor, no `<details>`, no handler.
+        #
+        # ⚠️ IT DRAWS ONLY WHERE THERE IS SOMETHING TO READ — no empty
+        # state, for the same reason as the done screen, and one further
+        # one: a permanent "no feedback yet" panel over every question of
+        # every paper would be a standing reminder of a teacher's silence.
+        #
+        # ⚠️ EVERY STYLE IS READ OFF A NODE ON *THIS* SCREEN, not carried
+        # over from the done screen's. The card recipe (border, radius,
+        # `--st-paper`, `overflow:hidden`) and its `--st-num-well` header
+        # band are nodes 268/269, the rail card this screen already draws;
+        # the header caption is 111's `eyebrow`; the timestamp is 108's
+        # 9.5px mono `--st-caption`; the margin is 111's own top margin.
+        # The panel therefore reads as a panel BESIDE the work rather than
+        # as part of the question — which is the distinction that keeps a
+        # teacher's sentence from being mistaken for a question stem.
+        # `white-space:pre-wrap` for a teacher's paragraph breaks, and
+        # `overflow-wrap:anywhere` because a URL a teacher typed is INERT
+        # text and inert text still has to wrap rather than push a 390px
+        # page sideways.
+        (106, 251): ({
+            "t": "if", "e": "feedbackHas",
+            "c": [{
+                "t": "div",
+                "a": {"style": "margin-top:clamp(18px,2cqw,26px);"
+                               "min-width:0;"
+                               "border:1px solid var(--st-rule);"
+                               "border-radius:var(--st-r-card);"
+                               "background:var(--st-paper);"
+                               "overflow:hidden"},
+                "c": [
+                    {"t": "div",
+                     "a": {"style": "display:flex;align-items:center;"
+                                    "gap:10px;flex-wrap:wrap;"
+                                    "padding:12px 16px;"
+                                    "background:var(--st-num-well);"
+                                    "border-bottom:1px solid var(--st-rule)"},
+                     "c": [
+                         {"t": "span", "a": {"class": "eyebrow"},
+                          "c": [{"t": "#", "v": "What your teacher said"}]},
+                         {"t": "span",
+                          "a": {"style": "margin-left:auto;font:400 9.5px/1 "
+                                         "var(--st-mono);"
+                                         "letter-spacing:0.12em;"
+                                         "color:var(--st-caption)"},
+                          "c": [{"t": "#", "v": {"parts": [
+                              {"e": "feedbackWhen"}]}}]},
+                     ]},
+                    {"t": "div",
+                     "a": {"style": "padding:clamp(13px,1.4cqw,16px) 16px"},
+                     "c": [
+                         {"t": "span",
+                          "a": {"style": "display:block;font:400 9px/1 "
+                                         "var(--st-mono);"
+                                         "letter-spacing:0.13em;"
+                                         "text-transform:uppercase;"
+                                         "color:var(--st-ghost)"},
+                          "c": [{"t": "#", "v": {"parts": [
+                              {"e": "feedbackBy"}]}}]},
+                         {"t": "span",
+                          "a": {"style": "display:block;margin-top:9px;"
+                                         "font:400 clamp(14px,1.15cqw,15.5px)"
+                                         "/1.6 var(--st-ui);"
+                                         "color:var(--st-body);"
+                                         "white-space:pre-wrap;"
+                                         "overflow-wrap:anywhere;"
+                                         "text-wrap:pretty"},
+                          "c": [{"t": "#", "v": {"parts": [
+                              {"e": "feedbackBody"}]}}]},
+                     ]},
+                ]}]},
+         "the teacher's written feedback, on the assignment's IN-PROGRESS "
+         "screen (`if onQ`, node 104), after the answer options (251) and "
+         "before the action bar — the same placement rule as the done "
+         "screen's, which is between the work and what to do next. Mide's "
+         "ruling of 4 Sep 2026 that a teacher MAY comment on "
+         "started-but-not-handed-in work: if they may write on open work, "
+         "the child must be able to read it while the work is still open. "
+         "Same four keys as (290, 314) — one read, two screens; no control, "
+         "on either."),
     },
 }
 

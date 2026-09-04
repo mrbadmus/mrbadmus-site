@@ -474,6 +474,37 @@ SHOUTOUT_SURFACE_RESTORED = dict(
 # returns names WITHOUT ids, ordered by subject then name; there is no
 # mapping from `teacher_id` to any of them, and guessing would attribute one
 # teacher's words to another in front of a child.
+#
+# ── ⊕ 4 Sep 2026 — HALF OF THAT IS NOW CLOSED, AND THE OTHER HALF IS NOT ─
+#
+# Mide approved the third RPC. `submission_feedback_authors_for_viewer` is
+# LIVE ON PROD (migration `20260904214520`): it returns
+# `{teacher_id: display_name}` for exactly the feedback rows the CALLING
+# STUDENT may already read on one assignment, and nothing else. So the
+# STUDENT side names the author on a co-taught class now.
+#
+# ⚠️ THE FALLBACK ABOVE IS NOT DELETED AND MUST NOT BE. It is what the page
+# does when the mapping is empty — an older database, a failed request, an
+# author whose profile has gone — and the "never guess" rule is unchanged.
+#
+# ⚠️ THE TEACHER SIDE IS STILL "Another teacher", DELIBERATELY. The new RPC
+# is scoped to `s.student_id = auth.uid()`, which a teacher session cannot
+# satisfy; naming a colleague from a teacher session is a different scope and
+# a different ruling, and it is left open rather than quietly widened.
+#
+# ⊕ AND ONE MEASURED CORRECTION TO THE PARAGRAPH ABOVE, kept because the
+# paragraph is what a future reader will act on: "neither role has a SELECT
+# policy on another teacher's `profiles` row" is true, but it was NOT the
+# whole picture. `public.display_name_for(uuid)` has been on prod all along —
+# STABLE SECURITY DEFINER, it returns the display name of any teacher who
+# teaches a class the CALLER IS A MEMBER OF. So the student half of this
+# limitation was always soluble with no new DDL at all, one id at a time, and
+# nobody had noticed. It was found on 4 Sep 2026 by the TEST proof of the new
+# function, not by reading. The new RPC is still the one wired up (feedback
+# AUTHORS only rather than every teacher of the class; one round trip rather
+# than N; and it still names someone who has since left the class) — but the
+# claim "there is no mapping" was too strong, and a future limitation note
+# should be checked against `pg_proc` before it is believed.
 FEEDBACK_SURFACE_ADDED = dict(
     screens=("teacher/student-detail.html", "teacher/assignment.html",
              "student/assignment.html"),
@@ -490,15 +521,24 @@ FEEDBACK_SURFACE_ADDED = dict(
     seam="shared/teacher-live.js — buildFeedback and the `subId` arrays on "
          "the matrix and the grid; shared/teacher-data.js — four functions",
     student_read="shared/student-live.js — drawFeedback, after the mount, "
-                 "under the automated marking. A READ and nothing else: no "
-                 "save path, no offline queue, no submission write.",
+                 "under the automated marking. ⊕ 4 Sep 2026: AND on the "
+                 "IN-PROGRESS screen, `student_rulings.INSERT_AT[(106, "
+                 "251)]` — Mide ruled that a teacher MAY comment on "
+                 "started-but-not-handed-in work, so a child has to be able "
+                 "to read it while the work is still open. Same four keys, "
+                 "one read, two screens. A READ and nothing else on both: "
+                 "no save path, no offline queue, no submission write.",
     one_way="no reply control exists on the student side, disabled or "
             "otherwise, and there is no student INSERT policy to wire one to",
-    limitation="a colleague's NAME is not reachable from a teacher session, "
-               "and the author's name is not reachable from a student "
-               "session on a CO-TAUGHT class. Both want a "
-               "`submission_feedback_for_viewer` SECURITY DEFINER RPC, which "
-               "is a live-database change and is in the handover.",
+    limitation="⊕ 4 Sep 2026 — HALF CLOSED. The author's name IS reachable "
+               "from a student session now, on a co-taught class, through "
+               "`submission_feedback_authors_for_viewer` (prod migration "
+               "20260904214520) — with the single-teacher/'your teacher' "
+               "fallback KEPT for when the mapping is empty. Still open: a "
+               "colleague's NAME from a TEACHER session, which renders "
+               "\"Another teacher\". That is a different scope (the new RPC "
+               "is scoped to the caller's own submissions) and a different "
+               "ruling, and it is left open rather than quietly widened.",
 )
 
 

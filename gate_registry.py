@@ -275,6 +275,42 @@ GATES = [
              "everything between the data arriving and the pixels, and "
              "nothing about whether the seam returned the right rows."),
 
+    # ── ⊕ MRB-306 Phase 3 · in the document is not the same as reachable ─
+
+    dict(name="teacher_reach",
+         cmd=["python3", "teacher_reach.py"],
+         speed="slow",
+         needs="teacher_fixtures/classes-fixture.html",
+         why="Mide's Phase 3 ruling, 4 Sep 2026: assert REACHABILITY of "
+             "every teacher control at a real phone width, not the absence "
+             "of document overflow. The two are different, and the "
+             "difference shipped: on 3 Sep the feedback sheet's \"Save "
+             "changes\" sat off the right-hand edge of a panel that is "
+             "`overflow:auto`, so it overflowed the PANEL, nothing "
+             "overflowed the DOCUMENT, the overflow probe of the day was "
+             "green, and a teacher could type a paragraph with nowhere to "
+             "press. Found by photographing the page. This gate drives the "
+             "same derived fixture set as teacher_behaviour at 390 and 360, "
+             "presses every control, and after every press SCROLLS EACH "
+             "CONTROL THROUGH EVERY SCROLLABLE ANCESTOR and hit-tests it at "
+             "its own centre with elementFromPoint — naming what covers it "
+             "when something does. ⚠️ It is NOT a second dead-control gate: "
+             "teacher_behaviour asserts that a press changes something, at "
+             "1460 where the page is roomy, and duplicating that here would "
+             "mean two gates red for one defect. This one asserts what "
+             "WIDTH decides — every control revealed by a press is itself "
+             "reachable, no computed value reaches the copy on the narrow "
+             "branch, and the page never scrolls sideways. Its first run "
+             "found the top bar dragging every screen 500px wide on a "
+             "phone; the fix is the `[data-port-region=\"topbar\"]` rule in "
+             "build_teacher_port.py. ⚠️ It does not cover today.html, "
+             "timetable.html or admin.html — those are hand-written and "
+             "have no fixtures; today_drive covers Today's four states "
+             "(including no-timetable) at 390 for OVERFLOW but not for "
+             "reach, and admin_view_drive is EXCLUDED because it signs in "
+             "for real. That gap is stated in this gate's own docstring "
+             "rather than left to be discovered."),
+
     # ── ⊕ MRB-288 · one bank per surface ────────────────────────────────
 
     dict(name="pool_ownership",

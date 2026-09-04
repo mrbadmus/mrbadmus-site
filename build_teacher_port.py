@@ -2471,7 +2471,41 @@ EMPTY_SHAPES = {
       "`load()` prefetches `newestMarkedIdx(papers)` and skips the fetch at "
       "-1, while `paper()` falls back to `list[0]` — a class whose papers "
       "are all still open lands between the two.",
-      lambda p: _shape_no_marked_paper(p)),),
+      lambda p: _shape_no_marked_paper(p)),
+
+     # ── ⊕ THE NINETEENTH, 4 Sep 2026 (MRB-306 Phase 3) ────────────────
+     #
+     # ⛔ THE FIXTURE THE PREVIOUS UNIT WROTE DOWN AS MISSING, IN ITS OWN
+     # "open" NOTE: *"No read-only fixture on the MARKING screen (student
+     # detail has one). The sheet is identical on both, so the behaviour is
+     # proven; a second fixture would make it an assertion."* This makes it
+     # an assertion.
+     #
+     # ⚠️ "IDENTICAL SHEET" IS EXACTLY THE REASONING THAT FAILED ONCE ON
+     # THIS SCREEN. `class-detail`'s read-only guarantee was described in
+     # `teacher_behaviour`'s docstring and asserted by nothing, and when v3
+     # deleted the two nodes `WRAP` held it on, the guarantee silently
+     # stopped applying while every gate stayed green. A shared builder is
+     # not a shared assertion: the two screens WRAP different nodes, the
+     # marking screen's opener is a GLYPH in a 225px track where student
+     # detail's is a word, and a future ruling can wrap one and not the
+     # other. This fixture is what notices.
+     #
+     # ⚑ IT IS A PAST YEAR WITH THE PAPER FULLY INTACT — a marked paper, a
+     # grid, a roster and marks — because the asymmetry is the rule: on a
+     # finished year the control that OPENS a comment SURVIVES (a teacher
+     # may still read what was written about a child last year) and the two
+     # inside the sheet that could CHANGE it do not. An empty read-only
+     # fixture could not tell "Save is correctly withheld" apart from
+     # "there was no comment to save".
+     ("readonly",
+      "the marking screen in a FINISHED academic year — `canWrite` false, "
+      "the paper, grid, roster and marks all intact. MRB-261's rule on the "
+      "surface written feedback is AUTHORED from: the feedback opener "
+      "survives on every row, and the sheet's Save and Remove do not. The "
+      "twin of `student-detail-readonly`, on the other screen the same "
+      "sheet is reached from.",
+      lambda p: _shape_past_year(p)),),
     "insights.html": (("empty",
         "a grid that was never prefetched — `GRID[key]: null`, the seam's "
         "deliberate \"not fetched yet\". It must render as PENDING and never "
@@ -4037,6 +4071,150 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "a:hover{color:var(--ks3-accent-hover)}"
         "button{font-family:inherit}"
         "#mrb-teacher-live-regions[hidden]{display:none}"
+        # ⊕ MRB-306 Phase 3, 4 Sep 2026 — THE TOP BAR SCROLLS ITSELF INSTEAD
+        # OF DRAGGING THE WHOLE PAGE SIDEWAYS. Found by `teacher_reach.py` on
+        # its first run, on every fixture, at rest.
+        #
+        # Design's node 10 is a 62px sticky flex row whose every child is
+        # `flex:none` — the wordmark, the Today/My-classes/Timetable strip,
+        # the crumb, FIND A STUDENT, the charts button, the teacher's name
+        # and Sign out. At 1460 that is a comfortable bar. At 390 it is
+        # 871–896px of content in a 390px viewport, and because nothing in it
+        # can shrink or wrap, the overflow lands on the DOCUMENT: the whole
+        # page pans sideways, and a teacher scrolling down a class list drags
+        # the content out from under their thumb.
+        #
+        # ⚠️ THIS IS THE PORT'S OWN CHROME, WHICH IS WHY IT IS FIXED HERE AND
+        # THE TABLES ARE NOT. The print note below records the standing
+        # ruling that a five-column table at 390 is Design's responsive
+        # question rather than this port's, and that still holds. The top bar
+        # is different in kind: `navTabs` is v3's addition, it is the only
+        # way BACK from a screen (MRB-306's own note: "the top-bar navTabs
+        # strip is the way back"), and a way back that is off the edge of the
+        # screen is not a way back.
+        #
+        # `overflow-x:auto` makes the bar its own scroll container, so the
+        # overflow stops at the bar: the document is 390 wide again, the
+        # strip scrolls under a thumb the way every mobile tab strip does,
+        # and everything in it is reachable. `overflow-y:hidden` because a
+        # 62px row has nothing to scroll vertically — and it clips nothing,
+        # since all four of Design's overlays and the port's two sheets are
+        # `position:fixed` SIBLINGS of this node, never descendants.
+        # `scrollbar-width:none` because a permanent scrollbar across the
+        # chrome of every screen is a worse answer than the overflow was.
+        "[data-port-region=\"topbar\"]{overflow-x:auto;overflow-y:hidden;"
+        "scrollbar-width:none;-ms-overflow-style:none}"
+        "[data-port-region=\"topbar\"]::-webkit-scrollbar{display:none}"
+        # ⊕ MRB-306 Phase 3, 4 Sep 2026 — THE TWO SECTION HEADERS DESIGN GAVE
+        # `space-between` AND NOT `flex-wrap`. Also found by
+        # `teacher_reach.py` on its first run: with the top bar contained,
+        # class-detail STILL dragged 561px of content across a 390px screen,
+        # and the culprits were nodes 285 and 309 — the mono captions "16
+        # STUDENTS · NOT SUBMITTED SHOWN FIRST" and "1 ASSIGNMENT · 12 THIS
+        # TERM", `white-space:nowrap` beside a heading in a row that cannot
+        # wrap.
+        #
+        # ⚑ IT IS A GAP IN DESIGN'S OWN PATTERN, WHICH IS WHY THE RULE IS
+        # STRUCTURAL RATHER THAN A LIST OF NODE NUMBERS. Every other
+        # heading-plus-caption row in the delivery — 159, 209, 334, 401, 432,
+        # 521 — already carries `flex-wrap:wrap`. Nodes 283 (class detail)
+        # and 350 (student detail) do not, and that is the whole of the
+        # difference. So the selector says exactly that: a `space-between`
+        # flex row inside a ported region that has NOT been given a wrap
+        # rule gets Design's own. A node-number allowlist would be wrong
+        # here for the reason this repo keeps rediscovering — Design renumbers
+        # everything on a re-vendor, and 283 would then mean something else.
+        #
+        # ⚠️ THE CAPTIONS THEMSELVES ARE LEFT `nowrap`, deliberately. At 375px
+        # and 260px they FIT on a 390px screen once they have a line of their
+        # own; forcing them to wrap as well would break "16 STUDENTS · NOT
+        # SUBMITTED SHOWN FIRST" across a middle dot for no gain.
+        #
+        # ⚠️ AND THIS IS NOT THE TABLES. The print note below records the
+        # standing ruling that a five-column table at 390 is Design's
+        # responsive question and not this port's; that is untouched. Every
+        # one of those tables sits in an `overflow:hidden` card, so it clips
+        # rather than dragging the page, and no rule here pretends otherwise.
+        #
+        # ⚠️ AND THE CAPTION STILL HAD TO BE ALLOWED TO WRAP, which the first
+        # attempt did not do and which the gate caught in the same way: the
+        # row wrapped, the document came down from 561px to 415px, and it was
+        # still 25px over. "16 STUDENTS · NOT SUBMITTED SHOWN FIRST" is
+        # 375px wide as one mono line and the screen roots carry Design's
+        # desktop `padding: 20px 40px`, so a 390px phone offers it 310. On
+        # its own line it wraps at a space — "…NOT SUBMITTED / SHOWN FIRST" —
+        # which is a caption on two lines instead of a page a teacher has to
+        # pan. Scoped to the six CONTENT regions by NAME: the top bar's crumb
+        # is also `nowrap` and must stay that way, because that bar is a
+        # 62px scrolling strip, not a column.
+        # ⊕ MRB-306 Phase 3 — A TOAST IS NOT A CONTROL, AND IT WAS EATING
+        # THE PRESS. Third of the three `teacher_reach` found, and the worst
+        # of them, because it is a trap rather than an inconvenience.
+        #
+        # Design's toast (node 672) is `position:fixed; left:50%; bottom:28px;
+        # z-index:80`. The overlays are z-index 60, so the toast is ABOVE
+        # them — correct, a toast should be readable over a modal. At 1460 it
+        # then sits in empty space below a centred 720px sheet. At 390 the
+        # sheet fills the screen and the toast lands exactly on its footer.
+        #
+        # Photographed: press "Send shoutouts" with nobody picked, and
+        # "Pick at least one student" appears directly over the "Send
+        # shoutouts" button. A teacher then picks their students and presses
+        # the button — and the toast takes the click, because it is a
+        # `pointer-events:auto` box over the top of it. The instruction and
+        # the thing you must do to obey it, in the same 195x68 rectangle.
+        #
+        # `pointer-events:none` AT EVERY WIDTH, because it is right at every
+        # width: the toast contains two spans and no control, so nothing in
+        # it is ever a press target, and a message that can swallow a press
+        # is a defect wherever it happens to land.
+        #
+        # And on a phone it MOVES rather than merely letting presses through,
+        # because a teacher also has to SEE the button they are pressing. The
+        # top of the screen is the free space there: below the 62px bar, and
+        # clear of the sheet's own close control, which is at the top LEFT
+        # while the toast is centred.
+        "[data-port-region=\"toast\"]{pointer-events:none}"
+        "@media (max-width:560px){"
+        "[data-port-region] [style*=\"display:flex\"]"
+        "[style*=\"justify-content:space-between\"]:not([style*=\"flex-wrap\"])"
+        "{flex-wrap:wrap}"
+        # ⚠️ `!important` IS LOAD-BEARING HERE AND NOWHERE ELSE IN THIS
+        # BLOCK. `white-space:nowrap` is written INLINE on Design's caption
+        # spans, and an inline declaration beats any selector — which is why
+        # the first attempt at this rule changed nothing and the gate stayed
+        # red at 415px. The `flex-wrap` rule above needs no such thing
+        # because it only ever matches nodes that carry no inline
+        # `flex-wrap` at all; that `:not()` is what keeps it honest.
+        "[data-port-region=\"classes\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"class\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"student\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"marking\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"digest\"] [style*=\"white-space:nowrap\"],"
+        "[data-port-region=\"insights\"] [style*=\"white-space:nowrap\"]"
+        "{white-space:normal!important}"
+        "[data-port-region=\"toast\"]{top:74px;bottom:auto}"
+        # ⚑ AND `minmax(330px, 1fr)` IS NOT A MINIMUM A 360px PHONE CAN
+        # KEEP. Fourth and last of the run's findings, and the one that
+        # explains why `auto-fit` is not by itself responsive: a track whose
+        # MINIMUM is 330px stays 330px in a 280px column — `auto-fit` drops
+        # to one track and then that track still does not fit, so the card
+        # sticks 10px past the edge and takes the whole document with it.
+        #
+        # Design uses the pattern five times, at 220/230/240/310/330. Only
+        # the two large ones can overflow a phone, and only class detail's
+        # `glance` trio (330 — chase, reteach, watch) actually does at 360.
+        # Rewriting just that one would leave 310 to fail on the next
+        # narrower device, so the rule is written for the PATTERN: below
+        # 560px every one of these grids is a single column, which is what
+        # `auto-fit` was reaching for and cannot express.
+        #
+        # `!important` for the same reason as the caption rule above — the
+        # template is inline on Design's node, and an inline declaration
+        # beats a selector.
+        "[data-port-region] [style*=\"repeat(auto-fit,minmax(\"]"
+        "{grid-template-columns:minmax(0,1fr)!important}"
+        "}"
         # ⊕ MRB-306 Phase 2a screen 6 — THE PRINT RULES, MEASURED NOT
         # ASSUMED. `.noprint` alone was not enough to make the digest a
         # report a teacher can hand to a head of department.

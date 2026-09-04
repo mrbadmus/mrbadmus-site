@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """teacher_behaviour.py — the ported teacher pages, driven.
 
-    python3 teacher_behaviour.py                # all twelve fixtures
+    python3 teacher_behaviour.py                # every fixture the port writes
     python3 teacher_behaviour.py classes        # one page (substring match)
     python3 teacher_behaviour.py --shots DIR    # also write screenshots
 
@@ -23,7 +23,13 @@ touches it.
 
 ── WHAT IT DRIVES, AND WHY NOT THE LIVE PAGES ───────────────────────────
 
-The twelve fixtures: six screens x {populated, empty}.
+Every fixture `build_teacher_port.py` writes — six screens, one populated
+and as many named states as each screen has. ⊕ CORRECTED 4 Sep 2026: this
+said "the twelve fixtures: six screens x {populated, empty}" and had been
+wrong since the thirteenth landed on 2 Sep. `fixtures()` has been DERIVED
+from the build since then precisely so the set can grow without anyone
+editing a list — so the number does not belong in prose here, and the run's
+own summary line prints what it actually drove.
 
 ⚠️ IT DOES NOT DRIVE THE LIVE PAGES, and that is a real limit rather than an
 oversight. A live teacher page begins with `requireTeacherRole`, so reaching
@@ -207,6 +213,18 @@ EMPTY_SHAPE = {
         "question carrying no stem text",
     ("assignment", "gridmissing"):
         "one open assignment and no grid fetched — the key is absent",
+    # ⊕ THE NINETEENTH, 4 Sep 2026 (MRB-306 Phase 3). The previous unit's own
+    # open note said this was missing and said why it was tolerable — "the
+    # sheet is identical on both screens, so the behaviour is proven; a
+    # second fixture would make it an assertion". It is an assertion now.
+    # ⚠️ AND "IDENTICAL" IS THE REASONING THAT FAILED ON class-detail: a
+    # shared builder is not a shared assertion, the two screens WRAP
+    # different nodes, and this screen's opener is a glyph where the other's
+    # is a word.
+    ("assignment", "readonly"):
+        "the marking screen in a FINISHED academic year, paper and grid "
+        "intact. MRB-261's rule on the screen feedback is AUTHORED from: "
+        "the opener survives, Save and Remove are withheld",
     # ⊕ CORRECTED 2 Sep 2026 (MRB-306 Phase 2a screen 6). This read "no live
     # classes to digest", which is not what the shaper makes and not what the
     # fixture shows: `_shape_no_work` blanks ONE class and SEVEN stay live.

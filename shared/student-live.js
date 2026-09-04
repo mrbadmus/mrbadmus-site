@@ -3131,20 +3131,53 @@
        restraint `teacherName` already takes on the class page, and for the
        same underlying gap: a student has no read policy on a teacher's
        profile row. Guessing would put one teacher's name on another
-       teacher's words, in front of a child. */
-    var feedback = null, teacherNames = [];
+       teacher's words, in front of a child.
+
+       ── ⊕ RULED BY MIDE, 4 Sep 2026 · AND NOW IT USUALLY CAN BE PROVED ──
+
+       The paragraph above describes what this page did for one unit, and it
+       is kept because it is still exactly what happens when the mapping
+       below is empty. What changed is that there IS a mapping now:
+       `submission_feedback_authors_for_viewer` returns
+       `{ teacher_id: display_name }` for the comments on THIS student's own
+       submissions of THIS assignment, and for nothing else. It closes the
+       co-taught case — 9 of prod's 73 classes, where the byline read "your
+       teacher" — without widening `profiles` RLS by a single row. The
+       reasoning for its shape is in `shared/student-data.js`.
+
+       ⚠️ THE THREE CALLS STILL RUN TOGETHER, and the third joined the
+       existing `Promise.all` rather than adding a wave. MRB-292's lesson was
+       that a student's wait is made of serial round trips, and a caption is
+       not worth one.
+
+       ⚠️ THE ORDER OF PREFERENCE IS MAPPING → SINGLE-TEACHER → "your
+       teacher", AND IT NEVER GUESSES AT ANY STEP. If the mapping has the
+       author's id, that name is a FACT about who wrote these words. If it
+       does not — an older database without the function, a failed request, a
+       profile since deleted — the page falls back to exactly what it did
+       before, which names the teacher only where the class has one. What it
+       must never do is take the first of two co-teachers, which is the one
+       behaviour that would put one teacher's name on another's words in
+       front of a child. */
+    var feedback = null, teacherNames = [], fbAuthors = {};
     try {
       var fbPair = await Promise.all([
         window.MrBadmusStudentData.loadSubmissionFeedback(a.id, userId),
-        window.MrBadmusStudentData.loadClassTeacherNames(klass.id)
+        window.MrBadmusStudentData.loadClassTeacherNames(klass.id),
+        window.MrBadmusStudentData.loadSubmissionFeedbackAuthors(a.id)
       ]);
       feedback = fbPair[0];
       teacherNames = fbPair[1] || [];
+      fbAuthors = fbPair[2] || {};
     } catch (err) {
       console.warn("[student-live] feedback read failed", err);
     }
-    var fbAuthor = (teacherNames.length === 1 && teacherNames[0])
-      ? teacherNames[0] : "your teacher";
+    var fbNamed = (feedback && feedback.teacherId &&
+                   typeof fbAuthors[feedback.teacherId] === "string")
+      ? fbAuthors[feedback.teacherId].trim() : "";
+    var fbAuthor = fbNamed ||
+      ((teacherNames.length === 1 && teacherNames[0])
+        ? teacherNames[0] : "your teacher");
 
     return {
       questions: questions,
