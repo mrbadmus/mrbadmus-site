@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}
+.pb-nav-links{display:none}
+.pb-step{display:grid;gap:18px}
+@media (min-width:900px){
+  .pb-nav-links{display:flex}
+  .pb-step{grid-template-columns:80px 1fr 1fr;gap:32px;align-items:start}
+  .pb-wrap{padding-left:48px!important;padding-right:48px!important}
+}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<header class="pb-wrap" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:2px solid var(--ks3-ink);position:sticky;top:0;background:var(--ks3-ground);z-index:5">
+  <a href="Public Home.dc.html" style="display:flex;align-items:center;gap:10px;color:var(--ks3-ink)">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </a>
+  <nav class="pb-nav-links" style="margin-left:24px;gap:22px;font-weight:600;font-size:16px">
+    <a href="Public How It Works.dc.html" style="color:var(--ks3-ink);border-bottom:2px solid var(--ks3-accent)">How it works</a>
+    <a href="Public Home Education.dc.html" style="color:var(--ks3-ink)">Home education</a>
+    <a href="Public Pricing.dc.html" style="color:var(--ks3-ink)">Pricing</a>
+  </nav>
+  <span style="flex:1"></span>
+  <a href="Public Sign In.dc.html" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>
+  <a href="Parent Signup.dc.html" style="display:flex;align-items:center;min-height:44px;padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>
+</header>
+
+<main class="pb-wrap" style="max-width:1100px;margin:0 auto;padding:56px 20px 80px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">How it works</p>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,5.5vw,64px);line-height:.95;letter-spacing:-.04em;max-width:16em;text-wrap:balance">Five minutes to set up. Then it runs itself.</h1>
+
+  <div style="margin-top:56px;display:flex;flex-direction:column;gap:48px">
+    <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+      <div class="pb-step" style="padding-top:32px;border-top:2px solid var(--ks3-ink)">
+        <span style="display:grid;place-items:center;width:56px;height:56px;border-radius:16px;border:2px solid var(--ks3-ink);background:var(--ks3-accent);font-family:var(--ks3-font-display);font-weight:800;font-size:26px">{{ s.n }}</span>
+        <div>
+          <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ s.who }}</p>
+          <h2 style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(26px,3vw,34px);letter-spacing:-.03em;line-height:1.05">{{ s.title }}</h2>
+          <p style="margin:12px 0 0;font-size:18px;color:var(--ks3-ink-body);text-wrap:pretty">{{ s.body }}</p>
+        </div>
+        <div style="padding:18px 20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">
+          <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ s.exLabel }}</p>
+          <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:16px">
+            <sc-for list="{{ s.ex }}" as="e" hint-placeholder-count="3">
+              <li style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--ks3-rule)"><span>{{ e.k }}</span><span style="font-family:var(--ks3-font-mono);font-size:14px;color:var(--ks3-ink-muted);text-align:right">{{ e.v }}</span></li>
+            </sc-for>
+          </ul>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <section style="margin-top:72px;padding:clamp(28px,4vw,44px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+    <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Things people ask</h2>
+    <div style="margin-top:24px;display:flex;flex-direction:column">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+        <div style="padding:18px 0;border-top:1px solid var(--ks3-dark-rule)">
+          <button onClick="{{ f.toggle }}" aria-expanded="{{ f.openStr }}" style="display:flex;justify-content:space-between;align-items:center;gap:16px;width:100%;padding:0;border:0;background:none;text-align:left;font-weight:700;font-size:19px;color:var(--ks3-on-dark);cursor:pointer">{{ f.q }}<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:18px;height:18px;flex:0 0 auto;transform:{{ f.rot }};transition:transform .15s"><path d="M6 9l6 6 6-6"/></svg></button>
+          <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><p style="margin:12px 0 0;font-size:17px;color:var(--ks3-on-dark-body);max-width:60em">{{ f.a }}</p></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <div style="margin-top:56px;text-align:center">
+    <a href="Parent Signup.dc.html" style="display:inline-flex;align-items:center;min-height:58px;padding:0 30px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:19px;box-shadow:5px 5px 0 var(--ks3-accent)">Start a free week</a>
+    <p style="margin:14px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Card needed, nothing charged for seven days.</p>
+  </div>
+</main>
+
+<footer style="border-top:2px solid var(--ks3-ink);background:var(--ks3-card)">
+  <div class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:28px 20px;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;font-size:15px;color:var(--ks3-ink-muted)">
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;color:var(--ks3-ink)">MrBadmus</span>
+    <a href="Public How It Works.dc.html">How it works</a><a href="Public Home Education.dc.html">Home education</a><a href="Public Pricing.dc.html">Pricing</a><a href="Public Sign In.dc.html">Sign in</a>
+    <span style="margin-left:auto">Mr Badmus Education Ltd · England</span>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const STEPS = [
+  { n: 1, who: 'You, once', title: 'Tell us where they are.', body: 'Name, year group, and the unit school is on right now. GCSE years add board, route and tier. Pick "alongside school" or "home education" and choose a username they\u2019ll remember.', exLabel: 'What we ask', ex: [{ k: 'Year group', v: '7 to 11' }, { k: 'Current unit', v: 'e.g. Rates of reaction' }, { k: 'Mode', v: 'School · Home ed' }] },
+  { n: 2, who: 'Mr Badmus, every Sunday', title: 'The week is set.', body: 'Two sessions a week for most children, four or five for home educators. Each one is a lesson, a set of quick recall questions, or a written exam question. Everything is tied to the National Curriculum and the exam board specs.', exLabel: 'A typical week, Year 9', ex: [{ k: 'Tue · Lesson', v: '20 min' }, { k: 'Thu · Quick questions', v: '10 min' }, { k: 'Sat · 4-mark practice', v: '15 min' }] },
+  { n: 3, who: 'Your child', title: 'They log in and do it.', body: 'Their own username, no email. The Today screen shows what\u2019s set and who set it. Phone or laptop, no app to install. Answers are marked the moment they finish, with the mark scheme laid out point by point.', exLabel: 'Marked instantly', ex: [{ k: 'Multiple choice and short answer', v: 'Right / wrong + why' }, { k: 'Written 4- and 6-markers', v: 'Point by point' }, { k: 'Unit checks', v: 'Score + weak area' }] },
+  { n: 4, who: 'Mr Badmus, twice a month', title: 'Two answers get a human mark.', body: 'Your child picks any written answer and sends it to me. I mark it against the same scheme, agree or disagree with the instant mark, and write a few lines back. Within three school days.', exLabel: 'Human marking', ex: [{ k: 'Per child', v: '2 a month' }, { k: 'Turnaround', v: '\u2264 3 school days' }, { k: 'You\u2019re told', v: 'Email + dashboard' }] },
+  { n: 5, who: 'You, Sunday evening', title: 'One email. Then a termly report.', body: 'What got done, what the scores were, and what to work on. No login needed to read it. At the end of each term, a printable report with every unit covered and every check score.', exLabel: 'You see', ex: [{ k: 'Sunday digest', v: 'All children' }, { k: 'Dashboard', v: 'Any time' }, { k: 'Termly report', v: 'A4, prints clean' }] },
+];
+const FAQS = [
+  { q: 'Which exam boards?', a: 'AQA, Edexcel and OCR Gateway for GCSE. Key Stage 3 follows the National Curriculum programme of study, which is the same for every school in England.' },
+  { q: 'Is this a replacement for a tutor?', a: 'For most families it replaces the weekly tutor bill. It sets, marks and reports. What it doesn\u2019t do is sit next to your child; if they need that, it works well alongside a tutor because the tutor can see exactly what\u2019s been done.' },
+  { q: 'What if my child falls behind?', a: 'Nothing piles up. Each Sunday sets a fresh week and anything not done is dropped, not carried. Retrieval questions keep pulling from earlier units so gaps get revisited without a backlog.' },
+  { q: 'Do you use AI?', a: 'The instant marking is automated against the published mark schemes, and the lessons are written by Mr Badmus. He personally marks the two answers a month your child sends him.' },
+  { q: 'Can I cancel?', a: 'Any time, in one click, from the billing page. You keep access until the end of what you\u2019ve paid for and the termly reports stay downloadable for a year.' },
+];
+class Component extends DCLogic {
+  state = { open: 0 };
+  renderVals() { return { brandSize: 26, steps: STEPS, faqs: FAQS.map((f, i) => ({ ...f, open: this.state.open === i, openStr: String(this.state.open === i), rot: this.state.open === i ? 'rotate(180deg)' : 'none', toggle: () => this.setState({ open: this.state.open === i ? -1 : i }) })) }; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}
+.pb-nav-links{display:none}
+.pb-hero{display:grid;gap:36px}
+.pb-two{display:grid;gap:16px}
+.pb-three{display:grid;gap:14px}
+.pb-head a{white-space:nowrap}
+@media (min-width:900px){
+  .pb-nav-links{display:flex}
+  .pb-nav-cta-m{display:none!important}
+  .pb-hero{grid-template-columns:1.1fr .9fr;align-items:center;gap:56px}
+  .pb-two{grid-template-columns:1fr 1fr;gap:24px}
+  .pb-three{grid-template-columns:1fr 1fr 1fr;gap:20px}
+  .pb-wrap{padding-left:48px!important;padding-right:48px!important}
+}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<header class="pb-wrap pb-head" style="display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:2px solid var(--ks3-ink);position:sticky;top:0;background:var(--ks3-ground);z-index:5">
+  <a href="Public Home.dc.html" style="display:flex;align-items:center;gap:10px;color:var(--ks3-ink)">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </a>
+  <nav class="pb-nav-links" style="margin-left:16px;gap:18px;font-weight:600;font-size:15px">
+    <a href="Public How It Works.dc.html" style="color:var(--ks3-ink)">How it works</a>
+    <a href="Public Home Education.dc.html" style="color:var(--ks3-ink)">Home education</a>
+    <a href="Public Pricing.dc.html" style="color:var(--ks3-ink)">Pricing</a>
+    <a href="Public Organisations.dc.html" style="color:var(--ks3-ink)">Organisations</a>
+  </nav>
+  <span style="flex:1"></span>
+  <a href="Public Sign In.dc.html" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>
+  <a href="Parent Signup.dc.html" style="display:flex;align-items:center;min-height:44px;padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>
+</header>
+
+<main>
+  <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:56px 20px 64px">
+    <div class="pb-hero">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Science · Years 7 to 11 · England</p>
+        <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(42px,6vw,76px);line-height:.95;letter-spacing:-.04em;text-wrap:balance">A science teacher who sets the work, marks it, and tells you how it went.</h1>
+        <p style="margin:22px 0 0;font-size:20px;color:var(--ks3-ink-body);max-width:34em;text-wrap:pretty">Mr Badmus sets your child two short sessions a week, matched to what school is covering. Every answer is marked against the real mark scheme. You get one email on Sunday.</p>
+        <div style="margin-top:30px;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <a href="Parent Signup.dc.html" style="display:flex;align-items:center;min-height:56px;padding:0 26px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;box-shadow:5px 5px 0 var(--ks3-accent)">Start a free week</a>
+          <a href="Public How It Works.dc.html" style="display:flex;align-items:center;min-height:56px;padding:0 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);color:var(--ks3-ink);font-weight:700;font-size:18px">See how it works</a>
+        </div>
+        <p style="margin:16px 0 0;font-size:15px;color:var(--ks3-ink-muted)">£9.99 a month after the free week. Cancel any time.</p>
+      </div>
+
+      <!-- product glimpse: a marked answer -->
+      <div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Health and disease · 6 marks</p>
+        <p style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1.2">Explain how vaccination protects a person from a disease they have never had.</p>
+        <div class="ks3-ladder" style="margin-top:16px;padding:18px">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between">
+            <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.04em">4<span style="font-size:20px;color:var(--ks3-ink-muted)">/6</span></span>
+            <span style="font-size:15px;font-weight:700;color:var(--ks3-ok-text)">Solid. The rest is precision.</span>
+          </div>
+          <ul style="margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px">
+            <sc-for list="{{ heroPoints }}" as="p" hint-placeholder-count="6">
+              <li style="display:flex;gap:10px;align-items:flex-start;color:{{ p.fg }}"><span style="display:grid;place-items:center;flex:0 0 22px;height:22px;margin-top:1px;border-radius:7px;border:2px solid {{ p.border }};background:{{ p.bg }};color:#fff"><sc-if value="{{ p.ok }}" hint-placeholder-val="{{ true }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:12px;height:12px"><path d="M5 12.5l4.5 4.5L19 7"/></svg></sc-if></span>{{ p.text }}</li>
+            </sc-for>
+          </ul>
+        </div>
+        <div style="margin-top:12px;padding:14px 16px;border-radius:var(--ks3-r-panel);background:var(--ks3-ink);color:var(--ks3-on-dark-body);font-size:15px;line-height:1.5"><span style="display:block;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-alert)">Mr Badmus</span><span style="display:block;margin-top:6px">Your structure is good. Now name things: say "antigen" and say "lymphocyte". In the exam the marks are on the nouns.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:2px solid var(--ks3-ink);border-bottom:2px solid var(--ks3-ink);background:var(--ks3-card)">
+    <div class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:56px 20px">
+      <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(30px,4vw,44px);letter-spacing:-.035em;line-height:1;max-width:22em">Three things a parent actually wants to know.</h2>
+      <div class="pb-three" style="margin-top:32px">
+        <sc-for list="{{ three }}" as="t" hint-placeholder-count="3">
+          <div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-ground)">
+            <span style="display:grid;place-items:center;width:40px;height:40px;border-radius:12px;border:2px solid var(--ks3-ink);background:var(--ks3-accent);font-family:var(--ks3-font-display);font-weight:800;font-size:18px">{{ t.n }}</span>
+            <h3 style="margin:16px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;letter-spacing:-.025em;line-height:1.1">{{ t.q }}</h3>
+            <p style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)">{{ t.a }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:64px 20px">
+    <div class="pb-two" style="align-items:center">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">A week, not a syllabus</p>
+        <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(30px,4vw,44px);letter-spacing:-.035em;line-height:1">Set every Sunday. Done by Friday.</h2>
+        <p style="margin:16px 0 0;font-size:18px;color:var(--ks3-ink-body);text-wrap:pretty">Tell us which unit school is on and the first week is set that evening. Two sessions for most children; four or five for home educators. Twenty minutes each, on a phone or a laptop.</p>
+        <a href="Public How It Works.dc.html" style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:17px">How a week runs <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <ul style="margin:0;padding:0;list-style:none;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);overflow:hidden">
+        <sc-for list="{{ week }}" as="w" hint-placeholder-count="4">
+          <li style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--ks3-rule)">
+            <span style="flex:0 0 44px;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ w.day }}</span>
+            <span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:17px">{{ w.title }}</span><span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">{{ w.sub }}</span></span>
+            <span style="font-family:var(--ks3-font-mono);font-size:13px;color:var(--ks3-ink-muted)">{{ w.mins }}</span>
+          </li>
+        </sc-for>
+      </ul>
+    </div>
+  </section>
+
+  <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:0 20px 64px">
+    <div style="padding:clamp(28px,4vw,48px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+      <div class="pb-two" style="align-items:center">
+        <div>
+          <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Who marks it</p>
+          <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(30px,4vw,44px);letter-spacing:-.035em;line-height:1">Every answer marked instantly. Two a month marked by me.</h2>
+          <p style="margin:16px 0 0;font-size:18px;color:var(--ks3-on-dark-body);text-wrap:pretty">I'm Mide Badmus. I've taught science in English secondary schools for twelve years and I mark for AQA. The instant marking uses the same mark schemes I do. Twice a month your child can send me an answer and I'll write back myself.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ creds }}" as="c" hint-placeholder-count="3">
+            <div style="display:flex;gap:12px;align-items:baseline;padding:14px 16px;border-radius:14px;background:var(--ks3-dark-panel);font-size:16px"><span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em;color:var(--ks3-alert)">{{ c.n }}</span><span style="color:var(--ks3-on-dark-body)">{{ c.text }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:0 20px 80px">
+    <div class="pb-two">
+      <a href="Public Home Education.dc.html" style="display:block;padding:26px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);color:var(--ks3-ink);box-shadow:var(--ks3-shadow-block)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Home educating?</p>
+        <h3 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1.05">The whole scheme of work, with a report the council will accept.</h3>
+        <span style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ks3-accent-text)">For home educators <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+      <a href="Public Pricing.dc.html" style="display:block;padding:26px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);color:var(--ks3-ink);box-shadow:var(--ks3-shadow-block)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">One plan</p>
+        <h3 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1.05">£9.99 a month. £5.99 for each extra child. Nothing else to buy.</h3>
+        <span style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ks3-accent-text)">Pricing <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer style="border-top:2px solid var(--ks3-ink);background:var(--ks3-card)">
+  <div class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:28px 20px;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;font-size:15px;color:var(--ks3-ink-muted)">
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;color:var(--ks3-ink)">MrBadmus</span>
+    <a href="Public How It Works.dc.html">How it works</a><a href="Public Home Education.dc.html">Home education</a><a href="Public Pricing.dc.html">Pricing</a><a href="Public Organisations.dc.html">Organisations</a><a href="Public Sign In.dc.html">Sign in</a>
+    <span style="margin-left:auto">Mr Badmus Education Ltd · England</span>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const HERO = [['Vaccine contains dead or inactive pathogen', true], ['White blood cells produce antibodies', true], ['Antibodies are specific to the antigen', false], ['Memory cells are retained', true], ['Faster, larger response on reinfection', true], ['Pathogen destroyed before symptoms develop', false]];
+const THREE = [
+  { n: '1', q: 'Are they doing the work?', a: 'A seven-day strip shows which sessions were done and when. Not a login count: finished work.' },
+  { n: '2', q: 'Are they getting better?', a: 'Every unit ends in a timed check. Scores line up term by term so you can see the trend, and the weak spot is named.' },
+  { n: '3', q: 'Can I do anything?', a: 'Message them inside the app, set an extra ten-minute task before a test, or pause it all for a holiday.' },
+];
+const WEEK = [{ day: 'Sun', title: 'Work set', sub: 'Matched to the unit school is on', mins: '' }, { day: 'Tue', title: 'Lesson', sub: 'Read, watch, answer as you go', mins: '20 min' }, { day: 'Thu', title: 'Quick questions', sub: 'Eight recall questions from earlier units', mins: '10 min' }, { day: 'Sun', title: 'Your email', sub: 'What got done, what the score was, what next', mins: '' }];
+const CREDS = [{ n: '12', text: 'years teaching science in state secondaries' }, { n: 'AQA', text: 'examiner for GCSE Combined Science' }, { n: '3', text: 'school days, at most, before your child hears back from me' }];
+class Component extends DCLogic {
+  renderVals() {
+    return { brandSize: 26, heroPoints: HERO.map(([text, ok]) => ({ text, ok, fg: ok ? 'var(--ks3-ink)' : 'var(--ks3-ink-muted)', border: ok ? 'var(--ks3-ok)' : 'var(--ks3-rule-strong)', bg: ok ? 'var(--ks3-ok)' : 'var(--ks3-card)' })), three: THREE, week: WEEK, creds: CREDS };
+  }
+}
+</script>
+</body>
+</html>

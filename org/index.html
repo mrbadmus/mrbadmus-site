@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#FBF3E6"/>
+  <title>Pupils — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <link rel="stylesheet" href="/org/org.css"/>
+</head>
+<body>
+
+<div class="rd og-page og-root" data-mode="ks3" id="c-main">
+
+  <!-- ── the sidebar (≥960 only) ──────────────────────────────────────── -->
+  <aside class="og-side og-noprint">
+    <div class="og-side-brand">
+      <!-- ⚠️ NO CHEVRON — staff surface. Mide's ruling 1 on MRB-316. -->
+      <span class="og-word" style="font-size:22px;">MrBadmus</span>
+    </div>
+    <div class="og-side-org">
+      <p class="og-side-kind" id="side-kind">—</p>
+      <p class="og-side-name" id="side-name">—</p>
+    </div>
+    <nav class="og-nav" id="nav"></nav>
+    <div class="og-seats">
+      <p id="seats-line">—</p>
+      <div class="og-seat-bar"><i id="seat-fill" style="width:0%;"></i></div>
+      <p class="og-who"><span id="who">—</span> · <button type="button" id="signout" style="padding:0;border:0;background:none;font:inherit;font-weight:700;color:var(--ks3-accent-text);cursor:pointer;">Sign out</button></p>
+    </div>
+  </aside>
+
+  <div style="min-width:0;">
+    <!-- ── the mobile header (<960) ───────────────────────────────────── -->
+    <header class="og-mhead og-noprint">
+      <span class="og-word" id="mhead-name" style="font-size:20px;">MrBadmus</span>
+      <select class="og-mnav" id="mnav" aria-label="Screen">
+        <!-- ⊕ DROP 2. Design's drop-1 select said "Work set" while her own
+             sidebar for the same screen said "Set work"; her drop-2 file
+             fixes the select to match, and adds Messages. -->
+        <option value="pupils">Pupils</option>
+        <option value="groups">Groups</option>
+        <option value="work">Set work</option>
+        <option value="messages">Messages</option>
+        <option value="account">Account</option>
+      </select>
+    </header>
+
+    <main class="og-main" id="main">
+      <p class="og-empty" id="boot-msg">Loading…</p>
+      <div id="screens" style="display:none;"></div>
+    </main>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   /org/index.html — the organisation dashboard. MRB-318, Night 3.
+
+   Claude Design's `Org Dashboard.dc.html`, compiled against the real API.
+   Every one of her six `const` blocks — ORG, STAFF, STAFF_LIST, GROUPS,
+   PUPILS, TOPICS — is now a read, and her `renderVals()` derivations are
+   reproduced from the fields `GET /api/consumer/org` actually sends.
+
+   ── WHAT SHE DREW, AND THE THREE PLACES THIS DEPARTS FROM IT ───────────
+   1. NO CHEVRON. She put `MrBadmusDS.BrandMark` beside both wordmarks.
+      Mide's ruling 1 on MRB-316: an organisation dashboard is a STAFF
+      surface and carries the wordmark alone.
+   2. THE ACCOUNT CARD'S PLAN WORDING (ruling 2). Hers reads "{seats} seats
+      · invoiced termly" and "£{perSeat} per seat per term. Next invoice
+      {date}, payable by BACS within 30 days." Organisations are invoiced
+      ANNUALLY against a seat cap and NO organisation price appears
+      anywhere, so both lines are replaced and "Add seats" / "Invoices"
+      become one mailto each — there is no invoice portal to link to.
+   3. PUPIL MESSAGING IS ON (ruling 3). Her Account row said "Off for
+      organisations" and her pupil page offered "Invite a parent". Pupils
+      message their caseworker exactly as a child messages a parent, and
+      there are no parent invites in v1 — so the row reads "On", the invite
+      link is gone, and the pupil page grows the chat panel she drew for the
+      parent dashboard instead.
+
+   Three further things she implies in copy but did not draw a control for
+   are built here, and are marked ⊕ADDED where they appear: moving a pupil
+   between groups ("Move a pupil between groups any time"), renaming a
+   group, and the printable login slips ("can be printed as login slips").
+
+   ── ONE READ, THEN ONE READ PER THING YOU OPEN ─────────────────────────
+   `GET /api/consumer/org` carries the org, the staff, the groups and EVERY
+   pupil already enriched — the same per-child derivation a parent gets, so
+   a streak means the same number on both dashboards. The pupil detail then
+   makes three small reads of its own (work, answers, messages) because
+   those are per-pupil and would be thirty times the payload if the list
+   carried them.
+
+   ── EVERY PANEL FAILS ALONE ────────────────────────────────────────────
+   `C.section` is used for the per-pupil reads for the reason its own
+   comment gives: a chat endpoint that is not up must not take the unit
+   check bars down with it.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var C  = window.MrBadmusConsumer;
+  var esc = C.escapeHtml;
+
+  /* Design's three day colours, by name, so the mapping below reads as she
+     wrote it rather than as three hex values. */
+  var OK = 'var(--ks3-ok)', BAND = 'var(--ks3-band)', NONE = 'var(--ks3-card)';
+
+  /* Her KINDS, with her labels and her minutes. The ids are the API's three
+     kinds; hers said "retrieval" where the API says "practice", and the
+     word a staff member reads is hers. */
+  var KINDS = [
+    { id: 'lesson',   label: 'A lesson',        mins: '20 min' },
+    { id: 'practice', label: 'Quick questions', mins: '10 min' },
+    { id: 'exam',     label: 'An exam question', mins: '15 min' }
+  ];
+  var DUES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+  var S = {
+    screen: 'pupils',
+    q: '', group: 'All', flag: 'All',
+    pupilId: null, newPass: '',
+    target: 'All', kind: 'practice', unit: null, due: 'Fri',
+    workMsg: '', workErr: '',
+    bulk: '', bulkErr: '',
+    slips: [],
+    data: null,      // the /org payload
+    picker: null,    // { childId, units } for the work screen
+    rt: null,        // the realtime subscription for the open pupil's chat
+
+    /* ⊕ DROP 2 — the Messages screen. `threads` is the whole payload of
+       `GET /api/consumer/chat/threads`, read once at boot because the nav
+       badge needs the unread total before anybody has opened the screen. A
+       badge that only appears after you visit Messages tells you nothing
+       you did not already know by visiting. */
+    threads: null,   // [] from /chat/threads, or null while unknown
+    threadId: null   // whose thread is open in the right-hand pane
+  };
+
+  var ctx = null;
+
+  /* ── little shared helpers ─────────────────────────────────────────── */
+
+  function el(id) { return document.getElementById(id); }
+
+  function pupilById(id) {
+    return ((S.data && S.data.pupils) || []).filter(function (p) { return p.id === id; })[0] || null;
+  }
+  function groupById(id) {
+    return ((S.data && S.data.groups) || []).filter(function (g) { return g.id === id; })[0] || null;
+  }
+
+  /* The week strip. The API sends `days: [1,0,1,0,0,0,0]` Monday-first and
+     says nothing about which of them have happened yet; Design's drawing
+     distinguishes three states, and the third one — a day still in the
+     future — is knowable here and nowhere else. So a day that is done is
+     OK, a day that has passed without work is BAND, and a day that has not
+     arrived is NONE. Without the last of those every pupil looks like they
+     have missed Friday, on a Tuesday. */
+  function dayColours(days) {
+    var today = (new Date().getDay() + 6) % 7;   // Mon = 0
+    return (days || [0, 0, 0, 0, 0, 0, 0]).map(function (d, i) {
+      if (d) { return OK; }
+      return i <= today ? BAND : NONE;
+    });
+  }
+
+  /* An honest blank. A number the backend did not send is not zero — the
+     policy `dash()` sets on the parent dashboard, applied here. */
+  function dash(v, suffix) {
+    if (v == null || v === '') { return '–'; }
+    return String(v) + (suffix || '');
+  }
+
+  function pct(p) { return (p == null) ? '–' : (String(p).indexOf('%') >= 0 ? String(p) : p + '%'); }
+
+  /* A PERIOD END, read off the string rather than through a local clock.
+
+     ⚠️ FOUND BY DRIVING IT. `subscriptions.current_period_end` for this
+     organisation is `2027-08-31T23:59:59+00:00` — an end-of-day marker, not
+     an instant anybody experiences. `C.fmtDate` converts to local time, and
+     in British Summer Time 23:59:59Z on the 31st is 00:59 on the 1st, so the
+     account page said the period ended on 1 September when the row says
+     31 August. A year boundary shown a day late is the kind of wrong nobody
+     notices until an invoice argument.
+
+     So the calendar date is taken from the ISO string's own leading
+     YYYY-MM-DD and never re-projected. Anything that is not shaped like an
+     ISO date falls through to `C.fmtDate`, which refuses to invent. */
+  function periodDate(iso, fallback) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+    if (!m) { return C.fmtDate(iso, fallback); }
+    var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return String(Number(m[3])) + ' ' + MONTHS[Number(m[2]) - 1] + ' ' + m[1];
+  }
+
+  /* A tick, as inline SVG. Never a typed character — the estate's rule. */
+  function tick() {
+    return '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+  }
+  function backArrow() {
+    return '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>';
+  }
+
+  function api(path, opts) {
+    opts = opts || {};
+    opts.token = ctx.token;
+    return C.api(path, opts);
+  }
+
+  function go(screen, extra) {
+    if (S.rt) { S.rt.unsubscribe(); S.rt = null; }
+    S.screen = screen;
+    if (extra) { Object.keys(extra).forEach(function (k) { S[k] = extra[k]; }); }
+    window.scrollTo(0, 0);
+    render();
+  }
+
+  /* Reload the whole payload, then re-render whatever screen is open. Used
+     after every write, because a seat count, a group size and a "needs
+     attention" badge are all derived server-side and a client that patched
+     them locally would drift from the badge in the sidebar. */
+  function reload() {
+    return api('/api/consumer/org').then(function (d) {
+      S.data = d;
+      render();
+      return d;
+    });
+  }
+
+  /* ── the chrome ────────────────────────────────────────────────────── */
+
+  function renderChrome() {
+    var d = S.data, org = d.org || {}, staff = d.staff || {};
+    var used = org.seats_used == null ? 0 : org.seats_used;
+    var cap  = org.seat_cap == null ? 0 : org.seat_cap;
+    var pctSeats = cap ? Math.round(used / cap * 100) : 0;
+
+    el('side-kind').textContent = (org.kind === 'organisation') ? 'Organisation' : (org.kind || '');
+    el('side-name').textContent = org.name || '';
+    el('mhead-name').textContent = org.name || 'MrBadmus';
+    el('seats-line').innerHTML = '<strong style="color:var(--ks3-ink)">' + esc(String(used)) +
+      '</strong> of ' + esc(String(cap)) + ' seats used';
+    el('seat-fill').style.width = pctSeats + '%';
+    el('who').textContent = staff.name || 'Staff';
+
+    var attention = ((d.pupils || []).filter(function (p) { return !!p.flag; })).length;
+    /* ⊕ DROP 2 — her `navItems` grew Messages between "Set work" and
+       "Account", badged with the unread total across every thread exactly
+       as Pupils is badged with the needs-attention count. `S.threads` is
+       null until the read lands (and stays null if it fails), and null is
+       rendered as NO badge rather than as a zero — "0 unread" and "we do
+       not know yet" are different facts and only one of them is true. */
+    var unread = (S.threads || []).reduce(function (a, t) { return a + (t.unread || 0); }, 0);
+    var items = [
+      { id: 'pupils',   label: 'Pupils',   badge: attention ? String(attention) : '' },
+      { id: 'groups',   label: 'Groups',   badge: '' },
+      { id: 'work',     label: 'Set work', badge: '' },
+      { id: 'messages', label: 'Messages', badge: unread ? String(unread) : '' },
+      { id: 'account',  label: 'Account',  badge: '' }
+    ];
+    el('nav').innerHTML = items.map(function (n) {
+      // Her rule: the pupil detail and the add screen both keep Pupils lit.
+      var on = S.screen === n.id ||
+               (n.id === 'pupils' && (S.screen === 'pupil' || S.screen === 'add' || S.screen === 'slips'));
+      return '<button type="button" data-nav="' + n.id + '" class="' + (on ? 'is-on' : '') + '">' +
+        '<span>' + esc(n.label) + '</span>' +
+        (n.badge ? '<span class="og-nav-badge">' + esc(n.badge) + '</span>' : '') +
+        '</button>';
+    }).join('');
+
+    var mnav = el('mnav');
+    mnav.value = (S.screen === 'pupil' || S.screen === 'add' || S.screen === 'slips') ? 'pupils' : S.screen;
+  }
+
+  /* ── PUPILS ────────────────────────────────────────────────────────── */
+
+  function filteredPupils() {
+    var q = S.q.trim().toLowerCase();
+    return ((S.data && S.data.pupils) || []).filter(function (p) {
+      if (S.group !== 'All' && p.group_id !== S.group) { return false; }
+      if (S.flag === 'Flag' && !p.flag) { return false; }
+      if (q && String(p.name || '').toLowerCase().indexOf(q) === -1) { return false; }
+      return true;
+    });
+  }
+
+  function screenPupils() {
+    var d = S.data, org = d.org || {}, pupils = d.pupils || [], groups = d.groups || [];
+    var rows = filteredPupils();
+
+    // Her four stats, from real fields.
+    var active = pupils.filter(function (p) { return (p.days || []).some(function (x) { return !!x; }); }).length;
+    var flagged = pupils.filter(function (p) { return !!p.flag; }).length;
+    var lastScores = pupils.map(function (p) {
+      var s = (p.scores || []);
+      return s.length ? Number(String(s[s.length - 1].pct).replace('%', '')) : null;
+    }).filter(function (n) { return n != null && !isNaN(n); });
+    var avg = lastScores.length
+      ? Math.round(lastScores.reduce(function (a, b) { return a + b; }, 0) / lastScores.length) + '%'
+      : '–';
+    var free = (org.seat_cap == null || org.seats_used == null) ? null : (org.seat_cap - org.seats_used);
+
+    var stats = [
+      { l: 'Pupils', v: dash(org.seats_used), n: free == null ? 'seat count unknown' : (free + ' seats free') },
+      { l: 'Active this week', v: String(active), n: (pupils.length - active) + ' not yet' },
+      { l: 'Need attention', v: String(flagged), n: 'not started or quiet' },
+      { l: 'Avg last check', v: avg, n: 'across all groups' }
+    ];
+
+    var groupFilters = [{ id: 'All', label: 'All groups' }].concat(groups.map(function (g) {
+      return { id: g.id, label: g.name };
+    }));
+
+    var week = 'Week of ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+
+    return '' +
+      '<div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:14px;">' +
+        '<div style="flex:1;min-width:240px;">' +
+          '<p class="og-eyebrow">' + esc(week) + '</p>' +
+          '<h1 class="og-h1" style="margin-top:8px;">Pupils</h1>' +
+        '</div>' +
+        '<button type="button" class="og-cta" data-go="add">Add pupils</button>' +
+      '</div>' +
+
+      '<div class="og-stats">' + stats.map(function (s) {
+        return '<div class="og-stat"><div class="og-stat-l">' + esc(s.l) + '</div>' +
+          '<div class="og-stat-v">' + esc(s.v) + '</div>' +
+          '<div class="og-stat-n">' + esc(s.n) + '</div></div>';
+      }).join('') + '</div>' +
+
+      '<div class="og-filters">' +
+        '<input class="og-search" id="q" value="' + esc(S.q) + '" placeholder="Search pupils" ' +
+          'autocapitalize="off" autocorrect="off" spellcheck="false"/>' +
+        groupFilters.map(function (g) {
+          return '<button type="button" class="ks3-option og-pill" data-gf="' + esc(g.id) + '" ' +
+            'aria-pressed="' + (S.group === g.id ? 'true' : 'false') + '">' + esc(g.label) + '</button>';
+        }).join('') +
+        '<button type="button" class="ks3-option og-pill og-pill-right" data-flagf="1" ' +
+          'aria-pressed="' + (S.flag === 'Flag' ? 'true' : 'false') + '">Needs attention</button>' +
+      '</div>' +
+
+      '<div class="og-table">' +
+        '<div class="og-hd"><span>Pupil</span><span>Group</span><span>This week</span>' +
+          '<span>Last check</span><span>Streak</span><span>Last active</span></div>' +
+        (rows.length ? rows.map(pupilRow).join('')
+                     : '<p class="og-empty">No pupils match.</p>') +
+      '</div>';
+  }
+
+  function pupilRow(p) {
+    var days = dayColours(p.days);
+    return '<button type="button" class="og-row' + (p.flag ? ' is-flagged' : '') + '" data-pupil="' + esc(p.id) + '">' +
+      '<span class="og-row-name">' +
+        '<span class="og-initial">' + esc(p.initial || (p.name || '?').charAt(0)) + '</span>' +
+        '<span style="min-width:0;">' +
+          '<span class="og-row-n">' + esc(p.name || '') + '</span>' +
+          '<span class="og-row-u">' + esc(p.username || '') + '</span>' +
+        '</span>' +
+        (p.flag ? '<span class="og-flag">' + esc(p.flag) + '</span>' : '') +
+      '</span>' +
+      '<span class="og-cell">' + esc(p.group || '—') + '</span>' +
+      '<span class="og-days">' + days.map(function (c) {
+        return '<span style="background:' + c + ';"></span>';
+      }).join('') + '</span>' +
+      '<span class="og-cell-mono">' + esc(p.last == null ? '–' : pct(p.last)) + '</span>' +
+      '<span class="og-cell-mono">' + esc(dash(p.streak)) + '</span>' +
+      '<span class="og-cell-muted">' + esc(p.active || 'Never') + '</span>' +
+    '</button>';
+  }
+
+  /* ── PUPIL DETAIL ──────────────────────────────────────────────────── */
+
+  function screenPupil() {
+    var p = pupilById(S.pupilId);
+    if (!p) { return '<p class="og-empty">That pupil isn’t on this organisation any more.</p>'; }
+    var groups = (S.data && S.data.groups) || [];
+    var staff = (S.data && S.data.staff) || {};
+    var days = dayColours(p.days);
+
+    var moveOpts = ['<option value="">No group</option>'].concat(groups.map(function (g) {
+      return '<option value="' + esc(g.id) + '"' + (g.id === p.group_id ? ' selected' : '') + '>' +
+        esc(g.name) + '</option>';
+    })).join('');
+
+    var bars = (p.scores || []).map(function (s, i, all) {
+      var v = Number(String(s.pct).replace('%', ''));
+      if (isNaN(v)) { v = 0; }
+      return '<div class="og-bar"><em>' + esc(pct(s.pct)) + '</em>' +
+        '<i style="height:' + Math.round(v * 0.65) + 'px;background:' +
+        (i === all.length - 1 ? 'var(--ks3-accent)' : 'var(--ks3-band)') + ';"></i></div>';
+    }).join('');
+
+    return '' +
+      '<button type="button" class="og-back og-noprint" data-go="pupils">' + backArrow() + 'All pupils</button>' +
+      '<div class="og-pd-head">' +
+        '<span class="og-pd-initial">' + esc(p.initial || (p.name || '?').charAt(0)) + '</span>' +
+        '<div style="flex:1;min-width:200px;">' +
+          '<h1 class="og-pd-name">' + esc(p.name || '') + '</h1>' +
+          '<p class="og-pd-meta">' + esc('Year ' + dash(p.year) + ' · ' + (p.group || 'No group') +
+            ' · @' + (p.username || '')) + '</p>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;" class="og-noprint">' +
+          '<button type="button" class="og-alt-sm" id="reset-pw"' + (S.newPass ? ' disabled' : '') + '>' +
+            (S.newPass ? 'Password reset' : 'Reset password') + '</button>' +
+          '<button type="button" class="og-cta-sm" data-setwork-pupil="' + esc(p.id) + '">Set work</button>' +
+        '</div>' +
+      '</div>' +
+      (S.newPass
+        ? '<div class="og-good"><strong>New password, shown once:</strong> <code>' + esc(S.newPass) + '</code></div>'
+        : '') +
+
+      '<div class="og-pd-grid">' +
+        // This week
+        '<section class="og-card">' +
+          '<p class="og-eyebrow-sm">This week</p>' +
+          '<div class="og-week">' + days.map(function (c) {
+            return '<span style="background:' + c + ';"></span>';
+          }).join('') + '</div>' +
+          '<div id="pd-work"><p class="og-note">Loading…</p></div>' +
+        '</section>' +
+
+        // Unit checks
+        '<section class="og-card">' +
+          '<p class="og-eyebrow-sm">Unit checks</p>' +
+          (bars
+            ? '<div class="og-bars">' + bars + '</div>'
+            : '<p class="og-note">No unit checks yet.</p>') +
+          (p.weak ? '<p class="og-warn"><strong>Weak spot:</strong> ' + esc(p.weak) + '</p>' : '') +
+        '</section>' +
+
+        // Written answers
+        '<section class="og-card">' +
+          '<p class="og-eyebrow-sm">Written answers</p>' +
+          '<div id="pd-answers"><p class="og-note">Loading…</p></div>' +
+        '</section>' +
+
+        /* ⊕ADDED — the chat panel. Design drew no messaging on the org
+           dashboard because her Account card said pupil messaging was off
+           for organisations. Ruling 3 turns it on, and a pupil whose only
+           adult is their caseworker needs the caseworker to be able to
+           answer. The panel is her parent-dashboard chat, transcribed. */
+        '<section class="og-card og-noprint">' +
+          '<p class="og-eyebrow-sm">Messages</p>' +
+          '<div id="pd-chat"><p class="og-note">Loading…</p></div>' +
+        '</section>' +
+      '</div>' +
+
+      /* ⊕ADDED — move between groups. Her Groups screen promises "Move a
+         pupil between groups any time; nothing done is lost" and draws no
+         control for it. This is that control, on the pupil it moves. */
+      '<div class="og-noprint" style="margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;">' +
+        '<label style="font-weight:700;font-size:15px;color:var(--ks3-ink-muted);">Move to group</label>' +
+        '<select class="og-select" id="move-group">' + moveOpts + '</select>' +
+        '<button type="button" class="og-alt-sm" id="move-go">Move</button>' +
+        '<a class="og-alt-sm" style="display:inline-flex;align-items:center;text-decoration:none;" ' +
+          'href="' + esc(C.href('/consumer/report.html', { child: p.id })) + '">Termly report</a>' +
+        '<span id="move-msg" class="og-note"></span>' +
+      '</div>' +
+
+      /* ⊕ DROP 2. Ruling 3 had already killed her drop-1 "Invite a parent"
+         link; her drop-2 sentence goes further and leads with the
+         caseworker's NAME rather than with the absence of a parent, which
+         is the fact a member of staff opening this page actually needs.
+         Her wording, with the pupil's name and the staff name filled in. */
+      '<p class="og-foot">Caseworker: <strong style="color:var(--ks3-ink);">' +
+        esc(staff.name || 'the organisation') + '</strong>. ' + esc(p.name || 'This pupil') +
+        '’s messages and the Sunday email go to them. Parent invites aren’t available in v1.</p>';
+  }
+
+  /* The three per-pupil reads. Each in its own `C.section`, so one that is
+     down leaves the other two on screen.
+
+     ⚠️ AND EACH ONE CHECKS THAT ITS PANEL IS STILL THERE. Found by driving
+     it: open a pupil, press "Set work" before the answers read comes back,
+     and the render lands on a screen that no longer has a `#pd-answers` —
+     `Cannot set properties of null`, in the console, on a page that looks
+     fine. A panel that has been navigated away from is not an error and not
+     a failure to show; it is a render nobody is waiting for any more. */
+  function stillOpen(p, id) {
+    return S.screen === 'pupil' && S.pupilId === p.id && el(id) !== null;
+  }
+
+  function loadPupilPanels(p) {
+    /* This week's work arrives WITH the list payload (`pupils[].work`, the
+       same `itemForParent` shape the parent dashboard reads), so it is
+       rendered synchronously rather than fetched again. Thirty pupils would
+       otherwise be thirty possible round trips for a panel the page already
+       has the answer to. */
+    var work = p.work || [];
+    el('pd-work').innerHTML = work.length
+      ? ('<ul class="og-list">' + work.map(function (it) {
+          var state = (it.done ? 'Done ' : 'Due ') + (it.day || '');
+          var fg = it.done ? 'var(--ks3-ok-text)' : 'var(--ks3-ink-muted)';
+          return '<li><span>' + esc(it.title || '') + '</span>' +
+            '<span style="font-family:var(--ks3-font-mono);font-size:13px;color:' + fg + ';">' +
+            esc(state.trim()) + '</span></li>';
+        }).join('') + '</ul>')
+      : '<p class="og-note">Nothing set for this week yet.</p>';
+
+    C.section(el('pd-answers'),
+      api('/api/consumer/children/' + encodeURIComponent(p.id) + '/answers'),
+      function (d) {
+        if (!stillOpen(p, 'pd-answers')) { return; }
+        var list = (d && d.answers) || [];
+        var host = el('pd-answers');
+        /* Her "Human marks this month: {used} of 2" — and the "of 2" is the
+           org's own cap, not a constant, because a goodwill top-up from
+           Admin changes it. `humanLeft` + `humanUsed` is the total. */
+        var total = (p.humanUsed == null || p.humanLeft == null) ? null : (p.humanUsed + p.humanLeft);
+        var note = '<p class="og-note">Human marks this month: ' + esc(dash(p.humanUsed)) +
+          (total == null ? '' : (' of ' + esc(String(total)))) +
+          '. Staff can send answers on the pupil’s behalf.</p>';
+        if (!list.length) {
+          host.innerHTML = '<p class="og-note">No written answers yet.</p>' + note;
+          return;
+        }
+        host.innerHTML = '<ul class="og-list-b">' + list.slice(0, 6).map(function (a) {
+          var mark = a.waiting ? 'With Mr Badmus'
+                   : (a.human ? (a.humanScore + ' MB') : (a.aiScore || '–'));
+          return '<li><span class="og-trunc">' + esc(a.question || '') + '</span>' +
+            '<span style="font-family:var(--ks3-font-mono);font-size:13px;white-space:nowrap;">' +
+            esc(mark) + '</span></li>';
+        }).join('') + '</ul>' + note;
+      });
+
+    C.section(el('pd-chat'),
+      api('/api/consumer/chat/messages?with=' + encodeURIComponent(p.id) + '&limit=50'),
+      function (d) {
+        if (!stillOpen(p, 'pd-chat')) { return; }
+        paintChat(p, (d && d.messages) || []);
+      });
+  }
+
+  function paintChat(p, messages) {
+    var host = el('pd-chat');
+    if (!host || !stillOpen(p, 'pd-chat')) { return; }
+    host.innerHTML =
+      (messages.length
+        ? '<div class="og-chat" id="chat-log">' + messages.map(function (m) {
+            return '<div class="og-bubble' + (m.mine ? ' mine' : '') + '">' +
+              esc(m.text || '') + '<time>' + esc(m.time || '') + '</time></div>';
+          }).join('') + '</div>'
+        : '<p class="og-note" id="chat-log">Nothing yet. Say hello — ' + esc((p.name || 'they')) +
+          ' sees it on their Today screen.</p>') +
+      '<div class="og-chat-send">' +
+        '<input id="chat-text" placeholder="Write to ' + esc(p.name || 'them') + '" maxlength="1000"/>' +
+        '<button type="button" class="og-cta-sm" id="chat-send">Send</button>' +
+      '</div>' +
+      '<p class="og-note" id="chat-msg"></p>';
+
+    var log = el('chat-log');
+    if (log && log.scrollTo) { log.scrollTop = log.scrollHeight; }
+
+    el('chat-send').onclick = function () {
+      var input = el('chat-text');
+      var text = input.value.trim();
+      var msg = el('chat-msg');
+      if (!text) { msg.textContent = 'Write something first.'; return; }
+      var btn = el('chat-send');
+      C.setBusy(btn, true, 'Sending…');
+      msg.textContent = '';
+      api('/api/consumer/chat/send', { method: 'POST', body: { to: p.id, text: text } })
+        .then(function () {
+          input.value = '';
+          C.setBusy(btn, false);
+          return api('/api/consumer/chat/messages?with=' + encodeURIComponent(p.id) + '&limit=50');
+        })
+        .then(function (d) { if (d && stillOpen(p, 'pd-chat')) { paintChat(p, (d && d.messages) || []); } })
+        .catch(function (e) { C.setBusy(btn, false); msg.textContent = e.message; });
+    };
+
+    /* Live, with the staff member's OWN JWT — RLS decides what arrives, so
+       there is no filter here to get wrong. One binding; see the warning in
+       consumer-common.js. */
+    if (!S.rt) {
+      S.rt = C.subscribeMessages(ctx.sb, function (row) {
+        if (!row) { return; }
+        if (row.sender_id !== p.id && row.recipient_id !== p.id) { return; }
+        api('/api/consumer/chat/messages?with=' + encodeURIComponent(p.id) + '&limit=50')
+          .then(function (d) {
+            if (!stillOpen(p, 'pd-chat')) { return; }
+            paintChat(p, (d && d.messages) || []);
+          })
+          .catch(function () { /* an enhancement; never fatal */ });
+      });
+    }
+  }
+
+  /* ── GROUPS ────────────────────────────────────────────────────────── */
+
+  /* ⚠️ A GROUP HAS NO SETTINGS OF ITS OWN. `unit` and `intensity` are
+     DERIVED from its members by the backend, and come back null in two
+     completely different situations: an empty group has nobody to derive
+     from, and a group whose members disagree has no single answer. Printing
+     "Not set" for the second one would be a lie — the pupils each have a
+     position, they just do not share one — and it is the lie that makes a
+     head of year think nothing has been set up. */
+  function derived(value, count) {
+    /* The API sends the intensity as its stored token — `light`, `steady`,
+       `full`. Design's card shows a word, so the word is capitalised here
+       and nowhere else: the value that goes back to the server is never
+       this string. */
+    if (value) { return String(value).charAt(0).toUpperCase() + String(value).slice(1); }
+    return count ? 'Mixed' : 'Not set';
+  }
+
+  function screenGroups() {
+    var groups = (S.data && S.data.groups) || [];
+    return '' +
+      '<h1 class="og-h1">Groups</h1>' +
+      '<p class="og-intro">A group shares a year, a unit position and an intensity. Mr Badmus sets the same week for everyone in it. Move a pupil between groups any time; nothing done is lost.</p>' +
+      '<div class="og-groups">' +
+        groups.map(function (g) {
+          return '<div class="og-card shadow-card" data-group="' + esc(g.id) + '">' +
+            '<div class="og-group-h"><h2>' + esc(g.name) + '</h2>' +
+              '<span class="og-group-c">' + esc(dash(g.count)) + ' pupils</span></div>' +
+            '<ul class="og-kv">' +
+              '<li><span class="k">Year</span><span>' + esc(dash(g.year)) + '</span></li>' +
+              '<li><span class="k">Current unit</span><span style="text-align:right;">' +
+                esc(derived(g.unit, g.count)) + '</span></li>' +
+              '<li><span class="k">Intensity</span><span>' + esc(derived(g.intensity, g.count)) + '</span></li>' +
+              '<li><span class="k">Done this week</span><span style="font-family:var(--ks3-font-mono);">' +
+                esc(g.done || '–') + '</span></li>' +
+            '</ul>' +
+            '<div class="og-group-acts">' +
+              '<button type="button" class="og-alt-sm" data-gview="' + esc(g.id) + '">View pupils</button>' +
+              '<button type="button" class="og-cta-sm" data-gwork="' + esc(g.id) + '">Set work</button>' +
+            '</div>' +
+            // ⊕ADDED — rename. C3 has PATCH; Design drew no control.
+            '<div style="margin-top:10px;display:flex;gap:8px;align-items:center;">' +
+              '<input class="og-select" style="flex:1;min-width:0;" data-gname="' + esc(g.id) + '" ' +
+                'value="' + esc(g.name) + '" aria-label="Group name"/>' +
+              '<button type="button" class="og-alt-sm" data-grename="' + esc(g.id) + '">Rename</button>' +
+            '</div>' +
+            '<p class="og-note" data-gmsg="' + esc(g.id) + '"></p>' +
+          '</div>';
+        }).join('') +
+        '<button type="button" class="og-dashed" id="new-group">New group</button>' +
+      '</div>' +
+      '<div id="new-group-form" style="display:none;margin-top:18px;max-width:520px;">' +
+        '<div class="og-card">' +
+          '<p class="og-eyebrow-sm">New group</p>' +
+          '<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;">' +
+            '<input class="og-select" id="ng-name" placeholder="9X" style="flex:1 1 160px;"/>' +
+            '<input class="og-select" id="ng-year" type="number" inputmode="numeric" min="7" max="11" ' +
+              'placeholder="Year" style="flex:0 0 110px;"/>' +
+          '</div>' +
+          '<button type="button" class="og-cta-sm" id="ng-go" style="margin-top:12px;">Create group</button>' +
+          '<p class="og-note" id="ng-msg"></p>' +
+        '</div>' +
+      '</div>';
+  }
+
+  /* ── SET WORK ──────────────────────────────────────────────────────── */
+
+  function targetLabel(id) {
+    if (id === 'All') { return 'All pupils'; }
+    var g = groupById(id);
+    if (g) { return g.name; }
+    var p = pupilById(id);
+    return p ? p.name : id;
+  }
+
+  function screenWork() {
+    var staff = (S.data && S.data.staff) || {};
+    var groups = (S.data && S.data.groups) || [];
+    var targets = [{ id: 'All', label: 'Everyone' }].concat(
+      groups.map(function (g) { return { id: g.id, label: g.name }; })
+    );
+    var chosenPupil = pupilById(S.target);
+    if (chosenPupil) { targets.push({ id: chosenPupil.id, label: chosenPupil.name + ' only' }); }
+
+    var units = (S.picker && S.picker.units) || [];
+    var pickerFor = S.picker && S.picker.name;
+
+    return '' +
+      '<h1 class="og-h1">Set work</h1>' +
+      '<p class="og-intro">Goes on top of Mr Badmus’s week. Pupils see it labelled “set by ' +
+        esc(staff.name || 'staff') + '”.</p>' +
+      '<div class="og-form-col">' +
+        '<p class="og-legend" style="margin-top:0;">Who</p>' +
+        '<div class="og-chips">' + targets.map(function (t) {
+          return '<button type="button" class="ks3-option og-chip" data-target="' + esc(t.id) + '" ' +
+            'aria-pressed="' + (S.target === t.id ? 'true' : 'false') + '">' + esc(t.label) + '</button>';
+        }).join('') + '</div>' +
+
+        '<p class="og-legend">What</p>' +
+        '<div class="og-stack">' + KINDS.map(function (k) {
+          return '<button type="button" class="ks3-option" data-kind="' + esc(k.id) + '" ' +
+            'aria-pressed="' + (S.kind === k.id ? 'true' : 'false') + '">' +
+            '<span style="flex:1;">' + esc(k.label) + '</span>' +
+            '<span style="font-size:13px;color:var(--ks3-ink-muted);">' + esc(k.mins) + '</span></button>';
+        }).join('') + '</div>' +
+
+        '<p class="og-legend">Topic</p>' +
+        (S.kind === 'exam'
+          /* An exam question is chosen by the server from where the pupil
+             actually is. Offering a topic chip here would be a control that
+             changes nothing — see `setWorkFor`: the exam branch reads
+             `question_id` or picks one, and ignores `unit_code` entirely. */
+          ? '<p class="og-note" style="margin-top:0;">Mr Badmus picks the question from where each pupil is up to.</p>'
+          : (units.length
+              ? '<div class="og-chips">' + units.map(function (u) {
+                  return '<button type="button" class="ks3-option og-chip" data-unit="' + esc(u.unit_code) + '" ' +
+                    'aria-pressed="' + (S.unit === u.unit_code ? 'true' : 'false') + '">' +
+                    esc(u.name) + '</button>';
+                }).join('') + '</div>' +
+                (pickerFor ? '<p class="og-note">Units for ' + esc(pickerFor) + '’s year.</p>' : '')
+              : '<p class="og-note" style="margin-top:0;" id="topic-note">Loading topics…</p>')) +
+
+        '<p class="og-legend">Due</p>' +
+        '<div class="og-days-grid">' + DUES.map(function (d) {
+          return '<button type="button" class="ks3-option" data-due="' + esc(d) + '" ' +
+            'aria-pressed="' + (S.due === d ? 'true' : 'false') + '">' + esc(d) + '</button>';
+        }).join('') + '</div>' +
+
+        '<button type="button" class="og-wide" id="work-go">Set for ' + esc(S.due) + '</button>' +
+        (S.workErr ? '<p class="og-err" style="margin-top:12px;">' + esc(S.workErr) + '</p>' : '') +
+        (S.workMsg ? '<p class="og-done">' + esc(S.workMsg) + '</p>' : '') +
+      '</div>';
+  }
+
+  /* The topic chips come from a real pupil's picker, because "which units
+     exist" is a function of a pupil's year and subject plan and there is no
+     org-wide answer to it. Which pupil is named on screen. */
+  function ensurePicker() {
+    if (S.kind === 'exam') { return; }
+    var pool = (S.data && S.data.pupils) || [];
+    var want;
+    var p = pupilById(S.target);
+    if (p) { want = p; }
+    else if (S.target !== 'All') {
+      want = pool.filter(function (x) { return x.group_id === S.target; })[0];
+    } else { want = pool[0]; }
+    if (!want) { return; }
+    if (S.picker && S.picker.childId === want.id) { return; }
+
+    api('/api/consumer/children/' + encodeURIComponent(want.id) + '/picker')
+      .then(function (d) {
+        S.picker = { childId: want.id, name: want.name, units: (d && d.units) || [] };
+        if (!S.unit && S.picker.units.length) { S.unit = S.picker.units[0].unit_code; }
+        if (S.screen === 'work') { render(); }
+      })
+      .catch(function (e) {
+        var note = el('topic-note');
+        if (note) { note.textContent = e.message; }
+      });
+  }
+
+  /* Design's due chips are weekday NAMES. A name is not a date, and the API
+     wants one — so "Fri" means the next Friday that has not happened yet,
+     today included. Anything else would silently set work in the past. */
+  function nextWeekday(label) {
+    var want = DUES.indexOf(label);            // 0 = Mon
+    if (want < 0) { want = 4; }
+    var d = new Date();
+    d.setHours(12, 0, 0, 0);
+    var today = (d.getDay() + 6) % 7;
+    var delta = (want - today + 7) % 7;
+    d.setDate(d.getDate() + delta);
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  }
+
+  /* ── ACCOUNT ───────────────────────────────────────────────────────── */
+
+  function screenAccount() {
+    var d = S.data, org = d.org || {}, list = d.staff_list || [];
+    var mail = 'mailto:support@mrbadmus.com';
+
+    return '' +
+      '<h1 class="og-h1">Organisation</h1>' +
+      '<div class="og-cards">' +
+
+        // ⊕ Ruling 2 — annual, against a seat cap, and no price anywhere.
+        '<section class="og-card shadow-block">' +
+          '<p class="og-eyebrow-sm">Plan</p>' +
+          '<p style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:26px;letter-spacing:-.03em;line-height:1.05;">' +
+            esc(dash(org.seat_cap)) + ' seats · invoiced annually</p>' +
+          /* ⊕ DROP 2 rewrote this line. Hers now reads "{used} in use
+             against a cap of {cap}. One invoice a year, renews {date},
+             payable by BACS within 30 days. Raising the cap mid-year is
+             pro-rated to the renewal date." — three facts Night 3's
+             paraphrase left out: BACS and its 30 days, and what happens
+             when a cap is raised part-way through a year, which is the
+             question a head of centre asks before they ask anything else.
+             Still no price: `org.renews` in her file is a date, not money. */
+          '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body);">' +
+            esc(dash(org.seats_used)) + ' in use against a cap of ' + esc(dash(org.seat_cap)) +
+            '. One invoice a year, renews ' + esc(periodDate(org.period_end, 'when the year does')) +
+            ', payable by BACS within 30 days. Raising the cap mid-year is pro-rated to the renewal date.</p>' +
+          '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">' +
+            /* Both were "#" in Design's file. There is no invoice portal and
+               no self-serve seat purchase, so rather than link to a page
+               that does not exist, both are the address a human answers. */
+            '<a href="' + mail + '?subject=Invoices" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:15px;color:var(--ks3-ink);">Invoices</a>' +
+            /* ⊕ DROP 2 renamed this control "Raise the cap". It is the more
+               accurate verb — nothing is bought here; a cap is a number in
+               a contract that goes up. */
+            '<a href="' + mail + '?subject=Raise%20the%20seat%20cap" style="flex:1;display:flex;align-items:center;justify-content:center;min-height:44px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);font-weight:700;font-size:15px;color:var(--ks3-on-dark);">Raise the cap</a>' +
+          '</div>' +
+          '<p class="og-note">Invoices and a higher cap are arranged by email — write to us and we’ll sort it.</p>' +
+        '</section>' +
+
+        '<section class="og-card">' +
+          '<p class="og-eyebrow-sm">Staff</p>' +
+          (list.length
+            ? '<ul class="og-list-b">' + list.map(function (s) {
+                return '<li><span><strong>' + esc(s.name || '') + '</strong> ' +
+                  '<span style="color:var(--ks3-ink-muted);">· ' + esc(s.role || '') +
+                  (s.pending ? ' · not signed in yet' : '') + '</span></span>' +
+                  '<span style="font-size:13px;color:var(--ks3-ink-muted);">' + esc(s.groups || '') + '</span></li>';
+              }).join('') + '</ul>'
+            : '<p class="og-note">No staff on record yet.</p>') +
+          /* Design's "Invite staff" button did nothing in her file and there
+             is no invite route in the contract. It is a mailto rather than a
+             dead control. */
+          '<a class="og-alt-sm" style="margin-top:12px;display:inline-flex;align-items:center;text-decoration:none;" ' +
+            'href="' + mail + '?subject=Add%20a%20staff%20member">Invite staff</a>' +
+        '</section>' +
+
+        '<section class="og-card">' +
+          '<p class="og-eyebrow-sm">Data and safeguarding</p>' +
+          '<ul class="og-kv" style="gap:8px;">' +
+            /* No DPA PDF was delivered, so this is the address that sends
+               one rather than a link to a file that is not there. */
+            '<li><span>Data processing agreement</span><a href="' + mail +
+              '?subject=Data%20processing%20agreement" style="font-weight:700;">Request a copy</a></li>' +
+            /* ⊕ DROP 2. Ruling 3 flipped this to "On"; her drop-2 row says
+               who that means — "On · caseworker sees them" — which is the
+               half a safeguarding lead is reading the row for. */
+            '<li><span>Pupil–staff messages</span><span style="color:var(--ks3-ink-muted);">On · caseworker sees them</span></li>' +
+            '<li><span>Export all pupil data</span>' +
+              '<button type="button" id="export" style="padding:0;border:0;background:none;font:inherit;font-weight:700;color:var(--ks3-accent-text);cursor:pointer;">CSV</button></li>' +
+            '<li><span>Remove a leaver</span><span style="color:var(--ks3-ink-muted);">From the pupil page</span></li>' +
+          '</ul>' +
+          '<p class="og-note" id="export-msg"></p>' +
+        '</section>' +
+      '</div>';
+  }
+
+  /* ── ADD PUPILS ────────────────────────────────────────────────────── */
+
+  /* Her textarea format: "first name, year, group", one per line. Parsed
+     here rather than on the backend because the count under the box has to
+     update as somebody types, and a parse that lives in two places is two
+     parses that will eventually disagree about "Amara,9". */
+  function parseBulk(text) {
+    return String(text || '').split('\n').map(function (l) { return l.trim(); })
+      .filter(Boolean)
+      .map(function (line) {
+        var bits = line.split(',').map(function (b) { return b.trim(); });
+        return {
+          first_name: bits[0] || '',
+          year_group: bits[1] ? Number(bits[1]) : null,
+          group: bits[2] || null,
+          _raw: line
+        };
+      });
+  }
+
+  function screenAdd() {
+    var org = (S.data && S.data.org) || {};
+    var rows = parseBulk(S.bulk);
+    var free = (org.seat_cap == null || org.seats_used == null) ? null : (org.seat_cap - org.seats_used);
+    return '' +
+      '<button type="button" class="og-back" data-go="pupils">' + backArrow() + 'Pupils</button>' +
+      '<h1 class="og-h1" style="margin-top:14px;">Add pupils</h1>' +
+      '<p class="og-intro">One per line: first name, year, group. Usernames and passwords are generated and can be printed as login slips. No pupil email addresses are collected.</p>' +
+      '<div class="og-form-col">' +
+        '<textarea class="og-textarea" id="bulk" rows="8" placeholder="Amara, 9, 9X&#10;Leo, 7, 7B">' +
+          esc(S.bulk) + '</textarea>' +
+        '<div class="og-count"><span id="bulk-count">' + esc(rows.length + ' ' + (rows.length === 1 ? 'pupil' : 'pupils')) + '</span>' +
+          '<span>' + esc(free == null ? 'seat count unknown' : (free + ' seats free')) + '</span></div>' +
+        (S.bulkErr ? '<p class="og-err" style="margin-top:10px;">' + esc(S.bulkErr) + '</p>' : '') +
+        '<button type="button" class="og-wide" style="margin-top:16px;" id="bulk-go">Create logins and print slips</button>' +
+      '</div>';
+  }
+
+  /* ── LOGIN SLIPS ───────────────────────────────────────────────────── */
+
+  /* ⊕ADDED. Design's `submitBulk` returns to the pupils list; her copy on
+     the screen before it promises slips. The passwords come back from
+     `POST /org/pupils/bulk` ONCE and are never stored anywhere, so this is
+     the only moment they can be printed — which is why leaving the screen
+     asks first, and why nothing here is re-fetchable. */
+  function screenSlips() {
+    var made = S.slips || [];
+    return '' +
+      '<div class="og-noprint">' +
+        '<h1 class="og-h1">Login slips</h1>' +
+        '<p class="og-intro"><strong>Print these now.</strong> The passwords are shown once and are not stored — if you leave this screen you will have to reset each pupil from their own page.</p>' +
+        '<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">' +
+          '<button type="button" class="og-cta" id="print">Print slips</button>' +
+          '<button type="button" class="og-alt-sm" data-go="pupils">Done</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="og-slips">' + made.map(function (c) {
+        return '<div class="og-slip"><h3>' + esc(c.first_name || '') + '</h3>' +
+          '<dl>' +
+            '<dt>Username</dt><dd>' + esc(c.username || '') + '</dd>' +
+            '<dt>Password</dt><dd>' + esc(c.password || '') + '</dd>' +
+            (c.group ? ('<dt>Group</dt><dd>' + esc(c.group) + '</dd>') : '') +
+          '</dl>' +
+          '<p>Sign in at mrbadmus.com/go</p></div>';
+      }).join('') + '</div>';
+  }
+
+  /* ── MESSAGES ⊕ DROP 2 ─────────────────────────────────────────────
+     Design's drop-2 Org Dashboard grows a whole screen: a thread list on
+     the left, one conversation on the right. It exists because ruling 3
+     turned pupil–staff messaging ON, and a caseworker with thirty pupils
+     cannot find out who wrote to them by opening thirty pupil pages.
+
+     ── EVERY FIELD SHE DRAWS HAS A REAL SOURCE, AND IT IS ONE CALL ──────
+     `GET /api/consumer/chat/threads` already returns exactly her row:
+     `with.{id,name}`, `last.{text,time,mine}` and `unread`, sorted with
+     the talkative threads newest-first and the silent ones after by name —
+     which is her order. `counterparties()` on the backend resolves to every
+     student in the staff member's org, so an org staff member's thread list
+     is the pupil roll. Nothing here is derived from a mock.
+
+     The one field with no source is the GROUP beside the name; the threads
+     payload does not carry it. It is joined from `S.data.pupils`, which the
+     page already holds, and omitted for a pupil who is in no group rather
+     than printed as "—".
+
+     ⚠️ THE PANE MUST NOT REUSE `paintChat`. That renderer writes into
+     `#pd-chat` and guards on `stillOpen(p, 'pd-chat')`, which is false on
+     this screen — so it would silently render nothing. Two panels, two
+     renderers, one plumbing underneath. */
+
+  function threadRows() {
+    var pupils = (S.data && S.data.pupils) || [];
+    return (S.threads || []).map(function (t) {
+      var who = t.with || {};
+      var p = pupils.filter(function (x) { return x.id === who.id; })[0] || {};
+      return {
+        id: who.id,
+        name: who.name || p.name || 'Pupil',
+        group: p.group || '',
+        last: (t.last && t.last.text) || '',
+        time: (t.last && t.last.time) || '',
+        unread: t.unread || 0
+      };
+    });
+  }
+
+  function openThreadId(rows) {
+    /* Design opens the first thread when none is chosen. Hers is a fixed
+       list; ours can be empty, and it can also still be holding an id for a
+       pupil who has since been removed — so the chosen id is only used if
+       it is still in the list. */
+    var ids = rows.map(function (r) { return r.id; });
+    if (S.threadId && ids.indexOf(S.threadId) !== -1) { return S.threadId; }
+    return rows.length ? rows[0].id : null;
+  }
+
+  function screenMessages() {
+    if (S.threads === null) {
+      return '<h1 class="og-h1">Messages</h1><p class="og-empty">Loading…</p>';
+    }
+    var rows = threadRows();
+    var openId = openThreadId(rows);
+
+    var head = '<h1 class="og-h1">Messages</h1>' +
+      '<p class="og-intro">Pupils write to their caseworker from the Today screen. Same as families: only the two of you can see it. Every thread is logged for safeguarding.</p>';
+
+    if (!rows.length) {
+      /* Not an error and not a failure to load. An organisation with no
+         pupils yet has no threads, and saying so is the whole message. */
+      return head + '<p class="og-empty">No pupils yet, so there is nobody to write to. Add pupils first.</p>';
+    }
+
+    return head +
+      '<div class="og-threads">' +
+        '<div class="og-thread-list">' +
+          rows.map(function (r) {
+            var on = r.id === openId;
+            return '<button type="button" data-thread="' + esc(r.id) + '" class="' + (on ? 'is-on' : '') + '">' +
+              '<span class="og-thread-who"><strong>' + esc(r.name) + '</strong>' +
+                (r.group ? '<span class="og-thread-grp"> · ' + esc(r.group) + '</span>' : '') + '</span>' +
+              /* Her second line is the last message; a thread nobody has
+                 written in yet has none, and gets a sentence saying that
+                 rather than an empty row two pixels high. */
+              '<span class="og-thread-last">' +
+                esc(r.last ? (r.time ? r.time + ' · ' : '') + r.last : 'No messages yet') + '</span>' +
+              (r.unread ? '<span class="og-thread-unread">' + esc(String(r.unread)) + '</span>' : '') +
+              '</button>';
+          }).join('') +
+        '</div>' +
+        '<div class="og-thread-pane" id="thread-pane"><p class="og-note">Loading…</p></div>' +
+      '</div>';
+  }
+
+  /* The open conversation. `who` is the row from `threadRows()`, so the
+     header line is the same name and group the list shows. */
+  function paintThread(who, messages) {
+    var host = el('thread-pane');
+    if (!host || S.screen !== 'messages') { return; }
+
+    host.innerHTML =
+      '<p class="og-thread-head"><strong>' + esc(who.name) + '</strong>' +
+        (who.group ? '<span class="og-thread-grp"> · ' + esc(who.group) + '</span>' : '') + '</p>' +
+      (messages.length
+        ? '<div class="og-chat" id="th-log">' + messages.map(function (m) {
+            return '<div class="og-bubble' + (m.mine ? ' mine' : '') + '">' +
+              esc(m.text || '') + '<time>' + esc(m.time || '') + '</time></div>';
+          }).join('') + '</div>'
+        : '<p class="og-note" id="th-log">Nothing yet. Say hello — ' + esc(who.name) +
+          ' sees it on their Today screen.</p>') +
+      '<div class="og-chat-send">' +
+        '<input id="th-text" placeholder="Reply to ' + esc(who.name) + '" maxlength="1000"/>' +
+        '<button type="button" class="og-cta-sm" id="th-send">Send</button>' +
+      '</div>' +
+      '<p class="og-note" id="th-msg"></p>';
+
+    var log = el('th-log');
+    if (log) { log.scrollTop = log.scrollHeight; }
+
+    el('th-send').onclick = function () {
+      var input = el('th-text');
+      var text = input.value.trim();
+      var msg = el('th-msg');
+      if (!text) { msg.textContent = 'Write something first.'; return; }
+      var btn = el('th-send');
+      C.setBusy(btn, true, 'Sending…');
+      msg.textContent = '';
+      api('/api/consumer/chat/send', { method: 'POST', body: { to: who.id, text: text } })
+        .then(function () {
+          input.value = '';
+          C.setBusy(btn, false);
+          return loadThread(who, { silent: true });
+        })
+        .catch(function (e) { C.setBusy(btn, false); msg.textContent = e.message; });
+    };
+  }
+
+  function loadThread(who, opts) {
+    if (!who) { return Promise.resolve(); }
+    var read = api('/api/consumer/chat/messages?with=' + encodeURIComponent(who.id) + '&limit=50');
+
+    if (opts && opts.silent) {
+      return read.then(function (d) { paintThread(who, (d && d.messages) || []); })
+                 .catch(function () { /* the send already reported */ });
+    }
+
+    C.section(el('thread-pane'), read, function (d) {
+      paintThread(who, (d && d.messages) || []);
+    });
+
+    /* Opening a thread clears its unread, on the server and then in the
+       badge. Fire-and-forget: a mark-read that fails leaves a stale count,
+       which is a wrong number, not a broken screen — so it must never take
+       the conversation down with it. */
+    if (who.unread) {
+      api('/api/consumer/chat/read', { method: 'POST', body: { with: who.id } })
+        .then(function () {
+          (S.threads || []).forEach(function (t) {
+            if (t.with && t.with.id === who.id) { t.unread = 0; }
+          });
+          if (S.screen === 'messages') { renderChrome(); }
+        })
+        .catch(function () { /* see above */ });
+    }
+
+    /* Live, one binding, the staff member's own JWT — the same rule the
+       pupil-page panel follows. RLS decides what arrives, so there is no
+       filter here to get wrong beyond "is it this conversation". */
+    if (!S.rt) {
+      S.rt = C.subscribeMessages(ctx.sb, function (row) {
+        if (!row) { return; }
+        if (S.screen !== 'messages') { return; }
+        if (row.sender_id !== who.id && row.recipient_id !== who.id) { return; }
+        loadThread(who, { silent: true });
+      });
+    }
+    return Promise.resolve();
+  }
+
+  /* ── render + wiring ───────────────────────────────────────────────── */
+
+  function render() {
+    if (!S.data) { return; }
+    renderChrome();
+    var host = el('screens');
+    var html =
+      S.screen === 'pupils'  ? screenPupils()  :
+      S.screen === 'pupil'   ? screenPupil()   :
+      S.screen === 'groups'  ? screenGroups()  :
+      S.screen === 'work'    ? screenWork()    :
+      S.screen === 'messages' ? screenMessages() :
+      S.screen === 'account' ? screenAccount() :
+      S.screen === 'add'     ? screenAdd()     :
+      S.screen === 'slips'   ? screenSlips()   : '';
+    host.innerHTML = html;
+    host.style.display = 'block';
+    el('boot-msg').style.display = 'none';
+    document.title = ({ pupils: 'Pupils', pupil: 'Pupil', groups: 'Groups', work: 'Set work',
+                        messages: 'Messages', account: 'Organisation', add: 'Add pupils',
+                        slips: 'Login slips' }[S.screen] || 'Pupils') +
+                     ' — MrBadmus';
+    wire();
+  }
+
+  function wire() {
+    if (S.screen === 'pupil') {
+      var p = pupilById(S.pupilId);
+      if (p) { loadPupilPanels(p); }
+    }
+    if (S.screen === 'work') { ensurePicker(); }
+    if (S.screen === 'messages' && S.threads) {
+      var rows = threadRows();
+      loadThread(rows.filter(function (r) { return r.id === openThreadId(rows); })[0]);
+    }
+
+    var q = el('q');
+    if (q) {
+      q.oninput = function () {
+        S.q = q.value;
+        // Re-render only the table, so the caret stays where it is.
+        var table = document.querySelector('.og-table');
+        var rows = filteredPupils();
+        table.innerHTML =
+          '<div class="og-hd"><span>Pupil</span><span>Group</span><span>This week</span>' +
+            '<span>Last check</span><span>Streak</span><span>Last active</span></div>' +
+          (rows.length ? rows.map(pupilRow).join('') : '<p class="og-empty">No pupils match.</p>');
+      };
+    }
+
+    var bulk = el('bulk');
+    if (bulk) {
+      bulk.oninput = function () {
+        S.bulk = bulk.value;
+        var n = parseBulk(S.bulk).length;
+        el('bulk-count').textContent = n + ' ' + (n === 1 ? 'pupil' : 'pupils');
+      };
+    }
+
+    var ng = el('new-group');
+    if (ng) { ng.onclick = function () { el('new-group-form').style.display = 'block'; el('ng-name').focus(); }; }
+    var ngGo = el('ng-go');
+    if (ngGo) { ngGo.onclick = createGroup; }
+
+    var reset = el('reset-pw');
+    if (reset) { reset.onclick = resetPassword; }
+    var moveGo = el('move-go');
+    if (moveGo) { moveGo.onclick = moveGroup; }
+    var workGo = el('work-go');
+    if (workGo) { workGo.onclick = submitWork; }
+    var bulkGo = el('bulk-go');
+    if (bulkGo) { bulkGo.onclick = submitBulk; }
+    var exp = el('export');
+    if (exp) { exp.onclick = exportCsv; }
+    var pr = el('print');
+    if (pr) { pr.onclick = function () { window.print(); }; }
+  }
+
+  /* One delegated click listener on the whole page, for everything that is
+     just navigation or a filter. Per-node handlers would be re-bound on
+     every render and left behind on detached nodes. */
+  document.addEventListener('click', function (ev) {
+    var t = ev.target.closest ? ev.target : null;
+    if (!t) { return; }
+    var b;
+
+    if ((b = t.closest('[data-nav]'))) { return go(b.getAttribute('data-nav')); }
+    if ((b = t.closest('[data-go]')))  { return go(b.getAttribute('data-go')); }
+    if ((b = t.closest('[data-pupil]'))) {
+      return go('pupil', { pupilId: b.getAttribute('data-pupil'), newPass: '' });
+    }
+    if ((b = t.closest('[data-gf]')))    { S.group = b.getAttribute('data-gf'); return render(); }
+    if ((b = t.closest('[data-flagf]'))) { S.flag = (S.flag === 'Flag') ? 'All' : 'Flag'; return render(); }
+    if ((b = t.closest('[data-gview]'))) { return go('pupils', { group: b.getAttribute('data-gview') }); }
+    if ((b = t.closest('[data-gwork]'))) {
+      return go('work', { target: b.getAttribute('data-gwork'), picker: null, unit: null, workMsg: '', workErr: '' });
+    }
+    if ((b = t.closest('[data-setwork-pupil]'))) {
+      return go('work', { target: b.getAttribute('data-setwork-pupil'), picker: null, unit: null, workMsg: '', workErr: '' });
+    }
+    if ((b = t.closest('[data-target]'))) {
+      S.target = b.getAttribute('data-target'); S.picker = null; S.unit = null; return render();
+    }
+    if ((b = t.closest('[data-kind]')))  { S.kind = b.getAttribute('data-kind'); return render(); }
+    if ((b = t.closest('[data-unit]')))  { S.unit = b.getAttribute('data-unit'); return render(); }
+    if ((b = t.closest('[data-due]')))   { S.due = b.getAttribute('data-due'); return render(); }
+    if ((b = t.closest('[data-grename]'))) { return renameGroup(b.getAttribute('data-grename')); }
+    /* ⊕ DROP 2. Through `go()` rather than a bare `render()`, because `go()`
+       drops the realtime subscription — and a binding left pointed at the
+       thread you have just navigated AWAY from repaints the pane with
+       somebody else's conversation. */
+    if ((b = t.closest('[data-thread]'))) {
+      return go('messages', { threadId: b.getAttribute('data-thread') });
+    }
+  });
+
+  /* ── the writes ────────────────────────────────────────────────────── */
+
+  function resetPassword() {
+    var p = pupilById(S.pupilId);
+    if (!p) { return; }
+    var btn = el('reset-pw');
+    C.setBusy(btn, true, 'Resetting…');
+    /* An EMPTY body on purpose. §C6: with no password supplied the backend
+       generates one and returns it once; supplying one sets it and echoes
+       nothing. The only way to show it to a staff member is to not choose
+       it. */
+    api('/api/consumer/children/' + encodeURIComponent(p.id) + '/password', { method: 'POST', body: {} })
+      .then(function (d) {
+        S.newPass = (d && d.password) || '';
+        if (!S.newPass) {
+          C.setBusy(btn, false);
+          var msg = document.createElement('p');
+          msg.className = 'og-note';
+          msg.textContent = 'The password was reset, but it wasn’t sent back to this page — ' +
+            'reset it again from the pupil’s own page if you need to read it out.';
+          btn.parentNode.appendChild(msg);
+          return;
+        }
+        render();
+      })
+      .catch(function (e) {
+        C.setBusy(btn, false);
+        var msg = document.createElement('p');
+        msg.className = 'og-note';
+        msg.textContent = e.message;
+        btn.parentNode.appendChild(msg);
+      });
+  }
+
+  function moveGroup() {
+    var p = pupilById(S.pupilId);
+    if (!p) { return; }
+    var want = el('move-group').value;
+    var msg = el('move-msg');
+    var btn = el('move-go');
+    if (want === (p.group_id || '')) { msg.textContent = 'Already in that group.'; return; }
+    C.setBusy(btn, true, 'Moving…');
+    msg.textContent = '';
+
+    /* Adding to a group leaves any other, server-side (§C3), so "move to no
+       group" is the only case that needs the remove call. */
+    var call = want
+      ? api('/api/consumer/org/groups/' + encodeURIComponent(want) + '/members',
+            { method: 'POST', body: { add: [p.id] } })
+      : api('/api/consumer/org/groups/' + encodeURIComponent(p.group_id) + '/members',
+            { method: 'POST', body: { remove: [p.id] } });
+
+    call.then(reload)
+      .then(function () {
+        var m = el('move-msg');
+        if (m) { m.textContent = 'Moved.'; }
+      })
+      .catch(function (e) {
+        C.setBusy(btn, false);
+        var m = el('move-msg');
+        if (m) { m.textContent = e.message; }
+      });
+  }
+
+  function createGroup() {
+    var name = el('ng-name').value.trim();
+    var year = el('ng-year').value.trim();
+    var msg = el('ng-msg');
+    var btn = el('ng-go');
+    if (!name) { msg.textContent = 'Give the group a name first.'; return; }
+    if (!/^\d+$/.test(year)) { msg.textContent = 'Which year group is it? A whole number.'; return; }
+    C.setBusy(btn, true, 'Creating…');
+    msg.textContent = '';
+    api('/api/consumer/org/groups', { method: 'POST', body: { name: name, year_group: Number(year) } })
+      .then(reload)
+      .catch(function (e) {
+        C.setBusy(btn, false);
+        var m = el('ng-msg');
+        if (m) { m.textContent = e.message; }
+      });
+  }
+
+  function renameGroup(id) {
+    var input = document.querySelector('[data-gname="' + id + '"]');
+    var msg = document.querySelector('[data-gmsg="' + id + '"]');
+    if (!input) { return; }
+    var name = input.value.trim();
+    if (!name) { if (msg) { msg.textContent = 'A group needs a name.'; } return; }
+    if (msg) { msg.textContent = 'Saving…'; }
+    api('/api/consumer/org/groups/' + encodeURIComponent(id), { method: 'PATCH', body: { name: name } })
+      .then(function (d) {
+        /* The route can also push a unit or an intensity onto every member,
+           and when it does it reports how many it reached. A rename sends
+           neither, so `applied` is usually absent — but if it ever comes
+           back it is said out loud rather than swallowed, because "applied
+           to 8 of 9" and "applied" are different facts. */
+        var applied = d && d.applied;
+        var skipped = (d && d.skipped) || [];
+        if (applied != null && skipped.length) {
+          window.setTimeout(function () {
+            var m = document.querySelector('[data-gmsg="' + id + '"]');
+            if (m) {
+              m.textContent = 'Applied to ' + applied + ' of ' + (applied + skipped.length) +
+                ' — ' + skipped.length + ' could not be changed.';
+            }
+          }, 0);
+        }
+        return reload();
+      })
+      .catch(function (e) {
+        var m = document.querySelector('[data-gmsg="' + id + '"]');
+        if (m) { m.textContent = e.message; }
+      });
+  }
+
+  function submitWork() {
+    var btn = el('work-go');
+    S.workErr = ''; S.workMsg = '';
+    var body = { kind: S.kind, scheduled_for: nextWeekday(S.due) };
+    if (S.kind !== 'exam') {
+      if (!S.unit) {
+        S.workErr = 'Pick a topic first.';
+        return render();
+      }
+      body.unit_code = S.unit;
+    }
+    body.target = (S.target === 'All') ? 'all'
+                : (groupById(S.target) ? { group_id: S.target } : { child_id: S.target });
+
+    C.setBusy(btn, true, 'Setting…');
+    /* ONE call. §C4 loops on the server; thirty calls from here would be
+       thirty transactions and a partial week if the tab is closed. */
+    api('/api/consumer/org/work', { method: 'POST', body: body })
+      .then(function (d) {
+        var n = (d && d.set) || 0;
+        var skipped = (d && d.skipped) || [];
+        S.workMsg = 'Set. ' + targetLabel(S.target) + ' will see it on their Today screen labelled ' +
+          '“set by ' + ((S.data.staff || {}).name || 'staff') + '”.' +
+          (skipped.length ? (' ' + skipped.length + ' pupil' + (skipped.length === 1 ? '' : 's') +
+            ' couldn’t be given it — there was nothing banked for them yet.') : '') +
+          (n ? '' : ' Nothing was set.');
+        return reload();
+      })
+      .catch(function (e) {
+        C.setBusy(btn, false);
+        S.workErr = e.message;
+        render();
+      });
+  }
+
+  function submitBulk() {
+    var rows = parseBulk(S.bulk);
+    var org = (S.data && S.data.org) || {};
+    var free = (org.seat_cap == null || org.seats_used == null) ? null : (org.seat_cap - org.seats_used);
+    S.bulkErr = '';
+    if (!rows.length) { S.bulkErr = 'Add at least one line.'; return render(); }
+    var bad = rows.filter(function (r) { return !r.first_name || !r.year_group; })[0];
+    if (bad) {
+      S.bulkErr = 'Each line needs a first name and a year: “' + bad._raw + '” doesn’t.';
+      return render();
+    }
+    /* Checked here AND on the backend. Hers is the sentence in both places
+       (§C5 sends it back verbatim on the 409) — this copy only saves a
+       round trip when the answer is already knowable. */
+    if (free != null && rows.length > free) {
+      S.bulkErr = 'Only ' + free + ' seats free. Add seats from Account, or remove leavers first.';
+      return render();
+    }
+
+    var btn = el('bulk-go');
+    C.setBusy(btn, true, 'Creating…');
+    api('/api/consumer/org/pupils/bulk', {
+      method: 'POST',
+      body: { pupils: rows.map(function (r) {
+        return { first_name: r.first_name, year_group: r.year_group, group: r.group };
+      }) }
+    }).then(function (d) {
+      var made = (d && d.created) || [];
+      var failed = (d && d.failed) || [];
+      S.bulk = '';
+      S.slips = made;
+      return reload().then(function () {
+        go('slips');
+        if (failed.length) {
+          var host = el('screens');
+          var warn = document.createElement('p');
+          warn.className = 'og-warn og-noprint';
+          warn.textContent = failed.length + ' line' + (failed.length === 1 ? '' : 's') +
+            ' couldn’t be created: ' + failed.map(function (f) {
+              return (f.row && f.row.first_name) || 'a row';
+            }).join(', ') + '. Add them again on their own.';
+          host.insertBefore(warn, host.firstChild);
+        }
+      });
+    }).catch(function (e) {
+      C.setBusy(btn, false);
+      /* The backend's own words on a 409 — §C5 sends Design's sentence. */
+      S.bulkErr = e.message;
+      render();
+    });
+  }
+
+  /* The CSV is an authenticated GET, so it cannot be an <a href> — a plain
+     link sends no Authorization header and would come back 401. Fetched
+     with the token, then handed to the browser as a blob. */
+  function exportCsv() {
+    var msg = el('export-msg');
+    var base = (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL) || '';
+    msg.textContent = 'Preparing…';
+    fetch(base + '/api/consumer/org/export', { headers: { Authorization: 'Bearer ' + ctx.token } })
+      .then(function (res) {
+        if (!res.ok) { throw new Error('We couldn’t build the export just now.'); }
+        return res.text();
+      })
+      .then(function (csv) {
+        var blob = new Blob([csv], { type: 'text/csv' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'mrbadmus-pupils.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+        var m = el('export-msg');
+        if (m) { m.textContent = 'Downloaded.'; }
+      })
+      .catch(function (e) {
+        var m = el('export-msg');
+        if (m) { m.textContent = e.message; }
+      });
+  }
+
+  /* ── boot ──────────────────────────────────────────────────────────── */
+
+  C.boot({
+    sessionOptional: true,
+    run: function (c) {
+      ctx = c;
+
+      /* `requireSession` bounces to the PARENT signup page, which is the
+         wrong door for a caseworker — hence sessionOptional plus this. */
+      if (!ctx.session) { return C.go('/org/sign-in.html'); }
+
+      el('mnav').onchange = function () { go(el('mnav').value); };
+      el('signout').onclick = function () {
+        ctx.sb.auth.signOut().then(function () { C.go('/org/sign-in.html'); });
+      };
+
+      /* ⊕ DROP 2 — the thread list, read alongside the org payload rather
+         than when the Messages screen opens, because the nav badge has to
+         carry the unread total from first paint.
+
+         ⚠️ IT IS NOT ALLOWED TO FAIL THE PAGE. `/chat/threads` is a second
+         endpoint and the dashboard's whole reason for existing is the pupil
+         list; a chat read that is down must cost the badge, not the screen.
+         So it is caught here and resolves to an empty list, and `S.threads`
+         stays `null` only until one of the two outcomes lands. */
+      var threads = api('/api/consumer/chat/threads')
+        .then(function (d) { return (d && d.threads) || []; })
+        .catch(function (e) {
+          console.error('[org] threads', e);
+          return [];
+        });
+
+      return api('/api/consumer/org').then(function (d) {
+        S.data = d;
+        render();
+        /* After the first paint, never before it. The org read is what the
+           page is waiting on; making it wait on chat too would put a second
+           endpoint's latency in front of every caseworker's pupil list. */
+        return threads.then(function (list) {
+          S.threads = list;
+          if (S.screen === 'messages') { render(); } else { renderChrome(); }
+        });
+      }, function (e) {
+        /* A 403 here is "you are signed in, but not as organisation staff",
+           and the only useful next step is the sign-in page — which will say
+           so properly, in Design's words, next to the form. */
+        if (e && (e.status === 403 || e.status === 401)) {
+          return C.go('/org/sign-in.html');
+        }
+        el('boot-msg').style.display = 'none';
+        C.fail(el('main'), e.message,
+          'Refresh in a moment. If it keeps happening, email support@mrbadmus.com.');
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

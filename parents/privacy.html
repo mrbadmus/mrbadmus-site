@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>Privacy — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<div id="pb-nav"></div>
+
+<!-- 800px for the same reason terms.html uses it: a document is read
+     linearly and needs a readable measure, not the marketing grid. -->
+<main class="pb-wrap" id="legal" style="max-width:800px;margin:0 auto;padding:56px 20px 80px"></main>
+
+<div id="pb-footer"></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script src="/parents/legal.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/privacy.html — MRB-317 Night 4, lane C (item C2).
+
+   ⚠️ THE CONSUMER PRIVACY POLICY DOES NOT EXIST YET. This page is the
+   finished furniture plus a scaffold; see the header of `parents/legal.js`.
+   Mide's ruling 7 on MRB-317; drafting is an owner item on MRB-319. Beta
+   does not open without it.
+
+   ⚠️ AND IT IS NOT THE SCHOOL ONE. `MrBadmusAI_Privacy_Policy.docx` on
+   Mide's Desktop is the B2B document: it is written for a school as the
+   data controller, with the platform as processor under a DPA. In the
+   consumer product the relationship is the other way round — the PARENT is
+   our counterparty and 3rd Eye Ltd is the controller for the child's data.
+   Pasting the school policy here would misstate who is responsible for a
+   child's record, which is the single most consequential sentence in the
+   document. It is not a starting point; it is a different document.
+
+   ── THE SECTION LIST IS MRB-319'S CHECKLIST, EXPANDED ──────────────────
+   Mide's line reads: "children's data, parent as counterparty,
+   Anthropic/Supabase/Render/Resend/Stripe processors, retention (e.g. 12
+   months after cancellation, or immediate on request); ICO Children's Code
+   alignment (high-privacy defaults, no nudging, plain-language child
+   version)." Each is a section below.
+
+   ── THE PROCESSOR LIST IS NAMED, AND IT IS THE REAL ONE ────────────────
+   Five sub-processors actually carry consumer personal data today, and the
+   notes below say which does what, because a privacy notice that lists a
+   vendor without saying what it touches tells a parent nothing. What is
+   deliberately NOT written is where each one stores the data — that is a
+   fact about contracts and regions, it is not on disk, and a guess about
+   an international transfer is exactly the kind of invented statement this
+   page exists to avoid.
+
+   ⚠️ ANTHROPIC IS THE ONE A PARENT WILL ASK ABOUT. A child's written exam
+   answers leave the estate to be marked. The section on it has to say so
+   in words a parent can act on, and it has to square with the "Do you use
+   AI?" answer on `/parents/how-it-works.html`, which is Mide's ruled copy
+   and is not to be edited for tone.
+
+   ── THE PATH IS A CONTRACT ─────────────────────────────────────────────
+   `/parents/privacy.html` is linked from the signup checkbox and from every
+   public footer. Do not rename it.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var L = window.MrBadmusLegal;
+
+  var SECTIONS = [
+    { h: 'Who holds your family’s data',
+      must: '3rd Eye Ltd, trading as MrBadmus, is the data controller. Company number, registered address, and the address a parent writes to about data. Whether a Data Protection Officer is appointed, and if not, who answers instead.' },
+    { h: 'You are the account holder; your child uses the account',
+      must: 'That the parent is our counterparty and holds the subscription; that the child has a login and no email address; that the parent can see everything the child does and can pause, reset or remove the child at any time. Which decisions are the parent’s and which are the child’s.' },
+    { h: 'What we hold about your child',
+      must: 'Name, year group, exam board and tier where they apply, username, the work set and done, answers written, marks and mark-scheme detail, unit-check scores, streaks and activity times, and messages between child and parent. That we do not ask a child for an email address, a photograph, a phone number or a location.' },
+    { h: 'What we hold about you',
+      must: 'Name, email address, the children on the account, email preferences, billing state and the dates that go with it. That card details are handled by Stripe and never reach us.' },
+    { h: 'Why we are allowed to hold it',
+      must: 'The lawful basis for each purpose: performing the contract for the service itself; legitimate interests for security, fraud prevention and service email; consent where consent is actually asked for, and what happens if it is withdrawn. Who consents for a child, and at what age that changes.' },
+    { h: 'The companies that process it for us',
+      must: 'Anthropic — a child’s written answer is sent to be marked against the mark scheme; say plainly what is sent, what is not, and that it is not used to train a model. Supabase — the database and sign-in. Render — the servers the application runs on. Resend — the emails to parents. Stripe — payments and card details. For each: what it touches, and where it is stored, including any transfer outside the UK and the safeguard relied on.' },
+    { h: 'How long we keep it',
+      must: 'A retention period for each kind of record — account, child work and marks, messages, reports, billing records kept for tax. What happens after a subscription is cancelled (MRB-319 suggests twelve months) and what a parent gets if they ask for deletion sooner. That an account deletion request today is recorded with a 30-day grace period and is not executed automatically, so a parent who asks is told what will actually happen and when.' },
+    { h: 'The ICO Children’s Code',
+      must: 'How the product meets the Age Appropriate Design Code: high-privacy defaults, no profiling for advertising, no behavioural nudges toward giving up more data, no third-party trackers on child surfaces, minimal data collected, and geolocation off. Each claim has to be one a look at the product would confirm.' },
+    { h: 'Marketing and email',
+      must: 'That service email (the Sunday digest, marking notices, billing) is part of the service; what, if anything, is marketing; how to turn each off, and that turning marketing off does not affect the service.' },
+    { h: 'Cookies and what is stored on the device',
+      must: 'The sign-in token and anything else kept in the browser, what each is for and how long it lasts; that there is no advertising or analytics tracking; and the cookie notice MRB-319 lists as a separate deliverable.' },
+    { h: 'Your rights, and your child’s',
+      must: 'Access, correction, deletion, portability, restriction and objection; that a child has these rights too and how they are exercised through the parent; the download of everything we hold; how to ask, and the time we answer in (one month under UK GDPR).' },
+    { h: 'Keeping it safe, and telling you if something goes wrong',
+      must: 'Encryption in transit and at rest, who inside the company can see what, and what we would do and when we would tell you if there were a breach.' },
+    { h: 'Changes to this notice',
+      must: 'How a change is notified, and that the last-updated date at the top is the version in force.' },
+    { h: 'Complaining',
+      must: 'Write to us first, and the time we answer in; then the right to complain to the Information Commissioner’s Office, with its address and the fact that complaining to it costs nothing.' },
+    /* Last on purpose. The Children's Code asks for a version a child can
+       actually read, and it belongs at the end of the parent's document
+       rather than on a page of its own, so a parent reading this can see
+       exactly what their child is being told. */
+    { h: 'For the person doing the work — what we know about you',
+      must: 'The plain-language child version the Children’s Code requires. Short sentences, no legal words: what we keep, who can see it (your grown-up, and Mr Badmus when you send him an answer), who cannot, that we do not sell it or show you adverts, and how to ask your grown-up to get rid of it. Written to be read by an eleven-year-old.' }
+  ];
+
+  C.boot({ public: true, run: function () {
+    P.chrome(null);
+    L.render(document.getElementById('legal'), {
+      eyebrow: 'Privacy',
+      title: 'How we look after your family’s data',
+      intro: 'What 3rd Eye Ltd, trading as MrBadmus, holds about you and about your child, why, who else touches it, and how to get it back or get rid of it.',
+      what: 'full privacy notice',
+      tailExtra: 'with any question about your family’s data, or to ask for a copy of everything we hold.',
+      sections: SECTIONS
+    });
+  }});
+})();
+</script>
+</body>
+</html>

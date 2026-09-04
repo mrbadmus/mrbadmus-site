@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<!-- ⚠️ Load-bearing while the launch flag is off. `boot({ public: true })`
+     removes this tag on the enabled path and only there, so the public front
+     door is invisible to search until the day it is switched on. -->
+<meta name="robots" content="noindex"/>
+<title>MrBadmus — a science teacher who sets the work, marks it, and tells you how it went</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+<style>
+/* This page's own grid, above Design's 900px breakpoint. The base
+   (single-column, phone-first) declarations sit here too, so the whole
+   layout of this page is legible in one place. */
+.pb-hero  { display: grid; gap: 36px; }
+.pb-two   { display: grid; gap: 16px; }
+.pb-three { display: grid; gap: 14px; }
+@media (min-width: 900px) {
+  .pb-hero  { grid-template-columns: 1.1fr .9fr; align-items: center; gap: 56px; }
+  .pb-two   { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .pb-three { grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+}
+</style>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<div id="pb-nav"></div>
+
+<main>
+  <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:56px 20px 64px">
+    <div class="pb-hero">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Science · Years 7 to 11 · England</p>
+        <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(42px,6vw,76px);line-height:.95;letter-spacing:-.04em;text-wrap:balance">A science teacher who sets the work, marks it, and tells you how it went.</h1>
+        <p style="margin:22px 0 0;font-size:20px;color:var(--ks3-ink-body);max-width:34em;text-wrap:pretty">Mr Badmus sets your child two short sessions a week, matched to what school is covering. Every answer is marked against the real mark scheme. You get one email on Sunday.</p>
+        <div style="margin-top:30px;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <a id="cta-hero" href="#" style="display:flex;align-items:center;min-height:56px;padding:0 26px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;box-shadow:5px 5px 0 var(--ks3-accent)">Start a free week</a>
+          <a id="cta-how" href="#" style="display:flex;align-items:center;min-height:56px;padding:0 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);color:var(--ks3-ink);font-weight:700;font-size:18px">See how it works</a>
+        </div>
+        <p id="hero-price" style="margin:16px 0 0;font-size:15px;color:var(--ks3-ink-muted)">…</p>
+      </div>
+
+      <!-- product glimpse: a marked answer -->
+      <div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Health and disease · 6 marks</p>
+        <p style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1.2">Explain how vaccination protects a person from a disease they have never had.</p>
+        <div class="ks3-ladder" style="margin-top:16px;padding:18px">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between">
+            <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.04em">4<span style="font-size:20px;color:var(--ks3-ink-muted)">/6</span></span>
+            <span style="font-size:15px;font-weight:700;color:var(--ks3-ok-text)">Solid. The rest is precision.</span>
+          </div>
+          <ul id="hero-points" style="margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px"></ul>
+        </div>
+        <div style="margin-top:12px;padding:14px 16px;border-radius:var(--ks3-r-panel);background:var(--ks3-ink);color:var(--ks3-on-dark-body);font-size:15px;line-height:1.5"><span style="display:block;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-alert)">Mr Badmus</span><span style="display:block;margin-top:6px">Your structure is good. Now name things: say "antigen" and say "lymphocyte". In the exam the marks are on the nouns.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:2px solid var(--ks3-ink);border-bottom:2px solid var(--ks3-ink);background:var(--ks3-card)">
+    <div class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:56px 20px">
+      <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(30px,4vw,44px);letter-spacing:-.035em;line-height:1;max-width:22em">Three things a parent actually wants to know.</h2>
+      <div class="pb-three" id="three" style="margin-top:32px"></div>
+    </div>
+  </section>
+
+  <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:64px 20px">
+    <div class="pb-two" style="align-items:center">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">A week, not a syllabus</p>
+        <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(30px,4vw,44px);letter-spacing:-.035em;line-height:1">Set every Sunday. Done by Friday.</h2>
+        <p style="margin:16px 0 0;font-size:18px;color:var(--ks3-ink-body);text-wrap:pretty">Tell us which unit school is on and the first week is set that evening. Two sessions for most children; four or five for home educators. Twenty minutes each, on a phone or a laptop.</p>
+        <a id="cta-week" href="#" style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:17px">How a week runs <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <ul id="week" style="margin:0;padding:0;list-style:none;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);overflow:hidden"></ul>
+    </div>
+  </section>
+
+  <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:0 20px 64px">
+    <div style="padding:clamp(28px,4vw,48px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+      <div class="pb-two" style="align-items:center">
+        <div>
+          <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Who marks it</p>
+          <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(30px,4vw,44px);letter-spacing:-.035em;line-height:1">Every answer marked instantly. Two a month marked by me.</h2>
+          <p style="margin:16px 0 0;font-size:18px;color:var(--ks3-on-dark-body);text-wrap:pretty">I'm Mide Badmus. I've taught science in English secondary schools for twelve years and I mark for AQA. The instant marking uses the same mark schemes I do. Twice a month your child can send me an answer and I'll write back myself.</p>
+        </div>
+        <div id="creds" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:0 20px 80px">
+    <div class="pb-two">
+      <a id="card-homeed" href="#" style="display:block;padding:26px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);color:var(--ks3-ink);box-shadow:var(--ks3-shadow-block)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Home educating?</p>
+        <h3 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1.05">The whole scheme of work, with a report the council will accept.</h3>
+        <span style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ks3-accent-text)">For home educators <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+      <a id="card-pricing" href="#" style="display:block;padding:26px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);color:var(--ks3-ink);box-shadow:var(--ks3-shadow-block)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">One plan</p>
+        <h3 id="pricing-line" style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1.05">…</h3>
+        <span style="margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ks3-accent-text)">Pricing <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<div id="pb-footer"></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/index.html — the public home page. MRB-317 Night 3.
+
+   Design's `Public Home.dc.html`, transcribed. Her four `const` blocks
+   (HERO, THREE, WEEK, CREDS) are CURRICULUM AND MARKETING COPY, not app
+   data — there is no endpoint behind "twelve years teaching science" — so
+   they stay as constants here, which is where a copy change belongs.
+
+   ── THE TWO EXCEPTIONS ARE THE PRICES ──────────────────────────────────
+   Her file writes "£9.99 a month" twice, as literal text inside the
+   markup. Both are replaced by a read of `MrBadmusConsumer.pricing()`,
+   which reads the same `stripe.TIER` object the invoice is priced from.
+   Until it answers, both sentences show a single "…" rather than a number
+   nobody has confirmed. See the pricing note in consumer-common.js.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var esc = C.escapeHtml;
+
+  /* Design's marked answer: [text, credited]. Four of six hit — the card
+     has to show a REAL mark, part-right, because a 6/6 glimpse would be an
+     advert and a 0/6 would be a warning. */
+  var HERO = [
+    ['Vaccine contains dead or inactive pathogen', true],
+    ['White blood cells produce antibodies', true],
+    ['Antibodies are specific to the antigen', false],
+    ['Memory cells are retained', true],
+    ['Faster, larger response on reinfection', true],
+    ['Pathogen destroyed before symptoms develop', false]
+  ];
+
+  var THREE = [
+    { n: '1', q: 'Are they doing the work?', a: 'A seven-day strip shows which sessions were done and when. Not a login count: finished work.' },
+    { n: '2', q: 'Are they getting better?', a: 'Every unit ends in a timed check. Scores line up term by term so you can see the trend, and the weak spot is named.' },
+    { n: '3', q: 'Can I do anything?', a: 'Message them inside the app, set an extra ten-minute task before a test, or pause it all for a holiday.' }
+  ];
+
+  var WEEK = [
+    { day: 'Sun', title: 'Work set', sub: 'Matched to the unit school is on', mins: '' },
+    { day: 'Tue', title: 'Lesson', sub: 'Read, watch, answer as you go', mins: '20 min' },
+    { day: 'Thu', title: 'Quick questions', sub: 'Eight recall questions from earlier units', mins: '10 min' },
+    { day: 'Sun', title: 'Your email', sub: 'What got done, what the score was, what next', mins: '' }
+  ];
+
+  var CREDS = [
+    { n: '12', text: 'years teaching science in state secondaries' },
+    { n: 'AQA', text: 'examiner for GCSE Combined Science' },
+    { n: '3', text: 'school days, at most, before your child hears back from me' }
+  ];
+
+  C.boot({ public: true, run: function () {
+    P.chrome('home');
+
+    document.getElementById('cta-hero').href    = P.url('signUp');
+    document.getElementById('cta-how').href     = P.url('how');
+    document.getElementById('cta-week').href    = P.url('how');
+    document.getElementById('card-homeed').href = P.url('homeEd');
+    document.getElementById('card-pricing').href = P.url('pricing');
+
+    document.getElementById('hero-points').innerHTML = HERO.map(function (row) {
+      var text = row[0], ok = row[1];
+      return '<li style="display:flex;gap:10px;align-items:flex-start;color:' +
+        (ok ? 'var(--ks3-ink)' : 'var(--ks3-ink-muted)') + '">' +
+        '<span style="display:grid;place-items:center;flex:0 0 22px;height:22px;margin-top:1px;' +
+        'border-radius:7px;border:2px solid ' + (ok ? 'var(--ks3-ok)' : 'var(--ks3-rule-strong)') +
+        ';background:' + (ok ? 'var(--ks3-ok)' : 'var(--ks3-card)') + ';color:#fff">' +
+        (ok ? P.mark(P.PATH.tick, 'width:12px;height:12px') : '') +
+        '</span>' + esc(text) + '</li>';
+    }).join('');
+
+    document.getElementById('three').innerHTML = THREE.map(function (t) {
+      return '<div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-ground)">' +
+        '<span style="display:grid;place-items:center;width:40px;height:40px;border-radius:12px;' +
+        'border:2px solid var(--ks3-ink);background:var(--ks3-accent);font-family:var(--ks3-font-display);' +
+        'font-weight:800;font-size:18px">' + esc(t.n) + '</span>' +
+        '<h3 style="margin:16px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;' +
+        'letter-spacing:-.025em;line-height:1.1">' + esc(t.q) + '</h3>' +
+        '<p style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)">' + esc(t.a) + '</p></div>';
+    }).join('');
+
+    document.getElementById('week').innerHTML = WEEK.map(function (w) {
+      return '<li style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--ks3-rule)">' +
+        '<span style="flex:0 0 44px;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.06em;' +
+        'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(w.day) + '</span>' +
+        '<span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:17px">' +
+        esc(w.title) + '</span><span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' +
+        esc(w.sub) + '</span></span>' +
+        '<span style="font-family:var(--ks3-font-mono);font-size:13px;color:var(--ks3-ink-muted)">' +
+        esc(w.mins) + '</span></li>';
+    }).join('');
+
+    document.getElementById('creds').innerHTML = CREDS.map(function (c) {
+      return '<div style="display:flex;gap:12px;align-items:baseline;padding:14px 16px;border-radius:14px;' +
+        'background:var(--ks3-dark-panel);font-size:16px">' +
+        '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em;' +
+        'color:var(--ks3-alert)">' + esc(c.n) + '</span>' +
+        '<span style="color:var(--ks3-on-dark-body)">' + esc(c.text) + '</span></div>';
+    }).join('');
+
+    /* The prices. A failure here leaves both sentences at "…" and says so
+       under the pricing card rather than blanking the page — a home page
+       whose marketing copy renders but whose price is unknown is still a
+       usable home page. */
+    C.pricing().then(function (p) {
+      var m = C.price(p.tiers, 'month', 1);
+      if (!m) { return; }
+      document.getElementById('hero-price').textContent =
+        P.money(m.first) + ' a month after the free week. Cancel any time.';
+      document.getElementById('pricing-line').textContent =
+        P.money(m.first) + ' a month. ' + P.money(m.rest) +
+        ' for each extra child. Nothing else to buy.';
+    }).catch(function (e) {
+      console.error('[parents/home] pricing', e);
+      document.getElementById('hero-price').textContent =
+        'Prices are on the pricing page. Cancel any time.';
+      document.getElementById('pricing-line').textContent =
+        'One plan, priced per child. Nothing else to buy.';
+    });
+  }});
+})();
+</script>
+</body>
+</html>

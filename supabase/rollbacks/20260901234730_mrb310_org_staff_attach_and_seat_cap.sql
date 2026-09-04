@@ -1,0 +1,7 @@
+-- ROLLBACK for mrb310_org_staff_attach_and_seat_cap. Apply by hand only.
+-- ⚠️ Restores the Night 1 attach_child_to_family(): organisation staff can
+-- no longer add a pupil through the API, and the seat cap is no longer
+-- enforced anywhere (Admin can set it; nothing reads it at creation).
+-- Re-apply the function body from
+--   supabase/migrations/20260901214558_mrb308_child_accounts.sql
+-- (the `create or replace function public.attach_child_to_family` block).

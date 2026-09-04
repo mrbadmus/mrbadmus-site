@@ -1,0 +1,470 @@
+/* ══════════════════════════════════════════════════════════════════════
+   shared/seating.css — MRB-322 seating plans
+
+   Sits on top of shared/teacher-ds.css, which supplies the --st-* tokens,
+   the self-hosted faces (Bricolage Grotesque / Instrument Sans / DM Mono)
+   and the .btn / .chip / .eyebrow component classes. Nothing here redefines
+   a token; everything here reads one.
+
+   No Design delivery exists for this screen — Mide ruled that v1 is built
+   from the v3 dashboard's component language and that Design may pass over
+   it later. So the vocabulary is deliberately the dashboard's: paper cards
+   on the cream ground, hairline rules, a mono eyebrow above a Bricolage
+   title, and outline buttons that only appear when they can be pressed.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Page frame ─────────────────────────────────────────────────────── */
+
+html { background: var(--st-ground); }
+
+body.sp-body {
+  margin: 0;
+  background: var(--st-ground);
+  color: var(--st-ink);
+  font-family: var(--st-ui);
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 64px 0 72px;
+  -webkit-text-size-adjust: 100%;
+}
+
+nav.sp-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 20px;
+  background: var(--st-paper);
+  border-bottom: 1px solid var(--st-rule);
+}
+.sp-nav__right { display: flex; align-items: center; gap: 14px; }
+.sp-nav__link {
+  color: var(--st-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.sp-nav__link:hover { color: var(--st-accent-text); }
+
+.sp-wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+
+/* ── Page head ──────────────────────────────────────────────────────── */
+
+.sp-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 26px 0 16px;
+}
+.sp-head__eyebrow {
+  font-family: var(--st-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  margin: 0 0 6px;
+}
+.sp-head__title {
+  font-family: var(--st-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3.4vw, 2.05rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0;
+}
+.sp-head__sub {
+  color: var(--st-muted);
+  margin: 7px 0 0;
+  max-width: 56ch;
+}
+.sp-head__actions { display: flex; gap: 9px; flex-wrap: wrap; }
+
+/* ── Buttons ────────────────────────────────────────────────────────── */
+/* .btn comes from teacher-ds.css; these are the seating-specific sizes and
+   the touch floor. 40px is the minimum comfortable target on an iPad and
+   this screen is used on one, so it is a floor and not a suggestion. */
+
+.sp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 15px;
+  border-radius: var(--st-r-btn);
+  border: 1px solid var(--st-btn-border);
+  background: var(--st-paper);
+  color: var(--st-ink);
+  font-family: var(--st-ui);
+  font-weight: 600;
+  font-size: 0.87rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color .14s, background .14s, color .14s;
+}
+.sp-btn:hover { border-color: var(--st-rule-strong); background: var(--st-crumb-bg); }
+.sp-btn:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+.sp-btn--primary {
+  background: var(--st-accent);
+  border-color: var(--st-accent);
+  color: #fff;
+}
+.sp-btn--primary:hover { background: var(--st-hatch-b); border-color: var(--st-hatch-b); }
+.sp-btn--quiet { border-color: transparent; background: transparent; color: var(--st-muted); }
+.sp-btn--quiet:hover { background: var(--st-crumb-bg); color: var(--st-ink); }
+.sp-btn--danger:hover { border-color: var(--danger, #FF6B6B); color: var(--danger, #FF6B6B); }
+.sp-btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+/* ── Room filter strip ──────────────────────────────────────────────── */
+
+.sp-rooms {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  padding: 4px 0 18px;
+  border-bottom: 1px solid var(--st-rule);
+  margin-bottom: 20px;
+}
+.sp-room {
+  min-height: 36px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--st-rule);
+  background: var(--st-paper);
+  font-family: var(--st-mono);
+  font-size: 0.78rem;
+  color: var(--st-body);
+  cursor: pointer;
+}
+.sp-room:hover { border-color: var(--st-rule-strong); }
+.sp-room[aria-pressed="true"] {
+  background: var(--st-chip-tint);
+  border-color: var(--st-chip-tint-border);
+  color: var(--st-accent-text);
+  font-weight: 500;
+}
+.sp-room__n { color: var(--st-ghost); font-size: 0.72rem; }
+
+/* ── Layout cards ───────────────────────────────────────────────────── */
+
+.sp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
+  gap: 14px;
+}
+.sp-card {
+  background: var(--st-paper);
+  border: 1px solid var(--st-rule);
+  border-radius: var(--st-r-card);
+  padding: 14px 15px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.sp-card:hover { border-color: var(--st-rule-strong); }
+.sp-card:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+.sp-card__top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.sp-card__room {
+  font-family: var(--st-mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.sp-card__src {
+  font-family: var(--st-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--st-ghost);
+}
+.sp-card__name {
+  font-family: var(--st-display);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 0;
+}
+.sp-card__thumb {
+  aspect-ratio: 1.35;
+  border-radius: 8px;
+  border: 1px solid var(--st-rule-soft);
+  background: var(--st-paper-grid);
+  overflow: hidden;
+}
+.sp-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: var(--st-caption);
+  border-top: 1px solid var(--st-rule-fact);
+  padding-top: 8px;
+  margin-top: auto;
+}
+
+/* ── Empty + error states ───────────────────────────────────────────── */
+
+.sp-empty {
+  border: 1px dashed var(--st-note-border);
+  background: var(--st-note-bg);
+  border-radius: var(--st-r-card);
+  padding: 26px 24px;
+  text-align: center;
+  color: var(--st-body);
+}
+.sp-empty__title {
+  font-family: var(--st-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin: 0 0 6px;
+  color: var(--st-ink);
+}
+.sp-empty__body { margin: 0 auto 14px; max-width: 46ch; }
+
+.sp-note {
+  border: 1px solid var(--st-note-border);
+  background: var(--st-note-bg);
+  border-radius: var(--st-r-control);
+  padding: 11px 13px;
+  font-size: 0.86rem;
+  color: var(--st-body);
+  margin: 0 0 14px;
+}
+.sp-note--warn { border-color: var(--st-chip-tint-border); background: var(--st-chip-tint); }
+
+/* ── Studio: canvas + side panel ────────────────────────────────────── */
+
+.sp-studio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 286px;
+  gap: 16px;
+  align-items: start;
+}
+.sp-stage {
+  background: var(--st-paper);
+  border: 1px solid var(--st-rule);
+  border-radius: var(--st-r-frame);
+  padding: 12px;
+  min-height: 360px;
+  box-shadow: var(--st-shadow-frame);
+}
+.sp-side {
+  background: var(--st-paper);
+  border: 1px solid var(--st-rule);
+  border-radius: var(--st-r-card);
+  padding: 14px;
+  position: sticky;
+  top: 76px;
+  max-height: calc(100vh - 96px);
+  overflow: auto;
+}
+.sp-side__h {
+  font-family: var(--st-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  margin: 0 0 9px;
+}
+.sp-side__h + .sp-side__h { margin-top: 18px; }
+
+.sp-tools { display: flex; flex-wrap: wrap; gap: 7px; }
+.sp-tools .sp-btn { flex: 1 1 auto; min-width: 0; }
+
+/* ── Roster ─────────────────────────────────────────────────────────── */
+
+.sp-roster { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.sp-pupil {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--st-rule-soft);
+  border-radius: var(--st-r-chip);
+  background: var(--st-paper);
+  font-size: 0.86rem;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.sp-pupil:hover { border-color: var(--st-rule-strong); background: var(--st-crumb-bg); }
+.sp-pupil[aria-grabbed="true"] { border-color: var(--st-accent); background: var(--st-chip-tint); }
+.sp-pupil--seated { opacity: .42; }
+.sp-pupil__dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--st-accent); flex: none;
+}
+.sp-pupil--seated .sp-pupil__dot { background: var(--st-rule-strong); }
+
+.sp-count {
+  font-family: var(--st-mono);
+  font-size: 0.76rem;
+  color: var(--st-caption);
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0 10px;
+  border-bottom: 1px solid var(--st-rule-fact);
+  margin-bottom: 10px;
+}
+/* An unseated count is never hidden and never softened. 28 pupils in a room
+   with 26 chairs is a fact the teacher has to solve before the lesson, and
+   the screen's job is to say so plainly. */
+.sp-count__unseated { color: var(--st-accent-text); font-weight: 500; }
+.sp-count__unseated--none { color: var(--st-ghost); font-weight: 400; }
+
+/* ── File input for the photo path ──────────────────────────────────── */
+
+.sp-file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.sp-busy { display: flex; align-items: center; gap: 9px; color: var(--st-muted); font-size: 0.86rem; }
+.sp-spin {
+  width: 15px; height: 15px; flex: none;
+  border: 2px solid var(--st-rule-strong);
+  border-top-color: var(--st-accent);
+  border-radius: 50%;
+  animation: sp-spin .8s linear infinite;
+}
+@keyframes sp-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sp-spin { animation-duration: 2.4s; } }
+
+/* ── Narrow screens ─────────────────────────────────────────────────── */
+
+@media (max-width: 860px) {
+  .sp-studio { grid-template-columns: minmax(0, 1fr); }
+  .sp-side { position: static; max-height: none; }
+}
+@media (max-width: 460px) {
+  body.sp-body { padding-top: 60px; font-size: 14.5px; }
+  /* The nav is three links and a wordmark. At 390 it used to wrap "My classes"
+     and "Sign out" onto two lines each, which reads as a broken header rather
+     than a tight one. Tighten the gaps and let the row scroll instead. */
+  nav.sp-nav { padding: 9px 12px; }
+  .sp-nav__right { gap: 10px; }
+  .sp-nav__link, .sp-nav__right .sp-btn { white-space: nowrap; font-size: 0.8rem; }
+  .sp-nav__right .sp-btn { padding: 0 9px; }
+  /* and the stage should not reserve desk space the room does not use */
+  .sp-stage { min-height: 0; }
+  .sp-wrap { padding: 0 14px; }
+  .sp-head { padding: 20px 0 14px; }
+  .sp-head__actions { width: 100%; }
+  .sp-head__actions .sp-btn { flex: 1 1 auto; }
+  .sp-grid { grid-template-columns: minmax(0, 1fr); }
+  .sp-stage { padding: 8px; border-radius: var(--st-r-card); }
+  /* The tool row is the one place a 40px floor is not enough on its own —
+     at 390px the buttons need to wrap two-up rather than shrink below it. */
+  .sp-tools .sp-btn { flex: 1 1 46%; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   PRINT — A4 landscape, one room to a page
+
+   What a teacher carries to the lesson. Everything that is a control on
+   screen is gone; what is left is the room, the names, and the four facts
+   that say which room and which class this sheet is for.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.sp-printhead { display: none; }
+
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+@media print {
+  html, body.sp-body {
+    background: #fff;
+    padding: 0;
+    margin: 0;
+    font-size: 11pt;
+  }
+
+  /* Controls, navigation and anything that only exists to be pressed. */
+  nav.sp-nav,
+  .sp-head__actions,
+  .sp-rooms,
+  .sp-side,
+  .sp-note,
+  .sp-tools,
+  .sp-noprint { display: none !important; }
+
+  /* ONE ROOM, ONE PAGE — and the overflow guard is what makes that true.
+     A4 landscape inside a 10mm margin leaves 277 x 190mm. Sizing the plan by
+     arithmetic alone is not enough: a single pixel of overshoot anywhere gives
+     Chrome a second page, and a second page of a seating plan is a blank sheet
+     with a stray hairline on it. So the wrapper is capped at the page and
+     clips, and the stage is sized comfortably inside it. Measured, not
+     calculated — this was two pages until it was driven and counted. */
+  .sp-wrap {
+    max-width: none;
+    padding: 0;
+    max-height: 188mm;
+    overflow: hidden;
+  }
+  .sp-studio { display: block; break-inside: avoid; page-break-inside: avoid; }
+  .sp-head { display: none !important; }
+  #sp-main { margin: 0; }
+
+  .sp-stage {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    min-height: 0;
+    height: 166mm;
+  }
+  .sp-stage svg { width: 100%; height: 100%; }
+
+  .sp-printhead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12mm;
+    border-bottom: 0.4mm solid #333;
+    padding-bottom: 2mm;
+    margin-bottom: 4mm;
+  }
+  .sp-printhead__main {
+    font-family: var(--st-display);
+    font-weight: 700;
+    font-size: 15pt;
+    color: #000;
+  }
+  .sp-printhead__room { font-family: var(--st-mono); font-weight: 500; }
+  .sp-printhead__meta {
+    font-family: var(--st-mono);
+    font-size: 8.5pt;
+    color: #333;
+    text-align: right;
+    line-height: 1.45;
+  }
+
+  /* Ink economy and legibility: seat fills go to white with a real border,
+     and every name prints black. A pale token that reads well on cream is
+     not necessarily a name a teacher can read at arm's length on paper. */
+  .sp-stage svg text { fill: #000 !important; }
+  .sp-stage svg .sc-seat-dot { fill: #fff !important; stroke: #444 !important; }
+  .sp-stage svg .sc-seat-label { fill: #000 !important; }
+  .sp-stage svg .sc-desk-shape { fill: #fff !important; stroke: #222 !important; }
+  .sp-stage svg .sc-teacher-shape { fill: #EEE !important; stroke: #222 !important; }
+  .sp-stage svg .sc-teacher-label { fill: #000 !important; }
+  .sp-stage svg .sc-front-bar { fill: #222 !important; }
+  .sp-stage svg .sc-front-label { fill: #fff !important; }
+  .sp-stage svg .sc-room { stroke: #666 !important; }
+  .sp-stage svg .sc-layer-handles,
+  .sp-stage svg .sc-layer-ghost,
+  .sp-stage svg .sc-handle,
+  .sp-stage svg .sc-handle-hit { display: none !important; }
+
+}

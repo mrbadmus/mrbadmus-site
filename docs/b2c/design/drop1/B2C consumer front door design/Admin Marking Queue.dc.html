@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#15110C}
+a{color:#F4B860;text-decoration:none}a:hover{color:#F6EEDF}
+input,textarea,button,select{font:inherit}
+textarea::placeholder,input::placeholder{color:#8A7F72}
+.ad-shell{display:grid;grid-template-columns:1fr}
+.ad-list{display:none}
+@media (min-width:1000px){
+  .ad-shell{grid-template-columns:360px 1fr;min-height:calc(100vh - 66px)}
+  .ad-list{display:flex!important}
+  .ad-mlist{display:none!important}
+}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--st-room);color:var(--st-room-text);font-family:var(--ks3-font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<header style="display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--ks3-dark-rule);background:var(--st-room-panel)">
+  <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="24px,24px"></x-import>
+  <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">MrBadmus</span>
+  <span style="padding:3px 9px;border:1px solid var(--ks3-dark-rule);border-radius:99px;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--st-ember)">Admin</span>
+  <nav style="margin-left:24px;display:flex;gap:18px;font-weight:600;font-size:15px">
+    <span style="color:var(--st-room-text);border-bottom:2px solid var(--st-ember);padding-bottom:2px">Marking</span>
+    <a href="Admin Accounts.dc.html" style="color:var(--ks3-on-dark-muted)">Accounts</a>
+  </nav>
+  <span style="margin-left:auto;font-size:14px;color:var(--ks3-on-dark-muted)">Mide · <a href="#">Sign out</a></span>
+</header>
+
+<div class="ad-shell">
+  <!-- QUEUE -->
+  <aside class="ad-list" style="flex-direction:column;border-right:1px solid var(--ks3-dark-rule);background:var(--st-room-panel)">
+    <div style="padding:20px 20px 12px">
+      <div style="display:flex;align-items:baseline;gap:10px"><h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:26px;letter-spacing:-.03em">Queue</h1><span style="font-family:var(--ks3-font-mono);font-size:13px;color:var(--ks3-on-dark-muted)">{{ queueCount }} waiting</span></div>
+      <div style="margin-top:12px;display:flex;gap:6px">
+        <sc-for list="{{ sorts }}" as="s" hint-placeholder-count="3"><button onClick="{{ s.pick }}" aria-pressed="{{ s.on }}" style="padding:6px 12px;border:1px solid {{ s.border }};border-radius:99px;background:{{ s.bg }};font-weight:600;font-size:13px;color:var(--st-room-text);cursor:pointer">{{ s.label }}</button></sc-for>
+      </div>
+    </div>
+    <div style="flex:1;overflow:auto;display:flex;flex-direction:column">
+      <sc-if value="{{ queueEmpty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:40px 20px;text-align:center;color:var(--ks3-on-dark-muted)">Queue clear. Nothing older than today.</p></sc-if>
+      <sc-for list="{{ queue }}" as="q" hint-placeholder-count="6">
+        <button onClick="{{ q.open }}" style="text-align:left;padding:14px 20px;border:0;border-top:1px solid var(--ks3-dark-rule);border-left:3px solid {{ q.accent }};background:{{ q.bg }};color:var(--st-room-text);cursor:pointer">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ks3-on-dark-muted)"><span style="font-weight:700;color:var(--st-room-text)">{{ q.child }}</span><span>Y{{ q.year }}</span><span style="margin-left:auto;font-family:var(--ks3-font-mono);color:{{ q.ageColor }}">{{ q.age }}</span></div>
+          <p style="margin:6px 0 0;font-size:15px;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">{{ q.question }}</p>
+          <div style="margin-top:6px;display:flex;gap:8px;font-family:var(--ks3-font-mono);font-size:12px;color:var(--ks3-on-dark-muted)"><span>{{ q.marks }} marks</span><span>· instant {{ q.ai }}</span><sc-if value="{{ q.org }}" hint-placeholder-val="{{ false }}"><span>· {{ q.org }}</span></sc-if></div>
+        </button>
+      </sc-for>
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid var(--ks3-dark-rule);font-size:13px;color:var(--ks3-on-dark-muted)">Marked today: <strong style="color:var(--st-room-text)">{{ markedToday }}</strong> · Oldest: <strong style="color:var(--st-room-text)">{{ oldest }}</strong> · SLA 3 school days</div>
+  </aside>
+
+  <!-- MOBILE QUEUE SELECT -->
+  <div class="ad-mlist" style="padding:14px 20px;border-bottom:1px solid var(--ks3-dark-rule);display:flex;gap:10px;align-items:center">
+    <select onChange="{{ mobilePick }}" value="{{ currentId }}" style="flex:1;min-height:42px;padding:0 10px;border:1px solid var(--ks3-dark-rule);border-radius:10px;background:var(--st-room-panel);color:var(--st-room-text);font-size:14px">
+      <sc-for list="{{ queue }}" as="q" hint-placeholder-count="3"><option value="{{ q.id }}">{{ q.child }} · {{ q.age }} · {{ q.short }}</option></sc-for>
+    </select>
+  </div>
+
+  <!-- MARKING PANE -->
+  <main style="padding:clamp(20px,3vw,40px);max-width:920px;width:100%;box-sizing:border-box;justify-self:center">
+    <sc-if value="{{ hasCurrent }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:14px;color:var(--ks3-on-dark-muted)">
+        <span style="display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--ks3-accent);color:var(--ks3-ink);font-family:var(--ks3-font-display);font-weight:800;font-size:15px">{{ cur.initial }}</span>
+        <span><strong style="color:var(--st-room-text);font-size:16px">{{ cur.child }}</strong> · Year {{ cur.year }} · {{ cur.mode }} · sent {{ cur.sentAt }}</span>
+        <a href="#" style="margin-left:auto;font-size:14px">Previous answers ({{ cur.prevCount }})</a>
+      </div>
+      <p style="margin:18px 0 0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">{{ cur.topic }} · {{ cur.marks }} marks · {{ cur.board }}</p>
+      <h2 style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(22px,2.4vw,28px);line-height:1.2;letter-spacing:-.03em">{{ cur.question }}</h2>
+
+      <div style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start">
+        <section style="padding:18px 20px;border:1px solid var(--ks3-dark-rule);border-radius:16px;background:var(--st-room-panel)">
+          <p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">{{ cur.child }} wrote</p>
+          <p style="margin:10px 0 0;font-size:17px;line-height:1.65;color:var(--st-room-text);white-space:pre-wrap">{{ cur.answer }}</p>
+        </section>
+        <section style="padding:18px 20px;border:1px solid var(--ks3-dark-rule);border-radius:16px;background:var(--st-room-panel)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">Mark scheme · instant mark {{ cur.ai }}</p><span style="font-family:var(--ks3-font-display);font-weight:800;font-size:26px;letter-spacing:-.03em">{{ myScore }}<span style="font-size:15px;color:var(--ks3-on-dark-muted)">/{{ cur.marks }}</span></span></div>
+          <ul style="margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px">
+            <sc-for list="{{ points }}" as="p" hint-placeholder-count="6">
+              <li><button onClick="{{ p.toggle }}" aria-pressed="{{ p.onStr }}" style="width:100%;display:flex;gap:12px;align-items:flex-start;text-align:left;padding:10px 12px;border:1px solid {{ p.border }};border-radius:12px;background:{{ p.bg }};color:var(--st-room-text);font-size:15px;line-height:1.45;cursor:pointer">
+                <span style="display:grid;place-items:center;flex:0 0 24px;height:24px;margin-top:1px;border-radius:7px;border:2px solid {{ p.markBorder }};background:{{ p.markBg }};color:#fff"><sc-if value="{{ p.on }}" hint-placeholder-val="{{ false }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:13px;height:13px"><path d="M5 12.5l4.5 4.5L19 7"/></svg></sc-if></span>
+                <span style="flex:1">{{ p.text }}</span>
+                <sc-if value="{{ p.aiDiff }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--ks3-font-mono);font-size:11px;color:var(--st-ember);white-space:nowrap">{{ p.aiDiff }}</span></sc-if>
+              </button></li>
+            </sc-for>
+          </ul>
+          <p style="margin:10px 0 0;font-size:13px;color:var(--ks3-on-dark-muted)">Tap a point to award or remove it. Starts from the instant mark.</p>
+        </section>
+      </div>
+
+      <section style="margin-top:16px;padding:18px 20px;border:1px solid var(--ks3-dark-rule);border-radius:16px;background:var(--st-room-panel)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">Your note to {{ cur.child }}</p>
+        <textarea value="{{ note }}" onChange="{{ setNote }}" rows="4" placeholder="Two or three lines. What they did right, then the one thing to change." style="margin-top:10px;display:block;width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid var(--ks3-dark-rule);border-radius:12px;background:var(--st-room);color:var(--st-room-text);font-size:16px;line-height:1.5;resize:vertical"></textarea>
+        <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">
+          <sc-for list="{{ snippets }}" as="sn" hint-placeholder-count="4"><button onClick="{{ sn.use }}" style="padding:6px 12px;border:1px solid var(--ks3-dark-rule);border-radius:99px;background:none;font-size:13px;color:var(--ks3-on-dark-body);cursor:pointer">{{ sn.label }}</button></sc-for>
+        </div>
+        <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <button onClick="{{ send }}" disabled="{{ sendDisabled }}" style="min-height:48px;padding:0 22px;border:2px solid var(--ks3-accent);border-radius:14px;background:var(--ks3-accent);color:var(--ks3-ink);font-weight:700;font-size:16px;cursor:pointer;opacity:{{ sendOpacity }}">Send mark · {{ myScore }}/{{ cur.marks }}</button>
+          <button onClick="{{ skip }}" style="min-height:48px;padding:0 16px;border:1px solid var(--ks3-dark-rule);border-radius:14px;background:none;color:var(--st-room-text);font-weight:600;font-size:15px;cursor:pointer">Skip for now</button>
+          <span style="margin-left:auto;font-size:13px;color:var(--ks3-on-dark-muted)">Sends to {{ cur.child }} and emails {{ cur.parent }}.</span>
+        </div>
+      </section>
+    </sc-if>
+    <sc-if value="{{ queueEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:60px 20px;text-align:center"><p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;letter-spacing:-.03em">All marked.</p><p style="margin:8px 0 0;color:var(--ks3-on-dark-muted)">{{ markedToday }} today. The queue refills as children send answers.</p></div>
+    </sc-if>
+  </main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+const SCHEMES = {
+  vacc: ['Vaccine contains dead or inactive pathogen', 'White blood cells (lymphocytes) produce antibodies', 'Antibodies are specific to the antigen', 'Memory cells are retained', 'Faster, larger response on reinfection', 'Pathogen destroyed before symptoms develop'],
+  rate: ['Particles gain kinetic energy', 'Particles move faster', 'More frequent collisions', 'More particles have energy ≥ activation energy', 'Greater proportion of collisions are successful', 'So rate increases'],
+  car: ['Loaded car has greater mass', 'Force = mass × acceleration', 'For the same acceleration, force must increase', 'Resultant force must be larger'],
+  ball: ['Before: gravitational potential store', 'Transferred to kinetic store during fall', 'Kinetic increases as GPE decreases', 'On impact: thermal store of ball/ground', 'Some to surroundings by sound', 'Total energy conserved'],
+};
+const QUEUE = [
+  { id: 'm1', child: 'Amara', year: 9, mode: 'Alongside school', parent: 'Funmi', board: 'KS3 · bridging', topic: 'Health and disease', marks: 6, scheme: 'vacc', hours: 51, question: 'Explain how vaccination protects a person from a disease they have never had.', answer: 'A vaccine has a dead or weak pathogen in it. White blood cells make antibodies to fight it. Then if the real one comes the body remembers and makes antibodies faster so you don\u2019t get ill.', aiHits: [true, true, false, true, true, false], prevCount: 3 },
+  { id: 'm2', child: 'Kwame', year: 10, mode: 'Brookfield Tuition Centre', org: 'Brookfield', parent: 'Ms Okafor', board: 'AQA · Combined · Higher', topic: 'Rates of reaction', marks: 6, scheme: 'rate', hours: 38, question: 'Explain how increasing the temperature changes the rate of a reaction.', answer: 'When its hotter the particles have more energy and move faster so they collide more often. More of the collisions have enough energy so more of them react and the rate goes up.', aiHits: [true, true, true, false, true, true], prevCount: 1 },
+  { id: 'm3', child: 'Leo', year: 7, mode: 'Home education', parent: 'Funmi', board: 'KS3', topic: 'Forces and motion', marks: 4, scheme: 'car', hours: 20, question: 'Explain why a car needs a larger force to accelerate when it is fully loaded.', answer: 'Because it is heavier so it needs more force to get it going.', aiHits: [true, false, false, false], prevCount: 0 },
+  { id: 'm4', child: 'Zainab', year: 11, mode: 'Alongside school', parent: 'Hassan', board: 'Edexcel · Triple · Higher', topic: 'Energy stores', marks: 6, scheme: 'ball', hours: 6, question: 'Compare the energy stores before and after a ball is dropped and comes to rest on the ground.', answer: 'Before it is dropped the ball has gravitational potential energy. As it falls this becomes kinetic energy, the GPE goes down and KE goes up. When it hits the ground the energy goes to the thermal store of the ball and ground and some as sound to the surroundings. The total energy stays the same because energy is conserved.', aiHits: [true, true, true, true, true, true], prevCount: 5 },
+  { id: 'm5', child: 'Tom', year: 8, mode: 'Brookfield Tuition Centre', org: 'Brookfield', parent: 'Ms Okafor', board: 'KS3', topic: 'Forces and motion', marks: 4, scheme: 'car', hours: 3, question: 'Explain why a car needs a larger force to accelerate when it is fully loaded.', answer: 'F = ma. The loaded car has more mass so for the same acceleration you need more force.', aiHits: [true, true, true, false], prevCount: 2 },
+];
+const SNIPPETS = [{ label: 'Agree with instant mark', text: 'Agree with the instant mark. ' }, { label: 'Name the term', text: 'Name things. The marks are on the nouns. ' }, { label: 'Finish the sentence', text: 'You stop one sentence early. End every explanation with the "so what". ' }, { label: 'Quote the equation', text: 'Quote the equation first, then use it. ' }];
+const age = (h) => (h < 24 ? `${h}h` : `${Math.floor(h / 24)}d ${h % 24}h`);
+class Component extends DCLogic {
+  state = { sort: 'oldest', currentId: 'm1', hits: {}, notes: {}, done: [], markedToday: 4 };
+  hitsFor(q) { return this.state.hits[q.id] || q.aiHits.slice(); }
+  renderVals() {
+    const s = this.state;
+    let queue = QUEUE.filter((q) => !s.done.includes(q.id));
+    if (s.sort === 'oldest') queue = queue.slice().sort((a, b) => b.hours - a.hours); else if (s.sort === 'newest') queue = queue.slice().sort((a, b) => a.hours - b.hours); else queue = queue.slice().sort((a, b) => (a.org ? 0 : 1) - (b.org ? 0 : 1) || b.hours - a.hours);
+    const cur = queue.find((q) => q.id === s.currentId) || queue[0];
+    const hits = cur ? this.hitsFor(cur) : [];
+    const myScore = hits.filter(Boolean).length;
+    const note = cur ? s.notes[cur.id] || '' : '';
+    return {
+      brandSize: 24, queueCount: queue.length, queueEmpty: queue.length === 0, hasCurrent: !!cur, currentId: cur ? cur.id : '',
+      sorts: [{ id: 'oldest', label: 'Oldest first' }, { id: 'newest', label: 'Newest' }, { id: 'org', label: 'Organisations' }].map((x) => ({ ...x, on: String(s.sort === x.id), border: s.sort === x.id ? 'var(--st-ember)' : 'var(--ks3-dark-rule)', bg: s.sort === x.id ? 'var(--ks3-dark-panel)' : 'transparent', pick: () => this.setState({ sort: x.id }) })),
+      queue: queue.map((q) => ({ ...q, short: q.topic, age: age(q.hours), ageColor: q.hours > 48 ? 'var(--st-ember)' : 'var(--ks3-on-dark-muted)', ai: `${q.aiHits.filter(Boolean).length}/${q.marks}`, org: q.org || '', accent: cur && q.id === cur.id ? 'var(--st-ember)' : q.hours > 48 ? 'var(--ks3-accent)' : 'transparent', bg: cur && q.id === cur.id ? 'var(--ks3-dark-panel)' : 'transparent', open: () => this.setState({ currentId: q.id }) })),
+      mobilePick: (e) => this.setState({ currentId: e.target.value }),
+      markedToday: s.markedToday, oldest: queue.length ? age(Math.max(...queue.map((q) => q.hours))) : '–',
+      cur: cur ? { ...cur, initial: cur.child[0], sentAt: age(cur.hours) + ' ago', ai: `${cur.aiHits.filter(Boolean).length}/${cur.marks}` } : {},
+      points: cur ? SCHEMES[cur.scheme].map((text, i) => { const on = hits[i]; const ai = cur.aiHits[i]; return { text, on, onStr: String(on), aiDiff: on !== ai ? (on ? 'you +1' : 'you −1') : '', border: on ? 'var(--ks3-ok)' : 'var(--ks3-dark-rule)', bg: on ? 'rgba(46,155,95,.12)' : 'transparent', markBorder: on ? 'var(--ks3-ok)' : 'var(--ks3-on-dark-muted)', markBg: on ? 'var(--ks3-ok)' : 'transparent', toggle: () => { const h = hits.slice(); h[i] = !h[i]; this.setState({ hits: { ...s.hits, [cur.id]: h } }); } }; }) : [],
+      myScore, note, setNote: (e) => this.setState({ notes: { ...s.notes, [cur.id]: e.target.value } }),
+      snippets: SNIPPETS.map((sn) => ({ ...sn, use: () => this.setState({ notes: { ...s.notes, [cur.id]: (note ? note.replace(/\s*$/, ' ') : '') + sn.text } }) })),
+      sendDisabled: note.trim().length < 10, sendOpacity: note.trim().length < 10 ? 0.45 : 1,
+      send: () => { if (note.trim().length < 10 || !cur) return; const next = queue.find((q) => q.id !== cur.id); this.setState({ done: [...s.done, cur.id], markedToday: s.markedToday + 1, currentId: next ? next.id : '' }); },
+      skip: () => { const i = queue.findIndex((q) => q.id === cur.id); const next = queue[(i + 1) % queue.length]; this.setState({ currentId: next.id }); },
+    };
+  }
+}
+</script>
+</body>
+</html>

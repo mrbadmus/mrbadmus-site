@@ -2159,7 +2159,19 @@
       screen: screen || "classes",
       classId: classId,
       studentId: params.studentId || null,
-      paperIdx: paperIndex(params.paperIdx)
+      paperIdx: paperIndex(params.paperIdx),
+
+      /* ⊕ Mide, 4 Sep 2026 — MRB-304's top-bar "My classes" button no longer
+         shows on classes.html itself. It used to, on every one of the six
+         screens including this one, deliberately (see teacher_rulings.py's
+         INSERT_AT[(10,13)]): a control that appears and disappears by screen
+         was judged harder to learn than one that is always there. In
+         practice it sat right beside the crumb, which ALREADY reads "My
+         classes" on this one screen — two controls saying the same thing,
+         one of them re-entering the page it's already on. Mide's call to
+         drop the duplicate rather than the crumb: the crumb is the one that
+         answers "where am I", which classes.html still needs on its own. */
+      showClassesLink: (screen || "classes") !== "classes"
     };
   }
 
@@ -2226,6 +2238,32 @@
       onAllowed: async function (ctx) {
         guardStarted = true;
         clearTimeout(guardTimer);
+
+        /* ⊕ THE URL, PARSED ONCE, IN THE SCOPE THAT READS IT TWICE.
+           ⛔ THIS WAS A LIVE CRASH, and it took every class screen down.
+           `q` used to be declared INSIDE the `withDeadline` callback below,
+           which is its own function scope — so `drawRemindControl(data,
+           q.get("class"), ctx)` after the mount, added by MRB-306 WS-3,
+           referenced a name that does not exist there. `ReferenceError: q is
+           not defined`, thrown inside the try that ends in `say(SAY.generic)`,
+           so a teacher opening any class saw "Your classes could not be
+           loaded" on a page whose data had ALL arrived and whose mount had
+           ALREADY succeeded.
+
+           ⚠️ IT LOOKED LIKE A DATA BUG AND IT IS NOT ONE. The throw is after
+           `__MRB_MOUNT__()`, and it is gated on `screenFromLocation() ===
+           "class"` — nothing else. It could not touch `classes.html`, and a
+           class with no students never reached it either, because that card
+           routes to the IMPORT screen (`MRB_GO(c.n > 0 ? 'class' : 'import')`).
+           Those two facts together read from outside as "only classes with
+           students break", which is a sentence about the roster and points at
+           the wrong file entirely.
+
+           Hoisted rather than re-parsed: two `new URLSearchParams` of the same
+           string is two answers to one question, and this is the question
+           `selectedYearId` is set from. */
+        var q = new URLSearchParams(window.location.search);
+
         try {
           var data = await withDeadline(30000, async function () {
             // The teacher's own name, from the profile the guard already
@@ -2239,8 +2277,8 @@
 
             /* ⊕ MRB-287 E1 — THE YEAR IS RESOLVED BEFORE THE FIRST ROW IS
                ASKED FOR, because `base()` scopes every read by it. A bare URL
-               leaves this null and `pickYear` returns the working year. */
-            var q = new URLSearchParams(window.location.search);
+               leaves this null and `pickYear` returns the working year.
+               `q` is parsed one scope out — see the note above it. */
             selectedYearId = q.get("year") || null;
 
             var c = await base();

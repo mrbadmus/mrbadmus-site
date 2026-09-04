@@ -957,16 +957,36 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
     # than listed here, so an addition cannot be made without this gate
     # pressing it. `page` is the screen name; the register's `pages` names the
     # emitted filenames — ⊕ MRB-304, always a tuple, because the "My classes"
-    # link in the top bar is chrome and is on all six.
+    # link in the top bar is chrome and is COMPILED into all six.
     # ⚠️ AND `needs_data` ADDITIONS ARE NOT EXPECTED ON THE EMPTY FIXTURE.
     # The four shoutout-delete controls hang off a feed row; the empty
     # class-detail shape is a class with no roster and `FEED[cid] == []`, so
     # there is nothing to remove and correctly nothing to press. Demanding
     # them there would be demanding a delete button on an empty feed. They
     # are still pressed, by name, on the populated fixture.
+    # ⊕ Mide, 4 Sep 2026 — AND `runtime_hidden_on` ADDITIONS ARE NOT EXPECTED
+    # ON THE SCREENS THEY NAME. `nav-classes` compiles into classes.html
+    # (build_teacher_port.py's byte check demands it does) but is wrapped in
+    # `if showClassesLink`, false only there — the crumb beside it already
+    # says "My classes". `querySelector` finds nothing an `if` didn't render,
+    # so without this the classes fixture would report the control GONE, the
+    # same failure this file reports for markup a page never should have had.
     added_here = [a["marker"] for a in R.AMENDED_ADDITIONS
                   if page + ".html" in a["pages"]
-                  and not (is_empty and a.get("needs_data"))]
+                  and not (is_empty and a.get("needs_data"))
+                  # ⊕ FROM main, 4 Sep 2026 — an addition the RUNTIME hides
+                  # on a given page is not expected in its DOM there. It is a
+                  # different question from `needs_write` below, which
+                  # asserts an ABSENCE rather than excusing one, so both
+                  # filters apply and both are kept.
+                  # ⚠️ NO ADDITION CARRIES IT ON THE MERGED TREE. Its only
+                  # user was `nav-classes`, retired by the v3 port because
+                  # Design's own `navTabs` strip draws that control — see
+                  # the note at `teacher_rulings.INSERT_AT[(10, 13)]`. The
+                  # filter stays because the QUESTION it answers is a real
+                  # one that will recur, and because a `.get()` with a
+                  # default cannot misfire on a register that never sets it.
+                  and page + ".html" not in a.get("runtime_hidden_on", ())]
     # ⊕ RULED BY MIDE, 3 Sep 2026 — THE WRITE CONTROLS, AND THE YEAR THEY
     # MAY NOT APPEAR ON. `needs_write` names an addition that exists only
     # where `canWrite` is true: MRB-261 makes a finished academic year

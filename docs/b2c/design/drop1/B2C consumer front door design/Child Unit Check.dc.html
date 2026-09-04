@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408;text-decoration:underline}
+input,button{font:inherit}
+input::placeholder{color:#9A8F86}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:19px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<header style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+  <sc-if value="{{ notRunning }}" hint-placeholder-val="{{ true }}">
+    <a href="Child Today.dc.html" aria-label="Back to today" style="display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;border-radius:12px;color:var(--ks3-ink)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg></a>
+  </sc-if>
+  <span style="flex:1;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">Unit check</span>
+  <sc-if value="{{ isRun }}" hint-placeholder-val="{{ false }}">
+    <span style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:99px;border:2px solid {{ timerBorder }};background:{{ timerBg }};font-family:var(--ks3-font-mono);font-size:15px;font-weight:500;color:{{ timerFg }}">
+      <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M10 3h4"/></svg>{{ timer }}
+    </span>
+  </sc-if>
+</header>
+
+<main style="max-width:600px;margin:0 auto;padding:26px 20px 80px">
+
+<!-- START -->
+<sc-if value="{{ isStart }}" hint-placeholder-val="{{ true }}">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ unit.subject }} · Year {{ unit.year }}</p>
+  <h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:42px;line-height:.98;letter-spacing:-.035em">{{ unit.name }}</h1>
+  <div style="margin-top:22px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+    <div style="padding:14px;border:2px solid var(--ks3-ink);border-radius:16px;background:var(--ks3-card);text-align:center"><div style="font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.02em;line-height:1">{{ unit.count }}</div><div style="margin-top:4px;font-size:14px;color:var(--ks3-ink-muted)">questions</div></div>
+    <div style="padding:14px;border:2px solid var(--ks3-ink);border-radius:16px;background:var(--ks3-card);text-align:center"><div style="font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.02em;line-height:1">{{ unit.minutes }}</div><div style="margin-top:4px;font-size:14px;color:var(--ks3-ink-muted)">minutes</div></div>
+    <div style="padding:14px;border:2px solid var(--ks3-ink);border-radius:16px;background:var(--ks3-card);text-align:center"><div style="font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.02em;line-height:1">{{ unit.lessons }}</div><div style="margin-top:4px;font-size:14px;color:var(--ks3-ink-muted)">lessons covered</div></div>
+  </div>
+
+  <sc-if value="{{ alreadyTaken }}" hint-placeholder-val="{{ false }}">
+    <div style="margin-top:22px;padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">You took this on {{ prev.date }}</p>
+      <p style="margin:6px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;letter-spacing:-.03em;line-height:1">{{ prev.pct }}</p>
+      <p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">That score is in your record and your personal best. A second go is practice: it shows in your own history, not in the record.</p>
+      <button onClick="{{ viewPrev }}" style="margin-top:12px;border:0;background:none;padding:0;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">See the breakdown</button>
+    </div>
+  </sc-if>
+
+  <div style="margin-top:22px;padding:20px 22px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:6px 6px 0 var(--ks3-accent)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Before you start</p>
+    <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:17px;color:var(--ks3-on-dark-body)">
+      <li style="display:flex;gap:10px"><span style="color:var(--ks3-alert)">1</span>The clock runs from the first question and doesn't pause.</li>
+      <li style="display:flex;gap:10px"><span style="color:var(--ks3-alert)">2</span>You can go back and change answers until you hand in.</li>
+      <li style="display:flex;gap:10px"><span style="color:var(--ks3-alert)">3</span>No notes. It's checking what stuck, not what you can find.</li>
+    </ul>
+  </div>
+  <button onClick="{{ start }}" style="margin-top:22px;width:100%;min-height:58px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:20px;cursor:pointer">{{ startLabel }}</button>
+</sc-if>
+
+<!-- RUN -->
+<sc-if value="{{ isRun }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:5px">
+    <sc-for list="{{ progress }}" as="p" hint-placeholder-count="10">
+      <button onClick="{{ p.jump }}" aria-label="{{ p.aria }}" style="flex:1;height:8px;border:0;border-radius:4px;background:{{ p.bg }};cursor:pointer;padding:0"></button>
+    </sc-for>
+  </div>
+  <p style="margin:18px 0 0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Question {{ qNum }} of {{ unit.count }} · {{ cur.topic }}</p>
+  <h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;line-height:1.2;letter-spacing:-.03em">{{ cur.text }}</h1>
+
+  <sc-if value="{{ cur.isChoice }}" hint-placeholder-val="{{ true }}">
+    <ul class="ks3-options" style="margin-top:20px">
+      <sc-for list="{{ cur.options }}" as="o" hint-placeholder-count="4">
+        <li><button class="ks3-option" aria-pressed="{{ o.on }}" onClick="{{ o.pick }}"><span class="ks3-opt-mark">{{ o.letter }}</span><span class="ks3-opt-label">{{ o.text }}</span></button></li>
+      </sc-for>
+    </ul>
+  </sc-if>
+  <sc-if value="{{ cur.isShort }}" hint-placeholder-val="{{ false }}">
+    <input value="{{ cur.typed }}" onChange="{{ cur.type }}" placeholder="Type your answer" autocomplete="off" style="margin-top:20px;display:block;width:100%;box-sizing:border-box;min-height:56px;padding:12px 16px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:20px;color:var(--ks3-ink)">
+    <sc-if value="{{ cur.unit }}" hint-placeholder-val="{{ false }}"><p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Give your answer in {{ cur.unit }}.</p></sc-if>
+  </sc-if>
+
+  <div style="margin-top:26px;display:flex;gap:10px">
+    <button onClick="{{ prev }}" disabled="{{ isFirst }}" style="min-height:52px;padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:16px;color:var(--ks3-ink);cursor:pointer;opacity:{{ prevOpacity }}">Back</button>
+    <sc-if value="{{ notLast }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ next }}" style="flex:1;min-height:52px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">{{ nextLabel }}</button>
+    </sc-if>
+    <sc-if value="{{ isLast }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ finish }}" style="flex:1;min-height:52px;border:2px solid var(--ks3-accent-text);border-radius:var(--ks3-r-control);background:var(--ks3-accent-text);color:#fff;font-weight:700;font-size:17px;cursor:pointer">Hand in</button>
+    </sc-if>
+  </div>
+  <sc-if value="{{ hasSkipped }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:14px 0 0;font-size:15px;color:var(--ks3-ink-muted);text-align:center">{{ skippedNote }}</p>
+  </sc-if>
+</sc-if>
+
+<!-- RESULT -->
+<sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ unit.name }} · {{ resultTime }}</p>
+  <div class="ks3-ladder" style="margin-top:12px;padding:26px 24px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Your score</p>
+        <p style="margin:4px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:64px;line-height:.95;letter-spacing:-.04em">{{ pct }}</p>
+        <p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-muted)">{{ scoreLine }}</p>
+      </div>
+      <sc-if value="{{ isBest }}" hint-placeholder-val="{{ false }}">
+        <span style="padding:8px 14px;border-radius:99px;border:2px solid var(--ks3-ok);background:var(--ks3-ok-tint);font-weight:700;font-size:14px;color:var(--ks3-ok-text)">Personal best</span>
+      </sc-if>
+    </div>
+    <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ breakdown }}" as="b" hint-placeholder-count="4">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:600"><span>{{ b.topic }}</span><span style="font-family:var(--ks3-font-mono);font-weight:500;color:var(--ks3-ink-muted)">{{ b.frac }}</span></div>
+          <div style="margin-top:6px;height:12px;border:2px solid var(--ks3-ink);border-radius:99px;background:var(--ks3-card);overflow:hidden"><div style="height:100%;width:{{ b.w }};background:{{ b.bg }}"></div></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="margin-top:18px;padding:20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-alert-tint)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-alert-text)">Work on next</p>
+    <p style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;letter-spacing:-.02em;line-height:1.15">{{ weak.topic }}</p>
+    <p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">{{ weak.note }}</p>
+  </div>
+
+  <h2 style="margin:28px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;letter-spacing:-.025em">Question by question</h2>
+  <ul style="margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ review }}" as="r" hint-placeholder-count="10">
+      <li style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:2px solid {{ r.border }};border-radius:16px;background:{{ r.bg }}">
+        <span style="display:grid;place-items:center;flex:0 0 28px;height:28px;border-radius:9px;border:2px solid var(--ks3-ink);background:{{ r.markBg }};color:{{ r.markFg }}">
+          <sc-if value="{{ r.ok }}" hint-placeholder-val="{{ true }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M5 12.5l4.5 4.5L19 7"/></svg></sc-if>
+          <sc-if value="{{ r.miss }}" hint-placeholder-val="{{ false }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M6 6l12 12M18 6L6 18"/></svg></sc-if>
+        </span>
+        <span style="flex:1;min-width:0">
+          <span style="display:block;font-size:16px;font-weight:600;line-height:1.35">{{ r.text }}</span>
+          <span style="display:block;margin-top:4px;font-size:14px;color:var(--ks3-ink-muted)">{{ r.line }}</span>
+        </span>
+      </li>
+    </sc-for>
+  </ul>
+
+  <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <button onClick="{{ restart }}" style="min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:16px;color:var(--ks3-ink);cursor:pointer">Practice again</button>
+    <a href="Child Today.dc.html" style="display:flex;align-items:center;justify-content:center;min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px;text-decoration:none">Back to today</a>
+  </div>
+</sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;alreadyTaken&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Edge states&quot;}}">
+const UNIT = { name: 'Health and disease', subject: 'Biology', year: 9, count: 10, minutes: 15, lessons: 6 };
+const QS = [
+  { topic: 'Pathogens', text: 'Which of these is NOT a type of pathogen?', options: ['Bacteria', 'Virus', 'Antibody', 'Fungus'], answer: 2 },
+  { topic: 'Pathogens', text: 'Bacteria make us feel ill because they release…', options: ['Toxins', 'Antibodies', 'Antigens', 'White blood cells'], answer: 0 },
+  { topic: 'Body defences', text: 'Name the substance in the stomach that kills pathogens.', short: true, accept: ['acid', 'hydrochloric acid', 'stomach acid', 'hcl'] },
+  { topic: 'Body defences', text: 'What do the hairs and mucus in the nose do?', options: ['Warm the air', 'Trap pathogens', 'Make antibodies', 'Produce toxins'], answer: 1 },
+  { topic: 'Immune response', text: 'Which cells produce antibodies?', options: ['Red blood cells', 'Platelets', 'Lymphocytes', 'Phagocytes'], answer: 2 },
+  { topic: 'Immune response', text: 'Antibodies are specific to a particular…', options: ['Antigen', 'Toxin', 'Vaccine', 'Organ'], answer: 0 },
+  { topic: 'Immune response', text: 'Phagocytes destroy pathogens by…', options: ['Making antibodies', 'Engulfing them', 'Releasing toxins', 'Trapping them in mucus'], answer: 1 },
+  { topic: 'Vaccination', text: 'A vaccine contains a…', options: ['Live, harmful pathogen', 'Dead or inactive pathogen', 'Dose of antibodies', 'Dose of antibiotics'], answer: 1 },
+  { topic: 'Vaccination', text: 'Why does a vaccinated person respond faster on infection?', options: ['They have more red blood cells', 'Memory cells remain in the blood', 'The pathogen is weaker', 'Their skin is thicker'], answer: 1 },
+  { topic: 'Vaccination', text: 'Roughly how many days does it take an unvaccinated person to produce enough antibodies to fight a new pathogen? Give a whole number.', short: true, accept: ['7', '10', '14', '5', '6', '8', '9', '11', '12', '13'], unit: 'days' },
+];
+const WEAK_NOTES = { Pathogens: 'Sort the four pathogen types and what each one does to the body. Bacteria and viruses are the pair that get mixed up.', 'Body defences': 'The body has three lines of defence before white blood cells get involved. Name all three and what each stops.', 'Immune response': 'Lymphocyte, antibody, antigen, phagocyte. Four words, four different jobs. Write a sentence for each until they stop swapping places.', Vaccination: 'The whole idea is memory cells. If you can explain why the second response is faster, you have the unit.' };
+const PREV = { date: '11 September', pct: '70%' };
+const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+
+class Component extends DCLogic {
+  state = { screen: 'start', i: 0, answers: {}, left: UNIT.minutes * 60, finishedAt: null };
+  componentWillUnmount() { clearInterval(this._t); }
+  begin() { clearInterval(this._t); this.setState({ screen: 'run', i: 0, answers: {}, left: UNIT.minutes * 60 }); this._t = setInterval(() => this.setState((s) => { if (s.left <= 1) { clearInterval(this._t); return { left: 0, screen: 'result', finishedAt: 0 }; } return { left: s.left - 1 }; }), 1000); }
+  finish() { clearInterval(this._t); this.setState({ screen: 'result', finishedAt: this.state.left }); }
+  isOk(q, i, a) { if (a == null) return false; return q.short ? q.accept.includes(String(a).trim().toLowerCase()) : a === q.answer; }
+  renderVals() {
+    const s = this.state; const q = QS[s.i]; const taken = this.props.alreadyTaken ?? false;
+    const a = s.answers[s.i];
+    const results = QS.map((x, i) => this.isOk(x, i, s.answers[i]));
+    const score = results.filter(Boolean).length; const pct = Math.round(score / QS.length * 100);
+    const topics = [...new Set(QS.map((x) => x.topic))];
+    const breakdown = topics.map((t) => { const idx = QS.map((x, i) => (x.topic === t ? i : -1)).filter((i) => i >= 0); const ok = idx.filter((i) => results[i]).length; return { topic: t, ok, n: idx.length, frac: `${ok}/${idx.length}`, w: Math.round(ok / idx.length * 100) + '%', bg: ok === idx.length ? 'var(--ks3-ok)' : ok / idx.length >= 0.5 ? 'var(--ks3-accent)' : 'var(--ks3-alert)' }; });
+    const weak = breakdown.slice().sort((x, y) => x.ok / x.n - y.ok / y.n)[0];
+    const skipped = QS.filter((_, i) => s.answers[i] == null || s.answers[i] === '').length;
+    const low = s.left <= 60;
+    return {
+      unit: UNIT, isStart: s.screen === 'start', isRun: s.screen === 'run', isResult: s.screen === 'result', notRunning: s.screen !== 'run',
+      alreadyTaken: taken, prev: PREV, viewPrev: () => { const answers = {}; QS.forEach((x, i) => { answers[i] = i === 2 || i === 9 || i === 6 ? -1 : x.short ? x.accept[0] : x.answer; }); clearInterval(this._t); this.setState({ screen: 'result', answers, finishedAt: 312 }); },
+      startLabel: taken ? 'Practice run' : 'Start the clock', start: () => this.begin(),
+      timer: fmt(s.left), timerBorder: low ? 'var(--ks3-accent)' : 'var(--ks3-ink)', timerBg: low ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)', timerFg: low ? 'var(--ks3-accent-text)' : 'var(--ks3-ink)',
+      progress: QS.map((_, i) => ({ aria: `Question ${i + 1}`, bg: i === s.i ? 'var(--ks3-accent)' : s.answers[i] != null && s.answers[i] !== '' ? 'var(--ks3-ink)' : 'var(--ks3-rule)', jump: () => this.setState({ i }) })),
+      qNum: s.i + 1,
+      cur: q ? { topic: q.topic, text: q.text, isChoice: !q.short, isShort: !!q.short, unit: q.unit || '', typed: typeof a === 'string' ? a : '', type: (e) => this.setState({ answers: { ...s.answers, [s.i]: e.target.value } }),
+        options: (q.options || []).map((text, k) => ({ text, letter: 'ABCD'[k], on: String(a === k), pick: () => this.setState({ answers: { ...s.answers, [s.i]: k } }) })) } : {},
+      isFirst: s.i === 0, prevOpacity: s.i === 0 ? 0.4 : 1, prev: () => this.setState({ i: Math.max(0, s.i - 1) }), notLast: s.i < QS.length - 1, isLast: s.i === QS.length - 1,
+      nextLabel: a == null || a === '' ? 'Skip for now' : 'Next', next: () => this.setState({ i: Math.min(QS.length - 1, s.i + 1) }), finish: () => this.finish(),
+      hasSkipped: skipped > 0 && s.i === QS.length - 1, skippedNote: `${skipped} unanswered. Tap a bar above to go back to one.`,
+      resultTime: s.finishedAt === 0 ? 'Time ran out' : `Finished with ${fmt(s.finishedAt || 0)} to spare`, pct: pct + '%', scoreLine: `${score} of ${QS.length} correct`, isBest: pct > 78,
+      breakdown, weak: weak ? { topic: weak.topic, note: WEAK_NOTES[weak.topic] } : {},
+      review: QS.map((x, i) => { const ok = results[i]; const given = s.answers[i]; const givenText = given == null || given === '' || given === -1 ? 'No answer' : x.short ? `You wrote "${given}"` : `You chose ${x.options[given]}`; const right = x.short ? x.accept[0] : x.options[x.answer]; return { text: x.text, ok, miss: !ok, border: ok ? 'var(--ks3-ok)' : 'var(--ks3-ink)', bg: ok ? 'var(--ks3-ok-tint)' : 'var(--ks3-card)', markBg: ok ? 'var(--ks3-ok)' : 'var(--ks3-ink)', markFg: ok ? '#fff' : 'var(--ks3-on-dark)', line: ok ? givenText : `${givenText}. Answer: ${right}.` }; }),
+      restart: () => this.setState({ screen: 'start' }),
+    };
+  }
+}
+</script>
+</body>
+</html>

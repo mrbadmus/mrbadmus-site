@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>Start a free week — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+</head>
+<body class="pb-body">
+
+<div class="rd su-root" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<aside class="su-rail" style="padding:28px 28px 32px">
+  <div id="rail-brand" style="display:flex;align-items:center;gap:10px"></div>
+  <ol id="rail-steps" style="margin:48px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px"></ol>
+  <div style="margin-top:auto;padding:18px 20px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:5px 5px 0 var(--ks3-accent)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">Free for seven days</p>
+    <p style="margin:8px 0 0;font-size:16px;color:var(--ks3-on-dark-body)">Work is set every Sunday. Marked against the mark scheme. Cancel before the week is up and you pay nothing.</p>
+  </div>
+</aside>
+
+<header class="su-head" style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+  <span id="head-brand" style="display:flex;align-items:center;gap:10px"></span>
+  <span id="step-label" style="margin-left:auto;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ks3-ink-muted)"></span>
+</header>
+
+<main class="su-main" id="su-main" style="max-width:520px;margin:0 auto;padding:28px 20px 80px"></main>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/signup.html — parent signup, end to end. MRB-317 Night 3.
+
+   Design's `Parent Signup.dc.html`, on real Supabase auth, the real consumer
+   API and real Stripe Checkout. Her seven screens are all here — account,
+   verify, child, unit, children, plan, Stripe hand-off — and her eighth,
+   the welcome/return screen, lives on `checkout-return.html` because that is
+   the URL Stripe sends the browser back to.
+
+   ── THE ORDER IS FORCED BY ONE 403, AND IT IS WORTH SAYING WHY ──────────
+   `POST /api/consumer/family/ensure` answers 403 `email_unverified` until
+   the parent has clicked the link in their inbox. Nothing downstream of it
+   exists before then: no family, so no child, so no picker, so no checkout.
+
+   Design's verify screen nonetheless offers "Carry on" — you can set your
+   child up while you wait — and she is right to: the alternative is a dead
+   screen with nothing on it but the word "waiting", and a parent who closes
+   the tab there never comes back.
+
+   So the child's details are held on the DEVICE until a verified session
+   exists, and created the moment one does. `draft` below is that holding
+   place, and it is deleted the instant its contents reach the server.
+
+   ⚠️ The draft carries the CHILD's password, in plain text, in
+   localStorage. That is a real thing to know about, and it is deliberate:
+   the parent has to type it, hand it over on paper, and it is displayed in
+   full on screen at Design's ruling, so localStorage is not where it first
+   became readable. The PARENT's password is never written there. The draft
+   is cleared as soon as the child exists server-side, which for the ordinary
+   flow is seconds; the only way it lingers is a parent who never verifies,
+   and clearing it then would delete the setup they came back for.
+
+   ── WHERE THE CHILD IS ACTUALLY CREATED, AND WHY THERE ─────────────────
+   At the END of the child step, not at the end of the flow. The unit picker
+   is `GET /children/:id/picker` — it is per child, because a Year 8's scheme
+   of work is not a Year 10's — so there must be a child before there can be
+   a picker. Design's step order (child → "where are they up to?") is
+   unchanged; the create simply happens between the two.
+
+   ── AND WHY THE CHILDREN LIST IS READ BACK FROM THE SERVER ─────────────
+   Once a family exists, `GET /api/consumer/family` is the truth about who
+   is in it. The list, the price lines and the seat count all read it, so a
+   parent who did half of this yesterday, or on their phone, sees what is
+   actually there rather than what this tab remembers.
+
+   ── NO PRICE CONSTANT ──────────────────────────────────────────────────
+   Design's `PRICE` object is not transcribed. Every figure on the plan step
+   comes from `MrBadmusConsumer.pricing()`. See consumer-common.js.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var esc = C.escapeHtml;
+
+  /* ── Design's constants — copy and option lists, verbatim ───────────── */
+  var YEARS  = [7, 8, 9, 10, 11];
+  var BOARDS = ['AQA', 'Edexcel', 'OCR'];
+  var TIERS  = ['Foundation', 'Higher', 'Not decided'];
+  var ROUTES = [
+    { id: 'Combined', label: 'Combined', desc: 'Two GCSEs, all three sciences' },
+    { id: 'Triple',   label: 'Triple',   desc: 'Three separate GCSEs' }
+  ];
+  var MODES = [
+    { id: 'school', label: 'Alongside school', desc: 'A couple of short sessions a week. Tracks what school is covering and keeps it sharp.' },
+    { id: 'home',   label: 'Home education',   desc: 'The full scheme of work. Four or five sessions a week, unit checks, and a termly report you can hand to the council.' }
+  ];
+  var STEP_LABELS = {
+    account: 'Step 1 of 4', verify: 'Step 1 of 4', child: 'Step 2 of 4',
+    unit: 'Step 2 of 4', children: 'Step 3 of 4', plan: 'Step 4 of 4',
+    stripe: 'Stripe'
+  };
+  var COPY = {
+    unitIntroSchool: 'Pick the unit school is on right now. Mr Badmus sets the first week to match, not Year 7 week 1.',
+    unitIntroHome: 'Pick the unit to start from. Everything before it is treated as covered, and the scheme of work runs from here.'
+  };
+
+  /* ── the half-term blocks ───────────────────────────────────────────────
+     Design groups the unit picker into six half-terms. The live picker
+     (`GET /children/:id/picker`) has no notion of a half-term: it returns
+     units carrying `lessons: [{ slug, title, week }]`, where `week` is the
+     per-(year, subject) TEACHING ORDER 1..n from `scheme_of_work_entries`,
+     not a calendar week.
+
+     A school year is six half-terms of roughly six teaching weeks, so the
+     order number maps onto the block by division. The last block is wider
+     (31–39) because summer 2 absorbs whatever the sequence has left rather
+     than dropping units off the end of the list — a unit that fell out of
+     the map would be invisible in the picker, and a parent would simply not
+     be able to say their child is on it.
+
+     ⚠️ This mapping is a PRESENTATION choice made here, not a fact the
+     backend asserts. Reported to the commander as such. */
+  var BLOCKS = [
+    { code: 'A1', term: 'Autumn 1', from: 1,  to: 6  },
+    { code: 'A2', term: 'Autumn 2', from: 7,  to: 12 },
+    { code: 'S1', term: 'Spring 1', from: 13, to: 18 },
+    { code: 'S2', term: 'Spring 2', from: 19, to: 24 },
+    { code: 'M1', term: 'Summer 1', from: 25, to: 30 },
+    { code: 'M2', term: 'Summer 2', from: 31, to: 39 }
+  ];
+  function blockFor(week) {
+    var w = Number(week);
+    if (!isFinite(w) || w < 1) { w = 1; }
+    for (var i = 0; i < BLOCKS.length; i++) {
+      if (w <= BLOCKS[i].to) { return BLOCKS[i]; }
+    }
+    return BLOCKS[BLOCKS.length - 1];
+  }
+
+  /* Night 4 (MRB-317 ruling 7). One string, because the tick gates two
+     buttons and they must refuse in the same words. */
+  var TERMS_REQUIRED = 'Please agree to the terms and privacy policy to carry on.';
+
+  function blankChild() {
+    return { name: '', year: null, board: null, tier: null, route: null,
+             mode: null, user: '', pass: '', unit: null, userStatus: 'idle',
+             userReason: '', suggestion: '' };
+  }
+
+  /* ── the draft ──────────────────────────────────────────────────────── */
+  var DRAFT_KEY = 'mrb.consumer.signup';
+  function readDraft() {
+    try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null') || {}; }
+    catch (e) { return {}; }
+  }
+  function writeDraft(d) {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch (e) { /* private window */ }
+  }
+  function clearPending() {
+    var d = readDraft();
+    delete d.pending;
+    writeDraft(d);
+  }
+
+  /* ── state ──────────────────────────────────────────────────────────── */
+  var S = {
+    step: 'account',
+    email: '',
+    resent: false,
+    /* Children that EXIST — read back from GET /family. */
+    children: [],
+    /* Children typed in before the email was verified. Mirrored into the
+       draft so the trip to the inbox does not lose them. */
+    pending: [],
+    form: blankChild(),
+    editing: -1,          // index into S.children, or -1
+    plan: 'month',
+    error: '',
+    childError: '',
+    unitChildId: null,    // whose picker the unit step is showing
+    unitUnits: [],        // grouped picker payload
+    unitPicked: null,     // { unit_code, name }
+    unitNote: '',         // "the unit isn't in this year's scheme…"
+    session: null,
+    token: null,
+    verified: false,
+    /* Night 4 (MRB-317 ruling 7 / MRB-319): the parent's acceptance of the
+       terms and the privacy policy. Kept in the draft as well as in state
+       because Google sign-up leaves this page for Google and comes back
+       through verify.html — the tick has to survive the round trip, or the
+       one thing we have to record would be gone by the time there is a
+       session to record it against. */
+    terms: false,
+    termsSent: false,
+    ensured: false,      // /family/ensure has run — see recordTerms()
+    busy: false
+  };
+
+  var tiers = null;   // pricing payload's .tiers, once it lands
+  var sb = null;
+
+  /* ── small helpers ──────────────────────────────────────────────────── */
+  function $(id) { return document.getElementById(id); }
+  function nameOr() { return (S.form.name || '').trim() || 'your child'; }
+  function isGcse() { return S.form.year === 10 || S.form.year === 11; }
+  function seatCount() { return Math.max(1, S.children.length + S.pending.length); }
+
+  /* Design's trial-end format: "9 September". Seven days from now, which is
+     what `trial_period_days: 7` on the Checkout session will actually do. */
+  function trialEndLabel() {
+    return new Date(Date.now() + 7 * 864e5)
+      .toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+  }
+
+  function optionBtn(attrs, on, style, inner) {
+    return '<button type="button" class="ks3-option" ' + attrs +
+      ' aria-pressed="' + (on ? 'true' : 'false') + '" style="' + style + '">' + inner + '</button>';
+  }
+  function primaryBtn(id, label, extra) {
+    return '<button type="button" id="' + id + '" style="margin-top:22px;width:100%;min-height:54px;' +
+      'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
+      'color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer' + (extra || '') + '">' +
+      esc(label) + '</button>';
+  }
+  function errorLine(msg) {
+    if (!msg) { return ''; }
+    return '<p style="margin:16px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">' +
+      esc(msg) + '</p>';
+  }
+  var GOOGLE_SVG =
+    '<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">' +
+    '<path fill="#4285F4" d="M45 24.5c0-1.6-.1-2.8-.4-4H24v7.6h12.1c-.3 2-1.6 5-4.6 7l7 5.4C42.7 36.6 45 31 45 24.5z"/>' +
+    '<path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.4l-7-5.4c-1.9 1.3-4.4 2.2-7.5 2.2-5.8 0-10.7-3.9-12.4-9.2l-7.2 5.6C8 41.3 15.4 46 24 46z"/>' +
+    '<path fill="#FBBC05" d="M11.6 28.2c-.4-1.3-.7-2.7-.7-4.2s.3-2.9.7-4.2l-7.2-5.6C3 17.1 2 20.4 2 24s1 6.9 2.4 9.8l7.2-5.6z"/>' +
+    '<path fill="#EA4335" d="M24 10.6c3.3 0 5.5 1.4 6.8 2.6l6.2-6C33.3 3.7 28.9 2 24 2 15.4 2 8 6.7 4.4 14.2l7.2 5.6c1.7-5.3 6.6-9.2 12.4-9.2z"/></svg>';
+
+  /* ── the chrome: brand, mobile step label, desktop rail ─────────────── */
+  function renderChrome() {
+    var mark = P.brand(26) +
+      '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
+      'letter-spacing:-.02em">MrBadmus</span>';
+    $('rail-brand').innerHTML = mark;
+    $('head-brand').innerHTML = mark;
+    $('step-label').textContent = STEP_LABELS[S.step] || '';
+
+    var idx = { account: 0, verify: 0, child: 1, unit: 1, children: 2, plan: 3, stripe: 3 }[S.step];
+    var labels = ['Your account', 'Your child', 'Anyone else?', 'Plan and card'];
+    var names = S.children.concat(S.pending).map(function (c) { return c.name; });
+    var total = S.children.length + S.pending.length;
+    var subs = [
+      S.email || '',
+      names.length ? names.join(', ') : (S.form.name || ''),
+      total ? (total + ' ' + (total === 1 ? 'child' : 'children')) : '',
+      ''
+    ];
+
+    $('rail-steps').innerHTML = labels.map(function (label, i) {
+      var done = i < idx, on = i === idx;
+      var numBg = done ? 'var(--ks3-ok)' : (on ? 'var(--ks3-ink)' : 'var(--ks3-card)');
+      var numFg = (done || on) ? '#fff' : 'var(--ks3-ink-muted)';
+      return '<li style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;' +
+        'background:' + (on ? 'var(--ks3-band)' : 'transparent') + ';border:2px solid ' +
+        (on ? 'var(--ks3-ink)' : 'transparent') + '">' +
+        '<span style="display:grid;place-items:center;width:30px;height:30px;border-radius:9px;' +
+        'border:2px solid var(--ks3-ink);background:' + numBg + ';color:' + numFg + ';' +
+        'font-family:var(--ks3-font-display);font-weight:800;font-size:14px">' +
+        (done ? P.mark(P.PATH.tick, 'width:14px;height:14px') : String(i + 1)) + '</span>' +
+        '<span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:16px;color:' +
+        ((on || done) ? 'var(--ks3-ink)' : 'var(--ks3-ink-muted)') + '">' + esc(label) + '</span>' +
+        (done && subs[i] ? '<span style="display:block;font-size:13px;color:var(--ks3-ink-muted)">' +
+                           esc(subs[i]) + '</span>' : '') +
+        '</span></li>';
+    }).join('');
+  }
+
+  /* ══ STEP: ACCOUNT ════════════════════════════════════════════════════ */
+  function viewAccount() {
+    var input = 'margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;' +
+      'padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);' +
+      'background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)';
+    return '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Free for seven days</p>' +
+      '<h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Create your account</h1>' +
+      '<p style="margin:14px 0 0;font-size:18px;color:var(--ks3-ink-body)">This is the parent account. You\'ll set up your child\'s login next.</p>' +
+      '<button type="button" id="google" style="margin-top:26px;width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:17px;color:var(--ks3-ink);cursor:pointer">' +
+      GOOGLE_SVG + 'Continue with Google</button>' +
+      '<div style="display:flex;align-items:center;gap:12px;margin:22px 0 18px;color:var(--ks3-ink-muted);font-size:14px"><span style="flex:1;height:2px;background:var(--ks3-rule)"></span>or with email<span style="flex:1;height:2px;background:var(--ks3-rule)"></span></div>' +
+      '<label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Email' +
+      '<input type="email" id="email" value="' + esc(S.email) + '" placeholder="you@example.com" autocomplete="email" style="' + input + '"></label>' +
+      '<label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Password' +
+      '<input type="password" id="password" placeholder="At least 10 characters" autocomplete="new-password" style="' + input + '"></label>' +
+      (S.error ? '<p style="margin:10px 0 0;font-size:15px;font-weight:700;color:var(--ks3-accent-text)">' + esc(S.error) + '</p>' : '') +
+      /* ── Night 4 (MRB-317 ruling 7) ────────────────────────────────────
+         Design drew a sentence — "By continuing you agree to the terms and
+         privacy notice" — with two dead `#` links, and Night 3 shipped it as
+         drawn. Two things were wrong with shipping that: the links went
+         nowhere, and continuing is not the same act as agreeing. This is
+         the same words as a REQUIRED tick, with the links pointed at the
+         two pages that now exist, and the acceptance is recorded against
+         the account rather than merely implied by a button press.
+
+         Both buttons on this step are gated, not just this one: signing up
+         with Google creates exactly the same account, and a consent gate
+         with a way round it is not a gate.
+
+         New tab on both links — `rel="noopener"` because `target="_blank"`
+         without it hands the opened page a live handle on this one — so
+         reading the terms cannot cost a parent the email and password they
+         have already typed. Nothing on this step is stored until Continue,
+         so a navigation away IS the form lost. */
+      '<label id="terms-row" style="margin-top:22px;display:flex;gap:12px;align-items:flex-start;' +
+        'padding:14px 16px;border:2px solid ' +
+        (S.terms ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') +
+        ';border-radius:var(--ks3-r-control);background:' +
+        (S.terms ? 'var(--ks3-band)' : 'var(--ks3-card)') + ';cursor:pointer">' +
+        '<input type="checkbox" id="terms"' + (S.terms ? ' checked' : '') +
+          ' style="flex:0 0 auto;width:22px;height:22px;margin:1px 0 0;accent-color:var(--ks3-ink);cursor:pointer"/>' +
+        '<span style="flex:1;min-width:0;font-size:16px;line-height:1.4;color:var(--ks3-ink)">' +
+          'I agree to the <a href="/parents/terms.html" target="_blank" rel="noopener" ' +
+            'style="font-weight:700">terms</a> and <a href="/parents/privacy.html" ' +
+            'target="_blank" rel="noopener" style="font-weight:700">privacy policy</a>.' +
+        '</span>' +
+      '</label>' +
+      '<p id="terms-note" style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)"' +
+        (S.terms ? ' hidden' : '') + '>Tick the box to create your account.</p>' +
+      primaryBtn('continue', 'Continue', S.terms ? '' : ';opacity:.45') +
+      '<p style="margin:26px 0 0;font-size:16px;text-align:center">Already have an account? <a href="' +
+      P.url('signIn') + '" style="font-weight:700">Sign in</a></p>';
+  }
+
+  function bindAccount() {
+    $('email').addEventListener('input', function () { S.email = this.value.trim(); });
+
+    /* ── the terms gate ─────────────────────────────────────────────────
+       ⚠️ This toggles the two buttons IN PLACE and never calls render().
+       A re-render rebuilds the form, and the password box is the one field
+       on this step whose value lives only in the DOM — it is deliberately
+       not mirrored into `S` (see the localStorage note in the header). So a
+       render() here would silently empty the password a parent had already
+       typed, every time they ticked the box. */
+    var termsBox = $('terms');
+    function syncTerms() {
+      var on = !!termsBox.checked;
+      S.terms = on;
+      $('continue').disabled = !on;
+      $('continue').style.opacity = on ? '' : '.45';
+      $('google').disabled = !on;
+      $('google').style.opacity = on ? '' : '.45';
+      $('terms-note').hidden = on;
+      $('terms-row').style.borderColor = on ? 'var(--ks3-ink)' : 'var(--ks3-option-border)';
+      $('terms-row').style.background = on ? 'var(--ks3-band)' : 'var(--ks3-card)';
+      saveDraft();
+    }
+    termsBox.addEventListener('change', syncTerms);
+    syncTerms();
+
+    $('google').addEventListener('click', function () {
+      var btn = this;
+      // Belt and braces. The button is already disabled without the tick;
+      // this is what stops a re-enabled one being a way round the gate.
+      if (!S.terms) { S.error = TERMS_REQUIRED; return render(); }
+      btn.disabled = true;
+      sb.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + C.href('/consumer/verify.html'),
+          scopes: 'openid profile email'
+        }
+      }).then(function (r) {
+        if (r.error) { btn.disabled = false; S.error = r.error.message; render(); }
+      }).catch(function () {
+        btn.disabled = false;
+        S.error = 'We couldn’t start Google sign-in. Please try again.';
+        render();
+      });
+    });
+
+    $('continue').addEventListener('click', function () {
+      var email = $('email').value.trim();
+      var password = $('password').value;
+      if (!S.terms) { S.error = TERMS_REQUIRED; return render(); }
+      // Design's validation, and her two strings.
+      if (email.indexOf('@') === -1) {
+        S.error = 'Enter the email you want us to write to.'; return render();
+      }
+      if (password.length < 10) {
+        S.error = 'Password needs at least 10 characters.'; return render();
+      }
+      S.email = email;
+      S.error = '';
+      var btn = this;
+      C.setBusy(btn, true, 'Creating…');
+
+      sb.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          // A hint, never a permission — the backend does not trust user
+          // metadata, and must not.
+          data: { account_type: 'parent' },
+          emailRedirectTo: window.location.origin + C.href('/consumer/verify.html')
+        }
+      }).then(function (r) {
+        C.setBusy(btn, false);
+        if (r.error) { S.error = r.error.message; return render(); }
+
+        /* Supabase obfuscates "this address already has an account": no
+           error, a user, and an EMPTY identities array. Without this the
+           button appears to do nothing and the parent presses it again. */
+        if (r.data.user && Array.isArray(r.data.user.identities) &&
+            r.data.user.identities.length === 0) {
+          S.error = 'Looks like you already have an account — try signing in instead.';
+          return render();
+        }
+
+        saveDraft();
+        if (r.data.session) {
+          // Confirmation is off on this project, or the address was already
+          // confirmed: skip the inbox entirely.
+          return adoptSession(r.data.session).then(function () { go('child'); });
+        }
+        go('verify');
+      }).catch(function (e) {
+        C.setBusy(btn, false);
+        console.error('[signup]', e);
+        S.error = 'We couldn’t create your account just now. Please try again in a moment.';
+        render();
+      });
+    });
+  }
+
+  /* ══ STEP: VERIFY ═════════════════════════════════════════════════════ */
+  function viewVerify() {
+    return '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Check your inbox</h1>' +
+      '<p style="margin:14px 0 0;font-size:18px;color:var(--ks3-ink-body)">We\'ve sent a link to <strong style="color:var(--ks3-ink)">' + esc(S.email) + '</strong>. Tap it and come straight back here.</p>' +
+      '<div style="margin-top:26px;padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">' +
+      '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">While you wait</p>' +
+      '<p style="margin:8px 0 0;font-size:17px;color:var(--ks3-ink-body)">You can carry on setting up your child now. We\'ll hold your place until the email is verified.</p>' +
+      '<button type="button" id="carry-on" style="margin-top:16px;width:100%;min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">Carry on</button>' +
+      '</div>' +
+      (S.error ? errorLine(S.error) : '') +
+      '<div style="margin-top:22px;display:flex;flex-direction:column;gap:10px;font-size:16px">' +
+      '<a href="#" id="resend" style="font-weight:700">' +
+      (S.resent ? 'Sent again. Check spam too.' : 'Send the email again') + '</a>' +
+      '<a href="#" id="change-email">Wrong address? Change it</a></div>';
+  }
+
+  function bindVerify() {
+    $('carry-on').addEventListener('click', function () { go('child'); });
+    $('change-email').addEventListener('click', function (e) { e.preventDefault(); go('account'); });
+    $('resend').addEventListener('click', function (e) {
+      e.preventDefault();
+      sb.auth.resend({
+        type: 'signup', email: S.email,
+        options: { emailRedirectTo: window.location.origin + C.href('/consumer/verify.html') }
+      }).then(function () { S.resent = true; render(); })
+        .catch(function () { S.resent = true; render(); });
+    });
+  }
+
+  /* ══ STEP: CHILD ══════════════════════════════════════════════════════ */
+  function viewChild() {
+    var f = S.form;
+    var input = 'margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:50px;' +
+      'padding:12px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);' +
+      'background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)';
+    var label = 'margin:20px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)';
+    var total = S.children.length + S.pending.length;
+
+    var h = '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">' +
+      esc(S.editing >= 0 ? 'Editing' : (total ? 'Child ' + (total + 1) : 'Your child')) + '</p>' +
+      '<h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">' +
+      esc(S.editing >= 0 ? ('Update ' + f.name) : (total ? 'Add another child' : 'Tell us about your child')) + '</h1>' +
+
+      '<label style="display:block;margin-top:24px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">First name' +
+      '<input id="c-name" value="' + esc(f.name) + '" placeholder="What Mr Badmus should call them" style="' + input + '"></label>' +
+
+      '<p style="' + label + '">Year group</p>' +
+      '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">' +
+      YEARS.map(function (y) {
+        return optionBtn('data-year="' + y + '"', f.year === y,
+          'justify-content:center;padding:12px 6px;font-size:17px', 'Y' + y);
+      }).join('') + '</div>';
+
+    if (isGcse()) {
+      h += '<p style="' + label + '">Exam board</p>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">' +
+        BOARDS.map(function (b) {
+          return optionBtn('data-board="' + esc(b) + '"', f.board === b,
+            'justify-content:center;padding:12px 6px;font-size:16px', esc(b));
+        }).join('') + '</div>' +
+
+        '<p style="' + label + '">Route</p>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+        ROUTES.map(function (r) {
+          return optionBtn('data-route="' + esc(r.id) + '"', f.route === r.id,
+            'flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px',
+            '<span style="font-weight:700;font-size:16px">' + esc(r.label) + '</span>' +
+            '<span style="font-size:13px;font-weight:400;color:var(--ks3-ink-body)">' + esc(r.desc) + '</span>');
+        }).join('') + '</div>' +
+
+        '<p style="' + label + '">Tier</p>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">' +
+        TIERS.map(function (t) {
+          return optionBtn('data-tier="' + esc(t) + '"', f.tier === t,
+            'justify-content:center;padding:12px 6px;font-size:16px', esc(t));
+        }).join('') + '</div>' +
+        '<p style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Not sure? Choose "Not decided" and school\'s choice can be added later.</p>';
+    }
+
+    h += '<p style="margin:24px 0 8px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">How will ' +
+      esc(nameOr()) + ' use it?</p>' +
+      '<div style="display:flex;flex-direction:column;gap:10px">' +
+      MODES.map(function (m) {
+        return optionBtn('data-mode="' + esc(m.id) + '"', f.mode === m.id,
+          'align-items:flex-start;flex-direction:column;gap:4px;padding:16px 18px',
+          '<span style="font-size:18px;font-weight:700">' + esc(m.label) + '</span>' +
+          '<span style="font-size:15px;font-weight:400;color:var(--ks3-ink-body);line-height:1.45">' + esc(m.desc) + '</span>');
+      }).join('') + '</div>' +
+
+      '<div style="margin-top:28px;padding-top:22px;border-top:2px solid var(--ks3-rule)">' +
+      '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Their login</p>' +
+      '<p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(nameOr()) +
+      ' signs in with a username, not an email. You choose both.</p>' +
+      '<label style="display:block;margin-top:16px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Username' +
+      '<div style="position:relative;margin-top:6px">' +
+      '<input id="c-user" value="' + esc(f.user) + '" placeholder="e.g. amararockets" autocomplete="off" autocapitalize="none" ' +
+      'style="display:block;width:100%;box-sizing:border-box;min-height:50px;padding:12px 110px 12px 14px;' +
+      'border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);' +
+      'font-size:17px;color:var(--ks3-ink)">' +
+      '<button type="button" id="c-check" style="position:absolute;right:6px;top:6px;bottom:6px;padding:0 14px;' +
+      'border:2px solid var(--ks3-ink);border-radius:10px;background:var(--ks3-band);font-weight:700;font-size:14px;' +
+      'color:var(--ks3-ink);cursor:pointer">Is it free?</button></div></label>' +
+      '<div id="c-user-state">' + usernameStateHtml() + '</div>' +
+
+      '<label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Password for ' +
+      esc(nameOr()) +
+      '<input type="text" id="c-pass" value="' + esc(f.pass) + '" placeholder="Something they can remember" autocomplete="off" style="' + input + '"></label>' +
+      '<p style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Shown in full so you can write it down. You can reset it any time.</p>' +
+      '</div>' +
+
+      errorLine(S.childError) +
+      primaryBtn('c-continue', 'Continue');
+
+    if (total > 0 && S.editing < 0) {
+      h += '<button type="button" id="c-cancel" style="margin-top:10px;width:100%;min-height:48px;border:0;' +
+        'background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">' +
+        'Never mind, back to the list</button>';
+    }
+    return h;
+  }
+
+  /* The username line. Never says more than free / taken-with-a-reason, and
+     offers exactly ONE alternative — the endpoint returns four, and showing
+     four generated near-misses of a name a parent just typed tells them, and
+     anyone reading over their shoulder, more about who else is on the
+     platform than "taken" does. */
+  function usernameStateHtml() {
+    var f = S.form;
+    if (f.userStatus === 'checking') {
+      return '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Checking…</p>';
+    }
+    if (f.userStatus === 'free') {
+      return '<p style="margin:8px 0 0;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;' +
+        'color:var(--ks3-ok-text)">' + P.mark(P.PATH.tick) + esc(f.user) + ' is free</p>';
+    }
+    if (f.userStatus === 'taken') {
+      var reason = f.userReason || 'That username is taken — try another.';
+      var out = '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">' +
+        '<strong style="color:var(--ks3-accent-text)">' + esc(reason) + '</strong>';
+      if (f.suggestion) {
+        out += ' How about <button type="button" id="c-take" style="padding:2px 8px;border:2px solid var(--ks3-accent);' +
+          'border-radius:8px;background:var(--ks3-accent-tint);font-weight:700;font-size:15px;' +
+          'color:var(--ks3-accent-text);cursor:pointer">' + esc(f.suggestion) + '</button>?';
+      }
+      return out + '</p>';
+    }
+    if (f.userStatus === 'unknown') {
+      /* The checker needs a signed-in caller and there isn't one yet — the
+         parent chose "Carry on" before verifying. Saying so is better than
+         a green tick we cannot justify or a red one we cannot prove. */
+      return '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' +
+        'We’ll check this is free when your email is verified.</p>';
+    }
+    if (f.userStatus === 'uncheckable') {
+      return '<p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-muted)">' +
+        esc(f.userReason || 'We couldn’t check that just now.') +
+        ' You can carry on — we’ll tell you if it’s taken.</p>';
+    }
+    return '';
+  }
+
+  var checkTimer = null;
+  function checkUsername(immediate) {
+    var u = (S.form.user || '').trim();
+    clearTimeout(checkTimer);
+    if (!u) {
+      S.form.userStatus = 'idle';
+      $('c-user-state').innerHTML = usernameStateHtml();
+      return;
+    }
+    function run() {
+      S.form.userStatus = 'checking';
+      $('c-user-state').innerHTML = usernameStateHtml();
+      C.api('/api/consumer/username/check?u=' + encodeURIComponent(u), { token: S.token })
+        .then(function (d) {
+          if ((S.form.user || '').trim() !== u) { return; }   // typed on since
+          if (d && d.ok) {
+            S.form.userStatus = 'free'; S.form.userReason = ''; S.form.suggestion = '';
+          } else {
+            S.form.userStatus = 'taken';
+            S.form.userReason = (d && d.reason) || 'That username is taken — try another.';
+            S.form.suggestion = (d && d.suggestions && d.suggestions[0]) || '';
+          }
+          $('c-user-state').innerHTML = usernameStateHtml();
+          bindUsernameChip();
+        })
+        .catch(function (e) {
+          if ((S.form.user || '').trim() !== u) { return; }
+          /* 401/403 means the checker has no signed-in caller yet — the
+             parent chose "Carry on" before verifying — and the honest line is
+             "we'll check this later". Anything else is a real failure and
+             must not borrow that sentence, because it would promise a check
+             that is not going to happen. Either way the server has the last
+             word at create time and answers 409 with suggestions. */
+          S.form.userStatus = (e && (e.status === 401 || e.status === 403))
+            ? 'unknown' : 'uncheckable';
+          S.form.userReason = (e && e.message) || '';
+          $('c-user-state').innerHTML = usernameStateHtml();
+        });
+    }
+    if (immediate) { run(); } else { checkTimer = setTimeout(run, 400); }
+  }
+  function bindUsernameChip() {
+    var chip = $('c-take');
+    if (!chip) { return; }
+    chip.addEventListener('click', function () {
+      S.form.user = S.form.suggestion;
+      $('c-user').value = S.form.user;
+      checkUsername(true);
+    });
+  }
+
+  function bindChild() {
+    $('c-name').addEventListener('input', function () {
+      S.form.name = this.value; S.childError = '';
+    });
+    $('c-pass').addEventListener('input', function () {
+      S.form.pass = this.value; S.childError = '';
+    });
+    $('c-user').addEventListener('input', function () {
+      /* ⊕ DEVIATION FROM DESIGN, FOUND BY DRIVING IT. Her normaliser keeps
+         hyphens and her placeholder is "e.g. amara-rockets" — but
+         `child_username_check` answers, verbatim:
+
+             "Letters and numbers only — no symbols."
+
+         So every parent who followed her example would have been refused on
+         their first attempt, by a rule the screen had just invited them to
+         break. The box now accepts only what the server accepts, and the
+         placeholder was changed to match. Reported to Mide: the alternative
+         fix — teaching the checker to allow hyphens — is a change to a
+         platform-wide unique key that the KS3 estate also writes, and that
+         is not a decision this page gets to take. */
+      this.value = this.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+      S.form.user = this.value;
+      S.form.userStatus = 'idle'; S.childError = '';
+      checkUsername(false);
+    });
+    $('c-check').addEventListener('click', function () { checkUsername(true); });
+    bindUsernameChip();
+
+    var cancel = $('c-cancel');
+    if (cancel) {
+      cancel.addEventListener('click', function () {
+        S.form = blankChild(); S.editing = -1; go('children');
+      });
+    }
+
+    $('c-continue').addEventListener('click', function () { submitChild(this); });
+  }
+
+  function submitChild(btn) {
+    var f = S.form;
+    // Design's validation, in her order and her words — with ONE change.
+    if (!f.name.trim())            { S.childError = 'Add a first name.'; return render(); }
+    if (!f.year)                   { S.childError = 'Pick a year group.'; return render(); }
+    if (isGcse() && !f.route)      { S.childError = 'Choose Combined or Triple.'; return render(); }
+    if (!f.mode)                   { S.childError = 'Choose how they’ll use it.'; return render(); }
+
+    /* Editing an existing child stops here. `PATCH /children/:id` takes
+       neither a username nor a password — the username is already theirs
+       and the password is reset from the dashboard, once, with its own
+       screen — so validating either here would refuse a legitimate edit for
+       a field this form is not going to send. */
+    if (S.editing >= 0) { S.childError = ''; return saveEdit(btn); }
+
+    if (!f.user)                   { S.childError = 'Choose a username.'; return render(); }
+    if (f.userStatus === 'taken')  { S.childError = 'Choose a username that’s free.'; return render(); }
+    /* ⊕ DEVIATION: Design validates the child's password at 6 characters.
+       `CHILD_PASSWORD_MIN` on the backend is 8, and `POST /children` refuses
+       a shorter one — so a 6 would pass the screen and fail the server, and
+       the parent would be told "at least 8" by a machine after being told
+       "at least 6" by us. The screen asks for what the server accepts. */
+    if (f.pass.length < 8)         { S.childError = 'Their password needs at least 8 characters.'; return render(); }
+
+    S.childError = '';
+
+    /* Not verified yet: hold it. The unit picker is per child and there is
+       no child to ask about, so the "where are they up to?" question waits
+       until there is one. Design's verify screen already promises exactly
+       this ("We'll hold your place until the email is verified"). */
+    if (!S.verified) {
+      S.pending.push(Object.assign({}, f));
+      S.form = blankChild();
+      saveDraft();
+      return go('children');
+    }
+
+    C.setBusy(btn, true, 'Setting up…');
+    createChild(f).then(function (res) {
+      C.setBusy(btn, false);
+      S.form = blankChild();
+      startUnitStep(res.child_id, res.name, res.year, res.mode, res.pickerNote);
+    }).catch(function (e) {
+      C.setBusy(btn, false);
+      /* 409 username_unavailable is the one refusal with a recovery path:
+         put the server's first suggestion back on the username line rather
+         than leaving the parent to invent another name. */
+      if (e && e.status === 409 && e.code === 'username_unavailable') {
+        S.form.userStatus = 'taken';
+        S.form.userReason = e.message;
+        S.form.suggestion = (e.data && e.data.suggestions && e.data.suggestions[0]) || '';
+        S.childError = '';
+      } else {
+        S.childError = (e && e.message) || 'We couldn’t set that child up just now.';
+      }
+      render();
+    });
+  }
+
+  /* PATCH is the edit path — a child that exists is never re-created. */
+  function saveEdit(btn) {
+    var f = S.form;
+    var child = S.children[S.editing];
+    if (!child || !child.id) { S.editing = -1; S.form = blankChild(); return go('children'); }
+    C.setBusy(btn, true, 'Saving…');
+    C.api('/api/consumer/children/' + child.id, {
+      method: 'PATCH', token: S.token,
+      body: {
+        first_name: f.name.trim(),
+        year_group: f.year,
+        mode: f.mode === 'home' ? 'home_education' : 'alongside_school',
+        exam_board: isGcse() ? (f.board || 'AQA') : undefined,
+        tier: isGcse() ? tierValue(f.tier) : undefined
+      }
+    }).then(function () {
+      return loadFamily();
+    }).then(function () {
+      C.setBusy(btn, false);
+      S.editing = -1; S.form = blankChild();
+      go('children');
+    }).catch(function (e) {
+      C.setBusy(btn, false);
+      S.childError = (e && e.message) || 'We couldn’t save that change.';
+      render();
+    });
+  }
+
+  function tierValue(t) {
+    // 'Not decided' is a real answer and the honest storage for it is null —
+    // the database's own CHECK allows only foundation/higher off null.
+    if (t === 'Foundation') { return 'foundation'; }
+    if (t === 'Higher') { return 'higher'; }
+    return null;
+  }
+
+  /* One create, used by the child step and by the post-verification flush. */
+  function createChild(f) {
+    var mode = f.mode === 'home' ? 'home_education' : 'alongside_school';
+    var body = {
+      first_name: f.name.trim(),
+      year_group: f.year,
+      username: (f.user || '').trim(),
+      password: f.pass,
+      mode: mode,
+      /* ⊕ The contract's generation table makes `full` the default for home
+         education and `light` the default alongside school, but
+         `attach_child_to_family` defaults to `light` whatever the mode. The
+         page sends the intended one rather than leaving a home-educating
+         family on two sessions a week — which is what Design's own mode
+         copy promises them ("four or five sessions a week"). */
+      intensity: mode === 'home_education' ? 'full' : 'light',
+      exam_board: (f.year >= 10 ? (f.board || 'AQA') : 'AQA'),
+      tier: f.year >= 10 ? tierValue(f.tier) : null,
+      pathway: f.year >= 10 && f.route ? f.route.toLowerCase() : null
+    };
+    if (f.unit) { body.unit_code = f.unit; }
+    return C.api('/api/consumer/children', { method: 'POST', token: S.token, body: body })
+      .then(function (d) {
+        return loadFamily().then(function () {
+          var picker = d && d.position && d.position.picker;
+          return {
+            child_id: d.child_id,
+            name: f.name.trim(),
+            year: f.year,
+            mode: mode,
+            pickerNote: (picker && picker.applied === false) ? NOT_IN_SCHEME : ''
+          };
+        });
+      });
+  }
+
+  /* The one sentence for "you named a unit this child's year does not
+     teach". Design has no state for it; the backend answers
+     `position.picker.applied === false`, and saying nothing would leave a
+     parent believing their child starts somewhere they do not. */
+  var NOT_IN_SCHEME = 'The unit isn’t in this year’s scheme; work starts at the term week.';
+
+  /* ══ STEP: UNIT ═══════════════════════════════════════════════════════ */
+  function startUnitStep(childId, name, year, mode, note) {
+    S.unitChildId = childId;
+    S.unitChildName = name;
+    S.unitChildYear = year;
+    S.unitChildMode = mode;
+    S.unitUnits = null;              // null = loading
+    S.unitPicked = null;
+    S.unitError = '';
+    S.unitNote = note || '';
+    go('unit');
+    C.api('/api/consumer/children/' + childId + '/picker', { token: S.token })
+      .then(function (d) { S.unitUnits = groupUnits((d && d.units) || []); render(); })
+      .catch(function (e) {
+        console.error('[signup] picker', e);
+        S.unitUnits = [];
+        S.unitError = (e && e.message) || 'We couldn’t load this year’s units.';
+        render();
+      });
+  }
+
+  /* The picker's flat unit list, grouped into Design's six half-term blocks
+     by the teaching-order week of each unit's FIRST lesson. */
+  function groupUnits(units) {
+    var byBlock = {};
+    BLOCKS.forEach(function (b) { byBlock[b.code] = { code: b.code, term: b.term, units: [] }; });
+    units.forEach(function (u) {
+      var weeks = (u.lessons || []).map(function (l) { return Number(l.week); })
+                   .filter(function (n) { return isFinite(n); });
+      var first = weeks.length ? Math.min.apply(null, weeks) : 1;
+      var b = blockFor(first);
+      byBlock[b.code].units.push({
+        unit_code: u.unit_code || null,
+        name: u.name,
+        subject: u.subject,
+        first: first
+      });
+    });
+    return BLOCKS.map(function (b) {
+      var g = byBlock[b.code];
+      g.units.sort(function (a, z) { return a.first - z.first; });
+      return g;
+    }).filter(function (g) { return g.units.length; });
+  }
+
+  function viewUnit() {
+    var name = S.unitChildName || 'your child';
+    var h = '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">' +
+      esc(name) + ' · Year ' + esc(S.unitChildYear) + '</p>' +
+      '<h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:38px;line-height:1.02;letter-spacing:-.035em">Where is ' +
+      esc(name) + ' up to?</h1>' +
+      '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' +
+      esc(S.unitChildMode === 'home_education' ? COPY.unitIntroHome : COPY.unitIntroSchool) + '</p>';
+
+    if (S.unitUnits === null) {
+      return h + '<p style="margin:22px 0 0;color:var(--ks3-ink-muted)">Loading this year’s units…</p>';
+    }
+    if (!S.unitUnits.length) {
+      return h + '<div style="margin-top:22px">' +
+        '<p style="font-size:16px;color:var(--ks3-ink-body)">' +
+        esc(S.unitError || 'We don’t have a unit list for this year yet.') + '</p>' +
+        '<p style="margin-top:8px;font-size:15px;color:var(--ks3-ink-muted)">' +
+        'That’s fine — the first week starts at the term week instead.</p></div>' +
+        '<button type="button" id="u-skip" style="margin-top:22px;width:100%;min-height:54px;' +
+        'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
+        'color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">Carry on</button>';
+    }
+
+    h += '<div style="margin-top:22px;display:flex;flex-direction:column;gap:22px">' +
+      S.unitUnits.map(function (g) {
+        return '<div><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
+          '<span style="display:grid;place-items:center;width:34px;height:34px;border:2px solid var(--ks3-ink);' +
+          'border-radius:10px;background:var(--ks3-band);font-family:var(--ks3-font-display);font-weight:800;' +
+          'font-size:15px">' + esc(g.code) + '</span>' +
+          '<span style="font-weight:700;font-size:16px">' + esc(g.term) + '</span></div>' +
+          '<div style="display:flex;flex-direction:column;gap:8px">' +
+          g.units.map(function (u) {
+            var on = S.unitPicked && S.unitPicked.name === u.name;
+            return optionBtn('data-unit="' + esc(u.name) + '"', on, 'padding:13px 16px',
+              '<span style="width:10px;height:10px;border-radius:99px;border:2px solid var(--ks3-ink);background:' +
+              (P.SUBJECT_DOT[u.subject] || 'var(--ks3-band)') + ';flex:0 0 auto"></span>' +
+              '<span style="flex:1">' + esc(u.name) + '</span>' +
+              '<span style="font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.08em;' +
+              'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(u.subject) + '</span>');
+          }).join('') + '</div></div>';
+      }).join('') + '</div>' +
+
+      '<div style="margin-top:22px;padding:16px 18px;border:2px dashed var(--ks3-rule-strong);' +
+      'border-radius:var(--ks3-r-panel);background:var(--ks3-inset);font-size:15px;color:var(--ks3-ink-body)">' +
+      'Everything before the unit you pick is treated as covered. Mr Badmus still checks it in short retrieval questions, so nothing is lost.</div>' +
+
+      (S.unitNote ? errorLine(S.unitNote) : '') +
+
+      '<button type="button" id="u-save" style="margin-top:22px;width:100%;min-height:54px;' +
+      'border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);' +
+      'color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">' +
+      esc(S.unitPicked ? ('Start ' + name + ' from ' + S.unitPicked.name) : 'Pick a unit to continue') + '</button>' +
+      '<button type="button" id="u-skip" style="margin-top:10px;width:100%;min-height:48px;border:0;' +
+      'background:none;font-weight:700;font-size:16px;color:var(--ks3-accent-text);cursor:pointer">' +
+      'Not sure, start from the beginning of the year</button>';
+    return h;
+  }
+
+  function bindUnit() {
+    var save = $('u-save');
+    if (save) {
+      save.addEventListener('click', function () {
+        if (!S.unitPicked) { return; }
+        var btn = this;
+        C.setBusy(btn, true, 'Saving…');
+        /* `unit_code` when the picker knows one (KS3), the unit's title
+           otherwise (KS4 has no unit codes). `findUnit` on the backend
+           accepts either, which is what makes one control work at both key
+           stages. */
+        C.api('/api/consumer/children/' + S.unitChildId + '/position', {
+          method: 'POST', token: S.token,
+          body: { unit_code: S.unitPicked.unit_code || S.unitPicked.name }
+        }).then(function () {
+          C.setBusy(btn, false);
+          return loadFamily().then(function () { go('children'); });
+        }).catch(function (e) {
+          C.setBusy(btn, false);
+          /* 404 unit_not_found is the same fact as
+             `position.picker.applied === false`: the unit is not in this
+             child's scheme. Said in the same words, in Design's error slot,
+             and the flow carries on — the child is real and their plan is
+             sound at the term week. */
+          if (e && e.status === 404) {
+            S.unitNote = NOT_IN_SCHEME;
+            return loadFamily().then(render);
+          }
+          S.unitNote = (e && e.message) || 'We couldn’t save that just now.';
+          render();
+        });
+      });
+    }
+
+    var skip = $('u-skip');
+    if (skip) {
+      skip.addEventListener('click', function () {
+        // Nothing to write: `seedPlan` already put the child at the term
+        // week when they were created. "Start from the beginning of the
+        // year" is the default, so skipping means leaving it alone.
+        loadFamily().then(function () { go('children'); });
+      });
+    }
+  }
+
+  /* ══ STEP: CHILDREN LIST ══════════════════════════════════════════════ */
+  function viewChildren() {
+    var rows = S.children.map(function (c, i) {
+      return { initial: (c.name || '?').charAt(0).toUpperCase(), name: c.name,
+               meta: c.meta, idx: i, pending: false };
+    }).concat(S.pending.map(function (c, i) {
+      return { initial: (c.name || '?').charAt(0).toUpperCase(), name: c.name,
+               meta: pendingMeta(c), idx: i, pending: true };
+    }));
+
+    var total = rows.length;
+    var heading = total === 1 ? (rows[0].name + ' is set up')
+                              : (total + ' children set up');
+
+    var extra = tiers && C.price(tiers, 'month', 2);
+    var extraLine = extra
+      ? ('Each extra child is ' + P.money(extra.rest) + ' a month on the same plan. Add them now or any time later.')
+      : ('Each extra child is ' + P.PENDING + ' a month on the same plan. Add them now or any time later.');
+
+    var h = '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">' +
+      esc(heading) + '</h1>' +
+      '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">' + esc(extraLine) + '</p>' +
+      '<div style="margin-top:22px;display:flex;flex-direction:column;gap:12px">' +
+      rows.map(function (r) {
+        return '<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;border:2px solid var(--ks3-ink);' +
+          'border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">' +
+          '<span style="display:grid;place-items:center;width:44px;height:44px;border-radius:14px;' +
+          'background:var(--ks3-accent);border:2px solid var(--ks3-ink);font-family:var(--ks3-font-display);' +
+          'font-weight:800;font-size:20px">' + esc(r.initial) + '</span>' +
+          '<span style="flex:1;min-width:0">' +
+          '<span style="display:block;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;' +
+          'letter-spacing:-.02em">' + esc(r.name) + '</span>' +
+          '<span style="display:block;font-size:14px;color:var(--ks3-ink-muted)">' + esc(r.meta) + '</span></span>' +
+          (r.pending ? '' :
+            '<button type="button" data-edit="' + r.idx + '" style="min-height:40px;padding:0 12px;' +
+            'border:2px solid var(--ks3-rule-strong);border-radius:10px;background:var(--ks3-band);' +
+            'font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">Edit</button>') +
+          '</div>';
+      }).join('') +
+      '<button type="button" id="add-another" style="min-height:64px;display:flex;align-items:center;' +
+      'justify-content:center;gap:10px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-card);' +
+      'background:none;font-weight:700;font-size:17px;color:var(--ks3-accent-text);cursor:pointer">' +
+      P.mark(P.PATH.plus) + 'Add another child</button>' +
+      '</div>' +
+      errorLine(S.error) +
+      primaryBtn('to-plan', 'Choose a plan', ';margin-top:26px');
+    return h;
+  }
+
+  function pendingMeta(c) {
+    return 'Year ' + c.year + (c.board ? ' · ' + c.board : '') +
+      (c.route ? ' · ' + c.route : '') +
+      ' · ' + (c.mode === 'home' ? 'Home education' : 'Alongside school') +
+      ' · @' + c.user;
+  }
+
+  function bindChildren() {
+    $('add-another').addEventListener('click', function () {
+      S.form = blankChild(); S.editing = -1; go('child');
+    });
+    $('to-plan').addEventListener('click', function () {
+      if (!S.verified) {
+        /* Nothing downstream exists without a family, and a family needs a
+           verified address. Design's verify screen is exactly the right
+           place to say so, and it already says it. */
+        S.error = '';
+        return go('verify');
+      }
+      if (!S.children.length) {
+        S.error = 'Add a child first — the plan is priced per child.';
+        return render();
+      }
+      go('plan');
+    });
+  }
+
+  /* ══ STEP: PLAN ═══════════════════════════════════════════════════════ */
+  function viewPlan() {
+    var count = Math.max(1, S.children.length);
+    var m = tiers && C.price(tiers, 'month', count);
+    var y = tiers && C.price(tiers, 'year', count);
+    var annual = S.plan === 'year';
+    var chosen = annual ? y : m;
+    var savingPence = (m && y) ? (m.total_pence * 12 - y.total_pence) : 0;
+
+    var lines = S.children.length
+      ? S.children.map(function (c, i) {
+          var per = chosen ? (i === 0 ? chosen.first : chosen.rest) : null;
+          return { label: c.name + ' (Year ' + c.year + ')', amount: per == null ? P.PENDING : P.money(per) };
+        })
+      : [{ label: 'First child', amount: chosen ? P.money(chosen.first) : P.PENDING }];
+
+    return '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">One plan · everything included</p>' +
+      '<h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;line-height:1;letter-spacing:-.035em">Start your free week</h1>' +
+      '<p style="margin:14px 0 0;font-size:17px;color:var(--ks3-ink-body)">Seven days free, full access. Your card isn\'t charged until <strong style="color:var(--ks3-ink)">' +
+      esc(trialEndLabel()) + '</strong>. Cancel any time before then and you pay nothing.</p>' +
+
+      '<div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+      [{ id: 'month', label: 'Monthly', price: m ? P.money(m.total_pence) : P.PENDING, sub: 'a month · cancel any time' },
+       { id: 'year',  label: 'Annual',  price: y ? P.money(y.total_pence) : P.PENDING,
+         sub: savingPence > 0 ? ('a year · save £' + Math.round(savingPence / 100)) : 'a year' }
+      ].map(function (p) {
+        return optionBtn('data-plan="' + p.id + '"', S.plan === p.id,
+          'flex-direction:column;align-items:flex-start;gap:2px;padding:16px',
+          '<span style="font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;' +
+          'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(p.label) + '</span>' +
+          '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:28px;' +
+          'letter-spacing:-.03em;line-height:1.1">' + esc(p.price) + '</span>' +
+          '<span style="font-size:14px;font-weight:600;color:var(--ks3-ink-body)">' + esc(p.sub) + '</span>');
+      }).join('') + '</div>' +
+
+      '<div style="margin-top:18px;padding:20px 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">' +
+      '<div style="display:flex;flex-direction:column;gap:10px">' +
+      lines.map(function (l) {
+        return '<div style="display:flex;justify-content:space-between;gap:12px;font-size:16px"><span>' +
+          esc(l.label) + '</span><span style="font-family:var(--ks3-font-mono);font-weight:500">' +
+          esc(l.amount) + '</span></div>';
+      }).join('') + '</div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px;padding-top:14px;border-top:2px solid var(--ks3-rule)">' +
+      /* `min-width:0` + `flex:0 0 auto` are not in Design's file and are not
+         a style change: at 390px her label wraps to two lines and, without
+         them, the total is free to be squeezed by the label rather than the
+         label by the total. The number is the thing that must never shrink. */
+      '<span style="font-weight:700;font-size:17px;min-width:0">' +
+      (annual ? 'Per year, after the free week' : 'Per month, after the free week') + '</span>' +
+      '<span style="flex:0 0 auto;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;letter-spacing:-.03em">' +
+      esc(chosen ? P.money(chosen.total_pence) : P.PENDING) + '</span></div>' +
+      '<p style="margin:6px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:right">' +
+      esc(count + ' ' + (count === 1 ? 'child' : 'children') + ' · everything included · no extras') + '</p></div>' +
+
+      '<ul style="margin:22px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:16px;color:var(--ks3-ink-body)">' +
+      ['Work set every week, marked against the mark scheme',
+       'Two exam answers a month marked by Mr Badmus himself, per child',
+       'Sunday email and a printable termly report'].map(function (t) {
+        return '<li style="display:flex;gap:10px;align-items:baseline">' +
+          P.mark(P.PATH.tick, 'color:var(--ks3-ok-text)') + esc(t) + '</li>';
+      }).join('') + '</ul>' +
+
+      errorLine(S.error) +
+
+      '<button type="button" id="to-stripe" style="margin-top:24px;width:100%;min-height:56px;' +
+      'border:2px solid var(--ks3-accent-text);border-radius:var(--ks3-r-control);background:var(--ks3-accent-text);' +
+      'color:#FFFFFF;font-weight:700;font-size:18px;cursor:pointer">Add a card and start the free week</button>' +
+      '<p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">Card details are taken securely by Stripe. We never see your card number.</p>';
+  }
+
+  function bindPlan() {
+    $('to-stripe').addEventListener('click', function () {
+      S.error = '';
+      /* The spinner goes up FIRST. Creating a Checkout session is a round
+         trip to Stripe and it is not always fast; a button that sits there
+         doing nothing gets pressed twice, and two Checkout sessions is two
+         subscriptions waiting to happen. */
+      go('stripe');
+      C.api('/api/consumer/checkout', {
+        method: 'POST', token: S.token, body: { interval: S.plan }
+      }).then(function (d) {
+        if (!d || !d.url) { throw new Error('We couldn’t open the payment page just now.'); }
+        // The draft has served its purpose — every child is on the server.
+        clearPending();
+        window.location.href = d.url;
+      }).catch(function (e) {
+        console.error('[signup] checkout', e);
+        S.error = (e && e.message) || 'We couldn’t open the payment page just now.';
+        go('plan');
+      });
+    });
+  }
+
+  /* ══ STEP: STRIPE HAND-OFF ════════════════════════════════════════════ */
+  function viewStripe() {
+    return '<div style="margin-top:40px;text-align:center">' +
+      '<div style="margin:0 auto;width:56px;height:56px;border-radius:99px;border:4px solid var(--ks3-rule);' +
+      'border-top-color:var(--ks3-accent);animation:pb-spin 1s linear infinite"></div>' +
+      '<h1 style="margin:24px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:32px;' +
+      'line-height:1.05;letter-spacing:-.03em">Taking you to Stripe</h1>' +
+      '<p style="margin:12px 0 0;font-size:17px;color:var(--ks3-ink-body)">You\'ll add a card there and come straight back. Nothing is charged for seven days.</p>' +
+      '</div>';
+  }
+
+  /* ══ plumbing ═════════════════════════════════════════════════════════ */
+  var VIEWS = {
+    account:  { view: viewAccount,  bind: bindAccount },
+    verify:   { view: viewVerify,   bind: bindVerify },
+    child:    { view: viewChild,    bind: bindChild },
+    unit:     { view: viewUnit,     bind: bindUnit },
+    children: { view: viewChildren, bind: bindChildren },
+    plan:     { view: viewPlan,     bind: bindPlan },
+    stripe:   { view: viewStripe,   bind: function () {} }
+  };
+
+  function render() {
+    var v = VIEWS[S.step] || VIEWS.account;
+    $('su-main').innerHTML = v.view();
+    renderChrome();
+    v.bind();
+  }
+
+  /* ⚠️ ONE delegated listener, installed ONCE, for every `data-*` control on
+     every step. `render()` replaces `su-main`'s innerHTML, which throws away
+     the child elements and their listeners — but NOT a listener on su-main
+     itself. Registering the delegation inside each step's `bind()` therefore
+     stacks a fresh copy on every render, and after three renders of the
+     child step one tap on "Y9" runs the handler three times. It looks
+     correct (idempotent state writes) right up until a handler stops being
+     idempotent, and then it is a bug nobody can reproduce on the first
+     click. So it lives here, outside the render cycle, and dispatches on
+     the attribute rather than on which step drew it. */
+  function installDelegation() {
+    $('su-main').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-year],[data-board],[data-route],[data-tier],' +
+                               '[data-mode],[data-unit],[data-edit],[data-plan]');
+      if (!b) { return; }
+
+      if (b.hasAttribute('data-plan')) {
+        S.plan = b.getAttribute('data-plan');
+        return render();
+      }
+
+      if (b.hasAttribute('data-unit')) {
+        var pickedName = b.getAttribute('data-unit');
+        (S.unitUnits || []).forEach(function (g) {
+          g.units.forEach(function (u) { if (u.name === pickedName) { S.unitPicked = u; } });
+        });
+        S.unitNote = '';
+        return render();
+      }
+
+      if (b.hasAttribute('data-edit')) {
+        var c = S.children[Number(b.getAttribute('data-edit'))];
+        if (!c) { return; }
+        S.form = {
+          name: c.name, year: c.year, board: c.board, tier: c.tierLabel, route: c.routeLabel,
+          mode: c.mode === 'home_education' ? 'home' : 'school',
+          user: c.username, pass: '', unit: null,
+          // The username already belongs to this child; asking the checker
+          // about it would answer "taken" about themselves.
+          userStatus: 'free', userReason: '', suggestion: ''
+        };
+        S.editing = S.children.indexOf(c);
+        return go('child');
+      }
+
+      S.childError = '';
+      if (b.hasAttribute('data-year'))  { S.form.year  = Number(b.getAttribute('data-year')); }
+      if (b.hasAttribute('data-board')) { S.form.board = b.getAttribute('data-board'); }
+      if (b.hasAttribute('data-route')) { S.form.route = b.getAttribute('data-route'); }
+      if (b.hasAttribute('data-tier'))  { S.form.tier  = b.getAttribute('data-tier'); }
+      if (b.hasAttribute('data-mode'))  { S.form.mode  = b.getAttribute('data-mode'); }
+      render();
+    });
+  }
+
+  function go(step) {
+    S.step = step;
+    S.childError = '';
+    saveDraft();
+    recordTerms();          // see the note on recordTerms — retried, not blocking
+    render();
+  }
+
+  function saveDraft() {
+    writeDraft({ email: S.email, step: S.step, plan: S.plan, pending: S.pending,
+                 terms: S.terms });
+  }
+
+  /* Read the family back. This is the truth about who exists; the list, the
+     price lines and the seat count all come from here. */
+  function loadFamily() {
+    if (!S.token) { return Promise.resolve(); }
+    return C.api('/api/consumer/family', { token: S.token }).then(function (d) {
+      S.children = ((d && d.children) || []).map(function (c) {
+        var mode = c.mode === 'home_education' ? 'Home education' : 'Alongside school';
+        var board = c.exam_board || null;
+        var route = c.pathway ? (c.pathway.charAt(0).toUpperCase() + c.pathway.slice(1)) : null;
+        var tierLabel = c.tier === 'foundation' ? 'Foundation'
+                      : (c.tier === 'higher' ? 'Higher' : 'Not decided');
+        var isKs4 = Number(c.year_group) >= 10;
+        return {
+          id: c.id,
+          name: c.first_name,
+          year: Number(c.year_group),
+          username: c.username,
+          mode: c.mode,
+          board: isKs4 ? board : null,
+          routeLabel: route,
+          tierLabel: tierLabel,
+          meta: 'Year ' + c.year_group + (isKs4 && board ? ' · ' + board : '') +
+                (isKs4 && route ? ' · ' + route : '') + ' · ' + mode + ' · @' + c.username
+        };
+      });
+    }, function (e) {
+      // A family that cannot be read is not a family that does not exist.
+      console.error('[signup] family', e);
+    });
+  }
+
+  /* Everything that happens the moment a verified session appears: make the
+     family, create anything held on the device, and put the parent on the
+     step that is now actually available. */
+  /* ── recording the acceptance (Night 4, MRB-317 ruling 7) ─────────────
+     The tick is taken on the account step, but there is no account to write
+     it against until Supabase has made one — and on the Google path that is
+     a different page load entirely. So it is written at the first moment a
+     parent token exists, which is here, and it is retried on every step
+     transition until it lands (see `go()`).
+
+     ⚠️ It does NOT block. A parent who agreed and whose consent write failed
+     on a flaky connection must not be stuck on a spinner in the middle of
+     signing up: they agreed, we have the tick in the draft, and the retry on
+     the next step is a better answer than a dead button. If it never lands
+     the console says so and the account simply has no timestamp, which is
+     visible and fixable — unlike a parent who gave up. */
+  function recordTerms() {
+    /* ⚠️ `S.ensured` is not belt-and-braces, it is the ORDER. `PATCH /parent`
+       is behind `requireParent`, and requireParent needs a `profiles` row —
+       which does not exist until `/family/ensure` has made one. Called any
+       earlier this 403s with "This is a parent-only area", every time, on
+       every signup. Found by driving it, 3 Sep 2026. The acceptance for a
+       brand-new account is carried on the ensure call itself (below); this
+       is the retry for an account that already had a profile. */
+    if (!S.terms || S.termsSent || !S.token || !S.ensured) { return; }
+    S.termsSent = true;
+    C.api('/api/consumer/parent', {
+      method: 'PATCH', token: S.token, body: { terms_accepted: true }
+    }).catch(function (e) {
+      S.termsSent = false;                 // let the next step try again
+      console.error('[signup] terms', e);
+    });
+  }
+
+  function adoptSession(session) {
+    S.session = session;
+    S.token = session.access_token;
+    S.email = session.user.email || S.email;
+    S.verified = !!session.user.email_confirmed_at;
+    if (!S.verified) { return Promise.resolve(); }
+
+    /* The acceptance rides on the call that CREATES the profile, because
+       that is the first request in the whole flow that is allowed to write
+       one. The backend's stamp is write-once, so sending it on every ensure
+       — this route is idempotent and runs on every sign-in — cannot walk the
+       date forward. */
+    return C.api('/api/consumer/family/ensure', {
+        method: 'POST', token: S.token,
+        body: S.terms ? { terms_accepted: true } : {}
+      })
+      .then(function (d) {
+        S.ensured = true;
+        if (d && d.terms_accepted_at) { S.termsSent = true; }
+        return loadFamily();
+      })
+      .then(flushPending)
+      .then(function () { recordTerms(); });   // retry if ensure did not stamp
+  }
+
+  function flushPending() {
+    var d = readDraft();
+    var queue = (d && d.pending) || [];
+    if (!queue.length) { return Promise.resolve(); }
+
+    // One at a time and in order: two creates racing for one seat cap, or
+    // for one username, is a refusal nobody can explain afterwards.
+    var made = [];
+    return queue.reduce(function (chain, f) {
+      return chain.then(function () {
+        return createChild(f).then(function (res) { made.push(res); },
+          function (e) {
+            console.error('[signup] pending child', e);
+            S.error = (e && e.message) || 'We couldn’t set one of your children up.';
+          });
+      });
+    }, Promise.resolve()).then(function () {
+      S.pending = [];
+      clearPending();
+      S.flushed = made;
+    });
+  }
+
+  /* ══ boot ═════════════════════════════════════════════════════════════ */
+  C.boot({ sessionOptional: true, run: function (ctx) {
+    sb = ctx.sb;
+    installDelegation();
+
+    var draft = readDraft();
+    S.email   = draft.email || '';
+    S.plan    = draft.plan === 'year' ? 'year' : 'month';
+    S.pending = draft.pending || [];
+    S.terms   = draft.terms === true;
+
+    var wanted = new URLSearchParams(window.location.search).get('step');
+
+    /* Prices first, but never blocking: the plan step is the only screen
+       that needs them and it is four steps away. */
+    C.pricing().then(function (p) { tiers = p.tiers; render(); })
+               .catch(function (e) { console.error('[signup] pricing', e); });
+
+    function settle() {
+      /* Where to land. A URL that names a step wins (Stripe's cancel_url
+         sends the parent back to `?step=plan`), then the draft, then the
+         first step that is actually reachable. */
+      if (wanted && VIEWS[wanted] && (S.verified || wanted === 'account' || wanted === 'verify')) {
+        return go(wanted);
+      }
+      if (!S.session) { return go(draft.step === 'verify' ? 'verify' : 'account'); }
+      if (!S.verified) { return go(draft.step === 'child' ? 'child' : 'verify'); }
+
+      /* Verified. If children were just created from the draft, ask the unit
+         question for the first of them — that is the step Design's flow owes
+         them, and it was skipped only because there was no child to ask
+         about at the time. */
+      var made = S.flushed || [];
+      if (made.length) {
+        var first = made[0];
+        return startUnitStep(first.child_id, first.name, first.year, first.mode, first.pickerNote);
+      }
+      if (draft.step && VIEWS[draft.step] && draft.step !== 'account' && draft.step !== 'verify') {
+        return go(draft.step);
+      }
+      return go(S.children.length ? 'children' : 'child');
+    }
+
+    if (ctx.session) {
+      adoptSession(ctx.session).then(settle, function (e) {
+        console.error('[signup] adopt', e);
+        S.error = (e && e.message) || '';
+        settle();
+      });
+    } else {
+      render();
+      settle();
+    }
+  }});
+})();
+</script>
+</body>
+</html>

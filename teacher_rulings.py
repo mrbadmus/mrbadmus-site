@@ -2604,16 +2604,61 @@ INSERT_AT = {
     # silently returned to the working year. A fresh `goClassList` would have
     # been a second answer to a question MRB-287 E1 already answered.
     #
-    # ⚠️ IT IS ON ALL SIX PAGES INCLUDING classes.html, where it re-enters the
-    # page it is on. That is deliberate and it is what the hand-written pages
-    # do: the header is chrome, chrome is identical everywhere, and a control
-    # that appears and disappears depending on which screen you are on is a
-    # harder thing for a teacher to learn than one that is always there.
+    # ⚠️ IT WAS ON ALL SIX PAGES INCLUDING classes.html, where it re-entered
+    # the page it was on. That was deliberate: the header is chrome, chrome
+    # is identical everywhere, and a control that appears and disappears
+    # depending on which screen you are on is a harder thing for a teacher
+    # to learn than one that is always there.
+    #
+    # ⊕ SUPERSEDED, Mide, 4 Sep 2026. On classes.html the crumb beside it
+    # (node 14) ALREADY reads "My classes" — that screen's `crumb` value is
+    # literally the string "My classes" — so the always-there argument above
+    # bought consistency at the cost of two controls saying the same thing
+    # in the same breath, one of them a press that reloads the page you are
+    # already reading. Wrapped in an `if` on `showClassesLink`
+    # (shared/teacher-live.js), true on every screen except classes.html, so
+    # the button still appears identically on the other five and the crumb
+    # alone answers "where am I" on the one screen where the two would have
+    # agreed.
+    #
+    # ⚠️ STILL COMPILED INTO ALL SIX. The `if` is a RUNTIME condition, not a
+    # build-time one — this node carries no `i` (INSERT_AT never gives one)
+    # and is inserted once into the shared template tree the six pages all
+    # emit from, so `"data-mrb-added":"nav-classes"` is in classes.html's
+    # bytes exactly as it always was; build_teacher_port.py's own byte check
+    # would refuse the build otherwise. `AMENDED_ADDITIONS`'s `nav-classes`
+    # entry keeps `pages` naming all six for that reason, and adds
+    # `runtime_hidden_on=("classes.html",)` instead — the field
+    # `teacher_behaviour.py` reads to stop expecting a PRESS there without
+    # claiming the markup is gone.
     #
     # Placed AFTER node 13 — Design's crumb block, with its own left rule —
     # and before node 15, the search button that carries `margin-left:auto`.
     # So it sits in the left-hand group with the brand and the crumb, and the
     # right-hand group Design drew is untouched.
+    #
+    # ── ⊕ 4 Sep 2026, ON THE v3 MERGE — READ THE TWO NOTES IN ORDER ──────
+    #
+    # ⚠️ THE PARAGRAPHS ABOVE AND THE ONE BELOW LOOK LIKE THEY DISAGREE, AND
+    # THEY DO NOT — they are two dates. `main` shipped the `if
+    # showClassesLink` wrap TODAY, against the v2-based pages, to stop the
+    # button and the crumb both saying "My classes" on the classes screen.
+    # This branch had already RETIRED the whole insertion, because v3's top
+    # bar draws the control itself. Merging the two would have put the
+    # button back beside Design's own tab — the duplicate `main` had just
+    # removed, in a new place. The retirement below wins on the merged tree,
+    # and it satisfies `main`'s fix as well as MRB-304's ruling.
+    #
+    # ⚠️ WHAT SURVIVES THE RETIREMENT, AND IS NOW READ BY NOTHING:
+    # `showClassesLink` is still computed in `shared/teacher-live.js`'s
+    # `load()`, still written into the fixture payload by
+    # `build_teacher_port.py`, and still exposed by the `LOGIC` entry below.
+    # With the insertion gone no `<if>` reads it. It is KEPT rather than
+    # unpicked across three files during a merge — it is an inert boolean
+    # that cannot reach a screen — and it is named HERE so that a future
+    # reader finds the answer instead of the puzzle. Deleting the three is a
+    # tidy-up, not a fix, and it belongs in a run of its own.
+    #
     # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — RETIRED, BECAUSE DESIGN DREW IT.
     #
     # The insertion that was here put a "My classes" button into the top bar
@@ -5551,6 +5596,26 @@ LOGIC = (
      "Switching year always returns to the GRID, which is the retired page's "
      "behaviour and the only destination that is certainly valid in the year "
      "being opened."),
+
+    # ⊕ Mide, 4 Sep 2026 — `showClassesLink`, the top bar's "My classes"
+    # button (INSERT_AT[(10,13)]). ⚠️ WITHOUT THIS RETURN-OBJECT ENTRY THE
+    # KEY IS INVISIBLE, even though `shared/teacher-live.js`'s `load()`
+    # already returns it and `build_teacher_port.py`'s fixture payload
+    # already carries it: `renderVals()` is the render SCOPE, an explicit
+    # object literal, not a pass-through of `window.__MRB_DATA__` — a key
+    # absent from here cannot be read by any `{"e":"..."}` in the template,
+    # `if` nodes included, no matter how correct the underlying data is.
+    # That is the exact shape `hasOtherYears`/`canWrite` just above already
+    # solved, so this reuses their anchor rather than inventing a second one.
+    ("      canWrite: MRB_DATA('canWrite'),\n",
+     "      canWrite: MRB_DATA('canWrite'),\n"
+     "      showClassesLink: MRB_DATA('showClassesLink'),\n",
+     "the one key INSERT_AT[(10,13)]'s `if` reads. Anchored on `canWrite`'s "
+     "own line rather than the `return {` head above: that head is this "
+     "same MRB-287 E1 patch's own `to` text, and re-matching it would be a "
+     "second ruling assuming a FROM only the first one's replacement ever "
+     "produces — LOGIC applies in tuple order and each entry's `frm` must "
+     "be unique in the source AT THAT POINT, so this one comes after."),
 
     ("      goClasses: () =>",
      "      signOut: () => window.MrBadmusTeacherGuard.signOut(),\n"

@@ -493,6 +493,15 @@
       font-size: 1.05rem;
       color: var(--text);
     }
+    /* The academic year, shown beside every class name (MRB-307). Quieter
+       than the name, but never hidden: a wrong year must be readable at a
+       glance on the screen where the teacher confirms the import. */
+    .class-setting-year {
+      font-family: var(--font-sans, inherit);
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
     .class-setting-count {
       color: var(--muted);
       font-size: 0.8rem;
@@ -878,6 +887,9 @@
       </div>
     </div>
 
+    <div id="working-year-note" class="card-help" style="margin-top:10px;">
+      Checking which school year to import into…
+    </div>
     <div id="staff-loading-note" class="card-help" style="display:none;margin-top:10px;">
       Loading teacher list…
     </div>
@@ -984,7 +996,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="/shared/config.js?v=06f24811"></script>
+<script src="/shared/config.js?v=d1fecb43"></script>
 <script src="/shared/class-entry.js?v=d47329ae" defer></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
@@ -1040,6 +1052,94 @@
     return year <= 9 ? 'KS3' : 'KS4';
   }
 
+  // ── The academic year this import will land in (MRB-307) ──────────────
+  //
+  // An import used to name no year at all: the page sent `academicYearName:
+  // null` and the edge function fell back to `academic_years.is_current`.
+  // That flag is moved BY HAND on 1 September, so on 1 Sep 2026 it still
+  // said 2025-26 and 14 real students were enrolled into LAST YEAR's 7h/Sc5
+  // while this year's stayed empty. Nothing on screen said which year.
+  //
+  // So the year is now resolved HERE, named on screen, and sent explicitly.
+  // `workingAcademicYear()` is date-based (earliest year still running past
+  // today+30d) and NEVER reads is_current.
+  let workingYear = null;        // { id, name, end_date } once resolved
+  let workingYearFailed = false; // true once we know we cannot resolve it
+
+  // ⚠️ MRB-267: there is exactly ONE implementation of the working-year rule,
+  // in shared/class-entry.js. Do NOT reimplement it here — a second copy is
+  // precisely the drift that consolidation removed. If the shared helper is
+  // absent the import BLOCKS rather than guessing, because a guessed year is
+  // the defect this whole change exists to kill.
+  async function loadWorkingYear() {
+    try {
+      // class-entry.js is `defer`red but teacher-guard.js is not, so on a slow
+      // parse the guard can call us before the helper exists. Wait for it
+      // rather than hard-failing on a timing accident — but never longer than
+      // 5s, and never by reimplementing the rule.
+      const entry = await (async function () {
+        for (let i = 0; i < 50; i++) {
+          if (window.MRBClassEntry &&
+              typeof window.MRBClassEntry.workingAcademicYear === 'function') {
+            return window.MRBClassEntry;
+          }
+          await new Promise(function (r) { setTimeout(r, 100); });
+        }
+        return null;
+      })();
+      if (!entry) {
+        throw new Error('MRBClassEntry not loaded — cannot resolve academic year');
+      }
+      let rows = null;
+      if (typeof entry.academicYears === 'function') {
+        rows = await entry.academicYears();
+      }
+      if (!rows) {
+        const { data, error } = await sb
+          .from('academic_years')
+          .select('id, name, start_date, end_date')
+          .eq('school_id', mySchoolId)
+          .is('deleted_at', null);
+        if (error) throw error;
+        rows = data || [];
+      }
+      workingYear = entry.workingAcademicYear(rows) || null;
+      workingYearFailed = !workingYear;
+    } catch (e) {
+      console.error('[import.html] working year load failed', e);
+      workingYear = null;
+      workingYearFailed = true;
+    }
+    applyWorkingYearState();
+    if ($('screen-2') && $('screen-2').classList.contains('show')) {
+      rebuildClassSettings();
+    }
+  }
+
+  // The year is shown on screen 2 and gates the Next button, so an import can
+  // never proceed into a year the teacher was never told about.
+  function applyWorkingYearState() {
+    const note = $('working-year-note');
+    if (note) {
+      if (workingYear) {
+        note.innerHTML = 'These classes will be imported into the ' +
+          '<strong>' + escapeHtml(workingYear.name) + '</strong> school year.';
+        note.style.display = 'block';
+      } else if (workingYearFailed) {
+        note.innerHTML = '<strong>We could not work out which school year to ' +
+          'import into.</strong> Nothing has been changed. Please reload the ' +
+          'page, and tell Mr Badmus if it keeps happening.';
+        note.style.display = 'block';
+      } else {
+        note.textContent = 'Checking which school year to import into…';
+        note.style.display = 'block';
+      }
+    }
+    applyStaffLoadingState();
+  }
+
+  function yearIsReady() { return !!(workingYear && workingYear.name); }
+
   // Staff + subject option lists (loaded once in onAllowed).
   let staffOptions = [];    // [{ id, label }]
   let subjectOptions = [];  // [{ id, name }]
@@ -1052,7 +1152,8 @@
     const note = document.getElementById('staff-loading-note');
     const nextBtn = document.getElementById('to-screen-3');
     if (note) note.style.display = staffSubjectsLoaded ? 'none' : 'block';
-    if (nextBtn) nextBtn.disabled = !staffSubjectsLoaded;
+    // The year must be resolved too — see loadWorkingYear() (MRB-307).
+    if (nextBtn) nextBtn.disabled = !staffSubjectsLoaded || !yearIsReady();
   }
 
   // Dry-run payload result (screen 3) — held so Confirm can re-send dryRun:false.
@@ -1543,7 +1644,12 @@
 
       return '<div class="class-setting" data-class="' + escapeHtml(c.name) + '">' +
         '<div class="class-setting-head">' +
-          '<span class="class-setting-name">' + escapeHtml(c.name) + '</span>' +
+          '<span class="class-setting-name">' + escapeHtml(c.name) +
+            (yearIsReady()
+              ? ' <span class="class-setting-year">· ' +
+                  escapeHtml(workingYear.name) + '</span>'
+              : '') +
+          '</span>' +
           '<span class="class-setting-count">' + c.count +
             (c.count === 1 ? ' student' : ' students') + '</span>' +
         '</div>' +
@@ -1704,7 +1810,8 @@
         fileHash: fileState.fileHash,
         rowCount: fileState.rowCount,
       },
-      academicYearName: null,
+      // Named explicitly, never left for the backend to guess (MRB-307).
+      academicYearName: workingYear ? workingYear.name : null,
       classes:          classes,
       students:         students,
     };
@@ -2009,6 +2116,47 @@
     }
   }
 
+  // Resolve the imported class and point the button at it. Falls back to the
+  // class list, never to nothing — and never blocks the success screen, which
+  // has already rendered by the time this resolves.
+  async function setSuccessLink(landed, landedYear) {
+    const backLink = $('success-back-link');
+    if (!backLink) return;
+    backLink.href = classesUrl();
+    backLink.textContent = 'Go to my classes';
+
+    let one = landed.length === 1 ? landed[0] : null;
+
+    // No ids in the response (older roster-import): ask for them. Scoped to
+    // the working year, so this can never resolve last year's twin.
+    if (!one && lastPayload && Array.isArray(lastPayload.classes) &&
+        lastPayload.classes.length === 1 && workingYear) {
+      try {
+        const wanted = lastPayload.classes[0].name;
+        const { data, error } = await sb
+          .from('classes')
+          .select('id, name')
+          .eq('school_id', mySchoolId)
+          .eq('academic_year_id', workingYear.id)
+          .eq('name', wanted)
+          .is('deleted_at', null);
+        if (!error && data && data.length === 1) {
+          one = { id: data[0].id, name: data[0].name };
+        }
+      } catch (e) {
+        console.error('[import.html] class link lookup failed', e);
+      }
+    }
+
+    if (one && one.id) {
+      // ⚠️ The param is `class` — class-detail.html reads MRB_Q('class').
+      // `?id=` silently opens an empty page.
+      backLink.href = '/teacher/class-detail.html?class=' +
+        encodeURIComponent(one.id) + envSuffix('&');
+      backLink.textContent = 'Go to ' + one.name;
+    }
+  }
+
   function renderSuccess(data) {
     const counts = data.counts || {};
     const issues = Array.isArray(data.issues) ? data.issues : [];
@@ -2019,7 +2167,34 @@
         pluralPart(counts.studentsSkipped, 'row') + ' ' +
         (counts.studentsSkipped === 1 ? 'was' : 'were') + ' skipped. See below.</span>';
     }
+    // Name the year we actually enrolled into — the server's own answer,
+    // not our guess — so a wrong year could never again be invisible. And
+    // point the button at THAT class rather than the generic class list.
+    const landedYear = data.academicYear ||
+      (workingYear ? workingYear.name : null);
+    const landed = (Array.isArray(data.classes) ? data.classes : [])
+      .filter(function (c) { return c && c.id; });
+
+    if (landedYear) {
+      const names = landed.length
+        ? joinList(landed.map(function (c) {
+            return '<strong>' + escapeHtml(c.name) + '</strong>';
+          }))
+        : null;
+      summary += names
+        ? ' Everyone went into ' + names + ' in the <strong>' +
+          escapeHtml(landedYear) + '</strong> school year.'
+        : ' This was the <strong>' + escapeHtml(landedYear) +
+          '</strong> school year.';
+    }
     $('success-summary').innerHTML = summary;
+
+    // Link straight to the class we just filled, rather than to the list.
+    // The class ids come from the server when it sends them; when it does
+    // not — an older deployment of roster-import returns counts only — we
+    // look them up ourselves rather than make this depend on a backend
+    // release. Either way the teacher lands on the class, not a list.
+    setSuccessLink(landed, landedYear);
 
     // Per-row issues list on the completion screen (skips, notes).
     if (issues.length > 0) {
@@ -2131,6 +2306,8 @@
       // Load teacher/subject options in the background — they're only needed
       // on screen 2, by which point this has resolved.
       loadStaffAndSubjects();
+      // Which school year this import lands in (MRB-307). Gates screen 2.
+      loadWorkingYear();
     },
   });
 })();

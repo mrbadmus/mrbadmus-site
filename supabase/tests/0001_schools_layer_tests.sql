@@ -126,7 +126,20 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- Profiles for each. Note: the existing 33 profiles on the branch will
--- still exist; these are additional fake ones that won't collide.
+-- still exist; these are additional fake ones.
+--
+-- The ON CONFLICT is load-bearing, and it is newer than the rest of this
+-- harness. When these tests were written, inserting into auth.users above did
+-- nothing else. It does now: on_auth_user_created fires handle_new_user(),
+-- which auto-creates a public.profiles row for every one of the eleven fake
+-- users the moment Section A runs. So by the time we reach this statement the
+-- rows already exist, and a plain INSERT dies on profiles_pkey with a 23505
+-- before a single assertion gets to run.
+--
+-- We still need OUR values in them — the school_id, role, department and
+-- key_stage below are exactly what the RLS and scope assertions later in this
+-- file are checking. So this reconciles with the trigger rather than fighting
+-- it: let handle_new_user() make the row, then overwrite it with the fixture.
 INSERT INTO public.profiles (id, school_id, role, department, key_stage, first_name, last_name)
 VALUES
   -- Alpha
@@ -142,7 +155,14 @@ VALUES
   ('b0000002-0000-0000-0000-000000000002', '22222222-2222-2222-2222-222222222222', 'teacher', NULL,        'KS4', 'Bravo',  'BioTeacher'),
   ('b0000003-0000-0000-0000-000000000003', '22222222-2222-2222-2222-222222222222', 'student', NULL,        'KS4', 'Bravo',  'Student1'),
   -- Legacy
-  ('c0000001-0000-0000-0000-000000000001', NULL,                                    'student', NULL,       'KS4', 'Legacy', 'User');
+  ('c0000001-0000-0000-0000-000000000001', NULL,                                    'student', NULL,       'KS4', 'Legacy', 'User')
+ON CONFLICT (id) DO UPDATE SET
+  school_id  = EXCLUDED.school_id,
+  role       = EXCLUDED.role,
+  department = EXCLUDED.department,
+  key_stage  = EXCLUDED.key_stage,
+  first_name = EXCLUDED.first_name,
+  last_name  = EXCLUDED.last_name;
 
 -- One class in each school
 INSERT INTO public.classes (id, school_id, academic_year_id, name, key_stage, year_group, tier, science_pathway)
@@ -441,13 +461,24 @@ $$;
 
 -- ─── B11. Scheme of work entries: globally readable ──────────────────
 
+-- The unfiltered total, read as postgres BEFORE becoming the student, so the
+-- comparison below is student-count against true-count and not a tautology.
+SELECT set_config('role', 'postgres', true);
+CREATE TEMP TABLE sow_total AS SELECT count(*)::int AS n FROM public.scheme_of_work_entries;
+GRANT SELECT ON sow_total TO anon, authenticated;  -- the assertion's argument is evaluated AS the student
+
 SELECT pg_temp.login_as('a0000006-0000-0000-0000-000000000006');  -- student
 
--- (No SoW entries seeded yet — Stage 4 populates them. So count is 0,
--- but the access *itself* should not error. Verify the SELECT runs cleanly.)
+-- (Written when no SoW entries were seeded — see the note inside the assertion.)
 SELECT pg_temp.assert_count(
-  'B11.1 Student can SELECT from sow_entries (read access works, table empty)',
-  0,
+  -- ⊕ 2 Sep 2026 (Night 3). This used to expect 0 and be labelled "table
+  -- empty": the SOW was empty when Stage 1 was written, and the assertion
+  -- silently became a test of the fixture rather than of the policy the
+  -- moment the scheme was seeded (1050 rows on TEST tonight). "Globally
+  -- readable" means a student sees EVERY row, so the expectation is the
+  -- unfiltered count read as postgres, whatever it happens to be.
+  'B11.1 Student can SELECT from sow_entries (globally readable: sees every row)',
+  (SELECT n FROM sow_total),
   (SELECT count(*)::int FROM public.scheme_of_work_entries)
 );
 

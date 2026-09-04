@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<script src="./doc-page.js"></script>
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}
+doc-page:not(:defined){visibility:hidden}
+.rpt-keep{break-inside:avoid}
+.rpt-actions{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;justify-content:center;padding:12px 16px;background:#FFFCF5;border-top:2px solid #221E1B;z-index:5}
+@media print{.rpt-actions{display:none}}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family:var(--ks3-font-body);color:var(--ks3-ink);-webkit-font-smoothing:antialiased;padding-bottom:72px">
+<doc-page margin="0.7in" size="a4">
+  <div style="font-size:12.5pt;line-height:1.5">
+    <div style="display:flex;align-items:center;gap:8pt;padding:0 0 8pt;margin-bottom:16pt;border-bottom:1.5pt solid #221E1B">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l8 8-8 8" fill="none" stroke="#E4572E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 4l8 8-8 8" fill="none" stroke="#E4572E" stroke-opacity=".34" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13pt;letter-spacing:-.02em;color:#221E1B">MrBadmus</span>
+      <span style="margin-left:auto;font-family:'DM Mono',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#5F564F">Report ref {{ ref }}</span>
+    </div>
+    <p style="margin:0;font-family:'DM Mono',monospace;font-size:10pt;letter-spacing:.14em;text-transform:uppercase;color:#5F564F">Science progress report · {{ term }}</p>
+    <h1 style="margin:6pt 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34pt;line-height:1;letter-spacing:-.035em">{{ child.name }} {{ child.surname }}</h1>
+    <p style="margin:8pt 0 0;font-size:12.5pt;color:#3B342E">Year {{ child.year }} · {{ child.modeLabel }} · {{ child.dates }}</p>
+
+    <div class="rpt-keep" style="margin-top:18pt;display:grid;grid-template-columns:repeat(4,1fr);gap:8pt">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+        <div style="padding:10pt 12pt;border:1.5pt solid #221E1B;border-radius:12pt;background:#FFFCF5">
+          <div style="font-family:'DM Mono',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#5F564F">{{ s.label }}</div>
+          <div style="margin-top:3pt;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22pt;letter-spacing:-.02em;line-height:1">{{ s.value }}</div>
+          <div style="margin-top:2pt;font-size:9.5pt;color:#5F564F">{{ s.note }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <h2 style="margin:22pt 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17pt;letter-spacing:-.025em;padding-bottom:5pt;border-bottom:1.5pt solid #221E1B">Summary</h2>
+    <p style="margin:9pt 0 0;color:#3B342E">{{ summary }}</p>
+
+    <h2 style="margin:22pt 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17pt;letter-spacing:-.025em;padding-bottom:5pt;border-bottom:1.5pt solid #221E1B">What was covered</h2>
+    <p style="margin:6pt 0 0;font-size:10.5pt;color:#5F564F">Each unit maps to the National Curriculum science programme of study for Key Stage {{ child.ks }}. The unit check is a timed test taken at the end of the unit.</p>
+    <div style="margin-top:10pt;font-size:11pt">
+      <div style="display:grid;grid-template-columns:2.2fr 1fr .7fr .8fr 1.3fr;gap:6pt;padding:5pt 0;border-bottom:1pt solid #221E1B;font-family:'DM Mono',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#5F564F">
+        <span>Unit</span><span>Subject</span><span>Lessons</span><span>Check</span><span>Status</span>
+      </div>
+      <sc-for list="{{ units }}" as="u" hint-placeholder-count="4">
+        <div style="display:grid;grid-template-columns:2.2fr 1fr .7fr .8fr 1.3fr;gap:6pt;padding:7pt 0;border-bottom:1pt solid #E0D2B9;break-inside:avoid;align-items:baseline">
+          <span style="font-weight:600">{{ u.name }}</span>
+          <span style="color:#3B342E">{{ u.subject }}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10.5pt">{{ u.lessons }}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10.5pt">{{ u.check }}</span>
+          <span style="color:#3B342E">{{ u.status }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <h2 style="margin:22pt 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17pt;letter-spacing:-.025em;padding-bottom:5pt;border-bottom:1.5pt solid #221E1B">Progress over the term</h2>
+    <div class="rpt-keep" style="margin-top:12pt;display:flex;align-items:flex-end;gap:10pt;height:110pt;border-bottom:1.5pt solid #221E1B;padding-bottom:2pt">
+      <sc-for list="{{ bars }}" as="b" hint-placeholder-count="5">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%">
+          <span style="font-family:'DM Mono',monospace;font-size:9.5pt">{{ b.pct }}</span>
+          <div style="width:100%;margin-top:3pt;border:1.5pt solid #221E1B;border-radius:5pt 5pt 0 0;background:{{ b.bg }};height:{{ b.h }}"></div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:10pt;margin-top:4pt">
+      <sc-for list="{{ bars }}" as="b" hint-placeholder-count="5"><div style="flex:1;text-align:center;font-size:9pt;color:#5F564F;line-height:1.2">{{ b.label }}</div></sc-for>
+    </div>
+    <p style="margin:10pt 0 0;color:#3B342E">{{ progressNote }}</p>
+
+    <div class="rpt-keep" style="margin-top:18pt;display:grid;grid-template-columns:1fr 1fr;gap:10pt">
+      <div style="padding:12pt 14pt;border:1.5pt solid #221E1B;border-radius:12pt;background:#E4F7EB">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#0A6B36">Strengths</p>
+        <ul style="margin:6pt 0 0;padding-left:14pt;font-size:11pt;color:#3B342E;display:flex;flex-direction:column;gap:3pt">
+          <sc-for list="{{ strengths }}" as="x" hint-placeholder-count="3"><li>{{ x }}</li></sc-for>
+        </ul>
+      </div>
+      <div style="padding:12pt 14pt;border:1.5pt solid #221E1B;border-radius:12pt;background:#FFF3D4">
+        <p style="margin:0;font-family:'DM Mono',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#5A430A">Next steps</p>
+        <ul style="margin:6pt 0 0;padding-left:14pt;font-size:11pt;color:#3B342E;display:flex;flex-direction:column;gap:3pt">
+          <sc-for list="{{ nextSteps }}" as="x" hint-placeholder-count="3"><li>{{ x }}</li></sc-for>
+        </ul>
+      </div>
+    </div>
+
+    <h2 style="margin:22pt 0 0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17pt;letter-spacing:-.025em;padding-bottom:5pt;border-bottom:1.5pt solid #221E1B">Extended writing</h2>
+    <p style="margin:6pt 0 0;font-size:10.5pt;color:#5F564F">Exam-style 4- and 6-mark questions, marked against the published mark scheme. Answers marked "MB" were marked by Mr Badmus personally.</p>
+    <div style="margin-top:10pt;font-size:11pt">
+      <div style="display:grid;grid-template-columns:.7fr 4fr .9fr;gap:6pt;padding:5pt 0;border-bottom:1pt solid #221E1B;font-family:'DM Mono',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#5F564F">
+        <span>Date</span><span>Question</span><span style="text-align:right">Mark</span>
+      </div>
+      <sc-for list="{{ answers }}" as="a" hint-placeholder-count="3">
+        <div style="display:grid;grid-template-columns:.7fr 4fr .9fr;gap:6pt;padding:6pt 0;border-bottom:1pt solid #E0D2B9;break-inside:avoid;align-items:baseline">
+          <span style="font-family:'DM Mono',monospace;font-size:10pt;white-space:nowrap">{{ a.date }}</span>
+          <span style="color:#3B342E">{{ a.q }}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10.5pt;text-align:right;white-space:nowrap">{{ a.mark }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div class="rpt-keep" style="margin-top:24pt;padding:14pt 16pt;border:1.5pt solid #221E1B;border-radius:12pt;background:#FFFCF5">
+      <p style="margin:0;font-family:'DM Mono',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#5F564F">Teacher's note</p>
+      <p style="margin:6pt 0 0;color:#3B342E;font-style:italic">{{ teacherNote }}</p>
+      <div style="margin-top:12pt;display:flex;align-items:flex-end;justify-content:space-between;gap:12pt">
+        <div>
+          <p style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13pt;letter-spacing:-.02em">Mide Badmus</p>
+          <p style="margin:0;font-size:10pt;color:#5F564F">Science teacher · AQA examiner · mrbadmus.com</p>
+        </div>
+        <p style="margin:0;font-size:9.5pt;color:#5F564F;text-align:right;max-width:46%">Attendance and marks are recorded automatically from {{ child.name }}'s work on the platform. Written feedback marked MB is the teacher's own.</p>
+      </div>
+    </div>
+    <p style="margin:16pt 0 0;padding-top:8pt;border-top:1pt solid #E0D2B9;display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:8.5pt;letter-spacing:.08em;text-transform:uppercase;color:#5F564F"><span>Produced {{ produced }} · mrbadmus.com</span><span>{{ child.name }} · {{ term }}</span></p>
+  </div>
+</doc-page>
+
+<div class="rpt-actions">
+  <button onClick="{{ print }}" style="min-height:46px;padding:0 20px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-ink);color:var(--ks3-on-dark);font:inherit;font-weight:700;font-size:16px;cursor:pointer">Print or save as PDF</button>
+  <a href="Parent Dashboard.dc.html" style="display:flex;align-items:center;min-height:46px;padding:0 18px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-card);font-weight:700;font-size:16px;color:var(--ks3-ink)">Back</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const REPORT = {
+  child: { name: 'Amara', surname: 'Adeyemi', year: 9, ks: 3, mode: 'school', dates: '1 September – 19 December 2026' },
+  term: 'Autumn 2026', produced: '19 December 2026', ref: 'AA-Y9-AUT26',
+  sessions: { done: 23, set: 26 }, minutes: 412, streakBest: 9, checksAvg: 66,
+  units: [
+    { name: 'Cells and organisation', subject: 'Biology', lessons: '6/6', check: '55%', status: 'Complete' },
+    { name: 'The particle model', subject: 'Chemistry', lessons: '5/5', check: '62%', status: 'Complete' },
+    { name: 'Forces and motion', subject: 'Physics', lessons: '6/6', check: '58%', status: 'Complete' },
+    { name: 'Energy stores', subject: 'Physics', lessons: '5/5', check: '71%', status: 'Complete' },
+    { name: 'Health and disease', subject: 'Biology', lessons: '6/6', check: '78%', status: 'Complete' },
+    { name: 'Rates of reaction', subject: 'Chemistry', lessons: '2/5', check: '—', status: 'Continues in spring' },
+  ],
+  summary: 'Amara completed 23 of the 26 sessions set this term, an average of 32 minutes a week. She worked through five units and sat five unit checks, rising from 55% on the first to a personal best of 78% on the last. Recall of key terms is now reliable; the remaining work is on structuring longer written answers.',
+  progressNote: 'Unit-check scores over the term. Each check covers the whole unit under a time limit, so the trend is a fair measure of retained understanding rather than a lesson-by-lesson snapshot.',
+  strengths: ['Consistent recall of definitions and key terms', 'Reads graphs and data tables accurately', 'Describes processes in the right sequence'],
+  nextSteps: ['Use "because" and "therefore" in every 6-mark answer', 'Name the scientific term rather than describing it', 'Check units on every calculated answer'],
+  answers: [{ date: '12 Sep', q: 'Explain how vaccination protects a person from a disease they have never had. (6)', mark: '4/6 MB' }, { date: '19 Sep', q: 'Describe two ways the body stops pathogens getting in. (4)', mark: '4/4' }, { date: '8 Oct', q: 'Explain why a car needs a larger force to accelerate when fully loaded. (4)', mark: '2/4' }, { date: '5 Nov', q: 'Compare the energy stores before and after a ball is dropped. (6)', mark: '5/6 MB' }, { date: '3 Dec', q: 'Explain how increasing temperature changes the rate of a reaction. (6)', mark: '4/6' }],
+  teacherNote: 'Amara has done the work this term and it shows in the numbers. What I want from her in spring is confidence in the six-markers: she knows the science, she just stops one sentence early. Every answer should end with the "so what".',
+};
+class Component extends DCLogic {
+  renderVals() {
+    const r = REPORT; const c = r.child;
+    const bars = r.units.filter((u) => u.check !== '—').map((u, i, arr) => ({ label: u.name, pct: u.check, h: Math.max(6, Math.round(parseInt(u.check) * 0.85)) + 'pt', bg: i === arr.length - 1 ? '#E4572E' : '#F4E9D8' }));
+    return {
+      child: { ...c, modeLabel: c.mode === 'home' ? 'Home education' : 'Alongside school' }, term: r.term, produced: r.produced, ref: r.ref,
+      stats: [
+        { label: 'Sessions', value: `${r.sessions.done}/${r.sessions.set}`, note: 'completed of set' },
+        { label: 'Time on task', value: `${Math.round(r.minutes / 60)}h ${r.minutes % 60}m`, note: 'over 16 weeks' },
+        { label: 'Unit checks', value: `${r.checksAvg}%`, note: 'average of five' },
+        { label: 'Best streak', value: `${r.streakBest}`, note: 'weeks in a row' },
+      ],
+      summary: r.summary, units: r.units, bars, progressNote: r.progressNote, strengths: r.strengths, nextSteps: r.nextSteps, answers: r.answers, teacherNote: r.teacherNote,
+      print: () => window.print(),
+    };
+  }
+}
+</script>
+</body>
+</html>

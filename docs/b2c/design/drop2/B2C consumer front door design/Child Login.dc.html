@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408;text-decoration:underline}
+input,button{font:inherit}
+input::placeholder{color:#9A8F86}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:19px;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column">
+  <header style="display:flex;align-items:center;gap:10px;padding:16px 24px 14px;border-bottom:2px solid var(--ks3-ink)">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </header>
+  <main style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:460px;width:100%;margin:0 auto;padding:32px 24px 48px;box-sizing:border-box">
+    <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,10vw,56px);line-height:.96;letter-spacing:-.035em">Hello.<br>Who's this?</h1>
+    <form onSubmit="{{ submit }}" style="margin-top:28px;display:flex;flex-direction:column;gap:14px">
+      <label style="display:block;font-weight:700;font-size:16px;color:var(--ks3-ink-muted)">Username
+        <input value="{{ user }}" onChange="{{ setUser }}" autocomplete="username" autocapitalize="none" placeholder="your-username" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:56px;padding:12px 16px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:20px;color:var(--ks3-ink)">
+      </label>
+      <label style="display:block;font-weight:700;font-size:16px;color:var(--ks3-ink-muted)">Password
+        <div style="position:relative;margin-top:6px">
+          <input type="{{ passType }}" value="{{ pass }}" onChange="{{ setPass }}" autocomplete="current-password" style="display:block;width:100%;box-sizing:border-box;min-height:56px;padding:12px 90px 12px 16px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:20px;color:var(--ks3-ink)">
+          <button type="button" onClick="{{ toggleShow }}" style="position:absolute;right:8px;top:8px;bottom:8px;padding:0 14px;border:2px solid var(--ks3-rule-strong);border-radius:10px;background:var(--ks3-band);font-weight:700;font-size:14px;color:var(--ks3-ink);cursor:pointer">{{ showLabel }}</button>
+        </div>
+      </label>
+      <sc-if value="{{ error }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:0;padding:12px 16px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-alert-tint);font-size:16px;font-weight:600">{{ error }}</p>
+      </sc-if>
+      <button type="submit" style="margin-top:6px;width:100%;min-height:58px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:20px;cursor:pointer">Let's go</button>
+    </form>
+    <p style="margin:24px 0 0;font-size:16px;color:var(--ks3-ink-muted)">Forgotten it? Ask whoever set up your account. They can give you a new password.</p>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844}}">
+const ACCOUNTS = { 'amara-rockets': 'saturn-rings', 'leo-lightning': 'comet-42' };
+const ERRORS = { user: 'That username isn\u2019t one we know. Check the spelling.', pass: 'That password isn\u2019t right. Try again.' };
+class Component extends DCLogic {
+  state = { user: '', pass: '', show: false, error: '' };
+  renderVals() {
+    const s = this.state;
+    return {
+      brandSize: 26, user: s.user, pass: s.pass, setUser: (e) => this.setState({ user: e.target.value.toLowerCase().trim(), error: '' }), setPass: (e) => this.setState({ pass: e.target.value, error: '' }),
+      passType: s.show ? 'text' : 'password', showLabel: s.show ? 'Hide' : 'Show', toggleShow: () => this.setState({ show: !s.show }), error: s.error,
+      submit: (e) => { e.preventDefault(); if (!(s.user in ACCOUNTS)) return this.setState({ error: ERRORS.user }); if (ACCOUNTS[s.user] !== s.pass) return this.setState({ error: ERRORS.pass }); window.location.href = 'Child Today.dc.html'; },
+    };
+  }
+}
+</script>
+</body>
+</html>

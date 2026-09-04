@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408;text-decoration:underline}
+textarea,button{font:inherit}
+textarea::placeholder{color:#9A8F86}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:19px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<header style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+  <sc-if value="{{ isPick }}" hint-placeholder-val="{{ true }}">
+    <a href="Child Today.dc.html" aria-label="Back to today" style="display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;border-radius:12px;color:var(--ks3-ink)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg></a>
+  </sc-if>
+  <sc-if value="{{ notPick }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ back }}" aria-label="Back" style="display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;border:0;border-radius:12px;background:none;color:var(--ks3-ink);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg></button>
+  </sc-if>
+  <span style="flex:1;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">Exam questions</span>
+  <span style="padding:6px 12px;border-radius:99px;border:2px solid var(--ks3-rule-strong);background:var(--ks3-band);font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.06em;color:var(--ks3-ink-muted);white-space:nowrap">{{ quotaChip }}</span>
+</header>
+
+<main style="max-width:600px;margin:0 auto;padding:26px 20px 80px">
+
+<!-- PICK -->
+<sc-if value="{{ isPick }}" hint-placeholder-val="{{ true }}">
+  <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:38px;line-height:1;letter-spacing:-.035em">Pick a question</h1>
+  <p style="margin:12px 0 0;font-size:17px;color:var(--ks3-ink-body)">Write it like you're in the exam. It's marked against the real mark scheme the moment you finish.</p>
+  <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px">
+    <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+      <button class="ks3-option" aria-pressed="{{ f.on }}" onClick="{{ f.pick }}" style="width:auto;min-height:40px;padding:8px 14px;border-radius:99px;font-size:15px">{{ f.label }}</button>
+    </sc-for>
+  </div>
+  <div style="margin-top:18px;display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ questions }}" as="q" hint-placeholder-count="4">
+      <button onClick="{{ q.open }}" style="text-align:left;display:block;width:100%;padding:18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:{{ q.bg }};box-shadow:{{ q.shadow }};color:var(--ks3-ink);cursor:pointer">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="width:10px;height:10px;border-radius:99px;border:2px solid var(--ks3-ink);background:{{ q.dot }}"></span>
+          <span style="font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ q.topic }}</span>
+          <span style="margin-left:auto;display:grid;place-items:center;width:38px;height:30px;border-radius:9px;border:2px solid var(--ks3-ink);background:var(--ks3-band);font-family:var(--ks3-font-display);font-weight:800;font-size:15px">{{ q.marks }}</span>
+        </div>
+        <p style="margin:10px 0 0;font-size:18px;font-weight:600;line-height:1.35">{{ q.text }}</p>
+        <sc-if value="{{ q.done }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:10px 0 0;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;background:var(--ks3-ok-tint);border:2px solid var(--ks3-ok);font-size:13px;font-weight:700;color:var(--ks3-ok-text)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>{{ q.doneLabel }}</p>
+        </sc-if>
+      </button>
+    </sc-for>
+  </div>
+</sc-if>
+
+<!-- WRITE -->
+<sc-if value="{{ isWrite }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ q.topic }}</span>
+    <span style="margin-left:auto;display:grid;place-items:center;width:52px;height:34px;border-radius:10px;border:2px solid var(--ks3-ink);background:var(--ks3-band);font-family:var(--ks3-font-display);font-weight:800;font-size:16px">{{ q.marks }} marks</span>
+  </div>
+  <h1 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;line-height:1.15;letter-spacing:-.03em">{{ q.text }}</h1>
+  <sc-if value="{{ q.stem }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:12px 0 0;padding:14px 16px;border:2px solid var(--ks3-rule-strong);border-radius:var(--ks3-r-panel);background:var(--ks3-inset);font-size:17px;color:var(--ks3-ink-body)">{{ q.stem }}</p>
+  </sc-if>
+  <label class="ks3-answer-label" style="margin-top:22px">Your answer</label>
+  <textarea class="ks3-answer" value="{{ answer }}" onChange="{{ setAnswer }}" placeholder="Start writing. Aim for one point per mark." rows="7"></textarea>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:14px;color:var(--ks3-ink-muted)"><span>{{ wordCount }}</span><span>{{ marksHint }}</span></div>
+  <button onClick="{{ check }}" disabled="{{ checkDisabled }}" style="margin-top:20px;width:100%;min-height:56px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:19px;cursor:pointer;opacity:{{ checkOpacity }}">Mark my answer</button>
+</sc-if>
+
+<!-- MARKING -->
+<sc-if value="{{ isMarking }}" hint-placeholder-val="{{ false }}">
+  <div style="margin-top:60px;text-align:center">
+    <div style="margin:0 auto;width:56px;height:56px;border-radius:99px;border:4px solid var(--ks3-rule);border-top-color:var(--ks3-accent);animation:spin 1s linear infinite"></div>
+    <p style="margin:22px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:26px;letter-spacing:-.03em">Checking against the mark scheme</p>
+  </div>
+</sc-if>
+
+<!-- RESULT -->
+<sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ q.topic }} · {{ q.marks }} marks</span>
+  </div>
+  <h1 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;line-height:1.2;letter-spacing:-.03em;color:var(--ks3-ink-body)">{{ q.text }}</h1>
+
+  <div class="ks3-ladder" style="margin-top:20px;padding:24px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Your mark</p>
+        <p style="margin:4px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:56px;line-height:.95;letter-spacing:-.04em">{{ result.score }}<span style="font-size:28px;color:var(--ks3-ink-muted)">/{{ q.marks }}</span></p>
+      </div>
+      <p style="margin:0;font-size:16px;font-weight:700;color:var(--ks3-ok-text);text-align:right;max-width:50%">{{ result.verdict }}</p>
+    </div>
+    <ul class="ks3-ticks" style="margin-top:20px">
+      <sc-for list="{{ result.points }}" as="p" hint-placeholder-count="4">
+        <li style="display:flex;gap:12px;align-items:flex-start;font-size:17px;line-height:1.5">
+          <span style="display:grid;place-items:center;flex:0 0 26px;height:26px;margin-top:2px;border-radius:8px;border:2px solid {{ p.border }};background:{{ p.bg }};color:{{ p.fg }}">
+            <sc-if value="{{ p.ok }}" hint-placeholder-val="{{ true }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M5 12.5l4.5 4.5L19 7"/></svg></sc-if>
+            <sc-if value="{{ p.miss }}" hint-placeholder-val="{{ false }}"><span style="font-family:var(--ks3-font-mono);font-size:11px">{{ p.n }}</span></sc-if>
+          </span>
+          <span style="color:{{ p.textColor }}">{{ p.text }}</span>
+        </li>
+      </sc-for>
+    </ul>
+    <div class="ks3-feedback" style="margin-top:18px">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Examiner's note</p>
+      <p style="margin:8px 0 0;font-size:17px;line-height:1.6">{{ result.feedback }}</p>
+    </div>
+  </div>
+
+  <div style="margin-top:18px;padding:18px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-panel);background:var(--ks3-card)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">You wrote</p>
+    <p style="margin:8px 0 0;font-size:16px;line-height:1.55;color:var(--ks3-ink-body);white-space:pre-wrap">{{ answer }}</p>
+  </div>
+
+  <!-- send to Mr Badmus -->
+  <sc-if value="{{ canSend }}" hint-placeholder-val="{{ true }}">
+    <div style="margin-top:18px;padding:20px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:6px 6px 0 var(--ks3-accent)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-alert)">Want a second opinion?</p>
+      <p style="margin:8px 0 0;font-size:17px;color:var(--ks3-on-dark-body)">Mr Badmus can mark this one himself and write back. Takes up to three school days.</p>
+      <button onClick="{{ sendHuman }}" style="margin-top:14px;width:100%;min-height:52px;border:2px solid var(--ks3-on-dark);border-radius:var(--ks3-r-control);background:var(--ks3-on-dark);color:var(--ks3-ink);font-weight:700;font-size:17px;cursor:pointer">Send to Mr Badmus</button>
+      <p style="margin:10px 0 0;font-size:14px;color:var(--ks3-on-dark-muted);text-align:center">{{ quotaLine }}</p>
+    </div>
+  </sc-if>
+  <sc-if value="{{ quotaOut }}" hint-placeholder-val="{{ false }}">
+    <div style="margin-top:18px;padding:16px 18px;border:2px dashed var(--ks3-rule-strong);border-radius:var(--ks3-r-panel);background:var(--ks3-inset);font-size:16px;color:var(--ks3-ink-body)"><strong style="color:var(--ks3-ink)">Mr Badmus has your two for this month.</strong> You can send another from {{ quotaResets }}. Your instant mark still counts.</div>
+  </sc-if>
+  <sc-if value="{{ justSent }}" hint-placeholder-val="{{ false }}">
+    <div style="margin-top:18px;padding:18px;border:2px solid var(--ks3-ok);border-radius:var(--ks3-r-panel);background:var(--ks3-ok-tint)">
+      <p style="margin:0;display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--ks3-ok-text)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Sent to Mr Badmus</p>
+      <p style="margin:6px 0 0;font-size:16px;color:var(--ks3-ink-body)">His mark and note will show up here, and on your Today screen, when he's done. {{ quotaLine }}</p>
+    </div>
+  </sc-if>
+
+  <!-- human mark landed -->
+  <sc-if value="{{ result.human }}" hint-placeholder-val="{{ false }}">
+    <div style="margin-top:18px;padding:22px;border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:6px 6px 0 var(--ks3-accent)">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+        <div>
+          <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-alert)">Mr Badmus marked this</p>
+          <p style="margin:4px 0 0;font-size:14px;color:var(--ks3-on-dark-muted)">{{ result.humanDate }}</p>
+        </div>
+        <p style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:44px;line-height:1;letter-spacing:-.04em">{{ result.humanScore }}<span style="font-size:22px;color:var(--ks3-on-dark-muted)">/{{ q.marks }}</span></p>
+      </div>
+      <p style="margin:14px 0 0;font-size:18px;line-height:1.55;color:var(--ks3-on-dark-body)">{{ result.humanFeedback }}</p>
+      <p style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;letter-spacing:-.02em">— Mr Badmus</p>
+    </div>
+  </sc-if>
+
+  <div style="margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <button onClick="{{ retry }}" style="min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:16px;color:var(--ks3-ink);cursor:pointer">Have another go</button>
+    <button onClick="{{ back }}" style="min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px;cursor:pointer">Another question</button>
+  </div>
+</sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;quotaLeft&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[2,1,0],&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Edge states&quot;}}">
+const QUESTIONS = [
+  { id: 'q1', topic: 'Health and disease', subject: 'Biology', marks: 6, text: 'Explain how vaccination protects a person from a disease they have never had.', stem: '', done: 'human',
+    scheme: ['Vaccine contains dead or inactive pathogen', 'White blood cells (lymphocytes) produce antibodies', 'Antibodies are specific to the antigen', 'Memory cells are retained', 'Faster, larger response on reinfection', 'Pathogen destroyed before symptoms develop'],
+    answer: 'A vaccine has a dead or weak pathogen in it. White blood cells make antibodies to fight it. Then if the real one comes the body remembers and makes antibodies faster so you don\u2019t get ill.',
+    hits: [0, 1, 3, 4], feedback: 'You have the sequence right and the memory point is there, which is where most candidates stop. Two marks are sitting on precision: the word "antigen" is what triggers the response, and the examiner wants to see the pathogen destroyed before it can cause symptoms. "So you don\u2019t get ill" is the idea but not the science.',
+    human: { score: 4, date: 'Marked Thursday', feedback: 'Agree with 4. Your structure is good — cause, response, memory. Now name things. Say "antigen" and say "lymphocyte". In the exam the marks are on the nouns.' } },
+  { id: 'q2', topic: 'Health and disease', subject: 'Biology', marks: 4, text: 'Describe two ways the body stops pathogens getting in.', stem: '', done: 'ai',
+    scheme: ['Skin acts as a physical barrier', 'Mucus traps pathogens', 'Cilia move mucus away from the lungs', 'Stomach acid kills pathogens'],
+    answer: 'Skin is a barrier. Mucus in the nose traps them and cilia move it. Stomach acid kills them.', hits: [0, 1, 2, 3], feedback: 'Full marks. Short, named, and every line does a job. This is exactly the register a 4-marker wants.' },
+  { id: 'q3', topic: 'Rates of reaction', subject: 'Chemistry', marks: 6, text: 'Explain how increasing the temperature changes the rate of a reaction.', stem: 'A student adds magnesium ribbon to hydrochloric acid at 20 °C and then at 40 °C.', done: null,
+    scheme: ['Particles gain kinetic energy', 'Particles move faster', 'More frequent collisions', 'More particles have energy equal to or above the activation energy', 'Greater proportion of collisions are successful', 'So rate increases'],
+    feedback: 'Two ideas carry this question and you need both: collisions happen more often AND more of them have enough energy to react. Most candidates write about "more collisions" and stop. Say "activation energy" and you are into the top band.' },
+  { id: 'q4', topic: 'Motion and forces', subject: 'Physics', marks: 4, text: 'Explain why a car needs a larger force to accelerate when it is fully loaded.', stem: '', done: null,
+    scheme: ['Loaded car has greater mass', 'Force = mass × acceleration', 'For the same acceleration, force must increase', 'Resultant force must be larger'],
+    feedback: 'Quote the equation. Once F = ma is on the page the examiner can give you the reasoning marks; without it they are guessing what you know.' },
+  { id: 'q5', topic: 'Energy stores', subject: 'Physics', marks: 6, text: 'Compare the energy stores before and after a ball is dropped and comes to rest on the ground.', stem: '', done: null,
+    scheme: ['Before: gravitational potential store', 'During fall: transferred to kinetic store', 'Kinetic store increases as GPE decreases', 'On impact: transferred to thermal store of ball/ground', 'Some transferred to surroundings by sound', 'Total energy is conserved'],
+    feedback: 'Name the stores, not the "types". The last mark, conservation, is free once you say where the energy ended up.' },
+];
+const SUBJECT_DOT = { Biology: 'var(--ks3-biology)', Chemistry: 'var(--ks3-chemistry)', Physics: 'var(--ks3-physics)' };
+const FILTERS = ['All', '4-markers', '6-markers', 'Not done yet'];
+const VERDICTS = (score, max) => (score === max ? 'Full marks.' : score >= max * 0.66 ? 'Solid. The rest is precision.' : score >= max * 0.4 ? 'Halfway. Read the note.' : 'A start. Read the note, then go again.');
+const mark = (q, text) => { // stand-in for the marking service: keyword hit per scheme line
+  const t = text.toLowerCase(); const keys = [['dead', 'inactive', 'weak'], ['white blood', 'lymphocyte', 'antibod'], ['antigen', 'specific'], ['memory'], ['faster', 'quick', 'remember'], ['symptom', 'destroy', 'before'],
+    ['barrier', 'skin'], ['mucus'], ['cilia'], ['acid'], ['energy'], ['faster', 'move'], ['collision', 'collide'], ['activation'], ['successful'], ['rate', 'increase'], ['mass'], ['f = ma', 'f=ma', 'force = mass', 'equation'], ['same acceleration', 'increase'], ['resultant'], ['gravitational', 'gpe'], ['kinetic'], ['decreas', 'increas'], ['thermal', 'heat'], ['sound'], ['conserv']];
+  const offset = { q1: 0, q2: 6, q3: 10, q4: 16, q5: 20 }[q.id];
+  return q.scheme.map((_, i) => keys[offset + i].some((k) => t.includes(k)));
+};
+class Component extends DCLogic {
+  state = { screen: 'pick', qid: null, answer: '', filter: 'All', result: null, quotaLeft: this.props.quotaLeft ?? 1, sent: false };
+  renderVals() {
+    const s = this.state; const q = QUESTIONS.find((x) => x.id === s.qid) || {};
+    const quotaLeft = s.quotaLeft;
+    const filtered = QUESTIONS.filter((x) => s.filter === 'All' || (s.filter === '4-markers' && x.marks === 4) || (s.filter === '6-markers' && x.marks === 6) || (s.filter === 'Not done yet' && !x.done));
+    const words = s.answer.trim() ? s.answer.trim().split(/\s+/).length : 0;
+    const openQ = (x) => { if (x.done) { const hits = mark(x, x.answer); const score = hits.filter(Boolean).length; return this.setState({ screen: 'result', qid: x.id, answer: x.answer, sent: x.done === 'human', result: { score, hits, human: x.done === 'human' ? x.human : null } }); } this.setState({ screen: 'write', qid: x.id, answer: '', result: null, sent: false }); };
+    const r = s.result || {};
+    return {
+      isPick: s.screen === 'pick', notPick: s.screen !== 'pick', isWrite: s.screen === 'write', isMarking: s.screen === 'marking', isResult: s.screen === 'result',
+      quotaChip: `Mr Badmus: ${quotaLeft} of 2 left`,
+      back: () => this.setState({ screen: s.screen === 'write' ? 'pick' : 'pick', result: null }),
+      filters: FILTERS.map((f) => ({ label: f, on: String(s.filter === f), pick: () => this.setState({ filter: f }) })),
+      questions: filtered.map((x) => ({ ...x, dot: SUBJECT_DOT[x.subject], bg: x.done ? 'var(--ks3-row-dim)' : 'var(--ks3-card)', shadow: x.done ? 'none' : 'var(--ks3-shadow-block)', done: !!x.done, doneLabel: x.done === 'human' ? 'Marked by Mr Badmus' : 'Marked', open: () => openQ(x) })),
+      q, answer: s.answer, setAnswer: (e) => this.setState({ answer: e.target.value }), wordCount: `${words} words`, marksHint: q.marks ? `${q.marks} marks · about ${q.marks} points` : '',
+      checkDisabled: words < 3, checkOpacity: words < 3 ? 0.45 : 1,
+      check: () => { if (words < 3) return; this.setState({ screen: 'marking' }); setTimeout(() => { const hits = mark(q, s.answer); this.setState({ screen: 'result', result: { score: hits.filter(Boolean).length, hits, human: null } }); }, 1400); },
+      result: { score: r.score, verdict: r.score != null ? VERDICTS(r.score, q.marks) : '', feedback: q.feedback,
+        points: (q.scheme || []).map((text, i) => { const ok = r.hits ? r.hits[i] : false; return { n: i + 1, text, ok, miss: !ok, border: ok ? 'var(--ks3-ok)' : 'var(--ks3-rule-strong)', bg: ok ? 'var(--ks3-ok)' : 'var(--ks3-card)', fg: ok ? '#fff' : 'var(--ks3-ink-muted)', textColor: ok ? 'var(--ks3-ink)' : 'var(--ks3-ink-muted)' }; }),
+        human: !!r.human, humanScore: r.human ? r.human.score : '', humanDate: r.human ? r.human.date : '', humanFeedback: r.human ? r.human.feedback : '' },
+      canSend: !s.sent && quotaLeft > 0 && !r.human, quotaOut: !s.sent && quotaLeft === 0 && !r.human, justSent: s.sent && !r.human,
+      quotaLine: s.sent ? (quotaLeft === 0 ? 'That was your last one this month. Resets 1 October.' : `${quotaLeft} left this month.`) : `Uses 1 of your ${quotaLeft} left this month.`, quotaResets: '1 October',
+      sendHuman: () => this.setState({ sent: true, quotaLeft: Math.max(0, quotaLeft - 1) }),
+      retry: () => this.setState({ screen: 'write', answer: '', result: null, sent: false }),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>Pricing — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+<style>
+.pb-two { display: grid; gap: 20px; }
+@media (min-width: 900px) {
+  .pb-two { grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: start; }
+}
+</style>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<div id="pb-nav"></div>
+
+<main class="pb-wrap" style="max-width:1100px;margin:0 auto;padding:56px 20px 80px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Pricing</p>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,5.5vw,64px);line-height:.95;letter-spacing:-.04em;max-width:15em;text-wrap:balance">One plan. Everything in it. Priced per child.</h1>
+
+  <div class="pb-two" style="margin-top:44px">
+    <div style="padding:clamp(22px,3vw,32px);border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+      <div id="cycles" style="display:flex;gap:8px"></div>
+      <p style="margin:24px 0 0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">How many children?</p>
+      <div style="margin-top:10px;display:flex;align-items:center;gap:14px">
+        <button type="button" id="dec" aria-label="Fewer" style="display:grid;place-items:center;width:48px;height:48px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-band);color:var(--ks3-ink);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+        <span id="count" style="min-width:40px;text-align:center;font-family:var(--ks3-font-display);font-weight:800;font-size:36px;letter-spacing:-.03em">1</span>
+        <button type="button" id="inc" aria-label="More" style="display:grid;place-items:center;width:48px;height:48px;border:2px solid var(--ks3-ink);border-radius:14px;background:var(--ks3-band);color:var(--ks3-ink);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+      <div id="lines" style="margin-top:24px;display:flex;flex-direction:column;gap:8px;font-size:17px"></div>
+      <div style="margin-top:16px;padding-top:16px;border-top:2px solid var(--ks3-rule);display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+        <span id="total-label" style="font-weight:700">Per month</span>
+        <span id="total" style="font-family:var(--ks3-font-display);font-weight:800;font-size:44px;letter-spacing:-.04em;line-height:1">…</span>
+      </div>
+      <p id="saving" style="margin:8px 0 0;font-size:15px;font-weight:700;color:var(--ks3-ok-text);text-align:right;display:none"></p>
+      <a id="cta" href="#" style="margin-top:22px;display:flex;align-items:center;justify-content:center;min-height:56px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;box-shadow:5px 5px 0 var(--ks3-accent)">Start a free week</a>
+      <p id="foot" style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted);text-align:center">Seven days free. Then … a month. Cancel any time.</p>
+    </div>
+
+    <div>
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Every child gets</p>
+      <ul id="includes" style="margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;font-size:17px"></ul>
+      <div style="margin-top:28px;padding:20px 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-band)">
+        <p style="margin:0;font-weight:700;font-size:17px">Compared with a tutor</p>
+        <p id="tutor" style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)"></p>
+      </div>
+    </div>
+  </div>
+
+  <section style="margin-top:64px">
+    <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Money questions</h2>
+    <div id="faqs" style="margin-top:20px;display:flex;flex-direction:column;border-top:2px solid var(--ks3-ink)"></div>
+  </section>
+</main>
+
+<div id="pb-footer"></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/pricing.html — MRB-317 Night 3.
+   Design's `Public Pricing.dc.html`, transcribed.
+
+   ── THIS PAGE HOLDS NO PRICE ───────────────────────────────────────────
+   Her file opens with a `PRICE` constant carrying four figures. That
+   constant is deleted, not transcribed. Every number on this page —
+   the two cycle totals, the per-child lines, the annual saving, the tutor
+   comparison, and the arithmetic inside the "what does the annual plan
+   save?" answer — is computed from `MrBadmusConsumer.pricing()`, which
+   reads the same `stripe.TIER` object that prices the invoice.
+
+   The failure mode this prevents is specific and expensive: a price rise
+   applied in Stripe and in the signup flow, and forgotten here, quotes a
+   parent one number on the page they decided on and charges another. There
+   is no number to forget, because there is no number.
+
+   Until the endpoint answers, every price reads "…" — see `PENDING` in
+   public.js for why a placeholder is a single neutral character and not a
+   plausible-looking figure.
+
+   ── AND WHY THE FAQ IS RENDERED TWICE ──────────────────────────────────
+   One of Design's five money answers quotes four figures. It is rendered
+   at load with "…" in those four slots and re-rendered when the prices
+   arrive, rather than held back — a reader who arrives on a slow
+   connection should see four of the five answers immediately.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var esc = C.escapeHtml;
+
+  var INCLUDES = [
+    'Work set every Sunday, matched to the unit school is on',
+    'Lessons, recall questions and exam questions for Years 7 to 11',
+    'Every answer marked instantly against the mark scheme',
+    'Two written answers a month marked by Mr Badmus personally',
+    'Timed unit checks with a named weak area',
+    'Sunday email to you and a printable termly report',
+    'Parent-to-child messaging and the ability to set extra work'
+  ];
+
+  /* Design's five answers. The two that carry money take a function of the
+     live tiers; the other three are plain strings. */
+  function faqs(t) {
+    var m = t && C.price(t, 'month', 1);
+    var y = t && C.price(t, 'year', 1);
+    var dash = P.PENDING;
+    return [
+      { q: 'Why is the card needed for a free week?', a: 'So the week runs the same as a paid one and switches over without a gap. Nothing is charged for seven days and cancelling before then costs nothing. You get an email two days before the first payment.' },
+      { q: 'What does the annual plan save?',
+        a: (y ? P.money(y.first) : dash) + ' a year for the first child against ' +
+           (m ? P.money(m.first * 12) : dash) + ' monthly, and ' +
+           (y ? P.money(y.rest) : dash) + ' against ' +
+           (m ? P.money(m.rest * 12) : dash) + ' for each extra child. About a third off.' },
+      { q: 'Can I add or remove a child mid-month?', a: 'Yes. Adding one is pro-rated to your billing date. Removing one takes effect at the end of the current period.' },
+      /* Kept exactly as Design wrote it: it names no price, which is the
+         point — organisation pricing is quoted, not published. */
+      /* ⊕ DROP 2 rewrote this answer, and it is the one string on the five
+         public pages whose WORDS changed rather than its nav. Her drop-1
+         answer said organisation accounts have "per-pupil pricing", which is
+         a price framing on a public page and so falls foul of Mide's ruling
+         2 (no organisation price appears anywhere public) — it survived
+         Night 3 because Night 3 was reading her drop-1 file. Her drop-2
+         answer names the three kinds of organisation, says invoiced
+         annually, and points at the page instead of at an inbox. Verbatim. */
+      { q: 'Is there a school or tutor rate?', a: 'Yes. Councils, alternative provision and tutoring centres run on organisation accounts with a staff dashboard, invoiced annually. See the organisations page and get in touch.' },
+      { q: 'Do prices include VAT?', a: 'Yes. What you see is what you pay.' }
+    ];
+  }
+
+  function tutorLine(t) {
+    var m = t && C.price(t, 'month', 1);
+    return 'An hour a week with a science tutor in England is typically £30 to £45. ' +
+      'That’s £120 to £180 a month for one child, for one hour of contact. This is ' +
+      (m ? P.money(m.first) : P.PENDING) +
+      ' for the week’s work set, marked and reported, every week of the year.';
+  }
+
+  C.boot({ public: true, run: function () {
+    P.chrome('pricing');
+    document.getElementById('cta').href = P.url('signUp');
+
+    document.getElementById('includes').innerHTML = INCLUDES.map(function (i) {
+      return '<li style="display:flex;gap:12px;align-items:flex-start">' +
+        P.mark(P.PATH.tick, 'flex:0 0 auto;margin-top:5px;color:var(--ks3-ok-text)') +
+        '<span>' + esc(i) + '</span></li>';
+    }).join('');
+
+    // Design's own bounds: never below one child, never above six. A family
+    // with seven talks to us; the calculator does not pretend to price it.
+    var state = { cycle: 'month', count: 1 };
+    var tiers = null;
+
+    var elCycles = document.getElementById('cycles');
+    var elCount  = document.getElementById('count');
+    var elLines  = document.getElementById('lines');
+    var elTotal  = document.getElementById('total');
+    var elLabel  = document.getElementById('total-label');
+    var elSaving = document.getElementById('saving');
+    var elFoot   = document.getElementById('foot');
+
+    function renderCycles() {
+      elCycles.innerHTML = [['month', 'Monthly'], ['year', 'Annual']].map(function (c) {
+        return '<button type="button" class="ks3-option" data-cycle="' + c[0] + '" aria-pressed="' +
+          (state.cycle === c[0] ? 'true' : 'false') + '" ' +
+          'style="width:auto;flex:1;justify-content:center;padding:12px;font-size:16px">' +
+          esc(c[1]) + '</button>';
+      }).join('');
+    }
+
+    function render() {
+      renderCycles();
+      elCount.textContent = String(state.count);
+
+      var annual = state.cycle === 'year';
+      elLabel.textContent = annual ? 'Per year' : 'Per month';
+
+      var p = tiers && C.price(tiers, state.cycle, state.count);
+      if (!p) {
+        elLines.innerHTML = '<div style="display:flex;justify-content:space-between;gap:12px">' +
+          '<span>First child</span><span style="font-family:var(--ks3-font-mono);font-weight:500">' +
+          P.PENDING + '</span></div>';
+        elTotal.textContent = P.PENDING;
+        elSaving.style.display = 'none';
+        elFoot.textContent = 'Seven days free. Then ' + P.PENDING + ' ' +
+          (annual ? 'a year' : 'a month') + '. Cancel any time.';
+        return;
+      }
+
+      var extras = state.count - 1;
+      var lines = [{ label: 'First child', amount: P.money(p.first) }];
+      if (extras > 0) {
+        lines.push({
+          label: extras + ' more ' + (extras === 1 ? 'child' : 'children') + ' × ' + P.money(p.rest),
+          amount: P.money(p.rest * extras)
+        });
+      }
+      elLines.innerHTML = lines.map(function (l) {
+        return '<div style="display:flex;justify-content:space-between;gap:12px"><span>' +
+          esc(l.label) + '</span><span style="font-family:var(--ks3-font-mono);font-weight:500">' +
+          esc(l.amount) + '</span></div>';
+      }).join('');
+
+      elTotal.textContent = P.money(p.total_pence);
+
+      /* The annual saving, in whole pounds, exactly as Design rounds it:
+         twelve monthly payments minus one annual one. Computed in pence and
+         rounded once at the end — rounding each side first is where a "£41"
+         becomes a "£40" on a different browser. */
+      if (annual) {
+        var m = C.price(tiers, 'month', state.count);
+        var savingPence = m ? (m.total_pence * 12 - p.total_pence) : 0;
+        if (savingPence > 0) {
+          elSaving.textContent = 'Saves £' + Math.round(savingPence / 100) + ' a year';
+          elSaving.style.display = 'block';
+        } else {
+          elSaving.style.display = 'none';
+        }
+      } else {
+        elSaving.style.display = 'none';
+      }
+
+      elFoot.textContent = 'Seven days free. Then ' + P.money(p.total_pence) + ' ' +
+        (annual ? 'a year' : 'a month') + '. Cancel any time.';
+    }
+
+    elCycles.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-cycle]');
+      if (!b) { return; }
+      state.cycle = b.getAttribute('data-cycle');
+      render();
+    });
+    document.getElementById('dec').addEventListener('click', function () {
+      state.count = Math.max(1, state.count - 1); render();
+    });
+    document.getElementById('inc').addEventListener('click', function () {
+      state.count = Math.min(6, state.count + 1); render();
+    });
+
+    function paint() {
+      render();
+      P.faqList(document.getElementById('faqs'), faqs(tiers));
+      document.getElementById('tutor').textContent = tutorLine(tiers);
+    }
+
+    paint();
+
+    C.pricing().then(function (d) {
+      tiers = d.tiers;
+      paint();
+    }).catch(function (e) {
+      console.error('[parents/pricing] pricing', e);
+      /* The calculator is the page. If prices cannot be read there is
+         nothing honest to render in it, so it says so in words a parent can
+         act on rather than sitting on "…" forever. */
+      C.fail(document.getElementById('lines'), e.message,
+             'Refresh in a moment, or email support@mrbadmus.com and we’ll tell you the price.');
+    });
+  }});
+})();
+</script>
+</body>
+</html>

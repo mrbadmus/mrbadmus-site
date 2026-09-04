@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>For organisations — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+<style>
+/* This page's own grids, phone-first, with Design's 900px break. Her
+   `.pb-two` here is 48px apart and top-aligned — wider than the 24px the
+   home page uses, because one half is a form and the two columns are not
+   reading as a pair. Her numbers. */
+.pb-three { display: grid; gap: 14px; }
+.pb-two   { display: grid; gap: 24px; }
+@media (min-width: 900px) {
+  .pb-three { grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .pb-two   { grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+}
+</style>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<div id="pb-nav"></div>
+
+<main class="pb-wrap" style="max-width:1100px;margin:0 auto;padding:56px 20px 80px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">For organisations</p>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,5.5vw,64px);line-height:.95;letter-spacing:-.04em;max-width:15em;text-wrap:balance">Science for the pupils who aren't in a science classroom.</h1>
+  <p style="margin:22px 0 0;font-size:20px;color:var(--ks3-ink-body);max-width:36em;text-wrap:pretty">Councils, alternative provision and tutoring centres use MrBadmus to set, mark and evidence science for pupils they're responsible for. One caseworker sees every pupil; each pupil gets the same teacher-set week a family would.</p>
+
+  <div class="pb-three" id="who" style="margin-top:44px"></div>
+
+  <section style="margin-top:64px;padding:clamp(28px,4vw,44px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+    <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">What an organisation account adds</h2>
+    <ul id="adds" style="margin:22px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px"></ul>
+    <p style="margin:20px 0 0;font-size:16px;color:var(--ks3-on-dark-muted)">Accounts are set up against a seat cap and invoiced once a year. No cards, no pupil email addresses.</p>
+  </section>
+
+  <section id="contact" style="margin-top:64px">
+    <div class="pb-two">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">Contact us</p>
+        <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Tell us who you work with. We'll reply within a school day.</h2>
+        <p style="margin:16px 0 0;font-size:17px;color:var(--ks3-ink-body);text-wrap:pretty">Say roughly how many pupils and which years. Mide reads these himself. If it's a fit, the account is usually open the same week with logins ready to hand out.</p>
+        <!-- Design's own line, kept: someone who will not fill in a form
+             needs an address before they press anything, and the one on the
+             confirmation panel only appears after they have. Her `hello@`
+             becomes `support@` — see INBOX below. -->
+        <p style="margin:16px 0 0;font-size:16px;color:var(--ks3-ink-muted)">Prefer email? <a id="inbox-link" href="#" style="font-weight:700">support@mrbadmus.com</a></p>
+        <p style="margin:16px 0 0;font-size:16px;color:var(--ks3-ink-muted)">Already set up? <a id="org-signin" href="#" style="font-weight:700">Organisation sign in</a>.</p>
+      </div>
+
+      <div>
+        <form id="form" novalidate style="padding:clamp(22px,3vw,28px);border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block);display:flex;flex-direction:column;gap:14px">
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Your name<input id="f-name" autocomplete="name" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:16px;color:var(--ks3-ink)"></label>
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Work email<input id="f-email" type="email" autocomplete="email" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:16px;color:var(--ks3-ink)"></label>
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Organisation<input id="f-org" autocomplete="organization" placeholder="e.g. Brookfield Tuition Centre" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:16px;color:var(--ks3-ink)"></label>
+          <div>
+            <p style="margin:0 0 6px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">You are a</p>
+            <div id="kinds" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+          </div>
+          <label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Pupils and years, roughly<textarea id="f-note" rows="3" placeholder="e.g. 25 pupils, mostly Y9–11, some on reduced timetables" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:16px;color:var(--ks3-ink);resize:vertical"></textarea></label>
+          <p id="error" style="margin:0;font-size:15px;font-weight:700;color:var(--ks3-accent-text);display:none"></p>
+          <button type="submit" id="send" style="width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">Send</button>
+          <!-- Said before the button is pressed, not after. See the header
+               note: a form that hands the message to the visitor's own email
+               app has to say so while they can still choose otherwise. -->
+          <p style="margin:0;font-size:14px;color:var(--ks3-ink-muted)">This opens your email app with the message written out. Nothing is stored on this page.</p>
+        </form>
+
+        <div id="sent" style="display:none;padding:28px;border:2px solid var(--ks3-ok);border-radius:var(--ks3-r-card);background:var(--ks3-ok-tint)">
+          <p style="margin:0;display:flex;align-items:center;gap:8px;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;letter-spacing:-.02em;color:var(--ks3-ok-text)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Ready to send</p>
+          <p id="sent-line" style="margin:10px 0 0;font-size:17px;color:var(--ks3-ink-body)"></p>
+          <p style="margin:12px 0 0;font-size:16px;color:var(--ks3-ink-muted)">Didn’t open? Write to <a id="sent-mail" href="#" style="font-weight:700">support@mrbadmus.com</a> and say the same things.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<div id="pb-footer"></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/organisations.html — Design's `Public Organisations.dc.html`,
+   from DROP 2. MRB-317/318 Night 4, lane C (item C3).
+
+   Night 3's decision D6 read "No Public Organisations page — Design did
+   not deliver one; none is invented." Drop 2 delivered it on 2 Sept. WHO,
+   ADDS and KINDS below are her three `const` blocks verbatim, and every
+   sentence in the markup above is hers.
+
+   ── NO PRICE. ANYWHERE. IT IS A RULING, NOT AN OMISSION ────────────────
+   Mide's ruling 2 on MRB-316: organisations are invoiced annually against
+   a seat cap, BACS, no cards, no trial, and NO organisation price appears
+   on any public surface. Design already drew it that way. This page holds
+   no number, reads no `/api/consumer/pricing`, and must never grow either
+   — an organisation's number comes out of a conversation, and a figure on
+   a public page becomes the ceiling of every one of those conversations.
+
+   ── THE FORM GOES NOWHERE, AND SAYS SO ─────────────────────────────────
+   ⚠️ THERE IS NO SERVER-SIDE CAPTURE. The backend has no contact or
+   enquiry route (checked: `consumer/index.js`, `consumer/org.js`, nothing
+   in API-CONTRACT §v3.4–v3.6), so pressing Send composes a `mailto:` to
+   support@mrbadmus.com with the five fields in the body and hands it to the
+   visitor's own email app.
+
+   That has a real failure mode — a machine with no mail client configured
+   does nothing visible — so it is disclosed BEFORE the press ("This opens
+   your email app…") and the address is repeated afterwards in plain text
+   for anyone whose browser swallowed it. And the panel says "Ready to
+   send", not Design's "Sent": we cannot know that it was, and a green tick
+   claiming a message reached Mide when it is sitting unsent in Mail is the
+   one lie on this page that would actually cost an organisation.
+
+   ⊕ If a capture route is ever built, this is one `C.api` call and the
+   panel goes back to her word. Named in the run report.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var esc = C.escapeHtml;
+
+  /* Where an organisation enquiry lands. `support@` rather than Design's
+     `hello@` because support@mrbadmus.com is the address MRB-319 is
+     standing up for launch; hello@ has no owner on that list. */
+  var INBOX = 'support@mrbadmus.com';
+
+  var WHO = [
+    { eyebrow: 'Councils', title: 'Children missing education, EOTAS, and looked-after children.',
+      body: 'A caseworker sets up each pupil in minutes, sees whether the work is being done, and gets a signed termly report for the file.' },
+    { eyebrow: 'Alternative provision', title: 'Science when there’s no science teacher on site.',
+      body: 'Groups share a unit position so one week is set for everyone. Staff add their own tasks on top and message pupils in the app.' },
+    { eyebrow: 'Tutoring centres', title: 'The setting and marking, so tutors can teach.',
+      body: 'Pupils arrive having done the week’s work, marked. The tutor sees the weak spot before the session starts.' }
+  ];
+
+  var ADDS = [
+    'A staff dashboard across every pupil, with groups',
+    'Bulk pupil creation with printable login slips',
+    'Pupil-to-caseworker messaging, logged for safeguarding',
+    'A named caseworker per pupil who gets the Sunday email',
+    'Termly reports for every pupil, printable and exportable',
+    'Data processing agreement and full CSV export'
+  ];
+
+  var KINDS = ['Council', 'Alternative provision', 'Tutoring centre', 'School', 'Other'];
+
+  var F = { kind: '' };
+
+  function el(id) { return document.getElementById(id); }
+
+  C.boot({ public: true, run: function () {
+    P.chrome('orgs');
+    el('org-signin').href = C.href('/org/sign-in.html');
+    ['sent-mail', 'inbox-link'].forEach(function (id) {
+      el(id).href = 'mailto:' + INBOX;
+      el(id).textContent = INBOX;
+    });
+
+    el('who').innerHTML = WHO.map(function (w) {
+      return '<div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);' +
+        'background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">' +
+        '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;' +
+        'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(w.eyebrow) + '</p>' +
+        '<h2 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;' +
+        'letter-spacing:-.025em;line-height:1.1">' + esc(w.title) + '</h2>' +
+        '<p style="margin:10px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(w.body) + '</p>' +
+        '</div>';
+    }).join('');
+
+    /* The tick is inline SVG, never a typed ✓ — the shipped font subsets do
+       not carry it and a phone renders an empty box. Design's own path, and
+       her `--ks3-alert` on the dark panel (the tick is the accent colour
+       there, not the green it is on cream). */
+    el('adds').innerHTML = ADDS.map(function (a) {
+      return '<li style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;' +
+        'border-radius:12px;background:var(--ks3-dark-panel);font-size:16px;color:var(--ks3-on-dark-body)">' +
+        P.mark(P.PATH.tick, 'flex:0 0 auto;margin-top:4px;color:var(--ks3-alert)') +
+        esc(a) + '</li>';
+    }).join('');
+
+    /* Her pill row. `.ks3-option` + `aria-pressed` is the estate's own
+       single-choice control, so a screen reader announces the selection
+       rather than reading five unlabelled buttons. */
+    function paintKinds() {
+      el('kinds').innerHTML = KINDS.map(function (k) {
+        return '<button type="button" class="ks3-option" data-kind="' + esc(k) + '" ' +
+          'aria-pressed="' + (F.kind === k ? 'true' : 'false') + '" ' +
+          'style="width:auto;min-height:40px;padding:6px 14px;border-radius:99px;font-size:14px">' +
+          esc(k) + '</button>';
+      }).join('');
+    }
+    paintKinds();
+    el('kinds').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-kind]');
+      if (!b) { return; }
+      F.kind = b.getAttribute('data-kind');
+      paintKinds();
+    });
+
+    function say(msg) {
+      var e = el('error');
+      if (!msg) { e.style.display = 'none'; e.textContent = ''; return; }
+      e.textContent = msg;
+      e.style.display = 'block';
+    }
+    ['f-name', 'f-email', 'f-org', 'f-note'].forEach(function (id) {
+      el(id).addEventListener('input', function () { say(''); });
+    });
+
+    el('form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name  = el('f-name').value.trim();
+      var email = el('f-email').value.trim();
+      var org   = el('f-org').value.trim();
+      var note  = el('f-note').value.trim();
+
+      // Design's validation and her exact string, including the full stop.
+      if (!name || email.indexOf('@') === -1 || !org) {
+        return say('Name, work email and organisation, please.');
+      }
+      say('');
+
+      /* The body is written as lines a person reads, not as a form dump —
+         Mide opens these himself. `encodeURIComponent` on the whole body
+         (newlines included) is what makes a mailto with line breaks work in
+         every client; a raw \n silently truncates in some of them. */
+      var body = [
+        'Name: ' + name,
+        'Work email: ' + email,
+        'Organisation: ' + org,
+        'Type: ' + (F.kind || 'not said'),
+        '',
+        'Pupils and years:',
+        (note || 'not said')
+      ].join('\n');
+
+      var href = 'mailto:' + INBOX +
+        '?subject=' + encodeURIComponent('Organisation enquiry — ' + org) +
+        '&body=' + encodeURIComponent(body);
+
+      el('sent-line').textContent =
+        'Your email app should have opened with the message written out, addressed to ' +
+        INBOX + '. Press send there and you’ll hear back from Mide at ' + email +
+        ' within a school day.';
+      el('form').style.display = 'none';
+      el('sent').style.display = 'block';
+
+      /* After the panel is on screen, not before: if the mail handler steals
+         focus or the browser prompts, the visitor comes back to a page that
+         already explains what just happened. */
+      window.location.href = href;
+    });
+  }});
+})();
+</script>
+</body>
+</html>

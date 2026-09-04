@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#FBF3E6"/>
+  <title>Staff sign in — MrBadmus</title>
+  <!-- Design's two faces. Bricolage is the display face on every heading
+       here; Instrument Sans is the body face. Both are served locally by
+       tokens.css, so these preloads are the only font bytes this page pulls
+       and they are the ones it is definitely going to use. -->
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <link rel="stylesheet" href="/org/org.css"/>
+</head>
+<body>
+
+<!-- `class="rd" data-mode="ks3"` is load-bearing, not decoration: the KS3
+     token block in tokens.css is scoped `.rd[data-mode="ks3"]`, and without
+     BOTH hooks every `var(--ks3-*)` below falls back to nothing. -->
+<div class="rd og-page og-signin" data-mode="ks3" id="c-main">
+
+  <header class="og-signin-head">
+    <!-- ⚠️ NO CHEVRON. Design drew her BrandMark here; Mide's ruling 1 on
+         MRB-316 makes this a STAFF surface, and a staff surface carries the
+         wordmark alone. "MrBadmus", never "MrBadmusAI". -->
+    <a class="og-word" href="/parents/index.html" style="font-size:22px;">MrBadmus</a>
+    <span class="og-badge">For organisations</span>
+    <a href="/parents/sign-in.html" style="margin-left:auto;font-weight:700;font-size:15px;">Family sign in</a>
+  </header>
+
+  <main class="og-signin-main">
+    <div class="og-two">
+
+      <div>
+        <p class="og-eyebrow">Schools and tutoring centres</p>
+        <h1 class="og-h1-hero">Staff sign in</h1>
+        <p class="og-lede">Same work, same marking, same reports. Pupils log in at mrbadmus.com/go with the username on their slip. Staff sign in here with a school email.</p>
+        <ul class="og-ticks">
+          <li><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Groups share a unit position; one week set for all</li>
+          <!-- ⊕ DROP 2, and it lands exactly where ruling 2 had already put
+               us. Design's drop-1 bullet read "Per-seat, invoiced termly, no
+               cards"; Night 3 replaced it under Mide's ruling because
+               organisations are invoiced ANNUALLY against a seat cap and no
+               organisation price appears anywhere on the estate. Her drop-2
+               file now writes it herself, more tersely than Night 3's
+               paraphrase did — so her words replace ours. -->
+          <li><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Seat cap, one invoice a year, no cards</li>
+          <!-- ⊕ DROP 2, same story as the bullet above. Her drop-1 line said
+               "pupil messaging off by default"; ruling 3 turned it on and
+               Night 3 rewrote it. Her drop-2 line says it and adds the word
+               Night 3's paraphrase left out — "logged" — which is the part a
+               designated safeguarding lead is reading the bullet for. -->
+          <li><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>No pupil emails; pupils message their caseworker, logged</li>
+        </ul>
+        <!-- ⊕ DROP 2. Her drop-1 line pointed at a mailto because there was
+             no page to point at. There is one now, and it asks the five
+             questions a bare email never contains, so the link goes there.
+             Her drop-2 wording, verbatim. -->
+        <p style="margin:22px 0 0;font-size:15px;color:var(--ks3-ink-muted);">Not set up yet? <a href="/parents/organisations.html" style="font-weight:700;">Contact us</a> and we’ll open the account within a school day.</p>
+      </div>
+
+      <form class="og-form" id="form" novalidate>
+        <!-- Microsoft first, and full width, because it is how a school
+             account actually signs in: the auth hook admits an on-domain
+             Microsoft account that has a `pending_staff` row waiting for it,
+             so for most staff this is the only control on the card they will
+             ever press. Design's own SSO shape, from her Public Sign In. -->
+        <button type="button" class="og-btn-sso" id="ms">
+          <svg width="20" height="20" viewBox="0 0 23 23" aria-hidden="true"><path fill="#F25022" d="M1 1h10v10H1z"/><path fill="#7FBA00" d="M12 1h10v10H12z"/><path fill="#00A4EF" d="M1 12h10v10H1z"/><path fill="#FFB900" d="M12 12h10v10H12z"/></svg>
+          Continue with Microsoft
+        </button>
+        <div class="og-or">or</div>
+
+        <label class="og-label">School or centre email
+          <input class="og-input" id="email" type="email" placeholder="you@school.sch.uk" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false"/>
+        </label>
+        <label class="og-label">Password
+          <input class="og-input" id="pass" type="password" autocomplete="current-password"/>
+        </label>
+
+        <p class="og-err" id="err" style="display:none;"></p>
+        <p class="og-ok" id="ok" style="display:none;"></p>
+
+        <button type="submit" class="og-btn-primary" id="go">Sign in</button>
+        <button type="button" class="og-btn-text" id="forgot">Forgotten your password?</button>
+        <!-- The magic-link fallback. Night 1's recon found that a seeded
+             staff member has a `pending_staff` row and an email address but
+             may have no password at all yet — `claim_pending_staff` keys on
+             the email, so a one-time link is a complete sign-in path for
+             someone who has never set one. Without it that person's only
+             route in is Microsoft, and not every tutoring centre has it. -->
+        <button type="button" class="og-btn-text" id="magic">Email me a sign-in link</button>
+      </form>
+
+    </div>
+  </main>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   /org/sign-in.html — MRB-318, Night 3.
+
+   Design's `Org Sign In.dc.html`, compiled. Her mock `submit` checked that
+   the email had an "@" in it and then navigated; the real one signs in
+   against Supabase and then asks the backend whether this person is org
+   staff at all, because those are two different questions and only the
+   second one decides whether the dashboard exists for them.
+
+   ── WHY THE 403 IS CHECKED HERE AND NOT ON THE DASHBOARD ───────────────
+   A parent, a KS3 teacher at a school, and an org caseworker all sign in
+   through Supabase identically and all end up holding a valid session. If
+   this page handed every valid session straight to /org/index.html, a
+   parent who typed the wrong address would land on a dashboard that
+   immediately failed with an error about an organisation they have never
+   heard of. Asking `GET /api/consumer/org` here means the refusal happens
+   next to the form they just filled in, in Design's own words.
+
+   ⚠️ AND THE SESSION IS SIGNED OUT AGAIN ON A 403. Leaving a non-staff
+   session in localStorage would make every subsequent visit to this page
+   silently bounce to a dashboard that refuses — the classic "I can't sign
+   in and I can't sign out" trap. See `refuse()`.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var C = window.MrBadmusConsumer;
+
+  /* Design's one error string, used for every credential failure. She wrote
+     exactly one, and that is a decision rather than an omission: "wrong
+     password" and "no such account" told apart out loud is an account
+     enumeration oracle on a page whose whole audience is school email
+     addresses that are trivially guessable. */
+  var BAD = 'That email and password don’t match.';
+
+  C.boot({
+    sessionOptional: true,
+    run: function (ctx) {
+      var sb   = ctx.sb;
+      var form = document.getElementById('form');
+      var elEmail = document.getElementById('email');
+      var elPass  = document.getElementById('pass');
+      var elErr = document.getElementById('err');
+      var elOk  = document.getElementById('ok');
+      var btnGo = document.getElementById('go');
+      var btnMs = document.getElementById('ms');
+      var btnForgot = document.getElementById('forgot');
+      var btnMagic  = document.getElementById('magic');
+
+      function say(el, text) {
+        var other = (el === elErr) ? elOk : elErr;
+        other.style.display = 'none';
+        if (!text) { el.style.display = 'none'; el.textContent = ''; return; }
+        el.textContent = text;
+        el.style.display = 'block';
+      }
+      function clear() { say(elErr, ''); say(elOk, ''); }
+
+      /* Where Microsoft and the magic link come back to. `C.href` carries
+         ?env= and ?api= through, which is the whole reason a redirect back
+         from an identity provider does not drop a tester from TEST into
+         production halfway through signing in. */
+      function backHere(path) {
+        return window.location.origin + C.href(path || '/org/index.html');
+      }
+
+      /* Already signed in? Then the only useful thing this page can do is
+         find out whether that session is org staff, and send them on if it
+         is. A session that is NOT org staff is left alone and the form is
+         shown — signing them out unasked would be rude and, for a parent
+         who arrived by a mistyped URL, would log them out of their own
+         dashboard in another tab. */
+      if (ctx.session) {
+        check(ctx.token).then(function (ok) {
+          if (ok) { C.go('/org/index.html'); }
+        });
+      }
+
+      function check(token) {
+        return C.api('/api/consumer/org', { token: token }).then(
+          function () { return true; },
+          function () { return false; }
+        );
+      }
+
+      /* A signed-in person who is not org staff. Sign them back out, so the
+         next visit starts from a clean form rather than from a session that
+         can only ever be refused. */
+      function refuse() {
+        return sb.auth.signOut().catch(function () { /* already gone */ })
+          .then(function () {
+            say(elErr, 'That account isn’t set up for an organisation on ' +
+                       'MrBadmus. If it should be, write to support@mrbadmus.com.');
+          });
+      }
+
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        clear();
+        var email = elEmail.value.trim();
+        var pass  = elPass.value;
+        /* Her check, kept: an address with no "@" and an empty password are
+           both refused before a request is made, in her words. */
+        if (email.indexOf('@') === -1 || !pass) { return say(elErr, BAD); }
+
+        C.setBusy(btnGo, true, 'Signing in…');
+        sb.auth.signInWithPassword({ email: email, password: pass })
+          .then(function (r) {
+            if (r.error || !r.data || !r.data.session) { throw new Error('bad'); }
+            return check(r.data.session.access_token).then(function (ok) {
+              if (!ok) { return refuse().then(function () { C.setBusy(btnGo, false); }); }
+              C.go('/org/index.html');
+            });
+          })
+          .catch(function () {
+            C.setBusy(btnGo, false);
+            say(elErr, BAD);
+          });
+      });
+
+      btnMs.addEventListener('click', function () {
+        clear();
+        C.setBusy(btnMs, true, 'Opening Microsoft…');
+        sb.auth.signInWithOAuth({
+          provider: 'azure',
+          options: { redirectTo: backHere('/org/index.html') }
+        }).then(function (r) {
+          /* On success the browser is already navigating away, so this only
+             ever runs on a failure. */
+          if (r && r.error) {
+            C.setBusy(btnMs, false);
+            say(elErr, 'We couldn’t open the Microsoft sign-in window. ' +
+                       'Try the email and password below instead.');
+          }
+        }, function () {
+          C.setBusy(btnMs, false);
+          say(elErr, 'We couldn’t open the Microsoft sign-in window. ' +
+                     'Try the email and password below instead.');
+        });
+      });
+
+      /* Design's `forgot` sets one flag and relabels the button to "Reset
+         link sent". Kept exactly — including that the button then stays in
+         that state, because a second press would send a second email to
+         somebody who is already reading the first. */
+      btnForgot.addEventListener('click', function () {
+        clear();
+        var email = elEmail.value.trim();
+        if (email.indexOf('@') === -1) {
+          return say(elErr, 'Type your school email above first, then press ' +
+                            'this again and we’ll send a reset link.');
+        }
+        C.setBusy(btnForgot, true, 'Sending…');
+        sb.auth.resetPasswordForEmail(email, { redirectTo: backHere('/org/sign-in.html') })
+          .then(function () {
+            btnForgot.dataset.label = 'Reset link sent';
+            C.setBusy(btnForgot, false);
+            btnForgot.disabled = true;
+            say(elOk, 'Reset link sent. Check your email.');
+          }, function () {
+            C.setBusy(btnForgot, false);
+            /* Deliberately the same words as success. See the note on BAD:
+               "no account with that address" said out loud is the same
+               oracle by another route. */
+            btnForgot.dataset.label = 'Reset link sent';
+            btnForgot.disabled = true;
+            say(elOk, 'Reset link sent. Check your email.');
+          });
+      });
+
+      btnMagic.addEventListener('click', function () {
+        clear();
+        var email = elEmail.value.trim();
+        if (email.indexOf('@') === -1) {
+          return say(elErr, 'Type your school email above first, then press ' +
+                            'this again and we’ll send you a link.');
+        }
+        C.setBusy(btnMagic, true, 'Sending…');
+        sb.auth.signInWithOtp({
+          email: email,
+          options: { emailRedirectTo: backHere('/org/index.html') }
+        }).then(function () {
+          btnMagic.dataset.label = 'Sign-in link sent';
+          C.setBusy(btnMagic, false);
+          btnMagic.disabled = true;
+          say(elOk, 'Sign-in link sent. Open it on this device and you’ll ' +
+                    'land straight on your pupils.');
+        }, function () {
+          C.setBusy(btnMagic, false);
+          btnMagic.dataset.label = 'Sign-in link sent';
+          btnMagic.disabled = true;
+          say(elOk, 'Sign-in link sent. Open it on this device and you’ll ' +
+                    'land straight on your pupils.');
+        });
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

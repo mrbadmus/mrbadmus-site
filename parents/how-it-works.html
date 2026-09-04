@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>How it works — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+<style>
+/* Each step is number / words / example. Below 900 they stack; above it
+   they sit in Design's 80px + 1fr + 1fr row, top-aligned so the number
+   stays level with the heading rather than centring against a long body. */
+.pb-step { display: grid; gap: 18px; }
+@media (min-width: 900px) {
+  .pb-step { grid-template-columns: 80px 1fr 1fr; gap: 32px; align-items: start; }
+}
+</style>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<div id="pb-nav"></div>
+
+<main class="pb-wrap" style="max-width:1100px;margin:0 auto;padding:56px 20px 80px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">How it works</p>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,5.5vw,64px);line-height:.95;letter-spacing:-.04em;max-width:16em;text-wrap:balance">Five minutes to set up. Then it runs itself.</h1>
+
+  <div id="steps" style="margin-top:56px;display:flex;flex-direction:column;gap:48px"></div>
+
+  <section style="margin-top:72px;padding:clamp(28px,4vw,44px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+    <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Things people ask</h2>
+    <div id="faqs" style="margin-top:24px;display:flex;flex-direction:column"></div>
+  </section>
+
+  <div style="margin-top:56px;text-align:center">
+    <a id="cta" href="#" style="display:inline-flex;align-items:center;min-height:58px;padding:0 30px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:19px;box-shadow:5px 5px 0 var(--ks3-accent)">Start a free week</a>
+    <p style="margin:14px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Card needed, nothing charged for seven days.</p>
+  </div>
+</main>
+
+<div id="pb-footer"></div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   parents/how-it-works.html — MRB-317 Night 3.
+   Design's `Public How It Works.dc.html`, transcribed. STEPS and FAQS are
+   her copy verbatim; there is no price on this page, so nothing here reads
+   the pricing endpoint.
+
+   ── THE "DO YOU USE AI?" ANSWER IS MIDE'S RULING, AND IT IS EXACT ───────
+   The wordmark on every consumer surface reads "MrBadmus" with no "AI" —
+   that is the standing ruling in consumer-common.js. This one FAQ answer is
+   the place where the honest answer to the direct question is given, and
+   Mide ruled that it stays exactly as Design wrote it: not softened, not
+   expanded, not made more reassuring. Do not edit this string for tone.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var esc = C.escapeHtml;
+
+  var STEPS = [
+    { n: 1, who: 'You, once', title: 'Tell us where they are.',
+      body: 'Name, year group, and the unit school is on right now. GCSE years add board, route and tier. Pick "alongside school" or "home education" and choose a username they’ll remember.',
+      exLabel: 'What we ask',
+      ex: [{ k: 'Year group', v: '7 to 11' }, { k: 'Current unit', v: 'e.g. Rates of reaction' }, { k: 'Mode', v: 'School · Home ed' }] },
+    { n: 2, who: 'Mr Badmus, every Sunday', title: 'The week is set.',
+      body: 'Two sessions a week for most children, four or five for home educators. Each one is a lesson, a set of quick recall questions, or a written exam question. Everything is tied to the National Curriculum and the exam board specs.',
+      exLabel: 'A typical week, Year 9',
+      ex: [{ k: 'Tue · Lesson', v: '20 min' }, { k: 'Thu · Quick questions', v: '10 min' }, { k: 'Sat · 4-mark practice', v: '15 min' }] },
+    { n: 3, who: 'Your child', title: 'They log in and do it.',
+      body: 'Their own username, no email. The Today screen shows what’s set and who set it. Phone or laptop, no app to install. Answers are marked the moment they finish, with the mark scheme laid out point by point.',
+      exLabel: 'Marked instantly',
+      ex: [{ k: 'Multiple choice and short answer', v: 'Right / wrong + why' }, { k: 'Written 4- and 6-markers', v: 'Point by point' }, { k: 'Unit checks', v: 'Score + weak area' }] },
+    { n: 4, who: 'Mr Badmus, twice a month', title: 'Two answers get a human mark.',
+      body: 'Your child picks any written answer and sends it to me. I mark it against the same scheme, agree or disagree with the instant mark, and write a few lines back. Within three school days.',
+      exLabel: 'Human marking',
+      ex: [{ k: 'Per child', v: '2 a month' }, { k: 'Turnaround', v: '≤ 3 school days' }, { k: 'You’re told', v: 'Email + dashboard' }] },
+    { n: 5, who: 'You, Sunday evening', title: 'One email. Then a termly report.',
+      body: 'What got done, what the scores were, and what to work on. No login needed to read it. At the end of each term, a printable report with every unit covered and every check score.',
+      exLabel: 'You see',
+      ex: [{ k: 'Sunday digest', v: 'All children' }, { k: 'Dashboard', v: 'Any time' }, { k: 'Termly report', v: 'A4, prints clean' }] }
+  ];
+
+  var FAQS = [
+    { q: 'Which exam boards?', a: 'AQA, Edexcel and OCR Gateway for GCSE. Key Stage 3 follows the National Curriculum programme of study, which is the same for every school in England.' },
+    { q: 'Is this a replacement for a tutor?', a: 'For most families it replaces the weekly tutor bill. It sets, marks and reports. What it doesn’t do is sit next to your child; if they need that, it works well alongside a tutor because the tutor can see exactly what’s been done.' },
+    { q: 'What if my child falls behind?', a: 'Nothing piles up. Each Sunday sets a fresh week and anything not done is dropped, not carried. Retrieval questions keep pulling from earlier units so gaps get revisited without a backlog.' },
+    // ⚠️ Mide's ruling — verbatim, do not edit. See the header note.
+    { q: 'Do you use AI?', a: 'The instant marking is automated against the published mark schemes, and the lessons are written by Mr Badmus. He personally marks the two answers a month your child sends him.' },
+    { q: 'Can I cancel?', a: 'Any time, in one click, from the billing page. You keep access until the end of what you’ve paid for and the termly reports stay downloadable for a year.' }
+  ];
+
+  C.boot({ public: true, run: function () {
+    P.chrome('how');
+    document.getElementById('cta').href = P.url('signUp');
+
+    document.getElementById('steps').innerHTML = STEPS.map(function (s) {
+      return '<div class="pb-step" style="padding-top:32px;border-top:2px solid var(--ks3-ink)">' +
+        '<span style="display:grid;place-items:center;width:56px;height:56px;border-radius:16px;' +
+        'border:2px solid var(--ks3-ink);background:var(--ks3-accent);font-family:var(--ks3-font-display);' +
+        'font-weight:800;font-size:26px">' + esc(s.n) + '</span>' +
+        '<div>' +
+          '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;' +
+          'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(s.who) + '</p>' +
+          '<h2 style="margin:8px 0 0;font-family:var(--ks3-font-display);font-weight:800;' +
+          'font-size:clamp(26px,3vw,34px);letter-spacing:-.03em;line-height:1.05">' + esc(s.title) + '</h2>' +
+          '<p style="margin:12px 0 0;font-size:18px;color:var(--ks3-ink-body);text-wrap:pretty">' + esc(s.body) + '</p>' +
+        '</div>' +
+        '<div style="padding:18px 20px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);' +
+        'background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">' +
+          '<p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;' +
+          'text-transform:uppercase;color:var(--ks3-ink-muted)">' + esc(s.exLabel) + '</p>' +
+          '<ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:16px">' +
+          s.ex.map(function (e) {
+            return '<li style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;' +
+              'border-bottom:1px solid var(--ks3-rule)"><span>' + esc(e.k) + '</span>' +
+              '<span style="font-family:var(--ks3-font-mono);font-size:14px;color:var(--ks3-ink-muted);' +
+              'text-align:right">' + esc(e.v) + '</span></li>';
+          }).join('') +
+          '</ul>' +
+        '</div>' +
+        '</div>';
+    }).join('');
+
+    // Design's state is `{ open: 0 }` — the first question answers itself
+    // before anyone clicks, so the pattern is obvious.
+    P.accordion(document.getElementById('faqs'), FAQS, { open: 0 });
+  }});
+})();
+</script>
+</body>
+</html>

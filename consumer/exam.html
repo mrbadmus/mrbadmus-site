@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#FBF3E6"/>
+  <title>Exam questions — MrBadmus</title>
+  <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+  <link rel="stylesheet" href="/consumer/consumer.css"/>
+  <style>
+  /* ── consumer/exam.html — Design's `Child Exam Questions.dc.html`, live ──
+     Her per-element inline styles transcribed; the repeated ones lifted here
+     with an `ex-` prefix. Every value is a --ks3-* token. Four screens on one
+     page — pick, write, marking, result — because they are one task, and a
+     child who has just written six marks' worth should not lose the page to
+     a navigation. Single column at every width. */
+
+  body { padding: 0; margin: 0; background: #FBF3E6; }
+
+  /* ⚠️ LOAD-BEARING, and it looks redundant. An AUTHOR `display` beats the UA
+     stylesheet's `[hidden] { display: none }` regardless of specificity — the
+     same trap shared/ks3.css documents at `.ks3-ticks[hidden]`. Every screen
+     switch on this page is `el.hidden = …` over a class that sets its own
+     `display` (flex/grid), so without this line the hidden screen renders
+     anyway: found by screenshotting it, 2 Sep 2026. */
+  [hidden] { display: none !important; }
+
+  .ex-root {
+    min-height: 100vh;
+    background: var(--ks3-ground);
+    color: var(--ks3-ink);
+    font-family: var(--ks3-font-body);
+    font-size: 19px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  @keyframes ex-spin { to { transform: rotate(360deg); } }
+
+  /* ── header ── */
+  .ex-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 20px 14px; border-bottom: 2px solid var(--ks3-ink);
+  }
+  .ex-back {
+    display: grid; place-items: center; width: 40px; height: 40px;
+    margin-left: -8px; border: 0; border-radius: 12px;
+    background: none; color: var(--ks3-ink); cursor: pointer; text-decoration: none;
+  }
+  .ex-back .ks3-mark { width: 22px; height: 22px; }
+  /* ⊕ Night 4. Four things now want this row: a back arrow, Design's title,
+     her quota chip and the sign-out control. At 390px they need about 410px.
+
+     Measured, then decided: the TITLE is what goes. It is the only one of
+     the four that is redundant — the h1 immediately below it reads "Pick a
+     question", and on the write screen the question itself is the heading —
+     whereas the quota chip is the only place a child is told how many asks
+     of Mr Badmus are left, and truncating THAT to "Mr Badmus: 2 of…" would
+     turn a fact into a tease. Above 440px everything fits and her title is
+     back. `min-width:0` stays on both so nothing can overflow the row at
+     any width in between. */
+  .ex-title {
+    flex: 1 1 auto; min-width: 0;
+    font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 20px; letter-spacing: -.02em;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  @media (max-width: 439px) {
+    .ex-title { display: none; }
+    .ex-quota-chip { margin-left: auto; }
+  }
+  .ex-quota-chip {
+    min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    padding: 6px 12px; border-radius: 99px;
+    border: 2px solid var(--ks3-rule-strong); background: var(--ks3-band);
+    font-family: var(--ks3-font-mono); font-size: 12px; letter-spacing: .06em;
+    color: var(--ks3-ink-muted); white-space: nowrap;
+  }
+
+  .ex-main { max-width: 600px; margin: 0 auto; padding: 26px 20px 80px; }
+
+  /* ── pick ── */
+  .ex-h1 {
+    margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 38px; line-height: 1; letter-spacing: -.035em;
+  }
+  .ex-lede { margin: 12px 0 0; font-size: 17px; color: var(--ks3-ink-body); }
+  .ex-filters { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .ex-filters .ks3-option {
+    width: auto; min-height: 40px; padding: 8px 14px;
+    border-radius: 99px; font-size: 15px;
+  }
+  /* `.ex-list` — the flat list's container — is gone with the flat list.
+     Kept out rather than left as a dead rule: an unused class is the next
+     person's evidence that a second rendering path still exists. */
+
+  /* ── Night 4: the picker is grouped, subject → unit ────────────────────
+     MRB-317 ruling 9. Design drew one flat list, and on real data that list
+     is 370 cards — a child scrolling for a minute to find Photosynthesis.
+     Her CARD is untouched below; what changed is that they now live inside
+     two collapsible levels. Both headers are her own shapes: the subject bar
+     is the band-filled row she uses for a section head, the unit row is her
+     `.ex-card` border at a smaller radius, and the count is the mono chip
+     from the header. */
+  .ex-groups { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .ex-subj {
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-card); overflow: hidden;
+  }
+  .ex-subj-head {
+    width: 100%; box-sizing: border-box;
+    display: flex; align-items: center; gap: 10px;
+    min-height: 56px; padding: 12px 16px;
+    border: 0; background: var(--ks3-band); color: var(--ks3-ink);
+    font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 21px; letter-spacing: -.025em;
+    text-align: left; cursor: pointer;
+  }
+  .ex-subj-body {
+    padding: 10px; display: flex; flex-direction: column; gap: 8px;
+    border-top: 2px solid var(--ks3-ink);
+  }
+  .ex-unit {
+    border: 2px solid var(--ks3-rule-strong); border-radius: 16px;
+    background: var(--ks3-card); overflow: hidden;
+  }
+  .ex-unit-head {
+    width: 100%; box-sizing: border-box;
+    display: flex; align-items: center; gap: 10px;
+    min-height: var(--ks3-tap); padding: 10px 14px;
+    border: 0; background: none; color: var(--ks3-ink);
+    font: inherit; font-weight: 700; font-size: 17px; line-height: 1.25;
+    text-align: left; cursor: pointer;
+  }
+  .ex-unit.is-here { border-color: var(--ks3-accent); }
+  .ex-unit.is-here .ex-unit-head { background: var(--ks3-accent-tint); }
+  .ex-group-name { flex: 1; min-width: 0; }
+  .ex-count {
+    flex: 0 0 auto; display: grid; place-items: center;
+    min-width: 34px; height: 26px; padding: 0 9px; border-radius: 99px;
+    border: 2px solid var(--ks3-rule-strong); background: var(--ks3-card);
+    font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500;
+    color: var(--ks3-ink-muted);
+  }
+  /* Ticks/crosses/arrows are inline SVG, never a typed character — the
+     shipped font subsets do not carry them (KS3 house rule). */
+  .ex-chev {
+    flex: 0 0 auto; width: 20px; height: 20px;
+    transition: transform .15s ease;
+  }
+  [aria-expanded="true"] .ex-chev { transform: rotate(90deg); }
+  .ex-unit-body {
+    padding: 0 12px 12px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .ex-here-note {
+    margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 11px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-accent-text);
+  }
+  .ex-card {
+    text-align: left; display: block; width: 100%; padding: 18px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-card); box-shadow: var(--ks3-shadow-block);
+    color: var(--ks3-ink); font: inherit; cursor: pointer;
+  }
+  .ex-card.is-done { background: var(--ks3-row-dim); box-shadow: none; }
+  .ex-card-top { display: flex; align-items: center; gap: 10px; }
+  .ex-dot {
+    width: 10px; height: 10px; border-radius: 99px;
+    border: 2px solid var(--ks3-ink); background: var(--ks3-band);
+  }
+  .ex-topic {
+    font-family: var(--ks3-font-mono); font-size: 12px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .ex-marks {
+    margin-left: auto; display: grid; place-items: center;
+    width: 38px; height: 30px; border-radius: 9px;
+    border: 2px solid var(--ks3-ink); background: var(--ks3-band);
+    font-family: var(--ks3-font-display); font-weight: 800; font-size: 15px;
+  }
+  .ex-card p { margin: 10px 0 0; font-size: 18px; font-weight: 600; line-height: 1.35; }
+  .ex-done-pill {
+    margin: 10px 0 0; display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 99px;
+    background: var(--ks3-ok-tint); border: 2px solid var(--ks3-ok);
+    font-size: 13px; font-weight: 700; color: var(--ks3-ok-text);
+  }
+
+  /* ── write ── */
+  .ex-eyebrow-row { display: flex; align-items: center; gap: 10px; }
+  .ex-eyebrow {
+    font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .ex-marks-wide {
+    margin-left: auto; display: grid; place-items: center;
+    min-width: 52px; height: 34px; padding: 0 8px; border-radius: 10px;
+    border: 2px solid var(--ks3-ink); background: var(--ks3-band);
+    font-family: var(--ks3-font-display); font-weight: 800; font-size: 16px;
+    white-space: nowrap;
+  }
+  .ex-q {
+    margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 28px; line-height: 1.15; letter-spacing: -.03em;
+  }
+  .ex-stem {
+    margin: 12px 0 0; padding: 14px 16px;
+    border: 2px solid var(--ks3-rule-strong); border-radius: var(--ks3-r-panel);
+    background: var(--ks3-inset); font-size: 17px; color: var(--ks3-ink-body);
+  }
+  .ex-meta-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 8px; font-size: 14px; color: var(--ks3-ink-muted);
+  }
+  .ex-primary {
+    margin-top: 20px; width: 100%; min-height: 56px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    font: inherit; font-weight: 700; font-size: 19px; cursor: pointer;
+  }
+  .ex-primary[disabled] { opacity: .45; cursor: default; }
+
+  /* ── marking ── */
+  .ex-marking { margin-top: 60px; text-align: center; }
+  .ex-spinner {
+    margin: 0 auto; width: 56px; height: 56px; border-radius: 99px;
+    border: 4px solid var(--ks3-rule); border-top-color: var(--ks3-accent);
+    animation: ex-spin 1s linear infinite;
+  }
+  .ex-marking p {
+    margin: 22px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 26px; letter-spacing: -.03em;
+  }
+
+  /* ── result ── */
+  .ex-result-q {
+    margin: 10px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 24px; line-height: 1.2; letter-spacing: -.03em; color: var(--ks3-ink-body);
+  }
+  .ex-ladder { margin-top: 20px; padding: 24px; }
+  .ex-score-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .ex-score-label {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 13px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .ex-score {
+    margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 56px; line-height: .95; letter-spacing: -.04em;
+  }
+  .ex-score span { font-size: 28px; color: var(--ks3-ink-muted); }
+  .ex-verdict {
+    margin: 0; font-size: 16px; font-weight: 700; color: var(--ks3-ok-text);
+    text-align: right; max-width: 50%;
+  }
+  .ex-point { display: flex; gap: 12px; align-items: flex-start; font-size: 17px; line-height: 1.5; }
+  .ex-point-mark {
+    display: grid; place-items: center; flex: 0 0 26px; height: 26px;
+    margin-top: 2px; border-radius: 8px;
+    border: 2px solid var(--ks3-rule-strong); background: var(--ks3-card);
+    color: var(--ks3-ink-muted);
+  }
+  .ex-point.is-hit .ex-point-mark {
+    border-color: var(--ks3-ok); background: var(--ks3-ok); color: #fff;
+  }
+  .ex-point-mark .ks3-mark { width: 14px; height: 14px; }
+  .ex-point-n { font-family: var(--ks3-font-mono); font-size: 11px; }
+  .ex-point-text { color: var(--ks3-ink-muted); }
+  .ex-point.is-hit .ex-point-text { color: var(--ks3-ink); }
+  .ex-note { margin-top: 18px; }
+  .ex-note-label {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-ink-muted);
+  }
+  .ex-note p { margin: 8px 0 0; font-size: 17px; line-height: 1.6; }
+
+  .ex-wrote {
+    margin-top: 18px; padding: 18px;
+    border: 2px solid var(--ks3-option-border); border-radius: var(--ks3-r-panel);
+    background: var(--ks3-card);
+  }
+  .ex-wrote p:last-child {
+    margin: 8px 0 0; font-size: 16px; line-height: 1.55;
+    color: var(--ks3-ink-body); white-space: pre-wrap;
+  }
+
+  .ex-dark {
+    margin-top: 18px; padding: 20px; border-radius: var(--ks3-r-dark);
+    background: var(--ks3-ink); color: var(--ks3-on-dark);
+    box-shadow: 6px 6px 0 var(--ks3-accent);
+  }
+  .ex-dark-eyebrow {
+    margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ks3-alert);
+  }
+  .ex-dark p.ex-dark-body { margin: 8px 0 0; font-size: 17px; color: var(--ks3-on-dark-body); }
+  .ex-dark-btn {
+    margin-top: 14px; width: 100%; min-height: 52px;
+    border: 2px solid var(--ks3-on-dark); border-radius: var(--ks3-r-control);
+    background: var(--ks3-on-dark); color: var(--ks3-ink);
+    font: inherit; font-weight: 700; font-size: 17px; cursor: pointer;
+  }
+  .ex-dark-btn[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+  .ex-quota-line {
+    margin: 10px 0 0; font-size: 14px; color: var(--ks3-on-dark-muted); text-align: center;
+  }
+  .ex-quota-out {
+    margin-top: 18px; padding: 16px 18px;
+    border: 2px dashed var(--ks3-rule-strong); border-radius: var(--ks3-r-panel);
+    background: var(--ks3-inset); font-size: 16px; color: var(--ks3-ink-body);
+  }
+  .ex-quota-out strong { color: var(--ks3-ink); }
+  .ex-sent {
+    margin-top: 18px; padding: 18px;
+    border: 2px solid var(--ks3-ok); border-radius: var(--ks3-r-panel);
+    background: var(--ks3-ok-tint);
+  }
+  .ex-sent p:first-child {
+    margin: 0; display: flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: 17px; color: var(--ks3-ok-text);
+  }
+  .ex-sent p:last-child { margin: 6px 0 0; font-size: 16px; color: var(--ks3-ink-body); }
+  .ex-human-score {
+    margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 44px; line-height: 1; letter-spacing: -.04em;
+  }
+  .ex-human-score span { font-size: 22px; color: var(--ks3-on-dark-muted); }
+  .ex-human-date { margin: 4px 0 0; font-size: 14px; color: var(--ks3-on-dark-muted); }
+  .ex-human-fb { margin: 14px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-on-dark-body); }
+  .ex-sign {
+    margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 16px; letter-spacing: -.02em;
+  }
+
+  .ex-pair { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ex-pair button, .ex-pair a {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 50px; border: 2px solid var(--ks3-ink);
+    border-radius: var(--ks3-r-control); background: var(--ks3-card);
+    color: var(--ks3-ink); font: inherit; font-weight: 700; font-size: 16px;
+    cursor: pointer; text-decoration: none;
+  }
+  .ex-pair .ex-solid { background: var(--ks3-ink); color: var(--ks3-on-dark); }
+  .ex-pair button[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }
+
+  /* Every failure a nine-year-old can read, in her panel language. */
+  .ex-oops {
+    margin-top: 18px; padding: 18px 20px;
+    border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+    background: var(--ks3-alert-tint); font-size: 17px;
+  }
+  .ex-oops p { margin: 0; }
+  .ex-empty {
+    margin-top: 18px; padding: 24px 22px;
+    border: 2px dashed var(--ks3-rule-strong); border-radius: var(--ks3-r-card);
+    background: var(--ks3-inset);
+  }
+  .ex-empty h3 {
+    margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+    font-size: 22px; letter-spacing: -.02em;
+  }
+  .ex-empty p { margin: 6px 0 0; font-size: 17px; color: var(--ks3-ink-body); }
+  </style>
+</head>
+<body>
+
+<div class="rd ex-root" data-mode="ks3" id="c-main">
+  <header class="ex-head">
+    <a class="ex-back" id="ex-back-link" href="/consumer/today.html" aria-label="Back to today">
+      <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </a>
+    <button class="ex-back" id="ex-back-btn" type="button" aria-label="Back" hidden>
+      <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <span class="ex-title">Exam questions</span>
+    <span class="ex-quota-chip" id="ex-quota-chip"></span>
+    <!-- Night 4, MRB-317 ruling 3. See today.html. -->
+    <span id="ex-signout"></span>
+  </header>
+
+  <main class="ex-main" id="ex-main"></main>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/exam.html — write an answer, get it marked. MRB-317 Night 3.
+   Design's `Child Exam Questions.dc.html`, on the Night 2 marking routes.
+
+   ── THE MARK SCHEME IS ONLY EVER SHOWN AFTER AN ANSWER IS SUBMITTED ────
+   `scheme` arrives in the list payload, and this page does not render it
+   until a mark comes back. That is not a display preference: a six-mark
+   question with its mark scheme printed underneath is not a question, and
+   a child who reads the scheme first has learnt to copy rather than to
+   answer. The tick-by-tick panel is the FEEDBACK, and it exists only after
+   `POST /mark` has replied.
+
+   ── THE STUB IS NOT ANNOUNCED TO A CHILD ───────────────────────────────
+   ⚠️ Deliberate, and it reverses the Night 2 scaffold. `provider: 'stub'`
+   means this environment has no Anthropic key and the marker fell back to
+   keyword overlap. That is a fact about a deployment. A child reading
+   "(marked by the practice marker, not the real one)" learns only that
+   something they cannot see is broken, and it is meta-text about the
+   platform on a nine-year-old's screen — forbidden on these surfaces. The
+   provider is still on the response for anyone reading the network tab;
+   it is simply not rendered.
+
+   ── TWO MARKERS, AND THEY MUST NEVER BE CONFUSED FOR EACH OTHER ────────
+   The instant mark is provisional. Mr Badmus marks in person, in his own
+   time, and is the real thing. Design gives them two visually opposite
+   treatments — the instant one on the light ladder panel, his on the ink
+   card with the orange shadow and his signature. A child must never be
+   able to read the instant 4/6 and believe their teacher gave it.
+
+   ── QUOTA IS A NUMBER OF ASKS, NOT AN ERROR CONDITION ──────────────────
+   `quotaLeft` / `quotaTotal` / `resetDate` are in the header chip from the
+   first paint, so running out is a thing the child watched coming rather
+   than a refusal that arrives out of nowhere. When the 429 does land,
+   `quota_reached` is rendered as Design's sentence, never as the code.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+
+  var SUBJECT_DOT = {
+    Biology: 'var(--ks3-biology)',
+    Chemistry: 'var(--ks3-chemistry)',
+    Physics: 'var(--ks3-physics)'
+  };
+  var FILTERS = ['All', '4-markers', '6-markers', 'Not done yet'];
+  var WORDS = { 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six' };
+
+  /* Design's thresholds and Design's four sentences. ⊕ The backend also
+     sends a `verdict` ('nearly there', 'halfway', …); hers are used instead
+     because they are the copy on this screen — two words from the API and
+     a full sentence from the design are not the same register, and the
+     register is what a child reads. The NUMBER is always the backend's. */
+  /* ⊕ FOUND BY SCREENSHOTTING IT, 2 Sep 2026. Design's mock reads "Marked
+     Thursday"; the API sends `mb_marked_at`, which is an ISO timestamp, and
+     the first render printed "2026-09-02T06:17:24.725+00:00" onto a
+     nine-year-old's screen. Anything that parses as a date is formatted;
+     anything that does not is already words and is left alone, because the
+     parent-facing `answers[]` shape sends `humanDate` pre-worded. */
+  function humanDate(v) {
+    if (!v) { return ''; }
+    var d = new Date(v);
+    return isNaN(d.getTime()) ? String(v) : ('Marked ' + C.fmtDate(v));
+  }
+
+  function verdictFor(score, max) {
+    if (!max) { return ''; }
+    if (score === max) { return 'Full marks.'; }
+    if (score >= max * 0.66) { return 'Solid. The rest is precision.'; }
+    if (score >= max * 0.4) { return 'Halfway. Read the note.'; }
+    return 'A start. Read the note, then go again.';
+  }
+
+  C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
+    var main = document.getElementById('ex-main');
+    var backLink = document.getElementById('ex-back-link');
+    var backBtn  = document.getElementById('ex-back-btn');
+
+    var questions = [];
+    var quota = { left: null, total: null, reset: null };
+    var writable = false;
+
+    var screen = 'pick';          // pick | write | marking | result
+    var filter = 'All';
+    /* Night 4: which accordion rows are open, keyed 's:<subject>' and
+       'u:<subject>|<unit>'. Survives a filter change and a trip into a
+       question and back, because a child who opened Photosynthesis and
+       answered one should come back to Photosynthesis. */
+    var expanded = {};
+    var expandInit = false;
+    var currentUnit = null;       // the unit name from /child/today, or null
+    var openId = new URLSearchParams(window.location.search).get('q');
+    var draft = '';               // survives a 503 — see markAnswer()
+    var result = null;            // the LAST mark for the open question
+    var justSent = false;
+
+    C.signOutControl(document.getElementById('ex-signout'), { sb: ctx.sb });
+
+    backLink.href = C.href('/consumer/today.html');
+    backBtn.addEventListener('click', function () {
+      screen = 'pick'; result = null; justSent = false; draft = '';
+      paint();
+    });
+
+    function esc(s) { return C.escapeHtml(s); }
+    function find(id) {
+      for (var i = 0; i < questions.length; i++) {
+        if (String(questions[i].id) === String(id)) { return questions[i]; }
+      }
+      return null;
+    }
+
+    /* ── the one read ──────────────────────────────────────────────────── */
+    function load() {
+      return C.api('/api/consumer/child/exam-questions', { token: ctx.token })
+        .then(function (d) {
+          d = d || {};
+          questions = d.questions || [];
+          quota = { left: d.quotaLeft, total: d.quotaTotal, reset: d.resetDate };
+          writable = C.guard(d.access, 'child').writable;
+          paintChip();
+        });
+    }
+
+    function paintChip() {
+      var chip = document.getElementById('ex-quota-chip');
+      if (quota.left == null || quota.total == null) { chip.textContent = ''; return; }
+      chip.textContent = 'Mr Badmus: ' + quota.left + ' of ' + quota.total + ' left';
+    }
+
+    /* ── paint ─────────────────────────────────────────────────────────── */
+    function paint() {
+      backLink.hidden = screen !== 'pick';
+      backBtn.hidden  = screen === 'pick';
+      if (screen === 'pick')    { return paintPick(); }
+      if (screen === 'write')   { return paintWrite(); }
+      if (screen === 'marking') { return paintMarking(); }
+      return paintResult();
+    }
+
+    function passes(q) {
+      if (filter === 'All') { return true; }
+      if (filter === 'Not done yet') { return !q.done; }
+      if (filter === '4-markers') { return Number(q.marks) === 4; }
+      if (filter === '6-markers') { return Number(q.marks) === 6; }
+      return true;
+    }
+
+    /* ══ THE PICKER IS GROUPED, SUBJECT → UNIT (Night 4, ruling 9) ═══════
+
+       Design drew one flat list. On her mock it is nine cards; on real data
+       it is 370, and a child looking for Photosynthesis scrolls past a
+       hundred physics questions to reach it. The flat list is GONE — not
+       hidden behind a toggle, because two ways of reading the same 370 rows
+       is two things to maintain and one of them is always the wrong one.
+
+       ── THE SECOND LEVEL IS `topic`, AND THAT IS THE UNIT ────────────────
+       ⚠️ `/child/exam-questions` sends `subject` and `topic` and no unit
+       field, although `exam_questions` has a `unit_code` column. At KS3 the
+       two are one-to-one — every question with `topic = 'Photosynthesis'`
+       has `unit_code = 'B7'`, checked against the table — so grouping on
+       `topic` groups on the unit exactly, without this page asking for a
+       column the contract does not promise. At KS4 there are no unit codes
+       at all and `topic` is the spec topic, which is the same shape of
+       answer. If a unit ever gains two topics the grouping stays correct
+       and merely gets finer; nothing here breaks.
+
+       ── ORDER ────────────────────────────────────────────────────────────
+       The server sends `.order('subject').order('id')`, so the units arrive
+       B1, B10, B11, B2 … — alphabetical on an id, which is not an order a
+       child recognises. Where every question in a unit carries the estate's
+       `ks3-b7-…` id convention the unit is sorted by its letter and NUMBER;
+       where it does not (KS4), first-appearance order stands. The code is
+       used to SORT and is never displayed: it is a convention of an opaque
+       id, not a field anyone promised.
+
+       ── WHAT THE COUNTS COUNT ────────────────────────────────────────────
+       The number on a header is the number of cards inside it AFTER the
+       current filter, computed from the same array the cards are rendered
+       from — one derivation, so the two cannot disagree. A group that
+       filters down to nothing is not rendered at all rather than rendered
+       as a zero.
+       ════════════════════════════════════════════════════════════════════ */
+
+    /* The estate's id convention, used for ordering only. See above. */
+    function unitOrderKey(q) {
+      var m = /^ks\d+-([a-z]+)(\d+)-/i.exec(String(q && q.id || ''));
+      return m ? { letter: m[1].toLowerCase(), n: Number(m[2]) } : null;
+    }
+
+    function groupsOf(list) {
+      var subjects = [];
+      var bySubject = {};
+      list.forEach(function (q) {
+        var sName = q.subject || 'Science';
+        var uName = q.topic || sName;
+        var sub = bySubject[sName];
+        if (!sub) {
+          sub = bySubject[sName] = { name: sName, units: [], byUnit: {}, count: 0 };
+          subjects.push(sub);
+        }
+        var unit = sub.byUnit[uName];
+        if (!unit) {
+          unit = sub.byUnit[uName] = { name: uName, questions: [], order: sub.units.length };
+          sub.units.push(unit);
+        }
+        unit.questions.push(q);
+        sub.count += 1;
+      });
+
+      subjects.forEach(function (sub) {
+        // Only reorder when EVERY unit in the subject yields a key; a
+        // half-sorted list is worse than the order it arrived in.
+        var keys = sub.units.map(function (u) {
+          var k = null;
+          for (var i = 0; i < u.questions.length; i++) {
+            var got = unitOrderKey(u.questions[i]);
+            if (!got) { return null; }
+            if (k && (k.letter !== got.letter || k.n !== got.n)) { return null; }
+            k = got;
+          }
+          return k;
+        });
+        if (keys.every(Boolean)) {
+          sub.units.forEach(function (u, i) { u.key = keys[i]; });
+          sub.units.sort(function (a, b) {
+            return a.key.letter === b.key.letter
+              ? a.key.n - b.key.n
+              : (a.key.letter < b.key.letter ? -1 : 1);
+          });
+        }
+      });
+      return subjects;
+    }
+
+    /* Which unit is the child ON? `/child/exam-questions` does not say, so
+       `/child/today` is asked — the one place that already knows, because it
+       is the page that builds this week's work out of the child's position.
+       Its titles carry the topic in one of two shapes: a lesson is
+       "<topic>: lesson 3" (topic BEFORE the colon), everything else is
+       "Unit check: <topic>" / "Practice: <topic>" (topic AFTER it). Rather
+       than parse which is which, BOTH halves are offered and the one that
+       matches a real group name wins — so the match validates itself and a
+       change to either title shape can only ever make this find nothing,
+       never the wrong unit. Nothing is expanded when nothing matches; a
+       picker with everything shut is usable, a wrong unit opened is a lie. */
+    function currentUnitFrom(today, names) {
+      var pool = (today && today.items || []).concat(today && today.later || []);
+      for (var i = 0; i < pool.length; i++) {
+        var t = String(pool[i].title || '');
+        var at = t.indexOf(':');
+        if (at < 0) { continue; }
+        var before = t.slice(0, at).trim();
+        var after = t.slice(at + 1).trim();
+        if (names[after.toLowerCase()]) { return names[after.toLowerCase()]; }
+        if (names[before.toLowerCase()]) { return names[before.toLowerCase()]; }
+      }
+      return null;
+    }
+
+    function chev() {
+      return '<svg class="ks3-mark ex-chev" viewBox="0 0 24 24" aria-hidden="true">' +
+             '<path d="M9 5l7 7-7 7"/></svg>';
+    }
+
+    function paintPick() {
+      var shown = questions.filter(passes);
+      var groups = groupsOf(shown);
+
+      /* First paint decides what is open: the child's unit, and the subject
+         it lives in. After that the child's own presses are the authority
+         and a filter change must not shut what they opened. */
+      if (!expandInit) {
+        expandInit = true;
+        if (currentUnit) {
+          groups.forEach(function (sub) {
+            sub.units.forEach(function (u) {
+              if (u.name === currentUnit) {
+                expanded['s:' + sub.name] = true;
+                expanded['u:' + sub.name + '|' + u.name] = true;
+              }
+            });
+          });
+        }
+      }
+
+      var html =
+        '<h1 class="ex-h1">Pick a question</h1>' +
+        '<p class="ex-lede">Write it like you’re in the exam. It’s marked against ' +
+        'the real mark scheme the moment you finish.</p>' +
+        '<div class="ex-filters" id="ex-filters">' +
+          FILTERS.map(function (f) {
+            return '<button class="ks3-option" type="button" aria-pressed="' +
+              (filter === f) + '" data-filter="' + esc(f) + '">' + esc(f) + '</button>';
+          }).join('') +
+        '</div>';
+
+      if (!shown.length) {
+        html += '<div class="ex-empty"><h3>' +
+          (questions.length ? 'Nothing here yet' : 'No questions yet') + '</h3><p>' +
+          (questions.length
+            ? 'Nothing matches that. Try “All”.'
+            : 'Exam questions appear as you work through the units. There will be ' +
+              'some here soon.') +
+          '</p></div>';
+      } else {
+        html += '<div class="ex-groups" id="ex-groups">' + groups.map(function (sub) {
+          var sKey = 's:' + sub.name;
+          var sOpen = !!expanded[sKey];
+          return '<section class="ex-subj">' +
+            '<button class="ex-subj-head" type="button" data-toggle="' + esc(sKey) +
+              '" aria-expanded="' + sOpen + '">' +
+              '<span class="ex-dot" style="background:' +
+                (SUBJECT_DOT[sub.name] || 'var(--ks3-band)') + '"></span>' +
+              '<span class="ex-group-name">' + esc(sub.name) + '</span>' +
+              '<span class="ex-count">' + sub.count + '</span>' + chev() +
+            '</button>' +
+            '<div class="ex-subj-body"' + (sOpen ? '' : ' hidden') + '>' +
+              sub.units.map(function (u) {
+                var uKey = 'u:' + sub.name + '|' + u.name;
+                var uOpen = !!expanded[uKey];
+                var here = currentUnit && u.name === currentUnit;
+                return '<section class="ex-unit' + (here ? ' is-here' : '') + '">' +
+                  '<button class="ex-unit-head" type="button" data-toggle="' + esc(uKey) +
+                    '" aria-expanded="' + uOpen + '">' +
+                    '<span class="ex-group-name">' + esc(u.name) + '</span>' +
+                    '<span class="ex-count">' + u.questions.length + '</span>' + chev() +
+                  '</button>' +
+                  '<div class="ex-unit-body"' + (uOpen ? '' : ' hidden') + '>' +
+                    (here ? '<p class="ex-here-note">You’re here now</p>' : '') +
+                    u.questions.map(cardHtml).join('') +
+                  '</div>' +
+                '</section>';
+              }).join('') +
+            '</div>' +
+          '</section>';
+        }).join('') + '</div>';
+      }
+
+      main.innerHTML = html;
+
+      document.getElementById('ex-filters').addEventListener('click', function (e) {
+        var b = e.target.closest ? e.target.closest('button[data-filter]') : null;
+        if (!b) { return; }
+        filter = b.getAttribute('data-filter');
+        paintPick();
+      });
+
+      var groupHost = document.getElementById('ex-groups');
+      if (groupHost) {
+        groupHost.addEventListener('click', function (e) {
+          if (!e.target.closest) { return; }
+          var t = e.target.closest('button[data-toggle]');
+          if (t) {
+            var key = t.getAttribute('data-toggle');
+            expanded[key] = !expanded[key];
+            /* Repaint rather than toggle the node in place: the panel that
+               opens has to be the one the counts were computed from, and a
+               single render path is the only way those two can never drift. */
+            var y = window.pageYOffset;
+            paintPick();
+            window.scrollTo(0, y);
+            return;
+          }
+          var b = e.target.closest('button[data-open]');
+          if (b) { openQuestion(b.getAttribute('data-open')); }
+        });
+      }
+    }
+
+    /* Design's card, unchanged — it just lives inside a group now. */
+    function cardHtml(q) {
+      var doneLabel = q.done === 'human' ? 'Marked by Mr Badmus' : 'Marked';
+      return '<button class="ex-card' + (q.done ? ' is-done' : '') +
+        '" type="button" data-open="' + esc(q.id) + '">' +
+        '<span class="ex-card-top">' +
+          '<span class="ex-dot" style="background:' +
+            (SUBJECT_DOT[q.subject] || 'var(--ks3-band)') + '"></span>' +
+          '<span class="ex-topic">' + esc(q.topic || q.subject || '') + '</span>' +
+          '<span class="ex-marks">' + esc(q.marks == null ? '' : q.marks) + '</span>' +
+        '</span>' +
+        '<p>' + esc(q.text || '') + '</p>' +
+        (q.done
+          ? ('<span class="ex-done-pill">' +
+             '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+             '<path d="M5 12.5l4.5 4.5L19 7"/></svg>' + esc(doneLabel) + '</span>')
+          : (q.waiting
+              ? '<span class="ex-done-pill">With Mr Badmus</span>'
+              : '')) +
+      '</button>';
+    }
+
+    /* Opening a question that has already been answered goes straight to the
+       result — the child wants the marking back, not a blank box. Design does
+       exactly this in `openQ`. */
+    function openQuestion(id) {
+      var q = find(id);
+      if (!q) { return; }
+      openId = id;
+      justSent = !!q.waiting;
+      /* Coming back from a question must land on the group it came from,
+         open. Set here rather than on the back button so it is true however
+         the child gets back — the header arrow, a mark, a send. */
+      expandInit = true;
+      expanded['s:' + (q.subject || 'Science')] = true;
+      expanded['u:' + (q.subject || 'Science') + '|' + (q.topic || q.subject || 'Science')] = true;
+      if (q.done && q.answer) {
+        result = { score: scoreOf(q), max: q.marks, hits: q.hits || [],
+                   feedback: q.feedback, answer: q.answer };
+        screen = 'result';
+      } else {
+        draft = '';
+        result = null;
+        screen = 'write';
+      }
+      paint();
+    }
+
+    /* `aiScore` arrives as the string "4/6". The numerator is the score; if
+       it is not there, the hit count is NOT substituted — that would be this
+       page inventing a mark out of a list of ticks. */
+    function scoreOf(q) {
+      if (!q.aiScore) { return null; }
+      var n = parseInt(String(q.aiScore).split('/')[0], 10);
+      return isNaN(n) ? null : n;
+    }
+
+    function paintWrite() {
+      var q = find(openId) || {};
+      var words = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+      var tooShort = words < 3;
+
+      main.innerHTML =
+        '<div class="ex-eyebrow-row">' +
+          '<span class="ex-eyebrow">' + esc(q.topic || q.subject || '') + '</span>' +
+          '<span class="ex-marks-wide">' + esc(q.marks == null ? '' : q.marks) +
+          ' marks</span>' +
+        '</div>' +
+        '<h1 class="ex-q">' + esc(q.text || '') + '</h1>' +
+        (q.stem ? ('<p class="ex-stem">' + esc(q.stem) + '</p>') : '') +
+        '<label class="ks3-answer-label" for="ex-answer" style="margin-top:22px">Your answer</label>' +
+        '<textarea class="ks3-answer" id="ex-answer" rows="7" data-write ' +
+          'placeholder="Start writing. Aim for one point per mark."></textarea>' +
+        '<div class="ex-meta-row"><span id="ex-words">' + words + ' words</span>' +
+          '<span>' + (q.marks ? (q.marks + ' marks · about ' + q.marks + ' points') : '') +
+        '</span></div>' +
+        (writable ? '' :
+          '<div class="ex-oops"><p>Handing work in is off just now. You can still ' +
+          'read your marked answers. Ask your grown-up.</p></div>') +
+        '<button class="ex-primary" id="ex-mark" type="button" data-write' +
+          (tooShort ? ' disabled' : '') + '>Mark my answer</button>' +
+        '<div id="ex-error"></div>';
+
+      var ta = document.getElementById('ex-answer');
+      ta.value = draft;
+      ta.addEventListener('input', function () {
+        draft = ta.value;
+        var n = draft.trim() ? draft.trim().split(/\s+/).length : 0;
+        document.getElementById('ex-words').textContent = n + ' words';
+        document.getElementById('ex-mark').disabled = (n < 3) || !writable;
+      });
+      C.applyWritable(main, writable);
+      if (tooShort) { document.getElementById('ex-mark').disabled = true; }
+
+      document.getElementById('ex-mark').addEventListener('click', function () {
+        markAnswer(q);
+      });
+    }
+
+    function paintMarking() {
+      main.innerHTML =
+        '<div class="ex-marking"><div class="ex-spinner"></div>' +
+        '<p>Checking against the mark scheme</p></div>';
+    }
+
+    function markAnswer(q) {
+      var text = draft.trim();
+      if (text.split(/\s+/).length < 3) { return; }
+      screen = 'marking';
+      paint();
+
+      C.api('/api/consumer/mark', {
+        method: 'POST', token: ctx.token,
+        body: { question_id: q.id, answer: text }
+      }).then(function (d) {
+        d = d || {};
+        result = { score: d.score, max: d.max, hits: d.hits || [],
+                   feedback: d.feedback, answer: text, answer_id: d.answer_id };
+        if (d.quotaLeft != null) { quota.left = d.quotaLeft; }
+        if (d.quotaTotal != null) { quota.total = d.quotaTotal; }
+        if (d.resetDate) { quota.reset = d.resetDate; }
+        justSent = false;
+        paintChip();
+        /* Refresh the list so the question carries its `answer_id`, its done
+           state and its scheme for the next visit. The score itself is not
+           in that payload, so `result` above is what the screen renders. */
+        return load().then(function () { screen = 'result'; paint(); },
+                           function () { screen = 'result'; paint(); });
+      }).catch(function (e) {
+        /* Back to the writing screen with the answer still in the box.
+           Ten minutes of work must survive every one of these. */
+        screen = 'write';
+        paint();
+        var host = document.getElementById('ex-error');
+        var msg;
+        if (e.status === 503 || e.code === 'marking_unavailable') {
+          msg = 'The marking isn’t working just now. Your answer is still here — ' +
+                'try again in a minute.';
+        } else if (e.code === 'cap_reached' || e.status === 429) {
+          msg = e.message || 'That’s all the marking for now. Try again later.';
+        } else if (e.code === 'org_locked' || e.status === 423) {
+          msg = 'Handing work in is off just now. Your answer is still here. ' +
+                'Ask your grown-up.';
+        } else {
+          msg = e.message;
+        }
+        host.innerHTML = '<div class="ex-oops"><p>' + esc(msg) + '</p></div>';
+      });
+    }
+
+    function paintResult() {
+      var q = find(openId) || {};
+      var r = result || {};
+      var max = r.max != null ? r.max : q.marks;
+      var human = q.human || null;
+
+      var scheme = q.scheme || [];
+      var hits = {};
+      (r.hits || []).forEach(function (i) { hits[Number(i)] = true; });
+
+      var points = scheme.map(function (pt, i) {
+        var ok = !!hits[i];
+        return '<li class="ex-point' + (ok ? ' is-hit' : '') + '">' +
+          '<span class="ex-point-mark">' +
+            (ok
+              ? '<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+                '<path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+              : '<span class="ex-point-n">' + (i + 1) + '</span>') +
+          '</span>' +
+          '<span class="ex-point-text">' + esc(C.schemePoint(pt)) + '</span>' +
+        '</li>';
+      }).join('');
+
+      /* Send-to-Mr-Badmus: three mutually exclusive states, Design's own. */
+      var answerId = r.answer_id || q.answer_id || '';
+      var canSend  = !justSent && !human && quota.left > 0 && !!answerId;
+      var quotaOut = !justSent && !human && quota.left === 0;
+
+      var quotaLine = justSent
+        ? (quota.left === 0
+            ? ('That was your last one this month.' +
+               (quota.reset ? (' Resets ' + quota.reset + '.') : ''))
+            : (quota.left + ' left this month.'))
+        : ('Uses 1 of your ' + quota.left + ' left this month.');
+
+      var totalWord = WORDS[quota.total] || String(quota.total);
+
+      main.innerHTML =
+        '<div class="ex-eyebrow-row"><span class="ex-eyebrow">' +
+          esc(q.topic || q.subject || '') +
+          (max != null ? (' · ' + max + ' marks') : '') + '</span></div>' +
+        '<h1 class="ex-result-q">' + esc(q.text || '') + '</h1>' +
+
+        '<div class="ks3-ladder ex-ladder">' +
+          '<div class="ex-score-row">' +
+            '<div>' +
+              '<p class="ex-score-label">Your mark</p>' +
+              '<p class="ex-score">' + esc(r.score == null ? '—' : r.score) +
+                '<span>/' + esc(max == null ? '?' : max) + '</span></p>' +
+            '</div>' +
+            '<p class="ex-verdict">' + esc(verdictFor(r.score, max)) + '</p>' +
+          '</div>' +
+          (points ? ('<ul class="ks3-ticks">' + points + '</ul>') : '') +
+          (r.feedback
+            ? ('<div class="ks3-feedback ex-note">' +
+               '<p class="ex-note-label">Examiner’s note</p>' +
+               '<p>' + esc(r.feedback) + '</p></div>')
+            : '') +
+        '</div>' +
+
+        '<div class="ex-wrote">' +
+          '<p class="ex-note-label">You wrote</p>' +
+          '<p>' + esc(r.answer || q.answer || '') + '</p>' +
+        '</div>' +
+
+        (canSend
+          ? ('<div class="ex-dark">' +
+             '<p class="ex-dark-eyebrow">Want a second opinion?</p>' +
+             '<p class="ex-dark-body">Mr Badmus can mark this one himself and write ' +
+             'back. Takes up to three school days.</p>' +
+             '<button class="ex-dark-btn" id="ex-send" type="button" data-write ' +
+             'data-answer="' + esc(answerId) + '">Send to Mr Badmus</button>' +
+             '<p class="ex-quota-line">' + esc(quotaLine) + '</p></div>')
+          : '') +
+
+        (quotaOut
+          ? ('<div class="ex-quota-out"><strong>Mr Badmus has your ' +
+             esc(totalWord) + ' for this month.</strong> You can send another from ' +
+             esc(quota.reset || 'next month') +
+             '. Your instant mark still counts.</div>')
+          : '') +
+
+        (justSent && !human
+          ? ('<div class="ex-sent">' +
+             '<p><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">' +
+             '<path d="M5 12.5l4.5 4.5L19 7"/></svg>Sent to Mr Badmus</p>' +
+             '<p>His mark and note will show up here, and on your Today screen, ' +
+             'when he’s done. ' + esc(quotaLine) + '</p></div>')
+          : '') +
+
+        (human
+          ? ('<div class="ex-dark">' +
+             '<div class="ex-score-row">' +
+               '<div>' +
+                 '<p class="ex-dark-eyebrow">Mr Badmus marked this</p>' +
+                 '<p class="ex-human-date">' + esc(humanDate(human.date)) + '</p>' +
+               '</div>' +
+               '<p class="ex-human-score">' + esc(human.score) +
+                 '<span>/' + esc(max == null ? '?' : max) + '</span></p>' +
+             '</div>' +
+             '<p class="ex-human-fb">' + esc(human.feedback || '') + '</p>' +
+             '<p class="ex-sign">— Mr Badmus</p></div>')
+          : '') +
+
+        '<div id="ex-error"></div>' +
+
+        '<div class="ex-pair">' +
+          '<button type="button" id="ex-again" data-write>Have another go</button>' +
+          '<button type="button" id="ex-another" class="ex-solid">Another question</button>' +
+        '</div>';
+
+      C.applyWritable(main, writable);
+
+      var s = document.getElementById('ex-send');
+      if (s) { s.addEventListener('click', function () { sendToMb(this); }); }
+      document.getElementById('ex-again').addEventListener('click', function () {
+        draft = ''; result = null; screen = 'write'; paint();
+      });
+      document.getElementById('ex-another').addEventListener('click', function () {
+        screen = 'pick'; result = null; justSent = false; draft = ''; paint();
+      });
+      window.scrollTo(0, 0);
+    }
+
+    function sendToMb(btn) {
+      var answerId = btn.getAttribute('data-answer');
+      if (!answerId) { return; }
+      C.setBusy(btn, true, 'Sending…');
+      C.api('/api/consumer/exam-answers/' + encodeURIComponent(answerId) + '/send-to-mb',
+            { method: 'POST', token: ctx.token })
+        .then(function (d) {
+          d = d || {};
+          if (d.quotaLeft != null) { quota.left = d.quotaLeft; }
+          if (d.quotaTotal != null) { quota.total = d.quotaTotal; }
+          if (d.resetDate) { quota.reset = d.resetDate; }
+          justSent = true;
+          paintChip();
+          return load().then(function () { paint(); }, function () { paint(); });
+        })
+        .catch(function (e) {
+          C.setBusy(btn, false);
+          if (e.code === 'quota_reached' || e.status === 429) {
+            /* Her quota-used state, not an error line: the child is being
+               told how the month works, not that they did something wrong. */
+            var dd = e.data || {};
+            quota.left = 0;
+            if (dd.limit != null) { quota.total = dd.limit; }
+            if (dd.resetDate) { quota.reset = dd.resetDate; }
+            paintChip();
+            return paint();
+          }
+          if (e.code === 'already_sent' || e.status === 409) {
+            justSent = true;
+            return paint();
+          }
+          var msg = (e.code === 'org_locked' || e.status === 423)
+            ? 'Sending is off just now. Your mark is still here. Ask your grown-up.'
+            : e.message;
+          var host = document.getElementById('ex-error');
+          if (host) { host.innerHTML = '<div class="ex-oops"><p>' + esc(msg) + '</p></div>'; }
+        });
+    }
+
+    /* The child's current unit, for the one group that starts open. It is a
+       SECOND read and it is deliberately not awaited as a dependency: the
+       picker is the page, and a slow or missing /child/today must cost the
+       child a pre-opened accordion, never the questions. Failure is a
+       console line and nothing on screen. */
+    function loadCurrentUnit() {
+      return C.api('/api/consumer/child/today', { token: ctx.token })
+        .then(function (today) {
+          var names = {};
+          questions.forEach(function (q) {
+            var n = q.topic || q.subject;
+            if (n) { names[String(n).toLowerCase()] = n; }
+          });
+          currentUnit = currentUnitFrom(today, names);
+        }, function (e) { console.error('[exam/current-unit]', e); });
+    }
+
+    return load().then(function () {
+      /* Today's exam item links here as ?q=<question_id>. Landing straight
+         on the question is the point of that link. */
+      if (openId && find(openId)) { return openQuestion(openId); }
+      openId = null;
+      paint();
+
+      /* THEN the current unit, and a repaint if it changes the answer. The
+         picker is on screen before this call is made, deliberately: a second
+         read must never be something a child waits behind to see their
+         questions. And the repaint is skipped the moment they have pressed
+         anything themselves — `expanded` empty is the test — so this can
+         never shut a group somebody opened. */
+      return loadCurrentUnit().then(function () {
+        if (screen !== 'pick' || !currentUnit) { return; }
+        if (Object.keys(expanded).length) { return; }
+        expandInit = false;
+        paintPick();
+      });
+    }).catch(function (e) {
+      main.innerHTML = '<div class="ex-oops"><p>' + esc(e.message) + '</p>' +
+        '<p style="margin-top:6px">Try again in a moment, or ask your grown-up ' +
+        'to check the account.</p></div>';
+    });
+  }});
+})();
+</script>
+</body>
+</html>

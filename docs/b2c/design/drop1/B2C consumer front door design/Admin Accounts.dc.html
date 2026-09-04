@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#15110C}
+a{color:#F4B860;text-decoration:none}a:hover{color:#F6EEDF}
+input,button,select{font:inherit}
+input::placeholder{color:#8A7F72}
+.ac-row,.ac-hd{display:grid;grid-template-columns:1fr;gap:4px}
+.ac-hd{display:none}
+@media (min-width:1000px){.ac-row,.ac-hd{grid-template-columns:2fr 1.2fr 1fr 1fr 1fr 1fr;gap:12px;align-items:center}.ac-hd{display:grid}}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--st-room);color:var(--st-room-text);font-family:var(--ks3-font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<header style="display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--ks3-dark-rule);background:var(--st-room-panel)">
+  <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="24px,24px"></x-import>
+  <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">MrBadmus</span>
+  <span style="padding:3px 9px;border:1px solid var(--ks3-dark-rule);border-radius:99px;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--st-ember)">Admin</span>
+  <nav style="margin-left:24px;display:flex;gap:18px;font-weight:600;font-size:15px">
+    <a href="Admin Marking Queue.dc.html" style="color:var(--ks3-on-dark-muted)">Marking</a>
+    <span style="color:var(--st-room-text);border-bottom:2px solid var(--st-ember);padding-bottom:2px">Accounts</span>
+  </nav>
+  <span style="margin-left:auto;font-size:14px;color:var(--ks3-on-dark-muted)">Mide · <a href="#">Sign out</a></span>
+</header>
+
+<main style="max-width:1240px;margin:0 auto;padding:clamp(20px,3vw,40px)">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+    <sc-for list="{{ stats }}" as="s" hint-placeholder-count="5">
+      <div style="padding:14px 16px;border:1px solid var(--ks3-dark-rule);border-radius:14px;background:var(--st-room-panel)">
+        <div style="font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">{{ s.label }}</div>
+        <div style="margin-top:4px;font-family:var(--ks3-font-display);font-weight:800;font-size:28px;letter-spacing:-.03em;line-height:1">{{ s.value }}</div>
+        <div style="margin-top:2px;font-size:12px;color:{{ s.noteColor }}">{{ s.note }}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ noDetail }}" hint-placeholder-val="{{ true }}">
+    <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <input value="{{ q }}" onChange="{{ setQ }}" placeholder="Search by parent, child, email or organisation" style="flex:1;min-width:240px;min-height:44px;padding:0 14px;border:1px solid var(--ks3-dark-rule);border-radius:12px;background:var(--st-room-panel);color:var(--st-room-text);font-size:15px">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="6"><button onClick="{{ f.pick }}" aria-pressed="{{ f.on }}" style="padding:8px 14px;border:1px solid {{ f.border }};border-radius:99px;background:{{ f.bg }};font-weight:600;font-size:13px;color:var(--st-room-text);cursor:pointer">{{ f.label }}</button></sc-for>
+    </div>
+    <div style="margin-top:14px;border:1px solid var(--ks3-dark-rule);border-radius:16px;background:var(--st-room-panel);overflow:hidden">
+      <div class="ac-hd" style="padding:10px 18px;border-bottom:1px solid var(--ks3-dark-rule);font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ks3-on-dark-muted)"><span>Account</span><span>Children / seats</span><span>Billing</span><span>MRR</span><span>Since</span><span>Last active</span></div>
+      <sc-if value="{{ noneMatch }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:28px;text-align:center;color:var(--ks3-on-dark-muted)">No accounts match.</p></sc-if>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+        <button onClick="{{ r.open }}" class="ac-row" style="width:100%;text-align:left;padding:12px 18px;border:0;border-bottom:1px solid var(--ks3-dark-rule);background:none;color:var(--st-room-text);cursor:pointer">
+          <span style="min-width:0"><span style="display:block;font-weight:700;font-size:15px">{{ r.name }}</span><span style="display:block;font-size:12px;color:var(--ks3-on-dark-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.email }}</span></span>
+          <span style="font-size:14px;color:var(--ks3-on-dark-body)">{{ r.children }}</span>
+          <span><span style="display:inline-block;padding:3px 9px;border-radius:99px;border:1px solid {{ r.border }};font-size:12px;font-weight:700;color:{{ r.fg }}">{{ r.billingLabel }}</span></span>
+          <span style="font-family:var(--ks3-font-mono);font-size:14px">{{ r.mrr }}</span>
+          <span style="font-size:13px;color:var(--ks3-on-dark-muted)">{{ r.since }}</span>
+          <span style="font-size:13px;color:var(--ks3-on-dark-muted)">{{ r.active }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasDetail }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ back }}" style="margin-top:24px;display:inline-flex;align-items:center;gap:6px;padding:0;border:0;background:none;font-weight:700;font-size:14px;color:var(--st-ember);cursor:pointer"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px"><path d="M15 5l-7 7 7 7"/></svg>All accounts</button>
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+      <h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:30px;letter-spacing:-.03em">{{ d.name }}</h1>
+      <span style="padding:4px 10px;border-radius:99px;border:1px solid {{ d.border }};font-size:12px;font-weight:700;color:{{ d.fg }}">{{ d.billingLabel }}</span>
+      <span style="font-size:14px;color:var(--ks3-on-dark-muted)">{{ d.email }} · since {{ d.since }}</span>
+    </div>
+    <div style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;align-items:start">
+      <section style="padding:18px 20px;border:1px solid var(--ks3-dark-rule);border-radius:16px;background:var(--st-room-panel)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">{{ d.childrenLabel }}</p>
+        <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;font-size:15px">
+          <sc-for list="{{ d.kids }}" as="k" hint-placeholder-count="2"><li style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--ks3-dark-rule)"><span><strong>{{ k.name }}</strong> <span style="color:var(--ks3-on-dark-muted)">· Y{{ k.year }} · {{ k.mode }}</span></span><span style="font-family:var(--ks3-font-mono);font-size:13px;color:var(--ks3-on-dark-muted)">{{ k.active }}</span></li></sc-for>
+        </ul>
+      </section>
+      <section style="padding:18px 20px;border:1px solid var(--ks3-dark-rule);border-radius:16px;background:var(--st-room-panel)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">Billing</p>
+        <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:15px">
+          <sc-for list="{{ d.billing }}" as="b" hint-placeholder-count="4"><li style="display:flex;justify-content:space-between;gap:10px"><span style="color:var(--ks3-on-dark-muted)">{{ b.k }}</span><span style="font-family:var(--ks3-font-mono);font-size:14px;text-align:right">{{ b.v }}</span></li></sc-for>
+        </ul>
+        <a href="#" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px">Open in Stripe <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:13px;height:13px"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </section>
+      <section style="padding:18px 20px;border:1px solid var(--ks3-dark-rule);border-radius:16px;background:var(--st-room-panel)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">Actions</p>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ actions }}" as="a" hint-placeholder-count="5"><button onClick="{{ a.run }}" style="display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:44px;padding:0 14px;border:1px solid var(--ks3-dark-rule);border-radius:12px;background:{{ a.bg }};color:{{ a.fg }};font-weight:600;font-size:14px;text-align:left;cursor:pointer"><span>{{ a.label }}</span><span style="font-size:12px;color:var(--ks3-on-dark-muted)">{{ a.hint }}</span></button></sc-for>
+        </div>
+        <sc-if value="{{ actionMsg }}" hint-placeholder-val="{{ false }}"><p style="margin:12px 0 0;padding:10px 12px;border-radius:10px;background:rgba(46,155,95,.15);border:1px solid var(--ks3-ok);font-size:14px;color:var(--st-room-text)">{{ actionMsg }}</p></sc-if>
+      </section>
+    </div>
+    <section style="margin-top:14px;padding:18px 20px;border:1px solid var(--ks3-dark-rule);border-radius:16px;background:var(--st-room-panel)">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-on-dark-muted)">Timeline</p>
+      <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;font-size:14px">
+        <sc-for list="{{ d.timeline }}" as="t" hint-placeholder-count="5"><li style="display:flex;gap:14px;padding:8px 0;border-bottom:1px solid var(--ks3-dark-rule)"><span style="flex:0 0 90px;font-family:var(--ks3-font-mono);font-size:12px;color:var(--ks3-on-dark-muted)">{{ t.when }}</span><span>{{ t.what }}</span></li></sc-for>
+      </ul>
+    </section>
+  </sc-if>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+const B = { trialing: { label: 'Trial', border: 'var(--ks3-on-dark-muted)', fg: 'var(--ks3-on-dark-body)' }, active: { label: 'Active', border: 'var(--ks3-ok)', fg: 'var(--ks3-ok)' }, past_due: { label: 'Past due', border: 'var(--ks3-accent)', fg: 'var(--st-ember)' }, cancelled: { label: 'Cancelled', border: 'var(--ks3-on-dark-muted)', fg: 'var(--ks3-on-dark-muted)' }, locked: { label: 'Locked', border: 'var(--ks3-on-dark-muted)', fg: 'var(--ks3-on-dark-muted)' }, invoiced: { label: 'Invoiced', border: 'var(--ks3-ok)', fg: 'var(--ks3-ok)' } };
+const ACCTS = [
+  { id: 1, name: 'Funmi Adeyemi', email: 'funmi@example.com', kind: 'family', billing: 'trialing', kids: [{ name: 'Amara', year: 9, mode: 'School', active: 'yesterday' }, { name: 'Leo', year: 7, mode: 'Home ed', active: 'never' }], mrr: 15.98, since: '1 Sep', active: 'Yesterday', cycle: 'Monthly', next: '8 Sep', card: 'Visa ···4242', failures: 0 },
+  { id: 2, name: 'Hassan Malik', email: 'hassan.m@example.com', kind: 'family', billing: 'active', kids: [{ name: 'Zainab', year: 11, mode: 'School', active: 'today' }], mrr: 9.99, since: '14 Mar', active: 'Today', cycle: 'Annual (£79)', next: '14 Mar 27', card: 'Mastercard ···8810', failures: 0 },
+  { id: 3, name: 'Brookfield Tuition Centre', email: 'admin@brookfield.example', kind: 'org', billing: 'invoiced', kids: [{ name: '31 pupils', year: '7–10', mode: '4 groups', active: 'today' }], mrr: 186, since: '2 Jan', active: 'Today', cycle: 'Termly · 40 seats', next: '6 Jan', card: 'BACS', failures: 0 },
+  { id: 4, name: 'Priya Nair', email: 'priya.nair@example.com', kind: 'family', billing: 'past_due', kids: [{ name: 'Ravi', year: 8, mode: 'School', active: '3 days ago' }], mrr: 9.99, since: '20 May', active: '3 days ago', cycle: 'Monthly', next: 'Retry 11 Sep', card: 'Visa ···1201', failures: 2 },
+  { id: 5, name: 'Grace Whitfield', email: 'grace.w@example.com', kind: 'family', billing: 'cancelled', kids: [{ name: 'Oscar', year: 10, mode: 'School', active: '8 days ago' }, { name: 'Evie', year: 7, mode: 'School', active: '12 days ago' }], mrr: 0, since: '3 Feb', active: '8 days ago', cycle: 'Monthly · ends 3 Oct', next: '—', card: 'Visa ···7731', failures: 0 },
+  { id: 6, name: 'Daniel Okoro', email: 'd.okoro@example.com', kind: 'family', billing: 'locked', kids: [{ name: 'Nia', year: 9, mode: 'Home ed', active: '41 days ago' }], mrr: 0, since: '10 Nov 25', active: '41 days ago', cycle: 'Ended 21 Jul', next: '—', card: 'Visa ···3350', failures: 3 },
+  { id: 7, name: 'St Aidan\u2019s High School', email: 'science@staidans.example', kind: 'org', billing: 'invoiced', kids: [{ name: '112 pupils', year: '7–11', mode: '9 groups', active: 'today' }], mrr: 672, since: '1 Sep', active: 'Today', cycle: 'Termly · 120 seats', next: '1 Dec', card: 'BACS', failures: 0 },
+  { id: 8, name: 'Sofia Rossi', email: 'sofia.r@example.com', kind: 'family', billing: 'active', kids: [{ name: 'Mia', year: 7, mode: 'School', active: 'today' }, { name: 'Kai', year: 9, mode: 'School', active: 'yesterday' }], mrr: 15.98, since: '5 Jun', active: 'Today', cycle: 'Monthly', next: '5 Oct', card: 'Amex ···0042', failures: 0 },
+];
+const fmt = (n) => '\u00a3' + n.toFixed(2);
+class Component extends DCLogic {
+  state = { q: '', filter: 'All', detailId: null, actionMsg: '' };
+  renderVals() {
+    const s = this.state;
+    const rows = ACCTS.filter((a) => (s.filter === 'All' || (s.filter === 'Orgs' ? a.kind === 'org' : a.billing === s.filter)) && (!s.q || [a.name, a.email, ...a.kids.map((k) => k.name)].join(' ').toLowerCase().includes(s.q.toLowerCase())));
+    const d = ACCTS.find((a) => a.id === s.detailId);
+    const mrr = ACCTS.reduce((n, a) => n + (a.kind === 'family' && (a.billing === 'active' || a.billing === 'past_due') ? a.mrr : 0), 0);
+    return {
+      brandSize: 24,
+      stats: [{ label: 'Families', value: ACCTS.filter((a) => a.kind === 'family' && ['trialing', 'active', 'past_due'].includes(a.billing)).length, note: `${ACCTS.filter((a) => a.billing === 'trialing').length} in trial`, noteColor: 'var(--ks3-on-dark-muted)' }, { label: 'Children', value: ACCTS.filter((a) => a.kind === 'family').reduce((n, a) => n + a.kids.length, 0), note: 'on family plans', noteColor: 'var(--ks3-on-dark-muted)' }, { label: 'Organisations', value: ACCTS.filter((a) => a.kind === 'org').length, note: '143 pupils', noteColor: 'var(--ks3-on-dark-muted)' }, { label: 'Family MRR', value: fmt(mrr), note: 'excl. trials', noteColor: 'var(--ks3-on-dark-muted)' }, { label: 'Past due', value: ACCTS.filter((a) => a.billing === 'past_due').length, note: 'in grace period', noteColor: 'var(--st-ember)' }],
+      q: s.q, setQ: (e) => this.setState({ q: e.target.value }),
+      filters: ['All', 'trialing', 'active', 'past_due', 'cancelled', 'locked', 'Orgs'].map((f) => ({ label: f === 'All' ? 'All' : f === 'Orgs' ? 'Organisations' : B[f].label, on: String(s.filter === f), border: s.filter === f ? 'var(--st-ember)' : 'var(--ks3-dark-rule)', bg: s.filter === f ? 'var(--ks3-dark-panel)' : 'transparent', pick: () => this.setState({ filter: f }) })),
+      noneMatch: rows.length === 0, noDetail: !d, hasDetail: !!d,
+      rows: rows.map((a) => ({ ...a, ...B[a.billing], billingLabel: B[a.billing].label, children: a.kind === 'org' ? a.kids[0].name : a.kids.map((k) => `${k.name} Y${k.year}`).join(', '), mrr: a.kind === 'org' ? fmt(a.mrr) + ' eq.' : a.mrr ? fmt(a.mrr) : '—', open: () => this.setState({ detailId: a.id, actionMsg: '' }) })),
+      back: () => this.setState({ detailId: null }),
+      d: d ? { ...d, ...B[d.billing], billingLabel: B[d.billing].label, childrenLabel: d.kind === 'org' ? 'Pupils' : 'Children', billing: [{ k: 'Plan', v: d.cycle }, { k: 'Next', v: d.next }, { k: 'Method', v: d.card }, { k: 'Failed payments', v: String(d.failures) }], timeline: [{ when: d.since, what: 'Account created' }, { when: d.since, what: `${d.kids.length === 1 ? d.kids[0].name : d.kids.length + ' children'} added` }, ...(d.billing === 'past_due' ? [{ when: '8 Sep', what: 'Payment failed (card declined)' }, { when: '8 Sep', what: 'E6 sent' }] : []), ...(d.billing === 'cancelled' ? [{ when: '29 Aug', what: 'Cancelled via Stripe portal. Reason: "Exams over"' }] : []), ...(d.billing === 'locked' ? [{ when: '21 Jul', what: 'Grace period ended · account locked' }] : []), { when: 'Sun', what: 'E3 Sunday digest sent' }] } : {},
+      actions: d ? [{ label: 'Extend trial 7 days', hint: d.billing === 'trialing' ? 'Trial ends 8 Sep' : 'Not on trial', ok: d.billing === 'trialing' }, { label: 'Reset a child\u2019s password', hint: 'Shown once', ok: true }, { label: 'Resend verification email', hint: 'E1', ok: true }, { label: 'Add 2 human marks this month', hint: 'Goodwill', ok: true }, { label: 'Unlock for 14 days', hint: d.billing === 'locked' ? 'No charge' : 'Not locked', ok: d.billing === 'locked' }].map((a) => ({ ...a, bg: a.ok ? 'transparent' : 'transparent', fg: a.ok ? 'var(--st-room-text)' : 'var(--ks3-on-dark-muted)', run: () => a.ok && this.setState({ actionMsg: `Done: ${a.label.toLowerCase()} for ${d.name}. Logged to the timeline.` }) })) : [],
+      actionMsg: s.actionMsg,
+    };
+  }
+}
+</script>
+</body>
+</html>

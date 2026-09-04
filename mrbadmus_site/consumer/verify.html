@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>Verifying your email — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=6fe90f37"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<link rel="stylesheet" href="/parents/public.css"/>
+</head>
+<body class="pb-body">
+
+<div class="rd" data-mode="ks3" id="c-main" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased">
+  <header style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+    <span id="brand" style="display:flex;align-items:center;gap:10px"></span>
+  </header>
+  <main id="main" style="max-width:520px;margin:0 auto;padding:40px 20px 80px"></main>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script src="/parents/public.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/verify.html — where the verification link lands. MRB-317 N3.
+
+   Three arrivals reach this page and it must handle all three:
+     1. the email confirmation link  — supabase-js reads the tokens out of
+                                       the URL fragment and establishes a
+                                       session before our code runs;
+     2. the Google OAuth return      — same mechanism, different provider;
+     3. someone opening the URL cold — no tokens, no session.
+
+   ── WHY IT WAITS RATHER THAN READING ONCE ──────────────────────────────
+   `getSession()` at DOMContentLoaded can legitimately answer null on
+   arrivals 1 and 2: the SDK's `detectSessionInUrl` work is asynchronous,
+   and whether it has finished by the time our script runs is a race we do
+   not control. Reading once and giving up produces the worst possible bug —
+   a parent who clicked a perfectly good link is told it did not work, and a
+   refresh fixes it, which makes it look intermittent rather than wrong.
+
+   So the page subscribes (`onAuthStateChange`) AND polls, with a bounded
+   wait, and only says "we couldn't verify this" when the wait expires.
+
+   ── AND WHERE IT SENDS THEM ────────────────────────────────────────────
+   `ensure` first, always: this is the moment a verified session exists for
+   most parents, and it is the call that turns one into a family. Then:
+
+     · a signup draft with a child waiting  → back into signup.html, which
+       creates that child and asks Design's "where are they up to?" question
+       — the one step the parent could not be asked before there was a
+       child to ask about;
+     · anything else                        → the dashboard.
+
+   `ensure` is idempotent by contract, which is what lets signup.html and
+   this page and every future sign-in all call it. If that ever stops being
+   true, this page is where a family gets duplicated.
+   ═══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var C = window.MrBadmusConsumer;
+  var P = window.MrBadmusPublic;
+  var esc = C.escapeHtml;
+
+  // 12s is generous for a token exchange and short enough that a dead link
+  // does not leave someone staring at a spinner.
+  var WAIT_MS = 12000, POLL_MS = 400;
+  var DRAFT_KEY = 'mrb.consumer.signup';
+
+  function draftHasChild() {
+    try {
+      var d = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+      return !!(d && d.pending && d.pending.length);
+    } catch (e) { return false; }
+  }
+
+  C.boot({ sessionOptional: true, run: function (ctx) {
+    var sb = ctx.sb;
+    var main = document.getElementById('main');
+    var settled = false;
+
+    document.getElementById('brand').innerHTML = P.brand(26) +
+      '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
+      'letter-spacing:-.02em">MrBadmus</span>';
+
+    function screen(head, body, actions) {
+      main.innerHTML =
+        '<h1 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:40px;' +
+        'line-height:1;letter-spacing:-.035em">' + esc(head) + '</h1>' +
+        '<p style="margin:14px 0 0;font-size:18px;color:var(--ks3-ink-body)">' + body + '</p>' +
+        (actions || '');
+    }
+    function linkBtn(href, label) {
+      return '<p style="margin:26px 0 0"><a href="' + esc(href) + '" style="display:flex;' +
+        'align-items:center;justify-content:center;min-height:54px;border:2px solid var(--ks3-ink);' +
+        'border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);' +
+        'font-weight:700;font-size:18px;text-decoration:none">' + esc(label) + '</a></p>';
+    }
+
+    screen('Verifying your email', 'One moment — we’re finishing this off.');
+
+    function unverified(email) {
+      settled = true;
+      screen('Your email isn’t verified yet',
+        email ? ('We’re still waiting on <strong style="color:var(--ks3-ink)">' + esc(email) + '</strong>.')
+              : 'We’re still waiting on your email address.',
+        '<p style="margin:12px 0 0;font-size:16px;color:var(--ks3-ink-body)">Open the link we sent you and this page will finish the job. If it has expired, ask for a fresh one from the signup page.</p>' +
+        linkBtn(C.href('/consumer/signup.html'), 'Back to signup'));
+    }
+
+    function noSession() {
+      settled = true;
+      screen('We couldn’t verify this link',
+        'It may have expired, or already been used.',
+        '<p style="margin:12px 0 0;font-size:16px;color:var(--ks3-ink-body)">Verification links are single-use and time-limited. Head back and sign in — if you’re already verified you’ll go straight through, and if not you can send yourself a fresh link.</p>' +
+        linkBtn(C.href('/consumer/signup.html'), 'Back to signup'));
+    }
+
+    function accept(session) {
+      if (settled) { return; }
+      if (!session || !session.user) { return; }
+      settled = true;
+
+      if (!session.user.email_confirmed_at) { return unverified(session.user.email); }
+
+      screen('You’re verified', 'Setting your family up — this takes a second.');
+
+      C.api('/api/consumer/family/ensure', { method: 'POST', token: session.access_token })
+        .then(function () {
+          /* Straight back into Design's flow if a child is waiting on this
+             device. The step is named explicitly so signup.html does not
+             have to guess, and signup.html creates the child and asks the
+             unit question the moment it lands. */
+          if (draftHasChild()) { return C.go('/consumer/signup.html', { step: 'child' }); }
+          C.go('/consumer/overview.html');
+        })
+        .catch(function (e) {
+          /* Verified, but the family could not be created. That is NOT a
+             verification failure and must not be reported as one: the
+             account is fine, and re-clicking the email link would be the
+             wrong advice. */
+          screen('You’re verified — but we couldn’t finish setting up',
+            'Your email is confirmed. The last step didn’t complete.',
+            '<p style="margin:12px 0 0;font-size:16px;color:var(--ks3-ink-body)">' + esc(e.message) + '</p>' +
+            '<p style="margin:26px 0 0"><button type="button" onclick="window.location.reload()" ' +
+            'style="width:100%;min-height:54px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
+            'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:18px;cursor:pointer">' +
+            'Try again</button></p>');
+        });
+    }
+
+    // Arm 1 — the subscription. Fires on SIGNED_IN when the SDK has finished
+    // reading the tokens out of the URL fragment.
+    var sub = sb.auth.onAuthStateChange(function (_evt, session) { accept(session); });
+
+    // Arm 2 — the poll, for a session that was already in place.
+    accept(ctx.session);
+
+    var waited = 0;
+    var timer = setInterval(function () {
+      if (settled) {
+        clearInterval(timer);
+        if (sub && sub.data && sub.data.subscription) { sub.data.subscription.unsubscribe(); }
+        return;
+      }
+      waited += POLL_MS;
+      if (waited >= WAIT_MS) {
+        clearInterval(timer);
+        if (sub && sub.data && sub.data.subscription) { sub.data.subscription.unsubscribe(); }
+        return noSession();
+      }
+      sb.auth.getSession().then(function (r) {
+        accept(r && r.data && r.data.session);
+      }).catch(function () { /* keep waiting; the deadline decides */ });
+    }, POLL_MS);
+  }});
+})();
+</script>
+</body>
+</html>

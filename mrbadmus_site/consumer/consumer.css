@@ -1,0 +1,564 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/consumer.css — SCAFFOLD styling for /consumer/*.
+
+   MRB-308 Night 1. This is not a design and is not trying to be one.
+   Claude Design is drawing every consumer screen and Night 3 compiles
+   those; until then these five pages need to look deliberate rather than
+   broken, so this file does the minimum: it borrows the estate's existing
+   tokens and reuses the class names teacher/admin.html already established
+   (`.card`, `.page-sub`, `.stats`, `.empty`, `.row`), prefixed `c-` where
+   a name is genuinely new.
+
+   ⚠️ NO NEW TOKENS. Every colour, radius, shadow, space and font below is
+   a var() out of /shared/tokens.css. A scaffold that invents `--parent-blue`
+   is a scaffold that has to be un-invented on Night 3, and in the meantime
+   it is a second palette nobody ruled.
+
+   The one thing here that IS load-bearing: `body { display: none }`. It is
+   how the flag gate fails closed — see the header of consumer-common.js.
+   Nothing but `boot()` reveals the page, so a page whose script never runs
+   shows nothing rather than showing an unguarded consumer product.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+html { background: var(--bg); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  min-height: 100vh;
+  padding: 84px var(--sp-5) var(--sp-8);
+  /* ⚠️ Load-bearing. See the header. */
+  display: none;
+}
+
+/* ── nav ─────────────────────────────────────────────────────────────── */
+.c-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: var(--sp-3) var(--sp-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+.c-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  text-decoration: none;
+  color: var(--text);
+}
+/* Bricolage Grotesque is the face Design's mark is set in; the fallback
+   chain matters because this wordmark sits next to the chevron and a
+   mismatched fallback reads as two logos. */
+.c-brand span {
+  font-family: 'Bricolage Grotesque', var(--font-sans);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+.c-nav-right { display: flex; align-items: center; gap: var(--sp-3); }
+.c-nav-right a {
+  color: var(--muted);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.c-nav-right a:hover { color: var(--accent); }
+
+/* ── page furniture (names borrowed from teacher/admin.html) ─────────── */
+.container { max-width: 720px; margin: 0 auto; }
+.container.wide { max-width: 980px; }
+.page-header h1 {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: 1.7rem;
+  line-height: var(--lh-title);
+}
+.page-sub {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: var(--sp-2) 0 var(--sp-6);
+}
+.page-sub .sep { padding: 0 6px; opacity: 0.6; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 26px 30px;
+  margin-bottom: 22px;
+}
+.card h2 {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: var(--sp-4);
+}
+
+.stats { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+.stat {
+  flex: 1 1 150px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.stat .n { font-size: 1.35rem; font-weight: 700; line-height: 1.15; }
+.stat .l {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+/* Flex rather than a table, for the same reason admin.html gives: it
+   reflows at 390px instead of scrolling sideways. */
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+.row:first-of-type { border-top: none; }
+.row .name { font-weight: 700; font-size: 1rem; }
+.row .meta { color: var(--muted); font-size: 0.84rem; }
+.row .right { margin-left: auto; display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+
+.empty { color: var(--muted); font-size: 0.9rem; }
+.muted { color: var(--muted); }
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--sunken);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.tag.ok      { background: var(--success-soft); color: var(--success); border-color: transparent; }
+.tag.warn    { background: var(--higher-soft);  color: var(--higher);  border-color: transparent; }
+.tag.danger  { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+
+/* ── forms ───────────────────────────────────────────────────────────── */
+.field { margin-bottom: var(--sp-4); }
+.field label {
+  display: block;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 11px 13px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+.field input:focus, .field select:focus {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+/* Year 7–9 has no tier at all on this platform, so the control is disabled
+   rather than hidden — a control that vanishes reads as a bug, whereas a
+   greyed one with a note underneath explains itself. */
+.field input:disabled, .field select:disabled {
+  background: var(--sunken);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+.field .hint { color: var(--muted); font-size: 0.8rem; margin-top: 5px; }
+.field-row { display: flex; gap: var(--sp-3); flex-wrap: wrap; }
+.field-row > .field { flex: 1 1 200px; }
+
+.btn {
+  display: inline-block;
+  padding: 11px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  width: 100%;
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--on-accent); }
+.btn-small { padding: 6px 11px; font-size: 0.8rem; }
+/* Destructive UI routes through --danger, never --chemistry. CLAUDE.md's
+   MRB-46 Phase 3 split, applied on a new surface from the start. */
+.btn-danger:hover:not(:disabled) { border-color: var(--danger); color: var(--danger); }
+
+.c-or {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  color: var(--muted);
+  font-size: var(--fs-small);
+  margin: var(--sp-5) 0;
+}
+.c-or::before, .c-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.btn-sso {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 18px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.btn-sso:hover:not(:disabled) { border-color: var(--accent); }
+.btn-sso svg { width: 18px; height: 18px; }
+
+/* ── messages ────────────────────────────────────────────────────────── */
+.c-msg {
+  display: none;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  margin-bottom: var(--sp-4);
+  background: var(--sunken);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.c-msg-error   { background: var(--danger-soft);  color: var(--danger);  border-color: transparent; }
+.c-msg-ok      { background: var(--success-soft); color: var(--success); border-color: transparent; }
+
+.c-fail { padding: var(--sp-4) 0; }
+.c-fail p { color: var(--text); font-size: 0.95rem; }
+.c-fail-hint { color: var(--muted); font-size: 0.86rem; margin-top: 6px; }
+
+/* The refusal / off state. Plain words, no codes — admin.html's `.notice`. */
+.c-notice { max-width: 620px; margin: 18vh auto 0; text-align: center; padding: 0 var(--sp-5); }
+.c-notice h1 {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.c-notice p { color: var(--muted); font-size: 1rem; line-height: var(--lh-body); }
+
+/* ── username availability (add-child) ───────────────────────────────── */
+.c-uname-state { margin-top: 7px; font-size: 0.86rem; min-height: 20px; }
+.c-uname-state.ok   { color: var(--success); font-weight: 700; }
+.c-uname-state.bad  { color: var(--danger); }
+.c-uname-state.busy { color: var(--muted); }
+.c-chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); margin-top: var(--sp-2); }
+.c-chip {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.c-chip:hover { background: var(--accent); color: var(--on-accent); }
+
+@media (max-width: 560px) {
+  body { padding: 78px var(--sp-4) var(--sp-7); }
+  .card { padding: 20px 16px; }
+  .row .right { margin-left: 0; width: 100%; }
+  .c-nav { padding: 10px var(--sp-4); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NIGHT 2 SCAFFOLD ADDITIONS (MRB-309…315)
+
+   Same contract as the rest of this file: no new tokens, no design. Nine
+   pages arrived on Night 2 and four things recur across them — a locked
+   banner, a chat panel, a list of things with a label on each, and a
+   printable report. They get the minimum that makes them legible and
+   tappable on a phone, and nothing that Night 3 will have to un-decide.
+
+   Big tap targets are not cosmetic here: teacher/admin.html's consumer
+   card is now the surface Mide marks exam answers on, and he does that
+   on a phone.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── the guard banner (consumer-common.js `lockedBanner`) ────────────── */
+.c-locked {
+  display: none;
+  padding: 12px 15px;
+  border-radius: var(--radius-sm);
+  background: var(--higher-soft);
+  color: var(--higher);
+  font-size: 0.9rem;
+  line-height: var(--lh-body);
+  margin-bottom: var(--sp-4);
+}
+.c-locked strong { display: block; font-weight: 800; margin-bottom: 3px; }
+
+/* ── generic list rows with a label and a right-hand action ──────────── */
+.c-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  padding: 13px 0;
+  border-top: 1px solid var(--border);
+}
+.c-item:first-child { border-top: none; }
+.c-item .c-item-main { flex: 1 1 240px; min-width: 0; }
+.c-item .c-item-title { font-weight: 700; }
+.c-item .c-item-sub { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+.c-item .c-item-acts { display: flex; gap: var(--sp-2); flex-wrap: wrap; align-items: center; }
+.c-item.done .c-item-title { text-decoration: line-through; color: var(--muted); }
+
+/* ── chat ────────────────────────────────────────────────────────────── */
+.c-chat {
+  max-height: 340px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+  padding: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+.c-bubble { margin-bottom: 10px; max-width: 82%; }
+.c-bubble.mine { margin-left: auto; text-align: right; }
+.c-bubble .c-bubble-text {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  text-align: left;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.92rem;
+}
+.c-bubble.mine .c-bubble-text {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+.c-bubble .c-bubble-meta {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 3px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.c-bubble.mine .c-bubble-meta { justify-content: flex-end; }
+.c-bubble .c-bubble-meta button {
+  background: none; border: none; padding: 0; cursor: pointer;
+  font: inherit; color: var(--muted); text-decoration: underline;
+}
+.c-bubble .c-bubble-meta button:hover { color: var(--danger); }
+.c-unread-dot {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+}
+.c-send { display: flex; gap: var(--sp-2); align-items: flex-end; flex-wrap: wrap; }
+.c-send textarea {
+  flex: 1 1 220px;
+  min-height: 62px;
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+}
+.c-count { font-size: 0.76rem; color: var(--muted); margin-top: 5px; }
+.c-count.over { color: var(--danger); font-weight: 700; }
+
+/* ── section headings inside a card ──────────────────────────────────── */
+.c-sub {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: var(--sp-5) 0 var(--sp-3);
+}
+.c-sub:first-child { margin-top: 0; }
+
+/* ── checkbox rows (notification prefs) ──────────────────────────────── */
+.c-check { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; }
+.c-check input { width: 20px; height: 20px; margin-top: 1px; flex: 0 0 auto; }
+.c-check label { font-size: 0.95rem; cursor: pointer; }
+.c-check .hint { display: block; color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
+
+/* ── radios (checkout interval) ──────────────────────────────────────── */
+.c-radios { display: flex; gap: var(--sp-3); flex-wrap: wrap; margin-bottom: var(--sp-4); }
+.c-radio {
+  display: flex; align-items: center; gap: 9px;
+  padding: 12px 15px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  flex: 1 1 180px;
+}
+.c-radio input { width: 18px; height: 18px; }
+.c-radio.sel { border-color: var(--accent); background: var(--accent-soft); }
+
+/* ── tables that must survive a 390px phone ──────────────────────────── */
+.c-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.c-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.c-table th, .c-table td {
+  text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.c-table th {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); font-weight: 700;
+}
+
+/* ── mark-scheme hits (exam.html) ────────────────────────────────────── */
+.c-scheme { list-style: none; margin: var(--sp-3) 0; }
+.c-scheme li {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 7px 0; font-size: 0.9rem;
+}
+.c-scheme .mk { flex: 0 0 auto; font-weight: 800; width: 1.2em; }
+.c-scheme li.hit .mk  { color: var(--success); }
+.c-scheme li.miss .mk { color: var(--danger); }
+.c-scheme li.miss { color: var(--muted); }
+
+/* ── unit-check run screen ───────────────────────────────────────────── */
+.c-clock { font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.c-clock.low { color: var(--danger); }
+.c-options { display: flex; flex-direction: column; gap: var(--sp-2); margin-top: var(--sp-4); }
+.c-options .btn { text-align: left; padding: 14px 16px; font-weight: 400; }
+.c-options .btn.sel { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.c-progress { color: var(--muted); font-size: 0.84rem; }
+
+@media (max-width: 560px) {
+  .c-item .c-item-acts { width: 100%; }
+  .c-item .c-item-acts .btn { flex: 1 1 auto; min-height: 42px; }
+  .c-bubble { max-width: 100%; }
+}
+
+/* ══ NIGHT 4 — LANE B (the child app): the sign-out control ═══════════════
+   MRB-317 ruling 3. Mounted by `MrBadmusConsumer.signOutControl()` into the
+   header of today.html, exam.html and unit-check.html, so it is drawn once
+   here rather than three times in three page <style> blocks.
+
+   It lives in consumer.css and not in the pages because the three headers
+   are Design's and are all slightly different — a brandmark and a messages
+   button on Today, a back arrow and a quota chip on Exam, a back arrow and a
+   running clock on Unit check. The control has to look identical on all
+   three, and a rule copied three times is a rule that ends up three
+   different sizes.
+
+   ⚠️ Every value is a --ks3-* token, because these three pages are KS3-mode
+   surfaces (`class="rd" data-mode="ks3"`) and NOT the consumer.css scaffold
+   ground the rest of this file dresses. The tokens resolve on those pages;
+   nothing here is a retyped hex.
+
+   ── AT 390px THE WORD GOES, THE CONTROL STAYS ────────────────────────────
+   Design's headers already carry two controls on a 390px screen. Below
+   400px the label is hidden and the button becomes the same 44px square as
+   her messages button — the tap target is unchanged, which is the part that
+   matters, and the aria-label carries the word for anyone who cannot see the
+   icon. Measured in the browser at 390; the quota chip on exam.html is the
+   element that runs out of room first, so it is allowed to ellipsise rather
+   than push the sign-out off the edge.
+   ════════════════════════════════════════════════════════════════════════ */
+.c-signout-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 44px; padding: 0 12px;
+  border: 2px solid var(--ks3-ink); border-radius: 14px;
+  background: var(--ks3-card); color: var(--ks3-ink);
+  font: inherit; font-weight: 700; font-size: 15px;
+  cursor: pointer; white-space: nowrap; flex: 0 0 auto;
+}
+.c-signout-btn .ks3-mark { width: 20px; height: 20px; flex: 0 0 auto; }
+.c-signout-btn:hover { background: var(--ks3-band); }
+
+@media (max-width: 399px) {
+  .c-signout-btn { width: 44px; padding: 0; justify-content: center; }
+  .c-signout-btn span { display: none; }
+}
+
+/* The confirm. Design's card, her ink, her radii — a full-screen veil rather
+   than an inline panel because the three pages put the button in three
+   different places and an inline answer would appear somewhere different on
+   each one. */
+.c-signout-veil {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+.c-signout-card {
+  width: 100%; max-width: 360px; box-sizing: border-box;
+  padding: 24px 22px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); color: var(--ks3-ink);
+  box-shadow: var(--ks3-shadow-block);
+  font-family: var(--ks3-font-body);
+}
+.c-signout-card h2 {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 28px; letter-spacing: -.03em; line-height: 1.05;
+}
+.c-signout-card p {
+  margin: 10px 0 0; font-size: 17px; line-height: 1.45; color: var(--ks3-ink-body);
+}
+.c-signout-acts { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.c-signout-acts button {
+  min-height: 50px; padding: 0 12px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+  font: inherit; font-weight: 700; font-size: 16px; cursor: pointer;
+}
+.c-signout-acts .c-signout-stay { background: var(--ks3-card); color: var(--ks3-ink); }
+.c-signout-acts .c-signout-go { background: var(--ks3-ink); color: var(--ks3-on-dark); }
+.c-signout-acts button[disabled] { opacity: var(--ks3-dim-spent); cursor: default; }

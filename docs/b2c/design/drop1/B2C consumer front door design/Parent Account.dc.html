@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408;text-decoration:underline}
+input,select,textarea,button{font:inherit}
+input::placeholder{color:#9A8F86}
+@media (min-width:960px){
+  .ak-main{max-width:1040px!important;padding:44px 48px 80px!important}
+  .ak-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+  .ak-first{margin-top:0!important}
+  .ak-head{padding:16px 48px 14px!important}
+}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased">
+
+<header class="ak-head" style="display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:2px solid var(--ks3-ink)">
+  <a href="Parent Dashboard.dc.html" aria-label="Back to dashboard" style="display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;border-radius:12px;color:var(--ks3-ink)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:22px;height:22px"><path d="M15 5l-7 7 7 7"/></svg></a>
+  <span style="flex:1;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;letter-spacing:-.02em">Account</span>
+</header>
+
+<main class="ak-main" style="max-width:560px;margin:0 auto;padding:24px 20px 60px">
+<div class="ak-cols">
+<div>
+
+  <!-- PLAN CARD, one per billing state -->
+  <section style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-block)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Your plan</p>
+      <span style="margin-left:auto;padding:5px 12px;border-radius:99px;border:2px solid {{ badge.border }};background:{{ badge.bg }};font-size:13px;font-weight:700;color:{{ badge.fg }}">{{ badge.label }}</span>
+    </div>
+    <p style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:30px;line-height:1.05;letter-spacing:-.03em">{{ planTitle }}</p>
+    <p style="margin:8px 0 0;font-size:16px;color:var(--ks3-ink-body)">{{ planLine }}</p>
+
+    <sc-if value="{{ isTrial }}" hint-placeholder-val="{{ true }}">
+      <div style="margin-top:16px;padding:14px 16px;border-radius:14px;background:var(--ks3-band)">
+        <div style="display:flex;justify-content:space-between;font-size:15px"><span>Free week ends</span><strong>{{ trialEnd }}</strong></div>
+        <div style="margin-top:8px;height:10px;border:2px solid var(--ks3-ink);border-radius:99px;background:var(--ks3-card);overflow:hidden"><div style="height:100%;width:{{ trialPct }};background:var(--ks3-accent)"></div></div>
+        <p style="margin:8px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Then {{ price }} {{ per }}. Cancel before {{ trialEnd }} and nothing is charged.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPastDue }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:16px;padding:16px;border:2px solid var(--ks3-alert-border);border-radius:14px;background:var(--ks3-alert-tint);color:var(--ks3-alert-text)">
+        <p style="margin:0;font-weight:700;font-size:16px">Your card was declined on {{ failedOn }}.</p>
+        <p style="margin:8px 0 0;font-size:15px">We'll retry on {{ retryOn }}. Work carries on as normal until <strong>{{ graceEnd }}</strong>. If it still fails, work stops being set and the account pauses. Nothing is deleted.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCancelled }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:16px;padding:16px;border-radius:14px;background:var(--ks3-band)">
+        <p style="margin:0;font-size:15px;color:var(--ks3-ink-body)">Everything works until <strong style="color:var(--ks3-ink)">{{ accessEnd }}</strong>. After that, logins open but no new work is set. Termly reports stay downloadable for a year. Restart any time and each child picks up where they left off.</p>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isLocked }}" hint-placeholder-val="{{ false }}">
+      <div style="margin-top:16px;padding:16px;border-radius:14px;background:var(--ks3-band)">
+        <p style="margin:0;font-size:15px;color:var(--ks3-ink-body)">Ended {{ accessEnd }}. Your children's logins open but show no new work. Reports, marked answers and chat history are all still here.</p>
+      </div>
+    </sc-if>
+
+    <div style="margin-top:18px;display:flex;flex-direction:column;gap:8px">
+      <a href="#stripe-portal" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border:2px solid {{ cta.border }};border-radius:var(--ks3-r-control);background:{{ cta.bg }};color:{{ cta.fg }};font-weight:700;font-size:17px;text-decoration:none">{{ cta.label }} <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      <p style="margin:0;font-size:13px;color:var(--ks3-ink-muted);text-align:center">{{ cta.note }}</p>
+    </div>
+  </section>
+
+  <!-- children on the plan -->
+  <section style="margin-top:16px;padding:20px 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">On this plan</p>
+    <ul style="margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column">
+      <sc-for list="{{ seats }}" as="s" hint-placeholder-count="2">
+        <li style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--ks3-rule);font-size:16px"><span>{{ s.name }} <span style="color:var(--ks3-ink-muted)">· Year {{ s.year }}</span></span><span style="font-family:var(--ks3-font-mono);font-weight:500">{{ s.price }}</span></li>
+      </sc-for>
+      <li style="display:flex;justify-content:space-between;gap:12px;padding:12px 0 0;font-weight:700;font-size:17px"><span>Total {{ per }}</span><span style="font-family:var(--ks3-font-mono)">{{ price }}</span></li>
+    </ul>
+    <p style="margin:12px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Add or remove children from the dashboard. Changes show on the next bill, pro-rated.</p>
+  </section>
+
+</div>
+<div>
+  <!-- account details -->
+  <section class="ak-first" style="margin-top:16px;padding:20px 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">You</p>
+    <label style="display:block;margin-top:12px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Name
+      <input value="{{ name }}" onChange="{{ setName }}" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)">
+    </label>
+    <p style="margin:6px 0 0;font-size:14px;color:var(--ks3-ink-muted)">Your children see this on work you set: "set by {{ name }}".</p>
+    <label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Email
+      <input value="{{ email }}" onChange="{{ setEmail }}" type="email" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-option-border);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-size:17px;color:var(--ks3-ink)">
+    </label>
+    <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--ks3-band);font-size:15px"><span>Password</span><button onClick="{{ changePass }}" style="border:0;background:none;padding:0;font-weight:700;color:var(--ks3-accent-text);cursor:pointer">{{ passLabel }}</button></div>
+    <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15px">
+      <span style="flex:1"><strong>Sunday digest</strong><br><span style="color:var(--ks3-ink-muted)">One email a week, all children.</span></span>
+      <button onClick="{{ toggleDigest }}" role="switch" aria-checked="{{ digestOn }}" style="position:relative;width:52px;height:30px;border:2px solid var(--ks3-ink);border-radius:99px;background:{{ digestBg }};cursor:pointer;flex:0 0 auto"><span style="position:absolute;top:3px;left:{{ digestKnob }};width:20px;height:20px;border-radius:99px;background:{{ digestKnobBg }};transition:left .15s"></span></button>
+    </div>
+    <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:15px">
+      <span style="flex:1"><strong>Marking emails</strong><br><span style="color:var(--ks3-ink-muted)">When Mr Badmus marks an answer.</span></span>
+      <button onClick="{{ toggleMarking }}" role="switch" aria-checked="{{ markingOn }}" style="position:relative;width:52px;height:30px;border:2px solid var(--ks3-ink);border-radius:99px;background:{{ markingBg }};cursor:pointer;flex:0 0 auto"><span style="position:absolute;top:3px;left:{{ markingKnob }};width:20px;height:20px;border-radius:99px;background:{{ markingKnobBg }};transition:left .15s"></span></button>
+    </div>
+    <button onClick="{{ save }}" style="margin-top:18px;width:100%;min-height:50px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:17px;cursor:pointer">{{ saveLabel }}</button>
+  </section>
+
+  <section style="margin-top:16px;padding:20px 22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card)">
+    <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">Your data</p>
+    <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;font-size:16px">
+      <a href="Termly Report.dc.html" style="display:flex;justify-content:space-between">Termly reports, all terms<span style="color:var(--ks3-ink-muted)">Open</span></a>
+      <a href="#" style="display:flex;justify-content:space-between">Download everything we hold<span style="color:var(--ks3-ink-muted)">Zip</span></a>
+      <a href="#" style="display:flex;justify-content:space-between">Privacy notice<span style="color:var(--ks3-ink-muted)">Read</span></a>
+    </div>
+  </section>
+
+  <!-- cancel -->
+  <sc-if value="{{ canCancel }}" hint-placeholder-val="{{ true }}">
+    <section style="margin-top:28px;padding-top:20px;border-top:2px solid var(--ks3-rule)">
+      <p style="margin:0;font-size:15px;color:var(--ks3-ink-body)">Want to stop? Cancelling keeps everything working until the end of what you've paid for. <a href="#stripe-portal" style="font-weight:700">Cancel in the billing portal</a>.</p>
+    </section>
+  </sc-if>
+
+  <!-- delete -->
+  <section style="margin-top:28px;padding-top:20px;border-top:2px solid var(--ks3-rule)">
+    <sc-if value="{{ notDeleting }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ askDelete }}" style="border:0;background:none;padding:0;font-weight:700;font-size:15px;color:var(--ks3-accent-text);cursor:pointer">Delete this account</button>
+    </sc-if>
+    <sc-if value="{{ deleting }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-panel);background:var(--ks3-alert-tint)">
+        <p style="margin:0;font-weight:700;font-size:18px">Delete your account and every child on it?</p>
+        <ul style="margin:10px 0 0;padding:0 0 0 18px;font-size:15px;color:var(--ks3-ink-body);display:flex;flex-direction:column;gap:4px">
+          <li>The subscription is cancelled today; no further charges.</li>
+          <li>Children's logins stop working immediately.</li>
+          <li>Progress, reports, answers and messages are deleted after 30 days. Download reports first if the council needs them.</li>
+        </ul>
+        <label style="display:block;margin-top:14px;font-weight:700;font-size:14px;color:var(--ks3-ink-muted)">Type DELETE to confirm
+          <input value="{{ confirmText }}" onChange="{{ setConfirm }}" autocomplete="off" style="margin-top:6px;display:block;width:100%;box-sizing:border-box;min-height:48px;padding:10px 14px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-family:var(--ks3-font-mono);font-size:17px;color:var(--ks3-ink)">
+        </label>
+        <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button onClick="{{ cancelDelete }}" style="min-height:48px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:15px;color:var(--ks3-ink);cursor:pointer">Keep my account</button>
+          <button onClick="{{ doDelete }}" disabled="{{ deleteDisabled }}" style="min-height:48px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:15px;cursor:pointer;opacity:{{ deleteOpacity }}">Delete everything</button>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ deleted }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-panel);background:var(--ks3-band)">
+        <p style="margin:0;font-weight:700;font-size:18px">Account scheduled for deletion</p>
+        <p style="margin:8px 0 0;font-size:15px;color:var(--ks3-ink-body)">We've emailed {{ email }} to confirm. Everything is gone on {{ deleteDate }}. Sign in before then to undo it.</p>
+      </div>
+    </sc-if>
+  </section>
+</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;billingState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;trialing&quot;,&quot;active&quot;,&quot;past_due&quot;,&quot;cancelled&quot;,&quot;locked&quot;],&quot;default&quot;:&quot;trialing&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Billing&quot;},&quot;annual&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Billing&quot;}}">
+const PRICE = { monthlyFirst: 9.99, monthlyExtra: 5.99, annualFirst: 79, annualExtra: 49 };
+const CHILDREN = [{ name: 'Amara', year: 9 }, { name: 'Leo', year: 7 }];
+const fmtDate = (d) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+const days = (n) => new Date(Date.now() + n * 864e5);
+const STATES = {
+  trialing: { label: 'Free week', title: 'Monthly · 2 children', line: 'Full access. Your card is on file and nothing has been charged.', cta: { label: 'Manage card in Stripe', note: 'Opens Stripe\u2019s secure billing portal. Card, receipts and cancellation live there.', kind: 'outline' }, badge: 'band' },
+  active: { label: 'Active', title: 'Monthly · 2 children', line: 'Next payment {{next}}. Receipts go to your email each month.', cta: { label: 'Manage billing in Stripe', note: 'Card, receipts, switch to annual, or cancel. Opens Stripe\u2019s secure portal.', kind: 'outline' }, badge: 'ok' },
+  past_due: { label: 'Payment failed', title: 'Monthly · 2 children', line: 'The last payment didn\u2019t go through.', cta: { label: 'Update card in Stripe', note: 'Takes a minute. Work carries on the moment it succeeds.', kind: 'accent' }, badge: 'alert' },
+  cancelled: { label: 'Cancelled', title: 'Monthly · ends {{end}}', line: 'You cancelled on {{cancelledOn}}. No further charges.', cta: { label: 'Resume subscription', note: 'Picks up the same plan and card. Nothing to set up again.', kind: 'ink' }, badge: 'band' },
+  locked: { label: 'Paused', title: 'No active plan', line: 'The subscription ended and work has stopped being set.', cta: { label: 'Restart · from \u00a39.99 a month', note: 'Seven-day trial doesn\u2019t apply again. Charged today, work set tonight.', kind: 'accent' }, badge: 'alert' },
+};
+const BADGES = { band: { border: 'var(--ks3-rule-strong)', bg: 'var(--ks3-band)', fg: 'var(--ks3-ink-muted)' }, ok: { border: 'var(--ks3-ok)', bg: 'var(--ks3-ok-tint)', fg: 'var(--ks3-ok-text)' }, alert: { border: 'var(--ks3-alert-border)', bg: 'var(--ks3-alert-tint)', fg: 'var(--ks3-alert-text)' } };
+const CTAS = { outline: { border: 'var(--ks3-ink)', bg: 'var(--ks3-card)', fg: 'var(--ks3-ink)' }, ink: { border: 'var(--ks3-ink)', bg: 'var(--ks3-ink)', fg: 'var(--ks3-on-dark)' }, accent: { border: 'var(--ks3-accent-text)', bg: 'var(--ks3-accent-text)', fg: '#FFFFFF' } };
+
+class Component extends DCLogic {
+  state = { name: 'Funmi', email: 'funmi@example.com', digest: true, marking: true, saved: false, passSent: false, deleting: false, deleted: false, confirmText: '' };
+  renderVals() {
+    const st = this.props.billingState ?? 'trialing'; const s = this.state; const def = STATES[st];
+    const annual = this.props.annual ?? false;
+    const n = CHILDREN.length; const total = annual ? PRICE.annualFirst + PRICE.annualExtra * (n - 1) : PRICE.monthlyFirst + PRICE.monthlyExtra * (n - 1);
+    const fmt = (v) => '\u00a3' + (Number.isInteger(v) ? v : v.toFixed(2));
+    const sub = (t) => t.replace('{{next}}', fmtDate(days(12))).replace('{{end}}', fmtDate(days(19))).replace('{{cancelledOn}}', fmtDate(days(-3)));
+    const knob = (on) => ({ bg: on ? 'var(--ks3-ok)' : 'var(--ks3-band)', knob: on ? '25px' : '3px', knobBg: on ? '#fff' : 'var(--ks3-ink)' });
+    const dk = knob(s.digest), mk = knob(s.marking);
+    return {
+      badge: { ...BADGES[def.badge], label: def.label }, planTitle: sub(def.title).replace('Monthly', annual ? 'Annual' : 'Monthly'), planLine: sub(def.line),
+      isTrial: st === 'trialing', isPastDue: st === 'past_due', isCancelled: st === 'cancelled', isLocked: st === 'locked', canCancel: st === 'trialing' || st === 'active',
+      trialEnd: fmtDate(days(4)), trialPct: '43%', price: fmt(total), per: annual ? 'a year' : 'a month',
+      failedOn: fmtDate(days(-2)), retryOn: fmtDate(days(1)), graceEnd: fmtDate(days(5)), accessEnd: fmtDate(days(st === 'locked' ? -6 : 19)),
+      cta: { ...CTAS[def.cta.kind], label: def.cta.label, note: def.cta.note },
+      seats: CHILDREN.map((c, i) => ({ ...c, price: fmt(i === 0 ? (annual ? PRICE.annualFirst : PRICE.monthlyFirst) : (annual ? PRICE.annualExtra : PRICE.monthlyExtra)) })),
+      name: s.name, setName: (e) => this.setState({ name: e.target.value, saved: false }), email: s.email, setEmail: (e) => this.setState({ email: e.target.value, saved: false }),
+      changePass: () => this.setState({ passSent: true }), passLabel: s.passSent ? 'Reset link sent' : 'Send reset link',
+      toggleDigest: () => this.setState({ digest: !s.digest, saved: false }), digestOn: String(s.digest), digestBg: dk.bg, digestKnob: dk.knob, digestKnobBg: dk.knobBg,
+      toggleMarking: () => this.setState({ marking: !s.marking, saved: false }), markingOn: String(s.marking), markingBg: mk.bg, markingKnob: mk.knob, markingKnobBg: mk.knobBg,
+      save: () => this.setState({ saved: true }), saveLabel: s.saved ? 'Saved' : 'Save',
+      notDeleting: !s.deleting && !s.deleted, deleting: s.deleting && !s.deleted, deleted: s.deleted, askDelete: () => this.setState({ deleting: true }), cancelDelete: () => this.setState({ deleting: false, confirmText: '' }),
+      confirmText: s.confirmText, setConfirm: (e) => this.setState({ confirmText: e.target.value }), deleteDisabled: s.confirmText !== 'DELETE', deleteOpacity: s.confirmText === 'DELETE' ? 1 : 0.45,
+      doDelete: () => { if (s.confirmText === 'DELETE') this.setState({ deleted: true, deleting: false }); }, deleteDate: fmtDate(days(30)),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,644 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   org/org.css — the two organisation staff surfaces.
+
+   MRB-318 Night 3. Loaded AFTER /shared/tokens.css, /shared/ks3.css and
+   /consumer/consumer.css by `/org/sign-in.html` and `/org/index.html`, and
+   by nothing else.
+
+   ── WHAT THIS FILE IS ──────────────────────────────────────────────────
+   Claude Design drew both pages with per-element inline styles. Those
+   inline styles ARE the design and are transcribed faithfully; this file
+   holds only the ones she repeats — a card, a row, a pill, a bar — lifted
+   into `og-` classes so the markup stays readable and one change to "what
+   a card looks like" is one change. Every value below is copied from her
+   file. Nothing here invents a colour, a radius or a shadow: every one is
+   a var() out of /shared/tokens.css, exactly as consumer.css requires.
+
+   ── WHY IT OVERRIDES consumer.css's `body` ─────────────────────────────
+   consumer.css gives `body` an 84px top padding and the KS4 sans, because
+   its five scaffold pages carry the fixed `.c-nav`. Neither org page does:
+   the dashboard's chrome is a sticky sidebar at ≥960 and a header band
+   below it, and the sign-in page is a full-height flex column. So the
+   padding is reset here. What is NOT reset is `display: none` — that is
+   the flag gate failing closed, and it stays exactly where it is.
+
+   ── BRAND ──────────────────────────────────────────────────────────────
+   ⚠️ NO CHEVRON ON THESE TWO PAGES. Design drew `MrBadmusDS.BrandMark`
+   beside the wordmark on both; Mide's ruling 1 on MRB-316 overrides her —
+   Org Sign In and Org Dashboard are STAFF surfaces, and a staff surface
+   carries the wordmark alone. The wordmark is "MrBadmus" with no "AI",
+   which is the consumer-side spelling and is deliberate (see the note in
+   consumer-common.js). So: no logo asset, no chevron, no "AI".
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Design's own `body{margin:0;background:#FBF3E6}` — as tokens. */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-family: var(--ks3-font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  /* ⚠️ NOT reset. consumer.css's `display:none` is the flag gate. */
+}
+
+a { color: var(--ks3-accent-text); text-decoration: none; }
+a:hover { color: var(--ks3-accent-hover, #7F2408); }
+input, select, button, textarea { font: inherit; }
+input::placeholder, textarea::placeholder { color: var(--ks3-ink-muted); }
+
+/* ── the page root ───────────────────────────────────────────────────── */
+.og-page {
+  min-height: 100vh;
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-family: var(--ks3-font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The wordmark. Her `font-family:var(--ks3-font-display);font-weight:800;
+   letter-spacing:-.02em` — size varies by surface, so it is set inline. */
+.og-word {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ks3-ink);
+}
+
+/* ── SIGN IN ─────────────────────────────────────────────────────────── */
+.og-signin { display: flex; flex-direction: column; font-size: 17px; }
+
+.og-signin-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 18px 24px;
+  border-bottom: 2px solid var(--ks3-ink);
+  flex-wrap: wrap;
+}
+
+.og-badge {
+  padding: 4px 10px;
+  border: 2px solid var(--ks3-ink);
+  border-radius: 99px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.og-signin-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  box-sizing: border-box;
+}
+
+/* Her `.os-two`, kept at her 900px breakpoint. */
+.og-two { display: grid; gap: 24px; width: 100%; }
+@media (min-width: 900px) {
+  .og-two { grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+}
+
+.og-eyebrow {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+
+.og-h1-hero {
+  margin: 12px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: clamp(36px, 4.5vw, 52px);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.og-lede { margin: 16px 0 0; font-size: 18px; color: var(--ks3-ink-body); text-wrap: pretty; }
+
+.og-ticks {
+  margin: 20px 0 0; padding: 0; list-style: none;
+  display: flex; flex-direction: column; gap: 8px;
+  font-size: 16px; color: var(--ks3-ink-body);
+}
+.og-ticks li { display: flex; gap: 10px; }
+.og-ticks .ks3-mark { flex: 0 0 auto; margin-top: 4px; color: var(--ks3-ok-text); }
+
+.og-form {
+  padding: clamp(22px, 3vw, 32px);
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-card);
+  box-shadow: var(--ks3-shadow-block);
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+.og-label { display: block; font-weight: 700; font-size: 15px; color: var(--ks3-ink-muted); }
+.og-input {
+  margin-top: 6px; display: block; width: 100%; box-sizing: border-box;
+  min-height: 50px; padding: 12px 14px;
+  border: 2px solid var(--ks3-option-border);
+  border-radius: var(--ks3-r-control);
+  background: var(--ks3-card);
+  /* 17px is hers, and it is also above the 16px floor at which iOS Safari
+     zooms the page on focus — see the note in teacher/admin.html. */
+  font-size: 17px;
+  color: var(--ks3-ink);
+}
+.og-input:focus { outline: 2px solid var(--ks3-accent); border-color: var(--ks3-accent); }
+
+.og-err { margin: 0; font-size: 15px; font-weight: 700; color: var(--ks3-accent-text); }
+.og-ok  { margin: 0; font-size: 15px; font-weight: 700; color: var(--ks3-ok-text); }
+
+/* Her primary: full width, ink ground, on-dark text. */
+.og-btn-primary {
+  margin-top: 4px; width: 100%; min-height: 54px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+  background: var(--ks3-ink); color: var(--ks3-on-dark);
+  font-weight: 700; font-size: 18px; cursor: pointer;
+}
+.og-btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Her text button ("Forgotten your password?"). */
+.og-btn-text {
+  align-self: flex-start; padding: 0; border: 0; background: none;
+  font-weight: 700; font-size: 15px; color: var(--ks3-accent-text); cursor: pointer;
+  /* 44px of touch target without 44px of ink — the row it sits in is the
+     tap area, which is the fix teacher/admin.html's `.cx-check` note
+     describes for a control whose glyph is smaller than a fingertip. */
+  min-height: 44px; display: inline-flex; align-items: center;
+}
+.og-btn-text:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Design's SSO button, transcribed from her Public Sign In "Continue with
+   Google" — the same shape, because it is the same job. */
+.og-btn-sso {
+  width: 100%; min-height: 52px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+  background: var(--ks3-card); font-weight: 700; font-size: 17px;
+  color: var(--ks3-ink); cursor: pointer;
+}
+.og-btn-sso:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.og-or {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--ks3-ink-muted); font-size: 14px;
+}
+.og-or::before, .og-or::after {
+  content: ''; flex: 1; height: 2px; background: var(--ks3-rule);
+}
+
+/* ── DASHBOARD SHELL ─────────────────────────────────────────────────── */
+/* Mobile first, exactly as she wrote it: no sidebar, one-column rows, no
+   table header. The 960 breakpoint is hers and is not moved. */
+.og-root { display: block; }
+.og-side { display: none; }
+.og-hd   { display: none; }
+.og-row  { display: grid; grid-template-columns: 1fr; gap: 6px; }
+
+.og-mhead {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 20px 14px;
+  border-bottom: 2px solid var(--ks3-ink);
+}
+.og-mnav {
+  margin-left: auto; min-height: 44px; padding: 0 10px;
+  border: 2px solid var(--ks3-ink); border-radius: 10px;
+  background: var(--ks3-card); font-weight: 700; font-size: 16px;
+  color: var(--ks3-ink);
+}
+
+.og-main { max-width: 1200px; padding: 24px 20px 60px; }
+
+@media (min-width: 960px) {
+  .og-root { display: grid; grid-template-columns: 260px 1fr; }
+  .og-side {
+    display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh; box-sizing: border-box;
+    border-right: 2px solid var(--ks3-ink);
+    background: var(--ks3-card);
+    padding: 22px 20px 24px;
+  }
+  .og-mhead { display: none !important; }
+  .og-main { padding: 40px 48px 80px; }
+  .og-row, .og-hd {
+    display: grid;
+    grid-template-columns: 2fr 1.1fr 1.2fr 1fr 1fr 1.1fr;
+    gap: 12px; align-items: center;
+  }
+  .og-stats { grid-template-columns: repeat(4, 1fr) !important; }
+}
+
+/* the sidebar */
+.og-side-brand { display: flex; align-items: center; gap: 10px; padding: 0 4px; }
+.og-side-org {
+  margin-top: 18px; padding: 12px 14px;
+  border: 2px solid var(--ks3-ink); border-radius: 14px;
+  background: var(--ks3-band);
+}
+.og-side-kind {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 11px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ks3-ink-muted);
+}
+.og-side-name { margin: 4px 0 0; font-weight: 700; font-size: 16px; line-height: 1.25; }
+.og-nav { margin-top: 22px; display: flex; flex-direction: column; gap: 4px; }
+.og-nav button {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 44px; padding: 0 12px;
+  border: 2px solid transparent; border-radius: 14px; background: transparent;
+  font-weight: 700; font-size: 15px; color: var(--ks3-ink);
+  cursor: pointer; text-align: left;
+}
+.og-nav button.is-on { border-color: var(--ks3-ink); background: var(--ks3-band); }
+.og-nav button > span:first-child { flex: 1; }
+.og-nav-badge {
+  display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 99px; background: var(--ks3-accent-text); color: #fff;
+  font-family: var(--ks3-font-mono); font-size: 11px;
+}
+.og-seats { margin-top: auto; font-size: 14px; color: var(--ks3-ink-muted); padding: 0 4px; }
+.og-seats p { margin: 0; }
+.og-seat-bar {
+  margin-top: 6px; height: 8px;
+  border: 2px solid var(--ks3-ink); border-radius: 99px;
+  background: var(--ks3-card); overflow: hidden;
+}
+.og-seat-bar i { display: block; height: 100%; background: var(--ks3-accent); }
+.og-seats .og-who { margin-top: 12px; }
+
+/* ── shared furniture across the five screens ────────────────────────── */
+.og-h1 {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 34px; line-height: 1; letter-spacing: -0.035em;
+}
+.og-intro { margin: 10px 0 0; font-size: 16px; color: var(--ks3-ink-body); max-width: 56em; }
+
+.og-card {
+  padding: 20px; border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-card); background: var(--ks3-card);
+}
+.og-card.shadow-block { box-shadow: var(--ks3-shadow-block); }
+.og-card.shadow-card  { box-shadow: var(--ks3-shadow-card); }
+.og-cards {
+  margin-top: 22px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px; align-items: start;
+}
+.og-eyebrow-sm {
+  margin: 0; font-family: var(--ks3-font-mono); font-size: 12px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--ks3-ink-muted);
+}
+
+.og-stats { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.og-stat {
+  padding: 14px 16px; border: 2px solid var(--ks3-ink);
+  border-radius: 16px; background: var(--ks3-card);
+}
+.og-stat-l {
+  font-family: var(--ks3-font-mono); font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ks3-ink-muted);
+}
+.og-stat-v {
+  margin-top: 4px; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 30px; letter-spacing: -0.03em; line-height: 1;
+}
+.og-stat-n { margin-top: 2px; font-size: 13px; color: var(--ks3-ink-muted); }
+
+.og-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 0; border: 0; background: none;
+  font-weight: 700; font-size: 15px; color: var(--ks3-accent-text); cursor: pointer;
+}
+.og-back .ks3-mark { width: 14px; height: 14px; }
+
+/* Her dark CTA and her band CTA, at the two sizes she uses them. */
+.og-cta {
+  min-height: 46px; padding: 0 18px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+  background: var(--ks3-ink); color: var(--ks3-on-dark);
+  font-weight: 700; font-size: 15px; cursor: pointer;
+}
+.og-cta:disabled { opacity: 0.55; cursor: not-allowed; }
+.og-cta-sm {
+  min-height: 44px; padding: 0 14px;
+  border: 2px solid var(--ks3-ink); border-radius: 10px;
+  background: var(--ks3-ink); color: var(--ks3-on-dark);
+  font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.og-cta-sm:disabled { opacity: 0.55; cursor: not-allowed; }
+.og-alt-sm {
+  min-height: 44px; padding: 0 14px;
+  border: 2px solid var(--ks3-rule-strong); border-radius: 10px;
+  background: var(--ks3-band); color: var(--ks3-ink);
+  font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.og-alt-sm:disabled { opacity: 0.55; cursor: not-allowed; }
+.og-wide {
+  margin-top: 24px; width: 100%; min-height: 52px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-control);
+  background: var(--ks3-ink); color: var(--ks3-on-dark);
+  font-weight: 700; font-size: 17px; cursor: pointer;
+}
+.og-wide:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* the "shown once" and the confirmation banners */
+.og-good {
+  margin-top: 14px; padding: 12px 16px;
+  border: 2px solid var(--ks3-ok); border-radius: 14px;
+  background: var(--ks3-ok-tint); font-size: 15px; color: var(--ks3-ink);
+}
+.og-good strong { color: var(--ks3-ok-text); }
+.og-good code {
+  font-family: var(--ks3-font-mono); font-size: 18px;
+  /* selectable on purpose: a staff member reads this to a pupil or copies
+     it onto a slip, and a password you cannot select is a password you
+     have to transcribe by eye. */
+  user-select: all;
+}
+.og-warn {
+  margin: 12px 0 0; padding: 10px 12px;
+  border-radius: 10px; background: var(--ks3-alert-tint);
+  border: 2px solid var(--ks3-alert-border);
+  font-size: 14px; color: var(--ks3-alert-text);
+}
+
+/* ── PUPILS table ────────────────────────────────────────────────────── */
+.og-filters {
+  margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.og-search {
+  flex: 1; min-width: 180px; min-height: 44px; padding: 0 14px;
+  border: 2px solid var(--ks3-option-border); border-radius: 12px;
+  background: var(--ks3-card);
+  /* 16px, not her 15px. Below 16px iOS Safari zooms the page on focus and
+     throws the layout away mid-search — the same working fact recorded on
+     `.cx-in` in teacher/admin.html. The one deviation in this file. */
+  font-size: 16px;
+  color: var(--ks3-ink);
+}
+.og-pill {
+  width: auto; min-height: 44px; padding: 6px 14px;
+  border-radius: 99px; font-size: 14px;
+}
+.og-pill-right { margin-left: auto; }
+
+.og-table {
+  margin-top: 14px; border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-card); background: var(--ks3-card); overflow: hidden;
+}
+.og-hd {
+  padding: 10px 18px; border-bottom: 2px solid var(--ks3-ink);
+  background: var(--ks3-band); font-family: var(--ks3-font-mono);
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.og-row {
+  width: 100%; text-align: left; padding: 12px 18px;
+  border: 0; border-bottom: 1px solid var(--ks3-rule);
+  background: var(--ks3-card); color: var(--ks3-ink); cursor: pointer;
+  /* the whole row is the tap target; at 390 it is three stacked lines and
+     always over 44px tall. */
+  min-height: 44px;
+}
+.og-row.is-flagged { background: var(--ks3-inset); }
+.og-row-name { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.og-initial {
+  display: grid; place-items: center; flex: 0 0 32px; height: 32px;
+  border-radius: 10px; border: 2px solid var(--ks3-ink);
+  background: var(--ks3-accent);
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 14px;
+  color: var(--ks3-ink);
+}
+.og-row-n { display: block; font-weight: 700; font-size: 15px; }
+.og-row-u {
+  display: block; font-size: 12px; color: var(--ks3-ink-muted);
+  font-family: var(--ks3-font-mono);
+}
+.og-flag {
+  margin-left: 6px; padding: 3px 8px; border-radius: 99px;
+  border: 2px solid var(--ks3-alert-border); background: var(--ks3-alert-tint);
+  font-size: 11px; font-weight: 700; color: var(--ks3-alert-text); white-space: nowrap;
+}
+.og-cell { font-size: 14px; color: var(--ks3-ink-body); }
+.og-cell-mono { font-family: var(--ks3-font-mono); font-size: 14px; }
+.og-cell-muted { font-size: 13px; color: var(--ks3-ink-muted); }
+.og-days { display: flex; gap: 3px; }
+.og-days span {
+  flex: 1; max-width: 16px; height: 14px; border-radius: 4px;
+  border: 1.5px solid var(--ks3-ink);
+}
+.og-empty { margin: 0; padding: 28px 18px; text-align: center; color: var(--ks3-ink-muted); }
+
+/* ── PUPIL DETAIL ────────────────────────────────────────────────────── */
+.og-pd-head {
+  margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+}
+.og-pd-initial {
+  display: grid; place-items: center; width: 52px; height: 52px;
+  border-radius: 16px; background: var(--ks3-accent); border: 2px solid var(--ks3-ink);
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 24px;
+  color: var(--ks3-ink);
+}
+.og-pd-name {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 32px; line-height: 1; letter-spacing: -0.035em;
+}
+.og-pd-meta { margin: 4px 0 0; font-size: 14px; color: var(--ks3-ink-muted); }
+.og-pd-grid {
+  margin-top: 22px; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px; align-items: start;
+}
+.og-week { margin-top: 12px; display: flex; gap: 6px; }
+.og-week span {
+  flex: 1; height: 32px; border-radius: 9px; border: 2px solid var(--ks3-ink);
+}
+.og-list { margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 15px; }
+.og-list li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid var(--ks3-rule); }
+.og-list-b { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; font-size: 15px; }
+.og-list-b li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--ks3-rule); }
+.og-trunc { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.og-bars {
+  margin-top: 14px; display: flex; align-items: flex-end; gap: 8px;
+  height: 90px; border-bottom: 2px solid var(--ks3-ink);
+}
+.og-bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.og-bar em {
+  font-family: var(--ks3-font-mono); font-size: 11px;
+  color: var(--ks3-ink-muted); font-style: normal;
+}
+.og-bar i {
+  display: block; width: 100%; margin-top: 3px;
+  border: 2px solid var(--ks3-ink); border-radius: 6px 6px 0 0;
+}
+.og-note { margin: 10px 0 0; font-size: 13px; color: var(--ks3-ink-muted); }
+.og-foot { margin: 18px 0 0; font-size: 14px; color: var(--ks3-ink-muted); }
+
+/* ── the chat panel (not in Design's org file — see the note in index.html) */
+.og-chat {
+  margin-top: 12px; display: flex; flex-direction: column; gap: 8px;
+  max-height: 320px; overflow-y: auto; padding-right: 4px;
+}
+.og-bubble {
+  max-width: 82%; padding: 9px 13px; border-radius: 14px;
+  border: 2px solid var(--ks3-ink); background: var(--ks3-band);
+  font-size: 15px; line-height: 1.45; align-self: flex-start;
+}
+.og-bubble.mine { align-self: flex-end; background: var(--ks3-inset); }
+.og-bubble time {
+  display: block; margin-top: 3px;
+  font-family: var(--ks3-font-mono); font-size: 11px; color: var(--ks3-ink-muted);
+}
+.og-chat-send { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.og-chat-send input {
+  flex: 1 1 200px; min-height: 44px; padding: 0 14px;
+  border: 2px solid var(--ks3-option-border); border-radius: 12px;
+  background: var(--ks3-card); font-size: 16px; color: var(--ks3-ink);
+}
+
+/* ── GROUPS ──────────────────────────────────────────────────────────── */
+.og-groups {
+  margin-top: 22px; display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.og-group-h { display: flex; align-items: baseline; gap: 10px; }
+.og-group-h h2 {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 24px; letter-spacing: -0.025em;
+}
+.og-group-c { margin-left: auto; font-family: var(--ks3-font-mono); font-size: 13px; color: var(--ks3-ink-muted); }
+.og-kv { margin: 12px 0 0; padding: 0; list-style: none; font-size: 15px; display: flex; flex-direction: column; gap: 6px; }
+.og-kv li { display: flex; justify-content: space-between; gap: 10px; }
+.og-kv .k { color: var(--ks3-ink-muted); }
+.og-group-acts { margin-top: 14px; display: flex; gap: 8px; }
+.og-group-acts button { flex: 1; }
+.og-dashed {
+  min-height: 120px; border: 2px dashed var(--ks3-rule-strong);
+  border-radius: var(--ks3-r-card); background: none;
+  font-weight: 700; font-size: 16px; color: var(--ks3-accent-text); cursor: pointer;
+}
+
+/* ── SET WORK / ADD PUPILS forms ─────────────────────────────────────── */
+.og-form-col { margin-top: 22px; max-width: 640px; }
+.og-legend { margin: 20px 0 8px; font-weight: 700; font-size: 15px; color: var(--ks3-ink-muted); }
+.og-legend:first-child { margin-top: 0; }
+.og-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.og-chip { width: auto; min-height: 44px; padding: 8px 14px; border-radius: 99px; font-size: 15px; }
+.og-stack { display: flex; flex-direction: column; gap: 8px; }
+.og-stack .ks3-option { padding: 12px 16px; }
+.og-days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.og-days-grid .ks3-option { justify-content: center; padding: 10px 4px; font-size: 15px; min-height: 44px; }
+.og-done {
+  margin: 12px 0 0; padding: 12px 16px;
+  border: 2px solid var(--ks3-ok); border-radius: 14px;
+  background: var(--ks3-ok-tint); font-size: 15px; font-weight: 700; color: var(--ks3-ok-text);
+}
+.og-textarea {
+  display: block; width: 100%; box-sizing: border-box; padding: 14px 16px;
+  border: 2px solid var(--ks3-option-border); border-radius: var(--ks3-r-control);
+  background: var(--ks3-card); font-family: var(--ks3-font-mono);
+  /* 16px, not her 15px — the iOS zoom floor again. */
+  font-size: 16px; color: var(--ks3-ink); resize: vertical;
+}
+.og-count {
+  margin-top: 10px; display: flex; justify-content: space-between;
+  font-size: 14px; color: var(--ks3-ink-muted);
+}
+.og-select {
+  min-height: 44px; padding: 0 10px;
+  border: 2px solid var(--ks3-option-border); border-radius: 10px;
+  background: var(--ks3-card); font-size: 16px; color: var(--ks3-ink);
+}
+
+/* ── LOGIN SLIPS ─────────────────────────────────────────────────────── */
+/* Not drawn by Design — see the note in index.html. Built from her card
+   and her mono treatment so that it belongs to the same page. */
+.og-slips {
+  margin-top: 18px; display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px;
+}
+.og-slip {
+  padding: 16px 18px; border: 2px solid var(--ks3-ink);
+  border-radius: 14px; background: var(--ks3-card);
+  break-inside: avoid; page-break-inside: avoid;
+}
+.og-slip h3 {
+  margin: 0; font-family: var(--ks3-font-display); font-weight: 800;
+  font-size: 20px; letter-spacing: -0.02em;
+}
+.og-slip dl { margin: 10px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 15px; }
+.og-slip dt { color: var(--ks3-ink-muted); }
+.og-slip dd { margin: 0; font-family: var(--ks3-font-mono); user-select: all; }
+.og-slip p { margin: 10px 0 0; font-size: 13px; color: var(--ks3-ink-muted); }
+
+/* ── MESSAGES ⊕ DROP 2 ───────────────────────────────────────────────── */
+/* Design's drop-2 screen: `minmax(220px,300px) 1fr`, 16px apart, top
+   aligned. That is her DESKTOP shape and she drew it inside a page that
+   already has a sidebar — so below 960, where the sidebar collapses into
+   the select header, the two panes stack instead. A 300px thread list and a
+   conversation side by side on a 390px phone is two unusable columns. */
+.og-threads {
+  margin-top: 22px; display: grid; gap: 16px; align-items: start;
+}
+@media (min-width: 960px) {
+  .og-threads { grid-template-columns: minmax(220px, 300px) 1fr; }
+}
+
+.og-thread-list {
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+  background: var(--ks3-card); overflow: hidden;
+}
+.og-thread-list button {
+  width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px;
+  padding: 12px 14px; border: 0;
+  /* Her 3px selected marker, transparent when it is not selected so that
+     nothing moves sideways by three pixels as the selection travels. */
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid var(--ks3-rule);
+  background: none; color: var(--ks3-ink); font: inherit; text-align: left;
+  cursor: pointer;
+}
+.og-thread-list button:last-child { border-bottom: 0; }
+.og-thread-list button.is-on { border-left-color: var(--ks3-ink); background: var(--ks3-band); }
+.og-thread-who  { flex: 1 1 auto; min-width: 0; font-size: 15px; }
+.og-thread-grp  { color: var(--ks3-ink-muted); font-weight: 400; }
+.og-thread-last {
+  flex: 1 0 100%; min-width: 0; font-size: 12px; color: var(--ks3-ink-muted);
+  /* One line, whatever was written. A three-line last message would make
+     every row in the list a different height. */
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.og-thread-unread {
+  display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 99px; background: var(--ks3-accent-text); color: #fff;
+  font-family: var(--ks3-font-mono); font-size: 11px;
+}
+.og-thread-pane {
+  display: flex; flex-direction: column; min-height: 420px; padding: 18px;
+  border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card);
+  background: var(--ks3-card);
+}
+.og-thread-head { margin: 0 0 12px; font-weight: 700; font-size: 16px; }
+/* The bubble stack takes the slack, so the reply box sits at the bottom of
+   the pane rather than floating under a short conversation. */
+.og-thread-pane .og-chat { flex: 1; }
+
+@media print {
+  /* The slips are the only thing worth ink. Everything else on the page —
+     the sidebar, the nav, the buttons — is furniture for a screen. */
+  .og-noprint { display: none !important; }
+  body { padding: 0; background: #fff; }
+  .og-root { display: block; }
+  .og-main { padding: 0; max-width: none; }
+  .og-slips { grid-template-columns: repeat(2, 1fr); }
+}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css">
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+body{margin:0;background:#FBF3E6}
+a{color:#A93411;text-decoration:none}a:hover{color:#7F2408}
+.pb-nav-links{display:none}
+.pb-two{display:grid;gap:20px}
+.pb-three{display:grid;gap:14px}
+@media (min-width:900px){
+  .pb-nav-links{display:flex}
+  .pb-two{grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+  .pb-three{grid-template-columns:1fr 1fr 1fr;gap:20px}
+  .pb-wrap{padding-left:48px!important;padding-right:48px!important}
+}
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="min-height:100vh;background:var(--ks3-ground);color:var(--ks3-ink);font-family:var(--ks3-font-body);font-size:18px;line-height:1.55;-webkit-font-smoothing:antialiased">
+
+<header class="pb-wrap" style="display:flex;align-items:center;gap:14px;padding:18px 20px;border-bottom:2px solid var(--ks3-ink);position:sticky;top:0;background:var(--ks3-ground);z-index:5">
+  <a href="Public Home.dc.html" style="display:flex;align-items:center;gap:10px;color:var(--ks3-ink)">
+    <x-import component-from-global-scope="MrBadmusDS.BrandMark" from="./_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js" size="{{ brandSize }}" hint-size="26px,26px"></x-import>
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;letter-spacing:-.02em">MrBadmus</span>
+  </a>
+  <nav class="pb-nav-links" style="margin-left:24px;gap:22px;font-weight:600;font-size:16px">
+    <a href="Public How It Works.dc.html" style="color:var(--ks3-ink)">How it works</a>
+    <a href="Public Home Education.dc.html" style="color:var(--ks3-ink);border-bottom:2px solid var(--ks3-accent)">Home education</a>
+    <a href="Public Pricing.dc.html" style="color:var(--ks3-ink)">Pricing</a>
+  </nav>
+  <span style="flex:1"></span>
+  <a href="Public Sign In.dc.html" style="font-weight:700;font-size:16px;color:var(--ks3-ink)">Sign in</a>
+  <a href="Parent Signup.dc.html" style="display:flex;align-items:center;min-height:44px;padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>
+</header>
+
+<main class="pb-wrap" style="max-width:1100px;margin:0 auto;padding:56px 20px 80px">
+  <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">For home educators</p>
+  <h1 style="margin:14px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(40px,5.5vw,64px);line-height:.95;letter-spacing:-.04em;max-width:15em;text-wrap:balance">Science covered, properly, by someone who has taught it.</h1>
+  <p style="margin:22px 0 0;font-size:20px;color:var(--ks3-ink-body);max-width:36em;text-wrap:pretty">The full Key Stage 3 and GCSE scheme of work, sequenced and set four or five days a week. Marked, tracked, and written up each term in a report you can hand to the local authority.</p>
+
+  <div class="pb-three" style="margin-top:44px">
+    <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="3">
+      <div style="padding:22px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);box-shadow:var(--ks3-shadow-card)">
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ks3-ink-muted)">{{ p.eyebrow }}</p>
+        <h2 style="margin:10px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:24px;letter-spacing:-.025em;line-height:1.1">{{ p.title }}</h2>
+        <p style="margin:10px 0 0;font-size:16px;color:var(--ks3-ink-body)">{{ p.body }}</p>
+      </div>
+    </sc-for>
+  </div>
+
+  <section style="margin-top:64px">
+    <div class="pb-two">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-ink-muted)">The scheme of work</p>
+        <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Start anywhere. Nothing before it is skipped.</h2>
+        <p style="margin:16px 0 0;font-size:18px;color:var(--ks3-ink-body);text-wrap:pretty">Pick the unit to start from. Everything earlier is treated as covered but keeps turning up in recall questions, so gaps show themselves. Year 9 bridges into GCSE content; Years 10 and 11 follow your board, route and tier.</p>
+      </div>
+      <div style="border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-card);background:var(--ks3-card);overflow:hidden">
+        <div style="display:flex;gap:6px;padding:12px 14px;border-bottom:2px solid var(--ks3-ink);background:var(--ks3-band)">
+          <sc-for list="{{ yearTabs }}" as="y" hint-placeholder-count="5">
+            <button onClick="{{ y.pick }}" aria-pressed="{{ y.on }}" style="flex:1;min-height:38px;border:2px solid {{ y.border }};border-radius:10px;background:{{ y.bg }};color:{{ y.fg }};font-weight:700;font-size:15px;cursor:pointer">{{ y.label }}</button>
+          </sc-for>
+        </div>
+        <ul style="margin:0;padding:0;list-style:none">
+          <sc-for list="{{ units }}" as="u" hint-placeholder-count="6">
+            <li style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--ks3-rule);font-size:16px">
+              <span style="flex:0 0 30px;font-family:var(--ks3-font-mono);font-size:12px;letter-spacing:.06em;color:var(--ks3-ink-muted)">{{ u.code }}</span>
+              <span style="width:10px;height:10px;border-radius:99px;border:2px solid var(--ks3-ink);background:{{ u.dot }};flex:0 0 auto"></span>
+              <span style="flex:1">{{ u.name }}</span>
+              <span style="font-size:13px;color:var(--ks3-ink-muted)">{{ u.subject }}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section style="margin-top:64px;padding:clamp(28px,4vw,44px);border-radius:var(--ks3-r-dark);background:var(--ks3-ink);color:var(--ks3-on-dark);box-shadow:8px 8px 0 var(--ks3-accent)">
+    <div class="pb-two">
+      <div>
+        <p style="margin:0;font-family:var(--ks3-font-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ks3-alert)">The termly report</p>
+        <h2 style="margin:12px 0 0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Evidence of learning, on one side of A4.</h2>
+        <p style="margin:16px 0 0;font-size:18px;color:var(--ks3-on-dark-body);text-wrap:pretty">Units covered mapped to the National Curriculum, lessons completed, every unit-check score, extended writing marks, strengths, next steps, and a signed note from a qualified teacher. Produced automatically at the end of each term. Prints cleanly, saves as PDF.</p>
+        <a href="Termly Report.dc.html" style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:17px;color:var(--ks3-alert)">See a sample report <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ reportHas }}" as="r" hint-placeholder-count="6">
+          <li style="display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:12px;background:var(--ks3-dark-panel);font-size:16px;color:var(--ks3-on-dark-body)"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true" style="flex:0 0 auto;color:var(--ks3-alert)"><path d="M5 12.5l4.5 4.5L19 7"/></svg>{{ r }}</li>
+        </sc-for>
+      </ul>
+    </div>
+  </section>
+
+  <section style="margin-top:64px">
+    <h2 style="margin:0;font-family:var(--ks3-font-display);font-weight:800;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.035em;line-height:1">Asked by home-educating parents</h2>
+    <div style="margin-top:20px;display:flex;flex-direction:column;border-top:2px solid var(--ks3-ink)">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="4">
+        <div style="padding:18px 0;border-bottom:1px solid var(--ks3-rule)">
+          <p style="margin:0;font-weight:700;font-size:19px">{{ f.q }}</p>
+          <p style="margin:8px 0 0;font-size:17px;color:var(--ks3-ink-body);max-width:60em">{{ f.a }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <div style="margin-top:56px;text-align:center">
+    <a href="Parent Signup.dc.html" style="display:inline-flex;align-items:center;min-height:58px;padding:0 30px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:19px;box-shadow:5px 5px 0 var(--ks3-accent)">Start a free week</a>
+    <p style="margin:14px 0 0;font-size:15px;color:var(--ks3-ink-muted)">Choose "Home education" when you add your child. Same price as everyone else.</p>
+  </div>
+</main>
+
+<footer style="border-top:2px solid var(--ks3-ink);background:var(--ks3-card)">
+  <div class="pb-wrap" style="max-width:1160px;margin:0 auto;padding:28px 20px;display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;font-size:15px;color:var(--ks3-ink-muted)">
+    <span style="font-family:var(--ks3-font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;color:var(--ks3-ink)">MrBadmus</span>
+    <a href="Public How It Works.dc.html">How it works</a><a href="Public Home Education.dc.html">Home education</a><a href="Public Pricing.dc.html">Pricing</a><a href="Public Sign In.dc.html">Sign in</a>
+    <span style="margin-left:auto">Mr Badmus Education Ltd · England</span>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PILLARS = [
+  { eyebrow: 'Coverage', title: 'The whole programme of study.', body: 'Biology, chemistry and physics, sequenced across the year the way a good department would. Four or five sessions a week.' },
+  { eyebrow: 'Rigour', title: 'Marked like the exam.', body: 'Written answers are marked point by point against the published schemes. Unit checks are timed. Mr Badmus marks two answers a month himself.' },
+  { eyebrow: 'Evidence', title: 'A report each term.', body: 'Mapped to the National Curriculum, signed by a qualified teacher, printable. Written for a local authority reader.' },
+];
+const UNITS = {
+  7: [['A1', 'Cells and organisation', 'Biology'], ['A1', 'The particle model', 'Chemistry'], ['A2', 'Forces and motion', 'Physics'], ['A2', 'Atoms, elements and compounds', 'Chemistry'], ['S1', 'Reproduction', 'Biology'], ['S1', 'Energy stores', 'Physics'], ['S2', 'Acids and alkalis', 'Chemistry'], ['S2', 'Sound and light', 'Physics'], ['M1', 'Ecosystems', 'Biology'], ['M1', 'Space', 'Physics'], ['M2', 'Chemical reactions', 'Chemistry']],
+  8: [['A1', 'Breathing and digestion', 'Biology'], ['A1', 'The periodic table', 'Chemistry'], ['A2', 'Electricity and magnetism', 'Physics'], ['A2', 'Separating mixtures', 'Chemistry'], ['S1', 'Photosynthesis and respiration', 'Biology'], ['S1', 'Pressure and moments', 'Physics'], ['S2', 'Metals and reactivity', 'Chemistry'], ['S2', 'Waves', 'Physics'], ['M1', 'Adaptation and inheritance', 'Biology'], ['M1', 'The Earth', 'Chemistry'], ['M2', 'Heating and cooling', 'Physics']],
+  9: [['A1', 'Health and disease', 'Biology'], ['A1', 'Rates of reaction', 'Chemistry'], ['A2', 'Motion and forces', 'Physics'], ['A2', 'Energy changes in reactions', 'Chemistry'], ['S1', 'Genetics and evolution', 'Biology'], ['S1', 'Electric circuits', 'Physics'], ['S2', 'Materials and the Earth', 'Chemistry'], ['S2', 'Radiation', 'Physics'], ['M1', 'Ecology in depth', 'Biology'], ['M1', 'Space physics', 'Physics'], ['M2', 'Bridging to GCSE', 'All three']],
+  10: [['A1', 'Cell biology', 'Biology'], ['A1', 'Atomic structure', 'Chemistry'], ['A2', 'Energy', 'Physics'], ['A2', 'Bonding and structure', 'Chemistry'], ['S1', 'Organisation', 'Biology'], ['S1', 'Electricity', 'Physics'], ['S2', 'Quantitative chemistry', 'Chemistry'], ['S2', 'Particle model of matter', 'Physics'], ['M1', 'Infection and response', 'Biology'], ['M1', 'Chemical changes', 'Chemistry'], ['M2', 'Atomic structure (physics)', 'Physics']],
+  11: [['A1', 'Homeostasis and response', 'Biology'], ['A1', 'Rate and extent of change', 'Chemistry'], ['A2', 'Forces', 'Physics'], ['A2', 'Organic chemistry', 'Chemistry'], ['S1', 'Inheritance and evolution', 'Biology'], ['S1', 'Waves', 'Physics'], ['S2', 'Chemical analysis and the atmosphere', 'Chemistry'], ['S2', 'Magnetism', 'Physics'], ['M1', 'Ecology', 'Biology'], ['M1', 'Revision', 'All three']],
+};
+const DOT = { Biology: 'var(--ks3-biology)', Chemistry: 'var(--ks3-chemistry)', Physics: 'var(--ks3-physics)', 'All three': 'var(--ks3-band)' };
+const REPORT_HAS = ['Units covered, mapped to the National Curriculum', 'Sessions set and completed, time on task', 'Every unit-check score, charted across the term', 'Extended writing log with marks', 'Strengths and next steps', 'Signed note from a qualified science teacher'];
+const FAQS = [
+  { q: 'Will the council accept the report?', a: 'Local authorities ask for evidence that a suitable, efficient education is taking place. The report shows curriculum coverage, completed work and assessed outcomes, signed by a qualified teacher. Families have used earlier versions in informal enquiries; it is designed for exactly that reader.' },
+  { q: 'Can I see the work before my child does it?', a: 'Yes. The dashboard lists next week\u2019s sessions from Sunday evening and you can open any lesson yourself. You can also remove a session or add your own.' },
+  { q: 'What about practicals?', a: 'Lessons include the required practicals as demonstrations with data to analyse, plus a short list of ones that are safe to do at a kitchen table. Nothing depends on lab equipment.' },
+  { q: 'We don\u2019t follow school years. Does it matter?', a: 'No. Pick the year whose content fits, start from whichever unit you like, and change year at any point. The report records what was actually covered.' },
+];
+class Component extends DCLogic {
+  state = { year: 8 };
+  renderVals() {
+    const y = this.state.year;
+    return { brandSize: 26, pillars: PILLARS, reportHas: REPORT_HAS, faqs: FAQS,
+      yearTabs: [7, 8, 9, 10, 11].map((n) => ({ label: `Y${n}`, on: String(y === n), border: y === n ? 'var(--ks3-ink)' : 'transparent', bg: y === n ? 'var(--ks3-ink)' : 'transparent', fg: y === n ? 'var(--ks3-on-dark)' : 'var(--ks3-ink)', pick: () => this.setState({ year: n }) })),
+      units: UNITS[y].map(([code, name, subject]) => ({ code, name, subject, dot: DOT[subject] })) };
+  }
+}
+</script>
+</body>
+</html>

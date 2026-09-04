@@ -248,6 +248,73 @@ GATES = [
              "for real, is not. The RLS behind it (timetable_entries_own_all) "
              "is proved separately in SQL under real roles.",
          ),
+
+    dict(name="import_year_drive",
+         cmd=["python3", "import_year_drive.py"],
+         speed="slow",
+         needs="teacher/import.html",
+         why="MRB-307 — WHICH SCHOOL YEAR A ROSTER IMPORT LANDS IN. On "
+             "1 September 2026 a real import enrolled 14 real students into "
+             "LAST YEAR's 7h/Sc5 and left this year's empty. The page sent "
+             "`academicYearName: null`, the roster-import edge function fell "
+             "back to `academic_years.is_current`, and that flag is moved BY "
+             "HAND on 1 September — so on the one morning it mattered it "
+             "still said 2025-26. Nothing on screen had ever named a year, "
+             "so nothing on screen could have looked wrong. "
+             "⚠️ THE FIXTURE HOLDS TWO YEARS AND `is_current` POINTS AT THE "
+             "WRONG ONE, and that is the whole gate. Against a single-year "
+             "fixture this defect is INVISIBLE: resolving the year properly, "
+             "reading is_current, and sending null all lead to the only row "
+             "there is, so every check passes on the broken page. Anyone "
+             "tempted to tidy the fixture down to one year is removing the "
+             "gate while leaving its name. "
+             "It drives the real page — real class-entry.js, real rendering "
+             "— with a stubbed client, a stubbed guard, a stubbed PapaParse "
+             "and the clock frozen to 2026-09-04, because "
+             "`workingAcademicYear()` is date-based and an unfrozen drive "
+             "asserts a different fact every day and none at all after "
+             "Aug 2027. "
+             "THE CENTRAL ASSERTION IS NOT A RENDERED STRING: it captures "
+             "the body actually handed to `functions.invoke('roster-import')` "
+             "by both the dry run and the confirmed write. A page can name "
+             "the right year in its note and still send null a screen later "
+             "— the note is what the teacher reads, the body is what enrols "
+             "the children. The screen checks are there so the two can never "
+             "disagree. "
+             "IT ALSO WATCHES THE SUCCESS SCREEN'S DEEP LINK, which is the "
+             "same defect one surface later. The button goes straight to the "
+             "class just filled, and the class ids come from roster-import "
+             "only on the NEW deployment — on the one live today the page "
+             "looks the id up itself, scoped to school + working year + name. "
+             "So the fixture holds TWIN CLASSES: two rows called 7h/Sc5 "
+             "differing only by academic year. Drop the year filter and the "
+             "lookup matches both, refuses to guess, and falls back to the "
+             "class list; filter on the wrong year and it opens last year's "
+             "empty twin, which is the original defect wearing a different "
+             "coat. Both response shapes are driven, because a deep link "
+             "that works on only one of two live deployments is a deep link "
+             "nobody can trust. "
+             "It also runs its OWN NEGATIVE CONTROL: a second pass with the "
+             "predicate forced to return 2025-26, which demands the payload "
+             "follow it. A drive that stubs this much can go vacuously green, "
+             "and a gate that cannot fail is not a gate — if the forced pass "
+             "still yields 2026-27 the payload is not reading the working "
+             "year at all and the whole file exits non-zero. The control "
+             "carries the deep link too — forced onto the stale year it must "
+             "open the STALE twin, which is what proves the year filter is "
+             "choosing between the twins rather than the fixture's row order. "
+             "⚠️ SLOW BY CATEGORY, NOT BY DURATION — it finishes in about "
+             "seven seconds, but it needs headless Chrome, and every browser "
+             "gate here is a receipt gate rather than a hook gate so that a "
+             "machine without Chrome cannot turn every push red. It needs NO "
+             "network and NO credentials: the three CDN hosts are blocked at "
+             "the protocol level and the pages are served from the repo root "
+             "over a local port. `needs` names teacher/import.html — the "
+             "hand-written import wizard, `_REFUSED` by build_teacher_port.py "
+             "— because the repo copy is the source of truth for it and the "
+             "built copy is only a restamped duplicate.",
+         ),
+
     dict(name="teacher_behaviour",
          cmd=["python3", "teacher_behaviour.py"],
          speed="slow",
@@ -560,6 +627,66 @@ GATES = [
          needs="3d-studio/dist",
          why="the mesh renderer in a real browser (MRB-187) — including that "
              "a missing GLB routes to the flat stage. Needs a built studio."),
+
+    dict(name="seating_tells",
+         cmd=["python3", "seating_tells.py"],
+         speed="fast",
+         why="MRB-322 seating plans, static. Five checks, and the two that "
+             "matter most cross a repo boundary. (a) THE ROOM LIST IS ONE "
+             "LIST: the eleven room codes are written in the dropdown, in a "
+             "CHECK constraint, and in the gate — nobody types a room name, "
+             "and a room quietly dropped from the dropdown is indis"
+             "tinguishable from a room nobody has drawn yet. (b) THE PHOTO IS "
+             "NEVER PERSISTED: /api/room-scan holds a photograph of a real "
+             "classroom, in memory, and discards it. This walks that handler "
+             "AND the room-scan.js module it delegates to — in the backend "
+             "repo, by absolute path, as pool_ownership does — and fails on "
+             "any fs write, storage upload, or log line that could carry "
+             "image bytes. (c) the honest degrade: `photo_scan_unconfigured` "
+             "is one string spanning two repos with no shared type, and if "
+             "the two halves drift the 'Photo scan isn't switched on yet' "
+             "branch becomes unreachable rather than wrong-looking. Plus: no "
+             "harness or RLS-rehearsal fixture data in anything shipped, and "
+             "every watched file exists — a gate that goes green because its "
+             "subject is missing is worse than no gate."),
+
+    dict(name="seating_drive",
+         cmd=["python3", "seating_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site/teacher/seating.html",
+         why="MRB-322 seating plans, driven. The canvas is the product — a "
+             "layout that cannot be dragged is not a layout — and nothing "
+             "else in the estate presses it: teacher_behaviour drives a "
+             "FIXED `SCREENS` list and seating.html is not on it, by design, "
+             "because that lane's generator does not own this page. Drives "
+             "the real page in headless Chrome at 1280 and 390 with pointer "
+             "events (the same code path a trackpad and an iPad take), and "
+             "asserts the things a screenshot cannot: that a drag moves a "
+             "desk and costs exactly one undo, that view mode renders no "
+             "handles AT ALL rather than disabled ones, and that the "
+             "unseated count is drawn even when it is inconvenient."),
+
+    dict(name="consumer_flag_off",
+         cmd=["python3", "night3_selfreview.py",
+              "--site", "mrbadmus_site", "--api", "http://localhost:3120"],
+         speed="slow",
+         needs="mrbadmus_site/parents/index.html",
+         why="MRB-317/321. The consumer estate ships to production with "
+             "CONSUMER_SIGNUP_ENABLED off, so 21 pages sit in "
+             "mrbadmus_site/ that NOBODY MAY SEE YET, and the only thing "
+             "standing between a paying-customer front door and 135 "
+             "students is one boot() branch on each of them. This drives "
+             "the BUILT tree with the Network domain recording every "
+             "request and asserts all 21 render 'Not found' having asked "
+             "for nothing — not the API, not Supabase, not a CDN. A static "
+             "grep cannot do it: the page ships the real markup and the "
+             "flag decides at runtime, so the bytes look identical either "
+             "way. It also carries the RAINFORD REGRESSION (teacher "
+             "landing, today, admin with the consumer card absent, the "
+             "student class page, the leaderboard) and the brand greps, "
+             "which is why it is here rather than scoped to one lane. "
+             "⚠️ Needs a backend on :3120; it signs in as the hz_* TEST "
+             "fixtures and skips, loudly, without their passwords."),
 ]
 
 
@@ -733,6 +860,50 @@ EXCLUDED = {
         "verifies mrbadmus.com's KS4 and root pages AFTER a push, including "
         "the cache-bust stamps (MRB-290). It cannot run before the thing it "
         "checks exists.",
+
+    # ── MRB-308…321 · the B2C nights' two generators ────────────────────
+    #
+    # Both arrived with the consumer work and neither was registered, which
+    # is the gap this registry exists to make loud. They are EXCLUDED for
+    # the reason every other generator here is: writing is the job, and the
+    # gate on their output is somewhere else.
+    "ks4_seed_sow.py":
+        "a GENERATOR of one tracked seed file "
+        "(supabase/seeds/20260902001000_ks4_default_sequence.sql), which it "
+        "rewrites whole from generate_site_v5.PATHWAY_TOPIC_MAP and the "
+        "all_subtopics_* modules. Exactly the shape of ks3_seed_sow.py "
+        "above. What its output must satisfy is asserted by the database "
+        "itself — scheme_of_work_entries_academic_week_check, which MRB-310 "
+        "had to widen to 52 for KS4 precisely because the seed ran into it.",
+    "export_ks3_extended.py":
+        "an EXPORTER: the KS3 ladder's `explain` and `produce` rungs as "
+        "JSON on stdout, feeding the exam_questions seed. It asserts "
+        "nothing about the estate and writes no tracked file. Its sibling "
+        "export_ks3_questions.py is a gate because it MIRRORS three pools "
+        "and can drift from them; this one has no mirror to drift from.",
+
+    # ── MRB-317/321 · the two consumer drives that assert and are STILL
+    # excluded, on exactly the P1 reasoning above. The third one,
+    # night3_selfreview.py, IS registered (`consumer_flag_off`), because it
+    # is estate-wide and it is what stands between a customer front door and
+    # 135 students. These two are not.
+    "night3_flagon_smoke.py":
+        "the flag-ON pass. It asserts plenty, and it is excluded because it "
+        "CREATES A REAL FAMILY on the shared TEST project through the API "
+        "— a parent, two children, a subscription — and tears them down "
+        "again. As a push gate it would have every lane writing fixtures "
+        "into one database at once, which is the collision Night 3 already "
+        "hit twice (two lanes marking each other's answers through the "
+        "platform-wide mb-queue). A gate that corrupts other lanes' runs to "
+        "prove a page renders is worse than no gate.",
+    "night4_laneC_drive.py":
+        "Lane C's public-surface drive — the nine /parents/ pages at 390 "
+        "and 1280, the reset-password flow against a real Supabase "
+        "recovery link, the org dashboard, and the price/brand cold greps. "
+        "Lane-scoped and needs Chrome plus a backend; its flag-off "
+        "assertions are a SUBSET of consumer_flag_off's, which is "
+        "registered. Same trade as p1_drive.py above: real value, run "
+        "deliberately, not a cost every push from every lane pays.",
 }
 
 # The KS4 subtopic corpora are DATA, not scripts: one module each of AQA spec
