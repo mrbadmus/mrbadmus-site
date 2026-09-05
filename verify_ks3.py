@@ -2216,17 +2216,29 @@ def main():
                    % (len(cv_problems), "; ".join(cv_problems[:2])))
 
         import ks3_overflow
-        ov_problems, ov_checked = ks3_overflow.run(
-            ks3_overflow.sample(), ks3_browser)
+        # ⊕ MRB-229 · 5 Sep 2026 — BOTH phone widths. This drove 390 only, and
+        # the one page in the estate that has ever scrolled sideways did so
+        # only at 320 (326 against 320) while measuring a clean 390 against
+        # 390. A gate at one width is a gate with a width-shaped hole.
+        ov_sample = ks3_overflow.sample()
+        ov_problems, ov_checked = ks3_overflow.run(ov_sample, ks3_browser)
+        ov_narrow, _ = ks3_overflow.run(
+            ov_sample, ks3_browser,
+            viewport=ks3_overflow.NARROW, known=ks3_overflow.NARROW_KNOWN)
+        ov_problems = list(ov_problems) + list(ov_narrow)
         ov_total = len(ks3_overflow.every())
-        check("⊕ MRB-270 · no page scrolls sideways at 390px, and wide "
-              "content is in its own scroller",
+        check("⊕ MRB-270/229 · no page scrolls sideways at 390px OR 320px, "
+              "and wide content is in its own scroller",
               not ov_problems,
-              "%d of %d built pages driven at 390x844 — one lesson per unit, "
-              "every canvas-bearing C1 page, the hub and a unit index; %d not "
-              "driven (`python3 ks3_overflow.py --all` drives them, and did, "
-              "clean, on 20 Aug)"
-              % (ov_checked, ov_total, ov_total - ov_checked)
+              "%d of %d built pages driven at 390x844 and again at 320x568 — "
+              "one lesson per unit, every canvas-bearing C1 page, the hub, a "
+              "unit index and %d pinned regression page(s); %d not driven "
+              "(`python3 ks3_overflow.py --all` drives them; on 5 Sep NO page "
+              "scrolled sideways at either width, and 3 physics pages outside "
+              "this sample held a clipped wide element — see ks3_overflow's "
+              "NARROW_KNOWN note)"
+              % (ov_checked, ov_total, len(ks3_overflow.REGRESSION_PAGES),
+                 ov_total - ov_checked)
               if not ov_problems
               else "%d problem(s): %s"
                    % (len(ov_problems), "; ".join(ov_problems[:2])))

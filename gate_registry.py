@@ -790,8 +790,9 @@ EXCLUDED = {
         "every drawn figure at three widths — invoked by verify_ks3 "
         "(verify_ks3.py:432).",
     "ks3_overflow.py":
-        "the 390px sideways-scroll gate — invoked by verify_ks3 "
-        "(verify_ks3.py:2175).",
+        "the sideways-scroll gate, at 390px AND 320px since MRB-229 (it "
+        "measured 390 only, which is why a page that scrolled solely at 320 "
+        "sat green for a fortnight) — invoked by verify_ks3, once per width.",
 
     # ── diagnostics · they REPORT, and a human reads the report ─────────
     "ks3_mutation.py":

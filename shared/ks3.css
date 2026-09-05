@@ -790,6 +790,48 @@ body.rd[data-mode="ks3"] {
   grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
   gap: 16px;
 }
+
+/* ⊕ MRB-229 · 5 Sep 2026 — THE LONG-KEYWORD GRID BLOWOUT. Two declarations,
+   and neither is cosmetic: together they are the whole reason
+   `ks3/chemistry/mixtures-and-separation/chromatography.html` measured
+   `scrollWidth` 326 against a 320px viewport. It was the only one of the 185,
+   and the block ~5,700 lines below records it as unexplained. This is the
+   explanation.
+
+   ⚠️ It is NOT a chromatography bug, and it is not a c3.py bug. It is generic,
+   and the page was simply the first content to cross the threshold:
+
+     * At `max-width: 34rem` the rule further down sets
+       `.ks3-cards { grid-template-columns: 1fr }`. `1fr` is `minmax(auto, 1fr)`,
+       and a grid item's AUTOMATIC MINIMUM is its min-content size — so that
+       track can never be narrower than the widest unbreakable thing in a card,
+       no matter how narrow the container is.
+     * A card's min-content is its longest single WORD. "Chromatography" sets
+       218.1px at `.ks3-card-front`'s 27px/800 display face, plus that rule's
+       `padding-right: 1.6rem` (25.6px, the dog-ear's clearance), plus the
+       button's 22px padding either side and its 2px borders = 291.7px.
+     * At 320px the keywords block's content box is 252px. The track blew out
+       to 291.7, the `<li>` right edge landed at 326, and the DOCUMENT scrolled.
+
+   So the trigger is a 14-letter word, and any longer one anywhere in KS3 would
+   have done the same — "Chromatography" is merely the longest term the estate
+   currently sets in that treatment. Renaming it would have hidden the bug and
+   left the next long keyword to re-find it.
+
+   `min-width: 0` releases the track from the min-content floor so it can fall
+   back to the container's 252px. On its own that would only move the damage:
+   `.ks3-card-btn` is `overflow: hidden`, so the word would be CLIPPED rather
+   than pushed — silently losing the end of the very term the card teaches, and
+   the 390px gate treats clipping as a failure precisely because it looks fixed.
+   `overflow-wrap: break-word` is therefore load-bearing next to it: it lets the
+   word wrap mid-token when — and only when — it would otherwise overflow, so
+   nothing is lost and nothing moves at any width where the word already fits.
+
+   Above 34rem the track is `minmax(268px, 1fr)`, min-content never binds, and
+   both declarations are inert. Nothing about the card's drawing changes. */
+.ks3-cards > li { min-width: 0; }
+.ks3-card-front { overflow-wrap: break-word; }
+
 .ks3-card-btn {
   position: relative;
   overflow: hidden;
