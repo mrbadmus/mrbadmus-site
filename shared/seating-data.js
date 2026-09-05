@@ -10,15 +10,20 @@
  *
  * Two tables, and one rule about each:
  *
- *   room_layouts   the shape of a room. Readable by the whole school, writable
- *                  only by whoever drew it (or a school admin).
- *   seating_plans  a class placed onto a layout. Readable only by people who
- *                  teach that class right now — and a seating plan is a named
- *                  list of children, which is why that boundary is tighter
- *                  than the layout's.
+ *   room_layouts   the shape of a room. Readable by the school's STAFF —
+ *                  teachers and admins, not pupils — and writable only by
+ *                  whoever drew it (or a school admin). Desk geometry, no
+ *                  children, which is why cover reads these and not plans.
+ *   seating_plans  a class placed onto a layout. Readable only by that class's
+ *                  own subject teachers (co-teachers included) and school
+ *                  admins — never by cover, and never by a pupil. A seating
+ *                  plan is a named list of children, which is why that
+ *                  boundary is tighter than the layout's.
  *
  * ⚠️ Everything here is layer 2 of defence-in-depth. The RLS policies in
- * migration 20260902214105_mrb322_seating_plans.sql are the real boundary; this
+ * migration 20260903214546_mrb322_seating_admin_is_scope.sql (the latest of
+ * five; it supersedes the admin branch of all four before it) are the real
+ * boundary; this
  * module exists so the page can render the right thing rather than firing
  * requests it knows will come back empty. `canEditLayout` / `canEditPlan` in
  * particular are NOT security — they decide whether a control is drawn at all,
@@ -92,12 +97,58 @@ window.MrBadmusSeatingData = (function () {
       .eq('id', uid)
       .single();
     if (error) bail('profile read failed', error);
+
+    // The school_admin SCOPE, read alongside the profile.
+    //
+    // `staff_scopes` carries a self-read policy (`profile_id = auth.uid()`),
+    // so this is one extra round trip and never a permission problem. It has
+    // to happen at all because the seating policies now decide "admin" on the
+    // SCOPE rather than on `profiles.role`, and a page still asking the old
+    // question would hide Save from a school_admin the database is perfectly
+    // willing to let write. That is the worst kind of disagreement between
+    // the two layers, because it presents as a broken button rather than as a
+    // refusal.
+    //
+    // A failed scope read is deliberately NOT fatal: it degrades to "not an
+    // admin", which is the safe direction. RLS is what actually enforces
+    // this; the helpers below only decide what gets drawn.
+    var scopeRows = null;
+    try {
+      var got = await sb
+        .from('staff_scopes')
+        .select('scope, started_at, ended_at, deleted_at')
+        .eq('profile_id', uid);
+      scopeRows = got.data;
+    } catch (e) { scopeRows = null; }
+
+    var nowMs = Date.now();
+    data.scopes = (scopeRows || []).filter(function (s) {
+      return !s.deleted_at
+        && (!s.started_at || Date.parse(s.started_at) <= nowMs)
+        && (!s.ended_at   || Date.parse(s.ended_at)   >  nowMs);
+    }).map(function (s) { return s.scope; });
+
     _me = data;
     return _me;
   }
 
   // ── Permission helpers (presentation only — see the header) ──────────
-  function isAdmin(who) { return !!who && who.role === 'admin'; }
+  // Mirrors `auth_user_has_scope('school_admin')` in the database, M1
+  // dual-read fallback included: that SQL helper still answers true for
+  // `profiles.role = 'admin'` while the scope migration is unfinished, so
+  // this answers true for it too. When the fallback is finally removed, both
+  // halves lose the same clause, on the same day.
+  //
+  // ⚠️ On production these are two different sets of people. `role = 'admin'`
+  // names one account holding no scopes at all; the three who actually
+  // administer the school are `role = 'teacher'` carrying the scope. Testing
+  // only the role — which this did until the scope migration — drew a
+  // read-only page for all three of them.
+  function isAdmin(who) {
+    if (!who) return false;
+    return who.role === 'admin'
+      || (who.scopes || []).indexOf('school_admin') !== -1;
+  }
 
   function canEditLayout(layout, who) {
     if (!layout || !who) return false;
@@ -465,6 +516,12 @@ window.MrBadmusSeatingData = (function () {
       if (year && c.academic_year_id !== year.id) return;
       // An ended attachment is history, not a class you can seat today.
       if (row.ended_at && new Date(row.ended_at) <= new Date()) return;
+      // Cover is outside seating entirely (ruled 3 Sep 2026), so a class you
+      // are only covering must not be offered here. The policies would refuse
+      // the plan anyway; listing the class would just walk a teacher into a
+      // screen that cannot work, and the house rule is that a control someone
+      // cannot use is absent rather than shown and then apologised for.
+      if (row.role !== 'subject_teacher') return;
       if (seen[c.id]) return;
       seen[c.id] = true;
       out.push({ id: c.id, name: c.name, key_stage: c.key_stage,

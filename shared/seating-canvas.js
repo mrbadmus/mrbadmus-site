@@ -845,12 +845,49 @@
       'stroke-dasharray:5 3;}'
   ].join('');
 
-  function injectStyles(doc) {
-    if (doc.getElementById(STYLE_ID)) return;
+  /* Put the sheet somewhere it can actually reach the drawing.
+
+     The obvious `doc.head.appendChild` is wrong here, and it was wrong in the
+     way that showed up as blank thumbnails on the Rooms and Plans lists. Every
+     card on those lists is built by seating.html's `el()` helper, which fills a
+     <template> and hands back `content.firstElementChild` — so at the moment
+     create() runs, the mount is still inside the template's INERT contents
+     document, which has neither a <head> nor a documentElement.
+     `(doc.head || doc.documentElement)` was therefore null, appendChild threw a
+     TypeError, and the throw was swallowed by the catch around each card's
+     create call. Every canvas silently drew nothing.
+
+     Do NOT "fix" this by appending the sheet to the fragment root instead. The
+     card loops append only the card element to the grid, so a <style> sitting
+     beside it inside the fragment is left behind and dropped on the floor — the
+     thumbnails would come back unstyled rather than blank, which is a quieter
+     failure and a harder one to spot. The fragment is on its way into the live
+     page, so the LIVE document's head is the right host: one shared sheet there
+     styles every card that lands. Appending to the mount itself is the last
+     resort, for a mount that belongs to no real document at all — the sheet
+     then travels with the element wherever it goes.
+
+     This function never throws. A missing stylesheet is a cosmetic problem; a
+     throw from here is a blank canvas. */
+  function injectStyles(doc, mount) {
+    var host = doc && (doc.head || doc.documentElement);
+    if (host) {
+      if (doc.getElementById && doc.getElementById(STYLE_ID)) return;
+    } else if (typeof document !== 'undefined' &&
+               (document.head || document.documentElement)) {
+      if (document.getElementById(STYLE_ID)) return;
+      host = document.head || document.documentElement;
+      doc = document;
+    } else if (mount && mount.appendChild && mount.querySelector) {
+      if (mount.querySelector('#' + STYLE_ID)) return;
+      host = mount;
+      doc = mount.ownerDocument || doc;
+    }
+    if (!host || !doc || !doc.createElement) return;
     var s = doc.createElement('style');
     s.id = STYLE_ID;
     s.textContent = CSS;
-    (doc.head || doc.documentElement).appendChild(s);
+    host.appendChild(s);
   }
 
   /* ── DOM helpers ─────────────────────────────────────────────────────── */
@@ -920,7 +957,7 @@
       layout = res.layout;
     })();
 
-    injectStyles(mount.ownerDocument || document);
+    injectStyles(mount.ownerDocument || document, mount);
 
     // -- DOM --------------------------------------------------------------
     var root = document.createElement('div');

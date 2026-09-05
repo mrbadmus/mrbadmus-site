@@ -71,8 +71,8 @@
      load-bearing across every page that reads a class list. -->
 <script src="/shared/class-entry.js?v=d47329ae"></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/seating-canvas.js?v=66ace40a"></script>
-<script src="/shared/seating-data.js?v=bc287d2f"></script>
+<script src="/shared/seating-canvas.js?v=0cabca6f"></script>
+<script src="/shared/seating-data.js?v=e03b0cd2"></script>
 <script src="/shared/seating-photo.js?v=de93bec8"></script>
 <script>
 (function () {
@@ -111,6 +111,25 @@
     if (!iso) return '';
     var d = new Date(iso);
     return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // A teacher cannot read a colleague's profile row, so `author_name` comes
+  // back null, blank, or the placeholder 'Unknown'. This returns '' for all of
+  // those, and EVERY place that names an owner drops its clause rather than
+  // printing the placeholder: the two read-only sentences, both eyebrows
+  // ("· by …") and all three card metas.
+  //
+  // ⚠️ ALL SEVEN, NOT JUST THE SENTENCE. Fixing only the sentence left a page
+  // reading "You can read this plan and print it." under an eyebrow saying
+  // "BY UNKNOWN" — the same defect, one line higher, on the same screen. A
+  // name that cannot be resolved is absent, everywhere, or the fix is theatre.
+  //
+  // Not a permissions change: whether a colleague's name is readable is a
+  // profiles-policy question and deliberately untouched here. This decides
+  // only what to render when the answer is no.
+  function authorName(v) {
+    var n = String(v == null ? '' : v).trim();
+    return n.toLowerCase() === 'unknown' ? '' : n;
   }
 
   function say(msg, kind) {
@@ -257,7 +276,7 @@
             '<p class="sp-card__name">' + esc(l.name || 'Untitled layout') + '</p>' +
             '<div class="sp-card__meta">' +
               '<span>' + l.desk_count + ' desks · ' + l.seat_count + ' seats</span>' +
-              '<span>' + esc(l.author_name) + '</span>' +
+              '<span>' + esc(authorName(l.author_name)) + '</span>' +
             '</div>' +
           '</button>');
         // A still thumbnail of the real layout, in view mode so it renders no
@@ -294,21 +313,27 @@
     var wanted = existing ? existing.room_code : (q.room || '');
     var room = D.ROOMS.indexOf(wanted) !== -1 ? wanted : D.ROOMS[0];
     var name = existing ? (existing.name || '') : '';
+    var ownerName = existing ? authorName(existing.author_name) : '';
 
     main.innerHTML =
       '<div class="sp-head">' +
         '<div><p class="sp-head__eyebrow">' +
-          (existing ? esc(existing.room_code) + ' · by ' + esc(existing.author_name)
-                    : 'New layout') + '</p>' +
+          (existing
+             ? esc(existing.room_code) +
+               (ownerName ? ' · by ' + esc(ownerName) : '')
+             : 'New layout') + '</p>' +
         '<h1 class="sp-head__title">' +
           (existing ? esc(existing.name || 'Untitled layout') : 'Draw the room') + '</h1>' +
         '<p class="sp-head__sub">' +
           (canEdit
             ? 'Drag desks into the shape of the real room. It does not need to ' +
               'be tidy — a skewed room should look skewed.'
-            : 'This layout belongs to ' + esc(existing.author_name) +
-              '. You can place a class on it, but only they or an admin can ' +
-              'change its shape.') +
+            : (ownerName
+                ? 'This layout belongs to ' + esc(ownerName) +
+                  '. You can place a class on it, but only they or an admin can ' +
+                  'change its shape.'
+                : 'You can place a class on it, but only its author or an admin ' +
+                  'can change its shape.')) +
         '</p></div>' +
         '<div class="sp-head__actions" id="sp-head-actions"></div>' +
       '</div>' +
@@ -587,7 +612,9 @@
           '<p class="sp-card__name">' + esc(p.name || 'Untitled plan') + '</p>' +
           '<div class="sp-card__meta">' +
             '<span>' + p.seated_count + ' seated</span>' +
-            '<span>' + esc(p.author_name) + ' · ' + esc(shortDate(p.updated_at)) + '</span>' +
+            '<span>' + (authorName(p.author_name)
+                          ? esc(authorName(p.author_name)) + ' · ' : '') +
+                        esc(shortDate(p.updated_at)) + '</span>' +
           '</div>' +
         '</button>');
       if (p.layout) {
@@ -620,33 +647,19 @@
     var cls = await D.loadClass(classId);
 
     /*
-      ⚠️ A plan you may read, for a class you may not.
-      This is the one place two permission models meet and disagree, and it is
-      a live seam rather than a bug in either.
+      There is no "you may read the plan but not the class" case any more, and
+      there is deliberately no message about one.
 
-      MRB-322 was ruled to give ACTIVE cover teacher visibility, so
-      `auth_user_teaches_class_now()` counts a cover stint that has started and
-      not yet ended. Everything else in the estate — `classes`, `class_members`
-      and the pupils' own `profiles` — is still gated by the older
-      `auth_user_teaches_class()`, which asks `ended_at IS NULL` and therefore
-      reads any cover booked with an end date as already finished.
+      Seating used to run on its own cover-aware permission test while the rest
+      of the estate ran on another, and the gap between the two was a screen a
+      cover teacher could open and not read. Ruled away on 3 Sep 2026: cover is
+      outside seating entirely, and the seating policies now use the same
+      liveness test (`ended_at is null`) as the class and register policies. So
+      anyone who can read a plan can read the names on it, by construction.
 
-      So a cover teacher can open the seating plan and cannot read the names on
-      it. Measured, not assumed: on TEST, active cover reads the plan (1) and
-      reads the class, its members and their profiles as 0.
-
-      Closing that gap means widening shared policies that every teacher screen
-      depends on, which would make a cover teacher look like a class teacher
-      across the whole product. That is Mide's call, not this lane's, and it is
-      written up. Until he makes it, the page says plainly what it can and
-      cannot show rather than drawing an empty room and letting the teacher
-      conclude nobody has been seated.
+      That leaves `cls` missing for one honest reason — the class is gone — and
+      the throw below is the whole of the handling it needs.
     */
-    var rosterBlocked = false;
-    if (!cls && plan) {
-      rosterBlocked = true;
-      cls = { id: classId, name: 'this class' };
-    }
     if (!cls) throw new Error('That class could not be found.');
     var layoutRow = plan && plan.layout
       ? { room_code: plan.room_code, layout: plan.layout }
@@ -655,29 +668,29 @@
 
     S.cls = cls;
     S.plan = plan;
-    S.roster = rosterBlocked ? [] : await D.loadClassRoster(classId);
-    var canEdit = rosterBlocked ? false : (plan ? plan.can_edit : true);
+    S.roster = await D.loadClassRoster(classId);
+    var canEdit = plan ? plan.can_edit : true;
     S.mode = canEdit ? 'plan' : 'view';
 
     var planName = plan ? (plan.name || '') : (cls.name + ' — ' + layoutRow.room_code);
+    var ownerName = plan ? authorName(plan.author_name) : '';
 
     main.innerHTML =
       '<div class="sp-head">' +
         '<div><p class="sp-head__eyebrow">' + esc(cls.name) + ' · ' +
-          esc(layoutRow.room_code) + (plan ? ' · by ' + esc(plan.author_name) : '') + '</p>' +
+          esc(layoutRow.room_code) +
+          (ownerName ? ' · by ' + esc(ownerName) : '') + '</p>' +
         '<h1 class="sp-head__title">' + esc(planName) + '</h1>' +
         '<p class="sp-head__sub">' +
-          (rosterBlocked
-            ? 'You can open this plan, but not the class list behind it — you ' +
-              'are not recorded as a teacher of this class for the whole of ' +
-              'this year. An admin can add you, and the names will appear.'
-            : canEdit
+          (canEdit
             ? 'Tap a name, then tap a chair. Tap an occupied chair to pick that ' +
               'pupil up: tap another chair to move them, tap a second ' +
               'pupil to swap the two, or tap their own chair again to ' +
               'take them out of the room.'
-            : 'This plan belongs to ' + esc(plan.author_name) + '. You can read ' +
-              'it and print it.') +
+            : (ownerName
+                ? 'This plan belongs to ' + esc(ownerName) + '. You can read ' +
+                  'it and print it.'
+                : 'You can read this plan and print it.')) +
         '</p></div>' +
         '<div class="sp-head__actions" id="sp-head-actions"></div>' +
       '</div>' +
@@ -719,19 +732,18 @@
       A teacher could reduce a desk, reopen the plan, read "0 unseated", print
       it, and walk into a lesson with two children standing up.
 
-      The other is a pupil id the roster cannot resolve — usually someone who
-      has left the class, but it is indistinguishable from a roster read that
-      came back SHORT because the reader is not allowed to see the pupils. That
-      second case is the dangerous one: save is a whole-object overwrite, so a
-      reader with an empty roster and a live Save button would have written
-      `{}` over the whole plan and been told "Saved."
+      The other is a pupil id the roster cannot resolve — someone who has left
+      the class, or a whole cohort replaced when the year rolled over. One or
+      two of those is ordinary. ALL of them is a signal: save is a whole-object
+      overwrite, so a page holding a roster that matches none of the plan and a
+      live Save button would write `{}` over the lot and report "Saved."
 
       So: seats that no longer exist are dropped and reported; pupils that
       cannot be resolved are reported; and if NONE of them resolved while the
       plan clearly holds some, the page decides it is not looking at the whole
       truth and refuses to let anyone write over it.
     */
-    var lostSeats = 0, unresolved = 0;
+    var lostSeats = 0, unresolved = 0, wholePlanUnresolved = false;
     if (plan && plan.assignments) {
       var liveSeats = {};
       S.canvas.seatIds().forEach(function (id) { liveSeats[id] = 1; });
@@ -746,7 +758,7 @@
       });
       var stored = Object.keys(plan.assignments).length;
       if (stored > 0 && Object.keys(map).length === 0 && unresolved > 0) {
-        rosterBlocked = true;
+        wholePlanUnresolved = true;
         canEdit = false;
         S.mode = 'view';
         S.canvas.setMode('view');
@@ -777,9 +789,9 @@
         (unresolved
           ? (unresolved === 1 ? 'One seat held someone ' : unresolved + ' seats held people ') +
             'this class list does not contain' +
-            (rosterBlocked
-              ? ', and none of the names could be read — this plan is shown ' +
-                'read-only rather than risk saving over it.'
+            (wholePlanUnresolved
+              ? ', and not one of them is on it — this plan is shown read-only ' +
+                'rather than risk saving over it.'
               : ' — saving will clear those seats.')
           : ''),
         'warn');
@@ -796,12 +808,12 @@
     function paintRoster() {
       var side = document.getElementById('sp-side');
       if (!side) return;
-      if (rosterBlocked) {
+      if (wholePlanUnresolved) {
         side.innerHTML =
           '<p class="sp-side__h">Class list</p>' +
-          '<p class="sp-note sp-note--warn" style="margin:0">The class list is ' +
-          'not visible to you, so the chairs on this plan are shown empty. ' +
-          'This is a permissions gap, not an empty room.</p>';
+          '<p class="sp-note sp-note--warn" style="margin:0">Nobody seated on ' +
+          'this plan is on the class list any more, so the chairs are shown ' +
+          'empty. The plan is older than the class list it was made from.</p>';
         return;
       }
       var seated = seatedIds();
@@ -1001,7 +1013,7 @@
         '<div class="sp-card__thumb"></div>' +
         '<p class="sp-card__name">' + esc(l.name || 'Untitled layout') + '</p>' +
         '<div class="sp-card__meta"><span>' + l.seat_count + ' seats</span><span>' +
-        esc(l.author_name) + '</span></div></button>');
+        esc(authorName(l.author_name)) + '</span></div></button>');
       try { SC.create({ mount: card.querySelector('.sp-card__thumb'), mode: 'view', layout: l.layout }); }
       catch (e) { /* keep the row */ }
       card.addEventListener('click', function () {

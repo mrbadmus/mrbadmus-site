@@ -140,6 +140,25 @@ function MRB_GO(screen, params){
    away mid-sweep. No `env` thread and no query string: the homepage is public
    and has no teacher state to carry. */
 function MRB_HOME(){window.location.href = '/index.html';}
+/* ⊕ MRB-322 — the class screen's way into that class's seating plan.
+   `teacher/seating.html` is NOT one of the six ported screens and is NOT in
+   MRB_PAGE, because it routes on a HASH (`#/class/<id>`) rather than a query
+   parameter — so MRB_GO cannot address it and must not be taught to.
+   A NAMED helper all the same, for exactly the reason MRB_HOME is one:
+   `teacher_behaviour` stubs these so it can press a navigating control FOR
+   REAL without tearing the fixture down mid-sweep, and an inline
+   `location.href` is precisely what that stub cannot intercept. Written as a
+   helper the first time rather than after the gate went red — which is what
+   happened, once.
+   ⚠️ `env` goes in the QUERY, BEFORE the hash. A query string written after a
+   `#` is fragment text, not a query, so `shared/config.js` would never see it
+   and a teacher working against the sandbox would land one navigation later
+   in production data. */
+function MRB_SEATING(classId){
+  var env = MRB_ENV();
+  window.location.href = '/teacher/seating.html'
+    + (env ? '?env=' + encodeURIComponent(env) : '')
+    + (classId ? '#/class/' + encodeURIComponent(classId) : '');}
 /* Design's Back buttons chose between two screens from state. Six URLs later
    the browser knows the real answer — and a page opened from a bookmark has no
    state to consult. Falls through to the class list rather than being a dead
@@ -2040,6 +2059,7 @@ class Component extends DCLogic {
       goClass: () => MRB_GO('class', { 'class': k && k.id }),
       goDigest: () => MRB_GO('digest', {}),
       goReport: () => MRB_GO('digest', { 'class': k && k.id }),
+      goSeating: () => MRB_SEATING(k && k.id),
       goImport: () => MRB_GO('import', {}),
       goBackFromDigest: () => MRB_BACK(),
       doPrint: () => window.print(),

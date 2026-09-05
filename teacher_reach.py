@@ -208,6 +208,12 @@ _REACH_JS = r"""
   window.MRB_GO = function (s, p) { navs.push(s); };
   window.MRB_BACK = function () { navs.push('<back>'); };
   window.MRB_HOME = function () { navs.push('<home>'); };
+  /* ⊕ MRB-322 — the class screen's "Seating plan" button calls this, and
+     unstubbed it set `window.location.href` for real and tore the sweep
+     down mid-pass: "Inspected target navigated or closed". Same reasoning
+     as the three above and the same fix `teacher_behaviour.py` already
+     carries for this control — recorded, never followed. */
+  window.MRB_SEATING = function (id) { navs.push('seating'); };
 
   function disabledLooking(el) {
     if (el.disabled) { return true; }
