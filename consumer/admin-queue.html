@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#15110C"/>
+<meta name="robots" content="noindex"/>
+<title>Admin — Marking — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=a3a854bf"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/admin-queue.html — MRB-317 follow-through (admin-ui, 5 Sep
+   2026). Design's `Admin Marking Queue.dc.html`, compiled onto
+   `GET /api/consumer/admin/mb-queue` and
+   `POST /api/consumer/admin/exam-answers/:id/mb-mark` (both `requireOperator`).
+
+   See consumer/admin-accounts.html's header comment for why this tree
+   (not teacher/admin.html) and for the dark-room tokens (`--st-room` /
+   `--st-room-panel` / `--st-ember`) — they are declared once, identically,
+   in each of this console's two pages rather than shared, since the pair
+   is small and a third page is not expected; if one is, they move to
+   consumer.css.
+
+   ⚠️ REAL FIELD NAMES DIFFER FROM DESIGN'S MOCK, on purpose — hers was
+   invented before the route existed. The real response key is `pending`
+   (not `queue`), age arrives as `sent_at` (an ISO timestamp), never `hours`
+   — this file derives hours itself — and the mark-scheme points arrive as
+   `question.scheme`, which `MrBadmusConsumer.schemePoint()` already knows
+   how to read in EITHER shape (`/child/exam-questions` sends strings,
+   `/admin/mb-queue` has been observed sending objects — see that helper's
+   own comment, found by driving it 2 Sep 2026). A `scheme` whose points
+   `schemePoint()` can't read as text (a levels grid, not a point checklist —
+   `exam_questions.scheme` is NOT NULL and non-empty by CHECK, so this branch
+   is reached by an unrecognised point shape, never by an absent scheme)
+   falls back to a plain 0–marks number input rather than fabricating a
+   checklist that doesn't exist.
+
+   The POST body is `{ score, feedback }` — "feedback", not "note": Design's
+   textarea is labelled "Your note to …" but the wire field the backend
+   actually reads is `feedback`, and that's what's sent.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  --st-room:        #15110C;
+  --st-room-panel:  #211A13;
+  --st-room-text:   #E7DECE;
+  --st-ember:       #F4B860;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--st-room); }
+a { color: var(--st-ember); text-decoration: none; }
+a:hover { color: #F6EEDF; }
+input, button, select, textarea { font: inherit; }
+input::placeholder, textarea::placeholder { color: #8A7F72; }
+
+.ad-room {
+  min-height: 100vh;
+  background: var(--st-room);
+  color: var(--st-room-text);
+  font-family: var(--ks3-font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ad-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--ks3-dark-rule);
+  flex-wrap: wrap;
+}
+.ad-word { font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: var(--st-room-text); }
+.ad-word:hover { color: var(--st-room-text); }
+.ad-badge { padding: 3px 9px; border-radius: 999px; font: 600 12px/1.4 var(--ks3-font-mono); letter-spacing: .08em; text-transform: uppercase; background: var(--ks3-dark-panel); color: var(--ks3-on-dark-muted); }
+.ad-nav { display: flex; gap: 18px; margin-left: 4px; }
+.ad-nav a { color: var(--ks3-on-dark-muted); font-weight: 600; font-size: 15px; padding-bottom: 2px; }
+.ad-nav a:hover { color: var(--st-room-text); }
+.ad-nav a.is-on { color: var(--st-room-text); border-bottom: 2px solid var(--st-ember); }
+.ad-who { margin-left: auto; color: var(--ks3-on-dark-muted); font-size: 14px; }
+.c-signout-btn { background: none; border: 1px solid var(--ks3-dark-rule); color: var(--ks3-on-dark-muted); border-radius: 8px; min-height: 36px; padding: 0 10px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.c-signout-btn:hover { color: var(--st-room-text); border-color: var(--st-ember); }
+.c-signout-btn svg { width: 16px; height: 16px; }
+
+.ad-shell { display: grid; grid-template-columns: 1fr; min-height: calc(100vh - 66px); }
+.ad-list { display: none; }
+@media (min-width: 1000px) {
+  .ad-shell { grid-template-columns: 340px 1fr; }
+  .ad-list { display: flex !important; }
+  .ad-mlist { display: none !important; }
+}
+
+/* ── sidebar ─────────────────────────────────────────────────────────── */
+.ad-list { flex-direction: column; border-right: 1px solid var(--ks3-dark-rule); }
+.ad-list-head { padding: 16px 18px 10px; }
+.ad-list-head h2 { margin: 0; font-family: var(--ks3-font-display); font-size: 18px; }
+.ad-list-head .n { color: var(--ks3-on-dark-muted); font-size: 13.5px; }
+.ad-sorts { display: flex; gap: 6px; padding: 0 18px 12px; flex-wrap: wrap; }
+.ad-pill { padding: 6px 11px; border-radius: 999px; font: 600 13px/1.2 inherit; border: 1px solid var(--ks3-dark-rule); background: transparent; color: var(--ks3-on-dark-muted); cursor: pointer; }
+.ad-pill.is-on { border-color: var(--st-ember); background: var(--ks3-dark-panel); color: var(--st-room-text); }
+.ad-queue { flex: 1; overflow-y: auto; }
+.ad-item { display: block; width: 100%; text-align: left; background: none; border: none; border-left: 4px solid transparent; padding: 12px 16px; cursor: pointer; color: var(--st-room-text); border-bottom: 1px solid var(--ks3-dark-rule); }
+.ad-item:hover { background: var(--ks3-dark-panel); }
+.ad-item.is-current { background: var(--ks3-dark-panel); }
+.ad-item .row1 { display: flex; justify-content: space-between; gap: 8px; font-weight: 700; }
+.ad-item .q-line { color: var(--ks3-on-dark-muted); font-size: 13.5px; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ad-item .foot { color: var(--ks3-on-dark-muted); font-size: 12.5px; margin-top: 6px; }
+.ad-empty-side, .ad-empty-main { padding: 20px 18px; color: var(--ks3-on-dark-muted); }
+.ad-list-foot { padding: 10px 18px; border-top: 1px solid var(--ks3-dark-rule); color: var(--ks3-on-dark-muted); font-size: 12.5px; }
+
+.ad-mlist { padding: 12px 16px; border-bottom: 1px solid var(--ks3-dark-rule); }
+.ad-mlist select { width: 100%; min-height: 44px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--ks3-dark-rule); background: var(--ks3-dark-panel); color: var(--st-room-text); }
+
+/* ── marking pane ────────────────────────────────────────────────────── */
+main.ad-main { max-width: 920px; margin: 0 auto; padding: clamp(18px,3vw,32px) clamp(16px,3vw,32px) 60px; }
+.ad-mhead { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.ad-avatar { width: 40px; height: 40px; border-radius: 10px; background: var(--ks3-accent); color: #221806; display: grid; place-items: center; font-weight: 800; font-family: var(--ks3-font-display); flex: none; }
+.ad-mhead .who { font-weight: 700; }
+.ad-mhead .meta { color: var(--ks3-on-dark-muted); font-size: 13.5px; }
+.ad-mhead .prev { margin-left: auto; color: var(--ks3-on-dark-muted); font-size: 13.5px; }
+.ad-metaline { color: var(--ks3-on-dark-muted); font-size: 14.5px; margin-bottom: 6px; }
+.ad-qtext { font-family: var(--ks3-font-display); font-weight: 700; font-size: 21px; line-height: 1.35; margin: 6px 0 18px; }
+.ad-cols { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 16px; margin-bottom: 16px; }
+.ad-sec { background: var(--ks3-dark-panel); border: 1px solid var(--ks3-dark-rule); border-radius: 12px; padding: 16px; }
+.ad-sec h3 { font: 600 12.5px/1.2 var(--ks3-font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ks3-on-dark-muted); margin: 0 0 10px; }
+.ad-answer { white-space: pre-wrap; font-size: 15.5px; line-height: 1.55; }
+.ad-score { font-family: var(--ks3-font-mono); font-weight: 700; font-size: 18px; color: var(--st-ember); margin-bottom: 10px; }
+.ad-point { display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left; padding: 9px 10px; margin-bottom: 6px; border-radius: 8px; border: 1px solid var(--ks3-dark-rule); background: transparent; color: var(--st-room-text); cursor: pointer; }
+.ad-point.is-on { border-color: var(--ks3-ok); background: rgba(46,155,95,.12); }
+.ad-mark-box { flex: none; width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--ks3-on-dark-muted); display: grid; place-items: center; margin-top: 1px; }
+.ad-point.is-on .ad-mark-box { border-color: var(--ks3-ok); }
+.ad-point.is-on .ad-mark-box svg { display: block; }
+.ad-mark-box svg { display: none; width: 12px; height: 12px; stroke: var(--ks3-ok); }
+.ad-diff { margin-left: auto; flex: none; font-size: 12px; color: var(--st-ember); }
+.ad-hint { color: var(--ks3-on-dark-muted); font-size: 13px; margin-top: 8px; }
+.ad-num-fallback input { width: 90px; min-height: 40px; text-align: center; border-radius: 8px; border: 1px solid var(--ks3-dark-rule); background: var(--ks3-dark-panel); color: var(--st-room-text); font-family: var(--ks3-font-mono); font-size: 18px; }
+
+.ad-note-label { font-size: 13.5px; color: var(--ks3-on-dark-muted); margin-bottom: 6px; display: block; }
+.ad-note { width: 100%; min-height: 96px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--ks3-dark-rule); background: var(--ks3-dark-panel); color: var(--st-room-text); resize: vertical; }
+.ad-snips { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.ad-snip { padding: 6px 10px; border-radius: 999px; border: 1px solid var(--ks3-dark-rule); background: transparent; color: var(--ks3-on-dark-muted); font-size: 13px; cursor: pointer; }
+.ad-snip:hover { border-color: var(--st-ember); color: var(--st-room-text); }
+.ad-actrow { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.ad-btn { min-height: 46px; padding: 0 18px; border-radius: 10px; cursor: pointer; border: 1px solid var(--ks3-dark-rule); background: transparent; color: var(--st-room-text); font-weight: 600; }
+.ad-btn.is-primary { background: var(--st-ember); border-color: var(--st-ember); color: #221806; }
+.ad-btn:disabled { opacity: .45; cursor: default; }
+.ad-send-msg { font-size: 13.5px; }
+.ad-send-msg.bad { color: var(--st-ember); }
+
+@media (max-width: 560px) {
+  .ad-head { padding: 12px 14px; }
+  main.ad-main { padding: 16px 12px 50px; }
+}
+</style>
+</head>
+<body>
+
+<div class="rd ad-room" data-mode="ks3" id="c-main" style="display:none;">
+
+  <header class="ad-head">
+    <a class="ad-word" href="/consumer/admin-accounts.html">MrBadmus</a>
+    <span class="ad-badge">Admin</span>
+    <nav class="ad-nav">
+      <a href="/consumer/admin-accounts.html">Accounts</a>
+      <a class="is-on" href="/consumer/admin-queue.html">Marking</a>
+    </nav>
+    <span class="ad-who" id="who"></span>
+    <span id="signout-host"></span>
+  </header>
+
+  <div class="ad-shell">
+    <aside class="ad-list" id="sidebar">
+      <div class="ad-list-head">
+        <h2>Queue</h2>
+        <div class="n" id="queue-count"></div>
+      </div>
+      <div class="ad-sorts" id="sorts"></div>
+      <div class="ad-queue" id="queue-list"></div>
+      <div class="ad-list-foot" id="list-foot"></div>
+    </aside>
+
+    <div class="ad-mlist" id="mlist-wrap">
+      <select id="mobile-pick" aria-label="Pick a queued answer"></select>
+    </div>
+
+    <main class="ad-main" id="main-pane"></main>
+  </div>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.MrBadmusConsumer;
+
+  var SORTS = [['oldest', 'Oldest first'], ['newest', 'Newest'], ['org', 'Organisations']];
+  var SNIPPETS = [
+    { label: 'Agree with instant mark', text: 'Agree with the instant mark. ' },
+    { label: 'Name the term', text: 'Name things. The marks are on the nouns. ' },
+    { label: 'Finish the sentence', text: 'You stop one sentence early. End every explanation with the "so what". ' },
+    { label: 'Quote the equation', text: 'Quote the equation first, then use it. ' }
+  ];
+
+  var state = {
+    sort: 'oldest',
+    pending: [],
+    currentId: null,
+    hits: {},      // id -> bool[] (per-point human toggles, checklist mode)
+    numScore: {},  // id -> number (fallback mode, when a question has no scheme)
+    notes: {},     // id -> string draft
+    markedToday: 0
+  };
+
+  function hoursSince(iso) {
+    if (!iso) return 0;
+    var ms = Date.now() - new Date(iso).getTime();
+    return Math.max(0, ms / 3600000);
+  }
+  function ageLabel(h) {
+    h = Math.floor(h);
+    if (h < 24) return h + 'h';
+    return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
+  }
+  function ageColor(h) { return h > 48 ? 'var(--st-ember)' : 'var(--ks3-on-dark-muted)'; }
+
+  function sorted(list) {
+    var out = list.slice();
+    if (state.sort === 'newest') {
+      out.sort(function (a, b) { return hoursSince(a.sent_at) - hoursSince(b.sent_at); });
+    } else if (state.sort === 'org') {
+      out.sort(function (a, b) {
+        var ao = a.org_kind === 'organisation' ? 0 : 1;
+        var bo = b.org_kind === 'organisation' ? 0 : 1;
+        if (ao !== bo) return ao - bo;
+        return hoursSince(b.sent_at) - hoursSince(a.sent_at);
+      });
+    } else {
+      out.sort(function (a, b) { return hoursSince(b.sent_at) - hoursSince(a.sent_at); });
+    }
+    return out;
+  }
+
+  function paintSorts() {
+    document.getElementById('sorts').innerHTML = SORTS.map(function (s) {
+      return '<button type="button" class="ad-pill' + (state.sort === s[0] ? ' is-on' : '') + '" data-sort="' + s[0] + '">' + C.escapeHtml(s[1]) + '</button>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('.ad-pill'), function (b) {
+      b.addEventListener('click', function () { state.sort = b.getAttribute('data-sort'); paintAll(); });
+    });
+  }
+
+  function itemShort(it) { return (it.question && (it.question.text || it.question.stem) || '').slice(0, 80); }
+
+  function paintSidebar() {
+    var list = sorted(state.pending);
+    document.getElementById('queue-count').textContent = list.length + (list.length === 1 ? ' waiting' : ' waiting');
+
+    var host = document.getElementById('queue-list');
+    if (!list.length) {
+      host.innerHTML = '<p class="ad-empty-side">Queue clear. Nothing older than today.</p>';
+    } else {
+      host.innerHTML = list.map(function (it) {
+        var h = hoursSince(it.sent_at);
+        var isCurrent = it.id === state.currentId;
+        var accent = isCurrent ? 'var(--st-ember)' : (h > 48 ? 'var(--ks3-accent)' : 'transparent');
+        var ai = it.ai && it.ai.max ? (it.ai.score + '/' + it.ai.max) : '—';
+        return '<button type="button" class="ad-item' + (isCurrent ? ' is-current' : '') + '" style="border-left-color:' + accent + '" data-id="' + C.escapeHtml(it.id) + '">' +
+          '<span class="row1"><span>' + C.escapeHtml(it.child.name) + ' · Y' + C.escapeHtml(String(it.child.year || '—')) + '</span>' +
+          '<span style="color:' + ageColor(h) + '">' + ageLabel(h) + '</span></span>' +
+          '<div class="q-line">' + C.escapeHtml(itemShort(it)) + '</div>' +
+          '<div class="foot">' + C.escapeHtml(String(it.question.marks || '?')) + ' marks · instant ' + C.escapeHtml(ai) +
+          (it.org ? ' · ' + C.escapeHtml(it.org) : '') + '</div></button>';
+      }).join('');
+      Array.prototype.forEach.call(host.querySelectorAll('.ad-item'), function (b) {
+        b.addEventListener('click', function () { selectItem(b.getAttribute('data-id')); });
+      });
+    }
+
+    /* The oldest thing waiting, not the last row of whichever sort is on —
+       under the default "Oldest first" the last row is the NEWEST item, and
+       the footer was reporting it as the oldest. */
+    var oldest = list.reduce(function (h, it) { return Math.max(h, hoursSince(it.sent_at)); }, 0);
+    document.getElementById('list-foot').textContent =
+      'Marked today: ' + state.markedToday + ' · Oldest: ' + (list.length ? ageLabel(oldest) : '—') + ' · SLA 3 school days';
+
+    var sel = document.getElementById('mobile-pick');
+    sel.innerHTML = list.map(function (it) {
+      var h = hoursSince(it.sent_at);
+      return '<option value="' + C.escapeHtml(it.id) + '"' + (it.id === state.currentId ? ' selected' : '') + '>' +
+        C.escapeHtml(it.child.name) + ' · ' + ageLabel(h) + ' · ' + C.escapeHtml(itemShort(it)) + '</option>';
+    }).join('');
+  }
+
+  function currentItem() {
+    return state.pending.filter(function (it) { return it.id === state.currentId; })[0] || null;
+  }
+
+  /* ⚠️ `ai.hits` is the LIST OF SCHEME-POINT INDEXES the instant marker
+     awarded — backend consumer/marking.js builds it with `hits.push(i)` and
+     reads it back with `hits.includes(i)`, and the column is `smallint[]`.
+     It is NOT one flag per point, and reading it as one is not a cosmetic
+     slip: on a three-point scheme, `[0, 2]` read as flags ticks point 2 and
+     nothing else, and the starting score reads 1 instead of 2 — so an
+     operator who agrees with the instant mark and presses Send gives the
+     child the wrong number. Converted to flags once, here, and nowhere else.
+     Found by driving the built page (admin_ui_drive.py, 5 Sep 2026). */
+  function aiFlags(it, n) {
+    var raw = (it.ai && it.ai.hits) || [];
+    var won = {};
+    for (var j = 0; j < raw.length; j++) { won[Number(raw[j])] = true; }
+    var out = [];
+    for (var i = 0; i < n; i++) { out.push(!!won[i]); }
+    return out;
+  }
+
+  function hitsFor(it, n) {
+    if (state.hits[it.id]) return state.hits[it.id];
+    return aiFlags(it, n);
+  }
+
+  function paintMain() {
+    var host = document.getElementById('main-pane');
+    var it = currentItem();
+    if (!it) {
+      host.innerHTML = '<div class="ad-empty-main"><h2 style="font-family:var(--ks3-font-display);">All marked.</h2>' +
+        '<p>' + state.markedToday + ' today. The queue refills as children send answers.</p></div>';
+      return;
+    }
+
+    var q = it.question || {};
+    var scheme = (q.scheme || []).map(function (p) { return C.schemePoint(p); }).filter(Boolean);
+    var hits = hitsFor(it, scheme.length);
+    var aiHits = aiFlags(it, scheme.length);
+    var marks = q.marks || (it.ai && it.ai.max) || 0;
+    var usingChecklist = scheme.length > 0;
+    var myScore = usingChecklist
+      ? hits.filter(Boolean).length
+      : (state.numScore[it.id] != null ? state.numScore[it.id] : (it.ai && it.ai.score) || 0);
+
+    var pointsHtml = usingChecklist ? scheme.map(function (text, i) {
+      var on = !!hits[i];
+      var ai = !!aiHits[i];
+      var diff = on !== ai ? '<span class="ad-diff">' + (on ? 'you +1' : 'you −1') + '</span>' : '';
+      return '<button type="button" class="ad-point' + (on ? ' is-on' : '') + '" data-pt="' + i + '">' +
+        '<span class="ad-mark-box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>' +
+        '<span>' + C.escapeHtml(text) + '</span>' + diff + '</button>';
+    }).join('') : (
+      '<div class="ad-num-fallback"><input type="number" id="num-score" min="0" max="' + marks + '" value="' + myScore + '"/> / ' + marks + '</div>' +
+      '<p class="ad-hint">No point-by-point mark scheme on this question (it is levels-marked) — enter the score directly.</p>'
+    );
+
+    var parentNames = (it.parent_names || []).join(', ') || 'the family';
+
+    host.innerHTML =
+      '<div class="ad-mhead">' +
+      '<span class="ad-avatar">' + C.escapeHtml((it.child.name || '?').slice(0, 1).toUpperCase()) + '</span>' +
+      '<span><span class="who">' + C.escapeHtml(it.child.name) + '</span><br/>' +
+      '<span class="meta">Year ' + C.escapeHtml(String(it.child.year || '—')) + ' · ' + C.escapeHtml(it.child.mode || '') + ' · sent ' + ageLabel(hoursSince(it.sent_at)) + ' ago</span></span>' +
+      '<span class="prev">Previous answers (' + (it.prev_count || 0) + ')</span></div>' +
+      '<div class="ad-metaline">' + C.escapeHtml(q.topic || '') + ' · ' + C.escapeHtml(String(marks)) + ' marks · ' + C.escapeHtml(it.child.board || '') + '</div>' +
+      '<h2 class="ad-qtext">' + (q.stem ? C.escapeHtml(q.stem) + ' ' : '') + C.escapeHtml(q.text || '') + '</h2>' +
+      '<div class="ad-cols">' +
+        '<div class="ad-sec"><h3>' + C.escapeHtml(it.child.name) + ' wrote</h3><div class="ad-answer">' + C.escapeHtml(it.answer || '') + '</div></div>' +
+        '<div class="ad-sec"><h3>Mark scheme · instant mark ' + (it.ai && it.ai.max ? C.escapeHtml(it.ai.score + '/' + it.ai.max) : '—') + '</h3>' +
+        '<div class="ad-score">' + myScore + '/' + marks + '</div>' + pointsHtml +
+        (usingChecklist ? '<p class="ad-hint">Tap a point to award or remove it. Starts from the instant mark.</p>' : '') +
+        '</div>' +
+      '</div>' +
+      '<label class="ad-note-label" for="note">Your note to ' + C.escapeHtml(it.child.name) + '</label>' +
+      '<textarea class="ad-note" id="note" rows="4" placeholder="Two or three lines. What they did right, then the one thing to change.">' + C.escapeHtml(state.notes[it.id] || '') + '</textarea>' +
+      '<div class="ad-snips">' + SNIPPETS.map(function (s, i) { return '<button type="button" class="ad-snip" data-snip="' + i + '">' + C.escapeHtml(s.label) + '</button>'; }).join('') + '</div>' +
+      '<div class="ad-actrow">' +
+      '<button type="button" class="ad-btn is-primary" id="send-btn">Send mark · ' + myScore + '/' + marks + '</button>' +
+      '<button type="button" class="ad-btn" id="skip-btn">Skip for now</button>' +
+      '<span class="ad-send-msg" id="send-msg"></span></div>' +
+      '<p class="ad-hint">Sends to ' + C.escapeHtml(it.child.name) + ' and emails ' + C.escapeHtml(parentNames) + '.</p>';
+
+    if (usingChecklist) {
+      Array.prototype.forEach.call(host.querySelectorAll('.ad-point'), function (btn) {
+        btn.addEventListener('click', function () {
+          var i = Number(btn.getAttribute('data-pt'));
+          var arr = hitsFor(it, scheme.length).slice();
+          arr[i] = !arr[i];
+          state.hits[it.id] = arr;
+          paintMain();
+        });
+      });
+    } else {
+      var numInput = document.getElementById('num-score');
+      numInput.addEventListener('input', function () {
+        var v = Math.max(0, Math.min(marks, Math.round(Number(this.value) || 0)));
+        state.numScore[it.id] = v;
+        /* ⚠️ The Send handler below closes over `myScore`, and this branch is
+           the one that does NOT repaint — so without this line the operator
+           types 5, the readout and the button both say 5, and the number that
+           actually reaches the child is the instant mark. */
+        myScore = v;
+        document.querySelector('.ad-score').textContent = v + '/' + marks;
+        document.getElementById('send-btn').textContent = 'Send mark · ' + v + '/' + marks;
+      });
+    }
+
+    var noteEl = document.getElementById('note');
+    function syncSend() {
+      var len = noteEl.value.trim().length;
+      var btn = document.getElementById('send-btn');
+      btn.disabled = len < 10;
+      btn.style.opacity = len < 10 ? '0.45' : '1';
+    }
+    noteEl.addEventListener('input', function () { state.notes[it.id] = noteEl.value; syncSend(); });
+    syncSend();
+
+    Array.prototype.forEach.call(host.querySelectorAll('.ad-snip'), function (btn) {
+      btn.addEventListener('click', function () {
+        var s = SNIPPETS[Number(btn.getAttribute('data-snip'))];
+        var cur = noteEl.value;
+        noteEl.value = (cur ? cur.replace(/\s*$/, ' ') : '') + s.text;
+        state.notes[it.id] = noteEl.value;
+        noteEl.focus();
+        syncSend();
+      });
+    });
+
+    document.getElementById('skip-btn').addEventListener('click', function () {
+      var list = sorted(state.pending);
+      var i = list.findIndex(function (x) { return x.id === it.id; });
+      var next = list[(i + 1) % list.length];
+      state.currentId = next ? next.id : null;
+      paintAll();
+    });
+
+    document.getElementById('send-btn').addEventListener('click', function () {
+      var note = noteEl.value.trim();
+      if (note.length < 10) return;
+      var sendBtn = document.getElementById('send-btn');
+      var msg = document.getElementById('send-msg');
+      C.setBusy(sendBtn, true, 'Sending…');
+      msg.textContent = '';
+      window.MrBadmusConsumer.api('/api/consumer/admin/exam-answers/' + it.id + '/mb-mark', {
+        method: 'POST', token: window.__mrbAdminToken,
+        body: { score: myScore, feedback: note }
+      }).then(function () {
+        state.pending = state.pending.filter(function (x) { return x.id !== it.id; });
+        state.markedToday += 1;
+        delete state.hits[it.id]; delete state.notes[it.id]; delete state.numScore[it.id];
+        var list = sorted(state.pending);
+        state.currentId = list.length ? list[0].id : null;
+        paintAll();
+      }).catch(function (e) {
+        C.setBusy(sendBtn, false);
+        msg.className = 'ad-send-msg bad';
+        msg.textContent = e.message || 'That didn’t send. Try again.';
+      });
+    });
+  }
+
+  function selectItem(id) {
+    state.currentId = id;
+    paintAll();
+  }
+
+  function paintAll() {
+    paintSorts();
+    paintSidebar();
+    paintMain();
+  }
+
+  function load() {
+    return window.MrBadmusConsumer.api('/api/consumer/admin/mb-queue', { token: window.__mrbAdminToken }).then(function (d) {
+      state.pending = d.pending || [];
+      var list = sorted(state.pending);
+      if (!state.currentId || !list.some(function (x) { return x.id === state.currentId; })) {
+        state.currentId = list.length ? list[0].id : null;
+      }
+      paintAll();
+    }).catch(function (e) {
+      C.fail(document.getElementById('main-pane'), e.message || 'We couldn’t load the queue.', 'Refresh and try again.');
+    });
+  }
+
+  document.getElementById('mobile-pick').addEventListener('change', function () {
+    selectItem(this.value);
+  });
+
+  C.boot({
+    requireSession: true,
+    signInPath: '/auth.html',
+    run: function (ctx) {
+      window.__mrbAdminToken = ctx.token;
+      return C.isOperator(ctx.sb).then(function (ok) {
+        if (!ok) { return C.notFound(); }
+        /* See admin-accounts.html: `#c-main` is hidden in the markup so the
+           console never flashes at a non-operator, and `boot()` only un-hides
+           `document.body`. This is the line that shows the page. */
+        document.getElementById('c-main').style.display = '';
+        document.getElementById('who').textContent = ctx.session.user.email || '';
+        C.signOutControl(document.getElementById('signout-host'), { sb: ctx.sb, label: 'Sign out', redirectTo: '/auth.html' });
+        load();
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
