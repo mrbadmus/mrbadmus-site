@@ -215,6 +215,54 @@
     .tag.pending { background: var(--st-note-bg); color: var(--st-body); border-color: var(--st-note-border); }
     .tag.you     { background: var(--st-chip-tint); color: var(--st-accent-text); border-color: var(--st-chip-tint-border); }
 
+    /* ── Assignments go-live hold (MRB-324) ──────────────────────────────
+       Built to be wound on the spot during a live dry run: the state is a
+       sentence, the input is pre-filled with the date that is actually set,
+       and the three quick buttons each do the whole job in one press. */
+    .hold-state {
+      font: 400 17.5px/1.45 var(--st-ui);
+      color: var(--st-ink);
+      margin-bottom: 14px;
+    }
+    .hold-state strong { font-weight: 600; }
+    .hold-state .held { color: var(--st-accent-text); font-weight: 600; }
+    .hold-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .hold-controls input[type="date"] {
+      font: 400 16px/1.2 var(--st-ui);
+      color: var(--st-ink);
+      background: var(--st-num-well);
+      border: 1px solid var(--st-rule);
+      border-radius: 8px;
+      padding: 9px 10px;
+      min-height: 42px;
+    }
+    .hold-btn {
+      font: 500 15px/1.2 var(--st-ui);
+      padding: 11px 14px;
+      min-height: 42px;
+      border-radius: 8px;
+      border: 1px solid var(--st-rule);
+      background: var(--st-num-well);
+      color: var(--st-ink);
+      cursor: pointer;
+    }
+    .hold-btn:hover:not(:disabled) { border-color: var(--st-accent-text); color: var(--st-accent-text); }
+    .hold-btn:disabled { opacity: 0.5; cursor: default; }
+    .hold-btn.primary {
+      background: var(--st-chip-tint);
+      color: var(--st-accent-text);
+      border-color: var(--st-chip-tint-border);
+      font-weight: 600;
+    }
+    .hold-msg { font: 400 15.5px/1.4 var(--st-ui); margin-top: 12px; min-height: 22px; }
+    .hold-msg.ok { color: var(--st-accent-text); }
+    .hold-msg.bad { color: var(--st-ink); }
+    .hold-note { font: 400 15px/1.45 var(--st-ui); color: var(--st-muted); margin-top: 12px; }
+    @media (max-width: 480px) {
+      .hold-controls { flex-direction: column; align-items: stretch; }
+      .hold-controls input[type="date"], .hold-btn { width: 100%; }
+    }
+
     .classlist { color: var(--st-muted); font: 400 15.5px/1.4 var(--st-ui); }
     .count { font-family: var(--st-mono); font-variant-numeric: tabular-nums; }
     .muted { color: var(--st-muted); }
@@ -303,6 +351,22 @@
     <div class="stats" id="stats"></div>
   </div>
 
+  <div class="card" id="hold-card" style="display:none;">
+    <h2>Assignments start</h2>
+    <div class="hold-state" id="hold-state"></div>
+    <div class="hold-controls">
+      <input type="date" id="hold-date" aria-label="Date assignments start">
+      <button class="hold-btn primary" id="hold-save" type="button">Save date</button>
+      <button class="hold-btn" id="hold-open" type="button">Start now</button>
+    </div>
+    <div class="hold-msg" id="hold-msg"></div>
+    <div class="hold-note">
+      Before this date no new weekly assignments are created, and students see
+      “No work has been set for this week yet.” Work that has already been set
+      stays visible either way. You can change this date as often as you like.
+    </div>
+  </div>
+
   <div class="card">
     <h2>Teachers</h2>
     <div id="teachers"></div>
@@ -352,10 +416,37 @@
    function that decides whether the Admin link appears in the nav, so the
    link and the page cannot disagree.
 
-   ⛔ THIS PAGE WRITES NOTHING. No form, no button that mutates, no RPC.
-   Every control is a link. That is the whole of "v1", and it is why the
-   page can be shipped against production data on the strength of RLS
-   alone.
+   ⛔ THIS PAGE MAKES NO DIRECT DATABASE WRITE. Every `sb.` call below is a
+   `.select()` — no `.update()`, no `.insert()`, no `.rpc()` that mutates.
+   That is why the page can be shipped against production data on the
+   strength of RLS alone.
+
+   ⊕ Superseded in part, MRB-324 (5 Sep 2026). This used to read "⛔ THIS
+   PAGE WRITES NOTHING. No form, no button that mutates, no RPC. Every
+   control is a link. That is the whole of 'v1'". The assignments go-live
+   hold is the page's FIRST mutating control, so the absolute form of that
+   sentence is no longer true and is kept here only because a reader who
+   believed it would conclude the control below is a mistake and remove it.
+
+   What survives, and is the part that matters, is the DIRECT-WRITE half:
+   the control posts to `/api/admin/school/assignments-open-from` and the
+   backend re-derives both the caller's admin standing and their school from
+   the JWT. The page still touches the database only through `.select()`.
+
+   That routing is deliberate, not incidental. `schools_admin_update` would
+   have permitted the browser to write the column itself, and three things
+   said not to:
+     · the policy is ROW-WIDE — no column list — so the capability handed to
+       a browser would be "rewrite your school row" (name, code, kind,
+       active, email_domains, admin_user_id) for a control that changes one
+       date;
+     · the policy wants `auth_user_has_scope('school_admin')`, but the gate
+       on THIS page is `MrBadmusAdminScope.isAdmin` = school_admin OR slt OR
+       legacy admin. An SLT user therefore sees the control, and a direct
+       write would match zero rows and return a cheerful 200 with an empty
+       array — a silent no-op that looks exactly like a successful save;
+     · and keeping every `sb.` call a read is the property that makes this
+       page easy to reason about at all.
 
    ⚠️ WHERE THE NUMBERS COME FROM, and why none of them is computed here.
    `shared/teacher-data.js` already owns the reads the teacher dashboard
@@ -489,6 +580,122 @@ function dateLabel(iso) {
   return d.getDate() + ' ' + M[d.getMonth()] + ' ' + d.getFullYear();
 }
 
+/* ── the assignments go-live hold (MRB-324) ────────────────────────────────
+   The ONE mutating control on this page. It posts; it never writes directly.
+   See the header comment for why.
+
+   Built for a live dry run, which is the actual requirement: the date has to
+   be windable forward or back on the spot, by Mide, on a phone, between
+   lessons. So the current state is a full sentence rather than a bare value,
+   the picker opens pre-filled with the date that is really set, and "Start
+   now" lifts the hold entirely in one press without anyone having to work out
+   today's date and type it. */
+
+function holdMsg(text, kind) {
+  var el = document.getElementById('hold-msg');
+  el.textContent = text || '';
+  el.className = 'hold-msg' + (kind ? ' ' + kind : '');
+}
+
+/* Today as YYYY-MM-DD in the BROWSER's own local time, which for a school
+   admin standing in the school is school time. Deliberately not
+   toISOString(), which is UTC and would name yesterday all evening in BST. */
+function todayLocalIso() {
+  var d = new Date();
+  return d.getFullYear() + '-' +
+         String(d.getMonth() + 1).padStart(2, '0') + '-' +
+         String(d.getDate()).padStart(2, '0');
+}
+
+function paintHold(value) {
+  var state = document.getElementById('hold-state');
+  var input = document.getElementById('hold-date');
+  var today = todayLocalIso();
+
+  if (!value) {
+    state.innerHTML = 'Assignments are <strong>running normally</strong>. ' +
+      'Each class gets its weekly work as soon as a student opens it.';
+    input.value = '';
+  } else if (value <= today) {
+    /* A date that has passed is not a hold any more, and saying "held until
+       a date last week" would be false. Say what is actually true now. */
+    state.innerHTML = 'Assignments are <strong>running normally</strong> — ' +
+      'they started on <strong>' + escapeHtml(dateLabel(value + 'T12:00:00')) + '</strong>.';
+    input.value = value;
+  } else {
+    state.innerHTML = 'Assignments are <span class="held">on hold</span> until ' +
+      '<strong>' + escapeHtml(dateLabel(value + 'T12:00:00')) + '</strong>. ' +
+      'Until then no new work is set, and students see “No work has been set ' +
+      'for this week yet.”';
+    input.value = value;
+  }
+  document.getElementById('hold-card').style.display = 'block';
+}
+
+async function saveHold(value) {
+  var buttons = [document.getElementById('hold-save'), document.getElementById('hold-open')];
+  buttons.forEach(function (b) { b.disabled = true; });
+  holdMsg('Saving…');
+
+  try {
+    /* getSession() refreshes a token that is about to expire, so what we hand
+       over is one the backend will still accept — same reasoning as
+       teacher-data.js's own backend calls. */
+    var s = await sb.auth.getSession();
+    var token = s.data && s.data.session && s.data.session.access_token;
+    if (!token) { throw new Error('no access token on the current session'); }
+
+    var cfg = window.MrBadmusConfig || {};
+    var base = cfg.BACKEND_URL || 'https://mrbadmus-backend.onrender.com';
+    var res = await fetch(base + '/api/admin/school/assignments-open-from', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assignments_open_from: value }),
+    });
+    var body = null;
+    try { body = await res.json(); } catch (e) { body = null; }
+
+    if (!res.ok) {
+      /* The backend's own sentence when it has one — it is written for a
+         teacher and is more specific than anything we could say here. */
+      holdMsg((body && body.message) || 'That didn’t save. Please try again.', 'bad');
+      return;
+    }
+
+    paintHold(body.assignments_open_from);
+    holdMsg(body.assignments_open_from ? 'Saved.' : 'Saved — assignments are running now.', 'ok');
+  } catch (e) {
+    console.error('[admin] assignments hold', e);
+    holdMsg('We couldn’t reach the server. Please try again in a moment.', 'bad');
+  } finally {
+    buttons.forEach(function (b) { b.disabled = false; });
+  }
+}
+
+function wireHold(value) {
+  paintHold(value);
+
+  document.getElementById('hold-save').addEventListener('click', function () {
+    var v = document.getElementById('hold-date').value;
+    if (!v) {
+      holdMsg('Pick a date first, or use “Start now” to let assignments run.', 'bad');
+      return;
+    }
+    saveHold(v);
+  });
+
+  document.getElementById('hold-open').addEventListener('click', function () {
+    /* null, not today's date: "no hold at all" is the honest state, and it
+       keeps reading correctly tomorrow instead of looking like a stale hold. */
+    saveHold(null);
+  });
+
+  /* Enter in the date field saves, so winding the date is type-and-Enter. */
+  document.getElementById('hold-date').addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter') { ev.preventDefault(); document.getElementById('hold-save').click(); }
+  });
+}
+
 async function render(ctx) {
   var TD = window.MrBadmusTeacherData;
   var schoolId = ctx.profile.school_id;
@@ -507,7 +714,7 @@ async function render(ctx) {
   // ── the year, and the school's name ────────────────────────────────────
   var schoolRes, yearIdx;
   var pair = await Promise.all([
-    sb.from('schools').select('name').eq('id', schoolId).single(),
+    sb.from('schools').select('name, assignments_open_from').eq('id', schoolId).single(),
     TD.loadAcademicYears(),
   ]);
   schoolRes = pair[0]; yearIdx = pair[1];
@@ -517,6 +724,14 @@ async function render(ctx) {
   document.getElementById('school-line').innerHTML =
     escapeHtml(schoolName) +
     (working ? '<span class="sep">·</span>' + escapeHtml(working.name || '') : '');
+
+  /* The go-live hold, drawn from the same row the name came from — no extra
+     read. ⚠️ A school with no academic year takes the `notice()` branch just
+     below, and `notice()` hides ALL of #main, this card with it. That is
+     accepted rather than worked around: composition needs a year to resolve a
+     teaching week at all, so a school without one is already composing
+     nothing and has nothing to hold. */
+  wireHold(schoolRes.data ? schoolRes.data.assignments_open_from : null);
 
   if (!working) {
     notice('No academic year set up',

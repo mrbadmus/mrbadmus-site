@@ -700,6 +700,58 @@ GATES = [
              "handles AT ALL rather than disabled ones, and that the "
              "unseated count is drawn even when it is inconvenient."),
 
+    dict(name="assignments_hold_drive",
+         cmd=["python3", "assignments_hold_drive.py"],
+         speed="slow",
+         needs="teacher/admin.html",
+         why="MRB-324 — THE ASSIGNMENTS GO-LIVE HOLD, and above all the "
+             "invariant underneath it. `teacher/admin.html` makes no direct "
+             "database write; every `sb.` call on it is a `.select()`, and "
+             "that is what lets it ship against production data on the "
+             "strength of RLS alone. The hold is the page's FIRST mutating "
+             "control, and the tempting way to build it is one line — "
+             "`sb.from('schools').update(...)` — which RLS would permit, so "
+             "it would appear to work when a school_admin tried it. "
+             "⚠️ IT IS WRONG TWICE, AND NEITHER SHOWS BY HAND. "
+             "`schools_admin_update` carries NO column list, so that line "
+             "hands a browser 'rewrite your school row' (name, code, kind, "
+             "active, email_domains, admin_user_id) as the capability "
+             "behind a date picker. And the policy wants "
+             "auth_user_has_scope('school_admin') while the gate on the "
+             "page is isAdmin = school_admin OR slt OR legacy admin — so an "
+             "SLT user SEES the control, and their direct write matches "
+             "zero rows and returns a cheerful 200 with an empty array. A "
+             "silent no-op that looks exactly like a save, on the morning "
+             "of a live dry run. "
+             "So the central assertion is NOT a rendered string: the stub "
+             "client records every mutating verb reached on it and the "
+             "drive demands the count is ZERO across four uses of the "
+             "control, with a NEGATIVE CONTROL that makes a deliberate "
+             "write and requires the recorder to see it — a seam that "
+             "cannot fail is not a seam. "
+             "It also watches the three states the card can be in (no "
+             "hold; a hold still ahead; a date already PASSED, which is not "
+             "a hold and must not be described as one), the body actually "
+             "POSTed (the typed date on Save, `null` on Start now — the "
+             "sentence on screen and the body on the wire are two facts and "
+             "only the second changes anything), the bearer token, that the "
+             "card repaints from the SERVER's value rather than the typed "
+             "one, and that a refusal shows the backend's own words without "
+             "repainting. "
+             "⚠️ THE CLOCK IS FROZEN to 2026-09-05 and must stay frozen: "
+             "'is this date ahead' IS the card's logic, so against a real "
+             "clock this file asserts something different every day and "
+             "nothing at all after 14 Sep 2026. "
+             "Slow by category, not duration — about four seconds, but it "
+             "needs headless Chrome, and every browser gate here is a "
+             "receipt gate so a machine without Chrome cannot redden every "
+             "push. No network and no credentials: the CDNs and "
+             "supabase.co are blocked at the protocol level, `fetch` is "
+             "replaced before the page's own script runs, and the page is "
+             "served from the repo root over a local port. `needs` names "
+             "the REPO copy — admin.html is one of the four hand-written "
+             "teacher pages, so the built copy is a restamped duplicate."),
+
     dict(name="consumer_flag_off",
          cmd=["python3", "night3_selfreview.py",
               "--site", "mrbadmus_site", "--api", "http://localhost:3120"],

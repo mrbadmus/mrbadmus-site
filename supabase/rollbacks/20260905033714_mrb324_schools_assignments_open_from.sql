@@ -1,0 +1,22 @@
+-- ROLLBACK for mrb324_schools_assignments_open_from. Apply by hand only.
+--
+-- ⚠️ Dropping this column REMOVES EVERY SCHOOL'S HOLD AT ONCE. The backend's
+-- guard reads it, so the moment it is gone every class in every school resumes
+-- composing assignments on the next student page open. If a school is mid-hold
+-- that is a go-live it did not ask for, and the composed assignments are real
+-- rows that would then have to be found and removed by hand.
+--
+-- Take the current holds off first — they are not recoverable once dropped:
+--   select id, name, assignments_open_from from public.schools
+--    where assignments_open_from is not null;
+--
+-- Roll the backend back WITH it, in that order (backend first, then this):
+-- GET /api/class/current-assignment reads this column on its composition path,
+-- and POST /api/admin/school/assignments-open-from writes it. Dropping the
+-- column under a running backend makes both fail on a missing column rather
+-- than degrade gracefully.
+--
+-- To lift a single school's hold you do NOT need this file — set that school's
+-- date to null (or to a past date) from the Admin page instead.
+alter table public.schools
+  drop column if exists assignments_open_from;
