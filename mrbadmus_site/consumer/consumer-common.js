@@ -382,6 +382,27 @@
     return String(pt.text || pt.point || pt.criterion || pt.description || '');
   }
 
+  /* ── isOperator ────────────────────────────────────────────────
+     MRB-317 Night 3 follow-through (admin-ui). The one frontend check for
+     "is this signed-in person a platform operator", mirroring the backend's
+     own `requireOperator` (server.js): it calls `auth_user_is_platform_operator()`
+     AS THE CALLER via the caller's own Supabase client, exactly the same RPC
+     the backend uses through `callerClient(req)`. Same reasoning as
+     `teacher/admin.html`'s `MrBadmusAdminScope.isAdmin(sb, uid)` — the
+     nearest existing precedent for a scope check the frontend must not get
+     wrong — fail-closed on any error, including "not signed in".
+
+     ⚠️ NOT a security boundary, same as everything else in this file: it
+     decides whether to show the console's markup at all. Every route behind
+     it re-checks `requireOperator` itself and answers 404 to anyone it
+     refuses — the console does not admit to existing either way. */
+  function isOperator(sb) {
+    if (!sb || typeof sb.rpc !== 'function') { return Promise.resolve(false); }
+    return sb.rpc('auth_user_is_platform_operator').then(function (r) {
+      return !!(r && !r.error && r.data === true);
+    }, function () { return false; });
+  }
+
   /* ── guard ─────────────────────────────────────────────────────
      The ACCESS state — `billing.access` for a parent, `access` on the child
      endpoints — is the authority, and it is a different value from the
@@ -714,11 +735,17 @@
     });
   }
 
-  function signOut(sb) {
+  /* `redirectTo` defaults to the child login door, which is correct for the
+     three surfaces this was built for — but MRB-317 admin-ui reuses this same
+     function for the operator console, and an operator signed out to
+     `/go/` (a nine-year-old's login page) would be a confusing landing, not
+     a wrong one exactly, but wrong enough to be worth a parameter rather
+     than a second copy of everything above `done()`. */
+  function signOut(sb, redirectTo) {
     var c = sb || client;
     var done = function () {
       clearLocalState();
-      go(CHILD_LOGIN_URL);
+      go(redirectTo || CHILD_LOGIN_URL);
     };
     if (!c || !c.auth || typeof c.auth.signOut !== 'function') { return done(); }
     var p;
@@ -802,7 +829,7 @@
         var b = this;
         b.disabled = true;
         b.textContent = 'Signing out…';
-        signOut(opts.sb);
+        signOut(opts.sb, opts.redirectTo);
       });
       // The SAFE answer takes focus. A stray Enter must not end the session.
       veil.querySelector('.c-signout-stay').focus();
@@ -823,6 +850,7 @@
     setBusy: setBusy,
     getClient: getClient,
     notFound: notFound,
+    isOperator: isOperator,
 
     // Night 2 (MRB-309…315)
     schemePoint: schemePoint,

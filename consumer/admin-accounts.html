@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#15110C"/>
+<meta name="robots" content="noindex"/>
+<title>Admin — Accounts — MrBadmus</title>
+<link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=a3a854bf"/>
+<link rel="stylesheet" href="/consumer/consumer.css"/>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   consumer/admin-accounts.html — MRB-317 follow-through (admin-ui, 5 Sep
+   2026). Design's `Admin Accounts.dc.html`, compiled onto the real
+   `/api/consumer/admin/*` routes (consumer/admin.js on the backend, all
+   `requireOperator`).
+
+   ── WHERE THIS LIVES, AND WHY ─────────────────────────────────────────
+   Not `teacher/admin.html` — that page is a SCHOOL-scoped staff view
+   (`requireTeacherRole` + `MrBadmusAdminScope.isAdmin`) with nothing to do
+   with `CONSUMER_SIGNUP_ENABLED`, and it stays live for a school admin
+   whether or not B2C is switched on. A platform operator is a different
+   actor entirely — cross-tenant, not scoped to any one school — and the
+   nine routes this page calls are namespaced `/api/consumer/admin/*`,
+   mounted from the backend's own `consumer/admin.js`. Putting the frontend
+   under `/consumer/` gets the ONE existing flag gate for free
+   (`MrBadmusConsumer.boot()` — 404, zero requests, when the flag is off)
+   instead of bolting a second flag check onto an unrelated page.
+
+   ── DARK-ROOM TOKENS ───────────────────────────────────────────────────
+   Design's file references `--st-room` / `--st-room-panel` / `--st-ember`
+   as externals and defines none of them locally — they do not exist in
+   shared/tokens.css or shared/ks3.css (checked; those two files carry the
+   light KS3 palette plus `--ks3-on-dark-*` for panels nested in an ink
+   block, but no near-black "room" ground). They are new, page-scoped
+   tokens invented for this console alone, declared once below rather than
+   added to the shared token files — the blast radius of a wrong value
+   should be this page, not every KS3 surface. Everything else (`--ks3-ink`,
+   `--ks3-on-dark-body`, `--ks3-on-dark-muted`, `--ks3-dark-panel`,
+   `--ks3-dark-rule`, `--ks3-accent`, `--ks3-accent-text`, `--ks3-ok`) is a
+   real token already in shared/ks3.css, scoped to `.rd[data-mode="ks3"]`
+   — hence that class pair on the root div below, same hook every KS3/
+   consumer page needs (see shared/ks3.css's own specificity-trap note).
+
+   ── BRAND ──────────────────────────────────────────────────────────────
+   Plain "MrBadmus" wordmark, no logo asset — Design drew it that way on
+   both admin screens, and it also matches CLAUDE.md's staff-surface rule
+   (plain white/light text, no chevron) for an internal instrument nobody
+   outside the business ever sees.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  --st-room:        #15110C;
+  --st-room-panel:  #211A13;
+  --st-room-text:   #E7DECE;
+  --st-ember:       #F4B860;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--st-room); }
+a { color: var(--st-ember); text-decoration: none; }
+a:hover { color: #F6EEDF; }
+input, button, select, textarea { font: inherit; }
+input::placeholder, textarea::placeholder { color: #8A7F72; }
+
+.ac-room {
+  min-height: 100vh;
+  background: var(--st-room);
+  color: var(--st-room-text);
+  font-family: var(--ks3-font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 60px;
+}
+
+/* ── header ──────────────────────────────────────────────────────────── */
+.ac-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--ks3-dark-rule);
+  flex-wrap: wrap;
+}
+.ac-word { font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: var(--st-room-text); }
+.ac-word:hover { color: var(--st-room-text); }
+.ac-badge {
+  padding: 3px 9px; border-radius: 999px; font: 600 12px/1.4 var(--ks3-font-mono);
+  letter-spacing: .08em; text-transform: uppercase;
+  background: var(--ks3-dark-panel); color: var(--ks3-on-dark-muted);
+}
+.ac-nav { display: flex; gap: 18px; margin-left: 4px; }
+.ac-nav a { color: var(--ks3-on-dark-muted); font-weight: 600; font-size: 15px; padding-bottom: 2px; }
+.ac-nav a:hover { color: var(--st-room-text); }
+.ac-nav a.is-on { color: var(--st-room-text); border-bottom: 2px solid var(--st-ember); }
+.ac-who { margin-left: auto; color: var(--ks3-on-dark-muted); font-size: 14px; }
+
+/* ── main ────────────────────────────────────────────────────────────── */
+.ac-main { max-width: 1240px; margin: 0 auto; padding: clamp(18px,3vw,32px) clamp(16px,3vw,32px); }
+
+.ac-stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 10px; margin-bottom: 20px; }
+.ac-stat { padding: 12px 14px; border-radius: 10px; background: var(--ks3-dark-panel); border: 1px solid var(--ks3-dark-rule); }
+.ac-stat .n { font: 600 24px/1.1 var(--ks3-font-mono); color: var(--st-room-text); }
+.ac-stat .l { font: 500 12px/1.3 var(--ks3-font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ks3-on-dark-muted); margin-top: 2px; }
+.ac-stat .note { font: 400 11px/1.3 var(--ks3-font-body); color: var(--ks3-on-dark-muted); margin-top: 1px; }
+
+.ac-toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.ac-search {
+  flex: 1 1 260px; min-height: 44px; padding: 0 14px; border-radius: 10px;
+  border: 1px solid var(--ks3-dark-rule); background: var(--ks3-dark-panel); color: var(--st-room-text);
+}
+.ac-btn {
+  min-height: 44px; padding: 0 16px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--ks3-dark-rule); background: transparent; color: var(--st-room-text); font-weight: 600;
+}
+.ac-btn:hover:not(:disabled) { border-color: var(--st-ember); color: var(--st-ember); }
+.ac-btn:disabled { opacity: .5; cursor: default; }
+.ac-btn.is-primary { background: var(--st-ember); border-color: var(--st-ember); color: #221806; }
+.ac-btn.is-primary:hover:not(:disabled) { color: #221806; }
+
+.ac-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.ac-pill {
+  padding: 7px 13px; border-radius: 999px; font: 600 14px/1.2 var(--ks3-font-ui,inherit);
+  border: 1px solid var(--ks3-dark-rule); background: transparent; color: var(--ks3-on-dark-muted); cursor: pointer;
+}
+.ac-pill.is-on { border-color: var(--st-ember); background: var(--ks3-dark-panel); color: var(--st-room-text); }
+
+.ac-hd, .ac-row {
+  display: grid; grid-template-columns: 1fr; gap: 4px;
+  padding: 12px 0; border-top: 1px solid var(--ks3-dark-rule);
+}
+.ac-hd { display: none; }
+.ac-row:first-of-type { border-top: none; }
+.ac-row {
+  width: 100%; text-align: left; background: none; border-left: none; border-right: none;
+  color: var(--st-room-text); cursor: pointer;
+}
+.ac-row:hover { background: var(--ks3-dark-panel); }
+@media (min-width: 1000px) {
+  .ac-hd, .ac-row { grid-template-columns: 2fr 1.3fr 1fr 1fr 1fr 1fr; gap: 12px; align-items: center; }
+  .ac-hd { display: grid; color: var(--ks3-on-dark-muted); font: 500 12px/1.2 var(--ks3-font-mono); letter-spacing: .08em; text-transform: uppercase; }
+}
+.ac-name { font-weight: 700; }
+.ac-meta { color: var(--ks3-on-dark-muted); font-size: 13.5px; }
+.ac-empty { color: var(--ks3-on-dark-muted); padding: 20px 0; }
+
+.ac-billing-pill {
+  display: inline-block; padding: 3px 9px; border-radius: 999px;
+  font: 600 12.5px/1.3 var(--ks3-font-mono); border: 1px solid var(--ks3-dark-rule);
+}
+
+/* ── detail ──────────────────────────────────────────────────────────── */
+.ac-back { display: inline-flex; align-items: center; gap: 6px; color: var(--ks3-on-dark-muted); margin-bottom: 14px; background: none; border: none; cursor: pointer; font: 600 15px/1.2 inherit; padding: 0; }
+.ac-back:hover { color: var(--st-room-text); }
+.ac-dhead { margin-bottom: 18px; }
+.ac-dhead h1 { font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px; margin: 0 0 6px; color: var(--st-room-text); }
+.ac-dsecs { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 14px; margin-bottom: 14px; }
+.ac-sec { background: var(--ks3-dark-panel); border: 1px solid var(--ks3-dark-rule); border-radius: 12px; padding: 16px; }
+.ac-sec h2 { font: 600 12.5px/1.2 var(--ks3-font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ks3-on-dark-muted); margin: 0 0 12px; }
+.ac-sec.full { grid-column: 1 / -1; }
+.ac-kid { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; padding: 8px 0; border-top: 1px solid var(--ks3-dark-rule); }
+.ac-kid:first-of-type { border-top: none; padding-top: 0; }
+.ac-kid .right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.ac-kv { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-top: 1px solid var(--ks3-dark-rule); font-size: 14.5px; }
+.ac-kv:first-of-type { border-top: none; padding-top: 0; }
+.ac-kv .k { color: var(--ks3-on-dark-muted); }
+.ac-act { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--ks3-dark-rule); flex-wrap: wrap; }
+.ac-act:first-of-type { border-top: none; padding-top: 0; }
+.ac-act .hint { color: var(--ks3-on-dark-muted); font-size: 13px; margin-left: auto; }
+.ac-act-msg { font-size: 13.5px; margin-top: -4px; margin-bottom: 8px; }
+.ac-act-msg.ok { color: var(--ks3-ok); }
+.ac-act-msg.bad { color: var(--st-ember); }
+.ac-pwd { font: 600 18px/1.3 var(--ks3-font-mono); letter-spacing: .04em; background: var(--ks3-dark-rule); padding: 6px 10px; border-radius: 8px; user-select: all; }
+.ac-timeline .ac-tl-row { display: flex; gap: 12px; padding: 7px 0; border-top: 1px solid var(--ks3-dark-rule); font-size: 14.5px; }
+.ac-timeline .ac-tl-row:first-of-type { border-top: none; padding-top: 0; }
+.ac-timeline .when { flex: none; width: 96px; color: var(--ks3-on-dark-muted); }
+
+/* ── org-create modal ──────────────────────────────────────────────────── */
+.ac-veil { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: flex; align-items: flex-start; justify-content: center; padding: 24px 16px; overflow-y: auto; z-index: 50; }
+/* ⚠️ Load-bearing. `display: flex` above is a class rule and beats the UA's
+   `[hidden] { display: none }`, so without this the veil is OPEN on first
+   paint — the New-organisation modal covering the console before anybody has
+   asked for it — and `veil.hidden = true` never closes it again. Found by
+   driving the built page (admin_ui_drive.py, 5 Sep 2026). */
+.ac-veil[hidden] { display: none; }
+.ac-modal { width: 100%; max-width: 480px; background: var(--st-room-panel); border: 1px solid var(--ks3-dark-rule); border-radius: 14px; padding: 22px; }
+.ac-modal h2 { font-family: var(--ks3-font-display); font-size: 20px; margin: 0 0 14px; color: var(--st-room-text); }
+.ac-field { display: block; margin-bottom: 12px; font-size: 13.5px; color: var(--ks3-on-dark-muted); }
+.ac-field input {
+  display: block; width: 100%; margin-top: 5px; min-height: 42px; padding: 0 12px;
+  border-radius: 8px; border: 1px solid var(--ks3-dark-rule); background: var(--ks3-dark-panel); color: var(--st-room-text);
+}
+.ac-modal-acts { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.ac-form-msg { font-size: 13.5px; margin-top: 10px; }
+.ac-form-msg.ok { color: var(--ks3-ok); }
+.ac-form-msg.bad { color: var(--st-ember); }
+
+.c-signout-btn { background: none; border: 1px solid var(--ks3-dark-rule); color: var(--ks3-on-dark-muted); border-radius: 8px; min-height: 36px; padding: 0 10px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.c-signout-btn:hover { color: var(--st-room-text); border-color: var(--st-ember); }
+.c-signout-btn svg { width: 16px; height: 16px; }
+
+@media (max-width: 560px) {
+  .ac-head { padding: 12px 14px; }
+  .ac-main { padding: 16px 12px 40px; }
+}
+</style>
+</head>
+<body>
+
+<div class="rd ac-room" data-mode="ks3" id="c-main" style="display:none;">
+
+  <header class="ac-head">
+    <a class="ac-word" href="/consumer/admin-accounts.html">MrBadmus</a>
+    <span class="ac-badge">Admin</span>
+    <nav class="ac-nav">
+      <a class="is-on" href="/consumer/admin-accounts.html">Accounts</a>
+      <a href="/consumer/admin-queue.html">Marking</a>
+    </nav>
+    <span class="ac-who" id="who"></span>
+    <span id="signout-host"></span>
+  </header>
+
+  <main class="ac-main">
+
+    <div class="ac-stats" id="stats"></div>
+
+    <div class="ac-toolbar">
+      <input class="ac-search" id="q" type="search" placeholder="Search by parent, child, email or organisation"/>
+      <button class="ac-btn" id="new-org-btn" type="button">+ New organisation</button>
+    </div>
+
+    <div class="ac-filters" id="filters"></div>
+
+    <div id="list-view">
+      <div class="ac-hd" id="hd">
+        <span>Account</span><span>Children</span><span>Billing</span><span>MRR</span><span>Since</span><span>Last active</span>
+      </div>
+      <div id="rows"></div>
+      <p class="ac-empty" id="empty" hidden>No accounts match.</p>
+    </div>
+
+    <div id="detail-view" hidden></div>
+
+  </main>
+</div>
+
+<div class="ac-veil" id="org-veil" hidden>
+  <form class="ac-modal" id="org-form" novalidate>
+    <h2>New organisation</h2>
+    <label class="ac-field">Name
+      <input id="org-name" type="text" maxlength="120" required/>
+    </label>
+    <label class="ac-field">Seat cap
+      <input id="org-seats" type="number" min="1" max="5000" step="1" required/>
+    </label>
+    <label class="ac-field">Period end (invoice covers to)
+      <input id="org-period-end" type="date" required/>
+    </label>
+    <label class="ac-field">Contact name
+      <input id="org-contact-name" type="text" maxlength="120"/>
+    </label>
+    <label class="ac-field">Contact email
+      <input id="org-contact-email" type="email" required/>
+    </label>
+    <label class="ac-field">Email domain (optional — lets staff self-claim by domain)
+      <input id="org-domain" type="text" placeholder="brookfield.example"/>
+    </label>
+    <p class="ac-form-msg" id="org-msg" hidden></p>
+    <div class="ac-modal-acts">
+      <button type="button" class="ac-btn" id="org-cancel">Cancel</button>
+      <button type="submit" class="ac-btn is-primary" id="org-submit">Create organisation</button>
+    </div>
+  </form>
+</div>
+
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/consumer/consumer-common.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.MrBadmusConsumer;
+
+  var BILLING = {
+    trialing:  { label: 'Trial',       border: 'var(--ks3-on-dark-muted)', fg: 'var(--ks3-on-dark-body)' },
+    active:    { label: 'Active',      border: 'var(--ks3-ok)',            fg: 'var(--ks3-ok)' },
+    past_due:  { label: 'Past due',    border: 'var(--ks3-accent)',        fg: 'var(--st-ember)' },
+    cancelled: { label: 'Cancelled',   border: 'var(--ks3-on-dark-muted)', fg: 'var(--ks3-on-dark-muted)' },
+    locked:    { label: 'Locked',      border: 'var(--ks3-on-dark-muted)', fg: 'var(--ks3-on-dark-muted)' },
+    none:      { label: 'Not started', border: 'var(--ks3-on-dark-muted)', fg: 'var(--ks3-on-dark-muted)' },
+    invoiced:  { label: 'Invoiced',    border: 'var(--ks3-ok)',            fg: 'var(--ks3-ok)' }
+  };
+  function billingPill(b) {
+    var m = BILLING[b] || BILLING.none;
+    return '<span class="ac-billing-pill" style="border-color:' + m.border + ';color:' + m.fg + '">' +
+      C.escapeHtml(m.label) + '</span>';
+  }
+
+  var FILTERS = [
+    ['all', 'All'], ['trialing', 'Trialing'], ['active', 'Active'],
+    ['past_due', 'Past due'], ['cancelled', 'Cancelled'], ['locked', 'Locked'], ['orgs', 'Organisations']
+  ];
+
+  var state = { filter: 'all', q: '', detailId: null, stats: null, accounts: [] };
+  var qTimer = null;
+
+  function paintStats(stats) {
+    // ⚠️ The MRR value and "excl. trials" used to be one concatenated string
+    // in the big mono number slot, which wrapped to three lines and made this
+    // one tile taller than its six neighbours — found driving it, 5 Sep 2026.
+    // "excl. trials" is a caveat about the number, not part of it, so it gets
+    // its own small line under the label, the same shape Design's own stats
+    // mock used (`s.note`) for exactly this kind of qualifier.
+    var tiles = [
+      [stats.families, 'Families', null],
+      [stats.in_trial, 'In trial', null],
+      [stats.children, 'Children', null],
+      [stats.organisations, 'Organisations', null],
+      [stats.pupils, 'Pupils', null],
+      [C.money(stats.family_mrr_pence), 'Family MRR', 'excl. trials'],
+      [stats.past_due, 'Past due', null]
+    ];
+    document.getElementById('stats').innerHTML = tiles.map(function (t) {
+      return '<div class="ac-stat"><div class="n">' + C.escapeHtml(String(t[0])) + '</div>' +
+        '<div class="l">' + C.escapeHtml(t[1]) + '</div>' +
+        (t[2] ? '<div class="note">' + C.escapeHtml(t[2]) + '</div>' : '') + '</div>';
+    }).join('');
+  }
+
+  function paintFilters() {
+    document.getElementById('filters').innerHTML = FILTERS.map(function (f) {
+      return '<button type="button" class="ac-pill' + (state.filter === f[0] ? ' is-on' : '') +
+        '" data-filter="' + f[0] + '">' + C.escapeHtml(f[1]) + '</button>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('.ac-pill'), function (btn) {
+      btn.addEventListener('click', function () {
+        state.filter = btn.getAttribute('data-filter');
+        load();
+      });
+    });
+  }
+
+  function fmtSince(iso) { return C.fmtDate(iso, '—'); }
+  function fmtActive(iso) {
+    if (!iso) return 'never';
+    var days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    if (days <= 0) return 'today';
+    if (days === 1) return 'yesterday';
+    return days + ' days ago';
+  }
+
+  function paintRows(accounts) {
+    var host = document.getElementById('rows');
+    var empty = document.getElementById('empty');
+    if (!accounts.length) {
+      host.innerHTML = '';
+      empty.hidden = false;
+      return;
+    }
+    empty.hidden = true;
+    host.innerHTML = accounts.map(function (a) {
+      return '<button type="button" class="ac-row" data-id="' + C.escapeHtml(a.id) + '">' +
+        '<span><span class="ac-name">' + C.escapeHtml(a.name) + '</span><br/>' +
+        '<span class="ac-meta">' + C.escapeHtml(a.email || '—') + '</span></span>' +
+        '<span class="ac-meta">' + C.escapeHtml(a.kids_label || '—') + '</span>' +
+        '<span>' + billingPill(a.billing) + '</span>' +
+        '<span class="ac-meta">' + C.escapeHtml(a.mrr_label || '—') + '</span>' +
+        '<span class="ac-meta">' + C.escapeHtml(fmtSince(a.since)) + '</span>' +
+        '<span class="ac-meta">' + C.escapeHtml(fmtActive(a.last_active)) + '</span>' +
+        '</button>';
+    }).join('');
+    Array.prototype.forEach.call(host.querySelectorAll('.ac-row'), function (row) {
+      row.addEventListener('click', function () { openDetail(row.getAttribute('data-id')); });
+    });
+  }
+
+  function showList() {
+    state.detailId = null;
+    document.getElementById('list-view').hidden = false;
+    document.getElementById('detail-view').hidden = true;
+    document.getElementById('hd').style.display = '';
+  }
+
+  function openDetail(id) {
+    state.detailId = id;
+    document.getElementById('list-view').hidden = true;
+    var dv = document.getElementById('detail-view');
+    dv.hidden = false;
+    dv.innerHTML = '<p class="ac-meta">Loading…</p>';
+    ctxApi('/api/consumer/admin/accounts/' + encodeURIComponent(id)).then(function (d) {
+      paintDetail(d.account);
+    }).catch(function (e) {
+      dv.innerHTML = '';
+      C.fail(dv, e.message || 'We couldn’t load this account.', 'Refresh and try again.');
+    });
+  }
+
+  var actionSeq = 0;
+  function actionRow(label, hint, onRun, disabled) {
+    var seq = 'act' + (actionSeq++);
+    return {
+      seq: seq,
+      html: '<div class="ac-act">' +
+        '<button type="button" class="ac-btn" id="' + seq + '"' + (disabled ? ' disabled' : '') + '>' + C.escapeHtml(label) + '</button>' +
+        '<span class="hint">' + C.escapeHtml(hint || '') + '</span></div>' +
+        '<p class="ac-act-msg" id="' + seq + '-msg" hidden></p>',
+      wire: function () {
+        var btn = document.getElementById(seq);
+        var msg = document.getElementById(seq + '-msg');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          C.setBusy(btn, true);
+          msg.hidden = true;
+          onRun().then(function (text) {
+            C.setBusy(btn, false);
+            msg.className = 'ac-act-msg ok'; msg.innerHTML = text; msg.hidden = false;
+          }).catch(function (e) {
+            C.setBusy(btn, false);
+            msg.className = 'ac-act-msg bad'; msg.textContent = e.message || 'That didn’t work. Try again.'; msg.hidden = false;
+          });
+        });
+      }
+    };
+  }
+
+  function ctxApi(path, opts) {
+    opts = opts || {};
+    opts.token = window.__mrbAdminToken;
+    return C.api(path, opts);
+  }
+
+  function paintDetail(d) {
+    var dv = document.getElementById('detail-view');
+    var kidsHtml = (d.kids || []).length ? d.kids.map(function (k) {
+      return '<div class="ac-kid" data-kid="' + C.escapeHtml(k.id) + '">' +
+        '<span class="ac-name">' + C.escapeHtml(k.name || 'Child') + '</span>' +
+        '<span class="ac-meta">Y' + C.escapeHtml(String(k.year || '—')) + ' · ' + C.escapeHtml(k.mode || '') + ' · active ' + C.escapeHtml(k.active || 'never') + '</span>' +
+        '<span class="right"><button type="button" class="ac-btn kid-pwd-btn" data-kid="' + C.escapeHtml(k.id) + '" data-name="' + C.escapeHtml(k.name || 'this child') + '">Reset password</button></span>' +
+        '<span class="ac-kid-msg" data-kidmsg="' + C.escapeHtml(k.id) + '"></span>' +
+        '</div>';
+    }).join('') : '<p class="ac-meta">No children on this account yet.</p>';
+
+    var billingKv = [
+      ['Cycle', d.cycle || '—'],
+      ['Next', d.next_label || '—'],
+      ['MRR', d.mrr_label || '—'],
+    ];
+    if (d.kind === 'organisation') {
+      billingKv.push(['Seats', (d.seats_used == null ? '0' : d.seats_used) + (d.seat_cap != null ? ' / ' + d.seat_cap : '')]);
+    }
+    if (d.failures) billingKv.push(['Failed payments', String(d.failures)]);
+    if (d.deletion_requested_at) billingKv.push(['Deletion requested', C.fmtDate(d.deletion_requested_at)]);
+    if (d.terms_accepted_at) billingKv.push(['Terms accepted', C.fmtDate(d.terms_accepted_at)]);
+    var billingHtml = billingKv.map(function (kv) {
+      return '<div class="ac-kv"><span class="k">' + C.escapeHtml(kv[0]) + '</span><span>' + C.escapeHtml(String(kv[1])) + '</span></div>';
+    }).join('') + (d.stripe_customer_id
+      ? '<p style="margin-top:10px;"><a href="https://dashboard.stripe.com/customers/' + encodeURIComponent(d.stripe_customer_id) + '" target="_blank" rel="noopener">Open in Stripe ↗</a></p>'
+      : '');
+
+    var actions = [];
+    actions.push(actionRow('Extend trial 7 days', d.billing === 'trialing' ? 'Trial ends ' + (d.next_label || '') : 'Not on trial', function () {
+      return ctxApi('/api/consumer/admin/orgs/' + d.id + '/extend-trial', { method: 'POST', body: { days: 7 } }).then(function (r) {
+        return 'Extended to ' + C.fmtDate(r.trial_end) + '.';
+      });
+    }, d.billing !== 'trialing'));
+    actions.push(actionRow('Resend verification email', 'E1', function () {
+      return ctxApi('/api/consumer/admin/orgs/' + d.id + '/resend-verification', { method: 'POST' }).then(function () {
+        return 'Sent.';
+      });
+    }, false));
+    actions.push(actionRow('Add 2 human marks this month', 'Goodwill', function () {
+      return ctxApi('/api/consumer/admin/orgs/' + d.id + '/human-marks', { method: 'POST', body: { add: 2 } }).then(function (r) {
+        return C.escapeHtml(r.note || 'Added.');
+      });
+    }, false));
+    actions.push(actionRow('Unlock for 14 days', d.billing === 'locked' ? 'No charge' : 'Not locked', function () {
+      return ctxApi('/api/consumer/admin/orgs/' + d.id + '/unlock', { method: 'POST' }).then(function (r) {
+        return 'Unlocked until ' + C.fmtDate(r.comped_until) + '.';
+      });
+    }, d.billing !== 'locked'));
+
+    var timelineHtml = (d.timeline || []).length ? d.timeline.map(function (t) {
+      return '<div class="ac-tl-row"><span class="when">' + C.escapeHtml(C.fmtDate(t.when)) + '</span><span>' + C.escapeHtml(t.what) + '</span></div>';
+    }).join('') : '<p class="ac-meta">Nothing recorded yet.</p>';
+
+    dv.innerHTML =
+      '<button type="button" class="ac-back" id="back-btn">‹ All accounts</button>' +
+      '<div class="ac-dhead"><h1>' + C.escapeHtml(d.name) + ' ' + billingPill(d.billing) + '</h1>' +
+      '<p class="ac-meta">' + C.escapeHtml(d.email || '—') + ' · since ' + C.escapeHtml(fmtSince(d.since)) + '</p></div>' +
+      '<div class="ac-dsecs">' +
+        '<div class="ac-sec"><h2>' + (d.kind === 'organisation' ? 'Pupils' : 'Children') + '</h2>' + kidsHtml + '</div>' +
+        '<div class="ac-sec"><h2>Billing</h2>' + billingHtml + '</div>' +
+        '<div class="ac-sec"><h2>Support actions</h2>' + actions.map(function (a) { return a.html; }).join('') + '</div>' +
+      '</div>' +
+      '<div class="ac-sec full ac-timeline"><h2>Timeline</h2>' + timelineHtml + '</div>';
+
+    document.getElementById('back-btn').addEventListener('click', showList);
+    actions.forEach(function (a) { a.wire(); });
+
+    Array.prototype.forEach.call(dv.querySelectorAll('.kid-pwd-btn'), function (btn) {
+      btn.addEventListener('click', function () {
+        var kidId = btn.getAttribute('data-kid');
+        var name = btn.getAttribute('data-name');
+        var msgEl = dv.querySelector('[data-kidmsg="' + kidId + '"]');
+        C.setBusy(btn, true);
+        ctxApi('/api/consumer/admin/children/' + kidId + '/password', { method: 'POST' }).then(function (r) {
+          C.setBusy(btn, false);
+          msgEl.innerHTML = 'New password for ' + C.escapeHtml(name) + ' (shown once): <span class="ac-pwd">' + C.escapeHtml(r.password) + '</span>';
+        }).catch(function (e) {
+          C.setBusy(btn, false);
+          msgEl.innerHTML = '<span style="color:var(--st-ember)">' + C.escapeHtml(e.message || 'That didn’t work.') + '</span>';
+        });
+      });
+    });
+  }
+
+  /* ⚠️ Every keystroke and every pill fires a fresh /admin/accounts, and that
+     route is not fast — it does an org_access_state RPC and an auth lookup PER
+     ACCOUNT. So two are routinely in flight at once, and without this guard
+     the SLOWER one wins: press "Organisations", then type a family's name, and
+     the org list lands last and sits there as the answer to a search it was
+     never asked. Only the newest request may paint. Found by driving the built
+     page (admin_ui_drive.py, 5 Sep 2026). */
+  var loadSeq = 0;
+
+  function load() {
+    paintFilters();
+    var params = [];
+    params.push('filter=' + encodeURIComponent(state.filter));
+    if (state.q) params.push('q=' + encodeURIComponent(state.q));
+    var mine = ++loadSeq;
+    ctxApi('/api/consumer/admin/accounts?' + params.join('&')).then(function (d) {
+      if (mine !== loadSeq) { return; }
+      state.stats = d.stats; state.accounts = d.accounts || [];
+      paintStats(state.stats);
+      paintRows(state.accounts);
+    }).catch(function (e) {
+      if (mine !== loadSeq) { return; }
+      C.fail(document.getElementById('rows'), e.message || 'We couldn’t load accounts.', 'Refresh and try again.');
+    });
+  }
+
+  function wireOrgForm() {
+    var veil = document.getElementById('org-veil');
+    var msg = document.getElementById('org-msg');
+    document.getElementById('new-org-btn').addEventListener('click', function () {
+      document.getElementById('org-form').reset();
+      msg.hidden = true;
+      veil.hidden = false;
+    });
+    document.getElementById('org-cancel').addEventListener('click', function () { veil.hidden = true; });
+    veil.addEventListener('click', function (e) { if (e.target === veil) veil.hidden = true; });
+
+    document.getElementById('org-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var body = {
+        name: document.getElementById('org-name').value.trim(),
+        seat_cap: Number(document.getElementById('org-seats').value),
+        period_end: document.getElementById('org-period-end').value,
+        contact_name: document.getElementById('org-contact-name').value.trim(),
+        contact_email: document.getElementById('org-contact-email').value.trim(),
+        email_domain: document.getElementById('org-domain').value.trim() || undefined
+      };
+      var btn = document.getElementById('org-submit');
+      C.setBusy(btn, true, 'Creating…');
+      msg.hidden = true;
+      ctxApi('/api/consumer/admin/orgs', { method: 'POST', body: body }).then(function (r) {
+        C.setBusy(btn, false);
+        var warn = (r.org.warnings || []).length ? ' Warning: ' + r.org.warnings.join(', ') + ' did not fully save — check before relying on it.' : '';
+        msg.className = 'ac-form-msg ok';
+        msg.textContent = 'Created ' + r.org.name + ' (' + r.org.academic_year + ').' + warn;
+        msg.hidden = false;
+        state.q = ''; document.getElementById('q').value = '';
+        load();
+        setTimeout(function () { veil.hidden = true; }, 1600);
+      }).catch(function (e) {
+        C.setBusy(btn, false);
+        msg.className = 'ac-form-msg bad';
+        msg.textContent = e.message || 'That didn’t save.';
+        msg.hidden = false;
+      });
+    });
+  }
+
+  C.boot({
+    requireSession: true,
+    signInPath: '/auth.html',
+    run: function (ctx) {
+      window.__mrbAdminToken = ctx.token;
+
+      return C.isOperator(ctx.sb).then(function (ok) {
+        if (!ok) { return C.notFound(); }
+
+        /* `#c-main` ships `display:none` so that the console's markup never
+           flashes up while the operator check is still in flight — a
+           non-operator must not see it for a frame. `boot()` only ever
+           un-hides `document.body`, so THIS line is what puts the page on
+           screen, and without it the console is invisible to everyone. */
+        document.getElementById('c-main').style.display = '';
+
+        document.getElementById('who').textContent = ctx.session.user.email || '';
+        C.signOutControl(document.getElementById('signout-host'), { sb: ctx.sb, label: 'Sign out', redirectTo: '/auth.html' });
+
+        document.getElementById('q').addEventListener('input', function () {
+          var v = this.value;
+          clearTimeout(qTimer);
+          qTimer = setTimeout(function () { state.q = v.trim(); load(); }, 300);
+        });
+
+        wireOrgForm();
+        load();
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
