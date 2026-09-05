@@ -458,7 +458,7 @@
 <script src="/shared/config.js?v=d1fecb43"></script>
 <script src="/shared/class-entry.js?v=d47329ae"></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/teacher-data.js?v=615378a3"></script>
+<script src="/shared/teacher-data.js?v=088ad9af"></script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
@@ -498,13 +498,26 @@ function notice(title, body) {
 
 let CLASSES = [];
 let pendingRows = null;
+let PERIOD_TIMES = {};
+
+/* MRB-325 ruling 2 — "09:15:00" (Postgres `time`) to "09:15". Never invents
+   a time: called only where `school_period_times` already has a row. */
+function formatTime(t) {
+  const m = /^(\d{2}):(\d{2})/.exec(t || '');
+  return m ? (m[1] + ':' + m[2]) : '';
+}
+
+function periodHeader(p) {
+  const pt = PERIOD_TIMES[p];
+  return 'Period ' + p + (pt && pt.startsAt ? ' · ' + formatTime(pt.startsAt) : '');
+}
 
 function drawGrid(existing) {
   const bySlot = {};
   (existing || []).forEach(function (e) { bySlot[e.weekday + ':' + e.period] = e.classId; });
 
   let html = '<tr><th class="rowhead"></th>';
-  PERIODS.forEach(function (p) { html += '<th>Period ' + p + '</th>'; });
+  PERIODS.forEach(function (p) { html += '<th>' + esc(periodHeader(p)) + '</th>'; });
   html += '</tr>';
 
   DAYS.forEach(function (d) {
@@ -636,12 +649,17 @@ MrBadmusTeacherGuard.requireTeacherRole({
       const yid = years && years.working ? years.working.id : null;
       const both = await Promise.all([
         TD.loadTeacherClasses(yid, { metrics: false }),
-        TD.loadTimetable()
+        TD.loadTimetable(),
+        TD.loadPeriodTimes().catch(function (e) {
+          console.warn('[timetable] loadPeriodTimes unavailable — labelling by period number', e);
+          return {};
+        })
       ]);
       CLASSES = (both[0] || []).slice().sort(function (a, b) {
         return String(a.name).localeCompare(String(b.name));
       });
       entries = both[1] || [];
+      PERIOD_TIMES = both[2] || {};
       el('sub').textContent = years && years.working
         ? (years.working.name + ' · ' + CLASSES.length +
            (CLASSES.length === 1 ? ' class' : ' classes'))

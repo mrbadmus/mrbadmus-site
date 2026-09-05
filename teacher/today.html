@@ -336,6 +336,88 @@
     }
     .remind-row .who { flex: 1; min-width: 200px; color: var(--st-muted); font: 400 16px/1.4 var(--st-ui); }
 
+    /* ── ⊕ MRB-325 ruling 1 — the stat strip, the action row and the two
+       side panels ─────────────────────────────────────────────────────────
+
+       ⚑ LAYOUT CALL: MOBILE-FIRST SINGLE COLUMN, WIDENING TO TWO.
+       The default is one stacked column — strip, lessons, students to chase,
+       worth a reteach — and the second column is bought back at 1000px with
+       ONE `grid-template-columns` line. Design's screenshot is the wide
+       state and this reaches it; the narrow state is the same content in
+       reading order rather than a second layout to maintain.
+       ⚠️ Written this way round on purpose. `today_drive`'s "390px: no
+       horizontal overflow" is a PUSH GATE on this page, and a desktop-first
+       rule would make 390px the exception that has to be remembered. Here
+       390px is what the file says with no media query at all: nothing below
+       has a fixed width, and `minmax(0, …)` is on both tracks so a long
+       stem in a reteach row cannot push the grid wider than its container. */
+    .today-grid { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+    @media (min-width: 1000px) {
+      .today-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 348px); }
+    }
+    .today-grid > * { min-width: 0; }
+    .today-col { display: flex; flex-direction: column; }
+    .today-col > .card:last-child { margin-bottom: 0; }
+
+    /* One line of facts, and the controls that act on them. Wraps rather than
+       shrinks: at 390px the buttons drop under the sentence. */
+    .strip {
+      display: flex; align-items: center; gap: 12px 18px; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .strip-line {
+      flex: 1 1 260px; min-width: 0;
+      font: 400 18px/1.5 var(--st-ui); color: var(--st-body);
+    }
+    .strip-line .sep { padding: 0 6px; opacity: 0.6; }
+    .strip-line .n { font-family: var(--st-mono); font-variant-numeric: tabular-nums; color: var(--st-ink); font-weight: 500; }
+    .strip-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    /* Design's action buttons at this page's own `.btn` size, one step down —
+       they are secondary to the lessons, which are why a teacher is here. */
+    .strip-actions .btn { padding: 8px 14px; min-height: 36px; font-size: 15.5px; }
+
+    /* The two side panels. Same `.card` shell as the lessons, so nothing new
+       is invented for them. */
+    .panel-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 11px 0; border-bottom: 1px solid var(--st-rule-fact);
+    }
+    .panel-row:last-child { border-bottom: none; }
+    .panel-body { flex: 1; min-width: 0; }
+    /* ⚠️ NO `text-transform` ON ANY PANEL ROW — the same rule the lesson card
+       above carries. `today_drive` reads `innerText`, which reflects the
+       RENDERED case, so a restyle here must not change what the page says.
+       (`.card h2` already uppercases the HEADINGS, and it did before this
+       unit; the assertions are case-folded for exactly those.) */
+    .panel-name { font: 600 16.5px/1.3 var(--st-ui); color: var(--st-ink); overflow-wrap: break-word; }
+    .panel-meta { color: var(--st-muted); font: 400 14.5px/1.4 var(--st-ui); margin-top: 2px; overflow-wrap: break-word; }
+    .panel-foot {
+      padding-top: 12px; margin-top: 2px; border-top: 1px solid var(--st-rule-fact);
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .panel-foot .more { flex: 1 1 auto; color: var(--st-muted); font: 400 14.5px/1.4 var(--st-ui); }
+    .panel-foot .btn { padding: 7px 12px; min-height: 34px; font-size: 15px; }
+
+    /* Initials, not a photo. `avatar_url` is on the roster rows but a face on
+       a chase list is a bigger claim than this panel needs, and the initials
+       are the same ones every other teacher screen draws. */
+    .avatar {
+      flex: none; width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font: 600 13px/1 var(--st-ui); color: #FFFFFF; letter-spacing: 0.02em;
+    }
+    /* ⚠️ NO MONO AND NO TRACKING HERE, unlike `.lesson-period` beside it.
+       A period label is a category; a class code is a NAME, and MRB-263 makes
+       its exact shape meaningful — `8r/Sc1` letter-spaced in a mono face reads
+       as "8 r / S c 1" and stops looking like the code the lesson card two
+       inches away is showing. Same string, same reading. */
+    .reteach-code {
+      flex: none; min-width: 72px;
+      font: 600 14.5px/1.4 var(--st-ui);
+      color: var(--st-caption); padding-top: 1px;
+    }
+    .reteach-pct { flex: none; font-family: var(--st-mono); font-variant-numeric: tabular-nums; font-weight: 500; padding-top: 2px; }
+
     @media (max-width: 560px) {
       .container { padding: 18px 14px 40px; }
       .card { padding: 14px 14px; }
@@ -406,12 +488,68 @@
 
   <div class="daybar" id="daybar"></div>
 
-  <div class="card">
-    <h2 id="lessons-heading">Your lessons</h2>
-    <div id="lessons">
-      <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:120px;height:16px;"></div><div class="skel" style="width:220px;height:12px;margin-top:8px;"></div></div></div>
-      <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:100px;height:16px;"></div><div class="skel" style="width:190px;height:12px;margin-top:8px;"></div></div></div>
-      <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:130px;height:16px;"></div><div class="skel" style="width:210px;height:12px;margin-top:8px;"></div></div></div>
+  <!-- ⊕ MRB-325 ruling 1 — the stat strip and the action row.
+       SHIPS HIDDEN and is revealed only once there is a timetable to describe.
+       ⚠️ That is load-bearing, not tidiness: the no-timetable branch below
+       returns early with `#main` visible, and `today_drive`'s no-timetable
+       case asserts `"upload" not in text.lower()` — an "Upload timetable"
+       button standing over "there isn't a timetable on your account yet"
+       would both fail that gate and offer a second door to a page the prompt
+       right beside it is already offering.
+
+       ⛔ THERE IS NO "SET WORK" BUTTON HERE, AND ITS ABSENCE IS THE RULING.
+       Design's target draws one. `DEAD` in `teacher_rulings.py` removed the
+       same control from every generated teacher screen — "a control that does
+       nothing when pressed is worse than none" — because there is no backend
+       write path that composes an assignment from a teacher surface anywhere
+       on this platform. Adding a working one here is not a front-end job, and
+       adding a non-working one is the thing that ruling forbids. Disclosed
+       deviation from the approved screenshot, MRB-325 ruling 1. -->
+  <div class="strip" id="strip" style="display:none;">
+    <div class="strip-line" id="strip-line"></div>
+    <div class="strip-actions">
+      <a class="btn" href="/teacher/digest.html">Weekly digest</a>
+      <!-- Both timetable intents stay reachable: this is the fresh-CSV door,
+           and `Edit timetable` (appended to the lessons heading by this page's
+           own JS) is the change-one-lesson door. They land on the same page
+           because that page holds both — the grid editor and the "Or upload a
+           file" card — and it has no anchor to deep-link the second half to. -->
+      <a class="btn" href="/teacher/timetable.html">Upload timetable</a>
+    </div>
+  </div>
+
+  <div class="today-grid">
+    <div class="today-col">
+      <div class="card">
+        <h2 id="lessons-heading">Your lessons</h2>
+        <div id="lessons">
+          <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:120px;height:16px;"></div><div class="skel" style="width:220px;height:12px;margin-top:8px;"></div></div></div>
+          <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:100px;height:16px;"></div><div class="skel" style="width:190px;height:12px;margin-top:8px;"></div></div></div>
+          <div class="skel-row"><div class="skel" style="width:74px;height:14px;"></div><div style="flex:1"><div class="skel" style="width:130px;height:16px;"></div><div class="skel" style="width:210px;height:12px;margin-top:8px;"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- The two panels ship HIDDEN for the same reason the strip does, and
+         are revealed with the strip. Each shows the lessons card's own
+         skeleton until its reads land — never a bare heading on empty ground,
+         and never a blank flash that reads as "nobody to chase". -->
+    <div class="today-col" id="side" style="display:none;">
+      <div class="card">
+        <h2>Students to chase</h2>
+        <div id="chase">
+          <div class="skel-row"><div class="skel" style="width:34px;height:34px;border-radius:50%;"></div><div style="flex:1"><div class="skel" style="width:120px;height:15px;"></div><div class="skel" style="width:170px;height:11px;margin-top:8px;"></div></div></div>
+          <div class="skel-row"><div class="skel" style="width:34px;height:34px;border-radius:50%;"></div><div style="flex:1"><div class="skel" style="width:100px;height:15px;"></div><div class="skel" style="width:150px;height:11px;margin-top:8px;"></div></div></div>
+          <div class="skel-row"><div class="skel" style="width:34px;height:34px;border-radius:50%;"></div><div style="flex:1"><div class="skel" style="width:130px;height:15px;"></div><div class="skel" style="width:160px;height:11px;margin-top:8px;"></div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Worth a reteach</h2>
+        <div id="reteach">
+          <div class="skel-row"><div class="skel" style="width:60px;height:13px;"></div><div style="flex:1"><div class="skel" style="width:180px;height:14px;"></div></div></div>
+          <div class="skel-row"><div class="skel" style="width:60px;height:13px;"></div><div style="flex:1"><div class="skel" style="width:150px;height:14px;"></div></div></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -431,7 +569,7 @@
      is not already on the page, and this page's very first read needs it. -->
 <script src="/shared/class-entry.js?v=d47329ae"></script>
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/teacher-data.js?v=615378a3"></script>
+<script src="/shared/teacher-data.js?v=088ad9af"></script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
      nothing until a lesson row's picker button is pressed. It makes no
@@ -478,6 +616,13 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
     return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
   });
+}
+
+/* MRB-325 ruling 2 — "09:15:00" (Postgres `time`) to "09:15". Never invents
+   a time: called only where `school_period_times` already has a row. */
+function formatTime(t) {
+  const m = /^(\d{2}):(\d{2})/.exec(t || '');
+  return m ? (m[1] + ':' + m[2]) : '';
 }
 
 /* Time-of-day greeting. From the clock, which is fine — being wished good
@@ -544,6 +689,29 @@ MrBadmusTeacherGuard.requireTeacherRole({
         'Your timetable could not be loaded just now. Refresh in a moment, or open ' +
         '<a href="/teacher/classes.html">My classes</a>.');
     }
+
+    /* MRB-325 ruling 2 — real clock times, once a school has them. Never
+       fatal: a school with no rows yet (school_period_times empty) simply
+       keeps labelling by period number, exactly as before. */
+    let periodTimes = {};
+    try {
+      periodTimes = await TD.loadPeriodTimes();
+    } catch (e) {
+      console.warn('[today] loadPeriodTimes unavailable — labelling by period number', e);
+    }
+
+    /* ⊕ MRB-325 ruling 1 — the school's go-live hold. Fired here, and NOT
+       awaited: nothing above the lessons needs it, and the panels that do are
+       many hundreds of milliseconds behind it. Never fatal — a school with no
+       row, or a read that fails, is treated as NOT held, which leaves the
+       page saying exactly what it said before this ruling. Failing the other
+       way would print "No assignment set yet" over a school that is running
+       normally, which is the worse of the two wrong answers. */
+    const holdPromise = (TD.loadSchoolHold ? TD.loadSchoolHold() : Promise.resolve({}))
+      .catch(function (e) {
+        console.warn('[today] loadSchoolHold unavailable — treating the school as open', e);
+        return {};
+      });
 
     const name = teacherName(ctx && ctx.profile);
     el('greeting').textContent = greetingFor(name);
@@ -641,9 +809,11 @@ MrBadmusTeacherGuard.requireTeacherRole({
          does nothing when pressed, and one offered for a class this page
          could not read would be a picker over an empty room. Same rule the
          state line beside it already keeps: unknown is not zero. */
+      const pt = periodTimes[e.period];
+      const periodLabel = 'Period ' + e.period + (pt && pt.startsAt ? ' · ' + formatTime(pt.startsAt) : '');
       return '<div class="lesson">' +
              '<a class="lesson-go" href="/teacher/class-detail.html?class=' + encodeURIComponent(e.classId) + '">' +
-             '<div class="lesson-period">Period ' + e.period + '</div>' +
+             '<div class="lesson-period">' + esc(periodLabel) + '</div>' +
              '<div class="lesson-body">' +
              '<div class="lesson-code">' + esc(e.className || 'Class') + '</div>' +
              '<div class="lesson-meta">' + esc(meta) + '</div>' +
@@ -671,6 +841,27 @@ MrBadmusTeacherGuard.requireTeacherRole({
     }).join('');
     el('main').style.display = 'block';
 
+    /* ⊕ MRB-325 ruling 1 — the strip and the panels are revealed HERE, past
+       the no-timetable and nothing-timetabled returns, so neither of those
+       states ever shows an "Upload timetable" button or an empty chase list.
+       The lesson count is real immediately (it is the timetable, which has
+       already landed); the other two facts are skeletons until their reads
+       come back, because a strip that opened at "0 students to chase" would
+       be a reassurance the page has not yet earned. */
+    el('strip').style.display = 'flex';
+    el('side').style.display = 'flex';
+    const lessonWord = dayEntries.length === 1 ? ' lesson' : ' lessons';
+    const stripHead = '<span class="n">' + dayEntries.length + '</span>' + lessonWord +
+      (isToday ? ' today' : ' on ' + esc(DAY_NAMES[showDay]));
+    function paintStrip(chaseHtml, reteachHtml) {
+      el('strip-line').innerHTML = stripHead +
+        '<span class="sep">·</span>' + chaseHtml +
+        '<span class="sep">·</span>' + reteachHtml;
+    }
+    const stripSkel = '<span class="skel" style="display:inline-block;width:96px;height:12px;' +
+                      'vertical-align:middle;"></span>';
+    paintStrip(stripSkel, stripSkel);
+
     /* ── PER-CLASS STATE ────────────────────────────────────────────────
        One read for every class on the day, in parallel — not one wave per
        lesson (the MRB-292 lesson). Each cell is filled independently, so one
@@ -687,6 +878,20 @@ MrBadmusTeacherGuard.requireTeacherRole({
       console.warn('[today] class state unavailable', err);
     }
 
+    /* ⊕ MRB-325 ruling 1 — IS THE SCHOOL HELD? `assignments_open_from` set
+       and STRICTLY in the future, against the school's own calendar day, is
+       the same test the backend applies before it refuses to compose and
+       answers `reason='assignments_not_open_yet'`. While it holds, every
+       surface below says the ONE ruled sentence and says it once. */
+    const hold = await holdPromise;
+    const openFrom = hold && hold.assignmentsOpenFrom ? String(hold.assignmentsOpenFrom) : null;
+    const HELD = !!(openFrom && openFrom > schoolDateISO());
+    /* ⚖️ RULED WORDING. Short, once per surface, and with NO explanation of
+       why — a teacher opening Today before term does not need the platform to
+       narrate its own configuration at them, and the school already knows it
+       set the date. Do not paraphrase this string. */
+    const HELD_TEXT = 'No assignment set yet';
+
     classIds.forEach(function (cid) {
       const cells = document.querySelectorAll('[data-state-for="' + cid + '"]');
       if (!cells.length) { return; }
@@ -700,7 +905,11 @@ MrBadmusTeacherGuard.requireTeacherRole({
       }
 
       const pack = matrices[cid];
-      const state = describeClass(pack);
+      /* The hold wins over `describeClass` here, and only here. It is not a
+         claim about the class — it is a claim about the school, and it is
+         true of every class on the page at once. "No work set this week."
+         would be literally accurate and would still read as a fault. */
+      const state = HELD ? { text: HELD_TEXT, chase: false } : describeClass(pack);
       cells.forEach(function (c) {
         c.className = 'lesson-state ' + (state.chase ? 'chase' : 'clear');
         c.textContent = state.text;
@@ -747,29 +956,276 @@ MrBadmusTeacherGuard.requireTeacherRole({
         });
       });
     }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       ⊕ MRB-325 ruling 1 — STUDENTS TO CHASE, AND WORTH A RETEACH
+       ══════════════════════════════════════════════════════════════════════
+
+       Both panels are scoped to TODAY'S classes only — the handful a teacher
+       is about to walk into, not their whole roster. That is the whole point
+       of the screen, and it is also what makes the reteach read affordable:
+       one extra round trip over three or four papers, not over twelve.       */
+
+    // The code a class shows on this page, so the panels name a class the
+    // same way the lesson row above them does. One row, one name.
+    const codeOf = {};
+    dayEntries.forEach(function (e) {
+      if (e.classId && !codeOf[e.classId]) { codeOf[e.classId] = e.className || ''; }
+    });
+
+    const chaseBox = el('chase');
+    const reteachBox = el('reteach');
+
+    /* ── THE HELD SCHOOL ──────────────────────────────────────────────── */
+    if (HELD) {
+      chaseBox.innerHTML = '<div class="empty">' + esc(HELD_TEXT) + '</div>';
+      reteachBox.innerHTML = '<div class="empty">' + esc(HELD_TEXT) + '</div>';
+      /* The strip says it ONCE too, in place of both counts, rather than
+         printing "0 students to chase · 0 topics worth a reteach". Those
+         zeroes would be arithmetically true and would read as a claim that
+         the classes are all up to date, which is a different and untrue
+         thing. The date is NOT shown: the ruling is short, once, and with no
+         explanation of why. */
+      el('strip-line').innerHTML = stripHead + '<span class="sep">·</span>' + esc(HELD_TEXT);
+      return;
+    }
+
+    /* ⚠️ UNKNOWN IS NOT ZERO, in the panels as much as on the lesson rows.
+       A failed matrices read means this page cannot see the classes at all,
+       and "nobody to chase" would be an invented reassurance. */
+    if (!matrices) {
+      chaseBox.innerHTML = '<div class="empty">Couldn’t load your classes just now.</div>';
+      reteachBox.innerHTML = '<div class="empty">Couldn’t load your classes just now.</div>';
+      el('strip-line').innerHTML = stripHead;
+      return;
+    }
+
+    const nowIso = new Date().toISOString();
+
+    /* ── WHO OWES THIS WEEK'S WORK ────────────────────────────────────────
+       From `weekState`, the SAME derivation the lesson line beside it just
+       used, so the panel can never list a student the row above says is in.
+       The per-student figures come from `termStats`, which is `buildRoster`'s
+       two numbers on the rows this page already holds. */
+    const chaseRows = [];
+    const chaseSeen = {};
+    const remindBy = {};   // classId -> { assignmentId, studentIds }
+    classIds.forEach(function (cid) {
+      const pack = matrices[cid];
+      const st = weekState(pack);
+      if (st.why !== 'ok' || !st.owing.length) { return; }
+      const stats = termStats(pack, nowIso);
+      remindBy[cid] = {
+        assignmentId: st.paper.id,
+        studentIds: st.owing.map(function (m) { return m.student_id; })
+      };
+      st.owing.forEach(function (m) {
+        const s = stats[m.student_id] || { missed: 0, avg: null };
+        /* Distinct STUDENTS, not distinct rows: a child taught twice in one
+           day owes one piece of work per class but is one person to chase,
+           and counting them twice would inflate the strip. The class they are
+           kept under is the earlier lesson of the day, which is the one the
+           teacher reaches first. */
+        if (chaseSeen[m.student_id]) { return; }
+        chaseSeen[m.student_id] = true;
+        chaseRows.push({
+          id: m.student_id,
+          name: fullName(m.first_name, m.last_name) || 'Student',
+          first: m.first_name, last: m.last_name,
+          code: codeOf[cid] || '',
+          missed: s.missed,
+          avg: s.avg
+        });
+      });
+    });
+
+    /* Worst first: most marked papers never handed in, then the lowest
+       average. A student with NO average sorts last within their tie rather
+       than first — no marks is not evidence of weakness, and putting an
+       unmarked child at the top of a chase list would be a claim the data
+       does not support. */
+    chaseRows.sort(function (a, b) {
+      if (a.missed !== b.missed) { return b.missed - a.missed; }
+      const av = a.avg == null ? 101 : a.avg;
+      const bv = b.avg == null ? 101 : b.avg;
+      if (av !== bv) { return av - bv; }
+      return a.name.localeCompare(b.name);
+    });
+
+    const CHASE_SHOWN = 5;
+    if (!chaseRows.length) {
+      chaseBox.innerHTML = '<div class="empty">Nobody owes this week’s work.</div>';
+    } else {
+      const shown = chaseRows.slice(0, CHASE_SHOWN);
+      let html = shown.map(function (r) {
+        const meta = r.missed + (r.missed === 1 ? ' missed this term' : ' missed this term') +
+          (r.avg == null ? '' : ' · avg ' + r.avg + '%');
+        return '<div class="panel-row">' +
+               '<div class="avatar" style="background:' + esc(hueFor(r.name)) + '" aria-hidden="true">' +
+               esc(initialsOf(r.first, r.last)) + '</div>' +
+               '<div class="panel-body">' +
+               '<div class="panel-name">' + esc(r.name) + '</div>' +
+               '<div class="panel-meta">' + esc(r.code) + '</div>' +
+               '<div class="panel-meta">' + esc(meta) + '</div>' +
+               '</div></div>';
+      }).join('');
+      const more = chaseRows.length - shown.length;
+      html += '<div class="panel-foot">' +
+        (more > 0
+          /* "across today's classes", NOT "across your classes". This panel
+             has only looked at the day's handful; the wider claim would be
+             one the page has not made a single read to support. */
+          ? '<span class="more">+' + more + ' more across today’s classes</span>'
+          : '<span class="more"></span>') +
+        '<button type="button" class="btn" id="remind-all">Send reminders</button>' +
+        '</div>';
+      chaseBox.innerHTML = html;
+
+      /* ⚑ A REAL SEND, or it would not be here. `sendReminders` is the same
+         write the class screen's "Remind all" uses — an in-platform
+         `student_notifications` row, nothing leaves the site — and it is an
+         UPSERT against the (student, assignment, sent_on) rate limit, so a
+         second press adds nothing and errors nothing.
+
+         One call per class is unavoidable and is NOT the N+1 this codebase
+         argues against: each class owes a DIFFERENT assignment, so there is
+         no one row-set to batch, and they go in parallel over the day's few
+         classes rather than in a loop of awaits. What is reported is what was
+         WRITTEN, not what was attempted — a child a colleague already nudged
+         today is skipped by the index, and saying otherwise would overstate
+         what the students actually got. */
+      const remindBtn = el('remind-all');
+      if (remindBtn) {
+        remindBtn.addEventListener('click', async function () {
+          const teacherId = ctx && ctx.user ? ctx.user.id : null;
+          if (!teacherId) { return; }
+          remindBtn.disabled = true;
+          remindBtn.textContent = 'Sending…';
+          try {
+            const written = await Promise.all(Object.keys(remindBy).map(function (cid) {
+              const r = remindBy[cid];
+              return TD.sendReminders({
+                classId: cid, assignmentId: r.assignmentId,
+                studentIds: r.studentIds, teacherId: teacherId
+              });
+            }));
+            const n = written.reduce(function (a, rows) { return a + (rows ? rows.length : 0); }, 0);
+            remindBtn.textContent = n === 0
+              ? 'Already reminded today'
+              : (n === 1 ? 'Reminded 1 student' : 'Reminded ' + n + ' students');
+          } catch (e) {
+            console.warn('[today] sendReminders failed', e);
+            remindBtn.textContent = 'Send reminders';
+            remindBtn.disabled = false;
+          }
+        });
+      }
+    }
+
+    paintStrip(
+      '<span class="n">' + chaseRows.length + '</span> ' +
+      (chaseRows.length === 1 ? 'student to chase' : 'students to chase'),
+      stripSkel);
+
+    /* ── WORTH A RETEACH ──────────────────────────────────────────────────
+       ⚑ ONE BATCHED ROUND TRIP, not one per class. `loadPaperQuestions` takes
+       an ARRAY and chunks it internally — the same batching
+       `teacher-live.js`'s `grids(pairs)` exists to get, for the same reason
+       (the insights chart wanted a dozen papers and would otherwise have made
+       a dozen calls). Here it is at most one per lesson on the day. */
+    const wanted = [];
+    classIds.forEach(function (cid) {
+      const paper = newestMarkedPaper(matrices[cid], nowIso);
+      if (paper) { wanted.push({ cid: cid, paper: paper }); }
+    });
+
+    let qpacks = null;
+    if (wanted.length) {
+      try {
+        qpacks = await TD.loadPaperQuestions(wanted.map(function (w) { return w.paper.id; }));
+      } catch (e) {
+        /* console.WARN, not error: a class whose marked paper cannot be read
+           costs this page one panel, and is not a fault of the screen the
+           teacher is standing in front of. */
+        console.warn('[today] paper questions unavailable', e);
+      }
+    }
+
+    const reteachRows = [];
+    if (qpacks) {
+      wanted.forEach(function (w) {
+        const weak = weakestQuestion(matrices[w.cid], qpacks[w.paper.id]);
+        if (!weak) { return; }
+        reteachRows.push({
+          code: codeOf[w.cid] || '',
+          id: weak.id,
+          text: weak.text,
+          pct: weak.pct
+        });
+      });
+    }
+    reteachRows.sort(function (a, b) { return a.pct - b.pct; });
+
+    const RETEACH_SHOWN = 3;
+    if (!reteachRows.length) {
+      /* Not "0%", and not an em-dash. A class whose closed papers nobody sat
+         — or whose answers were all written rather than machine-marked — has
+         nothing to reteach FROM, and the panel says so. */
+      reteachBox.innerHTML = '<div class="empty">Nothing marked yet.</div>';
+    } else {
+      const shown = reteachRows.slice(0, RETEACH_SHOWN);
+      let html = shown.map(function (r) {
+        // Design's own colour rule for this number, carried from the class
+        // screen: rust below half, muted above it. Not `--danger` — a hard
+        // question is not an error state.
+        const fg = r.pct < 50 ? 'var(--st-accent-text)' : 'var(--st-muted)';
+        const line = r.id + (r.text ? ' · ' + r.text : '');
+        return '<div class="panel-row">' +
+               '<div class="reteach-code">' + esc(r.code) + '</div>' +
+               '<div class="panel-body"><div class="panel-name">' + esc(line) + '</div></div>' +
+               '<div class="reteach-pct" style="color:' + fg + '">' + r.pct + '%</div>' +
+               '</div>';
+      }).join('');
+      const more = reteachRows.length - shown.length;
+      if (more > 0) {
+        html += '<div class="panel-foot"><span class="more">+' + more +
+                ' more across today’s classes</span></div>';
+      }
+      reteachBox.innerHTML = html;
+    }
+
+    paintStrip(
+      '<span class="n">' + chaseRows.length + '</span> ' +
+      (chaseRows.length === 1 ? 'student to chase' : 'students to chase'),
+      '<span class="n">' + reteachRows.length + '</span> ' +
+      (reteachRows.length === 1 ? 'topic worth a reteach' : 'topics worth a reteach'));
   }
 });
 
-/* What to say about one class, from its own submission rows.
+/* The doneness test, written ONCE.
 
-   ⚠️ The doneness test is the UNION — completed_at, submitted_at, or
-   status === 'complete' — the same one `teacher-live.js`'s cellOf() uses, so
-   this page cannot disagree with the class screens ("one number, one
-   source"), and it can never count a student as owing work when their own
-   page reads Complete. The literal is 'complete', NOT 'completed'. */
-function describeClass(pack) {
-  if (!pack) { return { text: '', chase: false }; }
+   ⚠️ It is the UNION — completed_at, submitted_at, or status === 'complete' —
+   the same one `teacher-live.js`'s cellOf() uses, so this page cannot
+   disagree with the class screens ("one number, one source"), and it can
+   never count a student as owing work when their own page reads Complete.
+   The literal is 'complete', NOT 'completed'. */
+function isDone(s) {
+  if (!s) { return false; }
+  return !!(s.completed_at || s.submitted_at) || s.status === 'complete';
+}
 
+/* ⊕ MRB-325 ruling 1 — THIS WEEK'S PAPER AND WHO OWES IT, in one place.
+   `describeClass` used to compute this inline and was its only reader; the
+   chase panel needs the very same set of students, and deriving it a second
+   time is how the sentence on a lesson row and the names in the panel beside
+   it come to disagree. The sentences below are UNCHANGED, byte for byte —
+   only where their numbers come from moved. */
+function weekState(pack) {
+  if (!pack) { return { why: 'unknown', members: [] }; }
   const assignments = pack.assignments || [];
   const members = pack.members || [];
-  if (!assignments.length) {
-    /* No work set. Say so; do NOT offer to set it — nothing on a teacher
-       surface can compose an assignment. */
-    return { text: 'No work set this week.', chase: false };
-  }
-  if (!members.length) {
-    return { text: 'No students on this class yet.', chase: false };
-  }
+  if (!assignments.length) { return { why: 'no-work', members: members }; }
+  if (!members.length) { return { why: 'no-students', members: members }; }
 
   // This week's work: the newest by due date, nulls first — the same order
   // buildPapers uses, where index 0 is the week the class opens parked on.
@@ -780,29 +1236,224 @@ function describeClass(pack) {
     return a.due_at < b.due_at ? 1 : -1;
   });
   const paper = papers[0];
-  if (!paper) { return { text: '', chase: false }; }
+  if (!paper) { return { why: 'unknown', members: members }; }
 
-  const subs = (pack.submissions || []).filter(function (s) {
-    return s.assignment_id === paper.id;
-  });
   const doneBy = {};
-  subs.forEach(function (s) {
-    const done = !!(s.completed_at || s.submitted_at) || s.status === 'complete';
-    if (done) { doneBy[s.student_id] = true; }
+  (pack.submissions || []).forEach(function (s) {
+    if (s.assignment_id !== paper.id) { return; }
+    if (isDone(s)) { doneBy[s.student_id] = true; }
   });
 
-  const total = members.length;
-  const inCount = members.filter(function (m) { return doneBy[m.student_id]; }).length;
-  const owing = total - inCount;
+  const owing = members.filter(function (m) { return !doneBy[m.student_id]; });
+  return {
+    why: 'ok',
+    paper: paper,
+    members: members,
+    total: members.length,
+    inCount: members.length - owing.length,
+    owing: owing
+  };
+}
 
+/* What to say about one class, from its own submission rows. */
+function describeClass(pack) {
+  const st = weekState(pack);
+  if (st.why === 'unknown') { return { text: '', chase: false }; }
+  if (st.why === 'no-work') {
+    /* No work set. Say so; do NOT offer to set it \u2014 nothing on a teacher
+       surface can compose an assignment. */
+    return { text: 'No work set this week.', chase: false };
+  }
+  if (st.why === 'no-students') {
+    return { text: 'No students on this class yet.', chase: false };
+  }
+
+  const owing = st.owing.length;
   if (owing === 0) {
-    return { text: inCount + ' of ' + total + ' in \u00B7 nothing to chase', chase: false };
+    return { text: st.inCount + ' of ' + st.total + ' in \u00B7 nothing to chase', chase: false };
   }
   return {
-    text: inCount + ' of ' + total + ' in \u00B7 ' + owing +
+    text: st.inCount + ' of ' + st.total + ' in \u00B7 ' + owing +
           (owing === 1 ? ' still to hand in' : ' still to hand in'),
     chase: true
   };
+}
+
+/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+   \u2295 MRB-325 ruling 1 \u2014 THE TWO PANELS
+   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+
+   \u2691 WHY THESE DERIVATIONS ARE RE-DERIVED HERE RATHER THAN IMPORTED.
+   `shared/teacher-live.js` owns `buildRoster` (the "Keep an eye on" numbers)
+   and `weakFor` (the class screen's "Reteach from the last set"), which are
+   the two this page has to agree with. Neither can be called: teacher-live.js
+   is a self-running IIFE that EXPORTS NOTHING \u2014 it ends in `run().catch(\u2026)`,
+   its whole surface is closure-private, and it mounts itself against the
+   generated pages' `__MRB_TPL__`, which this hand-written page does not have.
+   Loading it here would start a second dashboard inside Today.
+
+   So the numbers are re-derived from the SAME raw fields \u2014 `pack.members`,
+   `pack.assignments`, `pack.submissions`, all already in hand for the lesson
+   lines \u2014 using the same tests, and each one below is named against the
+   function it has to match. This unit introduces NO new definition of
+   "missed", "average" or "weakest"; if one of these ever drifts from its
+   counterpart that is a defect, not a difference of opinion.               */
+
+/* A class's CLOSED papers. `buildPapers` sets `when: open ? "upcoming" :
+   "marked"` from `open = !a.due_at || a.due_at > now`, so a "marked" paper is
+   exactly one whose deadline has passed. An assignment with no deadline never
+   closes and is never counted here. */
+function markedPapers(pack, nowIso) {
+  return ((pack && pack.assignments) || []).filter(function (a) {
+    return a.due_at && a.due_at <= nowIso;
+  });
+}
+
+/* Per-student "missed this term" and "avg X%", matching `buildRoster`.
+
+   \u00B7 MISSED \u2014 `buildRoster` computes `missingMarked`, a BOOLEAN over
+     `mx.markedIdx`: "is there a marked paper this student never submitted".
+     Design's row wants the COUNT of them: the same predicate over the same
+     papers, counted rather than collapsed. Nothing else changes.
+
+   \u00B7 AVG \u2014 `buildMatrix`'s `studentAvg`: sum(score) / sum(max) over the marked
+     papers, per student, rounded. `null` \u2014 NEVER 0 \u2014 when nothing of theirs
+     is graded, because 0% is a claim about how a child did and "nothing
+     marked" is not that claim. Only a cell `cellOf` would have kept counts:
+     handed in, with both a score and a max, and max > 0.
+
+   \u26A0\uFE0F "THIS TERM" IS DESIGN'S WORD AND IT IS APPROXIMATE. The population is
+   the class's own closed assignments \u2014 a class belongs to one academic year
+   so it cannot reach across years \u2014 but `academic_years` records a start and
+   an end and NOTHING about half terms, which is the same limitation
+   `teacher-live.js`'s week bar already carries in writing. Not re-litigated
+   here; recorded so the next reader knows what the words cover. */
+function termStats(pack, nowIso) {
+  const marked = markedPapers(pack, nowIso);
+  const byStudent = {};
+  ((pack && pack.submissions) || []).forEach(function (s) {
+    if (!byStudent[s.student_id]) { byStudent[s.student_id] = {}; }
+    byStudent[s.student_id][s.assignment_id] = s;
+  });
+  const out = {};
+  ((pack && pack.members) || []).forEach(function (m) {
+    const mine = byStudent[m.student_id] || {};
+    let missed = 0, tot = 0, totMax = 0;
+    marked.forEach(function (a) {
+      const s = mine[a.id];
+      if (!isDone(s)) { missed += 1; return; }
+      if (s.score != null && s.max_score != null && s.max_score > 0) {
+        tot += s.score; totMax += s.max_score;
+      }
+    });
+    out[m.student_id] = {
+      missed: missed,
+      avg: totMax > 0 ? Math.round((tot / totMax) * 100) : null
+    };
+  });
+  return out;
+}
+
+/* The newest MARKED paper \u2014 `newestMarkedIdx` over `buildPapers`' own
+   newest-first order, which is due_at DESC. null for a class whose papers are
+   all still open, which is the honest answer: a set nobody has been marked on
+   cannot say what to reteach. */
+function newestMarkedPaper(pack, nowIso) {
+  const closed = markedPapers(pack, nowIso).slice().sort(function (a, b) {
+    if (a.due_at !== b.due_at) { return a.due_at < b.due_at ? 1 : -1; }
+    return (a.title || '').localeCompare(b.title || '');
+  });
+  return closed[0] || null;
+}
+
+/* The weakest question on one paper \u2014 `weakFor` as RULED in
+   `teacher_rulings.py`, over `buildGrid`'s `qpct`. Three properties are
+   carried across deliberately, because all three are what that ruling FIXED
+   and dropping any one puts a wrong sentence in front of a teacher:
+
+     \u00B7 THE DENOMINATOR IS THE ANSWERS THAT WERE MACHINE-MARKED, not everyone
+       who handed the paper in. `is_correct` is nullable and NULL IS NOT
+       FALSE \u2014 a self-marked or written answer records no correctness claim \u2014
+       so a null counts towards neither half of the fraction.
+     \u00B7 THE MINIMUM IS OVER NON-NULL ENTRIES ONLY. `Math.min` across an array
+       holding nulls returns 0, which would name a question as the weakest in
+       the school at 0% on no marks at all.
+     \u00B7 A PAPER WITH NOTHING MARKED YIELDS NOTHING \u2014 null, rather than a bare
+       em-dash under a "worth a reteach" heading.
+
+   Ties go to the lowest question index, as `weakFor`'s strict `<` does. */
+function weakestQuestion(pack, qpack) {
+  if (!qpack) { return null; }
+  const onRoll = {};
+  ((pack && pack.members) || []).forEach(function (m) { onRoll[m.student_id] = true; });
+
+  // `buildGrid` walks the ROSTER, so a departed student's answers are not in
+  // the column. Same population here.
+  const counted = {};
+  (qpack.submissions || []).forEach(function (s) {
+    if (onRoll[s.student_id] && isDone(s)) { counted[s.id] = true; }
+  });
+
+  const correct = {}, marked = {}, stem = {};
+  (qpack.attempts || []).forEach(function (a) {
+    if (!counted[a.submission_id]) { return; }
+    const i = a.question_index;
+    if (i == null) { return; }
+    if (!stem[i] && a.question_text) { stem[i] = String(a.question_text); }
+    if (a.is_correct === true) {
+      correct[i] = (correct[i] || 0) + 1; marked[i] = (marked[i] || 0) + 1;
+    } else if (a.is_correct === false) {
+      marked[i] = (marked[i] || 0) + 1;
+    }
+  });
+
+  let best = null;
+  Object.keys(marked).map(Number).sort(function (a, b) { return a - b; })
+    .forEach(function (i) {
+      if (!marked[i]) { return; }
+      const pct = Math.round(((correct[i] || 0) / marked[i]) * 100);
+      if (best === null || pct < best.pct) {
+        best = { idx: i, pct: pct, id: 'Q' + (i + 1), text: stem[i] || '' };
+      }
+    });
+  return best;
+}
+
+/* Initials and the hue behind them \u2014 `initialsOf` and `hueFor` from
+   `teacher-live.js`, palette included, so one child is not a different colour
+   on Today than on their own class page. */
+const AVATAR_HUE = ['#2F5CE0', '#A93411', '#0A6B36', '#5A31C0', '#7A5F00', '#2545A8'];
+function initialsOf(first, last) {
+  const f = (first || '').trim(), l = (last || '').trim();
+  if (f && l) { return (f[0] + l[0]).toUpperCase(); }
+  if (f) { return f.slice(0, 2).toUpperCase(); }
+  if (l) { return l.slice(0, 2).toUpperCase(); }
+  return '';
+}
+function hueFor(name) {
+  let h = 2166136261;
+  const s = String(name || '');
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+  return AVATAR_HUE[(h >>> 0) % AVATAR_HUE.length];
+}
+function fullName(first, last) {
+  return ((first || '') + ' ' + (last || '')).trim();
+}
+
+/* The school's calendar day, as the DATABASE stamps one \u2014 the same
+   `Europe/London` reading `teacher-live.js`'s `todayInSchoolTz` uses for the
+   reminder rate limit. `assignments_open_from` is a `date`, and whether it is
+   "strictly in the future" has to be decided against the SCHOOL's day: a
+   teacher marking at home on a device in another timezone must see the same
+   hold their colleague sees in the building. */
+function schoolDateISO() {
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/London', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date());
+  } catch (e) {
+    return new Date().toISOString().slice(0, 10);
+  }
 }
 </script>
 </body>

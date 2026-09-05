@@ -4465,19 +4465,32 @@ LOGIC = (
     # middot, which is the convention a reader already knows. The parts
     # themselves keep ordinary spaces, so "Combined Science" and "28
     # students" can still break internally on a narrow card.
+    # ⊕ SUPERSEDED 5 Sep 2026 (MRB-325 ruling 3). The five-part line above
+    # this comment — year group, key stage, student count, subject, academic
+    # year — is kept in the entry below rather than deleted, because deleting
+    # it would delete the reasoning a future reader needs: TWO separate
+    # rulings (E1's academic year, Phase 2a's year-group-and-key-stage) each
+    # added a part in good conscience, and neither was wrong on its own. What
+    # was never re-examined is the SUM: a card whose name is already
+    # "7h/Sc5" — year, band and subject all readable off the class-naming
+    # convention (MRB-263) — repeating "Year 7 · KS3 · 14 students · Science
+    # · 2026-27" underneath it. Mide's ruling is explicit: the class name
+    # carries the year and subject, so the card states ONLY what it does
+    # not — the roster count and Design's own subject label, her original
+    # pair, in her original order. The academic year is a PAGE-level fact
+    # (the "My classes" heading's own year line) and appears there once, not
+    # once per card; repeating it sixty-nine times was the defect this
+    # ruling removes, not a fact this card needed twice.
     (dict(builder="cards", key="meta"),
-     "      meta: [c.year ? 'Year ' + c.year : '', c.ks,\n"
-     "        c.n ? c.n + ' students' : 'No students yet',\n"
-     "        c.subject, c.yearName].filter(Boolean).join('\\u00A0\\u00B7 '),",
-     "the class card's meta line — v2's student count, plus the card's OWN "
-     "academic year (Mide's E1 ruling), not the dashboard's. "
-     "⊕ 1 Sep 2026 (MRB-306) — moved off `frm` onto "
-     "`builder=\"cards\", key=\"meta\"`, and v3's `c.subject` is folded into "
-     "the same `.filter(Boolean)` list rather than concatenated, so an "
-     "unnamed academic year drops out instead of printing a bare separator. "
-     "⊕ 2 Sep 2026 (MRB-306 Phase 2a) — year group and key stage restored "
-     "to the front of the same list, per Mide's Phase 2a brief; both are "
-     "nullable and both drop rather than print."),
+     "      meta: [c.n ? c.n + ' students' : 'No students yet',\n"
+     "        c.subject].filter(Boolean).join('\\u00A0\\u00B7 '),",
+     "MRB-325 ruling 3 — the class card's meta line, trimmed back to "
+     "Design's own pair (student count, subject). The class code above it "
+     "already carries year and subject (MRB-263 naming), and the page "
+     "already states the academic year once, at page level — repeating "
+     "\"Year 7 · KS3 · 14 students · Science · 2026-27\" on every one of "
+     "sixty-nine cards was the defect, not a fact any card needed twice. "
+     "Supersedes the 1 Sep and 2 Sep 2026 additions recorded above."),
 
     # ══ "LAST ACTIVITY NO ACTIVITY YET" ═════════════════════════════════
     #
@@ -4945,12 +4958,43 @@ LOGIC = (
      "activity yet\" here and the sentence always read \"Last activity No "
      "activity yet.\""),
 
+    # ⊕ SUPERSEDED 5 Sep 2026 (MRB-325 ruling 6). `k.yearName` leading is
+    # kept in the entry below rather than deleted, for the same reason
+    # ruling 3's superseded card-meta entry is: it names the exact defect
+    # this ruling removes. Mide's ruling states the eyebrow's shape
+    # explicitly — "28 STUDENTS · YEAR 7 SCIENCE · NO LESSON TODAY" — and it
+    # has no academic year in it. `k.yearName` drops out entirely; the E1
+    # disambiguation it existed for (10H/Ph1 2025-26 vs 11h/Ph1 2026-27) is
+    # still real, but a teacher only reaches a past year through an explicit
+    # picker (MRB-261's "Previous years" strip), never by mistaking one
+    # class-detail page for another, so restating the year on every visit
+    # was solving a confusion the navigation itself already prevents.
+    #
+    # And the fourth part comes back, for the reason the comment below says
+    # it would: "When the Today/Timetable unit lands real timetable data,
+    # this is the part that comes back." MRB-325 ruling 1 landed it —
+    # `loadTimetable()` is real, self-filtered rows, not `TODAY_LESSONS`'s
+    # four invented ones — so `k.lessonToday`, set in `teacher-live.js`'s
+    # `load()` for the "class" screen only, is no longer a claim the
+    # platform cannot back: "Next lesson today · P5" or "No lesson today",
+    # both read off this teacher's own timetable for today.
     (dict(method="renderVals", key="klass.meta"),
-     "        meta: [k.yearName,\n"
+     "        meta: [\n"
+     "          k.actingAsAdmin ? 'Acting as admin' : '',\n"
      "          k.n + (k.n === 1 ? ' student' : ' students'),\n"
-     "          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject\n"
+     "          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject,\n"
+     "          k.lessonToday\n"
      "        ].filter(Boolean).join(' · '),",
-     "the class header's long meta line. The year, and a plural that said "
+     "MRB-325 rulings 5 and 6 — the class header's meta line, Design's shape "
+     "exactly: student count, Year + subject, then the live lesson-today "
+     "state, LEADING with 'Acting as admin' when `k.actingAsAdmin` is set "
+     "(`teacher-live.js`'s `mergeForeignClass` — a school_admin viewing a "
+     "class they do not personally teach). It leads rather than trails so a "
+     "wide roster table below it is never mistaken for the admin's own "
+     "class. Supersedes the 1 Sep and 2 Sep 2026 entries recorded above — "
+     "the academic year no longer leads it, and the fourth part is real "
+     "data now instead of the deleted `TODAY_LESSONS` fiction. Original "
+     "why, still true of the middle two parts: the year, and a plural that said "
      "\"1 assignments\".\n"
      "\n"
      "        ⊕ CORRECTED AGAIN, MRB-287 E1 — IT WAS THE SAME DEFECT AS THE "
@@ -7178,13 +7222,20 @@ componentDidUpdate() {
      """      backToClass: 'Back to ' + k.code,
 
       /* ── ⊕ MIDE, 1 Sep 2026 (MRB-306) · THE WEEK BAR ── */
+      /* ⊕ MRB-325 ruling 7, 5 Sep 2026 — `sub` no longer says "This week" on
+         the current chip: `on`/`bg`/`ring` below already mark it (a filled
+         well, an inset ring), so the word was a caption restating a mark the
+         chip already carries. Every chip, current or not, now reads its own
+         term-relative label — `w.range` is untouched here (still the raw
+         field name) but is a single week-commencing date since weeks() was
+         changed to build it from weekCommencingLabel, not a Mon–Fri range. */
       weekTabs: kWeeks.slice().reverse().map((w, n) => {
         const i = w.idx;
         const on = i === wi;
         return {
           idx: String(i),
           range: w.range,
-          sub: w.now ? 'This week' : w.label,
+          sub: w.label,
           subFg: w.now ? 'var(--st-accent-text)' : 'var(--st-muted)',
           on,
           now: w.now,
@@ -7217,7 +7268,14 @@ componentDidUpdate() {
      "them, the two chevrons with their disabled colours and cursors, and "
      "the roster column's heading. All nine are v2's, `weekTabs` re-derived "
      "over WEEKS rather than over assignments and every chip's second line "
-     "now filled. See the block comment."),
+     "now filled. See the block comment.\n"
+     "\n"
+     "⊕ MRB-325 ruling 7, 5 Sep 2026 — the chip's `sub` no longer says "
+     "\"This week\": the current chip is already marked (`on`/`bg`/`ring`), "
+     "so the word was a caption for a mark the chip already carried. "
+     "`weekNote` and `rosterWeekCol` keep saying \"This week\" — a plain "
+     "sentence and a column header have no ring to mark them, so the word "
+     "there is the only signal, not a duplicate of one."),
 
     # ══ ⊕ 2 Sep 2026 (MRB-306 Phase 1c) · THE TWO READERS OF TODAY_LESSONS ═
     #

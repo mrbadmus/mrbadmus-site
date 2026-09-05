@@ -60,9 +60,25 @@ ENTRIES = [
 YEARS = [{"id": YEAR, "name": "2026-27", "start_date": "2026-09-01",
           "end_date": "2027-08-31", "deleted_at": None}]
 
+# ⊕ MRB-325 ruling 1, 5 Sep 2026 — `loadTimetable()` now self-filters through
+# `class_teachers` before it ever asks `timetable_entries` (the fix for the
+# admin leak: Today used to show every class in the school to a school_admin,
+# not just their own). Without a row here for each of this fixture's three
+# classes, the self-filter finds nothing to teach and every case below would
+# read "No timetable yet" regardless of `timetable_entries` — a stub gap, not
+# a page bug, but one that would turn this whole drive red the moment a build
+# ships the fix.
+CLASS_TEACHERS = [
+    {"class_id": cid, "teacher_id": TEACHER, "deleted_at": None, "ended_at": None}
+    for cid in ("cccccccc-0000-4000-8000-000000000001",
+                "cccccccc-0000-4000-8000-000000000002",
+                "cccccccc-0000-4000-8000-000000000003")
+]
+
 TABLES = {
     "timetable_entries": ENTRIES,
     "academic_years":    YEARS,
+    "class_teachers":    CLASS_TEACHERS,
     "classes":           [klass("cccccccc-0000-4000-8000-000000000001","8r/Sc1","KS3",8), klass("cccccccc-0000-4000-8000-000000000002","10h/Ph1","KS4",10),
                           klass("cccccccc-0000-4000-8000-000000000003","7h/Sc5","KS3",7)],
     "profiles": [{"id": TEACHER, "first_name": "Ada", "last_name": "Nwosu",

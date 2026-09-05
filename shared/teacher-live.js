@@ -388,6 +388,17 @@
       : dayMonth(w.mon) + "–" + dayMonth(w.fri);
   }
 
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+  /* MRB-325 ruling 7 — the week bar names a week by its Monday alone,
+     "31/08/26", never a Mon–Fri range. Distinct from weekRangeLabel above,
+     which other surfaces (a paper's own set-week) still use unchanged. */
+  function weekCommencingLabel(d) {
+    if (!d) { return ""; }
+    var mon = teachingWeek(d).mon;
+    return pad2(mon.getDate()) + "/" + pad2(mon.getMonth() + 1) + "/" + String(mon.getFullYear()).slice(-2);
+  }
+
   /* Design's relative-time vocabulary, against real timestamps. Its own list
      ran '9 min ago' … '9 days ago'; anything older than a fortnight is given
      in weeks, because "23 days ago" is a number a teacher has to convert. */
@@ -1099,8 +1110,8 @@
         // "Autumn Week 1" — the chip's second line, and the sentence under
         // the bar. "This week" replaces it on the week a teacher is in.
         label: meta.term + " Week " + meta.n,
-        // Design's own range format, which the chips are sized for.
-        range: weekRangeLabel(mon),
+        // MRB-325 ruling 7 — week-commencing only, never a Mon–Fri range.
+        range: weekCommencingLabel(mon),
         now: ymd(mon) === thisMonYmd,
         monYmd: ymd(mon),
         friYmd: ymd(fri)
@@ -1511,6 +1522,114 @@
     return hit || idx.working || null;
   }
 
+  /* One class row + its matrices pack → the CLASSES entry every screen
+     reads, plus the papers/matrix/roster `base()` keys by class id.
+     Extracted from `base()`'s own loop (MRB-325 ruling 5) so a class
+     fetched OUTSIDE that loop — an admin viewing a class they do not teach,
+     see `mergeForeignClass` below — is built exactly the same way, rather
+     than a second, drifting copy of this shape. */
+  function buildClassEntry(c, pack, yearWeeks, viewing, now) {
+    var papers = buildPapers(pack, now);
+    assignPaperWeeks(papers, yearWeeks, viewing, now);
+    var mx = buildMatrix(pack, papers, now);
+    decoratePapers(papers, mx);      // `sub` / `mean` / `asked`, from the matrix
+    var roster = buildRoster(pack, mx, now);
+
+    // Which of the three shapes this class is in. Design's states, and the
+    // order matters: no roster beats no work, because a class with neither
+    // needs the roster first and its card offers Import, not Set work.
+    var state = pack.members.length === 0 ? "empty"
+              : (papers.length === 0 ? "nowork" : "live");
+
+    // The current teaching week's return: how many students have handed in
+    // this week's work, out of the roster. Both real; `week[0]` is 0 for a
+    // class with no work due this week, which is honest — nobody was asked.
+    var inWeekN = roster.filter(function (r) { return r.inWeek; }).length;
+
+    var lastIso = null;
+    roster.forEach(function (r) {
+      if (r.lastIso && (lastIso == null || r.lastIso > lastIso)) { lastIso = r.lastIso; }
+    });
+
+    var entry = {
+      id: c.id,
+      code: c.name,
+      year: c.year_group,
+      ks: c.key_stage,
+      // Off the class CODE, per Design's README — not `pill_label`, which
+      // answers a different question. See subjectFromCode.
+      subject: subjectFromCode(c.name, c.key_stage),
+      n: pack.members.length,
+      week: [inWeekN, pack.members.length],
+      last: lastIso ? relativeTime(lastIso, now) : "No activity yet",
+      lastIso: lastIso,
+      state: state,
+      // Carried but not part of Design's shape: the porter's rulings may
+      // want them and re-deriving them would be a second answer.
+      tier: c.tier,
+      science_pathway: c.science_pathway,
+      pill_label: c.pill_label,
+      academic_year_id: c.academic_year_id,
+      /* ⊕ MRB-287 E1 — THE CARD'S OWN YEAR, and it was being dropped here.
+         `teacher-data.js` has returned `academic_year_name` since MRB-261;
+         this map carried the id and not the name, so the card had nothing
+         to state and the porter's ruling reached for the DASHBOARD's year
+         instead. Right while the working year is the only one you can open,
+         wrong the moment a past year is — twelve cards from 2025-26 each
+         saying 2026-27.
+
+         Empty when the school has not named the year, or when this entry
+         was built from `mergeForeignClass` — `loadClassMatrices`'s `class`
+         embed carries no `academic_year_name` at all — the part drops
+         rather than printing "undefined". Unused by any live ruling since
+         MRB-325 rulings 3 and 6 both dropped it from the meta lines it fed;
+         kept on the entry itself as the identity field it always was. */
+      yearName: c.academic_year_name || "",
+      departed: pack.departed_count,
+      assignment_count: papers.length
+    };
+    return { entry: entry, mx: mx, roster: roster, papers: papers };
+  }
+
+  /* MRB-325 ruling 5 — a school_admin opening a class they do not
+     personally teach. `base()`'s own list (`loadTeacherClasses`) stays
+     self-filtered — that is ruling 1's fix for the Today/My-classes leak,
+     and it must not widen — so this is a SEPARATE path, reached only after
+     the self-filtered lookup in `load()` has already failed to find the
+     class.
+
+     ⚠️ THE SECURITY CHECK IS `loadClassMatrices` ITSELF, NOT A ROLE FIELD
+     READ HERE. Its `class_teachers`/`class_members`/`assignments` queries
+     (see teacher-data.js) carry no client-side self-filter — RLS alone
+     decides what rows come back. A plain teacher's read of a class they do
+     not teach returns nothing (`class_teachers_own_all` shows only their
+     own rows) and this function correctly returns false. An admin's read
+     succeeds ONLY because `class_teachers_admin_read` / `class_members_
+     admin_read` / `assignments_admin_read` exist and are role-gated — so a
+     non-empty pack here is PROOF of that role, not an assumption of it.
+
+     ⚠️ WRITE IS NOT THE SAME QUESTION AS READ. `assignment_submissions`
+     (marking), `class_shoutouts` and `submission_feedback` carry no admin
+     write policy at all today (checked against every migration, not
+     assumed) — an admin acting on a foreign class can view it in full but
+     a write on any of those three still gets RLS's plain rejection, same as
+     it would for a stranger. That gap needs its own migration and is
+     outside what this ruling can do without one; see the MRB-325 report. */
+  async function mergeForeignClass(c, classId) {
+    var packs2 = await window.MrBadmusTeacherData.loadClassMatrices([classId]);
+    var pack = packs2 && packs2[classId];
+    if (!pack || !pack.class) { return false; }
+    var yearWeeks = buildWeeks(c.viewing, c.now);
+    var built = buildClassEntry(pack.class, pack, yearWeeks, c.viewing, c.now);
+    built.entry.actingAsAdmin = true;
+    c.PAPERS[classId] = built.papers;
+    c.MATRIX[classId] = built.mx;
+    c.ROSTER[classId] = built.roster;
+    c.WEEKS[classId] = yearWeeks;
+    c.CLASSES.push(built.entry);
+    return true;
+  }
+
   async function base() {
     if (cache) { return cache; }
     var TD = window.MrBadmusTeacherData;
@@ -1587,70 +1706,12 @@
     classRows.forEach(function (c) {
       var pack = packs[c.id];
       if (!pack) { return; }                       // cannot happen: it throws
-      var papers = buildPapers(pack, now);
-      assignPaperWeeks(papers, yearWeeks, viewing, now);
-      var mx = buildMatrix(pack, papers, now);
-      decoratePapers(papers, mx);      // `sub` / `mean` / `asked`, from the matrix
-      var roster = buildRoster(pack, mx, now);
-
-      PAPERS[c.id] = papers;
-      MATRIX[c.id] = mx;
-      ROSTER[c.id] = roster;
+      var built = buildClassEntry(c, pack, yearWeeks, viewing, now);
+      PAPERS[c.id] = built.papers;
+      MATRIX[c.id] = built.mx;
+      ROSTER[c.id] = built.roster;
       WEEKS[c.id] = yearWeeks;
-
-      // Which of the three shapes this class is in. Design's states, and the
-      // order matters: no roster beats no work, because a class with neither
-      // needs the roster first and its card offers Import, not Set work.
-      var state = pack.members.length === 0 ? "empty"
-                : (papers.length === 0 ? "nowork" : "live");
-
-      // The current teaching week's return: how many students have handed in
-      // this week's work, out of the roster. Both real; `week[0]` is 0 for a
-      // class with no work due this week, which is honest — nobody was asked.
-      var inWeekN = roster.filter(function (r) { return r.inWeek; }).length;
-
-      var lastIso = null;
-      roster.forEach(function (r) {
-        if (r.lastIso && (lastIso == null || r.lastIso > lastIso)) { lastIso = r.lastIso; }
-      });
-
-      CLASSES.push({
-        id: c.id,
-        code: c.name,
-        year: c.year_group,
-        ks: c.key_stage,
-        // Off the class CODE, per Design's README — not `pill_label`, which
-        // answers a different question. See subjectFromCode.
-        subject: subjectFromCode(c.name, c.key_stage),
-        n: pack.members.length,
-        week: [inWeekN, pack.members.length],
-        last: lastIso ? relativeTime(lastIso, now) : "No activity yet",
-        lastIso: lastIso,
-        state: state,
-        // Carried but not part of Design's shape: the porter's rulings may
-        // want them and re-deriving them would be a second answer.
-        tier: c.tier,
-        science_pathway: c.science_pathway,
-        pill_label: c.pill_label,
-        academic_year_id: c.academic_year_id,
-        /* ⊕ MRB-287 E1 — THE CARD'S OWN YEAR, and it was being dropped here.
-           `teacher-data.js` has returned `academic_year_name` since MRB-261;
-           this map carried the id and not the name, so the card had nothing
-           to state and the porter's ruling reached for the DASHBOARD's year
-           instead. Right while the working year is the only one you can open,
-           wrong the moment a past year is — twelve cards from 2025-26 each
-           saying 2026-27.
-
-           The retired page put it on every card and recorded the reason:
-           10H/Ph1 and 11h/Ph1 are the same 17 students a year apart, and with
-           no year on the card they read as a duplicate.
-
-           Empty when the school has not named the year — the card drops the
-           part rather than printing "undefined". */
-        yearName: c.academic_year_name || "",
-        departed: pack.departed_count,
-        assignment_count: papers.length
-      });
+      CLASSES.push(built.entry);
     });
 
     // Class code order, natural-number aware, so 9h/Sc5 comes before 10h/Ph1.
@@ -1932,14 +1993,25 @@
        a class that IS theirs, in a year they are not currently viewing, moves
        the view to that year instead of being disowned. */
     if (params.classId && !c.MATRIX[params.classId]) {
-      var ay = await yearOfClass(params.classId);          // throws if foreign
+      var ay = await yearOfClass(params.classId);          // throws if RLS denies outright
       var known = (c.years.years || []).some(function (y) { return y.id === ay; });
-      if (!ay || !known || ay === selectedYearId) { throw notMine(params.classId); }
-      selectedYearId = ay;
-      reset();
-      c = await base();
-      // Belt and braces: the year moved and the class still is not in it.
-      if (!c.MATRIX[params.classId]) { throw notMine(params.classId); }
+      if (!ay || !known) { throw notMine(params.classId); }
+      if (ay !== selectedYearId) {
+        selectedYearId = ay;
+        reset();
+        c = await base();
+      }
+      if (!c.MATRIX[params.classId]) {
+        /* ⊕ MRB-325 ruling 5 — `yearOfClass` just proved RLS lets us read
+           this class's `class_teachers` row even though the self-filtered
+           "my classes" list above does not contain it. The old code read
+           that as proof the class is foreign and refused it outright; it
+           is exactly as likely to mean "this is a school_admin", and the
+           only way to tell the two apart is to try the admin-scoped read
+           and see whether anything comes back. */
+        var merged = await mergeForeignClass(c, params.classId);
+        if (!merged || !c.MATRIX[params.classId]) { throw notMine(params.classId); }
+      }
     }
 
     var now = c.now;
@@ -1950,6 +2022,32 @@
     var classId = params.classId && c.MATRIX[params.classId]
       ? params.classId
       : (c.CLASSES[0] ? c.CLASSES[0].id : null);
+
+    /* ⊕ MRB-325 ruling 6 — "next lesson today" on the class-detail eyebrow.
+       ONE extra query, and only on the one screen that shows it: `base()`
+       is shared by every screen (list, marking, student, digest, insights),
+       and asking every class's timetable on every one of them would be
+       exactly the per-navigation cost ruling 4 is about. `loadTimetable()`
+       is already self-filtered to this teacher (MRB-325 ruling 1), so this
+       cannot leak another teacher's day. A failure here is not fatal — the
+       eyebrow drops the segment via `klass.meta`'s `.filter(Boolean)`. */
+    if (screen === "class" && classId) {
+      try {
+        var todayEntries = await window.MrBadmusTeacherData.loadTimetable();
+        var todayWd = window.MrBadmusTeacherData.schoolWeekday();
+        var todayMine = (todayEntries || [])
+          .filter(function (e) { return e.classId === classId && e.weekday === todayWd; })
+          .sort(function (a, b) { return a.period - b.period; });
+        var kToday = c.CLASSES.filter(function (k) { return k.id === classId; })[0];
+        if (kToday) {
+          kToday.lessonToday = todayMine.length
+            ? ("Next lesson today · P" + todayMine[0].period)
+            : "No lesson today";
+        }
+      } catch (e) {
+        console.warn("[teacher-live] lessonToday unavailable", e);
+      }
+    }
 
     // ── prefetch only the grids this screen will actually draw ──────────
     if (screen === "marking" && classId) {

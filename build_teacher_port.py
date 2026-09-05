@@ -4810,34 +4810,31 @@ def build():
                     % (spec["out"], add["marker"],
                        ", ".join(add["pages"])))
 
-        # ── ⊕ MRB-287 E1 · EVERY CLASS STATES ITS OWN ACADEMIC YEAR ──────
+        # ── ⊕ SUPERSEDED 5 Sep 2026 (MRB-325 rulings 3 and 6) ────────────
         #
-        # ⛔ THE DEFECT THIS CATCHES CANNOT BE CAUGHT BY DRIVING THE PAGE, and
-        # that is why it is a byte check. The grid is year-scoped, so every
-        # card in one payload legitimately carries the SAME year string — a
-        # drive watching those strings cannot tell "each card states its own
-        # year" from "every card states the dashboard's year", because on
-        # correct data the two render identically. It only diverges on a past
-        # year, which no fixture can hold alongside a current one without
-        # inventing a shape the database cannot be in.
+        # This guard used to enforce MRB-287 E1 the other way round: it
+        # REFUSED a build where the card/header meta did not state the
+        # class's own academic year (`c.yearName` / `k.yearName`), catching
+        # the defect where every card read the dashboard's working year
+        # instead (`MRB_DATA('yearLabel')`) — 10H/Ph1 and 11h/Ph1, the same
+        # 17 students a year apart, reading as a duplicate. That history is
+        # kept in git rather than retyped here; it is the reasoning a future
+        # reader would otherwise have to re-derive.
         #
-        # What CAN be checked exactly is which value the expression reads. The
-        # card meta and the class header must read the CLASS's year
-        # (`c.yearName` / `k.yearName`) and must not reach for the dashboard's
-        # (`MRB_DATA('yearLabel')`), which is what both did until E1 and what
-        # made twelve cards out of 2025-26 each say 2026-27.
-        # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — BOTH ANCHORS RE-CUT, and the
-        # second one was WATCHING A KEY THAT NO LONGER EXISTS. Design's v3
-        # deleted `longMeta` and rebuilt the class header as `klass.meta`;
-        # the ruling was re-expressed onto `klass.meta` on 1 Sep and this
-        # guard was not, so it searched for a string absent from every page
-        # and refused all six builds. The FIRST anchor was worse: a bare
-        # `find("meta:")` takes whichever `meta:` comes first in the file,
-        # and v3 put the Today screen's lesson meta ahead of the card's — so
-        # for one afternoon it was checking `t.room` for an academic year.
+        # Mide's MRB-325 ruling changed the ANSWER, not the underlying
+        # concern: the card and class-header meta lines are now stated
+        # explicitly, character for character, and neither carries an
+        # academic year at all. The class name already carries year and
+        # subject (MRB-263 naming), the academic year is a PAGE-level fact
+        # stated once (the "My classes" heading's own line) rather than
+        # repeated on every one of sixty-nine cards, and a teacher only
+        # reaches a past year through the explicit "Previous years" picker
+        # (MRB-261) — never by mistaking one class-detail page for another.
         #
-        # Each row now names the DECLARATION it belongs under and searches
-        # forward from there, so neither can drift onto a neighbour's key.
+        # So the guard now checks the OPPOSITE: that `c.yearName` /
+        # `k.yearName` do NOT appear in these two meta lines, protecting
+        # against a silent regression BACK to the redundant style the same
+        # way the original guarded against never stating it at all.
         for what, own, decl, line in (
                 ("the class card's meta line", "c.yearName",
                  "const cards = ", "meta:"),
@@ -4850,33 +4847,21 @@ def build():
                     "build_teacher_port.py: %s — %s cannot be checked: "
                     "`%s` is not in the emitted logic.\n"
                     "  Design has renamed or removed the declaration this "
-                    "guard reads. An E1 check that cannot find its own "
-                    "anchor must refuse; skipping it would let the working "
-                    "year back onto a past year's class."
+                    "guard reads. Re-anchor teacher_rulings.py."
                     % (spec["out"], what, decl.strip()))
             at = page_logic.find(line, base)
             if at != -1:
                 seg = page_logic[at:at + 260]
-            if own not in seg:
+            if own in seg:
                 raise SystemExit(
-                    "build_teacher_port.py: %s — %s does not read %r.\n"
-                    "  Every class must state ITS OWN academic year, not the "
-                    "one the dashboard is scoped to. The retired page put it "
-                    "on every card and recorded why: 10H/Ph1 and 11h/Ph1 are "
-                    "the same 17 students a year apart and must never read "
-                    "as a duplicate. Re-anchor teacher_rulings.LOGIC."
-                    % (spec["out"], what, own))
-            if "MRB_DATA('yearLabel')" in seg:
-                raise SystemExit(
-                    "build_teacher_port.py: %s — %s reads "
-                    "MRB_DATA('yearLabel'), which is the WORKING year and "
-                    "not this class's.\n"
-                    "  Correct while the working year is the only one a "
-                    "teacher can open, and wrong the moment a past year is. "
-                    "That is the E1 defect exactly; it is a byte check "
-                    "because no drive can see it (the grid is year-scoped, "
-                    "so both readings render the same string on correct "
-                    "data)." % (spec["out"], what))
+                    "build_teacher_port.py: %s — %s still reads %r.\n"
+                    "  MRB-325 rulings 3 and 6 removed the academic year "
+                    "from this line entirely — the class name already "
+                    "carries year and subject, and the academic year is a "
+                    "page-level fact stated once, not repeated on every "
+                    "card. Re-anchor teacher_rulings.py to the MRB-325 "
+                    "ruling rather than restoring %s."
+                    % (spec["out"], what, own, own))
 
         # ⚑ ASSERTED, NOT ASSUMED. No bound literal may survive in the
         # template the PRODUCTION page ships — otherwise the binding is

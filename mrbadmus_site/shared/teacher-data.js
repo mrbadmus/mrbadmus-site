@@ -2088,10 +2088,37 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
+    /* MRB-325 ruling 1 — the same fail-closed self-filter loadTeacherClasses
+       applies (MRB-293): a school_admin's RLS read on timetable_entries is
+       school-wide, and "Today" must show YOUR classes only, admins included.
+       Relying on RLS breadth to mean "mine" is exactly the leak that shipped. */
+    const { data: sessionData } = await sb.auth.getSession();
+    const selfId = sessionData && sessionData.session && sessionData.session.user
+      ? sessionData.session.user.id
+      : null;
+    if (!selfId) {
+      const e = new Error('[teacher-data] no signed-in user — cannot scope "Today"');
+      e.code = 'no_session';
+      throw e;
+    }
+    const { data: taught, error: taughtErr } = await sb
+      .from('class_teachers')
+      .select('class_id')
+      .eq('teacher_id', selfId)
+      .is('deleted_at', null)
+      .is('ended_at', null);
+    if (taughtErr) {
+      console.error('[teacher-data] loadTimetable self-filter query failed', taughtErr);
+      throw taughtErr;
+    }
+    const myClassIds = Array.from(new Set((taught || []).map(function (r) { return r.class_id; })));
+    if (!myClassIds.length) { return []; }
+
     const { data, error } = await sb
       .from('timetable_entries')
       .select('id, class_id, weekday, period, week_cycle, source, academic_year_id, ' +
               'classes ( id, name, key_stage, year_group, academic_year_id )')
+      .in('class_id', myClassIds)
       .is('deleted_at', null)
       .order('weekday', { ascending: true })
       .order('period', { ascending: true });
@@ -2124,6 +2151,76 @@ window.MrBadmusTeacherData = (function () {
           yearGroup: r.classes ? r.classes.year_group : null,
         };
       });
+  }
+
+  /* loadPeriodTimes()
+     MRB-325 ruling 2 — `school_period_times` is no longer guaranteed empty:
+     Rainford's real period clock times are seeded. Returns a map keyed by
+     period number to { startsAt, endsAt, label } for the caller's own
+     school (RLS already scopes the row to `auth_user_school_id()`), or {}
+     for a school with no rows yet — callers must keep labelling by period
+     number alone in that case and never invent a time. */
+  async function loadPeriodTimes() {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+    const { data, error } = await sb
+      .from('school_period_times')
+      .select('period, starts_at, ends_at, label');
+    if (error) {
+      console.error('[teacher-data] loadPeriodTimes failed', error);
+      throw error;
+    }
+    const byPeriod = {};
+    (data || []).forEach(function (r) {
+      byPeriod[r.period] = { startsAt: r.starts_at, endsAt: r.ends_at, label: r.label };
+    });
+    return byPeriod;
+  }
+
+  /* loadSchoolHold()
+     ⊕ MRB-325 ruling 1 — the go-live hold, read by a TEACHER rather than by
+     an admin. `schools.assignments_open_from` (migration 20260905033714) is
+     the date a school's assignments start being composed; while it is set and
+     strictly in the future the backend refuses to compose new work at all and
+     returns `reason='assignments_not_open_yet'`. A teacher screen that did not
+     know about it would print "No work set this week." over and over across a
+     whole school and read as a platform fault rather than as a deliberate,
+     school-set pause.
+
+     Returns `{ assignmentsOpenFrom: <'YYYY-MM-DD' | null> }`.
+
+     ⚠️ NO `.eq('id', …)` AND NO `.single()`, and both are deliberate.
+     `schools_member_read` (20260501212106) is `id = auth_user_school_id()`,
+     so RLS already returns this caller's own school and nothing else — the
+     same reasoning `loadPeriodTimes` above states for `school_period_times`,
+     and it means this needs no `school_id` from the profile. `.single()` would
+     turn "this account has no school linked" — which is real in production —
+     into a PGRST116 error on a page that has nothing to do with schools.
+     Zero rows simply means no hold is known, and the caller must treat that
+     as "not held" rather than as a failure.
+
+     ⚖️ WHETHER THE HOLD IS ACTIVE IS THE CALLER'S COMPARISON, not this
+     function's. The column is a `date` and "strictly in the future" has to be
+     decided against the SCHOOL's calendar day, and a page that shows the hold
+     alongside its own day-line should use the one clock for both. */
+  async function loadSchoolHold() {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+    const { data, error } = await sb
+      .from('schools')
+      .select('assignments_open_from');
+    if (error) {
+      console.error('[teacher-data] loadSchoolHold failed', error);
+      throw error;
+    }
+    const row = (data || [])[0] || null;
+    return { assignmentsOpenFrom: row ? (row.assignments_open_from || null) : null };
   }
 
   /* saveTimetable(entries, source)
@@ -2539,6 +2636,12 @@ window.MrBadmusTeacherData = (function () {
     loadTimetable,
     saveTimetable,
     schoolWeekday,
+    // ⊕ MRB-325 ruling 2 — real period clock times, once a school has them.
+    loadPeriodTimes,
+    // ⊕ MRB-325 ruling 1 — the school's assignments go-live hold, so a
+    // teacher screen can say "No assignment set yet" instead of reading as
+    // broken through the days before a term opens.
+    loadSchoolHold,
     // ⊕ MRB-306 Phase 2b — written feedback on one submission. Additive;
     // no existing caller changes.
     loadSubmissionFeedback,

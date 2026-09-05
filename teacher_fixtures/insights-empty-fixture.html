@@ -1146,9 +1146,8 @@ class Component extends DCLogic {
       const chase = this.chaseFor(c);
       return {
         code: c.code,
-        meta: [c.year ? 'Year ' + c.year : '', c.ks,
-          c.n ? c.n + ' students' : 'No students yet',
-          c.subject, c.yearName].filter(Boolean).join('\u00A0\u00B7 '),
+        meta: [c.n ? c.n + ' students' : 'No students yet',
+          c.subject].filter(Boolean).join('\u00A0\u00B7 '),
         live: c.state === 'live',
         noWork: c.state === 'nowork',
         empty: c.state === 'empty',
@@ -1570,9 +1569,11 @@ class Component extends DCLogic {
 
       klass: {
         code: k.code,
-        meta: [k.yearName,
+        meta: [
+          k.actingAsAdmin ? 'Acting as admin' : '',
           k.n + (k.n === 1 ? ' student' : ' students'),
-          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject
+          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject,
+          k.lessonToday
         ].filter(Boolean).join(' · '),
         statLine: kPapers.length
           ? 'Class mean ' + (kMean == null ? '—' : kMean + '%') + ' · ' + (kMx.markedPct == null ? '—' : kMx.markedPct + '% on time') + ' · ' + kFlagged + (kFlagged === 1 ? ' student' : ' students') + ' to keep an eye on'
@@ -1596,13 +1597,20 @@ class Component extends DCLogic {
       backToClass: 'Back to ' + k.code,
 
       /* ── ⊕ MIDE, 1 Sep 2026 (MRB-306) · THE WEEK BAR ── */
+      /* ⊕ MRB-325 ruling 7, 5 Sep 2026 — `sub` no longer says "This week" on
+         the current chip: `on`/`bg`/`ring` below already mark it (a filled
+         well, an inset ring), so the word was a caption restating a mark the
+         chip already carries. Every chip, current or not, now reads its own
+         term-relative label — `w.range` is untouched here (still the raw
+         field name) but is a single week-commencing date since weeks() was
+         changed to build it from weekCommencingLabel, not a Mon–Fri range. */
       weekTabs: kWeeks.slice().reverse().map((w, n) => {
         const i = w.idx;
         const on = i === wi;
         return {
           idx: String(i),
           range: w.range,
-          sub: w.now ? 'This week' : w.label,
+          sub: w.label,
           subFg: w.now ? 'var(--st-accent-text)' : 'var(--st-muted)',
           on,
           now: w.now,
@@ -2066,7 +2074,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"615378a3","teacher-guard.js":"2efdc820","teacher-live.js":"26a7713d","teacher-picker.js":"8f2365b7"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"088ad9af","teacher-guard.js":"2efdc820","teacher-live.js":"c848aea8","teacher-picker.js":"8f2365b7"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script src="teacher-fixture-insights-empty.js"></script>
 <script>window.__MRB_MOUNT__();</script>

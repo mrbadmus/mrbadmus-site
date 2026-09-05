@@ -773,6 +773,95 @@ GATES = [
              "which is why it is here rather than scoped to one lane. "
              "⚠️ Needs a backend on :3120; it signs in as the hz_* TEST "
              "fixtures and skips, loudly, without their passwords."),
+
+    # ── ⊕ MRB-325, 5 Sep 2026 · the two rulings that needed watching ────
+
+    dict(name="teacher_perf_budget",
+         cmd=["python3", "teacher_perf_budget.py"],
+         speed="slow",
+         needs="mrbadmus_site/teacher/today.html",
+         needs_env="MRB_TEST_TEACHER_PASSWORD",
+         why="MRB-325 ruling 4 — A WARM-LOAD BUDGET ACROSS THE FOUR TEACHER "
+             "JOURNEYS (landing, class detail, marking, a student), and the "
+             "FIRST load-time budget in this repo: no page, student or "
+             "teacher, had one before this row. Every other gate here asks "
+             "whether a page is CORRECT. A page can be perfectly correct and "
+             "unusable, and this estate has already shipped exactly that — "
+             "MRB-292's four-and-a-half-second student load was green on "
+             "every gate, because the reads went out in serial waves and "
+             "nothing counted the waves. It was found by hand, on a Friday. "
+             "2500 ms, warm, per journey, median of three timed loads after "
+             "one discarded warm-up. The file's own docstring carries the "
+             "derivation and the measured medians (127-347 ms on TEST); the "
+             "short version is that it is NOT 1.5x the measured median — that "
+             "would be ~520 ms and would be red on the first bad minute of "
+             "Wi-Fi and red for good the first time a thirty-student class is "
+             "loaded instead of a six-student fixture. It is the threshold "
+             "where a teacher is visibly waiting, ~7x above the worst warm "
+             "median, which still catches an added serial wave or a "
+             "reintroduced N+1 because those cost seconds, not milliseconds. "
+             "⚠️ IT STOPS THE CLOCK ON CONTENT, NOT ON `load`. Each page's "
+             "own reveal signal is read from the page — `#main` plus a "
+             "SKELETON-FREE `#lessons` on today.html (whose `#lessons` ships "
+             "three `.skel-row`s in the static HTML, so a naive "
+             "children-length check stops the clock at first paint), and the "
+             "drawn `[data-port-region]` plus a string only the real fixture "
+             "can produce on the three ported screens. A refusal panel is "
+             "reported as a FAILED journey, never as a fast one: giving up "
+             "quickly is the cheapest way to pass a timing gate. "
+             "⚠️ THE ENV VAR IS NOT PROTECTING A SECRET — the MRB-293 TEST "
+             "fixture password is committed in teacher_landing_drive.py and "
+             "admin_view_drive.py. It is this registry's own switch for 'this "
+             "gate goes over the network', and it is why this file earns a "
+             "row where those two are EXCLUDED outright: a load ceiling has "
+             "to be NAMED in the list and re-measurable on demand, but a push "
+             "must never depend on Supabase TEST being reachable. Skipped by "
+             "name without it. "
+             "⚠️ KNOWN WEAKNESS, recorded rather than hidden: TEST holds no "
+             "`timetable_entries` for the fixture teachers, so the landing "
+             "journey traverses today.html's no-timetable branch and never "
+             "reaches the per-class reads. A true measurement of the wrong "
+             "day; seeding a timetable would fix it and is a write to a "
+             "shared project."),
+
+    dict(name="teacher_admin_foreign_class",
+         cmd=["python3", "teacher_admin_foreign_class_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site/teacher/class-detail.html",
+         why="MRB-325 ruling 5 — A SCHOOL_ADMIN OPENS A CLASS THEY DO NOT "
+             "TEACH, and a plain teacher still cannot. `mergeForeignClass` "
+             "widens who may open a class, and 'the page opened' is also what "
+             "a permissive page does, so the negative control is not a "
+             "nicety: it is the half that says the door is a door. Same page, "
+             "same fixture, same class id, one `staff_scopes` row different, "
+             "opposite outcomes — the admin gets the class with 'Acting as "
+             "admin' LEADING the eyebrow (Mide's order: a wide roster below "
+             "must never be mistaken for the admin's own class) and a real "
+             "roster; the plain teacher gets SAY.notMine and not one student "
+             "name leaks behind it. "
+             "It drives the REAL page, the REAL guard, the REAL "
+             "teacher-data.js and teacher-live.js and the REAL rulings; only "
+             "the Supabase client is stubbed, and the stub mechanism is "
+             "IMPORTED from admin_view_drive.py rather than copied so the two "
+             "cannot drift. "
+             "⚠️ THE STUB MODELS RLS'S ROW VISIBILITY; IT DOES NOT PROVE RLS, "
+             "and the two personas are exactly that model: an admin sees the "
+             "school's class_teachers/class_members/assignments rows "
+             "(class_teachers_admin_read and siblings), a plain teacher sees "
+             "only her own (class_teachers_own_all). Whether the DATABASE "
+             "draws that line is answered in SQL under real roles, under "
+             "MRB-303. What this proves is the half no SQL can: given those "
+             "row sets, the page opens for one and refuses the other and says "
+             "which. That split is not convenience — hz_admin and the other "
+             "admin-scoped fixtures have NO PASSWORD on TEST "
+             "(encrypted_password IS NULL, verified) and a standing MRB-303 "
+             "ruling BANS setting one, because writing to the fixtures a "
+             "security proof rests on spends the proof. This gate does not "
+             "override that ruling and never touches real RLS. "
+             "⚠️ Slow by category, not duration — about fifteen seconds, but "
+             "it needs headless Chrome, and every browser gate here is a "
+             "receipt gate so a machine without Chrome cannot redden every "
+             "push. No network and no credentials."),
 ]
 
 

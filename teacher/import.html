@@ -176,6 +176,44 @@
       max-width: 60ch;
     }
 
+    /* ── PERSISTENT IMPORT TARGET (which class this run lands in) ──
+       Sits under the page title on every step — upload, mapping, review,
+       and the success panel — so a teacher part-way through the wizard can
+       always see which class they are importing into. Its text is decided
+       in exactly one place: updateImportHeader(). */
+    .import-target {
+      display: inline-flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      max-width: 100%;
+      margin-bottom: 18px;
+      padding: 7px 15px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card2);
+    }
+    .import-target-label {
+      color: var(--muted);
+      font: 600 12px/1.4 var(--st-ui);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .import-target-value {
+      color: var(--text);
+      font: 700 16px/1.35 var(--st-display);
+      overflow-wrap: anywhere;
+    }
+    /* No class resolved yet — keep the row, drop the emphasis, so there is
+       never a blank space where a class name usually goes. */
+    .import-target.is-pending {
+      background: transparent;
+    }
+    .import-target.is-pending .import-target-value {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
     /* ── STEP INDICATOR (1 → 2 → 3) ── */
     .stepper {
       display: flex;
@@ -759,6 +797,15 @@
   <a id="back-link" class="back-link" href="/teacher/classes.html">← Back to my classes</a>
 
   <h1 class="page-title">Import students</h1>
+
+  <!-- Persistent target-class header. Visible on every step; text set by
+       updateImportHeader(). Starts in its honest "nothing picked yet" state
+       so it reads correctly before any script runs. -->
+  <p id="import-target" class="import-target is-pending" aria-live="polite">
+    <span id="import-target-label" class="import-target-label">Importing into</span>
+    <span id="import-target-value" class="import-target-value">Not chosen yet</span>
+  </p>
+
   <p class="page-subtitle">
     Upload a class list as a CSV file. We'll match it against your existing
     classes and students. Running it twice never creates duplicates.
@@ -1177,6 +1224,54 @@
 
   function $(id) { return document.getElementById(id); }
 
+  // ── The persistent "which class am I importing into?" header ────────────
+  // MRB-325 r9. A teacher could get part-way through the wizard and lose
+  // track of the target class, because the title and the stepper read the
+  // same on every screen. ONE function decides what that header says; every
+  // step transition and every control that can change the class calls it,
+  // and no other code builds that string.
+  //
+  // Nothing is cached: the names are derived from live state on each call,
+  // so choosing a different file or clearing the mapping cannot leave a
+  // stale class name behind.
+  let landedClassNames = null;   // the server's answer, once the import has run
+  let importCompleted = false;   // the success panel is the visible stage
+
+  // The class names this run is aimed at, best source first.
+  function importTargetNames() {
+    if (landedClassNames && landedClassNames.length) return landedClassNames.slice();
+    if (!fileState.rows.length) return [];
+    return distinctClasses().map(function (c) { return c.name; });
+  }
+
+  function updateImportHeader() {
+    const el = $('import-target');
+    const labelEl = $('import-target-label');
+    const valueEl = $('import-target-value');
+    if (!el || !valueEl) return;
+
+    if (labelEl) labelEl.textContent = importCompleted ? 'Imported into' : 'Importing into';
+
+    const names = importTargetNames();
+    if (!names.length) {
+      el.classList.add('is-pending');
+      valueEl.textContent = 'Not chosen yet';
+      return;
+    }
+    el.classList.remove('is-pending');
+
+    // One file can carry several classes. joinList() is how the confirm
+    // sentence and the success summary already read a class list out, so
+    // follow it for the short cases. Past three it stops fitting on a line,
+    // so name the first and count the rest — the full list is on the review
+    // table and in the per-class settings either way.
+    valueEl.textContent = names.length <= 3
+      ? joinList(names)
+      : names[0] + ' and ' + (names.length - 1) + ' more classes';
+    // textContent, not innerHTML: the class name is written as a text node,
+    // so it cannot be read as markup and needs no escapeHtml() pass.
+  }
+
   // ── Step indicator ──────────────────────────────────────────────────────
   function setStep(n) {
     document.querySelectorAll('.step').forEach(function (el) {
@@ -1191,6 +1286,7 @@
     ['1', '2', '3'].forEach(function (s) {
       $('screen-' + s).classList.toggle('show', s === String(n));
     });
+    updateImportHeader();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -1227,6 +1323,11 @@
     $('file-summary').classList.remove('show');
     $('preview-card').style.display = 'none';
     $('to-screen-2').disabled = true;
+    // No file, no rows, so no target class — the header goes back to its
+    // honest "not chosen yet" state rather than keeping the last one.
+    landedClassNames = null;
+    importCompleted = false;
+    updateImportHeader();
   }
 
   // Both parsers (papaparse for CSV, SheetJS for Excel) normalise into this
@@ -1250,6 +1351,11 @@
     renderFileSummary();
     renderPreview();
     $('to-screen-2').disabled = false;
+    // A newly-chosen file replaces the rows the header derives from, and
+    // retires any result from a previous run in this same page session.
+    landedClassNames = null;
+    importCompleted = false;
+    updateImportHeader();
   }
 
   function handleFile(file) {
@@ -1468,6 +1574,7 @@
     var single = classMode === 'single';
     $('map-class-row').style.display = single ? 'none' : '';
     $('single-class-row').style.display = single ? '' : 'none';
+    updateImportHeader();
   }
 
   // The class name for one row: from the mapped column (primary) or the single
@@ -1556,6 +1663,10 @@
     });
     classSettings = next;
     renderClassSettings(classes);
+    // Every control that can change which classes this file resolves to
+    // funnels through here (the class column, the "no class column" toggle,
+    // the single-name field), so this is the one hook screen 2 needs.
+    updateImportHeader();
   }
 
   function staffOptionsHtml(selectedId) {
@@ -1951,6 +2062,11 @@
     lastPayload = null;
     $('success-panel').classList.remove('show');
     $('confirm-stage').style.display = '';
+    // Back on the confirm stage: nothing has landed yet, so the header goes
+    // back to the future tense and to our own derived class list.
+    landedClassNames = null;
+    importCompleted = false;
+    updateImportHeader();
     $('preview-loading').style.display = '';
     $('preview-sentence').style.display = 'none';
     $('issues-card').style.display = 'none';
@@ -2203,6 +2319,14 @@
     } else {
       $('success-issues').style.display = 'none';
     }
+
+    // This stage swap does not go through setStep(), so the header is
+    // updated here too. Prefer the server's own list of classes over our
+    // derived one — it is the record of where students actually went.
+    landedClassNames = landed.map(function (c) { return c.name; })
+      .filter(function (n) { return !!n; });
+    importCompleted = true;
+    updateImportHeader();
 
     $('confirm-stage').style.display = 'none';
     $('success-panel').classList.add('show');

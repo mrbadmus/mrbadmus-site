@@ -430,8 +430,9 @@
           }
           const isStaff = p && ['teacher', 'hod', 'admin'].includes(p.role);
           if (isStaff) {
-            // Honour ?return= if explicitly set, otherwise default to teacher home.
-            window.location.href = returnUrl !== '/index.html' ? returnUrl : '/teacher/classes.html';
+            // Honour ?return= if explicitly set, otherwise default to Today
+            // (MRB-325 ruling 1 — Today is the landing surface, not My classes).
+            window.location.href = returnUrl !== '/index.html' ? returnUrl : '/teacher/today.html';
           } else if (p && p.key_stage === 'KS3') {
             // KS3 students legitimately have no science_pathway/tier (DB
             // constraint blocks them from KS4 fields). Never send them to the
