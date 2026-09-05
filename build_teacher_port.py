@@ -147,6 +147,9 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # ⊕ MRB-303 J2 — the scope-gated Admin entry. See `admin_nav` in page_html.
 ADMIN_NAV_JS_NAME = "teacher-admin-nav.js"
 
+# ⊕ MRB-323 — the random name picker. See `picker` in page_html.
+PICKER_JS_NAME = "teacher-picker.js"
+
 # ── pages this build REFUSES to write ────────────────────────────────────
 #
 # ⚠️ NOT A CONVENTION — A GUARD, and it is the same one `build_student_port`
@@ -205,8 +208,17 @@ _REFUSED = {"import.html"}
 # name in it from disk, in both published trees, and refuses to finish if a
 # stamp names bytes that are not what will be served. A tag that is stamped
 # but never verified is exactly the asset that goes stale quietly.
+# ⊕ MRB-323 — `teacher-picker.js` joins for the SECOND reason above, exactly
+# as `teacher-admin-nav.js` did: it is linked by a real `<script>` tag
+# `page_html` emits (on `class-detail.html` and its fixtures only, see
+# `picker` on the specs below), so `stamp_versions` would stamp it either
+# way. Being in this tuple is what makes `_verify_stamps` re-hash it from
+# disk in both published trees — and it is also what puts it in
+# `window.__MRB_ASSET_V__`, which costs one entry and closes the case of a
+# name that resolves to nothing.
 STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
-                "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js")
+                "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
+                "teacher-picker.js")
 
 
 def asset_hash(text):
@@ -257,7 +269,14 @@ PAGES = [
          # screen, so on this page the sheet was markup that could never open.
          overlays=("searchOpen", "hasToast"),
          retire="classes.html"),
+    # ⊕ MRB-323 — `picker=True` ON THIS ONE ONLY. The name picker's entry
+    # button is `teacher_rulings.INSERT_AT[(213, 216)]`, and node 213 is the
+    # CLASS screen's action row: an insertion whose parent is not on a page
+    # is skipped silently, so the other five pages carry neither the button
+    # nor a reason to load its script. `AMENDED_ADDITIONS` asserts both
+    # halves of that against the emitted bytes.
     dict(screen="class", node=87, out="class-detail.html", admin_nav=False,
+         picker=True,
          fixture_out="class-detail-fixture.html",
          fixture_js="teacher-fixture-class-detail.js",
          empty_out="class-detail-empty-fixture.html",
@@ -4043,6 +4062,31 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
     # failure.
     admin_nav = ("<script src=\"/shared/%s\"></script>\n" % ADMIN_NAV_JS_NAME
                  if spec.get("admin_nav") else "")
+
+    # ⊕ MRB-323 — the name picker, on ONE of the six.
+    #
+    # ⚠️ THE SAME SHAPE AS `admin_nav` ABOVE, AND FOR THE SAME REASONS. A
+    # plain `<script src>`: it touches neither `__MRB_TPL__` nor
+    # `teacher_rulings`, it defines `window.MrBadmusPicker` and does nothing
+    # at all until the entry button in Design's action row is pressed.
+    #
+    # ⛔ EMITTED ON THE FIXTURE TOO, AND HERE THAT IS LOAD-BEARING RATHER
+    # THAN MERELY TIDY. `admin_nav` on a fixture waits for a Supabase client
+    # that never arrives and correctly adds nothing. This one is the
+    # opposite: `teacher_behaviour.py` and `teacher_reach.py` drive the
+    # FIXTURES, and the picker's seven controls exist only after its script
+    # has run. Without the tag on the fixture the entry button would be
+    # pressed, `window.MrBadmusPicker` would be undefined, the handler would
+    # throw inside a click listener, and the one control this unit added
+    # would be reported by name as an error — which is the gates working,
+    # and a needless way to find out.
+    #
+    # ⚠️ ALSO ON THE EMPTY VARIANTS, which is where it does nothing: those
+    # fixtures are classes with no roster, `<if hasRoster>` is false, and
+    # there is no button to press. `AMENDED_ADDITIONS` carries `needs_data`
+    # for exactly that state.
+    picker = ("<script src=\"/shared/%s\"></script>\n" % PICKER_JS_NAME
+              if spec.get("picker") else "")
     # ⚠️ EMITTED ON BOTH PAGES, including the fixture, which never reads it.
     # The gates document the fixture as "the same bytes apart from its banner
     # and its last two script tags", and that sentence is what lets them
@@ -4307,7 +4351,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            "    props: {}\n"
            "  });\n"
            "};",
-           dep_map + admin_nav,
+           dep_map + admin_nav + picker,
            tail)),
         versions)
 

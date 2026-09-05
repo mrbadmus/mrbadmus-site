@@ -257,6 +257,70 @@ def packs_for(with_data=True):
     }
 
 
+# ── ⊕ MRB-323 · the name picker, on Today ────────────────────────────────
+#
+# ⚑ THE ONE THING NO OTHER GATE CAN SEE. `teacher_behaviour` and
+# `teacher_reach` drive the GENERATED class screen's copy of this feature,
+# and `teacher_picker_drive` drives its behaviour there. None of the three
+# knows this page exists: Today is hand-written, it has no fixture, and its
+# picker button is REVEALED by the same `loadClassMatrices` read that fills
+# the state line — which is stubbed here and nowhere else.
+#
+# So the questions this asks are Today's own:
+#
+#   · is the button revealed at all, and only for classes with a roster;
+#   · does the row still WORK as a link — it used to be one `<a>` wrapping
+#     the whole card, and a `<button>` cannot live inside one, so the card
+#     was restructured and "the card is still a link to the class" stopped
+#     being true by construction;
+#   · does pressing it open the picker HERE rather than navigating, and on
+#     the names this page already holds;
+#   · and does any of that touch the database. `S.log` records every table
+#     the stubbed client is asked for, reads included, so a delta of zero
+#     across the whole interaction is the read-only claim, measured.
+PICKER_EVALS = {
+    "rows": "document.querySelectorAll('.lesson').length",
+    "links": "(function(){var a=document.querySelectorAll('.lesson-go[href]');"
+             "return Array.prototype.map.call(a,function(x){"
+             "return x.getAttribute('href').indexOf('/teacher/class-detail.html?class=')===0;"
+             "}).filter(Boolean).length;})()",
+    "pickers": "document.querySelectorAll('.lesson-pick:not([hidden])').length",
+    "logBefore": "(window.__MRB_STUB__.log||[]).length",
+    "opened": """(async () => {
+      const b = document.querySelector('.lesson-pick:not([hidden])');
+      if (!b) { return JSON.stringify({error: 'no picker button revealed'}); }
+      b.click();
+      await new Promise(r => requestAnimationFrame(r));
+      const o = document.querySelector('[data-mrb-picker]');
+      if (!o) { return JSON.stringify({error: 'the picker button opened nothing'}); }
+      const host = o.parentElement;
+      const go = o.querySelector('[data-mrb-added="pick-go"]');
+      go.click();
+      await new Promise(r => setTimeout(r, 1400));
+      const n = o.querySelector('[data-mrb-name]');
+      /* ⚠️ BY ITS OWN MARKER, NOT `innerText.split('\\n')[0]`. The overlay's
+         header is LAST in the DOM and first on the screen (flex `order`, and
+         `shared/teacher-picker.js` says why), so reading the first LINE of
+         its text reads the big picked name instead of the class code. That
+         is what the first version of this check did, and it failed on a
+         perfectly correct page. */
+      const cd = o.querySelector('[data-mrb-code]');
+      const out = {
+        host: host.tagName,
+        code: cd ? (cd.textContent || '').trim() : '(no code node)',
+        dialog: o.getAttribute('aria-label') || '',
+        name: n ? (n.textContent || '').trim() : '',
+        stillHere: location.pathname
+      };
+      o.querySelector('[data-mrb-added="pick-close"]').click();
+      await new Promise(r => requestAnimationFrame(r));
+      out.closed = !document.querySelector('[data-mrb-picker]');
+      return JSON.stringify(out);
+    })()""",
+    "logAfter": "(window.__MRB_STUB__.log||[]).length",
+}
+
+
 def run_case(b, base, name, when, tables, packs, shots, width=1280,
              page="/teacher/today.html", evals=None):
     """One state. A FRESH PAGE TARGET each time, because
@@ -336,8 +400,9 @@ def main():
     try:
         with cdp.Browser() as b:
             # ── 1. a weekday this teacher teaches (Monday 7 Sep 2026) ────
-            t, s1, ov, errs, vis, _ = run_case(b, base, "1-weekday", "2026-09-07T09:00:00",
-                                       TABLES, packs_for(), args.shots)
+            t, s1, ov, errs, vis, g1 = run_case(
+                b, base, "1-weekday", "2026-09-07T09:00:00",
+                TABLES, packs_for(), args.shots, evals=PICKER_EVALS)
             print("\n--- WEEKDAY ---\n" + t[:800] + "\n")
             check("Monday" in t, "weekday: names the day")
             # ⚠️ CASE-FOLDED. `innerText` applies `text-transform`, so the
@@ -360,6 +425,43 @@ def main():
                   "weekday: no tier / pathway anywhere")
             check(vis, "weekday: the page is actually PAINTED", "not a blank screen")
             check(not errs, "weekday: no console errors", "; ".join(errs[:2]))
+
+            # ── ⊕ MRB-323 · the name picker on Today ─────────────────────
+            check(g1["rows"] == 3 and g1["links"] == 3,
+                  "picker: every lesson row is STILL a link to its class",
+                  "%d row(s), %d working link(s) — the card stopped being one "
+                  "<a> so that a second control could live on it"
+                  % (g1["rows"], g1["links"]))
+            check(g1["pickers"] == 3,
+                  "picker: offered on every class whose roster came back",
+                  "3 classes, all with members; got %d button(s)" % g1["pickers"])
+            op = json.loads(g1["opened"])
+            check(not op.get("error"), "picker: the button opens the picker",
+                  op.get("error", ""))
+            if not op.get("error"):
+                check(op["host"] == "BODY",
+                      "picker: mounts on THIS page",
+                      "no #mrb-teacher runtime host here, so body; got " + op["host"])
+                check(op["stillHere"] == "/teacher/today.html",
+                      "picker: does NOT navigate away",
+                      "the whole point is that it is at hand between lessons; "
+                      "landed on " + op["stillHere"])
+                check(op["code"] == "8r/Sc1",
+                      "picker: names the class as the class is named",
+                      "MRB-263 case, not upper-cased; got " + repr(op["code"]))
+                check(op["dialog"] == "Pick a student · 8r/Sc1",
+                      "picker: the dialog announces which class it is for",
+                      "its accessible name, so the class is heard on open "
+                      "rather than read last; got " + repr(op["dialog"]))
+                check(op["name"] in ("A One", "B Two", "C Three"),
+                      "picker: picks from THIS class's own roster",
+                      "3 members stubbed; got " + repr(op["name"]))
+                check(op["closed"], "picker: closes cleanly")
+            check(g1["logAfter"] == g1["logBefore"],
+                  "picker: touches the database NOT ONCE",
+                  "%d table read(s) before, %d after — it is read-only and "
+                  "absences are not written down"
+                  % (g1["logBefore"], g1["logAfter"]))
 
             # ── 2. Saturday ──────────────────────────────────────────────
             t2, s2, _, e2, vis2, _ = run_case(b, base, "2-weekend", "2026-09-12T09:00:00",

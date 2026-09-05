@@ -378,6 +378,40 @@ GATES = [
              "for real. That gap is stated in this gate's own docstring "
              "rather than left to be discovered."),
 
+    # ── ⊕ MRB-323 · a picker that repeats is not a picker ───────────────
+
+    dict(name="teacher_picker_drive",
+         cmd=["python3", "teacher_picker_drive.py"],
+         speed="slow",
+         needs="teacher_fixtures/class-detail-fixture.html",
+         why="MRB-323, 5 Sep 2026: the random name picker's PROMISES, which "
+             "the two gates beside it structurally cannot make. "
+             "teacher_behaviour already presses `pick-open` by name out of "
+             "AMENDED_ADDITIONS and sweeps all seven of the overlay's "
+             "controls; teacher_reach already hit-tests every one of them at "
+             "390 and 360 (the overlay is full-viewport `position:fixed`, so "
+             "its modalRoot() correctly narrows the page to the picker). "
+             "⚠️ NEITHER OF THEM KNOWS WHAT A PICKER IS FOR — \"the press "
+             "changed something\" is satisfied by one that shows the same "
+             "child eleven times, by one that calls on a student who is off "
+             "sick, and by a no-repeats toggle wired to nothing. This asserts "
+             "the four claims the feature makes: M presses over a class of M "
+             "give M DISTINCT names with the count line agreeing at every "
+             "step; Start again restores the pool; a student marked absent is "
+             "not returned by ANY of a whole cycle's presses (checked over the "
+             "cycle, because one draw missing one name proves nothing); and "
+             "Random repeats where the cycle cannot, which is the property "
+             "that tells the two modes apart. Plus the one that is not about "
+             "picking: the whole run makes ZERO requests (fetch, XHR and "
+             "sendBeacon are all recorded from before the first press) and "
+             "leaves ZERO storage keys — who was picked and who was away is "
+             "one lesson's business and this platform does not write it down. "
+             "⚠️ It drives the FIXTURE, like every teacher gate: a live page "
+             "starts with requireTeacherRole. Today's copy of the picker is "
+             "covered by today_drive instead, which is the only gate that "
+             "stubs loadClassMatrices and therefore the only one that can "
+             "reveal that page's button at all."),
+
     # ── ⊕ MRB-288 · one bank per surface ────────────────────────────────
 
     dict(name="pool_ownership",

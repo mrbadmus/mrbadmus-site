@@ -1877,6 +1877,27 @@ _DEL_PRIMARY = ("flex:none;height:38px;padding:0 18px;"
 _NAV_BACK_BTN = _DEL_TEXT_BTN
 
 
+# ── ⊕ MRB-323 · the class screen's entry to the name picker ──────────────
+#
+# ⚠️ NOT A NEW REGISTER — IT IS NODE 216's STYLE STRING, CHARACTER FOR
+# CHARACTER. Design's class-screen action row (node 213) holds one primary
+# and three secondaries: "Shoutouts" (215), "Charts" (216) and "Print report"
+# (217) are byte-identical to each other, `height:40px` on `--st-paper` with
+# a `--st-btn-border` hairline. This is a fourth control in that row and it
+# is drawn as the row's other three are, so a redraw of them makes this look
+# wrong before it reads wrong — which is the failure mode to want, and the
+# rule every other addition in this file already keeps.
+#
+# ⚠️ AND 40px IS THE FLOOR, NOT A COINCIDENCE. It is Design's own height for
+# every button in this row and it is at or above the touch target this unit
+# was given; `shared/teacher-picker.js` carries the same floor forward onto
+# every control it draws, so the picker and the row that opens it agree.
+_PICK_ENTRY_BTN = ("height:40px;padding:0 16px;font:600 17px/1.2 "
+                   "var(--st-ui);color:var(--st-ink);background:"
+                   "var(--st-paper);border:1px solid var(--st-btn-border);"
+                   "border-radius:9px;cursor:pointer")
+
+
 # ── ⊕ MIDE, 1 Sep 2026 · the week bar's style strings ────────────────────
 #
 # Read out of the v2 delivery, character for character, not retyped from a
@@ -2758,6 +2779,78 @@ INSERT_AT = {
         "`cellStyle(3)`'s own geometry and colour, read off that ruling "
         "rather than retyped as a guess."),
 
+    # ══ ⊕ MRB-323, 5 Sep 2026 · THE NAME PICKER'S ENTRY POINT ═══════════
+    #
+    # ⚑ A FOURTH CATEGORY'S SECOND ENTRY: markup Mide asked for. The
+    # shoutout delete control (above) is the first, and the note there says
+    # what governs both — every style copied off a node Design DID draw,
+    # registered in `AMENDED_ADDITIONS` so the build asserts it into the
+    # bytes and `teacher_behaviour` presses it by name.
+    #
+    # The control opens `shared/teacher-picker.js` — a full-screen board
+    # display that picks a name out of THIS CLASS'S OWN ROSTER, the one
+    # `renderVals` has already computed as `kRoster` and the one the roster
+    # column below is drawn from. It is the tool a teacher reaches for
+    # several times a lesson and has been doing on paper.
+    #
+    # ── WHY IT IS AN INSERTION AND NOT A `WRAP` OR A `SET_ON` ──────────
+    #
+    # There is nothing of Design's to work on. `WRAP` makes one of her nodes
+    # conditional and `SET_ON` finishes a handler she left inert; she drew
+    # no picker, no fifth button and no affordance this could hang off.
+    # `INSERT_AT` is this file's documented last resort and this is what it
+    # is for.
+    #
+    # ── WHERE IT SITS, AND WHY IT IS NOT APPENDED ──────────────────────
+    #
+    # ⚠️ AFTER NODE 216 ("Charts"), BEFORE NODE 217 ("Print report"), which
+    # is a placement INSIDE Design's row and not a reordering of it: her
+    # three surviving buttons keep their relative order exactly. Her row
+    # runs from the action a teacher takes weekly to the one they take at
+    # the end of a term, and "Print report" is plainly the terminal one.
+    # Picking a name is an every-lesson action, so it goes ahead of the rare
+    # one rather than after it.
+    #
+    # ⛔ NOT `(213, 214)`, WHICH IS WHERE IT WOULD HAVE READ BEST. Node 214
+    # is Design's "Set work" and it is in `DEAD` — creating an assignment
+    # has no write path — so it is PRUNED before this loop runs, and an
+    # `after` node that is not among the parent's children stops the build
+    # by design. There is no "insert first" in this mechanism; after 216 is
+    # the closest reachable answer and it is the right one anyway.
+    #
+    # ── THE `if`, AND WHY IT IS `hasRoster` AND NOT `klass.hasWork` ─────
+    #
+    # ⚠️ A PICKER OVER AN EMPTY CLASS IS A CONTROL THAT CANNOT DO ANYTHING.
+    # The week bar beside it is gated on `klass.hasWork` because a week is
+    # only worth scoping when there is work in it; this is gated on the
+    # ROSTER, because names are the only thing this reads. A class with
+    # thirty children and no assignment set has a full picker and no week
+    # bar, and both of those are right.
+    #
+    # `hasRoster` is a `renderVals` key added in `LOGIC` beside the handler
+    # — see there. An `<if>` expression is looked up WITHOUT the miss
+    # recorder, so a key that does not exist is silently FALSE and the
+    # button simply never renders; `AMENDED_ADDITIONS` carries `needs_data`
+    # so the empty-class fixture is not asked for a control it correctly
+    # does not have, and `teacher_behaviour` presses it by name on every
+    # fixture that does.
+    (213, 216): ({
+        "t": "if", "e": "hasRoster",
+        "c": [{
+            "t": "button",
+            "a": {"style": _PICK_ENTRY_BTN, "type": "button",
+                  "data-mrb-added": "pick-open"},
+            "hov": "border-color:var(--st-edge)",
+            "on": "pickStudent",
+            "c": [{"t": "#", "v": "Pick a student"}],
+        }]},
+        "the class screen's entry to the random name picker (MRB-323). "
+        "Design drew no counterpart: her row has Set work, Shoutouts, "
+        "Charts and Print report, and the picker is a fifth thing a teacher "
+        "does at the front of a room. Node 216's style string verbatim, "
+        "including its hover, so the four secondaries in this row cannot "
+        "drift apart."),
+
     # ── a filter that matches nothing is still a state ──────────────────
     #
     # ⛔ FILTER TO A KEY STAGE THE TEACHER DOES NOT TEACH AND THE GRID GOES
@@ -3635,6 +3728,53 @@ AMENDED_ADDITIONS = (
              "because `submission_feedback_update` is `teacher_id = "
              "auth.uid()` and offering it elsewhere would be offering a "
              "refusal."),
+
+    # ══ ⊕ MRB-323, 5 Sep 2026 · THE NAME PICKER ═════════════════════════
+    #
+    # ⚠️ ONE ROW, FOR A SURFACE THAT HAS SEVEN CONTROLS. That is deliberate
+    # and it is what this register can honestly hold. The check behind it
+    # reads the EMITTED BYTES of a page — `build_teacher_port.build()` looks
+    # for `"data-mrb-added":"<marker>"` in the serialised template — and only
+    # this button is in the template. The picker's own controls (`pick-go`,
+    # `pick-mode-cycle`, `pick-mode-random`, `pick-reset`, `pick-absent`,
+    # `pick-absent-row`, `pick-close`) are built by
+    # `shared/teacher-picker.js` at press time and exist in no file's bytes,
+    # so registering them here would demand markup that is correctly absent
+    # and stop every build.
+    #
+    # ⚠️ THEY ARE NOT THEREFORE UNGATED, WHICH IS THE THING TO CHECK. Every
+    # one of them carries a `data-mrb-added` attribute of its own, and the
+    # two drive gates collect on the ATTRIBUTE rather than on this register:
+    # `teacher_behaviour.clickable()` sweeps them by ordinal and requires
+    # each to move something, and `teacher_reach.clickable()` hit-tests them
+    # at 390px and 360px — where, the overlay being a full-viewport
+    # `position:fixed` element, its `modalRoot()` correctly narrows the whole
+    # page to the picker while it is open. The picker's own header comment
+    # records why its close button is LAST in the DOM: first, it would shut
+    # the overlay before the ordinal sweep had reached any of the other six.
+    #
+    # `needs_data=True` — and it means exactly what the note at the top of
+    # this register says it means. The entry button is wrapped in `<if
+    # hasRoster>`, so on `class-detail-empty-fixture` (a class with no
+    # roster) it is legitimately not on the page: there is nobody to pick.
+    # It is NOT `needs_write`. Picking a name writes nothing anywhere — no
+    # table, no `localStorage`, no request — so a finished, read-only
+    # academic year offers it exactly as a live one does, and claiming
+    # otherwise would take a harmless tool off last year's classes for a
+    # rule it does not touch.
+    #
+    # ⛔ NO `opener_tpl` AND NO `expect_nav`. Nothing hides it — it is in the
+    # class header's action row, on screen the moment the page mounts — and
+    # it navigates nowhere: it opens an overlay on the page a teacher is
+    # already on, which is the whole point of it for someone standing at the
+    # front of a room mid-lesson.
+    dict(marker="pick-open", pages=("class-detail.html",),
+         node=216, needs_data=True,
+         label="Pick a student",
+         why="the random name picker's entry point (MRB-323). Design drew "
+             "no counterpart; the control opens shared/teacher-picker.js "
+             "over the class screen, on the roster `renderVals` has already "
+             "computed. It reads and never writes."),
 )
 
 
@@ -7363,6 +7503,68 @@ componentDidUpdate() {
      "the two empty states hang on. The no-paper branch carries all three: "
      "every one of the six pages computes this object, so a key that exists "
      "on only one branch is a missing binding on the others."),
+
+    # ══ ⊕ MRB-323, 5 Sep 2026 · THE NAME PICKER'S TWO KEYS ══════════════
+    #
+    # ⚑ WITHOUT THIS ENTRY THE BUTTON EXISTS AND CANNOT WORK, in two
+    # different silences, and both are worth naming because they fail in
+    # opposite directions.
+    #
+    # · `hasRoster` is read by an `<if>`. `student-runtime` resolves an `if`
+    #   with `lookup(node.e, scope, null)` — WITHOUT the miss recorder — so a
+    #   key that is not in `renderVals` is not an error, it is FALSE. Missing,
+    #   the entry button would simply never render on any class, on any page,
+    #   with `data-mrb-misses` at zero and the build's own byte check still
+    #   green (the markup IS in the file; nothing draws it).
+    # · `pickStudent` is read as a handler. That one IS recorded as a miss,
+    #   so it fails loudly — but only once somebody presses the button.
+    #
+    # `renderVals()` is the render SCOPE, an explicit object literal, not a
+    # pass-through of anything: a key absent from here cannot be read by any
+    # `{"e": …}` in the template however correct the data behind it is. That
+    # is the same shape `hasOtherYears`, `canWrite` and `showClassesLink`
+    # already have, and this follows them.
+    #
+    # ── IT READS `kRoster`, WHICH IS DESIGN'S OWN LOCAL ─────────────────
+    #
+    # ⚠️ AND THAT IS THE WHOLE PERMISSION AND CORRECTNESS ARGUMENT, so it is
+    # not a convenience. `const kRoster = this.rosterFor(k)` is line five of
+    # `renderVals` — it is what the roster column, the glance block and every
+    # average on this screen are drawn from, and `rosterFor` is
+    # `MRB_PICK('ROSTER', k.id)`, which `shared/teacher-live.js` fills from
+    # `loadClassMatrices()`'s ACTIVE members (`left_at IS NULL`,
+    # `deleted_at IS NULL`), behind an RLS-scoped `class_teachers` driver
+    # query. So:
+    #
+    #   · the picker's pool cannot disagree with the names on the page —
+    #     there is one read and one filter, not a second implementation;
+    #   · the picker adds NO query, on a screen MRB-292 was spent making
+    #     fast;
+    #   · and there is no new permission gate to invent, which is the
+    #     correct outcome rather than an omission. A teacher who cannot read
+    #     this class never reaches this page: `teacher-live.js` throws
+    #     `not_authorised` before mount, and `renderVals` never runs. A
+    #     picker that re-asked the question would be a second answer to it.
+    #
+    # ⛔ AND IT IS UNGUARDED — `window.MrBadmusPicker.open(…)`, with no `&&`.
+    # Deliberately, and for the reason the `signOut` entry above records:
+    # `build_teacher_port.page_html` emits the `<script src>` for it on this
+    # page AND on its fixture, so if the object is missing the page's own
+    # assets did not load and a thrown error is the correct outcome rather
+    # than a button that quietly does nothing.
+    #
+    # Anchored on `openBulk` — the neighbouring action in Design's own row,
+    # untouched by every other ruling in this tuple, and unique in the
+    # source at this point (checked, not assumed).
+    ("      openBulk: () => this.setState({ modal: 'bulk' }),\n",
+     "      openBulk: () => this.setState({ modal: 'bulk' }),\n"
+     "      hasRoster: kRoster.length > 0,\n"
+     "      pickStudent: () => window.MrBadmusPicker.open({\n"
+     "        id: k.id, code: k.code, students: kRoster\n"
+     "      }),\n",
+     "the two keys MRB-323's entry button needs: the `<if>` that keeps a "
+     "picker off a class with nobody on it, and the handler that opens it "
+     "on the roster this screen has already read."),
 )
 
 

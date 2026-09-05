@@ -241,13 +241,40 @@
        deliberately: this page and timetable.html took v3's chrome and type;
        admin.html and import.html did not, and are outside this unit. */
 
+    /* ⊕ MRB-323, 5 Sep 2026 — `.lesson` IS NO LONGER THE LINK. It used to be
+       one `<a>` wrapping the whole card. The name picker needs a second
+       control on the same row, and a `<button>` inside an `<a>` is invalid
+       HTML that the anchor eats the tap for — so the row became a plain
+       `<div>` holding TWO explicit controls: `.lesson-go`, which is the
+       anchor and carries everything the card used to say, and
+       `.lesson-pick`, which is the picker.
+       ⚠️ THE ROW SAYS EXACTLY WHAT IT SAID BEFORE. `today_drive.py` reads
+       `innerText` and asserts "8r/Sc1", "Science", "1 of 3 in" and the rest
+       case-sensitively; the picker control is a glyph with an `aria-label`
+       and contributes no text at all. */
     .lesson {
-      display: flex; align-items: flex-start; gap: 16px;
+      display: flex; align-items: flex-start; gap: 12px;
       padding: 14px 0; border-bottom: 1px solid var(--st-rule-fact);
-      text-decoration: none; color: inherit;
+    }
+    .lesson-go {
+      display: flex; align-items: flex-start; gap: 16px;
+      flex: 1; min-width: 0; text-decoration: none; color: inherit;
     }
     .lesson:last-child { border-bottom: none; }
-    .lesson:hover .lesson-code { color: var(--st-accent-text); }
+    /* Scoped to the anchor, not the row: hovering the picker button must not
+       tint the class code as though the link were under the cursor. */
+    .lesson-go:hover .lesson-code { color: var(--st-accent-text); }
+    /* Design's v3 outline button, at the 40px this unit's floor and her own
+       class-screen action row both put it at. Icon only — see the note above
+       about what this row is allowed to say. */
+    .lesson-pick {
+      flex: none; width: 40px; height: 40px; margin-top: 2px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--st-paper); border: 1px solid var(--st-btn-border);
+      border-radius: 9px; cursor: pointer; color: var(--st-muted);
+    }
+    .lesson-pick:hover { border-color: var(--st-edge); color: var(--st-ink); }
+    .lesson-pick[hidden] { display: none; }
     .lesson-period {
       flex: none; min-width: 96px;
       font: 500 13px/1.2 var(--st-mono); letter-spacing: 0.16em;
@@ -406,6 +433,11 @@
 <script src="/shared/teacher-guard.js?v=2efdc820"></script>
 <script src="/shared/teacher-data.js?v=615378a3"></script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
+<!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
+     nothing until a lesson row's picker button is pressed. It makes no
+     request and touches no storage, so its position in this list carries no
+     load-order rule of its own. -->
+<script src="/shared/teacher-picker.js?v=8f2365b7"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
    MRB-306 — TODAY
@@ -603,7 +635,14 @@ MrBadmusTeacherGuard.requireTeacherRole({
     el('lessons').innerHTML = dayEntries.map(function (e) {
       const subj = subjectFromCode(e.className, e.keyStage);
       const meta = [e.keyStage, subj].filter(Boolean).join(' \u00B7 ');
-      return '<a class="lesson" href="/teacher/class-detail.html?class=' + encodeURIComponent(e.classId) + '">' +
+      /* ⊕ MRB-323 — the picker button ships HIDDEN and is revealed below,
+         only for a class whose roster actually came back with somebody on
+         it. A control offered before its data has arrived is a control that
+         does nothing when pressed, and one offered for a class this page
+         could not read would be a picker over an empty room. Same rule the
+         state line beside it already keeps: unknown is not zero. */
+      return '<div class="lesson">' +
+             '<a class="lesson-go" href="/teacher/class-detail.html?class=' + encodeURIComponent(e.classId) + '">' +
              '<div class="lesson-period">Period ' + e.period + '</div>' +
              '<div class="lesson-body">' +
              '<div class="lesson-code">' + esc(e.className || 'Class') + '</div>' +
@@ -611,7 +650,24 @@ MrBadmusTeacherGuard.requireTeacherRole({
              '<div class="lesson-state clear" data-state-for="' + esc(e.classId) + '">' +
              '<span class="skel" style="display:inline-block;width:150px;height:11px;"></span>' +
              '</div>' +
-             '</div></a>';
+             '</div></a>' +
+             /* ⚠️ THE NAME TRAVELS ON THE BUTTON, and it is the name THIS ROW
+                is displaying. The first version read `pack.class.name` out of
+                the matrices in the handler, which is a second source for a
+                string the card is already showing — and `today_drive` caught
+                it doing exactly what a second source does: a pack without a
+                `class` key put the word "Class" on the board in place of
+                8r/Sc1. One row, one name, in one place. */
+             '<button type="button" class="lesson-pick" hidden' +
+             ' data-pick-for="' + esc(e.classId) + '"' +
+             ' data-pick-name="' + esc(e.className || '') + '"' +
+             ' aria-label="Pick a student from ' + esc(e.className || 'this class') + '">' +
+             '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">' +
+             '<circle cx="8.5" cy="5" r="2.6" stroke="currentColor" stroke-width="1.5"/>' +
+             '<path d="M3 14c0-2.8 2.5-4.6 5.5-4.6S14 11.2 14 14" stroke="currentColor"' +
+             ' stroke-width="1.5" stroke-linecap="round"/></svg>' +
+             '</button>' +
+             '</div>';
     }).join('');
     el('main').style.display = 'block';
 
@@ -649,7 +705,48 @@ MrBadmusTeacherGuard.requireTeacherRole({
         c.className = 'lesson-state ' + (state.chase ? 'chase' : 'clear');
         c.textContent = state.text;
       });
+
+      /* ⊕ MRB-323 — and NOW the picker is offered, because now there are
+         names to pick from. `pack.members` is `loadClassMatrices`'s ACTIVE
+         roster (`left_at IS NULL`, `deleted_at IS NULL`, RLS-scoped through
+         its `class_teachers` driver) — the same rows the state line above is
+         derived from and the same set the class screen shows. So this page
+         adds NO query for the picker: the read it already makes for the day
+         carries the roster with it. */
+      const roster = (pack && pack.members) || [];
+      if (!roster.length) { return; }
+      document.querySelectorAll('[data-pick-for="' + cid + '"]').forEach(
+        function (b) { b.hidden = false; });
     });
+
+    /* ⚑ INLINE, NOT A TRIP THROUGH `class-detail.html`. The whole value of
+       this control is that it is at hand in the thirty seconds between one
+       lesson and the next; sending a teacher to another page — a navigation,
+       a fresh mount and a fresh set of reads, on a phone at the classroom
+       door — would be a slower way to do the thing they came here to do
+       quickly, and would leave them on a screen they then have to come back
+       from. The picker needs a class code and a list of names, and this page
+       is already holding both.
+
+       Delegated on the container rather than bound per card, because the
+       lessons are redrawn whenever the day changes. */
+    const lessonList = el('lessons');
+    if (lessonList) {
+      lessonList.addEventListener('click', function (ev) {
+        const btn = ev.target && ev.target.closest
+          ? ev.target.closest('[data-pick-for]') : null;
+        if (!btn) { return; }
+        ev.preventDefault();
+        const cid = btn.getAttribute('data-pick-for');
+        const pack = matrices && matrices[cid];
+        if (!pack || !window.MrBadmusPicker) { return; }
+        window.MrBadmusPicker.open({
+          id: cid,
+          code: btn.getAttribute('data-pick-name') || '',
+          students: pack.members || []
+        });
+      });
+    }
   }
 });
 

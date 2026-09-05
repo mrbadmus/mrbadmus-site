@@ -1992,6 +1992,10 @@ class Component extends DCLogic {
       doPrint: () => window.print(),
       openSearch: () => this.setState({ modal: 'search', search: '' }),
       openBulk: () => this.setState({ modal: 'bulk' }),
+      hasRoster: kRoster.length > 0,
+      pickStudent: () => window.MrBadmusPicker.open({
+        id: k.id, code: k.code, students: kRoster
+      }),
       closeModal: () => this.setState({ modal: null }),
       delOpen: !!s.delId,
       delName: s.delName || '',
@@ -2042,7 +2046,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"615378a3","teacher-guard.js":"2efdc820","teacher-live.js":"26a7713d"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"615378a3","teacher-guard.js":"2efdc820","teacher-live.js":"26a7713d","teacher-picker.js":"8f2365b7"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script src="teacher-fixture-digest-nolive.js"></script>
 <script>window.__MRB_MOUNT__();</script>
