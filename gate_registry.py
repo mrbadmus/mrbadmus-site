@@ -991,6 +991,16 @@ EXCLUDED = {
         "assertions are a SUBSET of consumer_flag_off's, which is "
         "registered. Same trade as p1_drive.py above: real value, run "
         "deliberately, not a cost every push from every lane pays.",
+    "admin_ui_drive.py":
+        "MRB-317 admin-ui. The operator-console drive — five families (one "
+        "per billing state), a seat-cap organisation, three queued marking "
+        "answers, every support action, a real mb-mark send. Same trade as "
+        "night3_flagon_smoke.py above and for the identical reason: it "
+        "CREATES real fixtures on the shared TEST project (through the "
+        "real API, torn down after) and would collide with any other "
+        "lane's fixtures on the same tables if every push ran it. Its "
+        "flag-off/non-operator assertions for these two pages are a subset "
+        "of consumer_flag_off's estate-wide sweep, which is registered.",
 }
 
 # The KS4 subtopic corpora are DATA, not scripts: one module each of AQA spec
