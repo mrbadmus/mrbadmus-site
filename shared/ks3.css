@@ -81,8 +81,9 @@ body.rd[data-mode="ks3"] {
 .ks3-mark-arrow { stroke-width: 2.2; }
 
 /* MRB-182 — Design's browse-layer header. Sticky, translucent over the
-   dotted ground with a blur behind it, and one 72px rail carrying brand,
-   breadcrumbs and the KS3 pill. `z-index:60` clears the sticky season
+   dotted ground with a blur behind it, and one 72px rail carrying brand
+   and breadcrumbs (⊕ MRB-330 — "and the KS3 pill" until 6 Sep 2026;
+   the pill is cut). `z-index:60` clears the sticky season
    tiles and the sticky unit aside, both of which scroll under it. */
 .ks3-nav {
   position: sticky;
@@ -110,22 +111,53 @@ body.rd[data-mode="ks3"] {
   background: var(--ks3-rule);
   flex: 0 0 auto;
 }
+/* Holds `.ks3-classlink` (below) at the right edge of the rail. Since MRB-330
+   removed the pill that used to be the rail's last child, this is the ONLY
+   thing keeping that link off the crumbs — it is not the dead element it now
+   looks like. On a signed-out page it grows into the space the pill vacated,
+   which is correct: at phone widths the rail is over-constrained, its
+   `flex-basis: 0` resolves to zero, and the freed width goes to the crumbs. */
 .ks3-nav-spacer { flex: 1; }
-/* The KS3 pill, top right — an ink lozenge, cream text. */
-.ks3-pill {
-  flex: 0 0 auto;
-  padding: 8px 16px;
-  border-radius: var(--ks3-r-pill);
-  background: var(--ks3-ink);
-  color: var(--ks3-on-dark);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-decoration: none;
-}
+
+/* ⊖ REMOVED by MRB-330, 6 Sep 2026 — the KS3 pill. The rule read:
+
+       .ks3-pill {
+         flex: 0 0 auto;
+         padding: 8px 16px;
+         border-radius: var(--ks3-r-pill);
+         background: var(--ks3-ink);
+         color: var(--ks3-on-dark);
+         font-size: 14px;
+         font-weight: 700;
+         letter-spacing: .1em;
+         text-decoration: none;
+       }
+
+   described as "the KS3 pill, top right — an ink lozenge, cream text", and
+   `build_ks3.py`'s shell emitted one on every page in the key stage. Both are
+   gone; the ruling is written up at the rail markup in build_ks3.py.
+
+   Kept as a record and not simply deleted because `.ks3-pill` is still NAMED
+   in two places that a search will find and that must not be "fixed" back:
+   `shared/class-entry.js` querySelects it as an insertion anchor (and handles
+   null), and the comment below describes the lozenge pair it used to make.
+
+   ⚠️ `.ks3-pills`, `.ks3-pill-badge` and `.ks3-pill-label` further down this
+   file are a DIFFERENT component — the keyword pill list inside a lesson —
+   and are untouched. */
+
 /* ── the way in to a student's own class (MRB-259) ──
-   Injected by shared/class-entry.js, immediately before the KS3 pill, and
-   ONLY for a signed-in viewer who is actually enrolled. It has no static
+   Injected by shared/class-entry.js at the end of the nav rail, and
+   ONLY for a signed-in viewer who is actually enrolled.
+
+   ⊕ MRB-330, 6 Sep 2026 — this used to read "immediately before the KS3
+   pill", and the paragraph below described the two as a deliberate pair:
+   same lozenge geometry, inverted weight, "so the pair does not read as two
+   equal destinations". The pill is cut, so this is now the only lozenge on
+   the rail and there is no pair to balance. Its own geometry is complete and
+   self-contained, so nothing here needs restyling — but the WHY below is now
+   a historical reason rather than a live constraint, and a future change to
+   these values no longer has a second element to stay in step with. It has no static
    presence in any generated page — that is what makes "no flash of the entry
    before auth resolves" structural rather than a CSS trick.
 
@@ -176,8 +208,9 @@ body.rd[data-mode="ks3"] {
    The lesson's trail, in the same header slot the mono `.ks3-crumbs` row uses
    on every other page type. Body font at 17px, NOT the row's mono 14px — they
    are two treatments of one landmark and only one of them is a lesson's. The
-   divider, the spacer and the KS3 pill above are the browse layer's and are
-   shared; the trail does its own wrapping, so the 72px rail grows with it. */
+   divider and the spacer above are the browse layer's and are shared; the
+   trail does its own wrapping, so the 72px rail grows with it. (⊕ MRB-330 —
+   this listed "the KS3 pill" as a third shared piece; it is cut.) */
 
 /* ── the header trail (⊕ MRB-208 rule 1) ──
    Body font at 17px, NOT the `.ks3-crumbs` row's mono 14px — they are two
@@ -241,8 +274,16 @@ body.rd[data-mode="ks3"] {
 .ks3-lesson > .ks3-prose { max-width: var(--ks3-measure); }
 
 /* MRB-208: the crumb trail moved onto the header rail, so it carries no
-   bottom margin of its own and `min-width:0` lets it shrink before the
-   KS3 pill does on a narrow rail.
+   bottom margin of its own and `min-width:0` lets it shrink rather than push
+   the rail wider.
+
+   ⊕ MRB-330, 6 Sep 2026 — that sentence used to end "lets it shrink before the
+   KS3 pill does on a narrow rail". The pill is cut, so there is no longer a
+   fixed item downstream for it to yield to. `min-width:0` is still REQUIRED
+   and removing it would be a regression: a flex item will not shrink below its
+   content without it, at any depth, which is exactly what the ellipsis in the
+   700px block depends on. Only the REASON changed — it now yields to
+   `.ks3-brand`, which is the unshrinkable one (see the 700px block).
 
    ⚠️ THE TYPE STAYS MONO 14px. Design's browse-layer artifact draws these
    at 16px/600 in the body face, but the Reference Set — which is what
@@ -1978,45 +2019,27 @@ body.rd[data-mode="ks3"] {
 .ks3-picker-title { font-weight: 700; font-size: 17px; line-height: 1.25; }
 .ks3-picker-unit { font-size: 14px; color: var(--ks3-ink-muted); line-height: 1.25; }
 
-/* the ink-dark "Live right now" panel */
-.ks3-live {
-  background: var(--ks3-ink);
-  color: var(--ks3-on-dark);
-  border-radius: var(--ks3-r-block);
-  padding: 30px 30px 26px;
-  box-shadow: 6px 6px 0 var(--ks3-accent);
-}
-.ks3-live-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.ks3-live-head .ks3-eyebrow { margin: 0; color: var(--ks3-on-dark-muted); }
-.ks3-live-count { font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-alert); }
-.ks3-live-line {
-  margin: 14px 0 22px;
-  font-family: var(--ks3-font-display);
-  font-weight: 700;
-  font-size: 27px;
-  line-height: 1.15;
-  letter-spacing: -.02em;
-}
-.ks3-live-bars { display: flex; flex-direction: column; gap: 16px; }
-.ks3-live-label {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 7px;
-}
-.ks3-live-of { color: var(--ks3-on-dark-muted); }
-.ks3-live-track {
-  height: 12px;
-  border-radius: 99px;
-  background: var(--ks3-dark-track);
-  overflow: hidden;
-}
-.ks3-live-fill { display: block; height: 100%; border-radius: 99px; background: var(--ks3-hue, var(--ks3-accent)); }
-.ks3-live-row[data-discipline="biology"]   { --ks3-hue: var(--ks3-biology); }
-.ks3-live-row[data-discipline="chemistry"] { --ks3-hue: var(--ks3-chemistry); }
-.ks3-live-row[data-discipline="physics"]   { --ks3-hue: var(--ks3-physics); }
+/* ⊖ REMOVED by MRB-330, 6 Sep 2026 — the ink-dark "Live right now" panel.
+   Fourteen rules lived here (`.ks3-live`, `-head`, `-count`, `-line`, `-bars`,
+   `-label`, `-of`, `-track`, `-fill` and three `-row[data-discipline]` hue
+   assignments), plus two overrides in the 34rem block. The only markup that
+   ever carried them was `landing()`'s hub panel in build_ks3.py, which is cut;
+   the ruling and the reasoning are written up there. Nothing else in the
+   estate names `.ks3-live*` — grepped across build_ks3.py, ks3_art/, the
+   gates, and every script and stylesheet under shared/, before removing.
+   (Spelled out rather than globbed on purpose: a `shared/` glob written with
+   a star is a stray comment opener inside a CSS comment.)
+
+   ⚠️ `.ks3-hub-live` (the "· N live" fragment on a subject card, a little
+   further up this file) is a different rule with a similar name and is NOT
+   part of this cut.
+
+   ⚠️ No token is orphaned by this removal — checked, because an orphaned one
+   would drop out of ks3_parity Layer A's provenance sweep. `--ks3-dark-track`
+   still has six readers further down this file (the instrument progress
+   tracks), `--ks3-alert`, `--ks3-on-dark-muted` and the three subject hues are
+   used throughout, and ks3_parity's MINTED_TOKENS note still cites
+   `--ks3-dark-track` by name. Nothing in tokens.css needed touching. */
 
 .ks3-hub-sec { margin-top: 84px; }
 .ks3-sec-head {
@@ -6376,8 +6399,8 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
   .ks3-hub-title { overflow-wrap: break-word; }
   .ks3-hub-actions { gap: 10px; }
   .ks3-btn { padding: 15px 20px; font-size: 17px; }
-  .ks3-live { padding: 22px 20px 20px; }
-  .ks3-live-line { font-size: 22px; }
+  /* ⊖ MRB-330 — `.ks3-live { padding: 22px 20px 20px; }` and
+     `.ks3-live-line { font-size: 22px; }` removed with the panel itself. */
   .ks3-hub-sec { margin-top: 52px; }
   .ks3-sec-head { display: block; }
   .ks3-sec-head h2 { font-size: 32px; }
@@ -6441,6 +6464,8 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    pill entirely off-screen on 33 pages (left edge 468 in a 390 viewport), and
    because the header is sticky the pill never came back on a vertical scroll:
    a nav link that could only be reached by swiping sideways to maximum.
+   (⊕ MRB-330 — the pill is cut. That half of the motivation is now history;
+   the wrapping-header half below is still live and still the reason.)
 
    THE RULING: below 700px the trail shows UNIT AND PAGE ONLY, elides what
    does not fit, and the page never scrolls sideways.
@@ -6456,8 +6481,38 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    What is NOT lost: the hidden crumbs are `display: none`, so a screen reader
    announces the two that are shown — the same two a sighted student sees —
    and every level above them is one tap away through the unit index the first
-   shown crumb points at. `.ks3-brand` still goes to the site root and the KS3
-   pill, now on screen, still goes to the key stage index.
+   shown crumb points at. `.ks3-brand` still goes to the site root, and since
+   MRB-330 it is the only chrome link to it — the KS3 pill that used to sit at
+   the right of the rail and point at the key-stage index is cut, and the first
+   SHOWN crumb is what reaches that now.
+
+   ⊕ MRB-330, 6 Sep 2026 — REVISITED here, because removing the pill hands this
+   block back real width and the question was whether the rules above actually
+   let the crumbs have it. They do, and no change was needed. Written down so
+   the next reader does not have to re-derive it:
+
+       390px viewport, 34rem block active (rail padding 0 16px, gap 12px)
+       content width                                    358.0px
+       before   brand 140.6 + divider 2 + pill 63 + 4 gaps 48 = 253.6
+                left for crumbs + spacer                 104.4px
+       after    brand 140.6 + divider 2        + 3 gaps 36 = 178.6
+                left for crumbs + spacer                 179.4px
+
+   `.ks3-nav-spacer` does NOT take that 75px. `flex: 1` is `1 1 0%`, so its
+   base size is zero: in an over-constrained rail — which is every phone width
+   here — shrink resolution is scaled by base size, the spacer contributes
+   nothing, and it resolves to 0px. The freed width lands on `.ks3-crumbs`,
+   which is the one item with `min-width: 0`. Where the rail is NOT
+   over-constrained (a short trail nearer 700px) the crumbs are already at
+   content width and the spacer growing is correct — it is what holds a
+   signed-in student's `.ks3-classlink` at the right edge now that the pill is
+   not there to do it.
+
+   ⚠️ The "keep the last three children" elision STAYS, and relaxing it would
+   undo the point of the cut. Showing a fourth and fifth crumb would spend the
+   75px on more rungs instead of on making the two that matter legible, which
+   is the opposite of what was asked for. The ruling above is unchanged: unit
+   and page, elide the rest, never scroll sideways.
 
    This is also the first half of audit 3.3's fix. A header that no longer
    wraps is a header that no longer varies from 86px to 215px, which fixes most
@@ -6488,6 +6543,38 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* ⊕ MRB-330, 6 Sep 2026 — AT PHONE WIDTHS THE TRAIL WRAPS INSTEAD OF ELIDING.
+     Removing the "KS3" pill above gave the trail back the 63px it was holding,
+     and that nearly doubled what the crumbs get at 390px — "Acids and alkalis"
+     went from 46px to 90px. It still did not FIT: the last two crumbs want
+     about 240px between them and there are about 179px to give, so the header
+     still read "Acids and a… › Acid + m…". Two ellipses instead of two shorter
+     ellipses is not the ruling being satisfied; the ruling was to let the
+     breadcrumb breathe, and a breadcrumb that names nothing has not.
+
+     So below 420px the elision is lifted and the row is allowed a second line.
+     Nothing is dropped, both names are readable, and the cost is one line of
+     header height on phones only. Above 420px the elision above is unchanged —
+     there the trail fits, and wrapping a rail that fits would be worse. */
+  @media (max-width: 420px) {
+    .ks3-trail,
+    .ks3-crumbs { flex-wrap: wrap; row-gap: 2px; }
+    .ks3-trail a,
+    .ks3-trail [aria-current],
+    .ks3-crumbs a,
+    .ks3-crumbs [aria-current] {
+      white-space: normal;
+      /* ⚠️ `overflow: hidden` STAYS. Lifting it to `visible` here read as the
+         natural partner of `white-space: normal` and cost a 320px regression:
+         two lesson pages began scrolling the document sideways by 1px and 11px.
+         Wrapping is what buys the legibility; the clip is what guarantees
+         nothing can spill out of the rail on a narrow phone, and the two are
+         independent. Measured at 320 and 390 both ways before this was
+         written — see ks3_overflow.py, which is the gate that caught it. */
+      text-overflow: clip;
+    }
   }
   /* ⊖ SUPERSEDED by MRB-297 — the rule below replaces it. It read
        `.ks3-brand { min-width: 0; }`

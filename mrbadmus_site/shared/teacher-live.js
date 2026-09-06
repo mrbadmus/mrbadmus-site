@@ -369,9 +369,23 @@
   /* The Monday and the Friday of the teaching week an instant falls in.
      Sunday is the END of a week to JS (`getDay()` 0) and the START of nothing
      to a school, so it is pulled back to the Monday six days behind it. */
+  /* ⊕ MRB-330, 6 Sep 2026 — SUNDAY BELONGS TO THE WEEK THAT IS COMING.
+     Ruled by Mide: the teaching week rolls on Sunday 00:00 UK. This is the
+     frontend half of that rule; the backend half is `currentTeachingWeek()` in
+     assignment-compose.js, and the two MUST agree or the product goes back to
+     having two week definitions — which is exactly what made the teacher's bar
+     read "Autumn Week 1" while the same class's student page was being served
+     week 2's work (MRB-329 F6).
+
+     The week is still NAMED by its Monday: a school week is Monday to Friday,
+     every label and range here is built from `mon`, and none of that changes.
+     The only day whose answer moves is Sunday, which used to be counted back
+     into the week that had just finished and is now counted forward into the
+     week about to be taught. */
   function teachingWeek(d) {
     var mon = new Date(d);
-    mon.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    var dow = d.getDay();                       // 0 = Sunday
+    mon.setDate(d.getDate() - (dow === 0 ? -1 : ((dow + 6) % 7)));
     mon.setHours(0, 0, 0, 0);
     var fri = new Date(mon);
     fri.setDate(mon.getDate() + 4);
@@ -2314,9 +2328,17 @@
         hue: hueFor(name),
         when: relativeTime(s.created_at, now),
         template: tpl[s.template_key] || "",
-        // The message a teacher typed, or nothing. A template-only shoutout
-        // has no body and gets none — the template line already said it.
-        body: s.message || "",
+        /* The message a teacher typed, or nothing. A template-only shoutout
+           has no body and gets none — the template line already said it.
+
+           ⊕ MRB-330, 6 Sep 2026 — and since F23 a template send now PERSISTS
+           the template's own sentence into `message`, so that a child's card
+           has words on it instead of arriving blank. Here that same sentence
+           would print a second time, directly under the template line that
+           already says it. Compared rather than flagged: a teacher who picked a
+           template AND typed something keeps both lines, which is the case the
+           two lines exist for. */
+        body: (s.message && s.message !== tpl[s.template_key]) ? s.message : "",
         template_key: s.template_key,
         recipient_id: s.recipient_id,
         author_id: s.author_id

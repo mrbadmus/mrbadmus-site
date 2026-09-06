@@ -244,10 +244,26 @@ window.MrBadmusTeacherData = (function () {
     const anchor_source = isFallback ? 'fallback' : 'explicit';
 
     const now = new Date();
-    const today = now.getDay();                       // 0..6, Sun..Sat (matches postgres dow)
+    /* ⊕ MRB-330, 6 Sep 2026 — SUNDAY BELONGS TO THE WEEK THAT IS COMING.
+       Ruled by Mide, and the same rule as `teachingWeek()` in teacher-live.js
+       and `currentTeachingWeek()` in the backend's assignment-compose.js. All
+       three have to agree: on the Sunday this was written, the backend served
+       week 2's work while this window still said week 1, so a teacher's "this
+       week's homework" card named a different assignment from the one the child
+       was looking at (MRB-329 F6).
+
+       Shifting `today` forward one day on a Sunday is the whole change. For the
+       Monday anchor — the fallback, and what every real class uses — the window
+       that results is exactly the teaching week. ⚠️ A class anchored on some
+       OTHER weekday still buckets on that weekday; the Sunday rule moves which
+       bucket a Sunday falls in, it does not move the boundary itself. */
+    const today = (now.getDay() === 0)
+      ? 1                                           // Sunday reads as the Monday ahead
+      : now.getDay();                               // 0..6, Sun..Sat (matches postgres dow)
     const daysSinceAnchor = (today - anchor_day + 7) % 7;
 
     const start = new Date(now);
+    if (now.getDay() === 0) { start.setDate(start.getDate() + 1); }
     start.setDate(start.getDate() - daysSinceAnchor);
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
@@ -1659,6 +1675,10 @@ window.MrBadmusTeacherData = (function () {
    * Caller validates UI-side that at least one of templateKey/message is
    * non-null; the DB CHECK is the belt.
    *
+   * ⊕ MRB-330, 6 Sep 2026 — a template send with no free text now stores the
+   * template's own label in `message` as well as the key, so the child's card
+   * has a sentence in it. See the block comment in the body.
+   *
    * Returns the inserted row (single object), with the same shape as a
    * loadClassShoutouts row (profile joins included), so the caller can
    * prepend it to the feed without a re-fetch if desired. We currently
@@ -1667,6 +1687,22 @@ window.MrBadmusTeacherData = (function () {
    *
    * Throws on driver/RLS error. Caller surfaces an inline error message.
    */
+  /* The words a template SAYS, read out of the locked six-key enum in
+     shared/shoutouts.js and never retyped here — that list mirrors
+     `class_shoutouts_template_key_chk`, and a second copy of it in this file
+     would be a seventh place for a label to drift.
+
+     ⚠️ AN EMPTY STRING WHEN THE MODULE IS NOT LOADED, NOT A THROW.
+     `teacher-live.js` loads shoutouts.js as the last of its DEPS, long before
+     a teacher can press Send, so in practice it is always there. If it is
+     not, the caller falls back to writing `message: null` — exactly what this
+     function did before MRB-330 — rather than failing a send over a label. */
+  function shoutoutTemplateLabel(key) {
+    const mod = window.MrBadmusShoutouts;
+    const tpl = (key && mod && mod.templateByKey) ? mod.templateByKey(key) : null;
+    return (tpl && tpl.label) ? tpl.label : '';
+  }
+
   async function insertClassShoutout(args) {
     const guard = window.MrBadmusTeacherGuard;
     const sb = guard && guard.getClient ? guard.getClient() : null;
@@ -1674,12 +1710,47 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
+    /* ⊕ MRB-330, 6 Sep 2026 — A TEMPLATE CARRIES ITS OWN WORDS TO THE CHILD.
+       (MRB-329 audit finding F23, severity 1.)
+
+       A template shoutout stored `template_key` and NOTHING else, because the
+       six templates are `{ key, emoji, label }` and the label was never
+       persisted. The teacher's own feed renders the label from the key and so
+       looked correct; the student page renders `s.message` and only that, so
+       a child opened their class page and read their initials, their name,
+       "TODAY" — and no words at all. The most common shoutout there is (a
+       template, no free text) was the one that arrived blank.
+
+       ⚠️ THE TYPED MESSAGE ALWAYS WINS. A teacher who picks a template AND
+       writes their own sentence keeps their sentence; the label fills the
+       column only when nothing was typed. Overwriting a teacher's words with
+       a stock phrase about a child would be a worse defect than the one this
+       fixes.
+
+       ⚠️ AND BOTH COLUMNS MAY BE SET — CHECKED, NOT ASSUMED. The only
+       content constraint is `class_shoutouts_content_chk`, which reads
+       `CHECK ((template_key IS NOT NULL) OR (message IS NOT NULL))` — an OR,
+       verified against the TEST project on 6 Sep 2026. Nothing forbids a row
+       carrying both, and the safeguarding log is the second reason to write
+       one: what a child was actually told is now readable in the row itself
+       rather than only by joining a key to a list held in a JS file.
+
+       ⚑ THE TEACHER'S OWN FEED CARD NOW SAYS IT TWICE — `buildFeed` in
+       teacher-live.js maps `template` (the label) and `body` (the message)
+       onto two lines, so a template-only shoutout renders the label above
+       itself. That is visible, it is on Mide, and it is NOT patched here:
+       suppressing the body when it equals the label is a change to the
+       teacher-side render, which this ticket rules out of scope. */
+    const templateKey = args.templateKey || null;
+    const typed = String(args.message == null ? '' : args.message).trim();
+    const label = typed ? '' : shoutoutTemplateLabel(templateKey);
+
     const row = {
       class_id:     args.classId,
       author_id:    args.authorId,
       recipient_id: args.recipientId,
-      template_key: args.templateKey || null,
-      message:      args.message || null,
+      template_key: templateKey,
+      message:      typed || label || null,
     };
 
     const { data, error } = await sb

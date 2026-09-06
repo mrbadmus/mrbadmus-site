@@ -1086,15 +1086,35 @@ REWRITES = {
         # anchor on `value:` and on `pct:` and never on the caption between
         # them. A pattern spanning all three would match Design's delivery and
         # not the logic these run on.
+        # ⊕ MRB-330, 6 Sep 2026 — AND BOTH FALL BACK THE WAY THEIR SIBLINGS DO.
+        # `practiceAnswered` and `practicePct` are deliberate COULD-NOT-SOURCE
+        # empties: the practice round writes nowhere, so neither is knowable.
+        # Passed straight through, an empty string reached the tile as
+        #
+        #   value: ''  → the value line rendered with no glyph in it, so the
+        #                tile was ~68px shorter than the three beside it and
+        #                the 2x2 grid stopped lining up (the "stat tiles"
+        #                alignment defect)
+        #   pct:   ''  → `width:` with nothing after it is an INVALID
+        #                declaration, so the fill span fell back to its
+        #                auto width — a FULL ORANGE BAR, on the one reading
+        #                that records nothing at all. It read as complete.
+        #
+        # The second is the one that mattered: the other three tiles already
+        # say `dash` when they do not know, and none of them draws a bar it
+        # cannot fill. The fallbacks are written HERE, beside the siblings that
+        # make the same decision, rather than by dressing the data up as a
+        # number it is not — `practiceAnswered` stays empty in student-live.js,
+        # where its comment explains why.
         dict(name="readings — recall answered",
              pat=r"\{ label: 'Recall', value: fresh \? '0' : "
                  r"'(?P<practiceAnswered>\d+)'",
              new="{ label: 'Recall', value: fresh ? '0' : "
-                 "MRB_DATA('practiceAnswered')",
+                 "(MRB_DATA('practiceAnswered') || dash)",
              keys=dict(practiceAnswered="str")),
         dict(name="readings — recall percentage",
              pat=r"pct: fresh \? '0%' : '(?P<practicePct>\d+%)' \}",
-             new="pct: fresh ? '0%' : MRB_DATA('practicePct') }",
+             new="pct: fresh ? '0%' : (MRB_DATA('practicePct') || '0%') }",
              keys=dict(practicePct="str")),
         # The same 46, spliced a second time 280 lines further down as the
         # retrieval room's own count. ONE KEY, TWO USES — deliberately: if the

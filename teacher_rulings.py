@@ -2132,10 +2132,23 @@ _SO_FOOT = ("display:flex;align-items:center;justify-content:space-between;"
             "gap:10px;margin-top:14px")
 _SO_COUNTER = ("font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;"
                "text-transform:uppercase;color:var(--st-ghost)")
+# ⊕ MRB-330, 6 Sep 2026 — SPLIT IN TWO, GEOMETRY FROM SKIN. Node 654's
+# declarations are unchanged and all still here; the three that say "this can
+# be pressed" — `color`, `background`, `cursor` — moved out into `sendSkin`,
+# a computed string in LOGIC, because whether Send is live is now a question
+# about state (is there a template or some text?) and only the logic knows.
+# That is Design's own idiom, not a new one: her template chips already carry
+# `t.fg` / `t.bg` / `t.bc` the same way.
+#
+# ⚠️ THE DISABLED SKIN CHANGES NO BOX. `border:none` and the height, padding,
+# font and radius are shared by both states, so nothing in the footer moves
+# when Send goes live — a button that resizes as you type reads as a glitch.
+# The off state is `--st-note-bg` under `--st-muted`, which is 4.8:1 and both
+# tokens are already on this surface; it is legible, obviously inactive, and
+# not a fourth button register.
 _SO_SEND = ("flex:none;height:38px;padding:0 18px;"
-            "font:600 16.5px/1.2 var(--st-ui);color:var(--st-paper);"
-            "background:var(--st-accent-text);border:none;"
-            "border-radius:9px;cursor:pointer")                   # node 654
+            "font:600 16.5px/1.2 var(--st-ui);border:none;"
+            "border-radius:9px;")                                 # node 654
 
 _SO_FEED_COL = "display:flex;flex-direction:column;gap:12px"
 _SO_FEED_CARD = ("padding:16px 18px;background:var(--st-paper);"
@@ -3230,10 +3243,36 @@ INSERT_AT = {
                             {"t": "span", "a": {"style": _SO_COUNTER},
                              "c": [{"t": "#", "v": {"parts": [
                                  {"e": "noteCount"}]}}]},
+                            # ⊕ MRB-330, 6 Sep 2026 — NO DEAD PRESS.
+                            # (MRB-329 audit finding F25.) The composer opens
+                            # with the first template selected and pressing
+                            # that template UNPICKS it (the `t.pick` toggle in
+                            # LOGIC, ruled 3 Sep 2026), which leaves a
+                            # composer with no template, no text — and a Send
+                            # button still painted live. Pressing it wrote
+                            # nothing, and the row count measured 5 → 5.
+                            # ⚠️ A REAL `disabled` ATTRIBUTE, NOT A CLASS AND
+                            # NOT A COLOUR. `student-runtime.js` DROPS an
+                            # attribute whose value resolves to `false`
+                            # (build(): `val === false` → `continue`), so
+                            # `sendOff` puts the attribute on the element when
+                            # there is nothing to send and takes it off again
+                            # on the next redraw — and every keystroke and
+                            # every template press schedules one. The browser
+                            # then refuses the press, refuses focus and
+                            # dispatches no mouse events, which is also why
+                            # `hov` below cannot paint the accent hover on a
+                            # button that cannot be sent.
+                            # ⚠️ THE GUARD IN `sendShoutout` STAYS. It is the
+                            # belt: a press can still arrive from a keyboard
+                            # or a script, and the toast it says is the one
+                            # sentence that names both ways out.
                             {"t": "button",
                              "a": {"type": "button",
                                    "data-mrb-added": "shoutout-send",
-                                   "style": _SO_SEND},
+                                   "disabled": {"parts": [{"e": "sendOff"}]},
+                                   "style": {"parts": [_SO_SEND,
+                                                       {"e": "sendSkin"}]}},
                              "hov": "background:var(--st-accent-hover)",
                              "on": "sendShoutout",
                              "c": [{"t": "#", "v": "Send shoutout"}]},
@@ -6453,6 +6492,57 @@ componentDidUpdate() {
      "      },",
      "the shoutout composer. Design's version toasts a confirmation of a "
      "write that does not happen."),
+
+    # ══ ⊕ MRB-330, 6 Sep 2026 · SEND IS OFF UNTIL THERE IS SOMETHING TO
+    #    SEND ═══════════════════════════════════════════════════════════
+    #
+    # ⛔ THE ONE STATE THE COMPOSER COULD REACH WITH NOTHING IN IT. The
+    # composer opens on the first template (`MRB_FIRST_TEMPLATE`) and pressing
+    # that template unpicks it — the toggle ruled on 3 Sep 2026, and the right
+    # ruling: a teacher writing their own words must be able to take the
+    # template off. What came with it is a composer holding no template and no
+    # text, in front of a Send button still painted in the accent as though it
+    # were live. MRB-329's audit pressed it: no row, no error, no toast a
+    # teacher would connect to the press, rows 5 → 5.
+    #
+    # ⚠️ `sendShoutout` ALREADY REFUSED THAT PRESS and said so — "Pick a
+    # template, or write a message" — so this is NOT a missing guard. It is
+    # that the guard speaks in a toast, at the top of the screen, about a
+    # button at the bottom of it, and the audit did not see one. Mide's ruling
+    # is that the button must not be pressable at all: the state is visible in
+    # the control rather than announced after the fact.
+    #
+    # ⚠️ TEMPLATE-OR-TEXT, AND NOT THE RECIPIENT. Sending with no student
+    # chosen already gets "Pick a student first", which is a sentence that
+    # tells a teacher what to do next about a control they can see; that press
+    # is not dead and it is not what was ruled on. Widening this to the
+    # recipient would also mean a composer that opens disabled, and the ruling
+    # is about a button that lies, not about an empty form.
+    #
+    # ⚠️ `s.boTpl` IS SHARED WITH THE BULK SHEET, deliberately — it is the same
+    # key the template chips write and the sheet reads (see `sendBulk`), so
+    # the composer cannot disagree with itself about which template is picked.
+    # The bulk sheet's own Send is NOT changed here: its refusals name a
+    # selection as well as a template, and it is a different control on a
+    # different surface.
+    ("      noteCount: (s.note || '').length + ' / 500',",
+     "      noteCount: (s.note || '').length + ' / 500',\n"
+     "      /* ⊕ MRB-330 — is there anything to send? Read by the Send\n"
+     "         button's `disabled` and by its skin; the two cannot disagree\n"
+     "         because they are the same question asked once each. */\n"
+     "      sendOff: !(s.boTpl || String(s.note || '').trim()),\n"
+     "      sendSkin: (s.boTpl || String(s.note || '').trim())\n"
+     "        ? 'color:var(--st-paper);background:var(--st-accent-text);"
+     "cursor:pointer'\n"
+     "        : 'color:var(--st-muted);background:var(--st-note-bg);"
+     "cursor:default',",
+     "the two keys the Send button needs to stop being a dead press: "
+     "`sendOff`, which the runtime turns into a real `disabled` attribute "
+     "(or into no attribute at all, because it drops an attribute that "
+     "resolves to `false`), and `sendSkin`, the three declarations lifted "
+     "out of node 654's style so the off state can be painted. Anchored on "
+     "`noteCount` because it is the composer's other computed key and the "
+     "only line in Design's logic that names this footer."),
 
     # ⛔ AND THE BULK SHEET, WHICH IS THE SAME LIE MULTIPLIED. Design's
     # `sendBulk` closes the sheet, empties the selection and toasts "Shoutout

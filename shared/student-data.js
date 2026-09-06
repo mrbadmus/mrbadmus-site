@@ -215,9 +215,16 @@ window.MrBadmusStudentData = (function () {
     const isFallback = (assignmentDayOfWeek === null || assignmentDayOfWeek === undefined);
     const anchor_day = isFallback ? 1 : assignmentDayOfWeek;
     const now = new Date();
-    const today = now.getDay();
+    /* ⊕ MRB-330, 6 Sep 2026 — SUNDAY BELONGS TO THE WEEK THAT IS COMING.
+       Kept byte-for-byte in step with teacher-data.js's copy of this algorithm
+       and with `teachingWeek()` in teacher-live.js; the backend's
+       `currentTeachingWeek()` is the same rule again. If these drift, the
+       teacher's "this week" and the child's stop naming the same assignment,
+       which is the defect this ruling exists to close (MRB-329 F6). */
+    const today = (now.getDay() === 0) ? 1 : now.getDay();
     const daysSinceAnchor = (today - anchor_day + 7) % 7;
     const start = new Date(now);
+    if (now.getDay() === 0) { start.setDate(start.getDate() + 1); }
     start.setDate(start.getDate() - daysSinceAnchor);
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
