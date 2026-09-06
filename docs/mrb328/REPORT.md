@@ -226,12 +226,56 @@ today.html report `tokens.css`'s hash while the ported screens reported
 picks `config.js` by name. Re-driven: **one value, `d1fecb43`, across all four
 pages, 46 rows, zero nulls.**
 
-**Which is the point.** ⚠️ **PROD truth arrives via the beacon, and there are
-no prod rows yet** — the table went live with this push and nothing has
-browsed. So, the one-line ask:
+**Which is the point.** And production answered before the run finished.
 
-> **Browse ten pages on the live site — a few teacher screens, a couple of
-> student ones — and the next run reads the truth instead of a laptop's guess.**
+### PRODUCTION ROWS — 20 of them, and they change the picture
+
+You browsed mid-run, so this is real data rather than the ten-page ask.
+
+| page | loads | median | fastest | slowest |
+|---|---|---|---|---|
+| `teacher-classes` | 14 | **545 ms** | 311 | 10310 |
+| `teacher-class-detail` | 5 | **4437 ms** | 933 | 4858 |
+| `teacher-today` | 1 | 5294 ms | — | — |
+
+All on 4g, all on a high-spec device, `school_id` filled on every row, zero
+nulls. So neither the connection nor the hardware is the story.
+
+**`teacher-classes` is healthy** at a 545 ms median. Its 10.3 s maximum is a
+tail, not the norm — the sort of thing a cold Postgres connection produces.
+
+⚠️ **`teacher-class-detail` is the finding: a 4437 ms median across five
+loads, four of them between 4.4 and 4.9 seconds.** That is not a tail. On TEST
+the same journey measures 400–1600 ms. The slowest read inside it is
+`class_teachers` at 2850 ms average — and on the classes page that same table
+averages 2445 ms with a 12.3 s peak.
+
+**This partly overturns what J4(b) was built on.** The caching and
+parallelising I shipped attack the NUMBER of round trips, on the evidence of a
+laptop where each one cost 100–400 ms. Production's problem is the COST of a
+single round trip — seconds, not hundreds of milliseconds. Removing a wave
+from two 3-second reads still leaves three seconds.
+
+The obvious cause is ruled out: `class_teachers`, `class_members` and
+`staff_scopes` all carry sensible indexes on the columns these queries filter
+(checked, listed in the run). So the next place to look is RLS predicate cost
+per row and connection warmth, not missing indexes.
+
+⚠️ **Twenty rows, one person, one session.** That is enough to say
+class-detail is consistently slow and enough to aim the next run at it. It is
+not enough to conclude *why*, and I am not going to.
+
+### ⚠️ A limitation in the `build` column I shipped
+
+The stamp resolves to `config.js`'s content hash, and `config.js` rarely
+changes — every row above reads `d1fecb43`, spanning deploys. So the column
+does NOT reliably distinguish one deploy from the next, which is most of what
+it was for. It is honest (it never lies about what it is) and it is stable
+across pages, but it under-delivers.
+
+The fix is a stamp the generator emits per BUILD rather than per file. That is
+new work and it is written down here rather than done at the end of a long
+run.
 
 ---
 
