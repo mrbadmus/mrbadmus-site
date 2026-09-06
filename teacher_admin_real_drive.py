@@ -51,7 +51,7 @@ changes which read authorises them and only the third exercises the new read.
   way; an UPDATE is not, and is asserted on its returning row.
 
 ⚠️ AND THE SUCCESSES BELOW ARE ONLY SUCCESSES BECAUSE OF THE MIGRATION.
-  `20260906044802_mrb326_admin_write_authority` is what turns each of these
+  `20260906054837_mrb326_admin_write_authority` is what turns each of these
   from a refusal into a row. Run this against a project without it and the
   four write checks go red, correctly — that is the gate doing its job, not a
   broken drive.
@@ -489,7 +489,7 @@ def main():
     #
     # On 7z/Sc9 — a class the admin does not teach, whose teacher is a
     # different real account. Each of these was measured refused before
-    # 20260906044802 and the refusals are quoted in this ticket's report.
+    # 20260906054837 and the refusals are quoted in this ticket's report.
     print("\n  ── 3 · the WRITES, as the admin, on a class she does not teach ──")
     A = admin["access_token"]
 

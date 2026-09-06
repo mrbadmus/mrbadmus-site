@@ -77,7 +77,10 @@ does **not** happen before the press.
 
 | Design | Shipped | Verdict |
 |---|---|---|
-| header "STUDENTS TO CHASE" (rust) + `chaseCount` | same | MATCHES |
+| header "STUDENTS TO CHASE" (rust) + `chaseCount` | header only | Design's `chaseCount` → **REMOVED (redundancy)**, post-review 6 Sep. The summary sentence at the top of the page says "12 students to chase", and the markup comment on the head states the rule in terms: the summary is the only place the chase count is said. The badge was that number a second time, one inch away — the same cut `lessonCount` took three rows above. |
+| — | the empty state, "Nobody owes this week's work." | **REMOVED (redundancy)**, post-review 6 Sep. It was the count a THIRD time, in words, on the one screen whose summary already reads "0 students to chase". An empty panel under its own heading says it once. |
+| footer "Reminded N students" | counts DISTINCT CHILDREN, not written rows | **CORRECTED**, post-review 6 Sep. It summed `rows.length` across classes; the panel dedups by student (`chaseSeen`) but the write goes out per paper, so a child owing in two of this teacher's classes was one row on screen and two in the database — "Reminded 3 students" over a panel showing two. `MRB_REMIND_ALL` on the class screen counts children the same way and says why. |
+| — | the summary's reteach segment where the question-pack read FAILED | **DROPPED**, post-review 6 Sep. `qpacks` null on catch rendered "· 0 topics worth a reteach" — a reassurance the page had just failed to earn. Unknown is not zero; a failed read drops the clause. ⚠️ Only a FAILED read: a teacher with nothing marked anywhere still sees "0 topics", because there zero is true. |
 | six rows: avatar 28px / name + code on one baseline / reason under | same | MATCHES (the code used to sit on a line of its own) |
 | `c.reason` — `reasonFor` | Design's branching adopted exactly: missed+low → "6 missed this term · avg 38%"; missed → "6 missed this term"; low only → "Averaging 38%"; else → "Nothing in this week" | MATCHES. It used to append "· avg 78%" to every row, which is not a reason to chase anybody. |
 | `c.open` → that child's page | `→ /teacher/student-detail.html?student=…&class=…` | MATCHES |

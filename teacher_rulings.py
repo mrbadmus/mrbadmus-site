@@ -5099,15 +5099,25 @@ LOGIC = (
     # ⚠️ THIS IS THE CLASS-DETAIL SCREEN, NOT SCREEN 1, and it is fixed here
     # anyway: it is one line, it is the same sentence, and the alternative is
     # leaving a known fabrication in the tree for the next unit to meet.
+    #
+    # ⊕ EXTENDED, MRB-326 post-review, 6 Sep 2026 — AND THE COUNT COMES OFF
+    # THE FRONT OF IT. "25 students are enrolled and waiting." sits directly
+    # under an eyebrow that opens "25 STUDENTS", so the sentence spent its
+    # first two words repeating the line above it. Design's sentence SHAPE
+    # is kept — her words "enrolled and waiting", her full stop, her second
+    # sentence about activity — with the number taken out and nothing else
+    # changed. What the line is FOR is saying that the roster is in place
+    # and the work is not, which nothing else on an empty class screen says.
     (dict(method="renderVals", key="klass.noWorkLine"),
-     "        noWorkLine: k.n + ' students are enrolled and waiting. '\n"
+     "        noWorkLine: 'Everyone is enrolled and waiting. '\n"
      "          + (k.last === 'No activity yet'\n"
      "            ? 'No activity yet.'\n"
      "            : 'Last activity ' + k.last + '.'),",
      "the class screen's no-work line. `noWork` means no papers, no papers "
      "means no submission stamps, so `k.last` is ALWAYS the words \"No "
      "activity yet\" here and the sentence always read \"Last activity No "
-     "activity yet.\""),
+     "activity yet.\" \u2295 post-review: the leading roster count is cut "
+     "too \u2014 the eyebrow one line above already opens with it."),
 
     # ⊕ SUPERSEDED 5 Sep 2026 (MRB-325 ruling 6). `k.yearName` leading is
     # kept in the entry below rather than deleted, for the same reason
@@ -7218,6 +7228,37 @@ componentDidUpdate() {
      "has nothing to reteach FROM, and must say so rather than render a "
      "dash. Part of #13."),
 
+    # ⊕ RULED, MRB-326 post-review, 6 Sep 2026 — "CLASS MEAN" IS SAID ONCE
+    # ON THIS SCREEN, AND THE HEADER SAYS IT.
+    #
+    # Design's subtitle read "Marked · class mean 62% · 14 submitted", four
+    # inches under a header stat line reading "Class mean 62% · 88% on
+    # time". Same label, same number, one screen — Mide's rule of 6 Sep in
+    # terms: what the page already says, it does not say twice.
+    #
+    # ⚠️ THE HEADER IS THE ONE THAT KEEPS IT, not this card, and the choice
+    # is not arbitrary. The header's figure is the class's mean ACROSS ITS
+    # MARKED WORK, which is the number a teacher scans for; this card's is
+    # the same figure narrowed to one paper and offered as context for a
+    # reteach recommendation — and the card's own TWO BARS are that context,
+    # question by question, which is finer evidence than a single mean and
+    # is not said anywhere else.
+    #
+    # ⚠️ AND THE SUBMITTED COUNT STAYS. "14 submitted" is a fact about THIS
+    # paper and about no other; the header's "88% on time" is punctuality
+    # across the term, which is a different claim in a different unit. The
+    # two do not collide, and dropping the count would leave the card
+    # recommending a reteach without saying how many children the
+    # recommendation rests on — the exact defect the `lastP` correction
+    # above was written to prevent.
+    (dict(method="renderVals", key="lastLine"),
+     """      lastLine: lastP ? 'Marked \u00B7 ' + lastP.sub + ' submitted' : '',""",
+     "the reteach card's subtitle, with \"class mean X\" cut. The class "
+     "header's stat line four inches above states the class mean already, "
+     "and the card's own two bars carry the per-question detail this "
+     "recommendation actually rests on. The submitted count stays: it is "
+     "about THIS paper, and nothing else on the screen says it."),
+
     ("    const g1 = lastP ? this.gridFor(k, 1) : null;",
      "    const g1 = lastP ? this.gridFor(k, lastP.idx) : null;",
      "the grid behind \"Worth a reteach\". Design asks for the grid of paper "
@@ -7466,18 +7507,37 @@ componentDidUpdate() {
     # The two parts that survive are not said anywhere else on the page —
     # nothing else states the class mean, and nothing else states punctuality
     # — so they stay in Design's own order and Design's own wording.
+    #
+    # ⊕ EXTENDED, MRB-326 post-review, 6 Sep 2026 — AND THE NO-WORK ARM
+    # SAYS NOTHING AT ALL. It said "No work set yet", on a screen that
+    # already says the same thing TWICE below it: Design's own node 280
+    # heads the empty state "No work set for this class", and the
+    # Assignments caption reads "None set" because that section sits
+    # OUTSIDE the `klass.hasWork` branch and renders on a class with no
+    # papers. Three sentences, one fact, inside one screen height.
+    #
+    # ⚠️ NODE 280 IS THE ONE THAT STAYS, and it is Design's. It is a
+    # HEADING — it names the state the whole panel is in — where this line
+    # is a statistics strip with no statistics to report. A strip with
+    # nothing to say says nothing; blanks over invented content is this
+    # port's rule everywhere else, and "there is no work" is not a
+    # statistic.
     (dict(method="renderVals", key="klass.statLine"),
      """        statLine: kPapers.length
           ? 'Class mean ' + (kMean == null ? '\u2014' : kMean + '%')
             + ' \u00B7 ' + (kMx.markedPct == null
               ? '\u2014' : kMx.markedPct + '% on time')
-          : 'No work set yet',""",
+          : '',""",
      "MRB-326 JOB 4e — the class header's stat line, with the "
-     "keep-an-eye-on segment cut. The third glance card IS \"Keep an eye "
-     "on\", names those children and says \"No one flagged\" when there "
-     "are none; the sentence was that card's heading and count restated in "
-     "the header. Class mean and on-time are not said anywhere else and "
-     "stay exactly as Design wrote them."),
+     "keep-an-eye-on segment cut, and (post-review) with its no-work arm "
+     "emptied. The third glance card IS \"Keep an eye on\", names those "
+     "children and says \"No one flagged\" when there are none; the "
+     "sentence was that card's heading and count restated in the header. "
+     "\"No work set yet\" was the third of three sentences saying there is "
+     "no work — Design's node 280 heads the empty state and the Assignments "
+     "caption says \"None set\" — so the strip is blank instead. Class mean "
+     "and on-time are not said anywhere else and stay exactly as Design "
+     "wrote them."),
 
     # ── the Students table's caption ────────────────────────────────────
     #

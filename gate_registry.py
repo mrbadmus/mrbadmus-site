@@ -891,7 +891,7 @@ GATES = [
              "broken. ⚠️ IT ALSO PROVES THE WRITES, which no stub can: "
              "marking, shoutout, feedback and reminder, each with the "
              "admin's own JWT, each measured refused before "
-             "20260906044802_mrb326_admin_write_authority and accepted after, "
+             "20260906054837_mrb326_admin_write_authority and accepted after, "
              "with a plain teacher still refused the same write as the "
              "negative control. ⚠️ AN UPDATE RLS MATCHES NOTHING FOR IS A 200 "
              "WITH AN EMPTY BODY, not a 403 — the pre-migration marking "

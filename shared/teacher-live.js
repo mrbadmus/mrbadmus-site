@@ -1607,9 +1607,37 @@
      `classes_teacher_read` needs `auth_user_teaches_class`) and this
      function correctly returns false. An admin's read succeeds ONLY because
      `class_teachers_admin_read` / `class_members_admin_read` /
-     `assignments_admin_read` / `classes_admin_read` exist and are
-     scope-gated — so a non-empty pack here is PROOF of that scope, not an
-     assumption of it.
+     `assignments_admin_read` / `classes_admin_read` exist — so a non-empty
+     pack here is PROOF of that grant, not an assumption of it.
+
+     ⊕ WHAT THOSE POLICIES ACTUALLY TEST, and WHERE TO READ IT — corrected
+     6 Sep 2026, because this said "scope-gated" and the repo's own
+     migrations did not say that.
+
+       · ON PRODUCTION (read off `pg_policy`, 6 Sep 2026) all five of
+         `classes_admin_read`, `class_teachers_admin_read`,
+         `class_members_admin_read`, `assignments_admin_read` and
+         `submissions_admin_read` test
+         `auth_user_has_scope('school_admin') OR auth_user_has_scope('slt')`
+         together with the same-school conjunct. They got that shape in the
+         JULY 2026 ROLE-MODEL POLICY SWAP, migration `20260703181456`, which
+         replaced the role-gated versions the 1 May schools layer created.
+         So the read side IS scope-gated, and MRB-326's seven new WRITE
+         policies match it rather than introducing a second way of asking.
+         There is also NO school-wide `FOR ALL` policy on `classes` any
+         more: `classes_teacher_read` requires `auth_user_teaches_class(id)`,
+         which is why a plain teacher's fallback read of `classes` — the one
+         the unstaffed-class path below depends on — returns nothing.
+
+       · IN THIS REPO, `supabase/migrations/20260501212106_schools_layer.sql`
+         still shows the 1 May form, `auth_user_role() = 'admin'`, and
+         `20260703181456` is not in `supabase/migrations/` at all. A reader
+         who greps the tree will find the OLD text. That is a
+         migrations-folder gap, not a description of the database.
+
+     ⚠️ THE LIVE POLICY IS THE AUTHORITY. Where this comment and the
+     database disagree, the database is right and this comment is stale —
+     read `pg_policy` before relying on either.
 
      ⊕ MRB-326, 6 Sep 2026 — AND IT NOW REACHES THE UNSTAFFED CLASSES TOO.
      `loadClassMatrices` used to drive off `class_teachers` alone, so a

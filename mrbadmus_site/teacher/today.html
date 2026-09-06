@@ -682,9 +682,16 @@
          there is something to reteach, so an empty one can never ship. -->
     <div class="today-col" id="side" style="display:none;">
       <div class="card" id="chase-card">
+        <!-- ⊕ MRB-326 post-review, 6 Sep 2026 — THE COUNT BADGE IS GONE.
+             Design draws `chaseCount` beside this heading. The summary
+             sentence at the top of the page already says "12 students to
+             chase", and the comment on the head above states the rule in
+             terms: the summary is the ONLY place the chase count is said.
+             The badge was the same number a second time, one inch away, and
+             `lessonCount` was removed for exactly this reason in the same
+             ruling. The heading names the panel; the rows are the answer. -->
         <div class="card-head">
           <h2 class="hot">Students to chase</h2>
-          <span class="card-count" id="chase-count"></span>
         </div>
         <div id="chase">
           <div class="skel-row"><div class="skel" style="width:28px;height:28px;border-radius:50%;"></div><div style="flex:1"><div class="skel" style="width:120px;height:15px;"></div><div class="skel" style="width:170px;height:11px;margin-top:8px;"></div></div></div>
@@ -1472,7 +1479,6 @@ MrBadmusTeacherGuard.requireTeacherRole({
        is Design's own `hasReteach: false`. The sentence itself is said ONCE,
        in the summary. */
     if (HELD) {
-      el('chase-count').textContent = '0';
       chaseBox.innerHTML = '';
       reteachHost.innerHTML = '';
       summary([stripHead, HELD_TEXT]);
@@ -1484,7 +1490,6 @@ MrBadmusTeacherGuard.requireTeacherRole({
        and "nobody to chase" would be an invented reassurance. Said ONCE —
        it used to be printed in both panels and it is one fact. */
     if (!matrices) {
-      el('chase-count').textContent = '';
       chaseBox.innerHTML = '<div class="empty">Couldn’t load your classes just now.</div>';
       reteachHost.innerHTML = '';
       summary([stripHead]);
@@ -1545,7 +1550,6 @@ MrBadmusTeacherGuard.requireTeacherRole({
 
     /* Design shows six. */
     const CHASE_SHOWN = 6;
-    el('chase-count').textContent = String(chaseRows.length);
 
     function chaseRowHtml(r, withCode) {
       return '<div class="panel-row" data-chase-student="' + esc(r.id) + '"' +
@@ -1580,8 +1584,13 @@ MrBadmusTeacherGuard.requireTeacherRole({
     let expanded = false;
 
     function paintChase() {
+      /* ⊕ MRB-326 post-review — AND THE EMPTY SENTENCE GOES WITH THE BADGE.
+         "Nobody owes this week's work." was the chase count said a THIRD
+         time, in words, on the one screen where the summary sentence is
+         already reading "0 students to chase" at the top. An empty panel
+         under its own heading says the same thing and says it once. */
       if (!chaseRows.length) {
-        chaseBox.innerHTML = '<div class="empty">Nobody owes this week’s work.</div>';
+        chaseBox.innerHTML = '';
         return;
       }
       let html;
@@ -1663,7 +1672,26 @@ MrBadmusTeacherGuard.requireTeacherRole({
                 studentIds: r.studentIds, teacherId: teacherId
               });
             }));
-            const n = written.reduce(function (a, rows) { return a + (rows ? rows.length : 0); }, 0);
+            /* ⊕ MRB-326 post-review, 6 Sep 2026 — CHILDREN, NOT ROWS.
+               This summed `rows.length` across the classes. `chaseRows`
+               above dedups by student — a child taught by this teacher in
+               two classes appears ONCE in the panel — but the reminder goes
+               out per CLASS, so that child is two written rows, and the
+               footer said "Reminded 13 students" over a panel listing 12.
+               `MRB_REMIND_ALL` in build_teacher_port.py counts the same
+               thing the same way, and says why in terms: "a child missing
+               both of the week's papers is two written rows and ONE student
+               reminded … counting rows would report more reminders than
+               there are children in the class, which is arithmetic a teacher
+               would rightly not believe." One number, one source. */
+            const sentTo = {};
+            written.forEach(function (rows) {
+              (rows || []).forEach(function (row) {
+                const id = row && row.student_id;
+                if (id) { sentTo[id] = true; }
+              });
+            });
+            const n = Object.keys(sentTo).length;
             remindState.label = n === 0
               ? 'Already reminded today'
               : (n === 1 ? 'Reminded 1 student' : 'Reminded ' + n + ' students');
@@ -1714,6 +1742,16 @@ MrBadmusTeacherGuard.requireTeacherRole({
     });
 
     let qpacks = null;
+    /* ⊕ MRB-326 post-review, 6 Sep 2026 — UNKNOWN IS NOT ZERO, HERE TOO.
+       The catch below leaves `qpacks` null, `reteachRows` empty, and the
+       summary sentence then ended "· 0 topics worth a reteach" — a
+       reassurance the page had just failed to earn. It is the same defect
+       the `!matrices` branch above is written against, one panel along.
+       ⚠️ AND IT IS NOT THE SAME AS `wanted.length === 0`: a teacher with
+       nothing marked anywhere really does have nothing worth a reteach, and
+       zero is the true answer there. Only a FAILED READ is unknown, so the
+       flag is set in the catch and nowhere else. */
+    let qpacksFailed = false;
     if (wanted.length) {
       try {
         qpacks = await TD.loadPaperQuestions(wanted.map(function (w) { return w.paper.id; }));
@@ -1721,6 +1759,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
         /* console.WARN, not error: a class whose marked paper cannot be read
            costs this page one panel, and is not a fault of the screen the
            teacher is standing in front of. */
+        qpacksFailed = true;
         console.warn('[today] paper questions unavailable', e);
       }
     }
@@ -1777,9 +1816,16 @@ MrBadmusTeacherGuard.requireTeacherRole({
       reteachHost.innerHTML = '';
     }
 
+    /* THE SEGMENT IS DROPPED ENTIRELY where the read failed — the file's
+       own rule, stated at the `!matrices` branch above: a count this page
+       could not make is not printed as a number. The sentence is shorter by
+       one clause and every clause left in it is true. */
     summary([stripHead,
-             num(chaseRows.length, 'student to chase', 'students to chase'),
-             num(shownReteach.length, 'topic worth a reteach', 'topics worth a reteach')]);
+             num(chaseRows.length, 'student to chase', 'students to chase')]
+            .concat(qpacksFailed
+              ? []
+              : [num(shownReteach.length, 'topic worth a reteach',
+                     'topics worth a reteach')]));
   }
 });
 

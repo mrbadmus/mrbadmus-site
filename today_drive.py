@@ -283,6 +283,41 @@ PACK_JS = '''
       v.loadTeacherClasses = function () {
         return Promise.resolve((window.__MRB_CLASSES__ || []).slice());
       };
+      /* ⊕ MRB-326 post-review, 6 Sep 2026 — A QUESTION-PACK READ THAT
+         FAILS, on demand. The page's reteach panel is the one place a
+         `catch` decides what the SUMMARY SENTENCE says, and no fixture
+         could reach that catch: the tiny query stub answers every read,
+         so `loadPaperQuestions` always resolved. Overridden at the same
+         data-layer boundary as the two above, for the same reason. */
+      if (window.__MRB_QFAIL__) {
+        v.loadPaperQuestions = function () {
+          return Promise.reject(new Error('drive: question packs unavailable'));
+        };
+      }
+      /* ⊕ MRB-326 post-review — THE REMINDER WRITE, ANSWERED AS POSTGREST
+         WOULD ANSWER IT. `sendReminders` is an UPSERT and the query stub
+         models reads only, so pressing the control threw and the footer
+         silently reverted — which is why "Reminded N students" had never
+         been measured at all. This echoes back the rows a FRESH upsert
+         returns (one per student per assignment, none suppressed by the
+         per-day rate limit) and records every call, so the drive can
+         compare rows WRITTEN against children TOLD. It adjudicates
+         nothing: whether RLS accepts the write is proved elsewhere, under
+         a real JWT, by teacher_admin_real_drive.py. */
+      if (window.__MRB_SENDREC__) {
+        v.sendReminders = function (o) {
+          o = o || {};
+          var rows = (o.studentIds || []).map(function (id) {
+            return {student_id: id, assignment_id: o.assignmentId,
+                    class_id: o.classId, sent_by: o.teacherId,
+                    sent_on: '2026-09-07'};
+          });
+          window.__MRB_SENDREC__.push({classId: o.classId,
+                                       assignmentId: o.assignmentId,
+                                       studentIds: (o.studentIds || []).slice()});
+          return Promise.resolve(rows);
+        };
+      }
     }
     return v;
   }
@@ -397,6 +432,52 @@ def packs_wide():
             "assignments": [{"id": "a4", "title": "Acids",
                              "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}],
             "submissions": [],
+        },
+    }
+
+
+# ── ⊕ MRB-326 post-review · ONE CHILD, TWO CLASSES ──────────────────────
+#
+# ⚑ THE SHAPE NO OTHER FIXTURE HAS. `packs_for` and `packs_wide` both give
+# every class its own children, so `chaseRows`'s dedup (`chaseSeen`) has never
+# actually deduped anything and the arithmetic downstream of it was never
+# tested. A science teacher taking the same child for two subjects, or a set
+# and an intervention group, is ordinary — and that child owes work in BOTH
+# classes.
+#
+# The panel lists them ONCE. The reminder, correctly, goes out per PAPER, so
+# they are TWO written rows. "Reminded 3 students" over a panel showing two
+# children is the defect this fixture exists to hold shut.
+#
+# ⚠️ NO REAL NAMES — initials and ordinals, as every fixture in this file
+# does, because real staff and children are live.
+TWICE_A = "tw-shared-child"
+TWICE_B = "tw-second-child"
+
+
+def packs_twice():
+    def paper(pid, title):
+        return {"id": pid, "title": title,
+                "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}
+    return {
+        # 8r/Sc1 — the shared child and one other, neither of them in.
+        "cccccccc-0000-4000-8000-000000000001": {
+            "members": [{"student_id": TWICE_A, "first_name": "F", "last_name": "One"},
+                        {"student_id": TWICE_B, "first_name": "G", "last_name": "Two"}],
+            "assignments": [paper("a1", "Particles")],
+            "submissions": [],
+        },
+        # 10h/Ph1 — the SAME child again, owing a DIFFERENT paper.
+        "cccccccc-0000-4000-8000-000000000002": {
+            "members": [{"student_id": TWICE_A, "first_name": "F", "last_name": "One"}],
+            "assignments": [paper("a2", "Forces")],
+            "submissions": [],
+        },
+        # and one with nothing set, so the day still carries three states.
+        "cccccccc-0000-4000-8000-000000000003": {
+            "members": [{"student_id": "tw-third-child",
+                         "first_name": "H", "last_name": "Three"}],
+            "assignments": [], "submissions": [],
         },
     }
 
@@ -521,7 +602,7 @@ PICKER_EVALS = {
 
 
 def run_case(b, base, name, when, tables, packs, shots, width=1280,
-             page="/teacher/today.html", evals=None):
+             page="/teacher/today.html", evals=None, pre_extra=""):
     """One state. A FRESH PAGE TARGET each time, because
     `Page.addScriptToEvaluateOnNewDocument` is per-target — reusing a page
     would carry the previous case's frozen clock into the next one."""
@@ -531,7 +612,12 @@ def run_case(b, base, name, when, tables, packs, shots, width=1280,
     # It was hardcoded, which meant a case that widened the class list — the
     # correction-1 case does exactly that — got the stubbed `loadTeacherClasses`
     # of the BASE fixture and silently proved nothing.
-    pre += (CLASSES_JS % json.dumps(tables.get('classes', []))) + PACK_JS
+    pre += (CLASSES_JS % json.dumps(tables.get('classes', [])))
+    # ⊕ MRB-326 post-review — BEFORE `PACK_JS`, not after. The flags below
+    # are read inside its `patch()`, which fires the instant teacher-data.js
+    # assigns `window.MrBadmusTeacherData`; setting them afterwards would set
+    # them after the only moment anything looks at them.
+    pre += pre_extra + PACK_JS
 
     p = b.page("about:blank", settle=0.2)
     p.send("Page.addScriptToEvaluateOnNewDocument", {"source": pre})
@@ -1004,7 +1090,14 @@ def main():
                   return JSON.stringify({
                     before, after, groups, offRows, codesInGroups, label, backLabel,
                     collapsed: rows(),
-                    total: Number(document.getElementById('chase-count').textContent || 0),
+                    /* ⊕ MRB-326 post-review — THE BADGE IS GONE, so the
+                       pool size is read off the OPENED LIST rather than off
+                       `#chase-count`. The count was printed in the panel
+                       header and in the summary sentence, and the summary is
+                       the one place (see the markup comment on the head).
+                       `badge` is kept as an assertion so the removal cannot
+                       silently come back. */
+                    badge: !!document.getElementById('chase-count'),
                     remind: !!document.getElementById('remind-all')
                   });
                 })()""",
@@ -1035,14 +1128,21 @@ def main():
                 check("more across your classes" in ex["label"],
                       "chase: and the control says how many more, in Design's words",
                       repr(ex["label"]))
-                check(ex["after"] == ex["total"] and ex["after"] > ex["before"],
+                check(ex["after"] > ex["before"],
                       "chase: pressing it opens the FULL list, in place",
-                      "%d of %d shown, %d after opening"
-                      % (ex["before"], ex["total"], ex["after"]))
-                check(ex["total"] == 17,
+                      "%d shown, %d after opening" % (ex["before"], ex["after"]))
+                check(ex["after"] == 17,
                       "chase: the pool is EVERY class, not the day's",
                       "10 + 4 today, plus 3 on a class taught on Thursday; "
-                      "got %d" % ex["total"])
+                      "got %d" % ex["after"])
+                check(not ex["badge"],
+                      "chase: the header count badge is GONE",
+                      "the summary sentence already says '17 students to "
+                      "chase'; Design's `chaseCount` beside the heading is "
+                      "the same number one inch away")
+                check("17 students to chase" in t9,
+                      "chase: and the count is said in the summary sentence",
+                      "the one place it is said")
                 check(len(ex["groups"]) == 3,
                       "chase: the full list is GROUPED BY CLASS",
                       "three classes owe work; got %s" % (ex["groups"],))
@@ -1086,7 +1186,13 @@ def main():
                           "document.querySelectorAll('.lesson-state').forEach(function(c){"
                           "if((c.textContent||'').trim())n++;});return n;})()",
                 "chaseRows": "document.querySelectorAll('#chase [data-chase-student]').length",
-                "chaseCount": "(document.getElementById('chase-count').textContent||'').trim()",
+                # ⊕ MRB-326 post-review — INVERTED, not deleted. This read
+                # `#chase-count` and demanded "0". The badge is removed
+                # (the count is the summary sentence's, and only its), so
+                # the assertion becomes: the element does not exist, and
+                # the zero is still said exactly once, in the summary.
+                "chaseBadge": "!!document.getElementById('chase-count')",
+                "chaseEmptyText": "(document.getElementById('chase').textContent||'').trim()",
                 "remind": "!!document.getElementById('remind-all')",
                 "reteach": "(document.getElementById('reteach-host').innerHTML||'').trim().length",
                 # ⚠️ THE WHOLE DOCUMENT, not the rendered text — a sentence
@@ -1114,10 +1220,27 @@ def main():
             check(g10["states"] == 0,
                   "held: NO lesson row carries a status line",
                   "ruling 6 — %s row(s) still do" % g10["states"])
-            check(g10["chaseCount"] == "0",
-                  "held: the chase panel shows a count of 0",
-                  "nothing is owed because nothing was set; got %r" % g10["chaseCount"])
+            check(not g10["chaseBadge"],
+                  "held: the chase panel carries NO count badge",
+                  "removed as a redundancy — the count is the summary "
+                  "sentence's and only its")
+            # ⚠️ AND ON A HELD SCHOOL THE COUNT IS NOT SAID AT ALL, which is
+            # the pre-existing behaviour of the branch above (`summary([
+            # stripHead, HELD_TEXT])`) and is the right one: "0 students to
+            # chase" under a school that has not opened yet is arithmetic
+            # about a state that does not exist. The hold sentence is the
+            # answer, and it is the only one.
+            check("students to chase" not in t10 and "student to chase" not in t10,
+                  "held: and no chase count is said anywhere",
+                  "the hold sentence is the whole answer; nothing was set, so "
+                  "there is no chase arithmetic to report")
             check(g10["chaseRows"] == 0, "held: and no chase rows")
+            check(g10["chaseEmptyText"] == "",
+                  "held: an empty chase panel says NOTHING under its heading",
+                  "'Nobody owes this week’s work.' was the same count a THIRD "
+                  "time, in words; got %r" % g10["chaseEmptyText"])
+            check("Nobody owes" not in t10,
+                  "held: and that sentence is nowhere on the page")
             check(not g10["remind"],
                   "held: and NO 'Send reminders'",
                   "there is nobody to remind and nothing to remind them about")
@@ -1128,6 +1251,110 @@ def main():
                   "held: the per-class sentence is not shown over the school-wide one")
             check(vis10, "held: the page is actually PAINTED")
             check(not e10, "held: no console errors", "; ".join(e10[:2]))
+
+            # ── 11. ⊕ MRB-326 post-review · UNKNOWN IS NOT ZERO, in the
+            #        summary sentence ────────────────────────────────────
+            #
+            # `loadPaperQuestions` throws. The page caught it, left `qpacks`
+            # null, and the summary sentence still ended "· 0 topics worth a
+            # reteach" — a reassurance it had just failed to earn, and the
+            # exact defect the `!matrices` branch two panels up is written
+            # against. The segment is now DROPPED where the read failed.
+            #
+            # ⚠️ AND ONLY WHERE IT FAILED. A teacher with nothing marked
+            # anywhere really does have nothing worth a reteach, and zero is
+            # the true answer there — every other case in this file still
+            # renders the segment, which is what keeps this check honest.
+            qfail_probe = {
+                "summary": "(document.querySelector('.summary').textContent||'')"
+                           ".replace(/\\s+/g,' ').trim()",
+                "reteach": "(document.getElementById('reteach-host').innerHTML||'').trim().length",
+            }
+            t11, s11, _o11, e11, vis11, g11 = run_case(
+                b, base, "11-reteach-unavailable", "2026-09-07T09:00:00",
+                TABLES, packs_for(), args.shots, evals=qfail_probe,
+                pre_extra="window.__MRB_QFAIL__=true;\n")
+            print("--- RETEACH READ FAILED ---\n" + g11["summary"] + "\n")
+            check("worth a reteach" not in g11["summary"],
+                  "reteach-fail: the summary DROPS the reteach segment",
+                  "a count this page could not make is not printed; got %r"
+                  % g11["summary"])
+            check("0 topics" not in g11["summary"] and "0 topic" not in g11["summary"],
+                  "reteach-fail: and it never says '0 topics'",
+                  "unknown is not zero; got %r" % g11["summary"])
+            check("students to chase" in g11["summary"],
+                  "reteach-fail: the clauses it CAN make are still said",
+                  "the sentence is shorter by one clause, not gone; got %r"
+                  % g11["summary"])
+            check(g11["reteach"] == 0,
+                  "reteach-fail: and no reteach card is drawn")
+            check(vis11, "reteach-fail: the page is actually PAINTED")
+            check(not e11, "reteach-fail: no console errors — a WARN, not an "
+                           "error, is what a failed panel costs",
+                  "; ".join(e11[:2]))
+
+            # ── 12. ⊕ MRB-326 post-review · ONE CHILD, TWO CLASSES ───────
+            #
+            # The chase panel dedups by student; the reminder goes out per
+            # paper. So a child owing work in two of this teacher's classes
+            # is ONE row in the panel and TWO rows in the database, and the
+            # footer summed rows: "Reminded 3 students" over a panel showing
+            # two children. It counts distinct children now, the same way
+            # `MRB_REMIND_ALL` does on the class screen — one number, one
+            # source.
+            twice_probe = {
+                "chaseRows": "document.querySelectorAll('#chase [data-chase-student]').length",
+                "summary": "(document.querySelector('.summary').textContent||'')"
+                           ".replace(/\\s+/g,' ').trim()",
+                "remind": """(async () => {
+                  const b = document.getElementById('remind-all');
+                  if (!b) { return JSON.stringify({error: 'no reminder control'}); }
+                  b.click();
+                  for (let i = 0; i < 40 && document.getElementById('remind-all')
+                       && /Sending/.test(document.getElementById('remind-all').textContent); i++) {
+                    await new Promise(r => setTimeout(r, 50));
+                  }
+                  await new Promise(r => setTimeout(r, 200));
+                  const after = document.getElementById('remind-all');
+                  const calls = window.__MRB_SENDREC__ || [];
+                  return JSON.stringify({
+                    label: after ? (after.textContent || '').trim() : '(gone)',
+                    calls: calls.length,
+                    rows: calls.reduce((a, c) => a + c.studentIds.length, 0),
+                    children: Object.keys(calls.reduce((a, c) => {
+                      c.studentIds.forEach(id => { a[id] = 1; }); return a; }, {})).length
+                  });
+                })()""",
+            }
+            t12, s12, _o12, e12, vis12, g12 = run_case(
+                b, base, "12-child-in-two-classes", "2026-09-07T09:00:00",
+                TABLES, packs_twice(), args.shots, evals=twice_probe,
+                pre_extra="window.__MRB_SENDREC__=[];\n")
+            print("--- ONE CHILD, TWO CLASSES ---\n" + g12["summary"] + "\n")
+            check(g12["chaseRows"] == 2,
+                  "twice: a child in TWO classes is listed ONCE",
+                  "three owing rows across two classes, two children; got %d"
+                  % g12["chaseRows"])
+            check("2 students to chase" in g12["summary"],
+                  "twice: and the summary counts children, not rows",
+                  repr(g12["summary"]))
+            rm = json.loads(g12["remind"])
+            check(not rm.get("error"), "twice: the reminder control is pressable",
+                  rm.get("error", ""))
+            if not rm.get("error"):
+                check(rm["calls"] == 2 and rm["rows"] == 3,
+                      "twice: the write itself is still PER PAPER",
+                      "two classes, three rows — the shared child is nudged "
+                      "about each paper they owe; got %d call(s), %d row(s)"
+                      % (rm["calls"], rm["rows"]))
+                check(rm["children"] == 2,
+                      "twice: over two distinct children", "got %d" % rm["children"])
+                check(rm["label"] == "Reminded 2 students",
+                      "twice: and the footer counts CHILDREN, not rows",
+                      "it summed rows.length and said 'Reminded 3 students' "
+                      "over a panel showing two; got %r" % rm["label"])
+            check(vis12, "twice: the page is actually PAINTED")
+            check(not e12, "twice: no console errors", "; ".join(e12[:2]))
     finally:
         try: server.shutdown()
         except Exception: pass

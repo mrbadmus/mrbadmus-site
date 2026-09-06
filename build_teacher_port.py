@@ -3301,7 +3301,9 @@ def _shape_grid_absent(p):
 # `worstTwo` is computed off `gridFor(k, lastP.idx)`, a missing grid is a
 # documented `null`, and an `sc-for` over `[]` renders NOTHING AT ALL: no
 # throw, no console line, no missing key. The middle card drew its heading,
-# its paper title and "Marked · class mean 33% · 2/2 submitted", and then
+# its paper title and "Marked · class mean 33% · 2/2 submitted" (the subtitle
+# as it read that day — post-review, 6 Sep, "class mean X" is cut from it as a
+# redundancy against the header stat line), and then
 # stopped. Every gate stayed green because the three POPULATED class-detail
 # fixtures ship a full grid map — a map the live page could not have.
 #

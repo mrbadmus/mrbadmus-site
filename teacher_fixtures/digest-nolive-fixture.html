@@ -1369,7 +1369,7 @@ class Component extends DCLogic {
           + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
       }),
       lastTitle: lastP ? lastP.title : 'Nothing marked yet',
-      lastLine: lastP ? 'Marked · class mean ' + lastP.mean + ' · ' + lastP.sub + ' submitted' : '',
+      lastLine: lastP ? 'Marked · ' + lastP.sub + ' submitted' : '',
       worstTwo: worstTwo.map(q => ({ id: q.id, text: q.text, pct: q.pct + '%', bar: q.pct, fill: q.pct < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)' })),
       openMarking: () => MRB_GO('marking', { 'class': k && k.id, paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id)) }),
       hasWatch: watch.length > 0,
@@ -1690,11 +1690,11 @@ class Component extends DCLogic {
           ? 'Class mean ' + (kMean == null ? '—' : kMean + '%')
             + ' · ' + (kMx.markedPct == null
               ? '—' : kMx.markedPct + '% on time')
-          : 'No work set yet',
+          : '',
         rosterLine: 'Not submitted shown first',
         hasWork: kPapers.length > 0,
         noWork: kPapers.length === 0,
-        noWorkLine: k.n + ' students are enrolled and waiting. '
+        noWorkLine: 'Everyone is enrolled and waiting. '
           + (k.last === 'No activity yet'
             ? 'No activity yet.'
             : 'Last activity ' + k.last + '.'),
@@ -2183,7 +2183,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"d5fbc542","teacher-guard.js":"2efdc820","teacher-live.js":"d8311d7a","teacher-picker.js":"8f2365b7"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"d5fbc542","teacher-guard.js":"2efdc820","teacher-live.js":"147c9cd7","teacher-picker.js":"8f2365b7"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script src="teacher-fixture-digest-nolive.js"></script>
 <script>window.__MRB_MOUNT__();</script>

@@ -357,6 +357,38 @@ def press(p, sel, idx=0, settle=1.2):
     return n
 
 
+# ⊕ MRB-326, 6 Sep 2026 — PRESSING A CONTROL DESIGN DREW, WHICH CARRIES NO
+# MARKER. Every other control this file presses was ADDED by a ruling, so it
+# has a `data-mrb-added` hook to find it by. The reminder is not: it is
+# Design's own node 236 inside the homework card, and the port wires it
+# (`on: glance.remind`) without adding an attribute. So it is found the way a
+# teacher finds it — by its words, inside the class region — and the label is
+# returned alongside the count so a green run says WHICH button it pressed.
+PRESS_TEXT_JS = r"""(function(){
+  var region = document.querySelector(%s);
+  if (!region) { return JSON.stringify({found: 0, label: '', reason: 'no region'}); }
+  var all = region.querySelectorAll('button');
+  var hits = [];
+  for (var i = 0; i < all.length; i++) {
+    var t = (all[i].innerText || '').replace(/\s+/g, ' ').trim();
+    if (t.indexOf(%s) === 0) { hits.push(all[i]); }
+  }
+  if (!hits.length) { return JSON.stringify({found: 0, label: '', reason: 'no match'}); }
+  var label = (hits[0].innerText || '').replace(/\s+/g, ' ').trim();
+  hits[0].click();
+  return JSON.stringify({found: hits.length, label: label, reason: ''});
+})()"""
+
+
+def press_text(p, region_sel, prefix, settle=1.2):
+    """Press the first button under `region_sel` whose text starts `prefix`."""
+    got = json.loads(p.eval(PRESS_TEXT_JS
+                            % (json.dumps(region_sel), json.dumps(prefix))))
+    if settle:
+        p.eval("new Promise(function(r){setTimeout(r,%d);})" % int(settle * 1000))
+    return got
+
+
 # ⚠️ A FRAMEWORK-RENDERED FIELD DOES NOT NOTICE `.value =`. Design's runtime
 # binds on `input`/`change`, so a value assigned without them is a value the
 # page has never heard of — the control looks filled and sends nothing, which
@@ -780,15 +812,39 @@ def main():
             # auth.uid() AND auth_user_teaches_class(class_id)`, so the
             # Remind control was refused for an admin exactly like the other
             # three. `student_notifications_admin_send` is its admin arm.
+            #
+            # ⊕ RE-ANCHORED, MRB-326 post-review, 6 Sep 2026. This pressed
+            # `[data-mrb-remind] button` — the banner `drawRemindControl`
+            # injected above the class header. That banner is DELETED (Mide's
+            # redundancy ruling: it sat above a card that already said "2 of 2
+            # in"), and with it the only element carrying that attribute. A
+            # selector matching nothing would have made this capability read
+            # as "the control is not drawn" forever, so the anchor moves to
+            # where the reminder now lives: Design's node 236, the dark
+            # "Remind all N" button INSIDE the homework card, wired to
+            # `glance.remind` by teacher_rulings.py and rendered only when
+            # `glance.hasChase` — i.e. only when there is somebody to chase.
+            #
+            # ⚠️ THE FIXTURE IS WHAT MAKES THE BUTTON EXIST. `tables()` sets
+            # one live paper on the foreign class and ONE submission against
+            # four active students, so three children owe it, `kChase` is
+            # non-empty, and the card draws the button. The assertion below
+            # guards that shape rather than trusting it: a fixture that
+            # quietly went all-in would delete the button and this capability
+            # would go green having pressed nothing.
             p7, a7 = mount(b, base, ADMIN, admin_world, klass_url)
-            rem_line = text_of(p7, '[data-mrb-remind]')
-            rem_found = press(p7, '[data-mrb-remind] button', settle=1.8)
+            rem = press_text(p7, '[data-port-region="class"]', "Remind all",
+                             settle=1.8)
+            rem_found, rem_line = rem["found"], rem["label"]
             rem_writes = wrote(writes(p7), "student_notifications")
             p7.screenshot(os.path.join(args.shots, "admin-remind.png"), width=1280)
             disarm(p7, a7)
             check(rem_found >= 1,
                   "C7. REMINDERS — the control is drawn on the foreign class",
-                  rem_line[:70] or "no control")
+                  rem_line[:70] or ("no control (%s)" % rem["reason"]))
+            check(rem_line == "Remind all %d" % (len(ROSTER) - 1),
+                  "…labelled for the children who actually owe the paper",
+                  repr(rem_line))
             check(len(rem_writes) == 1 and rem_writes[0]["op"] == "upsert",
                   "…and pressing it UPSERTS student_notifications",
                   json.dumps(rem_writes)[:120])
