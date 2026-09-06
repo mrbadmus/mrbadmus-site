@@ -7131,7 +7131,15 @@ componentDidUpdate() {
      "the class screen's chase list, on the SELECTED week rather than on "
      "`r.inWeek`. `chaseFor()` itself is left alone — the classes screen "
      "calls it too, and there the current week is the right question. Part "
-     "of #13."),
+     "of #13.\n"
+     "\n"
+     "        \u2295 MRB-326 JOB 4c, 6 Sep 2026 — AND `kRemind` BESIDE IT, "
+     "which is the same question asked per paper rather than per week. The "
+     "chase list answers \"who owes anything this week\"; a reminder names "
+     "ONE assignment, so it needs \"who owes THIS paper\" and needs it once "
+     "per paper in the week. Their union is `kChase` by construction, which "
+     "is what lets \"Remind all N\" count the same children the chips name. "
+     "See the block comment above the `glance.remind` entry."),
 
     # ⚠️ "NOT SUBMITTED FIRST" HAS TO MEAN THE WEEK BEING LOOKED AT. The
     # sort read `r.inWeek` as well, so on any earlier week the children
