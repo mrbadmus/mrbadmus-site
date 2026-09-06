@@ -7523,11 +7523,10 @@ componentDidUpdate() {
     # port's rule everywhere else, and "there is no work" is not a
     # statistic.
     (dict(method="renderVals", key="klass.statLine"),
-     """        statLine: kPapers.length
-          ? 'Class mean ' + (kMean == null ? '\u2014' : kMean + '%')
-            + ' \u00B7 ' + (kMx.markedPct == null
-              ? '\u2014' : kMx.markedPct + '% on time')
-          : '',""",
+     """        statLine: [
+          kMean == null ? '' : 'Class mean ' + kMean + '%',
+          kMx.markedPct == null ? '' : kMx.markedPct + '% on time'
+        ].filter(Boolean).join(' \u00B7 '),""",
      "MRB-326 JOB 4e — the class header's stat line, with the "
      "keep-an-eye-on segment cut, and (post-review) with its no-work arm "
      "emptied. The third glance card IS \"Keep an eye on\", names those "
@@ -7537,7 +7536,11 @@ componentDidUpdate() {
      "no work — Design's node 280 heads the empty state and the Assignments "
      "caption says \"None set\" — so the strip is blank instead. Class mean "
      "and on-time are not said anywhere else and stay exactly as Design "
-     "wrote them."),
+     "wrote them. ⊕ Post-review, second pass: an unknown figure is DROPPED, "
+     "not dashed — a line reading \"Class mean — · —\" on an unstaffed class "
+     "is a sentence with no fact in it, and the same unknown-is-not-zero rule "
+     "Today applies to its summary. With no papers there is no mean, so the "
+     "old `kPapers.length` arm is implied."),
 
     # ── the Students table's caption ────────────────────────────────────
     #

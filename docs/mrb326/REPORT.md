@@ -302,7 +302,31 @@ redundancy rule, honesty, gate weakening". Outcome:
 
 ### 7a. Gate results
 
-_(filled at push time — see the commit that ships this file)_
+Full slow set recorded on the merged tree (`prepush_gate.py --record-all`, 6 Sep 07:29–08:19), then
+recorded again on the final tree that carries this file. Verbatim:
+
+```
+PASS  verify_ks3            PASS  student_parity        PASS  student_behaviour
+PASS  student_themes        PASS  today_drive           PASS  import_year_drive
+PASS  teacher_behaviour     PASS  teacher_reach         PASS  teacher_picker_drive
+PASS  leaderboard_behaviour PASS  ks4_chrome_drive      PASS  ks3_instrument_liveness
+PASS  student_switches      PASS  3d_render_check       PASS  seating_drive
+PASS  assignments_hold_drive PASS consumer_flag_off     PASS  teacher_perf_budget
+PASS  teacher_admin_foreign_class                       PASS  teacher_admin_real
+SKIP  student_controls_drive — no $MRB_DRIVE_PASSWORD / $MRB_TEST_STUDENT_PASSWORD (skips by name)
+FAIL  3d_parity — the same three pre-existing 3D Studio findings MRB-325 recorded
+      (heart-plate TODO, --st-ok-room token, two 1.5px border drifts); GATE-OVERRIDE in the commit
+```
+
+Fast set (run by the push guard): verify_questions, ks3_smoke --static, answer_positions,
+answer_lengths, teacher_tells, pool_ownership, leaderboard_tells, leaderboard_seam,
+ks4_chrome_tells, gate_coverage (38 gates over 38 scripts, 41 excluded with a reason),
+ks3_statutory, ks3_key_audit, ks3_rail_manifest, seating_tells — all green.
+
+Drives, per lane: `today_drive.py` 131 checks; `teacher_admin_foreign_class_drive.py` every
+check, ten capabilities; `teacher_admin_real_drive.py` 13/13 under real sign-in on TEST;
+`teacher_behaviour` 24 fixtures / 866 controls pressed; `teacher_reach` 24 × 2 widths / 3234
+controls hit-tested; `teacher_perf_budget` all four journeys inside the 2500 ms warm-load budget.
 
 ---
 

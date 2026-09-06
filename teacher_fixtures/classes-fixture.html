@@ -1719,11 +1719,10 @@ class Component extends DCLogic {
           k.n + (k.n === 1 ? ' student' : ' students'),
           k.lessonToday
         ].filter(Boolean).join(' · '),
-        statLine: kPapers.length
-          ? 'Class mean ' + (kMean == null ? '—' : kMean + '%')
-            + ' · ' + (kMx.markedPct == null
-              ? '—' : kMx.markedPct + '% on time')
-          : '',
+        statLine: [
+          kMean == null ? '' : 'Class mean ' + kMean + '%',
+          kMx.markedPct == null ? '' : kMx.markedPct + '% on time'
+        ].filter(Boolean).join(' · '),
         rosterLine: 'Not submitted shown first',
         hasWork: kPapers.length > 0,
         noWork: kPapers.length === 0,
