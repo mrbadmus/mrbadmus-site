@@ -117,8 +117,13 @@
   function notFound() {
     document.title = 'Not found';
     document.body.innerHTML =
-      '<div class="c-notice"><h1>Not found</h1>' +
-      '<p>This page isn’t available.</p></div>';
+      /* MRB-327 a11y: <main>, not <div>. This replaces the WHOLE document,
+         so with a <div> the refusal page had no landmark at all and axe
+         `landmark-one-main` + `region` fired on every consumer and public
+         surface with the flag off. .c-notice styles the class, and <main>
+         and <div> are both block with no UA margin, so nothing moves. */
+      '<main class="c-notice"><h1>Not found</h1>' +
+      '<p>This page isn’t available.</p></main>';
     document.body.style.display = 'block';
   }
 
@@ -257,7 +262,14 @@
          tag is removed here, on the enabled path and nowhere else, which
          makes "is the product launched" and "may Google index it" one
          decision taken in one place instead of two that can disagree. */
-      if (opts.public) {
+      /* ⊕ MRB-327. `keepNoindex` is the one exception, and it exists for
+         exactly one page: /parents/reset-password.html. That URL is a
+         one-time emailed token. It is public in the sense `public` means
+         here — no session, no SDK bounce — but it is the last address on the
+         estate that should end up in a search index, and there is nothing on
+         it anyone would ever want to find. Launching the marketing site is
+         not a reason to invite a crawler onto a password-reset page. */
+      if (opts.public && !opts.keepNoindex) {
         var robots = document.querySelector('meta[name="robots"]');
         if (robots && robots.parentNode) { robots.parentNode.removeChild(robots); }
       }

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="theme-color" content="#15110C"/>
 <meta name="robots" content="noindex"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
 <title>Admin — Marking — MrBadmus</title>
 <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -51,6 +52,16 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--st-room); }
+
+/* ── MRB-327 a11y: the flag-off refusal page on a DARK surface ──────────
+   `notFound()` in consumer-common.js replaces the whole document with
+   `.c-notice`, which is styled in consumer.css for the light consumer
+   theme. Landed on this near-black room it measured 1.11:1 for the
+   heading and 3.02:1 for the paragraph — an operator opening the console
+   with CONSUMER_SIGNUP_ENABLED off saw, in practice, a blank black page.
+   Re-pointed at the room's own text tokens: 14.1:1 and 6.8:1. */
+.c-notice h1 { color: var(--st-room-text); }
+.c-notice p  { color: #A99A85; }
 a { color: var(--st-ember); text-decoration: none; }
 a:hover { color: #F6EEDF; }
 input, button, select, textarea { font: inherit; }
@@ -160,6 +171,10 @@ main.ad-main { max-width: 920px; margin: 0 auto; padding: clamp(18px,3vw,32px) c
 <div class="rd ad-room" data-mode="ks3" id="c-main" style="display:none;">
 
   <header class="ad-head">
+    <!-- MRB-327 a11y: axe `page-has-heading-one` — highest heading was the
+         sidebar's <h2>. Visually hidden, and inside <header> so it sits
+         within a landmark. -->
+    <h1 class="ks3-sr-only">Marking queue</h1>
     <a class="ad-word" href="/consumer/admin-accounts.html">MrBadmus</a>
     <span class="ad-badge">Admin</span>
     <nav class="ad-nav">
@@ -181,7 +196,7 @@ main.ad-main { max-width: 920px; margin: 0 auto; padding: clamp(18px,3vw,32px) c
       <div class="ad-list-foot" id="list-foot"></div>
     </aside>
 
-    <div class="ad-mlist" id="mlist-wrap">
+    <div class="ad-mlist" id="mlist-wrap" role="region" aria-label="Queue picker">
       <select id="mobile-pick" aria-label="Pick a queued answer"></select>
     </div>
 

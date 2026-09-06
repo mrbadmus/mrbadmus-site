@@ -1103,6 +1103,27 @@ EXCLUDED_PREFIXES = {
         "asserted by the answer_positions gate. (The authored files are "
         "deliberately 100%% index-0 — the build-time shuffle is what a "
         "student sees, which is why the gate measures the built tree.)",
+
+    # ── MRB-327 · the pre-flag hardening drives ────────────────────────
+    "mrb327_":
+        "MRB-327's consumer regression drives — the family journey, the "
+        "billing states, the organisation journey, the Safari/WebKit "
+        "comparison and the marketing capture. Excluded on exactly the "
+        "reasoning already written above for night3_flagon_smoke.py, "
+        "admin_ui_drive.py and night4_laneC_drive.py, which these are "
+        "siblings of: each CREATES real fixtures on the shared TEST project "
+        "through the real API — families, children, subscriptions, Stripe "
+        "test customers — and tears them down again. Run as a push gate "
+        "from every lane at once they would write into one database "
+        "simultaneously and corrupt each other's runs, which is the exact "
+        "collision Night 3 hit twice. A gate that breaks other lanes to "
+        "prove a page renders is worse than no gate. Their flag-off "
+        "assertions are a subset of consumer_flag_off's, which IS "
+        "registered and does run on every push.\n"
+        "        A PREFIX rather than six rows because they are one ticket's "
+        "set and share one reason — the same trade as all_subtopics_ above. "
+        "It is ticket-scoped and therefore bounded: it cannot quietly "
+        "swallow a future gate that is not MRB-327's.",
 }
 
 

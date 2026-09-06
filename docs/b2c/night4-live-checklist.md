@@ -143,13 +143,30 @@ check that proves §1 and §2 from outside the dashboard:
 curl -s https://mrbadmus-backend.onrender.com/api/health
 ```
 
+⊕ **Corrected 6 Sep 2026 (MRB-327).** This table named two values the code
+has never emitted — `stripe: "configured"` and `email: "live"`. Both are the
+dangerous direction: on launch night Mide curls this, reads `resend` where the
+checklist promised `live`, and concludes a correctly-configured deploy is
+broken. The real shapes, read off `server.js` and confirmed against a running
+backend, are below.
+
 | field | must read | meaning if wrong |
 |---|---|---|
-| `stripe` | `configured` (live) | `missing` = no checkout at all |
-| `limits` | `upstash` | `memory` = rate limits are per-instance only |
-| `email` | `live` | `dry_run` = **no parent receives any email**, silently |
+| `stripe` | an **object**, all four true: `{"configured":true,"webhook_secret":true,"prices":true,"portal_config":true}` | any `false` names the missing piece. `configured:false` = no checkout at all; `webhook_secret:false` = payments never land |
+| `limits` | `{"backend":"upstash"}` | `{"backend":"memory"}` = rate limits are per-instance only |
+| `email` | `{"mode":"resend"}` | `{"mode":"dry_run"}` = **no parent receives any email**, silently |
 
-Current value, 3 Sep 2026 (before any deploy):
+Value on TEST, 6 Sep 2026, backend running from the merged tree with the
+worktree `.env` (no `RESEND_API_KEY`, no Upstash — so two of the three read the
+"wrong" way **correctly**, because this is TEST):
+
+```json
+{"status":"ok","service":"MrBadmusAI Backend","version":"2.0.0","db":"ok","db_ms":74,
+ "stripe":{"configured":true,"webhook_secret":true,"prices":true,"portal_config":true},
+ "limits":{"backend":"memory"},"email":{"mode":"dry_run"}}
+```
+
+Value on production, 3 Sep 2026 (before any deploy):
 `{"status":"ok","service":"MrBadmusAI Backend","version":"2.0.0","db":"ok"}` —
 none of the three fields exist yet, because the Night 2 backend is not deployed.
 

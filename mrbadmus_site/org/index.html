@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Pupils — MrBadmus</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
@@ -181,6 +182,23 @@
 
   function pct(p) { return (p == null) ? '–' : (String(p).indexOf('%') >= 0 ? String(p) : p + '%'); }
 
+  /* ⊕ MRB-327 §1 lane 3. A count and its noun, agreeing. Three places on
+     this page printed "1 seats free" and "1 pupils" — small, and exactly the
+     kind of small that makes a caseworker trust the number less. */
+  function plural(n, one, many) { return n + ' ' + (Number(n) === 1 ? one : many); }
+
+  /* The seat-cap refusal, generated the same way the backend generates it
+     (consumer/org.js `seatsRefusal`), so the sentence a caseworker reads is
+     the same whether the browser knew the answer or had to ask. It names
+     "Raise the cap", which is what the Account screen actually offers, and
+     it says where a leaver is removed — which, until this run, was nowhere. */
+  function seatsRefusal(free) {
+    var tail = ' Raise the cap from Account, or remove a leaver from their own page first.';
+    if (free === 0) { return 'No seats free.' + tail; }
+    if (free === 1) { return 'Only 1 seat free.' + tail; }
+    return 'Only ' + free + ' seats free.' + tail;
+  }
+
   /* A PERIOD END, read off the string rather than through a local clock.
 
      ⚠️ FOUND BY DRIVING IT. `subscriptions.current_period_end` for this
@@ -310,7 +328,7 @@
     var free = (org.seat_cap == null || org.seats_used == null) ? null : (org.seat_cap - org.seats_used);
 
     var stats = [
-      { l: 'Pupils', v: dash(org.seats_used), n: free == null ? 'seat count unknown' : (free + ' seats free') },
+      { l: 'Pupils', v: dash(org.seats_used), n: free == null ? 'seat count unknown' : plural(free, 'seat free', 'seats free') },
       { l: 'Active this week', v: String(active), n: (pupils.length - active) + ' not yet' },
       { l: 'Need attention', v: String(flagged), n: 'not started or quiet' },
       { l: 'Avg last check', v: avg, n: 'across all groups' }
@@ -459,11 +477,36 @@
          control for it. This is that control, on the pupil it moves. */
       '<div class="og-noprint" style="margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;">' +
         '<label style="font-weight:700;font-size:15px;color:var(--ks3-ink-muted);">Move to group</label>' +
-        '<select class="og-select" id="move-group">' + moveOpts + '</select>' +
+        /* MRB-327 a11y: axe `select-name` (WCAG 4.1.2). The visible label
+           sits in a sibling heading, not a <label for>, so the control
+           itself announced only its selected option. */
+        '<select class="og-select" id="move-group" aria-label="Move to group">' + moveOpts + '</select>' +
         '<button type="button" class="og-alt-sm" id="move-go">Move</button>' +
         '<a class="og-alt-sm" style="display:inline-flex;align-items:center;text-decoration:none;" ' +
           'href="' + esc(C.href('/consumer/report.html', { child: p.id })) + '">Termly report</a>' +
         '<span id="move-msg" class="og-note"></span>' +
+      '</div>' +
+
+      /* ⊕ MRB-327 §1 lane 3 — REMOVE A LEAVER, the control this page has
+         been promising and not carrying.
+
+         The Account screen's own row reads "Remove a leaver — From the pupil
+         page", and the seat-cap refusal tells a caseworker at the cap to
+         remove one before they can add anybody. Neither was true: there was
+         no control here, and the family route underneath it refuses
+         organisation staff outright. So an organisation that filled its cap
+         could never empty a seat again.
+
+         Two presses, not a `confirm()`: the first press says the pupil's
+         name back and turns the button into the real one, which is a
+         confirmation a caseworker can read on a phone and cannot dismiss by
+         reflex. The removal is soft — every attempt the pupil ever made
+         survives it — and that is said out loud, because "remove" is a word
+         people are right to hesitate over. */
+      '<div class="og-noprint" style="margin-top:22px;padding-top:14px;border-top:1px solid var(--ks3-rule);">' +
+        '<button type="button" class="og-alt-sm" id="remove-pupil" data-armed="0">Remove from the organisation</button>' +
+        '<span id="remove-msg" class="og-note" style="margin-left:10px;"></span>' +
+        '<p class="og-note" style="margin-top:6px;">Frees a seat. Their work is kept, and nothing they have already done is lost.</p>' +
       '</div>' +
 
       /* ⊕ DROP 2. Ruling 3 had already killed her drop-1 "Invite a parent"
@@ -622,7 +665,8 @@
         groups.map(function (g) {
           return '<div class="og-card shadow-card" data-group="' + esc(g.id) + '">' +
             '<div class="og-group-h"><h2>' + esc(g.name) + '</h2>' +
-              '<span class="og-group-c">' + esc(dash(g.count)) + ' pupils</span></div>' +
+              '<span class="og-group-c">' +
+                esc(g.count == null ? '–' : plural(g.count, 'pupil', 'pupils')) + '</span></div>' +
             '<ul class="og-kv">' +
               '<li><span class="k">Year</span><span>' + esc(dash(g.year)) + '</span></li>' +
               '<li><span class="k">Current unit</span><span style="text-align:right;">' +
@@ -878,8 +922,8 @@
       '<div class="og-form-col">' +
         '<textarea class="og-textarea" id="bulk" rows="8" placeholder="Amara, 9, 9X&#10;Leo, 7, 7B">' +
           esc(S.bulk) + '</textarea>' +
-        '<div class="og-count"><span id="bulk-count">' + esc(rows.length + ' ' + (rows.length === 1 ? 'pupil' : 'pupils')) + '</span>' +
-          '<span>' + esc(free == null ? 'seat count unknown' : (free + ' seats free')) + '</span></div>' +
+        '<div class="og-count"><span id="bulk-count">' + esc(plural(rows.length, 'pupil', 'pupils')) + '</span>' +
+          '<span>' + esc(free == null ? 'seat count unknown' : plural(free, 'seat free', 'seats free')) + '</span></div>' +
         (S.bulkErr ? '<p class="og-err" style="margin-top:10px;">' + esc(S.bulkErr) + '</p>' : '') +
         '<button type="button" class="og-wide" style="margin-top:16px;" id="bulk-go">Create logins and print slips</button>' +
       '</div>';
@@ -1141,7 +1185,7 @@
       bulk.oninput = function () {
         S.bulk = bulk.value;
         var n = parseBulk(S.bulk).length;
-        el('bulk-count').textContent = n + ' ' + (n === 1 ? 'pupil' : 'pupils');
+        el('bulk-count').textContent = plural(n, 'pupil', 'pupils');
       };
     }
 
@@ -1154,6 +1198,8 @@
     if (reset) { reset.onclick = resetPassword; }
     var moveGo = el('move-go');
     if (moveGo) { moveGo.onclick = moveGroup; }
+    var rm = el('remove-pupil');
+    if (rm) { rm.onclick = removePupil; }
     var workGo = el('work-go');
     if (workGo) { workGo.onclick = submitWork; }
     var bulkGo = el('bulk-go');
@@ -1266,6 +1312,38 @@
       });
   }
 
+  /* ⊕ MRB-327 §1 lane 3. See the control's own comment on the pupil page.
+     `DELETE /api/consumer/org/pupils/:id` is the organisation's own route —
+     the family one (`/api/consumer/children/:id`) authorises through
+     `parent_owns_child()`, which requires role='parent', so it answers a
+     caseworker with a Postgres exception string and leaves them at the cap. */
+  function removePupil() {
+    var p = pupilById(S.pupilId);
+    if (!p) { return; }
+    var btn = el('remove-pupil');
+    var msg = el('remove-msg');
+
+    if (btn.getAttribute('data-armed') !== '1') {
+      btn.setAttribute('data-armed', '1');
+      btn.textContent = 'Yes — remove ' + (p.name || 'this pupil');
+      msg.textContent = 'This frees a seat. Press again to confirm.';
+      return;
+    }
+
+    C.setBusy(btn, true, 'Removing…');
+    msg.textContent = '';
+    api('/api/consumer/org/pupils/' + encodeURIComponent(p.id), { method: 'DELETE' })
+      .then(function () { return reload(); })
+      .then(function () { go('pupils', { pupilId: null, newPass: '' }); })
+      .catch(function (e) {
+        C.setBusy(btn, false);
+        var b = el('remove-pupil');
+        if (b) { b.setAttribute('data-armed', '0'); b.textContent = 'Remove from the organisation'; }
+        var m = el('remove-msg');
+        if (m) { m.textContent = e.message; }
+      });
+  }
+
   function createGroup() {
     var name = el('ng-name').value.trim();
     var year = el('ng-year').value.trim();
@@ -1367,7 +1445,7 @@
        (§C5 sends it back verbatim on the 409) — this copy only saves a
        round trip when the answer is already knowable. */
     if (free != null && rows.length > free) {
-      S.bulkErr = 'Only ' + free + ' seats free. Add seats from Account, or remove leavers first.';
+      S.bulkErr = seatsRefusal(free);
       return render();
     }
 
@@ -1381,6 +1459,13 @@
     }).then(function (d) {
       var made = (d && d.created) || [];
       var failed = (d && d.failed) || [];
+      /* ⚠️ ⊕ MRB-327 §1 lane 3. `failed[].row` is the INDEX of the line that
+         failed (org.js: `failed.push({ row: i, error })`), not a copy of it —
+         so the warning below used to read `f.row.first_name` off a number and
+         print "a row, a row" every single time, on the one screen whose whole
+         job is to say WHICH lines did not make it. The lines are still here,
+         in `rows`, and they are captured before `S.bulk` is emptied. */
+      var lineNames = rows.map(function (r) { return r.first_name || r._raw; });
       S.bulk = '';
       S.slips = made;
       return reload().then(function () {
@@ -1391,7 +1476,7 @@
           warn.className = 'og-warn og-noprint';
           warn.textContent = failed.length + ' line' + (failed.length === 1 ? '' : 's') +
             ' couldn’t be created: ' + failed.map(function (f) {
-              return (f.row && f.row.first_name) || 'a row';
+              return lineNames[f.row] || ('line ' + (Number(f.row) + 1));
             }).join(', ') + '. Add them again on their own.';
           host.insertBefore(warn, host.firstChild);
         }

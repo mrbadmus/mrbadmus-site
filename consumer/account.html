@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Account — MrBadmus</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
@@ -263,6 +264,12 @@
   /* ═══ render ══════════════════════════════════════════════════════════ */
   function renderHead() {
     document.getElementById('ak-head').innerHTML =
+      /* MRB-327 a11y: axe `page-has-heading-one`. The visible "Account" title
+         is a <span> in the brand row and promoting it would change Design's
+         header type scale, so the heading is added visually hidden. It lives
+         INSIDE <header> (a banner landmark) because a heading parked between
+         landmarks trips axe `region` instead. */
+      '<h1 class="ks3-sr-only">Account</h1>' +
       '<a href="' + esc(C.href('/consumer/overview.html')) + '" aria-label="Back to dashboard" ' +
         'style="display:grid;place-items:center;width:40px;height:40px;margin-left:-8px;' +
         'border-radius:12px;color:var(--ks3-ink)">' + MARK_BACK + '</a>' +
@@ -332,15 +339,29 @@
       var failed = dayMonth(b.failed_at);
       var retry = dayMonth(b.retry_at);
       var grace = dayMonth(plusDaysISO(S.sub && S.sub.current_period_end, 7));
+      /* ⊕ MRB-327 lane 2. THE GRACE IS SPENDABLE, AND THE SENTENCE HAS TO
+         KNOW. `past_due` is two different situations wearing one billing
+         word: inside the seven days `org_access_state()` still answers
+         `full` and work really is carrying on; after them it answers
+         `read_only` and work has stopped. The old copy said "Work carries on
+         as normal until <grace>" in both, so a parent whose grace had run
+         out was told, on the one screen they opened to find out, that
+         everything was fine — and the date it named was already in the past.
+         `access` is the only field that separates the two (`state` cannot),
+         which is the same reason the cancelled branch below reads it. */
+      var inGrace = String(b.access || '') === 'full';
       body = '<div style="margin-top:16px;padding:16px;border:2px solid var(--ks3-alert-border);' +
         'border-radius:14px;background:var(--ks3-alert-tint);color:var(--ks3-alert-text)">' +
         '<p style="margin:0;font-weight:700;font-size:16px">Your card was declined' +
           (failed ? (' on ' + esc(failed)) : '') + '.</p>' +
         '<p style="margin:8px 0 0;font-size:15px">' +
           (retry ? ('We’ll retry on ' + esc(retry) + '. ') : '') +
-          (grace ? ('Work carries on as normal until <strong>' + esc(grace) + '</strong>. ') : '') +
-          'If it still fails, work stops being set and the account pauses. Nothing is deleted.</p>' +
-        '</div>';
+          (inGrace
+            ? ((grace ? ('Work carries on as normal until <strong>' + esc(grace) + '</strong>. ') : '') +
+               'If it still fails, work stops being set and the account pauses. Nothing is deleted.')
+            : ('New work, marking and messages are <strong>paused</strong> until the payment goes ' +
+               'through. Everything already here stays readable, and nothing is deleted.')) +
+          '</p></div>';
     } else if (st === 'cancelled') {
       var ae = dayMonth(b.access_end);
       /* ⊕ TWO CANCELLED STATES. See overview.html's banner for the whole
