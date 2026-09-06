@@ -376,6 +376,78 @@ function MRB_REMIND_STUDENT(classId, assignmentId, studentId){
       return {ok:n, already:n===0, error:null};},
       function(e){return {ok:0,already:false,error:e};});}
 
+/* == "REMIND ALL N", WIRED - MRB-326 JOB 4c ==============================
+
+   ⊕ 6 Sep 2026. Design's node 236, the dark button under the Not-in-yet
+   chips, used to be pruned by `DEAD` because her handler toasted a send in
+   front of no write. `shared/teacher-live.js` carried the working control
+   instead, as a BANNER injected above the page header - and that banner said
+   "Everyone has handed this week's work in." directly above a card whose own
+   34px number already said "2 of 2 in". Mide ruled the banner off the page;
+   this is where its behaviour went.
+
+   ⚠️ IT TAKES GROUPS, NOT ONE ASSIGNMENT AND A LIST OF CHILDREN, and that
+   is the whole reason it is not `MRB_REMIND_STUDENT` with a longer array.
+   A reminder names ONE assignment. The chase list on the class screen spans
+   the SELECTED TEACHING WEEK, which can hold more than one - `openTitle`
+   says "Particle model - recall and apply · +1 more" when it does. Sending
+   everyone about the first paper would nudge a child about the one they
+   handed in and say nothing about the one they owe. `const kRemind` in
+   `renderVals` builds one group per paper, each holding only the children
+   missing THAT paper; this sends them as separate upserts and folds the
+   answers back together.
+
+   ⚠️ `ok` COUNTS CHILDREN, NOT ROWS. A child missing both of the week's
+   papers is two written rows and ONE student reminded, and the toast says
+   "Reminded 3 of 4" about children. Counting rows would report more
+   reminders than there are children in the class, which is arithmetic a
+   teacher would rightly not believe.
+
+   THE RATE LIMIT IS THE DATABASE'S, exactly as it is for the per-student
+   control: a unique index on (student_id, assignment_id, sent_on), an upsert
+   with `ignoreDuplicates`, and a return of the rows ACTUALLY written. A
+   second press writes nothing and errors nothing, and `ok` comes back 0,
+   which the caller reports as "already reminded today". Nothing here decides
+   who may be reminded; RLS's `teacher_send` policy does.
+
+   ⚠️ ONE FAILING GROUP DOES NOT DISCARD THE OTHERS. Each group settles on
+   its own; the first error is carried out so the caller can name it, and any
+   rows that DID get written are still counted. A teacher who reminded three
+   of four children must not be told nobody was told.
+
+   WARNING: IT NEVER REJECTS, like the helpers around it. Resolves
+   {ok, asked, error} and the caller says a sentence for each. */
+function MRB_REMIND_ALL(classId, groups){
+  var no=function(e){return Promise.resolve({ok:0,asked:0,error:e});};
+  if(!classId){return no(new Error('teacher page: no class'));}
+  var list=(groups||[]).filter(function(g){
+    return g&&g.assignmentId&&g.studentIds&&g.studentIds.length;});
+  if(!list.length){return no(new Error('teacher page: no assignment'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.sendReminders){
+    return no(new Error('teacher page: no data layer'));}
+  var asked={};
+  list.forEach(function(g){g.studentIds.forEach(function(id){
+    if(id){asked[id]=1;}});});
+  var me=MRB_ME()||null;
+  return Promise.all(list.map(function(g){
+    return TD.sendReminders({classId:classId, assignmentId:g.assignmentId,
+        studentIds:g.studentIds, teacherId:me})
+      .then(function(wrote){return {wrote:wrote||[], error:null};},
+            function(e){return {wrote:[], error:e};});
+  })).then(function(res){
+    var sent={}, err=null;
+    res.forEach(function(r){
+      if(r.error&&!err){err=r.error;}
+      r.wrote.forEach(function(row){
+        var id=row&&row.student_id; if(id){sent[id]=1;}});});
+    var ok=Object.keys(sent).length;
+    /* An error is only REPORTED when nothing at all was written. With some
+       rows in, the toast that names how many were reminded is the more
+       useful sentence and the failure is already in the console. */
+    return {ok:ok, asked:Object.keys(asked).length,
+            error:ok?null:err};});}
+
 /* Why a reminder failed, in a sentence a teacher can act on. The companion
    to MRB_SHOUTOUT_WHY, and separate for the same reason: a different verb
    and a different set of refusals. */
@@ -1175,16 +1247,19 @@ class Component extends DCLogic {
       const chase = this.chaseFor(c);
       return {
         code: c.code,
-        meta: [c.n ? c.n + ' students' : 'No students yet',
-          c.subject].filter(Boolean).join('\u00A0\u00B7 '),
+        /* ⊕ MRB-326 JOB 5a — the card's eyebrow line is gone,
+           and so is the value behind it. Design's node 182 is pruned by
+           REDUNDANT: the student count is on the chip below and the
+           subject is in the class code above. */
         live: c.state === 'live',
         noWork: c.state === 'nowork',
         empty: c.state === 'empty',
         weekLabel: c.week[0] + ' of ' + c.week[1] + ' in',
         pct: c.week[1] ? Math.round((c.week[0] / c.week[1]) * 100) : 0,
         weekSub: chase.length
-          ? 'Chase ' + chase.slice(0, 2).map(r => this.shortName(r.name)).join(', ') + (chase.length > 2 ? ' +' + (chase.length - 2) + ' more' : '')
-          : 'Everyone in — nothing to chase',
+          ? 'Chase ' + chase.slice(0, 2).map(r => this.shortName(r.name)).join(', ')
+            + (chase.length > 2 ? ' +' + (chase.length - 2) + ' more' : '')
+          : '',
         weekSubFg: chase.length ? 'var(--st-accent-text)' : 'var(--st-muted)',
         emptyLine: c.state === 'empty' ? 'No students yet' : c.n + ' students · no work set',
         activity: c.last === 'No activity yet'
@@ -1239,6 +1314,27 @@ class Component extends DCLogic {
     const lastP = lastMarked.length ? (kPapers[lastMarked[0]] || null) : null;
     const kChase = (!k || k.state !== 'live' || !wIdxs.length) ? []
       : kRoster.filter(r => wTally[r.id].in < wTally[r.id].asked);
+
+    /* ── ⊕ MRB-326 JOB 4c · WHO IS REMINDED, AND ABOUT WHAT ──────────────
+       One group PER PAPER, because a reminder names ONE assignment and the
+       chase list above spans the whole selected week. On a week carrying two
+       assignments, sending everyone in `kChase` a reminder about `openP`
+       would nudge a child about the paper they DID hand in and say nothing
+       about the one they owe. Grouping per paper costs one round trip each
+       and cannot do that.
+
+       The union of these groups is exactly `kChase` — a child appears here
+       if and only if they are missing at least one of the week's papers — so
+       "Remind all N" counts the same children the chips name, which is the
+       property the DEAD note on node 236 cared about most. */
+    const kRemind = (!k || k.state !== 'live') ? []
+      : wPapers.map(p => ({
+        assignmentId: p.id,
+        studentIds: kRoster.filter(r => {
+          const row = kMx.byId[r.id];
+          return !(row && row.submitted[p.idx]);
+        }).map(r => r.id)
+      })).filter(g => g.assignmentId && g.studentIds.length);
     /* ⊕ MRB-306: no timetable data exists; see DROP_FIELDS. */
     const lessonToday = null;
     const g1 = lastP ? this.gridFor(k, lastP.idx) : null;
@@ -1278,13 +1374,29 @@ class Component extends DCLogic {
       openIn: wPapers.length ? wSub + ' of ' + wAsk + ' in' : '—',
       openPct: wAsk ? Math.round((wSub / wAsk) * 100) : 0,
       hasChase: kChase.length > 0,
-      allIn: openP != null && kChase.length === 0,
       chase: kChase.map(r => ({
         name: this.shortName(r.name),
         open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
       })),
-      remindLabel: 'Remind all ' + kChase.length,
-      remind: () => this.ping('Reminder sent to ' + kChase.length + ' students in ' + k.code),
+      remindLabel: (s.remindDone === k.id + ':' + wi)
+        ? 'Reminded today' : 'Remind all ' + kChase.length,
+      remind: () => MRB_REMIND_ALL(k && k.id, kRemind).then((r) => {
+        if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+        this.setState({ remindDone: k.id + ':' + wi });
+        if (!r.ok) {
+          this.ping(r.asked === 1
+            ? 'They have already been reminded about this today'
+            : 'They have all already been reminded about this today');
+          return;
+        }
+        if (r.ok < r.asked) {
+          this.ping('Reminded ' + r.ok + ' of ' + r.asked
+            + ' — the rest were already reminded today');
+          return;
+        }
+        this.ping('Reminder sent to ' + r.ok
+          + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
+      }),
       lastTitle: lastP ? lastP.title : 'Nothing marked yet',
       lastLine: lastP ? 'Marked · class mean ' + lastP.mean + ' · ' + lastP.sub + ' submitted' : '',
       worstTwo: worstTwo.map(q => ({ id: q.id, text: q.text, pct: q.pct + '%', bar: q.pct, fill: q.pct < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)' })),
@@ -1601,13 +1713,14 @@ class Component extends DCLogic {
         meta: [
           k.actingAsAdmin ? 'Acting as admin' : '',
           k.n + (k.n === 1 ? ' student' : ' students'),
-          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject,
           k.lessonToday
         ].filter(Boolean).join(' · '),
         statLine: kPapers.length
-          ? 'Class mean ' + (kMean == null ? '—' : kMean + '%') + ' · ' + (kMx.markedPct == null ? '—' : kMx.markedPct + '% on time') + ' · ' + kFlagged + (kFlagged === 1 ? ' student' : ' students') + ' to keep an eye on'
+          ? 'Class mean ' + (kMean == null ? '—' : kMean + '%')
+            + ' · ' + (kMx.markedPct == null
+              ? '—' : kMx.markedPct + '% on time')
           : 'No work set yet',
-        rosterLine: k.n + ' students · not submitted shown first',
+        rosterLine: 'Not submitted shown first',
         hasWork: kPapers.length > 0,
         noWork: kPapers.length === 0,
         noWorkLine: k.n + ' students are enrolled and waiting. '
@@ -1650,17 +1763,13 @@ class Component extends DCLogic {
           dateColor: on ? 'var(--st-ink)' : 'var(--st-muted)'
         };
       }),
-      weekNote: !wWeek ? ''
-        : [wWeek.now ? 'This week' : wWeek.label, wWeek.range,
-          (!wPapers.length
-            ? 'No work set in this week'
-            : (wPapers.length === 1
-              ? wPapers[0].title
-                + (wPapers[0].when === 'upcoming' ? ' · open' : ' · marked')
-                + (wPapers[0].due ? ', due ' + wPapers[0].due.replace(/^Due /, '') : '')
-              : wPapers.length + ' assignments set')),
-          wMean == null ? '' : 'Week mean ' + wMean + '%'
-        ].filter(Boolean).join(' · '),
+      /* ⊕ MRB-326 JOB 4d — `weekNote` DELETED, with the node that drew it.
+         It read "This week · 31/08/26 · 2 assignments set · Week mean 42%",
+         and all four parts are already on the screen: the selected chip
+         carries the date and the label and is marked as selected;
+         `klass.paperLine` counts the week's assignments over the table;
+         and the class mean is stated in the header. Mide's ruling of 6 Sep
+         2026 — the chips stay, the sentence goes. */
       weekBack: () => { if (wi < kWeeks.length - 1) this.pickWeek(wi + 1); },
       weekFwd: () => { if (wi > 0) this.pickWeek(wi - 1); },
       weekBackColor: wi >= kWeeks.length - 1 ? 'var(--st-rule-strong)' : 'var(--st-ink)',
@@ -2103,7 +2212,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"7a0678d5","teacher-guard.js":"2efdc820","teacher-live.js":"01144f68","teacher-picker.js":"8f2365b7"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"d5fbc542","teacher-guard.js":"2efdc820","teacher-live.js":"d8311d7a","teacher-picker.js":"8f2365b7"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script src="teacher-fixture-student-detail.js"></script>
 <script>window.__MRB_MOUNT__();</script>
