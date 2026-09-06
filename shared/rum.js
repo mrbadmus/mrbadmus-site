@@ -141,6 +141,32 @@
         var keys = Object.keys(m).sort();
         v = keys.length ? m[keys[0]] : null;
       }
+      /* ⚠️ FALLBACK: READ THE STAMP OFF THE DOCUMENT'S OWN TAGS.
+         `__MRB_ASSET_V__` is published by the ported runtime, and the
+         hand-written pages — today.html, timetable.html, admin.html, import
+         .html — do not have it. The first live rows proved it: every ported
+         screen carried a build and `teacher-today` carried NULL, which is the
+         landing page, the one most worth attributing. A stamped `?v=` is on
+         every page by definition, because the generator puts it there. */
+      if (!v) {
+        /* config.js SPECIFICALLY, not merely the first stamped tag in the
+           document. Taking the first one made today.html report tokens.css's
+           hash while every ported screen reported config.js's — so `build`
+           was per-page and could not be grouped on. config.js is on every
+           page that could ever beacon, and picking it by name makes the
+           column ONE value across the estate for a given deploy. */
+        var tags = document.querySelectorAll(
+          'script[src*="/shared/"], link[href*="/shared/"]');
+        var any = null;
+        for (var i = 0; i < tags.length; i++) {
+          var url = tags[i].getAttribute('src') || tags[i].getAttribute('href') || '';
+          var hit = /[?&]v=([a-f0-9]{8})\b/.exec(url);
+          if (!hit) { continue; }
+          if (url.indexOf('/shared/config.js') >= 0) { any = hit[1]; break; }
+          if (!any) { any = hit[1]; }   // keep the first as a last resort
+        }
+        v = any;
+      }
       return (v && /^[a-f0-9]{8}$/.test(v)) ? v : null;
     } catch (e) { return null; }
   }

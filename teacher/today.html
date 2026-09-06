@@ -812,7 +812,7 @@ function rumReady() {
     // immutable is a file pinned in a browser for a year that no deploy can
     // reach. The build also VERIFIES this — an unstamped `/shared/…"` in a
     // published page fails the build rather than shipping.
-    s.src = "/shared/rum.js?v=42fde438";
+    s.src = "/shared/rum.js?v=930ee5e1";
     s.async = true;
     s.onload = function () {
       try { window.MrBadmusRUM.report('teacher-today', 'teacher', at); }
