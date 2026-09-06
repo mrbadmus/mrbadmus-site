@@ -200,6 +200,92 @@ def check_backend():
              "changed; prove the new shape against one_pool_per_assignment "
              "and update this gate")
 
+    # ── ⊕ MRB-331 · EVERY BANK READ SITS IN A NAMED PLACE ──────────────
+    #
+    # Until Set work there was exactly one way into `ks3_assignment_bank` from
+    # the backend — `bankFor()` — and this gate policed its BODY without ever
+    # asking whether anything else was reading the table. That was a real hole
+    # and the gate's own closing note said so: "a bank read outside bankFor()
+    # is currently unconstrained by this gate".
+    #
+    # MRB-331 gave three surfaces a reason to want the bank (the topics sheet,
+    # its question preview, and the write that validates the chosen ids), so
+    # the hole became a live risk rather than a theoretical one. It is closed
+    # the way the ladder's was: an allowlist of named spans, each justified,
+    # and anything outside them fails.
+    #
+    # ⚠️ THE ALLOWLIST IS SHORT ON PURPOSE. Two of the three new surfaces do
+    # NOT appear in it, because they were built to go through `bankFor()` with
+    # a different column list rather than to open a read of their own. If a
+    # future change gives one its own `.from('ks3_assignment_bank')`, this gate
+    # fails and the author has to come here and say why — which is the entire
+    # point.
+    BANK_HOMES = (
+        (r"async function bankFor.*?\n}",
+         "composition's pool read, the ruled owner path — every SERVING read "
+         "of the bank goes through it, including the Set work sheet's topic "
+         "counts and its question preview, which pass a column list rather "
+         "than opening a read of their own"),
+        (r"async function readAssignmentWithQuestions.*?\n}",
+         "hydrating an assignment's stored source_refs back into questions. "
+         "Serving, and of the pool the assignment owns"),
+        (r"app\.post\('/api/teacher/set-work'.*?\n\}\);",
+         "the write-side seal (MRB-331): it re-reads the chosen ids to prove "
+         "every one belongs to the lesson the teacher picked. ⚠️ It selects "
+         "`id, lesson_slug, band` and MUST NOT select `text` or `options` — "
+         "it is validating provenance, not serving questions"),
+    )
+    spans = []
+    for pattern, why in BANK_HOMES:
+        m3 = re.search(pattern, server, re.S)
+        if not m3:
+            fail("server.js", "the bank home for %r is gone — re-point this "
+                 "gate at it before the allowlist quietly stops covering "
+                 "anything" % why[:48])
+        else:
+            spans.append((m3.span(), why))
+
+    for m4 in re.finditer(r"ks3_assignment_bank", server):
+        if any(a <= m4.start() < b for (a, b), _why in spans):
+            continue
+        line_start = server.rfind("\n", 0, m4.start()) + 1
+        line = server[line_start:m4.start()]
+        if "//" in line or line.strip()[:1] == "*":
+            continue          # prose about the bank, not a read of it
+        fail("server.js", "ks3_assignment_bank read outside every named home "
+             "(offset %d) — a new way into the assignment pool. Add it to "
+             "BANK_HOMES with a reason, or route it through bankFor()"
+             % m4.start())
+
+    # the write-side seal must not become a serving read
+    seal = re.search(r"app\.post\('/api/teacher/set-work'.*?\n\}\);",
+                     server, re.S)
+    if seal:
+        body = seal.group(0)
+        m5 = re.search(r"from\('ks3_assignment_bank'\)\s*\.select\((.*?)\)",
+                       body, re.S)
+        if m5:
+            for banned in ("text", "options"):
+                if banned in m5.group(1):
+                    fail("server.js", "/api/teacher/set-work selects %r from "
+                         "the bank — it validates provenance and must not "
+                         "serve question content" % banned)
+
+    # ── the key stage is a precondition, not a filter ───────────────────
+    #
+    # `ks3_assignment_bank` has NO key_stage column; only its name says KS3.
+    # Eight KS4 subtopic slugs are byte-identical to KS3 lesson slugs, so a
+    # join on `lesson_slug` alone hands a Year 11 class Year 8 questions.
+    # `bankFor` takes the key stage as its FIRST argument so no caller can
+    # reach the table without having said which key stage it is asking for.
+    sig = re.search(r"async function bankFor\(([^)]*)\)", server)
+    if not sig:
+        fail("server.js", "bankFor's signature is gone")
+    elif "keyStage" not in sig.group(1).replace("key_stage", "keyStage"):
+        fail("server.js", "bankFor no longer takes a key stage as an "
+             "argument — the KS3/KS4 slug collision is unguarded and a KS4 "
+             "class can be served KS3 questions on eight lessons")
+
     # every ladder reference sits inside the FROZEN practice route
     route = re.search(
         r"app\.get\('/api/class/practice'.*?\n\}\);", server, re.S)

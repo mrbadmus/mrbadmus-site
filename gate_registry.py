@@ -874,6 +874,36 @@ GATES = [
 
     # ── ⊕ MRB-326, 6 Sep 2026 · the half a stub cannot reach ────────────
 
+    # ── ⊕ MRB-331, 6 Sep 2026 · a teacher sets work, a child does it ────
+    dict(name="set_work",
+         cmd=["python3", "set_work_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site/teacher/class-detail.html",
+         needs_env="MRB_THROWAWAY_PASSWORD",
+         why="MRB-331 — THE SEAMS SET WORK CREATES, END TO END, UNDER REAL "
+             "RLS. Every property this ticket has to establish is a join "
+             "between two things that are each individually fine, so none of "
+             "them is visible from either side alone: a class may now hold an "
+             "AUTO and a TEACHER-SET assignment in the same week, and the "
+             "week lookup used `maybeSingle()`, which turns that pair into an "
+             "error for every child in the class; work set before a school's "
+             "go-live date must appear ON that date and not before, to the "
+             "child, under RLS rather than under a backend `if`; switching a "
+             "class's automatic work off must stop COMPOSITION and nothing "
+             "else, with the marking, the feedback and the reminders on "
+             "teacher-set work all still working; and a KS4 class must be "
+             "offered its own tier-and-pathway-scoped scheme while being "
+             "refused a KS3 question — including on the eight subtopic slugs "
+             "that are byte-identical to KS3 lesson slugs, where the join "
+             "alone would have handed a Year 11 Higher Triple class twelve "
+             "Year 8 questions. A throwaway teacher signs in for real, sets "
+             "work, and a throwaway child completes it; the marking, the "
+             "written feedback and the reminder are then driven on that "
+             "teacher-set assignment, because 'it is an ordinary assignment' "
+             "is a claim and not a fact until something has done it. The "
+             "world it runs in is `mrb331_fixture.py` and every id in it "
+             "begins f3310000-."),
+
     dict(name="teacher_admin_real",
          cmd=["python3", "teacher_admin_real_drive.py"],
          speed="slow",
@@ -921,6 +951,14 @@ GATES = [
 
 EXCLUDED = {
     # ── generators · they WRITE the site, by design ─────────────────────
+    "mrb331_fixture.py":
+        "the throwaway world MRB-331's drive runs in — it seeds and it tears "
+        "down and it asserts NOTHING, which is why it is here and not in "
+        "GATES. It is also the only file in the run that touches the "
+        "service-role key: `set_work_drive.py` proves everything on real "
+        "users' JWTs, because a proof carried on a service-role key bypasses "
+        "RLS and therefore proves nothing at all.",
+
     "build_all.py":
         "the entry point — runs the four generators in their load-bearing "
         "order. Writing is the job.",
