@@ -748,7 +748,9 @@ class Component extends DCLogic {
         footNote: isMarked ? 'MARKS ARE FINAL UNLESS A RETAKE IS OPEN' : w.status === 'open' ? 'COUNTS TOWARDS WEEK ' + MRB_DATA('weekNumber') : '',
         primaryLabel: w.status === 'open' ? 'Open the assignment' : w.retake ? 'Retake it' : isMarked ? 'Open the lesson' : w.status === 'pending' ? 'See what you sent' : 'Ask for an extension',
         primary: (w.status === 'open' || w.retake)
-          ? this.openAssignment
+          ? (w.assignmentHref
+              ? () => { window.location.href = w.assignmentHref; }
+              : this.openAssignment)
           : (isMarked && w.lessonHref)
             ? () => { window.location.href = w.lessonHref; }
             /* ⊕ 23 Aug 2026 — PHASE 3. P3's fallback, repointed. It
@@ -1204,6 +1206,6 @@ window.__MRB_MOUNT__ = function () {
 };
 </script>
 <script>window.__MRB_ASSET_V__={"class-entry.js":"d47329ae","config.js":"d1fecb43","ks3-lesson-urls.js":"98cd0930","student-data.js":"cc95d142","student-guard.js":"baa9b309"};</script>
-<script src="/shared/student-live.js?v=d1a24d87"></script>
+<script src="/shared/student-live.js?v=4804d313"></script>
 </body>
 </html>

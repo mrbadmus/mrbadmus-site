@@ -764,10 +764,37 @@ LOGIC = {
             "           student_rulings.py for the whole reading. */\n"
             "        showHint: false,",
         ),
+        # ── ⊕ MRB-331 — AND THE OPEN ROW OPENS ITS OWN PIECE OF WORK ──────
+        #
+        # P3 above sent every open row to `this.openAssignment`, and that
+        # method has exactly one destination: `MRB_DATA('benchPrimaryHref')`,
+        # the BENCH's work. One row, one week, one assignment — it was the
+        # same answer for every row that could reach it, so it was right.
+        #
+        # A teacher can set work now. A week can hold the auto assignment and
+        # however many pieces the teacher set on top of it, every one of them
+        # an open row with its own title and its own deadline, and every one
+        # of them would have opened the bench's assignment instead of itself.
+        # That is not a dead button — it is a button that opens the WRONG
+        # child's-eye thing, which is worse, because the page it lands on
+        # looks entirely normal.
+        #
+        # The row carries its own address now (`assignmentHref`, set in
+        # `shared/student-live.js`) and the button goes there.
+        #
+        # ⚠️ THE FALL-THROUGH IS DESIGN'S OWN LINE AND IS NOT A SHRUG. With no
+        # `assignmentHref` on the row this is `this.openAssignment` exactly as
+        # it was — which is what the fixture is, since Design's `work` rows
+        # carry no such field, so the checklist still ticks and
+        # `student_behaviour`'s comparison against Design's own file has
+        # nothing to diverge over. No control is added, removed or relabelled
+        # by this: the same one button changes where it points.
         (
             "        primary: w.status === 'open' || w.retake ? this.openAssignment : () => this.go('recall'),",
             "        primary: (w.status === 'open' || w.retake)\n"
-            "          ? this.openAssignment\n"
+            "          ? (w.assignmentHref\n"
+            "              ? () => { window.location.href = w.assignmentHref; }\n"
+            "              : this.openAssignment)\n"
             "          : (isMarked && w.lessonHref)\n"
             "            ? () => { window.location.href = w.lessonHref; }\n"
             "            : () => this.go('recall'),",

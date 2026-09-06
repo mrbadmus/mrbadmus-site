@@ -726,7 +726,9 @@ class Component extends DCLogic {
         footNote: isMarked ? 'MARKS ARE FINAL UNLESS A RETAKE IS OPEN' : w.status === 'open' ? 'COUNTS TOWARDS WEEK ' + MRB_DATA('weekNumber') : '',
         primaryLabel: w.status === 'open' ? 'Open the assignment' : w.retake ? 'Retake it' : isMarked ? 'Open the lesson' : w.status === 'pending' ? 'See what you sent' : 'Ask for an extension',
         primary: (w.status === 'open' || w.retake)
-          ? this.openAssignment
+          ? (w.assignmentHref
+              ? () => { window.location.href = w.assignmentHref; }
+              : this.openAssignment)
           : (isMarked && w.lessonHref)
             ? () => { window.location.href = w.lessonHref; }
             /* ⊕ 23 Aug 2026 — PHASE 3. P3's fallback, repointed. It

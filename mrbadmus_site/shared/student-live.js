@@ -511,6 +511,32 @@
 
   function assignmentHref() { return carryParams("/student/assignment.html"); }
 
+  /* ⊕ MRB-331 — THE SAME PAGE, TOLD WHICH PIECE OF WORK TO OPEN.
+
+     The bare `assignmentHref()` above means "whatever this class's current
+     work is", and until tonight that was the only thing there was: one class,
+     one week, one auto-composed assignment. A teacher can set work now, so a
+     week can hold several pieces, and a URL with no name in it cannot say
+     which one a student pressed.
+
+     ⚠️ THE BARE FORM IS KEPT AND IS STILL THE BENCH'S. It is what every
+     existing bookmark points at, it is what `student_controls_drive.py`
+     asserts "Open the assignment" lands on, and it is the address that stays
+     right next week when this week's work is not the current work any more.
+     A named URL is for a row that names its own row; the bench's button is
+     about "the work in front of me", which is exactly what the bare address
+     means.
+
+     ⚠️ `carryParams` FIRST, then the id — `class` and `env` must survive,
+     for the reasons `carryParams` gives, and appending to its output is the
+     only way to keep that one answer about which parameters travel. */
+  function assignmentHrefFor(id) {
+    if (!id) { return ""; }
+    var base = carryParams("/student/assignment.html");
+    return base + (base.indexOf("?") < 0 ? "?" : "&") +
+           "assignment=" + encodeURIComponent(id);
+  }
+
   /* A KS3 lesson slug → the lesson's own page, or "" if this build does not
      know that slug. Empty rather than a guessed path: a link that 404s is
      worse than a button that is not offered, and the caller checks. */
@@ -1063,7 +1089,17 @@
           if (!isNaN(t)) { serverNow = t; }
         }
         if (!res.ok) {
-          throw new Error("backend " + res.status + " on " + path);
+          var bad = new Error("backend " + res.status + " on " + path);
+          /* ⊕ MRB-331 — THE STATUS TRAVELS WITH THE ERROR. Every caller
+             before tonight treated any non-2xx the same way and did not need
+             to know which one it was. `buildAssignment` does: a 404 on a
+             request that NAMED a piece of work means that piece of work is
+             not this student's to open — unreleased, deleted, another
+             class's — and the honest sentence for it is not the same as the
+             one for a backend that fell over. `withDeadline` rethrows the
+             original error untouched, so the property survives the wrapper. */
+          bad.status = res.status;
+          throw bad;
         }
         /* ⚠️ THE BODY READ IS INSIDE THE DEADLINE ON PURPOSE. A response whose
            HEADERS arrive and whose BODY never does is the same blank page as a
@@ -1874,8 +1910,117 @@
       return Math.max(1, Math.min(39, Math.floor(days / 7) + 1));
     }
 
-    var currentId = current && current.assignment ? current.assignment.id : null;
-    var currentCount = current && current.questions ? current.questions.length : 0;
+    var cards = detail.assignmentsDueNow
+      .concat(detail.assignmentsComingUp, detail.assignmentsDone);
+
+    /* ── ⊕ MRB-331 — WHAT THE BENCH IS SHOWING ───────────────────
+
+       The bench is the "do this now" card, and until tonight it was the auto
+       assignment or nothing — which was the same statement, because the auto
+       assignment was the only assignment a class could have.
+
+       ⛔ A CLASS WITH `auto_assignments` OFF WOULD HAVE HAD AN EMPTY BENCH
+       WITH WORK SITTING IN THE LIST BELOW IT. Nothing composes for that
+       class, so `current.assignment` is null with a `reason`, and the whole
+       bench — the one thing on the page that says what to do now — would
+       have gone blank while the teacher's own work was three inches lower.
+       That reads as broken, and it would have read as broken to the child
+       rather than to us.
+
+       So the bench takes the first of these that exists:
+
+         1. the auto assignment, whenever there is one. UNCHANGED, and every
+            key below that used to read `current.assignment` reads this
+            object's copy of the same fields, so this branch is byte-for-byte
+            what the page has been doing since August.
+         2. the earliest-due OPEN piece of teacher-set work in the current
+            teaching week.
+         3. nothing, and the existing empty state is already right.
+
+       ⚠️ REASON-AGNOSTIC, DELIBERATELY. The brief names
+       `auto_assignments_off` as the case, and it is the case that motivated
+       this; but `no_scheme_for_week`, `no_banked_questions` and
+       `assignments_not_open_yet` all produce the identical `assignment: null`
+       and the identical empty bench, and a student cannot tell the four
+       apart. The rule is written about what is THERE, not about why the auto
+       slot is empty.
+
+       ⚠️ `week_work` IS OPTIONAL AND ITS ABSENCE IS NOT AN ERROR — the
+       same both-ways-safe shape `resume` takes on the assignment page, and
+       for the same reason: the two repos deploy in either order, and a page
+       newer than the backend must behave exactly as it did before. No
+       `week_work`, no fallback, no change of any kind.
+
+       ⚠️ THE HOLD IS CHECKED HERE TOO, THOUGH IT IS ALREADY IN RLS. An
+       unreleased assignment is invisible to this student's own read of
+       `assignments` (migration 20260906145023), so a fallback that named one
+       would put a bench on the page above a work list that does not contain
+       it. Requiring the row to be in `cards` is what makes that impossible,
+       and it is also where `is_submitted` comes from — one source for both
+       questions rather than two that could disagree. */
+    var benchWork = null;
+    if (current && current.assignment) {
+      var ca = current.assignment;
+      benchWork = {
+        id: ca.id,
+        /* Design's heading takes the topic where there is one and the title
+           otherwise — `benchTopic` below has always resolved it this way, and
+           it is resolved once, here, so both benches read the same fact. */
+        title: ca.topic || ca.title || "",
+        setAt: ca.created_at || null,
+        dueAt: ca.due_at || null,
+        count: (current.questions || []).length,
+        href: assignmentHref(),
+        /* Whether the sentence on the bench may say the work comes from this
+           week's lessons. TRUE only for the auto assignment, which IS
+           composed from this week's scheme row. A teacher picks a scheme
+           entry of their own choosing, which may be any week's, so the clause
+           would be a claim about a child's homework that nothing backs. */
+        fromScheme: true
+      };
+    } else if (current && Array.isArray(current.week_work)) {
+      var byId = {};
+      cards.forEach(function (c) { byId[c.id] = c; });
+      var open = current.week_work.filter(function (w) {
+        if (!w || w.source !== "teacher") { return false; }
+        if (current.week != null && w.academic_week != null
+            && w.academic_week !== current.week) { return false; }
+        if (w.release_at && Date.parse(w.release_at) > serverNow) { return false; }
+        var card = byId[w.id];
+        if (!card || card.is_submitted) { return false; }
+        if (card.due_at && Date.parse(card.due_at) < serverNow) { return false; }
+        return true;
+      });
+      /* Earliest due first; undated last, because nothing is due about it and
+         it cannot be the thing to do now ahead of something that is. The same
+         ordering `assignmentsComingUp` already uses, for the same reason. */
+      open.sort(function (a, b) {
+        if (!a.due_at && !b.due_at) { return 0; }
+        if (!a.due_at) { return 1; }
+        if (!b.due_at) { return -1; }
+        return a.due_at < b.due_at ? -1 : (a.due_at > b.due_at ? 1 : 0);
+      });
+      if (open.length) {
+        var pick = open[0];
+        benchWork = {
+          id: pick.id,
+          /* The teacher's own title, and nothing added to it. The brief's
+             rule: teacher-set work reads differently because it CARRIES the
+             teacher's words, never because the page explains what it is. */
+          title: pick.title || "",
+          /* `week_work` carries no `created_at`, so the docket's SET row is
+             empty rather than guessed. An empty docket row is honest. */
+          setAt: null,
+          dueAt: pick.due_at || null,
+          count: pick.question_count || 0,
+          href: assignmentHrefFor(pick.id),
+          fromScheme: false
+        };
+      }
+    }
+
+    var currentId = benchWork ? benchWork.id : null;
+    var currentCount = benchWork ? benchWork.count : 0;
 
     /* ── work[] ──────────────────────────────────────────────────────────
        Every assignment this class has, in the three buckets the data layer
@@ -1886,10 +2031,14 @@
        `notes` and `items` are OMITTED, not emptied and not invented. Nothing
        in `assignment_submissions` records a teacher's written feedback, and
        the per-question breakdown lives in `assignment_question_attempts`,
-       which this page does not read. A row simply has no feedback to show. */
-    var cards = detail.assignmentsDueNow
-      .concat(detail.assignmentsComingUp, detail.assignmentsDone);
+       which this page does not read. A row simply has no feedback to show.
 
+       ⊕ MRB-331 — `cards` IS DECLARED ABOVE NOW, not here. It moved because
+       the bench resolution needs it: picking the fallback piece of work means
+       knowing whether a row has been handed in, and that fact lives on these
+       cards. It is the same expression over the same three buckets and it is
+       still read only from this point down; nothing between the two positions
+       touches `detail`. */
     var work = cards.map(function (c) {
       var status;
       if (c.is_submitted) {
@@ -1937,7 +2086,29 @@
         detail: detailLine,
         lessons: rowLessons,
         lessonHref: rowLessons.length ? rowLessons[0].href : "",
-        assignmentHref: c.id === currentId ? assignmentHref() : ""
+        /* ⊕ MRB-331 — EVERY OPEN ROW HAS A WAY IN.
+
+           ⛔ WHAT THIS REPLACES gave a destination to ONE row — the bench's —
+           and left every other row with an empty string. That was true while
+           the bench's assignment was the only assignment a class could have.
+           The moment a teacher can set work, it means a piece of work with the
+           teacher's own title on it sits in the list, correctly, with the
+           deadline beside it and no way to open it: the row expands, the
+           `Open the assignment` button is there, and it does nothing at all.
+
+           OPEN ROWS ONLY, and that is the whole rule. A marked row already
+           routes to its lesson (ruling P3), a pending one has been handed in,
+           and a missed one is Design's `Ask for an extension`, which is a
+           different control and a different ticket. `retake` is Design's own
+           field and no live row carries one.
+
+           ⚠️ THE BENCH'S ROW KEEPS THE BARE ADDRESS. Same reasoning as
+           `assignmentHrefFor` — bookmarks, and the drive's assertion — and it
+           means this line is a strict superset of what it replaces: every row
+           that had a destination has the same destination. */
+        assignmentHref: c.id === currentId
+          ? assignmentHref()
+          : (status === "open" ? assignmentHrefFor(c.id) : "")
       };
       if (status === "marked" && c.max_score > 0) {
         row.score = Math.round((c.score / c.max_score) * 100);
@@ -1999,8 +2170,10 @@
        bench's and the done bench's. Design's two deliveries drew two different
        sample topics in that slot, so the port carries two bound KEYS; there is
        still exactly one FACT, and it is this. */
-    var benchTopic = (current && current.assignment)
-      ? (current.assignment.topic || current.assignment.title || "") : "";
+    /* ⊕ MRB-331 — resolved on `benchWork` now, which is the same expression
+       on the auto assignment and the only place the fallback's title could
+       come from. */
+    var benchTopic = benchWork ? benchWork.title : "";
 
     /* ── the leaderboard: roster[] and weekPts{} ──────────────────────────
        ⛔ BOTH ARE EMPTY, AND THAT IS THE HONEST ANSWER TODAY.
@@ -2678,10 +2851,8 @@
          assignment with no points is not. */
       docketQuestions: currentCount ? String(currentCount) : "",
       docketDrawsOn: lessonDefs.map(function (l) { return l.name; }).join(" · "),
-      docketSet: current && current.assignment
-        ? fmtSet(current.assignment.created_at) : "",
-      docketDue: current && current.assignment
-        ? fmtDueMixed(current.assignment.due_at) : "",
+      docketSet: benchWork ? fmtSet(benchWork.setAt) : "",
+      docketDue: benchWork ? fmtDueMixed(benchWork.dueAt) : "",
       /* ⊕ RULED 22 Aug 2026 — P4. The docket agrees with the bench.
          `OPEN` was welded, so a finished piece of work still wore it — and
          the countdown beside it went on counting down to a deadline the
@@ -2713,8 +2884,7 @@
          The finished-week reading it used to carry — "5 of 15 answered" — is
          now the done bench's OPENED · ANSWERED · COMPLETED row, which says the
          same thing about the same numbers in the place Design put it. */
-      docketLeft: current && current.assignment
-        ? daysLeft(current.assignment.due_at, serverNow) : "",
+      docketLeft: benchWork ? daysLeft(benchWork.dueAt, serverNow) : "",
 
       /* ⊕ 22 Aug 2026 — the bench checklist. Design's middle item spelled the
          assignment's length out IN WORDS — "Answer the eight questions" — which
@@ -2750,16 +2920,33 @@
 
          ⚠️ AND THE OPEN ARMS ARE UNTOUCHED. Nothing about a student with work
          still on the bench changes tonight. */
-      benchLead: current && current.assignment && current.assignment.due_at
-        ? "On the bench now · due " + fmtDueMixed(current.assignment.due_at)
+      benchLead: benchWork && benchWork.dueAt
+        ? "On the bench now · due " + fmtDueMixed(benchWork.dueAt)
         : "On the bench now",
-      benchBlurb: (currentCount && current && current.assignment
-                   && current.assignment.due_at)
-        ? (currentCount + " questions, set from this week's lessons. " +
-           "Open it, answer them, and complete it before " +
-           weekdayName(current.assignment.due_at) + ".")
-        : "Set from this week's lessons. Open it, answer the questions, "
-          + "and complete it.",
+      /* ⊕ MRB-331 — THE PROVENANCE CLAUSE IS DROPPED WHERE IT IS NOT TRUE.
+
+         Both sentences said "set from this week's lessons", and for the auto
+         assignment that is a fact: it is composed from this week's scheme row
+         and from nothing else. Those two arms are untouched.
+
+         A teacher chooses the scheme entry themselves and may choose any
+         week's, so the same clause over teacher-set work is a claim about a
+         child's homework that nothing in the data backs. It comes off, and
+         nothing replaces it — the sentence is the same sentence with the
+         unbackable half removed, not a new one about a new kind of work. The
+         page never says what "teacher-set" is; the title is the teacher's, and
+         that is the whole of the difference a student sees. */
+      benchBlurb: benchWork && benchWork.fromScheme
+        ? ((currentCount && benchWork.dueAt)
+            ? (currentCount + " questions, set from this week's lessons. " +
+               "Open it, answer them, and complete it before " +
+               weekdayName(benchWork.dueAt) + ".")
+            : "Set from this week's lessons. Open it, answer the questions, "
+              + "and complete it.")
+        : ((currentCount && benchWork && benchWork.dueAt)
+            ? (currentCount + " questions. Open it, answer them, and " +
+               "complete it before " + weekdayName(benchWork.dueAt) + ".")
+            : "Open it, answer the questions, and complete it."),
 
       /* W5, in the readings strip. */
       handedLabel: "Completed",
@@ -2840,7 +3027,7 @@
          and `items` are omitted a hundred lines above, because nothing records
          a teacher's written feedback and this page does not read the
          per-question attempts. */
-      benchDoneFeedback: (current && current.assignment) ? assignmentHref() : "",
+      benchDoneFeedback: benchWork ? benchWork.href : "",
       benchDoneTitle: benchTopic,
       benchDoneLead: first ? "Good week, " + first + "." : "Good week.",
       benchDoneSteps: benchSteps + " / 3",
@@ -2866,7 +3053,10 @@
          states. Design's done bench has its own two controls, and the button
          this names is inside the branch that no longer renders beside them. */
       benchPrimaryLabel: "Open the assignment",
-      benchPrimaryHref: (current && current.assignment) ? assignmentHref() : "",
+      /* ⊕ MRB-331 — the bench's OWN address, which is the bare one for the
+         auto assignment and a named one for a fallback. One string, resolved
+         where the bench work itself was resolved. */
+      benchPrimaryHref: benchWork ? benchWork.href : "",
       /* ⊕ 23 Aug 2026 — PHASE 4. `benchPct` and `benchDoneText` are GONE from
          this object. They filled the open bench's meter and its caption with
          the MARK once the week was done; that meter is not drawn on a finished
@@ -2982,9 +3172,7 @@
 
       practiceRoundCrumb: questions.length
         ? (numWord(questions.length).toUpperCase() + " A ROUND") : "PRACTICE",
-      topicTitle: current && current.assignment
-        ? (current.assignment.topic || current.assignment.title || "")
-        : ""
+      topicTitle: benchTopic
     };
   }
 
@@ -3003,7 +3191,47 @@
       document.documentElement.setAttribute("data-bench-theme", mirrored);
     }
 
-    var current = await api("/api/class/current-assignment?class_id=" + klass.id, token);
+    /* ── ⊕ MRB-331 — WHICH PIECE OF WORK THIS PAGE IS ────────────────────
+
+       `?assignment=<id>` names it; no parameter means what it has always
+       meant, which is "this class's current work", and the request that goes
+       out in that case is byte-for-byte the one that went out before tonight.
+
+       ⚠️ THE ROUTE IS THE SAME ROUTE. The backend takes an optional
+       `assignment_id` and serves that assignment INSTEAD of composing,
+       returning the identical payload shape — so everything below this line
+       is unchanged and does not know which of the two it is looking at. That
+       is the point: the answer sink, the resume, the Complete model and the
+       feedback view all key on `assignment.id`, and they get a real one
+       either way.
+
+       ⚠️ THE PARAMETER IS THE PAGE'S, NOT `carryParams`'s. `carryParams`
+       deliberately copies only `class` and `env` onto internal links, so the
+       assignment id does NOT travel to the class page or anywhere else — a
+       student pressing Back to their class does not carry one piece of work's
+       id into a page about all of them.
+
+       ⚠️ A 404 HERE IS NOT AN OUTAGE. The backend refuses an assignment
+       whose release is in the future with 404, and it will refuse one that is
+       not this student's the same way. Left alone that lands on
+       `SAY.generic` — "we could not load your class just now" — which
+       describes a broken server to a child whose page is working perfectly.
+       `SAY.noWork` is the true sentence and it already exists: as far as this
+       student is concerned there is no such piece of work. No new copy, and
+       nothing about how releases or holds work (CLAUDE.md §8.10). */
+    var wanted = new URLSearchParams(window.location.search).get("assignment");
+    var current;
+    try {
+      current = await api("/api/class/current-assignment?class_id=" + klass.id +
+        (wanted ? "&assignment_id=" + encodeURIComponent(wanted) : ""), token);
+    } catch (err) {
+      if (wanted && err && err.status === 404) {
+        var gone = new Error("assignment " + wanted + " is not this student's to open");
+        gone.mrbSay = SAY.noWork;
+        throw gone;
+      }
+      throw err;
+    }
     var progress = null;
 
     /* `assignment: null` with a reason is a NORMAL state — no current week, no
