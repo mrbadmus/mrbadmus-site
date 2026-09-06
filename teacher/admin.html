@@ -941,7 +941,18 @@ function messageItems(raw) {
          requires at least one. Both are shown when both exist: the template
          is what the teacher picked and the message is what they typed, and
          an audit wants the two, not a preference between them. */
-      body: [templateSentence(s.template_key), s.message || ''].filter(Boolean).join(' — '),
+      /* ⊕ MRB-330 — the template's sentence and the typed message, joined,
+         but NEVER the same sentence twice. Since F23 a template send persists
+         the template's own words into `message` so that a child's card is not
+         blank; here that made a template-only shoutout read "Smashed a tough
+         topic — Smashed a tough topic". Compared rather than assumed: a teacher
+         who picked a template AND typed something still gets both halves, which
+         is the case the join exists for. */
+      body: (function () {
+        var t = templateSentence(s.template_key);
+        var m = s.message || '';
+        return (m && m !== t) ? [t, m].filter(Boolean).join(' — ') : (t || m);
+      })(),
       prior: null,
     });
   });
