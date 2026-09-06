@@ -2050,6 +2050,52 @@
     }
 
     // ── prefetch only the grids this screen will actually draw ──────────
+    /* ⊕ MRB-326 JOB 4b, 6 Sep 2026 — THE CLASS SCREEN IS ON THIS LIST NOW,
+       AND ITS ABSENCE WAS A WHOLE CARD DRAWING NOTHING.
+
+       ⛔ WHAT A TEACHER SAW. The middle glance card, "Reteach from the last
+       set", is Design's per-question breakdown: the two lowest-scoring
+       questions of the newest marked paper, each with a stem and a bar —
+       "Q8 · Evaluate — apply to a new context   30%". On production it drew
+       the heading, the paper's title, "Marked · class mean 33% · 2/2
+       submitted", and then NOTHING. An empty half-card under a subtitle
+       announcing marks, on the one class in the school with marked work.
+
+       ⚠️ AND EVERY GATE WAS GREEN THROUGH IT, which is the part worth
+       remembering. `renderVals` computes `worstTwo` off `g1 = gridFor(k,
+       lastP.idx)`; `gridFor` returns null for a grid that has not been
+       fetched (its documented contract), `worstTwo` degrades to `[]`, and
+       an `sc-for` over `[]` renders nothing at all. No throw, no console
+       error, no missing key — a correct render of an empty list. The
+       class-detail FIXTURES ship a populated GRID map, so
+       `teacher_behaviour` drew both bars every time; only the LIVE page,
+       whose GRID map `load()` left empty, could not. `_shape_grid_absent`
+       exists precisely because production always had `GRID: {}` here — it
+       was written as the honest shape of a page that CRASHED on it, and
+       nobody asked what else that shape was silently costing.
+
+       ⚠️ WHICH PAPER, AND IT MATCHES `lastP` BY CONSTRUCTION. `renderVals`
+       resolves the reteach paper as the newest CLOSED paper SOMEBODY SAT —
+       `markedIdx` narrowed by `colSub[i] > 0` — because `markedIdx` is a
+       deadline test and a deadline can pass with nothing handed in. The
+       same two lines are repeated here rather than `newestMarkedIdx()`
+       being reused, for exactly that reason: fetching the newest marked
+       paper would fetch a paper the card is not about, and the card would
+       still be empty.
+
+       ONE round trip, on a screen that already makes several, and only for
+       a class that has a marked paper somebody sat. A class with none
+       fetches nothing, which is also the state in which the card says
+       "Nothing marked yet" and has no bars to draw. */
+    if (screen === "class" && classId) {
+      var cMx = c.MATRIX[classId];
+      var cPapers = c.PAPERS[classId] || [];
+      var cSat = (cMx && cMx.markedIdx ? cMx.markedIdx : []).filter(
+        function (i) { return (cMx.colSub[i] || 0) > 0; });
+      if (cSat.length && cPapers[cSat[0]]) {
+        await grid(classId, cSat[0]);
+      }
+    }
     if (screen === "marking" && classId) {
       var papers = c.PAPERS[classId] || [];
       var asked = paperIndex(params.paperIdx);
@@ -2348,6 +2394,11 @@
            loaded" on a page whose data had ALL arrived and whose mount had
            ALREADY succeeded.
 
+           ⊕ MRB-326 — `drawRemindControl` IS GONE and this paragraph is
+           kept anyway, because it is the reason `q` is declared HERE and
+           not one scope in. Moving it back would be free today and a crash
+           the next time anything is added after the mount.
+
            ⚠️ IT LOOKED LIKE A DATA BUG AND IT IS NOT ONE. The throw is after
            `__MRB_MOUNT__()`, and it is gated on `screenFromLocation() ===
            "class"` — nothing else. It could not touch `classes.html`, and a
@@ -2416,17 +2467,24 @@
           window.__MRB_DATA__ = data;
           window.__MRB_MOUNT__();
 
-          /* ⊕ MRB-306 WS-3 — the reminder control, drawn AFTER the mount.
-             Design's v2 delivery (the one this port is pinned to) draws no
-             reminder affordance of any kind, so there is no node to finish
-             and nothing here is a departure from what she drew. Her v3
-             delivery DOES draw "Send reminders" and "Remind all N"; when that
-             port lands this injection is deleted and the real control takes
-             over. It is written as an injection precisely so that swap is a
-             deletion rather than an unpick. */
-          if (screenFromLocation() === "class") {
-            drawRemindControl(data, q.get("class"), ctx);
-          }
+          /* ⊕ MRB-326 JOB 4c, 6 Sep 2026 — THE INJECTION IS GONE, and this
+             is the deletion its own comment promised. It used to read:
+
+               if (screenFromLocation() === "class") {
+                 drawRemindControl(data, q.get("class"), ctx);
+               }
+
+             and the comment above it said "when that port lands this
+             injection is deleted and the real control takes over. It is
+             written as an injection precisely so that swap is a deletion
+             rather than an unpick." That port is MRB-326: Design's node 236
+             is off `DEAD` and wired to `MRB_REMIND_ALL`, which reaches the
+             same `sendReminders` this injection used.
+
+             ⚠️ The banner also had to go on its own account. It sat ABOVE
+             the page header — Design drew nothing there — saying "Everyone
+             has handed this week's work in." over a card that already said
+             "2 of 2 in" in 34px. Mide, 6 Sep 2026. */
         } catch (err) {
           console.error("[teacher-live]", err);
           if (err && err.mrbSay) { return say(err.mrbSay); }
@@ -2464,144 +2522,43 @@
     SAY: SAY
   };
 
-  /* ⊕ MRB-306 WS-3 — "Remind all N", and the small log beside it.
+  /* ⊕ MRB-326 JOB 4c, 6 Sep 2026 — `drawRemindControl` IS DELETED.
+     ~120 lines that built a box above the page header, read
+     `remindersForClass` before making the button pressable, and wrote
+     through `MrBadmusTeacherData.sendReminders`. Its own header comment
+     said it existed only until Design's v3 node was ported, and it is.
 
-     WHO IS CHASED. Paper index 0 is this week's work — `buildPapers` sorts
-     due_at DESC with nulls first and this file's own comment says index 0 is
-     "the week it opens parked on" — and a student is chased when the matrix
-     says they have not done it. That predicate is `cellOf()`'s, which is the
-     UNION of completed_at, submitted_at and status==='complete': the same
-     test the numbers printed beside this button already use, so the chase
-     count cannot disagree with them, and one that can never nag a child whose
-     own page reads Complete.
+     WHERE EACH PIECE WENT, so nothing is lost by accident:
 
-     NO FREE TEXT. This sends an identifier, not a message; the wording is
-     composed on the student's own page from the class, the work and the
-     sender's name. There is nothing here for a teacher to type into.
+       · the write            → `MRB_REMIND_ALL` in build_teacher_port.py,
+                                 calling the SAME `sendReminders`
+       · who is chased        → `const kRemind` in `renderVals`, per paper,
+                                 over the SELECTED week rather than over
+                                 `papers[0]`
+       · "Reminded today"     → `glance.remindLabel`, after a press
+       · "sent fewer than
+          asked" honesty      → the toast, off `sendReminders`'s return
+       · the banner's words   → nowhere. "Everyone has handed this week's
+                                 work in." sat above a card already reading
+                                 "2 of 2 in". Mide, 6 Sep 2026.
 
-     THE RATE LIMIT IS THE DATABASE'S. This button does not decide whether a
-     reminder is allowed — a unique index does. The control reflects that
-     state rather than enforcing it, which is why it reads the log first. */
-  async function drawRemindControl(data, classId, ctx) {
-    if (!classId) { return; }
-    var TD = window.MrBadmusTeacherData;
-    if (!TD || !TD.sendReminders) { return; }
+     ⚠️ THE ONE THING THAT IS NOT CARRIED OVER, NAMED. The banner read the
+     reminder log at draw time so it could show "Reminded today · 2" and
+     disable itself, and REMOVED ITSELF when that read failed. The in-card
+     button makes no claim about the past, so it needs neither — and the
+     class screen is one Supabase round trip lighter for it. The rate limit
+     was never this file's anyway: it is a unique index on
+     (student_id, assignment_id, sent_on), and `sendReminders` upserts with
+     `ignoreDuplicates` and returns the rows ACTUALLY written. */
 
-    var mx = data && data.MATRIX ? data.MATRIX[classId] : null;
-    var papers = data && data.PAPERS ? data.PAPERS[classId] : null;
-    var paper = papers && papers.length ? papers[0] : null;
-    /* No work set means nobody can be behind on it. Say nothing rather than
-       drawing a control that would have nothing to do. */
-    if (!paper || !paper.id || !mx || !mx.rows) { return; }
-
-    var chase = mx.rows.filter(function (r) { return !r.submitted[paper.idx]; })
-                       .map(function (r) { return r.sid; })
-                       .filter(Boolean);
-
-    var host = document.querySelector("main") || document.body;
-    if (!host) { return; }
-
-    var box = document.createElement("div");
-    box.setAttribute("data-mrb-remind", "1");
-    box.style.cssText = [
-      "display:flex", "align-items:center", "gap:12px", "flex-wrap:wrap",
-      "margin:0 0 16px 0", "padding:12px 14px",
-      "border:1px solid var(--st-rule,rgba(0,0,0,.14))",
-      "border-radius:10px", "background:var(--st-paper,transparent)",
-      "font:400 14px/1.4 var(--st-ui,inherit)"
-    ].join(";");
-
-    var line = document.createElement("span");
-    line.style.flex = "1";
-    box.appendChild(line);
-
-    var btn = document.createElement("button");
-    btn.type = "button";
-    btn.style.cssText = [
-      "flex:none", "cursor:pointer", "min-height:40px", "padding:0 14px",
-      "border:1px solid var(--st-rule,rgba(0,0,0,.18))",
-      "border-radius:8px", "background:transparent",
-      "color:var(--st-accent-text,inherit)", "font:inherit"
-    ].join(";");
-    box.appendChild(btn);
-    host.insertBefore(box, host.firstChild);
-
-    /* The log decides the control's state, so it is read BEFORE the button is
-       made pressable. A control that offered to send and then hit the unique
-       index would be a lie told twice. */
-    var sentToday = [];
-    try {
-      var log = await TD.remindersForClass(classId, paper.id);
-      var today = todayInSchoolTz();
-      sentToday = (log.byDay && log.byDay[today]) || [];
-    } catch (e) {
-      console.warn("[teacher-live] reminder log unavailable", e);
-      /* Unknown is not zero. Without the log this cannot honestly say whether
-         anyone was reminded today, so it says nothing and offers nothing. */
-      box.remove();
-      return;
-    }
-
-    function paint() {
-      if (sentToday.length) {
-        line.textContent = "Reminded today \u00B7 " + sentToday.length;
-        btn.textContent = "Reminded today";
-        btn.disabled = true;
-        btn.style.opacity = ".55";
-        btn.style.cursor = "default";
-        return;
-      }
-      if (!chase.length) {
-        line.textContent = "Everyone has handed this week's work in.";
-        btn.remove();
-        return;
-      }
-      line.textContent = chase.length === 1
-        ? "1 student has not handed this week's work in."
-        : chase.length + " students have not handed this week's work in.";
-      btn.textContent = "Remind all " + chase.length;
-      btn.disabled = false;
-    }
-    paint();
-
-    btn.addEventListener("click", async function () {
-      btn.disabled = true;
-      btn.textContent = "Sending\u2026";
-      try {
-        var wrote = await TD.sendReminders({
-          classId: classId,
-          assignmentId: paper.id,
-          studentIds: chase,
-          teacherId: ctx && ctx.user ? ctx.user.id : null
-        });
-        /* Report what was WRITTEN, not what was attempted: an upsert that
-           ignored a duplicate sent fewer than were asked for, and saying
-           otherwise would overstate what the students actually got. */
-        sentToday = wrote;
-        paint();
-      } catch (e) {
-        console.error("[teacher-live] sendReminders failed", e);
-        line.textContent = "Could not send just now. Try again in a moment.";
-        btn.textContent = "Remind all " + chase.length;
-        btn.disabled = false;
-      }
-    });
-  }
-
-  /* The school's calendar day, matching the `sent_on` default the database
-     stamps. Not the device's date — the two disagree for anyone whose machine
-     is on another timezone, and the button's state must follow the rate limit
-     that is actually enforced. */
-  function todayInSchoolTz() {
-    try {
-      return new Intl.DateTimeFormat("en-CA", {
-        timeZone: "Europe/London",
-        year: "numeric", month: "2-digit", day: "2-digit"
-      }).format(new Date());
-    } catch (e) {
-      return new Date().toISOString().slice(0, 10);
-    }
-  }
+  /* ⊕ MRB-326 JOB 4c — `todayInSchoolTz()` IS DELETED WITH ITS ONLY CALLER.
+     It formatted today in Europe/London so the banner's "Reminded today"
+     state followed the `sent_on` the database stamps rather than the
+     device clock. Nothing computes that state in this file any more: the
+     in-card button makes no claim about the past, and the rate limit it
+     was shadowing is enforced by a unique index, not by a date compared
+     here. Restoring it means restoring the pre-read, which is the round
+     trip MRB-326 removed. */
 
   /* ⊕ 27 Aug 2026 — WAKE THE BACKEND, at the top of the file, before anything
      is awaited. Nothing on a teacher screen calls Render today, so this buys

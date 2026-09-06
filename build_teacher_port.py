@@ -1352,12 +1352,29 @@ def apply_rulings(spec, roots, logic):
                 "path. Re-anchor it, or if Design has removed the control "
                 "itself, remove the row from teacher_rulings.DEAD and say so "
                 "in the commit." % (node, why))
+    # ⊕ MRB-326 — the same refusal, for the nodes removed because something
+    # else on the same screen already says what they say. Separate from DEAD
+    # for the reason teacher_rulings.REDUNDANT gives: these controls WORK,
+    # and a reader who believed they were broken would put the wrong ones
+    # back.
+    for node, why in R.REDUNDANT:
+        if node not in full:
+            raise SystemExit(
+                "build_teacher_port.py: the MRB-326 redundancy ruling prunes "
+                "template node %s — %s — and it is not in Design's "
+                "delivery.\n"
+                "  Design has redrawn that part of the screen. Re-anchor the "
+                "row in teacher_rulings.REDUNDANT against the node carrying "
+                "the SAME text, or, if she has removed it herself, delete "
+                "the row and say so in the commit. Guessing would leave a "
+                "line on the page that Mide ruled off it." % (node, why))
 
     # ── 1. prune: the six other screens, the unkept overlays, the dead ───
     keep_screen = R.SCREENS[spec["screen"]]
     prune = {n for f, n in R.SCREENS.items() if n != keep_screen}
     prune |= {n for f, n in R.OVERLAYS.items() if f not in spec["overlays"]}
     prune |= {n for n, _why in R.DEAD}
+    prune |= {n for n, _why in R.REDUNDANT}
 
     # A dead control inside a screen this page does not keep is already gone
     # with its screen. Only assert the ones that CAN be here.
@@ -2399,6 +2416,24 @@ EMPTY_SHAPES = {
       "every row, because the grids it would need are not here.",
       lambda p: _shape_grid_absent(p)),
 
+     # ── ⊕ THE NINETEENTH, 6 Sep 2026 (MRB-326 JOB 4b) ─────────────────
+     #
+     # The shape this screen has in production FROM TODAY: exactly one grid,
+     # the reteach card's. See `_shape_grid_reteach_only` for what it caught
+     # and why `gridmissing` is still needed beside it.
+     ("gridreteach",
+      "exactly ONE grid — the newest closed paper somebody sat, which is "
+      "what `load()` now prefetches for the class screen (MRB-326 JOB 4b). "
+      "Before that prefetch existed this page had `GRID: {}` in production "
+      "and Design's whole reteach breakdown drew NOTHING, silently: a "
+      "missing grid is a documented `null`, `worstTwo` degrades to `[]`, "
+      "and an `sc-for` over an empty list renders correctly and renders "
+      "nothing. The three populated fixtures ship twelve grids and could "
+      "never see it. This one holds the one grid the seam actually fetches, "
+      "so a prefetch scoped to the wrong paper shows up as an empty card "
+      "here.",
+      lambda p: _shape_grid_reteach_only(p)),
+
      # ── ⊕ THE SEVENTEENTH, 3 Sep 2026 (MRB-306 Phase 2b/3) ────────────
      #
      # ⛔ THE ONE SHAPE THE RESTORED SHOUTOUT SURFACE HAS TO BE PROVED ON,
@@ -3252,6 +3287,61 @@ def _shape_grid_absent(p):
     return p
 
 
+# ⚑ EXACTLY ONE GRID, AND IT IS THE RETEACH CARD'S ───────────────────────
+#
+# ⊕ MRB-326 JOB 4b, 6 Sep 2026 — THE SHAPE PRODUCTION HAS FROM TODAY.
+#
+# ⛔ WHAT IT REPLACES, AND WHY THE OLD ONE HID A DEFECT RATHER THAN CAUGHT
+# IT. `_shape_grid_absent` above is captioned "which is what this screen
+# ALWAYS has in production", and until today that was true: `load()`
+# prefetched grids for the marking screen and the questions chart and for
+# nothing else. It was written to reproduce a CRASH on that shape, and it
+# did. What nobody asked was what ELSE an empty grid map costs a page that
+# is not crashing — and the answer was Design's whole reteach breakdown.
+# `worstTwo` is computed off `gridFor(k, lastP.idx)`, a missing grid is a
+# documented `null`, and an `sc-for` over `[]` renders NOTHING AT ALL: no
+# throw, no console line, no missing key. The middle card drew its heading,
+# its paper title and "Marked · class mean 33% · 2/2 submitted", and then
+# stopped. Every gate stayed green because the three POPULATED class-detail
+# fixtures ship a full grid map — a map the live page could not have.
+#
+# `load()` now prefetches ONE grid on the class screen: the newest closed
+# paper somebody actually sat, which is the paper `renderVals` resolves as
+# `lastP`. This fixture is that, exactly — one key, the right one, and
+# nothing else — so it is the shape a real teacher's class screen has, and
+# the bars it draws are drawn from the one thing the seam fetched.
+#
+# ⚠️ IT IS NOT A DUPLICATE OF `class-detail-fixture`. That one holds twelve
+# grids and proves the card CAN draw. This one proves the card draws from
+# the SINGLE grid the prefetch is scoped to — so a prefetch narrowed to the
+# wrong paper, or widened back to everything, is visible here and nowhere
+# else. `gridmissing` stays too: a class with no marked paper anybody sat
+# still fetches nothing, and the crash it guards has not stopped being
+# possible.
+def _shape_grid_reteach_only(p):
+    """One grid, the reteach card's — what `load()` now fetches."""
+    p = json.loads(json.dumps(p))
+    cid = p["classId"]
+    mx = p["MATRIX"][cid]
+    sat = [i for i in mx.get("markedIdx", []) if (mx["colSub"][i] or 0) > 0]
+    if not sat:
+        raise SystemExit(
+            "build_teacher_port.py: _shape_grid_reteach_only found no closed "
+            "paper with a submission on %s, so there is no reteach grid to "
+            "keep and the fixture would be `gridmissing` under another "
+            "name.\n  Design's sample has changed shape; re-derive the "
+            "fixture rather than shipping a duplicate." % cid)
+    key = "%s:%d" % (cid, sat[0])
+    if key not in p["GRID"]:
+        raise SystemExit(
+            "build_teacher_port.py: _shape_grid_reteach_only wants grid %r "
+            "and the base payload does not carry it. The fixture cannot "
+            "prove what the prefetch fetches if it is built from a grid the "
+            "prefetch would not have asked for." % key)
+    p["GRID"] = {key: p["GRID"][key]}
+    return p
+
+
 # ⚑ THE MARKING SCREEN'S OWN KEY-ABSENT STATE ────────────────────────────
 #
 # ⛔ AND IT IS REACHABLE, WHICH TOOK FINDING. On marking, `load()` prefetches
@@ -3747,6 +3837,78 @@ function MRB_REMIND_STUDENT(classId, assignmentId, studentId){
       var n=(wrote&&wrote.length)||0;
       return {ok:n, already:n===0, error:null};},
       function(e){return {ok:0,already:false,error:e};});}
+
+/* == "REMIND ALL N", WIRED - MRB-326 JOB 4c ==============================
+
+   ⊕ 6 Sep 2026. Design's node 236, the dark button under the Not-in-yet
+   chips, used to be pruned by `DEAD` because her handler toasted a send in
+   front of no write. `shared/teacher-live.js` carried the working control
+   instead, as a BANNER injected above the page header - and that banner said
+   "Everyone has handed this week's work in." directly above a card whose own
+   34px number already said "2 of 2 in". Mide ruled the banner off the page;
+   this is where its behaviour went.
+
+   ⚠️ IT TAKES GROUPS, NOT ONE ASSIGNMENT AND A LIST OF CHILDREN, and that
+   is the whole reason it is not `MRB_REMIND_STUDENT` with a longer array.
+   A reminder names ONE assignment. The chase list on the class screen spans
+   the SELECTED TEACHING WEEK, which can hold more than one - `openTitle`
+   says "Particle model - recall and apply · +1 more" when it does. Sending
+   everyone about the first paper would nudge a child about the one they
+   handed in and say nothing about the one they owe. `const kRemind` in
+   `renderVals` builds one group per paper, each holding only the children
+   missing THAT paper; this sends them as separate upserts and folds the
+   answers back together.
+
+   ⚠️ `ok` COUNTS CHILDREN, NOT ROWS. A child missing both of the week's
+   papers is two written rows and ONE student reminded, and the toast says
+   "Reminded 3 of 4" about children. Counting rows would report more
+   reminders than there are children in the class, which is arithmetic a
+   teacher would rightly not believe.
+
+   THE RATE LIMIT IS THE DATABASE'S, exactly as it is for the per-student
+   control: a unique index on (student_id, assignment_id, sent_on), an upsert
+   with `ignoreDuplicates`, and a return of the rows ACTUALLY written. A
+   second press writes nothing and errors nothing, and `ok` comes back 0,
+   which the caller reports as "already reminded today". Nothing here decides
+   who may be reminded; RLS's `teacher_send` policy does.
+
+   ⚠️ ONE FAILING GROUP DOES NOT DISCARD THE OTHERS. Each group settles on
+   its own; the first error is carried out so the caller can name it, and any
+   rows that DID get written are still counted. A teacher who reminded three
+   of four children must not be told nobody was told.
+
+   WARNING: IT NEVER REJECTS, like the helpers around it. Resolves
+   {ok, asked, error} and the caller says a sentence for each. */
+function MRB_REMIND_ALL(classId, groups){
+  var no=function(e){return Promise.resolve({ok:0,asked:0,error:e});};
+  if(!classId){return no(new Error('teacher page: no class'));}
+  var list=(groups||[]).filter(function(g){
+    return g&&g.assignmentId&&g.studentIds&&g.studentIds.length;});
+  if(!list.length){return no(new Error('teacher page: no assignment'));}
+  var TD=window.MrBadmusTeacherData;
+  if(!TD||!TD.sendReminders){
+    return no(new Error('teacher page: no data layer'));}
+  var asked={};
+  list.forEach(function(g){g.studentIds.forEach(function(id){
+    if(id){asked[id]=1;}});});
+  var me=MRB_ME()||null;
+  return Promise.all(list.map(function(g){
+    return TD.sendReminders({classId:classId, assignmentId:g.assignmentId,
+        studentIds:g.studentIds, teacherId:me})
+      .then(function(wrote){return {wrote:wrote||[], error:null};},
+            function(e){return {wrote:[], error:e};});
+  })).then(function(res){
+    var sent={}, err=null;
+    res.forEach(function(r){
+      if(r.error&&!err){err=r.error;}
+      r.wrote.forEach(function(row){
+        var id=row&&row.student_id; if(id){sent[id]=1;}});});
+    var ok=Object.keys(sent).length;
+    /* An error is only REPORTED when nothing at all was written. With some
+       rows in, the toast that names how many were reminded is the more
+       useful sentence and the failure is already in the console. */
+    return {ok:ok, asked:Object.keys(asked).length,
+            error:ok?null:err};});}
 
 /* Why a reminder failed, in a sentence a teacher can act on. The companion
    to MRB_SHOUTOUT_WHY, and separate for the same reason: a different verb
@@ -4835,10 +4997,55 @@ def build():
         # `k.yearName` do NOT appear in these two meta lines, protecting
         # against a silent regression BACK to the redundant style the same
         # way the original guarded against never stating it at all.
+        # ⊕ FLIPPED AGAIN 6 Sep 2026 (MRB-326 JOB 5a) — THE CARD'S EYEBROW
+        # IS NOT TRIMMED, IT IS ABSENT.
+        #
+        # The row above used to guard the class card's meta line the way the
+        # header's is guarded below: find `meta:` inside `const cards`, and
+        # refuse if `c.yearName` is in it. Under MRB-326 there IS no `meta:`
+        # inside `const cards` — the property is deleted by its LOGIC entry
+        # and Design's node 182 is pruned by `REDUNDANT` — so a guard looking
+        # for a substring inside a line that no longer exists would pass by
+        # finding nothing, which is the failure mode this whole file is
+        # written against.
+        #
+        # So the card gets its own assertion, and it is the ABSENCE: the
+        # string `c.meta` may not appear anywhere in the emitted page —
+        # neither as a property in the logic nor as a binding in the template
+        # — on ANY of the six pages, because the `cards` builder ships on all
+        # of them. Paired with the presence check on the ruling's own
+        # sentinel, so a build where the LOGIC entry silently stopped
+        # matching cannot read as a build where the line was removed.
+        if "c.meta" in body:
+            raise SystemExit(
+                "build_teacher_port.py: %s — `c.meta` is still in the "
+                "emitted page.\n"
+                "  MRB-326 JOB 5a removed the class card's eyebrow line "
+                "entirely: the student count is already on the chip "
+                "directly below it and the subject is already in the class "
+                "code directly above it (MRB-263 naming). A card is the "
+                "class name, the homework chip or block, and the activity "
+                "line \u2014 nothing else.\n"
+                "  Either Design has redrawn the card and "
+                "teacher_rulings.REDUNDANT's node 182 now prunes the wrong "
+                "node, or somebody has restored the property. Re-anchor "
+                "against the MRB-326 ruling; do not restore the line."
+                % spec["out"])
+        if "MRB-326 JOB 5a" not in page_logic:
+            raise SystemExit(
+                "build_teacher_port.py: %s — the MRB-326 JOB 5a ruling that "
+                "deletes the class card's `meta` property is NOT in the "
+                "emitted logic.\n"
+                "  Without it, `c.meta` being absent above proves nothing: "
+                "an anchor that stopped matching would look exactly the "
+                "same. Re-anchor teacher_rulings.LOGIC's "
+                "`dict(builder=\"cards\", key=\"meta\")` entry."
+                % spec["out"])
+
         for what, own, decl, line in (
-                ("the class card's meta line", "c.yearName",
-                 "const cards = ", "meta:"),
                 ("the class header's meta line", "k.yearName",
+                 "      klass: {", "meta:"),
+                ("the class header's meta line", "k.subject",
                  "      klass: {", "meta:")):
             seg = ""
             base = page_logic.find(decl)
@@ -4855,12 +5062,15 @@ def build():
             if own in seg:
                 raise SystemExit(
                     "build_teacher_port.py: %s — %s still reads %r.\n"
-                    "  MRB-325 rulings 3 and 6 removed the academic year "
-                    "from this line entirely — the class name already "
-                    "carries year and subject, and the academic year is a "
-                    "page-level fact stated once, not repeated on every "
-                    "card. Re-anchor teacher_rulings.py to the MRB-325 "
-                    "ruling rather than restoring %s."
+                    "  MRB-325 ruling 6 removed the academic year from this "
+                    "line and MRB-326 JOB 4e removed the year-and-subject "
+                    "part after it: the class name already carries both "
+                    "(MRB-263 naming, `8r/Sc1`), and the academic year is a "
+                    "page-level fact stated once rather than on every "
+                    "screen. What is left is the student count and the "
+                    "lesson-today state, neither of which is said anywhere "
+                    "else on the page. Re-anchor teacher_rulings.py to "
+                    "those rulings rather than restoring %s."
                     % (spec["out"], what, own, own))
 
         # ⚑ ASSERTED, NOT ASSUMED. No bound literal may survive in the

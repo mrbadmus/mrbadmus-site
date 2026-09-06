@@ -686,28 +686,104 @@ DEAD = (
     (194, "\"Set work\" on a class card that has students but no work set. "
           "See the note above for why its twin at node 198 survives."),
 
-    # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — AND ONE THAT LIES RATHER THAN DOES
-    # NOTHING, WHICH IS WORSE. Node 236 is v3's "Remind all N" in the class
-    # glance, and Design's handler is
-    # `remind: () => this.ping('Reminder sent to N students in 8r/Sc1')` — a
-    # toast asserting a send, in front of no write at all. A teacher presses
-    # it, reads that N children were reminded, and nothing was.
+    # ⊕ SUPERSEDED 6 Sep 2026 (MRB-326 JOB 4c) — NODE 236 IS OFF THIS LIST.
     #
-    # ⚠️ THIS IS NOT A LOST AFFORDANCE. `shared/teacher-live.js` INJECTS a
-    # real reminder control onto this same page after mount
-    # (`drawRemindControl`, MRB-306 WS-3), backed by `remindersForClass` and
-    # a unique index that stops a second reminder the same day. Its own
-    # comment already anticipates this exact moment: "Her v3 delivery DOES
-    # draw 'Send reminders' and 'Remind all N'; when that port lands this
-    # injection is deleted and the real control takes over." Swapping the two
-    # is that port's job — a one-line deletion in the seam plus a NAV entry
-    # here. Until then the page carries ONE remind control and it is the one
-    # that works.
-    (236, "\"Remind all N\" in the class glance. It toasts \"Reminder sent "
-          "to N students\" and sends nothing. The working reminder control "
-          "on this page is the one teacher-live.js injects; this is its "
-          "duplicate, and it lies."),
+    # The row is kept here rather than deleted because it is the one that
+    # names the swap, and re-adding it would delete a working control. It
+    # read:
+    #
+    #     (236, "\"Remind all N\" in the class glance. It toasts \"Reminder
+    #            sent to N students\" and sends nothing. The working reminder
+    #            control on this page is the one teacher-live.js injects;
+    #            this is its duplicate, and it lies."),
+    #
+    # and its note ended: "Swapping the two is that port's job — a one-line
+    # deletion in the seam plus a NAV entry here. Until then the page carries
+    # ONE remind control and it is the one that works."
+    #
+    # ⚑ THAT PORT IS THIS ONE. `drawRemindControl` — the banner
+    # teacher-live.js injected above the header — is DELETED, and node 236 is
+    # wired to the same write path it used (`MrBadmusTeacherData.sendReminders`,
+    # through the new `MRB_REMIND_ALL` helper beside `MRB_REMIND_STUDENT`).
+    # See the `glance.remind` / `glance.remindLabel` entries in `LOGIC`.
+    #
+    # ⚠️ WHAT MADE IT SAFE TO WIRE NOW, AND WAS NOT TRUE IN SEPTEMBER 2. The
+    # `const kChase` note further down this file warned in terms: "IT IS WHY
+    # THE REMINDER CONTROL MUST NOT BE WIRED TO `kChase` AS DESIGN WROTE IT
+    # … Wiring Design's node to `kChase` before this correction would have
+    # sent real reminders to the wrong children." That correction has landed
+    # — `kChase` is the SELECTED week's chase list — and the ruling below
+    # goes one step further than it needs to: the reminder is not sent about
+    # `openP` for everybody, it is sent PER PAPER, to the children who owe
+    # THAT paper, so a week carrying two assignments cannot nudge a child
+    # about the one they already handed in.
+    #
+    # ⚠️ AND THE BANNER GOES REGARDLESS — Mide, 6 Sep 2026. It sat above the
+    # page header reading "Everyone has handed this week's work in." on a
+    # class where the card directly below already said "2 of 2 in", which is
+    # the redundancy this ticket exists to remove.
 )
+
+
+# ══ ⊕ RULED, MRB-326 · WHAT THE PAGE ALREADY SAYS, IT DOES NOT SAY TWICE ══
+#
+# ⚑ MIDE, 6 Sep 2026, verbatim: "PLEASE STOP REDUNDANCY ON THIS PROJECT!!!!!!
+# SO MANY PAGES ARE TOO REDUNDANT!!!!!"
+#
+# The rule he gave with it: if a number, a label or a sentence appears
+# anywhere else on the same page, or is already implied by the class name
+# (MRB-263 — `8r/Sc1` says Year 8 and Science before anything underneath it
+# does), it does not appear again. When in doubt, cut.
+#
+# ⚠️ THIS IS A SEPARATE TABLE FROM `DEAD` ON PURPOSE, AND THE DISTINCTION IS
+# NOT COSMETIC. `DEAD` means "this control cannot work" — a button in front
+# of a write path that does not exist. Everything here WORKS; it is removed
+# because something else on the same screen already said it. Folding the two
+# together would make a future reader believe these nodes were broken, and
+# the honest reason for removing a node is the only thing that lets somebody
+# later decide whether to put it back.
+#
+# It feeds the same prune set as `DEAD` and carries the same refusal: a node
+# named here that is not in Design's delivery stops the build.
+#
+# ⚠️ A PRUNED NODE'S VALUE GOES TOO, WHEREVER IT CAN. A `renderVals` key
+# nobody renders is a computation a future reader will wire back to a node,
+# so `allIn` is on `DROP_KEYS` and the card's `meta` property is deleted by
+# its `LOGIC` entry. `build_teacher_port.py` has a byte guard for the card
+# one, flipped from "must state the year" to "must not state the eyebrow at
+# all" — the same shape MRB-325 ruling 8's guard was flipped into.
+REDUNDANT = (
+    (182, "the class card's eyebrow — \"14 STUDENTS \u00B7 SCIENCE\". "
+          "MRB-326 JOB 5a. The card's own chip directly below it reads "
+          "\"14 students \u00B7 no work set\", so the count is printed "
+          "twice, eleven pixels apart; and the subject is already in the "
+          "class code above it (MRB-263). A card is the class name, the "
+          "homework chip or block, and the activity line. Nothing else. "
+          "⊕ This SUPERSEDES MRB-325 ruling 3, which trimmed the same line "
+          "to Design's own pair rather than removing it — the trim was "
+          "right about the four parts it dropped and did not ask whether "
+          "the two it kept were said elsewhere. They are."),
+
+    (237, "\"Everyone's in \u2014 nothing to chase.\" in the homework "
+          "card. MRB-326 JOB 5b. The card's own 34px number, three lines "
+          "above it, already reads \"4 of 4 in\" \u2014 the sentence is "
+          "that number in words. Mide's ruling turns this family of "
+          "sentences into the numeric form (\"2/2 in\") EXCEPT where the "
+          "count is already displayed immediately beside it, and here it "
+          "is, in the largest type on the card; so it is cut rather than "
+          "rephrased. `glance.allIn` goes with it, on `DROP_KEYS`."),
+)
+
+# ⚠️ THE THIRD MEMBER OF THAT FAMILY IS NOT HERE, AND DELIBERATELY. The class
+# card's `weekSub` (node 190) says "Everyone in \u2014 nothing to chase" on
+# the same shape, and the card's `weekLabel` two lines above it already reads
+# "2 of 2 in" — so the sentence goes for exactly the reason node 237's does.
+# But node 190 also carries the OTHER arm, "Chase Jasmine O, Kaleb A +3
+# more", which is not a repeat of anything and is the only place a teacher
+# reads the names off the card. Pruning the node would take both. So the NODE
+# stays and only the all-in ARM of the VALUE is cut, in `LOGIC` — which is
+# the general rule this table follows: prune a node only when everything it
+# can ever render is a repeat.
 
 
 # ── a handler Design never attached ──────────────────────────────────────
@@ -1557,18 +1633,21 @@ BIND_ATTR = {
     # touched: `white-space:nowrap` is dropped, and the line-height goes
     # 1.2 → 1.5 so a wrapped uppercase mono caption has room to breathe.
     # Design's margin, font, tracking, transform and colour are hers.
-    182: ("style",
-          "margin-top:8px;font:400 13px/1.2 var(--st-mono);"
-          "letter-spacing:.14em;text-transform:uppercase;"
-          "color:var(--st-caption);white-space:nowrap",
-          "margin-top:8px;font:400 13px/1.5 var(--st-mono);"
-          "letter-spacing:.14em;text-transform:uppercase;"
-          "color:var(--st-caption)",
-          "the class card's meta caption. nowrap on a grid child does not "
-          "truncate — it widens the column and clips at the window edge, "
-          "which it already did on the longest of Design's own twelve "
-          "cards. The line is identifying end to end, so it wraps rather "
-          "than being cut."),
+    # ⊕ SUPERSEDED 6 Sep 2026 (MRB-326 JOB 5a) — THE NODE IS PRUNED, so the
+    # row is deleted rather than re-anchored. It read:
+    #
+    #     182: ("style",
+    #           "margin-top:8px;font:400 13px/1.2 var(--st-mono);…nowrap",
+    #           "margin-top:8px;font:400 13px/1.5 var(--st-mono);…",
+    #           "the class card's meta caption. …")
+    #
+    # ⚠️ THE CLIP IT FIXED CANNOT COME BACK, and that is why deleting is
+    # safe rather than merely tidy: the clip was a nowrap caption widening
+    # its own grid column past the window, and there is no caption any more.
+    # `REDUNDANT` prunes the node, `LOGIC` deletes the value, and
+    # `build_teacher_port.py` refuses any build in which `c.meta` reappears.
+    # Anyone restoring the eyebrow has to restore this row with it — that
+    # refusal is what will tell them.
 }
 
 
@@ -1921,6 +2000,10 @@ _WK_CHIP = ("flex:none;display:flex;flex-direction:column;align-items:center;"
 _WK_RANGE = "font:500 18px/1.15 var(--st-mono);color:"
 _WK_SUB = ("font:500 11.5px/1 var(--st-mono);letter-spacing:.14em;"
            "text-transform:uppercase;white-space:nowrap;color:")
+# ⊕ MRB-326 JOB 4d — NOTHING USES THIS ANY MORE. The sentence under the
+# week bar is deleted; the constant is kept because the comment that
+# records the deletion quotes the node it styled, and a reader restoring
+# that node needs the measurement to restore it to.
 _WK_NOTE = "margin-top:14px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)"
 
 
@@ -2599,9 +2682,22 @@ INSERT_AT = {
                           ]}]}]},
                  _wk_chevron("weekFwd", "Next week", "M5 3l4 4-4 4",
                              "weekFwdColor", "weekFwdCursor", "week-fwd")
-             ]},
-            {"t": "div", "a": {"style": _WK_NOTE},
-             "c": [{"t": "#", "v": {"parts": [{"e": "weekNote"}]}}]}
+             ]}
+            # ⊕ MRB-326 JOB 4d, 6 Sep 2026 — THE SENTENCE UNDER THE BAR IS
+            # GONE. It was
+            #
+            #     {"t": "div", "a": {"style": _WK_NOTE},
+            #      "c": [{"t": "#", "v": {"parts": [{"e": "weekNote"}]}}]}
+            #
+            # and it rendered "This week · 31/08/26 · 2 assignments set ·
+            # Week mean 42%". Every one of those four parts is printed again
+            # within 200 pixels of it: the selected chip is already marked
+            # AND already carries the date and the term-relative label; the
+            # assignment count is `klass.paperLine` over the table below;
+            # and the week mean is the same figure `klass.statLine` states
+            # as the class mean whenever the selected week is the whole
+            # marked history. Mide's ruling: the chips stay, the sentence
+            # goes. `weekNote` itself is deleted with it — see LOGIC.
         ]},
         "the class screen's week bar — Mide's ruling of 1 Sep 2026, against "
         "Design's v3, which deleted it. Twelve teaching weeks of the "
@@ -3967,6 +4063,14 @@ DROP_FIELDS = tuple(r for r in DROP_FIELDS if r[0] != "BANDS")
 # offered a template CSV and still does not — that is a real gap, it is in the
 # report, and it belongs to whoever next opens `teacher/import.html`.
 DROP_KEYS = (
+    # ⊕ MRB-326 JOB 5b, 6 Sep 2026 — the homework card's all-in sentence.
+    # `allIn` gated Design's node 237, "Everyone's in — nothing to chase.",
+    # and `REDUNDANT` prunes that node: the card's own 34px number three
+    # lines above it already reads "4 of 4 in". The key goes with the node so
+    # nothing computes a flag no branch reads — an unread flag is exactly
+    # what a later reader wires a new node back onto.
+    "allIn",
+
     "setWorkOpen", "swEyebrow", "topics", "swCounts", "swDays",
     "swRelease", "swClassList", "swSummary", "swBackLabel", "swNextLabel",
     "swBack", "swNext", "openSetWork",
@@ -4481,16 +4585,63 @@ LOGIC = (
     # (the "My classes" heading's own year line) and appears there once, not
     # once per card; repeating it sixty-nine times was the defect this
     # ruling removes, not a fact this card needed twice.
+    # ⊕ SUPERSEDED AGAIN 6 Sep 2026 (MRB-326 JOB 5a) — THE LINE IS GONE, NOT
+    # TRIMMED. MRB-325 ruling 3's replacement is kept in this comment because
+    # it is the trim that made the removal obvious:
+    #
+    #     meta: [c.n ? c.n + ' students' : 'No students yet',
+    #       c.subject].filter(Boolean).join('\u00A0\u00B7 '),
+    #
+    # It dropped four parts and kept Design's own two, and it never asked
+    # whether those two were said elsewhere ON THE SAME CARD. They are: the
+    # chip directly beneath reads "14 students · no work set", and the class
+    # code directly above is `7h/Sc5`, which is Year 7 and Science by
+    # MRB-263's naming convention. So the eyebrow was the student count
+    # printed twice eleven pixels apart, over a subject printed twice.
+    #
+    # Design's node 182 is pruned by `REDUNDANT`; this deletes the value
+    # behind it, so nothing computes a string no node renders. There is no
+    # `meta` property on a card any more, and `build_teacher_port.py`'s byte
+    # guard asserts exactly that.
     (dict(builder="cards", key="meta"),
-     "      meta: [c.n ? c.n + ' students' : 'No students yet',\n"
-     "        c.subject].filter(Boolean).join('\\u00A0\\u00B7 '),",
-     "MRB-325 ruling 3 — the class card's meta line, trimmed back to "
-     "Design's own pair (student count, subject). The class code above it "
-     "already carries year and subject (MRB-263 naming), and the page "
-     "already states the academic year once, at page level — repeating "
-     "\"Year 7 · KS3 · 14 students · Science · 2026-27\" on every one of "
-     "sixty-nine cards was the defect, not a fact any card needed twice. "
-     "Supersedes the 1 Sep and 2 Sep 2026 additions recorded above."),
+     "      /* \u2295 MRB-326 JOB 5a \u2014 the card's eyebrow line is gone,\n"
+     "         and so is the value behind it. Design's node 182 is pruned by\n"
+     "         REDUNDANT: the student count is on the chip below and the\n"
+     "         subject is in the class code above. */",
+     "MRB-326 JOB 5a — the class card's eyebrow line, DELETED. A card is "
+     "the class name, the homework chip or block, and the activity line; "
+     "nothing else. Supersedes MRB-325 ruling 3, which trimmed the same "
+     "line rather than removing it."),
+
+    # ── ⊕ RULED, MRB-326 JOB 5b · "EVERYONE IN — NOTHING TO CHASE" ──────
+    #
+    # Mide's ruling turns this family of sentences into the numeric form
+    # ("2/2 in"), counted from data — EXCEPT where the same count is already
+    # displayed immediately beside it, and on this card it is: `weekLabel`
+    # sits on the row directly above this line, in mono, and reads
+    # "2 of 2 in". Printing "2/2 in" underneath "2 of 2 in" would be the
+    # redundancy the ruling removes, wearing the fix's clothes. So on this
+    # surface the sentence is CUT rather than rephrased.
+    #
+    # ⚠️ THE NODE STAYS AND ONLY THIS ARM GOES. Node 190 also renders
+    # "Chase Jasmine O, Kaleb A +3 more", which is the only place on the card
+    # a teacher reads the names, and is not a repeat of anything. See the
+    # note under `REDUNDANT` for why that is the general rule.
+    #
+    # ⚠️ AND THE EMPTY STRING IS THE RIGHT SHAPE, not a deleted property.
+    # `weekSubFg` still colours it, `c.live` still gates the block, and the
+    # div's own `margin-top:8px` collapses to nothing with no text in it —
+    # measured, not assumed. A card with everyone in now reads: class code,
+    # "HOMEWORK THIS WEEK  2 of 2 in", the bar, and the activity line.
+    (dict(builder="cards", key="weekSub"),
+     """      weekSub: chase.length
+        ? 'Chase ' + chase.slice(0, 2).map(r => this.shortName(r.name)).join(', ')
+          + (chase.length > 2 ? ' +' + (chase.length - 2) + ' more' : '')
+        : '',""",
+     "MRB-326 JOB 5b — the class card's all-in sentence, cut. \"Everyone in "
+     "\u2014 nothing to chase\" restated `weekLabel`, which is printed on "
+     "the row directly above it and already reads \"2 of 2 in\". The chase "
+     "arm is untouched: it names children and repeats nothing."),
 
     # ══ "LAST ACTIVITY NO ACTIVITY YET" ═════════════════════════════════
     #
@@ -4978,11 +5129,23 @@ LOGIC = (
     # `load()` for the "class" screen only, is no longer a claim the
     # platform cannot back: "Next lesson today · P5" or "No lesson today",
     # both read off this teacher's own timetable for today.
+    # ⊕ SUPERSEDED 6 Sep 2026 (MRB-326 JOB 4e) — THE THIRD PART GOES, for
+    # the reason MRB-325 ruling 3 already gave one screen away and this
+    # screen did not apply to itself. The line above this comment read
+    #
+    #     k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject,
+    #
+    # as its third element, and it is kept here rather than deleted because
+    # a reader who restored it would be restoring "YEAR 8 SCIENCE" directly
+    # underneath a 52px `8r/Sc1` — which is the class-naming convention
+    # (MRB-263) spelled out in words immediately below itself. Mide's ruling
+    # of 6 Sep is explicit that the class code carries the year and the
+    # subject, so the eyebrow states only what it does not: the roster count
+    # and today's lesson.
     (dict(method="renderVals", key="klass.meta"),
      "        meta: [\n"
      "          k.actingAsAdmin ? 'Acting as admin' : '',\n"
      "          k.n + (k.n === 1 ? ' student' : ' students'),\n"
-     "          k.year ? 'Year ' + k.year + ' ' + k.subject : k.subject,\n"
      "          k.lessonToday\n"
      "        ].filter(Boolean).join(' · '),",
      "MRB-325 rulings 5 and 6 — the class header's meta line, Design's shape "
@@ -6943,7 +7106,28 @@ componentDidUpdate() {
     # have sent real reminders to the wrong children.
     (dict(method="renderVals", key="const kChase"),
      """    const kChase = (!k || k.state !== 'live' || !wIdxs.length) ? []
-      : kRoster.filter(r => wTally[r.id].in < wTally[r.id].asked);""",
+      : kRoster.filter(r => wTally[r.id].in < wTally[r.id].asked);
+
+    /* ── ⊕ MRB-326 JOB 4c · WHO IS REMINDED, AND ABOUT WHAT ──────────────
+       One group PER PAPER, because a reminder names ONE assignment and the
+       chase list above spans the whole selected week. On a week carrying two
+       assignments, sending everyone in `kChase` a reminder about `openP`
+       would nudge a child about the paper they DID hand in and say nothing
+       about the one they owe. Grouping per paper costs one round trip each
+       and cannot do that.
+
+       The union of these groups is exactly `kChase` — a child appears here
+       if and only if they are missing at least one of the week's papers — so
+       "Remind all N" counts the same children the chips name, which is the
+       property the DEAD note on node 236 cared about most. */
+    const kRemind = (!k || k.state !== 'live') ? []
+      : wPapers.map(p => ({
+        assignmentId: p.id,
+        studentIds: kRoster.filter(r => {
+          const row = kMx.byId[r.id];
+          return !(row && row.submitted[p.idx]);
+        }).map(r => r.id)
+      })).filter(g => g.assignmentId && g.studentIds.length);""",
      "the class screen's chase list, on the SELECTED week rather than on "
      "`r.inWeek`. `chaseFor()` itself is left alone — the classes screen "
      "calls it too, and there the current week is the right question. Part "
@@ -7044,6 +7228,81 @@ componentDidUpdate() {
      "throws the moment a grid is present; and `qpct[i]` is null where "
      "nothing at that question was machine-marked, which sorts below a real "
      "0%. Same correction as #7, one screen along. Part of #13."),
+
+    # ══ ⊕ RULED, MRB-326 JOB 4c · THE REMINDER MOVES INTO DESIGN'S CARD ══
+    #
+    # ⛔ WHAT WAS ON THE PAGE, AND WHY IT WENT. `shared/teacher-live.js`
+    # injected a box ABOVE the class header — Design drew no such thing —
+    # reading "Everyone has handed this week's work in." with a "Remind all
+    # N" beside it. Directly under it, in 34px, the homework card said
+    # "2 of 2 in". Mide's ruling of 6 Sep 2026: the banner goes, and the
+    # reminder lives where Design drew it, inside the homework card under
+    # the Not-in-yet chips.
+    #
+    # ⚑ THE SWAP THE `DEAD` NOTE ON NODE 236 PROMISED. That note ended:
+    # "Swapping the two is that port's job — a one-line deletion in the seam
+    # plus a NAV entry here." It is a `LOGIC` pair rather than a `NAV` entry,
+    # because `remind` does not navigate: it writes. The write path is the
+    # one the banner used and is not reimplemented —
+    # `MrBadmusTeacherData.sendReminders`, reached through `MRB_REMIND_ALL`,
+    # which sits beside `MRB_REMIND_STUDENT` in `build_teacher_port.py` and
+    # groups by paper (see `const kRemind`).
+    #
+    # ⚠️ THE LABEL DOES NOT PRE-READ THE LOG, AND THAT IS A CHANGE IN
+    # BEHAVIOUR I AM NAMING RATHER THAN HIDING. `drawRemindControl` fetched
+    # `remindersForClass` before it made itself pressable, so it could say
+    # "Reminded today · 2" and disable itself; and it REMOVED ITSELF
+    # ENTIRELY when that read failed, because it could not honestly claim
+    # either state. Design's node has no state to remove itself with, and
+    # more importantly it does not need one: the banner had to read the log
+    # because it ASSERTED a history ("Reminded today · 2"). This button
+    # asserts nothing about the past. It says "Remind all 4", and the
+    # DATABASE decides what happens — a unique index on
+    # (student_id, assignment_id, sent_on), an upsert with
+    # `ignoreDuplicates`, and a return value of the rows ACTUALLY WRITTEN.
+    # So a second press writes nothing, errors nothing, and is reported as
+    # "already reminded today" rather than as a fresh send. That is the same
+    # honesty the banner had, bought with a press instead of a fetch, and it
+    # costs the class screen one Supabase round trip less on every load.
+    #
+    # ⚠️ AND THE LABEL STILL CHANGES AFTER A SEND, so a teacher who has just
+    # pressed it does not press it again wondering whether it took.
+    # `s.remindDone` is set to the class-and-week the send was for, so
+    # stepping to another week with the bar restores "Remind all N" — the
+    # reminder is about THAT week's papers, and a send on week 1 says nothing
+    # about week 2.
+    (dict(method="renderVals", key="remindLabel"),
+     """      remindLabel: (s.remindDone === k.id + ':' + wi)
+        ? 'Reminded today' : 'Remind all ' + kChase.length,""",
+     "MRB-326 JOB 4c — the in-card reminder's label. Design's own string "
+     "until it has been pressed, then \"Reminded today\" for the week it "
+     "was pressed on. It reads no log: the button asserts nothing about the "
+     "past, and the database's unique index is what actually decides."),
+
+    (dict(method="renderVals", key="remind"),
+     """      remind: () => MRB_REMIND_ALL(k && k.id, kRemind).then((r) => {
+        if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+        this.setState({ remindDone: k.id + ':' + wi });
+        if (!r.ok) {
+          this.ping(r.asked === 1
+            ? 'They have already been reminded about this today'
+            : 'They have all already been reminded about this today');
+          return;
+        }
+        if (r.ok < r.asked) {
+          this.ping('Reminded ' + r.ok + ' of ' + r.asked
+            + ' \u2014 the rest were already reminded today');
+          return;
+        }
+        this.ping('Reminder sent to ' + r.ok
+          + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
+      }),""",
+     "MRB-326 JOB 4c — the in-card reminder, WIRED. Design's handler was "
+     "`this.ping('Reminder sent to N students in 8r/Sc1')` in front of no "
+     "write at all, which is why `DEAD` pruned the node; it now writes "
+     "through the same `sendReminders` the deleted banner used, per paper, "
+     "and says which of the three things actually happened. Replaces "
+     "`drawRemindControl` in shared/teacher-live.js, which is deleted."),
 
     # ── `glance`, scoped to the selected week ───────────────────────────
     #
@@ -7179,6 +7438,60 @@ componentDidUpdate() {
      "the cross-class \"Worth a reteach\" list. Three throws in five lines, "
      "on every page rather than on one. See the block comment."),
 
+    # ══ ⊕ RULED, MRB-326 JOB 4e · THE HEADER STOPS REPEATING THE CARDS ══
+    #
+    # ⛔ "0 STUDENTS TO KEEP AN EYE ON", UNDER A CARD HEADED "KEEP AN EYE ON".
+    # Design's `statLine` ends `+ kFlagged + ' students to keep an eye on'`,
+    # and the third of the three glance cards — 300 pixels below it, on the
+    # same screen, always — is titled exactly that and lists exactly those
+    # children by name, or says "No one flagged — the class is keeping up."
+    # when there are none. The sentence is the card's own heading with the
+    # card's own count in front of it.
+    #
+    # ⚠️ AND THE ZERO CASE IS THE WORST OF IT, which is what makes this a
+    # redundancy rather than a summary. On a class where nobody is flagged,
+    # the header says "0 students to keep an eye on" and the card says "No
+    # one flagged — the class is keeping up": two sentences making one claim,
+    # one of them by printing a zero, which reads at a glance like a figure
+    # that failed to load.
+    #
+    # The two parts that survive are not said anywhere else on the page —
+    # nothing else states the class mean, and nothing else states punctuality
+    # — so they stay in Design's own order and Design's own wording.
+    (dict(method="renderVals", key="klass.statLine"),
+     """        statLine: kPapers.length
+          ? 'Class mean ' + (kMean == null ? '\u2014' : kMean + '%')
+            + ' \u00B7 ' + (kMx.markedPct == null
+              ? '\u2014' : kMx.markedPct + '% on time')
+          : 'No work set yet',""",
+     "MRB-326 JOB 4e — the class header's stat line, with the "
+     "keep-an-eye-on segment cut. The third glance card IS \"Keep an eye "
+     "on\", names those children and says \"No one flagged\" when there "
+     "are none; the sentence was that card's heading and count restated in "
+     "the header. Class mean and on-time are not said anywhere else and "
+     "stay exactly as Design wrote them."),
+
+    # ── the Students table's caption ────────────────────────────────────
+    #
+    # ⛔ "2 STUDENTS · NOT SUBMITTED SHOWN FIRST", TWO PARAGRAPHS UNDER
+    # "2 STUDENTS · NO LESSON TODAY". Design's `rosterLine` opens with the
+    # roster count and the eyebrow directly above the same table opens with
+    # it too. The count is a fact about the class and belongs to the class
+    # header; what this caption is FOR is telling a teacher why the rows are
+    # in the order they are in, which nothing else on the page says.
+    #
+    # ⚠️ NOT MOVED, CUT. The obvious alternative — drop the count from the
+    # eyebrow and keep it here — was considered and refused: the eyebrow is
+    # the class's own summary line and the roster size is the first thing a
+    # teacher checks against their register, so it belongs above the fold
+    # rather than beside a table heading two screens down on a class of
+    # thirty.
+    (dict(method="renderVals", key="klass.rosterLine"),
+     "        rosterLine: 'Not submitted shown first',",
+     "MRB-326 JOB 4e — the Students caption, with the roster count cut. The "
+     "class eyebrow directly above the table already states it; what is "
+     "left is the sort order, which nothing else says."),
+
     # ── the assignment section's own count ──────────────────────────────
     (dict(method="renderVals", key="klass.paperLine"),
      """        paperLine: !kPapers.length ? 'None set'
@@ -7246,17 +7559,13 @@ componentDidUpdate() {
           dateColor: on ? 'var(--st-ink)' : 'var(--st-muted)'
         };
       }),
-      weekNote: !wWeek ? ''
-        : [wWeek.now ? 'This week' : wWeek.label, wWeek.range,
-          (!wPapers.length
-            ? 'No work set in this week'
-            : (wPapers.length === 1
-              ? wPapers[0].title
-                + (wPapers[0].when === 'upcoming' ? ' · open' : ' · marked')
-                + (wPapers[0].due ? ', due ' + wPapers[0].due.replace(/^Due /, '') : '')
-              : wPapers.length + ' assignments set')),
-          wMean == null ? '' : 'Week mean ' + wMean + '%'
-        ].filter(Boolean).join(' · '),
+      /* ⊕ MRB-326 JOB 4d — `weekNote` DELETED, with the node that drew it.
+         It read "This week · 31/08/26 · 2 assignments set · Week mean 42%",
+         and all four parts are already on the screen: the selected chip
+         carries the date and the label and is marked as selected;
+         `klass.paperLine` counts the week's assignments over the table;
+         and the class mean is stated in the header. Mide's ruling of 6 Sep
+         2026 — the chips stay, the sentence goes. */
       weekBack: () => { if (wi < kWeeks.length - 1) this.pickWeek(wi + 1); },
       weekFwd: () => { if (wi > 0) this.pickWeek(wi - 1); },
       weekBackColor: wi >= kWeeks.length - 1 ? 'var(--st-rule-strong)' : 'var(--st-ink)',
