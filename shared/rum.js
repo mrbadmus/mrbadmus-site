@@ -24,6 +24,11 @@
  * The table enforces all of that again in Postgres, because this file is
  * JavaScript and anyone can edit it in a console and post as themselves. The
  * checks here are for correctness; the checks there are the actual guarantee.
+ *
+ * ⚠️ If you are verifying this file live after a deploy, read the note at the
+ * top of `_headers` FIRST. Polling its stamped URL before the deploy lands
+ * pins the OLD bytes to the NEW url for a year, and this file was the one it
+ * happened to.
  */
 (function () {
   'use strict';

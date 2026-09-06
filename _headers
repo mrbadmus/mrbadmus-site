@@ -24,6 +24,25 @@
 # reach it — the worst kind of caching bug, because it is invisible to us and
 # permanent for them.
 
+# ⚠️ NEVER REQUEST A STAMPED URL BEFORE THE DEPLOY THAT PUBLISHES IT.
+#
+# Learned the hard way on the run that added this file. Verifying live, I
+# polled `/shared/rum.js?v=<new stamp>` in a loop WHILE waiting for Cloudflare
+# to publish. Every one of those requests missed, went to an origin still
+# serving the OLD file, and cached that answer under the rule below — pinning
+# stale bytes to the new URL, at that POP, for a year. `immutable` means what
+# it says: nothing revalidates it, and no later deploy can dislodge it.
+#
+# Normal traffic cannot do this, because a Pages deployment swaps the HTML and
+# the assets together — nobody asks for a stamp that is not live yet. Only an
+# out-of-band check can, and CLAUDE.md tells every future run to do one.
+#
+# So verify in this order:
+#   1. fetch the PAGE (it is must-revalidate, so it is always current) and read
+#      the stamp out of its `__MRB_ASSET_V__` map;
+#   2. only once that map shows the new stamp, fetch the asset — and add a
+#      throwaway `&nonce=` so the check itself never populates the real key.
+
 /shared/*
   Cache-Control: public, max-age=31536000, immutable
 

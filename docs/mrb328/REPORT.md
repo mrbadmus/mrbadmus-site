@@ -260,6 +260,37 @@ browsed. So, the one-line ask:
 6. **13 lane worktrees are on this machine and disk is at 97%.** Pruning them
    is your call, not this ticket's; several hold unmerged work.
 
+### ⚠️ I poisoned a cache entry verifying the deploy, and fixed it
+
+Worth writing down because it is a trap this run CREATED for every future one,
+and because it is the exact failure CLAUDE.md warns about — a 200 carrying
+stale bytes, which looks like success.
+
+Verifying live, I polled `/shared/rum.js?v=<new stamp>` in a loop while waiting
+for Cloudflare to publish. Every one of those requests missed, reached an
+origin still serving the OLD file, and cached that answer under the brand-new
+`max-age=31536000, immutable` rule. The result: stale bytes pinned to the new
+URL, at that POP, for a year — and `immutable` means nothing revalidates it,
+so no later deploy could dislodge it.
+
+Diagnosed rather than assumed: a request with a fresh `&nonce=` returned the
+NEW file on a MISS, which proved the origin was fine and the query string is
+genuinely part of the cache key, while the canonical URL kept returning the
+old file on a HIT with a climbing `age`.
+
+**Normal traffic cannot do this** — a Pages deployment swaps HTML and assets
+together, so nobody ever asks for a stamp that is not live yet. Only an
+out-of-band check can, and CLAUDE.md instructs every run to do one.
+
+Fixed two ways: the file was re-stamped (a fresh hash orphans the poisoned
+key, since no HTML will ever reference it again), and `_headers` now carries
+the ordering that avoids it — read the stamp out of the PAGE first, which is
+`must-revalidate` and therefore always current, and only then fetch the asset,
+with a throwaway nonce so the check never populates the real key.
+
+The blast radius here was small — `rum.js` is telemetry-only and the old copy
+still worked. On `teacher-live.js` it would not have been.
+
 ### ⚠️ The perf gate is flaky in this environment
 
 `Today → class detail` measured, across eight samples: 406, 462, 670, 1279,
