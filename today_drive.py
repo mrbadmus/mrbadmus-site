@@ -42,10 +42,15 @@ def klass(cid, name, ks, yg):
     return {"id": cid, "name": name, "key_stage": ks, "year_group": yg,
             "academic_year_id": YEAR, "deleted_at": None, "school_id": "s1"}
 
-def entry(eid, cid, wd, per, name, ks, yg):
+def entry(eid, cid, wd, per, name, ks, yg, teacher=None,
+          source="seeded", updated="2026-09-01T08:00:00+00:00"):
+    """One timetable row. `teacher` and `updated` default to this fixture's own
+       teacher and to the seeded import's timestamp; the MRB-326 case below is
+       the only caller that passes either, and it passes both."""
     return {"id": eid, "class_id": cid, "weekday": wd, "period": per,
-            "week_cycle": None, "source": "seeded", "academic_year_id": YEAR,
-            "deleted_at": None, "teacher_id": TEACHER,
+            "week_cycle": None, "source": source, "academic_year_id": YEAR,
+            "deleted_at": None, "teacher_id": teacher or TEACHER,
+            "updated_at": updated,
             "classes": klass(cid, name, ks, yg)}
 
 # A week shaped like a real one: Monday busy, Wednesday light, Friday empty.
@@ -57,17 +62,59 @@ ENTRIES = [
     entry("eeeeeeee-0000-4000-8000-000000000005", "cccccccc-0000-4000-8000-000000000002", 3, 5, "10h/Ph1", "KS4", 10),
 ]
 
+# ── ⊕ MRB-326 · a colleague's lesson, and a slot written twice ───────────
+#
+# Two rows this fixture's teacher must never see rendered, and one they must
+# see EXACTLY ONCE. Both are shapes the served table really can hold:
+#
+#  · A CO-TEACHER'S ROW on a class this teacher also teaches, at a period
+#    this teacher is free (Monday P3). Under `timetable_entries_admin_read`
+#    a school_admin's read returns it — it is a lesson of their class, taught
+#    by somebody else — and the old class-scoped loader passed it straight
+#    through to the page. It must not be rendered, and it must not put a
+#    lesson in an empty period.
+#
+#  · TWO ROWS IN ONE SLOT (Monday P2): the `seeded` import's 10h/Ph1 and the
+#    teacher's own later `manual` edit, 7h/Sc5. The DB's unique index cannot
+#    always prevent this (a NULL week_cycle and an 'A' one coexist in its
+#    key), so the loader collapses on read, newest `updated_at` winning. The
+#    period must appear ONCE, showing what the teacher last saved.
+#
+# ⚠️ The grid the editor draws is one class per (weekday, period) cell, last
+# row wins — so a slot that arrives twice is not merely a cosmetic duplicate.
+# It is a cell that can be SAVED back wrong, which is how MRB-326's real
+# timetable was overwritten.
+CO_TEACHER = "33333333-3333-3333-3333-333333333333"
+
+ENTRIES_MIXED = ENTRIES + [
+    # a colleague's lesson of 8r/Sc1, in a period this teacher does not teach
+    entry("eeeeeeee-0000-4000-8000-000000000006", "cccccccc-0000-4000-8000-000000000001",
+          1, 3, "8r/Sc1", "KS3", 8, teacher=CO_TEACHER),
+    # the teacher's own later edit of Monday P2 — a different class, newer stamp
+    entry("eeeeeeee-0000-4000-8000-000000000007", "cccccccc-0000-4000-8000-000000000003",
+          1, 2, "7h/Sc5", "KS3", 7, source="manual",
+          updated="2026-09-05T17:30:00+00:00"),
+]
+
+# What Monday must look like: the teacher owns P1, P2 and P4, and P2 shows the
+# class they saved last.
+MIXED_EXPECTED = [("PERIOD 1", "8r/Sc1"), ("PERIOD 2", "7h/Sc5"), ("PERIOD 4", "7h/Sc5")]
+
 YEARS = [{"id": YEAR, "name": "2026-27", "start_date": "2026-09-01",
           "end_date": "2027-08-31", "deleted_at": None}]
 
-# ⊕ MRB-325 ruling 1, 5 Sep 2026 — `loadTimetable()` now self-filters through
-# `class_teachers` before it ever asks `timetable_entries` (the fix for the
-# admin leak: Today used to show every class in the school to a school_admin,
-# not just their own). Without a row here for each of this fixture's three
-# classes, the self-filter finds nothing to teach and every case below would
-# read "No timetable yet" regardless of `timetable_entries` — a stub gap, not
-# a page bug, but one that would turn this whole drive red the moment a build
-# ships the fix.
+# ⊕ MRB-326, 6 Sep 2026 — THIS TABLE IS NO LONGER LOAD-BEARING FOR `Today`,
+# and the reason it stopped being is the whole of MRB-326. It was added on
+# 5 Sep because `loadTimetable()` read `class_teachers` for the signed-in user
+# and then asked `timetable_entries` for `.in('class_id', myClassIds)` — a
+# filter on the CLASS, which for a school_admin (whose RLS read is school-wide)
+# returns every teacher's lesson of every class they co-teach, and which the
+# editor then saved back over their real timetable. The loader now filters on
+# `teacher_id`, which is the only thing that can mean "mine".
+#
+# The rows are KEPT because `loadTeacherClasses` still reads this table for the
+# editor's class picker (case 6), and because a fixture that stopped carrying
+# them would stop being able to notice if the class pre-read ever came back.
 CLASS_TEACHERS = [
     {"class_id": cid, "teacher_id": TEACHER, "deleted_at": None, "ended_at": None}
     for cid in ("cccccccc-0000-4000-8000-000000000001",
@@ -584,6 +631,49 @@ def main():
             check(bad == [None, None, None, None, None, None],
                   "csv: every unreadable row is REFUSED, never guessed",
                   "Sunday, nonsense, bad periods and unknown codes all null; got %s" % (bad,))
+
+            # ── 8. ⊕ MRB-326 · a colleague's lesson, and a slot written
+            #       twice. The served table holds both — this is the shape a
+            #       school_admin's school-wide RLS read really returns — and
+            #       the page must render the teacher's OWN day, each period
+            #       once. See ENTRIES_MIXED above for why each row is there.
+            mixed = dict(TABLES); mixed["timetable_entries"] = ENTRIES_MIXED
+            pairs_probe = {
+                "pairs": "JSON.stringify(Array.prototype.map.call("
+                         "document.querySelectorAll('.lesson'), function (l) {"
+                         "var p = l.querySelector('.lesson-period');"
+                         "var c = l.querySelector('.lesson-code');"
+                         "return [(p ? p.textContent : '').trim(),"
+                         "        (c ? c.textContent : '').trim()]; }))",
+            }
+            t8, s8, _o8, e8, vis8, g8 = run_case(
+                b, base, "8-own-day-once", "2026-09-07T09:00:00",
+                mixed, packs_for(), args.shots, evals=pairs_probe)
+            print("--- OWN DAY, ONCE ---\n" + t8[:600] + "\n")
+            pairs = json.loads(g8["pairs"])
+            # ⚠️ CASE-FOLDED on the period label for the same reason case 1 is:
+            # `innerText` applies `text-transform`, and the class CODE must NOT
+            # be folded (MRB-263 names classes in mixed case, and asserting the
+            # folded form would let 8R/SC1 pass for 8r/Sc1).
+            got = [[p.upper(), c] for p, c in pairs]
+            want = [[p, c] for p, c in MIXED_EXPECTED]
+            check(len(pairs) == 3,
+                  "own day: one row per slot the teacher OWNS on the day shown",
+                  "Monday holds P1, P2 and P4 for this teacher; got %d row(s): %s"
+                  % (len(pairs), pairs))
+            check(all(p != "PERIOD 3" for p, _ in got),
+                  "own day: a colleague's lesson of a shared class is NOT drawn",
+                  "P3 is free for this teacher and a co-teacher's 8r/Sc1 row sits "
+                  "in the served table; got %s" % (pairs,))
+            check(got == want,
+                  "own day: the twice-written slot collapses to the NEWER row",
+                  "Monday P2 has a seeded 10h/Ph1 and a later manual 7h/Sc5; "
+                  "expected %s, got %s" % (want, got))
+            check("10h/Ph1" not in t8,
+                  "own day: the superseded class is not shown at all",
+                  "the seeded row it came from lost to a newer manual edit")
+            check(vis8, "own day: the page is actually PAINTED")
+            check(not e8, "own day: no console errors", "; ".join(e8[:2]))
     finally:
         try: server.shutdown()
         except Exception: pass
