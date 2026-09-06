@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""teacher_admin_foreign_class_drive.py — MRB-325 ruling 5, both sides of it.
+"""teacher_admin_foreign_class_drive.py — MRB-325 ruling 5, both sides of it,
+and MRB-326: the class that has NO teacher at all, and the toolset once
+inside.
 
     python3 teacher_admin_foreign_class_drive.py
     python3 teacher_admin_foreign_class_drive.py --shots DIR
@@ -59,6 +61,34 @@ fixture rows shaped exactly as PostgREST would return them.
   empty, `yearOfClass` throws `not_authorised`, and `run()`'s catch draws
   SAY.notMine. Nothing about the two runs differs except the rows.
 
+⊕ MRB-326, 6 Sep 2026 — TWO THINGS THIS FILE COULD NOT SEE, AND BOTH SHIPPED.
+
+  1. IT ONLY EVER DROVE A CLASS SOMEBODY ELSE TEACHES. `loadClassMatrices`
+     drove off `class_teachers`, so what it really asked was "is there a live
+     teacher link here I am allowed to see" — and on production 25 of the 69
+     classes in 2026-27 have no live link AT ALL, their only teacher being an
+     unclaimed `pending_staff` row. Those 25 refused an admin outright. The
+     fixture that would have caught it already existed and was never pointed
+     at: `admin_view_drive.C_NONE`, the class NOBODY teaches. Section B drives
+     it, and drives a variant with the roster emptied too, because "no links,
+     no members, no work" is three empty things at once and the page has to
+     survive all three.
+
+  2. IT PROVED "OPENS" AND NOTHING ELSE — so "opens but cannot act" shipped.
+     Every write control on a class screen was refused by RLS for an admin,
+     because no write policy on the estate had an admin arm. Section C is one
+     fixture per capability: the control is PRESENT on the foreign class, and
+     firing it produces the same write or navigation the owning teacher's
+     press produces. Which of them the migration unblocks is written on each.
+
+⚠️ WHAT SECTION C DOES AND DOES NOT PROVE. The stub records writes; it does
+  not adjudicate them (see its own note in `admin_view_drive.STUB_JS`). So a
+  green Section C says the control is on screen and fires the right write with
+  the right arguments — the half no SQL can reach. Whether the DATABASE
+  accepts that write is the other half, and it is proved separately, under
+  real RLS with a real JWT, by `teacher_admin_real_drive.py`. Reading either
+  half as the whole is how "opens but cannot act" got through the first time.
+
 ⛔ SCREENSHOTS GO OUTSIDE THE REPO by default (`/tmp`) — MRB-301's rule: a gate
   must not write into the tree it is attesting is clean.
 """
@@ -90,6 +120,13 @@ RICH = av.RICH            # hod, and the teacher of the class under test
 C_OWN_ADMIN = av.C_DUP    # 8r/Sc1 — Ada's own class, so `base()` has a list
 C_OWN_AMY = av.C_CO       # 10h/Sc1 — Amy's own class, same reason
 C_FOREIGN = av.C_RICH     # 10h/Ph1 — RICH's class. Foreign to BOTH personas.
+
+# ⊕ MRB-326 — 9r/Sc4, the class NOBODY teaches. Foreign to both personas in a
+# second, harder way: there is no `class_teachers` row for it belonging to
+# ANYONE, so the driver query comes back empty no matter who asks. This is the
+# production shape — 25 of 69 classes this year — and the case the old code
+# refused with the sentence meant for somebody else's class.
+C_UNSTAFFED = av.C_NONE
 
 # The refusal, taken from the source of truth rather than retyped: if
 # SAY.notMine is ever reworded, this file must follow it or say so.
@@ -150,17 +187,37 @@ def tables():
 def teacher_world(uid, t):
     """The same rows, narrowed to what a PLAIN teacher's RLS read returns.
 
-    `class_teachers_own_all` shows a teacher their own link rows and nothing
+    `class_teachers_self_read` shows a teacher their own link rows and nothing
     else; the members and assignments policies hang off the classes those rows
     name. So: keep this teacher's links, keep only the classes they reach
     through them, and drop everything else. Narrowing the ADMIN world rather
     than writing a second fixture is deliberate — one fixture, one difference,
     and the difference is the scope.
+
+    ⊕ MRB-326 — AND IT NOW NARROWS `classes` TOO, WHICH IT DID NOT BEFORE.
+    That omission was invisible while `loadClassMatrices` drove off
+    `class_teachers` alone: nothing ever asked this world for a `classes` row,
+    so the table sat unfiltered and harmless. The moment the fallback read
+    landed, it stopped being harmless — the FIRST run of this drive after the
+    change showed Amy opening BOTH foreign classes in full, with the eyebrow
+    and the roster, because the fixture was handing her every class in the
+    school.
+
+    ⚠️ THAT WAS THE FIXTURE, NOT THE PRODUCT, AND THE DIFFERENCE MATTERS.
+    `classes_teacher_read` is `school_id = auth_user_school_id() AND
+    auth_user_teaches_class(id)`, so the real database returns a plain teacher
+    nothing for a class she does not teach — which is why the fallback is a
+    security boundary at all. The line below models that policy, exactly as
+    the three above it model theirs. But a model of a policy is not the
+    policy: this half is proved for real, with a real JWT under real RLS,
+    by `teacher_admin_real_drive.py` step 1, and that is the check to trust
+    if the two ever disagree.
     """
     t = copy.deepcopy(t)
     t["class_teachers"] = [r for r in t["class_teachers"]
                            if r["teacher_id"] == uid]
     mine = {r["class_id"] for r in t["class_teachers"]}
+    t["classes"] = [r for r in t.get("classes", []) if r["id"] in mine]
     t["class_members"] = [r for r in t["class_members"] if r["class_id"] in mine]
     t["assignments"] = [r for r in t["assignments"] if r["class_id"] in mine]
     keep = {a["id"] for a in t["assignments"]}
@@ -242,6 +299,125 @@ def open_as(b, base, uid, world, classId, shot):
     if armed:
         p.send("Page.removeScriptToEvaluateOnNewDocument", {"identifier": armed})
     return got, errs
+
+
+# ═════════════════════════════════════════════════════════════════════════
+# MRB-326 — the machinery Sections B and C need
+# ═════════════════════════════════════════════════════════════════════════
+
+def mount(b, base, uid, world, url):
+    """Open `url` as `uid` and HAND THE PAGE BACK STILL ARMED.
+
+    `open_as` above reads once and disarms, which is all Section A needs.
+    Section C has to press things and then read what the press did, so the
+    stub must stay in place across several evals. The caller disarms — and
+    must, for the reason `open_as` documents: `addScriptToEvaluateOnNewDocument`
+    is per TARGET, this drive reuses one, and a stub left armed answers as the
+    wrong persona on the next page.
+    """
+    p = b.page("about:blank", settle=0.2)
+    armed = p.send("Page.addScriptToEvaluateOnNewDocument",
+                   {"source": av.stub_world(uid, tables=world)}).get("identifier")
+    p.set_viewport(1280, 1600)
+    p.goto(url, settle=6.0)
+    return p, armed
+
+
+def disarm(p, armed):
+    if armed:
+        p.send("Page.removeScriptToEvaluateOnNewDocument", {"identifier": armed})
+
+
+def writes(p):
+    """Every write the stubbed client was asked to make, in order."""
+    return json.loads(p.eval(
+        "JSON.stringify((window.__MRB_STUB__ && window.__MRB_STUB__.writes) || [])"))
+
+
+def wrote(ws, table, op=None):
+    return [w for w in ws
+            if w.get("table") == table and (op is None or w.get("op") == op)]
+
+
+# Press a control by its ruling marker. Returns how many it found, so a
+# fixture can tell "pressed nothing" from "pressed and nothing happened" —
+# they look identical from the far side and only one of them is a defect.
+PRESS_JS = r"""(function(){
+  var n = document.querySelectorAll(%s);
+  if (!n.length) { return 0; }
+  n[%d].click();
+  return n.length;
+})()"""
+
+
+def press(p, sel, idx=0, settle=1.2):
+    n = p.eval(PRESS_JS % (json.dumps(sel), idx))
+    if settle:
+        p.eval("new Promise(function(r){setTimeout(r,%d);})" % int(settle * 1000))
+    return n
+
+
+# ⚠️ A FRAMEWORK-RENDERED FIELD DOES NOT NOTICE `.value =`. Design's runtime
+# binds on `input`/`change`, so a value assigned without them is a value the
+# page has never heard of — the control looks filled and sends nothing, which
+# is precisely the "confirmation of a write that never happened" shape
+# `build_teacher_port.py` warns about. Both events, every time.
+FILL_JS = r"""(function(){
+  var el = document.querySelector(%s);
+  if (!el) { return 'no-element'; }
+  el.value = %s;
+  el.dispatchEvent(new Event('input', {bubbles: true}));
+  el.dispatchEvent(new Event('change', {bubbles: true}));
+  return el.value;
+})()"""
+
+
+def fill(p, sel, value, settle=0.6):
+    got = p.eval(FILL_JS % (json.dumps(sel), json.dumps(value)))
+    if settle:
+        p.eval("new Promise(function(r){setTimeout(r,%d);})" % int(settle * 1000))
+    return got
+
+
+def text_of(p, sel):
+    return p.eval(
+        "(function(){var e=document.querySelector(%s);"
+        "return e?(e.innerText||'').replace(/\\s+/g,' ').trim():'';})()"
+        % json.dumps(sel))
+
+
+def classless_admin_world(t):
+    """The admin's world with the admin's OWN class links taken away.
+
+    ⊕ MRB-326. Ada teaches 8r/Sc1 in `av.LINKS`, deliberately — "so `base()`
+    has a list". That convenience hid a defect for a whole ticket: the real
+    person ruling 5 exists for is a school_admin who teaches NOTHING, and for
+    them `c.CLASSES` is empty, which `teacher-live.js`'s no-classes guard used
+    to treat as a reason to refuse the page BEFORE it had looked at `?class=`.
+    Every class in their own school answered "You are not teaching any classes
+    this year" — a sentence about their timetable, in front of a class they
+    were entitled to open.
+
+    It took a real sign-in to find (`teacher_admin_real_drive`, step 2). This
+    world is so that it cannot come back without this file going red too.
+    """
+    t = copy.deepcopy(t)
+    t["class_teachers"] = [r for r in t["class_teachers"] if r["teacher_id"] != ADMIN]
+    return t
+
+
+def stripped_world(base_world, class_id):
+    """The same world with `class_id`'s ROSTER removed as well as its links.
+
+    Section B's second case. A class with no teacher link, no members and no
+    work is three empty collections at once, and `buildClassEntry` has to
+    reach Design's "empty" state off all three rather than throwing on the
+    first one it meets.
+    """
+    t = copy.deepcopy(base_world)
+    t["class_members"] = [m for m in t["class_members"] if m["class_id"] != class_id]
+    t["assignments"] = [a for a in t["assignments"] if a["class_id"] != class_id]
+    return t
 
 
 def main():
@@ -355,6 +531,297 @@ def main():
                   got3["regionText"][:70])
             check("Acting as admin" not in got3["regionText"],
                   "…without the admin marker, because she is not one")
+
+            # ═══════════════════════════════════════════════════════════
+            #  SECTION B — MRB-326 · the class NOBODY teaches
+            # ═══════════════════════════════════════════════════════════
+            print("\n  ══ B · 9r/Sc4 — a class with NO teacher link at all ══")
+
+            got4, errs4 = open_as(b, base, ADMIN, admin_world, C_UNSTAFFED,
+                                  os.path.join(args.shots, "admin-unstaffed-class.png"))
+            check(got4["drawn"] and REFUSAL not in got4["bodyText"],
+                  "B1. the admin opens a class NOBODY teaches",
+                  got4["stateText"][:70] or got4["regionText"][:70])
+            check("ACTING AS ADMIN" in got4["metaText"].upper(),
+                  "…and it is marked 'Acting as admin' like any foreign class",
+                  got4["metaText"][:80] or "no eyebrow carried it")
+            check(not errs4, "…console stayed quiet", "; ".join(errs4[:2]))
+
+            # ⚠️ THE NULL PILL IS THE POINT, NOT A DEFECT. `derivePill` reads
+            # `class_teachers.subject_id`, and this class has no link to read
+            # one off, so it has no subject to name. A pill invented here
+            # would be the page asserting something the database does not.
+            check("Stu Five" in got4["regionText"] and "Stu Six" in got4["regionText"],
+                  "…and its real roster rendered off the members read alone",
+                  got4["regionText"][:70])
+
+            # …and with the roster and the work taken away too.
+            bare = stripped_world(admin_world, C_UNSTAFFED)
+            got5, errs5 = open_as(b, base, ADMIN, bare, C_UNSTAFFED,
+                                  os.path.join(args.shots, "admin-unstaffed-empty.png"))
+            check(got5["drawn"] and REFUSAL not in got5["bodyText"],
+                  "B2. no links, no members, NO work — the page still opens",
+                  got5["stateText"][:70] or got5["regionText"][:70])
+            check(not errs5,
+                  "…and three empty collections at once threw nothing",
+                  "; ".join(errs5[:2]))
+
+            # The negative control, again, on the harder class. Without this
+            # B1 proves only that `classes` returns rows to somebody.
+            plain_bare = teacher_world(AMY, admin_world)
+            got6, _ = open_as(b, base, AMY, plain_bare, C_UNSTAFFED,
+                              os.path.join(args.shots, "teacher-unstaffed-class.png"))
+            check(REFUSAL in got6["bodyText"] and not got6["drawn"],
+                  "B3. …and a plain teacher is STILL refused it",
+                  got6["stateText"][:70] or got6["bodyText"][:70])
+            check("Stu Five" not in got6["bodyText"],
+                  "…with not one of its students behind the refusal")
+
+            # ── B4 · the admin who teaches NOTHING ────────────────────
+            # Not a variation on B1: a different code path entirely. This one
+            # never reached `load()` at all, so `?class=` was unread and the
+            # refusal was about the admin's timetable rather than about the
+            # class. See `classless_admin_world` for why the fixture could not
+            # see it until now.
+            nothing = classless_admin_world(admin_world)
+            got7, errs7 = open_as(b, base, ADMIN, nothing, C_FOREIGN,
+                                  os.path.join(args.shots, "admin-teaches-nothing.png"))
+            check(got7["drawn"] and REFUSAL not in got7["bodyText"],
+                  "B4. an admin who teaches NO class of their own still opens one",
+                  got7["stateText"][:70] or got7["bodyText"][:70])
+            check("You are not teaching any classes" not in got7["bodyText"],
+                  "…and is not told about their own empty timetable instead",
+                  got7["bodyText"][:80])
+            check("ACTING AS ADMIN" in got7["metaText"].upper(),
+                  "…and the eyebrow still says which hat they are wearing",
+                  got7["metaText"][:80] or "no eyebrow carried it")
+            check(not errs7, "…console stayed quiet", "; ".join(errs7[:2]))
+
+            # ═══════════════════════════════════════════════════════════
+            #  SECTION C — MRB-326 · one fixture per capability
+            # ═══════════════════════════════════════════════════════════
+            #
+            # All on C_FOREIGN, as the admin. The question each asks is the
+            # one the MRB-325 gate never did: not "does it open" but "is the
+            # control there, and does pressing it do what a teacher's press
+            # does". The stub records the write; RLS is proved elsewhere.
+            print("\n  ══ C · the full toolset, inside a class Ada does not teach ══")
+            klass_url = "%s/teacher/class-detail.html?class=%s" % (base, C_FOREIGN)
+
+            # ── C1 · Import CSV ───────────────────────────────────────
+            # No policy needed. `teacher/import.html` never consults
+            # class_teachers — it lists staff by `school_id` — and
+            # `supabase/functions/roster-import/index.ts` authorises on
+            # `role IN (teacher,hod,admin)` AND `school_id`, not on teaching
+            # the class. So the capability was never blocked; this fixture
+            # exists so that if somebody ever ADDS an ownership check there,
+            # it goes red instead of quietly locking admins out of onboarding.
+            p1, a1 = mount(b, base, ADMIN, admin_world, base + "/teacher/import.html")
+            imp = json.loads(p1.eval(r"""(function(){
+              var body = (document.body.innerText||'').replace(/\s+/g,' ').trim();
+              return JSON.stringify({
+                body: body.slice(0, 400),
+                fileInputs: document.querySelectorAll('input[type=file]').length,
+                at: location.pathname});})()"""))
+            p1.screenshot(os.path.join(args.shots, "admin-import.png"), width=1280)
+            disarm(p1, a1)
+            check(REFUSAL not in imp["body"] and imp["fileInputs"] >= 1,
+                  "C1. IMPORT — the wizard mounts for an admin, with its file input",
+                  "%d file input(s) at %s" % (imp["fileInputs"], imp["at"]))
+
+            # ── C2 · Pick a student ───────────────────────────────────
+            # No policy needed. The pool is `loadClassMatrices().members`, so
+            # this capability was blocked for exactly as long as the class
+            # itself was — it is fixed by (a), not by the migration.
+            p2, a2 = mount(b, base, ADMIN, admin_world, klass_url)
+            found = press(p2, '[data-mrb-added="pick-open"]', settle=1.5)
+            picked = p2.eval(
+                "(document.body.innerText||'').replace(/\\s+/g,' ')")
+            p2.screenshot(os.path.join(args.shots, "admin-picker.png"), width=1280)
+            disarm(p2, a2)
+            check(found >= 1, "C2. PICK A STUDENT — the control is on the page",
+                  "%d control(s)" % found)
+            names_in_picker = [n for _, f, l in ROSTER
+                               for n in ["%s %s" % (f, l)] if n in picked]
+            check(len(names_in_picker) == len(ROSTER),
+                  "…and pressing it offers the FOREIGN class's own roster",
+                  "%d/%d names" % (len(names_in_picker), len(ROSTER)))
+
+            # ── C3 · Seating plan ─────────────────────────────────────
+            # No policy needed: `seating_plans` and `room_layouts` already
+            # carry `auth_user_has_scope('school_admin')` arms (MRB-322), and
+            # `seating.html` is reached by hash with the class id rather than
+            # through its own `myClasses()` picker — which drives off
+            # class_teachers and would show an admin nothing.
+            p3, a3 = mount(b, base, ADMIN, admin_world, klass_url)
+            # ⚠️ MRB_SEATING IS STUBBED BECAUSE IT NAVIGATES. Letting the real
+            # one run tears the page out from under the next eval — the exact
+            # "Inspected target navigated or closed" failure `teacher_rulings`
+            # records for this control. Stubbing records the destination,
+            # which is the thing under test anyway.
+            p3.eval("window.__seat=[];window.MRB_SEATING=function(id){window.__seat.push(id);};1")
+            seat_found = press(p3, '[data-mrb-added="class-seating"]', settle=1.0)
+            seat = json.loads(p3.eval("JSON.stringify(window.__seat||[])"))
+            disarm(p3, a3)
+            check(seat_found >= 1, "C3. SEATING — the control is on the page",
+                  "%d control(s)" % seat_found)
+            check(seat == [C_FOREIGN],
+                  "…and pressing it opens THIS class's plan, not the landing",
+                  repr(seat))
+
+            # ── C4 · Marking ──────────────────────────────────────────
+            # The marking screen itself needs no policy to READ. A score
+            # WRITE does, and `submissions_admin_write` supplies it — but
+            # there is no client-side score write anywhere in the estate
+            # today (grep: nothing calls `.update()` on assignment_submissions),
+            # so the policy is proved by PostgREST in the real drive rather
+            # than by a control here. What is proved here is that the screen
+            # opens on a class the admin does not teach.
+            p4, a4 = mount(b, base, ADMIN, admin_world,
+                           "%s/teacher/assignment.html?class=%s" % (base, C_FOREIGN))
+            # ⚠️ THE REGION IS NAMED, and a bare `[data-port-region]` is the
+            # wrong element. `assignment.html` draws TWO — `topbar` first —
+            # so the unnamed selector returns the nav, whose text is the same
+            # on every screen and contains none of the paper. The first run
+            # of this fixture asserted against exactly that and reported a
+            # correct page as broken, which is the failure mode READ_JS's own
+            # note at the top of this file already records once.
+            mark = json.loads(p4.eval(r"""(function(){
+              var r = document.querySelector('[data-port-region="marking"]');
+              return JSON.stringify({
+                drawn: !!r,
+                text: r ? (r.innerText||'').replace(/\s+/g,' ').trim().slice(0,400) : ''
+              });})()"""))
+            p4.screenshot(os.path.join(args.shots, "admin-marking.png"), width=1280)
+            disarm(p4, a4)
+            check(mark["drawn"] and REFUSAL not in mark["text"],
+                  "C4. MARKING — the marking screen opens on the foreign class",
+                  mark["text"][:70])
+            check("Week 1 · Forces" in mark["text"],
+                  "…showing the class's real paper", mark["text"][:70])
+
+            # ── C5 · Feedback ─────────────────────────────────────────
+            # ⚑ UNBLOCKED BY THE MIGRATION. `submission_feedback_insert` is
+            # `teacher_id = auth.uid() AND auth_user_teaches_class(...)`;
+            # before `submission_feedback_admin_insert` this press got a bare
+            # 42501. Driven on student-detail, which is where the control is
+            # drawn on a submission-history row.
+            p5, a5 = mount(b, base, ADMIN, admin_world,
+                           "%s/teacher/student-detail.html?class=%s&student=%s"
+                           % (base, C_FOREIGN, ROSTER[0][0]))
+            fb_found = press(p5, '[data-mrb-added="feedback-open"]', settle=1.2)
+            fill(p5, '[data-mrb-added="feedback-body"]',
+                 "MRB-326 fixture: an admin's written feedback.")
+            press(p5, '[data-mrb-added="feedback-save"]', settle=1.5)
+            fb_writes = wrote(writes(p5), "submission_feedback")
+            p5.screenshot(os.path.join(args.shots, "admin-feedback.png"), width=1280)
+            disarm(p5, a5)
+            check(fb_found >= 1, "C5. FEEDBACK — the control is on the page",
+                  "%d control(s)" % fb_found)
+            check(len(fb_writes) == 1 and fb_writes[0]["op"] == "insert",
+                  "…and saving writes ONE row to submission_feedback",
+                  json.dumps(fb_writes)[:120])
+            if fb_writes:
+                row = (fb_writes[0].get("rows") or [{}])[0]
+                # `teacher_id` is the conjunct the admin policy KEEPS. A press
+                # that wrote a colleague's id would pass RLS's scope test and
+                # still be wrong, so it is asserted here rather than assumed.
+                check(row.get("teacher_id") == ADMIN,
+                      "…authored as the ADMIN, not as the class's teacher",
+                      repr(row.get("teacher_id")))
+
+            # ── C6 · Shoutouts ────────────────────────────────────────
+            # ⚑ UNBLOCKED BY THE MIGRATION. `class_shoutouts_insert` requires
+            # `auth_user_teaches_class`; `class_shoutouts_admin_insert` is the
+            # arm that lets an admin praise a child in a class they do not
+            # teach, and it keeps both of the teacher policy's other
+            # conjuncts — `author_id = auth.uid()` and recipient-is-a-member.
+            p6, a6 = mount(b, base, ADMIN, admin_world, klass_url)
+            opt = p6.eval(r"""(function(){
+              var sel = document.querySelector('[data-mrb-added="shoutout-recipient"]');
+              if (!sel) { return ''; }
+              for (var i = 0; i < sel.options.length; i++) {
+                if (sel.options[i].value) { return sel.options[i].value; } }
+              return '';})()""")
+            fill(p6, '[data-mrb-added="shoutout-recipient"]', opt)
+            # ⚠️ DO NOT PRESS A TEMPLATE HERE. The first one is ALREADY
+            # selected when the composer opens (`MRB_FIRST_TEMPLATE`), and the
+            # buttons are a TOGGLE — so a press on it selects nothing, it
+            # DESELECTS the default, and Send then refuses with "Pick a
+            # template, or write a message". The first run of this fixture did
+            # exactly that and read as "the admin cannot send a shoutout".
+            # The message is filled instead: it exercises the textarea, and
+            # the write carries both it and the still-selected template.
+            fill(p6, '[data-mrb-added="shoutout-note"]',
+                 "MRB-326 fixture: an admin's shoutout.")
+            send_found = press(p6, '[data-mrb-added="shoutout-send"]', settle=2.0)
+            so_writes = wrote(writes(p6), "class_shoutouts", "insert")
+            p6.screenshot(os.path.join(args.shots, "admin-shoutout.png"), width=1280)
+            disarm(p6, a6)
+            check(send_found >= 1 and bool(opt),
+                  "C6. SHOUTOUTS — composer and recipient list are on the page",
+                  "recipient %s" % (opt[:8] or "NONE"))
+            check(len(so_writes) >= 1,
+                  "…and Send writes to class_shoutouts",
+                  json.dumps(so_writes)[:120])
+            if so_writes:
+                row = (so_writes[0].get("rows") or [{}])[0]
+                check(row.get("class_id") == C_FOREIGN and row.get("author_id") == ADMIN,
+                      "…on THIS class, authored as the admin",
+                      "class=%s author=%s" % (str(row.get("class_id"))[:8],
+                                              str(row.get("author_id"))[:8]))
+                check(row.get("recipient_id") == opt,
+                      "…to the child who was chosen",
+                      repr(str(row.get("recipient_id"))[:8]))
+
+            # ── C7 · Reminders ────────────────────────────────────────
+            # ⚑ UNBLOCKED BY THE MIGRATION, and by a policy the MRB-325 draft
+            # never named: `student_notifications_teacher_send` is `sent_by =
+            # auth.uid() AND auth_user_teaches_class(class_id)`, so the
+            # Remind control was refused for an admin exactly like the other
+            # three. `student_notifications_admin_send` is its admin arm.
+            p7, a7 = mount(b, base, ADMIN, admin_world, klass_url)
+            rem_line = text_of(p7, '[data-mrb-remind]')
+            rem_found = press(p7, '[data-mrb-remind] button', settle=1.8)
+            rem_writes = wrote(writes(p7), "student_notifications")
+            p7.screenshot(os.path.join(args.shots, "admin-remind.png"), width=1280)
+            disarm(p7, a7)
+            check(rem_found >= 1,
+                  "C7. REMINDERS — the control is drawn on the foreign class",
+                  rem_line[:70] or "no control")
+            check(len(rem_writes) == 1 and rem_writes[0]["op"] == "upsert",
+                  "…and pressing it UPSERTS student_notifications",
+                  json.dumps(rem_writes)[:120])
+            if rem_writes:
+                rows_ = rem_writes[0].get("rows") or []
+                # Three of the four have not handed in; the fourth has, and
+                # chasing a child who already submitted is the defect this
+                # asserts against.
+                check(len(rows_) == len(ROSTER) - 1,
+                      "…for exactly the students who have not handed in",
+                      "%d row(s)" % len(rows_))
+                check(all(r.get("sent_by") == ADMIN for r in rows_),
+                      "…sent as the admin, which is the conjunct RLS keeps")
+                # ⚠️ ignoreDuplicates is what makes a second press honest.
+                check((rem_writes[0].get("opts") or {}).get("ignoreDuplicates") is True,
+                      "…and still through the rate limit, not around it",
+                      json.dumps(rem_writes[0].get("opts")))
+
+            # ── C8 · Digest / Print report ────────────────────────────
+            # No policy needed — the digest derives from `base()`, so it was
+            # blocked for as long as the class was and is fixed by (a).
+            p8, a8 = mount(b, base, ADMIN, admin_world,
+                           "%s/teacher/digest.html?class=%s" % (base, C_FOREIGN))
+            dig = json.loads(p8.eval(r"""(function(){
+              var r = document.querySelector('[data-port-region]');
+              return JSON.stringify({drawn: !!r,
+                text: r ? (r.innerText||'').replace(/\s+/g,' ').trim().slice(0,300) : ''});
+              })()"""))
+            p8.screenshot(os.path.join(args.shots, "admin-digest.png"), width=1280)
+            disarm(p8, a8)
+            check(dig["drawn"] and REFUSAL not in dig["text"],
+                  "C8. DIGEST — the printable report opens on the foreign class",
+                  dig["text"][:70])
 
     finally:
         server.shutdown()

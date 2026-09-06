@@ -2412,7 +2412,33 @@
                "you are not teaching any classes" is exactly right — and that
                is a school in its first year, where there is no history to
                reach and nothing a selector could offer. */
-            if (!c.CLASSES.length && !c.yearOptions.length) {
+            /* ⊕ MRB-326, 6 Sep 2026 — …AND NOT WHEN THE URL NAMED A CLASS.
+               This guard fires off `c.CLASSES`, which is the viewer's OWN
+               list, and it fired BEFORE `load()` ever looked at `?class=`.
+               For the one person MRB-325 ruling 5 exists for — a school_admin
+               who teaches nothing at all — that meant every class in the
+               school, including their own school's, answered "You are not
+               teaching any classes this year". Not a refusal, not "that class
+               is not one of yours": a sentence about their timetable, in
+               front of a class they were entitled to open, with the id sitting
+               unread in the address bar.
+
+               ⚠️ IT WAS INVISIBLE TO THE STUBBED GATE, and that is worth
+               recording. `teacher_admin_foreign_class_drive`'s admin persona
+               (Ada) teaches 8r/Sc1, deliberately, "so `base()` has a list" —
+               so `c.CLASSES` was never empty there and this line was never
+               reached. It took a REAL sign-in as an admin who owns nothing
+               (`teacher_admin_real_drive`, step 2) to see it.
+
+               ⚠️ NO AUTHORISATION IS SKIPPED. `load()` is the thing that
+               asks, and it still asks: a class this viewer cannot reach
+               throws `notMine` from `yearOfClass`/`mergeForeignClass` and
+               draws "That class is not one of yours." What changes is only
+               that the question gets asked at all. The guard keeps its real
+               case — a BARE url, where the viewer's own list is the whole
+               screen and its emptiness is the whole answer. */
+            var askedFor = q.get("class") || q.get("student");
+            if (!c.CLASSES.length && !c.yearOptions.length && !askedFor) {
               var e = new Error("[teacher-live] no classes in any year");
               e.mrbSay = SAY.noClasses;
               throw e;

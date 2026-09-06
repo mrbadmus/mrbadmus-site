@@ -249,8 +249,34 @@ STUB_JS = r"""
     if (f.op === 'in') { return f.val.indexOf(v) !== -1; }
     return true;
   }
+  /* ⊕ MRB-326 — THE WRITE VERBS, AND WHAT THEY DO AND DO NOT PROVE.
+     `insert` / `upsert` / `update` / `delete` were absent until 6 Sep 2026,
+     so any control that wrote threw a TypeError the moment it was pressed —
+     which is why the MRB-325 gate could only ever prove that a foreign class
+     OPENS. They are recorded in `S.writes` and the row is reflected back into
+     the served table, so a control that reads its own write back finds it.
+
+     ⚠️ THE STUB DOES NOT MODEL RLS ON WRITES AND MUST NOT BE READ AS DOING
+     SO. On reads, the two personas differ by their ROW SETS and that models
+     row visibility honestly. A write has no row set to narrow: this accepts
+     every one it is given. So what these verbs prove is the half no SQL can
+     — that the control is on screen for an acting-as-admin, that pressing it
+     fires the write the owning teacher's press fires, and that it carries
+     the same arguments. Whether the DATABASE accepts that write is a
+     different question, answered by `teacher_admin_real_drive.py` under real
+     RLS with a real JWT. Neither half is sufficient alone. */
   function Q(table) {
-    var fs = [], one = false;
+    var fs = [], one = false, write = null;
+    function matching() {
+      var all = S.tables[table] || [];
+      var hit = [];
+      for (var i = 0; i < all.length; i++) {
+        var keep = true;
+        for (var j = 0; j < fs.length; j++) { if (!ok(all[i], fs[j])) { keep = false; break; } }
+        if (keep) { hit.push(all[i]); }
+      }
+      return hit;
+    }
     var api = {
       select: function () { return api; },
       order:  function () { return api; },
@@ -260,11 +286,50 @@ STUB_JS = r"""
       in: function (c, v) { fs.push({op:'in', col:c, val:v}); return api; },
       single: function () { one = true; return api; },
       maybeSingle: function () { one = true; return api; },
+      insert: function (r) { write = {op:'insert', rows: [].concat(r)}; return api; },
+      upsert: function (r, o) { write = {op:'upsert', rows: [].concat(r), opts: o || null}; return api; },
+      update: function (patch) { write = {op:'update', patch: patch}; return api; },
+      delete: function () { write = {op:'delete'}; return api; },
       then: function (res, rej) {
-        var out = rows(table).filter(function (r) {
-          for (var i = 0; i < fs.length; i++) { if (!ok(r, fs[i])) { return false; } }
-          return true;
-        });
+        var out;
+        if (write) {
+          var rec = {table: table, op: write.op,
+                     filters: fs.map(function (f) { return f.op + ':' + f.col + '=' + JSON.stringify(f.val); })};
+          if (write.rows) { rec.rows = write.rows; }
+          if (write.patch) { rec.patch = write.patch; }
+          if (write.opts) { rec.opts = write.opts; }
+          S.writes.push(rec);
+          if (write.op === 'insert' || write.op === 'upsert') {
+            S.tables[table] = S.tables[table] || [];
+            out = write.rows.map(function (r, i) {
+              var copy = {}, k;
+              for (k in r) { if (Object.prototype.hasOwnProperty.call(r, k)) { copy[k] = r[k]; } }
+              if (copy.id == null) { copy.id = 'stub-' + table + '-' + S.writes.length + '-' + i; }
+              if (copy.created_at == null) { copy.created_at = new Date().toISOString(); }
+              if (copy.deleted_at === undefined) { copy.deleted_at = null; }
+              S.tables[table].push(copy);
+              return copy;
+            });
+          } else if (write.op === 'update') {
+            out = matching();
+            out.forEach(function (r) {
+              var k;
+              for (k in write.patch) {
+                if (Object.prototype.hasOwnProperty.call(write.patch, k)) { r[k] = write.patch[k]; }
+              }
+            });
+          } else {
+            out = matching();
+            S.tables[table] = (S.tables[table] || []).filter(function (r) {
+              return out.indexOf(r) === -1;
+            });
+          }
+        } else {
+          out = rows(table).filter(function (r) {
+            for (var i = 0; i < fs.length; i++) { if (!ok(r, fs[i])) { return false; } }
+            return true;
+          });
+        }
         var payload = one
           ? {data: out[0] || null, error: out.length ? null : {code: 'PGRST116'}}
           : {data: out, error: null};
@@ -335,7 +400,7 @@ def stub_world(uid, tables=None, drop=()):
     t = dict(tables or TABLES)
     for name in drop:
         t[name] = []
-    payload = {"uid": uid, "tables": t, "log": []}
+    payload = {"uid": uid, "tables": t, "log": [], "writes": []}
     return ("window.__MRB_STUB__=%s;\n" % json.dumps(payload)) + STUB_JS
 
 

@@ -861,7 +861,52 @@ GATES = [
              "⚠️ Slow by category, not duration — about fifteen seconds, but "
              "it needs headless Chrome, and every browser gate here is a "
              "receipt gate so a machine without Chrome cannot redden every "
-             "push. No network and no credentials."),
+             "push. No network and no credentials. "
+             "⊕ MRB-326 — it now also drives the class NOBODY teaches "
+             "(av.C_NONE, the production shape: 25 of 69 classes this year "
+             "have no live link, their only teacher an unclaimed "
+             "pending_staff row), the same class with roster and work "
+             "stripped as well, an ADMIN WHO TEACHES NOTHING, and one "
+             "fixture per capability — import, picker, seating, marking, "
+             "feedback, shoutouts, reminders, digest — because 'the page "
+             "opened' was all it ever proved, which is how 'opens but cannot "
+             "act' shipped."),
+
+    # ── ⊕ MRB-326, 6 Sep 2026 · the half a stub cannot reach ────────────
+
+    dict(name="teacher_admin_real",
+         cmd=["python3", "teacher_admin_real_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site/teacher/class-detail.html",
+         needs_env="MRB_THROWAWAY_PASSWORD",
+         why="MRB-326 — THE SAME RULINGS, UNDER REAL RLS, AS TWO REAL "
+             "SIGNED-IN USERS. `teacher_admin_foreign_class` above stubs the "
+             "Supabase client and is honest that the stub models row "
+             "visibility rather than proving it; this file is the other half. "
+             "Two throwaway accounts created for this ticket in the TEST "
+             "fixture school — a plain teacher who teaches one class, and a "
+             "school_admin who teaches NOTHING — sign in for real and drive "
+             "three classes: the teacher's own, one taught by somebody else, "
+             "and one taught BY NOBODY. The third is the one that shipped "
+             "broken. ⚠️ IT ALSO PROVES THE WRITES, which no stub can: "
+             "marking, shoutout, feedback and reminder, each with the "
+             "admin's own JWT, each measured refused before "
+             "20260906044802_mrb326_admin_write_authority and accepted after, "
+             "with a plain teacher still refused the same write as the "
+             "negative control. ⚠️ AN UPDATE RLS MATCHES NOTHING FOR IS A 200 "
+             "WITH AN EMPTY BODY, not a 403 — the pre-migration marking "
+             "refusal was exactly that — so every write asks for "
+             "`return=representation` and asserts on the returning ROW. "
+             "⚠️ THE ENV VAR IS NOT PROTECTING A SECRET; the password is a "
+             "throwaway on a sandbox project and is quoted in this repo like "
+             "the MRB-293 fixtures'. It is the switch for 'this gate goes "
+             "over the network AND WRITES ROWS', which is a stronger claim "
+             "than teacher_perf_budget's and earns the same treatment: "
+             "skipped BY NAME without it, never silently, and never as a "
+             "pass. Every row it writes is soft- or hard-deleted in the same "
+             "run; `--keep` leaves them and lists the ids. It touches the "
+             "TEST project only — production is never addressed by this "
+             "file."),
 ]
 
 
