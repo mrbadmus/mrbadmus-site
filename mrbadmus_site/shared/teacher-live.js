@@ -2028,8 +2028,10 @@
        is shared by every screen (list, marking, student, digest, insights),
        and asking every class's timetable on every one of them would be
        exactly the per-navigation cost ruling 4 is about. `loadTimetable()`
-       is already self-filtered to this teacher (MRB-325 ruling 1), so this
-       cannot leak another teacher's day. A failure here is not fatal — the
+       is scoped to this teacher's OWN rows by `teacher_id` (MRB-326 — the
+       class-id scope it carried before could not express "mine" and handed
+       an admin their colleagues' lessons), so this cannot leak another
+       teacher's day. A failure here is not fatal — the
        eyebrow drops the segment via `klass.meta`'s `.filter(Boolean)`. */
     if (screen === "class" && classId) {
       try {

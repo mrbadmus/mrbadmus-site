@@ -2070,17 +2070,63 @@ window.MrBadmusTeacherData = (function () {
      MRB-306 WS-1 — THE TEACHER'S TIMETABLE
      ══════════════════════════════════════════════════════════════════════
 
-     `loadTimetable()` returns every live entry this teacher owns, with the
-     class attached. RLS does the scoping: `timetable_entries_own_all` admits
-     only rows whose `teacher_id` is auth.uid(), so an unclaimed colleague's
-     seeded rows — which hang off `pending_staff_id` and have no teacher_id at
-     all — are invisible here and cannot leak into anyone's day.
+     `loadTimetable()` returns the live entries the SIGNED-IN USER OWNS —
+     the rows whose own `teacher_id` is their id — with the class attached,
+     one row per slot.
 
-     ⚠️ NO CLOCK TIMES. `school_period_times` exists and is EMPTY, deliberately:
-     Rainford's period times are unknown, and a wrong time in front of a
-     teacher about to walk into a room is worse than no time. Entries are
-     ordered by period NUMBER and the page labels them "Period 1 … 5". When
-     that table is filled the label becomes a time and nothing else changes. */
+     ⚠️ MRB-326, 6 Sep 2026 — THE SCOPE USED TO BE THE CLASS, AND THAT WAS
+     WRONG IN A WAY THAT DESTROYED A REAL TIMETABLE.
+
+     This function used to read `class_teachers` for the signed-in user,
+     collect the ids of the classes they teach, and then ask
+     `timetable_entries` for `.in('class_id', myClassIds)`. It never
+     mentioned `teacher_id` at all. The comment above it called that a
+     "self-filter", and for a plain teacher it looks like one, because
+     `timetable_entries_own_all` narrows their read to their own rows anyway.
+
+     It is not one for a school_admin. `timetable_entries_admin_read` grants
+     the whole school, so for an admin the class filter says "every lesson of
+     every class I co-teach" — MY lessons plus MY COLLEAGUES' lessons of the
+     same shared classes. A co-taught class puts two or three teachers'
+     rows in one slot, and the admin got all of them: three lessons at
+     Monday P1, ten lessons on a Monday that holds five.
+
+     And it did not stop at looking wrong. `teacher/timetable.html` draws its
+     editor grid from this same loader, one class per (weekday, period) cell,
+     LAST ROW WINS — so a colleague's lesson silently took the teacher's own
+     cell, and pressing Save wrote that grid back through `replace_timetable`,
+     retiring the correct rows and storing the corrupted ones as `manual`.
+     A read scope became a write.
+
+     `teacher_id` is the ONLY correct scope here, for every role. "Which
+     lessons do I teach" is a question about the OWNER of a row, and no
+     filter on the class can express it: a class is a thing several teachers
+     share. A permission is not a filter — RLS says what you MAY see, and
+     this function must say what it WANTS, which is its own rows. The
+     `class_teachers` pre-read is gone entirely: it could not express "mine"
+     and cost a round trip to fail to.
+
+     ⚠️ Seeded rows that hang off `pending_staff_id` (an unclaimed
+     colleague's) carry no `teacher_id`, so they cannot match this filter and
+     cannot appear on anyone's day — the same property the old comment
+     claimed, now actually enforced by the query rather than by RLS breadth.
+
+     ── ONE ROW PER SLOT, ON READ ──────────────────────────────────────────
+     The DB's unique index cannot see every duplicate: its key includes
+     `coalesce(week_cycle,'')`, so a `week_cycle = 'A'` row and a
+     `week_cycle = NULL` row ("every week") sit in one slot without tripping
+     it. MRB-326 adds a trigger that refuses that pair, but a row written
+     before it existed can still be in the table, and a page that renders a
+     slot twice is a page that can be saved back wrong. So the read collapses
+     too: one row per (weekday, period, week_cycle-or-empty), keeping the
+     most recently updated. Belt and braces, and the cheaper of the two to
+     get right.
+
+     ⚠️ PERIOD LABELS, NOT CLOCK TIMES, unless the school has real ones.
+     Entries are ordered by period NUMBER; `loadPeriodTimes()` supplies a
+     time only where `school_period_times` actually holds a row for the
+     caller's school. A wrong time in front of a teacher about to walk into
+     a room is worse than no time. */
   async function loadTimetable() {
     const guard = window.MrBadmusTeacherGuard;
     const sb = guard && guard.getClient ? guard.getClient() : null;
@@ -2088,10 +2134,12 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
-    /* MRB-325 ruling 1 — the same fail-closed self-filter loadTeacherClasses
-       applies (MRB-293): a school_admin's RLS read on timetable_entries is
-       school-wide, and "Today" must show YOUR classes only, admins included.
-       Relying on RLS breadth to mean "mine" is exactly the leak that shipped. */
+    /* The id comes from the SDK's own persisted session — local, no round
+       trip — and is sourced HERE rather than accepted from the caller, for
+       the reason `loadTeacherClasses` states at length: a scope that arrives
+       as an argument can be forgotten by the next caller, and a forgotten
+       scope on this query is MRB-326 happening again. A function that cannot
+       be called without scoping itself cannot leak. */
     const { data: sessionData } = await sb.auth.getSession();
     const selfId = sessionData && sessionData.session && sessionData.session.user
       ? sessionData.session.user.id
@@ -2101,24 +2149,12 @@ window.MrBadmusTeacherData = (function () {
       e.code = 'no_session';
       throw e;
     }
-    const { data: taught, error: taughtErr } = await sb
-      .from('class_teachers')
-      .select('class_id')
-      .eq('teacher_id', selfId)
-      .is('deleted_at', null)
-      .is('ended_at', null);
-    if (taughtErr) {
-      console.error('[teacher-data] loadTimetable self-filter query failed', taughtErr);
-      throw taughtErr;
-    }
-    const myClassIds = Array.from(new Set((taught || []).map(function (r) { return r.class_id; })));
-    if (!myClassIds.length) { return []; }
 
     const { data, error } = await sb
       .from('timetable_entries')
       .select('id, class_id, weekday, period, week_cycle, source, academic_year_id, ' +
-              'classes ( id, name, key_stage, year_group, academic_year_id )')
-      .in('class_id', myClassIds)
+              'updated_at, classes ( id, name, key_stage, year_group, academic_year_id )')
+      .eq('teacher_id', selfId)
       .is('deleted_at', null)
       .order('weekday', { ascending: true })
       .order('period', { ascending: true });
@@ -2136,8 +2172,29 @@ window.MrBadmusTeacherData = (function () {
     const years = await loadAcademicYears();
     const workingId = years && years.working ? years.working.id : null;
 
-    return (data || [])
+    /* Newest wins, and an unparseable or missing `updated_at` loses to any
+       real one rather than throwing — a duplicate is already an abnormal
+       state and must not be able to take the page down with it. Where both
+       are unreadable the first row of the query's own (weekday, period)
+       order is kept, so the result is deterministic either way. */
+    function stampOf(r) {
+      const t = Date.parse(r && r.updated_at ? r.updated_at : '');
+      return isNaN(t) ? -Infinity : t;
+    }
+
+    const bySlot = new Map();
+    (data || [])
       .filter(function (r) { return !workingId || r.academic_year_id === workingId; })
+      .forEach(function (r) {
+        const key = r.weekday + ':' + r.period + ':' + (r.week_cycle || '');
+        const held = bySlot.get(key);
+        if (!held || stampOf(r) > stampOf(held)) { bySlot.set(key, r); }
+      });
+
+    return Array.from(bySlot.values())
+      .sort(function (a, b) {
+        return (a.weekday - b.weekday) || (a.period - b.period);
+      })
       .map(function (r) {
         return {
           id: r.id,
