@@ -98,7 +98,11 @@ ENTRIES_MIXED = ENTRIES + [
 
 # What Monday must look like: the teacher owns P1, P2 and P4, and P2 shows the
 # class they saved last.
-MIXED_EXPECTED = [("PERIOD 1", "8r/Sc1"), ("PERIOD 2", "7h/Sc5"), ("PERIOD 4", "7h/Sc5")]
+# ⊕ MRB-326 JOB 3 — "P1", not "PERIOD 1". Design's row stacks the period over
+# its clock time in a 92px column, and "PERIOD 1" does not fit that column at
+# 21px display. The SLOTS this case is about are unchanged: P1, P2, P4, with
+# P2 showing the class the teacher saved last.
+MIXED_EXPECTED = [("P1", "8r/Sc1"), ("P2", "7h/Sc5"), ("P4", "7h/Sc5")]
 
 YEARS = [{"id": YEAR, "name": "2026-27", "start_date": "2026-09-01",
           "end_date": "2027-08-31", "deleted_at": None}]
@@ -320,6 +324,51 @@ def packs_for(with_data=True):
     }
 
 
+def packs_wide():
+    """⊕ MRB-326 JOB 3 — a day with MORE chase-able students than the panel
+       shows, which is the only state in which ruling 5's expander exists.
+
+       `packs_for()` cannot ask the question: three students owe work there
+       and Design's panel shows six. Here `c1` has ten owing and `c2` four, so
+       the panel shows six of fourteen and the footer has something to open —
+       and the expanded list has TWO class groups to draw, which is what the
+       grouping check needs.
+
+       ⚠️ NO REAL NAMES. Initials-and-ordinals, exactly as `packs_for()` does,
+       because real staff and children are live."""
+    def member(i, cls):
+        return {"student_id": "w%s%d" % (cls, i),
+                "first_name": chr(70 + (i % 20)), "last_name": "Ten" + str(i)}
+
+    def sub(i, cls, aid):
+        return {"id": "y%s%d" % (cls, i), "assignment_id": aid,
+                "student_id": "w%s%d" % (cls, i), "status": "complete",
+                "completed_at": "2026-09-02T10:00:00+00:00",
+                "submitted_at": "2026-09-02T10:00:00+00:00",
+                "score": 4, "max_score": 8}
+
+    return {
+        # twelve on roll, two of them in: ten to chase
+        "cccccccc-0000-4000-8000-000000000001": {
+            "members": [member(i, "a") for i in range(12)],
+            "assignments": [{"id": "a1", "title": "Particles",
+                             "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}],
+            "submissions": [sub(0, "a", "a1"), sub(1, "a", "a1")],
+        },
+        # five on roll, one in: four to chase
+        "cccccccc-0000-4000-8000-000000000002": {
+            "members": [member(i, "b") for i in range(5)],
+            "assignments": [{"id": "a2", "title": "Forces",
+                             "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}],
+            "submissions": [sub(0, "b", "a2")],
+        },
+        # and one with nothing set, so the day still carries all three states
+        "cccccccc-0000-4000-8000-000000000003": {
+            "members": [member(0, "c")], "assignments": [], "submissions": [],
+        },
+    }
+
+
 # ── ⊕ MRB-323 · the name picker, on Today ────────────────────────────────
 #
 # ⚑ THE ONE THING NO OTHER GATE CAN SEE. `teacher_behaviour` and
@@ -343,6 +392,17 @@ def packs_for(with_data=True):
 #     across the whole interaction is the read-only claim, measured.
 PICKER_EVALS = {
     "rows": "document.querySelectorAll('.lesson').length",
+    # ⊕ MRB-326 JOB 3 · RULING 1 — measured on the DOM, not on the joined
+    # text. "LAB 2 · 29 STUDENTS · SCIENCE" is gone, and the claim is about
+    # the ROW's shape rather than about words that could one day legitimately
+    # appear somewhere else on the screen. A row is period, time, code,
+    # status: so the column holding the code holds at most those two lines.
+    "metas": "(function(){var n=0;"
+             "document.querySelectorAll('.lesson').forEach(function(l){"
+             "if(l.querySelector('.lesson-meta')){n++;return;}"
+             "var c=l.querySelector('.lesson-code');"
+             "if(c&&c.parentElement&&c.parentElement.children.length>2){n++;}"
+             "});return n;})()",
     "links": "(function(){var a=document.querySelectorAll('.lesson-go[href]');"
              "return Array.prototype.map.call(a,function(x){"
              "return x.getAttribute('href').indexOf('/teacher/class-detail.html?class=')===0;"
@@ -381,6 +441,50 @@ PICKER_EVALS = {
       return JSON.stringify(out);
     })()""",
     "logAfter": "(window.__MRB_STUB__.log||[]).length",
+    # ── ⊕ MRB-326 JOB 3 · ruling 9 — "FIND A STUDENT" ────────────────────
+    #
+    # The six GENERATED teacher screens carry this control, so ruling 9 puts
+    # it here. It could not be borrowed — `teacher-live.js` exports nothing
+    # and mounts against a host this hand-written page does not have — so it
+    # is rebuilt, and the rule that governs every control on this page
+    # governs it: a control that does nothing when pressed is worse than none.
+    #
+    # ⚑ AND IT IS LAZY, which this probe is the only thing that can prove.
+    # `logBeforeSearch` is taken AFTER the page has settled, so a non-zero
+    # delta across the OPEN is the read the sheet makes for itself — the pool
+    # is every student on every class, which is a wider read than the rest of
+    # this page makes and must therefore not be made on load.
+    "logBeforeSearch": "(window.__MRB_STUB__.log||[]).length",
+    "search": """(async () => {
+      const btn = document.getElementById('search-open');
+      const back = document.getElementById('search-back');
+      if (!btn || !back) { return JSON.stringify({error: 'no search control in the bar'}); }
+      const shutAtStart = back.hidden;
+      btn.click();
+      await new Promise(r => setTimeout(r, 900));
+      const input = document.getElementById('search-input');
+      const out = document.getElementById('search-results');
+      const idle = (out.textContent || '').trim();
+      input.value = 'One';
+      input.dispatchEvent(new Event('input', {bubbles: true}));
+      await new Promise(r => requestAnimationFrame(r));
+      const hits = out.querySelectorAll('[data-go-student]');
+      const first = hits.length ? (hits[0].textContent || '').trim() : '';
+      const href = hits.length
+        ? ('/teacher/student-detail.html?student=' + hits[0].getAttribute('data-go-student'))
+        : '';
+      input.value = 'zzzz-nobody';
+      input.dispatchEvent(new Event('input', {bubbles: true}));
+      await new Promise(r => requestAnimationFrame(r));
+      const miss = (out.textContent || '').trim();
+      document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
+      await new Promise(r => requestAnimationFrame(r));
+      return JSON.stringify({
+        shutAtStart, opened: true, idle, hitCount: hits.length,
+        first, href, miss, shutAtEnd: back.hidden
+      });
+    })()""",
+    "logAfterSearch": "(window.__MRB_STUB__.log||[]).length",
 }
 
 
@@ -467,27 +571,93 @@ def main():
                 b, base, "1-weekday", "2026-09-07T09:00:00",
                 TABLES, packs_for(), args.shots, evals=PICKER_EVALS)
             print("\n--- WEEKDAY ---\n" + t[:800] + "\n")
-            check("Monday" in t, "weekday: names the day")
-            # ⚠️ CASE-FOLDED. `innerText` applies `text-transform`, so the
-            # eyebrow written as "Period 1" reads back as "PERIOD 1".
-            # Asserting the source casing tests the stylesheet, not the page.
+            # ⚠️ CASE-FOLDED, for the reason the block below states: the day
+            # is named in the EYEBROW now, which `text-transform: uppercase`
+            # renders as "MONDAY". Asserting the source casing would test the
+            # stylesheet rather than the page. (It used to be matched in the
+            # sub-line "Monday · 3 lessons", which ruling 2 replaced.)
+            check("MONDAY" in t.upper(), "weekday: names the day")
+            # ⚠️ CASE-FOLDED where a stylesheet uppercases, and NOT where it
+            # does not. The eyebrow and the panel headings carry
+            # `text-transform`; the lesson row carries none, so "P1" and
+            # "8r/Sc1" are asserted exactly as the page writes them.
             T = t.upper()
-            check("PERIOD 1" in T and "PERIOD 2" in T and "PERIOD 4" in T,
-                  "weekday: periods by NUMBER and in order")
+            check("P1" in t and "P2" in t and "P4" in t,
+                  "weekday: periods by NUMBER and in order",
+                  "Design's row is P1 over its clock time, not 'PERIOD 1'")
+            # ⊕ MRB-326 JOB 3 · RULING 1 — a row is period, time, code, status.
+            check(not re.search(r"\bPERIOD \d\b", T),
+                  "weekday: the old 'PERIOD n' eyebrow is GONE")
             check(not re.search(r"\b\d{2}:\d{2}\b", t),
                   "weekday: NO clock times invented", "school_period_times is empty")
             check("8r/Sc1" in t and "10h/Ph1" in t and "7h/Sc5" in t,
                   "weekday: all three classes drawn")
-            check("Science" in t and "Physics" in t,
-                  "weekday: subject from the class CODE")
+            # ⊕ RULING 1 — THE META LINE IS DELETED. It said "KS3 · Science",
+            # which is the class code beside it spelled out. Asserting its
+            # ABSENCE, on the DOM rather than on the joined text, because the
+            # words could legitimately appear elsewhere one day and the claim
+            # is about the ROW.
+            check(g1["metas"] == 0,
+                  "weekday: no lesson row carries a meta line",
+                  "ruling 1 — %d row(s) still do" % g1["metas"])
+            check("KS3" not in T and "KS4" not in T,
+                  "weekday: the key stage is not spelled out beside the code",
+                  "MRB-263 makes the code itself say it")
             check("1 of 3 in" in t, "weekday: chase count from the union predicate")
-            check("nothing to chase" in t, "weekday: a class that is all in reads clear")
+            # ⊕ RULING 7 — Design's chase form, with the names on it.
+            # `shortName` is Design's: first name, then the surname's initial.
+            # This fixture's students are "B Two" and "C Three", so they read
+            # "B T" and "C T" — a real "Hana Popescu" reads "Hana P".
+            check("chase B T, C T" in t,
+                  "weekday: the chase line NAMES who to chase",
+                  "Design's '11 of 29 in — chase Hana P, Idris B +16 more'")
+            check("1/1 in" in t,
+                  "weekday: a class that is all in reads as the numeric form",
+                  "ruling 7 — 'All N homeworks in — nothing to chase' is gone")
+            check("nothing to chase" not in t.lower(),
+                  "weekday: 'nothing to chase' is GONE",
+                  "the absence of a chase clause does not need saying")
+            check("still to hand in" not in t,
+                  "weekday: the row does not say the same subtraction twice",
+                  "'1 of 3 in · 2 still to hand in' — 3 minus 1 IS 2")
             check("No work set this week." in t,
                   "weekday: a class with no work says so", "and offers no action")
             check("Higher" not in t and "Foundation" not in t,
                   "weekday: no tier / pathway anywhere")
+            # ⊕ RULING 3 — the day-chip strip is gone. Design does not draw it.
+            check(not re.search(r"\bTUE\b|\bTHU\b", T),
+                  "weekday: the MON/TUE/WED day-chip strip is GONE", "ruling 3")
+            # ⊕ RULING 6 — "N lessons" is said in the summary sentence and
+            # NOT AGAIN beside the h2 as Design's `lessonCount`.
+            check(T.count("3 LESSONS") == 1,
+                  "weekday: the lesson count is said ONCE",
+                  "ruling 6 — Design draws it twice; got %d" % T.count("3 LESSONS"))
+            check("3 lessons today" in t,
+                  "weekday: and the once is the summary sentence")
+            # ⊕ RULING 8 — the eyebrow, from data. Monday 7 September 2026,
+            # autumn term, and the academic year's own name.
+            check("MONDAY 7 SEPTEMBER" in T,
+                  "weekday: the eyebrow names the day and date from the clock")
+            check("AUTUMN TERM" in T,
+                  "weekday: the term is derived from the month", "ruling 8: Sep-Dec")
+            check("2026-27" in t,
+                  "weekday: the academic year comes from loadAcademicYears")
+            # ⊕ RULING 4 — "Set work" is DEAD platform-wide and is not drawn.
+            check("Set work" not in t, "weekday: no dead 'Set work' button", "ruling 4")
+            check("Weekly digest" in t and "Upload timetable" in t,
+                  "weekday: the two live actions are drawn", "ruling 4")
+            check("Edit timetable" in t, "weekday: Design's Edit timetable link is drawn")
+            # ⊕ RULING 9 — the nav carries what the generated screens carry.
+            check("Today" in t and "My classes" in t, "nav: both tabs")
+            check("FIND A STUDENT" in T, "nav: Find a student, as on the six generated screens")
+            check("Ms Nwosu" in t, "nav: the teacher is named, as Design draws it")
+            check("Sign out" in t, "nav: Sign out")
             check(vis, "weekday: the page is actually PAINTED", "not a blank screen")
             check(not errs, "weekday: no console errors", "; ".join(errs[:2]))
+
+            check("Send reminders" in t,
+                  "chase: the reminder control is present and REAL",
+                  "TD.sendReminders — the same write the class screen makes")
 
             # ── ⊕ MRB-323 · the name picker on Today ─────────────────────
             check(g1["rows"] == 3 and g1["links"] == 3,
@@ -520,6 +690,36 @@ def main():
                       "picker: picks from THIS class's own roster",
                       "3 members stubbed; got " + repr(op["name"]))
                 check(op["closed"], "picker: closes cleanly")
+            # ── ⊕ MRB-326 JOB 3 · ruling 9 — the student search ──────────
+            se = json.loads(g1["search"])
+            check(not se.get("error"), "search: the bar carries a working control",
+                  se.get("error", ""))
+            if not se.get("error"):
+                check(se["shutAtStart"], "search: the sheet ships CLOSED")
+                check(g1["logAfterSearch"] > g1["logBeforeSearch"],
+                      "search: and reads NOTHING until it is opened",
+                      "the pool is every class's roster, which is wider than "
+                      "this page's own day-scoped reads; %s read(s) before the "
+                      "press, %s after"
+                      % (g1["logBeforeSearch"], g1["logAfterSearch"]))
+                check("5 students on your classes" in se["idle"],
+                      "search: the pool is every student on EVERY class",
+                      "3 classes hold 5 students between them; got " + repr(se["idle"]))
+                check(se["hitCount"] == 1 and "A One" in se["first"],
+                      "search: typing filters it", "got %d hit(s): %r"
+                      % (se["hitCount"], se["first"]))
+                check("8r/Sc1" in se["first"],
+                      "search: and a hit names the class the child is in",
+                      repr(se["first"]))
+                check(se["href"].startswith("/teacher/student-detail.html?student="),
+                      "search: a hit goes to that child's page",
+                      "not a dead row; " + repr(se["href"]))
+                # ⚠️ UNKNOWN IS NOT EMPTY, and NO MATCH IS NOT AN ERROR. Both
+                # states get their own sentence, and neither is a blank box.
+                check("Nobody on your classes matches" in se["miss"],
+                      "search: a miss says so", repr(se["miss"]))
+                check(se["shutAtEnd"], "search: Escape closes it")
+
             check(g1["logAfter"] == g1["logBefore"],
                   "picker: touches the database NOT ONCE",
                   "%d table read(s) before, %d after — it is read-only and "
@@ -530,10 +730,28 @@ def main():
             t2, s2, _, e2, vis2, _ = run_case(b, base, "2-weekend", "2026-09-12T09:00:00",
                                      TABLES, packs_for(), args.shots)
             print("--- WEEKEND ---\n" + t2[:500] + "\n")
-            check("No lessons at the weekend" in t2, "weekend: says so plainly")
-            check("NEXT: MONDAY" in t2.upper(), "weekend: shows the next teaching day, LABELLED")
+            # ⊕ MRB-326 JOB 3 · RULING 2 — THESE TWO CHECKS ARE INVERTED, and
+            # the inversion is the ruling rather than a weakening. They used
+            # to assert "No lessons at the weekend. Showing your next teaching
+            # day." and "NEXT: MONDAY"; both are deleted. The property under
+            # test is unchanged — a Saturday must not pass Monday's lessons off
+            # as today's — and it is now carried by ONE WORD in the h2 instead
+            # of by two sentences of the page explaining its own arithmetic.
+            check("No lessons at the weekend" not in t2,
+                  "weekend: the explainer sentence is GONE", "ruling 2")
+            check("Showing your next teaching day" not in t2,
+                  "weekend: and so is the second half of it", "ruling 2")
+            check("NEXT:" not in t2.upper(),
+                  "weekend: the 'NEXT: MONDAY' label is GONE", "ruling 2")
+            check("Monday\u2019s lessons" in t2 or "Monday's lessons" in t2,
+                  "weekend: the h2 NAMES THE DAY instead", "ruling 2 — one word")
             check("TODAY\u2019S LESSONS" not in t2.upper() and "TODAY'S LESSONS" not in t2.upper(),
                   "weekend: does NOT present it as today")
+            # The eyebrow still tells the truth about what day it actually is:
+            # the h2 says whose lessons these are, the date line says the date.
+            # Two facts, each said once.
+            check("SATURDAY 12 SEPTEMBER" in t2.upper(),
+                  "weekend: the eyebrow is still TODAY's date", "ruling 8")
             check(vis2, "weekend: the page is actually PAINTED")
             check(not e2, "weekend: no console errors", "; ".join(e2[:2]))
 
@@ -541,8 +759,16 @@ def main():
             t3, s3, _, e3, vis3, _ = run_case(b, base, "3-empty-day", "2026-09-11T09:00:00",
                                      TABLES, packs_for(), args.shots)
             print("--- EMPTY WEEKDAY ---\n" + t3[:400] + "\n")
-            check("No lessons today" in t3, "empty weekday: says so")
-            check("NEXT:" in t3.upper(), "empty weekday: falls forward, labelled")
+            # ⊕ RULING 2 again — a weekday with no lessons falls forward the
+            # same silent way a weekend does.
+            check("No lessons today" not in t3,
+                  "empty weekday: the explainer sentence is GONE", "ruling 2")
+            check("NEXT:" not in t3.upper(),
+                  "empty weekday: the 'NEXT:' label is GONE", "ruling 2")
+            check("Monday\u2019s lessons" in t3 or "Monday's lessons" in t3,
+                  "empty weekday: falls forward, and the h2 names the day")
+            check("FRIDAY 11 SEPTEMBER" in t3.upper(),
+                  "empty weekday: the eyebrow is still TODAY's date")
             check(vis3, "empty weekday: the page is actually PAINTED")
 
             # ── 4. no timetable at all ───────────────────────────────────
@@ -551,6 +777,12 @@ def main():
                                      empty, {}, args.shots)
             print("--- NO TIMETABLE ---\n" + t4[:400] + "\n")
             check("No timetable yet" in t4, "no timetable: says so")
+            # ⊕ RULING 6 — and says it ONCE. The prompt paragraph used to end
+            # "…and there isn't one on your account yet", directly under the
+            # line that had just said it.
+            check("isn\u2019t one on your account" not in t4
+                  and "isn't one on your account" not in t4,
+                  "no timetable: and does not say it twice", "ruling 6")
             check("Period" not in t4, "no timetable: invents no lessons")
             check("upload" not in t4.lower(),
                   "no timetable: promises no upload", "that screen is not built")
@@ -641,7 +873,7 @@ def main():
             pairs_probe = {
                 "pairs": "JSON.stringify(Array.prototype.map.call("
                          "document.querySelectorAll('.lesson'), function (l) {"
-                         "var p = l.querySelector('.lesson-period');"
+                         "var p = l.querySelector('.lesson-p');"
                          "var c = l.querySelector('.lesson-code');"
                          "return [(p ? p.textContent : '').trim(),"
                          "        (c ? c.textContent : '').trim()]; }))",
@@ -674,6 +906,142 @@ def main():
                   "the seeded row it came from lost to a newer manual edit")
             check(vis8, "own day: the page is actually PAINTED")
             check(not e8, "own day: no console errors", "; ".join(e8[:2]))
+
+            # ── 9. ⊕ MRB-326 JOB 3 · ruling 5 — THE CHASE FOOTER OPENS ───
+            #
+            # "+51 MORE ACROSS YOUR CLASSES" was a dead count: the page told a
+            # teacher that fifty-one other children owed them work and then
+            # gave them no way to see who. It is now the door to the full list.
+            #
+            # ⚠️ ITS OWN FIXTURE, because case 1's cannot ask the question:
+            # three students owe work there and the panel shows six, so there
+            # is no overflow and no footer to press. `packs_wide()` puts a
+            # roster on two classes big enough that some of it is BELOW the
+            # fold, which is the only state in which the control exists.
+            wide = packs_wide()
+            chase_probe = {
+                "logBefore": "(window.__MRB_STUB__.log||[]).length",
+                "chase": """(async () => {
+                  const box = document.getElementById('chase');
+                  if (!box) { return JSON.stringify({error: 'no chase panel'}); }
+                  const rows = () => box.querySelectorAll('[data-chase-student]').length;
+                  const before = rows();
+                  const more = document.getElementById('chase-more');
+                  if (!more) { return JSON.stringify({error: 'no expander — ' + before + ' row(s) shown'}); }
+                  const label = (more.textContent || '').trim();
+                  more.click();
+                  await new Promise(r => requestAnimationFrame(r));
+                  const after = rows();
+                  const groups = box.querySelectorAll('.chase-group').length;
+                  /* ⊕ THE REDUNDANCY RULE, MEASURED. Once a group is headed
+                     "8r/Sc1" the rows inside it drop their own class code —
+                     the heading two lines up has just said it. */
+                  const codesInGroups = box.querySelectorAll('.chase-group ~ [data-chase-student] .panel-code').length;
+                  const back = document.getElementById('chase-more');
+                  const backLabel = (back ? back.textContent : '').trim();
+                  if (back) { back.click(); }
+                  await new Promise(r => requestAnimationFrame(r));
+                  return JSON.stringify({
+                    before, after, groups, codesInGroups, label, backLabel,
+                    collapsed: rows(),
+                    total: Number(document.getElementById('chase-count').textContent || 0),
+                    remind: !!document.getElementById('remind-all')
+                  });
+                })()""",
+                "logAfter": "(window.__MRB_STUB__.log||[]).length",
+            }
+            t9, s9, _o9, e9, vis9, g9 = run_case(
+                b, base, "9-chase-open", "2026-09-07T09:00:00",
+                TABLES, wide, args.shots, evals=chase_probe)
+            print("--- CHASE, OPENED ---\n" + t9[:500] + "\n")
+            ex = json.loads(g9["chase"])
+            check(not ex.get("error"), "chase: the footer is a CONTROL, not a caption",
+                  ex.get("error", ""))
+            if not ex.get("error"):
+                check(ex["before"] == 6,
+                      "chase: Design shows six", "got %d" % ex["before"])
+                check("more across today" in ex["label"],
+                      "chase: and the control says how many more there are",
+                      repr(ex["label"]))
+                check(ex["after"] == ex["total"] and ex["after"] > ex["before"],
+                      "chase: pressing it opens the FULL list, in place",
+                      "%d of %d shown, %d after opening"
+                      % (ex["before"], ex["total"], ex["after"]))
+                check(ex["groups"] >= 2,
+                      "chase: the full list is GROUPED BY CLASS",
+                      "two classes owe work; %d heading(s)" % ex["groups"])
+                check(ex["codesInGroups"] == 0,
+                      "chase: and a grouped row does not repeat its class code",
+                      "the heading above it has just said it; %d row(s) do"
+                      % ex["codesInGroups"])
+                check(ex["backLabel"] == "Show fewer",
+                      "chase: there is a way back", repr(ex["backLabel"]))
+                check(ex["collapsed"] == ex["before"],
+                      "chase: and it collapses again",
+                      "back to %d, was %d" % (ex["collapsed"], ex["before"]))
+                check(ex["remind"], "chase: Send reminders survives the toggle")
+            check(g9["logAfter"] == g9["logBefore"],
+                  "chase: opening the full list reads NOTHING new",
+                  "the whole list was already in hand; %s read(s) before, "
+                  "%s after" % (g9["logBefore"], g9["logAfter"]))
+            check(not e9, "chase: no console errors", "; ".join(e9[:2]))
+
+            # ── 10. ⊕ MRB-326 JOB 3 · ruling 6 — THE HELD SCHOOL ─────────
+            #
+            # `schools.assignments_open_from` in the future. MRB-325 ruled the
+            # sentence "once per surface" and this page has FOUR surfaces, so
+            # the drive's own fixture rendered it five times: on three lesson
+            # rows, in both panels, and in the summary. Ruling 6 hardens that
+            # to once, full stop.
+            held = dict(TABLES)
+            held["schools"] = [{"assignments_open_from": "2026-10-01"}]
+            hold_probe = {
+                "states": "(function(){var n=0;"
+                          "document.querySelectorAll('.lesson-state').forEach(function(c){"
+                          "if((c.textContent||'').trim())n++;});return n;})()",
+                "chaseRows": "document.querySelectorAll('#chase [data-chase-student]').length",
+                "chaseCount": "(document.getElementById('chase-count').textContent||'').trim()",
+                "remind": "!!document.getElementById('remind-all')",
+                "reteach": "(document.getElementById('reteach-host').innerHTML||'').trim().length",
+                # ⚠️ THE WHOLE DOCUMENT, not the rendered text — a sentence
+                # hidden in a `title`, an `aria-label` or a skeleton would
+                # still be a second copy of it waiting to surface.
+                "saidTimes": "(document.getElementById('main').innerHTML"
+                             ".split('No assignment set yet').length - 1)",
+            }
+            t10, s10, _o10, e10, vis10, g10 = run_case(
+                b, base, "10-held", "2026-09-07T09:00:00",
+                held, packs_for(), args.shots, evals=hold_probe)
+            print("--- HELD SCHOOL ---\n" + t10[:500] + "\n")
+            check(g10["saidTimes"] == 1,
+                  "held: 'No assignment set yet' appears EXACTLY ONCE",
+                  "ruling 6 — it was said 5 times; got %s" % g10["saidTimes"])
+            check("No assignment set yet" in t10,
+                  "held: and the once is where a teacher reads it")
+            # And the once is in the SUMMARY SENTENCE, beside the lesson
+            # count — not stranded in a panel where a teacher scanning the
+            # top of the page would never meet it.
+            check("3 lessons today" in t10 and
+                  t10.index("No assignment set yet") - t10.index("3 lessons today") < 40,
+                  "held: and it is said in the summary sentence",
+                  "beside the lesson count, where the page's one-line answer is")
+            check(g10["states"] == 0,
+                  "held: NO lesson row carries a status line",
+                  "ruling 6 — %s row(s) still do" % g10["states"])
+            check(g10["chaseCount"] == "0",
+                  "held: the chase panel shows a count of 0",
+                  "nothing is owed because nothing was set; got %r" % g10["chaseCount"])
+            check(g10["chaseRows"] == 0, "held: and no chase rows")
+            check(not g10["remind"],
+                  "held: and NO 'Send reminders'",
+                  "there is nobody to remind and nothing to remind them about")
+            check(g10["reteach"] == 0,
+                  "held: the reteach panel is not rendered at all",
+                  "Design's `hasReteach` false")
+            check("No work set this week" not in t10,
+                  "held: the per-class sentence is not shown over the school-wide one")
+            check(vis10, "held: the page is actually PAINTED")
+            check(not e10, "held: no console errors", "; ".join(e10[:2]))
     finally:
         try: server.shutdown()
         except Exception: pass
