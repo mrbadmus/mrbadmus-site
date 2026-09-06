@@ -104,8 +104,14 @@ C_NOBODY = "ee000000-0000-0000-0000-000000000403"  # HZ 10M Maths — nobody's
 # The throwaway paper and submission seeded on 7z/Sc9 for this drive. Without
 # a submission there is nothing to mark and nothing to write feedback against,
 # and an UPDATE matching zero rows proves nothing at all (see the trap above).
-PAPER = "f3260000-0000-0000-0000-000000000201"
-SUBMISSION = "f3260000-0000-0000-0000-000000000301"
+#
+# ⚠️ THESE TWO ROWS ARE PERMANENT FIXTURE, NOT LITTER, and the cleanup below
+# deliberately leaves them. They were seeded by service role on 6 Sep 2026
+# because the TEST project held no submission ANYWHERE — every class in the
+# fixture school had zero — so checks 3a and 3c had nothing real to act on.
+# Deleting them does not tidy the project, it disarms two checks.
+PAPER = "f3260000-0000-0000-0000-000000000201"        # "MRB-326 throwaway paper"
+SUBMISSION = "f3260000-0000-0000-0000-000000000301"   # score 5 / 10, restored each run
 PUPIL = "f3260000-0000-0000-0000-000000000011"
 
 # A current member of HZ 10B Physics — the class the plain teacher does NOT
