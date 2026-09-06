@@ -598,3 +598,43 @@ the **2025-26** academic year, which ended 31 August 2026 — so
 into `no_current_week`. Both drives now build and remove their own worlds. It is
 the same trap §2 of the plan named for Rainford, met a second time from the
 other direction.
+
+---
+
+## 15 · The sheet, paired
+
+Captured from `teacher_fixtures/class-detail-fixture.html` — the driven twin of
+the live `teacher/class-detail.html`, so this is the shipped markup and the
+shipped logic, on the fixture's data rather than a school's.
+
+Each step at 1460 and at 390, which is the width `teacher_reach` hit-tests.
+
+| | desktop | phone |
+|---|---|---|
+| The class screen's action row, with **Set work** restored and the toggle beside it | [`class-detail-actions-desk.png`](shots/class-detail-actions-desk.png) | |
+| **Step 1 · Classes** — multi-select, Design's checkbox grid | [`sheet-1-classes-desk.png`](shots/sheet-1-classes-desk.png) | [`sheet-1-classes-phone.png`](shots/sheet-1-classes-phone.png) |
+| **Step 2 · Topic** — this class's own scheme | [`sheet-2-topic-desk.png`](shots/sheet-2-topic-desk.png) | [`sheet-2-topic-phone.png`](shots/sheet-2-topic-phone.png) |
+| **Step 3 · Detail** — count, question preview, due, release | [`sheet-3-detail-desk.png`](shots/sheet-3-detail-desk.png) | [`sheet-3-detail-phone.png`](shots/sheet-3-detail-phone.png) |
+
+**Step 3 is where every ruled divergence is visible at once**: the fourth
+question chip (`20 Q`) that Design did not draw, `10 Q` selected as the default,
+the question preview underneath it with each question's **lesson** in the caption
+face and a **Swap** on every row, and the due-day chips below. Design's step 2
+showed a count and no questions at all.
+
+At 390 the chips wrap rather than overflow, the question stems truncate to one
+line, and every Swap stays hit-testable — which is `teacher_reach`'s 3,436-control
+pass, seen rather than asserted.
+
+⚠️ **These are ours, not a Design-vs-ours pair.** Design's teacher delivery is a
+`.dc.html` that needs her own compiler and runtime to render, so a side-by-side
+photograph is not available the way it is for the student pages. The fidelity
+comparison in §12 is made against her SCRIPT CONSTANTS instead — her `swCounts`,
+her `swRelease`, her eyebrow expression — which is the stricter comparison
+anyway, and the one this estate already uses.
+
+⊕ Worth recording, because it nearly produced three misleading screenshots: the
+capture's first pass searched for a control whose label *contained* "Set work",
+and step 3's confirm button is also labelled "Set work" — so every "advance"
+re-opened the sheet at step 1, and all three files showed the same panel. The
+capture now matches labels EXACTLY and takes the last match.
