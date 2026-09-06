@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════
--- ROLLBACK for 20260906044802_mrb326_admin_write_authority.sql
+-- ROLLBACK for 20260906054837_mrb326_admin_write_authority.sql
 -- ═══════════════════════════════════════════════════════════════════════
 --
 -- Apply MANUALLY only. The Supabase CLI never reads `supabase/rollbacks/`,
