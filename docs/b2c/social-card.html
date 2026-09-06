@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>MrBadmus social card — source of record</title>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     docs/b2c/social-card.html — the SOURCE the shared-link card is drawn from.
+
+     MRB-327 lane C. This file is not published: the generator does not copy
+     docs/, and nothing links it. It exists so the PNG next to it can be
+     redrawn rather than re-invented — a card image with no source is a card
+     image nobody can ever change.
+
+     TO REGENERATE:
+       python3 -m http.server 8899          # from the worktree root
+       # then screenshot http://localhost:8899/docs/b2c/social-card.html
+       # at exactly 1200x630, full_page=False, into docs/b2c/social-card.png
+     (the estate's headless-Chrome harness is ks3_browser.py; see the report)
+
+     ⚠️ THE CHEVRON IS COPIED, NOT REDRAWN. The two <path> elements below are
+     byte-for-byte `BRANDMARK` from consumer/consumer-common.js — same d=, same
+     stroke-width 3.4, same 0.34 second-chevron opacity, same viewBox. Redrawing
+     it by eye is how a brand mark quietly acquires a fourth variant.
+
+     ⚠️ "MrBadmus", never "MrBadmusAI". The consumer wordmark carries no "AI"
+     (ruled; night4_laneC_drive.py greps for violations).
+     ═══════════════════════════════════════════════════════════════════════ -->
+<link rel="stylesheet" href="/shared/tokens.css"/>
+<style>
+  html, body { margin: 0; padding: 0; }
+  /* The exact card box. Nothing may reflow it — a scrollbar or a stray
+     margin here becomes a crooked 1200x630 capture. */
+  .card {
+    width: 1200px; height: 630px; box-sizing: border-box;
+    /* Design's literals, for the same reason parents/public.css uses them:
+       the --ks3-* tokens live on .rd[data-mode="ks3"], and this box is the
+       root of its own document. */
+    background: #FBF3E6; color: #221E1B;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    padding: 72px 80px 80px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden;
+  }
+  /* The accent, as an edge rather than a shape. Design's language is hard
+     2px outlines and offset block shadows with no blur anywhere; a soft
+     tinted blob is not in it, and at card scale a low-opacity shape reads
+     as a compression artefact rather than as a decision. A full-bleed
+     bottom rule is the same vocabulary at the size a shared link is
+     actually seen at — 500px wide in a WhatsApp thread — where it is the
+     one element still legible. */
+  .card::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+    height: 16px; background: #E4572E;
+  }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .brand span {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 800; font-size: 46px; letter-spacing: -.035em;
+  }
+  h1 {
+    margin: 0; max-width: 17ch;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-weight: 800; font-size: 72px; line-height: .98; letter-spacing: -.04em;
+  }
+  .foot {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 24px;
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 20px; letter-spacing: .1em; text-transform: uppercase; color: #6B6058;
+    position: relative; z-index: 1;
+  }
+  .foot .url { color: #A93411; letter-spacing: .06em; text-transform: none; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <svg width="58" height="58" viewBox="0 0 22 22" aria-hidden="true">
+      <path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span>MrBadmus</span>
+  </div>
+  <h1>A science teacher who sets the work, marks it, and tells you how it went.</h1>
+  <div class="foot">
+    <span>Science · Years 7 to 11 · England</span>
+    <span class="url">mrbadmus.com</span>
+  </div>
+</div>
+</body>
+</html>

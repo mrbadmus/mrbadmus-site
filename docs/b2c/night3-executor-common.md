@@ -66,7 +66,65 @@ const { data: s } = await anon.auth.signInWithPassword({ email, password });   /
 // POST /api/consumer/family/ensure → org_id; POST /api/consumer/children → child_id; POST /api/consumer/child/login → child JWT
 ```
 Billing states for a page drive are set by SQL on `subscriptions` (`status`, `trial_end`, `current_period_end`, `locked_at`, `retry_at`, `last_payment_failed_at`, `canceled_at`) — the Night 2 drive `backend/scripts/night2-drive.js` shows every transition. To put a REAL session into headless Chrome, sign in with the Supabase JS SDK on the page itself (the `ks3_browser.py` CDP harness can `eval` that), or write the session JSON to `localStorage['sb-qeppkiswvclkkwbxmlok-auth-token']` — it must be a real session, the SDK deletes a fake one.
-Cleanup order: `DELETE /api/consumer/children/:id` each child → `admin.auth.admin.deleteUser` for children and parent (delete `profiles` dependants first; `profiles.id` FKs onto `auth.users` with no cascade) → rows in tonight's tables for the org → `staff_scopes`, `subscriptions`, `academic_years`, `classes`, `schools`. SQL via `mcp__supabase-test__execute_sql` (ToolSearch `select:mcp__supabase-test__execute_sql`). If the Bash permission layer refuses an authenticated write from your script, say so in the report and the commander will run it.
+Cleanup order: `DELETE /api/consumer/children/:id` each child → `admin.auth.admin.deleteUser` for children and parent (delete `profiles` dependants first; `profiles.id` FKs onto `auth.users` with no cascade) → rows in tonight's tables for the org → `staff_scopes`, `subscriptions`, `academic_years`, `classes`, `schools`.
+
+⊕ **6 Sep 2026 (MRB-327) — the dependants, named.** The paragraph above says
+"delete `profiles` dependants first" and then names none of them, so every lane
+rediscovers the list one `23503` at a time. There are **43 foreign keys onto
+`profiles(id)` and 26 onto `schools(id)` that are not `ON DELETE CASCADE`**. The
+ones that actually bite a consumer fixture, in the order they bite:
+
+```sql
+-- with o = the org id and p = the profile id
+delete from public.email_log              where org_id = o or recipient_id = p;
+delete from public.consumer_notifications where org_id = o or recipient_id = p;
+delete from public.parent_prefs           where profile_id = p;
+delete from public.ai_usage_events        where org_id = o or profile_id = p;
+-- ⚠️ The work generator writes a REAL assignment per practice item, so these
+-- four come before work_items and before classes. Found by the MRB-327
+-- marketing lane, whose teardown tripped on them.
+delete from public.assignment_question_attempts where submission_id in
+  (select id from public.assignment_submissions where student_id = p);
+delete from public.assignment_submissions where student_id = p;
+delete from public.assignment_questions   where assignment_id in
+  (select id from public.assignments where class_id in
+     (select id from public.classes where school_id = o));
+delete from public.assignments            where class_id in
+  (select id from public.classes where school_id = o);
+delete from public.work_items             where org_id = o or child_id = p or removed_by = p;
+delete from public.work_generation_runs   where child_id = p;
+delete from public.child_plans            where org_id = o or child_id = p or paused_by = p;
+delete from public.family_messages        where org_id = o or sender_id = p or recipient_id = p;
+delete from public.exam_answers           where org_id = o or child_id = p or mb_marked_by = p;
+delete from public.unit_check_attempts    where org_id = o or child_id = p;
+delete from public.child_flashcard_queue  where org_id = o or child_id = p;
+delete from public.report_notes           where child_id = p or written_by = p;
+delete from public.org_limits             where org_id = o or updated_by = p;
+delete from public.stripe_events          where org_id = o;
+delete from public.subscriptions          where org_id = o;
+delete from public.class_members          where student_id = p;
+delete from public.class_teachers         where teacher_id = p;
+delete from public.classes                where school_id = o;
+delete from public.staff_scopes           where school_id = o or granted_by = p;
+delete from public.academic_years         where school_id = o;
+delete from public.audit_log              where school_id = o or actor_id = p;
+delete from public.account_deletion_requests where org_id = o;
+delete from public.profiles               where id = p;   -- only now
+delete from public.schools                where id = o;   -- and only then
+-- and last, over the auth Admin API, the auth.users row
+```
+
+⚠️ **`audit_log` is the one that surprises people.** `POST /api/consumer/family/ensure`
+writes an `audit_log` row with `actor_id` = the parent, so the very first call of
+every drive plants a blocker on the very last step of its teardown.
+
+⚠️ Run the whole thing as ONE statement (a `do $$ … $$` block). The MCP runs a
+query as a single transaction, so if any one delete fails the entire batch rolls
+back and the earlier deletes you thought had succeeded did not.
+
+⚠️ `class_shoutouts` and `submission_feedback` are `RESTRICT`, not `NO ACTION` —
+they will refuse rather than defer. A consumer fixture should never write either;
+if teardown trips on one, something has crossed into the school layer. SQL via `mcp__supabase-test__execute_sql` (ToolSearch `select:mcp__supabase-test__execute_sql`). If the Bash permission layer refuses an authenticated write from your script, say so in the report and the commander will run it.
 
 ## Traps already found (do not rediscover them)
 - Two `postgres_changes` bindings on one channel deliver nothing; `subscribeMessages()` in consumer-common.js is the one correct binding — use it.

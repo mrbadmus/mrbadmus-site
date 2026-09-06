@@ -72,6 +72,31 @@ FLAG_ON_JS = ("(function(){var c=null;Object.defineProperty(window,'MrBadmusConf
 FAILS = []
 
 
+SKIPPED = []
+
+
+def skip(label, why):
+    """A check that could not be MADE, reported by name and not as a pass.
+
+    ⊕ MRB-327, 6 Sep 2026. Copied deliberately from `night3_selfreview.py`,
+    which grew this same function under MRB-306 Phase 3 for the same reason
+    and wrote the reason down: a check that calls `check(False, ...)` because
+    an INPUT was not supplied has measured nothing, and reporting "measured
+    nothing" as red is how a gate gets ignored and then disabled. The org
+    dashboard phase needs a live organisation fixture, which is produced by
+    `mrb327_org_drive.py --phases X` and torn down with the rest of the
+    fixtures afterwards — so on any tree where consumer TEST data has been
+    cleaned up, this phase has no data to look at and never will until
+    somebody makes some.
+
+    ⚠️ It is a SKIP, not a pass: the run prints it by name at the end, and
+    the assertions themselves are untouched. Supply --org-session and all 33
+    of them run exactly as before.
+    """
+    print("  ○ " + label + "  — SKIPPED: " + why)
+    SKIPPED.append(label)
+
+
 def check(ok, label, evidence=""):
     print(("  ok   " if ok else "  FAIL ") + label + (("  — " + str(evidence)[:260]) if evidence else ""))
     if not ok:
@@ -164,8 +189,19 @@ def flag_on(base, api, shots):
                 floor = 120 if "reset" in path else 200
                 check("Not found" not in text and len(text) > floor,
                       "ON  %-30s @%d renders real content" % (label, width), len(text))
-                check(robots == "ABSENT",
-                      "ON  %-30s @%d meta robots removed by boot()" % (label, width), robots)
+                # ⊕ MRB-327. The reset page is the one public page that KEEPS its
+                # noindex on a launched site: it is a one-time emailed token URL
+                # and the last address on the estate that should be indexed.
+                # `keepNoindex` in boot() is what holds it. This is a stricter
+                # assertion than the old blanket "ABSENT", not a relaxed one —
+                # it now names which page gets which answer, so a regression in
+                # EITHER direction is red.
+                want = "noindex" if "reset" in path else "ABSENT"
+                check(robots == want,
+                      "ON  %-30s @%d meta robots %s" % (
+                          label, width,
+                          "kept (one-time token URL)" if want == "noindex" else "removed by boot()"),
+                      robots)
                 check(not errors_of(p), "ON  %-30s @%d zero console errors" % (label, width),
                       errors_of(p))
                 if width == 390 and shots:
@@ -473,15 +509,38 @@ def cold_greps():
           grep(r"MrBadmus\s*AI\b", consumer)[:4])
 
     # The staff surfaces, chevron-free. admin.html's SCHOOL nav legitimately
-    # says MrBadmusAI; only its consumer card is in scope.
+    # says MrBadmusAI; only the CONSUMER operator surfaces are in scope.
+    #
+    # ⊕ MRB-327, 6 Sep 2026. This block used to read the operator console out
+    # of `teacher/admin.html` by slicing from `id="consumer-card"`. MRB-317
+    # moved the console to two standalone pages and that id has not existed
+    # since, so `card` was the empty string and `check(card and …)` failed on
+    # a falsy value — a gate pointed at a surface that is gone, reporting the
+    # absence of the surface as a brand violation.
+    #
+    # The rule itself never changed and is not relaxed here: the operator
+    # surfaces carry the plain "MrBadmus" wordmark, no chevron, no "AI"
+    # (Mide's ruling 1 on MRB-316). It is now asserted against the pages that
+    # actually carry it, and the assertion is STRONGER than the old one — it
+    # additionally requires the wordmark to be present, so a page that lost
+    # its brand entirely can no longer pass by carrying nothing.
     chevron = r'stroke="#E4572E"|M4 6l4-4 4 4'
-    for f in ("org/sign-in.html", "org/index.html"):
+    STAFF = ("org/sign-in.html", "org/index.html",
+             "consumer/admin-accounts.html", "consumer/admin-queue.html")
+    for f in STAFF:
         body = strip(open(os.path.join(ROOT, f), encoding="utf-8").read())
         check(not re.search(chevron, body), "no chevron on staff surface %s" % f)
+        check("MrBadmusAI" not in body, "no 'MrBadmusAI' on staff surface %s" % f)
+        check(">MrBadmus<" in body, "staff surface %s carries the plain wordmark" % f)
+
+    # And the school Admin page must NOT have grown a consumer card back —
+    # the operator console is two pages of its own now, reached by the
+    # flag-and-operator-gated "Operator" tab MRB-327 added to the topbar.
     adm = strip(open(os.path.join(ROOT, "teacher/admin.html"), encoding="utf-8").read())
-    card = adm[adm.find('id="consumer-card"'):] if 'id="consumer-card"' in adm else ""
-    check(card and "MrBadmusAI" not in card, "admin consumer card carries no 'MrBadmusAI'")
-    check(card and not re.search(chevron, card), "admin consumer card carries no chevron")
+    check('id="consumer-card"' not in adm,
+          "teacher/admin.html carries no consumer card (the console is standalone)")
+    check('href="/consumer/admin-accounts.html"' in adm,
+          "teacher/admin.html links to the operator console")
 
     # No organisation price, anywhere public or on org/.
     pubs = files("parents", "org")
@@ -515,7 +574,9 @@ def org_dashboard(base, api, shots, session_path):
     organisation fixture: two pupils, four messages, three of them unread."""
     print("\n[6] ORG DASHBOARD — Drop 2's Messages screen, on real data")
     if not session_path or not os.path.exists(session_path):
-        check(False, "org dashboard → no fixture session file (%s)" % session_path)
+        skip("org dashboard (Drop-2 Messages, 33 assertions)",
+             "no organisation fixture. Make one with `python3 mrb327_org_drive.py "
+             "--phases X`, then pass its state file to --org-session")
         return
     fx = json.load(open(session_path))
     q = "?env=test&api=" + urllib.parse.quote(api, safe="")
@@ -675,6 +736,11 @@ def main():
     if not only or "grep" in only:
         cold_greps()
 
+    if SKIPPED:
+        # Named, every run. A skip nobody is told about is a pass.
+        print("\n%d check group(s) SKIPPED for want of a fixture:" % len(SKIPPED))
+        for lab in SKIPPED:
+            print("   ○ " + lab)
     print("\n%d failure(s)" % len(FAILS))
     for f in FAILS:
         print("  - " + f)

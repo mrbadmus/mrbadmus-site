@@ -8,6 +8,16 @@
      removes this tag on the enabled path and only there, so the public front
      door is invisible to search until the day it is switched on. -->
 <meta name="robots" content="noindex"/>
+<!-- ⚠️ The tab icon is Design's DOUBLE chevron (consumer-common.js BRANDMARK),
+     not KS3's single one — CLAUDE.md keeps those apart deliberately. A data:
+     URI, not a file, because a flag-off public page must make ZERO network
+     requests and night4_laneC_drive.py asserts it. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
+<!-- ⚠️ NO og:*, twitter:* or rel="canonical" here, on purpose. They are
+     injected into the SERVED copy by generate_site_v5.publish_consumer_launch()
+     when CONSUMER_SIGNUP_ENABLED=true at build time, together with the removal
+     of the noindex above — one launch decision, one place. Edit the wording in
+     _PUBLIC_META in generate_site_v5.py, not here. -->
 <title>MrBadmus — a science teacher who sets the work, marks it, and tells you how it went</title>
 <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="theme-color" content="#15110C"/>
 <meta name="robots" content="noindex"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
 <title>Admin — Accounts — MrBadmus</title>
 <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -59,6 +60,16 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--st-room); }
+
+/* ── MRB-327 a11y: the flag-off refusal page on a DARK surface ──────────
+   `notFound()` in consumer-common.js replaces the whole document with
+   `.c-notice`, which is styled in consumer.css for the light consumer
+   theme. Landed on this near-black room it measured 1.11:1 for the
+   heading and 3.02:1 for the paragraph — an operator opening the console
+   with CONSUMER_SIGNUP_ENABLED off saw, in practice, a blank black page.
+   Re-pointed at the room's own text tokens: 14.1:1 and 6.8:1. */
+.c-notice h1 { color: var(--st-room-text); }
+.c-notice p  { color: #A99A85; }
 a { color: var(--st-ember); text-decoration: none; }
 a:hover { color: #F6EEDF; }
 input, button, select, textarea { font: inherit; }
@@ -97,6 +108,65 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
 
 /* ── main ────────────────────────────────────────────────────────────── */
 .ac-main { max-width: 1240px; margin: 0 auto; padding: clamp(18px,3vw,32px) clamp(16px,3vw,32px); }
+
+/* ── ops health strip (MRB-327 §5) ────────────────────────────────────
+   Six figures from GET /api/consumer/admin/health, sitting above the
+   account stats because they answer a different question: the tiles below
+   are "how is the business", these are "is the machine running".
+
+   ZERO READS AS CALM. A healthy figure wears exactly the panel every other
+   tile on this page wears — same ground, same rule, same muted label — so a
+   quiet morning looks like the ordinary state of the console and not like a
+   suppressed alarm. Only `is-warn` spends the ember, and the ember is the
+   only thing on the page that means "somebody has to do something". A strip
+   that shouted at six zeroes would be ignored by the second week, which is
+   the week it would first have mattered.
+
+   It scrolls inside itself rather than wrapping: six figures in a fixed
+   order are easier to read at a glance than six figures that reflow into a
+   different shape at every width, and the page body must never scroll
+   sideways. */
+.ac-ops {
+  display: flex; gap: 8px; margin-bottom: 6px;
+  overflow-x: auto; padding-bottom: 4px;
+}
+/* ⊕ MRB-327. On a PHONE the strip WRAPS instead of scrolling, and that is the
+   whole point of the strip: this is Mide reading six health figures on the way
+   to marking, and a sideways scroll hides half of them behind a gesture he has
+   no reason to know is there. Six tiles at ~130px do not fit in 390px, so as a
+   scroller the fourth, fifth and sixth were simply invisible.
+
+   Wrapping also keeps admin_ui_drive.py's "nothing sticks out past the
+   viewport" assertion honest — it caught this, and the right answer was to
+   stop sticking out rather than to teach the gate about a scrollable region.
+   The tiles keep their own min-width and grow to share the row, so two fit per
+   line at 390 and three at 560.
+
+   Desktop is untouched: above 720px it is the single row it was drawn as. */
+@media (max-width: 720px) {
+  .ac-ops { flex-wrap: wrap; overflow-x: visible; }
+  .ac-ops-item { flex: 1 1 calc(50% - 4px); max-width: none; }
+}
+.ac-ops-item {
+  flex: 0 0 auto; min-width: 130px; max-width: 260px;
+  padding: 9px 12px; border-radius: 10px;
+  background: var(--ks3-dark-panel); border: 1px solid var(--ks3-dark-rule);
+}
+.ac-ops-item.is-warn { border-color: var(--st-ember); background: #2A1E10; }
+.ac-ops-item .n { font: 600 19px/1.15 var(--ks3-font-mono); color: var(--st-room-text); }
+.ac-ops-item.is-warn .n { color: var(--st-ember); }
+.ac-ops-item .l {
+  font: 500 11px/1.3 var(--ks3-font-mono); letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ks3-on-dark-muted); margin-top: 3px; white-space: nowrap;
+}
+.ac-ops-item .note {
+  font: 400 11px/1.35 var(--ks3-font-body); color: var(--ks3-on-dark-muted);
+  margin-top: 2px; overflow-wrap: anywhere;
+}
+.ac-ops-when {
+  font: 400 11.5px/1.3 var(--ks3-font-mono); color: var(--ks3-on-dark-muted);
+  margin: 0 0 18px;
+}
 
 .ac-stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap: 10px; margin-bottom: 20px; }
 .ac-stat { padding: 12px 14px; border-radius: 10px; background: var(--ks3-dark-panel); border: 1px solid var(--ks3-dark-rule); }
@@ -210,6 +280,10 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
 <div class="rd ac-room" data-mode="ks3" id="c-main" style="display:none;">
 
   <header class="ac-head">
+    <!-- MRB-327 a11y: axe `page-has-heading-one` — the console had no <h1>.
+         Visually hidden (the visible title is the "Accounts" nav link), and
+         inside <header> so it sits within a landmark. -->
+    <h1 class="ks3-sr-only">Accounts</h1>
     <a class="ac-word" href="/consumer/admin-accounts.html">MrBadmus</a>
     <span class="ac-badge">Admin</span>
     <nav class="ac-nav">
@@ -221,6 +295,14 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
   </header>
 
   <main class="ac-main">
+
+    <!-- MRB-327 a11y: axe `scrollable-region-focusable` (SERIOUS, WCAG 2.1.1).
+         At 390px this ops strip scrolls horizontally, and with no tabindex a
+         keyboard-only operator could not scroll it to reach the checks past
+         the right edge. tabindex=0 makes it a focus stop; role+name say what
+         it is once focused. -->
+    <div class="ac-ops" id="ops" tabindex="0" role="region" aria-label="Operational checks" hidden></div>
+    <p class="ac-ops-when" id="ops-when" hidden></p>
 
     <div class="ac-stats" id="stats"></div>
 
@@ -324,6 +406,48 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
         '<div class="l">' + C.escapeHtml(t[1]) + '</div>' +
         (t[2] ? '<div class="note">' + C.escapeHtml(t[2]) + '</div>' : '') + '</div>';
     }).join('');
+  }
+
+  /* ── the ops health strip (MRB-327 §5) ──────────────────────────────
+     `figures` is the SAME array the 07:00 ops email renders, straight from
+     /api/consumer/admin/health, so a number cannot mean one thing on this
+     screen and something else in an inbox. The backend decides `warn`; this
+     function decides nothing at all, which is the point — two places
+     deciding what counts as bad is two places to disagree.
+
+     ⚠️ IT FAILS TO ABSENT. The console's actual job is the account list
+     below, and an operator on the phone to a parent needs that list whether
+     or not a health read succeeded. So this has its own request, its own
+     catch, and nothing waits on it: if the route is slow, 500s, or 404s
+     because the flag went off mid-session, the strip simply is not there
+     and every other thing on the page still works. */
+  function paintOps(h) {
+    var host = document.getElementById('ops');
+    var when = document.getElementById('ops-when');
+    var figures = (h && h.figures) || [];
+    if (!figures.length) { host.hidden = true; when.hidden = true; return; }
+    host.innerHTML = figures.map(function (f) {
+      return '<div class="ac-ops-item' + (f.warn ? ' is-warn' : '') + '">' +
+        '<div class="n">' + C.escapeHtml(String(f.value)) + '</div>' +
+        '<div class="l">' + C.escapeHtml(f.label) + '</div>' +
+        (f.note ? '<div class="note">' + C.escapeHtml(f.note) + '</div>' : '') +
+        '</div>';
+    }).join('');
+    host.hidden = false;
+    var t = h.checked_at ? new Date(h.checked_at) : null;
+    when.textContent = 'Platform health' +
+      (t && !isNaN(t.getTime())
+        ? ' · checked ' + t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+        : '') +
+      ' · last ' + (h.window_hours || 24) + ' hours';
+    when.hidden = false;
+  }
+
+  function loadOps() {
+    ctxApi('/api/consumer/admin/health').then(paintOps).catch(function () {
+      document.getElementById('ops').hidden = true;
+      document.getElementById('ops-when').hidden = true;
+    });
   }
 
   function paintFilters() {
@@ -477,6 +601,27 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
         return 'Unlocked until ' + C.fmtDate(r.comped_until) + '.';
       });
     }, d.billing !== 'locked'));
+    /* ⊕ MRB-327. The comp route (`POST /api/consumer/admin/orgs/:id/comp`)
+       has existed since Night 3 and had NO control on any screen, so the only
+       way to comp an account was to call the API by hand. The runbook has to
+       be able to say "open Accounts, click this" — an operator task with no
+       button is not a task Mide can be asked to do.
+
+       A fixed twelve months rather than a date picker, to match the two
+       actions above it: every other action here is one click with its period
+       stated on the button. A comp is the one that "never will pay" (the
+       route's own comment distinguishes it from a trial, which is one that
+       "has not begun paying"), so a year is the honest default — a beta
+       family, or a hardship case. For any other period the route still takes
+       an arbitrary `comped_until`. */
+    actions.push(actionRow('Comp for 12 months', d.billing === 'comped' ? 'Already comped' : 'Free, no card', function () {
+      var until = new Date();
+      until.setFullYear(until.getFullYear() + 1);
+      return ctxApi('/api/consumer/admin/orgs/' + d.id + '/comp',
+                    { method: 'POST', body: { comped_until: until.toISOString() } }).then(function (r) {
+        return 'Comped until ' + C.fmtDate(r.subscription && r.subscription.comped_until) + '.';
+      });
+    }, false));
 
     var timelineHtml = (d.timeline || []).length ? d.timeline.map(function (t) {
       return '<div class="ac-tl-row"><span class="when">' + C.escapeHtml(C.fmtDate(t.when)) + '</span><span>' + C.escapeHtml(t.what) + '</span></div>';
@@ -608,6 +753,7 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
 
         wireOrgForm();
         load();
+        loadOps();
       });
     }
   });
