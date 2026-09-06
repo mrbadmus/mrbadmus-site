@@ -101,6 +101,15 @@ C_OWN = "f3260000-0000-0000-0000-000000000101"     # 7z/Sc9 — the teacher's
 C_OTHER = "ee000000-0000-0000-0000-000000000402"   # HZ 10B Physics — someone's
 C_NOBODY = "ee000000-0000-0000-0000-000000000403"  # HZ 10M Maths — nobody's
 
+# 7z/Sc9b — ALSO taught by nobody, but WITH a pupil on it. Seeded for check
+# 2e, and it is the only class on TEST that can exercise the new branch in
+# `loadStudentDetail`: HZ 10M Maths has no roster, so the membership test
+# refuses it before the class test is even interesting, and 7z/Sc9 HAS a live
+# teacher link (the plain teacher's) which an admin can read school-wide — so
+# on that class the driver query answers and the fallback is never reached.
+C_NOBODY_WITH_PUPIL = "f3260000-0000-0000-0000-000000000102"
+PUPIL_B = "f3260000-0000-0000-0000-000000000012"
+
 # The throwaway paper and submission seeded on 7z/Sc9 for this drive. Without
 # a submission there is nothing to mark and nothing to write feedback against,
 # and an UPDATE matching zero rows proves nothing at all (see the trap above).
@@ -255,6 +264,34 @@ def open_class(b, base, sess, key, class_id, shot):
     return got
 
 
+CALL_JS = r"""(async function () {
+  try {
+    var r = await window.MrBadmusTeacherData.loadStudentDetail(%s, %s);
+    return JSON.stringify({ok: true, name: (r.student || {}).first_name || '',
+                           klass: (r.class || {}).name || '',
+                           pill: (r.class || {}).pill_label});
+  } catch (e) {
+    return JSON.stringify({ok: false, code: e && e.code, msg: String(e && e.message).slice(0, 120)});
+  }
+})()"""
+
+
+def load_student_detail(p, student_id, class_id):
+    """Call the exported data layer directly, in a really-signed-in page.
+
+    ⚠️ WHY A DIRECT CALL AND NOT A PAGE. `loadStudentDetail` is EXPORTED and
+    documented, and it carried the same `class_teachers`-driven refusal
+    `loadClassMatrices` did — but nothing on the live estate calls it any
+    more: the only callers were the hand-written pages retired on 24 Aug 2026,
+    and `teacher/student-detail.html` is now a build output fed by
+    `teacher-live.js`'s `base()`. So there is no screen to drive that would
+    reach it, and a fix to it would otherwise ship completely unmeasured.
+    This is the honest way to measure an export with no caller: call it, as a
+    real user, under real RLS.
+    """
+    return json.loads(p.eval(CALL_JS % (json.dumps(student_id), json.dumps(class_id))))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shots", default="/tmp/mrb326-shots")
@@ -378,6 +415,72 @@ def main():
                       g["metaText"][:80] or "no eyebrow carried it")
                 check(not g["errors"], "…console stayed quiet",
                       "; ".join(g["errors"][:2]))
+
+            # ── 2d · the exported data layer with no live caller ────────
+            print("\n  ── 2d · loadStudentDetail(), called directly ─────")
+            p = b.page("%s/leaderboard.html?env=test" % base, settle=2.0)
+            p.eval("""
+              (async function () {
+                var c = window.supabase.createClient(%s, %s);
+                await c.auth.setSession({access_token: %s, refresh_token: %s});
+                return 'ok';
+              })()
+            """ % (json.dumps(URL), json.dumps(key),
+                   json.dumps(admin["access_token"]),
+                   json.dumps(admin["refresh_token"])))
+            p.goto("%s/teacher/class-detail.html?class=%s&env=test" % (base, C_OWN),
+                   settle=6.0)
+            got = load_student_detail(p, PUPIL, C_OWN)
+            check(got.get("ok") is True,
+                  "2d. the admin reaches a pupil in a class she does not teach",
+                  json.dumps(got)[:120])
+            # ⚠️ THE SECOND CHECK IS NOT WEAKENED BY THE FIRST, and this is
+            # the assertion that says so. Reaching any class in the school is
+            # not permission to read a child who is not in the one you asked
+            # for — `loadStudentDetail`'s membership test is untouched.
+            stranger = load_student_detail(p, PUPIL, C_OTHER)
+            check(stranger.get("ok") is False
+                  and stranger.get("code") == "not_authorised",
+                  "…but NOT a pupil who is not on that class's roster",
+                  json.dumps(stranger)[:120])
+
+            # ── 2e · …and the branch 2d does NOT reach ─────────────────
+            # ⚠️ 2d PROVES LESS THAN IT LOOKS LIKE IT DOES, which is why this
+            # exists. On 7z/Sc9 the driver query ANSWERS for an admin — she
+            # can read `class_teachers` school-wide, and that class has a live
+            # link — so `loadStudentDetail`'s new `classes` fallback is never
+            # entered there. 7z/Sc9b has a pupil and NO link at all, so it is
+            # the only class on TEST where the fallback is the thing under
+            # test. The NULL pill is the tell: a class with no teacher-subject
+            # link has no subject to name, and 2d's "Science" came from the
+            # link 2d did not need.
+            bare = load_student_detail(p, PUPIL_B, C_NOBODY_WITH_PUPIL)
+            check(bare.get("ok") is True,
+                  "2e. …including on a class with NO teacher link at all",
+                  json.dumps(bare)[:140])
+            check(bare.get("pill") is None,
+                  "…with a NULL pill, which is what no link honestly means",
+                  repr(bare.get("pill")))
+
+            # The negative control on the same call. Without it, 2e proves
+            # only that the fallback returns rows to somebody.
+            p2 = b.page("%s/leaderboard.html?env=test" % base, settle=2.0)
+            p2.eval("""
+              (async function () {
+                var c = window.supabase.createClient(%s, %s);
+                await c.auth.setSession({access_token: %s, refresh_token: %s});
+                return 'ok';
+              })()
+            """ % (json.dumps(URL), json.dumps(key),
+                   json.dumps(teacher["access_token"]),
+                   json.dumps(teacher["refresh_token"])))
+            p2.goto("%s/teacher/class-detail.html?class=%s&env=test" % (base, C_OWN),
+                    settle=6.0)
+            denied = load_student_detail(p2, PUPIL_B, C_NOBODY_WITH_PUPIL)
+            check(denied.get("ok") is False
+                  and denied.get("code") == "not_authorised",
+                  "…and the plain teacher is refused the SAME call",
+                  json.dumps(denied)[:120])
 
     finally:
         server.shutdown()
