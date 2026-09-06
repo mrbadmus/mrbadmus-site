@@ -22,6 +22,17 @@ BOTH key stages, permanently, as a fast registered gate.
     student never sees that order. So for KS4 this gate measures the
     BUILT tree's `data-answer` attributes — the thing a student's
     browser actually receives.
+  · KS4's ASSIGNMENT POOL (ks4_data → ks4_assignment_bank, MRB-332) is
+    measured AUTHORED, like KS3 and unlike the KS4 lesson pages two
+    bullets up. ⚠️ That is not a contradiction — it is the same rule
+    reaching a different answer, because the rule is "measure what is
+    served". Nothing shuffles this pool. `bankFor` reads it ordered by
+    `bank_position` and composition takes the rows in that order, so the
+    `correct_index` an author types is the position the child meets. The
+    KS4 lesson pages are measured built ONLY because
+    generate_site_v5.make_new_quiz reshuffles them after authoring; there
+    is no such step here, and measuring the exported table instead would
+    measure the same numbers a day later.
   · The 46 KS4 bonding "rd" pages shuffle at RUNTIME (shared/quiz.js,
     per-option data-correct, no data-answer at all) and are
     position-immune by construction. The gate asserts that property
@@ -157,6 +168,54 @@ def main():
     check("KS4 rd pages stay position-immune", not immune_bad,
           "no data-answer on any quiz.js page" if not immune_bad
           else "positional cards appeared on: %s" % ", ".join(immune_bad))
+
+    # ── KS4 assignment pool, AUTHORED (MRB-332) ─────────────────────────
+    #
+    # ⚠️ AUTHORED, not built — and the header explains at length why the KS4
+    # lesson pages above are the other way round. Both follow the one rule:
+    # measure what is SERVED. This pool has no shuffle anywhere between the
+    # .py file and the child — `export_ks4_questions.py` copies
+    # `correct_index` across, `bankFor` orders by `bank_position`, and
+    # composition takes the rows in that order — so the index an author types
+    # is the position a student meets, and the authored file is the honest
+    # place to measure it.
+    #
+    # Scoped per SUBJECT and again per SUBTOPIC. The subtopic pass is the one
+    # that matters for a student: a subtopic is twelve questions and it is the
+    # unit of homework, so a skew inside one is a skew a class actually sits,
+    # even when the subject as a whole averages out.
+    try:
+        import ks4_data
+        # strict=False: the pool is authored by many hands over many days and
+        # a part-written subject must still be measurable. Completeness is
+        # export_ks4_questions.py's gate, not this one's.
+        pool = ks4_data.load_pool(strict=False)
+    except SystemExit as exc:
+        # A pool that will not load is a finding, not a skip. If an author is
+        # mid-save the message says so and the re-run is free.
+        check("KS4 assignment pool", False,
+              "ks4_data.load_pool() failed, so the pool could not be "
+              "measured: %s" % str(exc).replace("\n", " "))
+        pool = None
+    except Exception as exc:                       # noqa: BLE001 — reported
+        check("KS4 assignment pool", False,
+              "ks4_data could not be loaded (%s: %s)"
+              % (type(exc).__name__, exc))
+        pool = None
+
+    if pool is not None and not pool:
+        # The ONLY clean skip, and it is announced. An empty corpus has no
+        # distribution to measure; anything else is measured.
+        print("  ⏭️  KS4 assignment pool — SKIP: no questions authored yet. "
+              "One question and this measures.")
+    elif pool:
+        for label, key in (("KS4 assignment pool · by subject", "subject"),
+                           ("KS4 assignment pool · by subtopic",
+                            "subtopic_slug")):
+            sets = [(r[key], r["id"], len(r["options"]), r["correct_index"])
+                    for r in pool]
+            probs, line = pos_report(label, sets)
+            check(label, not probs, line if not probs else "; ".join(probs))
 
     if FAIL:
         print("❌ %d check(s) failed" % len(FAIL))
