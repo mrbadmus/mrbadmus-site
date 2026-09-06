@@ -132,6 +132,10 @@ TABLES = {
     "class_teachers":    CLASS_TEACHERS,
     "classes":           [klass("cccccccc-0000-4000-8000-000000000001","8r/Sc1","KS3",8), klass("cccccccc-0000-4000-8000-000000000002","10h/Ph1","KS4",10),
                           klass("cccccccc-0000-4000-8000-000000000003","7h/Sc5","KS3",7)],
+    # ⚠️ EMPTY, and the case that needs a row puts one here. `loadSchoolHold`
+    # reads this table; zero rows is "no hold known", which is the state every
+    # case except the held one is in.
+    "schools":           [],
     "profiles": [{"id": TEACHER, "first_name": "Ada", "last_name": "Nwosu",
                   "display_name": "Ms Nwosu", "role": "teacher", "school_id": "s1"}],
 }
@@ -324,6 +328,26 @@ def packs_for(with_data=True):
     }
 
 
+# ── ⊕ coordinator correction 1 · A CLASS THIS TEACHER TEACHES AND IS NOT
+#    TEACHING TODAY ────────────────────────────────────────────────────────
+#
+# Design's `chaseAll` and `reteachRows` both iterate `liveClasses` — every
+# class the teacher holds — and her footer says "+51 MORE ACROSS YOUR
+# CLASSES". The panels shipped scoped to the day, which no fixture could
+# catch while every class in the fixture was ON the day.
+#
+# `9r/Ch2` is taught on THURSDAY only. It never appears in the Monday lesson
+# list, and every one of its students who owes work must still appear in the
+# expanded chase list, under its own heading, after the day's classes.
+OFF_DAY_CLASS = "cccccccc-0000-4000-8000-000000000004"
+
+CLASSES_WIDE = TABLES["classes"] + [klass(OFF_DAY_CLASS, "9r/Ch2", "KS3", 9)]
+
+ENTRIES_WIDE = ENTRIES + [
+    entry("eeeeeeee-0000-4000-8000-000000000008", OFF_DAY_CLASS, 4, 3, "9r/Ch2", "KS3", 9),
+]
+
+
 def packs_wide():
     """⊕ MRB-326 JOB 3 — a day with MORE chase-able students than the panel
        shows, which is the only state in which ruling 5's expander exists.
@@ -365,6 +389,14 @@ def packs_wide():
         # and one with nothing set, so the day still carries all three states
         "cccccccc-0000-4000-8000-000000000003": {
             "members": [member(0, "c")], "assignments": [], "submissions": [],
+        },
+        # ⊕ THE OFF-TIMETABLE CLASS. Three on roll, none in: three students the
+        # day-scoped panel could not see at all.
+        OFF_DAY_CLASS: {
+            "members": [member(i, "d") for i in range(3)],
+            "assignments": [{"id": "a4", "title": "Acids",
+                             "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}],
+            "submissions": [],
         },
     }
 
@@ -495,7 +527,11 @@ def run_case(b, base, name, when, tables, packs, shots, width=1280,
     would carry the previous case's frozen clock into the next one."""
     pre = ("window.__MRB_STUB__=%s;\n" % json.dumps({"uid": TEACHER, "tables": tables, "log": []}))
     pre += STUB_JS + (FREEZE % when) + (PACKS % json.dumps(packs))
-    pre += (CLASSES_JS % json.dumps(TABLES['classes'])) + PACK_JS
+    # ⚠️ FROM THE CASE'S OWN `tables`, NOT FROM THE MODULE-LEVEL `TABLES`.
+    # It was hardcoded, which meant a case that widened the class list — the
+    # correction-1 case does exactly that — got the stubbed `loadTeacherClasses`
+    # of the BASE fixture and silently proved nothing.
+    pre += (CLASSES_JS % json.dumps(tables.get('classes', []))) + PACK_JS
 
     p = b.page("about:blank", settle=0.2)
     p.send("Page.addScriptToEvaluateOnNewDocument", {"source": pre})
@@ -696,11 +732,17 @@ def main():
                   se.get("error", ""))
             if not se.get("error"):
                 check(se["shutAtStart"], "search: the sheet ships CLOSED")
-                check(g1["logAfterSearch"] > g1["logBeforeSearch"],
-                      "search: and reads NOTHING until it is opened",
-                      "the pool is every class's roster, which is wider than "
-                      "this page's own day-scoped reads; %s read(s) before the "
-                      "press, %s after"
+                # ⊕ COORDINATOR CORRECTION 1 — THIS CHECK IS INVERTED, and
+                # the inversion is the correction. The search used to load its
+                # own pool on first press, because it was the only thing that
+                # wanted every class. The chase panel now wants the same
+                # population, so the page builds it once and the sheet reads
+                # it — which makes the sharper claim: opening the search costs
+                # NOT ONE query, because there is one pool and one source.
+                check(g1["logAfterSearch"] == g1["logBeforeSearch"],
+                      "search: adds NOT ONE read of its own",
+                      "it reads the pool the chase panel already built; "
+                      "%s read(s) before the press, %s after"
                       % (g1["logBeforeSearch"], g1["logAfterSearch"]))
                 check("5 students on your classes" in se["idle"],
                       "search: the pool is every student on EVERY class",
@@ -932,7 +974,25 @@ def main():
                   more.click();
                   await new Promise(r => requestAnimationFrame(r));
                   const after = rows();
-                  const groups = box.querySelectorAll('.chase-group').length;
+                  const groups = Array.prototype.map.call(
+                    box.querySelectorAll('.chase-group'),
+                    g => (g.textContent || '').trim());
+                  /* ⊕ CORRECTION 1 — is the OFF-TIMETABLE class's student in
+                     the list, under that class's own heading? */
+                  const offRows = (() => {
+                    const hs = box.querySelectorAll('.chase-group');
+                    for (const h of hs) {
+                      if ((h.textContent || '').trim() !== '9r/Ch2') { continue; }
+                      let n = 0;
+                      for (let e = h.nextElementSibling;
+                           e && !e.classList.contains('chase-group');
+                           e = e.nextElementSibling) {
+                        if (e.hasAttribute('data-chase-student')) { n++; }
+                      }
+                      return n;
+                    }
+                    return -1;
+                  })();
                   /* ⊕ THE REDUNDANCY RULE, MEASURED. Once a group is headed
                      "8r/Sc1" the rows inside it drop their own class code —
                      the heading two lines up has just said it. */
@@ -942,7 +1002,7 @@ def main():
                   if (back) { back.click(); }
                   await new Promise(r => requestAnimationFrame(r));
                   return JSON.stringify({
-                    before, after, groups, codesInGroups, label, backLabel,
+                    before, after, groups, offRows, codesInGroups, label, backLabel,
                     collapsed: rows(),
                     total: Number(document.getElementById('chase-count').textContent || 0),
                     remind: !!document.getElementById('remind-all')
@@ -950,9 +1010,18 @@ def main():
                 })()""",
                 "logAfter": "(window.__MRB_STUB__.log||[]).length",
             }
+            # ⊕ CORRECTION 1 — the wide fixture carries a FOURTH class taught
+            # on Thursday. It is never in Monday's lesson list, and its three
+            # students must still be chase-able.
+            wide_tables = dict(TABLES)
+            wide_tables["timetable_entries"] = ENTRIES_WIDE
+            wide_tables["classes"] = CLASSES_WIDE
+            wide_tables["class_teachers"] = CLASS_TEACHERS + [
+                {"class_id": OFF_DAY_CLASS, "teacher_id": TEACHER,
+                 "deleted_at": None, "ended_at": None}]
             t9, s9, _o9, e9, vis9, g9 = run_case(
                 b, base, "9-chase-open", "2026-09-07T09:00:00",
-                TABLES, wide, args.shots, evals=chase_probe)
+                wide_tables, wide, args.shots, evals=chase_probe)
             print("--- CHASE, OPENED ---\n" + t9[:500] + "\n")
             ex = json.loads(g9["chase"])
             check(not ex.get("error"), "chase: the footer is a CONTROL, not a caption",
@@ -960,16 +1029,33 @@ def main():
             if not ex.get("error"):
                 check(ex["before"] == 6,
                       "chase: Design shows six", "got %d" % ex["before"])
-                check("more across today" in ex["label"],
-                      "chase: and the control says how many more there are",
+                # ⊕ CORRECTION 1 — Design's exact words. It said "across
+                # today's classes" while the pool WAS the day; the pool is now
+                # every class, so the caption is hers again.
+                check("more across your classes" in ex["label"],
+                      "chase: and the control says how many more, in Design's words",
                       repr(ex["label"]))
                 check(ex["after"] == ex["total"] and ex["after"] > ex["before"],
                       "chase: pressing it opens the FULL list, in place",
                       "%d of %d shown, %d after opening"
                       % (ex["before"], ex["total"], ex["after"]))
-                check(ex["groups"] >= 2,
+                check(ex["total"] == 17,
+                      "chase: the pool is EVERY class, not the day's",
+                      "10 + 4 today, plus 3 on a class taught on Thursday; "
+                      "got %d" % ex["total"])
+                check(len(ex["groups"]) == 3,
                       "chase: the full list is GROUPED BY CLASS",
-                      "two classes owe work; %d heading(s)" % ex["groups"])
+                      "three classes owe work; got %s" % (ex["groups"],))
+                # Today's classes first, in the order they are taught; then
+                # the rest by code. The teacher's next hour is the part of
+                # this list they can still do something about.
+                check(ex["groups"] == ["8r/Sc1", "10h/Ph1", "9r/Ch2"],
+                      "chase: today's classes first, then the rest by code",
+                      "got %s" % (ex["groups"],))
+                check(ex["offRows"] == 3,
+                      "chase: a class NOT on today's timetable is in the list",
+                      "9r/Ch2 is taught on Thursday and three of its students "
+                      "owe work; got %s row(s) under its heading" % ex["offRows"])
                 check(ex["codesInGroups"] == 0,
                       "chase: and a grouped row does not repeat its class code",
                       "the heading above it has just said it; %d row(s) do"
@@ -982,8 +1068,8 @@ def main():
                 check(ex["remind"], "chase: Send reminders survives the toggle")
             check(g9["logAfter"] == g9["logBefore"],
                   "chase: opening the full list reads NOTHING new",
-                  "the whole list was already in hand; %s read(s) before, "
-                  "%s after" % (g9["logBefore"], g9["logAfter"]))
+                  "the whole list was already in hand before the press; "
+                  "%s read(s) before, %s after" % (g9["logBefore"], g9["logAfter"]))
             check(not e9, "chase: no console errors", "; ".join(e9[:2]))
 
             # ── 10. ⊕ MRB-326 JOB 3 · ruling 6 — THE HELD SCHOOL ─────────

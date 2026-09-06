@@ -397,7 +397,18 @@
       padding-top: 12px; margin-top: 2px; border-top: 1px solid var(--st-rule-soft);
       display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
     }
-    .panel-foot .btn { margin-left: auto; }
+    /* ⊕ CORRECTION 2 — Design's footer control: an underline link in her
+       accent, not a bordered button. Her own values, from the `remindAll`
+       node of the `isToday` block. `:disabled` only dims it — a control
+       mid-send must not change shape under the cursor. */
+    .panel-link {
+      margin-left: auto; flex: none;
+      font: 600 15.5px/1.2 var(--st-ui); color: var(--st-accent-text);
+      background: none; border: none; padding: 0; cursor: pointer;
+      text-decoration: underline; text-underline-offset: 3px;
+    }
+    .panel-link:hover { color: var(--st-accent-hover); }
+    .panel-link:disabled { opacity: 0.55; cursor: default; }
     /* Design's footer caption typography, on a control rather than a caption.
        ⊕ MIDE'S RULING 5: "+51 more across today's classes" was a DEAD COUNT.
        It is now the opener for the full list, so it is a `<button>` that
@@ -411,7 +422,6 @@
       text-decoration: underline; text-underline-offset: 3px;
     }
     .chase-more:hover { color: var(--st-accent-text); }
-    .panel-foot .btn { padding: 7px 12px; min-height: 34px; font-size: 15px; }
     /* Design's own reteach footer caption. A caption, not a control — there
        is nothing to open. */
     .panel-caption {
@@ -894,6 +904,13 @@ function nextTeachingDay(days, from) {
    already call, RLS-scoped exactly as they are everywhere else, and
    `loadClassMatrices` chunks internally — so twelve classes is a handful of
    round trips, not twelve.                                                 */
+/* ⊕ MRB-326 JOB 3 (coordinator correction 1) — THE PAGE'S OWN STUDENT POOL.
+   Filled by the wide read below, which the CHASE PANEL now needs anyway. The
+   search reads it when it is there and falls back to loading its own when it
+   is not (the no-timetable page, or a failed wide read) — so the sheet is
+   never dead and never duplicates a read the page has already made. */
+const SEARCH_POOL = { rows: null };
+
 function armSearch(TD) {
   const openBtn = el('search-open'), back = el('search-back'),
         input = el('search-input'), out = el('search-results');
@@ -932,6 +949,8 @@ function armSearch(TD) {
 
   async function ensurePool() {
     if (pool || loading) { return; }
+    /* The page has already built it, for the chase panel. */
+    if (SEARCH_POOL.rows) { pool = SEARCH_POOL.rows; render(); return; }
     loading = true; failed = false; render();
     try {
       let yid = null;
@@ -1016,19 +1035,57 @@ MrBadmusTeacherGuard.requireTeacherRole({
     /* Armed before anything is read. It makes no request until pressed. */
     armSearch(TD);
 
-    /* ⊕ RULING 8 — the eyebrow. Fired, NOT awaited: it is a date line above
-       the greeting and nothing below it waits on the academic year's NAME.
-       Never fatal — a failed read costs the line its "2026-27" and keeps the
-       date and the term, which are calendar facts this page can always
-       derive on its own. */
-    (TD.loadAcademicYears ? TD.loadAcademicYears() : Promise.resolve(null))
+    /* ⚑ ONE `loadAcademicYears`, TWO READERS, AND IT IS FIRED FIRST.
+       The eyebrow wants the year's NAME and the class list wants its ID, and
+       `loadTimetable` below wants it too — `class-entry.js` holds the answer
+       after the first ask, so this is one round trip whoever asks. */
+    const yearsPromise = (TD.loadAcademicYears ? TD.loadAcademicYears()
+                                               : Promise.resolve(null))
+      .catch(function (e) {
+        console.warn('[today] loadAcademicYears unavailable', e);
+        return null;
+      });
+
+    /* ⊕ RULING 8 — the eyebrow. NOT awaited: it is a date line above the
+       greeting and nothing below it waits on the academic year's NAME. Never
+       fatal — a failed read costs the line its "2026-27" and keeps the date
+       and the term, which are calendar facts this page can always derive. */
+    yearsPromise.then(function (y) {
+      const w = y && y.working;
+      el('eyebrow').textContent = eyebrowLine(w && w.name ? w.name : '');
+    });
+
+    /* ⊕ COORDINATOR CORRECTION 1, 6 Sep 2026 — EVERY CLASS, NOT TODAY'S.
+       ═══════════════════════════════════════════════════════════════════
+       The chase panel and the reteach panel were scoped to the day's
+       handful, and that was WRONG against Design on both counts. Her
+       `chaseAll` and her `reteachRows` BOTH iterate `liveClasses` — every
+       class the teacher holds, not the ones on the timetable today — her
+       footer says "+51 MORE ACROSS YOUR CLASSES", and Mide's ruling 5 asks
+       for "every chase-able student". A teacher chasing homework is not
+       chasing only the children they happen to see before lunch.
+
+       ⚑ FIRED HERE, BESIDE `loadTimetable`, AND NOT AFTER IT.
+       This is the MRB-292 lesson and it is the whole reason this sits at the
+       top of the function rather than next to the panel that consumes it: a
+       wide read placed where it is READ is a wide read placed in series
+       behind everything above it. The class list needs only the year, which
+       is already in flight, so it overlaps the timetable read completely;
+       the matrices read it feeds then overlaps the DAY's matrices read (see
+       `widePromise` below). Nothing waits on anything it does not need. */
+    const allClassesPromise = yearsPromise
       .then(function (y) {
-        const w = y && y.working;
-        el('eyebrow').textContent = eyebrowLine(w && w.name ? w.name : '');
+        const yid = y && y.working ? y.working.id : null;
+        return TD.loadTeacherClasses(yid, { metrics: false });
       })
       .catch(function (e) {
-        console.warn('[today] loadAcademicYears unavailable — no year on the date line', e);
-        el('eyebrow').textContent = eyebrowLine('');
+        /* ⚠️ null, NEVER []. An empty list would mean "this teacher has no
+           classes" and would quietly narrow the chase panel back to the day
+           while still captioning it "across your classes". null means "not
+           known", and the panel says the narrower, TRUE thing instead. */
+        console.warn('[today] loadTeacherClasses unavailable — the panels '
+                     + 'fall back to the day’s classes', e);
+        return null;
       });
 
     let entries;
@@ -1215,9 +1272,38 @@ MrBadmusTeacherGuard.requireTeacherRole({
       if (e.classId && classIds.indexOf(e.classId) === -1) { classIds.push(e.classId); }
     });
 
+    /* ⚑ TWO READS, ISSUED IN THE SAME MICROTASK, NOT ONE AFTER THE OTHER.
+       ⊕ COORDINATOR CORRECTION 1.
+
+       The DAY's classes are read on their own and awaited first, because the
+       lesson rows are why a teacher is on this screen and they must not wait
+       on the twelfth class. The REST are read beside them, off the class list
+       that has been in flight since the top of this function — so by the time
+       the day's read resolves the wide one is already most of the way home.
+
+       The two sets are DISJOINT: the wide read asks only for the classes the
+       day does not already cover, so no class's matrices are fetched twice.
+       `loadClassMatrices` chunks internally, so "the rest" is a couple of
+       round trips over a dozen classes, not a dozen. */
+    const todayMxPromise = TD.loadClassMatrices(classIds);
+
+    const widePromise = allClassesPromise.then(function (classes) {
+      if (!classes) { return null; }
+      const others = classes.filter(function (k) {
+        return k.id && classIds.indexOf(k.id) === -1;
+      });
+      if (!others.length) { return { classes: classes, mx: {} }; }
+      return TD.loadClassMatrices(others.map(function (k) { return k.id; }))
+        .then(function (mx) { return { classes: classes, mx: mx || {} }; });
+    }).catch(function (e) {
+      console.warn('[today] the wider class read failed — the panels fall '
+                   + 'back to the day’s classes', e);
+      return null;
+    });
+
     let matrices = null;
     try {
-      matrices = await TD.loadClassMatrices(classIds);
+      matrices = await todayMxPromise;
     } catch (err) {
       console.warn('[today] class state unavailable', err);
     }
@@ -1304,10 +1390,28 @@ MrBadmusTeacherGuard.requireTeacherRole({
        STUDENTS TO CHASE, AND WORTH A RETEACH
        ══════════════════════════════════════════════════════════════════════
 
-       Both panels are scoped to TODAY'S classes only — the handful a teacher
-       is about to walk into, not their whole roster. That is the whole point
-       of the screen, and it is also what makes the reteach read affordable:
-       one extra round trip over three or four papers, not over twelve.      */
+       ⊕ COORDINATOR CORRECTION 1 — BOTH PANELS ARE ACROSS EVERY CLASS.
+       This used to read "both panels are scoped to TODAY'S classes only",
+       and that was wrong against Design on both counts. Her `chaseAll` and
+       her `reteachRows` each iterate `liveClasses` — every class the teacher
+       holds this year. Checked in her source before changing either.
+
+       The LESSON ROWS stay day-scoped, because a lesson row is about a
+       lesson. The panels are about the teacher's week.                     */
+
+    const wide = await widePromise;          // already in flight since the top
+    const WIDE_OK = !!wide;
+
+    /* Every class in one map, and every class's code in another. The DAY's
+       reads win where the two overlap — same rows either way, but one row,
+       one name, and the day's name is the one the lesson row is showing. */
+    const allMx = {};
+    if (WIDE_OK) {
+      Object.keys(wide.mx).forEach(function (k) { allMx[k] = wide.mx[k]; });
+    }
+    if (matrices) {
+      Object.keys(matrices).forEach(function (k) { allMx[k] = matrices[k]; });
+    }
 
     // The code a class shows on this page, so the panels name a class the
     // same way the lesson row above them does. One row, one name.
@@ -1315,6 +1419,48 @@ MrBadmusTeacherGuard.requireTeacherRole({
     dayEntries.forEach(function (e) {
       if (e.classId && !codeOf[e.classId]) { codeOf[e.classId] = e.className || ''; }
     });
+    if (WIDE_OK) {
+      wide.classes.forEach(function (k) {
+        if (k.id && !codeOf[k.id]) { codeOf[k.id] = k.name || ''; }
+      });
+    }
+
+    /* ⚑ THE ORDER THE PANELS WALK, AND IT IS NOT ARBITRARY.
+       Today's classes first, in the order they are taught — the teacher's
+       next hour is the part of this list they can still do something about —
+       then every other class by code, naturally ordered so 9A precedes 10A.
+       It is also the DEDUP order: a child taught twice keeps the earlier
+       entry, so a student on today's timetable is filed under today's class
+       rather than under whichever other set the alphabet reached first. */
+    const panelIds = classIds.slice();
+    if (WIDE_OK) {
+      wide.classes.slice()
+        .sort(function (a, b) {
+          return String(a.name || '').localeCompare(String(b.name || ''),
+                                                    undefined, { numeric: true });
+        })
+        .forEach(function (k) {
+          if (k.id && panelIds.indexOf(k.id) === -1) { panelIds.push(k.id); }
+        });
+    }
+
+    /* ⊕ And the search sheet gets its pool for free — it is the same
+       population, and the page has just paid for it. */
+    if (WIDE_OK) {
+      const searchRows = [];
+      panelIds.forEach(function (cid) {
+        ((allMx[cid] && allMx[cid].members) || []).forEach(function (m) {
+          searchRows.push({ id: m.student_id,
+                            name: fullName(m.first_name, m.last_name) || 'Student',
+                            first: m.first_name, last: m.last_name,
+                            code: codeOf[cid] || '', classId: cid });
+        });
+      });
+      searchRows.sort(function (a, b) {
+        return a.name.localeCompare(b.name) || a.code.localeCompare(b.code);
+      });
+      SEARCH_POOL.rows = searchRows;
+    }
 
     const chaseBox = el('chase');
     const reteachHost = el('reteach-host');
@@ -1355,8 +1501,10 @@ MrBadmusTeacherGuard.requireTeacherRole({
     const chaseRows = [];
     const chaseSeen = {};
     const remindBy = {};   // classId -> { assignmentId, studentIds }
-    classIds.forEach(function (cid) {
-      const pack = matrices[cid];
+    /* ⊕ CORRECTION 1 — `panelIds` and `allMx`, not `classIds` and
+       `matrices`: every class the teacher holds, today's first. */
+    panelIds.forEach(function (cid) {
+      const pack = allMx[cid];
       const st = weekState(pack);
       if (st.why !== 'ok' || !st.owing.length) { return; }
       const stats = termStats(pack, nowIso);
@@ -1366,11 +1514,8 @@ MrBadmusTeacherGuard.requireTeacherRole({
       };
       st.owing.forEach(function (m) {
         const s = stats[m.student_id] || { missed: 0, avg: null };
-        /* Distinct STUDENTS, not distinct rows: a child taught twice in one
-           day owes one piece of work per class but is one person to chase,
-           and counting them twice would inflate the summary. The class they
-           are kept under is the earlier lesson of the day, which is the one
-           the teacher reaches first. */
+        /* Distinct STUDENTS, not distinct rows — and `panelIds` order is
+           what decides which class a twice-taught child is filed under. */
         if (chaseSeen[m.student_id]) { return; }
         chaseSeen[m.student_id] = true;
         chaseRows.push({
@@ -1447,7 +1592,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
       } else {
         // Grouped, in the order the classes appear on the day.
         const groups = [];
-        classIds.forEach(function (cid) {
+        panelIds.forEach(function (cid) {
           const mine = chaseRows.filter(function (r) { return r.classId === cid; });
           if (mine.length) { groups.push({ code: codeOf[cid] || '', rows: mine }); }
         });
@@ -1462,14 +1607,23 @@ MrBadmusTeacherGuard.requireTeacherRole({
       if (expanded) {
         foot = '<button type="button" class="chase-more" id="chase-more">Show fewer</button>';
       } else if (more > 0) {
-        /* "across today's classes", NOT "across your classes". This panel has
-           only looked at the day's handful; the wider claim would be one the
-           page has not made a single read to support. */
+        /* ⊕ CORRECTION 1 — DESIGN'S EXACT WORDS, "+51 more across your
+           classes", because the panel has now actually read your classes.
+           ⚠️ AND THE NARROWER SENTENCE SURVIVES, for the one case in which it
+           is the true one: where the wider read failed, this panel really has
+           only looked at the day, and captioning that "across your classes"
+           would be the page claiming a read it did not manage to make. */
         foot = '<button type="button" class="chase-more" id="chase-more">+' + more +
-               ' more across today’s classes</button>';
+               (WIDE_OK ? ' more across your classes' : ' more across today’s classes') +
+               '</button>';
       }
+      /* ⊕ COORDINATOR CORRECTION 2 — `.panel-link`, NOT `.btn`. Design draws
+         "Send reminders" as an underline link in her accent, the same
+         treatment "Edit timetable" gets beside the h2; it shipped as a
+         bordered outline button. Its "Reminded N students" state keeps the
+         same treatment — it is the same control, having done its job. */
       html += '<div class="panel-foot">' + foot +
-        '<button type="button" class="btn" id="remind-all"' +
+        '<button type="button" class="panel-link" id="remind-all"' +
         (remindState.disabled ? ' disabled' : '') + '>' +
         esc(remindState.label) + '</button></div>';
       chaseBox.innerHTML = html;
@@ -1547,8 +1701,15 @@ MrBadmusTeacherGuard.requireTeacherRole({
        (the insights chart wanted a dozen papers and would otherwise have made
        a dozen calls). Here it is at most one per lesson on the day. */
     const wanted = [];
-    classIds.forEach(function (cid) {
-      const paper = newestMarkedPaper(matrices[cid], nowIso);
+    /* ⊕ CORRECTION 1 — EVERY CLASS, which is Design's own rule here: her
+       `reteachRows` maps `liveClasses`, not the day's lessons. Checked in her
+       source rather than assumed, because the two panels could honestly have
+       had different scopes and this one had the better excuse for being
+       narrow. It does not need it: `loadPaperQuestions` takes an ARRAY and
+       chunks internally, so a dozen classes' newest marked papers is a couple
+       of round trips, and this fires AFTER the chase panel has painted. */
+    panelIds.forEach(function (cid) {
+      const paper = newestMarkedPaper(allMx[cid], nowIso);
       if (paper) { wanted.push({ cid: cid, paper: paper }); }
     });
 
@@ -1567,7 +1728,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
     const reteachRows = [];
     if (qpacks) {
       wanted.forEach(function (w) {
-        const weak = weakestQuestion(matrices[w.cid], qpacks[w.paper.id]);
+        const weak = weakestQuestion(allMx[w.cid], qpacks[w.paper.id]);
         /* ⊕ MRB-326 JOB 3 — DESIGN'S OWN THRESHOLD, `w.min < 55`, ADOPTED.
            Without it the panel headed "worth a reteach" listed each class's
            weakest question however well the class did it, and a question

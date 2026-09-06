@@ -51,7 +51,7 @@ does **not** happen before the press.
 |---|---|---|
 | eyebrow `todayLine` — "MONDAY 31 AUGUST · AUTUMN TERM · 2026-27", 13px mono, .18em, uppercase | same slot, same type, built from data: weekday + date from the clock **read in `Europe/London`**, the term derived from the month, the year name from `loadAcademicYears().working.name` | MATCHES (ruling 8). Each of the three parts is **dropped rather than guessed**: August falls in no term and the word is simply omitted; a failed year read costs the line "2026-27" and keeps the rest. |
 | h1 `greeting` — "Good morning, Ayomide" | same, from the clock and `display_name` | MATCHES |
-| `todaySummary` — "4 lessons today · 57 students to chase · 3 topics worth a reteach" | same sentence, same three facts, same order | MATCHES |
+| `todaySummary` — "4 lessons today · 57 students to chase · 3 topics worth a reteach" | same sentence, same three facts, same order. **"N students to chase" counts the whole pool — every class, not the day's** (Design's `chaseAll.length`), and "N topics" counts the reteach rows drawn. | MATCHES (⊕ corrected 6 Sep with the panel below it) |
 | "Set work" (primary, filled) | **not rendered** | **RULED** — ruling 4. `DEAD` in `teacher_rulings.py`: no backend write path composes an assignment from any teacher surface, so a working one is not a front-end job and a non-working one is what that ruling forbids. Disclosed deviation from the approved screenshot. |
 | "Weekly digest" | same, → `/teacher/digest.html` | MATCHES |
 | "Upload timetable" | same, → `/teacher/timetable.html` | **RULED ADDITION** kept — MRB-325 ruling 1 |
@@ -81,13 +81,16 @@ does **not** happen before the press.
 | six rows: avatar 28px / name + code on one baseline / reason under | same | MATCHES (the code used to sit on a line of its own) |
 | `c.reason` — `reasonFor` | Design's branching adopted exactly: missed+low → "6 missed this term · avg 38%"; missed → "6 missed this term"; low only → "Averaging 38%"; else → "Nothing in this week" | MATCHES. It used to append "· avg 78%" to every row, which is not a reason to chase anybody. |
 | `c.open` → that child's page | `→ /teacher/student-detail.html?student=…&class=…` | MATCHES |
-| footer `chaseFoot` — "+51 MORE ACROSS YOUR CLASSES" | **an openable control**: pressing it expands the panel in place to every chase-able student, grouped by class; "Show fewer" collapses it | **RULED CHANGE** — ruling 5. See §"How the full list works" below. |
-| footer "Send reminders" | same, and it was already REAL — `TD.sendReminders`, the same `student_notifications` upsert the class screen's "Remind all" makes | MATCHES |
+| the panel's POPULATION — `chaseAll` iterates `liveClasses`, i.e. every class the teacher holds | same: every class this teacher teaches this academic year | MATCHES (⊕ corrected 6 Sep — it shipped scoped to today's classes, which was wrong against Design and against ruling 5's "every chase-able student". See note ⓑ) |
+| footer `chaseFoot` — "+51 MORE ACROSS YOUR CLASSES" | Design's exact words, on **an openable control**: pressing it expands the panel in place to every chase-able student, grouped by class; "Show fewer" collapses it | **RULED CHANGE** — ruling 5. See §"How the full list works" below. |
+| footer "Send reminders" — underline link, 600 15.5px, accent, underline-offset 3px | same markup and same values (`.panel-link`); its "Reminded N students" state keeps the treatment | MATCHES (⊕ corrected 6 Sep — it shipped as a bordered `.btn`) |
+| — | the reminder write itself | already REAL before this run — `TD.sendReminders`, the same `student_notifications` upsert the class screen's "Remind all" makes. It now covers every class in the pool, which is the list the panel is showing. |
 
 ## 5. Right column — Worth a reteach
 
 | Design | Shipped | Verdict |
 |---|---|---|
+| the panel's POPULATION — `reteachRows` maps `liveClasses`, the same set `chaseAll` uses | same: every class the teacher holds | MATCHES. **Design's rule was checked in her source before this was changed**, because the two panels could honestly have had different scopes and this one had the better excuse for being narrow. She scopes neither to the day. |
 | `hasReteach` — the whole card is conditional | same: the card is **created only when there is something to reteach**, never rendered empty | MATCHES. It used to print "Nothing marked yet." under a heading that says "Worth a reteach" — a card whose heading and body disagree. |
 | header "WORTH A RETEACH" | same | MATCHES |
 | rows: code / question / pct | same, with Design's colour rule on the number (rust under 50%, muted above) | MATCHES |
@@ -122,6 +125,7 @@ Each of these was on the page before this run and is not in column one.
 | `"nothing to chase"` | the all-in status line | **Ruling 7.** "All 29 homeworks in — nothing to chase" → **"29/29 in"**. The absence of a chase clause does not need saying, and the summary above already counts the day's whole chase list. |
 | `"· 18 still to hand in"` | the chase status line | **Ruling 7.** "11 of 29 in · 18 still to hand in" said the same subtraction twice — 29 minus 11 IS 18 — and named nobody. Design's form names two of them. |
 | `"· avg 78%"` on rows with a healthy average | chase rows | Design's `reasonFor` shows the average only under 50%. A good average is not a reason to chase anybody, and it pushed the number that IS one off the end of a narrow panel. |
+| `"+N more across today's classes"` as the chase caption | the chase footer | ⊕ **Reverted 6 Sep.** It was the true sentence while the pool was the day; the pool is now every class, so Design's own "+N MORE ACROSS YOUR CLASSES" is correct again. The narrower sentence survives in code for the one case where it is true: a failed wide read. |
 | `"+N more across today's classes"` in the reteach panel | the reteach footer | Design's footer there is her caption. There is at most one candidate per lesson on the day, so three is the panel, not a truncation of it. |
 | `"…and there isn't one on your account yet"` | the no-timetable prompt | **Ruling 6.** The summary sentence directly above it says "No timetable yet." |
 | the whole `.strip` band (`.strip` / `.strip-line` / `.strip-actions`) | between the greeting and the grid | Design puts the sentence directly under the h1 and the buttons on the greeting's own row — one band fewer for the same two facts. |
@@ -159,9 +163,79 @@ It is now a `<button>` wearing the caption's exact typography.
 
 ---
 
+## ⓑ The chase pool is every class — and what it cost
+
+Corrected 6 September 2026. The panels shipped scoped to the day's handful.
+Design's own source scopes **neither**: `chaseAll` and `reteachRows` both
+iterate `liveClasses`, her footer reads "+51 MORE ACROSS YOUR CLASSES", and
+ruling 5 asks for "every chase-able student". A teacher chasing homework is not
+chasing only the children they see before lunch.
+
+**What is day-scoped and what is not.** The LESSON ROWS stay day-scoped,
+because a lesson row is about a lesson. The two panels and the summary
+sentence's chase count are across every class the teacher holds this year.
+
+**Order.** Today's classes first, in the order they are taught — the part of
+the list the teacher can still act on this morning — then every other class by
+code, naturally ordered so 9A precedes 10A. It is also the dedup order, so a
+child taught twice is filed under today's class rather than under whichever
+other set the alphabet reached first.
+
+**The read is in parallel, not in series.** This is the MRB-292 lesson, and it
+is why the class-list read sits at the top of `onAllowed` rather than beside
+the panel that consumes it:
+
+* `loadAcademicYears` is fired once and read by three callers.
+* `loadTeacherClasses` hangs off it and overlaps `loadTimetable` completely.
+* The day's `loadClassMatrices` and the rest's are issued in the **same
+  microtask**; the day's is awaited first so the lesson rows never wait on the
+  twelfth class. The two sets are **disjoint** — the wide read asks only for
+  classes the day does not cover — so nothing is fetched twice.
+* `loadPaperQuestions` takes an array and chunks internally, so a dozen
+  classes' newest marked papers is a couple of round trips, not a dozen; and it
+  still fires after the chase panel has painted.
+* The **search sheet now costs nothing at all**: it reads the pool the chase
+  panel has already built. One population, one source. Its drive check went
+  from "reads nothing until opened" to the sharper "adds not one read of its
+  own".
+
+**Measured.** `teacher_perf_budget` — the gate that owns MRB-325 ruling 4's
+2500ms warm load — **could not be run: `$MRB_TEST_TEACHER_PASSWORD` is unset**,
+and the registry skips it by name for exactly that reason. So the numbers below
+are the stubbed drive's, and they are a **bound on client-side cost only**: the
+stub answers every query from an in-page array, so there is no network latency
+in them at all. Measured with `performance.now()` (monotonic — the drive freezes
+`Date`), from navigation to the instant the chase panel has painted; median of
+seven, three repeats of the whole bench.
+
+| | median | min | max |
+|---|---|---|---|
+| **before** — 3 classes, all taught today | 50 ms | 23 | 155 |
+| **after** — 3 classes, all taught today | 47–55 ms | 20 | 178 |
+| **after** — 4 classes, one *not* taught today | 42–50 ms | 26 | 84 |
+
+The difference is inside the run-to-run noise, which is the expected result of
+issuing the wide read in parallel rather than behind the day's: the page waits
+on the slower of two concurrent reads instead of on their sum.
+
+⚠️ **One honest caveat on the read count.** The drive stubs `loadTeacherClasses`
+and `loadClassMatrices` at the *data-layer* boundary, so neither reaches the
+query stub's table log — which is why that log reads 8 both before and after.
+The load-shape claim above rests on the code and on the wall-clock, not on that
+counter. The real round-trip count is what `teacher_perf_budget` would measure,
+and it remains unmeasured on this branch.
+
+**Degradation.** If `loadTeacherClasses` or the wide matrices read fails, it
+resolves to `null` — never `[]`, which would mean "this teacher has no classes"
+and would quietly narrow the panel while still captioning it "across your
+classes". On `null` the panels fall back to the day's classes and the footer
+reverts to "+N more across today's classes", which is then the true sentence.
+
+---
+
 ## Gate
 
-`today_drive.py` — **109 checks, all passing** (was 53). Every assertion that
+`today_drive.py` — **112 checks, all passing** (was 53). Every assertion that
 named a deleted thing now asserts its **absence**, which is an inversion, not a
 weakening: the property under test in each case is unchanged.
 
@@ -174,6 +248,16 @@ weakening: the property under test in each case is unchanged.
 * ruling 5: the footer expands to the full list, groups it, drops the repeated
   codes, collapses again, and reads nothing new (case 9, its own wider fixture —
   case 1's three students cannot produce an overflow against a panel of six).
+* correction 1: case 9's fixture carries a fourth class, `9r/Ch2`, **taught on
+  Thursday**. It is never in Monday's lesson list, and the case asserts that the
+  pool is 17 rather than 14, that its three students appear under a `9r/Ch2`
+  group heading, and that the headings come out `8r/Sc1, 10h/Ph1, 9r/Ch2` —
+  today's two first, the off-day class after. No fixture could have caught the
+  day-scoping while every class in it was on the day.
+* correction 1: `run_case` built the stubbed `loadTeacherClasses` from the
+  module-level `TABLES` rather than the case's own — so a case that widened the
+  class list silently got the base fixture's three. Fixed; it was found by the
+  new assertions failing against a correct page.
 * ruling 6: in the held state `"No assignment set yet"` appears **exactly once
   in `#main`'s whole innerHTML**, no lesson row carries a status line, the chase
   count is `0` with no rows and no "Send reminders", and the reteach panel is
