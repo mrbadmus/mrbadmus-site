@@ -3451,13 +3451,58 @@
 
     host.insertBefore(bar, host.firstChild);
 
-    /* Opening the work counts as reading the reminder, exactly as dismissing
-       does — the student has done the thing it asked them to do. */
-    var go = document.querySelector('a[href*="/student/assignment"]');
-    if (go) {
-      go.addEventListener("click", function () {
-        markRemindersRead(sb, data.reminderIds);
-      });
+    /* ⊖ REMOVED by MRB-330, 6 Sep 2026 — it had never once fired. It read:
+
+           var go = document.querySelector('a[href*="/student/assignment"]');
+           if (go) { go.addEventListener("click", …markRemindersRead…); }
+
+       and its comment — "opening the work counts as reading the reminder,
+       exactly as dismissing does" — was right about the rule and wrong about
+       the page. This page renders NO anchors at all: every control on it is a
+       `<button>`, the bench's primary one included, and it navigates by setting
+       `window.location.href` from `openAssignment`. Measured on the live page:
+       0 anchors, 0 selector hits, and `read_at` still null after a child opened
+       her work. A reminder could only ever be cleared by pressing Dismiss.
+
+       It is kept here as a comment because the shape is the lesson: a handler
+       keyed on markup that the port had already changed, failing silently, in a
+       file whose gates were all green. The replacement is deliberately NOT
+       another selector — see `markRemindersReadOnOpen` on the assignment page,
+       which asks the same question of the DATA and cannot go stale when the
+       markup moves again. */
+  }
+
+  /* ⊕ MRB-330, 6 Sep 2026 — OPENING THE WORK COUNTS AS READING THE REMINDER.
+
+     The rule is the one the removed class-page handler stated and never
+     managed to apply: a child who has done the thing the reminder asked for
+     should not still be being asked. What changed is where the question is
+     asked from. The old version watched for a click on a link that does not
+     exist on that page; this one runs on the assignment page itself, where
+     "she opened her work" is not an event to be caught but a fact already
+     established by the page being there at all. There is no selector in it, so
+     there is nothing for a future change of markup to break silently.
+
+     Fire and forget, AFTER the work is on screen. It is a courtesy write on a
+     page whose subject is a child's assignment: it must never delay the render
+     and must never be able to fail it, which is why nothing awaits it and why
+     `markRemindersRead` was already silent about its own failures. Worst case
+     the line simply appears once more on the class page — the same honest
+     outcome that function's own comment describes. */
+  function markRemindersReadOnOpen(sb, classId) {
+    if (!sb || !classId) { return; }
+    try {
+      Promise.resolve(sb.rpc("student_reminders_for_viewer", { p_class_id: classId }))
+        .then(function (r) {
+          var rows = (r && !r.error && r.data && r.data.reminders) || [];
+          var ids = rows.map(function (n) { return n.id; }).filter(Boolean);
+          if (ids.length) { markRemindersRead(sb, ids); }
+        })
+        .catch(function (err) {
+          console.warn("[student-live] mark-read on open unavailable", err);
+        });
+    } catch (err) {
+      console.warn("[student-live] mark-read on open unavailable", err);
     }
   }
 
@@ -3605,6 +3650,11 @@
           if (pendingSink) { window.__MRB_SINK__ = pendingSink; }
 
           window.__MRB_MOUNT__();
+
+          /* ⊕ MRB-330 — she has opened her work, so the reminder that asked her
+             to has been read. After the mount, never awaited: see
+             `markRemindersReadOnOpen`. */
+          if (page === "assignment") { markRemindersReadOnOpen(sb, klass.id); }
 
           /* ⊕ MRB-328 J4(a) — one timing row, and it cannot hurt the page.
              The clock is read HERE, on the line after the mount, because that
