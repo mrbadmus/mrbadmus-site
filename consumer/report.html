@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Termly report — MrBadmus</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
@@ -143,6 +144,45 @@
     .rpt-sheet { width: 100%; min-height: 0; padding: 22px 18px; }
   }
 
+  /* ⊕ MRB-327. The stat row is the one thing on this page that would not fold.
+     Four boxes on `repeat(4, 1fr)`: `1fr` floors at min-content, and a grid
+     item overflows its container rather than stretching it, so the row needs
+     442px inside a 370px sheet and the WHOLE DOCUMENT scrolls sideways —
+     "BEST STREAK / 1 / weeks in a row" clipped off the right edge, and the
+     unit table's header row cut with it. Measured overflow: 122px at 320,
+     67 at 375, 52 at 390, 30 at 412, 12 at 430, 0 from 460 up. That is every
+     handset in use.
+
+     Two-up below 560. `!important` because the column count is dynamic and so
+     the grid-template-columns it overrides is an inline style. Paper is
+     untouched: the sheet is 794px when printing, so this query never applies
+     there — verified, the row is still four columns and still two A4 pages.
+
+     Found in the Safari sweep and present identically in both engines, so it
+     is not a WebKit defect; it had simply never been measured on a phone. */
+  @media (max-width: 560px) {
+    .rpt-stats { grid-template-columns: repeat(2, 1fr) !important; }
+
+    /* ⊕ MRB-327, second half. Fixing the stat row got 390px clean and left
+       320/360/375 still scrolling — iPhone SE is 375, so that was not
+       finished. The remaining culprits were the progress chart's bar labels
+       ("Energy transfers") and the units table's Unit and Status columns.
+
+       Same underlying cause as the stat row and worth naming, because it is
+       the one people rediscover: a flex item and a grid item both default to
+       `min-width: auto`, which floors them at min-content. `flex:1` and
+       `1fr` therefore CANNOT shrink past the longest word, and the row
+       overflows its container instead of the text wrapping. `min-width: 0`
+       removes the floor; `overflow-wrap: break-word` then breaks a word only
+       when there is genuinely no room, so nothing is hyphenated that fits.
+
+       Print is untouched — the sheet is 794px there and this query never
+       applies — which was verified, not assumed. */
+    .rpt-bars > div, .rpt-barlabels > div { min-width: 0; }
+    .rpt-barlabels > div { overflow-wrap: break-word; }
+    .rpt-grid-u > span { min-width: 0; overflow-wrap: break-word; }
+  }
+
   @media print {
     @page { size: A4; margin: 0; }
     html, body { background: #fff; }
@@ -162,8 +202,15 @@
 <body>
 
 <div class="rd rpt-root" data-mode="ks3" id="rpt-root">
-  <div class="rpt-sheet" id="c-main"></div>
-  <div class="rpt-actions" id="rpt-actions" hidden>
+  <!-- MRB-327 a11y: <main>, not <div>. This page had no landmark anywhere,
+       so axe `landmark-one-main` fired and all 17 blocks of the report body
+       fell outside any landmark (`region`). Both are block-level with no UA
+       margin and .rpt-sheet styles the class, so the sheet is unchanged —
+       including in print. -->
+  <main class="rpt-sheet" id="c-main"></main>
+  <!-- MRB-327 a11y: axe `region`. The action bar is a sibling of <main>, so
+       Print and Back were the one part of this page outside every landmark. -->
+  <div class="rpt-actions" id="rpt-actions" role="region" aria-label="Report actions" hidden>
     <button class="rpt-btn" data-act="print" type="button">Print or save as PDF</button>
     <a class="rpt-btn-quiet" id="rpt-back" href="#">Back</a>
   </div>
@@ -250,7 +297,12 @@
     stats.push(statBox('Unit checks', avg,
       count ? ('average of ' + count) : 'none sat yet'));
     if (r.streakBest != null) {
-      stats.push(statBox('Best streak', String(r.streakBest), 'weeks in a row'));
+      /* ⊕ MRB-327. "weeks in a row" — it is DAYS. `longestRun()` walks a set
+         of day strings and counts consecutive ones (86400000ms apart), so
+         this is the longest run of days, and it went into a document a
+         parent may hand to a local authority. */
+      stats.push(statBox('Best streak', String(r.streakBest),
+                         r.streakBest === 1 ? 'day in a row' : 'days in a row'));
     }
 
     /* ── units ───────────────────────────────────────────────────────── */
@@ -285,7 +337,7 @@
     var chart = '';
     if (bars.length) {
       chart = h2('Progress over the term') +
-        '<div class="rpt-keep" style="margin-top:12pt;display:flex;align-items:flex-end;gap:10pt;' +
+        '<div class="rpt-keep rpt-bars" style="margin-top:12pt;display:flex;align-items:flex-end;gap:10pt;' +
           'height:110pt;border-bottom:1.5pt solid #221E1B;padding-bottom:2pt">' +
         bars.map(function (u, i) {
           var pct = parseInt(u.check, 10);
@@ -297,7 +349,7 @@
               'border-radius:5pt 5pt 0 0;background:' +
               (i === bars.length - 1 ? '#E4572E' : '#F4E9D8') + ';height:' + h + 'pt"></div></div>';
         }).join('') + '</div>' +
-        '<div style="display:flex;gap:10pt;margin-top:4pt">' +
+        '<div class="rpt-barlabels" style="display:flex;gap:10pt;margin-top:4pt">' +
         bars.map(function (u) {
           return '<div style="flex:1;text-align:center;font-size:9pt;color:#5F564F;line-height:1.2">' +
             esc(u.name || '') + '</div>';
@@ -392,7 +444,7 @@
                      '</p>') : '') +
 
       (stats.length
-        ? ('<div class="rpt-keep" style="margin-top:18pt;display:grid;grid-template-columns:repeat(' +
+        ? ('<div class="rpt-keep rpt-stats" style="margin-top:18pt;display:grid;grid-template-columns:repeat(' +
            stats.length + ',1fr);gap:8pt">' + stats.join('') + '</div>')
         : '') +
 
@@ -427,6 +479,12 @@
       document.getElementById('rpt-actions').hidden = false;
       C.fail(host, 'This page needs to know whose report to show.',
              'Open it from a child’s page and it will bring their name with it.');
+      /* MRB-327 a11y: axe `page-has-heading-one`. A loaded report carries its
+         own visible <h1>; this refusal branch replaced the whole sheet with a
+         bare paragraph, leaving the document with no heading at all. Added
+         visually hidden so Design's refusal copy is untouched. */
+      host.insertAdjacentHTML('afterbegin',
+        '<h1 class="ks3-sr-only">Termly report</h1>');
       return;
     }
 

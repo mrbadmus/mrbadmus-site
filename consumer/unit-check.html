@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Unit check — MrBadmus</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
@@ -728,6 +729,13 @@
       }).join('');
 
       main.innerHTML =
+        /* ⊕ MRB-327 §3. Every OTHER screen on this page opens with an
+           <h1>; these two did not, so the result screen a child lands on
+           after finishing a check — and the history screen — were the only
+           two with no heading at all (axe page-has-heading-one). Visually
+           hidden rather than drawn, because Design's eyebrow line IS the
+           heading here and adding a visible one would change her page. */
+        '<h1 class="ks3-sr-only">Unit check result</h1>' +
         '<p class="uc-eyebrow">' + esc(unit.name || '') + ' · ' + esc(when) + '</p>' +
 
         '<div class="ks3-ladder uc-ladder">' +
@@ -949,6 +957,8 @@
         : '';
 
       main.innerHTML =
+        /* ⊕ MRB-327 §3 — see paintResult() above. */
+        '<h1 class="ks3-sr-only">Unit check history</h1>' +
         '<p class="uc-eyebrow">' +
           esc([a.name, a.when].filter(Boolean).join(' · ')) + '</p>' +
 

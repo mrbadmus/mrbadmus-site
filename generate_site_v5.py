@@ -5212,6 +5212,556 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
                    topic_title=f"{topic['title']} ({topic['spec']})")
 
 
+# ══════════════════════════════════════════════════════════════════════════
+# ── B2C LAUNCH PUBLICATION (MRB-327 lane C) ───────────────────────────────
+#
+# Everything in this section is gated on ONE build-time switch and does
+# NOTHING unless it is set. With the switch off — which is every normal
+# `python3 build_all.py` — the output of this generator is byte-identical to
+# what it produced before this section existed. That is the whole design, and
+# it is provable in one command:
+#
+#     python3 generate_site_v5.py && git status --short     # → clean
+#     CONSUMER_SIGNUP_ENABLED=true python3 generate_site_v5.py
+#
+# ── WHY ANY OF THIS IS AT BUILD TIME ──────────────────────────────────────
+#
+# Every public page ships `<meta name="robots" content="noindex">` in its
+# static HTML, and `boot()` in consumer/consumer-common.js removes it in the
+# browser when the flag is on. That is correct for a human and useless for a
+# crawler: plenty of crawlers — and every link-preview scraper there is —
+# read bytes and never run our JavaScript. On launch day a JS-only removal
+# means the marketing site says noindex to the machines that decide whether
+# anybody can find it, the pages are silently never indexed, and nothing
+# tells us for weeks. So the tag comes out of the SERVED COPY here, at build
+# time, and the runtime removal stays exactly where it is. Belt and braces:
+# either half alone is enough, and two halves cannot disagree because both
+# read the same launch decision.
+#
+# ── WHY IT RUNS AFTER THE REPO-ROOT ROUND-TRIP, AND NOT BEFORE ────────────
+#
+# ⚠️ THIS IS THE LOAD-BEARING BIT. `build_site()` ends by copying every
+# top-level entry of mrbadmus_site/ back over the repo root, so anything
+# written into mrbadmus_site/parents/ BEFORE that copy is also written into
+# ./parents/ — the source. A pre-round-trip strip would therefore delete the
+# noindex tag from the SOURCE pages, permanently, and a later flag-off build
+# could never put it back: the tag would be gone from the file it is supposed
+# to be gone from only conditionally. One flag-on build would silently make
+# the flag-off state unreachable.
+#
+# Running after the copy loop means the launched tags exist ONLY in the
+# deployed tree. `parents/*.html` in git keeps its noindex, keeps no `og:*`,
+# and is what a flag-off build publishes verbatim. The cost is that a
+# flag-on build leaves mrbadmus_site/parents/ differing from ./parents/ in
+# `git status`. That difference is the launch, it is intended, and it is the
+# only file-level signal that a build was run launched — which is a good
+# thing to be able to see.
+#
+# The same reasoning puts the sitemap, robots.txt, the card image and the
+# four consumer error pages here: none of them exists in source, so none of
+# them can be round-tripped into the repo root or trip the round-trip safety
+# net (which has already run by this point and compares source against
+# deploy).
+# ══════════════════════════════════════════════════════════════════════════
+
+SITE_ORIGIN = "https://mrbadmus.com"
+
+
+def consumer_launch_enabled():
+    """The BUILD-TIME half of CONSUMER_SIGNUP_ENABLED. Fail-closed.
+
+    Deliberately the same contract shared/config.js states for the runtime
+    half: "absent, undefined or anything other than exactly `true` means
+    OFF". So `CONSUMER_SIGNUP_ENABLED=1`, `=yes`, `=TRUE ` and an unset
+    variable all mean off, and there is exactly one spelling that launches
+    anything. A launch switch that answers to four spellings is a launch
+    switch somebody flips by accident.
+    """
+    return os.environ.get("CONSUMER_SIGNUP_ENABLED", "") == "true"
+
+
+def _canon(site_path):
+    """A site path → the URL Cloudflare Pages actually serves it at.
+
+    ⚠️ NOT the `.html` path our links are written with. Cloudflare Pages
+    "will also redirect HTML pages to their extension-less counterparts:
+    /contact.html will be redirected to /contact, and /about/index.html will
+    be redirected to /about/" — so a canonical or a sitemap entry naming the
+    `.html` form names a URL that 308s somewhere else, which is worse than
+    naming nothing at all. Same rule, same reason, as `canon()` in
+    build_ks3.py; kept as its own copy here because importing build_ks3 from
+    this generator would couple the two builds that are separate on purpose.
+
+        /parents/index.html        → https://mrbadmus.com/parents/
+        /parents/pricing.html      → https://mrbadmus.com/parents/pricing
+    """
+    if site_path.endswith("/index.html"):
+        return SITE_ORIGIN + site_path[:-len("index.html")]
+    if site_path.endswith(".html"):
+        return SITE_ORIGIN + site_path[:-len(".html")]
+    return SITE_ORIGIN + site_path
+
+
+# The shared-link card. 1200×630, drawn from Claude Design's `BRANDMARK` (the
+# double chevron in #E4572E, copied out of consumer/consumer-common.js rather
+# than redrawn) plus the wordmark in Bricolage Grotesque 800. Source of record
+# and instructions for redrawing it: docs/b2c/social-card.html.
+#
+# It lives under docs/ rather than in parents/ so that it, too, is published
+# only on a launched build — a flag-off deploy publishes not one byte of it.
+_CARD_SRC = "docs/b2c/social-card.png"
+_CARD_SITE_PATH = "/parents/social-card.png"
+_CARD_W, _CARD_H = 1200, 630
+
+# ── The per-page cards ────────────────────────────────────────────────────
+#
+# Written per page from each page's own copy, not stamped from a template: a
+# description is the sentence that appears under the link when somebody puts
+# it in a WhatsApp thread, and eight identical sentences is eight wasted
+# first impressions.
+#
+# RULES THESE OBEY, all of them checkable:
+#   · the wordmark is "MrBadmus", never "MrBadmusAI" — the consumer surfaces
+#     carry no "AI" (ruled; night4_laneC_drive.py greps for violations);
+#   · no price and no per-pupil framing appears on any public surface, so no
+#     description carries a number;
+#   · `title` is the OG/Twitter headline, kept near 60 characters because
+#     that is where every scraper truncates. It is deliberately NOT always
+#     the page's own <title> — the home page's <title> is Design's full
+#     sentence and runs to 92 characters, which arrives as an ellipsis.
+#
+# `sitemap` — whether the URL is submitted to search engines.
+# `strip_noindex` — whether the launched build removes the static noindex.
+#     Both are True for the six real marketing pages. They are False for
+#     terms and privacy because THE CONSUMER TERMS AND PRIVACY POLICY ARE NOT
+#     WRITTEN YET: parents/legal.js renders a "Not published yet" notice in
+#     place of the text, and asking Google to index a placeholder of a legal
+#     document is worse than leaving it uncrawled for a week. They still get
+#     a canonical and a card, because the footer links them from every page
+#     and a naked URL in a chat thread is the thing being avoided. FLIP BOTH
+#     TO TRUE THE DAY THE REAL WORDING LANDS — that is the whole change.
+_PUBLIC_META = [
+    {
+        "path": "/parents/index.html",
+        "title": "A science teacher who sets the work and marks it — MrBadmus",
+        "desc": ("Two short science sessions a week for your child, matched to what "
+                 "school is covering. Every answer marked against the real mark "
+                 "scheme. One email to you on Sunday."),
+        "sitemap": True, "strip_noindex": True,
+    },
+    {
+        "path": "/parents/how-it-works.html",
+        "title": "How it works — MrBadmus",
+        "desc": ("Five minutes to set up, then it runs itself: work set every Sunday, "
+                 "answers marked instantly, two a month marked by Mr Badmus himself, "
+                 "and one email to you."),
+        "sitemap": True, "strip_noindex": True,
+    },
+    {
+        "path": "/parents/pricing.html",
+        "title": "Pricing — MrBadmus",
+        "desc": ("One plan, everything in it, priced per child. Seven days free, then "
+                 "cancel any time — the week's work set, marked and reported, every "
+                 "week of the year."),
+        "sitemap": True, "strip_noindex": True,
+    },
+    {
+        "path": "/parents/home-education.html",
+        "title": "Science for home educators — MrBadmus",
+        "desc": ("The full Key Stage 3 and GCSE scheme of work, set four or five days "
+                 "a week, marked, and written up each term in a report you can hand to "
+                 "the local authority."),
+        "sitemap": True, "strip_noindex": True,
+    },
+    {
+        "path": "/parents/organisations.html",
+        "title": "For organisations — MrBadmus",
+        "desc": ("Councils, alternative provision and tutoring centres use MrBadmus to "
+                 "set, mark and evidence science for the pupils they are responsible "
+                 "for. One caseworker sees every pupil."),
+        "sitemap": True, "strip_noindex": True,
+    },
+    {
+        "path": "/parents/sign-in.html",
+        "title": "Sign in — MrBadmus",
+        "desc": ("Sign in to MrBadmus. Children sign in with the username they were "
+                 "given; parents use their email and password, or Google."),
+        "sitemap": True, "strip_noindex": True,
+    },
+    {
+        "path": "/parents/terms.html",
+        "title": "Terms — MrBadmus",
+        "desc": ("The terms you and MrBadmus agree to when you subscribe. MrBadmus "
+                 "is a trading name of 3rd Eye Ltd, registered in England — write "
+                 "to support@mrbadmus.com."),
+        "sitemap": False, "strip_noindex": False,
+    },
+    {
+        "path": "/parents/privacy.html",
+        "title": "Privacy — MrBadmus",
+        "desc": ("What MrBadmus does with your data and your child's, and who can see "
+                 "it. MrBadmus is a trading name of 3rd Eye Ltd, registered in "
+                 "England."),
+        "sitemap": False, "strip_noindex": False,
+    },
+]
+
+# ⚠️ NOT IN THE TABLE, ON PURPOSE: parents/reset-password.html. It is reached
+# only from a one-time emailed token link, there is nothing on it worth
+# sharing, and a password-reset URL is the last thing that should be sitting
+# in an index. It keeps its static noindex on a launched build, and
+# robots.txt disallows it outright — see `_robots_txt` below, which is the
+# only half of that protection a crawler honours without running our JS.
+
+
+def _meta_block(entry):
+    """The head tags for one public page. Absolute URLs throughout — a
+    scraper resolves nothing relative, so a relative og:image is an og:image
+    that does not exist."""
+    url = _canon(entry["path"])
+    esc = (lambda s: s.replace("&", "&amp;").replace("<", "&lt;")
+           .replace(">", "&gt;").replace('"', "&quot;"))
+    t, d = esc(entry["title"]), esc(entry["desc"])
+    img = SITE_ORIGIN + _CARD_SITE_PATH
+    return (
+        '<link rel="canonical" href="%s"/>\n'
+        '<meta name="description" content="%s"/>\n'
+        '<meta property="og:type" content="website"/>\n'
+        '<meta property="og:site_name" content="MrBadmus"/>\n'
+        '<meta property="og:locale" content="en_GB"/>\n'
+        '<meta property="og:title" content="%s"/>\n'
+        '<meta property="og:description" content="%s"/>\n'
+        '<meta property="og:url" content="%s"/>\n'
+        '<meta property="og:image" content="%s"/>\n'
+        '<meta property="og:image:width" content="%d"/>\n'
+        '<meta property="og:image:height" content="%d"/>\n'
+        '<meta property="og:image:alt" content="MrBadmus — a science teacher who '
+        'sets the work, marks it, and tells you how it went."/>\n'
+        '<meta name="twitter:card" content="summary_large_image"/>\n'
+        '<meta name="twitter:title" content="%s"/>\n'
+        '<meta name="twitter:description" content="%s"/>\n'
+        '<meta name="twitter:image" content="%s"/>\n'
+        % (url, d, t, d, url, img, _CARD_W, _CARD_H, t, d, img)
+    )
+
+
+def _sitemap_xml(entries):
+    """The sitemap, consumer pages only.
+
+    ⚠️ DELIBERATELY NOT THE WHOLE SITE. The school side — 297 KS3 pages and
+    the KS4 tree — has no sitemap today and has been indexed without one for
+    as long as it has existed. Adding a thousand school URLs here would be a
+    real SEO decision about the school product, taken as a side effect of a
+    consumer launch, by whoever happened to be editing this function. If the
+    school side should have one, it should have one on purpose, in its own
+    change, with somebody looking at the result. The consumer entries stay
+    out of a flag-off build entirely, which is the property that had to hold.
+
+    No <lastmod>, no <changefreq>, no <priority>: search engines ignore the
+    last two, and a <lastmod> derived from a file mtime would differ between
+    two checkouts of the same commit and churn the built tree on every
+    machine. A wrong lastmod is worse than no lastmod.
+    """
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for e in entries:
+        if not e["sitemap"]:
+            continue
+        out.append("  <url><loc>%s</loc></url>" % _canon(e["path"]))
+    out.append("</urlset>")
+    return "\n".join(out) + "\n"
+
+
+def _robots_txt():
+    """robots.txt, written only on a launched build.
+
+    Its absence today means "crawl everything", so the Disallow lines below
+    are the first thing that has ever asked a crawler to stay out of the
+    signed-in product. Every path named is an authenticated app surface with
+    nothing to index — and /parents/reset-password is named because it is a
+    one-time token URL, and this line is the only protection against it being
+    crawled that does not depend on a crawler running our JavaScript.
+    """
+    return (
+        "# MrBadmus — mrbadmus.com\n"
+        "# Written by generate_site_v5.py on a launched build only.\n"
+        "User-agent: *\n"
+        "\n"
+        "# Signed-in product surfaces. Nothing here is public, nothing here\n"
+        "# is worth indexing, and several need a session even to render.\n"
+        "Disallow: /consumer/\n"
+        "Disallow: /go/\n"
+        "Disallow: /org/\n"
+        "Disallow: /teacher/\n"
+        "Disallow: /student/\n"
+        "Disallow: /admin/\n"
+        "Disallow: /hod/\n"
+        "\n"
+        "# A one-time password-reset token URL.\n"
+        "Disallow: /parents/reset-password\n"
+        "\n"
+        "Sitemap: %s/sitemap.xml\n" % SITE_ORIGIN
+    )
+
+
+# ── The consumer-branded 404 and error pages ──────────────────────────────
+#
+# ⚠️ HOW CLOUDFLARE PAGES PICKS A 404, because it decides the filenames:
+# "Pages will then attempt to find the closest 404 page. If one is not found
+# in the same directory as the route you are currently requesting, it will
+# continue to look up the directory tree for a matching 404.html file, ending
+# in /404.html."
+#
+# So `404.html` — that exact name, in that exact directory — is the whole
+# mechanism. `mrbadmus_site/parents/404.html` answers every unmatched
+# /parents/* URL, `mrbadmus_site/consumer/404.html` answers every unmatched
+# /consumer/* URL, and the existing school-flavoured /404.html keeps
+# answering everything else.
+#
+# It is also exactly how these obey the launch flag with no code in them at
+# all: on a flag-off build they are never written, the walk up the tree finds
+# the root /404.html, and a parent who somehow reaches a consumer URL gets
+# today's generic behaviour. The file's EXISTENCE is the flag. That is worth
+# more than a runtime check, because a runtime check on a 404 page is a
+# consumer-branded page that ships and then hides itself with JavaScript —
+# and a scraper reading its bytes still sees the unlaunched product.
+#
+# ⚠️ THE 500 PAGE IS NOT WIRED TO ANYTHING, AND CANNOT BE. Cloudflare Pages
+# serves static files; there is no origin that can 500, and no custom-500
+# mechanism to point at. `error.html` is a real page at a real address for a
+# flow to send somebody to deliberately — a failed Stripe return is the
+# obvious one — and until something links it, nothing reaches it. It is built
+# because the alternative is writing it in a hurry on the night it is first
+# needed. See the MRB-327 lane C report for the one-line diff that would wire
+# consumer-common.js's `fail()` to it.
+#
+# These pages are SELF-CONTAINED apart from tokens.css: no consumer-common.js
+# (a 404 that needs JavaScript to say "not found" is a 404 that can fail), no
+# consumer.css (its `body { display: none }` is how the launch flag fails
+# closed, and a 404 page that hides itself is not a 404 page), no API call, no
+# Supabase, no CDN. Design's literals are inline for the same reason
+# parents/public.css uses literals: the --ks3-* tokens are declared on
+# `.rd[data-mode="ks3"]`, so anything outside that element resolves to
+# nothing.
+
+# The double chevron, copied from `BRANDMARK` in consumer/consumer-common.js.
+# Not redrawn — CLAUDE.md already tracks four brand presentations and the
+# difference between the consumer mark and the KS3 one is a stroke width and
+# a direction, which is exactly the kind of difference an eye reproduces
+# wrongly. Sized up from Design's 20px to 26px for a standalone page.
+_C_BRANDMARK = (
+    '<svg width="26" height="26" viewBox="0 0 22 22" aria-hidden="true">'
+    '<path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" '
+    'fill="none" stroke-linecap="round" stroke-linejoin="round"></path>'
+    '<path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" '
+    'stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>'
+    '</svg>'
+)
+
+# The tab icon, as a data: URI so it costs no request — the same technique
+# build_ks3.py uses, and the reason it matters here is that the flag-off
+# drive asserts a public page makes ZERO requests.
+#
+# ⚠️ THE DOUBLE CHEVRON, NOT KS3's SINGLE ONE. CLAUDE.md gives the consumer
+# and student surfaces Claude Design's double-chevron BrandMark and KS3 a
+# single upward chevron at stroke-width 4.6; they are both Design's, both
+# #E4572E, and they are not interchangeable. A consumer page wearing the KS3
+# favicon is brand drift introduced by a fix.
+_CONSUMER_FAVICON_SVG = (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">'
+    '<path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" '
+    'fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    '<path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" '
+    'stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+    '</svg>'
+)
+
+
+def consumer_favicon_link():
+    import base64 as _b64
+    return ('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s"/>'
+            % _b64.b64encode(_CONSUMER_FAVICON_SVG.encode("utf-8")).decode("ascii"))
+
+
+def _status_page(kind, tokens_href):
+    """A consumer-branded 404 or error page.
+
+    Plain English about what happened, and a way back that is a link rather
+    than an instruction. The routes differ: somebody who mistyped a /parents/
+    URL wants the front door, somebody whose signed-in page broke wants to
+    get back into their account.
+    """
+    if kind == "404":
+        eyebrow, h1 = "Error 404", "That page isn’t here."
+        blurb = ("The link you followed doesn’t point at anything — usually because "
+                 "it was typed slightly wrong, or because it pointed at something "
+                 "that has since moved. Nothing has gone wrong with your account.")
+        routes = [("/parents/", "Go to the home page", True),
+                  ("/parents/how-it-works", "How it works", False),
+                  ("/parents/sign-in", "Sign in", False)]
+        title = "Page not found — MrBadmus"
+    else:
+        eyebrow, h1 = "Something went wrong", "That didn’t work."
+        blurb = ("Something broke at our end, not yours. Nothing you were doing has "
+                 "been lost, and no payment is taken when a page fails. Try again in "
+                 "a minute — if it happens twice, email us and say what you were "
+                 "doing and we’ll sort it out.")
+        routes = [("/parents/sign-in", "Sign in", True),
+                  ("/parents/", "Go to the home page", False),
+                  ("mailto:support@mrbadmus.com", "Email support@mrbadmus.com", False)]
+        title = "Something went wrong — MrBadmus"
+
+    btns = "".join(
+        '<a href="%s" class="%s">%s</a>' % (href, "primary" if primary else "secondary", label)
+        for href, label, primary in routes)
+
+    return """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#FBF3E6"/>
+<meta name="robots" content="noindex"/>
+<title>%(title)s</title>
+%(favicon)s
+<link rel="stylesheet" href="%(tokens)s"/>
+<style>
+  html { background: #FBF3E6; }
+  body { margin: 0; padding: 0; background: #FBF3E6; color: #221E1B;
+         font-family: 'Instrument Sans', system-ui, sans-serif;
+         font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  .cs-head { display: flex; align-items: center; gap: 10px;
+             padding: 20px 20px 0; max-width: 760px; margin: 0 auto; }
+  .cs-head span { font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+                  font-weight: 800; font-size: 21px; letter-spacing: -.03em; }
+  .cs-head a { display: flex; align-items: center; gap: 10px;
+               color: #221E1B; text-decoration: none; }
+  main { max-width: 760px; margin: 0 auto; padding: 64px 20px 96px; }
+  .cs-eyebrow { margin: 0; font-family: 'DM Mono', ui-monospace, monospace;
+                font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
+                color: #6B6058; }
+  h1 { margin: 14px 0 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+       font-weight: 800; font-size: clamp(38px, 6vw, 60px); line-height: .98;
+       letter-spacing: -.04em; }
+  .cs-blurb { margin: 20px 0 0; font-size: 19px; color: #453E38;
+              max-width: 34em; text-wrap: pretty; }
+  .cs-routes { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .cs-routes a { display: flex; align-items: center; min-height: 56px; padding: 0 24px;
+                 border: 2px solid #221E1B; border-radius: 14px;
+                 font-weight: 700; font-size: 17px; text-decoration: none; }
+  .cs-routes a.primary { background: #221E1B; color: #FFFCF5; box-shadow: 5px 5px 0 #E4572E; }
+  .cs-routes a.secondary { background: #FFFCF5; color: #221E1B; }
+  .cs-routes a:hover { color: inherit; }
+  .cs-foot { margin: 56px 0 0; padding-top: 20px; border-top: 2px solid #221E1B;
+             font-size: 15px; color: #6B6058; }
+  .cs-foot a { color: #A93411; font-weight: 700; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="rd" data-mode="ks3">
+  <header class="cs-head"><a href="/parents/">%(brand)s<span>MrBadmus</span></a></header>
+  <main>
+    <p class="cs-eyebrow">%(eyebrow)s</p>
+    <h1>%(h1)s</h1>
+    <p class="cs-blurb">%(blurb)s</p>
+    <div class="cs-routes">%(btns)s</div>
+    <p class="cs-foot">Still stuck? Write to
+      <a href="mailto:support@mrbadmus.com">support@mrbadmus.com</a> and say what you
+      were trying to do.</p>
+  </main>
+</div>
+</body>
+</html>
+""" % {"title": title, "favicon": consumer_favicon_link(), "tokens": tokens_href,
+       "brand": _C_BRANDMARK, "eyebrow": eyebrow, "h1": h1, "blurb": blurb, "btns": btns}
+
+
+def publish_consumer_launch(output_dir, asset_ver):
+    """Write the launched-build-only artefacts. No-op when the flag is off.
+
+    ⚠️ MUST BE CALLED AFTER THE REPO-ROOT ROUND-TRIP. See the section header
+    above: called earlier, the noindex strip reaches ./parents/*.html and the
+    flag-off state becomes unreachable.
+
+    `asset_ver` is the generator's own {filename: md5[:8]} map, so the pages
+    written here carry the same honest cache-bust stamp every other page
+    does. They are written after the stamping pass, so nothing else would
+    stamp them.
+    """
+    if not consumer_launch_enabled():
+        # Nothing to undo: build_site() wipes output_dir on entry (except the
+        # foreign trees), so a sitemap or a 404 left by a previous launched
+        # build in this same directory is already gone before we get here.
+        print("  ○ consumer launch: CONSUMER_SIGNUP_ENABLED is not \"true\" — "
+              "no sitemap, no robots.txt, no consumer 404s, noindex left in place")
+        return
+
+    print("\n  🚀 CONSUMER_SIGNUP_ENABLED=true — publishing the launched public site")
+
+    tokens_href = "/shared/tokens.css"
+    if asset_ver.get("tokens.css"):
+        tokens_href += "?v=" + asset_ver["tokens.css"]
+
+    # ── the per-page head tags, and the noindex strip ──────────────────────
+    _robots_tag = re.compile(r'[ \t]*<meta name="robots" content="noindex"\s*/?>\n?')
+    for entry in _PUBLIC_META:
+        fp = os.path.join(output_dir, entry["path"].lstrip("/"))
+        if not os.path.exists(fp):
+            print(f"     ⚠️  {entry['path']} not in the build — skipped")
+            continue
+        with open(fp, encoding="utf-8") as fh:
+            html = fh.read()
+        if entry["strip_noindex"]:
+            html, n = _robots_tag.subn("", html)
+            if n != 1:
+                raise SystemExit(
+                    "generate_site_v5.py: expected exactly one static noindex tag in "
+                    "%s, found %d. The launched build would ship a page that is "
+                    "still noindex, or has lost something else." % (entry["path"], n))
+        # Before </head>, so the tags sit with the rest of the head rather
+        # than after the title of whatever comes next.
+        if "</head>" not in html:
+            raise SystemExit("generate_site_v5.py: no </head> in %s" % entry["path"])
+        html = html.replace("</head>", _meta_block(entry) + "</head>", 1)
+        with open(fp, "w", encoding="utf-8") as fh:
+            fh.write(html)
+    print("     ✅ head tags on %d public pages (%d keep their noindex: %s)"
+          % (len(_PUBLIC_META),
+             sum(1 for e in _PUBLIC_META if not e["strip_noindex"]),
+             ", ".join(e["path"].rsplit("/", 1)[-1]
+                       for e in _PUBLIC_META if not e["strip_noindex"]) or "none"))
+
+    # ── the card ──────────────────────────────────────────────────────────
+    if os.path.exists(_CARD_SRC):
+        shutil.copy2(_CARD_SRC, os.path.join(output_dir, _CARD_SITE_PATH.lstrip("/")))
+        print("     ✅ %s (%dx%d)" % (_CARD_SITE_PATH, _CARD_W, _CARD_H))
+    else:
+        # Loud, not fatal: a launched site with a missing card renders as a
+        # bare link, which is bad and is not worth failing a build over.
+        print("     ⚠️  %s is MISSING — every shared link will render with no "
+              "image. Redraw it: see docs/b2c/social-card.html" % _CARD_SRC)
+
+    # ── sitemap.xml and robots.txt, at the site root ──────────────────────
+    with open(os.path.join(output_dir, "sitemap.xml"), "w", encoding="utf-8") as fh:
+        fh.write(_sitemap_xml(_PUBLIC_META))
+    print("     ✅ sitemap.xml (%d urls)"
+          % sum(1 for e in _PUBLIC_META if e["sitemap"]))
+    with open(os.path.join(output_dir, "robots.txt"), "w", encoding="utf-8") as fh:
+        fh.write(_robots_txt())
+    print("     ✅ robots.txt")
+
+    # ── the consumer 404 and error pages, one pair per tree ───────────────
+    for tree in ("parents", "consumer"):
+        d = os.path.join(output_dir, tree)
+        if not os.path.isdir(d):
+            continue
+        for kind, name in (("404", "404.html"), ("500", "error.html")):
+            with open(os.path.join(d, name), "w", encoding="utf-8") as fh:
+                fh.write(_status_page(kind, tokens_href))
+        print("     ✅ %s/404.html + %s/error.html" % (tree, tree))
+
+
+
 def build_site(output_dir="mrbadmus_site"):
     import sys, os, shutil
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -5895,6 +6445,14 @@ def build_site(output_dir="mrbadmus_site"):
             shutil.copytree(s, d)
         else:
             shutil.copy2(s, d)
+
+    # ── B2C launch publication (MRB-327 lane C) ───────────────────────────
+    # ⚠️ AFTER the round-trip above, and that is load-bearing. See the section
+    # header on publish_consumer_launch: run before the copy loop, the noindex
+    # strip is written back over ./parents/*.html and the flag-off state can
+    # never be restored. Everything this writes exists in the deploy tree
+    # only, and only when CONSUMER_SIGNUP_ENABLED is exactly "true".
+    publish_consumer_launch(output_dir, _asset_ver)
 
     print(f"\n🎉 Done! {total_pages} pages generated")
     print(f"\nStructure:")

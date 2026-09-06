@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="theme-color" content="#FBF3E6"/>
 <meta name="robots" content="noindex"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
 <title>Start a free week — MrBadmus</title>
 <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -176,6 +177,8 @@
   var S = {
     step: 'account',
     email: '',
+    /* ⊕ MRB-327. See viewAccount() for why this field exists at all. */
+    name: '',
     resent: false,
     /* Children that EXIST — read back from GET /family. */
     children: [],
@@ -294,7 +297,26 @@
       '<button type="button" id="google" style="margin-top:26px;width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);background:var(--ks3-card);font-weight:700;font-size:17px;color:var(--ks3-ink);cursor:pointer">' +
       GOOGLE_SVG + 'Continue with Google</button>' +
       '<div style="display:flex;align-items:center;gap:12px;margin:22px 0 18px;color:var(--ks3-ink-muted);font-size:14px"><span style="flex:1;height:2px;background:var(--ks3-rule)"></span>or with email<span style="flex:1;height:2px;background:var(--ks3-rule)"></span></div>' +
-      '<label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Email' +
+      /* ⊕ MRB-327. THE ACCOUNT STEP NEVER ASKED THE PARENT'S NAME, and the
+         product then had nothing to call them. `profiles.first_name` stayed
+         null for every email signup, so the dashboard's first sentence to a
+         paying parent was "Morning, You." — and, worse, the child's chat
+         header and every message meta read "Your parent" instead of their
+         mum's or dad's name. today.html's own comment describes that
+         fallback as being for "a real parent who signed up with Google and
+         skipped the field"; with email and password there was no field to
+         skip, so the fallback was the only path.
+
+         Google signup already supplies a name, which is why this went
+         unnoticed. One input, in Design's own markup and above Email
+         because that is the order a person expects to be asked, and
+         `autocomplete="given-name"` so most parents never type it. It is
+         optional: an empty box must not stand between a parent and an
+         account, and the fallback still catches that case.
+         ⚠️ A field added to a step Design drew — flagged for her review. */
+      '<label style="display:block;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Your first name' +
+      '<input type="text" id="pname" value="' + esc(S.name) + '" placeholder="What should we call you?" autocomplete="given-name" style="' + input + '"></label>' +
+      '<label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Email' +
       '<input type="email" id="email" value="' + esc(S.email) + '" placeholder="you@example.com" autocomplete="email" style="' + input + '"></label>' +
       '<label style="display:block;margin-top:14px;font-weight:700;font-size:15px;color:var(--ks3-ink-muted)">Password' +
       '<input type="password" id="password" placeholder="At least 10 characters" autocomplete="new-password" style="' + input + '"></label>' +
@@ -337,7 +359,29 @@
       P.url('signIn') + '" style="font-weight:700">Sign in</a></p>';
   }
 
+  /* ⚠️ GoTrue's own strings reach the parent otherwise, and two of them do it
+     on the FIRST screen of the product. MRB-327 §1: driving a real signup
+     against the test project put "email rate limit exceeded" — a server's
+     internal wording about its own mail quota — in front of the parent, in
+     the error slot, as the only explanation of why nothing happened. The
+     other one a real parent can hit is a mistyped domain, which GoTrue calls
+     `Email address "..." is invalid`. Everything else keeps its own message:
+     Supabase's password and duplicate-account wording is already readable,
+     and inventing a house string for an error we have not seen would hide
+     the one clue support has. */
+  function signupError(err) {
+    var m = String((err && err.message) || '');
+    if (/rate limit|too many/i.test(m)) {
+      return 'We can\u2019t send the verification email right now. Wait a few minutes and try again \u2014 nothing has been charged and nothing is lost.';
+    }
+    if (/invalid/i.test(m) && /email/i.test(m)) {
+      return 'We can\u2019t send email to that address. Check it for a typo \u2014 the part after the @ especially.';
+    }
+    return m || 'We couldn\u2019t create your account just now. Please try again in a moment.';
+  }
+
   function bindAccount() {
+    $('pname').addEventListener('input', function () { S.name = this.value.trim(); });
     $('email').addEventListener('input', function () { S.email = this.value.trim(); });
 
     /* ── the terms gate ─────────────────────────────────────────────────
@@ -411,7 +455,7 @@
         }
       }).then(function (r) {
         C.setBusy(btn, false);
-        if (r.error) { S.error = r.error.message; return render(); }
+        if (r.error) { S.error = signupError(r.error); return render(); }
 
         /* Supabase obfuscates "this address already has an account": no
            error, a user, and an EMPTY identities array. Without this the
@@ -705,7 +749,19 @@
     if (S.editing >= 0) { S.childError = ''; return saveEdit(btn); }
 
     if (!f.user)                   { S.childError = 'Choose a username.'; return render(); }
-    if (f.userStatus === 'taken')  { S.childError = 'Choose a username that’s free.'; return render(); }
+    /* ⊕ MRB-327. `userStatus: 'taken'` is the checker's only failure word,
+       but it covers every refusal it makes — and most of them are not "taken".
+       `child_username_check` answers things like "That looks like a phone
+       number — pick a nickname instead." and "Letters and numbers only — no
+       symbols.", and this line replaced all of them with "Choose a username
+       that's free.", which is a different problem from the one the parent
+       actually has. `userReason` already holds the real sentence and is
+       already shown under the field; the summary now says the same thing as
+       the field instead of contradicting it. */
+    if (f.userStatus === 'taken')  {
+      S.childError = f.userReason || 'Choose a username that’s free.';
+      return render();
+    }
     /* ⊕ DEVIATION: Design validates the child's password at 6 characters.
        `CHILD_PASSWORD_MIN` on the backend is 8, and `POST /children` refuses
        a shorter one — so a 6 would pass the screen and fail the server, and
@@ -1184,9 +1240,22 @@
      the attribute rather than on which step drew it. */
   function installDelegation() {
     $('su-main').addEventListener('click', function (e) {
-      var b = e.target.closest('[data-year],[data-board],[data-route],[data-tier],' +
-                               '[data-mode],[data-unit],[data-edit],[data-plan]');
-      if (!b) { return; }
+      /* ⚠️ `button[…]`, and INSIDE #su-main, and both halves are load-bearing.
+         MRB-327 §1. Every consumer page's root carries the KS3 design-system
+         hook `<div class="rd" data-mode="ks3" id="c-main">`, and #su-main sits
+         inside it — so an unqualified `closest('[data-mode]')` walked straight
+         past the form and matched the PAGE, on every click in the step that
+         was not on an option button. Pressing "Is it free?" therefore set
+         S.form.mode = 'ks3', which is truthy (so validation passed) and is not
+         'home' (so createChild sent alongside_school / light). A home-educating
+         family was silently signed up for the alongside-school schedule, and
+         the only visible symptom was the Home-education button quietly losing
+         its selected state. */
+      var form = $('su-main');
+      var b = e.target.closest('button[data-year],button[data-board],button[data-route],' +
+                               'button[data-tier],button[data-mode],button[data-unit],' +
+                               'button[data-edit],button[data-plan]');
+      if (!b || !form.contains(b)) { return; }
 
       if (b.hasAttribute('data-plan')) {
         S.plan = b.getAttribute('data-plan');
@@ -1236,8 +1305,8 @@
   }
 
   function saveDraft() {
-    writeDraft({ email: S.email, step: S.step, plan: S.plan, pending: S.pending,
-                 terms: S.terms });
+    writeDraft({ email: S.email, name: S.name, step: S.step, plan: S.plan,
+                 pending: S.pending, terms: S.terms });
   }
 
   /* Read the family back. This is the truth about who exists; the list, the
@@ -1297,8 +1366,16 @@
        is the retry for an account that already had a profile. */
     if (!S.terms || S.termsSent || !S.token || !S.ensured) { return; }
     S.termsSent = true;
+    /* ⊕ MRB-327. The name rides on THIS call rather than getting one of its
+       own, for the same reason the acceptance does: it is the first request
+       in the flow allowed to write to the profile, and a second PATCH would
+       be a second thing that can fail on its own. Omitted entirely when
+       blank, so a parent who skipped the box does not overwrite a name
+       Google already gave us. */
+    var patch = { terms_accepted: true };
+    if (S.name) { patch.first_name = S.name; }
     C.api('/api/consumer/parent', {
-      method: 'PATCH', token: S.token, body: { terms_accepted: true }
+      method: 'PATCH', token: S.token, body: patch
     }).catch(function (e) {
       S.termsSent = false;                 // let the next step try again
       console.error('[signup] terms', e);
@@ -1360,6 +1437,7 @@
 
     var draft = readDraft();
     S.email   = draft.email || '';
+    S.name    = draft.name || '';
     S.plan    = draft.plan === 'year' ? 'year' : 'month';
     S.pending = draft.pending || [];
     S.terms   = draft.terms === true;

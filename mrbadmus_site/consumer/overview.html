@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Your family — MrBadmus</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
@@ -270,6 +271,18 @@
     .dk-composer { position: static !important; }
     .dk-work { margin-top: 0 !important; }
   }
+
+  /* MRB-327 a11y (WCAG 2.4.7 Focus Visible). #dk-draft carried
+     `outline:none` in its inline style, so the message composer was the one
+     control on the parent dashboard a keyboard user could focus with no
+     indication whatsoever. The ring is drawn INSIDE the field
+     (outline-offset:-2px) so it reads as part of Design's bordered composer
+     rather than a second box around it. */
+  #dk-draft:focus-visible {
+    outline: 2px solid var(--ks3-ink);
+    outline-offset: -2px;
+    border-radius: 8px;
+  }
   </style>
 </head>
 <body>
@@ -278,7 +291,10 @@
   <aside class="dk-side" id="dk-side"></aside>
   <div style="min-width:0">
     <header class="dk-mobilehead" id="dk-head"></header>
-    <div id="dk-banners"></div>
+    <!-- MRB-327 a11y: role+name so the billing banner sits in a landmark.
+         It is between <header> and <main>, so without this axe `region`
+         is right that landmark navigation skips it entirely. -->
+    <div id="dk-banners" role="region" aria-label="Account and billing status"></div>
     <main class="dk-main" id="c-main"></main>
     <nav class="dk-tabbar" id="dk-tabbar"></nav>
   </div>
@@ -717,9 +733,27 @@
          drops the family to read_only. */
       var retry = dayMonth(b.retry_at);
       var grace = dayMonth(plusDaysISO(S.sub && S.sub.current_period_end, 7));
+      /* ⊕ MRB-327. THE GRACE IS SPENDABLE, AND THIS BRANCH USED TO ASSUME IT
+         never was. `past_due` is two situations wearing one billing word:
+         inside the seven days access is still `full` and work really is
+         carrying on; after them `org_access_state()` has dropped the family to
+         `read_only` and it has stopped. Only `access` separates them —
+         `billing.state` reads `past_due` on both sides — and the cancelled
+         branch immediately below already reads `access` for exactly this
+         reason.
+
+         Without this, a parent whose grace ran out three days ago opened the
+         one screen they went to for an answer and was told "Work carries on
+         until 3 September" — a date already in the past, and a promise that
+         was false when it was rendered. */
+      var inGrace = String(b.access || '') === 'full';
       var mid = '';
       if (retry) { mid += ' We try again on ' + esc(retry) + '.'; }
-      if (grace) { mid += ' Work carries on until ' + esc(grace) + ' while you update the card.'; }
+      if (inGrace) {
+        if (grace) { mid += ' Work carries on until ' + esc(grace) + ' while you update the card.'; }
+      } else {
+        mid += ' New work, marking and messages are paused until the payment goes through.';
+      }
       return '<div class="dk-banner dk-banner-alert"><span style="flex:1">' +
         '<strong>Payment didn’t go through.</strong>' + mid +
         '</span><a href="' + account + '" style="font-weight:700;white-space:nowrap">Fix card</a></div>';
@@ -995,7 +1029,14 @@
               '<div class="dk-mini-s">' + esc(trend) + '</div></div>' +
             '<div class="dk-mini"><div class="dk-mini-l">Streak</div>' +
               '<div class="dk-mini-n">' + esc(String(k.streak != null ? k.streak : 0)) + '</div>' +
-              '<div class="dk-mini-s">weeks</div></div>' +
+              /* ⊕ MRB-327. This said "weeks", and the number is DAYS.
+                 `streakFor()` counts consecutive London days with a completed
+                 work item — so a five-day-old account showed its parent
+                 "STREAK 5 weeks", while the child's own Today screen showed
+                 "5 day streak" off the very same field. One number, two
+                 labels, and the one the parent saw was wrong by a factor of
+                 seven. */
+              '<div class="dk-mini-s">' + (k.streak === 1 ? 'day' : 'days') + '</div></div>' +
             '</div>' +
             '<p style="margin:14px 0 0;font-size:15px;color:var(--ks3-ink-body)">' +
               esc(cardHeadline(k)) + '</p>';
@@ -1282,6 +1323,10 @@
     if (!k) { return noChild(); }
     return '<div class="dk-chat dk-narrow" style="display:flex;flex-direction:column;' +
         'min-height:calc(100vh - 220px);max-width:720px">' +
+      /* MRB-327 a11y: the only view with no <h1>. Visually hidden — the
+         visible title is already in #dk-head, and Design's chat opens on
+         her "Only you and X can see this" line, which is not a heading. */
+      '<h1 class="ks3-sr-only">Chat with ' + esc(k.first_name) + '</h1>' +
       '<p style="margin:0 0 14px;font-size:14px;color:var(--ks3-ink-muted);text-align:center">' +
         'Only you and ' + esc(k.first_name) + ' can see this.</p>' +
       '<div id="dk-msg"></div>' +
@@ -1292,7 +1337,7 @@
         '<input id="dk-draft" value="' + esc(S.draft) + '" maxlength="1000" ' +
           'placeholder="Write to ' + esc(k.first_name) + '" data-write ' +
           'style="flex:1;min-width:0;min-height:44px;padding:8px 12px;border:0;background:none;' +
-          'font-size:17px;color:var(--ks3-ink);outline:none">' +
+          'font-size:17px;color:var(--ks3-ink)">' +
         '<button data-act="send" data-write aria-label="Send" style="display:grid;place-items:center;' +
           'width:44px;height:44px;border:2px solid var(--ks3-ink);border-radius:12px;' +
           'background:var(--ks3-ink);color:var(--ks3-on-dark);cursor:pointer">' +

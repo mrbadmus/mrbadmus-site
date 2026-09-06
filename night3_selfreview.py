@@ -155,6 +155,19 @@ def rainford(base, api, shots, passwords):
             if "admin" in path:
                 card = p.eval("(function(){var c=document.getElementById('consumer-card');return c?getComputedStyle(c).display:'absent';})()")
                 check(card in ("none", "absent"), "admin: consumer card hidden", card)
+                # ⊕ MRB-327. The Admin topbar now carries an "Operator" tab into
+                # the consumer console. With the flag off it must be invisible
+                # AND must not have cost a request: the operator predicate is an
+                # RPC, and firing it on a flag-off estate would both leak that a
+                # consumer product exists and break the zero-request rule this
+                # whole sweep is built on. The `not consumer_reqs` check above
+                # does not cover it — the RPC goes to Supabase, not to
+                # /api/consumer/ — so it is asserted by name here.
+                op = p.eval("(function(){var a=document.getElementById('operator-link');"
+                            "return a?getComputedStyle(a).display:'absent';})()")
+                check(op in ("none", "absent"), "admin: Operator tab hidden with the flag off", op)
+                rpc = [u for u in reqs if "auth_user_is_platform_operator" in u]
+                check(not rpc, "admin: no operator RPC fired with the flag off", rpc)
             if "leaderboard" in path:
                 rows = p.eval("document.querySelectorAll('[data-rank], .lb-row, tbody tr').length")
                 print("     leaderboard rendered rows: %s" % rows)

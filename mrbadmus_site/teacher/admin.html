@@ -337,6 +337,23 @@
   <div class="tb-seg">
     <a class="tb-tab" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
     <a class="tb-tab" href="/teacher/classes.html">My classes</a>
+    <!-- ⊕ MRB-327. The operator console had NO entry point anywhere on the
+         estate: /consumer/admin-accounts.html and /consumer/admin-queue.html
+         shipped with MRB-317 and nothing on any page linked to either, so the
+         only way in was to remember and type the URL. That is not a console a
+         person can be asked to work a marking queue from.
+
+         It sits here rather than in shared/teacher-admin-nav.js because that
+         module is shared by six GENERATED teacher pages, and a platform
+         operator is not a teacher role — it is a different predicate on a
+         different table. One hand-written page is the smaller seam.
+
+         Hidden in the markup and revealed only by the operator check below.
+         With CONSUMER_SIGNUP_ENABLED off no check runs at all, so a flag-off
+         estate makes not one extra request and says nothing about a product
+         that has not launched. -->
+    <a class="tb-tab" id="operator-link" href="/consumer/admin-accounts.html"
+       style="display:none;">Operator</a>
   </div>
   <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
   <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
@@ -977,6 +994,27 @@ MrBadmusTeacherGuard.requireTeacherRole({
       var pill = document.getElementById('env-pill');
       pill.className = 'pill env-test';
       pill.style.display = 'inline-block';
+    }
+
+    /* ⊕ MRB-327 — reveal the operator console, if this account is one.
+
+       Deliberately BEFORE the school-admin gate below, and independent of
+       it: `school_admin` and `platform_operator` are different permissions
+       on different tables. Mide happens to hold both, but a future operator
+       who is not a school admin would otherwise be shown the refusal notice
+       and never see the link at all.
+
+       The flag is checked FIRST and the RPC only runs behind it, so a
+       flag-off estate makes no extra request. Fail-closed: any error leaves
+       the link hidden, exactly as the isAdmin predicate below does — a
+       network blip must refuse rather than admit. */
+    if (window.MrBadmusConfig.CONSUMER_SIGNUP_ENABLED === true) {
+      try {
+        var op = await sb.rpc('auth_user_is_platform_operator');
+        if (op && op.data === true) {
+          document.getElementById('operator-link').style.display = '';
+        }
+      } catch (e) { /* stays hidden */ }
     }
 
     /* THE GUARD ABOVE ONLY PROVED "a teacher". This is the admin gate, and
