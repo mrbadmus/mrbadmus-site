@@ -1599,22 +1599,37 @@
      class.
 
      ⚠️ THE SECURITY CHECK IS `loadClassMatrices` ITSELF, NOT A ROLE FIELD
-     READ HERE. Its `class_teachers`/`class_members`/`assignments` queries
-     (see teacher-data.js) carry no client-side self-filter — RLS alone
-     decides what rows come back. A plain teacher's read of a class they do
-     not teach returns nothing (`class_teachers_own_all` shows only their
-     own rows) and this function correctly returns false. An admin's read
-     succeeds ONLY because `class_teachers_admin_read` / `class_members_
-     admin_read` / `assignments_admin_read` exist and are role-gated — so a
-     non-empty pack here is PROOF of that role, not an assumption of it.
+     READ HERE. Its `class_teachers` / `class_members` / `assignments` /
+     `classes` queries (see teacher-data.js) carry no client-side
+     self-filter — RLS alone decides what rows come back. A plain teacher's
+     read of a class she does not teach returns nothing from any of them
+     (`class_teachers_self_read` shows only her own link rows;
+     `classes_teacher_read` needs `auth_user_teaches_class`) and this
+     function correctly returns false. An admin's read succeeds ONLY because
+     `class_teachers_admin_read` / `class_members_admin_read` /
+     `assignments_admin_read` / `classes_admin_read` exist and are
+     scope-gated — so a non-empty pack here is PROOF of that scope, not an
+     assumption of it.
 
-     ⚠️ WRITE IS NOT THE SAME QUESTION AS READ. `assignment_submissions`
-     (marking), `class_shoutouts` and `submission_feedback` carry no admin
-     write policy at all today (checked against every migration, not
-     assumed) — an admin acting on a foreign class can view it in full but
-     a write on any of those three still gets RLS's plain rejection, same as
-     it would for a stranger. That gap needs its own migration and is
-     outside what this ruling can do without one; see the MRB-325 report. */
+     ⊕ MRB-326, 6 Sep 2026 — AND IT NOW REACHES THE UNSTAFFED CLASSES TOO.
+     `loadClassMatrices` used to drive off `class_teachers` alone, so a
+     class with no live teacher link — 25 of production's 69 this year,
+     every one of them waiting on a `pending_staff` row to be claimed —
+     came back empty and was refused to an admin as though it belonged to
+     somebody else. The fallback added there asks `classes` for exactly
+     those ids. The pack it synthesises carries an empty links list, so
+     `buildClassEntry` below must tolerate a null pill, an empty roster and
+     no work; it does, and Design's "empty" state is what it draws.
+
+     ⊕ MRB-326 — WRITE IS NOW ANSWERED TOO, BY MIGRATION, NOT BY THIS FILE.
+     This used to record that `assignment_submissions` (marking),
+     `class_shoutouts` and `submission_feedback` had no admin write policy
+     at all, so an admin could view a foreign class in full and then be
+     refused by RLS on every action in it. `mrb326_admin_write_authority`
+     adds those policies, each `auth_user_has_scope('school_admin')` AND
+     same-school, and each keeping the authorship and membership conjuncts
+     its teacher-facing twin already had. Nothing in JavaScript gates them:
+     the page offers the controls and the database decides. */
   async function mergeForeignClass(c, classId) {
     var packs2 = await window.MrBadmusTeacherData.loadClassMatrices([classId]);
     var pack = packs2 && packs2[classId];
@@ -2450,7 +2465,33 @@
                "you are not teaching any classes" is exactly right — and that
                is a school in its first year, where there is no history to
                reach and nothing a selector could offer. */
-            if (!c.CLASSES.length && !c.yearOptions.length) {
+            /* ⊕ MRB-326, 6 Sep 2026 — …AND NOT WHEN THE URL NAMED A CLASS.
+               This guard fires off `c.CLASSES`, which is the viewer's OWN
+               list, and it fired BEFORE `load()` ever looked at `?class=`.
+               For the one person MRB-325 ruling 5 exists for — a school_admin
+               who teaches nothing at all — that meant every class in the
+               school, including their own school's, answered "You are not
+               teaching any classes this year". Not a refusal, not "that class
+               is not one of yours": a sentence about their timetable, in
+               front of a class they were entitled to open, with the id sitting
+               unread in the address bar.
+
+               ⚠️ IT WAS INVISIBLE TO THE STUBBED GATE, and that is worth
+               recording. `teacher_admin_foreign_class_drive`'s admin persona
+               (Ada) teaches 8r/Sc1, deliberately, "so `base()` has a list" —
+               so `c.CLASSES` was never empty there and this line was never
+               reached. It took a REAL sign-in as an admin who owns nothing
+               (`teacher_admin_real_drive`, step 2) to see it.
+
+               ⚠️ NO AUTHORISATION IS SKIPPED. `load()` is the thing that
+               asks, and it still asks: a class this viewer cannot reach
+               throws `notMine` from `yearOfClass`/`mergeForeignClass` and
+               draws "That class is not one of yours." What changes is only
+               that the question gets asked at all. The guard keeps its real
+               case — a BARE url, where the viewer's own list is the whole
+               screen and its emptiness is the whole answer. */
+            var askedFor = q.get("class") || q.get("student");
+            if (!c.CLASSES.length && !c.yearOptions.length && !askedFor) {
               var e = new Error("[teacher-live] no classes in any year");
               e.mrbSay = SAY.noClasses;
               throw e;

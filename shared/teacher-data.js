@@ -912,6 +912,17 @@ window.MrBadmusTeacherData = (function () {
     const teacherRows = (q1.data || []).filter(function (r) {
       return r.class && !r.class.deleted_at;
     });
+    /* ⚠️ MRB-326 — THIS DRIVER CHECK IS THE OLD, NARROW ONE, DELIBERATELY.
+       `loadClassMatrices` and `loadStudentDetail` both grew a `classes`
+       fallback so a school_admin can reach a class with no live teacher
+       link (25 of production's 69 this year). This function did NOT, for
+       one reason: nothing calls it. The only callers were the hand-written
+       class-detail page retired on 24 Aug 2026 (`docs/ks3/retired/`); the
+       live screen is a `build_teacher_port.py` output driven by
+       `teacher-live.js`'s `base()`, which goes through `loadClassMatrices`.
+       Changing dead code means shipping an untested branch, so the gap is
+       written down instead. ⛔ IF YOU EVER WIRE THIS UP AGAIN, port the
+       fallback across with it — an admin will hit this line first. */
     if (teacherRows.length === 0) {
       const e = new Error('[teacher-data] not authorised for class ' + classId);
       e.code = 'not_authorised';
@@ -1169,11 +1180,21 @@ window.MrBadmusTeacherData = (function () {
    *   }
    *
    * Auth model — two checks, both must pass; the UI never differentiates
-   * the two failure modes ("class you don't teach" vs "student not in
+   * the two failure modes ("class you can't reach" vs "student not in
    * this class"), to avoid leaking class-membership info:
-   *   (1) class_teachers — RLS scopes to the teacher; 0 rows → not_authorised
+   *   (1) the CLASS is reachable. `class_teachers` under RLS answers it for
+   *       a teacher; when it returns nothing, `classes` is asked (MRB-326,
+   *       same fallback and same reasoning as `loadClassMatrices` — see the
+   *       long note there). Neither → not_authorised. A class reached by
+   *       the second read has no teacher-subject link, so its `pill_label`
+   *       is null — honest, because there is no subject to name.
+   *       `class_has_multiple_subjects` is unaffected: it is counted off
+   *       the ASSIGNMENTS' subjects, not off the links.
    *   (2) class_members — student must be a current member of THIS class
-   *       (left_at IS NULL); 0 rows → not_authorised
+   *       (left_at IS NULL); 0 rows → not_authorised. ⚠️ THIS CHECK IS NOT
+   *       WEAKENED BY (1) AND MUST NOT BE. An admin may reach any class in
+   *       the school; that is not permission to read a child who is not in
+   *       it.
    *   (3) profile fetch — RLS profiles_teacher_read_students enforces
    *       the same boundary at the DB layer; missing profile after both
    *       checks above is treated as not_authorised too (defensive — the
@@ -1184,6 +1205,7 @@ window.MrBadmusTeacherData = (function () {
    *   - invalid_class_id             — classId failed UUID shape check
    *   - not_authorised               — any auth check failed
    *   - query_failed_class_teachers  — Q1 errored
+   *   - query_failed_classes         — the class-row fallback errored
    *   - query_failed_class_members   — Q2 errored
    *   - query_failed_assignments     — Q3 errored
    *   - query_failed_student_profile — Q4 errored
@@ -1249,13 +1271,44 @@ window.MrBadmusTeacherData = (function () {
       e.cause = q1.error;
       throw e;
     }
-    const teacherRows = (q1.data || []).filter(function (r) {
+    let teacherRows = (q1.data || []).filter(function (r) {
       return r.class && !r.class.deleted_at;
     });
+    /* ⊕ MRB-326 — the same class-row fallback `loadClassMatrices` takes, for
+       the same reason, and the reasoning is written out in full there. In
+       short: `class_teachers` answers "is there a live link I can see", and
+       a class whose only teacher is an unclaimed `pending_staff` row has no
+       link for anyone to see. `classes` RLS asks the right question —
+       `classes_teacher_read` still needs `auth_user_teaches_class`, so a
+       plain teacher gets nothing back and the throw below still fires. */
+    let fallbackClass = null;
     if (teacherRows.length === 0) {
-      const e = new Error('[teacher-data] not a teacher of class ' + classId);
+      const qc = await sb.from('classes')
+        .select('id, name, key_stage, year_group, tier, science_pathway, deleted_at')
+        .eq('id', classId)
+        .is('deleted_at', null)
+        .limit(1);
+      if (qc.error) {
+        const e = new Error('[teacher-data] classes query failed: ' + qc.error.message);
+        e.code = 'query_failed_classes';
+        e.cause = qc.error;
+        throw e;
+      }
+      const row = (qc.data || [])[0];
+      if (row && !row.deleted_at) { fallbackClass = row; }
+    }
+    if (teacherRows.length === 0 && !fallbackClass) {
+      const e = new Error('[teacher-data] class not reachable: ' + classId);
       e.code = 'not_authorised';
       throw e;
+    }
+    /* One synthetic row, carrying the class and NO subject, so everything
+       below — `derivePill`, the `class` shape, the multi-subject test — runs
+       unchanged rather than growing a second branch. `derivePill` drops rows
+       with no `subject_id`, which is exactly the null pill this class has
+       earned: no teacher-subject link means no subject to name. */
+    if (fallbackClass) {
+      teacherRows = [{ subject_id: null, subject: null, class: fallbackClass }];
     }
 
     if (q2.error) {
@@ -1683,18 +1736,37 @@ window.MrBadmusTeacherData = (function () {
    * by accident of the tiebreak rather than by design, and it is written down
    * here so the next person to touch the picker knows both columns are live.
    *
-   * Authorisation: the class_teachers driver query is RLS-scoped to the
-   * caller. A class id that comes back with no row is one the caller does not
-   * teach, and the whole call fails rather than quietly omitting it — a
-   * dashboard that silently drops a class looks identical to a teacher who
-   * has been taken off it.
+   * Authorisation: RLS, and ONLY RLS. Every read in here is unfiltered on
+   * the client — no `.eq('teacher_id', me)` anywhere — so the rows that come
+   * back are exactly the rows the database is willing to hand this caller.
+   *
+   * TWO reads can authorise a class, and the second one is why (MRB-326):
+   *   1. `class_teachers` — the driver. A live link this caller can see.
+   *   2. `classes` — asked ONLY for the ids the driver did not answer for.
+   *      A class with no live teacher link at all (25 of production's 69 in
+   *      2026-27, all of them staffed only by an unclaimed `pending_staff`
+   *      row) has nothing for the driver to find, and used to be refused to
+   *      a school_admin as though it were someone else's. `classes` RLS
+   *      draws the line properly: teacher-read needs
+   *      `auth_user_teaches_class`, admin/slt/hod read needs the scope.
+   * A class neither read answers for still throws `not_authorised`, with
+   * the same code and message it always had — the whole call fails rather
+   * than quietly omitting it, because a dashboard that silently drops a
+   * class looks identical to a teacher who has been taken off it.
+   *
+   * ⚠️ A class authorised by read 2 has an EMPTY links list, so its
+   * `pill_label` / `pill_colour_var` are null (no teacher-subject link means
+   * no subject to name) and its `members` / `assignments` / `submissions`
+   * may all be empty. Every caller must tolerate that; it is a real class in
+   * a real school, not a failure.
    *
    * Error codes (thrown via Error.code):
    *   - invalid_class_id             — an id failed the UUID shape check
-   *   - not_authorised               — a requested class returned no driver row
+   *   - not_authorised               — neither read answered for a class
    *   - query_failed_class_teachers  — driver query errored
    *   - query_failed_class_members   — members query errored
    *   - query_failed_assignments     — assignments query errored
+   *   - query_failed_classes         — the class-row fallback errored
    *   - query_failed_submissions     — submissions query errored
    */
   async function loadClassMatrices(classIds) {
@@ -1775,7 +1847,86 @@ window.MrBadmusTeacherData = (function () {
       byClassId.get(id).rows.push(row);
     });
 
-    const missing = ids.filter(function (id) { return !byClassId.has(id); });
+    /* ── The class-row fallback (MRB-326) ─────────────────────────────
+       ⊕ 6 Sep 2026. This block used to be four lines: any id with no
+       `class_teachers` row threw `not_authorised`, full stop.
+
+       ⛔ WHY THAT WAS WRONG, and it was wrong on real data rather than in
+       principle. The driver above is `class_teachers`, so the question it
+       actually answers is "does this class have a LIVE TEACHER LINK THIS
+       READER CAN SEE" — which is not the same question as "may this reader
+       see this class". On production today 25 of the 69 classes in 2026-27
+       have no live link AT ALL: their only teacher is a `pending_staff`
+       row that has not been claimed yet (7 of 12 seeded staff are
+       unclaimed). Those 25 were the ONLY classes that refused a
+       school_admin, and they refused with "That class is not one of
+       yours" — the sentence for a class belonging to someone else, said
+       about a class belonging to nobody. MRB-325 ruling 5 says an admin
+       opens a colleague's class; an unstaffed class is the case that
+       ruling most obviously covers and the one it least obviously reached.
+
+       ⚠️ THE SECURITY PROPERTY IS UNCHANGED IN KIND, AND THIS IS THE
+       PARAGRAPH TO CHECK IF YOU ARE AUDITING THIS FILE. The check is still
+       RLS and only RLS: the read below carries NO client-side self-filter,
+       exactly like the three above it, so what comes back is whatever the
+       database is willing to hand this caller and nothing more. On
+       `public.classes` the policies are:
+
+         classes_teacher_read  school + auth_user_teaches_class(id)
+         classes_admin_read    school + (school_admin OR slt)
+         classes_hod_read      school + hod
+         classes_student_read  school + auth_user_is_member_of_class(id)
+
+       So a plain teacher asking for a class she does not teach gets zero
+       rows back and the `not_authorised` throw below still fires, with the
+       same code and the same sentence it always had. A row coming back IS
+       the proof of the scope, in precisely the way a non-empty
+       `class_teachers` read was before — the proof simply moved to the
+       table that carries the right predicate.
+
+       ⚠️ NO ROLE GAINS ACCESS IT DID NOT ALREADY HAVE. `school_admin`,
+       `slt` and `hod` could already open any class in the school that had
+       a live link, through `class_teachers_admin_read` /
+       `class_teachers_hod_read` on the driver above. What changes is that
+       the class no longer has to be STAFFED for them to do it. The set of
+       readers is identical; the set of classes is complete.
+
+       The pack synthesised here has an EMPTY links list, because there
+       genuinely are none — `derivePill` returns a null pill for it (a
+       class with no teacher-subject link has no subject to name), the
+       members / assignments / submissions all come from the reads above,
+       which were already run over the full id list, and every one of them
+       is allowed to be empty. `buildClassEntry` in teacher-live.js draws
+       Design's "empty" state from exactly that. */
+    let missing = ids.filter(function (id) { return !byClassId.has(id); });
+    if (missing.length) {
+      let classRows;
+      try {
+        classRows = await inChunks(missing, async function (chunk) {
+          const r = await sb.from('classes')
+            .select('id, name, key_stage, year_group, tier, science_pathway, ' +
+                    'assignment_day_of_week, deleted_at, academic_year_id, school_id')
+            .in('id', chunk)
+            .is('deleted_at', null);
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+      } catch (err) {
+        const e = new Error('[teacher-data] classes query failed: ' + (err && err.message));
+        e.code = 'query_failed_classes';
+        e.cause = err;
+        throw e;
+      }
+      classRows.forEach(function (klass) {
+        // Same defensive soft-delete skip the driver grouping makes. The
+        // query filters it too; both, because either one alone is a rule
+        // living in exactly one place.
+        if (!klass || klass.deleted_at) return;
+        if (byClassId.has(klass.id)) return;
+        byClassId.set(klass.id, { klass: klass, rows: [] });
+      });
+      missing = ids.filter(function (id) { return !byClassId.has(id); });
+    }
     if (missing.length) {
       const e = new Error('[teacher-data] not authorised for class(es): ' + missing.join(', '));
       e.code = 'not_authorised';
