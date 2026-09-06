@@ -1878,6 +1878,67 @@
     return pool;
   }
 
+  /* ── ⊕ MRB-331 UNIT B · `schools.assignments_open_from`, read tolerantly ─
+
+     Same shape and same reasoning as `readAutoAssignments` below: "" on every
+     failure path. The value produces ONE SENTENCE in the Set-work sheet — "Your
+     school opens work to students on …, so this will appear then" — and a
+     teacher who cannot read the row loses that sentence and nothing else. They
+     are still told when they set the work, by the server, in the toast.
+
+     ⛔ IT IS NOT THE AUTHORITY ON THE HOLD AND MUST NOT BECOME ONE. UNIT A
+     resolves `release_at = max(chosen, assignments_open_from)` server-side at
+     set time and stores the answer, with the timezone care that needs
+     (`londonMidnightInstant`). This read exists to WARN, not to decide. */
+  async function readAssignmentsOpenFrom(schoolId) {
+    if (!schoolId) { return ""; }
+    var guard = window.MrBadmusTeacherGuard;
+    var sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) { return ""; }
+    try {
+      var res = await sb.from("schools")
+        .select("id, assignments_open_from").eq("id", schoolId).maybeSingle();
+      if (res.error) { throw res.error; }
+      return (res.data && res.data.assignments_open_from) || "";
+    } catch (e) {
+      console.error("[teacher-live] assignments_open_from unavailable", e);
+      return "";
+    }
+  }
+
+  /* ── ⊕ MRB-331 UNIT B · `classes.auto_assignments`, read tolerantly ────
+
+     ⚠️ RETURNS `null` ON EVERY FAILURE PATH, DELIBERATELY, and it is the
+     `loadClassProgress` idiom rather than a new one. Three things can go
+     wrong and all three have the same right answer: the column does not
+     exist yet (a database that has not taken UNIT A's migration), RLS
+     refuses the row, or the network does. In every case the honest answer is
+     "not known", and `autoCan` in the ported logic then leaves the control
+     off the page rather than showing a switch whose position is a guess.
+
+     ⛔ IT IS NOT FOLDED INTO `loadTeacherClasses`. That query is what every
+     teacher's dashboard is built from, and PostgREST fails a select whole
+     when one named column is missing — so a column that has not landed
+     would turn one absent button into an empty class list for the entire
+     school. One extra row-scoped read on one screen is the cheaper risk by
+     a wide margin. */
+  async function readAutoAssignments(classId) {
+    var guard = window.MrBadmusTeacherGuard;
+    var sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) { return null; }
+    try {
+      var res = await sb.from("classes")
+        .select("id, auto_assignments").eq("id", classId).maybeSingle();
+      if (res.error) { throw res.error; }
+      var v = res.data && res.data.auto_assignments;
+      return (v === true || v === false) ? v : null;
+    } catch (e) {
+      console.error("[teacher-live] auto_assignments unavailable for class",
+                    classId, e);
+      return null;
+    }
+  }
+
   /* Real shoutouts for the class on screen, mapped into the shape Design's
      feed renders. Design invents two, complete with a fabricated "went from
      38% to 74%"; these are the ones a teacher actually wrote. The template
@@ -2187,6 +2248,23 @@
       FEED[classId] = await buildFeed(classId, now);
     }
 
+    /* ⊕ MRB-331 UNIT B — whether the generator sets this class's weekly
+       work. Only the class screen draws the control, so only the class
+       screen asks; `null` everywhere else means "not known", which is what
+       it honestly is. */
+    var autoAssignments = null;
+    if (classId && screen === "class") {
+      autoAssignments = await readAutoAssignments(classId);
+    }
+
+    /* ⊕ MRB-331 UNIT B — the school's assignment hold, for the one sentence
+       the Set-work sheet says about it. Only the two screens that can open
+       the sheet ask; everywhere else it is "" and draws nothing. */
+    var holdOpensOn = "";
+    if (screen === "class" || screen === "classes") {
+      holdOpensOn = await readAssignmentsOpenFrom(profile && profile.school_id);
+    }
+
     /* ⊕ MRB-306 Phase 2b — the written feedback the two authoring screens
        need. Scoped to what is on screen and nothing wider: this student's own
        submissions on the student screen, and the submissions in the grid the
@@ -2318,13 +2396,103 @@
                    window.MrBadmusShoutouts.SHOUTOUT_TEMPLATES) || [])
         .map(function (t) { return { id: t.key, key: t.key, label: t.label }; }),
 
-      /* ⛔ EMPTY ON PURPOSE. Design's Set-work sheet offers five topics with
-         labels like "Set 3 weeks ago". There is no product behind it — the
-         sheet composes nothing, and nothing in the schema answers "which
-         topics could this class be set next" for a teacher. Five invented
-         topics on a working instrument is worse than an empty sheet, because
-         a teacher would pick one. In the handover. */
+      /* ── ⊕ MRB-331 UNIT B · THE SET-WORK SHEET'S DATA ────────────────
+
+         ⊕ SUPERSEDED 6 Sep 2026. This block read:
+
+             ⛔ EMPTY ON PURPOSE. Design's Set-work sheet offers five topics
+             with labels like "Set 3 weeks ago". There is no product behind
+             it — the sheet composes nothing, and nothing in the schema
+             answers "which topics could this class be set next" for a
+             teacher. Five invented topics on a working instrument is worse
+             than an empty sheet, because a teacher would pick one. In the
+             handover.
+
+         ⚑ THIS IS THAT HANDOVER. UNIT A answers the question that sentence
+         says nothing answered: `/api/teacher/set-work/topics?class_id=…`
+         returns the class's own scheme of work, scoped by key stage, tier
+         and pathway, with a real `available` count per lesson and the day
+         each was last set.
+
+         ⚠️ IT STARTS EMPTY AND IS FETCHED BY THE SHEET, NOT BY THIS
+         FUNCTION, and that is a decision rather than laziness. The classes
+         screen has no class in the URL at all — node 165 is pressed from a
+         page about twelve classes — so there is no class to fetch a scheme
+         for until the teacher has chosen one INSIDE the sheet. Prefetching
+         all twelve would be twelve round trips before mount, on the screen
+         MRB-292 was opened to make faster, for a sheet most loads never
+         open. `MRB_SET_WORK_TOPICS` in the page seam does the fetch and
+         writes the answer back onto this key.
+
+         ⛔ AND IT IS NOT A SUPABASE READ, WHICH IT COULD TRIVIALLY HAVE
+         BEEN. `pool_ownership.py` fails the build on the mere PRESENCE of
+         the assignment bank's name in this file, comment or not, and it is
+         right to: MRB-288 rules that the weekly assignment is composed by
+         the backend and by nothing else. Widening that gate to let a
+         teacher surface select `text`/`options` client-side would retire
+         the guarantee the student half of the same gate exists to give.
+         The gate's own closing note recommends exactly what is done here. */
       TOPICS: [],
+
+      /* The classes this teacher may set work TO. It is the same list the
+         page draws — there is one authorised class list per year and a
+         second implementation of it would be a second answer — but it is
+         its OWN key, because "which classes are on screen" and "which
+         classes may be written to" are different questions and the second
+         one is where a later rule (a class held by a colleague, a class that
+         has finished) belongs. `n` is the real roster size; the sheet
+         reports students from it and the SERVER reports them again after
+         the write, which is the number the teacher is actually told. */
+      SET_WORK_CLASSES: c.CLASSES.map(function (k) {
+        return { id: k.id, code: k.code, subject: k.subject, n: k.n };
+      }),
+
+      /* `holdOpensOn` is `schools.assignments_open_from` — MRB-324's dial
+         for delaying the day a school's work opens to students. The sheet
+         needs it BEFORE the write, to say one sentence about why work set
+         today will not appear today; UNIT A resolves it again, server-side
+         and authoritatively, when the work is actually set, and that is the
+         value that gets stored. This one only ever produces a sentence.
+
+         ⚠️ A READ, NEVER A WRITE, AND THE DISTINCTION IS A RULING.
+         `assignments_hold_drive.py`'s primary assertion is that this dial
+         must not become a client-side database WRITE — `schools_admin_update`
+         carries no column list, so a browser update would carry every column
+         of the school row. Reading one column of the teacher's own school is
+         a different act and carries none of that.
+
+         ⚠️ AND IT FAILS TO "", WHICH DRAWS NOTHING. A teacher whose RLS does
+         not reach `schools` loses one sentence and nothing else; they are
+         still told, by the toast, the moment they actually set the work.
+
+         `setWorkBand` is the class's difficulty band. It comes back on the
+         scheme answer, because it is a property of the class rather than of
+         this page, and the preview route needs it. */
+      holdOpensOn: holdOpensOn,
+      setWorkBand: "",
+
+      /* ⛔ EMPTY ON EVERY LIVE PAGE, ALWAYS. The questions a piece of work
+         would be composed of are chosen by the backend per (class, topic,
+         count) and arrive through `MRB_SET_WORK_PREVIEW`; this key exists so
+         the sheet's `swPick` has a shape before the first fetch answers and
+         so `MRB_DATA` never throws. The FIXTURES fill it with Design's own
+         eight stems, which is what puts the Swap control on the page
+         `teacher_behaviour` drives. */
+      SET_WORK_PREVIEW: [],
+
+      /* ⊕ MRB-331 UNIT B — whether the generator sets this class's weekly
+         work. `null` means NOT KNOWN, and it is a third state rather than a
+         defaulted `true`: the control is absent when the flag could not be
+         read, because a switch that shows "on" without having asked is the
+         same untruth as a toast in front of no write.
+
+         ⚠️ ITS OWN READ, TOLERANT, AND DELIBERATELY NOT ADDED TO
+         `loadTeacherClasses`'S COLUMN LIST. That query is the one every
+         teacher's dashboard depends on; naming a column that a database
+         which has not yet taken UNIT A's migration does not have would turn
+         a missing column into an empty class list for everybody. This one
+         fails to `null` and the page loses one button. */
+      autoAssignments: autoAssignments,
 
       /* ⛔ EMPTY ON PURPOSE. The CSV import screen's column mapping, row
          preview and "Import 26 students" button are all invented; Design's

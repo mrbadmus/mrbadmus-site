@@ -292,7 +292,7 @@ is nothing behind week 1 to fill from.
 | 6 | **Auto rows are not retro-held** | Same ruling. Auto work is already held at creation; adding a read-time hold would retract Rainford's two pre-term assignments, which MRB-324 explicitly protects |
 | 7 | **Fill backwards through the scheme** (§7) | The alternative was a dead swap control and an unreachable default |
 | 8 | **KS4 refuses rather than composing empty work** (§6) | There is no KS4 pool; the backend's own stance is that empty work is worse than none |
-| 9 | **A partial multi-class set is refused whole** | A teacher who sees an error must not have to guess which half landed |
+| 9 | **A partial multi-class set is refused whole** | A teacher who sees an error must not have to guess which half landed. ⚠️ See §13 — this was TRUE of the authorisation check and FALSE of everything else until a cold pass found it |
 | 10 | **The bench falls back to teacher-set work when auto is off** | Otherwise a class with the switch off shows an empty bench above a full work list, which reads as broken |
 | 11 | **Only *open* work rows get a link** | Marked rows already route to their lesson (ruling P3); missed ones are Design's "Ask for an extension", a different control |
 | 12 | **`slt` cannot set work** | Setting work is a teaching act. The admin route accepts SLT for a date dial, which is a different kind of thing |
@@ -348,3 +348,253 @@ means. The work carries the teacher's own title, and that is the whole of the
 difference they see. One honesty fix: the bench's blurb drops the clause "set
 from this week's lessons" on the fallback path, because that is a fact about an
 auto assignment and would be untrue of work whose lesson the teacher chose.
+
+---
+
+## 11 · Caught in review: the Swap control was dead on most rows
+
+Worth writing down because it would have shipped, and because of *how* it
+happened.
+
+The sheet's question preview gives every row a **Swap**. Its first
+implementation took "swap for another from the same lesson" from the brief
+literally, which was correct when it was written. Unit A then changed the
+selection underneath it, on my instruction (§7): one lesson cannot fill ten
+questions, so the set fills backwards through the scheme.
+
+Those two halves are inconsistent, and the inconsistency is invisible from
+either side. Driven against the live backend on a real class:
+
+| count | picked | pool | rows with a swap available |
+|---|---|---|---|
+| 6 | 6 | 314 | **2 of 6** |
+| 10 | 10 | 310 | **2 of 10** |
+| 15 | 15 | 305 | **3 of 15** |
+| 20 | 20 | 300 | **0 of 20** |
+
+The fill consumes a lesson's four questions *entirely* before moving to the next
+lesson back, so the pool holds nothing for any fully-consumed lesson. At count
+10 the picked set is `{chosen: 4, next back: 4, next: 2}` and the pool holds
+`{0, 0, 2}` for those three. Only the partially-consumed final lesson can swap.
+
+**A control that does nothing when pressed, on eight rows in ten — and on
+twenty in twenty at the maximum count.** That is precisely what MRB-287's `DEAD`
+ruling forbade. Restoring the sheet while re-committing its original sin would
+have been the worst possible outcome of this ticket.
+
+Fixed by making Swap draw from the drawn range — same lesson first, then the
+nearest unused, the pool already being nearest-first — and by **putting each
+question's lesson on its row**, which is the half that makes the fill visible
+rather than hidden:
+
+```js
+const free = (s.swPool || []).filter(x => used.indexOf(x.id) < 0);
+const alt  = free.filter(x => x.lesson_slug === q.lesson_slug)[0] || free[0];
+```
+
+The pool is ~300 questions against a picked set of at most 20, so `free` is
+never empty on a real class and **every row is swappable at every count** —
+measured on the closure lifted verbatim out of the built page, against the same
+pool model that produced the table above:
+
+| count | picked | pool | rows with a swap available |
+|---|---|---|---|
+| 6 | 6 | 314 | **6 of 6** |
+| 10 | 10 | 310 | **10 of 10** |
+| 15 | 15 | 305 | **15 of 15** |
+| 20 | 20 | 300 | **20 of 20** | The
+refusal survives for the genuinely-exhausted case and now says something true —
+"Nothing left in the bank to swap in" — rather than the previous "No other
+question from that lesson yet", whose "yet" implied a bank that grows.
+
+⚠️ **`teacher_behaviour` could not have caught this.** It presses each
+registered marker once and asks whether anything changed; one row's swap
+working is enough to satisfy it. The property here is about the other nine rows,
+so the proof is a count of available alternatives, not a press.
+
+⊕ **My own fault as much as anyone's**: I ruled the fill change and did not tell
+the unit that owned the swap.
+
+---
+
+## 12 · Fidelity: reconciling the sheet against Design's template
+
+Design's Set-work sheet is at lines 889–968 of
+`docs/ks3/design-reference/teacher/source/Teacher Dashboard.dc.html`; its
+behaviour is in her script constants at 2046–2099 and `TOPICS` at 1092.
+
+⚠️ **The comparison is against her SCRIPT, not her markup.** Her HTML carries
+`hint-placeholder-count` stubs, not content; the constants are what she actually
+specified. This is the method the estate already uses.
+
+### What ships unchanged
+
+| Design | Ships |
+|---|---|
+| Three steps, `swStep` 1–3 | unchanged |
+| Eyebrow `'Step ' + n + ' of 3 · ' + [...][n-1]` | the sentence is unchanged; its three words are reordered — see divergence 6 |
+| Topic rows: name, `unit` caption, right-aligned `tag` | unchanged |
+| Footer summary + Back/Next, labels `Cancel`/`Back` and `Next`/`Set work` | unchanged |
+| Due: five weekday chips Mon–Fri | unchanged |
+| Step 3: multi-select class grid with the square checkbox | unchanged |
+| Modal frame, 720px, `--st-*` tokens throughout | unchanged |
+
+### Ruled divergences
+
+| # | Design drew | Ships as | Why |
+|---|---|---|---|
+| 1 | question chips `[6, 10, 15]` | `[6, 10, 15, 20]`, default 10 | The brief sets the max at 20. One chip added to her row; her `flex:1` layout absorbs it at 720px and at 390px |
+| 2 | a count, and **no questions** | the count, then the auto-selected questions with a **Swap** on each, and each question's lesson | *"Six, ten or fifteen questions, chosen by nobody the teacher can see, set to thirty children. That is acceptable in a sheet that sets nothing and is not acceptable in one that does."* The lesson caption is what makes the backward fill (§7) visible rather than hidden |
+| 3 | release chips `Release now` / `Release next lesson` | `Release now` / `Release later` + a date | "Next lesson" cannot be resolved: the timetable is per-teacher (MRB-326), and a multi-class set has no single next lesson. A date can be resolved and is what the brief asks for |
+| 4 | *(nothing)* | one line naming the school's go-live date, shown only when a hold is set and ahead | Without it a teacher sets work for Tuesday and cannot tell why the class does not have it. One sentence, in the footer, said once |
+| 5 | *(nothing)* | the due chips resolve to a real date, shown beneath them | Her chips are weekdays; the brief's default is "next week, same weekday". The resolved date is the only way to tell which Wednesday |
+| 6 | step order `['Topic','Detail','Classes']` | `['Classes','Topic','Detail']` | **Forced by real data, not chosen.** Design's topic list is a five-row constant, so it can be drawn before anything is known. A real one is *this class's* scheme of work — and the sheet also opens from `classes.html` (node 165), where no class is in the URL. Her step 1 cannot be drawn there at all. No panel is redrawn and no control moves; only which step number makes each `<if>` true |
+
+### Withheld
+
+**Node 382, "Reteach and reset"** — drawn by `openSetWork`, so restoring the sheet
+would have restored it too. It stays `DEAD`: a Set-work sheet behind a button
+labelled "Reteach and reset" lies about what the control does, which is a smaller
+lie than MRB-287's but still one.
+
+**Teacher-authored free-text questions** — v2 in the brief, and **not drawn as a
+disabled control**. There is no greyed-out "write your own" anywhere on the sheet.
+
+---
+
+## 13 · The cold pass, and what it found
+
+The diff was read end to end by a reviewer with none of this run's context,
+instructed to be adversarial about authorisation, provenance, the release logic
+and crashes. It found six real defects. Two are worth reading in full because of
+what they say about the rest of this report.
+
+### The one that falsified a claim I had already written
+
+**`POST /api/teacher/set-work` was not all-or-nothing.** The route's own header
+said *"IT REFUSES THE WHOLE REQUEST OR IT WRITES ALL OF IT."* Only
+**authorisation** was pre-flighted. The hold resolution, the
+`due_at > release_at` check and both inserts all happened **inside** the write
+loop, with no transaction and no rollback of classes already written.
+
+A deterministic scenario, needing no transient failure: a teacher who teaches in
+two schools — B with no hold, A with a go-live date — posts both with a due date
+of tomorrow. Class B is inserted and released. Class A returns
+`400 bad_due_at`, naming class A. The teacher sees an error about a class they
+did not think they were setting, retries with a later due date, and **class B
+receives a second assignment** — because this very ticket narrowed
+`assignments_class_week_uniq` to `source = 'auto'`, so nothing dedupes teacher
+rows. The child's week then lists the same homework twice.
+
+⚠️ **I had already written decision 9 — "a partial multi-class set is refused
+whole" — on the strength of that header.** My drive tested the *authorisation*
+refusal and proved it, which is why it read as covered. It was not. The claim was
+false when I made it; the fix makes it true.
+
+### The one whose reasoning was right and whose premise was wrong
+
+`?assignment_id=` was placed ahead of the consumer branch, on the stated grounds
+that it was "behaviourally identical today since no consumer flow passes it."
+The consumer branch carries the only guard stopping a family child opening work
+generated a week ahead (`consumer/work.js:1733`). The premise was wrong: the
+**child** can pass it. `assignments_student_read` permits `release_at is null`,
+consumer practice is written with a null release, and the student page already
+holds direct PostgREST reads of `assignments` — so the child's own client
+returns the row and its id.
+
+### The rest
+
+| # | Defect |
+|---|---|
+| 3 | The release gate was on one student-facing route out of five. The other four go through `studentAssignment()`, which runs on the **service-role** client, so neither the backend check nor the new RLS policies applied. Not currently reachable for teacher-set work — but "not reachable" is a statement about today, and defect 2 shows ids already leak for the null-release case |
+| 4 | Five `callerClient()` call sites left unwrapped, against the commit's own instruction. Verified empirically on this repo's express 4.22.1 / node 24: an async handler that throws produces no response, no error middleware is registered anywhere, and the process terminates |
+| 5 | The write accepted a scheme row the preview refuses (null `subtopic`), storing work that the "last set" logic then never reports as set |
+| 6 | Both audit writes were wrapped in a `try/catch` that can never fire — `supabase…insert()` resolves with `{ error }`, it does not reject, so an audit failure was discarded with no row and no log line |
+| 7 | A dead filter that reads as a guard (`q.band !== band`, always false — `bankFor` already filters by band) |
+
+### What it could not break
+
+Authorisation — `setWorkAccess` sound, every id re-derived server-side,
+`sowMatchesClass` applied to **every** class rather than the first. Question
+provenance — the key-stage seal held at all four call sites. The DST arithmetic.
+And the `source = 'auto'` sweep: every week-scoped lookup in the estate
+enumerated, none missed.
+
+**The lesson worth keeping:** the drive proved the properties it was written to
+prove, and each of those proofs is sound. Six defects sat in the space between
+them, and four were in code paths the drive never entered. A green gate is
+evidence about what it watches, and nothing at all about what it does not.
+
+---
+
+## 14 · Gates
+
+| Gate | Result |
+|---|---|
+| `set_work_drive.py` (new) | **54 checks, 0 failed**, three consecutive runs, real JWTs under real RLS |
+| `teacher_behaviour.py` (dead-control) | **PASS** — 24 fixtures, 880 controls pressed; `setwork-swap`, `setwork-release-date` and `auto-assignments` pressed by name |
+| `teacher_reach.py` (390px + 360px) | **PASS** — 24 fixtures × 2 widths, 3,436 controls hit-tested at their own centre, 1,894 presses, nothing out of reach, no sideways scroll |
+| `teacher_tells.py` | **PASS** — none of Design's five invented topics reaches a built page |
+| `student_behaviour.py` | **PASS** — 100/100 against Design's own files |
+| `pool_ownership.py` | **PASS** — extended, and all three new checks mutation-tested red first |
+| `gate_registry.py --check` | **PASS** — 39 gates over 39 scripts |
+| backend `test_assignment_compose.js` | **51 passed** |
+| backend `test_generate_week_guard.js` | **16 passed** |
+
+⚠️ **`teacher_behaviour` presses each registered control once.** That is what it
+is for, and it is why §11's dead-Swap defect was invisible to it: one row's swap
+working satisfies the press. The property there was about the *other nine rows*,
+and the proof was a count of available alternatives, not a press. A gate is
+evidence about what it watches.
+
+### The dead-control gate had to be taught to reach the sheet
+
+Its `OPENERS` map held one template index per marker — enough for a control one
+press behind one of Design's nodes. The sheet's controls sit **three panels
+deep**, behind open-then-Next-then-Next, on two screens that open it from two
+different nodes. `OPENERS` now takes a *chain*, pressed in order, re-querying the
+DOM at every step — because the page is rebuilt wholesale on every `setState`, so
+a handle taken before the first press is stale by the second.
+
+### All six fixed, and how
+
+Committed as `2bd513d`, *"a partial set is refused whole, and unreleased work is
+404 everywhere"*.
+
+1. **The multi-class write is genuinely all-or-nothing.** Split into a
+   **decision pre-flight** — hold, `release_at`, `academic_week` and the due-date
+   check, per class, into `plans[]` — and a **write loop that can only insert**.
+   Every refusal now sits at or before `plans.push`; the only returns after the
+   loop opens are two 500s, each preceded by a `rollbackAll()` that deletes
+   *every* assignment the request has created, not just the current one, and
+   logs loudly if a rollback delete itself fails.
+2. **`?assignment_id=` moved below the consumer branch** — consumer, then
+   `assignment_id`, then compose, with the ordering's load-bearingness written
+   down, and the original reasoning corrected: it was about our pages, not the
+   child's client.
+3. **The release gate moved into `studentAssignment()`**, so all four callers
+   inherit it. A detail worth keeping: no teacher path reaches that helper at
+   all — every caller requires class *membership* — so teachers read unreleased
+   work through `?assignment_id=`, which permits it explicitly.
+4. **`callerRpc(req, fn, args)`** — the shape-over-instruction option: it
+   *cannot* throw and returns `{data, error}`, which every one of the seven
+   sites already handled. Six `.rpc` sites plus `callerStanding` converted; the
+   one `.from()` chain catches around itself. Plus a process-level
+   `unhandledRejection` net, after empirically confirming on this repo's own
+   express/node that an async handler throw produces no response and terminates
+   the process.
+5–7. The write mirrors the preview's `!sow.subtopic` refusal; both audit writes
+   read `{ error }`; the dead band filter is gone.
+
+Verified by a **94-check** drive on TEST covering each finding, including the
+positive control for #1 — the *same* two-class request succeeds on both classes
+once the hold is lifted, proving the refusal was the hold and not the shape.
+
+⚠️ **A note on the earlier drive failures.** Six checks failed in an
+intermediate run for a reason that was not the product: the throwaway school was
+deleted mid-run by a concurrent session, and the classes it fell back to sit in
+the **2025-26** academic year, which ended 31 August 2026 — so
+`currentTeachingWeek()` returns null and every week-scoped assertion collapses
+into `no_current_week`. Both drives now build and remove their own worlds. It is
+the same trap §2 of the plan named for Rainford, met a second time from the
+other direction.

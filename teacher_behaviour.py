@@ -341,8 +341,17 @@ _DRIVE_JS = r"""
 (async function () {
   var EXEMPT = __EXEMPT__;
   var ADDED = __ADDED__;
-  /* {marker: template index}. An addition whose opener is one of DESIGN'S
-     nodes rather than an earlier addition — see the reveal loop. */
+  /* {marker: [template index, …]}. An addition whose opener is one of
+     DESIGN'S nodes rather than an earlier addition — see the reveal loop.
+
+     ⊕ 6 Sep 2026 (MRB-331 UNIT B) — A LIST, WHERE IT USED TO BE ONE INDEX,
+     and the list is PRESSED IN ORDER. One index was enough for the year
+     picker, which sits one press behind one of Design's nodes on one page.
+     It is not enough for a control three panels inside a sheet that two
+     different screens open from two different nodes: reaching the Set-work
+     sheet's detail panel is open-then-Next-then-Next. The Python side
+     resolves a per-page map down to the list for THIS page, so nothing here
+     knows which page it is on. */
   var OPENERS = __OPENERS__;
   var host = document.querySelector('#mrb-teacher');
   if (!host) { return JSON.stringify({error: 'no #mrb-teacher host'}); }
@@ -609,9 +618,23 @@ _DRIVE_JS = r"""
        first. Without it the year options are reported unreachable — correctly,
        from this gate's point of view, which is exactly why the gate had to be
        taught rather than the marker moved. */
-    if (!el && OPENERS[want] != null) {
-      var byTpl = host.querySelector('[data-dc-tpl="' + OPENERS[want] + '"]');
-      if (byTpl) {
+    if (!el && OPENERS[want]) {
+      var chain = OPENERS[want];
+      for (var o = 0; o < chain.length && !el; o++) {
+        /* ⚠️ RE-QUERIED EVERY STEP, NEVER HELD. The DOM is rebuilt wholesale
+           on every `setState`, so a handle taken before the first press is a
+           handle to an element that no longer exists by the second.
+
+           A step is a NUMBER — one of Design's template indices — or a raw
+           SELECTOR. The second form exists because a control drawn inside an
+           `sc-for` shares one template index with every sibling row, so
+           `[data-dc-tpl="613"]` is "Release now" and there is no index at
+           all for "Release later". */
+        var step = chain[o];
+        var byTpl = host.querySelector(
+          (typeof step === 'number')
+            ? ('[data-dc-tpl="' + step + '"]') : step);
+        if (!byTpl) { break; }
         byTpl.click();
         await frame();
         el = host.querySelector(sel);
@@ -1038,8 +1061,25 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
     added_why = {a["marker"]: a for a in R.AMENDED_ADDITIONS}
     # ⊕ MRB-287 E1 — additions revealed by one of DESIGN'S nodes rather than
     # by an earlier addition. See the probe's note beside OPENERS.
-    openers = {a["marker"]: a["opener_tpl"] for a in R.AMENDED_ADDITIONS
-               if a.get("opener_tpl") is not None}
+    # ⊕ 6 Sep 2026 (MRB-331 UNIT B) — `opener_tpl` takes three shapes now,
+    # and this is where they collapse to one. An int is one press; a tuple is
+    # a SEQUENCE of presses in order; a dict is per PAGE, because an addition
+    # emitted on two screens can be revealed from a different node on each
+    # (the Set-work sheet is node 165 on the classes screen and node 214 on
+    # the class screen, and `INSERT_AT` is not page-scoped so the marker is
+    # one marker). A page named nowhere in the map contributes no chain,
+    # which is the same as having none.
+    openers = {}
+    for a in R.AMENDED_ADDITIONS:
+        want = a.get("opener_tpl")
+        if want is None:
+            continue
+        if isinstance(want, dict):
+            want = want.get(page + ".html")
+            if want is None:
+                continue
+        openers[a["marker"]] = ([want] if isinstance(want, (int, str))
+                                else list(want))
     # ⊕ MRB-287 — the search overlay's three nodes, if this page keeps it.
     search_nodes = _search_nodes(os.path.join(PAGE_DIR, path))
     with cdp.Browser() as b:

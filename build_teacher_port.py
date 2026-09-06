@@ -240,10 +240,36 @@ def asset_hash(text):
 # and the overlays not listed — is pruned by index, and a missing index stops
 # the build.
 #
-# ⚠️ `setWorkOpen` IS KEPT BY NONE OF THEM. See `DEAD` in teacher_rulings.py:
-# creating an assignment has no write path anywhere in the data layer, so the
-# sheet is a control that would collect four answers, show a confirmation and
-# set nothing.
+# ⊕ SUPERSEDED 6 Sep 2026 (MRB-331 UNIT B). This read:
+#
+#     ⚠️ `setWorkOpen` IS KEPT BY NONE OF THEM. See `DEAD` in
+#     teacher_rulings.py: creating an assignment has no write path anywhere
+#     in the data layer, so the sheet is a control that would collect four
+#     answers, show a confirmation and set nothing.
+#
+# ⚑ `setWorkOpen` IS KEPT BY TWO OF THEM — `classes.html` and
+# `class-detail.html` — and by no others. UNIT A built the write path; the
+# sheet composes from the assignment bank through backend composition and
+# writes a real `assignments` row.
+#
+# ⚠️ TWO, NOT SIX, AND THE OTHER FOUR ARE A RULING RATHER THAN AN OMISSION.
+# An overlay ships on a page only where something on that page can OPEN it —
+# the 24 Aug `bulkOpen` ruling four paragraphs down, in the same words:
+# "markup that cannot be reached is not a feature in waiting; it is weight
+# and a false positive for anybody reading the page." Design draws five
+# openers and one is not restored:
+#
+#     165  classes screen header          → `classes.html`
+#     194  a class card with no work set  → `classes.html`
+#     214  class screen header            → `class-detail.html`
+#     282  the no-work empty state        → `class-detail.html`
+#     382  the marking screen header      → STAYS DEAD, see `DEAD` — it is
+#          labelled "Reteach and reset" and opening a Set-work sheet from it
+#          would lie about what it does rather than about whether it does
+#          anything.
+#
+# So `student-detail.html`, `assignment.html`, `digest.html` and
+# `insights.html` carry no opener and therefore carry no sheet.
 #
 # ⊕ RULED 24 Aug 2026 — `bulkOpen` IS GONE FROM `classes.html`. It used to be
 # kept there because the brief named it, with a note that it had no opener.
@@ -267,7 +293,7 @@ PAGES = [
          # ⊕ NO `bulkOpen`. See the note above the list: `openBulk` is on
          # nodes 104/196 (class) and 232 (student) and nowhere on the classes
          # screen, so on this page the sheet was markup that could never open.
-         overlays=("searchOpen", "hasToast"),
+         overlays=("setWorkOpen", "searchOpen", "hasToast"),
          retire="classes.html"),
     # ⊕ MRB-323 — `picker=True` ON THIS ONE ONLY. The name picker's entry
     # button is `teacher_rulings.INSERT_AT[(213, 216)]`, and node 213 is the
@@ -282,7 +308,7 @@ PAGES = [
          empty_out="class-detail-empty-fixture.html",
          empty_js="teacher-fixture-class-detail-empty.js",
          title="Class \u00b7 MrBadmusAI",
-         overlays=("searchOpen", "bulkOpen", "hasToast"),
+         overlays=("setWorkOpen", "searchOpen", "bulkOpen", "hasToast"),
          retire="class-detail.html"),
     dict(screen="student", node=222, out="student-detail.html", admin_nav=True,
          fixture_out="student-detail-fixture.html",
@@ -2095,6 +2121,30 @@ c.POOL_CLASSES.forEach(function (id) {
       avg: r.avg == null ? '—' : r.avg + '%' });
   });
 });
+/* ⊕ MRB-331 UNIT B — Design's own topic list and question stems, in the
+   shapes the SEAMED sheet reads. Computed by running her logic like the rest
+   of the sample rather than retyped: `available` is the number of stems she
+   drew, not a number chosen here, so the fixture cannot claim a bank size
+   that disagrees with the questions beside it.
+
+   ⛔ FIXTURE ONLY. `teacher-live.js` sends `TOPICS: []` and
+   `SET_WORK_PREVIEW: []` on every live page — the real ones come from
+   `/api/teacher/set-work/topics` and `/preview` — and `teacher_tells.py`
+   proves Design's five topic names are in none of the six emitted pages. */
+out.TOPICS = c.TOPICS.map(function (t) {
+  return { id: t.id, name: t.name, unit: t.unit, tag: t.tag,
+           lesson_slug: t.id, lesson_title: t.name,
+           available: c.STEMS.length };
+});
+/* ⚠️ `text` AND `lesson_title`, WHICH ARE THE PREVIEW ROUTE'S OWN FIELD
+   NAMES. A fixture that invented friendlier ones would render perfectly and
+   the live page would render a column of blank rows — the exact class of
+   defect a fixture exists to catch rather than to hide. */
+out.SET_WORK_PREVIEW = c.STEMS.map(function (q) {
+  return { id: q.id, text: q.text, lesson_slug: c.TOPICS[0].id,
+           lesson_title: c.TOPICS[0].name };
+});
+
 process.stdout.write(JSON.stringify(out));
 """
 
@@ -2223,12 +2273,32 @@ DESIGN_SCALARS = dict(
     weekRangeLabel="Mon 17 – Fri 21 Aug 2026",
     weekOfLabel="Week of Mon 17 Aug 2026",
     printedOn="24 Aug 2026",
-    # ⛔ EMPTY ON PURPOSE, AND THIS IS THE ONE PLACE THE FIXTURE DELIBERATELY
-    # DIFFERS FROM DESIGN'S RENDER. The Set-work sheet is pruned, and the CSV
-    # mapping and preview must bind to the LIVE wizard's own values — filling
-    # them here would put four invented children back on the confirm step of a
-    # gate that exists to prove they are gone.
-    TOPICS=[],
+    # ⛔ EMPTY ON PURPOSE. The CSV mapping and preview must bind to the LIVE
+    # wizard's own values — filling them here would put four invented
+    # children back on the confirm step of a gate that exists to prove they
+    # are gone.
+    #
+    # ⊕ 6 Sep 2026 (MRB-331 UNIT B) — `TOPICS` USED TO BE ON THIS LIST and
+    # the note above used to open "The Set-work sheet is pruned". It is not
+    # pruned any more, and the fixture's topic list is now DESIGN'S OWN five
+    # rows, computed by running her logic like everything else in the sample
+    # rather than retyped here (see `_FIXTURE_RUNNER`). A fixture is supposed
+    # to carry Design's values; `teacher_tells.py` polices the LIVE pages,
+    # where `TOPICS` is a seam read and Design's five rows cannot appear.
+    #
+    # ⊕ AND THE FIXTURE'S SET-WORK SCALARS ARE HERE. `SET_WORK_CLASSES` is
+    # filled in `fixture_payload` from the sample's own class list, for the
+    # same reason `classCount` is: twelve literals would be twelve chances to
+    # disagree with the twelve classes beside them.
+    #
+    # ⚠️ `autoAssignments=True` IS THE FIXTURE'S ANSWER AND NOT A DEFAULT.
+    # The live payload's third state is `null` — "the flag could not be
+    # read" — and a fixture that carried it would take the toggle off the
+    # page and quietly excuse `teacher_behaviour` from pressing the one
+    # control MRB-331 adds outside the sheet.
+    holdOpensOn="",
+    setWorkBand="",
+    autoAssignments=True,
     IMPORT_MAP_ROWS=[],
     IMPORT_PREVIEW_ROWS=[],
     importCountLabel="",
@@ -2266,6 +2336,11 @@ def fixture_payload(data, templates, class_id):
         searchPlaceholder="Search students across all %d classes"
                           % len(classes),
         classId=class_id,
+        # ⊕ MRB-331 UNIT B — the classes the sheet may set to, derived from
+        # the sample's own list rather than written out again.
+        SET_WORK_CLASSES=[dict(id=c["id"], code=c["code"],
+                               subject=c["subject"], n=c["n"])
+                          for c in classes],
         # ⊕ MRB-306 Phase 2a screen 4, 2 Sep 2026 — WAS `-3`, AND `-3` LEFT
         # THE SCREEN'S ONLY WRITE CONTROL UNDRIVEN.
         #
@@ -2771,7 +2846,11 @@ def _shape_no_classes(p):
              FEED={}, searchPool=[], searchPoolCount=0, classCount=0,
              studentCount=0, liveClassCount=0, classId=None, studentId=None,
              paperIdx=None,
-             searchPlaceholder="Search students across all 0 classes")
+             searchPlaceholder="Search students across all 0 classes",
+             # ⊕ MRB-331 UNIT B — a teacher with no classes in the year they
+             # are viewing has nothing to set work to, and the sheet's class
+             # chooser has to be able to say so rather than list last year's.
+             SET_WORK_CLASSES=[], TOPICS=[], autoAssignments=None)
     return p
 
 
@@ -2781,6 +2860,12 @@ def _shape_no_roster(p):
     p = _blank_class(p, cid, "empty", keep_papers=False)
     p["FEED"] = {cid: []}
     p["studentId"] = None
+    # ⊕ MRB-331 UNIT B — this fixture is ALSO the past-year, read-only shape
+    # (`_shape_past_year` wraps it), and MRB-261 takes the write controls off
+    # a finished year. `autoCan` already carries `canWrite`, so the toggle is
+    # gone either way; `None` says the honest second reason as well — nothing
+    # asked the database about a class nobody can write to.
+    p["autoAssignments"] = None
     return p
 
 
@@ -4179,6 +4264,438 @@ function MRB_REMOVE_FEEDBACK(id){
    write has already happened, and the only thing waiting on this is the sheet
    closing. Eight seconds, then it closes anyway with a stale row - a stale
    row is a refresh away and a stuck sheet is not. */
+/* ══ THE SET-WORK SHEET, WIRED — MRB-331 UNIT B ═════════════════════════
+
+   Design's `swNext` ended in `this.ping(topic.name + ' set for ' + …)`: a
+   confirmation of a write that never happened, which is why `DEAD` pruned the
+   whole sheet under MRB-287. UNIT A built the write path; these helpers are
+   the whole of what the ported sheet needs to reach it.
+
+   ⚠️ THEY GO TO THE BACKEND, NOT TO SUPABASE, AND THAT IS A RULING RATHER
+   THAN A PREFERENCE. Two separate reasons, both already written down
+   elsewhere in this estate:
+
+     · POOL OWNERSHIP (MRB-288). The assignment pool is `ks3_assignment_bank`
+       and its ruled serving path is backend composition — `bankFor()`. A
+       teacher surface selecting `text`/`options` client-side is the thing the
+       student-side half of that gate exists to forbid, and `pool_ownership.
+       check_other_surfaces()` fails on the mere PRESENCE of the pool's name
+       in `shared/teacher-live.js`. Routing through the backend is the gate's
+       own closing recommendation, not a way around it.
+     · RLS SHAPE (MRB-324). `assignments_hold_drive.py`'s primary assertion is
+       that the hold control must never become a direct database write,
+       because `schools_admin_update` carries no column list. The
+       `assignments_teacher_write` policy has the same shape — `FOR ALL`,
+       USING only — so handing the browser an assignment INSERT would hand it
+       every column of the row, including `source`, `auto_generated` and
+       `set_by`, which are the three UNIT A added to tell teacher-set work
+       apart from generated work.
+
+   WARNING: NOTHING HERE REJECTS, exactly like the six shoutout helpers and
+   the two reminder helpers above, and for the same reason: the callers are
+   Design's SYNCHRONOUS `renderVals` closures, and an unhandled rejection out
+   of one is a console error a teacher never sees in front of a sheet that
+   still looks like it set the work. */
+
+/* The session's raw JWT. Everything else on this page goes to PostgREST
+   through the guard's client, where RLS is the boundary; these four go to the
+   Render backend, so the token is lifted out by hand exactly as
+   `teacher-data.loadClassProgress` already does for `/api/class/progress`.
+   `getSession()` refreshes a token that is about to expire, so what is handed
+   over is one the backend will still accept. */
+function MRB_TOKEN(){
+  var g=window.MrBadmusTeacherGuard;
+  var sb=(g&&g.getClient)?g.getClient():null;
+  if(!sb){return Promise.reject(new Error('teacher page: no data layer'));}
+  return sb.auth.getSession().then(function(r){
+    var t=r&&r.data&&r.data.session&&r.data.session.access_token;
+    if(!t){throw new Error('teacher page: not signed in');}
+    return t;});}
+
+function MRB_API(){var c=window.MrBadmusConfig||{};
+  return c.BACKEND_URL||'https://mrbadmus-backend.onrender.com';}
+
+/* One GET, authorised, JSON in and JSON out. Separate from the POST below
+   because a read that fails is a sheet with nothing in it and a write that
+   fails is a teacher who must be told; the two callers want different
+   sentences and sharing one helper would have flattened them. */
+function MRB_API_GET(path){
+  return MRB_TOKEN().then(function(t){
+    return fetch(MRB_API()+path,{headers:{Authorization:'Bearer '+t}});
+  }).then(function(res){
+    if(res.ok){return res.json();}
+    return res.json().then(function(d){throw MRB_API_ERR(res,d,path);},
+                           function(){throw MRB_API_ERR(res,null,path);});});}
+
+/* ⚠️ THE SERVER'S OWN SENTENCE IS CARRIED, NOT RE-INVENTED. Every refusal on
+   these four routes answers `{error: <code>, message: <a sentence>}` — "Choose
+   at least one class.", "Twenty questions is the limit.", "That due date is
+   not a date." Guessing a second wording from the code would give a teacher a
+   different sentence from the one the backend wrote for exactly that case, and
+   the two would drift apart the first time one of them changed.
+
+   `mrbSay` is the estate's existing name for "a sentence already fit to show"
+   — `teacher-live.js`'s `withDeadline` sets it — so `MRB_SET_WORK_WHY` reads
+   it first and only falls back to matching the code. */
+function MRB_API_ERR(res,d,path){
+  var code=(d&&d.error)||('backend '+res.status);
+  var e=new Error(code+' on '+path);
+  if(d&&d.message){e.mrbSay=d.message;}
+  e.mrbCode=(d&&d.error)||'';
+  e.mrbStatus=res.status;
+  return e;}
+
+/* ── THE TOPICS THIS CLASS COULD BE SET NEXT ─────────────────────────────
+
+   ⚠️ IT WRITES BACK INTO `window.__MRB_DATA__` AND RE-RENDERS. `TOPICS` is a
+   payload key like every other, so the sheet reads it through `MRB_DATA` and
+   cannot tell a fetched list from a mounted one — which is what lets the
+   classes screen, where there is no class in the URL at all, open the sheet
+   and fill its topic list once a class has been chosen.
+
+   ⚠️ AND IT IS A GETTER ON DESIGN'S CLASS, NOT A FIELD. A class field is
+   evaluated once at construction; this list arrives after mount, so a field
+   would have frozen the empty list Design's page started with. See the
+   `TOPICS` entry in `teacher_rulings.LOGIC`.
+
+   `hold_opens_on` rides along on this answer rather than being a read of its
+   own: `schools.assignments_open_from` is resolved server-side, next to the
+   scheme read that already has the school, and a teacher has no business
+   holding a `schools` row open in their browser to find out. */
+function MRB_SET_WORK_TOPICS(cmp, classId){
+  var D=window.__MRB_DATA__;
+  if(!D||!cmp){return Promise.resolve(false);}
+  if(!classId){
+    D.TOPICS=[];D.setWorkBand='';
+    cmp.setState({swTopicsErr:false});
+    return Promise.resolve(false);}
+  return MRB_API_GET('/api/teacher/set-work/topics?class_id='+
+                     encodeURIComponent(classId))
+    .then(function(d){
+      D.TOPICS=MRB_SET_WORK_ROWS(d);
+      D.setWorkBand=(d&&d.band)||'';
+      cmp.setState({swTopicsErr:false});
+      return true;},
+      function(){
+      /* ⚠️ NOT `console.error`, AND THAT IS A RULING RATHER THAN A STYLE
+         CHOICE. Every other failure on this page is reported to the TEACHER
+         and not to a log they will never open — `MRB_SHOUTOUT_WHY`,
+         `MRB_REMIND_WHY`, `MRB_SET_WORK_WHY`. A scheme that will not load is
+         the same kind of event, and the topic panel has a sentence for it
+         (`swNoTopicsLine`). It is also what keeps a fixture — which has no
+         session and so can never reach this route — from failing
+         `teacher_behaviour`'s console check for behaving exactly as
+         designed.
+
+         The sheet is one overlay on a page that mounted perfectly well
+         without it: a teacher who cannot read the scheme can still mark,
+         chase and shout out, so this never fails the page. */
+      D.TOPICS=[];D.setWorkBand='';
+      cmp.setState({swTopicsErr:true});
+      return false;});}
+
+/* The scheme route's rows, in the shape Design's topic list renders.
+
+   ⚠️ `tag` IS DERIVED HERE AND THE ROUTE DOES NOT SEND ONE. It sends
+   `last_set_at` — the newest assignment on this class whose `subtotpic` is this
+   lesson, or null — and the tag is Design's own vocabulary over it: she wrote
+   "Not set yet" and "Set 3 weeks ago" and this says exactly those things about
+   a real date. The question a teacher asks second is "have I already given
+   them this?", so it is a fact about THIS class and not about the lesson.
+
+   ⚠️ `available` IS CARRIED THROUGH UNTOUCHED AND IS 0 ON EVERY KS4 ROW. Not
+   because the join finds nothing — on eight KS4 slugs it finds twelve, because
+   eight KS4 subtopic slugs are byte-identical to KS3 lesson slugs — but
+   because the route gates on the KEY STAGE. There is no KS4 bank. A row with
+   `available: 0` renders unavailable and refuses to be picked; see the
+   `topics` ruling in teacher_rulings.py. */
+function MRB_SET_WORK_ROWS(d){
+  var rows=(d&&d.topics)||[];
+  return rows.map(function(r){
+    return {id:r.id, name:r.name, unit:r.unit,
+            lesson_slug:r.lesson_slug, lesson_title:r.lesson_title,
+            available:r.available||0,
+            tag:MRB_SET_WORK_TAG(r.last_set_at)};});}
+
+function MRB_SET_WORK_TAG(iso){
+  if(!iso){return 'Not set yet';}
+  var t=new Date(iso);
+  if(isNaN(t.getTime())){return 'Not set yet';}
+  var days=Math.floor((Date.now()-t.getTime())/86400000);
+  if(days<7){return 'Set this week';}
+  var w=Math.floor(days/7);
+  return 'Set ' + w + (w===1?' week ago':' weeks ago');}
+
+/* ── WHICH QUESTIONS, AND WHAT ELSE THE LESSON HAS ──────────────────────
+
+   `picked` is what the work would be composed of; `pool` is the rest of the
+   same lesson's bank, which is what makes "Swap" a real control rather than a
+   re-roll. `short` and `reason` are the honest half: KS4 has no bank at all
+   (there is no KS4 question pool anywhere in this product — see
+   `consumer/work.js`'s own `no_ks4_bank`), and a lesson can simply hold fewer
+   questions than the teacher asked for. Both are said, neither is padded. */
+function MRB_SET_WORK_PREVIEW(classId, sowEntryId, count, band){
+  var no=function(e){return Promise.resolve(
+    {picked:[],pool:[],available:0,short:true,reason:'',error:e});};
+  if(!classId){return no(new Error('teacher page: no class'));}
+  if(!sowEntryId){return no(new Error('teacher page: no topic'));}
+  return MRB_API_GET('/api/teacher/set-work/preview?class_id='+
+      encodeURIComponent(classId)+'&sow_entry_id='+
+      encodeURIComponent(sowEntryId)+'&count='+encodeURIComponent(count||10)+
+      (band?('&band='+encodeURIComponent(band)):''))
+    .then(function(d){
+      return {picked:(d&&d.picked)||[], pool:(d&&d.pool)||[],
+              available:(d&&d.available)||0, short:!!(d&&d.short),
+              reason:(d&&d.reason)||'', error:null};}, no);}
+
+/* ── THE WRITE ──────────────────────────────────────────────────────────
+
+   ⚠️ IT REPORTS WHAT THE SERVER CREATED, NOT WHAT WAS TYPED. Design's toast
+   counted the classes the teacher had TICKED. A set can be refused per class
+   — a class whose year has finished, a class somebody else set the same
+   lesson to, a class with no children in it — so the only number worth
+   putting in front of a teacher is the one that came back. `classes` and
+   `students` here are the server's own counts and nothing derives them
+   locally. */
+function MRB_SET_WORK(payload){
+  var no=function(e){return Promise.resolve(
+    {ok:false,classes:0,students:0,skipped:[],error:e});};
+  var p=payload||{};
+  if(!p.class_ids||!p.class_ids.length){
+    return no(new Error('teacher page: no class'));}
+  if(!p.sow_entry_id){return no(new Error('teacher page: no topic'));}
+  if(!p.question_ids||!p.question_ids.length){
+    return no(new Error('teacher page: no questions'));}
+  return MRB_TOKEN().then(function(t){
+    return fetch(MRB_API()+'/api/teacher/set-work',
+      {method:'POST',
+       headers:{Authorization:'Bearer '+t,
+                'Content-Type':'application/json'},
+       body:JSON.stringify(p)});
+  }).then(function(res){
+    return res.json().then(function(d){return {res:res,d:d};},
+                           function(){return {res:res,d:null};});
+  }).then(function(r){
+    if(!r.res.ok){throw MRB_API_ERR(r.res,r.d,'/api/teacher/set-work');}
+    var d=r.d||{};
+    /* `created` is one row per class the server actually wrote, carrying that
+       class's id and the assignment's. It is the ONLY honest count of what
+       happened: the write refuses a partial multi-class set whole (UNIT A
+       decision 9), so a short list means the whole thing was refused rather
+       than half-landed — and either way the number a teacher is told comes
+       from here and never from what they ticked. */
+    return {ok:true, created:d.created||[],
+            releasedNow:d.released_now===true,
+            heldUntil:d.held_until||'', error:null};},
+    function(e){return {ok:false,created:[],releasedNow:false,
+                        heldUntil:'',error:e};});}
+
+/* ── AUTOMATIC WEEKLY WORK, ON OR OFF ───────────────────────────────────
+
+   ⚠️ IT RESOLVES THE SERVER'S VIEW OF THE FLAG, NOT THE ONE THAT WAS ASKED
+   FOR. A control that repaints from what was clicked says "off" the moment
+   it is pressed whether or not anything was stored, which is the same class
+   of lie as Design's original toast. `state` is what came back. */
+function MRB_SET_AUTO_ASSIGNMENTS(classId, on){
+  var no=function(e){return Promise.resolve({ok:false,state:null,error:e});};
+  if(!classId){return no(new Error('teacher page: no class'));}
+  return MRB_TOKEN().then(function(t){
+    return fetch(MRB_API()+'/api/class/auto-assignments',
+      {method:'POST',
+       headers:{Authorization:'Bearer '+t,
+                'Content-Type':'application/json'},
+       body:JSON.stringify({class_id:classId, auto_assignments:!!on})});
+  }).then(function(res){
+    return res.json().then(function(d){return {res:res,d:d};},
+                           function(){return {res:res,d:null};});
+  }).then(function(r){
+    if(!r.res.ok){
+      throw MRB_API_ERR(r.res,r.d,'/api/class/auto-assignments');}
+    var st=r.d&&r.d.auto_assignments;
+    return {ok:true, state:(st===true||st===false)?st:null, error:null};},
+    function(e){return {ok:false,state:null,error:e};});}
+
+/* The preview, fetched and landed on the sheet's own state. One place, so
+   that the three things that can change the answer — the topic, the count and
+   the class — cannot each grow their own slightly different version of it.
+
+   ⚠️ IT TAKES THE COMPONENT. `renderVals`'s closures are synchronous and
+   `this` inside one is Design's logic instance, so the fetch is fired from
+   the closure and the answer is landed through the instance it was fired
+   from. Passing it explicitly is what keeps this out of the seam's global
+   scope and out of a second `window.` handle. */
+function MRB_SW_FETCH(cmp, classId, sowEntryId, count, band){
+  if(!cmp){return Promise.resolve(false);}
+  if(!sowEntryId){cmp.setState({swPick:[],swPool:[],swErr:''});
+    return Promise.resolve(false);}
+  cmp.setState({swBusy:true, swErr:''});
+  return MRB_SET_WORK_PREVIEW(classId, sowEntryId, count, band)
+    .then(function(r){
+      cmp.setState({swBusy:false, swPick:r.picked||[], swPool:r.pool||[],
+        swErr:r.error?MRB_SET_WORK_WHY(r.error):MRB_SET_WORK_SHORT(r)});
+      return !r.error;});}
+
+/* Why the sheet has fewer questions than were asked for, said once. Empty
+   when it has as many as it asked for, which draws nothing. */
+function MRB_SET_WORK_SHORT(r){
+  if(!r){return '';}
+  /* ⚠️ THE REFUSAL COMES BACK AS A 200, NOT AN ERROR, and it has to be read
+     here or it is read nowhere. `/preview` answers `{picked: [], pool: [],
+     reason: 'no_question_bank'}` for a KS4 class — there is no KS4 question
+     pool anywhere in this product — and that is a state to explain, not a
+     failure to report. */
+  if((r.reason||'')==='no_question_bank')
+    return 'There are no questions for this course yet, so this lesson ' +
+           'cannot be set.';
+  if(!r.short){return '';}
+  var n=(r.picked||[]).length;
+  if(!n){return 'There are no questions for that lesson yet.';}
+  /* ⚠️ IT SAYS "THIS PART OF THE SCHEME", NOT "THIS LESSON", AND THE
+     DIFFERENCE IS THE TRUTH. A lesson holds four questions per band, so a set
+     of ten is never one lesson's: the backend fills backwards through the
+     scheme, nearest first, exactly as the weekly producer does. Every row in
+     the preview names the lesson it came from, so nothing is concealed —
+     which is why this sentence must not claim otherwise. */
+  return 'Only ' + n + (n===1?' question is':' questions are') +
+         ' available for this part of the scheme, so that is what will ' +
+         'be set.';}
+
+/* Next Monday, as `yyyy-mm-dd`. The default a "Release later" gets, because
+   a blank date under that chip is a state that means the same thing as
+   "Release now" — see the `swRelease` ruling. Local time, deliberately: the
+   teacher is choosing a school day, not an instant. */
+function MRB_SET_WORK_NEXT_MONDAY_YMD(){
+  var d=new Date(); d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + (8 - (d.getDay()||7)));
+  var m=String(d.getMonth()+1), dd=String(d.getDate());
+  return d.getFullYear()+'-'+(m.length<2?'0'+m:m)+'-'+(dd.length<2?'0'+dd:dd);}
+
+/* One stored day, in words. Used for the release date the teacher picked;
+   the DUE line has its own helper because it resolves a weekday first. */
+function MRB_SET_WORK_DAY_LINE(ymd){
+  if(!ymd){return '';}
+  var d=new Date(ymd+'T00:00:00');
+  if(isNaN(d.getTime())){return '';}
+  return 'Students see it on ' + d.toLocaleDateString(undefined,
+    {weekday:'short', day:'numeric', month:'short', year:'numeric'}) + '.';}
+
+/* Why a set failed, in a sentence a teacher can act on. The companion to
+   MRB_SHOUTOUT_WHY and MRB_REMIND_WHY, separate for the same reason: a
+   different verb and a different set of refusals. */
+function MRB_SET_WORK_WHY(e){
+  /* THE SERVER'S OWN SENTENCE FIRST. Every refusal on these routes carries
+     one, written for that exact case; a second wording invented here would
+     say something slightly different about the same event and would drift
+     the first time either changed. */
+  if(e&&e.mrbSay){return e.mrbSay;}
+  var m=(e&&e.message)||'';
+  if(/no_question_bank/i.test(m))
+    return "There are no questions for this course yet, so this cannot be " +
+           "set.";
+  if(/no topic/i.test(m))
+    return "Pick a topic first.";
+  if(/no class/i.test(m))
+    return "Pick at least one class.";
+  if(/no questions/i.test(m))
+    return "Couldn't set it — there are no questions for that lesson yet.";
+  if(e&&(e.mrbStatus===401||e.mrbStatus===403))
+    return "Couldn't set it — you may no longer teach that class.";
+  if(e&&e.mrbStatus===404)
+    return "Couldn't set it — that class or lesson is no longer there.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't set it — this page is not signed in. Reload and " +
+           "try again.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't set it — no connection just now. Try again in a " +
+           "moment.";
+  return "Couldn't set the work. Try again.";}
+
+/* What the server actually did, as one sentence. Plural-aware, because
+   Design's own summary said "1 classes".
+
+   ⚠️ THE CLASSES ARE THE SERVER'S AND SO ARE THE CHILDREN. `r.created` names
+   the classes it wrote, one row each; the roster size beside each of those ids
+   is the real one this page already has. Design's toast counted what was
+   TICKED, which is a different number the moment a class is refused.
+
+   ⚠️ AND IT SAYS WHETHER THEY CAN SEE IT. `released_now` is true only when
+   every class got it immediately; when a school hold pushed it back,
+   `held_until` is the instant the last of them is waiting on, and a teacher
+   who is not told that will go looking for work the class cannot see. */
+function MRB_SET_WORK_SAID(r, all){
+  var made=r.created||[];
+  var ids={}, i;
+  for(i=0;i<made.length;i++){if(made[i]&&made[i].class_id){
+    ids[made[i].class_id]=1;}}
+  var n=Object.keys(ids).length||made.length;
+  var st=0;
+  (all||[]).forEach(function(k){if(ids[k.id]){st+=(k.n||0);}});
+  var line='Set for ' + n + (n===1?' class':' classes');
+  if(st){line+=' · ' + st + (st===1?' student':' students');}
+  if(!r.releasedNow){
+    var when=r.heldUntil?new Date(r.heldUntil):null;
+    line+=(when&&!isNaN(when.getTime()))
+      ? (' · they see it on ' + when.toLocaleDateString(undefined,
+          {weekday:'short', day:'numeric', month:'short'}))
+      : ' · held until your school opens work';}
+  return line;}
+
+/* ── THE DUE DAY, RESOLVED ───────────────────────────────────────────────
+
+   ⚠️ A WEEKDAY IS NOT A DATE, AND DESIGN'S CHIPS ONLY EVER SAID "Wed". The
+   sheet is used on any day of the week, so "Wed" alone is ambiguous the
+   moment it is pressed on a Thursday. This resolves it the way a teacher
+   means it — that weekday, NEXT week — and the sheet prints the answer under
+   the chips so nobody has to guess which Wednesday.
+
+   Computed from the browser's own clock, never from a literal: a typed date
+   is the tell `teacher_tells.py` fails the build on, and rightly. */
+function MRB_SET_WORK_DUE_DATE(day){
+  var names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var want=names.indexOf(day);
+  if(want<0){return null;}
+  var d=new Date();
+  d.setHours(23,59,0,0);
+  /* Monday of this week, then the same weekday seven days on. */
+  var back=(d.getDay()+6)%7;
+  d.setDate(d.getDate()-back+7+((want+6)%7));
+  return d;}
+
+function MRB_SET_WORK_DUE_LINE(day){
+  var d=MRB_SET_WORK_DUE_DATE(day);
+  if(!d){return '';}
+  return d.toLocaleDateString(undefined,
+    {weekday:'short', day:'numeric', month:'short', year:'numeric'});}
+
+function MRB_SET_WORK_DUE_ISO(day){
+  var d=MRB_SET_WORK_DUE_DATE(day);
+  return d?d.toISOString():null;}
+
+/* `now` is null — the row is released the moment it is written, which is what
+   every existing assignment already is. A chosen date is sent as the start of
+   that day; the SERVER takes the later of it and the school's hold, and
+   stores the answer (see the MRB-331 plan: a hold moved later must never
+   retract work a class can already see). */
+function MRB_SET_WORK_RELEASE_ISO(rel, ymd){
+  if(rel!=='later'){return null;}
+  if(!ymd){return null;}
+  var d=new Date(ymd+'T00:00:00');
+  return isNaN(d.getTime())?null:d.toISOString();}
+
+/* The school's hold, as one sentence, and ONLY when it is real and ahead of
+   today. `holdOpensOn` is empty on every school that has not set one, which
+   is almost all of them, and an empty string draws nothing. */
+function MRB_SET_WORK_HOLD_LINE(ymd){
+  if(!ymd){return '';}
+  var d=new Date(ymd+'T00:00:00');
+  if(isNaN(d.getTime())){return '';}
+  var t=new Date(); t.setHours(0,0,0,0);
+  if(d.getTime()<=t.getTime()){return '';}
+  return 'Your school opens work to students on ' +
+         d.toLocaleDateString(undefined,
+           {day:'numeric', month:'short', year:'numeric'}) +
+         ', so this will appear then.';}
+
 function MRB_REFRESH_FEEDBACK(screen, params){
   var L=window.MrBadmusTeacherLive, D=window.__MRB_DATA__;
   if(!L||!L.load||!D){return Promise.resolve(false);}
@@ -4764,9 +5281,16 @@ def build():
 
     # ── Design's logic, seamed once ──────────────────────────────────────
     logic, counts = seam_logic(tpl["logic"])
+    # ⊕ 6 Sep 2026 (MRB-331 UNIT B) — THE LAST COUNT NO LONGER SAYS
+    # "Set-work key(s) removed", AND SAYING SO WOULD NOW BE FALSE. Thirteen
+    # of the fifteen keys `DROP_KEYS` used to name were the Set-work sheet's,
+    # and the sheet is shipped: the two left are `allIn` (MRB-326, a sentence
+    # the card already said) and `sampleCsv` (a toast in front of no
+    # download). A build line that names the wrong reason is how a reader
+    # concludes a ruling is still in force.
     print("     ⊕ logic: %d ruled edit(s), %d navigation rewire(s), "
           "%d method(s) reseamed, %d invented field(s) deleted, "
-          "%d Set-work key(s) removed"
+          "%d unrenderable `renderVals` key(s) removed"
           % (counts["logic"], counts["nav"], counts["methods"],
              counts["fields"], counts["keys"]))
     print("     ✅ no `rnd(` survives; `this.seed(` has exactly one caller "
