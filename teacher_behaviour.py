@@ -157,6 +157,25 @@ EMPTY_SHAPE = {
     ("class-detail", "gridmissing"):
         "no grid fetched at all — which is every class-detail render in "
         "production",
+    # ⊕ THE TWENTIETH, 6 Sep 2026 (MRB-326 JOB 4b). The line above USED to
+    # end "which is every class-detail render in production" without a
+    # qualifier, and it was true until today: `load()` prefetched grids for
+    # the marking screen and the questions chart and for nothing else. It
+    # now prefetches ONE on the class screen — the newest closed paper
+    # somebody sat, the paper the reteach card is about — and this is that
+    # shape.
+    #
+    # ⚠️ IT IS HERE BECAUSE AN EMPTY GRID MAP WAS NOT A CRASH, IT WAS A
+    # BLANK CARD. `gridmissing` was written to reproduce the 26 Aug throw;
+    # nobody asked what a NON-throwing empty grid map costs, and the answer
+    # was Design's whole per-question breakdown — `worstTwo` degrades to
+    # `[]` and an `sc-for` over `[]` renders nothing, correctly and
+    # silently. The three populated fixtures carry twelve grids apiece and
+    # could never see it.
+    ("class-detail", "gridreteach"):
+        "exactly one grid, the reteach card's — what the class screen "
+        "prefetches from MRB-326 onward, and the shape on which the two "
+        "per-question bars have to draw",
     # ⊕ THE SEVENTEENTH, 3 Sep 2026 (MRB-306 Phase 2b/3). The only fixture in
     # the set that is READ-ONLY AND POPULATED. `class-detail-empty` is also a
     # past year, but its class has no roster and an empty feed, so it cannot
