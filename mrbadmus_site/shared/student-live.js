@@ -1768,7 +1768,29 @@
 
          READ ONLY — this feature adds no save path to this page and must not
          disturb the per-answer queue or the keepalive. */
-      withDbDeadline(WARM_MS, sb.rpc("student_reminders_for_viewer", { p_class_id: klass.id }))
+      withDbDeadline(WARM_MS, sb.rpc("student_reminders_for_viewer", { p_class_id: klass.id })),
+      /* ⊕ MRB-328 J4(b) — THE SHOUT-OUT FEED, joined to this wave for exactly
+         the reason the reminders RPC above was joined to it, and stated in
+         the same words: it takes only `klass.id`, already an argument here,
+         so it has no dependency on the six above and costs no extra round
+         trip.
+
+         ⛔ WHAT IT WAS: the last `await` in a seven-hundred-line function, a
+         full round trip AFTER every other read on the page had resolved and
+         every derivation had run. It was the page's pure serial tail — the
+         student sat looking at nothing while one query fetched a list of
+         praise. Nothing between the opening wave and that await touched it.
+
+         Soft-failed HERE rather than at the read site, so the `catch` that
+         has always turned a failed feed into an empty one still does exactly
+         that: an arm of a `Promise.all` that rejects would take the whole
+         wave down, and this feed is one panel on a page whose subject is the
+         work. Empty, logged, and the rest of the class view renders. */
+      window.MrBadmusStudentData.loadStudentClassShoutouts(klass.id, { limit: 20 })
+        .catch(function (e) {
+          console.warn("[student-live] shoutouts unavailable", e);
+          return { shoutouts: [] };
+        })
     ]);
     var detail = opening[0];
     var practice = opening[1];
@@ -1776,6 +1798,7 @@
     var aw = opening[3];
     var yrs = opening[4];
     var unreadNotes = opening[5];
+    var feedEarly = opening[6];
 
     /* Whether a piece of work is still open or has been missed is decided
        against the SERVER's clock and nothing else. Without one, this page does
@@ -2426,8 +2449,12 @@
        view down with it. */
     var shoutouts = [];
     try {
-      var feed = await window.MrBadmusStudentData.loadStudentClassShoutouts(
-        klass.id, { limit: 20 });
+      /* ⊕ MRB-328 J4(b) — fetched in the OPENING wave at the top of this
+         function, not here. This is the shaping, which is all it ever was;
+         the round trip it used to make on this line is gone. The `try` is
+         kept because the mapping below can still throw on a malformed row,
+         and the empty-feed contract is unchanged either way. */
+      var feed = feedEarly || { shoutouts: [] };
       shoutouts = (feed.shoutouts || []).filter(function (s) {
         return s.recipient_id == null || s.recipient_id === user.id;
       }).map(function (s) {
@@ -3464,6 +3491,29 @@
           if (pendingSink) { window.__MRB_SINK__ = pendingSink; }
 
           window.__MRB_MOUNT__();
+
+          /* ⊕ MRB-328 J4(a) — one timing row, and it cannot hurt the page.
+             The clock is read HERE, on the line after the mount, because that
+             is the moment the student stops waiting. rum.js is then fetched
+             asynchronously and handed that number: loading it in DEPS would
+             put telemetry in front of the paint, and measuring inside it would
+             bill the student for the beacon's own download.
+             Everything is inside try/catch and the failure path is silence —
+             a page must never break because a measurement did. */
+          try {
+            var _rumAt = Math.round(performance.now());
+            var _rumEl = document.createElement("script");
+            _rumEl.src = stamped("/shared/rum.js");
+            _rumEl.async = true;
+            _rumEl.onload = function () {
+              try {
+                window.MrBadmusRUM.report(
+                  page === "class" ? "student-class" : "student-assignment",
+                  "student", _rumAt);
+              } catch (e) {}
+            };
+            document.head.appendChild(_rumEl);
+          } catch (e) {}
 
           /* ⊕ MRB-306 WS-3 — the reminder line, drawn AFTER the mount.
              Design drew no student-side banner, so there is no donor subtree

@@ -226,6 +226,106 @@
     } catch (e) {}
   }
 
+  /* ── ⊕ MRB-328 J4(b) · THE CACHE, LENT OUT ──────────────────────────────
+
+     `cacheGet`/`cacheSet` above have held the class entry and the academic
+     years since 27 Aug 2026, and they are the ONE cache on this estate: same
+     storage, same envelope, same TTL discipline. Two more answers now want
+     the same treatment — the guard's session/role resolution and the
+     teacher's own-classes list — and the alternative to lending this out is a
+     second implementation of a stale-value envelope, which is the copy that
+     drifts on the day somebody changes what "expired" means.
+
+     ⚠️ THE KEY IS BUILT HERE, NOT BY THE CALLER, and that is the whole point
+     of exporting `cacheKey` rather than just the two accessors. Every key on
+     this estate must carry the ENVIRONMENT and the VIEWER'S ID — a tester
+     signed into TEST and then into prod in the same tab is otherwise handed
+     the sandbox's answer for a production question, and a shared classroom
+     browser hands the first child's answer to the second. Both are the same
+     bug and both are prevented by the same two segments. A caller that
+     assembles its own key can forget one; a caller that asks for one cannot.
+
+     Returns null when there is no session to scope a key to — signed out has
+     no cache, which is the only correct answer for a per-viewer store. */
+  function cacheKey(prefix) {
+    var conf = cfg();
+    var ref = projectRef(conf.url);
+    if (!ref) { return null; }
+    var session = readSession(ref);
+    if (!session) { return null; }
+    return prefix + conf.env + ':' + session.user.id;
+  }
+
+  /* Everything this module and its borrowers have stored, gone.
+
+     ⚠️ IT SWEEPS BY PREFIX RATHER THAN DELETING KNOWN KEYS, deliberately. The
+     keys carry the viewer's id, and the moment sign-out is the thing calling
+     this the session is already being torn down — so the id needed to
+     RECONSTRUCT a key may be gone before the key can be removed. Sweeping a
+     FAMILY catches the previous viewer's rows whether or not we can still
+     name them, which is the direction that fails safe: the cost of dropping
+     one row too many is one extra read, and the cost of leaving one behind is
+     a colleague's class list under the next person's name.
+
+     ⚠️ AND IT IS A NAMED LIST RATHER THAN A BARE `mrb-`, which is the wider
+     sweep it started as. `shared/rum.js` keeps its per-session flood cap at
+     `mrb-rum-count` in this same store, and a bare prefix sweep would reset
+     that counter on every sign-out — quietly turning a cap of twenty loads
+     per session into a cap of twenty per sign-in. Every family below is
+     viewer-scoped and re-derivable from one read; nothing else is touched. */
+  /* ⚠️ THE FAMILY NAMES CARRY NO VERSION SEGMENT, deliberately. The keys do —
+     `mrb-teacher-classes:v1:…` — and a sweep listed as `…:v1:` would silently
+     stop clearing the day somebody bumped it to v2, leaving the previous
+     viewer's list behind under a name nothing was looking for. A family is
+     the stem, so it survives its own versioning. */
+  var CLASS_LISTS_FAMILY = 'mrb-teacher-classes:';
+
+  var CACHE_FAMILIES = [
+    CACHE_PREFIX,           // mrb-class-entry:v2:
+    YEARS_CACHE_PREFIX,     // mrb-academic-years:v1:
+    'mrb-staff-session:',   // the guard's session/role resolution (J4b)
+    CLASS_LISTS_FAMILY      // the teacher's own-classes list      (J4b)
+  ];
+
+  /* ⊕ MRB-328 J4(b) — WHAT A MEMBERSHIP WRITE INVALIDATES, named once.
+
+     `teacher/import.html` runs the only frontend write that changes who is in
+     a class (`roster-import`), and it does NOT load `teacher-data.js` — it
+     loads this file. So the invalidation has to be reachable from here, and
+     the family stem it sweeps has to be owned in ONE place rather than
+     retyped as a literal at the call site, where it would go stale silently
+     the first time the key is versioned.
+
+     A class list is all it drops. The viewer's session and role are unchanged
+     by an import, and clearing them would buy a `getUser()` round trip for
+     nothing. */
+  function dropClassLists() { dropPrefix(CLASS_LISTS_FAMILY); }
+
+  function dropCaches() {
+    CACHE_FAMILIES.forEach(dropPrefix);
+    // The in-memory memos die with them, or the page would keep answering
+    // from a promise resolved for the person who just left.
+    _yearsInflight = null;
+    _inflight = null;
+  }
+
+  /* One family of keys, for a write that invalidates less than everything.
+     A roster import changes who is in a class; it does not change who the
+     viewer is, and dropping their session would cost a `getUser()` round
+     trip for nothing. */
+  function dropPrefix(prefix) {
+    try {
+      var doomed = [];
+      for (var i = 0; i < sessionStorage.length; i++) {
+        var k = sessionStorage.key(i);
+        if (k && k.indexOf(prefix) === 0) { doomed.push(k); }
+      }
+      doomed.forEach(function (k) {
+        try { sessionStorage.removeItem(k); } catch (e) {}
+      });
+    } catch (e) {}
+  }
+
   /* ── The academic years, read ONCE per page ─────────────────────────────
      ⊕ 27 Aug 2026 — the load-performance pass.
 
@@ -527,6 +627,22 @@
        cannot know (signed out, or the read failed); a caller must fall back
        to its own query rather than reading null as "no years". */
     academicYears: academicYears,
+
+    /* ⊕ MRB-328 J4(b) — THE CACHE ITSELF, lent to the guard and the teacher
+       data layer. See the block above `cacheKey`: the point of exporting the
+       key BUILDER rather than only the accessors is that no borrower can
+       forget the environment or the viewer's id, which are the two segments
+       that stop a TEST session answering a production question and a shared
+       classroom browser answering with the last child's data.
+
+       `dropCaches` on sign-out; `dropPrefix('mrb-teacher-classes:')` on a
+       write that changes who is in a class. */
+    cacheGet: cacheGet,
+    cacheSet: cacheSet,
+    cacheKey: cacheKey,
+    dropCaches: dropCaches,
+    dropPrefix: dropPrefix,
+    dropClassLists: dropClassLists,
   };
 
   if (document.readyState === 'loading') {

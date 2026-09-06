@@ -1,0 +1,43 @@
+# Cloudflare Pages headers. Consumed at deploy; never served as a file.
+#
+# WHY THIS IS SAFE, AND WHAT WOULD MAKE IT UNSAFE
+#
+# Cloudflare Pages' default for /shared/* is `max-age=14400, must-revalidate` —
+# four hours, then a conditional request per asset per visitor. On a class set
+# of 30 Chromebooks opening a lesson at the same moment that is 30 round trips
+# for bytes that have not changed, on school wifi, before anything renders.
+#
+# `immutable` is only ever safe when the URL changes whenever the bytes do, and
+# here it does: generate_site_v5.py rewrites every /shared/ reference to carry
+# `?v=<md5[:8]>` of the file's own content, and a query string is part of the
+# cache key. Change the file, the stamp changes, the URL changes, the cache
+# misses. That is the whole contract.
+#
+# ⚠️ It was CHECKED, not assumed, before this file was written: 10,328 stamped
+# references across the published tree and ZERO unstamped ones in any published
+# HTML. The 18 unstamped `/shared/...` strings that do exist in the repo are all
+# inside JavaScript COMMENTS showing people what to paste, and no browser ever
+# fetches them. Runtime-injected scripts go through stamped() too.
+#
+# So before relaxing anything here, re-run that check. An unstamped asset under
+# `immutable` is pinned in a child's browser for a YEAR, and no deploy can
+# reach it — the worst kind of caching bug, because it is invisible to us and
+# permanent for them.
+
+/shared/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# The 3D studio is a Vite build: its filenames carry a content hash, which is
+# the same contract by a different mechanism.
+/3d/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# ⚠️ There is deliberately NO `/*` rule here for HTML.
+#
+# The obvious thing to add is `/*  Cache-Control: max-age=0, must-revalidate`,
+# to keep pages fresh. It is left out because `/*` also matches `/shared/...`,
+# and the precedence between an overlapping wildcard and a specific rule is not
+# something to be guessed at: if the later rule wins, that one line silently
+# undoes both blocks above and the whole file becomes decoration. Pages already
+# serves HTML as `max-age=0, must-revalidate` by default, so the rule would buy
+# nothing and could cost everything.

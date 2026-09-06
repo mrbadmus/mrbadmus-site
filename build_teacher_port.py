@@ -216,9 +216,29 @@ _REFUSED = {"import.html"}
 # disk in both published trees — and it is also what puts it in
 # `window.__MRB_ASSET_V__`, which costs one entry and closes the case of a
 # name that resolves to nothing.
+# ⊕ MRB-328 J4(b) — `rum.js` JOINS, AND IT WAS A REAL DEFECT, NOT A TIDY-UP.
+#
+# J4(a) wired the beacon in as `stamped("/shared/rum.js")` from
+# `teacher-live.js` and `student-live.js` — the correct call. But `stamped()`
+# resolves a BARE NAME against `window.__MRB_ASSET_V__`, and a name absent
+# from that map does not error: it returns the path UNCHANGED. So the beacon
+# was being injected as `/shared/rum.js`, with no `?v=`.
+#
+# ⚠️ THAT WAS SURVIVABLE UNTIL J4(a) SHIPPED `_headers` IN THE SAME RUN.
+# `/shared/*` is now `max-age=31536000, immutable`, and `_headers`' own
+# comment says exactly what that costs an unstamped asset: "pinned in a
+# child's browser for a YEAR, and no deploy can reach it — the worst kind of
+# caching bug, because it is invisible to us and permanent for them." The
+# same comment asserts "Runtime-injected scripts go through stamped() too",
+# which was true of the CALL and not of its RESULT.
+#
+# It would also have failed silently in the direction that looks fine: the
+# beacon works perfectly on the first deploy, and every later fix to it —
+# including a fix to what it is allowed to send — would never reach anybody
+# who had already loaded a teacher page.
 STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
-                "teacher-picker.js")
+                "teacher-picker.js", "rum.js")
 
 
 def asset_hash(text):
@@ -2193,6 +2213,17 @@ DESIGN_SCALARS = dict(
     envBadge="PROD",
     termLabel="Autumn term · 2026–27",
     termSeason="Autumn",
+    # ⊕ MRB-328 J3 — the classes screen's heading and eyebrow, bound rather
+    # than literal since a school admin can open a COLLEAGUE'S list
+    # (`teacher/admin.html` → `?teacher=` / `?pending=`). The fixture is the
+    # ordinary load, so both read exactly what Design drew: the markers only
+    # lead when `teacher-live.js` has resolved a scope, which no fixture has.
+    classesTitle="My classes",
+    classesEyebrow="Autumn term · 2026–27",
+    # Empty on an ordinary load, and `MRB_GO` drops an empty parameter — so
+    # the year strip's URL is unchanged. See teacher_rulings' yearOptions.
+    scopeTeacherParam="",
+    scopePendingParam="",
     yearLabel="2026–27",
     yearName="2026–27",
     viewingYearLabel="Viewing 2026–27",

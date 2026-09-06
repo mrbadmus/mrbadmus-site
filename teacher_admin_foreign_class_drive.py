@@ -89,6 +89,40 @@ fixture rows shaped exactly as PostgREST would return them.
   real RLS with a real JWT, by `teacher_admin_real_drive.py`. Reading either
   half as the whole is how "opens but cannot act" got through the first time.
 
+⊕ MRB-328 J3, 6 Sep 2026 — SECTION D, AND IT IS THE OTHER DIRECTION.
+
+  A–C are about ONE CLASS an admin may open. D is about ONE TEACHER'S WHOLE
+  LIST: `teacher/admin.html`'s staff rows now open
+  `/teacher/classes.html?teacher=<profile>` (a claimed teacher) or
+  `?pending=<pending_staff row>` (an unclaimed invitation), and the GENERATED
+  My-classes grid draws that person's classes under their name.
+
+  ⚠️ THE REUSE IS THE CLAIM, so the assertions are about the generated grid
+  and not about anything this file could have drawn: Design's card container,
+  Design's card, Design's empty panel, Design's `<h1>` — all fed a different
+  list. `shared/teacher-live.js`'s `base()` swaps only where the class ids
+  come from; every line under it is the one a teacher's own list runs.
+
+  Four shapes, and the fourth is what makes the first three worth anything:
+
+    D1/D1b  a CLAIMED teacher with classes — his, not the admin's own, and a
+            card opens THAT class's detail (where A already proved the
+            "Acting as admin" marker is drawn).
+    D2      an UNCLAIMED invitation, whose classes exist ONLY in
+            `pending_staff_classes` and carry no `class_teachers` row at all
+            — production's shape, and the one a driver-read-only grid cannot
+            see.
+    D3      a teacher with NONE — Design's own "No classes" panel, and NEVER
+            `SAY.noClasses`, which is a sentence about the VIEWER'S timetable.
+    D4/D5   a PLAIN TEACHER typing either parameter. She gets HER OWN
+            classes, under Design's own heading, with none of his anywhere.
+
+  ⚠️ THE SAME LIMIT AS A–C APPLIES AND IS NOT WEAKENED: the stub models row
+  visibility, it does not prove RLS. What D4/D5 prove is the product rule
+  (the parameter is IGNORED, not errored) — the database half is
+  `class_teachers_self_read` and `pending_staff_admin_all`, and it is proved
+  in SQL under real roles, not here.
+
 ⛔ SCREENSHOTS GO OUTSIDE THE REPO by default (`/tmp`) — MRB-301's rule: a gate
   must not write into the tree it is attesting is clean.
 """
@@ -145,6 +179,31 @@ DEPARTED = ("ee000000-0000-0000-0000-000000001205", "Ex", "Student")
 
 PAPER = "ee000000-0000-0000-0000-000000003001"
 
+# ⊕ MRB-328 J3 — THE UNCLAIMED TEACHER, AND THE CLASSES SHE IS DOWN FOR.
+#
+# `admin_view_drive.PENDING[0]` is an unclaimed `pending_staff` row. Nothing
+# in either fixture has ever given her CLASSES, because until now nothing
+# read `pending_staff_classes` — so this file supplies them, in that table,
+# in the production shape: an unclaimed member of staff's classes have NO
+# `class_teachers` row at all, which is why 25 of production's 69 this year
+# are unstaffed. Both of hers are that shape.
+#
+# A SECOND unstaffed class is added for it. `av.CLASSES` has exactly one
+# (`C_NONE`), and a grid of one card cannot tell "her classes" apart from
+# "one class that happened to be there" — two can, and two is also what
+# proves the list is hers rather than the school's four.
+PENDING_STAFF = av.PENDING[0]["id"]          # unclaimed
+PENDING_NAME = "%s %s" % (av.PENDING[0]["first_name"], av.PENDING[0]["last_name"])
+C_UNSTAFFED2 = "ee000000-0000-0000-0000-000000000404"
+
+# The claimed teacher whose list Section D opens, and the one with none.
+# RICH teaches exactly one class in `av.LINKS`; NIA teaches nothing at all
+# and holds no scope — she is the honest-empty case, and she already exists
+# for a different reason, which is why no new person is invented here.
+NIA = av.NIA
+NIA_NAME = "Nia Fresh"
+RICH_NAME = "Rich Spedding"
+
 
 def tables():
     """The whole school's rows — i.e. what an admin's RLS read returns."""
@@ -181,6 +240,31 @@ def tables():
     # its segment, which is what `klass.meta`'s .filter(Boolean) is for.
     t["timetable_entries"] = []
     t["school_period_times"] = []
+
+    # ── ⊕ MRB-328 J3 · the unclaimed teacher's class assignments ──────
+    #
+    # ⚠️ A SECOND UNSTAFFED CLASS, AND IT IS DELIBERATELY NOT LINKED TO
+    # ANYBODY. If it carried a `class_teachers` row the pending list would be
+    # provable through the driver read alone, and the thing under test —
+    # `pending_staff_classes` reaching `loadClassMatrices`'s class-row
+    # fallback — would never be exercised.
+    t["classes"] = t["classes"] + [
+        av.klass(C_UNSTAFFED2, "9r/Sc5", "KS3", 9),
+    ]
+    t["class_members"] = t["class_members"] + [
+        av.member(C_UNSTAFFED2, "ee000000-0000-0000-0000-000000001108",
+                  "Stu", "Eight"),
+        av.member(C_UNSTAFFED2, "ee000000-0000-0000-0000-000000001109",
+                  "Stu", "Nine"),
+    ]
+    t["pending_staff_classes"] = [
+        {"id": "bb000000-0000-0000-0000-000000000001",
+         "pending_staff_id": PENDING_STAFF, "class_id": C_UNSTAFFED,
+         "subject_id": av.SUBJ_SC, "role": "subject_teacher"},
+        {"id": "bb000000-0000-0000-0000-000000000002",
+         "pending_staff_id": PENDING_STAFF, "class_id": C_UNSTAFFED2,
+         "subject_id": av.SUBJ_SC, "role": "subject_teacher"},
+    ]
     return t
 
 
@@ -226,6 +310,11 @@ def teacher_world(uid, t):
     # A plain teacher holds no scope row and cannot read the staff table.
     t["staff_scopes"] = [r for r in t["staff_scopes"] if r["profile_id"] == uid]
     t["pending_staff"] = []
+    # ⊕ MRB-328 J3 — and the table hanging off it. `pending_staff_classes`'s
+    # only policy is `..._admin_all`, which requires a live `school_admin`
+    # scope AND an EXISTS over `pending_staff`; a plain teacher matches
+    # neither half, so her row set carries none of these either.
+    t["pending_staff_classes"] = []
     return t
 
 
@@ -270,6 +359,57 @@ READ_JS = r"""(function () {
     nodes: host ? host.getElementsByTagName('*').length : 0
   });
 })()"""
+
+
+# ⊕ MRB-328 J3 — THE CLASSES GRID, READ AS ITS PARTS.
+#
+# ⚠️ THE CARD CODES ARE TAKEN FROM THE CARD'S OWN 33px LINE, not by
+# searching the page text for a class name. Every class in the fixture is
+# also named in the search pool and — for the admin — in her own list, so a
+# substring test over the body would report a card that is not drawn. The
+# grid is Design's `grid-template-columns` container inside the classes
+# region; its direct children are the cards, and each card's first text is
+# `c.code`.
+#
+# ⚠️ AND THE HEADING AND EYEBROW ARE READ BY POSITION IN DESIGN'S OWN
+# BLOCK, not by their words — the whole point of the change is that those
+# words move, so matching on them would be a test that passes by finding
+# what it planted.
+READ_GRID_JS = r"""(function () {
+  var host = document.getElementById('mrb-teacher');
+  var region = host ? host.querySelector('[data-port-region="classes"]') : null;
+  function txt(el) { return el ? (el.innerText || '').replace(/\s+/g, ' ').trim() : ''; }
+
+  var h1 = region ? region.querySelector('h1') : null;
+  var eyebrow = (h1 && h1.previousElementSibling) ? h1.previousElementSibling : null;
+
+  var grid = region
+    ? region.querySelector('[style*="grid-template-columns"][style*="310px"]')
+    : null;
+  var cards = [];
+  if (grid) {
+    var kids = grid.children;
+    for (var i = 0; i < kids.length; i++) {
+      var first = kids[i].querySelector('div');
+      var t = txt(first);
+      if (t) { cards.push(t.split('\n')[0]); }
+    }
+  }
+  return JSON.stringify({
+    at: location.pathname + location.search,
+    drawn: !!region,
+    title: txt(h1),
+    eyebrow: txt(eyebrow),
+    cards: cards,
+    body: (document.body.innerText || '').replace(/\s+/g, ' ').trim(),
+    nodes: host ? host.getElementsByTagName('*').length : 0
+  });
+})()"""
+
+# `SAY.noClasses` from teacher-live.js, taken from the source of truth rather
+# than retyped: it is a sentence about the VIEWER'S timetable and must never
+# appear over somebody else's list.
+SAY_NO_CLASSES = "You are not teaching any classes this year."
 
 
 # The teacher pages ping the Render backend's /api/health on boot. There is no
@@ -878,6 +1018,179 @@ def main():
             check(dig["drawn"] and REFUSAL not in dig["text"],
                   "C8. DIGEST — the printable report opens on the foreign class",
                   dig["text"][:70])
+
+
+            # ═══════════════════════════════════════════════════════════
+            #  SECTION D — MRB-328 J3 · one teacher's classes, as the grid
+            # ═══════════════════════════════════════════════════════════
+            #
+            # ⚑ WHAT THIS SECTION IS FOR. `teacher/admin.html` lists the
+            # school's staff; pressing a name now opens THE MY-CLASSES GRID
+            # scoped to that person. The claim being tested is not "a page
+            # appears" — it is that the page is the GENERATED grid, showing
+            # THAT person's classes and nobody else's, headed with their
+            # name, and that a plain teacher cannot get the same page by
+            # typing the same URL.
+            #
+            # ⚠️ THE SAME TWO-PERSONA DESIGN AS SECTION A, AND FOR THE SAME
+            # REASON. "The list rendered" is what a permissive page does
+            # too. D4 is the negative control: identical URL, identical
+            # class id, one field different — a `staff_scopes` row — and the
+            # viewer gets HER OWN classes back rather than an empty page or
+            # an error. Ignoring the parameter is the specified behaviour,
+            # so "shows her own list" is the assertion, not "refuses".
+            print("\n  ══ D · a school admin opens ONE TEACHER'S classes ══")
+
+            grid_url = "%s/teacher/classes.html" % base
+
+            # ── D1 · a CLAIMED teacher, with classes ──────────────────
+            p9, a9 = mount(b, base, ADMIN, admin_world,
+                           grid_url + "?teacher=" + RICH)
+            g1 = json.loads(p9.eval(READ_GRID_JS))
+            p9.screenshot(os.path.join(args.shots, "admin-teacher-grid.png"),
+                          width=1280)
+            errs9 = real_errors(p9.console_errors())
+            disarm(p9, a9)
+
+            check(g1["drawn"], "D1. the classes grid rendered",
+                  "%d card(s) at %s" % (len(g1["cards"]), g1["at"]))
+            check(g1["title"] == RICH_NAME,
+                  "…headed with the teacher's name, not \"My classes\"",
+                  repr(g1["title"]))
+            check(g1["eyebrow"].upper().startswith("ACTING AS ADMIN"),
+                  "…and the eyebrow LEADS with the admin marker",
+                  repr(g1["eyebrow"]))
+            check(sorted(g1["cards"]) == ["10h/Ph1"],
+                  "…showing exactly the classes that teacher holds",
+                  repr(sorted(g1["cards"])))
+            # The half that makes the line above mean something: Ada's OWN
+            # class is 8r/Sc1, and a grid that merged the two lists would
+            # look correct at a glance and be wrong.
+            check("8r/Sc1" not in g1["cards"],
+                  "…and NOT the admin's own class alongside them")
+            check(SAY_NO_CLASSES not in g1["body"],
+                  "…with nothing said about the ADMIN's own timetable")
+            check(not errs9, "…console stayed quiet", "; ".join(errs9[:2]))
+
+            # ── D1b · and a card opens class-detail, acting as admin ───
+            # ⚠️ MRB_GO IS STUBBED BECAUSE IT NAVIGATES — the same reason
+            # `MRB_SEATING` is stubbed in C3, and the same failure if it is
+            # not (the target navigates and the next eval has nothing to
+            # answer). The destination is the thing under test; that the
+            # destination then shows "Acting as admin" is Section A.
+            p10, a10 = mount(b, base, ADMIN, admin_world,
+                             grid_url + "?teacher=" + RICH)
+            p10.eval("window.__go=[];window.MRB_GO=function(s,q){"
+                     "window.__go.push([s,q]);};1")
+            card_n = press(p10, '[data-port-region="classes"] '
+                                '[style*="grid-template-columns"] > div',
+                           settle=1.0)
+            went = json.loads(p10.eval("JSON.stringify(window.__go||[])"))
+            disarm(p10, a10)
+            check(card_n >= 1, "D1b. the card is pressable",
+                  "%d card node(s)" % card_n)
+            check(len(went) == 1 and went[0][0] == "class"
+                  and went[0][1].get("class") == C_FOREIGN,
+                  "…and it opens THAT class's detail screen",
+                  json.dumps(went)[:140])
+
+            # ── D2 · an UNCLAIMED teacher — pending rows AS CARDS ──────
+            # The production shape: her classes have no `class_teachers` row
+            # at all, so they can only be reached through
+            # `pending_staff_classes` plus `loadClassMatrices`'s class-row
+            # fallback. A grid drawn off the driver read alone shows nothing.
+            p11, a11 = mount(b, base, ADMIN, admin_world,
+                             grid_url + "?pending=" + PENDING_STAFF)
+            g2 = json.loads(p11.eval(READ_GRID_JS))
+            p11.screenshot(os.path.join(args.shots, "admin-pending-grid.png"),
+                           width=1280)
+            errs11 = real_errors(p11.console_errors())
+            disarm(p11, a11)
+
+            check(g2["drawn"] and sorted(g2["cards"]) == ["9r/Sc4", "9r/Sc5"],
+                  "D2. an unclaimed teacher's assignments render AS CARDS",
+                  repr(sorted(g2["cards"])))
+            check(g2["title"] == PENDING_NAME,
+                  "…headed with the name on the invitation",
+                  repr(g2["title"]))
+            check("NOT YET SIGNED IN" in g2["eyebrow"].upper(),
+                  "…and the eyebrow says the account is unclaimed",
+                  repr(g2["eyebrow"]))
+            # Same card component: the roster count reaches the chip, which
+            # is the one number a hand-rolled second card would get wrong.
+            check("2 students" in g2["body"],
+                  "…through the SAME card, roster count and all",
+                  g2["body"][:90])
+            check(not errs11, "…console stayed quiet", "; ".join(errs11[:2]))
+
+            # ── D3 · a teacher with NO classes — an honest empty ───────
+            # ⚠️ THE SENTENCE THAT MUST NOT APPEAR IS THE INTERESTING HALF.
+            # `SAY.noClasses` is "You are not teaching any classes this
+            # year" — a statement about the VIEWER — and before this ticket
+            # `run()`'s guard could reach it on a scoped list, putting a
+            # sentence about the admin's own timetable in front of a
+            # colleague's empty one.
+            p12, a12 = mount(b, base, ADMIN, admin_world,
+                             grid_url + "?teacher=" + NIA)
+            g3 = json.loads(p12.eval(READ_GRID_JS))
+            p12.screenshot(os.path.join(args.shots, "admin-empty-grid.png"),
+                           width=1280)
+            errs12 = real_errors(p12.console_errors())
+            disarm(p12, a12)
+
+            check(g3["drawn"] and not g3["cards"],
+                  "D3. a teacher with no classes draws the grid with none",
+                  repr(g3["cards"]))
+            check(g3["title"] == NIA_NAME,
+                  "…still headed with their name", repr(g3["title"]))
+            check("No classes" in g3["body"],
+                  "…and Design's own empty panel says so",
+                  g3["body"][:90])
+            check(SAY_NO_CLASSES not in g3["body"],
+                  "…never the sentence about the ADMIN'S timetable",
+                  g3["body"][:90])
+            check(not errs12, "…console stayed quiet", "; ".join(errs12[:2]))
+
+            # ── D4 · a PLAIN TEACHER passing the same parameter ────────
+            print("\n  ── …and the same URL, typed by a plain teacher ──")
+            # The fixture guard first: without it a green D4 could mean the
+            # rows were never there to leak.
+            check(not [r for r in plain_world["class_teachers"]
+                       if r["teacher_id"] == RICH],
+                  "D4. the fixture: her row set holds none of his links")
+            check(not plain_world.get("pending_staff_classes"),
+                  "…nor any pending_staff_classes row")
+
+            p13, a13 = mount(b, base, AMY, plain_world,
+                             grid_url + "?teacher=" + RICH)
+            g4 = json.loads(p13.eval(READ_GRID_JS))
+            errs13 = real_errors(p13.console_errors())
+            disarm(p13, a13)
+
+            check(g4["drawn"] and sorted(g4["cards"]) == ["10h/Sc1"],
+                  "…she is shown HER OWN classes, not his",
+                  repr(sorted(g4["cards"])))
+            check(g4["title"] == "My classes",
+                  "…under Design's own heading, unchanged",
+                  repr(g4["title"]))
+            check("ACTING AS ADMIN" not in g4["eyebrow"].upper(),
+                  "…and nothing claims she is acting as an admin",
+                  repr(g4["eyebrow"]))
+            check("10h/Ph1" not in g4["body"],
+                  "…with not one of his classes anywhere on the page")
+            check(not errs13, "…console stayed quiet", "; ".join(errs13[:2]))
+
+            # ── D5 · and the pending parameter is refused her too ──────
+            p14, a14 = mount(b, base, AMY, plain_world,
+                             grid_url + "?pending=" + PENDING_STAFF)
+            g5 = json.loads(p14.eval(READ_GRID_JS))
+            disarm(p14, a14)
+            check(g5["drawn"] and sorted(g5["cards"]) == ["10h/Sc1"]
+                  and g5["title"] == "My classes",
+                  "D5. …and so is `?pending=`, by the same fallback",
+                  "%s %s" % (repr(g5["title"]), repr(sorted(g5["cards"]))))
+            check(PENDING_NAME not in g5["body"],
+                  "…with the unclaimed teacher's name nowhere on it")
 
     finally:
         server.shutdown()

@@ -1401,6 +1401,208 @@
     "insights":       "insights"
   };
 
+  /* ═════════════════════════════════════════════════════════════════════
+     ⊕ MRB-328 J4(b) · HOVER A CLASS CARD, START FETCHING ITS PAGE
+     ═════════════════════════════════════════════════════════════════════
+
+     `teacher/class-detail.html` is a 165 KB document and the pages on this
+     site are served `max-age=0`, so every press of a class card begins with
+     downloading it before a single line of JavaScript can run. A teacher
+     spends anything from a quarter of a second to several seconds with a
+     pointer resting on a card before they click it. This spends that time.
+
+     ⚠️ WHY A DOCUMENT PREFETCH AND NOT A DATA PREFETCH. The obvious version
+     of this ticket is "hover the card, fetch that class's rows". It is the
+     wrong version, and the reason is worth writing down so it is not
+     re-proposed:
+
+       · `base()` on class-detail does NOT make a per-class read. It loads the
+         teacher's whole class list and every class's matrices — the same two
+         calls this very page has just made. There is no per-class request
+         sitting on the critical path to be brought forward.
+       · The three reads that ARE per-class on that screen are the timetable
+         (teacher-wide, not per class), the reteach grid, and the shoutout
+         feed — and the feed is under a STANDING RULING that it is never held
+         ("a teacher can post to it and must see it change", the memo on
+         `base`'s cache). Caching it on hover would break that ruling to save
+         a round trip.
+       · What IS on the critical path, unavoidably, for every class alike, is
+         the 165 KB of HTML. So that is what gets fetched early.
+
+     `<link rel="prefetch">` is the right instrument for it: the browser
+     fetches at IDLE priority, so it cannot compete with anything the current
+     page still wants, and it drops the request entirely under memory or
+     network pressure. If it does not finish, the click behaves exactly as it
+     does today.
+
+     ⚠️ THE URL MUST MATCH `MRB_GO`'S BYTE FOR BYTE. A prefetch of
+     `?class=X` when the click navigates to `?class=X&env=test` warms a cache
+     entry nobody asks for and costs a teacher 165 KB for nothing. The
+     builder below reproduces `MRB_GO`'s construction exactly — same page map,
+     same parameter ORDER (`class`, then `year`, then `env`), same rule that
+     an empty value is dropped. `build_teacher_port.py` owns the original;
+     these two must move together.
+
+     ⚠️ AND IT HONOURS THE ZERO-STUDENT FORK. `c.open` is
+     `MRB_GO(c.n > 0 ? 'class' : 'import', …)` — a card with no roster opens
+     the IMPORT screen, and that is a standing ruling, not an accident. This
+     prefetches whichever of the two that card would actually open, so the
+     routing is never second-guessed and never changed. Nothing here
+     intercepts a click, cancels an event, or rewrites an href. */
+  var PREFETCH_MAX = 12;      // one per card on a full grid, and no more
+
+  function armCardPrefetch(data) {
+    try {
+      if (!data || !data.CLASSES || !data.CLASSES.length) { return; }
+
+      /* ⚠️ A SCOPED LIST IS NEVER PREFETCHED. `?teacher=`/`?pending=` draws a
+         COLLEAGUE'S classes (MRB-328 J3), and while a document prefetch
+         stores nothing viewer-specific — it is the same static HTML every
+         teacher downloads — the rule this sits under is that a scoped view
+         must not warm anything on the viewer's own behalf. Refusing outright
+         is the version of that with no argument to get wrong later.
+
+         ⛔ THE FIRST VERSION OF THIS LINE READ `if (data.scope)`, AND IT
+         NEVER FIRED. `base()` does put `scope: classScope` on its own cache
+         object — but `load()` builds a DIFFERENT payload, and what it
+         publishes is `scopeTeacherParam` / `scopePendingParam`, two strings.
+         `data.scope` is `undefined` on every load there has ever been, so the
+         guard read as a working refusal and was in fact a no-op: an admin
+         opening a colleague's list would have had every one of that
+         colleague's class pages prefetched. Nothing would have said so.
+
+         `classScope` — the module's own variable, set by `resolveClassScope`
+         before `base()` runs — is the authoritative answer and cannot be
+         missed by a rename in the payload. The two published strings are
+         checked as well, so a future caller that arms this from somewhere
+         `classScope` has been reset still refuses. */
+      if (classScope || data.scopeTeacherParam || data.scopePendingParam) { return; }
+
+      var host = document.getElementById(HOST_ID);
+      var region = host && host.querySelector('[data-port-region="classes"]');
+      if (!region) { return; }
+
+      /* A speculative 165 KB is the last thing a metered or very slow
+         connection wants spent on a page that may never be opened. */
+      try {
+        var conn = navigator.connection || navigator.mozConnection;
+        if (conn && (conn.saveData === true ||
+                     conn.effectiveType === "slow-2g" ||
+                     conn.effectiveType === "2g")) { return; }
+      } catch (e) {}
+
+      var byCode = {};
+      var codes = [];
+      data.CLASSES.forEach(function (k) {
+        if (!k || !k.code || !k.id) { return; }
+        var code = String(k.code).trim();
+        byCode[code] = k;
+        codes.push(code);
+      });
+      if (!codes.length) { return; }
+      // Longest first, so `10h/Sc1` can never be matched in front of
+      // `10h/Sc11` on a school that has both.
+      codes.sort(function (a, b) { return b.length - a.length; });
+
+      var yearParam = data.yearParam || "";
+      var env = "";
+      try {
+        if (typeof window.MRB_ENV === "function") { env = window.MRB_ENV() || ""; }
+      } catch (e) { env = ""; }
+
+      function hrefFor(k) {
+        var file = k.n > 0 ? "class-detail.html" : "import.html";
+        var q = [];
+        q.push("class=" + encodeURIComponent(k.id));
+        if (yearParam) { q.push("year=" + encodeURIComponent(yearParam)); }
+        if (env) { q.push("env=" + env); }
+        return "/teacher/" + file + "?" + q.join("&");
+      }
+
+      /* Idempotence lives HERE and not in the event handler, so that a
+         pointer crossing a card's forty descendant elements does one Object
+         lookup thirty-nine of those times. Nothing listens to `mousemove`;
+         `pointerover` fires on entering an element, not on moving within
+         one, and every one of those entries after the first is a return. */
+      var done = {};
+      var count = 0;
+
+      function warm(k) {
+        var href = hrefFor(k);
+        if (done[href]) { return; }
+        done[href] = 1;
+        if (count >= PREFETCH_MAX) { return; }
+        // A prefetch already in the head — ours from a previous render, or
+        // the browser's own — is not re-added.
+        if (document.querySelector('link[rel="prefetch"][href="' +
+                                   href.replace(/"/g, '\\"') + '"]')) { return; }
+        count++;
+        var link = document.createElement("link");
+        link.rel = "prefetch";
+        link.as = "document";
+        link.href = href;
+        document.head.appendChild(link);
+      }
+
+      /* Which card is under the pointer. Walked up from the event target
+         rather than bound per card, because the grid is re-rendered whenever
+         the teacher changes the key-stage filter or the sort — a per-card
+         binding would be stale after the first press of "KS3", and a
+         MutationObserver to fix that would be a lot of machinery for an
+         affordance that is allowed to do nothing. */
+      function classUnder(target) {
+        var el = target;
+        for (var hops = 0; el && el !== region && hops < 8; hops++, el = el.parentElement) {
+          var line = "";
+          try {
+            line = String(el.innerText || el.textContent || "").trim();
+          } catch (e) { line = ""; }
+          if (!line) { continue; }
+          var first = line.split("\n")[0].trim();
+          if (byCode[first]) { return byCode[first]; }
+          for (var i = 0; i < codes.length; i++) {
+            if (line.indexOf(codes[i]) === 0) { return byCode[codes[i]]; }
+          }
+        }
+        return null;
+      }
+
+      function onHint(ev) {
+        try {
+          var k = ev && ev.target ? classUnder(ev.target) : null;
+          if (k) { warm(k); }
+        } catch (e) { /* an affordance must never break the screen */ }
+      }
+
+      /* `touchstart` for a finger — it fires before the tap completes, which
+         on a phone is the whole of the head start there is. `focusin` for a
+         keyboard, so tabbing through the grid gets the same treatment a
+         pointer does. `passive` on both of the two that can block scrolling.
+         One listener on the region, never one per card. */
+      region.addEventListener("pointerover", onHint, { passive: true });
+      region.addEventListener("touchstart", onHint, { passive: true });
+      region.addEventListener("focusin", onHint);
+    } catch (e) { /* never let a prefetch take a dashboard down */ }
+  }
+
+  /* ⊕ MRB-328 J4(a) — the SCREEN's name in the telemetry table.
+
+     A separate map rather than a suffix rule on `SCREEN_BY_PAGE`, because the
+     two vocabularies genuinely differ and neither is derivable from the
+     other: the screen called `class` is the page `class-detail.html` and the
+     row `teacher-class-detail`, and the screen called `marking` is the page
+     `assignment.html` and the row `teacher-assignment`. Every value here must
+     be one of `rum_timings`'s whitelisted page names — the column has a CHECK
+     constraint, so a name invented here is a row the database refuses. */
+  var RUM_PAGE = {
+    "classes":  "teacher-classes",
+    "class":    "teacher-class-detail",
+    "student":  "teacher-student",
+    "marking":  "teacher-assignment",
+    "digest":   "teacher-digest",
+    "insights": "teacher-insights"
+  };
+
   function screenFromLocation() {
     var q = new URLSearchParams(window.location.search);
     var override = q.get("screen");
@@ -1462,6 +1664,97 @@
   var viewerId = null;
 
   function reset() { cache = null; }
+
+  /* ⊕ MRB-328 J3 — WHOSE CLASSES THIS PAGE IS SHOWING.
+
+     Null on every ordinary load, and on every screen except the class LIST.
+     Set only when ALL of these hold: the URL carries `?teacher=<profile id>`
+     or `?pending=<pending_staff id>`, the screen is `classes`, the viewer is
+     admin-scoped, and the rows for that person actually came back. Then
+     `base()` builds the grid from THAT person's classes instead of the
+     viewer's own, and the page says whose they are.
+
+     `{ name, classIds, claimed }` — see `teacher-data.loadStaffClassScope`.
+
+     ⚠️ IT SURVIVES `reset()`, DELIBERATELY. `reset()` drops the row cache so
+     a year switch re-reads; it is not a change of subject. An admin who
+     opens a colleague's 2025-26 must not silently be handed their own.
+
+     ⚠️ THE CLIENT-SIDE ADMIN CHECK IS NOT THE SECURITY BOUNDARY, and must
+     not be read as one — same standing as `teacher-admin-nav.js`'s own note
+     on the predicate it borrows. What it decides is whether the parameter is
+     HONOURED AT ALL, which is the product requirement: a plain teacher who
+     types someone else's id into the address bar gets HER OWN classes back,
+     not an empty page and not an error. The boundary underneath it is RLS:
+     `class_teachers_self_read` hands her zero of another teacher's link rows
+     and `pending_staff_admin_all` hands her zero pending rows, so even with
+     this check deleted the failure direction is an empty list rather than a
+     colleague's. Two independent reasons, and the leak needs both to fail. */
+  var classScope = null;
+
+  /* Resolve it, or leave it null. Never throws: every failure — no module,
+     no client, a refused read, a row that is not there — is a reason to show
+     the viewer their own classes, which is the page a bare URL gives. */
+  async function resolveClassScope(screen, q) {
+    classScope = null;
+    if (screen !== "classes") { return null; }
+    var teacherId = q.get("teacher");
+    var pendingId = q.get("pending");
+    if (!teacherId && !pendingId) { return null; }
+
+    var mod = window.MrBadmusAdminScope;
+    var guard = window.MrBadmusTeacherGuard;
+    var sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!mod || !mod.isAdmin || !sb || !viewerId) { return null; }
+
+    /* ONE answer to "is this person an admin", borrowed rather than
+       re-derived — `teacher-admin-nav.js` owns it, `teacher/admin.html`
+       already asks it the same way, and a second copy of the predicate is
+       the copy that drifts. It fails CLOSED on its own (a network blip is
+       not a grant). */
+    var ok = false;
+    try { ok = await mod.isAdmin(sb, viewerId); }
+    catch (e) { ok = false; }
+    if (!ok) { return null; }
+
+    var TD = window.MrBadmusTeacherData;
+    var got = null;
+    try {
+      got = await TD.loadStaffClassScope(
+        teacherId ? { teacherId: teacherId } : { pendingId: pendingId });
+
+      /* ⚠️ AN INVITATION THAT HAS SINCE BEEN CLAIMED IS A TEACHER, and the
+         two answers are not the same list. `pending_staff_classes` is a
+         record of what the invitation asked for; once claimed,
+         `claim_pending_staff` has mirrored it into `class_teachers`, and
+         THAT is the live truth — a class added or removed since the claim
+         shows in one and not the other. `teacher/admin.html` never writes
+         such a link (a claimed invitation is folded onto the teacher's own
+         row), so this is for a bookmark taken before the claim: it follows
+         the claim through rather than showing a stale list under a name
+         that is now a real account. */
+      if (got && pendingId && got.claimed && got.claimedProfileId) {
+        var live = await TD.loadStaffClassScope(
+          { teacherId: got.claimedProfileId });
+        if (live) {
+          teacherId = got.claimedProfileId;
+          pendingId = null;
+          got = live;
+        }
+      }
+    } catch (e) {
+      console.warn("[teacher-live] staff scope unavailable", e);
+      got = null;
+    }
+    if (!got) { return null; }
+
+    /* The id that got us here, so the year strip can carry it. Kept off the
+       URL read at the call sites — one parse, one answer. */
+    got.teacherParam = teacherId || "";
+    got.pendingParam = teacherId ? "" : (pendingId || "");
+    classScope = got;
+    return got;
+  }
 
   /* ⊕ MRB-287 E1 — THE ACADEMIC YEAR BEING VIEWED.
      ...
@@ -1709,10 +2002,97 @@
        were then overwritten by better ones. They are filled back in below
        from the bulk data, so `cache.classRows` — which is exposed — still
        carries real values rather than the nulls the opt-out hands back. */
-    var classRows = await TD.loadTeacherClasses(selectedYearId, { metrics: false });
-    var classIds = classRows.map(function (c) { return c.id; });
+    /* ⊕ MRB-328 J3 — …UNLESS AN ADMIN HAS ASKED FOR SOMEBODY ELSE'S.
 
-    var packs = classIds.length ? await TD.loadClassMatrices(classIds) : {};
+       ⚠️ THE SELF-FILTERED LIST ABOVE IS NOT WIDENED, AND MUST NOT BE. That
+       is MRB-325 ruling 1's fix for the Today/My-classes leak: whatever
+       `loadTeacherClasses` returns is the viewer's own and stays so. This is
+       the same SEPARATE PATH `mergeForeignClass` takes one class at a time,
+       taken for a whole list — the ids come from the target's own
+       `class_teachers` rows (or, for an unclaimed invitation, from
+       `pending_staff_classes`), and every one of them goes through the same
+       `loadClassMatrices` the ordinary path uses, so RLS answers exactly as
+       it does there. Nothing below this branch knows the difference: the
+       cards, the filters, the sort, the counts and the year strip are the
+       ones Design drew, fed the same shape.
+
+       ⚠️ AND THE YEAR FILTER IS HERE RATHER THAN IN THE READ. Neither
+       `class_teachers` nor `pending_staff_classes` carries an academic year;
+       `pack.class.academic_year_id` does, and it is the same field
+       `loadTeacherClasses` filters on for the ordinary path. One definition
+       of "this year's classes", read off the row that owns it. */
+    var classRows, classIds, packs;
+    if (classScope) {
+      classIds = classScope.classIds.slice();
+      packs = classIds.length ? await TD.loadClassMatrices(classIds) : {};
+      classRows = [];
+      classIds.forEach(function (id) {
+        var pack = packs[id];
+        if (!pack || !pack.class) { return; }
+        if (viewing && pack.class.academic_year_id !== viewing.id) { return; }
+        classRows.push(pack.class);
+      });
+      classIds = classRows.map(function (c) { return c.id; });
+    } else {
+      /* ⊕ MRB-328 J4(b) — THE TWO WAVES, OVERLAPPED WHEN WE CAN GUESS THE
+         SECOND ONE'S ARGUMENT.
+
+         ⛔ WHAT THIS REPLACES, and why it was the slowest thing on the
+         screen: `loadTeacherClasses` reads `class_teachers` to find out which
+         classes this teacher holds, and then `loadClassMatrices` reads
+         `class_teachers` AGAIN — one whole round trip later — for the ids the
+         first read just produced. Two waves, same table, and the second spent
+         its first round trip doing nothing but waiting to be told what to ask
+         for. Every teacher page pays it, because `base()` is shared by all
+         six screens.
+
+         It is a REAL data dependency and it is not being pretended away. What
+         changes is that the argument is usually PREDICTABLE: the id list came
+         back on the last navigation and is sitting in `sessionStorage`. So
+         the matrices read is started against the remembered ids at the same
+         instant as the driver query, and the two run together.
+
+         ⚠️ THE FRESH LIST STILL WINS, ALWAYS. Nothing renders off the guess.
+         `classRows` below is the driver query's answer, exactly as before;
+         the speculative packs are consulted only for ids that answer is
+         asking for, and any id it asks for that the guess did not cover is
+         fetched in a second call. A guess that is wrong costs one extra read
+         and changes nothing a teacher sees. A guess that is right removes a
+         round trip from every navigation after the first.
+
+         ⚠️ AND THE GUESS IS THE VIEWER'S OWN, WHICH IS WHY IT IS IN THIS
+         BRANCH AND NOT ABOVE IT. `cachedOwnClassIds` is keyed on the signed-in
+         viewer; the `classScope` branch is showing SOMEBODY ELSE'S classes and
+         must neither read nor write that key. Putting this inside the `else`
+         is what guarantees it — there is no flag to get wrong. */
+      var guess = null;
+      var speculative = null;
+      try {
+        guess = TD.cachedOwnClassIds ? TD.cachedOwnClassIds(viewerId, selectedYearId) : null;
+      } catch (e) { guess = null; }
+      if (guess && guess.length) {
+        /* A refusal here is not an error the page should ever see: the
+           authoritative read below asks again for whatever this could not
+           answer for. `loadClassMatrices` THROWS on a class it cannot read —
+           a stale id for a class the teacher has been taken off is exactly
+           that — so the whole speculative call is swallowed to null. */
+        speculative = TD.loadClassMatrices(guess).catch(function () { return null; });
+      }
+
+      classRows = await TD.loadTeacherClasses(selectedYearId, { metrics: false });
+      classIds = classRows.map(function (c) { return c.id; });
+
+      var early = speculative ? await speculative : null;
+      packs = {};
+      var missing = [];
+      classIds.forEach(function (id) {
+        if (early && early[id]) { packs[id] = early[id]; } else { missing.push(id); }
+      });
+      if (missing.length) {
+        var fetched = await TD.loadClassMatrices(missing);
+        Object.keys(fetched).forEach(function (id) { packs[id] = fetched[id]; });
+      }
+    }
 
     /* The five deferred numbers, from the bulk read that superseded them. Done
        before anything reads `classRows` so no consumer — here, a ruling, or a
@@ -1750,6 +2130,13 @@
       var pack = packs[c.id];
       if (!pack) { return; }                       // cannot happen: it throws
       var built = buildClassEntry(c, pack, yearWeeks, viewing, now);
+      /* ⊕ MRB-328 J3 — the same marker `mergeForeignClass` sets, for the
+         same reason and on the same terms: this is not the viewer's class.
+         The grid does not read it; `klass.meta` on the class screen does,
+         and an entry that travelled here rather than through
+         `loadTeacherClasses` must not be able to reach that screen
+         claiming to be the viewer's own. */
+      if (classScope) { built.entry.actingAsAdmin = true; }
       PAPERS[c.id] = built.papers;
       MATRIX[c.id] = built.mx;
       ROSTER[c.id] = built.roster;
@@ -1787,6 +2174,8 @@
       yearOptions: options,
       classRows: classRows,
       packs: packs,
+      // ⊕ MRB-328 J3 — null on an ordinary load. See `classScope`.
+      scope: classScope,
       CLASSES: CLASSES,
       MATRIX: MATRIX,
       ROSTER: ROSTER,
@@ -2075,22 +2464,57 @@
        class-id scope it carried before could not express "mine" and handed
        an admin their colleagues' lessons), so this cannot leak another
        teacher's day. A failure here is not fatal — the
-       eyebrow drops the segment via `klass.meta`'s `.filter(Boolean)`. */
+       eyebrow drops the segment via `klass.meta`'s `.filter(Boolean)`.
+
+       ⊕ MRB-328 J4(b) — FIRED HERE, READ AT THE FOOT OF THIS FUNCTION.
+
+       The class screen made three round trips one after the other — this
+       timetable read, the reteach grid prefetch, and the shoutout feed — and
+       not one of them needs anything from the other two. All three want
+       `classId`, which is settled on the line above, and nothing else. Three
+       waves became one, and the eyebrow, the reteach card and the feed now
+       arrive together instead of in a queue.
+
+       ⚠️ THE ORDER THE ANSWERS ARE APPLIED IN IS UNCHANGED. Only the moment
+       each request LEAVES has moved; every value is still consumed at the
+       point it always was, so nothing downstream can read a half-filled
+       object. `catch` is attached to the handle rather than to the await so
+       an in-flight failure cannot raise `unhandledrejection` in the window
+       before it is read — the await below still sees the real rejection. */
+    var timetablePromise = null;
     if (screen === "class" && classId) {
-      try {
-        var todayEntries = await window.MrBadmusTeacherData.loadTimetable();
-        var todayWd = window.MrBadmusTeacherData.schoolWeekday();
-        var todayMine = (todayEntries || [])
-          .filter(function (e) { return e.classId === classId && e.weekday === todayWd; })
-          .sort(function (a, b) { return a.period - b.period; });
-        var kToday = c.CLASSES.filter(function (k) { return k.id === classId; })[0];
-        if (kToday) {
-          kToday.lessonToday = todayMine.length
-            ? ("Next lesson today · P" + todayMine[0].period)
-            : "No lesson today";
-        }
-      } catch (e) {
-        console.warn("[teacher-live] lessonToday unavailable", e);
+      timetablePromise = window.MrBadmusTeacherData.loadTimetable();
+      timetablePromise.catch(function () {});
+    }
+
+    /* ⊕ MRB-328 J4(b) — the shoutout feed, started for the same reason and on
+       the same terms. It takes `classId` and the clock and nothing else, and
+       it ran LAST of the three, so on the class screen it was a whole round
+       trip added to a page that had already finished fetching everything it
+       draws above the feed. */
+    var feedPromise = null;
+    if (classId && (screen === "class" || screen === "student")) {
+      feedPromise = buildFeed(classId, now);
+      feedPromise.catch(function () {});
+    }
+
+    /* ⊕ MRB-328 J4(b) — and the STUDENT screen's written feedback, which was
+       the fourth serial read on a page that only ever needed two.
+
+       ⚠️ ONLY THE STUDENT BRANCH. The marking screen's version of this reads
+       the submission ids OUT of the grid prefetch below and genuinely cannot
+       be started before it — the note on the `FEEDBACK` block downstream says
+       so and it is still true. The student branch is different in kind: its
+       one submission id is `c.MATRIX[classId].byId[studentId].subId`, which
+       `base()` produced and which is sitting in memory on the line above.
+       Nothing was ever waiting for it except the order the code was in. */
+    var studentFeedbackPromise = null;
+    if (classId && screen === "student" && params.studentId) {
+      var stEarly = (c.MATRIX[classId] && c.MATRIX[classId].byId)
+        ? c.MATRIX[classId].byId[params.studentId] : null;
+      if (stEarly && stEarly.subId) {
+        studentFeedbackPromise = buildFeedback(stEarly.subId, viewerId);
+        studentFeedbackPromise.catch(function () {});
       }
     }
 
@@ -2182,9 +2606,33 @@
       await grids(pairs);
     }
 
+    /* ⊕ MRB-328 J4(b) — the eyebrow's answer, collected. Started before the
+       grid prefetch above, so on the class screen the timetable read and the
+       reteach grid have been in the air together rather than in a queue.
+       The try/catch, the failure message and the "not fatal" contract are
+       exactly what they were — a class with no timetable row still simply
+       loses the segment. */
+    if (timetablePromise) {
+      try {
+        var todayEntries = await timetablePromise;
+        var todayWd = window.MrBadmusTeacherData.schoolWeekday();
+        var todayMine = (todayEntries || [])
+          .filter(function (e) { return e.classId === classId && e.weekday === todayWd; })
+          .sort(function (a, b) { return a.period - b.period; });
+        var kToday = c.CLASSES.filter(function (k) { return k.id === classId; })[0];
+        if (kToday) {
+          kToday.lessonToday = todayMine.length
+            ? ("Next lesson today · P" + todayMine[0].period)
+            : "No lesson today";
+        }
+      } catch (e) {
+        console.warn("[teacher-live] lessonToday unavailable", e);
+      }
+    }
+
     var FEED = {};
     if (classId && (screen === "class" || screen === "student")) {
-      FEED[classId] = await buildFeed(classId, now);
+      FEED[classId] = await feedPromise;
     }
 
     /* ⊕ MRB-306 Phase 2b — the written feedback the two authoring screens
@@ -2199,11 +2647,8 @@
        that is about a paper. */
     var FEEDBACK = {};
     if (classId && screen === "student" && params.studentId) {
-      var stRow = (c.MATRIX[classId] && c.MATRIX[classId].byId)
-        ? c.MATRIX[classId].byId[params.studentId] : null;
-      if (stRow && stRow.subId) {
-        FEEDBACK = await buildFeedback(stRow.subId, viewerId);
-      }
+      // ⊕ MRB-328 J4(b) — started beside the feed, above; this is the await.
+      if (studentFeedbackPromise) { FEEDBACK = await studentFeedbackPromise; }
     } else if (classId && screen === "marking") {
       var mPapers = c.PAPERS[classId] || [];
       var mAsked = paperIndex(params.paperIdx);
@@ -2243,6 +2688,38 @@
          dashboard should show as blank rather than paper over. */
       termLabel: year ? (season + " term · " + yearLabel) : "",
       termSeason: year ? season : "",
+
+      /* ── ⊕ MRB-328 J3 · WHOSE CLASSES THESE ARE ────────────────────────
+         Two keys, and between them they are the WHOLE of the page context.
+         There is no third: the cards, the counts, the filters and the year
+         strip are unchanged, because they already say everything else.
+
+         ⚠️ NO NEW COPY. "My classes" is Design's own heading; "Acting as
+         admin" is the string `klass.meta` already leads the class header
+         with when the same viewer opens the same person's class (MRB-325
+         ruling 5); "Not yet signed in" is the exact tag `teacher/admin.html`
+         puts on an unclaimed invitation, and it is here for the same reason
+         it is there — the classes on screen are assignments waiting on a
+         claim, not links a teacher holds. Three strings the estate already
+         uses, in the places they already mean.
+
+         ⚠️ THE MARKER LEADS, for Mide's reason on the class header: a grid
+         of somebody else's classes must never be mistaken for your own. */
+      classesTitle: (classScope && classScope.name) || "My classes",
+      classesEyebrow: [
+        classScope ? "Acting as admin" : "",
+        (classScope && !classScope.claimed) ? "Not yet signed in" : "",
+        year ? (season + " term · " + yearLabel) : ""
+      ].filter(Boolean).join(" · "),
+
+      /* Threaded onto the year strip so switching year keeps the subject.
+         `MRB_GO` drops an empty parameter, so on an ordinary load these add
+         nothing to the URL — exactly as `yearParam` does. Without them,
+         pressing 2025-26 while reading a colleague's list would hand the
+         viewer their OWN 2025-26 under the colleague's name, which is the
+         quiet kind of wrong. */
+      scopeTeacherParam: (classScope && classScope.teacherParam) || "",
+      scopePendingParam: (classScope && classScope.pendingParam) || "",
       yearLabel: yearLabel,
       yearName: (year && year.name) || "",
       academicWeek: academicWeek,
@@ -2338,8 +2815,14 @@
       studentCount: studentCount,
       liveClassCount: c.CLASSES.filter(function (k) { return k.state === "live"; }).length,
       // Design: "Search students across all 12 classes".
+      /* ⊕ MRB-328 J3 — "your" IS FALSE ON A SCOPED LIST. The pool is built
+         from `c.CLASSES`, so on a colleague's list it is a colleague's
+         students, and the one-class arm was the only string on the screen
+         still calling them the viewer's. One word, and only on that arm:
+         the plural arm never said "your" and is untouched. */
       searchPlaceholder: classCount === 1
-        ? "Search students in your class"
+        ? (classScope ? "Search students in this class"
+                      : "Search students in your class")
         : "Search students across all " + classCount + " classes",
       searchPool: pool,
       searchPoolCount: pool.length,
@@ -2475,6 +2958,15 @@
                `q` is parsed one scope out — see the note above it. */
             selectedYearId = q.get("year") || null;
 
+            /* ⊕ MRB-328 J3 — BEFORE `base()`, because `base()` is what it
+               changes. Returns null on every ordinary load and on every
+               screen but the class list; when it does not, `base()` builds
+               the grid from that person's classes. It never throws — a
+               refusal, a missing row or a viewer who is not an admin all
+               mean "show them their own", which is the page a bare URL
+               gives. */
+            await resolveClassScope(screenFromLocation(), q);
+
             var c = await base();
 
             /* ⛔ THIS USED TO THROW WHENEVER THE WORKING YEAR WAS EMPTY, and
@@ -2518,7 +3010,17 @@
                that the question gets asked at all. The guard keeps its real
                case — a BARE url, where the viewer's own list is the whole
                screen and its emptiness is the whole answer. */
-            var askedFor = q.get("class") || q.get("student");
+            /* ⊕ MRB-328 J3 — AND A SCOPED LIST IS ALSO "ASKED FOR".
+               `SAY.noClasses` is a sentence about the VIEWER'S timetable —
+               "You are not teaching any classes this year" — and it is
+               simply false in front of a colleague's empty list. A school
+               with only one year has no `yearOptions`, so without this the
+               honest empty state (Design's own "No classes" panel, drawn by
+               `noneShownLine`) would be replaced by a sentence about the
+               wrong person. Same shape as the `?class=` case above it, and
+               the same reason: the guard's real case is a BARE url. */
+            var askedFor = q.get("class") || q.get("student") ||
+                           (classScope ? "1" : null);
             if (!c.CLASSES.length && !c.yearOptions.length && !askedFor) {
               var e = new Error("[teacher-live] no classes in any year");
               e.mrbSay = SAY.noClasses;
@@ -2537,6 +3039,39 @@
 
           window.__MRB_DATA__ = data;
           window.__MRB_MOUNT__();
+
+          /* ⊕ MRB-328 J4(a) — one timing row, and it cannot hurt the page.
+             The clock is read HERE, on the line after the mount, because that
+             is the moment the teacher stops waiting. rum.js is then fetched
+             asynchronously and handed that number: loading it in DEPS would
+             put telemetry in front of the paint, and measuring inside it
+             would bill the teacher for the beacon's own download.
+             Everything is inside try/catch and the failure path is silence —
+             a page must never break because a measurement did.
+             ⚠️ AN UNMAPPED SCREEN SENDS NOTHING. `RUM_PAGE` names the six
+             screens teacher-live.js actually draws; `import` is in
+             SCREEN_BY_PAGE but `teacher/import.html` is hand-written and does
+             not load this file, so there is no seventh row to write. rum.js
+             re-checks the name against its own whitelist regardless. */
+          /* ⊕ MRB-328 J4(b) — the hover prefetch, armed on the one screen
+             that has cards to hover. After the mount, because it reads the
+             cards the mount has just drawn. */
+          if (screenFromLocation() === "classes") { armCardPrefetch(data); }
+
+          try {
+            var _rumPage = RUM_PAGE[screenFromLocation()];
+            if (_rumPage) {
+              var _rumAt = Math.round(performance.now());
+              var _rumEl = document.createElement("script");
+              _rumEl.src = stamped("/shared/rum.js");
+              _rumEl.async = true;
+              _rumEl.onload = function () {
+                try { window.MrBadmusRUM.report(_rumPage, "teacher", _rumAt); }
+                catch (e) {}
+              };
+              document.head.appendChild(_rumEl);
+            }
+          } catch (e) {}
 
           /* ⊕ MRB-326 JOB 4c, 6 Sep 2026 — THE INJECTION IS GONE, and this
              is the deletion its own comment promised. It used to read:

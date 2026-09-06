@@ -170,6 +170,18 @@ window.MrBadmusStudentGuard = (function () {
   // in spirit: the redirect always happens, even if signOut errors,
   // so the student is never stranded on a protected page.
   async function signOut() {
+    /* ⊕ MRB-328 J4(b) — the shared session caches, dropped BEFORE the network
+       call and before the redirect. A student surface caches only the class
+       entry and the academic years, not a session (the optimistic-render path
+       is staff-side), but the entry is per-viewer and a shared classroom
+       machine is exactly where it must not survive one child signing out and
+       the next signing in. Same call, same reasoning, same ordering argument
+       as `teacher-guard.signOut` — see the longer note there. */
+    try {
+      const ce = window.MRBClassEntry;
+      if (ce && ce.dropCaches) { ce.dropCaches(); }
+    } catch (e) { /* a cache that will not clear must not strand a sign-out */ }
+
     const sb = getClient();
     if (sb) {
       try {

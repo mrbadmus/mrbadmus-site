@@ -1696,7 +1696,31 @@ BINDINGS_AT = {
     # not come back.
 
     # ── the classes screen ──────────────────────────────────────────────
-    161: ("Autumn term · 2026–27", "termLabel"),
+    #
+    # ⊕ MRB-328 J3, 6 Sep 2026 — THESE TWO NOW ANSWER "WHOSE CLASSES?".
+    #
+    # 161 used to bind `termLabel` and 162 was not bound at all — it was
+    # Design's literal `<h1>My classes</h1>`, which is correct for every
+    # teacher reading their own list and WRONG THE MOMENT A SCHOOL ADMIN
+    # OPENS A COLLEAGUE'S from `teacher/admin.html`. A page headed "My
+    # classes" over twelve cards that are somebody else's is the same defect
+    # `klass.meta` already fixed one screen along, and it is fixed the same
+    # way: the marker LEADS the eyebrow, and the heading names the person.
+    #
+    # ⚠️ `termLabel` IS NOT DELETED and its derivation has not moved. It is
+    # still computed in the seam and still describes NOW; `classesEyebrow`
+    # is that string with up to two markers in front of it, joined the way
+    # `klass.meta` joins its own parts, and it is EQUAL to `termLabel` on
+    # every ordinary load. Two keys rather than one overloaded key, because
+    # `termWeekLabel` and `termSeason` are derived from the same season and
+    # must keep meaning the term and nothing else.
+    #
+    # ⚠️ NO NEW COPY IS INTRODUCED BY EITHER. "My classes" is Design's,
+    # "Acting as admin" is MRB-325 ruling 5's, "Not yet signed in" is the tag
+    # `teacher/admin.html` already prints on an unclaimed invitation. See
+    # `shared/teacher-live.js`'s `classesEyebrow` for the join.
+    161: ("Autumn term · 2026–27", "classesEyebrow"),
+    162: ("My classes", "classesTitle"),
     204: ("Viewing 2026–27", "viewingYearLabel"),
     # ⊕ MRB-287 E1 — the year toggle's own label. "Previous years" is right
     # only while the WORKING year is in view; opened FROM a past year the same
@@ -6047,7 +6071,9 @@ LOGIC = (
      "      readOnlyLine: MRB_DATA('readOnlyLine'),\n"
      "      yearOptions: MRB_DATA('yearOptions').map((y) => ({\n"
      "        name: y.name,\n"
-     "        open: () => MRB_GO('classes', { year: y.id })\n"
+     "        open: () => MRB_GO('classes', { year: y.id,\n"
+     "          teacher: MRB_DATA('scopeTeacherParam'),\n"
+     "          pending: MRB_DATA('scopePendingParam') })\n"
      "      })),",
      "the five keys the year selector and the read-only rule need. "
      "`yearOptions` is mapped into Design's own row idiom — a `name` and an "
@@ -6055,7 +6081,17 @@ LOGIC = (
      "inserted list is a list of Design's rows rather than a new pattern. "
      "Switching year always returns to the GRID, which is the retired page's "
      "behaviour and the only destination that is certainly valid in the year "
-     "being opened."),
+     "being opened.\n"
+     "\n"
+     "⊕ MRB-328 J3, 6 Sep 2026 — AND IT CARRIES THE SUBJECT OF THE PAGE "
+     "WITH IT. Both parameters are EMPTY on every ordinary load and "
+     "`MRB_GO` drops an empty parameter, so the URL a teacher switching "
+     "year gets is byte-identical to the one this ruling has always "
+     "produced. They are non-empty only while a school admin is reading "
+     "SOMEBODY ELSE'S list, and without them that press would hand the "
+     "admin their OWN 2025-26 under the colleague's name still in the "
+     "heading — a page that is wrong and looks right, which is the one "
+     "outcome worth two extra keys."),
 
     # ⊕ Mide, 4 Sep 2026 — `showClassesLink`, the top bar's "My classes"
     # button (INSERT_AT[(10,13)]). ⚠️ WITHOUT THIS RETURN-OBJECT ENTRY THE
@@ -6263,6 +6299,29 @@ componentDidUpdate() {
      "screen changes any more. `weekIdxFor` is re-derived over weeks; the "
      "other three are v2 verbatim."),
 
+    # ══ ⊕ MRB-328 J3, 6 Sep 2026 · "1 CLASSES · 4 STUDENTS" ════════════
+    #
+    # A plural that has always been wrong and has only just become easy to
+    # meet. Design's sample teacher has twelve classes, so `CLASSES.length`
+    # was never 1 on any screen anybody looked at; a school admin opening a
+    # colleague's list from `teacher/admin.html` now lands on a one-class
+    # teacher routinely, and the first one photographed read "1 classes ·
+    # 4 students" under their name.
+    #
+    # ⚠️ FIXED IN THE SAME BREATH AS THE FEATURE THAT SURFACES IT, and
+    # nothing else about the line moves: same separator, same order, same
+    # two numbers, both still `this.CLASSES.length` and `totalStudents`.
+    # `student` is pluralised too — a class of one is a real class, and
+    # leaving half the line right is worse than leaving it alone.
+    ("      classLine: this.CLASSES.length + ' classes · ' + totalStudents "
+     "+ ' students',",
+     "      classLine: this.CLASSES.length\n"
+     "        + (this.CLASSES.length === 1 ? ' class · ' : ' classes · ')\n"
+     "        + totalStudents\n"
+     "        + (totalStudents === 1 ? ' student' : ' students'),",
+     "the classes screen's sub-heading. Design's own shape, with the two "
+     "plurals it never had to get right."),
+
     # ══ ⊕ 24 Aug 2026 · A FILTER THAT MATCHES NOTHING ═══════════════════
     #
     # The two keys `INSERT_AT[31]` renders. `s.ks` is the filter that is ON,
@@ -6270,6 +6329,15 @@ componentDidUpdate() {
     # the teacher has no classes: they have classes, they filtered them out,
     # and the genuinely-empty case never reaches this grid because
     # `teacher-live.js` throws `SAY.noClasses` before mount.
+    #
+    # ⊕ CORRECTED, MRB-328 J3, 6 Sep 2026 — THE LAST CLAUSE IS NO LONGER
+    # TRUE, AND THE `All` ARM IS NOW REACHABLE FOR REAL. `SAY.noClasses` is
+    # a sentence about the VIEWER'S timetable, so `run()`'s guard no longer
+    # fires when a school admin has asked for SOMEBODY ELSE'S list — a
+    # colleague with no classes this year draws this panel, reading "No
+    # classes", under that colleague's name. Which is what the arm should
+    # always have said and never previously got to. The `s.ks` arms are
+    # unchanged and the reasoning above them still holds.
     ("      shownLine: cards.length + ' shown',",
      "      shownLine: cards.length + ' shown',\n"
      "      noneShown: !cards.length,\n"

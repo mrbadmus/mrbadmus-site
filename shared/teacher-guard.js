@@ -65,6 +65,95 @@ window.MrBadmusTeacherGuard = (function () {
     window.location.replace('/index.html');
   }
 
+  /* ── ⊕ MRB-328 J4(b) · THE SESSION, RESOLVED ONCE PER BURST ────────────
+
+     `getUser()` below is a genuine round trip to Supabase auth, and it sits in
+     front of EVERYTHING: no page on this surface reads a row, draws a header
+     or starts a skeleton until it has come back. A teacher walking Today →
+     class → marking → a student pays it four times in ninety seconds, for four
+     identical answers about an identity that did not change.
+
+     So the resolved answer — the user and the profile row, which is to say the
+     ROLE — is held in `sessionStorage` for two minutes and, on a hit, the page
+     is allowed to render IMMEDIATELY while the real check runs behind the
+     paint. If the background check disagrees, the page bounces exactly as it
+     would have done, one paint later.
+
+     ── Why two minutes, and not thirty like the class entry ───────────────
+     The class entry caches "which class page to link to", which changes when a
+     teacher enrols somebody. This caches WHETHER YOU MAY BE HERE. The two are
+     not comparable and the second wants the shortest TTL that still spans a
+     burst of navigation — which is what a teacher does between lessons, and
+     what the four measured journeys are. Two minutes covers the burst and
+     expires long before anybody could sit on a revoked role.
+
+     ── Why this is not a hole ─────────────────────────────────────────────
+     ⚠️ IT NEVER WIDENS WHAT MAY BE READ, only when the page starts drawing.
+
+       1. THIS FILE HAS NEVER BEEN THE SECURITY GATE and says so twice in its
+          own header: "layer 2 of defence-in-depth (UX gate); the real security
+          gates are the backend's requireTeacherRole and the database's RLS
+          policies." Every row the page then fetches is fetched under the
+          viewer's own JWT and filtered by RLS. A cached `role: 'teacher'`
+          buys a non-teacher nothing at all — the reads still come back empty.
+       2. THE CACHED ANSWER IS KEYED ON THE VIEWER'S OWN ID, via
+          `MRBClassEntry.cacheKey`, and on the environment. A second person
+          signing into the same tab gets a different key and therefore a miss.
+       3. THE STORED TOKEN IS STILL CHECKED FOR EXPIRY before the cache is
+          consulted at all. An expired session takes the full path, so the
+          bounce-to-login a teacher would have got is the bounce they get.
+       4. IT IS `sessionStorage`, so it dies with the tab. A shared staffroom
+          machine cannot carry it into the next person's browsing session even
+          for the two minutes.
+       5. SIGN-OUT DROPS IT — see `signOut()` below.
+
+     ⚠️ AND THE REVALIDATION IS NOT OPTIONAL. If it were skipped on a hit, a
+     teacher whose role was removed would keep a working-looking dashboard for
+     the life of the tab. It runs on EVERY cached load, and its denial path is
+     the same `onDenied`/bounce the cold path uses. */
+  const SESSION_PREFIX = 'mrb-staff-session:';
+  const SESSION_TTL_MS = 2 * 60 * 1000;
+
+  function sessionCacheKey() {
+    const ce = window.MRBClassEntry;
+    if (!ce || !ce.cacheKey) { return null; }   // module absent → no cache
+    try { return ce.cacheKey(SESSION_PREFIX); } catch (e) { return null; }
+  }
+
+  function cachedResolution() {
+    const ce = window.MRBClassEntry;
+    const key = sessionCacheKey();
+    if (!key || !ce.cacheGet) { return null; }
+    try {
+      const hit = ce.cacheGet(key, SESSION_TTL_MS);
+      if (!hit || !hit.user || !hit.user.id || !hit.profile) { return null; }
+      if (!ALLOWED_ROLES.includes(hit.profile.role)) { return null; }
+      return hit;
+    } catch (e) { return null; }
+  }
+
+  function rememberResolution(user, profile) {
+    const ce = window.MRBClassEntry;
+    const key = sessionCacheKey();
+    if (!key || !ce || !ce.cacheSet) { return; }
+    try {
+      // The id and the profile columns, and nothing else. `user` from the SDK
+      // carries the whole identity payload — app_metadata, the provider token
+      // envelope, every recovery timestamp — and none of it is read by any
+      // caller of `onAllowed`, so none of it is stored.
+      ce.cacheSet(key, {
+        user: { id: user.id, email: user.email || null },
+        profile: {
+          first_name: profile.first_name || null,
+          last_name: profile.last_name || null,
+          display_name: profile.display_name || null,
+          role: profile.role,
+          school_id: profile.school_id || null
+        }
+      });
+    } catch (e) {}
+  }
+
   async function requireTeacherRole(opts) {
     opts = opts || {};
     const onAllowed = opts.onAllowed || function () {};
@@ -112,10 +201,11 @@ window.MrBadmusTeacherGuard = (function () {
        for anyway). */
     let prefetchId = null;
     let prefetched = null;
+    let storedSession = null;
     try {
       const stored = await sb.auth.getSession();
-      const storedUser = stored && stored.data && stored.data.session
-        ? stored.data.session.user : null;
+      storedSession = stored && stored.data ? stored.data.session : null;
+      const storedUser = storedSession ? storedSession.user : null;
       if (storedUser && storedUser.id) {
         prefetchId = storedUser.id;
         // `.then()` FORCES IT TO LEAVE NOW. A PostgREST builder is lazy — it
@@ -140,6 +230,37 @@ window.MrBadmusTeacherGuard = (function () {
     } catch (e) {
       prefetchId = null;
       prefetched = null;
+      storedSession = null;
+    }
+
+    /* ⊕ MRB-328 J4(b) — THE OPTIMISTIC RENDER, and then the real check.
+
+       Everything below this block still runs, in the order it always ran and
+       with the same effect. What changes is only that on a cache hit the page
+       is handed its context NOW rather than one round trip from now, and the
+       round trip becomes a correction rather than a wait.
+
+       ⚠️ THE EXPIRY TEST IS NOT DECORATION. Without it a tab left open over
+       lunch would render its dashboard off a two-minute-old cache against a
+       token Supabase has already stopped accepting — a page that looks signed
+       in and whose every read comes back 401, which is strictly worse than
+       the login bounce it replaced. An expired or missing token takes the
+       cold path, which is where that bounce lives. */
+    let served = false;
+    const expMs = storedSession && storedSession.expires_at
+      ? storedSession.expires_at * 1000 : 0;
+    if (storedSession && prefetchId && (!expMs || expMs > Date.now())) {
+      const hit = cachedResolution();
+      if (hit && hit.user.id === prefetchId) {
+        served = true;
+        try {
+          onAllowed({ user: hit.user, profile: hit.profile });
+        } catch (e) {
+          // A throw out of the page's own render must not take the
+          // revalidation below down with it — the check still has to happen.
+          console.error('[teacher-guard] onAllowed threw on the cached path', e);
+        }
+      }
     }
 
     // 1. Session check — getUser() actually validates the JWT with Supabase
@@ -182,7 +303,17 @@ window.MrBadmusTeacherGuard = (function () {
       return bounceToHome();
     }
 
-    // 3. Allowed — let the page render with the data we already have.
+    /* 3. Allowed — let the page render with the data we already have.
+
+       ⊕ MRB-328 J4(b) — …unless it already did. On a cached load this whole
+       function has been the REVALIDATION, and reaching here means it agreed:
+       the page is drawn, the answer is unchanged, and there is nothing to do
+       but refresh the stamp so the next navigation is cheap too. Calling
+       `onAllowed` a second time would boot the runtime twice over its own
+       mounted DOM. Every DENIAL above is unguarded on purpose — a correction
+       must fire whether or not the page has already drawn. */
+    rememberResolution(user, profile);
+    if (served) { return; }
     onAllowed({ user, profile });
   }
 
@@ -191,6 +322,23 @@ window.MrBadmusTeacherGuard = (function () {
   // missing client), the redirect always happens — so the user is never
   // stranded on a protected page.
   async function signOut() {
+    /* ⊕ MRB-328 J4(b) — THE CACHES GO FIRST, before the network call that may
+       fail and before the redirect that ends this script.
+
+       Order is the whole of it. Dropped after `sb.auth.signOut()`, a network
+       failure there would skip the drop and leave the previous teacher's
+       session, role and class list in `sessionStorage` — where the next
+       person to sign in on that tab would find them still inside their TTL.
+       Dropped after the redirect, it would never run at all.
+
+       `dropCaches` sweeps by FAMILY rather than by exact key, because by the
+       time this is called the id those keys are built from may already be
+       gone. See `shared/class-entry.js`. */
+    try {
+      const ce = window.MRBClassEntry;
+      if (ce && ce.dropCaches) { ce.dropCaches(); }
+    } catch (e) { /* a cache that will not clear must not strand a sign-out */ }
+
     const sb = getClient();
     if (sb) {
       try {

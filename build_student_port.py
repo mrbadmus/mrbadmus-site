@@ -179,8 +179,14 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # occurs, including inside a JSON key — turning the key into
 # `"/shared/student-data.js?v=…"`, which `student-live.js` would then fail to
 # look up. Silent, and it would look like the stamp simply had no effect.
+# ⊕ MRB-328 J4(b) — `rum.js` joins for the reason written out at length beside
+# `build_teacher_port.STAMPED_DEPS`: `student-live.js` injects it through
+# `stamped()`, a name missing from `window.__MRB_ASSET_V__` comes back
+# UNSTAMPED rather than erroring, and `/shared/*` is now served
+# `immutable, max-age=31536000`. Unstamped under immutable is a file pinned in
+# a student's browser for a year that no deploy can reach.
 STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
-                "student-data.js")
+                "student-data.js", "rum.js")
 
 
 def asset_hash(text):

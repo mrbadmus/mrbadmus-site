@@ -204,6 +204,28 @@
       font: 700 16px/1.35 var(--st-display);
       overflow-wrap: anywhere;
     }
+    /* ⊕ MRB-328 J2 — the picker, wearing the chip's typography and the
+       page's own control chrome. Background, border, radius, focus ring and
+       transition are `.field-select`'s values, not new ones, so the control
+       reads as one of this page's form controls; the type is
+       `.import-target-value`'s, so the pill's density does not change. The
+       padding is tighter than `.field-select`'s 10px/12px because this one
+       sits INSIDE a pill that already has 7px/15px of its own. */
+    .import-target-select {
+      max-width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      color: var(--text);
+      font: 700 16px/1.35 var(--st-display);
+      padding: 3px 8px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .import-target-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
     /* No class resolved yet — keep the row, drop the emphasis, so there is
        never a blank space where a class name usually goes. */
     .import-target.is-pending {
@@ -800,10 +822,32 @@
 
   <!-- Persistent target-class header. Visible on every step; text set by
        updateImportHeader(). Starts in its honest "nothing picked yet" state
-       so it reads correctly before any script runs. -->
-  <p id="import-target" class="import-target is-pending" aria-live="polite">
+       so it reads correctly before any script runs.
+
+       ⊕ MRB-328 J2 — the chip is now a CONTROL, not only a readout. It held
+       the answer to "which class am I importing into?" and had no way to
+       ANSWER it: before a file was uploaded it read "Not chosen yet" and
+       there was nothing to click, and `teacher/class-detail.html` had been
+       linking here with `?class=<id>` since MRB-325 while this page never
+       read the parameter. The select is that missing half, in the place the
+       answer was already being shown — same pill, same label, same density.
+
+       ⚠️ THREE ELEMENTS, AND WHICH ONE SPEAKS DEPENDS ON STATE. The select
+       carries a CHOSEN class; the value span carries what the select cannot
+       — the classes derived from the file, the classes the server says it
+       landed, and (on the review step) the chosen class's teachers. They are
+       never both saying the same thing; updateImportHeader() is still the
+       one function that decides.
+
+       `aria-live` moved off the <p> and onto the value span on purpose: with
+       it on the container, rebuilding the select's option list would be
+       announced as a live region change on every load. -->
+  <p id="import-target" class="import-target is-pending">
     <span id="import-target-label" class="import-target-label">Importing into</span>
-    <span id="import-target-value" class="import-target-value">Not chosen yet</span>
+    <select id="import-target-select" class="import-target-select"
+            aria-labelledby="import-target-label" hidden></select>
+    <span id="import-target-value" class="import-target-value"
+          aria-live="polite">Not chosen yet</span>
   </p>
 
   <p class="page-subtitle">
@@ -1044,8 +1088,8 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="/shared/config.js?v=d1fecb43"></script>
-<script src="/shared/class-entry.js?v=d47329ae" defer></script>
-<script src="/shared/teacher-guard.js?v=2efdc820"></script>
+<script src="/shared/class-entry.js?v=dc8db888" defer></script>
+<script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script>
 (function () {
@@ -1236,9 +1280,252 @@
   // stale class name behind.
   let landedClassNames = null;   // the server's answer, once the import has run
   let importCompleted = false;   // the success panel is the visible stage
+  let currentStep = 1;           // which screen is showing; setStep() owns it
+
+  // ── The class PICKER (MRB-328 J2) ──────────────────────────────────────
+  //
+  // The chip above answered "which class am I importing into?" and offered
+  // no way to answer it: with no file uploaded it read "Not chosen yet" and
+  // there was nothing to press. Meanwhile class-detail.html had been linking
+  // here as `import.html?class=<id>` since MRB-325 and this page never read
+  // the parameter — a teacher who pressed "Import students" from inside a
+  // class arrived somewhere that had forgotten which class they came from.
+  //
+  // ⚠️ A SELECTION IS A DESTINATION, NOT A HINT. When a class is chosen,
+  // EVERY imported row lands in that class and the file's class column stops
+  // mattering — mechanically, the choice pins the page's existing
+  // single-class mode (`classMode = 'single'`) to the chosen class's exact
+  // name, which is the same road the "my file has no Class column" checkbox
+  // already travels. Nothing new reaches the payload, and `roster-import`
+  // FINDS that class by (school, working year, name) rather than creating a
+  // second one. With NO selection the page behaves exactly as it always did:
+  // classes come from the file, and a multi-class file still works.
+  let targetClasses = [];        // [{id, name, year, tier, pathway}] role-scoped
+  let targetClassesLoaded = false;
+  let selectedClassId = null;    // the chosen destination, or null
+  let pinnedByClass = false;     // true while a selection owns the class mode
+  let requestedClassId = null;   // ?class=<id>, consumed once
+  const classTeacherNames = {};  // classId → [name] (cache; [] = asked, nobody)
+
+  function selectedClass() {
+    if (!selectedClassId) return null;
+    return targetClasses.filter(function (c) { return c.id === selectedClassId; })[0] || null;
+  }
+
+  // "10A" before "10X1" before "9Y1" is wrong; numeric collation is what a
+  // teacher means by alphabetical for names that are mostly numbers.
+  function naturalCmp(a, b) {
+    return String(a).localeCompare(String(b), undefined,
+      { numeric: true, sensitivity: 'base' });
+  }
+
+  // ⚠️ ROLE SCOPING LIVES IN THE QUERY, NOT IN A LATER CHECK. A school admin
+  // asks for the school's classes; a plain teacher asks only for the ids
+  // `class_teachers` gives them. That is why `?class=` needs no separate
+  // permission test below: a class a teacher may not import into is not in
+  // this list, so it cannot be preselected. The list IS the boundary the
+  // page can draw; the database draws the real one (classes_admin_read /
+  // classes_teacher_read), and both have to agree for a row to arrive.
+  async function loadTargetClasses() {
+    try {
+      if (!mySchoolId || !workingYear || !workingYear.id) {
+        // No year, no list. `loadWorkingYear()` has already said so on screen
+        // and blocked the wizard; a class list scoped to a guessed year is
+        // the MRB-307 defect in a different control.
+        targetClasses = [];
+        return;
+      }
+
+      let admin = false;
+      try {
+        admin = !!(window.MrBadmusAdminScope &&
+                   await window.MrBadmusAdminScope.isAdmin(sb, currentUserId));
+      } catch (e) {
+        // Fail CLOSED — a network blip is not a grant. The teacher then sees
+        // their own classes, which is the narrower answer, never the wider.
+        console.error('[import.html] admin check failed', e);
+        admin = false;
+      }
+
+      let ownIds = null;
+      if (!admin) {
+        const { data: links, error: linkErr } = await sb
+          .from('class_teachers')
+          .select('class_id')
+          .eq('teacher_id', currentUserId)
+          .is('ended_at', null)
+          .is('deleted_at', null);
+        if (linkErr) throw linkErr;
+        ownIds = [];
+        (links || []).forEach(function (r) {
+          if (r.class_id && ownIds.indexOf(r.class_id) === -1) ownIds.push(r.class_id);
+        });
+        if (!ownIds.length) { targetClasses = []; return; }
+      }
+
+      // ONE query either way, with one extra filter for the narrow case.
+      let q = sb
+        .from('classes')
+        .select('id, name, year_group, key_stage, tier, science_pathway')
+        .eq('school_id', mySchoolId)
+        .eq('academic_year_id', workingYear.id)
+        .is('deleted_at', null);
+      if (ownIds) q = q.in('id', ownIds);
+      const { data, error } = await q;
+      if (error) throw error;
+
+      targetClasses = (data || []).map(function (c) {
+        const yg = Number(c.year_group);
+        return {
+          id: c.id,
+          name: c.name,
+          // The row is authoritative; the name is the fallback the rest of
+          // this page already uses when a row has no year_group.
+          year: (yg >= 7 && yg <= 11) ? yg : parseYearFromName(c.name),
+          tier: c.tier || null,
+          pathway: c.science_pathway || null,
+        };
+      }).filter(function (c) { return !!c.name; });
+    } catch (e) {
+      console.error('[import.html] class list load failed', e);
+      targetClasses = [];
+    }
+    targetClassesLoaded = true;
+    renderTargetSelect();
+    applyRequestedClass();
+    updateImportHeader();
+  }
+
+  // Year 7 → Year 11 in <optgroup>s, each group naturally sorted.
+  //
+  // Grouped only when the list SPANS years: an admin's list always does, and
+  // a teacher who teaches one year group gets a flat list rather than a
+  // single group heading that separates nothing.
+  function renderTargetSelect() {
+    const sel = $('import-target-select');
+    if (!sel) return;
+
+    const byYear = {};
+    const undated = [];
+    targetClasses.forEach(function (c) {
+      if (c.year) { (byYear[c.year] = byYear[c.year] || []).push(c); }
+      else { undated.push(c); }
+    });
+    const years = Object.keys(byYear).map(Number).sort(function (a, b) { return a - b; });
+
+    function opt(c) {
+      return '<option value="' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>';
+    }
+    function sorted(list) {
+      return list.slice().sort(function (a, b) { return naturalCmp(a.name, b.name); });
+    }
+
+    // The blank option repeats the chip's own pending words rather than
+    // inventing a second phrase for the same state.
+    let html = '<option value="">Not chosen yet</option>';
+    if (years.length > 1) {
+      years.forEach(function (y) {
+        html += '<optgroup label="Year ' + y + '">' +
+          sorted(byYear[y]).map(opt).join('') + '</optgroup>';
+      });
+      // A class whose year cannot be resolved gets no group rather than a
+      // made-up one — an <optgroup> called "Other" would be a new word for
+      // something the data simply does not say.
+      html += sorted(undated).map(opt).join('');
+    } else {
+      html += years.map(function (y) { return sorted(byYear[y]); })
+        .concat([sorted(undated)])
+        .reduce(function (a, b) { return a.concat(b); }, [])
+        .map(opt).join('');
+    }
+    sel.innerHTML = html;
+    sel.value = selectedClassId || '';
+  }
+
+  // `?class=<id>` from any class page. ⚠️ A FOREIGN ID IS REFUSED, and it is
+  // refused by NOT BEING IN THE LIST rather than by a check that could be
+  // forgotten: `targetClasses` is already role-scoped, so an id that is not
+  // in it leaves the page unselected. No throw, no silent select.
+  function applyRequestedClass() {
+    if (!requestedClassId || selectedClassId) return;
+    const want = requestedClassId;
+    requestedClassId = null;   // one shot, whatever the answer was
+    const hit = targetClasses.filter(function (c) { return c.id === want; })[0];
+    if (!hit) return;
+    selectClass(hit.id);
+  }
+
+  function selectClass(id) {
+    selectedClassId = id || null;
+    const chosen = selectedClass();
+    if (chosen) {
+      // Pin the existing single-class road to this class's exact name.
+      classMode = 'single';
+      singleClassName = chosen.name;
+      pinnedByClass = true;
+      loadClassTeachers(chosen.id);
+    } else if (pinnedByClass) {
+      // Back to "Not chosen yet": hand the class question back to the file.
+      classMode = 'column';
+      singleClassName = '';
+      pinnedByClass = false;
+    }
+    const sel = $('import-target-select');
+    if (sel) sel.value = selectedClassId || '';
+    if ($('single-class-name')) $('single-class-name').value = singleClassName;
+    if ($('no-class-col')) $('no-class-col').checked = (classMode === 'single');
+    if ($('map-class-row')) applyClassMode();
+    rebuildClassSettings();    // re-keys the per-class settings, then redraws
+    updateImportHeader();
+  }
+
+  // The chosen class's teachers, for the review step. Two reads rather than
+  // an embedded select, because `profiles` and `class_teachers` are governed
+  // by different policies and a join that half-resolves is harder to read
+  // than two answers. A name we are not allowed to see is DROPPED, not
+  // guessed at and not apologised for.
+  async function loadClassTeachers(classId) {
+    if (classTeacherNames[classId]) { updateImportHeader(); return; }
+    try {
+      const { data: links, error: linkErr } = await sb
+        .from('class_teachers')
+        .select('teacher_id')
+        .eq('class_id', classId)
+        .is('ended_at', null)
+        .is('deleted_at', null);
+      if (linkErr) throw linkErr;
+      const ids = [];
+      (links || []).forEach(function (r) {
+        if (r.teacher_id && ids.indexOf(r.teacher_id) === -1) ids.push(r.teacher_id);
+      });
+      let names = [];
+      if (ids.length) {
+        const { data: people, error: pErr } = await sb
+          .from('profiles')
+          .select('id, first_name, last_name')
+          .in('id', ids);
+        if (pErr) throw pErr;
+        const seen = {};
+        (people || []).forEach(function (p) {
+          const n = ((p.first_name || '') + ' ' + (p.last_name || '')).trim();
+          if (n && !seen[n]) { seen[n] = 1; names.push(n); }
+        });
+        names.sort(naturalCmp);
+      }
+      classTeacherNames[classId] = names;
+    } catch (e) {
+      console.error('[import.html] class teachers load failed', e);
+      classTeacherNames[classId] = [];
+    }
+    updateImportHeader();
+  }
 
   // The class names this run is aimed at, best source first.
+  // ⊕ MRB-328 J2 — an explicit selection outranks everything, including the
+  // server's own answer: it is the only source the teacher stated.
   function importTargetNames() {
+    const chosen = selectedClass();
+    if (chosen) return [chosen.name];
     if (landedClassNames && landedClassNames.length) return landedClassNames.slice();
     if (!fileState.rows.length) return [];
     return distinctClasses().map(function (c) { return c.name; });
@@ -1248,32 +1535,55 @@
     const el = $('import-target');
     const labelEl = $('import-target-label');
     const valueEl = $('import-target-value');
+    const sel = $('import-target-select');
     if (!el || !valueEl) return;
 
     if (labelEl) labelEl.textContent = importCompleted ? 'Imported into' : 'Importing into';
 
-    const names = importTargetNames();
-    if (!names.length) {
-      el.classList.add('is-pending');
-      valueEl.textContent = 'Not chosen yet';
-      return;
+    const chosen = selectedClass();
+    // Choosing stops once the import has run: the chip is then a record of
+    // where the students went, and a live control there would invite a
+    // change that can no longer change anything.
+    const canPick = !!(sel && targetClasses.length && !importCompleted);
+    if (sel) {
+      sel.hidden = !canPick;
+      if (canPick) sel.value = selectedClassId || '';
     }
-    el.classList.remove('is-pending');
 
-    // One file can carry several classes. joinList() is how the confirm
-    // sentence and the success summary already read a class list out, so
-    // follow it for the short cases. Past three it stops fitting on a line,
-    // so name the first and count the rest — the full list is on the review
-    // table and in the per-class settings either way.
-    valueEl.textContent = names.length <= 3
-      ? joinList(names)
-      : names[0] + ' and ' + (names.length - 1) + ' more classes';
+    const names = importTargetNames();
+    el.classList.toggle('is-pending', !names.length);
+
+    // ⚠️ THE SPAN NEVER REPEATS THE SELECT. When a class is chosen the
+    // select is already showing its name, so the span carries only what the
+    // select cannot: on the review step, who teaches it.
+    let text;
+    if (chosen && canPick) {
+      const teachers = classTeacherNames[chosen.id];
+      text = (currentStep === 3 && teachers && teachers.length)
+        ? '· ' + teachers.join(', ')
+        : '';
+    } else if (!names.length) {
+      text = canPick ? '' : 'Not chosen yet';
+    } else {
+      // One file can carry several classes. joinList() is how the confirm
+      // sentence and the success summary already read a class list out, so
+      // follow it for the short cases. Past three it stops fitting on a line,
+      // so name the first and count the rest — the full list is on the review
+      // table and in the per-class settings either way.
+      text = names.length <= 3
+        ? joinList(names)
+        : names[0] + ' and ' + (names.length - 1) + ' more classes';
+    }
+    valueEl.textContent = text;
     // textContent, not innerHTML: the class name is written as a text node,
     // so it cannot be read as markup and needs no escapeHtml() pass.
+    valueEl.hidden = !text;
   }
 
   // ── Step indicator ──────────────────────────────────────────────────────
   function setStep(n) {
+    // ⊕ MRB-328 J2 — set BEFORE updateImportHeader() below, which reads it.
+    currentStep = n;
     document.querySelectorAll('.step').forEach(function (el) {
       const s = Number(el.getAttribute('data-step'));
       el.classList.toggle('active', s === n);
@@ -1570,10 +1880,18 @@
   }
 
   // Show the class-column select (primary) OR the single-name input (fallback).
+  //
+  // ⊕ MRB-328 J2 — and NEITHER when the header has pinned a class. The
+  // destination is then already decided and named at the top of every step;
+  // leaving a "Class" column mapper on screen beside it would be two
+  // controls answering one question, and the one that lost would still look
+  // live. The checkbox goes with them for the same reason.
   function applyClassMode() {
     var single = classMode === 'single';
-    $('map-class-row').style.display = single ? 'none' : '';
-    $('single-class-row').style.display = single ? '' : 'none';
+    $('map-class-row').style.display = (single || pinnedByClass) ? 'none' : '';
+    $('single-class-row').style.display = (single && !pinnedByClass) ? '' : 'none';
+    var toggle = document.querySelector('.single-class-toggle');
+    if (toggle) toggle.style.display = pinnedByClass ? 'none' : '';
     updateImportHeader();
   }
 
@@ -1648,16 +1966,28 @@
   function rebuildClassSettings() {
     const classes = distinctClasses();
     const next = {};
+    // ⊕ MRB-328 J2 — the CHOSEN class is one this school already has, so its
+    // year group, tier and course are read off the row rather than guessed
+    // from its name or asked for again. And its teacher defaults to NOBODY,
+    // not to whoever is driving: an admin importing into a colleague's class
+    // is not becoming its teacher.
+    const chosen = pinnedByClass ? selectedClass() : null;
     classes.forEach(function (c) {
       const prev = classSettings[c.name] || {};
+      const isChosen = !!(chosen && chosen.name === c.name);
       next[c.name] = {
         // Auto-guess the year from the class name once; after that, respect
         // whatever the teacher chose (including "not chosen yet").
-        year:      ('year' in prev) ? prev.year : parseYearFromName(c.name),
-        pathway:   prev.pathway || null,   // 'combined' | 'triple'
-        tier:      prev.tier || null,      // 'foundation' | 'higher'
-        teacherId: prev.teacherId !== undefined ? prev.teacherId : (currentUserId || null),
+        year:      ('year' in prev) ? prev.year
+                   : (isChosen ? (chosen.year || parseYearFromName(c.name))
+                               : parseYearFromName(c.name)),
+        pathway:   prev.pathway || (isChosen ? chosen.pathway : null) || null,   // 'combined' | 'triple'
+        tier:      prev.tier || (isChosen ? chosen.tier : null) || null,         // 'foundation' | 'higher'
+        teacherId: prev.teacherId !== undefined ? prev.teacherId
+                   : (isChosen ? null : (currentUserId || null)),
         subjectId: prev.subjectId || null,
+        // Marks a class that EXISTS. See classIsComplete().
+        existing:  isChosen,
         count:     c.count,
       };
     });
@@ -1840,6 +2170,14 @@
     // import silently skips the class_teachers row and the class never appears
     // in My classes.
     if (s.teacherId && !s.subjectId) return false;
+    // ⊕ MRB-328 J2 — a class CHOSEN in the header already exists, and
+    // `roster-import` FINDS it: for a class it finds, every field of the
+    // spec but the name is ignored (the tier/pathway/teacher writes all sit
+    // in the create branch). Blocking here on Combined/Triple would be
+    // demanding an answer the import cannot act on. The toggles still render,
+    // filled in from the row, so the class's course is visible — they simply
+    // no longer gate a class this wizard is not setting up.
+    if (s.existing) return true;
     if (keyStageForYear(s.year) === 'KS4') return !!s.pathway && !!s.tier;
     return true;
   }
@@ -2038,8 +2376,17 @@
   function renderClassesReview() {
     function courseLabel(s, ks) {
       if (ks === 'KS3') return 'Science';
-      const cap = function (v) { return v ? v.charAt(0).toUpperCase() + v.slice(1) : '—'; };
-      return cap(s.pathway) + ' · ' + cap(s.tier);
+      // ⊕ MRB-328 — an unknown is DROPPED, not dashed (the MRB-326 ruling).
+      //
+      // This used to read `cap(pathway) + ' · ' + cap(tier)` with '—' for a
+      // missing half, and it was unreachable: classIsComplete refused to let a
+      // KS4 class through until both were chosen. J2's picker made it
+      // reachable — a CHOSEN existing class is not asked for its course,
+      // because roster-import ignores every field of a found class but its
+      // name — and '— · —' in the COURSE column reads as "we do not know this
+      // class", when what is true is "this import does not touch it".
+      const cap = function (v) { return v ? v.charAt(0).toUpperCase() + v.slice(1) : null; };
+      return [cap(s.pathway), cap(s.tier)].filter(Boolean).join(' · ');
     }
     $('classes-review-body').innerHTML = Object.keys(classSettings).map(function (name) {
       const s = classSettings[name];
@@ -2220,6 +2567,47 @@
       if (!data || !data.ok) {
         throw new Error((data && data.error) || 'unknown_error');
       }
+
+      /* ⊕ MRB-328 J4(b) — THE ONE WRITE ON THIS SITE THAT CHANGES WHO IS IN A
+         CLASS, AND THEREFORE THE ONE PLACE THE CLASS CACHE MUST BE DROPPED.
+
+         `roster-import` creates `classes` rows, `class_teachers` links and
+         `class_members` rows (see supabase/functions/roster-import/index.ts).
+         `shared/teacher-data.js` remembers this teacher's own class ids in
+         `sessionStorage` for two minutes so `base()` can start its matrices
+         read early — and a teacher who imports a brand-new class and then
+         presses "My classes" would, without this line, spend those two
+         minutes speculating against a list that predates the import.
+
+         ⚠️ IT IS NOT A CORRECTNESS BUG THAT THIS FIXES, AND THAT IS WORTH
+         BEING PRECISE ABOUT: the remembered list is only ever used to GUESS
+         the argument to the next read, never to render, so a stale entry
+         costs one extra request and cannot put a wrong class on a screen.
+         What it fixes is the guess being wrong for exactly as long as the
+         teacher is most likely to be looking — the minute after an import.
+
+         The whole FAMILY goes, not one key: an import can create a class in
+         an academic year the importer is not currently viewing, and a
+         key-by-key invalidation would have to know which. The session/role
+         cache is deliberately left alone — an import does not change who the
+         viewer is, and dropping it would cost a `getUser()` round trip for
+         nothing. Never fatal: a cache that will not clear must not turn a
+         successful import into an error message.
+
+         ⚠️ VIA `MRBClassEntry`, NOT `MrBadmusTeacherData`. This page does not
+         load `teacher-data.js` — its scripts are config, class-entry, the
+         guard, the admin nav and the two spreadsheet parsers — so reaching
+         for `window.MrBadmusTeacherData.forgetOwnClasses()` here would find
+         `undefined`, take the `if` guard, and do nothing at all, silently,
+         while reading like a working invalidation. `class-entry.js` owns the
+         family name and is on this page already. */
+      try {
+        const CE = window.MRBClassEntry;
+        if (CE && CE.dropClassLists) { CE.dropClassLists(); }
+      } catch (cacheErr) {
+        console.warn('[import.html] class cache not cleared after import', cacheErr);
+      }
+
       renderSuccess(data);
     } catch (e) {
       console.error('[import.html] confirm import failed', e);
@@ -2414,6 +2802,20 @@
         ? 'Test sandbox — fake data only'
         : 'Production — live student data';
 
+      // ⊕ MRB-328 J2 — the class a teacher pressed "Import students" from.
+      // Read here and CONSUMED once the role-scoped list arrives; a class
+      // that is not in that list is simply never selected.
+      try {
+        requestedClassId =
+          new URLSearchParams(window.location.search).get('class') || null;
+      } catch (e) {
+        requestedClassId = null;
+      }
+      const targetSel = $('import-target-select');
+      if (targetSel) {
+        targetSel.onchange = function () { selectClass(this.value || null); };
+      }
+
       // Preserve ?env on the back links.
       $('back-link').href = classesUrl();
       $('success-back-link').href = classesUrl();
@@ -2431,7 +2833,11 @@
       // on screen 2, by which point this has resolved.
       loadStaffAndSubjects();
       // Which school year this import lands in (MRB-307). Gates screen 2.
-      loadWorkingYear();
+      // ⊕ MRB-328 J2 — and THEN the class list, which is scoped to that year.
+      // Chained, not fired alongside: a picker built before the year resolved
+      // would either be empty or list some other year's classes, which is the
+      // MRB-307 defect wearing a dropdown.
+      loadWorkingYear().then(loadTargetClasses);
     },
   });
 })();
