@@ -145,27 +145,24 @@ ASSIGNMENT_SIZE = 15
 # reads every position.
 AUTO_POSITIONS = QUESTIONS_PER_LESSON
 
-# ⚠️ A KNOWN CONTENT DEFECT, NAMED SO NO MORE OF IT CAN BE ADDED — NOT AN
-# EXEMPTION ANYONE MAY GROW (MRB-335, found 7 Sep 2026).
+# ⚠️ THE SET IS NOW EMPTY, AND IT STAYS EMPTY (MRB-335, fixed 7 Sep 2026).
 #
-# Three C8 questions carry `<sub>` tags in their stems, options and `why`
-# fields. Bank text never reaches the DOM as HTML: `student-runtime.js`
+# Three C8 questions used to carry `<sub>` tags in their stems, options and
+# `why` fields. Bank text never reaches the DOM as HTML: `student-runtime.js`
 # builds every text node with `document.createTextNode` (line 138/141), and
 # nothing runs `ks3_art.kit.formulae()` over bank rows the way it runs over
-# lesson prose. So a child sitting one of these assignments is shown
+# lesson prose. So a child sitting one of those assignments was shown
 #
 #     Silicon forms SiO<sub>2</sub> and tin forms SnO<sub>2</sub>.
 #
-# with the angle brackets, today, live. The fix is one character per site —
-# `<sub>2</sub>` → `₂` — but it is a CONTENT edit in `ks3_data/c8/`, which the
-# MRB-335 loader lane may not make. Listed here so the check ships GREEN
-# while still refusing every new occurrence, and so the finding cannot be
-# lost. **Delete a line from this set when the row is fixed. Never add one.**
-MARKUP_KNOWN = frozenset({
-    "c8-02-s03",   # stem + option 2 · SiO<sub>2</sub>, SnO<sub>2</sub>, XO<sub>2</sub>
-    "c8-03-e02",   # why 3 · MgCl<sub>2</sub>
-    "c8-03-h04",   # stem + why 0 + why 1 · CO<sub>2</sub>, SiO<sub>2</sub>, Na<sub>2</sub>O
-})
+# with the angle brackets, live. `c8-02-s03`, `c8-03-e02` and `c8-03-h04` were
+# repaired in place by the KS3 chemistry content lane — eight sites, each
+# `<sub>2</sub>` replaced by the real character `₂` — and their entries were
+# deleted from this set at the same commit. **Never add a line here.** The
+# check below is the only thing standing between a child and raw markup, and
+# an exemption is how it stops working. A row that needs a subscript carries
+# the real character; a row that does not writes the formula flat.
+MARKUP_KNOWN = frozenset()
 
 # ⊕ RETIRED by Mide's final ruling (20 Aug 2026). `RETRIEVAL_MINIMUM = 2`
 # reserved two of the fifteen for the immediately preceding lesson. The rule is

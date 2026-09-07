@@ -86,7 +86,7 @@ QUESTIONS = [
             {"text": "That they will form compounds with identical formulae",
              "correct": False,
              "why": "Same formulae come from the same GROUP. Sodium gives "
-                    "NaCl and magnesium MgCl<sub>2</sub>."},
+                    "NaCl and magnesium MgCl₂."},
         ],
         "figure": None,
     },
@@ -321,18 +321,18 @@ QUESTIONS = [
     {
         "id": "c8-03-h04",
         "band": "harder",
-        "text": "Carbon forms CO<sub>2</sub>. Silicon is directly below it. "
-                "What is the strongest reason to expect SiO<sub>2</sub>?",
+        "text": "Carbon forms CO₂. Silicon is directly below it. "
+                "What is the strongest reason to expect SiO₂?",
         "options": [
             {"text": "Because silicon is heavier, so it takes more oxygen "
                      "atoms",
              "correct": False,
              "why": "Mass does not set the ratio. Tin is much heavier than "
-                    "silicon and still gives SnO<sub>2</sub>."},
+                    "silicon and still gives SnO₂."},
             {"text": "Because every element forms an oxide with two oxygen "
                      "atoms",
              "correct": False,
-             "why": "Sodium gives Na<sub>2</sub>O and magnesium gives MgO. "
+             "why": "Sodium gives Na₂O and magnesium gives MgO. "
                     "The ratio is a fact about the group."},
             {"text": "Because carbon and silicon were discovered close "
                      "together",

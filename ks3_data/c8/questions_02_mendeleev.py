@@ -199,7 +199,7 @@ QUESTIONS = [
     {
         "id": "c8-02-s03",
         "band": "standard",
-        "text": "Silicon forms SiO<sub>2</sub> and tin forms SnO<sub>2</sub>. "
+        "text": "Silicon forms SiO₂ and tin forms SnO₂. "
                 "What did that let Mendeleev predict about the element "
                 "between them?",
         "options": [
@@ -213,7 +213,7 @@ QUESTIONS = [
              "correct": False,
              "why": "A group is a family. An element that behaved completely "
                     "differently would not belong in it."},
-            {"text": "That its oxide would have the formula XO<sub>2</sub>",
+            {"text": "That its oxide would have the formula XO₂",
              "correct": True},
             {"text": "That its oxide would be exactly halfway between the two "
                      "in formula",
