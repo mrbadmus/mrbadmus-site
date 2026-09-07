@@ -319,4 +319,445 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p10-02-e05",
+        "band": "easier",
+        "text": "Where field lines are crowded closely together, the field "
+                "is…",
+        "options": [
+            {"text": "strong", "correct": True},
+            {"text": "weak", "correct": False,
+             "why": "Spread-out lines mean a weak field; crowding means the "
+                    "opposite."},
+            {"text": "pointing the other way", "correct": False,
+             "why": "Direction is shown by the arrowheads, not by how close "
+                    "the lines are."},
+            {"text": "the same as everywhere else", "correct": False,
+             "why": "Crowding is exactly how a map shows that the field "
+                    "varies from place to place."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-e06",
+        "band": "easier",
+        "text": "Can two field lines cross on a map?",
+        "options": [
+            {"text": "Yes, where the field is strongest", "correct": False,
+             "why": "A strong field crowds the lines but never makes them "
+                    "meet."},
+            {"text": "Yes, between two magnets", "correct": False,
+             "why": "The two fields add there to give one direction, so the "
+                    "lines still do not cross."},
+            {"text": "No — a compass cannot point two ways at once",
+             "correct": True},
+            {"text": "No, because there are too few lines drawn",
+             "correct": False,
+             "why": "Drawing more lines would not let them cross; the field "
+                    "has one direction at each point."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-e07",
+        "band": "easier",
+        "text": "Field lines outside a bar magnet run…",
+        "options": [            {"text": "from the north pole to the south pole", "correct": True},
+            {"text": "from the south pole to the north pole", "correct": False,
+             "why": "That is the direction INSIDE the magnet; outside they "
+                    "run the other way."},
+            {"text": "out of both poles", "correct": False,
+             "why": "They leave the north and enter the south, so only one "
+                    "end has them coming out."},
+            {"text": "into both poles", "correct": False,
+             "why": "They enter at the south only; the north is where they "
+                    "leave."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-e08",
+        "band": "easier",
+        "text": "Is there a magnetic field in the space BETWEEN two drawn "
+                "field lines?",
+        "options": [            {"text": "No — the field is only along the lines themselves",
+             "correct": False,
+             "why": "Put a compass there and it turns, which shows the field "
+                    "is present."},
+            {"text": "Only if a magnetic material is placed there",
+             "correct": False,
+             "why": "The field is there whether or not anything is in it to "
+                    "feel it."},
+            {"text": "No, unless more lines are drawn in", "correct": False,
+             "why": "Drawing a line does not create a field; the line records "
+                    "one that is already there."},
+            {"text": "Yes, just as much as on the lines", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-e09",
+        "band": "easier",
+        "text": "What lines itself up along the field at a point?",
+        "options": [            {"text": "A plotting compass needle", "correct": True},
+            {"text": "A copper wire", "correct": False,
+             "why": "Copper is not magnetic, so a field does nothing to it."},
+            {"text": "A thermometer", "correct": False,
+             "why": "A thermometer measures temperature and is unaffected by "
+                    "a magnetic field."},
+            {"text": "A plastic ruler", "correct": False,
+             "why": "Plastic is not magnetic and is ignored completely."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-e10",
+        "band": "easier",
+        "text": "Iron filings sprinkled on paper over a magnet show…",
+        "options": [
+            {"text": "the shape of a field that was already there",
+             "correct": True},
+            {"text": "the field that the filings themselves create",
+             "correct": False,
+             "why": "The filings only line up in it; sweep them off and the "
+                    "field is unchanged."},
+            {"text": "where the magnet has been damaged", "correct": False,
+             "why": "The pattern appears round any magnet, damaged or not."},
+            {"text": "which way round the field runs", "correct": False,
+             "why": "Filings show the shape but not the direction; a compass "
+                    "is needed for that."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-e11",
+        "band": "easier",
+        "text": "A magnetic field is…",
+        "options": [            {"text": "a substance that pours out of the poles",
+             "correct": False,
+             "why": "Nothing flows out; the field is a state the space is "
+                    "in."},
+            {"text": "the iron filings that gather round a magnet",
+             "correct": False,
+             "why": "The filings reveal the field; the field is there without "
+                    "them."},
+            {"text": "the lines drawn on a diagram", "correct": False,
+             "why": "The lines are a record of the field, not the field "
+                    "itself."},
+            {"text": "the region where a magnet would feel a force",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p10-02-s05",
+        "band": "standard",
+        "text": "A plotting compass is moved slowly along a curved field "
+                "line. What does the needle do?",
+        "options": [            {"text": "Turns steadily, staying lined up with the line",
+             "correct": True},
+            {"text": "Stays pointing the same way throughout",
+             "correct": False,
+             "why": "The line curves, and the needle follows the field's "
+                    "direction at each point."},
+            {"text": "Spins freely, because the field has no direction along "
+                     "a line",
+             "correct": False,
+             "why": "It has a definite direction at every point, which is why "
+                    "the needle settles."},
+            {"text": "Points at the nearest pole all the way round",
+             "correct": False,
+             "why": "It follows the field, which curves away from the "
+                    "straight line to the pole."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-s06",
+        "band": "standard",
+        "text": "Where is a bar magnet's field strongest?",
+        "options": [            {"text": "Halfway along its side", "correct": False,
+             "why": "That is where the lines are furthest apart, so the field "
+                    "is weakest."},
+            {"text": "At the very centre, inside the magnet", "correct": False,
+             "why": "The question is about the field outside, and the poles "
+                    "are where it is most concentrated."},
+            {"text": "Everywhere equally, since it is one magnet",
+             "correct": False,
+             "why": "The map shows it varying a great deal from place to "
+                    "place."},
+            {"text": "Close to the two poles", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-s07",
+        "band": "standard",
+        "text": "Why can two field lines never cross?",
+        "options": [            {"text": "Because a compass there would have to point two ways at "
+                     "once",
+             "correct": True},
+            {"text": "Because the lines would break the magnet if they met",
+             "correct": False,
+             "why": "Lines are a drawing and cannot damage anything."},
+            {"text": "Because there is not enough room on the paper",
+             "correct": False,
+             "why": "A bigger sheet would not let them cross; the physics "
+                    "forbids it."},
+            {"text": "Because crossing lines would mean the field was zero "
+                     "there",
+             "correct": False,
+             "why": "A zero field is drawn as a gap in the lines, not as a "
+                    "crossing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-s08",
+        "band": "standard",
+        "text": "Two bar magnets are laid end to end with their NORTH poles "
+                "facing. What happens to the field between them?",
+        "options": [            {"text": "The two fields add, so it is very strong between them",
+             "correct": False,
+             "why": "They point towards each other there, so they oppose "
+                    "rather than add."},
+            {"text": "The lines cross between the two magnets",
+             "correct": False,
+             "why": "Lines never cross; where two fields cancel the map shows "
+                    "a gap instead."},
+            {"text": "The field disappears everywhere around both magnets",
+             "correct": False,
+             "why": "Each magnet's field is unchanged elsewhere; only between "
+                    "them do they cancel."},
+            {"text": "The two fields oppose, and somewhere between them they "
+                     "cancel",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-s09",
+        "band": "standard",
+        "text": "A field map is drawn with every arrowhead left off. What has "
+                "been lost?",
+        "options": [
+            {"text": "The shape of the field", "correct": False,
+             "why": "The shape is in the lines themselves, and it survives "
+                    "perfectly well."},
+            {"text": "Where the field is strong and where it is weak",
+             "correct": False,
+             "why": "That is shown by how crowded the lines are, which the "
+                    "arrowheads do not affect."},
+            {"text": "Which way round the field runs, so the poles cannot be "
+                     "told apart",
+             "correct": True},
+            {"text": "Nothing at all — arrowheads are decoration",
+             "correct": False,
+             "why": "They carry the direction, which is half of what a field "
+                    "map records."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-s10",
+        "band": "standard",
+        "text": "Why must a plotting compass be small?",
+        "options": [            {"text": "So that it records the field at one place rather than "
+                     "an average",
+             "correct": True},
+            {"text": "So that it is light enough to turn freely",
+             "correct": False,
+             "why": "A well-made large compass turns freely too; the reason "
+                    "is about where it samples."},
+            {"text": "So that it does not add its own field to the magnet's",
+             "correct": False,
+             "why": "It has a field of its own whatever its size, and that is "
+                    "not what limits it."},
+            {"text": "So that it fits between the iron filings",
+             "correct": False,
+             "why": "Filings and compasses are used separately, not at the "
+                    "same time."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-s11",
+        "band": "standard",
+        "text": "The same magnet is replaced with a much stronger one of the "
+                "same shape. How does the map change?",
+        "options": [
+            {"text": "The shape changes completely", "correct": False,
+             "why": "The pattern round a bar magnet is set by its shape, and "
+                    "that has not changed."},
+            {"text": "The lines run the other way round", "correct": False,
+             "why": "The poles are still at the same ends, so the direction "
+                    "is unchanged."},
+            {"text": "The same shape, but the lines are more crowded",
+             "correct": True},
+            {"text": "Nothing changes, because a map cannot show strength",
+             "correct": False,
+             "why": "Crowding is exactly how a map shows strength."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p10-02-h05",
+        "band": "harder",
+        "text": "A bar magnet is sealed inside a cardboard box. How could you "
+                "find its poles without opening the box?",
+        "options": [
+            {"text": "Weigh the box at each end and compare", "correct": False,
+             "why": "Mass tells you nothing about which end is which pole."},
+            {"text": "Shake the box and listen for which end it slides "
+                     "towards",
+             "correct": False,
+             "why": "Sliding depends on how it is packed, not on its "
+                    "magnetism."},
+            {"text": "Move a plotting compass round the outside and record "
+                     "the directions",
+             "correct": True},
+            {"text": "Sprinkle iron filings on the box and read the "
+                     "direction off",
+             "correct": False,
+             "why": "Filings show the shape but never which way round it "
+                    "runs, so the poles stay unidentified."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-h06",
+        "band": "harder",
+        "text": "Two bar magnets are laid side by side with both north poles "
+                "at the same end. What is the field like at that end?",
+        "options": [
+            {"text": "Stronger than either magnet on its own", "correct": True},
+            {"text": "Zero, because the two magnets cancel", "correct": False,
+             "why": "Cancelling needs the fields to point opposite ways, and "
+                    "here they point the same way."},
+            {"text": "The same as one magnet, because they are identical",
+             "correct": False,
+             "why": "Both contribute at every point, so the two add up."},
+            {"text": "Reversed, so that end behaves as a south pole",
+             "correct": False,
+             "why": "Nothing reverses a pole by putting another north beside "
+                    "it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-h07",
+        "band": "harder",
+        "text": "A student says the magnet must make extra lines at its ends, "
+                "because they are crowded there. What is right?",
+        "options": [            {"text": "The magnet does make more lines at the poles",
+             "correct": False,
+             "why": "There is no fixed stock of lines; a mapmaker chooses how "
+                    "many to draw."},
+            {"text": "The crowding is a mistake and the lines should be "
+                     "evenly spaced",
+             "correct": False,
+             "why": "Even spacing would hide the fact that the field is "
+                    "stronger near the poles."},
+            {"text": "The lines are real, and they gather at the poles",
+             "correct": False,
+             "why": "The field is real; the lines are our way of recording "
+                    "it."},
+            {"text": "The lines are a drawing, and crowding is how a map "
+                     "shows a strong field",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-h08",
+        "band": "harder",
+        "text": "A student's map shows a line leaving the north pole and "
+                "stopping in mid-air. What is wrong?",
+        "options": [            {"text": "The line should carry on round and enter the south "
+                     "pole",
+             "correct": True},
+            {"text": "Lines should always be straight", "correct": False,
+             "why": "They curve almost everywhere round a bar magnet, and "
+                    "that is correct."},
+            {"text": "The line should have gone into the north pole instead",
+             "correct": False,
+             "why": "Outside a magnet the lines leave the north; entering it "
+                    "would reverse the whole map."},
+            {"text": "Nothing is wrong — lines stop where the field runs out",
+             "correct": False,
+             "why": "The field fades but never stops abruptly, so a line "
+                    "ending in space is a drawing error."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-h09",
+        "band": "harder",
+        "text": "From a field map alone, how would you find where the field "
+                "is strongest?",
+        "options": [
+            {"text": "Look for where the lines are most crowded",
+             "correct": True},
+            {"text": "Look for where the lines are longest", "correct": False,
+             "why": "A field line has no length of its own; it is drawn as "
+                    "far as the mapmaker chooses."},
+            {"text": "Look for where the lines cross", "correct": False,
+             "why": "They never cross, so there is nothing to look for."},
+            {"text": "Look for where the arrowheads are largest",
+             "correct": False,
+             "why": "Arrowheads mark direction; their size is not part of the "
+                    "convention."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-h10",
+        "band": "harder",
+        "text": "Why do the field lines round a bar magnet spread out widely "
+                "at its sides?",
+        "options": [            {"text": "Because the magnet is thinner there", "correct": False,
+             "why": "The shape of the metal is not what sets the spacing; the "
+                    "strength of the field is."},
+            {"text": "Because the field points sideways there", "correct": False,
+             "why": "Which way it points is shown by the arrows, not by how "
+                    "far apart the lines are."},
+            {"text": "Because the lines are running out of room",
+             "correct": False,
+             "why": "There is more room at the sides, not less, and spacing "
+                    "records strength."},
+            {"text": "Because the field is weaker at the sides",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-02-h11",
+        "band": "harder",
+        "text": "Why is a plotting compass better than iron filings for "
+                "recording a field?",
+        "options": [            {"text": "Because a compass shows which way round the field runs, "
+                     "and filings do not",
+             "correct": True},
+            {"text": "Because filings are too heavy to be moved by a weak "
+                     "field",
+             "correct": False,
+             "why": "They line up readily; what they cannot show is the "
+                    "direction."},
+            {"text": "Because filings give the wrong shape", "correct": False,
+             "why": "They give the shape very well, which is why they are "
+                    "used at all."},
+            {"text": "Because a compass works without the magnet being "
+                     "present",
+             "correct": False,
+             "why": "It needs a field to line up with, just as the filings "
+                    "do."},
+        ],
+        "figure": None,
+    },
 ]

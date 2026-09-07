@@ -320,4 +320,385 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p10-05-e05",
+        "band": "easier",
+        "text": "A wire carrying a current in a magnetic field is pushed…",
+        "options": [
+            {"text": "along its own length", "correct": False,
+             "why": "The push is at right angles to the wire, not along it."},
+            {"text": "sideways, at right angles to both",
+             "correct": True},
+            {"text": "towards the nearest pole", "correct": False,
+             "why": "It is not attracted to a pole; the push is across both "
+                    "the current and the field."},
+            {"text": "nowhere — a wire is not magnetic", "correct": False,
+             "why": "The current makes a field of its own, and that is what "
+                    "the magnet's field acts on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-e06",
+        "band": "easier",
+        "text": "Reversing the current through a motor's coil, with the "
+                "magnets left alone, does what?",
+        "options": [
+            {"text": "Reverses the direction it turns", "correct": True},
+            {"text": "Makes it turn faster the same way", "correct": False,
+             "why": "Speed depends on how big the current is, not on which "
+                    "way it runs."},
+            {"text": "Stops it turning altogether", "correct": False,
+             "why": "A current is still flowing, so a push is still made — "
+                    "just the other way."},
+            {"text": "Makes no difference at all", "correct": False,
+             "why": "The direction of the push depends on the current's "
+                    "direction, so it changes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-e07",
+        "band": "easier",
+        "text": "In a motor, the two sides of the coil are pushed…",
+        "options": [
+            {"text": "the same way, so the coil slides sideways",
+             "correct": False,
+             "why": "The current runs opposite ways along the two sides, so "
+                    "the pushes are opposite too."},
+            {"text": "opposite ways, so the coil turns", "correct": True},
+            {"text": "towards each other, so the coil is squashed",
+             "correct": False,
+             "why": "The pushes are opposite in the sense that turns the "
+                    "coil, not that crushes it."},
+            {"text": "not at all, until the split ring acts", "correct": False,
+             "why": "The pushes are there from the first instant; the split "
+                    "ring only keeps them useful."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-e08",
+        "band": "easier",
+        "text": "What does a split-ring commutator do?",
+        "options": [
+            {"text": "It makes the coil turn in the first place",
+             "correct": False,
+             "why": "The forces on the two sides do the turning; the split "
+                    "ring only keeps them going the same way round."},
+            {"text": "It reverses the current every half turn",
+             "correct": True},
+            {"text": "It supplies the current to the magnets", "correct": False,
+             "why": "The magnets are permanent and need no current at all."},
+            {"text": "It stops the coil turning too fast", "correct": False,
+             "why": "It does not limit the speed; it keeps the turning effect "
+                    "pointing the same way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-e09",
+        "band": "easier",
+        "text": "A motor's magnets are turned round so the poles swap, and "
+                "nothing else is changed. What happens?",
+        "options": [
+            {"text": "It turns the other way", "correct": True},
+            {"text": "It turns faster the same way", "correct": False,
+             "why": "Swapping the poles changes the direction of the push, "
+                    "not its size."},
+            {"text": "It stops", "correct": False,
+             "why": "The field is as strong as before, so the coil is still "
+                    "pushed — just the other way."},
+            {"text": "It carries on exactly as before", "correct": False,
+             "why": "The push depends on the field's direction, and that has "
+                    "been reversed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-e10",
+        "band": "easier",
+        "text": "What has to flow through a motor's coil for it to turn?",
+        "options": [
+            {"text": "A magnetic field", "correct": False,
+             "why": "A field surrounds the coil; it is not something that "
+                    "flows through the wire."},
+            {"text": "An electric current", "correct": True},
+            {"text": "Air, through the gaps in the windings", "correct": False,
+             "why": "A motor works in a vacuum; nothing needs to pass through "
+                    "it."},
+            {"text": "Heat from the magnets", "correct": False,
+             "why": "The magnets supply a field, not warmth, and warmth would "
+                    "turn nothing."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p10-05-s05",
+        "band": "standard",
+        "text": "Both the current AND the magnets in a motor are reversed. "
+                "What happens?",
+        "options": [
+            {"text": "It turns the other way", "correct": False,
+             "why": "One reversal would do that; two of them put it back "
+                    "where it started."},
+            {"text": "It carries on turning the same way as before",
+             "correct": True},
+            {"text": "It stops, because the two reversals fight each other",
+             "correct": False,
+             "why": "Nothing fights: reversing twice returns the push to its "
+                    "original direction."},
+            {"text": "It turns twice as fast", "correct": False,
+             "why": "Neither change alters the size of the current or the "
+                    "field, so the speed is unchanged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-s06",
+        "band": "standard",
+        "text": "A motor is built with two plain rings instead of a split "
+                "ring. What happens when it is switched on?",
+        "options": [
+            {"text": "It runs normally, since the rings still carry the "
+                     "current",
+             "correct": False,
+             "why": "They do carry it, but they never reverse it, so the "
+                    "turning effect fights itself after half a turn."},
+            {"text": "It swings round and then rocks back and forth instead "
+                     "of turning",
+             "correct": True},
+            {"text": "It turns steadily but the other way round",
+             "correct": False,
+             "why": "The direction of the first push is unchanged; what fails "
+                    "is keeping it going."},
+            {"text": "Nothing happens at all", "correct": False,
+             "why": "The first half turn happens perfectly well; it is what "
+                    "comes after that fails."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-s07",
+        "band": "standard",
+        "text": "The current through a working motor is doubled and nothing "
+                "else changes. What happens to the turning effect?",
+        "options": [
+            {"text": "It halves", "correct": False,
+             "why": "A larger current makes a larger push, not a smaller "
+                    "one."},
+            {"text": "It gets bigger", "correct": True},
+            {"text": "It stays the same, because the magnets have not "
+                     "changed",
+             "correct": False,
+             "why": "The push depends on the current as well as the field, "
+                    "and the current has doubled."},
+            {"text": "It reverses", "correct": False,
+             "why": "Reversing needs the current's DIRECTION to change, not "
+                    "its size."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-s08",
+        "band": "standard",
+        "text": "A motor's coil is rewound with twenty turns instead of one, "
+                "with the same current and magnets. What happens?",
+        "options": [
+            {"text": "Nothing changes, because the current is the same",
+             "correct": False,
+             "why": "Each turn is pushed, so twenty turns give about twenty "
+                    "times the turning effect."},
+            {"text": "The turning effect is much greater", "correct": True},
+            {"text": "It turns the other way", "correct": False,
+             "why": "Adding turns does not reverse anything; the direction is "
+                    "set by the current and the field."},
+            {"text": "It stops, because the extra wire blocks the current",
+             "correct": False,
+             "why": "The current still flows; more wire raises the resistance "
+                    "a little, and no more."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-s09",
+        "band": "standard",
+        "text": "A motor's copper coil is replaced with an identical "
+                "aluminium one. Does it still turn?",
+        "options": [
+            {"text": "No, because aluminium is not magnetic", "correct": False,
+             "why": "The wire does not need to be magnetic; it needs to carry "
+                    "a current."},
+            {"text": "Yes, because what matters is that a current flows",
+             "correct": True},
+            {"text": "No, because aluminium cannot carry a current",
+             "correct": False,
+             "why": "Aluminium conducts well and is used for power cables."},
+            {"text": "Yes, but it turns the other way", "correct": False,
+             "why": "Changing the metal does not change which way the current "
+                    "runs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-s10",
+        "band": "standard",
+        "text": "A current-carrying wire lies exactly along the field "
+                "direction between two poles. What force acts on it?",
+        "options": [
+            {"text": "The largest force possible", "correct": False,
+             "why": "The push is largest when the wire is at right angles to "
+                    "the field, not along it."},
+            {"text": "A force along the wire, pushing it out", "correct": False,
+             "why": "The push is never along the wire; it is at right angles "
+                    "to it."},
+            {"text": "None at all", "correct": True},
+            {"text": "A force towards the north pole", "correct": False,
+             "why": "The wire is not attracted to a pole; the push depends on "
+                    "how the current crosses the field."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p10-05-h05",
+        "band": "harder",
+        "text": "A single-coil motor is held with its coil exactly upright "
+                "and released with the current on. What happens?",
+        "options": [
+            {"text": "It accelerates away at once, as it would from any "
+                     "position",
+             "correct": False,
+             "why": "In that one position the two pushes act straight along "
+                    "the coil and give no turning effect."},
+            {"text": "It may not start, because there is no turning effect in "
+                     "that position",
+             "correct": True},
+            {"text": "It turns the other way from usual", "correct": False,
+             "why": "Nothing has reversed; the difficulty is that nothing "
+                    "turns it at all."},
+            {"text": "It burns out immediately", "correct": False,
+             "why": "It draws its usual current; standing still is not the "
+                    "same as a fault."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-h06",
+        "band": "harder",
+        "text": "Why does a motor need the current reversed every half turn?",
+        "options": [
+            {"text": "Because the current would otherwise run out",
+             "correct": False,
+             "why": "The supply keeps delivering it; nothing runs out."},
+            {"text": "Because after half a turn the sides have swapped over",
+             "correct": True},
+            {"text": "Because the magnets swap poles as the coil turns",
+             "correct": False,
+             "why": "The magnets are fixed and never change; it is the coil "
+                    "that moves."},
+            {"text": "Because the coil would otherwise overheat",
+             "correct": False,
+             "why": "Heating depends on the current's size, not on its "
+                    "direction."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-h07",
+        "band": "harder",
+        "text": "A cordless drill has a forward and reverse switch, and its "
+                "magnets cannot be moved. What must the switch do?",
+        "options": [
+            {"text": "Swap the magnets over inside the casing",
+             "correct": False,
+             "why": "The question says they cannot be moved, and no switch "
+                    "could turn a fixed magnet round."},
+            {"text": "Reverse the current fed into the motor", "correct": True},
+            {"text": "Slow the motor until it turns the other way",
+             "correct": False,
+             "why": "Slowing never reverses a direction; it only reduces the "
+                    "speed."},
+            {"text": "Disconnect the split ring", "correct": False,
+             "why": "Without the split ring the motor would rock rather than "
+                    "run backwards."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-h08",
+        "band": "harder",
+        "text": "In a loudspeaker a coil sits in a magnet's field and the "
+                "current through it changes direction thousands of times a "
+                "second. What does the coil do?",
+        "options": [
+            {"text": "Spins round faster and faster", "correct": False,
+             "why": "It is not free to spin; each reversal pushes it back the "
+                    "other way."},
+            {"text": "Moves back and forth, pushing the air", "correct": True},
+            {"text": "Stays still, because the reversals cancel out",
+             "correct": False,
+             "why": "They do not cancel — each one drives it the other way, "
+                    "which is the movement."},
+            {"text": "Heats up until the cone melts", "correct": False,
+             "why": "It warms a little, but the useful effect is the "
+                    "movement it makes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-h09",
+        "band": "harder",
+        "text": "A student says the coil is pulled round because the magnets "
+                "attract it. What is right?",
+        "options": [
+            {"text": "They are right — the coil is iron and is attracted",
+             "correct": False,
+             "why": "The coil is usually copper, which is not magnetic at "
+                    "all."},
+            {"text": "The coil is pushed sideways because a current in a "
+                     "field feels a force",
+             "correct": True},
+            {"text": "The coil is repelled by both magnets equally",
+             "correct": False,
+             "why": "Neither attraction nor repulsion of the metal is "
+                    "involved; the current is what matters."},
+            {"text": "The magnets attract it only while the split ring is "
+                     "closed",
+             "correct": False,
+             "why": "The split ring switches the current; it does not turn an "
+                    "attraction on and off."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-05-h10",
+        "band": "harder",
+        "text": "On a motor diagram the two force arrows are drawn the same "
+                "length as each other whatever the current is. Why?",
+        "options": [
+            {"text": "Because the arrows are decorative and their length "
+                     "means nothing",
+             "correct": False,
+             "why": "Arrow length is meaningful; the point is that these two "
+                    "forces really are equal."},
+            {"text": "Because the same current runs through both sides in the "
+                     "same field",
+             "correct": True},
+            {"text": "Because one side is always stronger and the diagram "
+                     "simplifies it",
+             "correct": False,
+             "why": "Neither side is stronger; the equality is real rather "
+                    "than a simplification."},
+            {"text": "Because the split ring makes them equal", "correct": False,
+             "why": "The split ring reverses the current; it does not balance "
+                    "two forces."},
+        ],
+        "figure": None,
+    },
 ]

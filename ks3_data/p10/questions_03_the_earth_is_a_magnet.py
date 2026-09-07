@@ -327,4 +327,397 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p10-03-e05",
+        "band": "easier",
+        "text": "The magnetic pole in the Arctic is a magnetic…",
+        "options": [            {"text": "north pole", "correct": False,
+             "why": "The needle's north-seeking end turns towards it, and "
+                    "unlike poles attract — so it must be a south pole."},
+            {"text": "north pole in summer and south in winter",
+             "correct": False,
+             "why": "It drifts slowly over years, but it does not swap "
+                    "with the seasons."},
+            {"text": "neither, because the Earth has no poles",
+             "correct": False,
+             "why": "The Earth has a field shaped like a bar magnet's, with "
+                    "two magnetic poles."},
+            {"text": "south pole", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-e06",
+        "band": "easier",
+        "text": "The Earth's magnetic field is produced by…",
+        "options": [            {"text": "moving liquid iron in the core", "correct": True},
+            {"text": "a huge bar magnet buried in the core", "correct": False,
+             "why": "The core is far too hot to stay magnetised, so no solid "
+                    "magnet could survive there."},
+            {"text": "the Earth's spin alone", "correct": False,
+             "why": "Spin helps stir the core, but the field comes from the "
+                    "moving iron and its currents."},
+            {"text": "iron ore near the surface", "correct": False,
+             "why": "Surface rocks can nudge a compass locally, but the "
+                    "planet-wide field comes from far deeper."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-e07",
+        "band": "easier",
+        "text": "Does a compass needle point exactly at true north?",
+        "options": [
+            {"text": "Yes, everywhere on Earth", "correct": False,
+             "why": "The magnetic pole is some way from the geographic one, "
+                    "so the two rarely agree."},
+            {"text": "Yes, but only in Britain", "correct": False,
+             "why": "Britain has a declination of its own; nowhere is exempt "
+                    "by default."},
+            {"text": "No — it lines up with the magnetic field instead",
+             "correct": True},
+            {"text": "No — it points at whatever iron is nearest",
+             "correct": False,
+             "why": "Nearby iron does disturb it, but out in the open it "
+                    "follows the Earth's own field."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-e08",
+        "band": "easier",
+        "text": "A compass needle is…",
+        "options": [
+            {"text": "a small magnet, free to turn", "correct": True},
+            {"text": "a piece of plain steel with no poles", "correct": False,
+             "why": "Plain steel would be attracted both ways and could not "
+                    "settle pointing one way."},
+            {"text": "a piece of copper wire", "correct": False,
+             "why": "Copper is not magnetic and would be unaffected by the "
+                    "Earth's field."},
+            {"text": "an electromagnet powered by the Earth", "correct": False,
+             "why": "No current runs through it; it is a permanent magnet."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-e09",
+        "band": "easier",
+        "text": "Why does a compass needle settle in one direction rather "
+                "than spinning?",
+        "options": [            {"text": "Because friction on the pivot stops it", "correct": False,
+             "why": "Friction slows it down, but something has to turn it to "
+                    "one particular direction first."},
+            {"text": "Because it is heavier at one end", "correct": False,
+             "why": "It is balanced on its pivot; weight would tip it, not "
+                    "aim it north."},
+            {"text": "Because the Earth's spin drags it round", "correct": False,
+             "why": "Spin does not act on a needle; the magnetic field "
+                    "does."},
+            {"text": "Because it lines up with the Earth's magnetic field",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-e10",
+        "band": "easier",
+        "text": "Does the Earth's magnetic pole stay in the same place?",
+        "options": [
+            {"text": "Yes, it has never moved", "correct": False,
+             "why": "It has moved hundreds of kilometres within living "
+                    "memory, which is why maps carry a date."},
+            {"text": "Yes, because it is fixed to the spin axis",
+             "correct": False,
+             "why": "It is tilted away from the spin axis and is not attached "
+                    "to it."},
+            {"text": "No — it drifts, which is why a bearing needs a date",
+             "correct": True},
+            {"text": "No — it moves back and forth every day",
+             "correct": False,
+             "why": "The drift is slow, over years, not something that "
+                    "happens daily."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p10-03-s05",
+        "band": "standard",
+        "text": "Why does the north-seeking end of a needle turn towards the "
+                "Arctic?",
+        "options": [            {"text": "Because a magnetic south pole lies that way, and unlike "
+                     "poles attract",
+             "correct": True},
+            {"text": "Because it is attracted to the geographic North Pole",
+             "correct": False,
+             "why": "Geography does not attract anything; the magnetic pole "
+                    "is elsewhere and is what acts on it."},
+            {"text": "Because a magnetic north pole lies that way, and like "
+                     "poles attract",
+             "correct": False,
+             "why": "Like poles repel, so a north pole up there would push "
+                    "the needle away."},
+            {"text": "Because the Earth spins that way", "correct": False,
+             "why": "Spin has nothing to do with which way a magnet points."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-s06",
+        "band": "standard",
+        "text": "Why is a compass unreliable on a bench covered in steel "
+                "clamp stands?",
+        "options": [            {"text": "Because steel blocks the Earth's field completely",
+             "correct": False,
+             "why": "It does not block it; it adds a field of its own that "
+                    "the needle also responds to."},
+            {"text": "Because a compass only works out of doors",
+             "correct": False,
+             "why": "It works indoors perfectly well, away from iron and "
+                    "steel."},
+            {"text": "Because steel makes the needle heavier", "correct": False,
+             "why": "Nothing is added to the needle; it is the field around "
+                    "it that has changed."},
+            {"text": "Because the needle lines up with the steel's field as "
+                     "well",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-s07",
+        "band": "standard",
+        "text": "A walker follows a bearing from a map printed forty years "
+                "ago and drifts off course. Why?",
+        "options": [
+            {"text": "Because the magnetic pole has moved since the map was "
+                     "printed",
+             "correct": True},
+            {"text": "Because the ground has shifted since the map was made",
+             "correct": False,
+             "why": "The landscape has barely changed; it is the magnetic "
+                    "direction that has."},
+            {"text": "Because compasses get weaker with age", "correct": False,
+             "why": "The walker's compass is modern, and the map is what is "
+                    "out of date."},
+            {"text": "Because the Earth's spin has slowed since then",
+             "correct": False,
+             "why": "The tiny change in spin has no effect on a bearing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-s08",
+        "band": "standard",
+        "text": "Why can there be no solid bar magnet inside the Earth's "
+                "core?",
+        "options": [
+            {"text": "Because the core is liquid all the way through",
+             "correct": False,
+             "why": "The inner core is solid; it is the temperature that "
+                    "rules a permanent magnet out."},
+            {"text": "Because iron is not magnetic at that depth",
+             "correct": False,
+             "why": "Iron is magnetic wherever it is cool enough; heat is "
+                    "what destroys the alignment."},
+            {"text": "Because the core is far too hot to stay magnetised",
+             "correct": True},
+            {"text": "Because the pressure would crush any magnet",
+             "correct": False,
+             "why": "Pressure does not remove magnetism; temperature does."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-s09",
+        "band": "standard",
+        "text": "A compass is carried into a lift with steel walls. What "
+                "happens to the reading?",
+        "options": [            {"text": "It is disturbed, because the steel changes the field "
+                     "around the needle",
+             "correct": True},
+            {"text": "It becomes more accurate, because the steel focuses the "
+                     "field",
+             "correct": False,
+             "why": "Steel disturbs the field around the needle rather than "
+                    "sharpening it."},
+            {"text": "Nothing changes, because steel is not magnetic",
+             "correct": False,
+             "why": "Steel is one of the magnetic materials, which is exactly "
+                    "why it interferes."},
+            {"text": "The needle spins continuously", "correct": False,
+             "why": "It still settles; it simply settles pointing the wrong "
+                    "way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-s10",
+        "band": "standard",
+        "text": "What does a magnetic bearing need alongside it to be worth "
+                "trusting?",
+        "options": [
+            {"text": "The temperature at the time it was taken",
+             "correct": False,
+             "why": "Temperature does not shift a compass bearing "
+                    "measurably."},
+            {"text": "The height above sea level", "correct": False,
+             "why": "Altitude makes no practical difference to the direction "
+                    "the needle takes."},
+            {"text": "A declination and the date it applies to", "correct": True},
+            {"text": "The make of compass used", "correct": False,
+             "why": "Any well-made compass gives the same reading in the same "
+                    "place."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p10-03-h05",
+        "band": "harder",
+        "text": "Why is a compass of little use very close to the magnetic "
+                "pole?",
+        "options": [            {"text": "Because the field there is too strong and the needle "
+                     "sticks",
+             "correct": False,
+             "why": "A strong field would make it settle more firmly, not "
+                    "less."},
+            {"text": "Because the pole moves too fast to follow",
+             "correct": False,
+             "why": "It drifts over years, far too slowly to matter on a "
+                    "single flight."},
+            {"text": "Because the field disappears at the pole itself",
+             "correct": False,
+             "why": "It is at its strongest there; the problem is its "
+                    "direction, not its size."},
+            {"text": "Because the field points almost straight down, leaving "
+                     "little to turn a flat needle",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-h06",
+        "band": "harder",
+        "text": "A student says the Earth's field must come from a magnet, "
+                "because it is shaped like one. What is right?",
+        "options": [            {"text": "The shape is the same, but moving currents in the "
+                     "liquid core make it",
+             "correct": True},
+            {"text": "They are right — only a magnet can make that shape",
+             "correct": False,
+             "why": "A coil of wire carrying a current makes the same shape, "
+                    "with no magnet anywhere."},
+            {"text": "The shape is different from a bar magnet's, so the "
+                     "claim fails at once",
+             "correct": False,
+             "why": "The shape really is very close, which is what makes the "
+                    "argument tempting."},
+            {"text": "The Earth's field has no shape that can be mapped",
+             "correct": False,
+             "why": "It is mapped in detail all over the world, and used for "
+                    "navigation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-h07",
+        "band": "harder",
+        "text": "Two compasses, one in Britain and one in New Zealand, both "
+                "settle and both are said to point north. Are they parallel?",
+        "options": [            {"text": "Yes — north is one fixed direction everywhere",
+             "correct": False,
+             "why": "The field curves round the planet, so two needles on "
+                    "opposite sides are not parallel at all."},
+            {"text": "Yes, provided both are the same make", "correct": False,
+             "why": "The make is irrelevant; the shape of the Earth's field "
+                    "is what settles it."},
+            {"text": "No — the New Zealand one points south instead",
+             "correct": False,
+             "why": "Its north-seeking end still turns towards the Arctic "
+                    "magnetic pole, as every compass does."},
+            {"text": "No — each lines up with the curving field where it is",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-h08",
+        "band": "harder",
+        "text": "Rocks on the sea floor record the Earth's field frozen in as "
+                "they cooled, and stripes of it run in opposite directions. "
+                "What does that show?",
+        "options": [
+            {"text": "That the rocks were laid down by two different volcanoes",
+             "correct": False,
+             "why": "The stripes are symmetrical and repeat, which no pair of "
+                    "sources would produce."},
+            {"text": "That the Earth's field has reversed direction in the "
+                     "past",
+             "correct": True},
+            {"text": "That the compass was invented after the rocks formed",
+             "correct": False,
+             "why": "The rocks record the field whether or not anyone was "
+                    "measuring it."},
+            {"text": "That the rocks have been turned over since they formed",
+             "correct": False,
+             "why": "Whole stripes of ocean floor have not been flipped; the "
+                    "field itself changed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-h09",
+        "band": "harder",
+        "text": "Why does a freely hung needle tip downwards at one end in "
+                "Britain and the other end in New Zealand?",
+        "options": [
+            {"text": "Because gravity pulls harder at higher latitudes",
+             "correct": False,
+             "why": "The tiny change in gravity would tip both ends the same "
+                    "way, not opposite ways."},
+            {"text": "Because the field runs into the ground in one "
+                     "hemisphere and out the other",
+             "correct": True},
+            {"text": "Because the needle is made differently in each country",
+             "correct": False,
+             "why": "The same needle carried between them behaves this way, "
+                    "so it is not the instrument."},
+            {"text": "Because the Earth spins the other way in the southern "
+                     "hemisphere",
+             "correct": False,
+             "why": "The Earth spins one way; only the appearance from the "
+                    "ground differs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-03-h10",
+        "band": "harder",
+        "text": "A ship's compass sits between two large iron spheres bolted "
+                "either side of it. What are they for?",
+        "options": [
+            {"text": "To make the compass heavier so it does not swing in a "
+                     "storm",
+             "correct": False,
+             "why": "Damping the swing is done in the compass bowl, not with "
+                    "iron spheres outside it."},
+            {"text": "To shield the compass from the Earth's field entirely",
+             "correct": False,
+             "why": "Shielding it would leave nothing for the needle to line "
+                    "up with."},
+            {"text": "To cancel the effect of the ship's own steel hull",
+             "correct": True},
+            {"text": "To make the Earth's field stronger at the needle",
+             "correct": False,
+             "why": "Nothing can strengthen the Earth's own field; the "
+                    "spheres correct a local disturbance."},
+        ],
+        "figure": None,
+    },
 ]

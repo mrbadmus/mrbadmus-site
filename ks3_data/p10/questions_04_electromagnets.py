@@ -320,4 +320,402 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p10-04-e05",
+        "band": "easier",
+        "text": "What makes a magnetic field around a wire?",
+        "options": [
+            {"text": "A current flowing through it", "correct": True},
+            {"text": "The wire being made of copper", "correct": False,
+             "why": "Copper is not magnetic; the field appears only when a "
+                    "current runs."},
+            {"text": "The wire being coiled up", "correct": False,
+             "why": "Coiling concentrates the field, but a current is what "
+                    "creates it in the first place."},
+            {"text": "The wire being connected to earth", "correct": False,
+             "why": "Earthing is about charge escaping and makes no field of "
+                    "its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e06",
+        "band": "easier",
+        "text": "Which of these makes an electromagnet stronger?",
+        "options": [
+            {"text": "Using fewer turns of wire", "correct": False,
+             "why": "Fewer turns means fewer fields adding together, so it "
+                    "gets weaker."},
+            {"text": "Using a smaller current", "correct": False,
+             "why": "A smaller current makes a weaker field, not a stronger "
+                    "one."},
+            {"text": "Putting a soft iron core down the middle",
+             "correct": True},
+            {"text": "Replacing the iron core with a plastic one",
+             "correct": False,
+             "why": "Plastic is not magnetic, so it multiplies nothing — it "
+                    "is no better than empty space."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e07",
+        "band": "easier",
+        "text": "What happens to an electromagnet's magnetism when the "
+                "current is switched off?",
+        "options": [
+            {"text": "It fades away over several minutes", "correct": False,
+             "why": "With a soft iron core it stops at the same instant the "
+                    "current does."},
+            {"text": "It goes completely, at once", "correct": True},
+            {"text": "It stays, because the core has been magnetised for "
+                     "good",
+             "correct": False,
+             "why": "Soft iron is chosen precisely because it lets go the "
+                    "moment the current stops."},
+            {"text": "It reverses and becomes the other way round",
+             "correct": False,
+             "why": "Reversing needs the current to run the other way, not to "
+                    "stop."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e08",
+        "band": "easier",
+        "text": "Reversing the current through an electromagnet…",
+        "options": [
+            {"text": "swaps its north and south ends", "correct": True},
+            {"text": "makes it stronger", "correct": False,
+             "why": "The size of the current sets the strength; its direction "
+                    "sets which end is which."},
+            {"text": "switches it off completely", "correct": False,
+             "why": "A current is still flowing, so a field is still made."},
+            {"text": "makes no difference at all", "correct": False,
+             "why": "A compass held nearby swings right round, which shows it "
+                    "makes a large difference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e09",
+        "band": "easier",
+        "text": "Why is soft iron used for an electromagnet's core rather "
+                "than hardened steel?",
+        "options": [
+            {"text": "Because soft iron is cheaper", "correct": False,
+             "why": "Cost is not the reason; what matters is what happens "
+                    "when the current stops."},
+            {"text": "Because soft iron lets go of its magnetism at "
+                     "switch-off",
+             "correct": True},
+            {"text": "Because hardened steel is not magnetic at all",
+             "correct": False,
+             "why": "Steel is magnetic — too much so, since it keeps its "
+                    "magnetism afterwards."},
+            {"text": "Because soft iron carries the current better",
+             "correct": False,
+             "why": "The current runs in the coil, not through the core."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e10",
+        "band": "easier",
+        "text": "The field outside a coil carrying a current has the same "
+                "shape as the field of…",
+        "options": [
+            {"text": "a single straight wire", "correct": False,
+             "why": "A straight wire's field is a set of circles round it, "
+                    "which is a different shape."},
+            {"text": "a bar magnet", "correct": True},
+            {"text": "the Earth's core", "correct": False,
+             "why": "That is itself bar-magnet shaped, but the coil's field "
+                    "is described directly by the bar magnet."},
+            {"text": "no magnet at all — a coil's field has no shape",
+             "correct": False,
+             "why": "It has a clear shape, with a north end and a south end "
+                    "like any magnet."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p10-04-s05",
+        "band": "standard",
+        "text": "An electromagnet holds six paper clips. The current is "
+                "doubled and nothing else is changed. What happens?",
+        "options": [
+            {"text": "It holds fewer clips, because the coil warms up",
+             "correct": False,
+             "why": "It does warm, but a larger current makes a stronger "
+                    "field and holds more."},
+            {"text": "It holds about the same, because the number of turns "
+                     "has not changed",
+             "correct": False,
+             "why": "Turns and current both matter, and the current has "
+                    "changed."},
+            {"text": "It holds more clips than before", "correct": True},
+            {"text": "It lets all the clips go, because the field reverses",
+             "correct": False,
+             "why": "Reversing needs the current to change DIRECTION, not to "
+                    "grow."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s06",
+        "band": "standard",
+        "text": "A coil with an iron core lifts a chain of clips. The core is "
+                "pulled out while the current still flows. What happens?",
+        "options": [
+            {"text": "Nothing changes, because the coil makes the field",
+             "correct": False,
+             "why": "The coil does make it, and the core multiplies it many "
+                    "times over."},
+            {"text": "The field disappears completely", "correct": False,
+             "why": "The coil alone still makes a field — just a much weaker "
+                    "one."},
+            {"text": "The field gets much weaker, and most of the clips fall",
+             "correct": True},
+            {"text": "The field reverses and the clips are pushed away",
+             "correct": False,
+             "why": "Nothing about removing the core changes which way the "
+                    "current runs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s07",
+        "band": "standard",
+        "text": "Why does a scrapyard crane use an electromagnet rather than "
+                "a very strong permanent magnet?",
+        "options": [
+            {"text": "Because an electromagnet is stronger than any permanent "
+                     "magnet can be",
+             "correct": False,
+             "why": "Strength is not the point; being able to let go is."},
+            {"text": "Because it can be switched off to drop the load",
+             "correct": True},
+            {"text": "Because a permanent magnet would attract aluminium too",
+             "correct": False,
+             "why": "Neither attracts aluminium; both act only on magnetic "
+                    "materials."},
+            {"text": "Because an electromagnet works without any current",
+             "correct": False,
+             "why": "It works only WITH a current, which is exactly what lets "
+                    "it be turned off."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s08",
+        "band": "standard",
+        "text": "Two coils are identical except that one is wound on a soft "
+                "iron rod and the other on a wooden one. Which is stronger?",
+        "options": [
+            {"text": "The wooden one, because wood does not resist the field",
+             "correct": False,
+             "why": "Wood does nothing at all; it behaves like empty space."},
+            {"text": "The same, because the coils are identical",
+             "correct": False,
+             "why": "The coils are, but the core is part of what makes the "
+                    "magnet."},
+            {"text": "The iron one, by a large margin", "correct": True},
+            {"text": "The iron one, but only very slightly", "correct": False,
+             "why": "A soft iron core multiplies the field many times over, "
+                    "which is a very large difference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s09",
+        "band": "standard",
+        "text": "Which change would NOT make an electromagnet stronger?",
+        "options": [
+            {"text": "Adding more turns of wire", "correct": False,
+             "why": "More turns means more fields adding together, so it gets "
+                    "stronger."},
+            {"text": "Increasing the current", "correct": False,
+             "why": "A larger current makes a stronger field."},
+            {"text": "Fitting a soft iron core", "correct": False,
+             "why": "The core multiplies the field many times over."},
+            {"text": "Painting the coil a different colour", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s10",
+        "band": "standard",
+        "text": "A compass is held near the end of a working electromagnet "
+                "and settles pointing at it. The current is then reversed. "
+                "What does the compass do?",
+        "options": [
+            {"text": "Turns right round to point the other way",
+             "correct": True},
+            {"text": "Stays exactly as it was", "correct": False,
+             "why": "The ends have swapped, so the needle must swing round to "
+                    "match."},
+            {"text": "Spins continuously while the current flows",
+             "correct": False,
+             "why": "It settles again in the new direction, just as it did in "
+                    "the old one."},
+            {"text": "Stops responding, because the field has been cancelled",
+             "correct": False,
+             "why": "The field is as strong as before; only its direction has "
+                    "changed."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p10-04-h05",
+        "band": "harder",
+        "text": "A student says adding turns helps because more wire carries "
+                "more current. What is wrong?",
+        "options": [
+            {"text": "Nothing — more wire really does carry more current",
+             "correct": False,
+             "why": "Adding wire raises the resistance, so if anything the "
+                    "current falls."},
+            {"text": "More wire lowers the current slightly; the gain is the "
+                     "extra turns",
+             "correct": True},
+            {"text": "Adding turns makes no difference to the strength at "
+                     "all",
+             "correct": False,
+             "why": "It makes a large difference — the fields of the turns "
+                    "add up."},
+            {"text": "Adding turns weakens the magnet, so the student has it "
+                     "backwards",
+             "correct": False,
+             "why": "It strengthens it; the student's ANSWER is right and "
+                    "their reason is not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h06",
+        "band": "harder",
+        "text": "An electromagnet is built with a hardened steel core by "
+                "mistake. It lifts a load, and the current is switched off. "
+                "What happens?",
+        "options": [
+            {"text": "The load drops at once, as it would with iron",
+             "correct": False,
+             "why": "Hardened steel keeps its magnetism, so it does not let "
+                    "go cleanly."},
+            {"text": "Some of the load stays stuck, because the steel keeps "
+                     "its magnetism",
+             "correct": True},
+            {"text": "Nothing was lifted in the first place, since steel "
+                     "cannot be a core",
+             "correct": False,
+             "why": "Steel is magnetic and works as a core; the problem comes "
+                    "at switch-off."},
+            {"text": "The load is pushed away as the field reverses",
+             "correct": False,
+             "why": "Switching off does not reverse anything; it simply stops "
+                    "driving the field."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h07",
+        "band": "harder",
+        "text": "Electromagnet A has 40 turns and 2.0 A. Electromagnet B has "
+                "80 turns and 1.0 A. Their cores are identical. What would "
+                "you expect?",
+        "options": [
+            {"text": "A is much stronger, because its current is larger",
+             "correct": False,
+             "why": "B has twice the turns, which compensates for its smaller "
+                    "current."},
+            {"text": "B is much stronger, because it has more turns",
+             "correct": False,
+             "why": "A has twice the current, which compensates for its "
+                    "smaller number of turns."},
+            {"text": "They are close to each other in strength",
+             "correct": True},
+            {"text": "Neither works, because the currents differ",
+             "correct": False,
+             "why": "Both work perfectly well; the question is how their "
+                    "strengths compare."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h08",
+        "band": "harder",
+        "text": "A fire door is held open by an electromagnet and closes when "
+                "the alarm sounds. Why is that safer than a mechanical "
+                "catch?",
+        "options": [
+            {"text": "Because an electromagnet is stronger than a catch",
+             "correct": False,
+             "why": "Strength is not the safety argument; what happens on a "
+                    "power failure is."},
+            {"text": "Because losing power releases the door rather than "
+                     "jamming it",
+             "correct": True},
+            {"text": "Because a catch cannot hold a fire door open at all",
+             "correct": False,
+             "why": "A catch holds it perfectly well — until someone has to "
+                    "release it."},
+            {"text": "Because the magnet detects smoke directly",
+             "correct": False,
+             "why": "The alarm detects the smoke; the magnet only lets go "
+                    "when its current stops."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h09",
+        "band": "harder",
+        "text": "In an electric bell the coil pulls an iron arm across, and "
+                "moving the arm breaks the circuit. What happens next?",
+        "options": [
+            {"text": "The bell stops for good, because the circuit is broken",
+             "correct": False,
+             "why": "The arm springs back, which remakes the circuit, and the "
+                    "cycle repeats."},
+            {"text": "The field goes, the arm springs back, the circuit is "
+                     "remade, and it repeats",
+             "correct": True},
+            {"text": "The arm stays across, because the iron keeps its "
+                     "magnetism",
+             "correct": False,
+             "why": "The core is soft iron, chosen so it lets go the moment "
+                    "the current stops."},
+            {"text": "The current reverses and the arm is pushed the other "
+                     "way",
+             "correct": False,
+             "why": "Breaking a circuit stops the current; it does not turn "
+                    "it round."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h10",
+        "band": "harder",
+        "text": "Name one thing an electromagnet can do that no permanent "
+                "magnet can.",
+        "options": [
+            {"text": "Attract iron and steel", "correct": False,
+             "why": "Any magnet does that; it is not what separates the "
+                    "two."},
+            {"text": "Have a north end and a south end", "correct": False,
+             "why": "Both have two ends, and neither can have just one."},
+            {"text": "Have its strength and poles changed by a switch",
+             "correct": True},
+            {"text": "Act across a gap without touching", "correct": False,
+             "why": "Every magnet acts across a gap; that is what a field "
+                    "means."},
+        ],
+        "figure": None,
+    },
 ]

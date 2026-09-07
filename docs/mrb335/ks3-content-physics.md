@@ -406,6 +406,41 @@ P9 went from 16 / 68 / 34 / 2 to **29 / 31 / 31 / 29**.
 
 ---
 
+## P10 · Magnetism — 5 lessons, 96 new rows (32 per band)
+
+Unit total: **52 / 52 / 52**. Seven per band on lessons 01–02, six per band on
+03–05.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 magnets and poles | e05–e11, s05–s11, h05–h11 |
+| 02 magnetic fields | e05–e11, s05–s11, h05–h11 |
+| 03 the Earth is a magnet | e05–e10, s05–s10, h05–h10 |
+| 04 electromagnets | e05–e10, s05–s10, h05–h10 |
+| 05 how a motor works | e05–e10, s05–s10, h05–h10 |
+
+Lesson 01 repeats the P9 discipline in a new setting: **attraction proves
+nothing, repulsion proves everything** (`e09`, `s05`, `s09`), and the reason is
+given its own row — the magnet magnetises the bar first, so the near end always
+comes out opposite (`h07`). Lesson 02 keeps insisting that the LINES are a
+drawing and the FIELD is real: there is a field between two drawn lines
+(`e08`), crowding is how a map shows strength rather than extra lines the
+magnet makes (`h07`), and filings show the shape but never which way round it
+runs (`e10`, `h11`).
+
+Lesson 04's rows separate the coil's contribution from the core's, since the
+lesson names both confusions: pulling the core out while the current still runs
+(`s06`), and the "more wire carries more current" reasoning that reaches the
+right answer by the wrong route (`h05`). Lesson 05 turns on the two reversals —
+one changes the direction, two put it back (`s05`) — and on what the split ring
+is actually for (`e08`, `h06`).
+
+**Review fixes.** Seventeen length flags reworded. The correct answer had again
+clustered badly — 12 / 57 / 25 / 2 across the 96 rows — and `phys_rebalance.py`
+moved 32 of them to give **23 / 25 / 25 / 23**.
+
+---
+
 ## ⚠️ `git add` was scoped correctly and a commit still swept in another lane
 
 Found by the commander in this lane's **P5 commit `586aaa0c4`**, which carried
