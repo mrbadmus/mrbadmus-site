@@ -453,6 +453,30 @@ GATES = [
              "and that hash/rng have exactly two callers each — the "
              "declaration and Design's confetti."),
 
+    dict(name="week_truth",
+         cmd=["python3", "verify_week_truth.py"],
+         speed="fast",
+         needs_env="MRB_BACKEND",
+         why="⊕ MRB-330 — ONE WEEK, agreed on by every surface that names it. "
+             "The product had TWO definitions of \"this week\" and neither knew "
+             "about the other: the backend composed and served work by one, the "
+             "teacher's week bar and the digest drew the other. On Sunday 6 "
+             "September 2026 they disagreed by exactly one week, and the "
+             "disagreement reached a child as \"LATE · 3 DAYS LATE\" on the first "
+             "thing she had ever opened (MRB-329 F1/F2/F6). Fixing the "
+             "arithmetic in four places does not stop that happening again — "
+             "the four implementations are still four. This holds them against "
+             "each other across a whole academic year, for every weekday a year "
+             "could open on, and fails if they EVER disagree. "
+             "⚠️ needs_env=MRB_BACKEND ON PURPOSE, and the reason is visible in "
+             "the gate beside it: `pool_ownership` hardcodes the sibling backend "
+             "checkout, and is red right now because that checkout is sitting on "
+             "another session's feature branch rather than on the code that is "
+             "deployed. A gate that silently compares against whatever branch "
+             "somebody left checked out proves nothing about what a child is "
+             "served, so this one refuses to guess and must be TOLD which "
+             "backend is authoritative."),
+
     dict(name="leaderboard_seam",
          cmd=["python3", "leaderboard_seam.py"],
          speed="fast",

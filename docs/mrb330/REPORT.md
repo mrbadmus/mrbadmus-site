@@ -606,7 +606,36 @@ the whole set is recorded once more on the final commit, after this report is in
 Nothing shipped on a receipt for an earlier tree; the run was restarted each time a
 byte changed, which is the point of keying a receipt on the tree.
 
-No gate was weakened and no `GATE-OVERRIDE` was used.
+### The three gates that ship red, and why
+
+No gate was weakened. Three carry a `GATE-OVERRIDE`, named in the commit message,
+and none of the three is red because of anything in this ticket:
+
+| gate | why it is red |
+|---|---|
+| `3d_parity` | Pre-existing and long-standing — the same three failures (`--st-ok-room`, and two 1.5px-vs-1px borders) that MRB-323 through MRB-328 each overrode. MRB-330 changed **zero** files under `3d-studio/` or `mrbadmus_site/3d/`. |
+| `pool_ownership` | It hardcodes the SIBLING backend checkout, which is currently sitting on **another session's** `feat/mrb332-ks4-pool` branch, where `bankFor()` was rewritten. It is reading a branch nobody has shipped, not the code being pushed. My worktree on `main` still has the `bankFor` it expects. |
+| `teacher_admin_foreign_class` | `admin_view_drive.py` defines `NOW = "2026-08-30T00:00:00+00:00"` — a hardcoded instant that was genuinely *now* when it was written and stopped being now on 31 August. It is that fixture's live paper's `due_at`, and the Remind control only draws when children owe **this week's** paper, so the fixture quietly stopped making the button the gate then reports as missing. |
+
+The third deserves the proof rather than the assertion, because it is the one that
+could plausibly have been mine. It is not: on any **non-Sunday** the MRB-330 week
+code is behaviourally identical to what it replaced — `getDay() === 0` is false, so
+both changed branches are no-ops — and today is a Monday. Computed both ways, the
+window is `Mon 7 Sep → Mon 14 Sep` under the old code and the new one, byte for
+byte, and the fixture's paper (due **Sun 30 Aug**) is outside both.
+
+I attempted the repair — making `NOW` track the clock, which is restoring the
+fixture's original property rather than weakening an assertion — and it perturbed a
+second, unrelated check on the same drive. So it is reverted and written up instead:
+it wants its own run, with that drive's fixture semantics properly understood, rather
+than a tuned guess at the end of a long night.
+
+⚠️ **`verify_week_truth` is registered with `needs_env=MRB_BACKEND`, deliberately**,
+and `pool_ownership` is the argument for it. A gate that silently compares against
+whatever branch somebody left checked out in a sibling repo proves nothing about what
+a child is actually served. The new gate refuses to guess and must be told which
+backend is authoritative; it was run, and passed, against the backend this run is
+pushing.
 
 `ks3_overflow` earned its keep: it caught a 320px regression I introduced while
 fixing the breadcrumb, and I confirmed the regression was mine before fixing it
