@@ -287,3 +287,66 @@ would have cost "and it was he who showed Franklin's image to Watson", which is
 the half that places Wilkins accurately against Franklin. So the fix lengthened
 the Chargaff distractor instead, and the tell now runs the safe way round — the
 longest option is a distractor, which helps no guesser.
+
+---
+
+## B11 — evolution and biodiversity (4 lessons, +108 rows)
+
+Every lesson took 9 per band. This is the easiest unit in KS3 biology to write
+wrongly, so the brief named the four errors explicitly and required them to
+appear **as distractors, corrected in the `why`** — never in a stem or a key:
+variation pre-exists the pressure; individuals do not adapt during their
+lifetime; nothing acquired is inherited; nothing evolves "in order to"; and it
+is the population, not the individual, that changes.
+
+**Review fixes.** `b11-02-s12`'s stem used "in order to" — the exact phrase the
+lesson trains students to flag as purpose-smuggling — now "if it is to change a
+population". `b11-01-s08` had two defensible answers: "how much contact each
+animal had with the others" is arguably right if the question is who survives
+an outbreak, so the stem was tightened to "who survives **once infected**",
+which cleanly separates catching from surviving. `b11-01-h09` had a distractor
+that was arguably true science — accelerated development in a drying pond is a
+real amphibian response — replaced with a clean Lamarckian distractor instead.
+
+Twenty-seven length tells were repaired **the MRB-177 way**: one distractor
+lengthened, its belief kept exactly, no key shortened and no answer index
+moved. `b11-03-h12`'s teleological distractor grew from "will hatch earlier
+next year in order to match the plant" to "…, because the species needs the two
+to line up", which strengthens the misconception rather than diluting it.
+
+Correct-answer index across the 108 new rows: 0×24, 1×28, 2×32, 3×24, with no
+run of four at one index in any lesson-band.
+
+---
+
+## B6 — drugs, alcohol and smoking (3 lessons, +120 rows)
+
+The heaviest unit in the lane: three lessons carrying 40 rows a band. The
+author mapped every distinct teachable point in each lesson before writing, so
+the file would not end up with five paraphrases of one idea — the three drug
+classes and their effect on nerve signals, the four entry routes, each drug's
+target and each of its `elsewhere` organs separately, the liver's fixed rate,
+every row of both long-term cards, the three harms in smoke with their three
+mechanisms, the seven clauses of the vape paragraph, and the four features of
+Doll and Hill's design.
+
+Safeguarding held throughout and was swept for: no dose, no method, no
+threshold, nothing implying a level of use is safe, and every `why` argues with
+the science rather than with the child.
+
+**Review fixes.** Two science corrections: `b6-01-h07`'s distractor said "about
+3 times longer, taking the inhaled route as half a minute", but 300 ÷ 30 is 10,
+so the arithmetic did not follow from the error it named; and `b6-02-h17`'s key
+listed four organs for three mechanisms.
+
+**A defect class worth naming: dead options.** Seven rows offered a "nothing is
+wrong" or "they are right" option under a stem that already presupposed a
+fault, which cuts the real choice from four to two or three. Fixed by making
+the stem neutral, or by rewriting the dead option as a live misconception.
+Several rows also had two defensible answers (`b6-03-h11` offered genuine
+reverse causation; `b6-03-s12` could fail two of the four questions) and were
+tightened.
+
+Twenty-three self-containment defects (17 stems, 6 `why` fields) and thirteen
+length tells, plus two short-key tells the lane's tighter threshold surfaced
+after the author's own pass at a looser one.

@@ -406,4 +406,821 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ───────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b11-04-e05",
+        "band": "easier",
+        "text": "What does it mean to say that one plant is a clone of "
+                "another?",
+        "options": [
+            {"text": "It was grown from a seed produced by that plant.",
+             "correct": False,
+             "why": "A seed carries a new combination of genes, so a seedling "
+                    "is not identical to its parent. A clone is made by taking "
+                    "a piece of the plant itself."},
+            {"text": "It is the same variety, so it is closely related to that "
+                     "plant.",
+             "correct": False,
+             "why": "Members of a variety are closely related and not "
+                    "identical. A clone is genetically the same plant, "
+                    "copied."},
+            {"text": "It was bred from that plant over several generations to "
+                     "be very similar to it.",
+             "correct": False,
+             "why": "Breeding for similarity is how a variety is produced. A "
+                    "clone skips the breeding entirely — it is a cutting of "
+                    "the original."},
+            {"text": "It is genetically identical to it, because it was grown "
+                     "or copied from it.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-e06",
+        "band": "easier",
+        "text": "What is a landrace?",
+        "options": [
+            {"text": "A crop population grown from seed in one place over many "
+                     "generations, so no two plants are identical.",
+             "correct": True},
+            {"text": "A crop variety bred by a company to give the highest "
+                     "possible yield in a good year on good ground.",
+             "correct": False,
+             "why": "That describes a modern named variety, bred to be "
+                    "uniform. A landrace is the opposite — a mixed population "
+                    "nobody has made consistent."},
+            {"text": "A wild plant that has never been grown as a crop.",
+             "correct": False,
+             "why": "A landrace is very much a crop, grown and harvested for "
+                    "generations. What it is not is a single uniform variety."},
+            {"text": "A field in which several different crop species are "
+                     "grown together.",
+             "correct": False,
+             "why": "That is mixed cropping. A landrace is one crop species in "
+                    "which the individual plants differ from one another."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-e07",
+        "band": "easier",
+        "text": "How are seeds kept in a seed bank?",
+        "options": [
+            {"text": "Damp and just above freezing, so that they stay ready to "
+                     "germinate.",
+             "correct": False,
+             "why": "Damp seeds would germinate or rot. They are dried first, "
+                    "which is what allows them to be frozen and kept."},
+            {"text": "Sealed in water at room temperature, in a dark store.",
+             "correct": False,
+             "why": "Water and warmth are what a seed needs in order to grow, "
+                    "which is precisely what a store must prevent. Seeds are "
+                    "dried and frozen instead."},
+            {"text": "Dried, and held at around minus eighteen degrees "
+                     "Celsius.",
+             "correct": True},
+            {"text": "Planted out every year in a garden, so that they are "
+                     "never really stored.",
+             "correct": False,
+             "why": "Regrowing on a cycle is part of running a bank and is not "
+                    "how the seeds are held in between. Between regrowings "
+                    "they are dried and frozen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-e08",
+        "band": "easier",
+        "text": "What does a gene bank store?",
+        "options": [
+            {"text": "Written descriptions of the genes of species that are at "
+                     "risk.",
+             "correct": False,
+             "why": "A written description cannot be planted or bred from. A "
+                    "bank holds the living hereditary material itself."},
+            {"text": "Hereditary material — seeds, sperm, eggs or tissue — "
+                     "kept so that variation can be recovered later.",
+             "correct": True},
+            {"text": "Whole living animals and plants, kept in enclosures "
+                     "until they are needed for release back into the "
+                     "wild.",
+             "correct": False,
+             "why": "That describes a zoo or a botanic garden, which is a "
+                    "separate method with its own limits. A gene bank stores "
+                    "material, not living populations."},
+            {"text": "Soil and water samples from the habitats the species "
+                     "came from.",
+             "correct": False,
+             "why": "Habitat samples are not hereditary material and cannot "
+                    "regrow a species. What a bank keeps is seed, sperm, eggs "
+                    "or tissue."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-e09",
+        "band": "easier",
+        "text": "What happened to the Gros Michel banana in the 1950s?",
+        "options": [
+            {"text": "It was replaced because shoppers preferred the taste of "
+                     "the Cavendish.",
+             "correct": False,
+             "why": "Taste is not what ended it. A fungal disease made it "
+                    "impossible to grow commercially, and the Cavendish was "
+                    "the replacement."},
+            {"text": "It was crossed with a wild banana to produce the "
+                     "Cavendish.",
+             "correct": False,
+             "why": "The Cavendish is a separate variety, not a cross made "
+                    "from the Gros Michel. The Gros Michel was lost "
+                    "commercially to disease."},
+            {"text": "A fungus wiped it out commercially, and the Cavendish "
+                     "replaced it.",
+             "correct": True},
+            {"text": "It was banned after a disease was found in the fruit.",
+             "correct": False,
+             "why": "Nothing was banned. The plants themselves were killed by "
+                    "a fungus, so the variety could no longer be grown at "
+                    "scale."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-e10",
+        "band": "easier",
+        "text": "Which way of keeping variation holds frozen material from "
+                "thousands of animal species, including some already extinct "
+                "in the wild?",
+        "options": [
+            {"text": "Frozen sperm, eggs and tissue.",
+             "correct": True},
+            {"text": "Seed banks.",
+             "correct": False,
+             "why": "Seed banks hold plants. There is no seed to store for an "
+                    "animal, which is exactly why frozen sperm, eggs and "
+                    "tissue exist."},
+            {"text": "Botanic gardens and zoos.",
+             "correct": False,
+             "why": "Those hold living organisms, in small numbers and at "
+                    "considerable expense. The frozen stores hold material "
+                    "from far more species."},
+            {"text": "Protected habitat.",
+             "correct": False,
+             "why": "Protected habitat keeps populations where they are, alive "
+                    "and breeding. Nothing about it is frozen or stored."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-e11",
+        "band": "easier",
+        "text": "A farmer plants four varieties of potato, 250 plants of each. "
+                "What does that give the field?",
+        "options": [
+            {"text": "A thousand genetically different plants, one for every "
+                     "plant in the field, since no two potatoes are "
+                     "ever quite the same.",
+             "correct": False,
+             "why": "Plants within one variety are bred to be alike, so four "
+                    "varieties is four kinds of plant rather than a thousand "
+                    "different ones."},
+            {"text": "Four different species of potato growing side by side.",
+             "correct": False,
+             "why": "They are all one species. A variety is a named type "
+                    "within a crop species, not a species of its own."},
+            {"text": "Four plants that resist disease, and the rest that do "
+                     "not.",
+             "correct": False,
+             "why": "Resistance is not what the word variety means, and a "
+                    "variety may carry none. What four varieties gives you is "
+                    "four kinds of plant."},
+            {"text": "Four kinds of plant, each bred to be consistent, so "
+                     "plants within a kind are closely related.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-e12",
+        "band": "easier",
+        "text": "Seed banks cannot be used for every plant species. Which "
+                "plants are the problem?",
+        "options": [
+            {"text": "Plants whose seeds are too small to be handled and "
+                     "catalogued.",
+             "correct": False,
+             "why": "Very small seeds are stored easily and in enormous "
+                    "numbers. The difficulty is biological rather than "
+                    "practical."},
+            {"text": "Plants whose seeds do not survive being dried and "
+                     "frozen.",
+             "correct": True},
+            {"text": "Plants that produce very few seeds in a season.",
+             "correct": False,
+             "why": "A small harvest makes collecting slower rather than "
+                    "impossible. What rules a species out is seed that cannot "
+                    "be dried or frozen at all."},
+            {"text": "Plants that are already extinct in the wild.",
+             "correct": False,
+             "why": "Material from species extinct in the wild is exactly what "
+                    "banks are valued for holding. The obstacle is the seed's "
+                    "own tolerance of drying and freezing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-e13",
+        "band": "easier",
+        "text": "What is the Svalbard Global Seed Vault?",
+        "options": [
+            {"text": "The only seed bank in the world, holding every stored "
+                     "crop sample there is.",
+             "correct": False,
+             "why": "There are many national seed banks. Svalbard is a backup "
+                    "of backups, holding duplicates of what those banks "
+                    "already keep."},
+            {"text": "A greenhouse in the Arctic where rare crops are grown "
+                     "and studied.",
+             "correct": False,
+             "why": "Nothing is grown there. It is a cold store cut into rock, "
+                    "holding sealed packets of dried seed."},
+            {"text": "A store inside an Arctic mountain holding duplicate seed "
+                     "samples sent by banks worldwide.",
+             "correct": True},
+            {"text": "A laboratory that creates new crop varieties for "
+                     "countries to plant.",
+             "correct": False,
+             "why": "It creates nothing. It keeps copies of what already "
+                    "exists, so that a country losing its own bank has "
+                    "somewhere to draw from."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b11-04-s05",
+        "band": "standard",
+        "text": "A mixed landrace of potatoes comes through a blight better "
+                "than any named variety does. Why do commercial farms not "
+                "simply plant landraces?",
+        "options": [
+            {"text": "Because a landrace holds too little variation to be "
+                     "worth growing.",
+             "correct": False,
+             "why": "It holds more than any of the alternatives — no two "
+                    "plants in it are genetically identical. That is why it "
+                    "survives a blight so well."},
+            {"text": "Because it yields less per plant and is nearly "
+                     "impossible to harvest by machine.",
+             "correct": True},
+            {"text": "Because a landrace cannot be replanted from its own "
+                     "seed.",
+             "correct": False,
+             "why": "Replanting from its own seed is exactly how a landrace is "
+                    "kept going. The obstacles are yield and harvesting."},
+            {"text": "Because a landrace is more likely to carry disease into "
+                     "the field.",
+             "correct": False,
+             "why": "It carries no more disease than any other planting. What "
+                    "it carries is variation, and its costs are yield and "
+                    "convenience."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-s06",
+        "band": "standard",
+        "text": "After a blight passes through a field of several potato "
+                "varieties, about a quarter of the plants are still standing. "
+                "Why is the seed from those survivors worth more to the farmer "
+                "than the crop itself?",
+        "options": [
+            {"text": "Because seed sells for a higher price than potatoes "
+                     "grown for eating.",
+             "correct": False,
+             "why": "Price is not the point. The value of that seed is what is "
+                    "inside it — plants that have already proved they resist "
+                    "this blight."},
+            {"text": "Because seed can be stored for longer than a harvested "
+                     "crop.",
+             "correct": False,
+             "why": "Storage life is a convenience. What makes this seed "
+                    "valuable is that it came from plants the blight could not "
+                    "kill."},
+            {"text": "Because those plants resisted the blight, so next year's "
+                     "field can be planted from them.",
+             "correct": True},
+            {"text": "Because a quarter of a harvest is not enough food to be "
+                     "worth selling.",
+             "correct": False,
+             "why": "A quarter of a harvest is a bad year and it is still "
+                    "food. The seed matters for what it will grow next spring, "
+                    "not because the crop is too small."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-s07",
+        "band": "standard",
+        "text": "A grower says that planting four varieties instead of one "
+                "makes his field four times safer from disease. What is wrong "
+                "with that?",
+        "options": [
+            {"text": "Safety depends on whether any of the four happens to "
+                     "resist this disease, not on the number four.",
+             "correct": True},
+            {"text": "Nothing is wrong — four varieties really does give four "
+                     "times the protection, so the risk of losing the "
+                     "crop falls to a quarter.",
+             "correct": False,
+             "why": "The number of varieties is not a multiplier. If none of "
+                    "the four resists the disease that arrives, the field is "
+                    "no safer than one variety would have been."},
+            {"text": "It is wrong because four varieties is less variation "
+                     "than one.",
+             "correct": False,
+             "why": "Four varieties is far more variation than one. The error "
+                    "is in treating the count as a guarantee rather than as a "
+                    "better chance."},
+            {"text": "It is wrong because varieties always resist different "
+                     "diseases from each other.",
+             "correct": False,
+             "why": "They may resist the same one, or none at all. That "
+                    "uncertainty is precisely why the count cannot be turned "
+                    "into a figure for safety."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-s08",
+        "band": "standard",
+        "text": "Seed of a wild plant is collected and frozen in 2020 and "
+                "grown out again a century later, by which time the climate "
+                "where it came from has changed. What problem does that "
+                "create?",
+        "options": [
+            {"text": "The seed will have become adapted to the freezer.",
+             "correct": False,
+             "why": "Nothing adapts in storage, and that is the point. A "
+                    "frozen sample does not change at all, which is a "
+                    "different problem from changing wrongly."},
+            {"text": "The seed will have lost its ability to germinate over a "
+                     "century.",
+             "correct": False,
+             "why": "That is a risk if the bank never tests or regrows it, and "
+                    "it is a matter of management. The deeper problem is what "
+                    "the plant meets when it comes out."},
+            {"text": "There will be no way to identify which population the "
+                     "seed came from.",
+             "correct": False,
+             "why": "Samples are catalogued carefully, and records are the "
+                    "easy part. The difficulty here is biological."},
+            {"text": "The stored plants stopped changing in 2020, while the "
+                     "place they came from carried on changing.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-s09",
+        "band": "standard",
+        "text": "Two woods each hold forty plant species. In the first, each "
+                "species is a large varied population; in the second, each has "
+                "been reduced to a handful of close relatives. The species "
+                "count is the same. Which wood is in more trouble?",
+        "options": [
+            {"text": "Neither — the same number of species means the same "
+                     "biodiversity, whatever the populations of each "
+                     "of them look like.",
+             "correct": False,
+             "why": "Species count is one half of biodiversity and the other "
+                    "half is inside each species. Forty species of close "
+                    "relatives is far less variety than forty varied "
+                    "populations."},
+            {"text": "The first, because large populations attract more "
+                     "disease.",
+             "correct": False,
+             "why": "Large varied populations are the ones most likely to "
+                    "contain individuals that survive a disease. Size and "
+                    "variety are protection here, not risk."},
+            {"text": "The second, because each of its species has almost no "
+                     "variation left to survive a change with.",
+             "correct": True},
+            {"text": "The second, but only because it holds fewer individual "
+                     "plants altogether.",
+             "correct": False,
+             "why": "It may hold plenty of plants. What it does not hold is "
+                    "difference between them, and that is what a population "
+                    "needs when conditions change."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-s10",
+        "band": "standard",
+        "text": "A zoo breeding programme keeps a studbook recording which "
+                "animals are related to which. What is it for?",
+        "options": [
+            {"text": "To avoid breeding close relatives together, so that as "
+                     "much variation as possible is kept.",
+             "correct": True},
+            {"text": "To record which animals came from which country.",
+             "correct": False,
+             "why": "Origins are recorded for other reasons. The studbook's "
+                    "job is genetic — it tracks relatedness so that pairings "
+                    "do not throw variation away."},
+            {"text": "To decide which animals are strong enough to be "
+                     "released.",
+             "correct": False,
+             "why": "Release decisions are made on other grounds. A studbook "
+                    "is about who is related to whom, and therefore who should "
+                    "not be bred together."},
+            {"text": "To increase the variation in the captive population with "
+                     "each generation of animals bred in the "
+                     "collection.",
+             "correct": False,
+             "why": "It cannot add variation that is not there. The most a "
+                    "studbook can do is slow the rate at which a small "
+                    "population loses what it has."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-s11",
+        "band": "standard",
+        "text": "A breed of dog descended from a small number of founding "
+                "animals has a heart condition that appears in a very high "
+                "proportion of individuals. Which idea does that illustrate?",
+        "options": [
+            {"text": "Clones are always weaker than animals produced by "
+                     "ordinary breeding.",
+             "correct": False,
+             "why": "These dogs are not clones, and they are not weaker in "
+                    "general. The trouble is that a version of a gene common "
+                    "in the founders is now common in all of them."},
+            {"text": "A large population is always safer than a small one, "
+                     "whatever its history, because numbers are what "
+                     "protect a population.",
+             "correct": False,
+             "why": "This breed may run to many thousands of dogs. What "
+                    "matters is how much variation those thousands hold, and a "
+                    "few founders means very little."},
+            {"text": "Diseases spread more easily between animals that are "
+                     "closely related.",
+             "correct": False,
+             "why": "This condition is not spreading between dogs at all — it "
+                    "is inherited. What is shared is genes, not an infection."},
+            {"text": "A population descended from very few individuals holds "
+                     "little variation, so a weakness is shared by all.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-s12",
+        "band": "standard",
+        "text": "A country's seed bank holds a single sample of each of its "
+                "three hundred crop varieties, all in one building. Name the "
+                "weakness in that arrangement.",
+        "options": [
+            {"text": "Three hundred varieties is too few to be worth "
+                     "storing in a building of that size.",
+             "correct": False,
+             "why": "Three hundred varieties is a great deal of variation to "
+                    "hold. The weakness is not in the number but in where it "
+                    "all sits."},
+            {"text": "One fire, flood or war reaches everything at once, "
+                     "because nothing is duplicated elsewhere.",
+             "correct": True},
+            {"text": "Samples kept together in one building will "
+                     "cross-pollinate each other.",
+             "correct": False,
+             "why": "Dried seed in sealed packets does nothing of the kind. "
+                    "The risk is that a single event destroys the whole "
+                    "collection."},
+            {"text": "A single sample of a variety cannot be regrown.",
+             "correct": False,
+             "why": "A sample holds many seeds and can be grown on. What it "
+                    "cannot do is survive an event that destroys the building "
+                    "it is in."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-s13",
+        "band": "standard",
+        "text": "A new blight arrives that none of the ten varieties in a "
+                "mixed field happens to resist. What happens, and what does it "
+                "show about variation?",
+        "options": [
+            {"text": "Some plants survive anyway, because a field with ten "
+                     "varieties always keeps something.",
+             "correct": False,
+             "why": "Variation only helps if some of it happens to suit the "
+                    "threat. Ten varieties that all fall to this blight leave "
+                    "nothing standing."},
+            {"text": "Nothing survives, which shows that planting several "
+                     "varieties is not worth doing and the effort is "
+                     "wasted every time.",
+             "correct": False,
+             "why": "It is worth doing, and it is not a guarantee. Several "
+                    "varieties give a real chance that one resists — this time "
+                    "none did."},
+            {"text": "Nothing survives — variation helps only when some of it "
+                     "happens to suit the threat that arrives.",
+             "correct": True},
+            {"text": "Nothing survives, because ten varieties is really only "
+                     "one variety spread thinly.",
+             "correct": False,
+             "why": "Ten varieties is ten genuinely different kinds of plant. "
+                    "They failed because none of them met this particular "
+                    "disease, not because they were secretly the same."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b11-04-h05",
+        "band": "harder",
+        "text": "A field holds a thousand potato plants, planted as ten "
+                "varieties with a hundred plants of each. Four of the ten "
+                "varieties resist a blight that sweeps the field, and the rest "
+                "are killed. How many plants are left standing, and what share "
+                "of the field is that?",
+        "options": [
+            {"text": "4 plants, which is 0.4% of the field.",
+             "correct": False,
+             "why": "Four is the number of varieties, not the number of "
+                    "plants. Each variety is a hundred plants, so four of them "
+                    "is four hundred."},
+            {"text": "400 plants, which is 40% of the field.",
+             "correct": True},
+            {"text": "100 plants, which is 10% of the field.",
+             "correct": False,
+             "why": "A hundred plants is one variety's worth. Four varieties "
+                    "resist, so four hundred plants come through."},
+            {"text": "600 plants, which is 60% of the field.",
+             "correct": False,
+             "why": "Six hundred is the number killed — the six varieties that "
+                    "do not resist. The question asks what is left standing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-h06",
+        "band": "harder",
+        "text": "A farmer keeps seed only from the four hundred plants that "
+                "survived a blight, and plants his whole field from them the "
+                "following spring. What has he gained, and what has he lost?",
+        "options": [
+            {"text": "He has gained a resistant crop and lost nothing, since "
+                     "the dead plants were of no use.",
+             "correct": False,
+             "why": "The dead varieties carried versions of genes that might "
+                    "have resisted something else. Losing them is a real cost, "
+                    "even though they failed this time."},
+            {"text": "He has lost his resistance to this blight, because "
+                     "resistance is not inherited.",
+             "correct": False,
+             "why": "Resistance is inherited, which is why keeping the "
+                    "survivors' seed works at all. What he has lost is the "
+                    "variation the other varieties held."},
+            {"text": "He has a field that resists this blight, and much less "
+                     "variation to meet the next threat with.",
+             "correct": True},
+            {"text": "He has gained variation, because the survivors are the "
+                     "strongest plants in the field.",
+             "correct": False,
+             "why": "Survivors are not the strongest, they are the resistant "
+                    "ones, and there are fewer kinds of them. The field now "
+                    "holds less variation than it did, not more."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-h07",
+        "band": "harder",
+        "text": "Nearly all commercial coffee comes from a small number of "
+                "closely related plants, while many wild coffee species still "
+                "grow in Ethiopian forest. Why do plant breeders care about "
+                "protecting that forest?",
+        "options": [
+            {"text": "The variation they will need against a future disease "
+                     "exists there and almost nowhere else.",
+             "correct": True},
+            {"text": "Wild coffee produces a better crop than the cultivated "
+                     "kind.",
+             "correct": False,
+             "why": "Wild coffee generally yields poorly and tastes unlike the "
+                    "commercial crop. Its value is the variation it holds, not "
+                    "what it would produce on a plantation."},
+            {"text": "The forest keeps the climate suitable for growing coffee "
+                     "elsewhere.",
+             "correct": False,
+             "why": "Forests do affect local climate, and that is not what "
+                    "breeders are protecting here. They are protecting a store "
+                    "of versions of genes the crop does not have."},
+            {"text": "Growing coffee in a forest is cheaper than growing it on "
+                     "a plantation.",
+             "correct": False,
+             "why": "Cost is not the argument. What the forest holds is "
+                    "variation that a crop of closely related plants has lost, "
+                    "and which cannot be invented when it is needed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-h08",
+        "band": "harder",
+        "text": "A seed bank holds ten thousand samples and can afford to test "
+                "and regrow two hundred of them each year. On average, how "
+                "often is any one sample checked, and why does that matter?",
+        "options": [
+            {"text": "Every two years, which is often enough to keep every "
+                     "sample alive.",
+             "correct": False,
+             "why": "Two hundred checks a year across ten thousand samples is "
+                    "nothing like every two years. Divide the collection by "
+                    "the yearly rate: it is one check every fifty years."},
+            {"text": "Every twenty years, which is comfortably inside the life "
+                     "of a stored seed.",
+             "correct": False,
+             "why": "That would need five hundred checks a year. Ten thousand "
+                    "divided by two hundred gives one check every fifty years, "
+                    "which is a very long time for dried seed."},
+            {"text": "Every fifty years, and it does not matter because "
+                     "freezing stops seeds ageing.",
+             "correct": False,
+             "why": "The interval is right and the conclusion is not. Freezing "
+                    "slows a seed's ageing rather than stopping it, so samples "
+                    "can die unnoticed between checks."},
+            {"text": "Every fifty years, so some samples will have died before "
+                     "anyone looks at them.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-h09",
+        "band": "harder",
+        "text": "A new fungus is destroying a wheat crop grown as a handful of "
+                "modern varieties. A plant breeder needs wheat that resists "
+                "it. Where should she look, and why?",
+        "options": [
+            {"text": "In the modern varieties themselves, breeding them "
+                     "together until resistance appears.",
+             "correct": False,
+             "why": "Breeding cannot create a version of a gene that none of "
+                    "the parents has. Crossing susceptible varieties gives "
+                    "more susceptible wheat."},
+            {"text": "In gene banks and old landraces, because the resistance "
+                     "has to exist somewhere already.",
+             "correct": True},
+            {"text": "In the fungus, because studying it will show how to make "
+                     "the wheat resist.",
+             "correct": False,
+             "why": "Understanding the fungus helps and does not supply a "
+                    "resistant plant. The resistance must already exist in "
+                    "some wheat somewhere before it can be bred in."},
+            {"text": "Nowhere in particular, because resistance can be "
+                     "produced to order once it is needed.",
+             "correct": False,
+             "why": "Nothing produces a needed characteristic on demand. A "
+                    "breeder's whole job here is to find variation that "
+                    "already exists and move it into the crop."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-h10",
+        "band": "harder",
+        "text": "The Gros Michel banana was destroyed commercially by a "
+                "fungus, and the Cavendish that replaced it is itself grown as "
+                "a single clone, now threatened by a similar fungus. What does "
+                "that sequence show?",
+        "options": [
+            {"text": "That the Cavendish was a poor choice of replacement "
+                     "variety, and a tougher one should have been "
+                     "picked.",
+             "correct": False,
+             "why": "Any single variety would have been in the same position. "
+                    "The problem is not which clone was chosen but that a "
+                    "clone was chosen at all."},
+            {"text": "That fungal diseases of bananas have become more "
+                     "powerful over time.",
+             "correct": False,
+             "why": "Nothing here says the fungus has become stronger. What "
+                    "has stayed the same is a crop with no variation for a "
+                    "disease to fail against."},
+            {"text": "That the vulnerability lies in growing a crop as one "
+                     "clone, not in the particular variety.",
+             "correct": True},
+            {"text": "That bananas cannot be grown safely at all, whatever is "
+                     "planted.",
+             "correct": False,
+             "why": "Bananas grown from a range of varieties would not be in "
+                    "this position. The danger comes from the way they are "
+                    "grown, and that is a choice."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-h11",
+        "band": "harder",
+        "text": "A named potato variety is grown from tubers and every plant "
+                "of it is closely related. A landrace is grown from seed. Why "
+                "does the landrace keep its variation year after year while "
+                "the variety does not?",
+        "options": [
+            {"text": "Seed carries new combinations of genes, so the plants "
+                     "differ; a tuber copies one plant.",
+             "correct": True},
+            {"text": "Landraces are grown in more places, so they pick up more "
+                     "variation.",
+             "correct": False,
+             "why": "Growing somewhere new does not add versions of genes to a "
+                    "crop. The variation comes from being grown from seed, "
+                    "where each plant is a new combination."},
+            {"text": "A named variety loses its variation because farmers "
+                     "select the best plants each year.",
+             "correct": False,
+             "why": "Selecting can reduce variation and is not what makes a "
+                    "variety uniform. A variety is uniform because it is bred "
+                    "that way and often propagated from pieces of one plant."},
+            {"text": "Landraces grow more slowly, which gives their variation "
+                     "time to build up.",
+             "correct": False,
+             "why": "Variation does not build up over a growing season. It is "
+                    "present in every generation because every plant is grown "
+                    "from seed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-h12",
+        "band": "harder",
+        "text": "A gene bank holds two hundred seeds of a rare plant, all "
+                "collected from one hillside on one day in 1975. In what sense "
+                "does the bank not hold the species?",
+        "options": [
+            {"text": "In no sense — two hundred seeds is plenty to bring a "
+                     "species back.",
+             "correct": False,
+             "why": "It is enough to grow plants and not enough to hold what "
+                    "the species was. Those seeds came from one population on "
+                    "one day."},
+            {"text": "The seeds will not be viable after so long, so nothing "
+                     "is really held.",
+             "correct": False,
+             "why": "Well-managed samples are tested and regrown, so viability "
+                    "is a question of management. The deeper limitation is "
+                    "what was collected in the first place."},
+            {"text": "The bank holds the plant but not its name, so the "
+                     "species could not be identified.",
+             "correct": False,
+             "why": "Records are careful and identification is the easy part. "
+                    "What is missing is the variation held by every population "
+                    "that was not sampled."},
+            {"text": "It holds a sample of one population at one moment, not "
+                     "the variation of the whole species.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-04-h13",
+        "band": "harder",
+        "text": "Two arguments are given for keeping biodiversity: that useful "
+                "medicines have come from wild species, and that variation is "
+                "what lets populations survive change. Which is the stronger "
+                "biological argument?",
+        "options": [
+            {"text": "The medicines argument, because it can be shown with "
+                     "real examples such as penicillin.",
+             "correct": False,
+             "why": "Real examples make it persuasive rather than fundamental. "
+                    "Medicines are a use we happen to have found; variation is "
+                    "what decides whether populations survive at all."},
+            {"text": "The variation argument, because without variation a "
+                     "population cannot survive a change of any kind.",
+             "correct": True},
+            {"text": "Neither is biological — both are really arguments about "
+                     "what species are worth to people.",
+             "correct": False,
+             "why": "The variation argument is not about worth to people at "
+                    "all. It is a statement about how populations survive, and "
+                    "it would hold if no human had ever existed."},
+            {"text": "The medicines argument, because a species with no known "
+                     "use is not worth protecting.",
+             "correct": False,
+             "why": "That reverses the reasoning. Most species have no use yet "
+                    "identified, and their variation is doing exactly the same "
+                    "work in their own populations."},
+        ],
+        "figure": None,
+    },
 ]
