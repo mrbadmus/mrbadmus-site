@@ -660,3 +660,41 @@ every commit even when it is red for somebody else's reasons, and read WHICH
 findings are yours.
 
 ---
+## C10 — Earth and atmosphere (6 lessons)
+
+**Quota:** 26 needed per band; 27 added, taking every band to **51**. Spread
+5 · 5 · 5 · 4 · 4 · 4 per band, 81 rows.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 inside-the-earth | e05–e09 | s05–s09 | h05–h09 |
+| 02 three-ways-to-make-a-rock | e05–e09 | s05–s09 | h05–h09 |
+| 03 the-rock-cycle | e05–e09 | s05–s09 | h05–h09 |
+| 04 a-planet-with-limits | e05–e08 | s05–s08 | h05–h08 |
+| 05 whats-in-the-air | e05–e08 | s05–s08 | h05–h08 |
+| 06 carbon-dioxide-humans-and-climate | e05–e08 | s05–s08 | h05–h08 |
+
+Positions 21 · 21 · 21 · 18. Length tell **22.0%**, against a `BASELINE` of
+85.7% — C10's original twelve are joint second-worst in the key stage.
+
+### Review fixes before commit
+
+Seven near-duplicates, six of them word-for-word repeats of questions the unit
+already asks: the phosphate-against-steel comparison, carbon dioxide's 0.04 per
+cent, the nitrogen diluting the oxygen, why nitrogen and argon accumulated,
+which two actions beat recycling, and the Everest fossils. `c10-02-h09`
+repeated `c10-02-s03` with marble swapped for granite. All replaced.
+
+**Note on where these clustered.** Four of the seven are in lessons 4 and 5,
+which are the two lessons whose original twelve are the most tightly packed
+with named facts — reserves, downcycling, the crisp packet, the composition of
+air, banded iron. When a lesson's original rows already cover its named facts
+one each, a top-up written from the same notes lands on them again. Reading the
+existing stems immediately before writing is what prevents it, and I read L1–L3
+that way and L4–L6 less carefully.
+
+Gates at commit: `verify_questions` OK — 185 lessons, 5142 questions, all nine
+checks clean; `verify_answer_positions` OK; `verify_answer_lengths` green on
+every chemistry scope.
+
+---

@@ -358,4 +358,386 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c10-01-e05",
+        "band": "easier",
+        "text": "What is density?",
+        "options": [
+            {"text": "How much mass a material has for its size",
+             "correct": True},
+            {"text": "How hard a material is to break apart, measured by "
+                     "pressing on a sample of it until it finally gives way "
+                     "under the load",
+             "correct": False,
+             "why": "That is strength. Density is mass compared with volume"},
+            {"text": "How hot a material is",
+             "correct": False,
+             "why": "Temperature is a separate property. A hot rock and a "
+                    "cold one have almost the same density"},
+            {"text": "How deep a layer is",
+             "correct": False,
+             "why": "Depth is a distance. Density is about the material "
+                    "itself"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-e06",
+        "band": "easier",
+        "text": "Which of the Earth's four layers is by far the THINNEST?",
+        "options": [
+            {"text": "The mantle",
+             "correct": False,
+             "why": "The mantle is the thickest layer of the four, running "
+                    "most of the way to the core"},
+            {"text": "The crust",
+             "correct": True},
+            {"text": "The outer core",
+             "correct": False,
+             "why": "It is over two thousand kilometres thick — hundreds of "
+                    "times the crust"},
+            {"text": "The inner core, which is the smallest of the four "
+                     "because it sits right at the middle where there is "
+                     "least room for anything to fit",
+             "correct": False,
+             "why": "It is a ball over a thousand kilometres across. The "
+                    "crust is a skin a few tens of kilometres thick"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-e07",
+        "band": "easier",
+        "text": "What is the inner core made of, and what state is it in?",
+        "options": [
+            {"text": "Iron and nickel, and liquid, since it is the hottest "
+                     "part of the whole planet and nothing that hot could "
+                     "still be holding together as a solid",
+             "correct": False,
+             "why": "It is the hottest part and it is solid, because the "
+                    "pressure at the centre will not let the atoms move "
+                    "apart"},
+            {"text": "Rock, and solid",
+             "correct": False,
+             "why": "Rock is the mantle and the crust. The core is metal"},
+            {"text": "Iron and nickel, and solid",
+             "correct": True},
+            {"text": "Rock, and molten",
+             "correct": False,
+             "why": "Neither half is right. The core is iron and nickel, and "
+                    "the inner part is solid"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-e08",
+        "band": "easier",
+        "text": "Which layer is solid rock that flows very slowly?",
+        "options": [
+            {"text": "The crust, which is carried about on the surface and "
+                     "must therefore be the layer that is doing the moving",
+             "correct": False,
+             "why": "The crust is carried BY something. What creeps "
+                    "underneath it is the mantle"},
+            {"text": "The outer core",
+             "correct": False,
+             "why": "That is a genuine liquid — molten iron — rather than a "
+                    "solid that creeps"},
+            {"text": "The inner core",
+             "correct": False,
+             "why": "Solid, and not flowing at all. The pressure holds it "
+                    "rigid"},
+            {"text": "The mantle",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-e09",
+        "band": "easier",
+        "text": "How is the structure of the Earth's inside known?",
+        "options": [
+            {"text": "From the way earthquake waves travel through the "
+                     "planet",
+             "correct": True},
+            {"text": "From samples brought up by the deepest boreholes ever "
+                     "drilled, which have now reached down as far as the top "
+                     "of the mantle",
+             "correct": False,
+             "why": "The deepest hole reached about a third of the way "
+                    "through the crust. Nothing has sampled the mantle"},
+            {"text": "From what comes out of volcanoes",
+             "correct": False,
+             "why": "Volcanoes bring up material from small pockets near the "
+                    "top of the mantle. They say nothing about the core"},
+            {"text": "It is a guess",
+             "correct": False,
+             "why": "It rests on measurement — waves recorded at stations all "
+                    "over the world"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c10-01-s05",
+        "band": "standard",
+        "text": "Why does the Earth have a magnetic field at all?",
+        "options": [
+            {"text": "Because liquid metal is moving in the outer core, and "
+                     "moving metal carries electric currents",
+             "correct": True},
+            {"text": "Because there is a very large permanent magnet at the "
+                     "centre of the planet, made of the iron that sank there "
+                     "while the Earth was forming",
+             "correct": False,
+             "why": "Iron loses its magnetism long before core temperatures. "
+                    "No permanent magnet could survive down there"},
+            {"text": "Because the Earth spins",
+             "correct": False,
+             "why": "Spinning helps stir the core and is not enough on its "
+                    "own. Venus spins and has no field"},
+            {"text": "Because the Sun magnetises the planet",
+             "correct": False,
+             "why": "The Sun's particles are DEFLECTED by the field rather "
+                    "than causing it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-s06",
+        "band": "standard",
+        "text": "A student pictures the mantle as a sea of molten lava under "
+                "the crust. What is the correction?",
+        "options": [
+            {"text": "It is molten near the top and solid further down, which "
+                     "is why volcanoes can reach the melted part and "
+                     "earthquake waves can cross the solid part below it",
+             "correct": False,
+             "why": "It is solid essentially throughout. The pockets that "
+                    "melt are local and small"},
+            {"text": "It is solid rock that creeps, and melting happens only "
+                     "in small pockets",
+             "correct": True},
+            {"text": "It is liquid iron rather than liquid rock",
+             "correct": False,
+             "why": "That describes the outer core. The mantle is rock"},
+            {"text": "Nothing — the picture is right",
+             "correct": False,
+             "why": "Earthquake waves cross the mantle in a way that only a "
+                    "solid allows"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-s07",
+        "band": "standard",
+        "text": "The crust is under one per cent of the way to the centre. "
+                "What does that mean in practice?",
+        "options": [
+            {"text": "The crust holds under one per cent of the Earth's "
+                     "material, so almost none of the planet's mass is in the "
+                     "part that anybody has ever been able to reach",
+             "correct": False,
+             "why": "True about the mass, and the phrase is about DEPTH. It "
+                    "is a statement about how far down anyone has got"},
+            {"text": "The crust is unimportant",
+             "correct": False,
+             "why": "Everything alive and everything ever mined is in it. "
+                    "Thin is not unimportant"},
+            {"text": "Everything anyone has ever dug, mined or drilled has "
+                     "stayed in a very thin skin",
+             "correct": True},
+            {"text": "The crust is thinner than the atmosphere",
+             "correct": False,
+             "why": "The crust is tens of kilometres thick and most of the "
+                    "atmosphere is in the first ten"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-s08",
+        "band": "standard",
+        "text": "Which TWO layers are made of iron and nickel?",
+        "options": [
+            {"text": "The crust and the mantle, which are the two rocky "
+                     "layers and hold most of the iron that has ever been "
+                     "mined anywhere in the world",
+             "correct": False,
+             "why": "Mined iron comes from the crust, and the crust and "
+                    "mantle are rock. The metal layers are the two cores"},
+            {"text": "The mantle and the outer core",
+             "correct": False,
+             "why": "The mantle is rock. Only the two core layers are metal"},
+            {"text": "The crust and the inner core",
+             "correct": False,
+             "why": "The crust is rock, and the two metal layers are next to "
+                    "each other at the centre"},
+            {"text": "The outer core and the inner core",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-s09",
+        "band": "standard",
+        "text": "Earthquake waves are recorded at stations all over the "
+                "world. Why does having MANY stations matter?",
+        "options": [
+            {"text": "Because where a wave arrives and where it fails to "
+                     "arrive is what maps the inside",
+             "correct": True},
+            {"text": "Because a single station could miss an earthquake "
+                     "altogether, and having many of them means no event "
+                     "anywhere in the world goes unrecorded",
+             "correct": False,
+             "why": "Catching every event matters and is not the point here. "
+                    "The pattern of where waves DO NOT arrive is the "
+                    "evidence"},
+            {"text": "Because one station's instrument might be faulty",
+             "correct": False,
+             "why": "Checking instruments is good practice. The layers are "
+                    "found from the geography of the arrivals"},
+            {"text": "Because earthquakes are rare",
+             "correct": False,
+             "why": "They are recorded constantly. The number of stations is "
+                    "about coverage rather than frequency"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c10-01-h05",
+        "band": "harder",
+        "text": "The inner core is growing a little every year. Where does "
+                "the added material come from?",
+        "options": [
+            {"text": "From the outer core, which freezes onto it",
+             "correct": True},
+            {"text": "From the mantle above, which sinks through the liquid "
+                     "outer core and settles at the centre because rock is "
+                     "denser than molten iron",
+             "correct": False,
+             "why": "Iron is far denser than rock, so rock does not sink "
+                    "through it. The growth is the liquid iron freezing"},
+            {"text": "From iron falling in from space",
+             "correct": False,
+             "why": "Meteorites land on the surface. Nothing reaches the "
+                    "core"},
+            {"text": "It does not grow — it is the same size as when the "
+                     "Earth formed",
+             "correct": False,
+             "why": "It has been growing as the planet slowly cools, and the "
+                    "energy released helps drive the field"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-h06",
+        "band": "harder",
+        "text": "Why does the inner core's growth matter for anything at the "
+                "surface?",
+        "options": [
+            {"text": "Because the planet gets slightly denser each year as "
+                     "liquid becomes solid, and that gradual change alters "
+                     "the strength of gravity at the surface over time",
+             "correct": False,
+             "why": "Freezing rearranges material without adding any. The "
+                    "mass and the gravity are unchanged"},
+            {"text": "Because the energy released as it freezes helps drive "
+                     "the currents that make the magnetic field",
+             "correct": True},
+            {"text": "Because it makes the Earth spin faster",
+             "correct": False,
+             "why": "Nothing at the surface would notice. What matters is the "
+                    "energy driving the core's currents"},
+            {"text": "It does not matter at all",
+             "correct": False,
+             "why": "The magnetic field it helps sustain is what deflects the "
+                    "solar wind and keeps the atmosphere"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-h07",
+        "band": "harder",
+        "text": "A student says the Earth's interior is only a guess, because "
+                "nobody has ever been there. What is the best reply?",
+        "options": [
+            {"text": "It IS a guess for now, and it will stay one until "
+                     "somebody manages to drill deep enough to bring a sample "
+                     "of the mantle back to the surface",
+             "correct": False,
+             "why": "The evidence is already strong, and a great deal of "
+                    "established science rests on things nobody has "
+                    "visited"},
+            {"text": "Volcanoes have brought up samples of the core",
+             "correct": False,
+             "why": "They bring up material from near the top of the mantle. "
+                    "Nothing from the core reaches the surface"},
+            {"text": "The layers were found by measurement and inference, "
+                     "which is how most of science works",
+             "correct": True},
+            {"text": "Boreholes have reached the mantle",
+             "correct": False,
+             "why": "The deepest reached about a third of the way through the "
+                    "crust"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-h08",
+        "band": "harder",
+        "text": "Suppose the whole core were solid. What would the earthquake "
+                "records look like?",
+        "options": [
+            {"text": "No waves would reach the far side of the planet at all, "
+                     "because a solid core would absorb everything that "
+                     "entered it rather than letting it pass",
+             "correct": False,
+             "why": "A solid carries BOTH kinds of wave. Solid material is "
+                    "what lets that wave through"},
+            {"text": "Nothing would change",
+             "correct": False,
+             "why": "Then the liquid layer could never have been detected, "
+                    "and it was"},
+            {"text": "The waves would arrive sooner everywhere",
+             "correct": False,
+             "why": "Speeds would shift a little, and the decisive change is "
+                    "that a wave which currently vanishes would not"},
+            {"text": "The wave that stops at 2900 km would carry straight on "
+                     "through",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-01-h09",
+        "band": "harder",
+        "text": "The Earth formed about 4.5 billion years ago. Why is it "
+                "still hot inside?",
+        "options": [
+            {"text": "Heat left over from its formation, plus heat still "
+                     "being released by radioactive decay in the rocks",
+             "correct": True},
+            {"text": "The Sun heats the ground, and over billions of years "
+                     "that heat has worked its way down through the crust to "
+                     "the layers below it",
+             "correct": False,
+             "why": "The Sun warms about a metre of soil. Nothing solar "
+                    "reaches any depth that matters"},
+            {"text": "Friction from the planet spinning",
+             "correct": False,
+             "why": "The spin is smooth and generates almost nothing. The "
+                    "heat is left over and radioactive"},
+            {"text": "The pressure at the centre creates heat continuously",
+             "correct": False,
+             "why": "Pressure keeps the inner core solid and does not go on "
+                    "making new heat"},
+        ],
+        "figure": None,
+    },
 ]

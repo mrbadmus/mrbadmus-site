@@ -378,4 +378,322 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c10-04-e05",
+        "band": "easier",
+        "text": "What is a RESERVE, as this lesson uses the word?",
+        "options": [
+            {"text": "A store of material kept back for emergencies",
+             "correct": False,
+             "why": "That is the everyday sense. Here it is about what is "
+                    "economically extractable"},
+            {"text": "The part of a resource that has already been used",
+             "correct": False,
+             "why": "A reserve is what is still available under today's "
+                    "conditions"},
+            {"text": "The total amount of a resource that is in the ground "
+                     "anywhere on Earth, measured by surveying and then "
+                     "published as a figure for how much is left",
+             "correct": False,
+             "why": "That is the whole stock. A reserve is the part worth "
+                    "digging today, which is why the figure moves"},
+            {"text": "The part of a resource that can be extracted at a "
+                     "profit with the technology we have now",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-e06",
+        "band": "easier",
+        "text": "Recycled aluminium takes about a twentieth of the energy of "
+                "new metal from ore. Where does that saving come from?",
+        "options": [
+            {"text": "The oxygen has already been prised off once, so that "
+                     "step does not have to be paid for again",
+             "correct": True},
+            {"text": "Recycled metal does not have to be melted, so the "
+                     "furnace stage of making it is skipped altogether and "
+                     "with it most of the energy that stage would use",
+             "correct": False,
+             "why": "Recycled aluminium IS melted. The twentieth that is "
+                    "still spent is mostly the melting"},
+            {"text": "Less transport is needed",
+             "correct": False,
+             "why": "Transport is a small part of the total. The electricity "
+                    "for extraction is the large one"},
+            {"text": "Recycled aluminium is a different metal",
+             "correct": False,
+             "why": "It is the same metal, atom for atom. That is why it can "
+                    "be used again"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-e07",
+        "band": "easier",
+        "text": "Why does recycling slow extraction rather than ending it?",
+        "options": [
+            {"text": "Because not everybody puts their waste in the right "
+                     "bin, so a proportion of what could be recycled is "
+                     "thrown away with the ordinary rubbish instead",
+             "correct": False,
+             "why": "Collection matters and even perfect collection leaks. "
+                    "The losses are in the process"},
+            {"text": "Because every loop loses some material",
+             "correct": True},
+            {"text": "Because recycled material is always worse than new",
+             "correct": False,
+             "why": "Aluminium comes back as good as new. Some materials "
+                    "degrade and not all"},
+            {"text": "Because recycling uses more energy than extraction",
+             "correct": False,
+             "why": "It uses far less for most materials. The problem is that "
+                    "material is lost each pass"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-e08",
+        "band": "easier",
+        "text": "Which of these is NOT a finite resource?",
+        "options": [
+            {"text": "Copper ore",
+             "correct": False,
+             "why": "It formed over millions of years and is not being "
+                    "replaced. Finite"},
+            {"text": "Crude oil",
+             "correct": False,
+             "why": "Made from buried remains over millions of years, and "
+                    "extracted in centuries"},
+            {"text": "Sunlight",
+             "correct": True},
+            {"text": "Phosphate rock, which is spread on fields as fertiliser "
+                     "and is replaced by the weathering of the rocks "
+                     "underneath them at about the rate it is used",
+             "correct": False,
+             "why": "Weathering releases phosphorus far too slowly to matter. "
+                    "Phosphate rock is one of the sharpest finite problems "
+                    "there is"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c10-04-s05",
+        "band": "standard",
+        "text": "Why is a crisp packet close to unrecyclable, when both the "
+                "materials in it can be recycled on their own?",
+        "options": [
+            {"text": "The packet is contaminated with food",
+             "correct": False,
+             "why": "Washing deals with that. The lamination is what defeats "
+                    "the process"},
+            {"text": "Nobody collects them",
+             "correct": False,
+             "why": "The bench collected nine in ten and almost nothing came "
+                    "back. Collection was not the problem"},
+            {"text": "The aluminium layer is only a few microns thick, so "
+                     "there is too little of it in any one packet to be worth "
+                     "the trouble of recovering it at all",
+             "correct": False,
+             "why": "Thin layers are recovered in bulk elsewhere. The "
+                    "obstacle is that the two are bonded together"},
+            {"text": "No process separates the plastic film from the "
+                     "aluminium layer economically",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-s06",
+        "band": "standard",
+        "text": "The lesson calls the crisp packet a real trade-off rather "
+                "than a mistake. Why?",
+        "options": [
+            {"text": "Because the property that makes it useful — keeping "
+                     "food fresh with very little material — is the same one "
+                     "that makes it hard to recover",
+             "correct": True},
+            {"text": "Because nobody knew when it was designed that "
+                     "laminated materials would be difficult to recycle, and "
+                     "by the time anybody realised it was too late to change "
+                     "the design",
+             "correct": False,
+             "why": "The difficulty follows from the design working. It is "
+                    "not an oversight that could simply have been avoided"},
+            {"text": "Because the packet is cheap",
+             "correct": False,
+             "why": "Cost is not the trade-off being described. Performance "
+                    "against recoverability is"},
+            {"text": "Because crisps would go stale otherwise",
+             "correct": False,
+             "why": "That is one half of the trade-off. The other half is "
+                    "what it costs at the end of the packet's life"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-s07",
+        "band": "standard",
+        "text": "A recycled bottle becomes a fleece. Which word describes "
+                "that, and why does it matter?",
+        "options": [
+            {"text": "Recycling, and it matters because it shows that "
+                     "plastic can go round indefinitely as long as somebody "
+                     "is willing to find a use for what comes back each time",
+             "correct": False,
+             "why": "It goes round ONCE and then stops. That is what makes it "
+                    "downcycling rather than a loop"},
+            {"text": "Downcycling, and it matters because the fleece cannot "
+                     "become a bottle or another fleece",
+             "correct": True},
+            {"text": "Reusing, and it matters because nothing was melted",
+             "correct": False,
+             "why": "The bottle was melted and reprocessed. Reusing would "
+                    "mean refilling it"},
+            {"text": "Downcycling, and it does not matter much",
+             "correct": False,
+             "why": "It matters a great deal — the loop ends there, and new "
+                     "plastic is still needed for the next bottle"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-s08",
+        "band": "standard",
+        "text": "Why do published figures for how many years of a metal are "
+                "left keep changing?",
+        "options": [
+            {"text": "Because the estimates were wrong to begin with",
+             "correct": False,
+             "why": "They were right for the conditions of their day. The "
+                    "conditions changed"},
+            {"text": "Because new deposits are found all the time, and each "
+                     "one adds to the total amount of the metal that is known "
+                     "to exist in the crust",
+             "correct": False,
+             "why": "New finds happen and are not the main reason. The line "
+                    "between worthless rock and ore keeps moving"},
+            {"text": "Because a reserve depends on price and technology, so "
+                     "rock that was worthless can become worth digging",
+             "correct": True},
+            {"text": "Because more of the metal forms underground each year",
+             "correct": False,
+             "why": "Ore takes millions of years to form. Nothing is being "
+                    "topped up"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c10-04-h05",
+        "band": "harder",
+        "text": "The lesson says a limit shows up as rising ENERGY COST long "
+                "before anything physically runs out. Why?",
+        "options": [
+            {"text": "Because mining companies raise prices as stocks fall",
+             "correct": False,
+             "why": "Prices do rise, and the underlying cause is the physical "
+                    "one: poorer ore takes more energy"},
+            {"text": "Because energy itself is running out",
+             "correct": False,
+             "why": "The point is about the ore rather than about the energy "
+                    "supply"},
+            {"text": "Because the price of energy rises as a resource becomes "
+                     "scarcer, so the cost of extraction goes up even when "
+                     "the ore itself is no harder to dig than before",
+             "correct": False,
+             "why": "The ore genuinely does get harder. It is the "
+                    "concentration that falls, not just the price"},
+            {"text": "Because the cheap concentrated ore is used first, and "
+                     "everything after it takes more energy to extract",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-h06",
+        "band": "harder",
+        "text": "Two materials are collected at the same rate and one "
+                "recycles far better. What must differ?",
+        "options": [
+            {"text": "How much of what is collected survives the process "
+                     "fit to be used again",
+             "correct": True},
+            {"text": "How carefully the two of them are sorted before they "
+                     "reach the plant, since a stream with less contamination "
+                     "in it always comes back in better condition",
+             "correct": False,
+             "why": "Collection was held equal, and sorting is part of "
+                    "collection. The difference is in what the process can "
+                    "recover"},
+            {"text": "How much each is worth per tonne",
+             "correct": False,
+             "why": "Value decides whether anyone bothers. It does not decide "
+                    "how much survives"},
+            {"text": "How heavy each one is",
+             "correct": False,
+             "why": "Mass was compared equally on the bench and the gap was "
+                    "still enormous"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-h07",
+        "band": "harder",
+        "text": "A phone holds about thirty elements in layers a few atoms "
+                "thick. What would designers have to change for it to recycle "
+                "well?",
+        "options": [
+            {"text": "Use more of each element, so that there is enough of "
+                     "every one of them in a single phone to be worth "
+                     "recovering when it reaches the end of its life",
+             "correct": False,
+             "why": "That would make a heavier phone using more material. The "
+                    "problem is that they cannot be separated"},
+            {"text": "Design for disassembly — fewer materials, and parts "
+                     "that come apart",
+             "correct": True},
+            {"text": "Collect more phones",
+             "correct": False,
+             "why": "Collection is the easy half. What defeats it is the "
+                    "bonding"},
+            {"text": "Make phones last longer",
+             "correct": False,
+             "why": "A genuinely good idea, and it reduces demand rather than "
+                    "making a phone recyclable"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-04-h08",
+        "band": "harder",
+        "text": "Suppose a material could be recycled perfectly, with no "
+                "losses at all. Would extraction stop?",
+        "options": [
+            {"text": "Yes, provided everybody recycled everything",
+             "correct": False,
+             "why": "Perfect recycling is what the question already assumes. "
+                    "Growth in what is in use is the remaining gap"},
+            {"text": "Yes — with no losses the same material would go round "
+                     "for ever, so nothing new would ever have to be taken "
+                     "out of the ground again",
+             "correct": False,
+             "why": "It would go round for ever and there would still be more "
+                    "of it in use each year than the year before"},
+            {"text": "No — recycling only returns what is thrown away, and "
+                     "anything still in use is not available to return",
+             "correct": True},
+            {"text": "No, because perfect recycling is impossible",
+             "correct": False,
+             "why": "That refuses the question rather than answering it. The "
+                    "interesting point holds even if it were possible"},
+        ],
+        "figure": None,
+    },
 ]

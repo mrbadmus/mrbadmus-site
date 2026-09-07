@@ -396,4 +396,322 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c10-06-e05",
+        "band": "easier",
+        "text": "What is infrared radiation?",
+        "options": [
+            {"text": "The radiation that arrives from the Sun and warms the "
+                     "ground, which is what makes a sunny day feel hotter "
+                     "than a cloudy one",
+             "correct": False,
+             "why": "The Sun mostly sends VISIBLE light down. Infrared is "
+                    "what the warmed ground sends back up"},
+            {"text": "A kind of ultraviolet",
+             "correct": False,
+             "why": "Ultraviolet is at the other end, shorter than violet. "
+                    "Infrared is longer than red"},
+            {"text": "A gas in the upper atmosphere",
+             "correct": False,
+             "why": "It is radiation rather than a substance"},
+            {"text": "Radiation given off by anything warm — invisible, and a "
+                     "longer wavelength than red light",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-e06",
+        "band": "easier",
+        "text": "What does PARTS PER MILLION mean?",
+        "options": [
+            {"text": "How many of something there are in every million — 420 "
+                     "ppm is 420 molecules in a million",
+             "correct": True},
+            {"text": "How many tonnes of a gas are added to the atmosphere "
+                     "each year, counted in millions so that the figure stays "
+                     "a manageable size",
+             "correct": False,
+             "why": "It is a concentration rather than an amount added. It "
+                    "says how dilute the gas is"},
+            {"text": "A percentage",
+             "correct": False,
+             "why": "A percentage is parts per hundred. 420 ppm is 0.042 per "
+                    "cent"},
+            {"text": "The number of millions of molecules in a sample",
+             "correct": False,
+             "why": "It is a ratio, not a count of a sample"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-e07",
+        "band": "easier",
+        "text": "What is the difference between WEATHER and CLIMATE?",
+        "options": [
+            {"text": "Weather is what happens in one country and climate is "
+                     "what happens across the whole world, so the two words "
+                     "describe the same thing at two different sizes",
+             "correct": False,
+             "why": "A single place has a climate of its own. The difference "
+                    "is time, not area"},
+            {"text": "Weather is what it is doing now; climate is the pattern "
+                     "averaged over decades",
+             "correct": True},
+            {"text": "Weather is measured and climate is predicted",
+             "correct": False,
+             "why": "Both are measured, and both are forecast. The difference "
+                    "is the timescale"},
+            {"text": "They mean the same thing",
+             "correct": False,
+             "why": "Confusing them is what lets one cold winter be offered "
+                    "as evidence about the climate"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-e08",
+        "band": "easier",
+        "text": "Which of these is NOT a greenhouse gas?",
+        "options": [
+            {"text": "Carbon dioxide",
+             "correct": False,
+             "why": "One of the main ones, and the one human activity has "
+                    "changed most"},
+            {"text": "Methane",
+             "correct": False,
+             "why": "A greenhouse gas, and a far stronger one per molecule "
+                    "than carbon dioxide"},
+            {"text": "Nitrogen",
+             "correct": True},
+            {"text": "Water vapour, which is present in far larger amounts "
+                     "than any of the others and absorbs a great deal of the "
+                     "infrared leaving the surface",
+             "correct": False,
+             "why": "All of that is true, and it makes water vapour one of "
+                    "the strongest greenhouse gases there is"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c10-06-s05",
+        "band": "standard",
+        "text": "Why does adding greenhouse gas make the surface settle at a "
+                "HIGHER temperature?",
+        "options": [
+            {"text": "Because the extra gas absorbs more of the sunlight "
+                     "arriving, and that absorbed energy heats the air and "
+                     "the ground below it directly",
+             "correct": False,
+             "why": "Greenhouse gases are transparent to sunlight. They "
+                    "absorb the infrared going OUT"},
+            {"text": "Because the gas is warm itself",
+             "correct": False,
+             "why": "The gas is at the temperature of the air around it. What "
+                    "matters is what it absorbs"},
+            {"text": "Because more gas means a thicker atmosphere, which "
+                     "presses harder on the ground",
+             "correct": False,
+             "why": "The pressure change is negligible. The mechanism is "
+                    "radiation"},
+            {"text": "Because energy leaves more slowly, so the surface has "
+                     "to be warmer before as much goes out as comes in",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-s06",
+        "band": "standard",
+        "text": "Ice cores are described as the best archive on the planet. "
+                "What exactly is in one?",
+        "options": [
+            {"text": "Bubbles of air sealed in as snow was buried, each a "
+                     "sample of the atmosphere of its year",
+             "correct": True},
+            {"text": "Layers of dust and ash blown onto the ice, which record "
+                     "what was in the air each year by what settled out of it "
+                     "onto the surface",
+             "correct": False,
+             "why": "Dust layers are studied too, and the carbon dioxide "
+                    "record comes from trapped BUBBLES of the air itself"},
+            {"text": "Frozen sea water from the year it formed",
+             "correct": False,
+             "why": "The cores come from snow that fell on land. Nothing in "
+                    "them is sea water"},
+            {"text": "A chemical record of the temperature only",
+             "correct": False,
+             "why": "Temperature is recorded, and the bubbles give the actual "
+                    "composition of the air as well"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-s07",
+        "band": "standard",
+        "text": "Someone says the greenhouse effect is what is warming the "
+                "planet, so we should reduce it as far as possible. What is "
+                "wrong?",
+        "options": [
+            {"text": "The greenhouse effect has almost no influence on the "
+                     "temperature, so reducing it would make very little "
+                     "difference either way to how warm the planet is",
+             "correct": False,
+             "why": "It accounts for about 33 °C. Its influence is enormous, "
+                    "which is why adding to it matters"},
+            {"text": "Without it the surface would average about −18 °C — the "
+                     "problem is that it has been STRENGTHENED",
+             "correct": True},
+            {"text": "The greenhouse effect only started when people began "
+                     "burning fossil fuels",
+             "correct": False,
+             "why": "It has operated for as long as the atmosphere has "
+                    "existed. What changed is its strength"},
+            {"text": "Nothing is wrong",
+             "correct": False,
+             "why": "Removing it entirely would leave a frozen planet"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-s08",
+        "band": "standard",
+        "text": "Why is methane described as the gas where cutting emissions "
+                "shows a result soonest?",
+        "options": [
+            {"text": "Because it is a far stronger greenhouse gas per "
+                     "molecule than carbon dioxide, so removing a tonne of it "
+                     "has a much larger effect than removing a tonne of "
+                     "carbon dioxide",
+             "correct": False,
+             "why": "It is stronger per molecule, and that is about SIZE of "
+                    "effect. The soonest is about how fast it clears"},
+            {"text": "Because there is very little of it in the air",
+             "correct": False,
+             "why": "The small amount is part of why its total effect is "
+                    "smaller. It is the ten-year lifetime that makes it "
+                    "quick"},
+            {"text": "Because it breaks down in about ten years, so the "
+                     "amount in the air falls quickly once emissions stop",
+             "correct": True},
+            {"text": "Because it comes mostly from livestock",
+             "correct": False,
+             "why": "Where it comes from is a separate question from how fast "
+                    "a cut would show"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c10-06-h05",
+        "band": "harder",
+        "text": "Four independent lines of evidence are named for the cause "
+                "of the rise. Why does having FOUR matter?",
+        "options": [
+            {"text": "Because a conclusion based on four measurements is four "
+                     "times as reliable as one based on a single measurement "
+                     "of the same thing",
+             "correct": False,
+             "why": "They are not four measurements of one thing. They are "
+                    "four different KINDS of evidence"},
+            {"text": "Because no single line of evidence is trustworthy",
+             "correct": False,
+             "why": "Each is trustworthy on its own. Agreement between "
+                    "independent lines is stronger still"},
+            {"text": "Because four is the number scientists agree on",
+             "correct": False,
+             "why": "There is no such convention. It happens to be how many "
+                    "there are"},
+            {"text": "Because each could have disagreed with the others, and "
+                     "they do not",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-h06",
+        "band": "harder",
+        "text": "Sea level rises partly because ice on land melts and partly "
+                "for another reason. What is the second one?",
+        "options": [
+            {"text": "Water expands as it warms, and the ocean is deep enough "
+                     "for that to matter",
+             "correct": True},
+            {"text": "Sea ice melts, and ice that turns to water takes up "
+                     "more room in the ocean than it did while it was still "
+                     "frozen and floating",
+             "correct": False,
+             "why": "Floating ice displaces its own weight already, so "
+                    "melting it changes the level almost not at all. Land ice "
+                    "is the one that counts"},
+            {"text": "More rain falls into the sea",
+             "correct": False,
+             "why": "Rain came out of the sea in the first place. It is not a "
+                    "net addition"},
+            {"text": "Rivers carry more sediment in",
+             "correct": False,
+             "why": "That happens and is far too small to matter at this "
+                    "scale"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-h07",
+        "band": "harder",
+        "text": "Why is the ISOTOPE evidence particularly hard to argue "
+                "with?",
+        "options": [
+            {"text": "Because isotopes can be measured to far more decimal "
+                     "places than any other quantity in the whole "
+                     "investigation, so the figure carries less uncertainty "
+                     "than the rest",
+             "correct": False,
+             "why": "Precision is not what makes it strong. It IDENTIFIES the "
+                    "source rather than just measuring an amount"},
+            {"text": "Because the extra carbon is lighter in its isotopes, "
+                     "which points to carbon that was once living material",
+             "correct": True},
+            {"text": "Because isotopes cannot be measured wrongly",
+             "correct": False,
+             "why": "Any measurement can go wrong. Its strength is that it "
+                    "points at a particular origin"},
+            {"text": "Because volcanoes produce no carbon dioxide",
+             "correct": False,
+             "why": "They produce a great deal, and its isotopes are "
+                    "different — which is exactly how they are ruled out"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-06-h08",
+        "band": "harder",
+        "text": "Two graphs rise together: carbon dioxide and temperature. "
+                "What has to be added before that is an argument?",
+        "options": [
+            {"text": "A longer record, because two lines that have only been "
+                     "measured for a couple of centuries cannot show anything "
+                     "reliable about how they are related",
+             "correct": False,
+             "why": "A longer record helps and is not what is missing. Two "
+                    "lines rising together never establish cause by "
+                    "themselves"},
+            {"text": "Nothing — two graphs rising together is proof",
+             "correct": False,
+             "why": "Two things can rise together for a third reason, or by "
+                    "coincidence. The mechanism is what closes it"},
+            {"text": "A mechanism — a reason why one should warm the other, "
+                     "which the laboratory supplies",
+             "correct": True},
+            {"text": "A third graph",
+             "correct": False,
+             "why": "More correlations do not become a cause. A physical "
+                    "reason does"},
+        ],
+        "figure": None,
+    },
 ]

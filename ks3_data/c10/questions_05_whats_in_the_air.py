@@ -382,4 +382,312 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c10-05-e05",
+        "band": "easier",
+        "text": "What is an atmosphere?",
+        "options": [
+            {"text": "The air inside a room",
+             "correct": False,
+             "why": "That is the everyday sense. Here it means a planet's "
+                    "gases"},
+            {"text": "The oxygen a planet holds",
+             "correct": False,
+             "why": "It is all the gases. Mars has an atmosphere with almost "
+                    "no oxygen in it"},
+            {"text": "The layer of air immediately above the ground, which "
+                     "extends up to about the height that the highest clouds "
+                     "and the weather reach",
+             "correct": False,
+             "why": "The weather does happen low down, and the atmosphere is "
+                    "the whole envelope of gas the planet holds"},
+            {"text": "The layer of gases held around a planet by its "
+                     "gravity",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-e06",
+        "band": "easier",
+        "text": "Roughly what proportion of dry air is oxygen?",
+        "options": [
+            {"text": "About 21 per cent",
+             "correct": True},
+            {"text": "About 78 per cent, which is why a fire in an ordinary "
+                     "room burns as readily as it does and why the air can "
+                     "keep a person alive",
+             "correct": False,
+             "why": "78 per cent is the NITROGEN. Oxygen is about a fifth"},
+            {"text": "About 50 per cent",
+             "correct": False,
+             "why": "That would make almost anything flammable. The real "
+                    "ratio is about one to four"},
+            {"text": "About 0.9 per cent",
+             "correct": False,
+             "why": "That is the argon. Oxygen is more than twenty times "
+                    "that"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-e07",
+        "band": "easier",
+        "text": "What is a fossil fuel?",
+        "options": [
+            {"text": "A fuel dug out of the ground, as opposed to one grown "
+                     "on the surface, which is what makes coal and wood "
+                     "different from each other",
+             "correct": False,
+             "why": "Being dug up is not the definition. What matters is that "
+                    "it is made of buried remains"},
+            {"text": "A fuel made from the remains of living things buried "
+                     "and compressed over millions of years",
+             "correct": True},
+            {"text": "A fuel that contains fossils",
+             "correct": False,
+             "why": "Recognisable fossils are occasionally found in coal, and "
+                    "the fuel itself is the compressed remains"},
+            {"text": "Any fuel that gives off carbon dioxide",
+             "correct": False,
+             "why": "Wood does that and is not a fossil fuel. The carbon in a "
+                    "fossil fuel left the air long ago"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-e08",
+        "band": "easier",
+        "text": "Where did the oxygen in today's air come from?",
+        "options": [
+            {"text": "It was there from the moment the Earth formed",
+             "correct": False,
+             "why": "The rocks record when it arrived, and the early "
+                    "atmosphere had essentially none"},
+            {"text": "From the volcanoes that supplied the rest of the early "
+                     "atmosphere, releasing it alongside the carbon dioxide "
+                     "and the water vapour",
+             "correct": False,
+             "why": "Volcanoes give carbon dioxide, water vapour and "
+                    "nitrogen. They release almost no oxygen"},
+            {"text": "From photosynthesis, over billions of years",
+             "correct": True},
+            {"text": "From water splitting in sunlight high in the "
+                     "atmosphere",
+             "correct": False,
+             "why": "That happens in tiny amounts and accounts for almost "
+                    "none of it"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c10-05-s05",
+        "band": "standard",
+        "text": "Why is water vapour left OUT when the composition of air is "
+                "quoted?",
+        "options": [
+            {"text": "Because there is too little of it to matter",
+             "correct": False,
+             "why": "There can be several per cent of it — more than argon "
+                    "and carbon dioxide together"},
+            {"text": "Because it is not a greenhouse gas",
+             "correct": False,
+             "why": "It is one of the strongest. That is a different lesson "
+                    "and not the reason here"},
+            {"text": "Because water vapour is not really one of the gases of "
+                     "the air, being a liquid that happens to have evaporated "
+                     "into it rather than a gas in its own right",
+             "correct": False,
+             "why": "Water vapour IS a gas and is genuinely part of the air. "
+                    "It is left out because it varies"},
+            {"text": "Because how much of it there is varies from place to "
+                     "place and day to day",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-s06",
+        "band": "standard",
+        "text": "The air's proportions can vary, and a compound's cannot. "
+                "What does that establish about air?",
+        "options": [
+            {"text": "That it is a mixture",
+             "correct": True},
+            {"text": "That it is a compound whose formula is difficult to "
+                     "write down, because the proportions of the gases in it "
+                     "change with the weather and with height",
+             "correct": False,
+             "why": "A compound has one fixed formula. Varying proportions "
+                    "rule a compound out"},
+            {"text": "That it is an element",
+             "correct": False,
+             "why": "It holds several different kinds of atom, so it cannot "
+                    "be an element"},
+            {"text": "That its gases are chemically joined",
+             "correct": False,
+             "why": "They are not joined at all. Each keeps its own "
+                    "properties"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-s07",
+        "band": "standard",
+        "text": "What happened to the water vapour in the early atmosphere?",
+        "options": [
+            {"text": "It was split apart by sunlight into hydrogen and "
+                     "oxygen, and the oxygen it released is what the "
+                     "atmosphere is made of now",
+             "correct": False,
+             "why": "That happens in tiny amounts. The oceans came from the "
+                    "vapour, and the oxygen came from life"},
+            {"text": "It condensed as the Earth cooled and formed the oceans",
+             "correct": True},
+            {"text": "It is still there — most of the air is water vapour",
+             "correct": False,
+             "why": "Water vapour is a small and variable part of the air"},
+            {"text": "It reacted with the carbon dioxide",
+             "correct": False,
+             "why": "Carbon dioxide DISSOLVED in the oceans the water made. "
+                    "The vapour itself condensed"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-s08",
+        "band": "standard",
+        "text": "Which gas in the air has been produced by radioactive decay "
+                "in the rocks?",
+        "options": [
+            {"text": "Nitrogen, which is released from rocks as they weather "
+                     "and is the reason it makes up so much more of the air "
+                     "than any of the other gases do",
+             "correct": False,
+             "why": "Nitrogen came from volcanoes. The gas produced by decay "
+                    "is argon"},
+            {"text": "Oxygen",
+             "correct": False,
+             "why": "Every atom of it came out of photosynthesis"},
+            {"text": "Argon",
+             "correct": True},
+            {"text": "Carbon dioxide",
+             "correct": False,
+             "why": "It came from volcanoes, and now from burning and "
+                    "respiration"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c10-05-h05",
+        "band": "harder",
+        "text": "Banded iron formations were laid down in enormous "
+                "quantities from about 2.5 billion years ago and then largely "
+                "stopped. What do they record?",
+        "options": [
+            {"text": "Volcanoes releasing iron",
+             "correct": False,
+             "why": "Volcanoes release gases. The iron was already dissolved "
+                    "in the sea"},
+            {"text": "Iron rusting on land and being blown out to sea",
+             "correct": False,
+             "why": "Rusting on land needs the oxygen that had not built up "
+                    "yet. The reaction happened in the water"},
+            {"text": "A period when the Earth's crust was unusually rich in "
+                     "iron, which was washed into the sea by rivers and "
+                     "settled on the floor in bands as the water dried out",
+             "correct": False,
+             "why": "The crust's iron did not change. What changed was the "
+                    "arrival of oxygen to react with the iron in the water"},
+            {"text": "Oxygen reacting with iron dissolved in the oceans, "
+                     "until the oceans had been swept clear of it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-h06",
+        "band": "harder",
+        "text": "The arrival of oxygen is described as a catastrophe for "
+                "almost everything then alive. Why?",
+        "options": [
+            {"text": "It was a corrosive poison to organisms that had evolved "
+                     "without it, and most of them died",
+             "correct": True},
+            {"text": "It made the atmosphere so much heavier that the "
+                     "pressure at the surface crushed the simple organisms "
+                     "that had grown up under a thinner sky",
+             "correct": False,
+             "why": "The pressure change was not what killed them. Oxygen is "
+                    "chemically aggressive"},
+            {"text": "It cooled the planet into an ice age",
+             "correct": False,
+             "why": "There were consequences for the climate, and the "
+                    "catastrophe named here is chemical"},
+            {"text": "It blocked the sunlight photosynthesis needed",
+             "correct": False,
+             "why": "Oxygen is transparent. The organisms making it went on "
+                    "making it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-h07",
+        "band": "harder",
+        "text": "Photosynthesis released the oxygen. Where did the CARBON "
+                "those organisms took out of the air end up?",
+        "options": [
+            {"text": "Back in the air, because respiration returns every atom "
+                     "of carbon that photosynthesis takes out and the two "
+                     "processes balance each other exactly",
+             "correct": False,
+             "why": "They nearly balance, and the small excess buried over "
+                    "billions of years is what removed the carbon dioxide"},
+            {"text": "In living material, and eventually locked into "
+                     "sedimentary rocks and fossil fuels",
+             "correct": True},
+            {"text": "It was released as a gas by volcanoes",
+             "correct": False,
+             "why": "Volcanoes PUT carbon dioxide in. The question is where "
+                    "it went afterwards"},
+            {"text": "It dissolved in the oceans and stayed dissolved",
+             "correct": False,
+             "why": "Much of it dissolved on the way, and it did not stay "
+                    "there — it ended up in limestone"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c10-05-h08",
+        "band": "harder",
+        "text": "Why is the composition of the air evidence that life has "
+                "CHANGED the planet rather than merely lived on it?",
+        "options": [
+            {"text": "Because the air holds carbon dioxide, which living "
+                     "things need",
+             "correct": False,
+             "why": "Volcanoes supplied that. It shows life depends on the "
+                    "air rather than the other way round"},
+            {"text": "Because living things breathe the air in and out "
+                     "constantly, so every molecule in it has passed through "
+                     "something alive at some point in its history",
+             "correct": False,
+             "why": "Breathing moves gas about without changing what the "
+                    "atmosphere is made of. MAKING the oxygen did"},
+            {"text": "Because the oxygen in it was produced by organisms, and "
+                     "there was essentially none before them",
+             "correct": True},
+            {"text": "Because the air is a mixture",
+             "correct": False,
+             "why": "Mars's atmosphere is a mixture too, and nothing has ever "
+                    "lived there as far as anyone knows"},
+        ],
+        "figure": None,
+    },
 ]
