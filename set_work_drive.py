@@ -67,7 +67,9 @@ import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
+import uuid
 from datetime import datetime, timedelta, timezone
 
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -316,11 +318,18 @@ def scope_of(token, class_id):
     return st, (body if isinstance(body, dict) else {})
 
 
-def preview(token, class_id, tier, kind, ref, count=10, exclude=None):
+def preview(token, class_id, tier, kind, ref, count=10, exclude=None,
+            subject=None):
     q = ("/api/teacher/set-work/preview?class_id=%s&tier=%s&scope_kind=%s"
          "&scope_ref=%s&count=%d" % (class_id, tier, kind, ref, count))
     if exclude:
         q += "&exclude=" + ",".join(exclude)
+    # ⊕ `subject` DISAMBIGUATES, AND IS OPTIONAL BECAUSE ALMOST NOTHING NEEDS
+    # IT. `atomic-structure` is a topic id in BOTH chemistry and physics, so on
+    # a combined class the tree holds two nodes under one ref. Every other id in
+    # the curriculum is unique.
+    if subject:
+        q += "&subject=" + subject
     return call("GET", q, token)
 
 
@@ -690,7 +699,17 @@ def post_set(token, **kw):
         "title": kw.get("title", TITLE + " · scratch"),
         "release_at": kw.get("release_at", None),
         "due_at": kw.get("due_at", DUE.isoformat()),
+        # ⊕ `client_ref` IS REQUIRED, and a FRESH one per call by default.
+        # It is the idempotency key: the same body twice with the same ref
+        # sets the work once. So every ordinary check here must carry its OWN,
+        # or the second write in a run would be answered as a replay of the
+        # first and the check would pass having written nothing.
+        # `check_idempotent_submit` is the one place a ref is reused on
+        # purpose.
+        "client_ref": kw.get("client_ref") or str(uuid.uuid4()),
     }
+    if kw.get("subject") is not None:
+        body["subject"] = kw["subject"]
     st, out = call("POST", "/api/teacher/set-work", token, body)
     if st == 200 and isinstance(out, dict):
         made_assignments.extend(out.get("assignment_ids") or [])
@@ -2700,6 +2719,7 @@ def main():
 
     server = None
     site = None
+    twenty_title = None
     try:
         site, site_port = cdp.serve("mrbadmus_site", port=SITE_PORT)
         base = "http://localhost:%d" % site_port
@@ -2716,6 +2736,11 @@ def main():
         check_hold(t_teacher, t_pupil_b)
         check_auto_unchanged(t_teacher, t_pupil, scopes)
         check_admin_and_lastset(t_teacher, t_admin, admin_id)
+        check_ambiguous_topic(t_teacher, scopes)
+        check_idempotent_submit(t_teacher, scopes)
+        check_tier_write_seal(t_teacher, t_admin)
+        check_figures_and_counts(t_teacher, scopes)
+        twenty_title = set_twenty(t_teacher, scopes)
 
         if not args.api_only:
             # ⚠️ ONE BROWSER PER PERSONA, SEQUENTIALLY. The teacher's browser
@@ -2732,8 +2757,14 @@ def main():
                     check_dates(p, t_teacher, scopes, args.shots)
                     check_faff(p, scopes)
                     check_toast_and_swap(p, scopes, args.shots)
-                    # LAST of the sheet checks: it wraps `fetch` to make a
-                    # race deterministic, so nothing else runs behind it.
+                    check_hold_validation(p, scopes)
+                    check_classes_screen_open(p, base)
+                    check_admin_repaint(p, base, t_admin)
+                    # LAST of the sheet checks, both of them: each wraps
+                    # `fetch` to make a race deterministic, so nothing that
+                    # needs an unhindered network runs behind them.
+                    race_stems = check_swap_count_race(p, scopes)
+                    check_swap_race_stored(t_teacher, race_stems)
                     check_stale_guard(p)
                     p.eval("window.MRBSetWork.close()")
                     # ⚠️ READ BEFORE THE CONSUMER NAVIGATIONS, or this check
@@ -2750,6 +2781,7 @@ def main():
                        "the pupil signs in through auth.html, for real", signed)
                 check_consumers(p2, base, STUDENT_PAGES, "the pupil",
                                 TITLE + " · from the sheet", args.shots)
+                check_student_twenty(p2, base, twenty_title)
     finally:
         if server:
             server.__exit__(None, None, None)
@@ -2773,3 +2805,685 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# ════════════════════════════════════════════════════════════════════════
+# 10 · THE CONTRACT ADDITIONS (⊕ 8 Sep 2026, after the cold audit)
+# ════════════════════════════════════════════════════════════════════════
+
+# ── (a) `atomic-structure` IS TWO TOPICS, AND ONLY THE SUBJECT SEPARATES THEM ─
+#
+# ⚠️ THE ONLY AMBIGUOUS ID IN THE CURRICULUM, AND IT FAILS SILENTLY. AQA has a
+# topic called Atomic structure in chemistry (paper 1) and another in physics
+# (paper 1), and the slug is byte-identical. On a combined class the tree holds
+# BOTH, one after the other, so a `findScope` that walked the tree and returned
+# the first match handed every teacher who tapped the PHYSICS row a set of
+# CHEMISTRY questions — with a plausible title, a plausible paper, and nothing
+# anywhere saying so. `subject` is what tells them apart; it is optional
+# because every other id in the curriculum is unique.
+def check_ambiguous_topic(t_teacher, scopes):
+    print("\n10 · Atomic structure is two topics, in two sciences")
+
+    comb = scopes["comb"]
+    both = [t for t in comb.get("tree") or [] if t["id"] == "atomic-structure"]
+    record(len(both) == 2
+           and sorted(t.get("subject") for t in both) == ["chemistry", "physics"],
+           "the combined tree really does carry TWO `atomic-structure` topics, "
+           "so the ambiguity is present and not hypothetical",
+           "subjects: %s" % sorted(t.get("subject") for t in both))
+    if len(both) != 2:
+        return
+
+    by_subject = {t["subject"]: t for t in both}
+    for subject, other in (("physics", "chemistry"), ("chemistry", "physics")):
+        want = {c["id"] for c in by_subject[subject]["children"]}
+        wrong = {c["id"] for c in by_subject[other]["children"]}
+        st, body = preview(t_teacher, FX.C_KS4_COMB, "foundation", "topic",
+                           "atomic-structure", 10, subject=subject)
+        got = {q.get("slug") or q.get("subtopic") for q in (body or {}).get("picked") or []}
+        record(st == 200 and got and got <= want and not (got & wrong),
+               "the %s Atomic structure previews %s subtopics and none of "
+               "%s's" % (subject, subject, other),
+               "status %s · %d question(s) from %s"
+               % (st, len(got), sorted(got)[:3]) if st == 200
+               else "status %s %s" % (st, json.dumps(body)[:160]))
+        record((body or {}).get("scope", {}).get("subject") == subject,
+               "…and the answer says which science it answered for, so the "
+               "sheet can show the right chip",
+               "scope.subject = %r, paper %s"
+               % ((body or {}).get("scope", {}).get("subject"),
+                  (body or {}).get("scope", {}).get("paper")))
+
+    # ── and the WRITE stores it, which is what a consumer reads ───────
+    st, prev = preview(t_teacher, FX.C_KS4_COMB, "foundation", "topic",
+                       "atomic-structure", 5, subject="physics")
+    ids = [q["id"] for q in (prev.get("picked") or [])]
+    st, made = post_set(t_teacher, class_ids=[FX.C_KS4_COMB], tier="foundation",
+                        scope_ref="atomic-structure", subject="physics",
+                        question_ids=ids, title=TITLE + " · physics atoms")
+    if record(st == 200 and made.get("assignment_ids"),
+              "a physics Atomic structure set is accepted",
+              "status %s %s" % (st, json.dumps(made)[:160])):
+        aid = made["assignment_ids"][0]
+        st, row = rest("GET", "/rest/v1/assignments?id=eq.%s&select=subject,"
+                              "paper,topic,scope_ref" % aid, t_teacher)
+        r = row[0] if isinstance(row, list) and row else {}
+        record(r.get("subject") == "physics" and r.get("paper") == 1,
+               "…and the row records subject=physics, paper=1 — not "
+               "chemistry's, which shares the slug",
+               json.dumps(r)[:220])
+
+    # An unknown science is a refusal rather than a silent fallback to the
+    # first match, which is the behaviour this whole check exists to end.
+    st, out = preview(t_teacher, FX.C_KS4_COMB, "foundation", "topic",
+                      "atomic-structure", 5, subject="geography")
+    record(st == 400, "an unknown science is refused, not quietly ignored",
+           "status %s %s" % (st, json.dumps(out)[:120]))
+
+
+# ── (b) THE SAME SUBMIT TWICE SETS THE WORK ONCE ───────────────────────
+#
+# ⚠️ NOTHING DEDUPES TEACHER ROWS. `assignments_class_week_uniq` is PARTIAL on
+# `source = 'auto'`, so two identical teacher sets are two rows and the child's
+# week lists the same homework twice. A teacher whose phone drops the response
+# and who presses Set work again is the ordinary way to get there — no
+# transient failure and no double-tap is needed, just a slow train.
+def check_idempotent_submit(t_teacher, scopes):
+    print("\n   the same submit, twice")
+
+    got = pick_topic(scopes["ks3"], 2, "medium")
+    if not got:
+        return record(False, "a KS3 unit to set twice")
+    _n, unit, _s = got
+    st, prev = preview(t_teacher, FX.C_KS3_A, "medium", "topic", unit["id"], 4)
+    ids = [q["id"] for q in (prev.get("picked") or [])]
+    ref = str(uuid.uuid4())
+    title = TITLE + " · pressed twice"
+
+    kw = dict(class_ids=[FX.C_KS3_A], tier="medium", scope_ref=unit["id"],
+              question_ids=ids, title=title, client_ref=ref)
+    st1, first = post_set(t_teacher, **kw)
+    st2, second = post_set(t_teacher, **kw)
+
+    record(st1 == 200 and first.get("replayed") is False,
+           "the first press sets the work and says it was not a replay",
+           "status %s replayed=%s ids=%s"
+           % (st1, first.get("replayed"), first.get("assignment_ids")))
+    record(st2 == 200 and second.get("replayed") is True,
+           "the second press with the SAME client_ref answers 200 "
+           "`replayed: true` — a retry is told it succeeded, because it did",
+           "status %s replayed=%s" % (st2, second.get("replayed")))
+    record(sorted(second.get("assignment_ids") or []) ==
+           sorted(first.get("assignment_ids") or []),
+           "…and hands back the SAME assignment ids, so a sheet that retried "
+           "can still refresh the right card",
+           "%s vs %s" % (first.get("assignment_ids"),
+                         second.get("assignment_ids")))
+
+    # ⚠️ THE ROW COUNT IS THE PROOF, NOT THE FLAG. A route could answer
+    # `replayed: true` and insert anyway.
+    st, rows = rest("GET", "/rest/v1/assignments?class_id=eq.%s&title=eq.%s"
+                           "&select=id" % (FX.C_KS3_A, urllib.parse.quote(title)),
+                    t_teacher)
+    n = len(rows) if isinstance(rows, list) else -1
+    record(n == 1,
+           "…and the class holds exactly ONE assignment with that title, not "
+           "two — the week does not list the same homework twice",
+           "%d row(s) titled %r" % (n, title))
+
+    # A DIFFERENT ref is a different set, or the guard would make a teacher
+    # unable to set the same topic twice on purpose.
+    st3, third = post_set(t_teacher, **dict(kw, client_ref=str(uuid.uuid4()),
+                                            title=title + " again"))
+    record(st3 == 200 and third.get("replayed") is False
+           and sorted(third.get("assignment_ids") or []) !=
+           sorted(first.get("assignment_ids") or []),
+           "a NEW client_ref sets a new piece of work — the guard is an "
+           "idempotency key, not a lock on the topic",
+           "status %s replayed=%s" % (st3, third.get("replayed")))
+
+    for bad in (None, "", "not-a-uuid", 42):
+        st, out = call("POST", "/api/teacher/set-work", t_teacher, {
+            "class_ids": [FX.C_KS3_A], "tier": "medium", "scope_kind": "topic",
+            "scope_ref": unit["id"], "question_ids": ids,
+            "title": TITLE + " · no ref", "due_at": DUE.isoformat(),
+            "release_at": None, "client_ref": bad})
+        if not record(st == 400 and (out or {}).get("error") == "bad_client_ref",
+                      "a submit with client_ref %r is refused — without one "
+                      "there is no way to make a retry safe" % (bad,),
+                      "status %s %s" % (st, json.dumps(out)[:110])):
+            break
+
+
+# ── (c) THE TIER IS NOT A COLUMN A TEACHER MAY WRITE ───────────────────
+#
+# ⚠️ THE ROUTE BEING ADMIN-ONLY IS NOT THE SAME CLAIM AS THE COLUMN BEING
+# PROTECTED. `POST /api/admin/class-tier` checks `standing.schoolAdmin` in the
+# backend — but `classes` is a table a signed-in teacher can already UPDATE
+# through PostgREST for the things a teacher legitimately changes, and a
+# class's tier decides WHICH QUESTIONS A CHILD IS SERVED. A teacher who can
+# PATCH it can move their whole class onto Higher content from the browser
+# console, and every check that goes through the route would still be green.
+#
+# So the seal is in the DATABASE, and this asks the database directly, with a
+# real teacher's JWT and no backend in the way.
+def check_tier_write_seal(t_teacher, t_admin):
+    print("\n   who may move a class's tier")
+
+    st, before = rest("GET", "/rest/v1/classes?id=eq.%s&select=tier,"
+                             "tier_pathway_source" % FX.C_KS4_COMB, t_admin)
+    was = (before[0] if isinstance(before, list) and before else {})
+
+    st, out = rest("PATCH", "/rest/v1/classes?id=eq." + FX.C_KS4_COMB,
+                   t_teacher, {"tier": "higher"}, prefer="return=representation")
+    st2, after = rest("GET", "/rest/v1/classes?id=eq.%s&select=tier,"
+                             "tier_pathway_source" % FX.C_KS4_COMB, t_admin)
+    now = (after[0] if isinstance(after, list) and after else {})
+
+    # ⚠️ THE ROW IS THE PROOF, NOT THE STATUS. PostgREST answers an UPDATE that
+    # matched no row with a cheerful 200 and an empty array, and a policy that
+    # merely hides the row would give the same 200 — so "it was refused" and
+    # "it silently did nothing" and "it worked" are three different things that
+    # can all look alike from the status line alone. Read the tier back.
+    record(now.get("tier") == was.get("tier"),
+           "a teacher's own JWT cannot move `classes.tier` through PostgREST "
+           "— the seal is in the database, not only in the route",
+           "tier %r before, %r after, PATCH answered %s"
+           % (was.get("tier"), now.get("tier"), st))
+    record(now.get("tier_pathway_source") == was.get("tier_pathway_source"),
+           "…and nothing was stamped `admin` by an edit that did not happen",
+           "source %r → %r" % (was.get("tier_pathway_source"),
+                               now.get("tier_pathway_source")))
+
+    # ⚠️ AND THE ADMIN ROUTE MUST STILL WORK, or "nobody can change it" would
+    # pass this pair and break the one screen that repairs a mis-imported class.
+    st, ok = call("POST", "/api/admin/class-tier", t_admin,
+                  {"class_id": FX.C_KS4_COMB, "tier": "higher",
+                   "pathway": "combined", "subject": None})
+    record(st == 200 and (ok.get("class") or {}).get("tier") == "higher",
+           "…while the admin route still moves it, so the seal is a seal and "
+           "not a wall", "status %s %s" % (st, json.dumps(ok)[:160]))
+    call("POST", "/api/admin/class-tier", t_admin,
+         {"class_id": FX.C_KS4_COMB, "tier": "foundation",
+          "pathway": "combined", "subject": None})
+
+
+# ── (d) A FIGURE CANNOT BE SET, AND THE COUNTS MUST BE HONEST ──────────
+#
+# ⚠️ A KS3 QUESTION MAY CARRY A `figure`, AND THE SHEET CANNOT DRAW ONE. The
+# sheet renders a stem and four options; a question whose stem says "look at
+# the diagram" with no diagram is unanswerable, and it is unanswerable for the
+# CHILD, in the assignment, after a teacher has set it in good faith.
+def check_figures_and_counts(t_teacher, scopes):
+    print("\n   figures, and counts that mean what they say")
+
+    import ks3_data.question_bank as qb
+    with_figure = set()
+    for entry in qb.load_bank():
+        for q in entry["questions"]:
+            if q.get("figure"):
+                with_figure.add(q["id"])
+
+    seen, offered = 0, []
+    for topic in (scopes["ks3"].get("tree") or [])[:8]:
+        for tier in ("easy", "medium", "hard"):
+            st, body = preview(t_teacher, FX.C_KS3_A, tier, "topic",
+                               topic["id"], 20)
+            for q in (body or {}).get("picked") or []:
+                seen += 1
+                if q.get("figure") is not None or q["id"] in with_figure:
+                    offered.append("%s (%s @ %s)" % (q["id"], topic["id"], tier))
+    record(not offered,
+           "preview_no_figures — no KS3 question carrying a figure is ever "
+           "offered; the sheet draws a stem and four options and cannot draw "
+           "a diagram",
+           "%d question(s) sampled across 8 units × 3 tiers; %d figure-bearing "
+           "rows exist in the bank and none was served"
+           % (seen, len(with_figure)) if not offered
+           else "OFFERED: %s" % offered[:5])
+
+    # ── /scope's count is what the chips cap against; preview is what
+    #    arrives. They must agree, or a chip promises a question the pool
+    #    cannot deliver.
+    disagreed = []
+    for key, cid, tier in (("ks3", FX.C_KS3_A, "medium"),
+                           ("comb", FX.C_KS4_COMB, "foundation"),
+                           ("bi", FX.C_KS4_TRIPLE, "higher")):
+        for topic in (scopes[key].get("tree") or [])[:6]:
+            n = (topic.get("counts") or {}).get(tier, 0)
+            if not n:
+                continue
+            st, body = preview(t_teacher, cid, tier, "topic", topic["id"], 20)
+            avail = (body or {}).get("available")
+            picked = len((body or {}).get("picked") or [])
+            # `available` de-duplicates by normalised stem, so it may be
+            # SMALLER than the count — never larger, and the number picked
+            # must be exactly what was asked for or exactly what exists.
+            if avail is None or avail > n or picked != min(20, avail):
+                disagreed.append("%s @ %s: scope %s, available %s, picked %s"
+                                 % (topic["id"], tier, n, avail, picked))
+    record(not disagreed,
+           "scope_counts_agree_with_preview — every count the chips cap "
+           "against is at least what preview can serve, and a request for "
+           "twenty returns exactly what exists",
+           "18 topic(s) across three cohorts agree" if not disagreed
+           else "; ".join(disagreed[:4]))
+
+
+# ── (g) SWAP IN FLIGHT, THEN A COUNT CHIP ──────────────────────────────
+#
+# ⚠️ TWO ASYNC WRITES INTO ONE LIST, AND THE SECOND REBUILDS IT. Swap replaces
+# `S.picked[i]` when its answer lands; a count chip calls `/preview` and
+# replaces `S.picked` ENTIRELY. Press Swap and tap a chip before it returns and
+# the swap's answer can be written into a list that no longer exists — leaving
+# `S.picked` holding a question that is NOT on the screen. The teacher reads ten
+# rows, presses Set work, and the class is set something the teacher never saw.
+#
+# It is invisible in every other way: the DOM is consistent, the count is right,
+# and only the ids disagree.
+def check_swap_count_race(p, scopes):
+    print("\n   Swap in flight, then a count chip")
+
+    big = None
+    for t in scopes["comb"].get("tree") or []:
+        if (t.get("counts") or {}).get("foundation", 0) >= 20:
+            big = t["id"]
+            break
+    if not big or not goto_detail(p, FX.C_KS4_COMB, "foundation", "topic", big):
+        return record(False, "reach a twenty-deep topic for the swap race")
+
+    # Hold the swap two seconds so the race is arranged rather than hoped for.
+    p.eval("""(function(){
+      if (window.__mrbSwapHeld) { return true; }
+      window.__mrbSwapHeld = true;
+      var real = window.fetch;
+      window.fetch = function (u, o) {
+        var slow = String(u).indexOf('set-work/swap') > -1;
+        return real(u, o).then(function (r) {
+          if (!slow) { return r; }
+          return new Promise(function (res) {
+            setTimeout(function () { res(r); }, 2000); });
+        });
+      };
+      return true;})()""")
+
+    p.eval("""(function(){var b=document.querySelector(
+        '[data-sw="swap"]:not([disabled])'); if(b){b.click();} return !!b;})()""")
+    time.sleep(0.2)
+    p.eval("""(function(){var cs=document.querySelectorAll(
+        '[data-sw="count-chips"] .sw-chip');
+        for(var i=0;i<cs.length;i++){if(cs[i].textContent==='5'){cs[i].click();}}
+        return true;})()""")
+    wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]').length === 5")
+    time.sleep(3.0)          # the held swap lands here, into the new list
+
+    # ⚠️ THE SUBMITTED IDS ARE READ FROM THE SHEET'S OWN PAYLOAD, and the rows
+    # from the DOM. Comparing the DOM with itself would prove nothing.
+    got = p.eval(r"""(function(){
+      var rows = document.querySelectorAll('[data-sw="question"]');
+      var onScreen = [];
+      for (var i = 0; i < rows.length; i++) {
+        onScreen.push((rows[i].querySelector('[data-sw="stem"]').textContent
+                       || '').trim());
+      }
+      return {rows: onScreen.length, stems: onScreen};})()""")
+
+    # Set it, and read back what actually reached the database.
+    p.eval("""(function(){var t=document.querySelector('[data-sw="title"]');
+        t.value=%s; t.dispatchEvent(new Event('input',{bubbles:true}));})()"""
+           % json.dumps(TITLE + " · swap race"))
+    time.sleep(0.3)
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    ok = wait_for(p, "(function(){var t=document.querySelector("
+                     "'[data-sw=\"toast\"]');return t && !t.hidden;})()")
+    record(ok and got["rows"] == 5,
+           "the sheet shows five rows after the chip, with a swap still in "
+           "flight behind it", "%d row(s) on screen" % got["rows"])
+    return got["stems"]
+
+
+def check_swap_race_stored(t_teacher, stems):
+    """The other half of (g): what was STORED must be what was on screen."""
+    if not stems:
+        return
+    st, rows = rest("GET", "/rest/v1/assignments?class_id=eq.%s&title=eq.%s"
+                           "&select=id&order=created_at.desc&limit=1"
+                    % (FX.C_KS4_COMB,
+                       urllib.parse.quote(TITLE + " · swap race")), t_teacher)
+    if not (isinstance(rows, list) and rows):
+        return record(False, "the swap-race set reached the database")
+    aid = rows[0]["id"]
+    st, body = call("GET", "/api/class/current-assignment?class_id=%s"
+                    "&assignment_id=%s" % (FX.C_KS4_COMB, aid), t_teacher)
+    stored = [(q.get("text") or "").strip()
+              for q in (body or {}).get("questions") or []]
+
+    def norm(x):
+        return re.sub(r"\s+", " ", str(x or "")).strip()
+
+    on = [norm(x) for x in stems]
+    db = [norm(x) for x in stored]
+    record(len(db) == len(on) and set(db) == set(on),
+           "swap_count_race — the questions STORED are exactly the questions "
+           "that were on the screen; a swap landing after a count chip cannot "
+           "smuggle a row the teacher never read into the set",
+           "%d on screen, %d stored, identical" % (len(on), len(db))
+           if set(db) == set(on)
+           else "on screen but not stored: %s\n        stored but not shown: %s"
+                % (sorted(set(on) - set(db))[:2], sorted(set(db) - set(on))[:2]))
+
+
+# ── (h) DUE BEFORE THE HOLD IS REFUSED IN THE SHEET, NOT BY THE SERVER ─
+#
+# The held school opens in eight days. A teacher choosing Release Now and a due
+# date inside that window has chosen work that is overdue on the day it appears.
+# The server refuses it (`bad_due_at`), and a sheet that let the press happen
+# would show a teacher a failure they could have been shown a second earlier.
+def check_hold_validation(p, scopes):
+    print("\n   Release Now, due before the school opens")
+
+    got = pick_topic(scopes["ks3"], 1, "medium")
+    if not got:
+        return record(False, "a unit to try in the held school")
+    _n, unit, _s = got
+    if not goto_detail(p, FX.C_KS3_HELD, "medium", "topic", unit["id"]):
+        return record(False, "reach Detail on the held school's class")
+
+    p.eval("""(function(){var t=document.querySelector('[data-sw="title"]');
+        t.value=%s; t.dispatchEvent(new Event('input',{bubbles:true}));})()"""
+           % json.dumps(TITLE + " · must not send"))
+    # Release Now, and a due date two days out — inside the eight-day hold.
+    p.eval("""(function(){var cs=document.querySelectorAll(
+        '[data-sw="release-chips"] .sw-chip');
+        for(var i=0;i<cs.length;i++){if(cs[i].textContent==='Now'){
+          cs[i].click();}} return true;})()""")
+    soon = p.eval("""(function(){
+        var f=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',
+          year:'numeric',month:'2-digit',day:'2-digit'});
+        var o={}; f.formatToParts(new Date()).forEach(function(x){o[x.type]=x.value;});
+        var d=new Date(Date.UTC(+o.year,+o.month-1,+o.day)+2*86400000);
+        return d.toISOString().slice(0,10);})()""")
+    p.eval("""(function(){var d=document.querySelector('[data-sw="due-date"]');
+        d.value=%s; d.dispatchEvent(new Event('input',{bubbles:true}));
+        d.dispatchEvent(new Event('change',{bubbles:true}));})()""" % json.dumps(soon))
+    time.sleep(0.5)
+
+    state = p.eval("""(function(){
+      var pri = document.querySelector('[data-sw="primary"]');
+      var dd = document.querySelector('[data-sw="due-date"]');
+      var dt = document.querySelector('[data-sw="due-time"]');
+      var h = document.querySelector('[data-sw="hold"]');
+      return {disabled: !!pri.disabled,
+              dueOutlined: dd.classList.contains('sw-bad')
+                        || dt.classList.contains('sw-bad'),
+              holdShown: !h.hidden, holdText: (h.textContent||'').trim(),
+              due: dd.value};})()""")
+    record(state["disabled"] and state["dueOutlined"],
+           "hold_due_before_release — the primary is DISABLED and the Due "
+           "field is outlined; the teacher is stopped before the press, not "
+           "after it", json.dumps(state))
+    record(state["holdShown"]
+           and state["holdText"].startswith("Assignments open"),
+           "…and the one factual line says WHEN, which is the only thing that "
+           "makes the refusal actionable", repr(state["holdText"]))
+
+    # ⚠️ AND NOTHING WAS SENT. A disabled button that still fires would look
+    # identical from the screen.
+    n = p.eval("performance.getEntriesByType('resource').filter(function(r){"
+               "return r.name.indexOf('/api/teacher/set-work') > -1 "
+               "&& r.name.indexOf('set-work/') < 0;}).length")
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    time.sleep(1.0)
+    n2 = p.eval("performance.getEntriesByType('resource').filter(function(r){"
+                "return r.name.indexOf('/api/teacher/set-work') > -1 "
+                "&& r.name.indexOf('set-work/') < 0;}).length")
+    record(n2 == n,
+           "…and pressing the disabled primary sends NOTHING — a POST count "
+           "of %d before and after" % n, "%d → %d" % (n, n2))
+
+
+# ── (i) OPENED FROM THE CLASSES SCREEN, NOTHING IS PRESELECTED ─────────
+#
+# ⚠️ `classes.html` HAS NO CLASS IN ITS URL, so the sheet's opening class is
+# `this.CLASSES[0]` — whichever class happens to sort first. Preselecting it is
+# a sheet that has quietly decided, on a screen showing twenty classes, which
+# one the teacher meant. The press that follows sets real work on a real class
+# the teacher did not choose.
+#
+# And once a class IS chosen, the rest of the list is no longer all selectable:
+# cohort is what makes two classes safe to set the same work on, so a class of
+# another cohort must go dead rather than be offered and then refused by the
+# server with `cohort_mismatch`.
+def check_classes_screen_open(p, base):
+    print("\n   the sheet opened from the classes screen")
+
+    if not goto_ready(p, "%s/teacher/classes.html?env=test&api=%s"
+                      % (base, PAGE_API),
+                      "!!(window.MRBSetWork && window.MRBSetWork.open)",
+                      settle=6.0):
+        return record(False, "the classes screen loads with the sheet module")
+
+    pressed = p.eval(r"""(function(){
+      var bs = document.querySelectorAll('button, a');
+      for (var i = 0; i < bs.length; i++) {
+        if ((bs[i].textContent || '').trim() === 'Set work'
+            && bs[i].offsetParent !== null) { bs[i].click(); return true; }
+      }
+      return false;})()""")
+    if not (pressed and wait_for(p, "document.querySelectorAll("
+                                    "'[data-sw=\"class\"]').length > 0")):
+        return record(False, "the classes screen's Set work opens the sheet",
+                      "pressed %s" % pressed)
+
+    state = p.eval("""(function(){
+      var rs = document.querySelectorAll('[data-sw="class"]'), on = [];
+      for (var i = 0; i < rs.length; i++) {
+        if (rs[i].getAttribute('aria-pressed') === 'true') {
+          on.push(rs[i].getAttribute('data-sw-ref')); } }
+      return {rows: rs.length, selected: on,
+              primary: !!document.querySelector('[data-sw="primary"]').disabled,
+              step: document.querySelector(
+                '[data-sw="overlay"]').getAttribute('data-sw-step')};})()""")
+    record(state["rows"] > 0 and not state["selected"] and state["primary"],
+           "classes_screen_no_preselect — the sheet opens on the Classes step "
+           "with NOTHING chosen and Next disabled, rather than deciding for "
+           "the teacher which of %d classes they meant" % state["rows"],
+           json.dumps(state))
+
+    # ── and after the first pick, the other cohorts go dead ───────────
+    picked = p.eval("""(function(){var rs=document.querySelectorAll(
+        '[data-sw="class"]'); if(!rs.length){return null;}
+        rs[0].click(); return rs[0].getAttribute('data-sw-ref');})()""")
+    time.sleep(0.4)
+    after = p.eval("""(function(){
+      var rs = document.querySelectorAll('[data-sw="class"]');
+      var on = [], dead = 0, live = 0;
+      for (var i = 0; i < rs.length; i++) {
+        if (rs[i].getAttribute('aria-pressed') === 'true') {
+          on.push(rs[i].getAttribute('data-sw-ref')); }
+        if (rs[i].getAttribute('aria-disabled') === 'true' || rs[i].disabled) {
+          dead++; } else { live++; } }
+      return {selected: on, dead: dead, live: live, rows: rs.length,
+              primary: !!document.querySelector('[data-sw="primary"]').disabled};
+      })()""")
+    record(after["selected"] == [picked] and after["primary"] is False,
+           "…one tap selects exactly that class and nothing else, and Next "
+           "comes alive", json.dumps(after))
+    record(after["dead"] + after["live"] == after["rows"]
+           and after["live"] >= 1,
+           "classes_screen_cohort_locks — every row is now either live (same "
+           "cohort) or dead (another cohort); a class the server would refuse "
+           "with `cohort_mismatch` is not offered at all",
+           "%d live, %d dead, of %d"
+           % (after["live"], after["dead"], after["rows"]))
+    p.eval("window.MRBSetWork.close()")
+
+
+# ── (e) THE ADMIN SCREEN REPAINTS AFTER A SAVE ─────────────────────────
+#
+# ⚠️ DRIVING THE ROUTE IS NOT DRIVING THE SCREEN, and the gap between them is
+# where `.select()` lives. `POST /api/admin/class-tier` is already proved to
+# write and to audit. What that says nothing about is whether the PAGE then
+# shows the new value — and a screen that saves correctly and repaints stale is
+# the shape a head of department reads as "it didn't save", so they press it
+# again, and again.
+def check_admin_repaint(p, base, t_admin):
+    print("\n   the admin screen after a save")
+
+    if not goto_ready(p, "%s/teacher/admin.html?env=test&api=%s"
+                      % (base, PAGE_API),
+                      "document.body && document.body.innerText.length > 200",
+                      settle=7.0):
+        return record(False, "the admin screen loads")
+
+    found = p.eval("""(function(){
+      var sels = document.querySelectorAll('select');
+      var out = [];
+      for (var i = 0; i < sels.length; i++) {
+        out.push({id: sels[i].id || sels[i].name || '',
+                  n: sels[i].options.length,
+                  v: sels[i].value,
+                  label: (sels[i].getAttribute('aria-label') || '')});
+      }
+      return {selects: out, text: document.body.innerText.slice(0, 400)};})()""")
+    record(bool(found["selects"]),
+           "the admin screen renders its class-cohort selectors",
+           "%d select(s): %s" % (len(found["selects"]),
+                                 [s["id"] or s["label"] for s in
+                                  found["selects"]][:6]))
+    if not found["selects"]:
+        return
+
+    # Change the tier through the SCREEN and read the screen back.
+    before = json.loads(json.dumps(found["selects"]))
+    changed = p.eval("""(function(){
+      var sels = document.querySelectorAll('select'), out = null;
+      for (var i = 0; i < sels.length; i++) {
+        var s = sels[i], opts = [];
+        for (var j = 0; j < s.options.length; j++) { opts.push(s.options[j].value); }
+        if (opts.indexOf('higher') > -1 && opts.indexOf('foundation') > -1) {
+          s.value = (s.value === 'higher') ? 'foundation' : 'higher';
+          s.dispatchEvent(new Event('change', {bubbles: true}));
+          out = {idx: i, to: s.value};
+          break; } }
+      return out;})()""")
+    if not changed:
+        return record(False, "a tier selector with both tiers exists on the "
+                             "admin screen", json.dumps(before)[:220])
+    time.sleep(0.4)
+    p.eval("""(function(){var bs=document.querySelectorAll('button');
+        for(var i=0;i<bs.length;i++){var t=(bs[i].textContent||'').trim();
+          if(/^(Save|Apply|Update)/i.test(t) && bs[i].offsetParent!==null){
+            bs[i].click(); return t;}} return false;})()""")
+    time.sleep(2.5)
+
+    after = p.eval("""(function(){var sels=document.querySelectorAll('select');
+        var s=sels[%d]; return s ? s.value : null;})()""" % changed["idx"])
+    record(after == changed["to"],
+           "admin_repaint_after_save — the selector still shows the value that "
+           "was saved, rather than snapping back to the old one",
+           "set to %r, screen shows %r" % (changed["to"], after))
+
+    # ⚠️ AND THE DATABASE AGREES. A screen that keeps the new value locally and
+    # saved nothing looks identical.
+    st, rows = rest("GET", "/rest/v1/classes?id=in.(%s,%s,%s)&select=name,tier,"
+                           "tier_pathway_source&order=name"
+                    % (FX.C_KS4_COMB, FX.C_KS4_TRIPLE, FX.C_KS4_SEPS), t_admin)
+    record(isinstance(rows, list) and any(r.get("tier") == changed["to"]
+                                          for r in rows),
+           "…and a class really does hold that tier in the database",
+           json.dumps(rows)[:240])
+    # Put every KS4 fixture class back where its name says.
+    for cid in (FX.C_KS4_COMB, FX.C_KS4_TRIPLE, FX.C_KS4_SEPS):
+        t, pth, sub = FX.rule_for(
+            {FX.C_KS4_COMB: "10b/Sc5", FX.C_KS4_TRIPLE: "10a/Bi1",
+             FX.C_KS4_SEPS: "10c/Ph1"}[cid])
+        call("POST", "/api/admin/class-tier", t_admin,
+             {"class_id": cid, "tier": t, "pathway": pth, "subject": sub})
+
+
+# ── (f) TWENTY QUESTIONS, AS THE CHILD MEETS THEM ──────────────────────
+#
+# ⚠️ TWENTY IS THE NEW NUMBER AND NOTHING DOWNSTREAM WAS BUILT FOR IT. Every
+# automatic assignment in the estate is TEN (`ASSIGNMENT_SIZE`), so the student
+# page, its progress dots, its scroller and its submit have only ever been met
+# by ten. Twenty is the ceiling Set work v2 offers a teacher, and the first
+# time anybody finds out whether the page can carry it must not be a Year 8
+# class on a Monday morning.
+def set_twenty(t_teacher, scopes):
+    """Set a twenty-question KS3 assignment on 8a/Sc1. Returns its title."""
+    best = None
+    for t in scopes["ks3"].get("tree") or []:
+        n = (t.get("counts") or {}).get("medium", 0)
+        if n >= 20 and (best is None or n > best[1]):
+            best = (t["id"], n)
+    if not best:
+        record(False, "a KS3 unit deep enough for twenty at Medium")
+        return None
+    unit, n = best
+    st, prev = preview(t_teacher, FX.C_KS3_A, "medium", "topic", unit, 20)
+    ids = [q["id"] for q in (prev.get("picked") or [])]
+    if len(ids) != 20:
+        record(False, "twenty questions preview on %s" % unit,
+               "got %d of 20 from a pool of %d" % (len(ids), n))
+        return None
+    title = TITLE + " · twenty"
+    st, made = post_set(t_teacher, class_ids=[FX.C_KS3_A], tier="medium",
+                        scope_ref=unit, question_ids=ids, title=title)
+    if not record(st == 200, "a twenty-question set is written",
+                  "status %s, unit %s" % (st, unit)):
+        return None
+    aid = made["assignment_ids"][0]
+    st, back = rest("GET", "/rest/v1/assignment_questions?assignment_id=eq.%s"
+                           "&select=position&order=position" % aid, t_teacher)
+    pos = [r["position"] for r in back] if isinstance(back, list) else []
+    record(pos == list(range(1, 21)),
+           "…with twenty question rows at positions 1..20, none dropped",
+           "%d row(s), positions %s…%s" % (len(pos), pos[:3], pos[-2:])
+           if pos else "no rows")
+    return title
+
+
+def check_student_twenty(p, base, title):
+    """The child's page, with twenty questions on it."""
+    print("\n   the child opens a twenty-question set")
+    if not title:
+        return
+    if not goto_ready(p, "%s/student/class.html?class=%s&env=test&api=%s"
+                      % (base, FX.C_KS3_A, PAGE_API),
+                      "document.body && document.body.innerText.length > 200",
+                      settle=7.0):
+        return record(False, "the student class page loads")
+
+    body = p.eval("document.body.innerText") or ""
+    record(title in body,
+           "student_sees_twenty — the twenty-question set is on the child's "
+           "class page", "looked for %r" % title)
+
+    got = p.eval("""(function(){
+      var d = document.documentElement;
+      return {sw: d.scrollWidth, cw: d.clientWidth,
+              bad: /\\bnull\\b|\\bundefined\\b|\\bNaN\\b|Week null/.test(
+                     document.body.innerText || ''),
+              chars: (document.body.innerText||'').length};})()""")
+    record(got["sw"] <= got["cw"] + 1 and not got["bad"],
+           "…and the page does not scroll sideways at 390px or say null with "
+           "twenty on it",
+           "scrollWidth %d ≤ %d, %d characters" % (got["sw"], got["cw"],
+                                                   got["chars"]))
+
+    # Open the assignment itself and count what the child is actually given.
+    if not goto_ready(p, "%s/student/assignment.html?class=%s&env=test&api=%s"
+                      % (base, FX.C_KS3_A, PAGE_API),
+                      "document.body && document.body.innerText.length > 100",
+                      settle=7.0):
+        return record(False, "the student assignment page loads")
+    a = p.eval("""(function(){
+      var d = document.documentElement;
+      return {sw: d.scrollWidth, cw: d.clientWidth,
+              chars: (document.body.innerText||'').length,
+              bad: /\\bnull\\b|\\bundefined\\b|\\bNaN\\b/.test(
+                     document.body.innerText || '')};})()""")
+    record(a["sw"] <= a["cw"] + 1 and not a["bad"] and a["chars"] > 100,
+           "…and the assignment page draws at 390px with no null",
+           "scrollWidth %d ≤ %d, %d characters" % (a["sw"], a["cw"], a["chars"]))
