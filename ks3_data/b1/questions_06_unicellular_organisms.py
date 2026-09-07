@@ -474,8 +474,9 @@ QUESTIONS = [
                 "inside itself. Does that settle whether it is a whole "
                 "organism?",
         "options": [
-            {"text": "Yes — anything that hunts and eats another cell must be "
-                     "an organism.", "correct": False,
+            {"text": "Yes — anything that hunts down another cell and "
+                     "swallows it whole must be an organism in its own "
+                     "right.", "correct": False,
              "why": "A white blood cell does exactly that inside you, and it "
                     "is part of an organism. Behaviour is the least reliable "
                     "evidence there is."},
@@ -484,11 +485,12 @@ QUESTIONS = [
              "why": "Your white blood cells engulf bacteria in precisely this "
                     "way. That is why engulfing settles nothing."},
             {"text": "No — it is far too small a thing for anyone to watch "
-                     "and judge.", "correct": False,
+                     "it closely enough to judge what it "
+                     "is.", "correct": False,
              "why": "It can be watched under a microscope. The reason it "
                     "settles nothing is that cells inside a body do it too."},
-            {"text": "No — a white blood cell engulfs bacteria the same way, "
-                     "and it is part of you.", "correct": True},
+            {"text": "No — a white blood cell engulfs bacteria the same way "
+                     "and is part of you.", "correct": True},
         ],
         "figure": None,
     },
@@ -631,23 +633,24 @@ QUESTIONS = [
                 "with water and squeezing it out, and so does an Amoeba. No "
                 "cell in your body has one. What does that tell you?",
         "options": [
-            {"text": "That your own cells are watertight in a way a pond "
-                     "organism's cells simply are not.", "correct": False,
+            {"text": "That your own cells are completely watertight in a way "
+                     "that the cells of a pond organism simply are "
+                     "not.", "correct": False,
              "why": "Water crosses your cell membranes constantly. The "
                     "difference is that the fluid around your cells is held "
                     "steady, so nothing builds up."},
-            {"text": "That pond organisms are more advanced, because they "
-                     "control their own water.", "correct": False,
-             "why": "It is not a ranking. It is a job your body does for your "
-                    "cells and a free-living cell has to do for itself."},
-            {"text": "That a contractile vacuole is what makes something a "
-                     "unicellular organism.", "correct": False,
+            {"text": "That pond organisms are more advanced at controlling "
+                     "their water.", "correct": False,
+             "why": "It is not a ranking. It is a job your body does for "
+                    "your cells and a free-living cell has to do for itself."},
+            {"text": "That having a contractile vacuole is what makes a "
+                     "single cell a whole unicellular "
+                     "organism.", "correct": False,
              "why": "A bacterium has none and is a complete organism. The "
                     "vacuole is one answer to living in fresh water, not a "
                     "definition."},
             {"text": "That a free-living cell manages its own water, while "
-                     "your body does that job for your cells.",
-             "correct": True},
+                     "your body does it for you.", "correct": True},
         ],
         "figure": None,
     },

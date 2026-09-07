@@ -523,19 +523,21 @@ QUESTIONS = [
         "text": "An oak tree stands in the same spot for two hundred years. "
                 "How can movement still be one of its life processes?",
         "options": [
-            {"text": "Movement can happen inside an organism — roots push "
-                     "down, leaves turn to the light.", "correct": True},
-            {"text": "It cannot. A tree fails that one, and a living thing is "
-                     "allowed to fail one.", "correct": False,
+            {"text": "Movement can happen inside it — roots push down, "
+                     "leaves turn to the light.", "correct": True},
+            {"text": "It cannot. A tree fails that one, and a living thing "
+                     "is allowed to fail one of the seven "
+                     "processes.", "correct": False,
              "why": "No allowance is being made anywhere. The tree really "
                     "does move — the movement is inside it, rather than "
                     "across the ground."},
-            {"text": "The wind moves its branches for it, and being moved "
-                     "counts as movement.", "correct": False,
-             "why": "Being pushed by something else is not the organism's own "
-                    "doing. A wooden fence panel moves in the wind as well."},
-            {"text": "A tree does travel, very slowly, over the whole two "
-                     "hundred years.", "correct": False,
+            {"text": "The wind moves its branches and its leaves for it, and "
+                     "being moved counts as movement.", "correct": False,
+             "why": "Being pushed by something else is not the organism's "
+                    "own doing. A wooden fence panel moves in the wind as "
+                    "well."},
+            {"text": "A tree does travel, very slowly, over the two hundred "
+                     "years.", "correct": False,
              "why": "It does not travel at all — the trunk stands where the "
                     "acorn landed. What moves is inside it: water up the "
                     "stem, roots down into the soil."},
@@ -573,23 +575,23 @@ QUESTIONS = [
         "text": "A worker bee never reproduces in its whole life. Does that "
                 "stop it being alive?",
         "options": [
-            {"text": "Yes — reproduction is one of the seven, so anything "
-                     "that never does it is not alive.", "correct": False,
+            {"text": "Yes — reproduction is one of the seven life processes, "
+                     "so anything that never does it is not "
+                     "alive.", "correct": False,
              "why": "An acorn does three of the seven and is alive. A score "
                     "out of seven settles nothing; being made of cells "
                     "settles it."},
-            {"text": "No — it is made of cells, and the seven describe what "
-                     "living things do rather than deciding it.",
-             "correct": True},
+            {"text": "No — it is made of cells, and the seven only describe "
+                     "what it does.", "correct": True},
             {"text": "No — it counts because the queen reproduces on behalf "
-                     "of the whole colony.", "correct": False,
+                     "of every worker in the colony.", "correct": False,
              "why": "What another bee does cannot make this one alive. What "
                     "settles it is that this bee is built from cells."},
-            {"text": "Yes, until it lays eggs — then it would count as fully "
+            {"text": "Yes, until it lays eggs — then it would count as "
                      "alive.", "correct": False,
              "why": "Nothing switches on. An acorn that never sprouts is "
-                    "alive the whole time it sits in the drawer, for the same "
-                    "reason."},
+                    "alive the whole time it sits in the drawer, for the "
+                    "same reason."},
         ],
         "figure": None,
     },
@@ -602,23 +604,25 @@ QUESTIONS = [
                 "student says they are really one process, because both are "
                 "about food. What is the difference?",
         "options": [
-            {"text": "There is none — MRS GREN splits one process in two so "
-                     "that the letters spell a word.", "correct": False,
+            {"text": "There is none — MRS GREN splits one process into two "
+                     "so that the letters spell out a word you can "
+                     "remember.", "correct": False,
              "why": "The letters are a memory trick, not the reason the two "
                     "are separate. Taking food in and releasing energy from "
                     "it are different jobs."},
-            {"text": "Nutrition is what animals do, and respiration is what "
-                     "plants do.", "correct": False,
-             "why": "Every living thing does both. A plant makes its own food "
-                    "and then respires to release the energy from it, exactly "
-                    "as you do."},
-            {"text": "Respiration means breathing air in and out; nutrition "
-                     "means eating.", "correct": False,
+            {"text": "Nutrition is for animals and respiration is for "
+                     "plants.", "correct": False,
+             "why": "Every living thing does both. A plant makes its own "
+                    "food and then respires to release the energy from it, "
+                    "exactly as you do."},
+            {"text": "Respiration means breathing air in and out, and "
+                     "nutrition means eating and digesting your "
+                     "food.", "correct": False,
              "why": "Breathing is not one of the seven at all. Respiration "
                     "is the reactions inside cells, and it happens in things "
                     "that never breathe."},
-            {"text": "Nutrition is taking in or making food; respiration is "
-                     "releasing energy from it inside cells.", "correct": True},
+            {"text": "Nutrition is taking in or making food; respiration "
+                     "releases energy from it in cells.", "correct": True},
         ],
         "figure": None,
     },
@@ -629,21 +633,21 @@ QUESTIONS = [
                 "and starts new fires. A student asks what the seven life "
                 "processes are for, if that passes most of them.",
         "options": [
-            {"text": "They are out of date, and biologists no longer use "
-                     "them.", "correct": False,
+            {"text": "They are out of date, and biologists have long since "
+                     "stopped using them.", "correct": False,
              "why": "They are used constantly, because a description of what "
-                    "living things do is exactly what a biologist needs. They "
-                    "were never meant to be a test."},
-            {"text": "They describe what living things do. They were never "
-                     "what decides whether something is alive.",
-             "correct": True},
-            {"text": "The fire only appears to do them, and really does none "
-                     "of the seven.", "correct": False,
+                    "living things do is exactly what a biologist needs. "
+                    "They were never meant to be a test."},
+            {"text": "They describe what living things do, not what is "
+                     "alive.", "correct": True},
+            {"text": "The fire only appears to do them, and really carries "
+                     "out none of the seven processes.", "correct": False,
              "why": "It genuinely does several, in the plain sense of the "
                     "words — which is why the candle flame lights six lamps. "
                     "Denying that dodges the point."},
-            {"text": "They work perfectly well, but only on animals, which is "
-                     "how a fire slips through them.", "correct": False,
+            {"text": "They work perfectly well as a test, but only on "
+                     "animals, which is how a fire slips through "
+                     "them.", "correct": False,
              "why": "They apply to an oak, a yeast cell and you alike. What "
                     "lets a fire through is that the seven were never a test "
                     "of what is alive."},
@@ -657,15 +661,16 @@ QUESTIONS = [
                 "student writes it down as “Anything made of cells is "
                 "alive.” Is that the same rule?",
         "options": [
-            {"text": "No — it has been turned round, and a wooden spoon is "
-                     "made of cells and is not alive.", "correct": True},
-            {"text": "Yes — it is the same rule, written the other way "
-                     "round.", "correct": False,
+            {"text": "No — it is turned round: a wooden spoon is made of "
+                     "cells and is not alive.", "correct": True},
+            {"text": "Yes — it is the same rule, just written the other way "
+                     "round, so it claims the same thing.", "correct": False,
              "why": "Turning a rule round changes what it claims. “Every "
                     "living thing is made of cells” says nothing about a "
                     "spoon or a lump of coal, and neither is alive."},
-            {"text": "No — the rule is that a thing is alive if it carries "
-                     "out enough of the seven.", "correct": False,
+            {"text": "No — the rule is really that a thing is alive if it "
+                     "carries out enough of the seven life "
+                     "processes.", "correct": False,
              "why": "That is the idea the whole lesson exists to kill. Six "
                     "out of seven does not make a candle flame alive."},
             {"text": "No — nothing that is not alive contains any cells at "

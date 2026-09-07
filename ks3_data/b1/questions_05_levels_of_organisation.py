@@ -430,18 +430,18 @@ QUESTIONS = [
                 "does that show about a tissue?",
         "options": [
             {"text": "That a tissue works only when its cells are of several "
-                     "different kinds", "correct": False,
+                     "different kinds arranged side by side", "correct": False,
              "why": "A tissue is similar cells, not different ones. Several "
                     "unlike tissues together make an organ."},
-            {"text": "That a tissue is simply a larger version of one of its "
-                     "cells", "correct": False,
+            {"text": "That a tissue is simply a much larger version of one "
+                     "of the cells that make it up", "correct": False,
              "why": "A rung up is a different kind of thing, not a bigger "
                     "one. What the layer adds is arrangement — cells side by "
                     "side with no gaps."},
-            {"text": "That similar cells packed together can do something "
-                     "none of them could do alone", "correct": True},
-            {"text": "That each palisade cell must catch far more light than "
-                     "it appears to", "correct": False,
+            {"text": "That similar cells packed together do what none of "
+                     "them could do alone", "correct": True},
+            {"text": "That each palisade cell catches more light than it "
+                     "seems to", "correct": False,
              "why": "Each one still catches a speck. The layer works because "
                     "thousands of them stand shoulder to shoulder, leaving "
                     "nothing to get past."},
@@ -478,22 +478,23 @@ QUESTIONS = [
         "band": "standard",
         "text": "Which rung is the brain on, and why?",
         "options": [
-            {"text": "An organ system, because it controls the whole body",
-             "correct": False,
-             "why": "What it controls does not set the rung. The brain is the "
-                    "main organ of the nervous system, not the system "
+            {"text": "An organ system, because it controls the nerves "
+                     "running through the body", "correct": False,
+             "why": "What it controls does not set the rung. The brain is "
+                    "the main organ of the nervous system, not the system "
                     "itself."},
-            {"text": "A tissue, because it is nerve cells all doing one job",
-             "correct": False,
+            {"text": "A tissue, because it is nothing but nerve cells, all "
+                     "packed together doing one job", "correct": False,
              "why": "It holds more than nerve tissue — blood vessels, "
                     "connective tissue and membranes as well. Several unlike "
                     "tissues together make an organ."},
-            {"text": "An organism, because it could survive alone if it were "
-                     "kept supplied", "correct": False,
+            {"text": "An organism, because it could survive on its own if it "
+                     "were kept supplied with blood and "
+                     "oxygen", "correct": False,
              "why": "An organism is a whole living thing. A brain outside a "
                     "body is an organ with nothing bringing it blood."},
-            {"text": "An organ, because it is several different tissues "
-                     "working together on one job", "correct": True},
+            {"text": "An organ, because it is different tissues working "
+                     "together", "correct": True},
         ],
         "figure": None,
     },
@@ -582,24 +583,25 @@ QUESTIONS = [
         "text": "A single muscle cell shortens by a tiny amount. A whole "
                 "muscle lifts your arm. Which statement about that is right?",
         "options": [
-            {"text": "The muscle lifts your arm because its cells are far "
-                     "bigger than the ones grown in a dish", "correct": False,
+            {"text": "The muscle lifts your arm because each of its cells is "
+                     "far bigger than a single cell grown alone in a "
+                     "dish", "correct": False,
              "why": "The cells are the same size either way. What the muscle "
                     "adds is thousands of them pulling together in one "
                     "direction."},
-            {"text": "The muscle is on the same rung as the cell, since it is "
-                     "only more of the same thing", "correct": False,
+            {"text": "The muscle is on the same rung as the cell, since it "
+                     "is only more of exactly the same "
+                     "thing", "correct": False,
              "why": "A rung up is a different kind of thing. Similar cells "
                     "arranged so their pulls add up is a tissue, and a named "
                     "muscle is an organ."},
-            {"text": "The cell must be doing something different from what it "
-                     "does on its own", "correct": False,
+            {"text": "The cell must be doing something different from what "
+                     "it does alone", "correct": False,
              "why": "It does the same thing either way — it shortens. What "
                     "has changed is that thousands of them are arranged to "
                     "shorten together."},
-            {"text": "Thousands of cells arranged to pull the same way is a "
-                     "tissue, and the arrangement is what does it",
-             "correct": True},
+            {"text": "Thousands of cells pulling the same way is a tissue, "
+                     "and the arrangement does it", "correct": True},
         ],
         "figure": None,
     },

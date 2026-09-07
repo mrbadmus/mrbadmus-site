@@ -611,17 +611,18 @@ QUESTIONS = [
         "text": "A nerve cell's mitochondria are not spread evenly along its "
                 "length. Where are most of them, and why?",
         "options": [
-            {"text": "In the middle of the long cable, where the signal has "
-                     "the furthest to travel.", "correct": False,
+            {"text": "In the middle of the long cable, because that is where "
+                     "the signal is furthest from either end of the "
+                     "cell.", "correct": False,
              "why": "The middle is pure cable, and the signal jumps along it "
                     "cheaply. The expensive part is at the ends."},
-            {"text": "Just under the fatty sheath, which has to be held in "
-                     "place.", "correct": False,
+            {"text": "Just under the fatty sheath, which has to be built and "
+                     "held in place along the whole cable.", "correct": False,
              "why": "The sheath is made and maintained by the other cells "
                     "wrapped around it. The mitochondria gather where the "
                     "signal is handed on."},
-            {"text": "At the branched ends, because passing the signal to the "
-                     "next cell is the expensive part.", "correct": True},
+            {"text": "At the branched ends, where passing the signal to the "
+                     "next cell is expensive.", "correct": True},
             {"text": "Around the nucleus, so the instructions are always "
                      "powered.", "correct": False,
              "why": "The nucleus needs no power station beside it. The energy "
@@ -639,22 +640,22 @@ QUESTIONS = [
                 "egg. What does that show?",
         "options": [
             {"text": "That the tail is the adaptation that really matters, "
-                     "since neither of the two cells got anywhere.",
-             "correct": False,
+                     "since neither of the two cells got anywhere near the "
+                     "egg.", "correct": False,
              "why": "One of them had a perfect tail and still failed. A tail "
                     "with nothing powering it is a motor with no fuel."},
-            {"text": "That a sperm cell needs only one of the two, and both "
-                     "of these were unlucky.", "correct": False,
+            {"text": "That a sperm cell needs only one of the two "
+                     "adaptations, and both of these were simply "
+                     "unlucky.", "correct": False,
              "why": "Neither arrived, which is the point. Each was missing "
                     "what the other had, and each failed for it."},
-            {"text": "That the midpiece matters more, because energy has to "
-                     "come before movement.", "correct": False,
+            {"text": "That the midpiece matters more, because the energy has "
+                     "to come before the movement.", "correct": False,
              "why": "Ranking them misses it. The cell with a full midpiece "
                     "and no tail went nowhere at all, with all the energy it "
                     "needed."},
-            {"text": "That the tail and the mitochondria are one adaptation — "
-                     "a structure and its power supply, useless apart.",
-             "correct": True},
+            {"text": "That the tail and the mitochondria are one adaptation, "
+                     "useless apart.", "correct": True},
         ],
         "figure": None,
     },
@@ -742,21 +743,22 @@ QUESTIONS = [
                 "and is still dished in on both sides, calling it the best of "
                 "both. What is wrong with the design?",
         "options": [
-            {"text": "Nothing — the two features are independent, so a cell "
-                     "could have both.", "correct": False,
+            {"text": "Nothing — the two features are independent of each "
+                     "other, so a single cell could easily have "
+                     "both.", "correct": False,
              "why": "They are not independent. The nucleus sits where the "
-                    "dimple has to be, and it fills the space the haemoglobin "
-                    "would use."},
+                    "dimple has to be, and it fills the space the "
+                    "haemoglobin would use."},
             {"text": "The nucleus takes the room the dimple and the "
-                     "haemoglobin need, so it cannot have both.",
-             "correct": True},
+                     "haemoglobin need.", "correct": True},
             {"text": "A cell with a nucleus could not fold through a "
-                     "capillary, whatever shape it was.", "correct": False,
+                     "capillary, whatever shape it was "
+                     "given.", "correct": False,
              "why": "Shape is what decides folding, and plenty of cells with "
                     "nuclei change shape. The real cost here is the room the "
                     "nucleus takes up."},
-            {"text": "The nucleus would use up the oxygen the cell is "
-                     "carrying.", "correct": False,
+            {"text": "The nucleus would use up some of the oxygen that the "
+                     "cell is meant to carry.", "correct": False,
              "why": "Using oxygen is what mitochondria do, and this cell has "
                     "none of those either. The nucleus's cost is space."},
         ],

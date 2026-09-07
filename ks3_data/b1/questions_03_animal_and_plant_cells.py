@@ -619,7 +619,7 @@ QUESTIONS = [
                 "it, and why?",
         "options": [
             {"text": "Very little — a plant cell can release energy from "
-                     "light directly when it needs to.", "correct": False,
+                     "light directly whenever it needs to.", "correct": False,
              "why": "Nothing in a cell releases energy from light. Light is "
                     "used to make food, and the energy is released from that "
                     "food afterwards, in the mitochondria."},
@@ -628,12 +628,12 @@ QUESTIONS = [
              "why": "It lives for a while on the food it has already stored. "
                     "What it cannot do is make any more."},
             {"text": "It carries on as normal, because the mitochondria make "
-                     "food when the chloroplasts cannot.", "correct": False,
+                     "food in the dark when the chloroplasts "
+                     "cannot.", "correct": False,
              "why": "Mitochondria release energy from food; they never make "
                     "any. In the dark nothing at all is making food."},
-            {"text": "It starves: with no light the chloroplasts cannot work, "
-                     "so no new food is made for the mitochondria.",
-             "correct": True},
+            {"text": "It starves: with no light the chloroplasts cannot make "
+                     "food.", "correct": True},
         ],
         "figure": None,
     },
@@ -644,22 +644,22 @@ QUESTIONS = [
                 "floating inside the vacuole, and says that is where the "
                 "plant keeps its green. Which correction is right?",
         "options": [
-            {"text": "Chloroplasts sit in the cytoplasm; the vacuole holds "
-                     "cell sap, and the green is inside the chloroplasts.",
-             "correct": True},
-            {"text": "Chloroplasts sit inside the nucleus, which is why the "
-                     "nucleus is pushed to one side.", "correct": False,
-             "why": "The nucleus is pushed aside by the vacuole, and it holds "
-                    "instructions rather than chloroplasts. The chloroplasts "
-                    "are out in the cytoplasm."},
+            {"text": "Chloroplasts sit in the cytoplasm, not the vacuole, "
+                     "and the green is inside them.", "correct": True},
+            {"text": "Chloroplasts sit packed inside the nucleus, which is "
+                     "why the nucleus is pushed to one "
+                     "side.", "correct": False,
+             "why": "The nucleus is pushed aside by the vacuole, and it "
+                    "holds instructions rather than chloroplasts. The "
+                    "chloroplasts are out in the cytoplasm."},
             {"text": "The drawing is right — the vacuole is where a plant "
-                     "cell keeps the green colour it shows outside.",
-             "correct": False,
+                     "cell keeps the green colour that its leaves show "
+                     "outside.", "correct": False,
              "why": "The vacuole holds a watery sap of sugars and salts, and "
                     "it is not green. The green is chlorophyll, held inside "
                     "chloroplasts in the cytoplasm."},
             {"text": "Chloroplasts sit inside the cell wall, which is why a "
-                     "leaf looks green from outside.", "correct": False,
+                     "leaf looks green.", "correct": False,
              "why": "The wall is a layer of cellulose and holds nothing "
                     "inside it. The chloroplasts are in the cytoplasm, "
                     "crowded up towards the light."},
@@ -674,20 +674,21 @@ QUESTIONS = [
                 "membranes are stronger. Why is that wrong?",
         "options": [
             {"text": "Because it is the leaf cell's vacuole doing the "
-                     "holding, not its membrane.", "correct": False,
+                     "holding and resisting, not its "
+                     "membrane.", "correct": False,
              "why": "The vacuole is filling with water, not resisting it. "
                     "What stops the leaf cell splitting is the stiff wall "
                     "outside the membrane."},
             {"text": "Because the leaf cell lets no water in at all, so "
-                     "nothing pushes on its membrane.", "correct": False,
+                     "there is nothing pushing outwards on its "
+                     "membrane.", "correct": False,
              "why": "Water enters the leaf cell too — that is why it becomes "
                     "firm. It survives because the wall pushes back, not "
                     "because the water stays out."},
-            {"text": "Because the two membranes are the same kind of layer, "
-                     "and it is the wall outside that pushes back.",
-             "correct": True},
-            {"text": "Because a cheek cell has no membrane, so there was "
-                     "never anything there to burst.", "correct": False,
+            {"text": "Because both membranes are alike, and it is the wall "
+                     "outside that pushes back.", "correct": True},
+            {"text": "Because a cheek cell has no membrane, so nothing was "
+                     "there to burst.", "correct": False,
              "why": "Every cell here has a membrane, and it is the cheek "
                     "cell's membrane that splits. What it lacks is a wall "
                     "around it."},

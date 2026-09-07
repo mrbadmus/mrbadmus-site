@@ -582,24 +582,25 @@ QUESTIONS = [
                 "found nothing. A friend tells her to turn to the ×40, "
                 "because there is more to see there. Why is that bad advice?",
         "options": [
-            {"text": "The ×40 objective shows less detail, so she would be "
-                     "going backwards.", "correct": False,
+            {"text": "The ×40 objective shows less detail than the ×4, so "
+                     "she would be going backwards in her "
+                     "hunt.", "correct": False,
              "why": "It shows more detail, which is exactly why it is "
                     "tempting. What it does not do is help her find "
                     "anything."},
             {"text": "On the ×40 objective the image would be far too dark "
-                     "for her to see anything at all in it.", "correct": False,
-             "why": "The lamp still lights it. The real problem is how little "
-                    "slide is in front of her, and how little of it is in "
-                    "focus at once."},
+                     "for her to see anything at all in the field of "
+                     "view.", "correct": False,
+             "why": "The lamp still lights it. The real problem is how "
+                    "little slide is in front of her, and how little of it "
+                    "is in focus at once."},
             {"text": "She should change the eyepiece instead of the "
                      "objective.", "correct": False,
              "why": "The eyepiece is fixed on a school microscope, and "
                     "swapping it would not help her search. The point is to "
                     "hunt where the field of view is widest."},
-            {"text": "On the ×40 objective she would search 0.45 mm of "
-                     "slide instead of 4.5 mm, so it is harder still.",
-             "correct": True},
+            {"text": "On the ×40 she searches 0.45 mm of slide instead of "
+                     "4.5 mm, so it is harder.", "correct": True},
         ],
         "figure": None,
     },
