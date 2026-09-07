@@ -250,16 +250,65 @@ def check_topics(t_teacher):
                  "distance-time-graphs", "electric-fields", "magnetic-fields"}
     offered = {r["lesson_slug"]: r.get("available", 0)
                for r in trip.get("topics") or []}
-    hit = sorted(s for s in COLLIDING if offered.get(s, 0) > 0)
-    record(not hit,
-           "KS4: no KS3 questions leak through a colliding lesson slug",
-           "leaked on: %s" % ", ".join(hit) if hit
-           else "all eight colliding slugs report available = 0")
-    record(trip.get("has_bank") is False,
-           "KS4: has_bank is false — the sheet says so rather than "
-           "offering an empty list")
-    record(all(r.get("available", 0) == 0 for r in trip.get("topics") or []),
-           "KS4: every lesson reports available = 0")
+
+    # ⚠️ RESHAPED BY MRB-332, AND THE SHAPE IS THE POINT (docs/ks4/merge-notes
+    # §2). This check used to assert `available == 0` on all eight, which was
+    # exactly right while KS4 had no pool: anything above zero could only be
+    # KS3 rows leaking through a shared slug.
+    #
+    # It cannot survive the pool, and the tempting repair is the WRONG one.
+    # Each of these eight now holds twelve KS3 bank rows AND twelve KS4 pool
+    # rows, so `available == 12` is true whether the route read the right
+    # table or the wrong one. Changing the assertion from `== 0` to `== 12`
+    # would produce a check that PASSES ON THE BUG IT EXISTS TO CATCH — worse
+    # than deleting it, because it would still read as coverage.
+    #
+    # What separates the two pools is row IDENTITY, not row count: a KS4 pool
+    # id begins `ks4-`, a KS3 bank id looks like `c1-04-h02`. So the question
+    # becomes "what is actually served", which means asking for the questions
+    # rather than the counts.
+    # ⚠️ THE ROUTE'S REAL SHAPE. It is GET, it keys on the class's own
+    # `sow_entry_id` rather than on a slug, and it answers `picked` — not a
+    # POST with `lesson_slug` answering `questions`, which is what this check
+    # was first written against and what made all eight report HTTP 404.
+    # A slug is not addressable here on purpose: `sowMatchesClass` 404s a
+    # scheme row outside the class's cohort, so the id has to come from the
+    # class's own topic list.
+    KS3_ID = re.compile(r"^[a-z]\d+-\d+-[a-z]\d+$")
+    sow_ids = {r.get("lesson_slug"): r.get("id")
+               for r in trip.get("topics") or []}
+    leaked, checked = [], []
+    for slug in sorted(COLLIDING):
+        if offered.get(slug, 0) <= 0 or not sow_ids.get(slug):
+            continue          # not on this class's scheme — nothing to leak
+        st3, prev = call("GET", "/api/teacher/set-work/preview?class_id=%s"
+                         "&sow_entry_id=%s&band=standard&count=10"
+                         % (FX.C_KS4_TRIPLE, sow_ids[slug]), t_teacher)
+        if st3 != 200:
+            leaked.append("%s: preview HTTP %s" % (slug, st3))
+            continue
+        checked.append(slug)
+        for q in prev.get("picked") or []:
+            qid = str(q.get("source_ref") or q.get("id") or "")
+            if KS3_ID.match(qid):
+                leaked.append("%s served KS3 id %s" % (slug, qid))
+            elif not qid.startswith("ks4-"):
+                leaked.append("%s served unrecognised id %s" % (slug, qid))
+    record(not leaked,
+           "KS4: the colliding slugs serve ks4- ids and never KS3 ones",
+           "%d slug(s) checked, every question a ks4- id" % len(checked)
+           if not leaked else "; ".join(leaked[:5]))
+
+    # ⊕ Both of these INVERT at MRB-332, and that is the ticket landing rather
+    # than something breaking. They asserted, correctly for MRB-331's branch,
+    # that KS4 had no pool at all.
+    record(trip.get("has_bank") is True,
+           "KS4: has_bank is true — the class has a pool of its own")
+    seeded = [r for r in trip.get("topics") or [] if r.get("available", 0) > 0]
+    record(bool(seeded),
+           "KS4: seeded subtopics report available > 0",
+           "%d of %d topic(s) offer questions"
+           % (len(seeded), len(trip.get("topics") or [])))
     return rows
 
 

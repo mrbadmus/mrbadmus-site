@@ -78,7 +78,22 @@ except ModuleNotFoundError:
 
 import ks4_data                          # noqa: E402
 
-BACKEND = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend"
+# ⚠️ THE CHECKOUT THIS DRIVE LAUNCHES `node server.js` FROM. This hardwired the
+# MAIN backend checkout, which is exactly the defect MRB-331 fixed in
+# `pool_ownership.py` and `set_work_drive.py` on 7 September — the main checkout
+# is a SHARED working copy and any session can leave it on any branch. This
+# lane's own work was what was sitting in it that morning.
+#
+# ⚠️ The dangerous direction is not the red. A drive pointed at a colleague's
+# branch that happens to satisfy the contract reports green about a backend
+# nobody is shipping, and nobody investigates a pass. So it takes an explicit
+# path, in the same shape and precedence as set_work_drive.py; the sibling repo
+# stays the default because that is what an ordinary machine has.
+BACKEND = (
+    (sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else None)
+    or os.environ.get("MRB_BACKEND")
+    or "/Users/midebadmus/Documents/GitHub/mrbadmus---backend"
+)
 PORT = 5532                              # not 5531 — set_work_drive owns that
 API = "http://127.0.0.1:%d" % PORT
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
@@ -111,7 +126,7 @@ def sign_in(email, pw, tries=4):
     to back has drawn a bare TLS reset from GoTrue before, and a drive that
     dies on that reads as a product failure."""
     key = anon_key()
-    url = FX.SUPABASE_URL + "/auth/v1/token?grant_type=password"
+    url = FX.env("SUPABASE_URL") + "/auth/v1/token?grant_type=password"
     body = json.dumps({"email": email, "password": pw}).encode()
     last = None
     for n in range(tries):
@@ -224,11 +239,23 @@ def check_topics(t_teacher, pool):
            "KS4 Triple Higher: most lessons now have banked questions",
            "%d of %d rows have available > 0" % (len(t_stocked), len(t_rows)))
 
-    # The count itself, where the pool is complete: twelve per subtopic.
-    twelves = [s for s, n in t_rows.items() if n == 12]
-    record(bool(twelves),
-           "KS4: subtopics report twelve available",
-           "%d subtopic(s) at exactly 12" % len(twelves))
+    # ⚠️ THE COUNT IS FOUR, NOT TWELVE, AND THAT IS CORRECT.
+    #
+    # A subtopic holds twelve questions — but `/set-work/topics` reports what is
+    # available AT ONE BAND, because `bankFor` applies `.eq('band', band)` and
+    # the route answers for a single band at a time. Twelve per subtopic is four
+    # easier, four standard, four harder, so a correctly stocked subtopic
+    # reports 4 here and a route that reported 12 would be ignoring the band.
+    #
+    # This drive asserted 12 and was wrong, not the product. Recorded rather
+    # than quietly corrected, because "the number I expected" is the weakest
+    # possible reason to change an assertion and the next reader deserves the
+    # arithmetic.
+    wrong = {s: n for s, n in t_rows.items() if n not in (0, 4)}
+    record(not wrong,
+           "KS4: every stocked subtopic reports four available — one band of twelve",
+           "%d stocked, all at 4" % len(t_stocked) if not wrong
+           else "off-band counts: %s" % dict(list(wrong.items())[:5]))
 
     # Scoping proved by DIFFERENCE, not by a count. A route ignoring tier and
     # pathway entirely would still return rows for both classes.
@@ -253,6 +280,53 @@ def check_topics(t_teacher, pool):
     return trip, comb
 
 
+# ── the route's real contract (⚠️ read at merge, not assumed) ────────────
+#
+# This drive was written against `POST …/preview {lesson_slug}`. MRB-331 shipped
+#     GET /api/teacher/set-work/preview?class_id=&sow_entry_id=[&count=][&band=]
+# and it answers `{picked, pool, available, reason}` — not `questions`. It keys
+# on the SCHEME ENTRY, not the slug, and deliberately 404s `sow_entry_not_found`
+# for a row outside the class's own cohort, because "that row exists but is not
+# yours" is a fact about another cohort's scheme.
+#
+# ⚠️ That 404 is why the helper below returns a THIRD state. A missing scheme
+# entry and an empty payload are different refusals — the first is the scheme
+# declining to offer the topic, the second is the pool declining to fill it —
+# and a check that treats them alike passes when the route is simply broken.
+# An earlier revision of this drive did exactly that: every preview 404'd and
+# two checks went green on "served 0".
+_TOPICS = {}
+
+
+def topics_for(t_teacher, class_id):
+    if class_id not in _TOPICS:
+        st, body = call("GET", "/api/teacher/set-work/topics?class_id=" + class_id,
+                        t_teacher)
+        _TOPICS[class_id] = (body.get("topics") or []) if st == 200 else []
+    return _TOPICS[class_id]
+
+
+def sow_id_for(t_teacher, class_id, slug):
+    """The class's own scheme-entry id for `slug`, or None if not on its scheme."""
+    for r in topics_for(t_teacher, class_id):
+        if r.get("lesson_slug") == slug:
+            return r.get("id")
+    return None
+
+
+def preview(t_teacher, class_id, slug, band="standard", count=10):
+    """(state, questions). state is 'ok' | 'not_on_scheme' | 'http <n>'."""
+    sow_id = sow_id_for(t_teacher, class_id, slug)
+    if not sow_id:
+        return "not_on_scheme", []
+    st, body = call("GET", "/api/teacher/set-work/preview?class_id=%s"
+                    "&sow_entry_id=%s&band=%s&count=%d"
+                    % (class_id, sow_id, band, count), t_teacher)
+    if st != 200:
+        return "http %s" % st, []
+    return "ok", list(body.get("picked") or [])
+
+
 def check_collision(t_teacher, pool):
     """⚠️ THE COLLISION, RESHAPED. See the module docstring.
 
@@ -270,13 +344,13 @@ def check_collision(t_teacher, pool):
         if slug not in pool_slugs(pool):
             missing.append(slug)
             continue
-        st, prev = call("POST", "/api/teacher/set-work/preview", t_teacher,
-                        {"class_id": FX.C_KS4_TRIPLE, "lesson_slug": slug,
-                         "band": "standard"})
-        if st != 200:
-            leaked.append("%s: preview %s" % (slug, st))
+        state, qs = preview(t_teacher, FX.C_KS4_TRIPLE, slug)
+        if state == "not_on_scheme":
+            missing.append(slug + " (not on this class's scheme)")
             continue
-        qs = prev.get("questions") or []
+        if state != "ok":
+            leaked.append("%s: preview %s" % (slug, state))
+            continue
         checked.append(slug)
         for q in qs:
             qid = str(q.get("source_ref") or q.get("id") or "")
@@ -304,13 +378,26 @@ def check_serving(t_teacher, pool):
     cls = ks4_data.classify()
     have = pool_slugs(pool)
 
-    # A subtopic BOTH classes are taught, so the two payloads are comparable
-    # and any difference is the content rule rather than the scheme.
-    base = sorted(s for s in have
+    # ⚠️ THE SUBTOPIC MUST BE ONE BOTH CLASSES ARE ACTUALLY OFFERED, and it is
+    # chosen from their topic lists rather than from the pool alphabetically.
+    #
+    # The pool holds all 264 subtopics; a fixture class is one year group at one
+    # week and is offered a fraction of them. Taking `sorted(pool)[0]` picked
+    # `abiotic-biotic-factors`, which is on neither class's scheme, so every
+    # preview answered `sow_entry_not_found` and the checks failed for a reason
+    # that had nothing to do with what they measure.
+    #
+    # Intersecting the two lists is also what makes the comparison mean
+    # anything: both classes can reach this row, so any DIFFERENCE in what comes
+    # back is the content rule rather than the scheme.
+    offered_both = ({r["lesson_slug"] for r in topics_for(t_teacher, FX.C_KS4_COMB)}
+                    & {r["lesson_slug"] for r in topics_for(t_teacher, FX.C_KS4_TRIPLE)})
+    base = sorted(s for s in have & offered_both
                   if cls[s]["tier"] == "foundation"
                   and not cls[s]["triple_only"])
     if not base:
-        record(False, "no base subtopic is authored yet — nothing to serve")
+        record(False, "no base subtopic is on BOTH classes' schemes — "
+                      "nothing comparable to serve")
         return None
     slug = base[0]
 
@@ -318,14 +405,10 @@ def check_serving(t_teacher, pool):
     for label, class_id, tier, pathway in (
             ("Foundation Combined", FX.C_KS4_COMB, "foundation", "combined"),
             ("Triple Higher", FX.C_KS4_TRIPLE, "higher", "triple")):
-        st, prev = call("POST", "/api/teacher/set-work/preview", t_teacher,
-                        {"class_id": class_id, "lesson_slug": slug,
-                         "band": "standard"})
-        if st != 200:
-            record(False, "%s: preview on %s" % (label, slug),
-                   "HTTP %s %s" % (st, prev))
+        state, qs = preview(t_teacher, class_id, slug)
+        if state != "ok":
+            record(False, "%s: preview on %s" % (label, slug), state)
             continue
-        qs = prev.get("questions") or []
         ok, detail = audit_payload(label, qs, pool, tier, pathway)
         record(ok, "%s is served only what it may be served" % label, detail)
         out[label] = qs
@@ -342,35 +425,49 @@ def check_full_set(t_teacher, pool):
     print("\n── the Triple Higher class gets the full set ──")
     cls = ks4_data.classify()
     have = pool_slugs(pool)
-    triple = sorted(s for s in have if cls[s]["triple_only"])
-    higher = sorted(s for s in have
+    # Same correction as check_serving: chosen from what the Triple Higher class
+    # is actually OFFERED, not from the pool alphabetically. A subtopic off its
+    # scheme previews as sow_entry_not_found and proves nothing either way.
+    offered_triple = {r["lesson_slug"] for r in topics_for(t_teacher, FX.C_KS4_TRIPLE)}
+    triple = sorted(s for s in have & offered_triple if cls[s]["triple_only"])
+    higher = sorted(s for s in have & offered_triple
                     if cls[s]["tier"] == "higher" and not cls[s]["triple_only"])
 
     for label, slugs in (("triple-only", triple), ("higher-only", higher)):
         if not slugs:
-            record(True, "no %s subtopic authored yet — not measurable"
+            record(True, "no %s subtopic on this class's scheme — not measurable"
                    % label)
             continue
         slug = slugs[0]
-        st, prev = call("POST", "/api/teacher/set-work/preview", t_teacher,
-                        {"class_id": FX.C_KS4_TRIPLE, "lesson_slug": slug,
-                         "band": "standard"})
-        served = len(prev.get("questions") or []) if st == 200 else 0
-        record(st == 200 and served > 0,
+        state, qs = preview(t_teacher, FX.C_KS4_TRIPLE, slug)
+        record(state == "ok" and qs,
                "Triple Higher reaches a %s subtopic (%s)" % (label, slug),
-               "%d question(s) served" % served if st == 200
-               else "HTTP %s" % st)
+               "%d question(s) served" % len(qs) if state == "ok"
+               else "preview %s" % state)
 
-        # And the Combined Foundation class must be REFUSED the same subtopic.
-        st2, prev2 = call("POST", "/api/teacher/set-work/preview", t_teacher,
-                          {"class_id": FX.C_KS4_COMB, "lesson_slug": slug,
-                           "band": "standard"})
-        served2 = len(prev2.get("questions") or []) if st2 == 200 else 0
-        record(served2 == 0,
-               "Combined Foundation is refused that same %s subtopic" % label,
-               "served %d — refusal reason %r"
-               % (served2, prev2.get("reason")) if served2 == 0
-               else "⚠️ served %d question(s) it may not have" % served2)
+        # ⚠️ AND THE COMBINED FOUNDATION CLASS MUST NOT REACH IT — but state
+        # WHICH refusal, because there are two and only one is this ticket's.
+        #
+        # On correct data the SCHEME refuses first: a triple-only or higher-only
+        # subtopic is not on a Combined Foundation class's scheme at all, so
+        # there is no scheme entry to preview and the pool filter is never
+        # consulted. That is the honest result and it is asserted as such.
+        #
+        # It would be easy, and wrong, to write this as "served 0" and call it
+        # proof of the content rule. An earlier revision did, and it went green
+        # while every preview in the run was 404ing. The content rule itself is
+        # proved where it can actually be exercised — test_ks4_bank_read.js
+        # calls bankFor() with each scope against real rows, including the
+        # Foundation-Triple and no-tier-no-pathway cases this route cannot
+        # reach. Two lines of defence, each tested where it lives.
+        state2, qs2 = preview(t_teacher, FX.C_KS4_COMB, slug)
+        record(state2 == "not_on_scheme" or not qs2,
+               "Combined Foundation cannot reach that same %s subtopic" % label,
+               "refused at the SCHEME — not on its list at all"
+               if state2 == "not_on_scheme" else
+               ("refused at the POOL — scheme offered it, 0 served"
+                if not qs2 else
+                "⚠️ served %d question(s) it may not have" % len(qs2)))
 
 
 def main():
@@ -388,7 +485,13 @@ def main():
         raise SystemExit("ks4_pool_drive: the pool is empty — author and "
                          "export first.")
 
-    FX.build()
+    # ⚠️ `seed`, not `build`. This drive was written against an earlier
+    # shape of MRB-331's fixture; the merged one exposes seed() /
+    # clear_work() / teardown(). docs/ks4/merge-notes.md says to read the
+    # seam's final form rather than assume it — this is that, and it is
+    # why the drive is run here rather than declared compatible.
+    FX.seed()
+    FX.clear_work()
     server = None
     try:
         server = subprocess.Popen(
