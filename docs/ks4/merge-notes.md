@@ -128,3 +128,54 @@ a duplicate. If in doubt, re-export.
 5. Merge the backend branch `feat/mrb332-ks4-pool` and deploy it **before**
    the frontend, per CLAUDE.md's API-contract rule.
 6. Run `ks4_pool_drive.py` and `set_work_drive.py`. Both green, or stop.
+
+
+---
+
+## ⊕ 7 Sep 2026 — what the merge run actually did, and two rulings
+
+**Rebased early, onto `origin/main` at `3b56144eb`, before MRB-331 landed.** The
+branch was 7 commits behind and `verify_week_truth.py` exists only on main, so
+the gate this ticket has to pass could not even be run from the old base. Clean
+rebase, no conflicts, and `build_all.py` was a no-op afterwards.
+`git merge-tree` against `feat/set-work` predicts no conflicts either — both
+lanes touch `gate_registry.py` and `pool_ownership.py`, in different regions.
+
+**⚠️ `verify_week_truth` is RED against a backend branch cut before MRB-330,
+and that is not a defect in this ticket.** Pointed at the `feat/mrb332-ks4-pool`
+worktree it reported the backend one week behind the week bar on every date,
+because that branch is based on MRB-327 and lacks MRB-330's Sunday roll. Green
+against the main checkout. Rebasing the backend branch onto backend `main` was
+tried and **abandoned deliberately**: the conflicts are between *MRB-331's* two
+commits and MRB-330, which is that lane's resolution to make, not this one's.
+The right order is to rebase the backend branch after MRB-331 is on backend
+main, and to require the gate green then, with `MRB_BACKEND` pointed at the
+worktree.
+
+### Ruling — the Rainford **KS3** overrides seed is PARKED (MRB-333)
+
+Not applied to production. Production's 183 live Rainford KS3 override rows
+stay for the 14 September go-live. See `rainford-ks3-sow-mapping.md` §2, now
+rewritten: its "no live conflict" note was true of TEST and false of production,
+and the seed's scoped `DELETE` would have taken all 183 rows first.
+
+### Ruling — the Rainford **KS4** overrides seed IS applied at Phase 3d
+
+Safe and additive: production holds **zero** KS4 override rows, and the delete
+is scoped to `key_stage = 'KS4'` and the school by name. 688 rows.
+⚠️ It has no functional effect today — nothing reads `scheme_of_work_overrides`
+(finding 12). It is reference data for a future feature.
+
+### The throwaway credential drifted, and it is NOT a gate finding
+
+Three drives failed HTTP 400 on sign-in during the receipt run
+(`teacher_admin_real`, `mrb328_import_picker_real`, `mrb328_card_prefetch`).
+The shared MRB-326 throwaway password is **`mrb326-throwaway`**, named in
+MRB-331's `f433d7399`; an older note said `mrb328-drive-only`. Re-run with the
+right credential, all three pass. **A credential failure must never be shipped
+under a GATE-OVERRIDE** — it is not a statement about the tree.
+
+The one genuine red is `teacher_admin_foreign_class`, inherited from main
+(a fixture time bomb: `admin_view_drive.py` pins `NOW = "2026-08-30"`), already
+overridden by MRB-330 and re-confirmed by MRB-331 on bare `origin/main`. It
+ships here under an override that names it as inherited.

@@ -206,7 +206,18 @@ what homework can ask.
 
 ---
 
-## 5. ⚠️ SCIENCE ERROR in a lesson page's own "common mistake" field
+## 5. ✅ FIXED 7 Sep — SCIENCE ERROR in a lesson page's own "common mistake" field
+
+> **Ruled and shipped.** You ruled this under standing science authority on
+> 7 September and it is now in the branch, commit *"parasites invert the
+> pyramid of NUMBERS, not of biomass"*. The sentence names the
+> phytoplankton→zooplankton case; parasites moved into the numbers clause,
+> where they belong, so the sentence still teaches the distinction it was
+> written to teach. Rebuilt via `build_all.py` — one page changed in each
+> tree. `ks4-pyramids-of-biomass-s02` was already correct and is untouched.
+> **The description below is kept as written, because it is the record of
+> why.**
+
 
 Found by the ecology author, which declined to write the question the brief was
 steering it toward. I have verified it against the source.
@@ -237,8 +248,9 @@ it, refused it, and wrote the real textbook case instead (sheep and ticks —
 numbers inverted at the top, biomass still a true pyramid). Had it not, this
 pool would now teach the misconception as fact.
 
-**I have not changed the lesson page.** Editing KS4 content is your science
-gate and outside this ticket.
+~~**I have not changed the lesson page.** Editing KS4 content is your science
+gate and outside this ticket.~~ — superseded by your ruling of 7 Sep; see the
+box at the top of this finding.
 
 ### ⚠️ This one now has a consequence, and it is the reason to act before ship
 
@@ -263,7 +275,8 @@ Here they contradict each other, and a diligent student is punished for it.
 the parasite example for the phytoplankton→zooplankton one that the same
 record's `higher` field already names correctly. The pool needs no change.
 
-This is the single item I would ask you to look at before this ships.
+~~This is the single item I would ask you to look at before this ships.~~
+Done.
 
 ---
 
@@ -333,3 +346,104 @@ Playwright 853 MB — and I left them alone.
 
 There is ~2.6 GB free. Below roughly 500 MB, gates crash in ways that look
 like real failures, so it is worth a clear-out before the next long session.
+
+---
+
+## 11. ⚠️ THE 14 SEPTEMBER ONE — KS4 Set work is empty for 489 of Rainford's 539 KS4 pupils
+
+Found on 7 September while preparing your live check, by reading production.
+**It is not the pool, not Set work, and not caused by this ticket.** It is the
+class rows, and it decides whether KS4 Set work does anything at all next week.
+
+`classes.tier` and `classes.science_pathway` are **null** on almost every
+Rainford KS4 class. Every KS4 `scheme_of_work_entries` row carries a non-null
+tier and pathway, and the backend's `schemeLessons()` matches a null class
+column against `is null` — so those classes match **zero** scheme rows, and the
+Set work topic picker has nothing to offer.
+
+Measured on production with the backend's own filter, 2026-27:
+
+| tier | pathway | classes | pupils | scheme rows the class can see |
+|---|---|---|---|---|
+| null | null (Y10) | 18 | 227 | **0** |
+| null | null (Y11) | 17 | 245 | **0** |
+| null | triple (Y10) | 1 | 17 | **0** |
+| higher | combined (Y11) | 1 | 33 | 103 |
+| higher | triple (Y11) | 1 | 17 | 132 |
+
+So **`11r/Sc1` and `11h/Ph1` work — 50 pupils — and the other 36 classes, 489
+pupils, get an empty picker.** `10h/Ph1` is in the broken set despite having a
+pathway, because its tier is null; both columns have to be set.
+
+⚠️ **The guard that produces this is correct and should not be loosened.** Its
+comment says so in as many words: a query that ignored tier and pathway would
+hand a Foundation Combined class the Higher Triple scheme, silently, with real
+lessons in it, on a page that looked completely normal. Failing closed is the
+right behaviour. The data is what is missing.
+
+**Three ways to close it, and the choice is yours:**
+
+1. **Set the columns.** A per-class `update`, once, from the school's own
+   knowledge of who sits which tier and pathway. Correct, and needs a human who
+   knows the answer for 36 classes.
+2. **Set them at import.** The roster CSV would need tier and pathway columns,
+   and `roster-import` would need to map them. Durable, but not a 14 September
+   change.
+3. **Ship KS4 Set work for the two classes that work** and leave the rest on
+   KS3-style automatic work until the columns are filled.
+
+I have changed nothing. This is real children's class data and the values are a
+matter of fact about the school, not something to infer — a guess here puts a
+Foundation child in front of Higher content, which is the exact harm the rest
+of this ticket exists to prevent.
+
+⊕ Note the direction of the failure, because it is the reassuring part: the
+null columns make Set work show **nothing**, never the wrong thing.
+
+---
+
+## 12. `scheme_of_work_overrides` is read by nothing — a school's SOW has no effect yet
+
+Worth knowing before you read the two Rainford mapping documents as though they
+change the product.
+
+Grepped across the backend, the frontend, the built output and the edge
+functions: **no code anywhere reads `public.scheme_of_work_overrides`.** The
+only references are the generators that write it (`rainford_sow.py`,
+`rainford_ks3_sow.py`, `ks3_seed_sow.py`) and the gate registry.
+`schemeLessons()` — the one function that turns a class into "this week's
+lessons" — reads `scheme_of_work_entries`, the platform default, and nothing
+else.
+
+So applying Rainford's KS4 override rows (688 of them) is **reference data**:
+safe, additive, and with no effect on what any teacher or child sees. That is
+not an argument against applying them — having the school's real sequence in
+the database is what a future "follow our own scheme" feature is built on — but
+it should not be mistaken for shipping that feature.
+
+It also means the per-subject drift below is, today, a statement about the
+**default** scheme's pacing rather than about anything Rainford will experience.
+
+**The drift, recorded as asked:** Rainford teaches roughly 46–55 lessons per
+subject per year (Y11 Biology 55, Y10 Chemistry 48, Y10 Physics 47) against 39
+teaching weeks. Their taught lesson therefore runs ahead of `academic_week` N
+from roughly mid-year, and automatic work — which composes from week N of the
+default sequence — trails what the class has actually covered. Teacher-set work
+is the cover for that: a teacher picks the subtopic, so it is always the one
+they have taught. It is a reason KS4 needs Set work more than KS3 does, not a
+defect in either.
+
+---
+
+## 13. Minor — `academic_years.is_current` is still on 2025-26
+
+On 7 September, `is_current` is `true` for 2025-26 and `false` for 2026-27. It
+is moved by hand on 1 September and has not been moved.
+
+**Not a hazard any more, and named so nobody re-fixes it in a panic.** MRB-307
+already removed the `is_current` fallback from `roster-import`, which is what
+enrolled 14 real students into last year's class in the first place, and
+`workingAcademicYear()`'s 30-day lookahead resolves the year correctly
+everywhere else. So this is cosmetic drift, not a live import risk. Still worth
+a one-line update before 14 September, so the flag stops disagreeing with the
+product.

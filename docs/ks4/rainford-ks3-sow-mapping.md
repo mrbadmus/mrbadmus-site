@@ -49,7 +49,30 @@ Mitigation, not a fix: every row carries its Rainford week label verbatim in
 query cannot. Making it queryable is a `calendar_week` column — a schema change,
 recorded here as the honest cost rather than smuggled into `academic_week`.
 
-### 2. ⚠️ This seed COLLIDES with the existing Rainford seed — open on Mide
+### 2. ✅ RULED 7 Sep 2026 — THIS SEED IS PARKED. DO NOT APPLY IT.
+
+> **Mide's ruling, 7 September.** Production's **183 live Rainford KS3 override
+> rows stay** for the 14 September go-live. This seed is parked as **MRB-333**,
+> post-go-live, and the blocker is *not* the honesty test below — the rows are
+> honest. The blocker is §1's own "honest cost": the calendar-week
+> representation has to be decided first, because that decision may change what
+> these rows should contain.
+>
+> ⚠️ **What made this urgent rather than theoretical.** The paragraph below says
+> "on TEST the old seed had never been applied, so applying this one caused no
+> live conflict." That is true of TEST and **false of production**, which was
+> not checked when this was written. Production holds **183 Rainford KS3
+> override rows** (Y7 90, Y8 90, Y9 3, created 16 Aug 2026, weeks 1–37). This
+> seed opens with a scoped `DELETE` and would have removed all 183 before
+> writing 162 different ones — a real school's live scheme, replaced, on a
+> choice this document itself parks on Mide.
+>
+> The generator and the seed file **stay in the repo**, retired nothing. See
+> finding 12 in `findings-for-mide.md`: nothing reads
+> `scheme_of_work_overrides` yet, so neither row set currently affects what a
+> teacher or child sees.
+
+### 2. ⚠️ This seed COLLIDES with the existing Rainford seed — the original note
 
 `supabase/seeds/20260726182000_ks3_school_schemes.sql` already claims **exclusive**
 ownership of Rainford's KS3 override rows and opens with the same scoped
