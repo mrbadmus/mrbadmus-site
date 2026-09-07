@@ -69,6 +69,26 @@ The four cohorts, from PLAN §1:
      a set — it silently shrinks the pool instead, and a scope reporting 20
      available then hands back 19.
 
+  5. THE FIFTY FLOOR, on the cells a teacher actually sets from. A teacher may
+     ask for twenty questions on one node, and asking for twenty out of twenty
+     hands the class the whole pool — so the same topic set twice running is
+     the same paper twice running, and a swap has nothing to swap to. Fifty is
+     the number the content lanes built to.
+
+     ⚠️ IT IS FLOORED ON TOPICS AND UNITS, NOT ON SUBTOPICS AND LESSONS, and
+     that distinction is the whole of it. A KS4 SUBTOPIC holds twelve to
+     forty; a KS3 LESSON holds four to sixteen. Flooring those at fifty would
+     demand four times the content that exists and would be a red on every
+     run — and it would be demanding the wrong thing, because a teacher
+     setting twenty on one subtopic is deliberately narrowing, and a narrow
+     pool is what narrow means. The TOPIC is the unit of "set them something
+     on Energy Changes", and it is the topic that has to be deep.
+
+     Floored per AUDIENCE, not per topic: `(topic, combined-foundation)`,
+     `(topic, combined-higher)`, `(topic, triple-foundation)`,
+     `(topic, triple-higher)` are four different pools and a topic can be deep
+     for one and thin for another. KS3 is floored per `(unit, tier)`.
+
 Plus: the SMALLEST CELL per key stage, which is the number that says whether
 the content lanes are finished. It is reported whether or not anything failed,
 because "the smallest KS4 cell is 4" is the fact a reader wants.
@@ -109,6 +129,10 @@ SUBJECTS = ("biology", "chemistry", "physics")
 KS4_TIERS = ("foundation", "higher")
 KS3_TIERS = ("easy", "medium", "hard")
 KS3_BAND_BY_TIER = {"easy": "easier", "medium": "standard", "hard": "harder"}
+
+# PLAN §5's threshold: a teacher may draw twenty from one node, and twenty out
+# of twenty is the whole pool.
+POOL_FLOOR = 50
 
 failures = []
 notes = []
@@ -303,9 +327,10 @@ def measure(label, nodes, index, tiers, keep, want_subject=None):
     """`keep(row, tier)` is the pool spec for this cohort. Returns
     (smallest, empties, shape_bad, purity_bad, dup_bad, cells, higher_only)."""
     smallest = None
-    empties, shape_bad, purity_bad, dup_bad = [], [], [], []
+    empties, shape_bad, purity_bad, dup_bad, thin = [], [], [], [], []
     cells = 0
     higher_only = 0
+    floored = 0
     for kind, ref, where, slugs, all_higher in nodes:
         for tier in tiers:
             cells += 1
@@ -329,6 +354,12 @@ def measure(label, nodes, index, tiers, keep, want_subject=None):
             if smallest is None or n < smallest[0]:
                 smallest = (n, "%s %s @ %s" % (kind, where, tier))
 
+            # ── 5 · the fifty floor, on TOPICS and UNITS only ─────────
+            if kind in ("topic", "unit"):
+                floored += 1
+                if n < POOL_FLOOR:
+                    thin.append("%s @ %s holds %d" % (where, tier, n))
+
             # 2 · MCQ shape
             for r in pool:
                 if r["n_options"] != 4 or r["n_correct"] != 1:
@@ -351,20 +382,27 @@ def measure(label, nodes, index, tiers, keep, want_subject=None):
                                    % (r["id"], seen[k], where, tier))
                 else:
                     seen[k] = r["id"]
-    return (smallest, empties, shape_bad, purity_bad, dup_bad, cells, higher_only)
+    return (smallest, empties, shape_bad, purity_bad, dup_bad, cells,
+            higher_only, thin, floored)
 
 
 def report(cohort, res, quiet):
-    smallest, empties, shape_bad, purity_bad, dup_bad, cells, higher_only = res
-    ok = not (empties or shape_bad or purity_bad or dup_bad)
+    (smallest, empties, shape_bad, purity_bad, dup_bad, cells, higher_only,
+     thin, floored) = res
+    ok = not (empties or shape_bad or purity_bad or dup_bad or thin)
     print("   %s %-26s %5d cells   smallest %s"
           % ("✅" if ok else "❌", cohort, cells,
              ("%d  (%s)" % smallest) if smallest else "— nothing at all"))
     if higher_only:
         print("        %d Higher-only node(s) render 0 at Foundation and fill "
               "at Higher — RISKS A5" % higher_only)
+    if floored:
+        print("        %d topic/unit pool(s) floored at %d — %s"
+              % (floored, POOL_FLOOR,
+                 "all clear" if not thin else "%d BELOW IT" % len(thin)))
     for name, bad in (("EMPTY", empties), ("not a four-option MCQ", shape_bad),
-                      ("out of pathway", purity_bad), ("duplicate stem", dup_bad)):
+                      ("out of pathway", purity_bad), ("duplicate stem", dup_bad),
+                      ("below the %d floor" % POOL_FLOOR, thin)):
         if not bad:
             continue
         fail(cohort, "%d %s" % (len(bad), name))
@@ -441,7 +479,9 @@ def main():
             print("   · %-24s %s" % (where, msg))
         return 1
     print("\n✅ set_work_scope_check: every offered node fills at every tier, "
-          "four options and one answer, in pathway, no repeated stem")
+          "four options and one answer, in pathway, no repeated stem,\n"
+          "   and every topic/unit pool is at or above the %d floor"
+          % POOL_FLOOR)
     return 0
 
 

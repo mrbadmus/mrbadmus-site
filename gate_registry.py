@@ -627,6 +627,35 @@ GATES = [
              "can ask for ten. `--db` runs the identical rule against what "
              "TEST holds, which is what the sheet actually serves."),
 
+    dict(name="set_work_unit",
+         cmd=["python3", "set_work_unit.py"],
+         speed="fast",
+         needs_env="MRB_BACKEND",
+         why="MRB-335 — SET WORK'S TWO PURE SUITES, WHICH EXISTED AND WERE "
+             "REACHABLE ONLY BY SOMEBODY REMEMBERING THEM. "
+             "`test_set_work_v2.js` lives in the BACKEND checkout and tests "
+             "`set-work-scope.js`: the class-name rule (against the same five "
+             "names the SQL function was verified on, because the SQL and the "
+             "JS are two copies of one rule and copies drift), the cohort, "
+             "the tree filter, the pool spec, the paper map's completeness "
+             "against the tree, and `pickRoundRobin`. "
+             "`tools/set_work_time_test.js` lives in THIS repo and tests the "
+             "sheet's London↔UTC helpers — the other half of the same "
+             "feature, and the half Python cannot test at all, because `Intl` "
+             "is the authority on the hour that happens twice and the browser "
+             "is where it lives. "
+             "⚠️ THESE ARE THE ONLY PLACE THE POOL SPEC IS PROVED AS A RULE "
+             "RATHER THAN AS DATA. `set_work_scope_check` measures the pool "
+             "against an independent statement of PLAN §1, and "
+             "`set_work_drive` measures the serving path; this measures the "
+             "backend's OWN `poolRowMatches` against a synthetic bank, which "
+             "is the only reading that can catch a spec that is correct in "
+             "shape and wrong in effect before it reaches either. "
+             "⚠️ It names its backend checkout the way `pool_ownership` does "
+             "— an argument, then `MRB_BACKEND`, then the sibling repo — "
+             "because the main checkout is a shared working copy and a gate "
+             "pointed at it reports green about code nobody is shipping."),
+
     dict(name="curriculum_tree_mirror",
          cmd=["python3", "tools/export_curriculum_tree.py", "--check"],
          speed="fast",

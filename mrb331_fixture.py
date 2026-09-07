@@ -260,50 +260,120 @@ def rule_for(name):
     return (r.get("tier"), r.get("pathway"), r.get("subject"))
 
 
-def normalise_ks4():
-    """Repair a KS4 fixture row an EARLIER run left disagreeing with its name.
-
-    ⚠️ THIS IS A MIGRATION FOR THE THROWAWAY WORLD, not a second seeding path,
-    and it exists because of one specific row. `10b/Sc1` was seeded on TEST as
-    combined FOUNDATION while its name said set 1 — so when MRB-335's backfill
-    ran, it correctly concluded that a person had overruled the rule and
-    stamped `tier_pathway_source = 'admin'`. Renaming it to `10b/Sc5` does not
-    undo that: the trigger only DERIVES on INSERT, and the row already exists.
-    Left alone, the fixture would carry a class whose cohort was a fossil of a
-    name it no longer has.
-
-    ⚠️ `tier_pathway_source` IS SENT EXPLICITLY, and that is what stops the
-    repair labelling itself. The trigger's UPDATE arm stamps `admin` when the
-    triple moves AND the source is unchanged from OLD; naming a new source
-    means the row records what actually decided it — the rule — rather than
-    recording this script as a head of department.
-    """
+def ks4_rows():
+    """The KS4 fixture classes as the database currently holds them."""
     ks4 = [(cid, name) for (cid, name, ks, *_r) in CLASSES if ks == "KS4"]
     if not ks4:
-        return
+        return [], {}
     st, rows = api("GET", "/rest/v1/classes?id=in.(%s)&select=id,name,tier,"
                           "science_pathway,science_subject,tier_pathway_source"
                    % ",".join(c for c, _n in ks4))
-    have = {r["id"]: r for r in rows} if isinstance(rows, list) else {}
-    fixed = []
+    return ks4, ({r["id"]: r for r in rows} if isinstance(rows, list) else {})
+
+
+def ks4_mismatches(ks4, have):
+    """Every KS4 fixture row whose cohort is not what its NAME says it is."""
+    out = []
     for cid, name in ks4:
         row = have.get(cid)
         if not row:
+            out.append((cid, name, "absent", None))
             continue
         want = rule_for(name)
         got = (row.get("tier"), row.get("science_pathway"),
                row.get("science_subject"))
-        if got == want and row.get("tier_pathway_source") == "rule":
+        if got != want or row.get("tier_pathway_source") != "rule":
+            out.append((cid, name,
+                        "%s src=%s" % ("/".join(str(g) for g in got),
+                                       row.get("tier_pathway_source")),
+                        "%s src=rule" % "/".join(str(w) for w in want)))
+    return out
+
+
+def normalise_ks4(fresh_ids):
+    """Read the KS4 rows back and, on a FRESH insert, assert rather than repair.
+
+    ⊕ MRB-335, second pass. The first version of this function read the rows
+    and repaired any that disagreed with their name — and it ran immediately
+    after the INSERT that the trigger had just filled. That is a repair placed
+    exactly where it can hide the thing the drive is about to measure: if
+    `classes_apply_tier_rule` stopped filling tomorrow, every fresh row would
+    come out NULL, this would quietly write the right answer in, and
+    `tier_default_matches_rule` would go green on a trigger that had died.
+    A fixture is allowed to build a world; it is not allowed to supply an
+    answer the checks are looking for.
+
+    So the two cases are now separated, and only one of them is a repair:
+
+      A ROW INSERTED BY THIS RUN is the trigger's own output. It is READ BACK
+      and ASSERTED. A mismatch is a hard failure with the row printed, because
+      the only thing that could have produced it is the trigger not doing its
+      job — and that is a finding about the database, not a mess to tidy.
+
+      A ROW THAT ALREADY EXISTED is a legacy row from an older seed, which the
+      trigger never touches: it only DERIVES on INSERT. `10b/Sc1` was seeded
+      as combined FOUNDATION while its name said set 1, so MRB-335's backfill
+      correctly stamped it `admin`, and renaming it to `10b/Sc5` cannot undo
+      that. Those are repaired, once, loudly, and named.
+
+    ⚠️ `tier_pathway_source` IS SENT EXPLICITLY ON THE REPAIR, and that is what
+    stops it labelling itself. The trigger's UPDATE arm stamps `admin` when the
+    triple moves AND the source is unchanged from OLD; naming a new source
+    means the row records what actually decided it — the rule — rather than
+    recording this script as a head of department.
+    """
+    ks4, have = ks4_rows()
+    if not ks4:
+        return
+
+    bad = ks4_mismatches(ks4, have)
+
+    # ── the assertion, on rows this run created ──────────────────────
+    fresh_bad = [b for b in bad if b[0] in fresh_ids]
+    if fresh_bad:
+        raise SystemExit(
+            ("mrb331_fixture: the class-name trigger did not fill %d row(s) "
+             "it had just inserted.\n"
+             "  `classes_apply_tier_rule` is what makes a KS4 class's cohort "
+             "follow its name (MRB-263 / MRB-335), and these rows came out of "
+             "the INSERT disagreeing with it. That is a finding about the "
+             "database, not something this fixture may write over — doing so "
+             "would make `tier_default_matches_rule` pass on a dead trigger.\n"
+             % len(fresh_bad))
+            + "\n".join("    %-9s is %s, the rule says %s"
+                         % (name, got, want) for _c, name, got, want in fresh_bad))
+    fresh_ok = [c for c, _n in ks4 if c in fresh_ids]
+    if fresh_ok:
+        print("  trigger   filled %d fresh KS4 row(s) from their names, all "
+              "src=rule" % len(fresh_ok))
+
+    # ── the repair, on rows that predate this run ────────────────────
+    fixed = []
+    for cid, name, got, want in bad:
+        if cid in fresh_ids:
             continue
+        w = rule_for(name)
         st, _ = api("PATCH", "/rest/v1/classes?id=eq." + cid,
-                    {"tier": want[0], "science_pathway": want[1],
-                     "science_subject": want[2], "tier_pathway_source": "rule"})
+                    {"tier": w[0], "science_pathway": w[1],
+                     "science_subject": w[2], "tier_pathway_source": "rule"})
         if st not in (200, 204):
             raise SystemExit("could not normalise %s: %s" % (name, st))
-        fixed.append("%s %s→%s" % (name, "/".join(str(g) for g in got),
-                                   "/".join(str(w) for w in want)))
+        fixed.append("%s %s → %s" % (name, got, want))
     if fixed:
-        print("  repaired  %s" % "; ".join(fixed))
+        print("  repaired  %d LEGACY row(s) the trigger never saw (it derives "
+              "on INSERT only): %s" % (len(fixed), "; ".join(fixed)))
+
+        # ⚠️ AND THE REPAIR IS ITSELF READ BACK. A PATCH that PostgREST
+        # accepted and matched no row answers 200 with an empty body — the
+        # same silent no-op `/api/class/auto-assignments` was rewritten to
+        # refuse. Never trust a write you did not read.
+        _ks4, again = ks4_rows()
+        still = ks4_mismatches(_ks4, again)
+        if still:
+            raise SystemExit(
+                "mrb331_fixture: the repair did not take on %d row(s): %s"
+                % (len(still), "; ".join("%s is %s" % (n, g)
+                                         for _c, n, g, _w in still)))
 
 
 def seed():
@@ -336,12 +406,17 @@ def seed():
     # a re-run PostgREST's `ON CONFLICT DO UPDATE` only touches the columns the
     # payload names, so a rename cannot disturb a cohort, and the trigger's
     # UPDATE arm (which stamps `admin` when the triple MOVES) never fires.
+    # ⚠️ WHICH ROWS THIS RUN CREATED IS READ BEFORE THE UPSERT, NOT AFTER.
+    # It is the only way to tell the trigger's own output from a legacy row —
+    # and telling them apart is what lets `normalise_ks4` ASSERT on the first
+    # and repair only the second.
+    _pre_ks4, pre_have = ks4_rows()
     upsert("classes", [
         {"id": cid, "school_id": sch, "academic_year_id": yr, "name": name,
          "key_stage": ks, "year_group": yg, "auto_assignments": auto}
         for (cid, name, ks, yg, sch, yr, auto) in CLASSES
     ])
-    normalise_ks4()
+    normalise_ks4({cid for cid, _n in _pre_ks4 if cid not in pre_have})
 
     teacher = ensure_user(TEACHER_EMAIL, pw)
     admin = ensure_user(ADMIN_EMAIL, pw)
