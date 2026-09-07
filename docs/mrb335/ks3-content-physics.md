@@ -362,6 +362,50 @@ prompt to read the stem, never as a finding on its own.
 
 ---
 
+## P9 · Static electricity — 3 lessons, 120 new rows (40 per band)
+
+Unit total: **52 / 52 / 52**. Thirteen per band on lessons 01–02, fourteen on
+lesson 03.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 charging by rubbing | e05–e17, s05–s17, h05–h17 |
+| 02 forces between charges | e05–e17, s05–s17, h05–h17 |
+| 03 electric fields | e05–e18, s05–s18, h05–h18 |
+
+Two ideas carry the unit and are attacked from every side. The first is that
+**rubbing separates charge and never makes it**: a row that asks where the
+charge came from (`h05`), one that rebuts the claim with a measurement of the
+duster (`h09`), one that shows both objects cannot be negative (`h11`), and one
+that names what is unchanged (`h12`). The second is that **attraction proves
+nothing and repulsion proves everything** — `p9-02-e06`, `e14`, `e17`, `s07`,
+`s13`, `s17`, `h07`, `h09` and `h16` each approach it from a different
+direction, because it is the discrimination a student most often loses.
+
+Lesson 03's rows keep the field as a property of the space rather than of what
+is in it: the test charge is trebled and the field does not move (`s05`), the
+air is pumped out and nothing changes (`s13`, `h08`), and a null point is no
+field rather than a weak one (`h07`).
+
+**Review fixes.** Three duplicate stems caught by the gate — `p9-03-s06` had
+reproduced the existing `s03`, `p9-03-s10` the existing `h02` (the metal lift),
+and the replacement written for `s10` then collided with `h04` (the charged
+comb and the water). All three were rewritten rather than nudged: the arrows
+between an unlike pair, what a doubled arrow length means for the force, and
+the comb held above and then below the stream. Twenty-nine length flags fixed.
+
+**A pattern the row-by-row read cannot see, and the fix for it.** Across the
+120 new rows the correct answer sat in slot 1 sixty-eight times and in slot 4
+twice — a tell worth more to a guessing student than most of the physics. The
+lane now has `phys_rebalance.py`, which walks a unit's new rows and swaps two
+option blocks wherever the correct answer sits in an over-used slot, moving it
+to the least-used one. It touches order only: the same four options, the same
+correct one, each `why` still attached to its own option (spot-checked, and the
+gate's "exactly one correct" and duplicate-answer-set checks both still pass).
+P9 went from 16 / 68 / 34 / 2 to **29 / 31 / 31 / 29**.
+
+---
+
 ## ⚠️ `git add` was scoped correctly and a commit still swept in another lane
 
 Found by the commander in this lane's **P5 commit `586aaa0c4`**, which carried
