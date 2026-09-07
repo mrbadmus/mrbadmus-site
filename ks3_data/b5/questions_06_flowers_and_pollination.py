@@ -372,4 +372,156 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-06-e05",
+        "band": "easier",
+        "text": "In which part of a flower are pollen grains made?",
+        "options": [
+            {"text": "The stigma", "correct": False,
+             "why": "The stigma is the surface at the top of the carpel where "
+                    "pollen lands. It receives grains rather than making "
+                    "them."},
+            {"text": "The anther", "correct": True},
+            {"text": "The ovule", "correct": False,
+             "why": "An ovule sits inside the ovary and holds the female "
+                    "gamete nucleus. It is the other half of the pairing."},
+            {"text": "The nectary", "correct": False,
+             "why": "The nectary makes nectar, the sugary liquid that pays a "
+                    "visiting insect. It makes no gametes at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-06-e06",
+        "band": "easier",
+        "text": "After fertilisation, what does the ovary of a flower "
+                "become?",
+        "options": [
+            {"text": "The seed", "correct": False,
+             "why": "One ovule becomes one seed. The ovary is the chamber "
+                    "those ovules sat in, so it becomes what surrounds them."},
+            {"text": "The stigma", "correct": False,
+             "why": "The stigma is already there, at the top of the carpel, "
+                    "and its job is finished once pollen has landed. It "
+                    "withers rather than growing into anything."},
+            {"text": "A new flower", "correct": False,
+             "why": "Nothing turns into a new flower. The next flower is "
+                    "grown separately by the plant, from a bud."},
+            {"text": "The fruit", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b5-06-s05",
+        "band": "standard",
+        "text": "An insect-pollinated flower holds its anthers inside the "
+                "flower, while a wind-pollinated one dangles them outside on "
+                "long thin filaments. Explain the two positions.",
+        "options": [
+            {"text": "Inside keeps the pollen dry, and outside lets it warm "
+                     "in the sun", "correct": False,
+             "why": "Neither position is about the weather. Both are about "
+                    "putting the pollen where whatever is going to carry it "
+                    "will actually reach it."},
+            {"text": "Inside protects the pollen from insects, and outside "
+                     "lets the wind take it", "correct": False,
+             "why": "An insect-pollinated flower needs the insect to touch "
+                    "its anthers. It is not protecting the pollen from its "
+                    "own courier."},
+            {"text": "Inside, an insect must brush past them; outside, the "
+                     "wind shakes the pollen loose", "correct": True},
+            {"text": "Wind-pollinated anthers are too heavy to be held up "
+                     "inside the flower", "correct": False,
+             "why": "Wind-carried pollen is the lighter of the two, not the "
+                    "heavier. The position is chosen for exposure, not forced "
+                    "by weight."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-06-s06",
+        "band": "standard",
+        "text": "A student labels the stigma as a male part of a flower, "
+                "because pollen is found on it. What is wrong with that?",
+        "options": [
+            {"text": "The stigma is the female surface that catches pollen, "
+                     "and the grains have only landed there", "correct": True},
+            {"text": "Nothing is wrong — a part carrying pollen counts as "
+                     "male", "correct": False,
+             "why": "Then a bee’s back would be a male part too. What decides "
+                    "it is the part’s own job, not what is temporarily stuck "
+                    "to it."},
+            {"text": "The stigma is neither male nor female, like the petals "
+                     "and the sepals", "correct": False,
+             "why": "Petals and sepals are neither. The stigma is the top of "
+                    "the carpel, and the carpel is the female part of the "
+                    "flower."},
+            {"text": "The stigma is male only in wind-pollinated flowers, "
+                     "where it catches the plant’s own pollen", "correct": False,
+             "why": "A stigma is female in every flower. Its texture changes "
+                    "with how the pollen is delivered; its job does not."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-06-h05",
+        "band": "harder",
+        "text": "A plant breeder wants to be certain that one particular "
+                "flower is not pollinated by any other plant. Which single "
+                "part should be covered, and why?",
+        "options": [
+            {"text": "The anthers, because that is the part of the flower "
+                     "where pollen is made", "correct": False,
+             "why": "Covering the anthers stops this flower’s own pollen "
+                    "leaving. It does nothing to stop another plant’s pollen "
+                    "arriving."},
+            {"text": "The stigma, because pollination has happened only once "
+                     "pollen lands on it", "correct": True},
+            {"text": "The ovary, because that is the part where the seeds "
+                     "will eventually form", "correct": False,
+             "why": "The ovary is already enclosed at the base of the carpel, "
+                    "and pollen never reaches it directly. The grain lands "
+                    "higher up, on the stigma."},
+            {"text": "The petals, because they are what attracts the insects",
+             "correct": False,
+             "why": "That would reduce insect visits and stop no wind-carried "
+                    "grain at all. Only covering the receiving surface is "
+                    "certain."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-06-h06",
+        "band": "harder",
+        "text": "Many wind-pollinated trees flower in early spring, before "
+                "their leaves have opened. Suggest why that timing helps "
+                "them.",
+        "options": [
+            {"text": "Because insects are not yet active, so there is less "
+                     "competition for them", "correct": False,
+             "why": "A wind-pollinated tree is not competing for insects at "
+                    "all — it attracts none and pays none. Nothing about its "
+                    "pollination involves them."},
+            {"text": "Because pollen is heavier later in the year and would "
+                     "not travel so well", "correct": False,
+             "why": "A species’ pollen does not change weight with the "
+                    "season. What changes is what stands in its way."},
+            {"text": "Because the flowers need direct sunlight in order to "
+                     "open at all", "correct": False,
+             "why": "Flowers open when the plant is ready to release or "
+                    "receive pollen, not because light reaches them. Plenty "
+                    "of flowers open in full shade."},
+            {"text": "Because pollen drifts more freely through bare branches "
+                     "than through a canopy of leaves", "correct": True},
+        ],
+        "figure": None,
+    },
 ]

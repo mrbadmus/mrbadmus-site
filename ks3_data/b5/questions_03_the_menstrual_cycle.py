@@ -354,4 +354,232 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-03-e05",
+        "band": "easier",
+        "text": "Over roughly which days of a cycle does the lining of the "
+                "uterus break down and pass out through the vagina?",
+        "options": [
+            {"text": "The five days just before the next period",
+             "correct": False,
+             "why": "Those are days when the lining is still being held at "
+                    "its thickest. It breaks down at the start of a cycle, "
+                    "not at the end of one."},
+            {"text": "The days immediately after the egg is released",
+             "correct": False,
+             "why": "The lining is nearly at full thickness then, and it is "
+                    "held that way for about a fortnight afterwards."},
+            {"text": "Roughly the first five days of the cycle",
+             "correct": True},
+            {"text": "The whole of the second half of the cycle",
+             "correct": False,
+             "why": "The second half is the fortnight in which the lining is "
+                    "held ready. Breaking down is quick, and it is what day 1 "
+                    "is counted from."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-03-e06",
+        "band": "easier",
+        "text": "In which organ is a lining built up and then broken down "
+                "each cycle?",
+        "options": [
+            {"text": "The uterus", "correct": True},
+            {"text": "The ovary", "correct": False,
+             "why": "The ovary is the other half of the cycle: one egg cell "
+                    "finishes maturing there and is released. It builds no "
+                    "lining."},
+            {"text": "The oviduct", "correct": False,
+             "why": "The oviduct is the tube a released egg is drawn into. "
+                    "Nothing is built up inside it."},
+            {"text": "The cervix", "correct": False,
+             "why": "The cervix is the ring of muscle at the lower end of the "
+                    "uterus. The lining is inside the uterus itself."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-03-e07",
+        "band": "easier",
+        "text": "A mature egg cell has just left the ovary. Where does it go "
+                "next?",
+        "options": [
+            {"text": "Straight into the uterus", "correct": False,
+             "why": "The uterus is further on. There is a tube to travel "
+                    "along first, and it is in that tube that the egg can be "
+                    "fertilised."},
+            {"text": "Into the lining of the uterus", "correct": False,
+             "why": "Only a fertilised egg embeds in the lining, and that is "
+                    "several days later. An unfertilised one never gets that "
+                    "far."},
+            {"text": "Out through the vagina", "correct": False,
+             "why": "What leaves during a period is the lining, not the egg. "
+                    "The egg is 0.1 mm across and breaks down where it is."},
+            {"text": "Into the oviduct", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b5-03-s05",
+        "band": "standard",
+        "text": "After the egg has been released, the lining of the uterus is "
+                "held at its thickest for about a fortnight. What is it being "
+                "held ready for?",
+        "options": [
+            {"text": "So the next egg cell has somewhere to finish maturing",
+             "correct": False,
+             "why": "Egg cells mature inside an ovary, not in the uterus. The "
+                    "lining has nothing to do with that half of the cycle."},
+            {"text": "In case a fertilised egg arrives and implants in it",
+             "correct": True},
+            {"text": "So that the next period will be shorter when it comes",
+             "correct": False,
+             "why": "The lining is built to be used, not to make its own "
+                    "removal easier. What breaks down is exactly what was "
+                    "built."},
+            {"text": "To protect the ovary while it recovers from releasing "
+                     "an egg", "correct": False,
+             "why": "The two organs are not protecting each other. The lining "
+                    "is inside the uterus, and the ovary carries on "
+                    "regardless."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-03-s06",
+        "band": "standard",
+        "text": "Why is day 1 counted from the first day of bleeding rather "
+                "than from the day the egg is released?",
+        "options": [
+            {"text": "Because the lining begins to be built on that day",
+             "correct": False,
+             "why": "On that day the lining is breaking down, not being "
+                    "built. Building starts once the breaking down is over."},
+            {"text": "Because release always falls on day 14, so it would be "
+                     "the same number anyway", "correct": False,
+             "why": "Release moves with the length of the cycle. It is "
+                    "precisely the event that cannot be pinned to a fixed "
+                    "number."},
+            {"text": "Because bleeding is genuinely the first thing that "
+                     "happens in a cycle", "correct": False,
+             "why": "A cycle is a loop, so nothing in it is genuinely first. "
+                    "Day 1 is a place to start counting, not the start of the "
+                    "process."},
+            {"text": "Because bleeding is something that can be noticed, "
+                     "and release is not", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-03-s07",
+        "band": "standard",
+        "text": "Someone’s cycles are 26 days long. Roughly how many days "
+                "pass between the egg being released and the start of the "
+                "next period?",
+        "options": [
+            {"text": "About 14 days — close to a fortnight, whatever the "
+                     "length of the cycle", "correct": True},
+            {"text": "About 12 days, because a 26-day cycle is shorter than a "
+                     "28-day one", "correct": False,
+             "why": "The shortening does not fall here. It is the building "
+                    "phase, before release, that stretches and shrinks with "
+                    "the length of the cycle."},
+            {"text": "About 13 days, because release happens exactly halfway "
+                     "through", "correct": False,
+             "why": "Halfway is a guess that happens to be close in a 26-day "
+                    "cycle and is wrong in most others. The steady interval "
+                    "is the one after release."},
+            {"text": "About 26 days, because the next cycle starts from "
+                     "release", "correct": False,
+             "why": "Day 1 is the first day of bleeding, not the day of "
+                    "release. Twenty-six days is the whole cycle, not the "
+                    "part after release."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-03-h05",
+        "band": "harder",
+        "text": "Someone’s cycles are 31 days long. Working from day 1, "
+                "roughly which day of the cycle is the egg released?",
+        "options": [
+            {"text": "About day 14, the day that applies to every cycle",
+             "correct": False,
+             "why": "Day 14 is release in a 28-day cycle and in no other. In "
+                    "a 31-day cycle it would leave seventeen days before the "
+                    "next period."},
+            {"text": "About day 17, a fortnight back from the end of the "
+                     "cycle", "correct": True},
+            {"text": "About day 16, exactly halfway through the 31 days",
+             "correct": False,
+             "why": "Halfway is the wrong rule, and here it lands close by "
+                    "luck rather than by reasoning. Count back a fortnight "
+                    "from the end of the cycle instead."},
+            {"text": "About day 15, a fortnight forward from day 1",
+             "correct": False,
+             "why": "The fortnight belongs at the other end. It is the gap "
+                    "between release and the next period, so it is counted "
+                    "back from day 31."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-03-h06",
+        "band": "harder",
+        "text": "An egg cell can be fertilised for roughly a day, but the "
+                "lining of the uterus is held ready for about a fortnight. "
+                "Why are the two windows so different?",
+        "options": [
+            {"text": "Because the lining takes about a fortnight to break "
+                     "down once it starts", "correct": False,
+             "why": "The breaking down is the period, and it is over in about "
+                    "five days. The fortnight is time spent holding the "
+                    "lining, not clearing it."},
+            {"text": "Because the next egg cell takes about a fortnight to "
+                     "finish maturing", "correct": False,
+             "why": "Maturing happens in the ovary during the building phase, "
+                    "before release. The fortnight after release is not spent "
+                    "on it."},
+            {"text": "Because a fertilised egg arrives days later and stays, "
+                     "so the lining must be ready throughout", "correct": True},
+            {"text": "Because a fertilised egg survives in the oviduct for a "
+                     "fortnight before moving on", "correct": False,
+             "why": "The fertilised cell divides as it travels and takes "
+                    "about five days, not a fortnight. What the lining is "
+                    "waiting through is that journey."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-03-h07",
+        "band": "harder",
+        "text": "In a 21-day cycle the period lasts about five days. Roughly "
+                "how many days are there between the end of the period and "
+                "the release of the egg?",
+        "options": [
+            {"text": "About two days", "correct": True},
+            {"text": "About seven days", "correct": False,
+             "why": "Seven is the day of release itself, counted from day 1. "
+                    "The question asks how much of the building phase is left "
+                    "once the period has ended."},
+            {"text": "About nine days", "correct": False,
+             "why": "Nine would be right in a 28-day cycle, where release "
+                    "falls near day 14. A 21-day cycle takes its seven days "
+                    "off the front of the cycle."},
+            {"text": "About fourteen days", "correct": False,
+             "why": "Fourteen is the gap after release, not before it. That "
+                    "interval is the one part of the cycle that hardly "
+                    "changes."},
+        ],
+        "figure": None,
+    },
 ]

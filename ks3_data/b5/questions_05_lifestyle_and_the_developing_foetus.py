@@ -412,4 +412,168 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-05-e05",
+        "band": "easier",
+        "text": "UK guidance on caffeine during pregnancy sets a daily limit "
+                "rather than banning it. Roughly what is that limit?",
+        "options": [
+            {"text": "About 20 mg a day — a small fraction of one mug",
+             "correct": False,
+             "why": "That is ten times stricter than the guidance, and would "
+                    "rule out even one mug of coffee. The published figure is "
+                    "larger."},
+            {"text": "About 2000 mg a day — roughly twenty mugs",
+             "correct": False,
+             "why": "That is ten times more than the guidance allows. A limit "
+                    "set that high would not be a limit at all."},
+            {"text": "About 200 mg a day — roughly two mugs of instant coffee",
+             "correct": True},
+            {"text": "There is no limit, because caffeine does not cross the "
+                     "placenta", "correct": False,
+             "why": "Caffeine crosses easily, and the foetus breaks it down "
+                    "slowly. It is precisely because it arrives that a figure "
+                    "is given at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-05-e06",
+        "band": "easier",
+        "text": "Which vaccination given in childhood also protects a "
+                "pregnancy years later, and against what?",
+        "options": [
+            {"text": "The MMR vaccination, which protects against rubella",
+             "correct": True},
+            {"text": "There is none — rubella cannot be vaccinated against",
+             "correct": False,
+             "why": "It can, and the MMR vaccination is how. That is why "
+                    "rubella in pregnancy is far rarer than it once was."},
+            {"text": "A vaccination given during the pregnancy itself, "
+                     "against rubella", "correct": False,
+             "why": "The protection has to be in place before the pregnancy "
+                    "begins, because the damage is done in the earliest "
+                    "weeks. That is why it is given in childhood."},
+            {"text": "The MMR vaccination, against carbon monoxide",
+             "correct": False,
+             "why": "Carbon monoxide is a gas from burning tobacco, not an "
+                    "infection, and nothing can be vaccinated against it. "
+                    "Rubella is a virus, and that is what MMR covers."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b5-05-s05",
+        "band": "standard",
+        "text": "Tobacco smoke supplies both carbon monoxide and nicotine. "
+                "Taken together, what is their effect on a developing foetus?",
+        "options": [
+            {"text": "Its blood becomes thicker and harder for its heart to "
+                     "pump", "correct": False,
+             "why": "Neither substance thickens blood. What carbon monoxide "
+                    "does is take up space on haemoglobin that oxygen would "
+                    "otherwise have used."},
+            {"text": "The placenta is damaged, so that nothing can cross it "
+                     "at all", "correct": False,
+             "why": "Substances go on crossing — that is the problem. What "
+                    "falls is the amount of oxygen there is to cross."},
+            {"text": "Only the smoker is affected, because the foetus has its "
+                     "own blood supply", "correct": False,
+             "why": "That supply is loaded across the placenta from hers, and "
+                    "carbon monoxide is breathed in by anyone in the room, "
+                    "not only by the smoker."},
+            {"text": "Less oxygen reaches it, so it grows more slowly and is "
+                     "lighter at birth", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-05-s06",
+        "band": "standard",
+        "text": "Weeks one and two of a pregnancy are described as “very "
+                "little, or everything”. What does that mean?",
+        "options": [
+            {"text": "An exposure then damages every organ at once, because "
+                     "they are all being built", "correct": False,
+             "why": "There are no organs at all in the first fortnight. The "
+                    "ball of cells is implanting and beginning to build the "
+                    "placenta."},
+            {"text": "An exposure then tends either to leave no lasting mark "
+                     "or to stop the pregnancy continuing", "correct": True},
+            {"text": "Almost nothing crosses the placenta yet, so hardly "
+                     "anything can reach the cells", "correct": False,
+             "why": "The placenta is still being built during those weeks, "
+                    "but that is not the point. The point is that there is "
+                    "not yet any structure to alter."},
+            {"text": "The effects appear later, in whichever week the organ "
+                     "concerned is being formed", "correct": False,
+             "why": "That describes weeks three to eight, when organs are "
+                    "laid down. The first fortnight is the window with no "
+                    "structure in it."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-05-h05",
+        "band": "harder",
+        "text": "Two doctors working separately traced a pattern of severely "
+                "shortened limbs back to thalidomide, and it was withdrawn in "
+                "1961. What made the timing of the doses the decisive "
+                "evidence?",
+        "options": [
+            {"text": "The mothers who had taken it were all of a similar age",
+             "correct": False,
+             "why": "Age was not what separated the cases. What ran with the "
+                    "pattern was which days of the pregnancy the tablets were "
+                    "taken on."},
+            {"text": "The larger the dose taken, the more severe the "
+                     "malformation was", "correct": False,
+             "why": "It was not chiefly a matter of how much. The window in "
+                    "which it was taken decided which structure was "
+                    "affected."},
+            {"text": "Which limb was affected shifted with the days of "
+                     "pregnancy on which it was taken", "correct": True},
+            {"text": "Laboratory animals given a very large dose were not "
+                     "harmed by it", "correct": False,
+             "why": "That was true, and it is why the drug was believed safe. "
+                    "It is the reason the disaster happened, not the evidence "
+                    "that solved it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-05-h06",
+        "band": "harder",
+        "text": "Thalidomide is still prescribed today, under tight controls, "
+                "for conditions including a cancer of the blood. Which "
+                "conclusion does that support?",
+        "options": [
+            {"text": "Whether a substance is safe depends on who is taking "
+                     "it and why", "correct": True},
+            {"text": "The original reports of harm must have been exaggerated",
+             "correct": False,
+             "why": "They were not. Thousands of babies were affected, and "
+                    "the pattern was traced twice, independently, in two "
+                    "countries."},
+            {"text": "The molecule was later altered so that it is no longer "
+                     "harmful", "correct": False,
+             "why": "It is the same substance it always was. What changed is "
+                    "the knowledge of who must never take it, and the "
+                    "controls that enforce that."},
+            {"text": "Any medicine becomes safe once enough time has passed "
+                     "since it was withdrawn", "correct": False,
+             "why": "Time settles nothing on its own. What made this drug "
+                    "usable again was evidence about which patients it helps "
+                    "and which it must not reach."},
+        ],
+        "figure": None,
+    },
 ]

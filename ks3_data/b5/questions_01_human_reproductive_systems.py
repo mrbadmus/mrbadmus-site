@@ -332,4 +332,227 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-01-e05",
+        "band": "easier",
+        "text": "Where are the egg cells held before one of them is "
+                "released?",
+        "options": [
+            {"text": "In the oviducts", "correct": False,
+             "why": "The oviduct is the tube a released egg travels along. It "
+                    "carries the egg towards the uterus; it never held the "
+                    "stock."},
+            {"text": "In the lining of the uterus", "correct": False,
+             "why": "The lining is built to receive a fertilised egg, not to "
+                    "keep unfertilised ones. No egg cell is ever stored "
+                    "there."},
+            {"text": "In the ovaries", "correct": True},
+            {"text": "In the cervix", "correct": False,
+             "why": "The cervix is the ring of muscle at the lower end of the "
+                    "uterus. It is a doorway, not a store."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-01-e06",
+        "band": "easier",
+        "text": "Which structure receives the semen when it is transferred "
+                "from the male system?",
+        "options": [
+            {"text": "The vagina", "correct": True},
+            {"text": "The uterus", "correct": False,
+             "why": "The uterus is further in, beyond the cervix. Sperm pass "
+                    "through it afterwards, but it is not where the transfer "
+                    "happens."},
+            {"text": "The oviduct", "correct": False,
+             "why": "The oviduct is where the sperm are heading, about 15 cm "
+                    "further on. It is the end of the journey, not the "
+                    "start."},
+            {"text": "The urethra", "correct": False,
+             "why": "The urethra is the tube semen leaves the male system "
+                    "through, so it sits on the other side of the transfer "
+                    "entirely."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-01-e07",
+        "band": "easier",
+        "text": "About how many immature egg cells are present in the ovaries "
+                "of a newborn baby?",
+        "options": [
+            {"text": "None — they begin to be made at puberty", "correct": False,
+             "why": "That is the sperm pattern applied to eggs. The whole "
+                    "stock of immature egg cells is already there before "
+                    "birth."},
+            {"text": "About four hundred", "correct": False,
+             "why": "About four hundred is roughly how many are ever released "
+                    "across a lifetime. The stock they are drawn from is far "
+                    "larger."},
+            {"text": "Hundreds of millions", "correct": False,
+             "why": "Hundreds of millions is the number of sperm cells "
+                    "released at a time. Egg cells are never made in anything "
+                    "like those numbers."},
+            {"text": "About a million", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b5-01-s05",
+        "band": "standard",
+        "text": "Both oviducts of a person become completely blocked, and "
+                "every other structure works normally. Which event can no "
+                "longer happen, and why?",
+        "options": [
+            {"text": "Egg cells can no longer be released, because they have "
+                     "nowhere to go", "correct": False,
+             "why": "The ovary releases its egg whether the tube beyond it is "
+                    "open or not. What is lost is what would have happened "
+                    "next."},
+            {"text": "Fertilisation, because the sperm and the egg can only "
+                     "meet in the oviduct", "correct": True},
+            {"text": "The lining of the uterus can no longer be built, "
+                     "because nothing reaches it", "correct": False,
+             "why": "The lining is built every cycle regardless of what "
+                    "arrives. It is prepared in advance, not in response to "
+                    "something."},
+            {"text": "Sperm can no longer be made, because they have nowhere "
+                     "to swim to", "correct": False,
+             "why": "Sperm production happens in the testes, in the other "
+                    "system entirely, and takes no notice of what is "
+                    "happening here."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-01-s06",
+        "band": "standard",
+        "text": "A student is asked what semen actually is. Which answer is "
+                "right?",
+        "options": [
+            {"text": "Sperm cells together with the fluid added by the glands",
+             "correct": True},
+            {"text": "The fluid the glands make, before any sperm are added "
+                     "to it", "correct": False,
+             "why": "That fluid is only half of it. Semen is the fluid and "
+                    "the sperm cells together, which is why the name applies "
+                    "only after the two have met."},
+            {"text": "Sperm cells alone, given a new name once they leave the "
+                     "testes", "correct": False,
+             "why": "Sperm cells on their own are just sperm cells. The name "
+                    "changes because something has been added to them, not "
+                    "because they have moved."},
+            {"text": "Fluid made in the testes and carried along by the sperm "
+                     "duct", "correct": False,
+             "why": "The testes make sperm, not the fluid, and the sperm duct "
+                    "only transports. The fluid is added further along, by "
+                    "the glands."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-01-s07",
+        "band": "standard",
+        "text": "Semen has been transferred into the vagina. Which two "
+                "structures do the sperm pass through next, in order, on the "
+                "way to the oviduct?",
+        "options": [
+            {"text": "The uterus, then the cervix", "correct": False,
+             "why": "The right pair in the wrong order. The cervix is the "
+                    "lower opening of the uterus, so it has to be passed "
+                    "first."},
+            {"text": "The urethra, then the uterus", "correct": False,
+             "why": "The urethra belongs to the male system and the sperm "
+                    "have already left it. Nothing on this journey goes back "
+                    "through it."},
+            {"text": "The cervix, then the uterus", "correct": True},
+            {"text": "The ovary, then the oviduct", "correct": False,
+             "why": "Sperm never enter an ovary. The egg comes out of the "
+                    "ovary, and it is met in the tube beyond it."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-01-h05",
+        "band": "harder",
+        "text": "Sperm are produced continuously at something like fifteen "
+                "hundred a second, while an ovary releases about one egg cell "
+                "a month. Which explanation of that difference fits both "
+                "systems?",
+        "options": [
+            {"text": "Egg cells survive far longer than sperm cells do, so "
+                     "fewer of them are needed", "correct": False,
+             "why": "A released egg can be fertilised for roughly a day, "
+                    "which is not long at all. How long a gamete lasts is not "
+                    "what sets how many are made."},
+            {"text": "An ovary is smaller than a testis, so it has less room "
+                     "to work in", "correct": False,
+             "why": "Size is not the limit. A testis of any size would still "
+                    "be making new cells, and an ovary of any size would "
+                    "still be releasing from a stock that is already "
+                    "complete."},
+            {"text": "The body makes exactly as many gametes as it is going "
+                     "to use, and no more", "correct": False,
+             "why": "Hundreds of millions of sperm are released for one "
+                    "possible fertilisation, so almost all of them are "
+                    "wasted. Nothing here is matched to need."},
+            {"text": "An egg is expensive to build and a sperm is cheap, so "
+                     "the numbers follow the cost", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-01-h06",
+        "band": "harder",
+        "text": "The sperm duct and the oviduct have similar names. A student "
+                "says both carry gametes towards the outside of the body. "
+                "What is wrong with that?",
+        "options": [
+            {"text": "Nothing is wrong — both of them lead out of the body",
+             "correct": False,
+             "why": "Only one of them does. The oviduct leads further in, "
+                    "towards the uterus, which is where a developing embryo "
+                    "has to end up."},
+            {"text": "The oviduct carries the egg inwards, towards the "
+                     "uterus, rather than out of the body", "correct": True},
+            {"text": "The sperm duct carries sperm inwards, back towards the "
+                     "testes", "correct": False,
+             "why": "It runs the other way: from the testes towards the "
+                    "urethra. Sperm are made in the testes, so that is where "
+                    "the journey begins."},
+            {"text": "The oviduct carries sperm rather than eggs, so it is "
+                     "not an egg tube at all", "correct": False,
+             "why": "Sperm do swim up the oviduct, and the egg is carried "
+                    "down it. Its named job is carrying the egg, and it is "
+                    "named for that."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-01-h07",
+        "band": "harder",
+        "text": "Sperm cells are produced at roughly fifteen hundred per "
+                "second. Roughly how many is that in one minute?",
+        "options": [
+            {"text": "About 25 sperm cells", "correct": False,
+             "why": "This divides fifteen hundred by sixty. A rate per second "
+                    "becomes a larger number per minute, not a smaller one."},
+            {"text": "About 1500 sperm cells", "correct": False,
+             "why": "That is the number for a single second. A minute is "
+                    "sixty of them, so the figure has to be multiplied."},
+            {"text": "About 90 000 sperm cells", "correct": True},
+            {"text": "About 15 000 sperm cells", "correct": False,
+             "why": "This multiplies by ten rather than by sixty. There are "
+                    "sixty seconds in a minute, not ten."},
+        ],
+        "figure": None,
+    },
 ]

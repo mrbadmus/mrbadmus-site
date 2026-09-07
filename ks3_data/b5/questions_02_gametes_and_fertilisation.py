@@ -375,4 +375,227 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-02-e05",
+        "band": "easier",
+        "text": "Several days after fertilisation the ball of cells embeds "
+                "itself in the thickened lining of the uterus. What is that "
+                "event called?",
+        "options": [
+            {"text": "Fertilisation", "correct": False,
+             "why": "Fertilisation happened days earlier, in the oviduct, "
+                    "when the two nuclei fused. This is a separate event, in "
+                    "a different organ."},
+            {"text": "Implantation", "correct": True},
+            {"text": "Release", "correct": False,
+             "why": "Release is the egg cell leaving the ovary, before any of "
+                    "this. It happens whether or not any sperm are present."},
+            {"text": "Dividing", "correct": False,
+             "why": "Dividing is what the cell has been doing all the way "
+                    "down the oviduct. Embedding is what it does once it "
+                    "arrives."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-02-e06",
+        "band": "easier",
+        "text": "How many chromosomes does a single human gamete carry?",
+        "options": [
+            {"text": "46 — a full set", "correct": False,
+             "why": "46 is the number in the single cell formed when two "
+                    "gametes fuse. One gamete brings half of that."},
+            {"text": "23 in a sperm cell and 46 in an egg cell",
+             "correct": False,
+             "why": "The two gametes are unequal in almost every way, and "
+                    "this is the one measurement on which they match exactly: "
+                    "23 each."},
+            {"text": "None — a gamete has no chromosomes until fertilisation",
+             "correct": False,
+             "why": "A gamete has a nucleus with chromosomes inside it. "
+                    "Fertilisation adds a second set to the first; it does "
+                    "not create the first."},
+            {"text": "23 — half a set", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-02-e07",
+        "band": "easier",
+        "text": "Which of these does a sperm cell have and an egg cell does "
+                "not?",
+        "options": [
+            {"text": "A tail", "correct": True},
+            {"text": "A nucleus", "correct": False,
+             "why": "Both have one, and the fusing of those two nuclei is the "
+                    "whole of fertilisation."},
+            {"text": "Twenty-three chromosomes", "correct": False,
+             "why": "Both carry twenty-three. It is the one measurement on "
+                    "which the two gametes are identical."},
+            {"text": "A large food store", "correct": False,
+             "why": "That belongs to the egg, not the sperm. A sperm carries "
+                    "almost no store and lives on sugar in the fluid around "
+                    "it."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b5-02-s05",
+        "band": "standard",
+        "text": "A sperm cell has a few dozen mitochondria packed behind its "
+                "head; an egg cell has hundreds of thousands. What is each "
+                "set of mitochondria for?",
+        "options": [
+            {"text": "Both sets release energy for swimming; the egg simply "
+                     "carries spares", "correct": False,
+             "why": "The egg does not swim at all — it is moved along by "
+                    "cilia and by muscle. Its mitochondria are not there for "
+                    "propulsion."},
+            {"text": "The egg’s release the energy that the sperm uses on its "
+                     "journey", "correct": False,
+             "why": "The sperm powers itself, using its own mitochondria and "
+                    "sugar from the fluid around it. It arrives with its "
+                    "energy already spent."},
+            {"text": "The sperm’s power its journey; the egg’s are the ones "
+                     "the new organism inherits", "correct": True},
+            {"text": "The sperm’s are the ones inherited, which is why "
+                     "mitochondria come from the father", "correct": False,
+             "why": "It is the other way round. Every mitochondrion in your "
+                    "body came from the egg, and the sperm’s are destroyed "
+                    "after fusion."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-02-s06",
+        "band": "standard",
+        "text": "A gamete cannot grow into a new organism on its own. What is "
+                "the reason for that?",
+        "options": [
+            {"text": "It has no cytoplasm and no food store of its own to "
+                     "grow with", "correct": False,
+             "why": "An egg cell has both, in quantity, and still cannot do "
+                    "it alone. What is missing is not material."},
+            {"text": "It carries half a set of chromosomes, and needs the "
+                     "other half added to it", "correct": True},
+            {"text": "It is far too small to divide into a new organism",
+             "correct": False,
+             "why": "The egg is the largest cell in the body, and the "
+                    "fertilised cell begins dividing straight away. Size is "
+                    "not what stops it."},
+            {"text": "It breaks down within about a day unless it is "
+                     "fertilised", "correct": False,
+             "why": "A released egg does break down within about a day, but "
+                    "that is a deadline rather than a reason. Even a fresh "
+                    "one could not manage on its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-02-s07",
+        "band": "standard",
+        "text": "One sperm’s nucleus has fused with the egg’s nucleus, and "
+                "the egg’s outer layer changes immediately afterwards. What "
+                "is that change for?",
+        "options": [
+            {"text": "It stops any other sperm cell from entering the egg",
+             "correct": True},
+            {"text": "It seals the food store in, so the cell can live on it",
+             "correct": False,
+             "why": "The food store is already inside the cytoplasm and is "
+                    "not going anywhere. There is nothing to seal in."},
+            {"text": "It makes the cell sticky, so it can embed in the "
+                     "uterus lining", "correct": False,
+             "why": "Embedding is implantation, about five days later and in "
+                    "a different organ. This change happens within moments of "
+                    "fusion."},
+            {"text": "It signals the cell to start dividing", "correct": False,
+             "why": "The cell does begin dividing, but keeping the other "
+                    "sperm out is what the outer layer is doing. Two things "
+                    "happening at once are not the same thing."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-02-h05",
+        "band": "harder",
+        "text": "Three days after fertilisation, one cell is taken from the "
+                "ball of cells travelling down the oviduct. How many "
+                "chromosomes does it carry, and why?",
+        "options": [
+            {"text": "23, because the ball is still made of gametes",
+             "correct": False,
+             "why": "The two gametes stopped existing at fusion. From that "
+                    "moment there is one cell with a full set, and everything "
+                    "after it is a copy of that cell."},
+            {"text": "92, because the cell has divided twice since "
+                     "fertilisation", "correct": False,
+             "why": "Dividing makes more cells; it does not make more "
+                    "chromosomes in each one. Every division hands on a full "
+                    "set of 46."},
+            {"text": "46 in some cells and 23 in others, depending which "
+                     "gamete each came from", "correct": False,
+             "why": "The two sets were combined in one nucleus at fusion and "
+                    "never separated again. Every cell in the ball carries "
+                    "both halves."},
+            {"text": "46, because every cell came by division from the single "
+                     "fertilised cell", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-02-h06",
+        "band": "harder",
+        "text": "A biologist studying an unfamiliar animal finds two kinds of "
+                "gamete: one large and immobile with a food store, one tiny "
+                "with a tail. Which conclusion is safest?",
+        "options": [
+            {"text": "The large one is the egg and the tiny one the sperm, "
+                     "because each is built for its own job", "correct": True},
+            {"text": "The large one must carry more chromosomes than the "
+                     "tiny one, since it holds so much more material",
+             "correct": False,
+             "why": "In humans the two carry exactly the same number, and all "
+                    "the size difference is packing material. Size says "
+                    "nothing about the chromosome count."},
+            {"text": "They must come from two different species, since one "
+                     "animal’s gametes would be alike", "correct": False,
+             "why": "The two gametes of a single species are normally as "
+                    "different as this. Being unalike is the whole point of "
+                    "having two kinds."},
+            {"text": "The tiny one must be a young gamete that has not yet "
+                     "finished growing to its full size", "correct": False,
+             "why": "A sperm is small because travelling is easier the "
+                    "smaller you are, and it never grows any larger. It is "
+                    "finished as it is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-02-h07",
+        "band": "harder",
+        "text": "Suppose 300 million sperm cells set out and about 300 of "
+                "them reach the oviduct. Roughly what fraction arrives?",
+        "options": [
+            {"text": "About one in a thousand", "correct": False,
+             "why": "One in a thousand of 300 million is 300 000 arriving. "
+                    "The real number is a thousand times smaller than that."},
+            {"text": "About one in a hundred thousand", "correct": False,
+             "why": "Closer, and still a hundredfold too generous: one in a "
+                    "hundred thousand of 300 million is 3000."},
+            {"text": "About one in a million", "correct": True},
+            {"text": "About one in ten million", "correct": False,
+             "why": "That would leave only 30 arriving. Dividing 300 million "
+                    "by 300 gives one in a million exactly."},
+        ],
+        "figure": None,
+    },
 ]

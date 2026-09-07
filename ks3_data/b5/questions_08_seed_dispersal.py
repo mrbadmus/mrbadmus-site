@@ -418,4 +418,166 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-08-e05",
+        "band": "easier",
+        "text": "A sycamore key is a hard seed at one end of a stiff papery "
+                "blade. What does that blade make the key do as it falls?",
+        "options": [
+            {"text": "Float on the surface of water until it reaches a bank",
+             "correct": False,
+             "why": "A papery blade is not a buoyant case. Floating belongs "
+                    "to fruits such as the coconut, with a thick fibrous "
+                    "husk."},
+            {"text": "Spin, so that it falls slowly and the wind has time to "
+                     "carry it sideways", "correct": True},
+            {"text": "Catch in the fur of any animal that brushes past it",
+             "correct": False,
+             "why": "Catching needs hooks, and a sycamore key has none. There "
+                    "is nothing on it to hold on with."},
+            {"text": "Drop straight down, so the seed lands clear of the "
+                     "tree’s own canopy", "correct": False,
+             "why": "Landing directly below the parent is the one outcome "
+                    "every dispersal structure exists to avoid. The blade "
+                    "slows the fall rather than hurrying it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-08-e06",
+        "band": "easier",
+        "text": "In which method of seed dispersal does the plant pay with "
+                "sugar it made itself?",
+        "options": [
+            {"text": "Wind, using a parachute of fine hairs", "correct": False,
+             "why": "Hairs are built from ordinary plant material and cost "
+                    "very little. What wind dispersal costs is the vast "
+                    "number of seeds that land nowhere useful."},
+            {"text": "On an animal, caught by hooks in its fur",
+             "correct": False,
+             "why": "Hooks are the cheapest method of all. No reward is "
+                    "offered, and the animal gets nothing out of it."},
+            {"text": "Flung by the plant itself, from a pod that dries and "
+                     "splits", "correct": False,
+             "why": "The energy for that comes from the pod drying in the "
+                    "sun. Nothing is handed over to anybody."},
+            {"text": "Inside an animal, in the flesh of a fruit it eats",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b5-08-s05",
+        "band": "standard",
+        "text": "A goosegrass fruit is a few millimetres across and a burdock "
+                "burr is about two centimetres. Both work the same way. What "
+                "is the principle they share?",
+        "options": [
+            {"text": "Stiff backward-facing hooks that catch in fur or wool, "
+                     "with no reward offered", "correct": True},
+            {"text": "A body light enough for the wind to lift and carry",
+             "correct": False,
+             "why": "Neither has a parachute or a wing, and neither is light "
+                    "enough to be lifted. They travel by being carried, not "
+                    "by drifting."},
+            {"text": "Flesh sweet enough to be eaten, around a seed with a "
+                     "very tough coat", "correct": False,
+             "why": "Neither of them is edible. A fruit dispersed that way "
+                    "pays with sugar; these two pay nothing at all."},
+            {"text": "A waterproof case full of air spaces, so that they "
+                     "float", "correct": False,
+             "why": "That is the coconut’s solution, for a seed too heavy for "
+                    "anything else to move. These two are carried on the "
+                    "outside of an animal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-08-s06",
+        "band": "standard",
+        "text": "A coconut is far too heavy for the wind to lift and far too "
+                "big for an animal to carry off. Why does that same weight "
+                "not rule out water as well?",
+        "options": [
+            {"text": "Coconuts are lighter than they look once the liquid "
+                     "inside has been used up", "correct": False,
+             "why": "That liquid is a store for the seedling and it is not "
+                    "lost at sea. It is the husk, not a change in weight, "
+                    "that makes this work."},
+            {"text": "Sea water dissolves part of the husk, so the coconut "
+                     "gets lighter as it drifts", "correct": False,
+             "why": "The husk is waterproof, and keeping salt water out is a "
+                    "large part of its job. It is not being worn away."},
+            {"text": "The husk is buoyant and waterproof, so the sea carries "
+                     "it and weight hardly matters", "correct": True},
+            {"text": "The palm flings the coconut clear of the shore, and the "
+                     "sea takes it from there", "correct": False,
+             "why": "Flinging belongs to plants with a pod that dries and "
+                    "splits. A coconut simply falls, and the tide does the "
+                    "rest."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-08-h05",
+        "band": "harder",
+        "text": "A gorse pod flings its seeds a few metres, while a dandelion "
+                "parachute can travel a kilometre. Why is the gorse method "
+                "still worth having?",
+        "options": [
+            {"text": "The seeds land more accurately, in soil that the "
+                     "plant has already tested for itself", "correct": False,
+             "why": "A plant tests nothing and aims at nothing. A splitting "
+                    "pod scatters seeds in whatever direction the seam gives "
+                    "way."},
+            {"text": "It needs no wind, no water and no animal — the plant "
+                     "supplies the energy itself", "correct": True},
+            {"text": "The seeds are heavier, so they germinate more reliably "
+                     "once they land", "correct": False,
+             "why": "Weight is not what decides whether a seed germinates, "
+                    "and being flung does nothing for a seed after it has "
+                    "landed."},
+            {"text": "The pod goes on protecting the seeds after they have "
+                     "been flung", "correct": False,
+             "why": "The pod tears itself apart to release them and its two "
+                    "halves stay behind on the plant. Nothing travels with "
+                    "the seed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-08-h06",
+        "band": "harder",
+        "text": "A poppy capsule releases its seeds only while something is "
+                "shaking it. Why is that better for the plant than holes that "
+                "simply let the seeds fall out?",
+        "options": [
+            {"text": "It keeps birds from reaching the seeds while they are "
+                     "still inside the capsule on its stem", "correct": False,
+             "why": "Small holes under the rim are no defence against a bird, "
+                    "and the capsule is not built as armour. What the design "
+                    "controls is when the seeds leave."},
+            {"text": "It keeps rain out of the capsule, so the seeds cannot "
+                     "germinate before they ever leave it", "correct": False,
+             "why": "The holes are open either way. Shaking changes the "
+                    "timing of release, not whether water can get in."},
+            {"text": "The seeds leave on windy days, when they can be blown "
+                     "along, and stay put on still ones", "correct": True},
+            {"text": "It empties the capsule slowly, so the plant does not "
+                     "run out of seeds too early in the season",
+             "correct": False,
+             "why": "The plant has no use for seeds it is still holding. "
+                    "Spreading them out in time is worth nothing unless the "
+                    "wind is there to move them."},
+        ],
+        "figure": None,
+    },
 ]

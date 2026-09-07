@@ -414,4 +414,226 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-04-e05",
+        "band": "easier",
+        "text": "What happens to the placenta at the end of a pregnancy?",
+        "options": [
+            {"text": "It stays in the uterus and is slowly absorbed",
+             "correct": False,
+             "why": "It is delivered, not absorbed. Once the cord is cut it "
+                    "has nothing left to connect and no job to do."},
+            {"text": "It is delivered after the baby, because it is no longer "
+                     "needed", "correct": True},
+            {"text": "It becomes part of the baby once the cord is cut",
+             "correct": False,
+             "why": "It grew from the same ball of cells as the embryo, but "
+                    "it is never part of the baby’s body. It is the one organ "
+                    "a person builds, uses and then discards."},
+            {"text": "It stays attached to the wall of the uterus, ready for "
+                     "a later pregnancy", "correct": False,
+             "why": "A new placenta is built for every pregnancy, over the "
+                    "first twelve weeks. Nothing is kept."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-04-e06",
+        "band": "easier",
+        "text": "Which structure carries the foetus’s own blood out to the "
+                "placenta and back again?",
+        "options": [
+            {"text": "The amniotic fluid", "correct": False,
+             "why": "That fluid surrounds the foetus and cushions it. Nothing "
+                    "is carried through it in vessels."},
+            {"text": "The oviduct", "correct": False,
+             "why": "The oviduct is where fertilisation happened, weeks "
+                    "earlier. It has no part in supplying a foetus."},
+            {"text": "The umbilical cord", "correct": True},
+            {"text": "The cervix", "correct": False,
+             "why": "The cervix is the lower opening of the uterus, held "
+                    "closed for the whole pregnancy. It carries nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-04-e07",
+        "band": "easier",
+        "text": "During which weeks of a pregnancy are the organs laid down?",
+        "options": [
+            {"text": "Weeks 9 to 40", "correct": False,
+             "why": "By week nine the organs already exist. Those weeks are "
+                    "spent growing them and finishing them off."},
+            {"text": "The last three weeks before birth", "correct": False,
+             "why": "Nothing new is built that late. The lungs are still "
+                    "getting ready, but they were laid down long before."},
+            {"text": "Weeks 1 and 2", "correct": False,
+             "why": "In the first fortnight the ball of cells is implanting "
+                    "and beginning to build the placenta. There are no organs "
+                    "yet."},
+            {"text": "Weeks 3 to 8", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b5-04-s05",
+        "band": "standard",
+        "text": "As it grows into the wall of the uterus, the placenta folds "
+                "into thousands of finger-like projections. Which feature of "
+                "a good exchange surface does that folding give it?",
+        "options": [
+            {"text": "A very large surface area to exchange across",
+             "correct": True},
+            {"text": "A very thin barrier between the two blood supplies",
+             "correct": False,
+             "why": "Thinness depends on how few cells lie between the two "
+                    "supplies, and folding does not change that. Folding buys "
+                    "area, not closeness."},
+            {"text": "A good blood supply on both sides of it",
+             "correct": False,
+             "why": "The blood supply comes from the vessels growing into "
+                    "each side. What the folding does is give those vessels "
+                    "far more surface to work across."},
+            {"text": "A seal that keeps the two blood supplies from mixing",
+             "correct": False,
+             "why": "The two are kept apart by the barrier between them, "
+                    "which folding leaves exactly as it was."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-04-s06",
+        "band": "standard",
+        "text": "Glucose crosses the placenta into the foetus’s blood. Where "
+                "did that glucose come from?",
+        "options": [
+            {"text": "The placenta makes it from a store built up earlier in "
+                     "the pregnancy", "correct": False,
+             "why": "The placenta is an exchange surface, not a factory. "
+                    "Everything that crosses it arrived in one of the two "
+                    "blood supplies first."},
+            {"text": "The mother’s digestion — her small intestine absorbed "
+                     "it into her blood", "correct": True},
+            {"text": "The amniotic fluid, which the foetus swallows",
+             "correct": False,
+             "why": "The foetus does swallow that fluid, but its glucose does "
+                    "not come from there. It arrives dissolved in blood, at "
+                    "the placenta."},
+            {"text": "The foetus makes it itself, by respiring",
+             "correct": False,
+             "why": "Respiration uses glucose up and releases energy from it. "
+                    "Nothing in the body makes glucose by respiring."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-04-s07",
+        "band": "standard",
+        "text": "Put the events of birth into the order in which they happen.",
+        "options": [
+            {"text": "The placenta is delivered, then the cervix opens, then "
+                     "the baby is delivered", "correct": False,
+             "why": "The placenta is the last thing to leave, not the first. "
+                    "Until the baby is born it is still supplying it."},
+            {"text": "The baby is delivered, then the cervix opens, then the "
+                     "placenta is delivered", "correct": False,
+             "why": "The cervix has to open before anything can pass through "
+                    "it. It is the closed lower end of the uterus."},
+            {"text": "The uterus contracts and the cervix opens, the baby is "
+                     "delivered, then the placenta follows", "correct": True},
+            {"text": "The cord is cut, then the cervix opens, then the baby "
+                     "is delivered", "correct": False,
+             "why": "The cord is cut once the baby has been born, so nothing "
+                    "about it can come first."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-04-h05",
+        "band": "harder",
+        "text": "A pregnancy is dated from the first day of the last period, "
+                "about two weeks before fertilisation. If a pregnancy is "
+                "described as 32 weeks, for roughly how long has the foetus "
+                "itself existed?",
+        "options": [
+            {"text": "About 34 weeks", "correct": False,
+             "why": "This adds the fortnight where it should be taken off. "
+                    "The foetus is younger than the dated pregnancy, not "
+                    "older."},
+            {"text": "About 32 weeks", "correct": False,
+             "why": "That is the dated length of the pregnancy. Because the "
+                    "dating begins a fortnight before fertilisation, the "
+                    "foetus has existed for less time than that."},
+            {"text": "About 6 weeks", "correct": False,
+             "why": "Six weeks is roughly what is left before a 38-week "
+                    "gestation is complete. The question asks how long the "
+                    "foetus has already existed."},
+            {"text": "About 30 weeks", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-04-h06",
+        "band": "harder",
+        "text": "A pregnant person is given oxygen through a mask, and the "
+                "amount of oxygen in her blood rises. Predict what happens at "
+                "the placenta, and say why.",
+        "options": [
+            {"text": "More oxygen crosses to the foetus, because the "
+                     "difference between the two bloods is now larger",
+             "correct": True},
+            {"text": "Nothing changes, because the two blood supplies never "
+                     "mix", "correct": False,
+             "why": "They never mix and oxygen still crosses, by diffusing "
+                    "between them. Not mixing is not the same as not "
+                    "exchanging."},
+            {"text": "Nothing changes, because the placenta passes across "
+                     "only what the foetus asks for", "correct": False,
+             "why": "The placenta works nothing out. Substances move down "
+                    "whatever difference exists, so a larger difference means "
+                    "a faster crossing."},
+            {"text": "The foetus receives too much oxygen, because it is "
+                     "pumped across under pressure", "correct": False,
+             "why": "Nothing is pumped across. Diffusion has no pressure "
+                    "behind it, and it slows as the difference between the "
+                    "two sides closes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-04-h07",
+        "band": "harder",
+        "text": "The foetus’s carbon dioxide leaves the body through the "
+                "mother’s lungs, and its urea through her kidneys. Which "
+                "statement about that is right?",
+        "options": [
+            {"text": "The foetus has no kidneys and no lungs of its own until "
+                     "it is born", "correct": False,
+             "why": "It has both. The kidneys even make urine, which passes "
+                    "into the amniotic fluid, and the lungs are formed but "
+                    "full of fluid."},
+            {"text": "Its waste crosses the placenta into her blood, and her "
+                     "organs do the removing", "correct": True},
+            {"text": "The placenta removes the carbon dioxide and urea "
+                     "itself, so the foetus needs neither organ",
+             "correct": False,
+             "why": "The placenta is a surface things cross, and nothing "
+                    "leaves the body there. Whatever crosses is still inside "
+                    "her, and her organs have to deal with it."},
+            {"text": "Its own kidneys and lungs do the work, through the "
+                     "umbilical cord", "correct": False,
+             "why": "The cord carries the foetus’s blood to the placenta and "
+                    "back, not to any organ of hers. Its lungs are not used "
+                    "at all before birth."},
+        ],
+        "figure": None,
+    },
 ]

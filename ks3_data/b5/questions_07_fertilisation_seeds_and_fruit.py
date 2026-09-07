@@ -383,4 +383,163 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-07-e05",
+        "band": "easier",
+        "text": "A seed has a tough coat around it. What two things are "
+                "inside that coat?",
+        "options": [
+            {"text": "An ovule and an ovary", "correct": False,
+             "why": "Those are parts of the flower, and both have already "
+                    "become something else: the ovule became this seed, and "
+                    "the ovary became the fruit around it."},
+            {"text": "A pollen grain and a stigma", "correct": False,
+             "why": "Both finished their work before fertilisation, and "
+                    "neither ends up inside a seed. The grain grew a tube and "
+                    "the stigma withered."},
+            {"text": "An embryo plant and a food store", "correct": True},
+            {"text": "A root and a flower, both already formed",
+             "correct": False,
+             "why": "The embryo has the beginnings of a root and a shoot, "
+                    "folded up. A flower is built far later, by a plant that "
+                    "has already grown."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-07-e06",
+        "band": "easier",
+        "text": "Once the ovules of a flower have been fertilised, what "
+                "happens to its petals and stamens?",
+        "options": [
+            {"text": "They wither and fall off the plant", "correct": True},
+            {"text": "They swell and become the fruit", "correct": False,
+             "why": "The fruit forms from the ovary. The petals and stamens "
+                    "are no part of it and are abandoned."},
+            {"text": "They close over the developing seeds to protect them",
+             "correct": False,
+             "why": "The sepals often stay and go on protecting — that is the "
+                    "little green star on top of a strawberry. The petals do "
+                    "not."},
+            {"text": "They turn green and make food for the seeds",
+             "correct": False,
+             "why": "Each seed’s food store is built inside the seed itself. "
+                    "The petals were an advertisement, and the advertising "
+                    "stops."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b5-07-s05",
+        "band": "standard",
+        "text": "The food store inside a seed is called the endosperm. Most "
+                "of a grain of wheat is endosperm, and white flour is very "
+                "nearly pure endosperm. What is that tissue for?",
+        "options": [
+            {"text": "It attracts the animal that will carry the seed away",
+             "correct": False,
+             "why": "What attracts an animal is flesh on the outside of a "
+                    "fruit. The endosperm is inside the seed coat, where "
+                    "nothing can taste it."},
+            {"text": "It protects the embryo from being crushed or eaten",
+             "correct": False,
+             "why": "Protection is the tough coat’s job. The store is food, "
+                    "and a great deal of it is eaten every day."},
+            {"text": "It makes the seed heavy enough to fall straight to the "
+                     "ground", "correct": False,
+             "why": "Plenty of seeds are built to be carried as far as "
+                    "possible. Weight is a cost of carrying a store, not the "
+                    "reason for having one."},
+            {"text": "It feeds the young plant until it can make food for "
+                     "itself", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-07-s06",
+        "band": "standard",
+        "text": "A tomato flower is pollinated, but not one pollen tube ever "
+                "reaches an ovule. Predict what the plant produces.",
+        "options": [
+            {"text": "Seeds, but no fruit around them", "correct": False,
+             "why": "A seed is a fertilised ovule, so no fertilisation means "
+                    "no seed either. Both depend on the same event."},
+            {"text": "Neither seeds nor a fruit, because no fertilisation has "
+                     "happened", "correct": True},
+            {"text": "Seeds anyway, because the ovules were already in place "
+                     "inside the ovary", "correct": False,
+             "why": "An ovule holds a female gamete nucleus and nothing more "
+                    "until a male nucleus fuses with it. Being in place is "
+                    "not being fertilised."},
+            {"text": "A fruit, because pollination alone is enough to start "
+                     "the ovary swelling", "correct": False,
+             "why": "Pollination is only delivery to the stigma. The ovary "
+                    "swells after the ovules inside it have been fertilised, "
+                    "not before."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b5-07-h05",
+        "band": "harder",
+        "text": "A pea pod is opened and holds nine full peas and three "
+                "shrivelled empty spaces. Every ovule that becomes a seed "
+                "needs its own pollen tube. What does that tell you?",
+        "options": [
+            {"text": "Nine ovules were present, and three peas were eaten "
+                     "later", "correct": False,
+             "why": "The empty spaces are where ovules sat. Nothing was "
+                    "removed — three of the twelve simply never became "
+                    "seeds."},
+            {"text": "Twelve pollen grains landed, and nine of them were of "
+                     "the right species", "correct": False,
+             "why": "Far more than twelve grains land on a stigma, and one of "
+                    "the wrong species usually gets no response at all. What "
+                    "is counted here is tubes that arrived."},
+            {"text": "The ovary held twelve ovules, and nine of them were "
+                     "reached by a pollen tube", "correct": True},
+            {"text": "One pollen tube arrived and fertilised nine of the "
+                     "twelve ovules", "correct": False,
+             "why": "One tube carries one male gamete nucleus and fertilises "
+                    "one ovule. Nine seeds means nine tubes reached their "
+                    "target."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b5-07-h06",
+        "band": "harder",
+        "text": "Two nuclei travel down one pollen tube: one fuses with the "
+                "egg nucleus and becomes the embryo, and the second helps "
+                "build the seed’s food store. Why is it useful that the store "
+                "is not started until then?",
+        "options": [
+            {"text": "A store is expensive, so an ovule that is never "
+                     "fertilised costs the plant almost nothing",
+             "correct": True},
+            {"text": "The store would rot if it were built before the seed "
+                     "coat existed", "correct": False,
+             "why": "Plant tissue inside an ovary is not sitting there "
+                    "rotting. The saving is in what never has to be built at "
+                    "all."},
+            {"text": "The store is made from the pollen grain, so it cannot "
+                     "exist until the grain arrives", "correct": False,
+             "why": "The store is built from the plant’s own materials. What "
+                    "the pollen brings is a nucleus, not a food supply."},
+            {"text": "The embryo needs the store at once, so the two have to "
+                     "be made at the same moment", "correct": False,
+             "why": "The embryo lives on the store later, when the seed "
+                    "germinates. Timing the build to fertilisation is about "
+                    "cost, not about urgency."},
+        ],
+        "figure": None,
+    },
 ]
