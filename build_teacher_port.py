@@ -150,6 +150,11 @@ ADMIN_NAV_JS_NAME = "teacher-admin-nav.js"
 # ⊕ MRB-323 — the random name picker. See `picker` in page_html.
 PICKER_JS_NAME = "teacher-picker.js"
 
+# ⊕ MRB-335 — the Set work sheet, which is no longer a compiled overlay.
+# See `setwork` in page_html, and the note on node 581 in teacher_rulings.DEAD.
+SETWORK_CSS_NAME = "set-work.css"
+SETWORK_JS_NAME = "set-work.js"
+
 # ── pages this build REFUSES to write ────────────────────────────────────
 #
 # ⚠️ NOT A CONVENTION — A GUARD, and it is the same one `build_student_port`
@@ -236,9 +241,25 @@ _REFUSED = {"import.html"}
 # beacon works perfectly on the first deploy, and every later fix to it —
 # including a fix to what it is allowed to send — would never reach anybody
 # who had already loaded a teacher page.
+# ⊕ MRB-335 — `set-work.css` AND `set-work.js` JOIN, and the CSS is the
+# first stylesheet in this tuple. They join for `teacher-picker.js`'s SECOND
+# reason and not its first: both are linked by real tags `page_html` emits on
+# the two pages that carry the sheet, so `stamp_versions` would stamp them
+# either way. Being named here is what makes `_verify_stamps` re-hash them
+# from disk in BOTH published trees and refuse to finish if a stamp names
+# bytes that are not what will be served — and `_headers` now serves
+# `/shared/*` as `immutable`, so an unstamped or wrongly-stamped asset is
+# pinned in a teacher's browser for a year with no deploy able to reach it.
+#
+# ⚠️ THE CSS ALSO LANDS IN `window.__MRB_ASSET_V__`, which no runtime looks
+# it up in. That costs one JSON entry and is the honest reading of this
+# tuple's contract — "every asset a teacher page names is in the version
+# map" — rather than a second, filtered list that would have to be kept in
+# step with this one.
 STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
-                "teacher-picker.js", "rum.js")
+                "teacher-picker.js", "rum.js",
+                SETWORK_CSS_NAME, SETWORK_JS_NAME)
 
 
 def asset_hash(text):
@@ -313,7 +334,8 @@ PAGES = [
          # ⊕ NO `bulkOpen`. See the note above the list: `openBulk` is on
          # nodes 104/196 (class) and 232 (student) and nowhere on the classes
          # screen, so on this page the sheet was markup that could never open.
-         overlays=("setWorkOpen", "searchOpen", "hasToast"),
+         setwork=True,
+         overlays=("searchOpen", "hasToast"),
          retire="classes.html"),
     # ⊕ MRB-323 — `picker=True` ON THIS ONE ONLY. The name picker's entry
     # button is `teacher_rulings.INSERT_AT[(213, 216)]`, and node 213 is the
@@ -328,7 +350,8 @@ PAGES = [
          empty_out="class-detail-empty-fixture.html",
          empty_js="teacher-fixture-class-detail-empty.js",
          title="Class \u00b7 MrBadmusAI",
-         overlays=("setWorkOpen", "searchOpen", "bulkOpen", "hasToast"),
+         setwork=True,
+         overlays=("searchOpen", "bulkOpen", "hasToast"),
          retire="class-detail.html"),
     dict(screen="student", node=222, out="student-detail.html", admin_nav=True,
          fixture_out="student-detail-fixture.html",
@@ -4375,151 +4398,100 @@ function MRB_API_ERR(res,d,path){
   e.mrbCode=(d&&d.error)||'';
   e.mrbStatus=res.status;
   return e;}
+/* ⊕ MRB-335, 7 Sep 2026 — THE SET-WORK SEAM IS TWO FUNCTIONS NOW.
 
-/* ── THE TOPICS THIS CLASS COULD BE SET NEXT ─────────────────────────────
+   Fifteen went, and they are named so a reader who greps for one lands
+   here rather than on nothing: MRB_SET_WORK_TOPICS, MRB_SET_WORK_ROWS,
+   MRB_SET_WORK_TAG, MRB_SET_WORK_PREVIEW, MRB_SET_WORK, MRB_SW_FETCH,
+   MRB_SET_WORK_SHORT, MRB_SET_WORK_NEXT_MONDAY_YMD, MRB_SET_WORK_DAY_LINE,
+   MRB_SET_WORK_SAID, MRB_SET_WORK_DUE_DATE, MRB_SET_WORK_DUE_LINE,
+   MRB_SET_WORK_DUE_ISO, MRB_SET_WORK_RELEASE_ISO, MRB_SET_WORK_HOLD_LINE.
 
-   ⚠️ IT WRITES BACK INTO `window.__MRB_DATA__` AND RE-RENDERS. `TOPICS` is a
-   payload key like every other, so the sheet reads it through `MRB_DATA` and
-   cannot tell a fetched list from a mounted one — which is what lets the
-   classes screen, where there is no class in the URL at all, open the sheet
-   and fill its topic list once a class has been chosen.
+   They were v1's whole write path, and every one of them landed its answer
+   on the compiled component with `cmp.setState` — which is the scroll-jump
+   (`student-runtime.js:497`). They also read v1's `/api/teacher/set-work/
+   topics` and its `sow_entry_id` contract, both of which MRB-335 deletes.
+   `shared/set-work.js` owns the fetches now, against `/scope`, `/preview`,
+   `/swap` and the POST.
 
-   ⚠️ AND IT IS A GETTER ON DESIGN'S CLASS, NOT A FIELD. A class field is
-   evaluated once at construction; this list arrives after mount, so a field
-   would have frozen the empty list Design's page started with. See the
-   `TOPICS` entry in `teacher_rulings.LOGIC`.
+   ⛔ NOT COMMENTED OUT, DELETED. Every byte of `_SEAM` ships on all seven
+   teacher pages, and three hundred lines of dead JavaScript calling routes
+   that no longer answer is a page-weight cost AND a trap: `teacher_tells`
+   reads the built bytes, and the next reader to grep for a set-work helper
+   would find a working-looking implementation of the wrong contract. The
+   record of what they did lives in `teacher_rulings.py`, which is the file
+   whose job that is.
 
-   `hold_opens_on` rides along on this answer rather than being a read of its
-   own: `schools.assignments_open_from` is resolved server-side, next to the
-   scheme read that already has the school, and a teacher has no business
-   holding a `schools` row open in their browser to find out. */
-function MRB_SET_WORK_TOPICS(cmp, classId){
-  var D=window.__MRB_DATA__;
-  if(!D||!cmp){return Promise.resolve(false);}
-  if(!classId){
-    D.TOPICS=[];D.setWorkBand='';
-    cmp.setState({swTopicsErr:false});
-    return Promise.resolve(false);}
-  return MRB_API_GET('/api/teacher/set-work/topics?class_id='+
-                     encodeURIComponent(classId))
-    .then(function(d){
-      D.TOPICS=MRB_SET_WORK_ROWS(d);
-      D.setWorkBand=(d&&d.band)||'';
-      cmp.setState({swTopicsErr:false});
-      return true;},
-      function(){
-      /* ⚠️ NOT `console.error`, AND THAT IS A RULING RATHER THAN A STYLE
-         CHOICE. Every other failure on this page is reported to the TEACHER
-         and not to a log they will never open — `MRB_SHOUTOUT_WHY`,
-         `MRB_REMIND_WHY`, `MRB_SET_WORK_WHY`. A scheme that will not load is
-         the same kind of event, and the topic panel has a sentence for it
-         (`swNoTopicsLine`). It is also what keeps a fixture — which has no
-         session and so can never reach this route — from failing
-         `teacher_behaviour`'s console check for behaving exactly as
-         designed.
+   ⚠️ TWO SURVIVE AND ARE NOT LISTED ABOVE. `MRB_SET_AUTO_ASSIGNMENTS` and
+   `MRB_SET_WORK_WHY` belong to the automatic-weekly-work toggle, which is
+   in Design's action row and not in the sheet at all. */
 
-         The sheet is one overlay on a page that mounted perfectly well
-         without it: a teacher who cannot read the scheme can still mark,
-         chase and shout out, so this never fails the page. */
-      D.TOPICS=[];D.setWorkBand='';
-      cmp.setState({swTopicsErr:true});
-      return false;});}
+/* The opener the three "Set work" buttons bind to (nodes 165, 214, 282) and
+   the class card's own fork (194). One argument.
 
-/* The scheme route's rows, in the shape Design's topic list renders.
+   ⚠️ IT IS A NAMED SEAM HELPER RATHER THAN AN INLINE `window.MRBSetWork
+   .open(...)` FOR THE REASON EVERY NAVIGATION HERE IS: `teacher_behaviour`
+   STUBS the helpers, so a swept press can be recorded without a sheet
+   opening over the fixture it is still measuring.
 
-   ⚠️ `tag` IS DERIVED HERE AND THE ROUTE DOES NOT SEND ONE. It sends
-   `last_set_at` — the newest assignment on this class whose `subtotpic` is this
-   lesson, or null — and the tag is Design's own vocabulary over it: she wrote
-   "Not set yet" and "Set 3 weeks ago" and this says exactly those things about
-   a real date. The question a teacher asks second is "have I already given
-   them this?", so it is a fact about THIS class and not about the lesson.
+   ⚠️ IT TOLERATES THE SCRIPT NOT BEING THERE. A falsy `classId` is the
+   `classes.html` case — `k` is `MRB_NO_CLASS()` and `k.id` is '' — and a
+   missing `window.MRBSetWork` is a page that loaded its HTML but not its
+   JavaScript. Neither throws inside a click listener, because a throw there
+   is reported by the gates as a dead control, which is the wrong finding. */
+function MRB_SET_WORK_OPEN(classId){
+  if(!classId){return false;}
+  var M=window.MRBSetWork;
+  if(!M||!M.open){return false;}
+  M.open({classId:classId});
+  return true;}
 
-   ⚠️ `available` IS CARRIED THROUGH UNTOUCHED AND IS 0 ON EVERY KS4 ROW. Not
-   because the join finds nothing — on eight KS4 slugs it finds twelve, because
-   eight KS4 subtopic slugs are byte-identical to KS3 lesson slugs — but
-   because the route gates on the KEY STAGE. There is no KS4 bank. A row with
-   `available: 0` renders unavailable and refuses to be picked; see the
-   `topics` ruling in teacher_rulings.py. */
-function MRB_SET_WORK_ROWS(d){
-  var rows=(d&&d.topics)||[];
-  return rows.map(function(r){
-    return {id:r.id, name:r.name, unit:r.unit,
-            lesson_slug:r.lesson_slug, lesson_title:r.lesson_title,
-            available:r.available||0,
-            tag:MRB_SET_WORK_TAG(r.last_set_at)};});}
+/* ⊕ MRB-335 — THE CARD REFRESHES AFTER A SET, WHICH IT NEVER DID.
 
-function MRB_SET_WORK_TAG(iso){
-  if(!iso){return 'Not set yet';}
-  var t=new Date(iso);
-  if(isNaN(t.getTime())){return 'Not set yet';}
-  var days=Math.floor((Date.now()-t.getTime())/86400000);
-  if(days<7){return 'Set this week';}
-  var w=Math.floor(days/7);
-  return 'Set ' + w + (w===1?' week ago':' weeks ago');}
+   v1's `swNext` ended in `this.ping(...)` and nothing else, so a teacher who
+   had just set work to a class watched its card go on reading "no work set"
+   until they reloaded the page. The toast said one thing and the screen said
+   another, which is the same class of untruth as a toast in front of no
+   write.
 
-/* ── WHICH QUESTIONS, AND WHAT ELSE THE LESSON HAS ──────────────────────
+   `shared/set-work.js` calls this after a successful POST. It re-reads the
+   screen through `MrBadmusTeacherLive.load` — the mechanism `MRB_REFRESH_FEED`
+   and `MRB_REFRESH_FEEDBACK` already use — lands the keys that carry a
+   class's work, and forces one redraw.
 
-   `picked` is what the work would be composed of; `pool` is the rest of the
-   same lesson's bank, which is what makes "Swap" a real control rather than a
-   re-roll. `short` and `reason` are the honest half: KS4 has no bank at all
-   (there is no KS4 question pool anywhere in this product — see
-   `consumer/work.js`'s own `no_ks4_bank`), and a lesson can simply hold fewer
-   questions than the teacher asked for. Both are said, neither is padded. */
-function MRB_SET_WORK_PREVIEW(classId, sowEntryId, count, band){
-  var no=function(e){return Promise.resolve(
-    {picked:[],pool:[],available:0,short:true,reason:'',error:e});};
-  if(!classId){return no(new Error('teacher page: no class'));}
-  if(!sowEntryId){return no(new Error('teacher page: no topic'));}
-  return MRB_API_GET('/api/teacher/set-work/preview?class_id='+
-      encodeURIComponent(classId)+'&sow_entry_id='+
-      encodeURIComponent(sowEntryId)+'&count='+encodeURIComponent(count||10)+
-      (band?('&band='+encodeURIComponent(band)):''))
-    .then(function(d){
-      return {picked:(d&&d.picked)||[], pool:(d&&d.pool)||[],
-              available:(d&&d.available)||0, short:!!(d&&d.short),
-              reason:(d&&d.reason)||'', error:null};}, no);}
+   ⚠️ THE REDRAW IS THE WHOLE POINT AND IT IS SAFE HERE. A full rebuild of
+   the mount host is exactly what MRB-335 took the sheet away from; it is
+   harmless now because the sheet is CLOSED by the time this runs and lives
+   on `<body>` regardless. The page underneath has no scroll position anybody
+   is mid-gesture in.
 
-/* ── THE WRITE ──────────────────────────────────────────────────────────
+   ⚠️ ON A DEADLINE AND IT ALWAYS SETTLES, exactly as `MRB_REFRESH_FEED` is:
+   a stale card is a refresh away and a hung page is not. */
+window.MRB_SET_WORK_DONE = function(done){
+  var L=window.MrBadmusTeacherLive, C=window.__MRB_CMP__;
+  if(!L||!L.load||!L.reload){return Promise.resolve(false);}
+  var q=new URLSearchParams(window.location.search);
+  /* ⚠️ `reload()` FIRST, AND WITHOUT IT THIS DOES NOTHING VISIBLE. `load()`
+     is served out of a memoised `base()`; calling it again after a write
+     returns the same rows that were on screen before the write, so the card
+     would repaint itself unchanged and the defect would look fixed in a
+     drive and be unfixed for a teacher. `reload()` is the exported
+     `reset(); base();` pair and is the only way to make the next read real. */
+  return Promise.race([
+    L.reload().then(function(){
+      return L.load(L.screenFromLocation(), {
+        classId: q.get('class'), studentId: q.get('student'),
+        paperIdx: q.get('paper'), chartKind: q.get('chart'),
+        chartScope: q.get('scope')});
+    }).then(function(d){
+      window.__MRB_DATA__ = d;
+      /* `CLASSES` is a class FIELD, read once at construction, so landing it
+         on `__MRB_DATA__` alone leaves the instance holding the old array. */
+      if(C&&C.logic){C.logic.CLASSES=d.CLASSES;C.logic.forceUpdate();}
+      return true;}, function(){return false;}),
+    new Promise(function(r){setTimeout(function(){r(false);}, 8000);})
+  ]);};
 
-   ⚠️ IT REPORTS WHAT THE SERVER CREATED, NOT WHAT WAS TYPED. Design's toast
-   counted the classes the teacher had TICKED. A set can be refused per class
-   — a class whose year has finished, a class somebody else set the same
-   lesson to, a class with no children in it — so the only number worth
-   putting in front of a teacher is the one that came back. `classes` and
-   `students` here are the server's own counts and nothing derives them
-   locally. */
-function MRB_SET_WORK(payload){
-  var no=function(e){return Promise.resolve(
-    {ok:false,classes:0,students:0,skipped:[],error:e});};
-  var p=payload||{};
-  if(!p.class_ids||!p.class_ids.length){
-    return no(new Error('teacher page: no class'));}
-  if(!p.sow_entry_id){return no(new Error('teacher page: no topic'));}
-  if(!p.question_ids||!p.question_ids.length){
-    return no(new Error('teacher page: no questions'));}
-  return MRB_TOKEN().then(function(t){
-    return fetch(MRB_API()+'/api/teacher/set-work',
-      {method:'POST',
-       headers:{Authorization:'Bearer '+t,
-                'Content-Type':'application/json'},
-       body:JSON.stringify(p)});
-  }).then(function(res){
-    return res.json().then(function(d){return {res:res,d:d};},
-                           function(){return {res:res,d:null};});
-  }).then(function(r){
-    if(!r.res.ok){throw MRB_API_ERR(r.res,r.d,'/api/teacher/set-work');}
-    var d=r.d||{};
-    /* `created` is one row per class the server actually wrote, carrying that
-       class's id and the assignment's. It is the ONLY honest count of what
-       happened: the write refuses a partial multi-class set whole (UNIT A
-       decision 9), so a short list means the whole thing was refused rather
-       than half-landed — and either way the number a teacher is told comes
-       from here and never from what they ticked. */
-    return {ok:true, created:d.created||[],
-            releasedNow:d.released_now===true,
-            heldUntil:d.held_until||'', error:null};},
-    function(e){return {ok:false,created:[],releasedNow:false,
-                        heldUntil:'',error:e};});}
 
 /* ── AUTOMATIC WEEKLY WORK, ON OR OFF ───────────────────────────────────
 
@@ -4545,78 +4517,6 @@ function MRB_SET_AUTO_ASSIGNMENTS(classId, on){
     var st=r.d&&r.d.auto_assignments;
     return {ok:true, state:(st===true||st===false)?st:null, error:null};},
     function(e){return {ok:false,state:null,error:e};});}
-
-/* The preview, fetched and landed on the sheet's own state. One place, so
-   that the three things that can change the answer — the topic, the count and
-   the class — cannot each grow their own slightly different version of it.
-
-   ⚠️ IT TAKES THE COMPONENT. `renderVals`'s closures are synchronous and
-   `this` inside one is Design's logic instance, so the fetch is fired from
-   the closure and the answer is landed through the instance it was fired
-   from. Passing it explicitly is what keeps this out of the seam's global
-   scope and out of a second `window.` handle. */
-function MRB_SW_FETCH(cmp, classId, sowEntryId, count, band){
-  if(!cmp){return Promise.resolve(false);}
-  if(!sowEntryId){cmp.setState({swPick:[],swPool:[],swErr:''});
-    return Promise.resolve(false);}
-  cmp.setState({swBusy:true, swErr:''});
-  return MRB_SET_WORK_PREVIEW(classId, sowEntryId, count, band)
-    .then(function(r){
-      cmp.setState({swBusy:false, swPick:r.picked||[], swPool:r.pool||[],
-        swErr:r.error?MRB_SET_WORK_WHY(r.error):MRB_SET_WORK_SHORT(r)});
-      return !r.error;});}
-
-/* Why the sheet has fewer questions than were asked for, said once. Empty
-   when it has as many as it asked for, which draws nothing. */
-function MRB_SET_WORK_SHORT(r){
-  if(!r){return '';}
-  /* ⚠️ THE REFUSAL COMES BACK AS A 200, NOT AN ERROR, and it has to be read
-     here or it is read nowhere. `/preview` answers `{picked: [], pool: [],
-     reason: 'no_question_bank'}` for a KS4 class — there is no KS4 question
-     pool anywhere in this product — and that is a state to explain, not a
-     failure to report. */
-  if((r.reason||'')==='no_question_bank')
-    return 'There are no questions for this course yet, so this lesson ' +
-           'cannot be set.';
-  if(!r.short){return '';}
-  var n=(r.picked||[]).length;
-  if(!n){return 'There are no questions for that lesson yet.';}
-  /* ⚠️ IT SAYS "THIS PART OF THE SCHEME", NOT "THIS LESSON", AND THE
-     DIFFERENCE IS THE TRUTH. A lesson holds four questions per band, so a set
-     of ten is never one lesson's: the backend fills backwards through the
-     scheme, nearest first, exactly as the weekly producer does. Every row in
-     the preview names the lesson it came from, so nothing is concealed —
-     which is why this sentence must not claim otherwise. */
-  return 'Only ' + n + (n===1?' question is':' questions are') +
-         ' available for this part of the scheme, so that is what will ' +
-         'be set.';}
-
-/* Next Monday, as `yyyy-mm-dd`. The default a "Release later" gets, because
-   a blank date under that chip is a state that means the same thing as
-   "Release now" — see the `swRelease` ruling. Local time, deliberately: the
-   teacher is choosing a school day, not an instant. */
-function MRB_SET_WORK_NEXT_MONDAY_YMD(){
-  var d=new Date(); d.setHours(0,0,0,0);
-  /* ⊕ MRB-331 x MRB-330, 7 Sep 2026 — the same Sunday correction as
-     MRB_SET_WORK_DUE_DATE, and it has to be the same or the two controls
-     disagree with each other on one day a week. `(8-(d.getDay()||7))` treated
-     Sunday as the tail of the old week and offered the very next morning,
-     while the due chips beside it were already pointing a week further on:
-     work that appeared Monday and was due ten days later, from two defaults
-     the teacher never touched. Sunday now anchors on the week it OPENS. */
-  var dow0=d.getDay();
-  d.setDate(d.getDate() + (dow0===0 ? 8 : (8 - dow0)));
-  var m=String(d.getMonth()+1), dd=String(d.getDate());
-  return d.getFullYear()+'-'+(m.length<2?'0'+m:m)+'-'+(dd.length<2?'0'+dd:dd);}
-
-/* One stored day, in words. Used for the release date the teacher picked;
-   the DUE line has its own helper because it resolves a weekday first. */
-function MRB_SET_WORK_DAY_LINE(ymd){
-  if(!ymd){return '';}
-  var d=new Date(ymd+'T00:00:00');
-  if(isNaN(d.getTime())){return '';}
-  return 'Students see it on ' + d.toLocaleDateString(undefined,
-    {weekday:'short', day:'numeric', month:'short', year:'numeric'}) + '.';}
 
 /* Why a set failed, in a sentence a teacher can act on. The companion to
    MRB_SHOUTOUT_WHY and MRB_REMIND_WHY, separate for the same reason: a
@@ -4648,106 +4548,6 @@ function MRB_SET_WORK_WHY(e){
     return "Couldn't set it — no connection just now. Try again in a " +
            "moment.";
   return "Couldn't set the work. Try again.";}
-
-/* What the server actually did, as one sentence. Plural-aware, because
-   Design's own summary said "1 classes".
-
-   ⚠️ THE CLASSES ARE THE SERVER'S AND SO ARE THE CHILDREN. `r.created` names
-   the classes it wrote, one row each; the roster size beside each of those ids
-   is the real one this page already has. Design's toast counted what was
-   TICKED, which is a different number the moment a class is refused.
-
-   ⚠️ AND IT SAYS WHETHER THEY CAN SEE IT. `released_now` is true only when
-   every class got it immediately; when a school hold pushed it back,
-   `held_until` is the instant the last of them is waiting on, and a teacher
-   who is not told that will go looking for work the class cannot see. */
-function MRB_SET_WORK_SAID(r, all){
-  var made=r.created||[];
-  var ids={}, i;
-  for(i=0;i<made.length;i++){if(made[i]&&made[i].class_id){
-    ids[made[i].class_id]=1;}}
-  var n=Object.keys(ids).length||made.length;
-  var st=0;
-  (all||[]).forEach(function(k){if(ids[k.id]){st+=(k.n||0);}});
-  var line='Set for ' + n + (n===1?' class':' classes');
-  if(st){line+=' · ' + st + (st===1?' student':' students');}
-  if(!r.releasedNow){
-    var when=r.heldUntil?new Date(r.heldUntil):null;
-    line+=(when&&!isNaN(when.getTime()))
-      ? (' · they see it on ' + when.toLocaleDateString(undefined,
-          {weekday:'short', day:'numeric', month:'short'}))
-      : ' · held until your school opens work';}
-  return line;}
-
-/* ── THE DUE DAY, RESOLVED ───────────────────────────────────────────────
-
-   ⚠️ A WEEKDAY IS NOT A DATE, AND DESIGN'S CHIPS ONLY EVER SAID "Wed". The
-   sheet is used on any day of the week, so "Wed" alone is ambiguous the
-   moment it is pressed on a Thursday. This resolves it the way a teacher
-   means it — that weekday, NEXT week — and the sheet prints the answer under
-   the chips so nobody has to guess which Wednesday.
-
-   Computed from the browser's own clock, never from a literal: a typed date
-   is the tell `teacher_tells.py` fails the build on, and rightly. */
-function MRB_SET_WORK_DUE_DATE(day){
-  var names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  var want=names.indexOf(day);
-  if(want<0){return null;}
-  var d=new Date();
-  d.setHours(23,59,0,0);
-  /* Monday of this TEACHING week, then the same weekday seven days on.
-
-     ⊕ MRB-331 x MRB-330, 7 Sep 2026 — SUNDAY IS THE START OF ITS WEEK, NOT
-     THE END. This read `(d.getDay()+6)%7`, which is the arithmetic MRB-330
-     replaced: it puts Sunday six days after the Monday that has gone, so a
-     Sunday press anchored on the week that was ENDING and a Monday press on
-     the week beginning. Measured: pressing "Thu" on Sunday 13 Sep 2026 gave
-     Thu 17 Sep, and the identical press twelve hours later on Monday 14 Sep
-     gave Thu 24 Sep — a seven-day jump between two moments the week model
-     says are the same teaching week.
-
-     Sunday evening is when homework gets set, and Sunday 6 Sep 2026 is the
-     exact day the MRB-329 audit was reported on. The week is still NAMED by
-     its Monday, so on a Sunday that Monday is TOMORROW, which is the -1. */
-  var dow=d.getDay();
-  var back=(dow===0)?-1:((dow+6)%7);
-  d.setDate(d.getDate()-back+7+((want+6)%7));
-  return d;}
-
-function MRB_SET_WORK_DUE_LINE(day){
-  var d=MRB_SET_WORK_DUE_DATE(day);
-  if(!d){return '';}
-  return d.toLocaleDateString(undefined,
-    {weekday:'short', day:'numeric', month:'short', year:'numeric'});}
-
-function MRB_SET_WORK_DUE_ISO(day){
-  var d=MRB_SET_WORK_DUE_DATE(day);
-  return d?d.toISOString():null;}
-
-/* `now` is null — the row is released the moment it is written, which is what
-   every existing assignment already is. A chosen date is sent as the start of
-   that day; the SERVER takes the later of it and the school's hold, and
-   stores the answer (see the MRB-331 plan: a hold moved later must never
-   retract work a class can already see). */
-function MRB_SET_WORK_RELEASE_ISO(rel, ymd){
-  if(rel!=='later'){return null;}
-  if(!ymd){return null;}
-  var d=new Date(ymd+'T00:00:00');
-  return isNaN(d.getTime())?null:d.toISOString();}
-
-/* The school's hold, as one sentence, and ONLY when it is real and ahead of
-   today. `holdOpensOn` is empty on every school that has not set one, which
-   is almost all of them, and an empty string draws nothing. */
-function MRB_SET_WORK_HOLD_LINE(ymd){
-  if(!ymd){return '';}
-  var d=new Date(ymd+'T00:00:00');
-  if(isNaN(d.getTime())){return '';}
-  var t=new Date(); t.setHours(0,0,0,0);
-  if(d.getTime()<=t.getTime()){return '';}
-  return 'Your school opens work to students on ' +
-         d.toLocaleDateString(undefined,
-           {day:'numeric', month:'short', year:'numeric'}) +
-         ', so this will appear then.';}
 
 function MRB_REFRESH_FEEDBACK(screen, params){
   var L=window.MrBadmusTeacherLive, D=window.__MRB_DATA__;
@@ -4840,6 +4640,25 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
     # for exactly that state.
     picker = ("<script src=\"/shared/%s\"></script>\n" % PICKER_JS_NAME
               if spec.get("picker") else "")
+    # ⊕ MRB-335 — the Set work sheet, on the two pages that open it.
+    #
+    # ⚠️ THE STYLESHEET GOES IN `<head>` AND THE SCRIPT AT THE FOOT, and the
+    # split is not cosmetic: the sheet is drawn over a page the teacher is
+    # already reading, so its CSS must be parsed before it can ever be
+    # opened, while its JS is only needed when a button is pressed. Loading
+    # the CSS late would draw one unstyled frame of a 720px overlay.
+    #
+    # ⚠️ ON THE FIXTURES TOO, for the reason the picker's tag is: the gates
+    # document the fixture as "the same bytes apart from its banner and its
+    # last two script tags", and `teacher_behaviour` presses `openSetWork` by
+    # name. Without the script there, the press would find `window.MRBSetWork`
+    # undefined — `MRB_SET_WORK_OPEN` returns false rather than throwing, so
+    # it would be reported as a DEAD CONTROL, which is the wrong finding
+    # about a control that works.
+    setwork_css = ("<link rel=\"stylesheet\" href=\"/shared/%s\">\n"
+                   % SETWORK_CSS_NAME if spec.get("setwork") else "")
+    setwork_js = ("<script src=\"/shared/%s\"></script>\n"
+                  % SETWORK_JS_NAME if spec.get("setwork") else "")
     # ⚠️ EMITTED ON BOTH PAGES, including the fixture, which never reads it.
     # The gates document the fixture as "the same bytes apart from its banner
     # and its last two script tags", and that sentence is what lets them
@@ -4863,6 +4682,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "<title>%s</title>\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
+        "%s"
         "<style>body{margin:0;background:var(--st-ground,#FBF3E6)}"
         "a{color:var(--ks3-accent-text);text-decoration:none}"
         "a:hover{color:var(--ks3-accent-hover)}"
@@ -5079,6 +4899,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            (_BANNER % (spec["out"][:-5].replace("-", " ").title(),
                        LIVE_JS_NAME, spec["fixture_out"])),
            DS_CSS_URL,
+           setwork_css,
            regions,
            json.dumps({"roots": roots, "imports": imports},
                       separators=(",", ":")).replace("<", "\\u003c"),
@@ -5092,19 +4913,27 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            # ⚠️ DECLARED, NOT CALLED. Whoever loads the data calls it, which
            # is what makes "the production page cannot mount without a data
            # source" a property of the file rather than a promise about it.
+           # ⊕ MRB-335 — THE MOUNT'S RETURN IS KEPT, on `window.__MRB_CMP__`.
+           # `R.mount` hands back the render api (`.logic`, `.draw`,
+           # `.forceUpdate` through the logic) and until now every caller
+           # dropped it on the floor, so nothing outside the template could
+           # ask the page to redraw. `MRB_SET_WORK_DONE` needs exactly that
+           # once — after a set, to repaint the card the teacher just set work
+           # to, which v1 never did. It is a handle, not a second seam: no
+           # DATA passes through it.
            "window.__MRB_MOUNT__ = function () {\n"
            "  var R = window.MrBadmusStudentRuntime;\n"
            "  var tpl = window.__MRB_TPL__;\n"
-           "  return R.mount({\n"
+           "  return (window.__MRB_CMP__ = R.mount({\n"
            "    into: '#mrb-teacher',\n"
            "    template: {roots: R.applyBindings(tpl.roots, "
            "window.__MRB_BIND__, MRB_DATA), imports: tpl.imports},\n"
            "    imports: tpl.imports,\n"
            "    Component: Component,\n"
            "    props: {}\n"
-           "  });\n"
+           "  }));\n"
            "};",
-           dep_map + admin_nav + picker,
+           dep_map + admin_nav + picker + setwork_js,
            tail)),
         versions)
 

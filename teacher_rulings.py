@@ -201,6 +201,13 @@ WEEK_BAR_RESTORED = dict(
 # `setWorkOpen` is on this list so the build can PRUNE it by name on every
 # page rather than by an index typed in seven places. It is kept by none of
 # them; see `DEAD`.
+# ⊕ MRB-335, 7 Sep 2026 — TRUE AGAIN, and it was false for one day.
+# MRB-331 UNIT B made `classes.html` and `class-detail.html` keep
+# `setWorkOpen` without amending this paragraph. Both pages drop it
+# again: the sheet is `shared/set-work.js` now, and node 581 is on
+# `DEAD`. The entry stays in this table because the build prunes BY
+# NAME, and pruning by name is what makes "kept by none of them"
+# checkable rather than a claim about six `overlays` tuples.
 # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — re-anchored on v3. 453→581, 500→628,
 # 525→655, 541→671. The four overlays survive v3 unchanged in shape; only
 # their numbering moved, behind the two screens Design added above them.
@@ -711,6 +718,43 @@ IMPORT_NOT_PORTED = dict(
 # not listed: `SCREENS` prunes Today whole on all six pages, and the build's
 # own sweep refuses a DEAD node that survives on no page.
 DEAD = (
+    # ⊕ MRB-335, 7 Sep 2026 — NODE 581 IS BACK ON THIS LIST, AND FOR A
+    # DIFFERENT REASON FROM THE ONE MRB-287 GAVE. MRB-287 pruned it because
+    # there was no write path behind it. There is one, MRB-331 built it, and
+    # this ruling does not touch that: the sheet still composes from a
+    # question bank through the backend and still writes a real `assignments`
+    # row. What is wrong with node 581 is the RENDERER it is drawn by.
+    #
+    # `student-runtime.js` rebuilds the whole mount host on every state
+    # change — its own header says so, "the re-render is a full rebuild,
+    # deliberately" — restoring focus (`refocus`, :381), field values
+    # (`restoreFields`, :419) and `window.scrollY` (:496, :501), and no
+    # element's `scrollTop`, because it keeps no record of one. Node 581 is
+    # `max-height:86vh; overflow:auto`: its own inner scroller. So every tap
+    # of a topic destroyed the node holding the teacher's place at :497 and
+    # replaced it at :498 with a fresh one at 0, and a teacher choosing from
+    # a fifty-row list was thrown to the top of it every single time.
+    #
+    # That is not fixable inside the sheet — it is a property of the
+    # renderer. Either the runtime learns to save every descendant scroller,
+    # changing the render path of every teacher AND student page to fix one
+    # overlay, or the sheet leaves the runtime. It left: `shared/set-work.js`
+    # owns one overlay appended to `<body>`, a SIBLING of the mount host,
+    # which `draw()` cannot reach, and it patches in place.
+    #
+    # ⚠️ THE OTHER FOUR STAY OFF THIS LIST. Nodes 165, 214, 282 and 194 are
+    # Design's "Set work" BUTTONS, and a button is not a renderer: they stay
+    # on the page and open the module instead of a modal. Pruning them again
+    # would take the feature away in order to fix how it scrolls.
+    (581, "the Set-work sheet itself — Design's compiled overlay. NOT for "
+          "want of a write path (MRB-331 built one, and it is still the "
+          "write path) but because the compiled runtime rebuilds the whole "
+          "mount host on every `setState` and restores no element's "
+          "`scrollTop`, so the sheet's own `overflow:auto` scroller was "
+          "destroyed and rebuilt at 0 on every selection a teacher made. "
+          "`shared/set-work.js` replaces it: one overlay on `<body>`, "
+          "outside the runtime, patched in place. ⊕ MRB-335."),
+
     # ⊕ SUPERSEDED 6 Sep 2026 (MRB-331 UNIT B) — FIVE NODES ARE OFF THIS
     # LIST. They are kept here, verbatim, for the reason MRB-326 JOB 4c kept
     # node 236: these rows are the ONLY record of which controls the pruning
@@ -1388,11 +1432,7 @@ NAV = {
         to="      act: (e) => { e.stopPropagation();\n"
            "        if (c.state === 'empty') { "
            "return MRB_GO('import', { 'class': c.id }); }\n"
-           "        this.setState({ modal: 'setwork', swStep: 1, "
-           "swTopic: null, swPick: MRB_DATA('SET_WORK_PREVIEW'), "
-           "swPool: [], swErr: '', swBusy: false, swTopicsErr: false, "
-           "swClasses: [c.id] });\n"
-           "        MRB_SET_WORK_TOPICS(this, c.id); }",
+           "        MRB_SET_WORK_OPEN(c.id); }",
         why="\"Import\" on a class card with no students, and \"Set work\" "
             "on a card that has students but no work set — Design's own "
             "two-armed fork, restored. The one route into "
@@ -2698,237 +2738,264 @@ def _fb_sheet():
 _CLASS_ACTION_BTN = _PICK_ENTRY_BTN
 
 
-# ── ⊕ MRB-331 UNIT B · THE SET-WORK SHEET'S OWN TREATMENTS ──────────────
+# ⊕ SUPERSEDED 7 Sep 2026 (MRB-335) — the Set-work sheet's own
+# treatments, retired with the six `INSERT_AT` subtrees that were
+# their only readers. See the note at the head of `INSERT_AT`.
 #
-# ⚠️ NOT ONE OF THESE IS A NEW DESIGN. Every value is read out of Design's own
-# sheet — the section labels are node 606's string, the preview row is the
-# topic row at nodes 596-600 with its padding tightened one step, the Swap
-# control is node 600's tag treatment made pressable, and the two quiet lines
-# are node 624's footer caption. No new colour token appears anywhere here:
-# `--st-caption`, `--st-ghost`, `--st-ink`, `--st-muted`, `--st-mono`,
-# `--st-ui`, `--st-paper`, `--st-rule-soft`, `--st-btn-border` and
-# `--st-note-bg` are all already in the sheet.
-# The second release chip, by selector rather than by template index: it is
-# the second row of one `sc-for`, so it shares `data-dc-tpl="613"` with the
-# first and only a sibling combinator can tell them apart. Read by
-# `teacher_behaviour`'s reveal chain and by nothing that ships.
-_SW_LATER_CHIP = '[data-dc-tpl="613"] ~ [data-dc-tpl="613"]'
-_SW_LABEL = ("margin-top:22px;font:500 13px/1.2 var(--st-mono);"
-             "letter-spacing:.16em;text-transform:uppercase;"
-             "color:var(--st-caption)")
-_SW_LIST = "display:flex;flex-direction:column;gap:6px;margin-top:12px"
-# The topic row, one density step in: 14px/16px padding becomes 11px/13px and
-# the 18px display name becomes the 15.5px UI face, because a preview row is
-# a line of text a teacher SCANS rather than a target they choose between.
-_SW_ROW = ("display:flex;align-items:center;justify-content:space-between;"
-           "gap:12px;padding:11px 13px;border-radius:10px;"
-           "background:var(--st-paper);border:1px solid var(--st-rule-soft)")
-_SW_N = ("flex:none;font:500 13px/1.2 var(--st-mono);"
-         "letter-spacing:.06em;color:var(--st-ghost)")
-# ⚠️ ONE LINE, TRUNCATED, AND THAT IS THE RULING RATHER THAN A CSS DETAIL. A
-# question stem can be a paragraph; ten of them at full height is a sheet a
-# teacher scrolls instead of reads, and the point of the preview is to be
-# glanceable. The full stem is one press away in the lesson itself.
-_SW_TEXT = "flex:1;min-width:0"
-_SW_STEM = ("display:block;overflow:hidden;text-overflow:ellipsis;"
-            "white-space:nowrap;font:400 15.5px/1.35 var(--st-ui);"
-            "color:var(--st-ink)")
-# Node 599's treatment — the topic row's unit caption — at the same size it
-# has there. ⚠️ IT IS NOT DECORATION. A set of ten is drawn ACROSS the scheme
-# (a lesson holds four questions per band), so some of these rows come from
-# lessons before the one the teacher chose. Naming the lesson on every row is
-# what makes that visible instead of concealed.
-_SW_LESSON = ("display:block;margin-top:4px;overflow:hidden;"
-              "text-overflow:ellipsis;white-space:nowrap;"
-              "font:400 12.5px/1.2 var(--st-mono);letter-spacing:.1em;"
-              "text-transform:uppercase;color:var(--st-caption)")
-_SW_SWAP = ("flex:none;padding:5px 9px;background:transparent;"
-            "border:1px solid var(--st-btn-border);border-radius:8px;"
-            "cursor:pointer;font:500 13px/1.2 var(--st-mono);"
-            "letter-spacing:.1em;text-transform:uppercase;"
-            "color:var(--st-ghost)")
-_SW_NOTE = ("margin-top:12px;font:400 15px/1.45 var(--st-ui);"
-            "color:var(--st-muted)")
-# The footer caption's face, used for the two derived lines that sit directly
-# under a chip row: the resolved due date and the release date.
-_SW_MONO = ("margin-top:9px;font:400 13.5px/1.4 var(--st-mono);"
-            "letter-spacing:.1em;text-transform:uppercase;"
-            "color:var(--st-caption)")
-_SW_DATE_INPUT = ("margin-top:12px;width:100%;box-sizing:border-box;"
-                  "padding:12px 13px;border-radius:10px;"
-                  "border:1px solid var(--st-btn-border);"
-                  "background:var(--st-paper);color:var(--st-ink);"
-                  "font:500 16px/1.2 var(--st-mono)")
-_SW_HOLD = ("margin-top:22px;padding:13px 15px;border-radius:10px;"
-            "background:var(--st-note-bg);"
-            "border:1px solid var(--st-rule-soft);"
-            "font:400 15px/1.45 var(--st-ui);color:var(--st-muted)")
-_SW_EMPTY = ("margin-top:12px;padding:22px 16px;border-radius:10px;"
-             "background:var(--st-note-bg);"
-             "border:1px dashed var(--st-rule-strong);"
-             "font:400 16px/1.45 var(--st-ui);color:var(--st-muted)")
+# # ── ⊕ MRB-331 UNIT B · THE SET-WORK SHEET'S OWN TREATMENTS ──────────────
+# #
+# # ⚠️ NOT ONE OF THESE IS A NEW DESIGN. Every value is read out of Design's own
+# # sheet — the section labels are node 606's string, the preview row is the
+# # topic row at nodes 596-600 with its padding tightened one step, the Swap
+# # control is node 600's tag treatment made pressable, and the two quiet lines
+# # are node 624's footer caption. No new colour token appears anywhere here:
+# # `--st-caption`, `--st-ghost`, `--st-ink`, `--st-muted`, `--st-mono`,
+# # `--st-ui`, `--st-paper`, `--st-rule-soft`, `--st-btn-border` and
+# # `--st-note-bg` are all already in the sheet.
+# # The second release chip, by selector rather than by template index: it is
+# # the second row of one `sc-for`, so it shares `data-dc-tpl="613"` with the
+# # first and only a sibling combinator can tell them apart. Read by
+# # `teacher_behaviour`'s reveal chain and by nothing that ships.
+# _SW_LATER_CHIP = '[data-dc-tpl="613"] ~ [data-dc-tpl="613"]'
+# _SW_LABEL = ("margin-top:22px;font:500 13px/1.2 var(--st-mono);"
+#              "letter-spacing:.16em;text-transform:uppercase;"
+#              "color:var(--st-caption)")
+# _SW_LIST = "display:flex;flex-direction:column;gap:6px;margin-top:12px"
+# # The topic row, one density step in: 14px/16px padding becomes 11px/13px and
+# # the 18px display name becomes the 15.5px UI face, because a preview row is
+# # a line of text a teacher SCANS rather than a target they choose between.
+# _SW_ROW = ("display:flex;align-items:center;justify-content:space-between;"
+#            "gap:12px;padding:11px 13px;border-radius:10px;"
+#            "background:var(--st-paper);border:1px solid var(--st-rule-soft)")
+# _SW_N = ("flex:none;font:500 13px/1.2 var(--st-mono);"
+#          "letter-spacing:.06em;color:var(--st-ghost)")
+# # ⚠️ ONE LINE, TRUNCATED, AND THAT IS THE RULING RATHER THAN A CSS DETAIL. A
+# # question stem can be a paragraph; ten of them at full height is a sheet a
+# # teacher scrolls instead of reads, and the point of the preview is to be
+# # glanceable. The full stem is one press away in the lesson itself.
+# _SW_TEXT = "flex:1;min-width:0"
+# _SW_STEM = ("display:block;overflow:hidden;text-overflow:ellipsis;"
+#             "white-space:nowrap;font:400 15.5px/1.35 var(--st-ui);"
+#             "color:var(--st-ink)")
+# # Node 599's treatment — the topic row's unit caption — at the same size it
+# # has there. ⚠️ IT IS NOT DECORATION. A set of ten is drawn ACROSS the scheme
+# # (a lesson holds four questions per band), so some of these rows come from
+# # lessons before the one the teacher chose. Naming the lesson on every row is
+# # what makes that visible instead of concealed.
+# _SW_LESSON = ("display:block;margin-top:4px;overflow:hidden;"
+#               "text-overflow:ellipsis;white-space:nowrap;"
+#               "font:400 12.5px/1.2 var(--st-mono);letter-spacing:.1em;"
+#               "text-transform:uppercase;color:var(--st-caption)")
+# _SW_SWAP = ("flex:none;padding:5px 9px;background:transparent;"
+#             "border:1px solid var(--st-btn-border);border-radius:8px;"
+#             "cursor:pointer;font:500 13px/1.2 var(--st-mono);"
+#             "letter-spacing:.1em;text-transform:uppercase;"
+#             "color:var(--st-ghost)")
+# _SW_NOTE = ("margin-top:12px;font:400 15px/1.45 var(--st-ui);"
+#             "color:var(--st-muted)")
+# # The footer caption's face, used for the two derived lines that sit directly
+# # under a chip row: the resolved due date and the release date.
+# _SW_MONO = ("margin-top:9px;font:400 13.5px/1.4 var(--st-mono);"
+#             "letter-spacing:.1em;text-transform:uppercase;"
+#             "color:var(--st-caption)")
+# _SW_DATE_INPUT = ("margin-top:12px;width:100%;box-sizing:border-box;"
+#                   "padding:12px 13px;border-radius:10px;"
+#                   "border:1px solid var(--st-btn-border);"
+#                   "background:var(--st-paper);color:var(--st-ink);"
+#                   "font:500 16px/1.2 var(--st-mono)")
+# _SW_HOLD = ("margin-top:22px;padding:13px 15px;border-radius:10px;"
+#             "background:var(--st-note-bg);"
+#             "border:1px solid var(--st-rule-soft);"
+#             "font:400 15px/1.45 var(--st-ui);color:var(--st-muted)")
+# _SW_EMPTY = ("margin-top:12px;padding:22px 16px;border-radius:10px;"
+#              "background:var(--st-note-bg);"
+#              "border:1px dashed var(--st-rule-strong);"
+#              "font:400 16px/1.45 var(--st-ui);color:var(--st-muted)")
 
 
 INSERT_AT = {
-    # ── ⊕ MRB-331 UNIT B · A TOPIC PANEL WITH NO TOPICS IN IT ──────────
+    # ══ ⊕ SUPERSEDED 7 Sep 2026 (MRB-335) · SIX SUBTREES INSERTED INTO A
+    #    SHEET THAT IS NO LONGER EMITTED ════════════════════════════════
     #
-    # ⛔ DESIGN'S TOPIC PANEL CANNOT BE EMPTY AND A REAL ONE CAN. Her
-    # `TOPICS` is a five-row constant, so `sc-for` always draws five buttons;
-    # the seamed list is one class's scheme of work and is legitimately empty
-    # in two different states — no class chosen yet (which is the state node
-    # 165 opens the sheet in, every time), and a class whose scheme has
-    # nothing left to set. Without this the teacher gets the words "Pick a
-    # topic", a hairline and blank space.
+    # ⚑ EVERY KEY BELOW IS A PAIR OF NODES INSIDE 581 — (592,594), (601,603),
+    # (601,606), (601,607), (601,611), (591,614) — and 581 is back on `DEAD`.
+    # An insertion whose parent is not on a page is skipped silently, so
+    # leaving them would not break the build; it would leave six blocks of
+    # markup in this file that no page can ever draw, which is the state
+    # this file exists to make impossible to reach by accident.
     #
-    # ⚠️ TWO CAUSES, TWO SENTENCES, because they want different actions.
-    # `swNoTopicsLine` picks; this is the panel that holds it.
-    (592, 594): ({
-        "t": "if", "e": "swNoTopics",
-        "c": [{
-            "t": "div", "a": {"style": _SW_EMPTY},
-            "c": [{"t": "#", "v": {"parts": [{"e": "swNoTopicsLine"}]}}],
-        }]},
-        "the Set-work sheet's topic panel, with nothing in it. Design drew "
-        "no empty state because her topic list is a constant."),
-
-    # ── ⊕ MRB-331 UNIT B · RULED DIVERGENCE 2 · THE QUESTION PREVIEW ────
+    # ⚠️ WHAT THEY ESTABLISHED IS NOT WITHDRAWN. The question preview and
+    # its Swap, the release DATE behind "Release later", the empty topic
+    # panel and the school's hold line are all in `shared/set-work.js` —
+    # in a sheet that patches in place instead of being re-rendered whole.
+    # The one that changed shape is the hold: MRB-331 wrote it as a
+    # SENTENCE ("Your school opens work to students on …, so this will
+    # appear then."); MRB-335 RISKS A9 bans sentences in this sheet and B6
+    # rules it down to the fact — `Assignments open 14 Sep 2026`, and only
+    # when the clamp actually applies.
     #
-    # ⛔ DESIGN ASKS FOR A COUNT AND NEVER SAYS WHAT THE COUNT CONTAINS. Six,
-    # ten or fifteen questions, chosen by nobody the teacher can see, set to
-    # thirty children. That is acceptable in a sheet that sets nothing and is
-    # not acceptable in one that does: the teacher is accountable for the
-    # work and has to be able to read it first.
+    # The `_SW_*` style constants above are retired with them: each was
+    # read by exactly one of these subtrees and by nothing else.
     #
-    # ⚠️ SWAP REPLACES ONE QUESTION, NOT THE SET. The next unused question
-    # FROM THE SAME LESSON — see `swPreview` in `LOGIC`. A re-roll would make
-    # the teacher lose the nine questions they were happy with to change the
-    # one they were not, and would make the control unusable for the thing it
-    # is for.
+    #     # ── ⊕ MRB-331 UNIT B · A TOPIC PANEL WITH NO TOPICS IN IT ──────────
+    #     #
+    #     # ⛔ DESIGN'S TOPIC PANEL CANNOT BE EMPTY AND A REAL ONE CAN. Her
+    #     # `TOPICS` is a five-row constant, so `sc-for` always draws five buttons;
+    #     # the seamed list is one class's scheme of work and is legitimately empty
+    #     # in two different states — no class chosen yet (which is the state node
+    #     # 165 opens the sheet in, every time), and a class whose scheme has
+    #     # nothing left to set. Without this the teacher gets the words "Pick a
+    #     # topic", a hairline and blank space.
+    #     #
+    #     # ⚠️ TWO CAUSES, TWO SENTENCES, because they want different actions.
+    #     # `swNoTopicsLine` picks; this is the panel that holds it.
+    #     (592, 594): ({
+    #         "t": "if", "e": "swNoTopics",
+    #         "c": [{
+    #             "t": "div", "a": {"style": _SW_EMPTY},
+    #             "c": [{"t": "#", "v": {"parts": [{"e": "swNoTopicsLine"}]}}],
+    #         }]},
+    #         "the Set-work sheet's topic panel, with nothing in it. Design drew "
+    #         "no empty state because her topic list is a constant."),
     #
-    # ⚠️ IT SITS BETWEEN THE COUNT CHIPS AND "Due", inside Design's own
-    # detail panel, so the panel still reads top to bottom as one question:
-    # how many, which ones, when, and when they see it.
-    (601, 603): ({
-        "t": "if", "e": "swHasPreview",
-        "c": [{
-            "t": "div", "a": {"style": _SW_LIST},
-            "c": [{
-                "t": "for", "e": "swPreview", "as": "p",
-                "c": [{
-                    "t": "div", "a": {"style": _SW_ROW},
-                    "c": [
-                        {"t": "span", "a": {"style": _SW_N},
-                         "c": [{"t": "#", "v": {"parts": [{"e": "p.n"}]}}]},
-                        {"t": "span", "a": {"style": _SW_TEXT}, "c": [
-                            {"t": "span", "a": {"style": _SW_STEM},
-                             "c": [{"t": "#", "v": {"parts": [
-                                 {"e": "p.stem"}]}}]},
-                            {"t": "span", "a": {"style": _SW_LESSON},
-                             "c": [{"t": "#", "v": {"parts": [
-                                 {"e": "p.lesson"}]}}]},
-                        ]},
-                        {"t": "button",
-                         "a": {"type": "button", "style": _SW_SWAP,
-                               "data-mrb-added": "setwork-swap"},
-                         "hov": "color:var(--st-ink)",
-                         "on": "p.swap",
-                         "c": [{"t": "#", "v": "Swap"}]},
-                    ],
-                }],
-            }],
-        }]},
-        "the auto-selected questions, with the lesson each came from and a "
-        "Swap on each. Design's step 2 shows a question COUNT and no "
-        "questions. ⚠️ THE LESSON NAME IS NOT DECORATION: a lesson holds four "
-        "questions per band, so a set of ten is filled backwards through the "
-        "scheme, nearest first — the teacher picked one lesson and is getting "
-        "a set drawn AROUND it, and every row says so."),
-
-    # The same panel's note: which is why there is nothing to preview, or
-    # why there is less of it than was asked for. Outside the `if` above,
-    # deliberately — it has to be able to speak when the list is empty, which
-    # is exactly when it matters.
-    (601, 606): ({
-        "t": "if", "e": "swHasNote",
-        "c": [{
-            "t": "div", "a": {"style": _SW_NOTE},
-            "c": [{"t": "#", "v": {"parts": [{"e": "swPreviewNote"}]}}],
-        }]},
-        "why the question preview is empty or short. It is the only place "
-        "a failed composition is said to the teacher rather than to the "
-        "console."),
-
-    # ── ⊕ MRB-331 UNIT B · WHICH WEDNESDAY ──────────────────────────────
+    #     # ── ⊕ MRB-331 UNIT B · RULED DIVERGENCE 2 · THE QUESTION PREVIEW ────
+    #     #
+    #     # ⛔ DESIGN ASKS FOR A COUNT AND NEVER SAYS WHAT THE COUNT CONTAINS. Six,
+    #     # ten or fifteen questions, chosen by nobody the teacher can see, set to
+    #     # thirty children. That is acceptable in a sheet that sets nothing and is
+    #     # not acceptable in one that does: the teacher is accountable for the
+    #     # work and has to be able to read it first.
+    #     #
+    #     # ⚠️ SWAP REPLACES ONE QUESTION, NOT THE SET. The next unused question
+    #     # FROM THE SAME LESSON — see `swPreview` in `LOGIC`. A re-roll would make
+    #     # the teacher lose the nine questions they were happy with to change the
+    #     # one they were not, and would make the control unusable for the thing it
+    #     # is for.
+    #     #
+    #     # ⚠️ IT SITS BETWEEN THE COUNT CHIPS AND "Due", inside Design's own
+    #     # detail panel, so the panel still reads top to bottom as one question:
+    #     # how many, which ones, when, and when they see it.
+    #     (601, 603): ({
+    #         "t": "if", "e": "swHasPreview",
+    #         "c": [{
+    #             "t": "div", "a": {"style": _SW_LIST},
+    #             "c": [{
+    #                 "t": "for", "e": "swPreview", "as": "p",
+    #                 "c": [{
+    #                     "t": "div", "a": {"style": _SW_ROW},
+    #                     "c": [
+    #                         {"t": "span", "a": {"style": _SW_N},
+    #                          "c": [{"t": "#", "v": {"parts": [{"e": "p.n"}]}}]},
+    #                         {"t": "span", "a": {"style": _SW_TEXT}, "c": [
+    #                             {"t": "span", "a": {"style": _SW_STEM},
+    #                              "c": [{"t": "#", "v": {"parts": [
+    #                                  {"e": "p.stem"}]}}]},
+    #                             {"t": "span", "a": {"style": _SW_LESSON},
+    #                              "c": [{"t": "#", "v": {"parts": [
+    #                                  {"e": "p.lesson"}]}}]},
+    #                         ]},
+    #                         {"t": "button",
+    #                          "a": {"type": "button", "style": _SW_SWAP,
+    #                                "data-mrb-added": "setwork-swap"},
+    #                          "hov": "color:var(--st-ink)",
+    #                          "on": "p.swap",
+    #                          "c": [{"t": "#", "v": "Swap"}]},
+    #                     ],
+    #                 }],
+    #             }],
+    #         }]},
+    #         "the auto-selected questions, with the lesson each came from and a "
+    #         "Swap on each. Design's step 2 shows a question COUNT and no "
+    #         "questions. ⚠️ THE LESSON NAME IS NOT DECORATION: a lesson holds four "
+    #         "questions per band, so a set of ten is filled backwards through the "
+    #         "scheme, nearest first — the teacher picked one lesson and is getting "
+    #         "a set drawn AROUND it, and every row says so."),
     #
-    # ⚠️ A WEEKDAY IS NOT A DATE. Design's chips read Mon–Fri and stop, and
-    # the sheet is opened on every day of the week: pressed on a Thursday,
-    # "Wed" is either five days ago or six days away. The port's rule is that
-    # weekday NEXT week, and this prints the answer so the teacher reads a
-    # date instead of trusting one.
-    (601, 607): ({
-        "t": "div", "a": {"style": _SW_MONO},
-        "c": [{"t": "#", "v": {"parts": [{"e": "swDueLine"}]}}]},
-        "the real date the chosen due day resolves to. Design's chip says "
-        "\"Wed\" and nothing else."),
-
-    # ── ⊕ MRB-331 UNIT B · RULED DIVERGENCE 3 · THE RELEASE DATE ────────
+    #     # The same panel's note: which is why there is nothing to preview, or
+    #     # why there is less of it than was asked for. Outside the `if` above,
+    #     # deliberately — it has to be able to speak when the list is empty, which
+    #     # is exactly when it matters.
+    #     (601, 606): ({
+    #         "t": "if", "e": "swHasNote",
+    #         "c": [{
+    #             "t": "div", "a": {"style": _SW_NOTE},
+    #             "c": [{"t": "#", "v": {"parts": [{"e": "swPreviewNote"}]}}],
+    #         }]},
+    #         "why the question preview is empty or short. It is the only place "
+    #         "a failed composition is said to the teacher rather than to the "
+    #         "console."),
     #
-    # Design's second release chip is "Release next lesson" and there is no
-    # timetable this page can ask — a timetable is per TEACHER (MRB-326) and
-    # a multi-class set has no single next lesson. The chip reads "Release
-    # later" and this is the date it needs. See `swRelease` in `LOGIC`.
+    #     # ── ⊕ MRB-331 UNIT B · WHICH WEDNESDAY ──────────────────────────────
+    #     #
+    #     # ⚠️ A WEEKDAY IS NOT A DATE. Design's chips read Mon–Fri and stop, and
+    #     # the sheet is opened on every day of the week: pressed on a Thursday,
+    #     # "Wed" is either five days ago or six days away. The port's rule is that
+    #     # weekday NEXT week, and this prints the answer so the teacher reads a
+    #     # date instead of trusting one.
+    #     (601, 607): ({
+    #         "t": "div", "a": {"style": _SW_MONO},
+    #         "c": [{"t": "#", "v": {"parts": [{"e": "swDueLine"}]}}]},
+    #         "the real date the chosen due day resolves to. Design's chip says "
+    #         "\"Wed\" and nothing else."),
     #
-    # ⚠️ `data-compose-field` IS DELIBERATELY NOT ON IT. That attribute is
-    # what `MRB_COMPOSE_RESET` clears, and it clears the SHOUTOUT fields; a
-    # successful shoutout send must not wipe a date typed into a different
-    # sheet. The field is carried across a redraw by the runtime's own
-    # `fieldState`, like every other uncontrolled input on these pages.
-    (601, 611): ({
-        "t": "if", "e": "swRelLater",
-        "c": [
-            {"t": "input",
-             "a": {"type": "date", "style": _SW_DATE_INPUT,
-                   "aria-label": "Release date",
-                   "data-mrb-added": "setwork-release-date",
-                   "value": {"parts": [{"e": "swRelVal"}]}},
-             "onch": "setSwRelDate"},
-            {"t": "div", "a": {"style": _SW_MONO},
-             "c": [{"t": "#", "v": {"parts": [{"e": "swRelLine"}]}}]},
-        ]},
-        "the date behind \"Release later\". Design's chip said \"Release "
-        "next lesson\", which nothing in this product can resolve."),
-
-    # ── ⊕ MRB-331 UNIT B · THE SCHOOL'S HOLD, SAID ONCE ─────────────────
+    #     # ── ⊕ MRB-331 UNIT B · RULED DIVERGENCE 3 · THE RELEASE DATE ────────
+    #     #
+    #     # Design's second release chip is "Release next lesson" and there is no
+    #     # timetable this page can ask — a timetable is per TEACHER (MRB-326) and
+    #     # a multi-class set has no single next lesson. The chip reads "Release
+    #     # later" and this is the date it needs. See `swRelease` in `LOGIC`.
+    #     #
+    #     # ⚠️ `data-compose-field` IS DELIBERATELY NOT ON IT. That attribute is
+    #     # what `MRB_COMPOSE_RESET` clears, and it clears the SHOUTOUT fields; a
+    #     # successful shoutout send must not wipe a date typed into a different
+    #     # sheet. The field is carried across a redraw by the runtime's own
+    #     # `fieldState`, like every other uncontrolled input on these pages.
+    #     (601, 611): ({
+    #         "t": "if", "e": "swRelLater",
+    #         "c": [
+    #             {"t": "input",
+    #              "a": {"type": "date", "style": _SW_DATE_INPUT,
+    #                    "aria-label": "Release date",
+    #                    "data-mrb-added": "setwork-release-date",
+    #                    "value": {"parts": [{"e": "swRelVal"}]}},
+    #              "onch": "setSwRelDate"},
+    #             {"t": "div", "a": {"style": _SW_MONO},
+    #              "c": [{"t": "#", "v": {"parts": [{"e": "swRelLine"}]}}]},
+    #         ]},
+    #         "the date behind \"Release later\". Design's chip said \"Release "
+    #         "next lesson\", which nothing in this product can resolve."),
     #
-    # ⛔ WITHOUT IT THE WORK SIMPLY DOES NOT APPEAR AND NOBODY IS TOLD WHY.
-    # `schools.assignments_open_from` is MRB-324's dial for delaying the day
-    # a school's work opens to students. A teacher setting work in the last
-    # week of August gets a cheerful confirmation and thirty children who see
-    # nothing, and every page in the product is silent about the reason.
+    #     # ── ⊕ MRB-331 UNIT B · THE SCHOOL'S HOLD, SAID ONCE ─────────────────
+    #     #
+    #     # ⛔ WITHOUT IT THE WORK SIMPLY DOES NOT APPEAR AND NOBODY IS TOLD WHY.
+    #     # `schools.assignments_open_from` is MRB-324's dial for delaying the day
+    #     # a school's work opens to students. A teacher setting work in the last
+    #     # week of August gets a cheerful confirmation and thirty children who see
+    #     # nothing, and every page in the product is silent about the reason.
+    #     #
+    #     # ⚠️ ONE SENTENCE, AND ONLY WHEN THE HOLD IS REAL AND STILL AHEAD OF
+    #     # TODAY. `MRB_SET_WORK_HOLD_LINE` returns "" otherwise and an empty
+    #     # binding draws nothing, so on the overwhelming majority of schools this
+    #     # is not on the page at all. It says what happens, not how the platform
+    #     # works — KS3 copy rule §8.10, which applies to a teacher as much as to a
+    #     # child.
+    #     #
+    #     # ⛔ AT THE FOOT OF THE BODY, NOT INSIDE THE FOOTER ROW. Node 623 is a
+    #     # two-item `justify-content:space-between` flex — the summary and the
+    #     # buttons — and a third child would put a paragraph between them and
+    #     # break the row at 390px, which is a width this port is measured at.
+    #     # Immediately above the footer rule is the same place on screen without
+    #     # the layout risk.
+    #     (591, 614): ({
+    #         "t": "if", "e": "swHasHold",
+    #         "c": [{
+    #             "t": "div", "a": {"style": _SW_HOLD},
+    #             "c": [{"t": "#", "v": {"parts": [{"e": "swHoldLine"}]}}],
+    #         }]},
+    #         "the school's assignment hold, in one sentence, at the foot of the "
+    #         "sheet. Nothing in the product said it, so held work looked like "
+    #         "work that had failed to save."),
     #
-    # ⚠️ ONE SENTENCE, AND ONLY WHEN THE HOLD IS REAL AND STILL AHEAD OF
-    # TODAY. `MRB_SET_WORK_HOLD_LINE` returns "" otherwise and an empty
-    # binding draws nothing, so on the overwhelming majority of schools this
-    # is not on the page at all. It says what happens, not how the platform
-    # works — KS3 copy rule §8.10, which applies to a teacher as much as to a
-    # child.
-    #
-    # ⛔ AT THE FOOT OF THE BODY, NOT INSIDE THE FOOTER ROW. Node 623 is a
-    # two-item `justify-content:space-between` flex — the summary and the
-    # buttons — and a third child would put a paragraph between them and
-    # break the row at 390px, which is a width this port is measured at.
-    # Immediately above the footer rule is the same place on screen without
-    # the layout risk.
-    (591, 614): ({
-        "t": "if", "e": "swHasHold",
-        "c": [{
-            "t": "div", "a": {"style": _SW_HOLD},
-            "c": [{"t": "#", "v": {"parts": [{"e": "swHoldLine"}]}}],
-        }]},
-        "the school's assignment hold, in one sentence, at the foot of the "
-        "sheet. Nothing in the product said it, so held work looked like "
-        "work that had failed to save."),
-
     # ── ⊕ MRB-331 UNIT B · AUTOMATIC WEEKLY WORK, ON OR OFF ─────────────
     #
     # ⛔ THE FLAG EXISTED AND NOTHING COULD SEE IT. UNIT A added
@@ -3977,6 +4044,33 @@ WRAP = {
         # empty class card (the one node 194's pruning deliberately spared).
         167: "canWrite",
         198: "canWrite",
+        # ⊕ MRB-335, 7 Sep 2026 — AND SO IS "SET WORK", WHICH NOTHING HAS
+        # GATED SINCE MRB-331 RESTORED IT.
+        #
+        # ⛔ THE SAME HOLE THE `class-detail.html` NOTE BELOW RECORDS, in the
+        # same place, found the same way: `teacher_behaviour` pressed node
+        # 165 on `classes-empty-fixture` — a PAST academic year — and it was
+        # there to press. MRB-261's rule is that a write control on a
+        # finished year is ABSENT rather than disabled, and setting work is
+        # one of the three write paths on the whole teacher surface. Its twin
+        # at 198 has been `canWrite` since MRB-287; 165 was pruned by `DEAD`
+        # then, came back under MRB-331, and came back ungated.
+        #
+        # ⚠️ `canSetWork`, NOT `canWrite`, AND THE SECOND CONJUNCT IS THE
+        # OTHER HALF OF THE SAME FINDING. On `classes.html` there is no class
+        # in the URL, so `klass()` returns `this.CLASSES[0] || MRB_NO_CLASS()`
+        # — and on a teacher with no classes in the viewed year that is
+        # `MRB_NO_CLASS()`, whose id is the empty string. `MRBSetWork.open`
+        # refuses a falsy `classId` (there is no class to scope a tree, a
+        # cohort or a tier to), so the button would be present, pressable and
+        # incapable of acting. `canWrite && there is a class` is what the
+        # control actually needs, and it is computed once beside the opener.
+        165: "canSetWork",
+        # The "Set work" arm of Design's card fork, whose "Import" arm at 198
+        # is already here. A card only draws for a class that exists, so this
+        # one needs `canWrite` and nothing more — but it takes the same key
+        # so that the pair cannot drift apart again.
+        194: "canSetWork",
     },
     # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — `class-detail.html` HAD TWO ROWS HERE
     # AND HAS NONE. They were nodes 183 ("Send to several students") and 185
@@ -4025,6 +4119,20 @@ WRAP = {
     "class-detail.html": {
         215: "canWrite",
         276: "canWrite",
+        # ⊕ MRB-335, 7 Sep 2026 — THE CLASS SCREEN'S "SET WORK" AND ITS
+        # EMPTY-STATE TWIN, for the reason the note above this dict gives
+        # about 215 and 276 and in exactly the same shape: both are write
+        # controls, neither was wrapped, and on a finished academic year both
+        # were live. Found by `teacher_behaviour` on
+        # `class-detail-empty-fixture` — "a class with no roster, in a past
+        # (read-only) year" — where node 282 is the ONLY thing on the panel.
+        #
+        # It is the lesser of MRB-261's two failures rather than the worse
+        # one, exactly as the shoutout hole was: the backend refuses the
+        # write against a finished year, so this was a control that LIED
+        # rather than one that corrupted. That is still not right.
+        214: "canSetWork",
+        282: "canSetWork",
     },
     # ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) ────────────────────────
     #
@@ -4404,91 +4512,117 @@ AMENDED_ADDITIONS = (
              "sits fourth in Design's action row (213), after \"Print "
              "report\" (217), in node 217's own treatment."),
 
-    # ══ ⊕ MRB-331 UNIT B · THE SET-WORK SHEET'S TWO NEW CONTROLS ════════
+    # ══ ⊕ SUPERSEDED 7 Sep 2026 (MRB-335) · TWO CONTROLS INSIDE A SHEET
+    #    THAT IS NO LONGER EMITTED ══════════════════════════════════════
     #
-    # ⚠️ ONLY CONTROLS ARE REGISTERED HERE, AND THE SHEET GAINS FOUR OTHER
-    # PIECES OF MARKUP THAT ARE NOT. `swNoTopics`, `swPreviewNote`,
-    # `swDueLine` and `swHoldLine` are SENTENCES — nothing to press, nothing
-    # a press could move — and this register's whole mechanism is "press it
-    # by name and require it to move something". That is the same call
-    # `INSERT_AT[(390, 391)]` (the marking screen's no-grid line) and
-    # `INSERT_AT[(158, 177)]` (the filtered-to-nothing panel) already made:
-    # both are additions, neither carries a marker, and registering a static
-    # line would put a row in this table that the drive can only ever report
-    # as dead.
+    # ⚑ BOTH ARE NODES INSIDE 581 (603 and 611), and 581 is back on `DEAD`.
+    # This register presses every row BY NAME and requires the press to move
+    # something, so a row naming a marker that no page emits is not inert
+    # here the way a skipped `INSERT_AT` key is — it is a RED GATE. They have
+    # to come off, not merely stop being drawn.
     #
-    # ── `opener_tpl` TAKES A SEQUENCE, AND A DIFFERENT ONE PER PAGE ──────
+    # ⚠️ SWAP AND THE RELEASE DATE BOTH SURVIVE, in `shared/set-work.js`.
+    # Swap is now SERVER-side — `/api/teacher/set-work/swap` with `exclude` =
+    # picked ∪ everything shown this sheet session, and a 204 kills that
+    # row's button — rather than a client-side pick out of a pool. That is
+    # what closes MRB-335 RISKS A6: a swap handing back a question the
+    # teacher has already read and rejected. The release date gains a TIME
+    # beside it, and both are `<input type=date>` + `<input type=time>`
+    # pairs rather than one `datetime-local`, for Safari (RISKS B7).
     #
-    # ⚑ THE FIELD USED TO TAKE ONE TEMPLATE INDEX. It was added under
-    # MRB-287 E1 for the year list, which sits behind exactly one of Design's
-    # nodes on exactly one page. Neither of those is true here:
+    # ⛔ THEY ARE NOT RE-REGISTERED AGAINST THE NEW SHEET, and that is a
+    # ruling rather than an omission. This register's whole mechanism is
+    # Design's compiled node indices, and `shared/set-work.js` has none —
+    # exactly the limitation the restored shoutout composer records one
+    # table up. The new sheet's controls are driven by `set_work_drive.py`,
+    # which presses them at 390px and measures the scroller before and after
+    # every press: a stronger assertion than this table can make.
     #
-    #   · TWO PAGES OPEN THE SHEET, from DIFFERENT nodes — 165 on the classes
-    #     screen, 214 on the class screen. One index cannot name both, and
-    #     the marker is one marker: `INSERT_AT` is not page-scoped, so the
-    #     same subtree is emitted on both pages and the build's own
-    #     absent-elsewhere check requires the row to name both.
-    #   · THE CONTROLS ARE THREE PANELS IN. The sheet opens on step 1
-    #     (Classes) and these live on step 3 (Detail), so reaching them is
-    #     open-then-Next-then-Next — a SEQUENCE, which one index also cannot
-    #     express.
+    #     # ══ ⊕ MRB-331 UNIT B · THE SET-WORK SHEET'S TWO NEW CONTROLS ════════
+    #     #
+    #     # ⚠️ ONLY CONTROLS ARE REGISTERED HERE, AND THE SHEET GAINS FOUR OTHER
+    #     # PIECES OF MARKUP THAT ARE NOT. `swNoTopics`, `swPreviewNote`,
+    #     # `swDueLine` and `swHoldLine` are SENTENCES — nothing to press, nothing
+    #     # a press could move — and this register's whole mechanism is "press it
+    #     # by name and require it to move something". That is the same call
+    #     # `INSERT_AT[(390, 391)]` (the marking screen's no-grid line) and
+    #     # `INSERT_AT[(158, 177)]` (the filtered-to-nothing panel) already made:
+    #     # both are additions, neither carries a marker, and registering a static
+    #     # line would put a row in this table that the drive can only ever report
+    #     # as dead.
+    #     #
+    #     # ── `opener_tpl` TAKES A SEQUENCE, AND A DIFFERENT ONE PER PAGE ──────
+    #     #
+    #     # ⚑ THE FIELD USED TO TAKE ONE TEMPLATE INDEX. It was added under
+    #     # MRB-287 E1 for the year list, which sits behind exactly one of Design's
+    #     # nodes on exactly one page. Neither of those is true here:
+    #     #
+    #     #   · TWO PAGES OPEN THE SHEET, from DIFFERENT nodes — 165 on the classes
+    #     #     screen, 214 on the class screen. One index cannot name both, and
+    #     #     the marker is one marker: `INSERT_AT` is not page-scoped, so the
+    #     #     same subtree is emitted on both pages and the build's own
+    #     #     absent-elsewhere check requires the row to name both.
+    #     #   · THE CONTROLS ARE THREE PANELS IN. The sheet opens on step 1
+    #     #     (Classes) and these live on step 3 (Detail), so reaching them is
+    #     #     open-then-Next-then-Next — a SEQUENCE, which one index also cannot
+    #     #     express.
+    #     #
+    #     # `teacher_behaviour` now accepts an int, a tuple of ints pressed in
+    #     # order, or a `{page: int-or-tuple}` map. The alternative was to leave
+    #     # these unreachable and let the gate report them as dead, which is the
+    #     # shape of "how gates stop watching" — a control in the file that nothing
+    #     # ever presses.
+    #     #
+    #     # ⚠️ `needs_data`, NOT `needs_write`, AND THE DIFFERENCE IS ASSERTED.
+    #     # `needs_write` is checked on the page AT REST — see the note at the top
+    #     # of this register and `teacher_behaviour`'s 5b-ii — and a control that
+    #     # only exists behind a sheet is never at rest, so the flag would demand
+    #     # it be visible on load and fail. Absence on a read-only year is
+    #     # guaranteed one level up instead: on `class-detail-empty-fixture`
+    #     # `canWrite` is false, `DEAD` no longer prunes node 214 but nothing else
+    #     # on that page opens the sheet, and the empty fixture has no class to set
+    #     # work to at all.
+    #     dict(marker="setwork-swap",
+    #          pages=("classes.html", "class-detail.html"),
+    #          node=603, needs_data=True,
+    #          opener_tpl={"classes.html": (165, 627, 627),
+    #                      "class-detail.html": (214, 627, 627)},
+    #          label="Swap",
+    #          why="the per-question Swap in the Set-work sheet's preview "
+    #              "(MRB-331 ruled divergence 2). Design's step 2 asks for a "
+    #              "question COUNT and never shows a question; a teacher is "
+    #              "accountable for the work and has to be able to read it before "
+    #              "thirty children get it. Swap replaces one question with the "
+    #              "nearest unused one — the same lesson where the pool still "
+    #              "holds one, and the nearest lesson in the drawn range "
+    #              "otherwise — so changing the one question that will not land "
+    #              "does not cost the nine that will. ⚠️ THE FALLBACK IS LOAD-"
+    #              "BEARING AND WAS MEASURED: at four questions per (lesson, "
+    #              "band) a same-lesson-only swap is dead on 8 rows in 10 and on "
+    #              "20 of 20 at the maximum count. See the divergence note in "
+    #              "`LOGIC`. Every row names the lesson it came from, so a swap "
+    #              "that crosses a lesson boundary is a change the teacher can "
+    #              "see."),
     #
-    # `teacher_behaviour` now accepts an int, a tuple of ints pressed in
-    # order, or a `{page: int-or-tuple}` map. The alternative was to leave
-    # these unreachable and let the gate report them as dead, which is the
-    # shape of "how gates stop watching" — a control in the file that nothing
-    # ever presses.
+    #     dict(marker="setwork-release-date",
+    #          pages=("classes.html", "class-detail.html"),
+    #          node=611, needs_data=True,
+    #          # ⚠️ A FOURTH STEP, AND IT IS A SELECTOR RATHER THAN AN INDEX.
+    #          # The date sits behind Design's SECOND release chip, and both chips
+    #          # are one `sc-for` row — so both carry `data-dc-tpl="613"` and an
+    #          # index selects "Release now", which is the chip that hides it.
+    #          # `teacher_behaviour` takes a raw selector as a chain step for
+    #          # exactly this: a control inside a loop cannot be named by its
+    #          # template index alone.
+    #          opener_tpl={"classes.html": (165, 627, 627, _SW_LATER_CHIP),
+    #                      "class-detail.html": (214, 627, 627, _SW_LATER_CHIP)},
+    #          label="Release date",
+    #          why="the date behind \"Release later\" (MRB-331 ruled divergence "
+    #              "3). Design's chip reads \"Release next lesson\" and nothing "
+    #              "in this product can resolve one — a timetable is per teacher "
+    #              "(MRB-326) and a set spanning three classes has three next "
+    #              "lessons. A date is a smaller promise the product can keep."),
     #
-    # ⚠️ `needs_data`, NOT `needs_write`, AND THE DIFFERENCE IS ASSERTED.
-    # `needs_write` is checked on the page AT REST — see the note at the top
-    # of this register and `teacher_behaviour`'s 5b-ii — and a control that
-    # only exists behind a sheet is never at rest, so the flag would demand
-    # it be visible on load and fail. Absence on a read-only year is
-    # guaranteed one level up instead: on `class-detail-empty-fixture`
-    # `canWrite` is false, `DEAD` no longer prunes node 214 but nothing else
-    # on that page opens the sheet, and the empty fixture has no class to set
-    # work to at all.
-    dict(marker="setwork-swap",
-         pages=("classes.html", "class-detail.html"),
-         node=603, needs_data=True,
-         opener_tpl={"classes.html": (165, 627, 627),
-                     "class-detail.html": (214, 627, 627)},
-         label="Swap",
-         why="the per-question Swap in the Set-work sheet's preview "
-             "(MRB-331 ruled divergence 2). Design's step 2 asks for a "
-             "question COUNT and never shows a question; a teacher is "
-             "accountable for the work and has to be able to read it before "
-             "thirty children get it. Swap replaces one question with the "
-             "nearest unused one — the same lesson where the pool still "
-             "holds one, and the nearest lesson in the drawn range "
-             "otherwise — so changing the one question that will not land "
-             "does not cost the nine that will. ⚠️ THE FALLBACK IS LOAD-"
-             "BEARING AND WAS MEASURED: at four questions per (lesson, "
-             "band) a same-lesson-only swap is dead on 8 rows in 10 and on "
-             "20 of 20 at the maximum count. See the divergence note in "
-             "`LOGIC`. Every row names the lesson it came from, so a swap "
-             "that crosses a lesson boundary is a change the teacher can "
-             "see."),
-
-    dict(marker="setwork-release-date",
-         pages=("classes.html", "class-detail.html"),
-         node=611, needs_data=True,
-         # ⚠️ A FOURTH STEP, AND IT IS A SELECTOR RATHER THAN AN INDEX.
-         # The date sits behind Design's SECOND release chip, and both chips
-         # are one `sc-for` row — so both carry `data-dc-tpl="613"` and an
-         # index selects "Release now", which is the chip that hides it.
-         # `teacher_behaviour` takes a raw selector as a chain step for
-         # exactly this: a control inside a loop cannot be named by its
-         # template index alone.
-         opener_tpl={"classes.html": (165, 627, 627, _SW_LATER_CHIP),
-                     "class-detail.html": (214, 627, 627, _SW_LATER_CHIP)},
-         label="Release date",
-         why="the date behind \"Release later\" (MRB-331 ruled divergence "
-             "3). Design's chip reads \"Release next lesson\" and nothing "
-             "in this product can resolve one — a timetable is per teacher "
-             "(MRB-326) and a set spanning three classes has three next "
-             "lessons. A date is a smaller promise the product can keep."),
-
     # ══ ⊕ MRB-331 UNIT B · AUTOMATIC WEEKLY WORK ════════════════════════
     #
     # ⚠️ `needs_write` AND NOT `needs_data`, WHICH IS THE OPPOSITE CALL FROM
@@ -4629,25 +4763,37 @@ DROP_KEYS = (
     # what a later reader wires a new node back onto.
     "allIn",
 
-    # ⊕ SUPERSEDED 6 Sep 2026 (MRB-331 UNIT B) — THE THIRTEEN SET-WORK KEYS
-    # ARE OFF THIS LIST. They read:
+    # ⊕ MRB-335, 7 Sep 2026 — TWELVE OF THE THIRTEEN SET-WORK KEYS ARE
+    # BACK ON THIS LIST. Design's node 581 is on `DEAD` again and neither
+    # page keeps `setWorkOpen`, so every one of these computes a value for
+    # a subtree that is not emitted. `shared/set-work.js` builds its own.
     #
-    #     "setWorkOpen", "swEyebrow", "topics", "swCounts", "swDays",
-    #     "swRelease", "swClassList", "swSummary", "swBackLabel",
-    #     "swNextLabel", "swBack", "swNext", "openSetWork",
+    # ⚠️ THE THIRTEENTH — `openSetWork` — IS DELIBERATELY NOT HERE, AND
+    # THAT IS THE WHOLE DIFFERENCE BETWEEN THIS AND THE PRE-MRB-331 STATE.
+    # Nodes 165, 214 and 282 are NOT on `DEAD`: the three "Set work"
+    # buttons stay on the page, they are Design's own controls, and they
+    # bind to `openSetWork`. Dropping it would leave three live buttons
+    # wired to a key `renderVals` does not return — `data-mrb-misses` would
+    # count them and `teacher_behaviour` would report three dead controls.
+    # It is rewritten in `LOGIC` to one line: `MRB_SET_WORK_OPEN(k && k.id)`.
+    "setWorkOpen", "swEyebrow", "topics", "swCounts", "swDays",
+    "swRelease", "swClassList", "swSummary", "swBackLabel",
+    "swNextLabel", "swBack", "swNext",
+
+    # ⊕ SUPERSEDED 6 Sep 2026 (MRB-331 UNIT B), and superseded again above.
+    # It read: "THE THIRTEEN SET-WORK KEYS ARE OFF THIS LIST … they are not
+    # merely restored — every one of them is RULED … leaving them on this
+    # list and restoring the sheet would have shipped a sheet with no keys
+    # at all, which renders as a modal with three empty panels." True of
+    # that sheet. There is no longer a modal to render empty.
     #
-    # ⚑ THEY ARE NOT MERELY RESTORED — EVERY ONE OF THEM IS RULED. Design's
-    # versions read `this.TOPICS` (five invented topics), her own `CLASSES`
-    # sample, and a `swNext` that ends in `this.ping(...)` in front of no
-    # write. The `LOGIC` entries below replace each key in place; leaving
-    # them on this list and restoring the sheet would have shipped a sheet
-    # with no keys at all, which renders as a modal with three empty panels.
-    #
-    # ⚠️ AND THE ORDER STILL MATTERS THE OTHER WAY ROUND. The comment at the
-    # head of this table says the keys are dropped BEFORE the fields because
-    # `topics` reads `this.TOPICS`. That is still true and is why `TOPICS` is
-    # now SEAMED in `LOGIC` (`TOPICS = MRB_DATA('TOPICS');`) rather than left
-    # on `DROP_FIELDS`: a reader of a deleted field throws at mount.
+    # ⚠️ `TOPICS` STAYS SEAMED rather than going back on `DROP_FIELDS`.
+    # Nothing reads it now that `topics` is dropped, so it is inert either
+    # way — and `teacher-live.js` already returns `TOPICS: []`, so what
+    # ships is an empty array and not five invented lessons. Moving it is a
+    # second change to the field/key ordering this table depends on, for no
+    # behaviour; recorded here rather than done.
+
     "sampleCsv",
 
     # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — A SEEDED DATE, NEW IN v3.
@@ -5027,9 +5173,6 @@ LOGIC = (
     ks: 'All', sort: 'code', modal: null, toast: '',
     boSel: [], boTpl: MRB_FIRST_TEMPLATE(), note: '', boNote: '',
     search: '',
-    swStep: 1, swTopic: null, swQ: 10, swDay: 'Wed', swRel: 'now',
-    swClasses: [], swPick: MRB_DATA('SET_WORK_PREVIEW'), swPool: [],
-    swRelDate: '', swBusy: false, swErr: '', swTopicsErr: false,
     fbSub: null, fbName: '', fbPaper: '', fbBody: '', fbErr: '',
     fbConfirm: false,
     importStep: 1, ttStep: 1,
@@ -5039,9 +5182,17 @@ LOGIC = (
     yearsOpen: false
   };""",
      "the state initialiser. See the block comment above. "
-     "⊕ 6 Sep 2026 (MRB-331 UNIT B) — the six Set-work keys are RESTORED "
+     "⊕ MRB-335, 7 Sep 2026 — THE TWELVE SET-WORK KEYS ARE OFF AGAIN, and "
+     "this time they are not coming back to this object. `shared/set-work.js` "
+     "keeps the sheet's state in its own closure, which is the point: state "
+     "held HERE is state a page-level `setState` re-renders the whole mount "
+     "host for, and that re-render is the scroll-jump. They read `swStep: 1, "
+     "swTopic: null, swQ: 10, swDay: 'Wed', swRel: 'now', swClasses: [], "
+     "swPick: MRB_DATA('SET_WORK_PREVIEW'), swPool: [], swRelDate: '', "
+     "swBusy: false, swErr: '', swTopicsErr: false`. "
+     "⊕ SUPERSEDED (MRB-331 UNIT B) — \"the six Set-work keys are RESTORED "
      "and five more join them; the sheet is shipped and every one of them "
-     "has a reader again. "
+     "has a reader again.\" "
      "⊕ 1 Sep 2026 (MRB-306) — moved off a verbatim `frm` onto "
      "`key=\"state = {\"`, because v3 redrew five of the seven lines the "
      "`frm` had photographed without touching what the ruling is about. "
@@ -7723,38 +7874,20 @@ componentDidUpdate() {
     const swStudents = this.CLASSES.filter(c => swSel.indexOf(c.id) > -1).reduce((a, c) => a + c.n, 0);
     const topic = this.TOPICS.filter(t => t.id === s.swTopic)[0] || this.TOPICS[0];
 """,
-     """    const swAll = MRB_DATA('SET_WORK_CLASSES');
-    const swTopics = this.TOPICS;
-    const swSel = (s.swClasses || []).filter(id => swAll.some(c => c.id === id));
-    const swStudents = swAll.filter(c => swSel.indexOf(c.id) > -1).reduce((a, c) => a + c.n, 0);
-    const topic = swTopics.filter(t => t.id === s.swTopic)[0] || null;
-    const swPicked = s.swPick || [];
-    const swHold = MRB_SET_WORK_HOLD_LINE(MRB_DATA('holdOpensOn'));
-    const swNote = s.swErr ? s.swErr
-      : (s.swBusy ? 'Choosing questions\\u2026'
-        : (swPicked.length ? '' : 'Pick a topic and the questions appear here.'));
-""",
-     "the Set-work sheet's three locals, on real data. ⚠️ `topic` FALLS BACK "
-     "TO `null`, WHERE DESIGN FALLS BACK TO `this.TOPICS[0]`. Hers cannot be "
-     "empty — it is a five-row constant — so \"no topic chosen\" and \"the "
-     "first topic\" are the same state in her delivery and are not the same "
-     "state anywhere else: a real class's scheme of work can legitimately "
-     "have nothing ready to set, and silently treating that as \"the first "
-     "one\" would set a lesson the teacher never picked. Every reader of "
-     "`topic` below is written for a null.\n"
+     "",
+     "⊕ MRB-335, 7 Sep 2026 — A DELETION AGAIN. `topic` reads "
+     "`this.TOPICS` and `swSel` reads `s.swClasses`; with the compiled "
+     "sheet gone neither exists — the state keys are off the initialiser "
+     "and every reader of these three locals is retired below. Left in "
+     "place they throw at mount on all seven pages, which is exactly the "
+     "reason the pre-MRB-331 deletion gave.\n"
      "\n"
-     "        `swPicked` is added rather than derived at each reader: four "
-     "keys read the chosen questions and `s.swPick` can be undefined for "
-     "exactly one render — the first, before the preview answers.\n"
-     "\n"
-     "        ⚠️ `swHold` AND `swNote` ARE LOCALS BECAUSE EACH IS READ "
-     "TWICE — once for the words and once for the `<if>` that decides "
-     "whether the panel holding them is drawn at all. An empty binding draws "
-     "nothing, but the DIV around it still draws its own padding, ground and "
-     "border: without the boolean, a school with no assignment hold — which "
-     "is nearly every school — gets a blank tinted card at the foot of every "
-     "Set-work sheet. Computing each string twice would also work, and would "
-     "be two chances for a panel and its contents to disagree."),
+     "        ⊕ SUPERSEDED (MRB-331 UNIT B) — it was a REWRITE adding "
+     "`swAll`, `swTopics`, `swPicked`, `swHold` and `swNote`, and making "
+     "`topic` fall back to `null` rather than to Design's first invented "
+     "row. THAT NULL-FALLBACK RULING IS CARRIED, not dropped: "
+     "`shared/set-work.js` has no \"first topic\" state at all — an "
+     "unchosen scope is the empty string and the primary stays disabled."),
 
     # ── ⊕ MRB-331 UNIT B · RULED DIVERGENCE 5 · THE PANELS ARE REORDERED ─
     #
@@ -7791,362 +7924,426 @@ componentDidUpdate() {
     # The eyebrow's word list is reordered to match, so "Step 1 of 3 ·
     # Classes" is what the teacher reads and it is true.
     ("      sw1: s.swStep === 1, sw2: s.swStep === 2, sw3: s.swStep === 3,\n",
-     "      sw1: s.swStep === 2, sw2: s.swStep === 3, sw3: s.swStep === 1,\n",
-     "the three panel flags. Design numbers them in her own step order; the "
-     "port's order is Classes → Topic → Detail, so `sw3` (her class chooser) "
-     "is step 1 and the other two shift up. ⚠️ THE NAMES ARE DELIBERATELY "
-     "NOT CHANGED: they are the `<if>` expressions on nodes 592, 601 and "
-     "614, and renaming them would mean editing Design's compiled tree to "
-     "say the same thing."),
+     "",
+     "⊕ MRB-335, 7 Sep 2026 — A DELETION AGAIN, which is what it was "
+     "before MRB-331 and for the same mechanical reason: `sw2` and `sw3` "
+     "sit on the same physical line as `sw1`, and `DROP_KEYS` works one "
+     "balanced key at a time, so it cannot take them. The three flags gate "
+     "nodes 592, 601 and 614 — all inside node 581, all pruned with it.\n"
+     "\n"
+     "        ⊕ SUPERSEDED (MRB-331 UNIT B) — it was a REWRITE, `sw1: "
+     "s.swStep === 2, sw2: s.swStep === 3, sw3: s.swStep === 1`, "
+     "renumbering Design's panels into the port's Classes → Topic → "
+     "Detail order. THAT ORDER IS KEPT — `shared/set-work.js` steps "
+     "Classes, Topic, Detail for the reason divergence 5 gave — but it is "
+     "expressed in the module rather than by renumbering a compiled tree."),
 
-    # ── the eyebrow, and the empty states Design's constants hid ─────────
-    (dict(method="renderVals", key="swEyebrow"),
-     """      swEyebrow: 'Step ' + s.swStep + ' of 3 · ' + ['Classes', 'Topic', 'Detail'][s.swStep - 1],
-      swNoTopics: swTopics.length === 0,
-      swNoTopicsLine: s.swTopicsErr
-        ? 'The lessons for that class could not be loaded just now. Try again in a moment.'
-        : (swSel.length
-            ? 'No lessons from this class\\u2019s scheme of work can be set yet.'
-            : 'Choose a class first \\u2014 the lessons come from its scheme of work.'),
-      swHoldLine: swHold,
-      swHasHold: !!swHold,""",
-     "the sheet's eyebrow, reordered with the panels (see the ruling "
-     "above), plus the two states Design's five-row constant made "
-     "unreachable and the school hold.\n"
-     "\n"
-     "        ⚠️ `swNoTopics` IS NOT A NICETY. Design's topic panel is an "
-     "`sc-for` over a list that cannot be empty, so with no class chosen — "
-     "which is the state node 165 opens in — her markup renders a heading, "
-     "a gap and nothing else. THREE sentences, because three different "
-     "things produce an empty list and each wants a different action from "
-     "the teacher: no class chosen yet, a class whose scheme has nothing "
-     "left to set, and a scheme that would not load. The third is where a "
-     "`console.error` would otherwise have gone, and a teacher does not "
-     "open the console.\n"
-     "\n"
-     "        ⚠️ `swHoldLine` IS EMPTY ON ALMOST EVERY SCHOOL and draws "
-     "nothing when it is. It appears only when `assignments_open_from` is "
-     "set AND still ahead of today — MRB-324's dial, which delays the day a "
-     "school's work opens to students. Without it a teacher sets work in "
-     "August, the children see nothing, and the page has given them no way "
-     "to know why."),
-
-    (dict(method="renderVals", key="topics"),
-     """      topics: swTopics.map(t => ({
-        name: t.name, unit: t.unit,
-        tag: t.available ? t.tag : 'No questions yet',
-        bg: !t.available ? 'var(--st-note-bg)'
-          : (s.swTopic === t.id ? 'var(--st-chip-tint)' : 'var(--st-paper)'),
-        bc: (t.available && s.swTopic === t.id) ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
-        tagFg: (t.available && s.swTopic === t.id) ? 'var(--st-accent-text)' : 'var(--st-ghost)',
-        pick: () => t.available
-          ? this.setState({ swTopic: t.id, swPick: [], swPool: [], swErr: '' })
-          : this.ping('There are no questions for that lesson yet')
-      })),""",
-     "the topic rows. Design maps five invented topics; this maps the class's "
-     "own scheme of work.\n"
-     "\n"
-     "        ⚠️ A TOPIC WITH NO QUESTIONS IS SHOWN AND IS NOT SETTABLE, "
-     "which is the KS4 case and is not an edge one. There is no KS4 question "
-     "pool anywhere in this product — `ks3_assignment_bank` is the only "
-     "bank, `consumer/work.js` already says `no_ks4_bank` in as many words, "
-     "and `assignment_questions`' own `one_pool_per_assignment` CHECK "
-     "structurally refuses an exam question. What KS4 HAS is the scheme: 865 "
-     "`scheme_of_work_entries` rows, correctly scoped by tier and pathway. "
-     "So the picker works and is right, and the row says \"No questions "
-     "yet\" on the note ground rather than being hidden. HIDING IT WOULD BE "
-     "WORSE: a Year 10 teacher would see an empty sheet and no reason for "
-     "it. The press answers instead of doing nothing, because a control that "
-     "swallows a press reads as broken.\n"
-     "\n"
-     "        No new colours. `--st-note-bg` and `--st-ghost` are the tokens "
-     "Design already uses for an inert row and a quiet tag."),
-
-    # ── ⊕ RULED DIVERGENCE 1 · 6/10/15 → 6/10/15/20 ─────────────────────
+    # ══ ⊕ MRB-335, 7 Sep 2026 · THE SECOND FORK, HALF-FIXED ON PURPOSE ══
     #
-    # Design drew `swCounts: [6, 10, 15]`. The brief caps a set at twenty, so
-    # the fourth chip is added and the default stays at her 10. Nothing else
-    # about the row changes — same treatment, same `flex:1`, one more of it.
-    (dict(method="renderVals", key="swCounts"),
-     """      swCounts: [6, 10, 15, 20].map(n => ({
-        label: n + ' Q',
-        fg: s.swQ === n ? 'var(--st-accent-text)' : 'var(--st-ink)',
-        bg: s.swQ === n ? 'var(--st-chip-tint)' : 'var(--st-paper)',
-        bc: s.swQ === n ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
-        pick: () => {
-          this.setState({ swQ: n });
-          MRB_SW_FETCH(this, swSel[0] || '', s.swTopic, n, MRB_DATA('setWorkBand'));
-        }
-      })),
-      swPreview: swPicked.map((q, i) => ({
-        n: (i + 1) + '.',
-        stem: q.text || '',
-        lesson: q.lesson_title || '',
-        swap: () => {
-          const used = swPicked.map(x => x.id);
-          const free = (s.swPool || []).filter(x => used.indexOf(x.id) < 0);
-          const alt = free.filter(x => x.lesson_slug === q.lesson_slug)[0] || free[0];
-          if (!alt) { return this.ping('Nothing left in the bank to swap in'); }
-          const next = swPicked.slice();
-          next[i] = alt;
-          this.setState({ swPick: next });
-        }
-      })),
-      swHasPreview: swPicked.length > 0,
-      swPreviewNote: swNote,
-      swHasNote: !!swNote,""",
-     "the question-count chips, and the question PREVIEW that MRB-331 adds "
-     "under them.\n"
-     "\n"
-     "        ⊕ RULED DIVERGENCE 1 — Design drew three chips, `[6, 10, 15]`. "
-     "There are four, `[6, 10, 15, 20]`, because the brief caps a set at "
-     "twenty and a teacher who wants twenty questions should not have to set "
-     "the work twice. Her default of 10 is kept.\n"
-     "\n"
-     "        ⊕ RULED DIVERGENCE 2 — DESIGN'S STEP 2 SHOWED NO QUESTIONS AT "
-     "ALL. She asks for a count and never says what the count contains, "
-     "which is fine for a sheet that sets nothing and is not fine for one "
-     "that does: a teacher setting ten questions to thirty children is "
-     "entitled to see them first. So the detail panel gains a list of the "
-     "auto-selected questions, one line each, naming the lesson each came "
-     "from, with a Swap that replaces ONE of them — not a re-roll of the "
-     "whole set, because the point is to drop the one question that will not "
-     "land with this class while keeping the nine that will.\n"
-     "\n"
-     "        ⊕ SUPERSEDED WITHIN THE RUN, 6 Sep 2026, AND THE OLD SENTENCE "
-     "IS KEPT BECAUSE SOMEBODY WILL OTHERWISE REINSTATE IT. It read: \"a "
-     "Swap that replaces one with the next unused question FROM THE SAME "
-     "LESSON\". That is what the brief asked for and it is a DEAD CONTROL "
-     "on most rows.\n"
-     "\n"
-     "        ⛔ MEASURED AGAINST THE LIVE BACKEND, NOT REASONED ABOUT. The "
-     "bank holds exactly FOUR questions per (lesson, band), and UNIT A's "
-     "fill consumes a lesson's four ENTIRELY before moving to the lesson "
-     "before it in the scheme — so the swap pool holds NOTHING for any "
-     "fully-consumed lesson, and only the last, partially-consumed one can "
-     "ever answer:\n"
-     "\n"
-     "            count=6   picked=6   pool=314    swappable 2 of 6\n"
-     "            count=10  picked=10  pool=310    swappable 2 of 10\n"
-     "            count=15  picked=15  pool=305    swappable 3 of 15\n"
-     "            count=20  picked=20  pool=300    swappable 0 of 20\n"
-     "\n"
-     "        Eight rows in ten did nothing when pressed, and at the maximum "
-     "count every row did. That is precisely the control MRB-287's `DEAD` "
-     "ruling removed, restored with its original sin intact.\n"
-     "\n"
-     "        The literal reading was never available: \"the same lesson\" "
-     "cannot supply ten questions at four per band, which is why UNIT A "
-     "fills backwards through the scheme at all. Mide's ruling on that fill "
-     "is that the honest reading is \"the same neighbourhood of the "
-     "scheme\", and the fill is nearest-first — so `free[0]` IS the nearest "
-     "lesson rather than an arbitrary one. Same lesson first where the pool "
-     "still holds one; the nearest unused question otherwise; a refusal only "
-     "when the whole drawn range is exhausted, which on a real class (pool "
-     "≈ 300) does not happen.\n"
-     "\n"
-     "        ⚠️ SWAP PREFERS THE SAME LESSON AND FALLS BACK TO THE REST OF "
-     "THE POOL, AND THE FALLBACK IS NOT A COMPROMISE — it is the only "
-     "reading that survives the data. A lesson holds FOUR questions per "
-     "band, so a set of ten is never one lesson's: the backend fills "
-     "backwards through the scheme, nearest first (`composeFromBank`, "
-     "Mide's ruling of 20 August 2026), and the swap pool is everything "
-     "unused from that same drawn range. A swap restricted to "
-     "`lesson_slug === q.lesson_slug` would refuse on most rows most of the "
-     "time — a control that is dead four presses out of five, which is the "
-     "shape this whole unit exists to remove. So the same lesson is "
-     "PREFERRED and the nearest unused question is taken otherwise, and "
-     "every row NAMES the lesson it came from so the fill is visible rather "
-     "than concealed.\n"
-     "\n"
-     "        ⚠️ `q.text`, NOT `q.stem`. The preview route's shape is `{id, "
-     "position, lesson_slug, lesson_title, from_chosen_lesson, text, figure, "
-     "options}`. A misnamed field here renders an empty row for every "
-     "question, on a control whose entire job is to show a teacher what they "
-     "are about to set.\n"
-     "\n"
-     "        ⚠️ `swPreviewNote` NEVER SAYS NOTHING WHEN SOMETHING IS WRONG. "
-     "It carries the error first, then \"choosing\", then the resting "
-     "prompt, so a failed composition is read in the sheet rather than in "
-     "the console."),
+    # `setupRows.act` — the one the note directly above names as "a finding
+    # for MRB-306, not a change to make here". It still is, in the direction
+    # MRB-306 owns: the row draws on node 95, which is on the TODAY screen,
+    # which `SCREENS` prunes on all six pages, so neither arm renders
+    # anywhere and its Import arm still calls `setState({ screen: 'import' })`
+    # rather than `MRB_GO`. That half is left exactly as it was found.
+    #
+    # ⚑ WHAT MRB-335 HAS TO TOUCH IS THE OTHER ARM, and only because THIS
+    # ticket broke it. It read `this.setState({ modal: 'setwork', swStep: 1,
+    # swClasses: [c.id] })`, and `modal`, `swStep` and `swClasses` are three
+    # keys this ticket takes off the state initialiser. Left alone it would
+    # ship a reference to state that no longer exists — invisible today
+    # because the screen is pruned, and a thrown key error on the day
+    # somebody unprunes it.
+    #
+    # ⛔ NOT REGISTERED IN `NAV`. The build's closing sweep refuses a `NAV`
+    # node that appears on no page, and node 95 appears on none. A `LOGIC`
+    # rewrite is anchored on the SOURCE LINE rather than on a node, which is
+    # the only mechanism that can reach a handler on a pruned screen.
+    ("      act: () => c.state === 'empty' ? this.setState({ screen: 'import', "
+     "importStep: 1 }) : this.setState({ modal: 'setwork', swStep: 1, "
+     "swClasses: [c.id] })",
+     "      act: () => c.state === 'empty' ? this.setState({ screen: 'import', "
+     "importStep: 1 }) : MRB_SET_WORK_OPEN(c.id)",
+     "the Today screen's second Import/Set-work fork. Its Set-work arm named "
+     "three state keys MRB-335 deletes; it now opens the module, like every "
+     "other Set-work control. ⚠️ THE IMPORT ARM IS DELIBERATELY UNCHANGED "
+     "and is still wrong — `setState({ screen: 'import' })` on a six-URL "
+     "port renders a blank page, exactly as `c.act`'s did before MRB-306 "
+     "fixed it. It is MRB-306's open finding on node 95 and fixing it here "
+     "would be closing somebody else's ticket inside a sheet rebuild. "
+     "Neither arm renders today: `SCREENS` prunes the Today screen on all "
+     "six pages."),
 
-    (dict(method="renderVals", key="swDays"),
-     """      swDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map(d => ({
-        label: d,
-        fg: s.swDay === d ? 'var(--st-accent-text)' : 'var(--st-ink)',
-        bg: s.swDay === d ? 'var(--st-chip-tint)' : 'var(--st-paper)',
-        bc: s.swDay === d ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
-        pick: () => this.setState({ swDay: d })
-      })),
-      swDueLine: MRB_SET_WORK_DUE_LINE(s.swDay),""",
-     "the due-day chips, unchanged, and the date they actually resolve to.\n"
-     "\n"
-     "        ⚠️ A WEEKDAY IS NOT A DATE. Design's chip says \"Wed\" and "
-     "stops, which is unambiguous on a sheet that sets nothing and is not on "
-     "one that does: pressed on a Thursday, \"Wed\" is either yesterday or "
-     "in six days' time. The rule is THAT WEEKDAY, NEXT WEEK — a week is "
-     "what a teacher gives for homework — and the resolved date is printed "
-     "under the chips in the mono face so nobody has to work out which "
-     "Wednesday it meant. Computed from the browser's clock in "
-     "`MRB_SET_WORK_DUE_LINE`; a typed date is a tell and "
-     "`teacher_tells.py` fails the build on one."),
-
-    # ── ⊕ RULED DIVERGENCE 3 · "Release next lesson" cannot be resolved ──
-    (dict(method="renderVals", key="swRelease"),
-     """      swRelease: [{ k: 'now', l: 'Release now' }, { k: 'later', l: 'Release later' }].map(o => ({
-        label: o.l,
-        fg: s.swRel === o.k ? 'var(--st-accent-text)' : 'var(--st-ink)',
-        bg: s.swRel === o.k ? 'var(--st-chip-tint)' : 'var(--st-paper)',
-        bc: s.swRel === o.k ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
-        pick: () => this.setState({ swRel: o.k,
-          swRelDate: (o.k === 'later' && !s.swRelDate)
-            ? MRB_SET_WORK_NEXT_MONDAY_YMD() : s.swRelDate })
-      })),
-      swRelLater: s.swRel === 'later',
-      swRelVal: s.swRelDate || '',
-      setSwRelDate: (e) => this.setState({
-        swRelDate: (e && e.target) ? e.target.value : '' }),
-      swRelLine: s.swRel !== 'later' ? ''
-        : (s.swRelDate ? MRB_SET_WORK_DAY_LINE(s.swRelDate)
-                       : 'Pick the day it should appear.'),""",
-     "the release chips.\n"
-     "\n"
-     "        ⊕ RULED DIVERGENCE 3 — Design's second chip reads \"Release "
-     "next lesson\". IT CANNOT BE RESOLVED. There is no timetable this page "
-     "can ask: MRB-326 established that a timetable is PER TEACHER, so "
-     "\"next lesson\" means a different day depending on who is asking, and "
-     "a set spanning three classes has three different next lessons and no "
-     "single one. Design's own `TODAY_LESSONS` — four invented periods, "
-     "times and rooms — is on `DROP_FIELDS` for the same absence.\n"
-     "\n"
-     "        So the chip reads \"Release later\" and picking it reveals a "
-     "date. That is a smaller promise and one the product can keep, and it "
-     "is strictly more useful than a lesson boundary would have been: "
-     "\"Monday morning\" is what a teacher actually means most of the time.\n"
-     "\n"
-     "        ⚠️ PICKING \"later\" SEEDS THE DATE WITH NEXT MONDAY rather "
-     "than leaving the field blank. A blank date under a chip that says "
-     "\"Release later\" is a control in a state that means the same thing "
-     "as \"Release now\" — the teacher has said later and the sheet has "
-     "nothing to act on. Next Monday is the release almost everybody wants "
-     "and it is one press to change. It is also the one state in which "
-     "clearing the field is indistinguishable from never having touched "
-     "it.\n"
-     "\n"
-     "        ⚠️ THE DATE IS RESOLVED ONCE, AT SET TIME, AND STORED. Not "
-     "recomputed on read — MRB-324 ruled that the school hold governs "
-     "CREATION and never retracts, and a read-time `greatest()` against the "
-     "hold would mean moving the hold later takes back work a class can "
-     "already see."),
-
-    (dict(method="renderVals", key="swClassList"),
-     """      swClassList: swAll.filter(c => c.n > 0).map(c => {
-        const on = swSel.indexOf(c.id) > -1;
-        return {
-          code: c.code, sub: c.subject + ' · ' + c.n + (c.n === 1 ? ' student' : ' students'),
-          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',
-          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
-          boxBg: on ? 'var(--st-accent-text)' : 'transparent',
-          boxBc: on ? 'var(--st-accent-text)' : 'var(--st-rule-strong)',
-          toggle: () => this.setState({
-            swClasses: on ? swSel.filter(x => x !== c.id) : swSel.concat([c.id]),
-            swTopic: null, swPick: [], swPool: [], swErr: '' })
-        };
-      }),""",
-     "the class chooser. Design maps her own twelve invented classes; this "
-     "maps the ones the teacher may actually set to.\n"
-     "\n"
-     "        ⚠️ A CHANGE OF CLASS CLEARS THE TOPIC, and it has to. The "
-     "topic list is the FIRST selected class's scheme of work, so a topic "
-     "chosen against 7h/Sc5 is not a row that exists for 11h/Sc5; carrying "
-     "it across would send a `sow_entry_id` the second class has no claim "
-     "on. Clearing it costs one press and cannot be wrong.\n"
-     "\n"
-     "        ⚠️ AND \"1 students\" IS FIXED IN PASSING. Design's `sub` is "
-     "`c.n + ' students'` unconditionally. A class of one is rare and real."),
-
-    (dict(method="renderVals", key="swSummary"),
-     """      swSummary: s.swStep === 1
-        ? (swSel.length
-            ? swSel.length + (swSel.length === 1 ? ' class · ' : ' classes · ') +
-              swStudents + (swStudents === 1 ? ' student' : ' students')
-            : 'Pick at least one class')
-        : s.swStep === 2
-          ? (topic ? topic.name : 'Pick a topic')
-          : ((topic ? topic.name : '\\u2014') + ' · ' + s.swQ + ' questions · due ' + s.swDay),""",
-     "the footer summary, re-mapped onto the port's step order and made "
-     "plural-aware. Design's step-3 string is \"N classes · M students\" "
-     "unconditionally, which reads \"1 classes · 1 students\" on a teacher "
-     "with one class — and one-class teachers exist. Both of her sentences "
-     "survive; they are said at the step that is now about them."),
-
-    (dict(method="renderVals", key="swNext"),
-     """      swNext: () => {
-        if (s.swStep < 3) {
-          this.setState({ swStep: s.swStep + 1 });
-          if (s.swStep === 1) { MRB_SET_WORK_TOPICS(this, swSel[0] || ''); }
-          if (s.swStep === 2 && s.swTopic) {
-            MRB_SW_FETCH(this, swSel[0] || '', s.swTopic, s.swQ, MRB_DATA('setWorkBand'));
-          }
-          return;
-        }
-        if (s.swBusy) { return; }
-        if (!swSel.length) { return this.ping('Pick at least one class'); }
-        if (!topic) { return this.ping('Pick a topic'); }
-        if (!swPicked.length) {
-          return this.ping(s.swErr || 'There are no questions to set for that lesson yet');
-        }
-        this.setState({ swBusy: true });
-        MRB_SET_WORK({
-          class_ids: swSel,
-          sow_entry_id: topic.id,
-          question_ids: swPicked.map(q => q.id),
-          title: topic.name,
-          due_at: MRB_SET_WORK_DUE_ISO(s.swDay),
-          release_at: MRB_SET_WORK_RELEASE_ISO(s.swRel, s.swRelDate)
-        }).then(r => {
-          if (!r.ok) {
-            this.setState({ swBusy: false });
-            return this.ping(MRB_SET_WORK_WHY(r.error));
-          }
-          this.setState({ modal: null, swStep: 1, swBusy: false, swTopic: null,
-                          swPick: [], swPool: [], swErr: '' });
-          this.ping(MRB_SET_WORK_SAID(r, swAll));
-        });
-      },""",
-     "THE WRITE. Design's handler is `this.setState({ modal: null, swStep: "
-     "1 }); this.ping(topic.name + ' set for ' + swSel.length + ' classes · "
-     "' + swStudents + ' students')` — a confirmation of a write that never "
-     "happened, and the single sentence that put the whole sheet on `DEAD` "
-     "under MRB-287.\n"
-     "\n"
-     "        ⚠️ THE TOAST COUNTS WHAT THE SERVER CREATED, NOT WHAT WAS "
-     "TICKED. `MRB_SET_WORK_SAID` reads `r.classes` and `r.students` off the "
-     "answer. A set can be refused per class — a finished year, a class a "
-     "colleague already set that lesson to, a class with nobody in it — so "
-     "reporting the tick count would be the same lie in a new place.\n"
-     "\n"
-     "        ⚠️ DESIGN'S STEP ADVANCE IS KEPT PERMISSIVE, and that is "
-     "deliberate rather than an omission. Her `swNext` walks forward without "
-     "checking anything, and so does this one: the refusals are all on the "
-     "FINAL press, where they can name the one thing that is missing. A "
-     "wizard that blocks Next says \"no\" without saying why, three panels "
-     "away from the sentence that would explain it.\n"
-     "\n"
-     "        ⚠️ `swBusy` GUARDS A SECOND PRESS. Two presses of \"Set work\" "
-     "is two assignments, and nothing further down refuses the duplicate: "
-     "UNIT A narrowed `assignments_class_week_uniq` to `source = 'auto'` "
-     "precisely so a teacher CAN set a second piece of work in a week."),
+    # ══ ⊕ SUPERSEDED 7 Sep 2026 (MRB-335) · EIGHT KEYS THAT DREW A SHEET
+    #    WHICH IS NO LONGER ON THE PAGE ══════════════════════════════════
+    #
+    # ⚑ THE SHEET LEFT THE COMPILED RUNTIME, so the keys that fed it have
+    # nothing to feed. Design's node 581 is back on `DEAD`, both pages drop
+    # `setWorkOpen` from `overlays`, and `shared/set-work.js` owns the sheet
+    # now. Twelve of these key names go back on `DROP_KEYS`, which takes
+    # DESIGN'S originals — so leaving these rewrites here would be a rewrite
+    # of a key that is being deleted in the same pass.
+    #
+    # ⛔ THE REASON IS NOT THAT THIS CODE WAS WRONG. Every ruling below was
+    # correct about the sheet it was written for, and several are carried
+    # into `shared/set-work.js` unchanged in BEHAVIOUR: the question preview
+    # (MRB-331 ruled divergence 2), a release DATE rather than "next lesson"
+    # (divergence 3), the Classes-first step order (divergence 5), the null
+    # `topic` fallback, and a toast carrying the SERVER'S count rather than
+    # the teacher's ticks. What could not be carried is the RENDERER. Every
+    # `pick:` below ends in `this.setState`, and `student-runtime.js:497`
+    # empties the entire mount host on every one of them — so the sheet's
+    # own `overflow:auto` scroller was destroyed and rebuilt at scrollTop 0
+    # under the teacher's thumb, every time they chose anything. That is
+    # MRB-335's whole ticket.
+    #
+    # ⚠️ KEPT VERBATIM RATHER THAN DELETED, for the reason MRB-331 gave for
+    # keeping the five `DEAD` rows it lifted: this is the only record of
+    # what the compiled sheet computed, and anybody re-wiring node 581 needs
+    # to know that THESE keys, not new ones, are what it reads.
+    #
+    #     # ── the eyebrow, and the empty states Design's constants hid ─────────
+    #     (dict(method="renderVals", key="swEyebrow"),
+    #      """      swEyebrow: 'Step ' + s.swStep + ' of 3 · ' + ['Classes', 'Topic', 'Detail'][s.swStep - 1],
+    #       swNoTopics: swTopics.length === 0,
+    #       swNoTopicsLine: s.swTopicsErr
+    #         ? 'The lessons for that class could not be loaded just now. Try again in a moment.'
+    #         : (swSel.length
+    #             ? 'No lessons from this class\\u2019s scheme of work can be set yet.'
+    #             : 'Choose a class first \\u2014 the lessons come from its scheme of work.'),
+    #       swHoldLine: swHold,
+    #       swHasHold: !!swHold,""",
+    #      "the sheet's eyebrow, reordered with the panels (see the ruling "
+    #      "above), plus the two states Design's five-row constant made "
+    #      "unreachable and the school hold.\n"
+    #      "\n"
+    #      "        ⚠️ `swNoTopics` IS NOT A NICETY. Design's topic panel is an "
+    #      "`sc-for` over a list that cannot be empty, so with no class chosen — "
+    #      "which is the state node 165 opens in — her markup renders a heading, "
+    #      "a gap and nothing else. THREE sentences, because three different "
+    #      "things produce an empty list and each wants a different action from "
+    #      "the teacher: no class chosen yet, a class whose scheme has nothing "
+    #      "left to set, and a scheme that would not load. The third is where a "
+    #      "`console.error` would otherwise have gone, and a teacher does not "
+    #      "open the console.\n"
+    #      "\n"
+    #      "        ⚠️ `swHoldLine` IS EMPTY ON ALMOST EVERY SCHOOL and draws "
+    #      "nothing when it is. It appears only when `assignments_open_from` is "
+    #      "set AND still ahead of today — MRB-324's dial, which delays the day a "
+    #      "school's work opens to students. Without it a teacher sets work in "
+    #      "August, the children see nothing, and the page has given them no way "
+    #      "to know why."),
+    #
+    #     (dict(method="renderVals", key="topics"),
+    #      """      topics: swTopics.map(t => ({
+    #         name: t.name, unit: t.unit,
+    #         tag: t.available ? t.tag : 'No questions yet',
+    #         bg: !t.available ? 'var(--st-note-bg)'
+    #           : (s.swTopic === t.id ? 'var(--st-chip-tint)' : 'var(--st-paper)'),
+    #         bc: (t.available && s.swTopic === t.id) ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+    #         tagFg: (t.available && s.swTopic === t.id) ? 'var(--st-accent-text)' : 'var(--st-ghost)',
+    #         pick: () => t.available
+    #           ? this.setState({ swTopic: t.id, swPick: [], swPool: [], swErr: '' })
+    #           : this.ping('There are no questions for that lesson yet')
+    #       })),""",
+    #      "the topic rows. Design maps five invented topics; this maps the class's "
+    #      "own scheme of work.\n"
+    #      "\n"
+    #      "        ⚠️ A TOPIC WITH NO QUESTIONS IS SHOWN AND IS NOT SETTABLE, "
+    #      "which is the KS4 case and is not an edge one. There is no KS4 question "
+    #      "pool anywhere in this product — `ks3_assignment_bank` is the only "
+    #      "bank, `consumer/work.js` already says `no_ks4_bank` in as many words, "
+    #      "and `assignment_questions`' own `one_pool_per_assignment` CHECK "
+    #      "structurally refuses an exam question. What KS4 HAS is the scheme: 865 "
+    #      "`scheme_of_work_entries` rows, correctly scoped by tier and pathway. "
+    #      "So the picker works and is right, and the row says \"No questions "
+    #      "yet\" on the note ground rather than being hidden. HIDING IT WOULD BE "
+    #      "WORSE: a Year 10 teacher would see an empty sheet and no reason for "
+    #      "it. The press answers instead of doing nothing, because a control that "
+    #      "swallows a press reads as broken.\n"
+    #      "\n"
+    #      "        No new colours. `--st-note-bg` and `--st-ghost` are the tokens "
+    #      "Design already uses for an inert row and a quiet tag."),
+    #
+    #     # ── ⊕ RULED DIVERGENCE 1 · 6/10/15 → 6/10/15/20 ─────────────────────
+    #     #
+    #     # Design drew `swCounts: [6, 10, 15]`. The brief caps a set at twenty, so
+    #     # the fourth chip is added and the default stays at her 10. Nothing else
+    #     # about the row changes — same treatment, same `flex:1`, one more of it.
+    #     (dict(method="renderVals", key="swCounts"),
+    #      """      swCounts: [6, 10, 15, 20].map(n => ({
+    #         label: n + ' Q',
+    #         fg: s.swQ === n ? 'var(--st-accent-text)' : 'var(--st-ink)',
+    #         bg: s.swQ === n ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+    #         bc: s.swQ === n ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+    #         pick: () => {
+    #           this.setState({ swQ: n });
+    #           MRB_SW_FETCH(this, swSel[0] || '', s.swTopic, n, MRB_DATA('setWorkBand'));
+    #         }
+    #       })),
+    #       swPreview: swPicked.map((q, i) => ({
+    #         n: (i + 1) + '.',
+    #         stem: q.text || '',
+    #         lesson: q.lesson_title || '',
+    #         swap: () => {
+    #           const used = swPicked.map(x => x.id);
+    #           const free = (s.swPool || []).filter(x => used.indexOf(x.id) < 0);
+    #           const alt = free.filter(x => x.lesson_slug === q.lesson_slug)[0] || free[0];
+    #           if (!alt) { return this.ping('Nothing left in the bank to swap in'); }
+    #           const next = swPicked.slice();
+    #           next[i] = alt;
+    #           this.setState({ swPick: next });
+    #         }
+    #       })),
+    #       swHasPreview: swPicked.length > 0,
+    #       swPreviewNote: swNote,
+    #       swHasNote: !!swNote,""",
+    #      "the question-count chips, and the question PREVIEW that MRB-331 adds "
+    #      "under them.\n"
+    #      "\n"
+    #      "        ⊕ RULED DIVERGENCE 1 — Design drew three chips, `[6, 10, 15]`. "
+    #      "There are four, `[6, 10, 15, 20]`, because the brief caps a set at "
+    #      "twenty and a teacher who wants twenty questions should not have to set "
+    #      "the work twice. Her default of 10 is kept.\n"
+    #      "\n"
+    #      "        ⊕ RULED DIVERGENCE 2 — DESIGN'S STEP 2 SHOWED NO QUESTIONS AT "
+    #      "ALL. She asks for a count and never says what the count contains, "
+    #      "which is fine for a sheet that sets nothing and is not fine for one "
+    #      "that does: a teacher setting ten questions to thirty children is "
+    #      "entitled to see them first. So the detail panel gains a list of the "
+    #      "auto-selected questions, one line each, naming the lesson each came "
+    #      "from, with a Swap that replaces ONE of them — not a re-roll of the "
+    #      "whole set, because the point is to drop the one question that will not "
+    #      "land with this class while keeping the nine that will.\n"
+    #      "\n"
+    #      "        ⊕ SUPERSEDED WITHIN THE RUN, 6 Sep 2026, AND THE OLD SENTENCE "
+    #      "IS KEPT BECAUSE SOMEBODY WILL OTHERWISE REINSTATE IT. It read: \"a "
+    #      "Swap that replaces one with the next unused question FROM THE SAME "
+    #      "LESSON\". That is what the brief asked for and it is a DEAD CONTROL "
+    #      "on most rows.\n"
+    #      "\n"
+    #      "        ⛔ MEASURED AGAINST THE LIVE BACKEND, NOT REASONED ABOUT. The "
+    #      "bank holds exactly FOUR questions per (lesson, band), and UNIT A's "
+    #      "fill consumes a lesson's four ENTIRELY before moving to the lesson "
+    #      "before it in the scheme — so the swap pool holds NOTHING for any "
+    #      "fully-consumed lesson, and only the last, partially-consumed one can "
+    #      "ever answer:\n"
+    #      "\n"
+    #      "            count=6   picked=6   pool=314    swappable 2 of 6\n"
+    #      "            count=10  picked=10  pool=310    swappable 2 of 10\n"
+    #      "            count=15  picked=15  pool=305    swappable 3 of 15\n"
+    #      "            count=20  picked=20  pool=300    swappable 0 of 20\n"
+    #      "\n"
+    #      "        Eight rows in ten did nothing when pressed, and at the maximum "
+    #      "count every row did. That is precisely the control MRB-287's `DEAD` "
+    #      "ruling removed, restored with its original sin intact.\n"
+    #      "\n"
+    #      "        The literal reading was never available: \"the same lesson\" "
+    #      "cannot supply ten questions at four per band, which is why UNIT A "
+    #      "fills backwards through the scheme at all. Mide's ruling on that fill "
+    #      "is that the honest reading is \"the same neighbourhood of the "
+    #      "scheme\", and the fill is nearest-first — so `free[0]` IS the nearest "
+    #      "lesson rather than an arbitrary one. Same lesson first where the pool "
+    #      "still holds one; the nearest unused question otherwise; a refusal only "
+    #      "when the whole drawn range is exhausted, which on a real class (pool "
+    #      "≈ 300) does not happen.\n"
+    #      "\n"
+    #      "        ⚠️ SWAP PREFERS THE SAME LESSON AND FALLS BACK TO THE REST OF "
+    #      "THE POOL, AND THE FALLBACK IS NOT A COMPROMISE — it is the only "
+    #      "reading that survives the data. A lesson holds FOUR questions per "
+    #      "band, so a set of ten is never one lesson's: the backend fills "
+    #      "backwards through the scheme, nearest first (`composeFromBank`, "
+    #      "Mide's ruling of 20 August 2026), and the swap pool is everything "
+    #      "unused from that same drawn range. A swap restricted to "
+    #      "`lesson_slug === q.lesson_slug` would refuse on most rows most of the "
+    #      "time — a control that is dead four presses out of five, which is the "
+    #      "shape this whole unit exists to remove. So the same lesson is "
+    #      "PREFERRED and the nearest unused question is taken otherwise, and "
+    #      "every row NAMES the lesson it came from so the fill is visible rather "
+    #      "than concealed.\n"
+    #      "\n"
+    #      "        ⚠️ `q.text`, NOT `q.stem`. The preview route's shape is `{id, "
+    #      "position, lesson_slug, lesson_title, from_chosen_lesson, text, figure, "
+    #      "options}`. A misnamed field here renders an empty row for every "
+    #      "question, on a control whose entire job is to show a teacher what they "
+    #      "are about to set.\n"
+    #      "\n"
+    #      "        ⚠️ `swPreviewNote` NEVER SAYS NOTHING WHEN SOMETHING IS WRONG. "
+    #      "It carries the error first, then \"choosing\", then the resting "
+    #      "prompt, so a failed composition is read in the sheet rather than in "
+    #      "the console."),
+    #
+    #     (dict(method="renderVals", key="swDays"),
+    #      """      swDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map(d => ({
+    #         label: d,
+    #         fg: s.swDay === d ? 'var(--st-accent-text)' : 'var(--st-ink)',
+    #         bg: s.swDay === d ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+    #         bc: s.swDay === d ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+    #         pick: () => this.setState({ swDay: d })
+    #       })),
+    #       swDueLine: MRB_SET_WORK_DUE_LINE(s.swDay),""",
+    #      "the due-day chips, unchanged, and the date they actually resolve to.\n"
+    #      "\n"
+    #      "        ⚠️ A WEEKDAY IS NOT A DATE. Design's chip says \"Wed\" and "
+    #      "stops, which is unambiguous on a sheet that sets nothing and is not on "
+    #      "one that does: pressed on a Thursday, \"Wed\" is either yesterday or "
+    #      "in six days' time. The rule is THAT WEEKDAY, NEXT WEEK — a week is "
+    #      "what a teacher gives for homework — and the resolved date is printed "
+    #      "under the chips in the mono face so nobody has to work out which "
+    #      "Wednesday it meant. Computed from the browser's clock in "
+    #      "`MRB_SET_WORK_DUE_LINE`; a typed date is a tell and "
+    #      "`teacher_tells.py` fails the build on one."),
+    #
+    #     # ── ⊕ RULED DIVERGENCE 3 · "Release next lesson" cannot be resolved ──
+    #     (dict(method="renderVals", key="swRelease"),
+    #      """      swRelease: [{ k: 'now', l: 'Release now' }, { k: 'later', l: 'Release later' }].map(o => ({
+    #         label: o.l,
+    #         fg: s.swRel === o.k ? 'var(--st-accent-text)' : 'var(--st-ink)',
+    #         bg: s.swRel === o.k ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+    #         bc: s.swRel === o.k ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+    #         pick: () => this.setState({ swRel: o.k,
+    #           swRelDate: (o.k === 'later' && !s.swRelDate)
+    #             ? MRB_SET_WORK_NEXT_MONDAY_YMD() : s.swRelDate })
+    #       })),
+    #       swRelLater: s.swRel === 'later',
+    #       swRelVal: s.swRelDate || '',
+    #       setSwRelDate: (e) => this.setState({
+    #         swRelDate: (e && e.target) ? e.target.value : '' }),
+    #       swRelLine: s.swRel !== 'later' ? ''
+    #         : (s.swRelDate ? MRB_SET_WORK_DAY_LINE(s.swRelDate)
+    #                        : 'Pick the day it should appear.'),""",
+    #      "the release chips.\n"
+    #      "\n"
+    #      "        ⊕ RULED DIVERGENCE 3 — Design's second chip reads \"Release "
+    #      "next lesson\". IT CANNOT BE RESOLVED. There is no timetable this page "
+    #      "can ask: MRB-326 established that a timetable is PER TEACHER, so "
+    #      "\"next lesson\" means a different day depending on who is asking, and "
+    #      "a set spanning three classes has three different next lessons and no "
+    #      "single one. Design's own `TODAY_LESSONS` — four invented periods, "
+    #      "times and rooms — is on `DROP_FIELDS` for the same absence.\n"
+    #      "\n"
+    #      "        So the chip reads \"Release later\" and picking it reveals a "
+    #      "date. That is a smaller promise and one the product can keep, and it "
+    #      "is strictly more useful than a lesson boundary would have been: "
+    #      "\"Monday morning\" is what a teacher actually means most of the time.\n"
+    #      "\n"
+    #      "        ⚠️ PICKING \"later\" SEEDS THE DATE WITH NEXT MONDAY rather "
+    #      "than leaving the field blank. A blank date under a chip that says "
+    #      "\"Release later\" is a control in a state that means the same thing "
+    #      "as \"Release now\" — the teacher has said later and the sheet has "
+    #      "nothing to act on. Next Monday is the release almost everybody wants "
+    #      "and it is one press to change. It is also the one state in which "
+    #      "clearing the field is indistinguishable from never having touched "
+    #      "it.\n"
+    #      "\n"
+    #      "        ⚠️ THE DATE IS RESOLVED ONCE, AT SET TIME, AND STORED. Not "
+    #      "recomputed on read — MRB-324 ruled that the school hold governs "
+    #      "CREATION and never retracts, and a read-time `greatest()` against the "
+    #      "hold would mean moving the hold later takes back work a class can "
+    #      "already see."),
+    #
+    #     (dict(method="renderVals", key="swClassList"),
+    #      """      swClassList: swAll.filter(c => c.n > 0).map(c => {
+    #         const on = swSel.indexOf(c.id) > -1;
+    #         return {
+    #           code: c.code, sub: c.subject + ' · ' + c.n + (c.n === 1 ? ' student' : ' students'),
+    #           bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',
+    #           bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',
+    #           boxBg: on ? 'var(--st-accent-text)' : 'transparent',
+    #           boxBc: on ? 'var(--st-accent-text)' : 'var(--st-rule-strong)',
+    #           toggle: () => this.setState({
+    #             swClasses: on ? swSel.filter(x => x !== c.id) : swSel.concat([c.id]),
+    #             swTopic: null, swPick: [], swPool: [], swErr: '' })
+    #         };
+    #       }),""",
+    #      "the class chooser. Design maps her own twelve invented classes; this "
+    #      "maps the ones the teacher may actually set to.\n"
+    #      "\n"
+    #      "        ⚠️ A CHANGE OF CLASS CLEARS THE TOPIC, and it has to. The "
+    #      "topic list is the FIRST selected class's scheme of work, so a topic "
+    #      "chosen against 7h/Sc5 is not a row that exists for 11h/Sc5; carrying "
+    #      "it across would send a `sow_entry_id` the second class has no claim "
+    #      "on. Clearing it costs one press and cannot be wrong.\n"
+    #      "\n"
+    #      "        ⚠️ AND \"1 students\" IS FIXED IN PASSING. Design's `sub` is "
+    #      "`c.n + ' students'` unconditionally. A class of one is rare and real."),
+    #
+    #     (dict(method="renderVals", key="swSummary"),
+    #      """      swSummary: s.swStep === 1
+    #         ? (swSel.length
+    #             ? swSel.length + (swSel.length === 1 ? ' class · ' : ' classes · ') +
+    #               swStudents + (swStudents === 1 ? ' student' : ' students')
+    #             : 'Pick at least one class')
+    #         : s.swStep === 2
+    #           ? (topic ? topic.name : 'Pick a topic')
+    #           : ((topic ? topic.name : '\\u2014') + ' · ' + s.swQ + ' questions · due ' + s.swDay),""",
+    #      "the footer summary, re-mapped onto the port's step order and made "
+    #      "plural-aware. Design's step-3 string is \"N classes · M students\" "
+    #      "unconditionally, which reads \"1 classes · 1 students\" on a teacher "
+    #      "with one class — and one-class teachers exist. Both of her sentences "
+    #      "survive; they are said at the step that is now about them."),
+    #
+    #     (dict(method="renderVals", key="swNext"),
+    #      """      swNext: () => {
+    #         if (s.swStep < 3) {
+    #           this.setState({ swStep: s.swStep + 1 });
+    #           if (s.swStep === 1) { MRB_SET_WORK_TOPICS(this, swSel[0] || ''); }
+    #           if (s.swStep === 2 && s.swTopic) {
+    #             MRB_SW_FETCH(this, swSel[0] || '', s.swTopic, s.swQ, MRB_DATA('setWorkBand'));
+    #           }
+    #           return;
+    #         }
+    #         if (s.swBusy) { return; }
+    #         if (!swSel.length) { return this.ping('Pick at least one class'); }
+    #         if (!topic) { return this.ping('Pick a topic'); }
+    #         if (!swPicked.length) {
+    #           return this.ping(s.swErr || 'There are no questions to set for that lesson yet');
+    #         }
+    #         this.setState({ swBusy: true });
+    #         MRB_SET_WORK({
+    #           class_ids: swSel,
+    #           sow_entry_id: topic.id,
+    #           question_ids: swPicked.map(q => q.id),
+    #           title: topic.name,
+    #           due_at: MRB_SET_WORK_DUE_ISO(s.swDay),
+    #           release_at: MRB_SET_WORK_RELEASE_ISO(s.swRel, s.swRelDate)
+    #         }).then(r => {
+    #           if (!r.ok) {
+    #             this.setState({ swBusy: false });
+    #             return this.ping(MRB_SET_WORK_WHY(r.error));
+    #           }
+    #           this.setState({ modal: null, swStep: 1, swBusy: false, swTopic: null,
+    #                           swPick: [], swPool: [], swErr: '' });
+    #           this.ping(MRB_SET_WORK_SAID(r, swAll));
+    #         });
+    #       },""",
+    #      "THE WRITE. Design's handler is `this.setState({ modal: null, swStep: "
+    #      "1 }); this.ping(topic.name + ' set for ' + swSel.length + ' classes · "
+    #      "' + swStudents + ' students')` — a confirmation of a write that never "
+    #      "happened, and the single sentence that put the whole sheet on `DEAD` "
+    #      "under MRB-287.\n"
+    #      "\n"
+    #      "        ⚠️ THE TOAST COUNTS WHAT THE SERVER CREATED, NOT WHAT WAS "
+    #      "TICKED. `MRB_SET_WORK_SAID` reads `r.classes` and `r.students` off the "
+    #      "answer. A set can be refused per class — a finished year, a class a "
+    #      "colleague already set that lesson to, a class with nobody in it — so "
+    #      "reporting the tick count would be the same lie in a new place.\n"
+    #      "\n"
+    #      "        ⚠️ DESIGN'S STEP ADVANCE IS KEPT PERMISSIVE, and that is "
+    #      "deliberate rather than an omission. Her `swNext` walks forward without "
+    #      "checking anything, and so does this one: the refusals are all on the "
+    #      "FINAL press, where they can name the one thing that is missing. A "
+    #      "wizard that blocks Next says \"no\" without saying why, three panels "
+    #      "away from the sentence that would explain it.\n"
+    #      "\n"
+    #      "        ⚠️ `swBusy` GUARDS A SECOND PRESS. Two presses of \"Set work\" "
+    #      "is two assignments, and nothing further down refuses the duplicate: "
+    #      "UNIT A narrowed `assignments_class_week_uniq` to `source = 'auto'` "
+    #      "precisely so a teacher CAN set a second piece of work in a week."),
 
     (dict(method="renderVals", key="openSetWork"),
-     """      openSetWork: () => {
-        const swId = (k && k.id) ? k.id : '';
-        this.setState({ modal: 'setwork', swStep: 1, swTopic: null,
-                        swPick: MRB_DATA('SET_WORK_PREVIEW'), swPool: [],
-                        swErr: '', swBusy: false, swTopicsErr: false,
-                        swClasses: swId ? [swId] : [] });
-        if (swId) { MRB_SET_WORK_TOPICS(this, swId); }
-      },
+     """      openSetWork: () => MRB_SET_WORK_OPEN(k && k.id),
+      canSetWork: MRB_DATA('canWrite') && !!(k && k.id),
       autoCan: MRB_DATA('canWrite') && MRB_DATA('autoAssignments') !== null &&
                !!(k && k.id),
       autoLabel: 'Automatic weekly work: ' +
@@ -8162,6 +8359,28 @@ componentDidUpdate() {
         });
       },""",
      "the sheet's opener, and the automatic-weekly-work toggle beside it.\n"
+     "\n"
+     "        ⊕ MRB-335, 7 Sep 2026 — IT OPENS A MODULE, NOT A MODAL. "
+     "Everything the old body did — seed `swClasses`, blank the pick, "
+     "fire the topics fetch — was setting up compiled state for a sheet "
+     "that is no longer on the page. `window.MRBSetWork` owns its own "
+     "state, its own DOM and its own fetches, and takes one argument. "
+     "`MRB_SET_WORK_OPEN` is the seam helper, so `teacher_behaviour` "
+     "can stub it exactly as it stubs `MRB_GO`.\n"
+     "\n"
+     "        ⚠️ THE EMPTY-STRING CLASS ID IS STILL THE POINT OF THE "
+     "GUARD, and it has moved INTO the module: on `classes.html` `k` "
+     "is `MRB_NO_CLASS()` and `k.id` is the empty string, and "
+     "`MRBSetWork.open` returns without drawing for a falsy `classId`. "
+     "Design seeded a selection with an id that matches nothing.\n"
+     "\n"
+     "        ⊕ SUPERSEDED (MRB-331 UNIT B) — the body read:\n"
+     "\n"
+     "            openSetWork: () => {\n"
+     "              const swId = (k && k.id) ? k.id : '';\n"
+     "              this.setState({ modal: 'setwork', swStep: 1, … });\n"
+     "              if (swId) { MRB_SET_WORK_TOPICS(this, swId); }\n"
+     "            },\n"
      "\n"
      "        Design's opener is `this.setState({ modal: 'setwork', swStep: "
      "1, swClasses: [k.id] })`. On `classes.html` there is no class in the "

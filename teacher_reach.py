@@ -246,9 +246,37 @@ _REACH_JS = r"""
      which is what a browser does with pointer events anyway. Sized rather
      than named, so it catches Design's four overlays, the port's two sheets
      and any future one, and does not catch the toast (also fixed, 200px
-     wide). */
+     wide).
+
+     ⊕ MRB-335, 7 Sep 2026 — SEARCHED OVER THE DOCUMENT, NOT OVER THE HOST,
+     AND THE SENTENCE ABOVE IS WHY.
+
+     "Any future one" arrived and this could not see it. MRB-335 moved the
+     Set work sheet out of the compiled runtime and appends its overlay to
+     `<body>`, deliberately OUTSIDE `#mrb-teacher`, because
+     `student-runtime.js:497` empties the mount host on every `setState` and
+     outside is the only place a scroll position survives that. A
+     `host.querySelectorAll('*')` cannot reach a sibling of the host, so with
+     a 720px sheet up over the whole viewport this function returned the
+     SHOUTOUT overlay underneath it — and the sweep went on pressing the
+     roster through two scrims, reporting 174 controls "covered at its centre
+     by div.sw-sheet". Every one was real geometry in a state no teacher can
+     reach: the exact false alarm the paragraph above records finding the
+     first time, from the same cause one level up.
+
+     ⚑ A WIDENING, NOT A RELAXATION. The size test, the z-order test and the
+     visibility test are untouched. Only where they LOOK changes, and it
+     changes from "inside one div" to "on the page", which is where a scrim
+     is as far as a finger is concerned. Nothing caught before stops being
+     caught.
+
+     ⚠️ THE TOAST IS STILL NOT CAUGHT, and it is a sibling of the host now
+     too. `set-work.css` gives it `max-width:calc(100vw - 32px)` — at 390px
+     that is 91% of the viewport WIDTH, over the 90% bar — and about 45px of
+     height, nowhere near 90%. THE HEIGHT TEST IS WHAT EXCLUDES IT, which is
+     worth knowing before anybody relaxes either of the two. */
   function modalRoot() {
-    var all = host.querySelectorAll('*'), best = null, bestZ = -1;
+    var all = document.querySelectorAll('*'), best = null, bestZ = -1;
     for (var i = 0; i < all.length; i++) {
       var el = all[i], cs = getComputedStyle(el);
       if (cs.position !== 'fixed' || cs.visibility === 'hidden') { continue; }

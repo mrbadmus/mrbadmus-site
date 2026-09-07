@@ -400,12 +400,64 @@ _DRIVE_JS = r"""
     navs.push({screen: 'seating', params: {'class': id || ''}});
   };
 
+  /* ⊕ MRB-335, 7 Sep 2026 — THE SET WORK SHEET IS A SIBLING OF THE HOST,
+     SO THE PROBE HAS TO LOOK AT BOTH.
+
+     ⚑ THIS IS A WIDENING, NOT A RELAXATION, and the distinction is the whole
+     reason it is written this way rather than by exempting the buttons.
+     MRB-335 moved the Set work sheet out of the compiled runtime — Design's
+     node 581 is on `DEAD` again — because `student-runtime.js:497` empties
+     the whole mount host on every `setState`, which destroyed the sheet's own
+     `overflow:auto` scroller and threw a teacher back to the top of the topic
+     list on every selection. The new sheet is `shared/set-work.js`, and it
+     appends ONE overlay to `<body>`, deliberately outside `#mrb-teacher`,
+     because outside is the only place `draw()` cannot reach.
+
+     ⛔ THE CONSEQUENCE FOR THIS GATE IS EXACTLY THE FAILURE MODE IT EXISTS TO
+     CATCH, INVERTED. Measured against the host alone, pressing "Set work"
+     opened a 720px sheet and this probe read "no text, no node count, no
+     re-render" — eight fixtures red for four controls that work perfectly.
+     A gate that cannot see where a control acts reports it as dead, and the
+     temptation is then to add the control to `EXEMPT`, which would stop the
+     gate watching four buttons for good.
+
+     So the probe is told where to look instead. `[data-sw="overlay"]` is the
+     module's one overlay and it carries `hidden` when closed, so an OPEN
+     sheet adds its text and its node count and a closed one adds nothing —
+     which means opening it registers as a change and failing to open it
+     still registers as nothing. That is the same assertion as before, over a
+     larger DOM.
+
+     ⚠️ THE SHEET'S OWN CONTROLS ARE NOT SWEPT HERE, and that is deliberate.
+     The sweep collects from `host`, so what this gate asserts is that the
+     OPENER opens. What happens inside the sheet — the tier chips, the tree,
+     Swap, the count caps, and the scroll position across every one of them —
+     is `set_work_drive.py`'s, at 390px, with the scroller measured before
+     and after every press. Pressing the sheet's controls here as well would
+     mean two gates red for one defect. */
+  function sheet() { return document.querySelector('[data-sw="overlay"]'); }
   function snap() {
+    var sw = sheet();
+    var swOpen = !!(sw && !sw.hidden);
     return {
-      text: host.innerText || '',
+      text: (host.innerText || '') + (swOpen ? '\n' + (sw.innerText || '') : ''),
       renders: host.getAttribute('data-mrb-renders'),
       misses: host.getAttribute('data-mrb-misses'),
-      nodes: host.querySelectorAll('*').length
+      nodes: host.querySelectorAll('*').length +
+             (swOpen ? sw.querySelectorAll('*').length + 1 : 0),
+      /* ⊕ MRB-335 — THE SHEET'S OWN `data-mrb-renders`. Four buttons open
+         one sheet, so the second one pressed in a sweep re-opens a sheet
+         that is already on screen, for a different class, before the new
+         tree has been fetched — an identical DOM for one frame. Text and
+         node counts cannot tell that apart from nothing happening. The
+         module counts its own opens and names the class it opened for, so
+         "it re-opened, on 8r/Sc4" is a fact this probe reads rather than a
+         difference it has to infer. Same instrument, same reason, as the
+         runtime's `data-mrb-renders` two lines up. */
+      sw: sw ? ((sw.hidden ? '0' : '1') + ':' +
+                (sw.getAttribute('data-sw-opens') || '') + ':' +
+                (sw.getAttribute('data-sw-step') || '') + ':' +
+                (sw.getAttribute('data-sw-class') || '')) : ''
     };
   }
 
@@ -558,6 +610,7 @@ _DRIVE_JS = r"""
     var moved = after.text !== before.text ||
                 after.renders !== before.renders ||
                 after.nodes !== before.nodes ||
+                after.sw !== before.sw ||
                 navs.length > navsBefore;
     if (!moved) {
       dead.push({i: idx, label: label, tag: c.tagName.toLowerCase()});
