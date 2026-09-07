@@ -415,24 +415,27 @@ QUESTIONS = [
     {
         "id": "c9-03-e08",
         "band": "easier",
-        "text": "Which of these metals CAN be obtained from its oxide by "
-                "heating with carbon?",
+        "text": "Why is coke — which is mostly carbon — loaded into a blast "
+                "furnace along with the ore?",
         "options": [
-            {"text": "Aluminium",
+            {"text": "To burn and supply the heat, since the reaction that "
+                     "frees the iron needs a very high temperature and "
+                     "nothing else in the furnace can provide one",
              "correct": False,
-             "why": "Aluminium is above carbon, so carbon cannot take its "
-                    "oxygen at any temperature"},
-            {"text": "Lead",
+             "why": "It does burn and supply heat, and that is a second job. "
+                    "Its main one is chemical — it takes the oxygen"},
+            {"text": "To supply the carbon that takes the oxygen away from "
+                     "the ore",
              "correct": True},
-            {"text": "Calcium",
+            {"text": "To keep the air out of the furnace",
              "correct": False,
-             "why": "Calcium is well above carbon in the series"},
-            {"text": "Sodium, which sits at the top of the series and is "
-                     "therefore the easiest of all the metals to free from "
-                     "whatever it happens to be joined to",
+             "why": "Air is blasted IN on purpose, which is where the name "
+                    "comes from"},
+            {"text": "To make the iron harder",
              "correct": False,
-             "why": "Being at the top makes a metal the HARDEST to free. It "
-                    "holds its partner most tightly"},
+             "why": "Carbon in the finished iron does affect its hardness, "
+                    "and that is a later step. In the furnace it takes the "
+                    "oxygen"},
         ],
         "figure": None,
     },

@@ -634,3 +634,29 @@ Gates at commit: chemistry-only `validate_lesson` clean,
 `verify_answer_positions` OK, `verify_answer_lengths` green on `bank/C9`.
 
 ---
+## C9 follow-up — a ladder restatement my own runner could not see
+
+`verify_questions` check 6 refuses a bank row whose text restates one of its
+lesson's four ladder rungs — `ks3-authoring.md` §10, and the one authoring rule
+in the brief that a gate DOES enforce. `c9-03-e08` asked *"Which of these
+metals CAN be obtained from its oxide by heating with carbon?"*, which is
+C9 lesson 3's recall rung with a different option list.
+
+**Why it survived to the end of the run.** During authoring I checked each unit
+with a chemistry-only runner that calls `validate_lesson` — the same function
+`python3 -m ks3_data.question_bank` uses. That was written because the full
+gate spent most of this run red on another lane's B1 rows, and a red I could
+not act on is a red I would learn to ignore. But `validate_lesson` holds checks
+on shape, ids, positions and duplicates; **check 6 lives in
+`verify_questions.py` and nowhere else**. Nine units went past the narrower
+runner and the tenth exposed the gap.
+
+Replaced with a question about why coke is loaded into a blast furnace. The
+full gate is now clean: 185 lessons, 5142 questions, all nine checks.
+
+**The rule for the next lane:** a unit-scoped runner is a convenience for
+iterating, never the thing you commit against. Run `verify_questions.py` before
+every commit even when it is red for somebody else's reasons, and read WHICH
+findings are yours.
+
+---
