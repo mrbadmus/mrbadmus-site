@@ -321,18 +321,17 @@ QUESTIONS = [
         "id": "p5-02-e06",
         "band": "easier",
         "text": "At one depth in a liquid, the pressure acts…",
-        "options": [
-            {"text": "downwards only", "correct": False,
+        "options": [            {"text": "downwards only", "correct": False,
              "why": "Water squirts sideways out of a hole in a can, so it "
                     "clearly pushes that way too."},
-            {"text": "equally in every direction", "correct": True},
-            {"text": "sideways only", "correct": False,
-             "why": "It pushes down on the base of a tank as well, so it is "
-                    "not sideways only."},
             {"text": "in whichever direction the liquid is flowing",
              "correct": False,
              "why": "Still water in a sealed tank presses in every direction "
                     "without flowing anywhere."},
+            {"text": "sideways only", "correct": False,
+             "why": "It pushes down on the base of a tank as well, so it is "
+                    "not sideways only."},
+            {"text": "equally in every direction", "correct": True},
         ],
         "figure": None,
     },
@@ -408,17 +407,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "A reading that counts the liquid alone and leaves out the "
                 "air pressing on the surface is called…",
-        "options": [
-            {"text": "atmospheric pressure", "correct": False,
+        "options": [            {"text": "atmospheric pressure", "correct": False,
              "why": "That is the air's own push, which is exactly what this "
                     "reading leaves out."},
-            {"text": "gauge pressure", "correct": True},
-            {"text": "upthrust", "correct": False,
-             "why": "Upthrust is an upward force in newtons, not a pressure "
-                    "reading."},
             {"text": "depth", "correct": False,
              "why": "Depth is a distance in metres; the reading is a pressure "
                     "in pascals."},
+            {"text": "upthrust", "correct": False,
+             "why": "Upthrust is an upward force in newtons, not a pressure "
+                    "reading."},
+            {"text": "gauge pressure", "correct": True},
         ],
         "figure": None,
     },
@@ -446,16 +444,15 @@ QUESTIONS = [
         "band": "easier",
         "text": "The water above a probe face of 0.04 m² weighs 1200 N. What "
                 "is the pressure on the face?",
-        "options": [
-            {"text": "48 Pa", "correct": False,
+        "options": [            {"text": "48 Pa", "correct": False,
              "why": "That is 1200 × 0.04, a multiplication where the formula "
                     "divides."},
-            {"text": "30 000 Pa", "correct": True},
-            {"text": "0.000033 Pa", "correct": False,
-             "why": "That is 0.04 ÷ 1200, the ratio upside down."},
             {"text": "1200 Pa", "correct": False,
              "why": "That is the weight in newtons with the unit changed; the "
                     "area still has to be divided in."},
+            {"text": "0.000033 Pa", "correct": False,
+             "why": "That is 0.04 ÷ 1200, the ratio upside down."},
+            {"text": "30 000 Pa", "correct": True},
         ],
         "figure": None,
     },
@@ -485,16 +482,15 @@ QUESTIONS = [
         "band": "standard",
         "text": "A hatch of area 0.05 m² has 2000 N of water standing above "
                 "it. What is the pressure on it?",
-        "options": [
-            {"text": "100 Pa", "correct": False,
+        "options": [            {"text": "100 Pa", "correct": False,
              "why": "That is 2000 × 0.05, a multiplication where the formula "
                     "divides."},
-            {"text": "40 000 Pa", "correct": True},
-            {"text": "0.000025 Pa", "correct": False,
-             "why": "That is 0.05 ÷ 2000, the ratio the wrong way up."},
             {"text": "2000 Pa", "correct": False,
              "why": "That is the weight with the unit swapped; the area has "
                     "to be divided in."},
+            {"text": "0.000025 Pa", "correct": False,
+             "why": "That is 0.05 ÷ 2000, the ratio the wrong way up."},
+            {"text": "40 000 Pa", "correct": True},
         ],
         "figure": None,
     },
@@ -542,21 +538,20 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why must a submarine's hull be far stronger for 300 m than "
                 "for 30 m?",
-        "options": [
-            {"text": "Because the water is colder that far down",
+        "options": [            {"text": "Because the water is colder that far down",
              "correct": False,
              "why": "Temperature does change with depth, but it is the "
                     "pressure the hull has to resist."},
-            {"text": "Because the pressure there is about ten times as great",
-             "correct": True},
-            {"text": "Because there is less oxygen dissolved that far down",
-             "correct": False,
-             "why": "Dissolved gas has nothing to do with the force on the "
-                    "hull."},
             {"text": "Because the ocean is wider at that depth",
              "correct": False,
              "why": "How wide the ocean is makes no difference; the depth "
                     "above the hull does."},
+            {"text": "Because there is less oxygen dissolved that far down",
+             "correct": False,
+             "why": "Dissolved gas has nothing to do with the force on the "
+                    "hull."},
+            {"text": "Because the pressure there is about ten times as great",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -565,25 +560,24 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why is the thickness a dam needs decided by depth rather "
                 "than by the size of the lake behind it?",
-        "options": [
-            {"text": "Because a large lake spreads its weight over the whole "
+        "options": [            {"text": "Because a large lake spreads its weight over the whole "
                      "valley floor",
              "correct": False,
              "why": "True but beside the point: the pressure on the dam "
                     "depends on depth alone."},
-            {"text": "Because the pressure on the dam depends on depth, not "
-                     "on the amount",
-             "correct": True},
-            {"text": "Because a small lake would freeze and a large one would "
-                     "not",
-             "correct": False,
-             "why": "Freezing is a separate engineering worry and is not what "
-                    "sets the thickness."},
             {"text": "Because the amount of water in a lake changes with the "
                      "weather",
              "correct": False,
              "why": "It does, but even a fixed volume would not set the "
                     "pressure — only the depth does."},
+            {"text": "Because a small lake would freeze and a large one would "
+                     "not",
+             "correct": False,
+             "why": "Freezing is a separate engineering worry and is not what "
+                    "sets the thickness."},
+            {"text": "Because the pressure on the dam depends on depth, not "
+                     "on the amount",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -614,19 +608,18 @@ QUESTIONS = [
         "band": "standard",
         "text": "Mercury is far denser than water. At the same depth in each, "
                 "which gives the greater pressure?",
-        "options": [
-            {"text": "Water, because it flows more easily", "correct": False,
+        "options": [            {"text": "Water, because it flows more easily", "correct": False,
              "why": "How easily a liquid flows does not set its pressure; how "
                     "much a given volume weighs does."},
-            {"text": "Mercury, because it is denser", "correct": True},
-            {"text": "They are the same, because the depth is the same",
-             "correct": False,
-             "why": "Depth is one of the two things that matter; which liquid "
-                    "it is, is the other."},
             {"text": "It depends on how much of each liquid there is",
              "correct": False,
              "why": "Total amount never enters into it — only depth and the "
                     "liquid itself."},
+            {"text": "They are the same, because the depth is the same",
+             "correct": False,
+             "why": "Depth is one of the two things that matter; which liquid "
+                    "it is, is the other."},
+            {"text": "Mercury, because it is denser", "correct": True},
         ],
         "figure": None,
     },
