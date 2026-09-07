@@ -318,4 +318,321 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-03-e05",
+        "band": "easier",
+        "text": "What is neutralisation?",
+        "options": [
+            {"text": "The reaction between an acid and a base",
+             "correct": True},
+            {"text": "Diluting an acid with so much water that its pH climbs "
+                     "all the way up to 7 and it stops behaving as an acid",
+             "correct": False,
+             "why": "Diluting never reaches 7 and makes nothing new. "
+                    "Neutralisation is a reaction between two substances"},
+            {"text": "Boiling an acid until it is gone",
+             "correct": False,
+             "why": "Nothing here is boiled, and boiling would concentrate "
+                    "the acid rather than remove it"},
+            {"text": "Any reaction that ends at pH 7",
+             "correct": False,
+             "why": "The reaction is between an acid and a base, and it ends "
+                    "at 7 only if the amounts match exactly"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-e06",
+        "band": "easier",
+        "text": "What is an equivalence point?",
+        "options": [
+            {"text": "The point at which the two solutions are at exactly the "
+                     "same temperature as each other, so that the reaction "
+                     "can proceed evenly",
+             "correct": False,
+             "why": "Temperature is not what the word is about. It marks the "
+                    "moment the acid runs out"},
+            {"text": "The moment when exactly enough alkali has been added to "
+                     "use up all the acid",
+             "correct": True},
+            {"text": "The point where the two liquids have the same volume",
+             "correct": False,
+             "why": "Volumes rarely match. What has to match is how much acid "
+                    "and how much alkali"},
+            {"text": "The pH of the acid before anything is added",
+             "correct": False,
+             "why": "That is where you start. The equivalence point is the "
+                    "one drop where the reading jumps"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-e07",
+        "band": "easier",
+        "text": "Someone has indigestion — stomach acid where it should not "
+                "be. What is in the tablet they take?",
+        "options": [
+            {"text": "A stronger acid, which pushes the stomach acid further "
+                     "down the pH scale until it is too far from neutral to "
+                     "do any more damage",
+             "correct": False,
+             "why": "More acid makes it worse. The pH has to come UP towards "
+                    "7, which needs a base"},
+            {"text": "A dye that shows where the acid is",
+             "correct": False,
+             "why": "An indicator would report the problem and do nothing "
+                    "about it"},
+            {"text": "A base, which neutralises the acid",
+             "correct": True},
+            {"text": "A catalyst, which speeds the acid up",
+             "correct": False,
+             "why": "Speeding it up is the last thing anyone wants, and a "
+                    "catalyst would not remove it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-e08",
+        "band": "easier",
+        "text": "What is a titration?",
+        "options": [
+            {"text": "Boiling a solution until crystals of the salt in it "
+                     "start to appear on a cold glass rod",
+             "correct": False,
+             "why": "That is crystallising, which comes after the reaction. A "
+                    "titration is the measuring"},
+            {"text": "Testing a solution with litmus paper",
+             "correct": False,
+             "why": "That gives a side of neutral. A titration gives a "
+                    "volume"},
+            {"text": "Filtering a mixture to remove what has not reacted",
+             "correct": False,
+             "why": "Filtering separates a solid out. A titration measures "
+                    "how much of one solution the other needs"},
+            {"text": "Adding one solution to another a little at a time until "
+                     "the reaction is exactly complete, and measuring how much "
+                     "it took",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c6-03-s05",
+        "band": "standard",
+        "text": "Hydrochloric acid is neutralised with sodium hydroxide. "
+                "Which salt is made?",
+        "options": [
+            {"text": "Sodium chloride",
+             "correct": True},
+            {"text": "Sodium hydroxide chloride, taking one word from each of "
+                     "the two substances that were poured into the beaker",
+             "correct": False,
+             "why": "No salt is named like that. The metal names it and the "
+                    "acid gives the ending"},
+            {"text": "Hydrogen chloride",
+             "correct": False,
+             "why": "That is the acid itself. The hydrogen is swapped for the "
+                    "metal, which is what makes a salt"},
+            {"text": "Sodium sulfate",
+             "correct": False,
+             "why": "Sulfates come from sulfuric acid. Hydrochloric acid "
+                    "gives chlorides"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-s06",
+        "band": "standard",
+        "text": "Power station chimneys are sprayed with calcium hydroxide to "
+                "catch sulfur dioxide before it leaves. Which reaction is "
+                "that?",
+        "options": [
+            {"text": "Filtration on a very large scale, with the spray acting "
+                     "as a wet screen that the gas particles cannot pass "
+                     "through",
+             "correct": False,
+             "why": "Nothing is being sieved by size. The gas is reacting "
+                    "with the spray"},
+            {"text": "Neutralisation — a base catching an acidic gas",
+             "correct": True},
+            {"text": "Distillation, because the gas is condensed by the cold "
+                     "spray",
+             "correct": False,
+             "why": "Nothing is condensed and collected. A new substance is "
+                    "made, and it is a solid"},
+            {"text": "Crystallisation, because a solid comes out of it",
+             "correct": False,
+             "why": "A solid is produced, and it is a product of a reaction "
+                    "rather than something coming out of a solution"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-s07",
+        "band": "standard",
+        "text": "25 cm³ of acid needs exactly 20 cm³ of a particular alkali "
+                "to neutralise it. What happens if 30 cm³ of that alkali is "
+                "added instead?",
+        "options": [
+            {"text": "The extra alkali reacts with the salt that has already "
+                     "been made, and the pH comes back down towards 7 on its "
+                     "own",
+             "correct": False,
+             "why": "The salt does not react with the extra alkali. The "
+                    "excess simply sits in the beaker"},
+            {"text": "Nothing changes after 20 cm³, because the reaction has "
+                     "finished",
+             "correct": False,
+             "why": "The reaction has finished and the beaker has not stopped "
+                    "receiving alkali. What goes in stays in"},
+            {"text": "The mixture ends up alkaline, with 10 cm³ of unreacted "
+                     "alkali in it",
+             "correct": True},
+            {"text": "The mixture ends up acidic, because the extra alkali "
+                     "makes the salt acidic",
+             "correct": False,
+             "why": "Excess alkali pushes the pH up, not down. Sodium "
+                    "chloride solution is neutral"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-s08",
+        "band": "standard",
+        "text": "Why does a chemist measuring an unknown acid use a sharp "
+                "one-colour indicator rather than universal indicator?",
+        "options": [
+            {"text": "Because universal indicator would react with the acid",
+             "correct": False,
+             "why": "The few drops of indicator change nothing measurable. "
+                    "The problem is reading the end point"},
+            {"text": "Because universal indicator does not work on strong "
+                     "acids",
+             "correct": False,
+             "why": "It works right across the scale. It simply changes too "
+                    "gradually to mark one drop"},
+            {"text": "Because a sharp indicator gives a pH number and "
+                     "universal indicator does not",
+             "correct": False,
+             "why": "Exactly backwards. Universal indicator is the one that "
+                    "gives a number"},
+            {"text": "Because they need to see the exact drop where the "
+                     "colour flips, and a gradual change hides it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-03-h05",
+        "band": "harder",
+        "text": "Sulfur dioxide from a chimney is caught with calcium "
+                "hydroxide, and the salt produced is calcium sulfate — which "
+                "is sold as plasterboard. What does that show?",
+        "options": [
+            {"text": "That the salt from a neutralisation is a real substance "
+                     "with uses of its own",
+             "correct": True},
+            {"text": "That neutralisation always produces something useful, "
+                     "which is why industry is willing to pay for the "
+                     "chemicals that go into it in the first place",
+             "correct": False,
+             "why": "Plenty of neutralisations give a salt nobody wants. This "
+                    "one happens to give a valuable one"},
+            {"text": "That the sulfur dioxide was not really an acid",
+             "correct": False,
+             "why": "It is acidic, which is why a base catches it. That is "
+                    "the whole design"},
+            {"text": "That plasterboard is dangerous",
+             "correct": False,
+             "why": "The salt is harmless. Being made from something "
+                    "unpleasant does not make a product unpleasant"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-h06",
+        "band": "harder",
+        "text": "A beaker of acid is neutralised and the water is boiled off. "
+                "The crystals left behind are weighed. How does their mass "
+                "compare with the acid and alkali that went in?",
+        "options": [
+            {"text": "Heavier than both put together, because the two "
+                     "solutions have combined and their masses add up in the "
+                     "solid that is left",
+             "correct": False,
+             "why": "Water was made as well and has been boiled away. The "
+                    "crystals are only part of what went in"},
+            {"text": "Less, because the water that was made has been boiled "
+                     "off",
+             "correct": True},
+            {"text": "Exactly the same, because mass is always conserved",
+             "correct": False,
+             "why": "Mass IS conserved — across everything, including the "
+                    "water in the air. The crystals alone are not everything"},
+            {"text": "Less, because some of the acid was destroyed",
+             "correct": False,
+             "why": "Nothing is destroyed. The acid's atoms are in the salt "
+                    "and in the water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-h07",
+        "band": "harder",
+        "text": "A student neutralises acid with alkali and then says the "
+                "beaker holds pure water. Which single test would show they "
+                "are wrong?",
+        "options": [
+            {"text": "Test it with universal indicator and check that the "
+                     "reading really is 7 rather than something a little "
+                     "above or below it",
+             "correct": False,
+             "why": "A correct neutralisation does read 7 — and so does pure "
+                    "water. The test cannot tell them apart"},
+            {"text": "Weigh the beaker before and after the reaction",
+             "correct": False,
+             "why": "The mass is unchanged either way. Conservation of mass "
+                    "does not distinguish the two"},
+            {"text": "Evaporate it to dryness and see the salt left behind",
+             "correct": True},
+            {"text": "Smell it",
+             "correct": False,
+             "why": "Salt solution and water both smell of nothing, and "
+                    "smelling a beaker is not a test"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-03-h08",
+        "band": "harder",
+        "text": "25 cm³ of an acid is exactly neutralised by 20 cm³ of an "
+                "alkali. The same alkali is used on 50 cm³ of the same acid. "
+                "How much is needed?",
+        "options": [
+            {"text": "20 cm³, because the alkali is unchanged and it is the "
+                     "alkali that decides the volume the neutralisation "
+                     "takes",
+             "correct": False,
+             "why": "The volume needed depends on how much acid there is, and "
+                    "there is now twice as much of it"},
+            {"text": "25 cm³, matching the volume of acid",
+             "correct": False,
+             "why": "The two volumes do not have to match. It took 20 cm³ for "
+                    "25 cm³ of acid, not 25"},
+            {"text": "45 cm³, adding the extra 25 cm³ of acid to the 20 cm³ "
+                     "that worked before",
+             "correct": False,
+             "why": "Volumes of two different solutions cannot be added like "
+                    "that. Twice the acid needs twice the alkali"},
+            {"text": "40 cm³",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

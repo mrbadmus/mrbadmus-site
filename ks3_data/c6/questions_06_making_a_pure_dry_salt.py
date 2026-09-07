@@ -303,4 +303,317 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-06-e05",
+        "band": "easier",
+        "text": "In this method, what does adding a base in excess mean?",
+        "options": [
+            {"text": "Adding more than enough of it, so that none of the acid "
+                     "can be left",
+             "correct": True},
+            {"text": "Adding exactly the amount the acid needs, measured out "
+                     "carefully beforehand so that nothing at all is wasted "
+                     "and nothing is left over",
+             "correct": False,
+             "why": "That is the opposite of excess. The point is to add MORE "
+                    "than enough"},
+            {"text": "Adding it very quickly",
+             "correct": False,
+             "why": "It goes in a spatula at a time, with stirring. Excess is "
+                    "about amount, not speed"},
+            {"text": "Adding a second base as well as the first",
+             "correct": False,
+             "why": "One base is used. Excess means more of that one"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-e06",
+        "band": "easier",
+        "text": "Which salt does hydrochloric acid make with magnesium "
+                "oxide?",
+        "options": [
+            {"text": "Magnesium hydrochloride, taking its name from the metal "
+                     "and then the whole name of the acid that was used",
+             "correct": False,
+             "why": "The acid supplies an ENDING rather than its whole name. "
+                    "Hydrochloric acid gives chlorides"},
+            {"text": "Magnesium chloride",
+             "correct": True},
+            {"text": "Magnesium sulfate",
+             "correct": False,
+             "why": "Sulfates come from sulfuric acid"},
+            {"text": "Magnesium oxide chloride",
+             "correct": False,
+             "why": "The oxide is used up in the reaction — its oxygen leaves "
+                    "as part of the water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-e07",
+        "band": "easier",
+        "text": "Why is the filtrate not boiled all the way to dryness?",
+        "options": [
+            {"text": "Because the last of the water carries the impurities "
+                     "with it as it goes, so stopping early leaves a purer "
+                     "solid in the dish",
+             "correct": False,
+             "why": "Nothing leaves with the water. The reason is the size "
+                    "and quality of the crystals"},
+            {"text": "Because the salt would be destroyed by the heat",
+             "correct": False,
+             "why": "The salt survives. What is lost is the chance for it to "
+                    "grow into crystals"},
+            {"text": "Because boiling to dryness gives powder rather than "
+                     "crystals",
+             "correct": True},
+            {"text": "Because less salt would be recovered",
+             "correct": False,
+             "why": "The same mass is recovered either way. It is the form "
+                    "that differs"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-e08",
+        "band": "easier",
+        "text": "A jar is labelled copper sulfate. Which acid must have made "
+                "it?",
+        "options": [
+            {"text": "Hydrochloric acid",
+             "correct": False,
+             "why": "Hydrochloric acid makes chlorides. This one is a "
+                    "sulfate"},
+            {"text": "Nitric acid",
+             "correct": False,
+             "why": "Nitric acid makes nitrates"},
+            {"text": "Any of the three, since the acid decides only how fast "
+                     "the reaction goes and the metal decides what the salt "
+                     "will be called",
+             "correct": False,
+             "why": "The metal gives the first word and the acid gives the "
+                    "ending. A sulfate can only have come from sulfuric "
+                    "acid"},
+            {"text": "Sulfuric acid",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c6-06-s05",
+        "band": "standard",
+        "text": "Why is the acid warmed gently at the start rather than "
+                "boiled?",
+        "options": [
+            {"text": "Warming speeds the reaction up; boiling would drive "
+                     "acid off before it had reacted",
+             "correct": True},
+            {"text": "Because boiling would decompose the salt as fast as it "
+                     "was formed, so nothing would be left in the beaker to "
+                     "crystallise afterwards",
+             "correct": False,
+             "why": "The salt is stable in the beaker. Boiling would drive "
+                    "acid off before it had reacted"},
+            {"text": "Because a hot solution cannot be filtered",
+             "correct": False,
+             "why": "A warm solution filters perfectly well, and often better "
+                    "than a cold one"},
+            {"text": "Because copper oxide only dissolves in cold acid",
+             "correct": False,
+             "why": "Warming is what makes it react faster. Cold acid would "
+                    "be slower, not better"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-s06",
+        "band": "standard",
+        "text": "Black copper oxide is stirred into blue-free acid until "
+                "black powder stays on the bottom and will not go in. What "
+                "does that tell you?",
+        "options": [
+            {"text": "That too much has been added, so some of the salt has "
+                     "been used up again by the excess and the yield will now "
+                     "be lower than it should be",
+             "correct": False,
+             "why": "Excess is deliberate, and the salt is not attacked by "
+                    "it. The yield is set by the acid"},
+            {"text": "That every last bit of acid has been used up",
+             "correct": True},
+            {"text": "That the reaction has failed",
+             "correct": False,
+             "why": "It has finished, which is the opposite. The leftover "
+                    "solid is the signal"},
+            {"text": "That the acid was too weak to react at all",
+             "correct": False,
+             "why": "The solution has gone blue, which means it reacted. What "
+                    "has run out is the acid"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-s07",
+        "band": "standard",
+        "text": "What is being removed when the mixture is filtered?",
+        "options": [
+            {"text": "The salt, which stays in the paper as crystals while "
+                     "the water and the unreacted solid run through into the "
+                     "flask below",
+             "correct": False,
+             "why": "The salt is dissolved, so it goes THROUGH with the "
+                    "water. It is recovered later, by crystallising"},
+            {"text": "The water",
+             "correct": False,
+             "why": "The water passes through as part of the filtrate. It is "
+                    "removed later, by evaporating"},
+            {"text": "The leftover base that did not react",
+             "correct": True},
+            {"text": "The acid",
+             "correct": False,
+             "why": "There is no acid left — that is the whole point of "
+                    "adding the base in excess"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-s08",
+        "band": "standard",
+        "text": "A student adds an exactly measured amount of copper oxide "
+                "instead of an excess, and gets it slightly wrong. Which way "
+                "round is the mistake worse?",
+        "options": [
+            {"text": "Either way is equally bad, because whatever is left "
+                     "over ends up dried into the crystals at the end of the "
+                     "method",
+             "correct": False,
+             "why": "Only one of the two can be removed. Leftover solid "
+                    "filters out; leftover acid does not"},
+            {"text": "Too much copper oxide is worse, because the extra ends "
+                     "up in the crystals",
+             "correct": False,
+             "why": "The extra is filtered off before the crystals are grown. "
+                    "That is why excess is safe"},
+            {"text": "Too much copper oxide is worse, because it uses up the "
+                     "salt",
+             "correct": False,
+             "why": "It reacts with nothing once the acid has gone. It simply "
+                    "sits there waiting to be filtered"},
+            {"text": "Too little copper oxide is worse, because leftover acid "
+                     "cannot be filtered out",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-06-h05",
+        "band": "harder",
+        "text": "Copper carbonate can be used instead of copper oxide to make "
+                "copper sulfate. What is different about the method?",
+        "options": [
+            {"text": "It fizzes, because carbon dioxide is given off as well",
+             "correct": True},
+            {"text": "The salt produced is a carbonate rather than a sulfate, "
+                     "because the base now supplies the ending as well as the "
+                     "metal",
+             "correct": False,
+             "why": "The ACID always supplies the ending. Sulfuric acid gives "
+                    "a sulfate whichever copper compound is used"},
+            {"text": "Nothing is different at all",
+             "correct": False,
+             "why": "An acid and a carbonate give three products rather than "
+                    "two. You can see the third one leaving"},
+            {"text": "No filtering is needed, because copper carbonate "
+                     "dissolves",
+             "correct": False,
+             "why": "It is insoluble too, which is exactly why it can be used "
+                    "in excess and filtered off"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-h06",
+        "band": "harder",
+        "text": "A student uses twice as much copper oxide as before, with "
+                "the same acid. How much copper sulfate do they get?",
+        "options": [
+            {"text": "Twice as much, since doubling one of the two things "
+                     "that react always doubles the amount of product that "
+                     "comes out of the reaction",
+             "correct": False,
+             "why": "Doubling helps only while the other is still available. "
+                    "The acid ran out first"},
+            {"text": "The same amount, because the acid sets the yield",
+             "correct": True},
+            {"text": "Half as much, because the extra oxide gets in the way",
+             "correct": False,
+             "why": "The excess solid does nothing at all. It is filtered "
+                    "off"},
+            {"text": "None, because the mixture is now unbalanced",
+             "correct": False,
+             "why": "There is no such thing as an unbalanced mixture here. "
+                    "The reaction runs until the acid is used up"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-h07",
+        "band": "harder",
+        "text": "Making sodium chloride from hydrochloric acid and sodium "
+                "hydroxide needs the reaction done TWICE. Why?",
+        "options": [
+            {"text": "Because one run is never accurate enough, so it is done "
+                     "again and the two volumes are averaged before the "
+                     "crystals are grown from the second beaker",
+             "correct": False,
+             "why": "The second run is not a repeat for accuracy. It is done "
+                    "without indicator, so the crystals are not stained"},
+            {"text": "Because sodium hydroxide reacts too slowly to finish in "
+                     "one go",
+             "correct": False,
+             "why": "It reacts instantly. The difficulty is knowing when to "
+                    "stop"},
+            {"text": "Because the first run uses indicator to find the "
+                     "volume, and the second repeats it with no dye in the "
+                     "product",
+             "correct": True},
+            {"text": "Because the salt has to be dissolved and recrystallised "
+                     "to purify it",
+             "correct": False,
+             "why": "That is a different technique altogether, and it is not "
+                    "what the two runs are for"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-06-h08",
+        "band": "harder",
+        "text": "The name of a salt is said to give the recipe backwards. "
+                "What must have made magnesium nitrate?",
+        "options": [
+            {"text": "Nitrogen in some form, and an acid containing "
+                     "magnesium, since the first word of a salt always names "
+                     "the acid it came from",
+             "correct": False,
+             "why": "Exactly the wrong way round. The metal comes first and "
+                    "the acid supplies the ending"},
+            {"text": "Magnesium and hydrochloric acid",
+             "correct": False,
+             "why": "Hydrochloric acid gives chlorides. A nitrate needs "
+                    "nitric acid"},
+            {"text": "Any metal at all with nitric acid",
+             "correct": False,
+             "why": "The first word names the metal, and it is magnesium. No "
+                    "other metal would give this salt"},
+            {"text": "Magnesium in some form, and nitric acid",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

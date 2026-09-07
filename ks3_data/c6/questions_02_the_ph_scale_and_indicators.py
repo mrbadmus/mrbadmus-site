@@ -312,4 +312,318 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-02-e05",
+        "band": "easier",
+        "text": "What does litmus tell you?",
+        "options": [
+            {"text": "Which side of neutral a solution is on",
+             "correct": True},
+            {"text": "A pH number, read off a printed chart by matching the "
+                     "colour it turns against the shades along the scale",
+             "correct": False,
+             "why": "That is universal indicator. Litmus gives a side, not a "
+                    "number"},
+            {"text": "How dangerous a solution is",
+             "correct": False,
+             "why": "No indicator measures danger. Lemon juice turns litmus "
+                    "red and is safe to drink"},
+            {"text": "How much acid is dissolved in a solution",
+             "correct": False,
+             "why": "Neither indicator measures how much. Litmus answers one "
+                    "question: acid or alkali"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-e06",
+        "band": "easier",
+        "text": "What is a pH meter?",
+        "options": [
+            {"text": "A printed card of colours that the indicator is matched "
+                     "against, so that a number can be read off by eye",
+             "correct": False,
+             "why": "That is the colour chart, and judging it by eye is "
+                    "exactly what a meter avoids"},
+            {"text": "An instrument that measures pH electrically and reads "
+                     "out a number",
+             "correct": True},
+            {"text": "A dye that changes colour in acid",
+             "correct": False,
+             "why": "That is an indicator. A meter has no colour in it at "
+                    "all"},
+            {"text": "A tube for measuring out exact volumes of acid",
+             "correct": False,
+             "why": "That is a burette or a pipette. A meter measures pH"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-e07",
+        "band": "easier",
+        "text": "What colour does universal indicator turn in a strong acid?",
+        "options": [
+            {"text": "Purple, which is the colour it turns at both ends of "
+                     "the scale because both extremes are equally far from "
+                     "neutral",
+             "correct": False,
+             "why": "Purple is the strong-alkali end. The two ends look "
+                    "different, which is how the chart works"},
+            {"text": "Green",
+             "correct": False,
+             "why": "Green is neutral, pH 7 — the middle of the scale"},
+            {"text": "Red",
+             "correct": True},
+            {"text": "It does not change at all in a strong acid",
+             "correct": False,
+             "why": "It changes most strongly at the ends. A dye that did "
+                    "nothing would be no use as an indicator"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-e08",
+        "band": "easier",
+        "text": "What numbers does the pH scale run between?",
+        "options": [
+            {"text": "1 to 10",
+             "correct": False,
+             "why": "That would leave no room for the strongest acids and "
+                    "alkalis, and it would put neutral in the wrong place"},
+            {"text": "0 to 100, in the same way as a percentage, so that a pH "
+                     "of 50 is exactly halfway and counts as neutral",
+             "correct": False,
+             "why": "It is not a percentage. The scale runs 0 to 14 and "
+                    "neutral is 7"},
+            {"text": "7 to 14, with acids given negative numbers",
+             "correct": False,
+             "why": "Acids have ordinary numbers below 7. Nothing on the "
+                    "school scale is negative"},
+            {"text": "0 to 14",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c6-02-s05",
+        "band": "standard",
+        "text": "A technician has to know at once whether a spill is acid or "
+                "alkali, before choosing what to clean it up with. Which tool "
+                "should they use?",
+        "options": [
+            {"text": "Litmus",
+             "correct": True},
+            {"text": "Universal indicator, because a pH number is always "
+                     "better evidence than a colour and the chart takes only "
+                     "a moment to consult",
+             "correct": False,
+             "why": "More information than the decision needs, and slower. "
+                    "The question is one of two answers"},
+            {"text": "A pH meter, calibrated first",
+             "correct": False,
+             "why": "Calibrating takes minutes, and there is a spill on the "
+                    "floor. Litmus answers in seconds"},
+            {"text": "Neither — wait for the spill to be identified",
+             "correct": False,
+             "why": "The whole point is to act now. Litmus gives the answer "
+                    "the decision actually needs"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-s06",
+        "band": "standard",
+        "text": "Litmus comes out of lichens, and red cabbage, beetroot and "
+                "blackberries all work as indicators too. Why do so many "
+                "plants do this?",
+        "options": [
+            {"text": "Because plants take acid up out of the soil, so their "
+                     "colour is already a record of how acidic the ground "
+                     "they grew in happened to be",
+             "correct": False,
+             "why": "A hydrangea does read the soil, and that is not why the "
+                    "juice works in a test tube. The pigment itself changes"},
+            {"text": "Because the pigment that colours them is a molecule "
+                     "that changes shape in acid",
+             "correct": True},
+            {"text": "Because all plant juices are slightly acidic to start "
+                     "with",
+             "correct": False,
+             "why": "Being acidic does not make something an indicator. "
+                    "Vinegar is acidic and shows no colour change"},
+            {"text": "Because boiling a plant releases litmus from it",
+             "correct": False,
+             "why": "Litmus comes from lichens specifically. The other plants "
+                    "have pigments of their own"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-s07",
+        "band": "standard",
+        "text": "A hydrangea flowers blue in one garden and pink in the "
+                "garden next door, from cuttings off the same plant. What is "
+                "the difference between the gardens?",
+        "options": [
+            {"text": "One gets more sunlight, and the pigment in the petals "
+                     "is bleached to a paler shade by strong light over the "
+                     "course of a summer",
+             "correct": False,
+             "why": "Blue and pink are not paler and darker versions of one "
+                    "colour. The pigment is reading something chemical"},
+            {"text": "How much water each plant is given",
+             "correct": False,
+             "why": "Water changes how well a plant grows, not what colour "
+                    "its pigment turns"},
+            {"text": "The pH of the soil",
+             "correct": True},
+            {"text": "The temperature of the two gardens",
+             "correct": False,
+             "why": "They are next door to each other. What differs "
+                    "underground is the acidity"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-s08",
+        "band": "standard",
+        "text": "Meters are more accurate than colour charts, and school "
+                "laboratories still use charts. Give the best reason.",
+        "options": [
+            {"text": "Charts are more accurate than meters over the middle of "
+                     "the scale, which is the part a school most often needs "
+                     "to read",
+             "correct": False,
+             "why": "A meter is more accurate everywhere. Charts survive for "
+                    "practical reasons rather than accurate ones"},
+            {"text": "A meter cannot be used on a coloured solution",
+             "correct": False,
+             "why": "A meter works on any solution, and a COLOUR CHART is the "
+                    "one that struggles with a coloured sample"},
+            {"text": "Colour is easier to remember than a number",
+             "correct": False,
+             "why": "Remembering is not the issue. Cost and reliability "
+                    "are"},
+            {"text": "They are cheap, need no power, and cannot go out of "
+                     "calibration halfway through a lesson",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-02-h05",
+        "band": "harder",
+        "text": "Vinegar reads pH 3, and battery acid is about a thousand "
+                "times more acidic than vinegar. What is battery acid's pH?",
+        "options": [
+            {"text": "0",
+             "correct": True},
+            {"text": "2, because a thousand is a large number and one step is "
+                     "as far as the scale can be pushed by any real solution "
+                     "you would meet",
+             "correct": False,
+             "why": "One step is ten times. A thousand is ten times ten times "
+                    "ten, so it is three steps"},
+            {"text": "1",
+             "correct": False,
+             "why": "That is two steps, which is a hundred times. Three steps "
+                    "down from 3 lands on 0"},
+            {"text": "3000",
+             "correct": False,
+             "why": "The scale runs 0 to 14. You divide the acidity by ten "
+                    "per step rather than multiplying the pH"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-h06",
+        "band": "harder",
+        "text": "The lesson calls neutral a single point rather than a "
+                "region. What does that mean in practice?",
+        "options": [
+            {"text": "That a solution has to be tested three times before it "
+                     "can be called neutral, since a single reading of 7 "
+                     "could always be a mistake",
+             "correct": False,
+             "why": "Repeats are good practice and are not what the phrase "
+                    "means. It is about the scale, not the method"},
+            {"text": "That only pH 7 exactly is neutral — 6.8 is acidic and "
+                     "7.2 is alkaline",
+             "correct": True},
+            {"text": "That anything between 6 and 8 counts as neutral for "
+                     "practical purposes",
+             "correct": False,
+             "why": "That is the region reading the phrase rules out. "
+                    "Neutral is one value"},
+            {"text": "That neutral solutions are rare",
+             "correct": False,
+             "why": "Pure water is neutral and is not rare. The point is "
+                    "about where on the scale the word applies"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-h07",
+        "band": "harder",
+        "text": "Enamel starts to dissolve below about pH 5.5. A new drink "
+                "reads pH 5.8. Does that settle the claim that it is gentle on "
+                "teeth?",
+        "options": [
+            {"text": "Yes — 5.8 is above 5.5, so the drink cannot damage "
+                     "enamel",
+             "correct": False,
+             "why": "The number supports the claim and does not close it. How "
+                    "long the drink sits on the teeth matters too"},
+            {"text": "No — 5.8 is below 7, so the drink is acidic and will "
+                     "dissolve enamel",
+             "correct": False,
+             "why": "Almost everything you drink is below 7. The threshold "
+                    "that matters for enamel is 5.5"},
+            {"text": "No — the pH supports the claim, but how long the drink "
+                     "stays on the teeth also matters",
+             "correct": True},
+            {"text": "Yes, provided the same reading is obtained by a pH "
+                     "meter as well",
+             "correct": False,
+             "why": "A better instrument gives a better number, and the "
+                    "number was never the whole question"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-02-h08",
+        "band": "harder",
+        "text": "Litmus flips between two colours and universal indicator "
+                "changes gradually all the way along. Why does mixing dyes "
+                "produce that difference?",
+        "options": [
+            {"text": "Because a mixture of dyes is more concentrated, so its "
+                     "colour is deeper at every point on the scale and more "
+                     "shades can be told apart by eye",
+             "correct": False,
+             "why": "Concentration changes how deep a colour is, not how many "
+                    "different colours appear. Each dye flips at its own "
+                    "point"},
+            {"text": "Because the dyes react with each other as the pH "
+                     "changes",
+             "correct": False,
+             "why": "They do not react together. Each one simply responds to "
+                    "the solution it is sitting in"},
+            {"text": "Because universal indicator is measured by a meter "
+                     "rather than by eye",
+             "correct": False,
+             "why": "It is matched against a chart by eye. That is why a "
+                    "meter is preferred where the number matters"},
+            {"text": "Because each dye in the mixture changes at a different "
+                     "point, so between them they change all along",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

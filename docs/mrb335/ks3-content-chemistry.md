@@ -274,3 +274,60 @@ Gates at commit: chemistry-only `validate_lesson` clean across all ten units
 `bank/C3`.
 
 ---
+## C6 — Acids and alkalis (7 lessons)
+
+**Quota:** 22 needed per band; **28 added**, taking every band to **56**. Four
+per lesson per band across all seven lessons — more than the brief asks for,
+because four sits naturally on each of these lessons and dropping three of them
+to three would have meant cutting a written row rather than not writing it.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 acids-and-alkalis | e05–e08 | s05–s08 | h05–h08 |
+| 02 the-ph-scale-and-indicators | e05–e08 | s05–s08 | h05–h08 |
+| 03 neutralisation | e05–e08 | s05–s08 | h05–h08 |
+| 04 acid-plus-metal | e05–e08 | s05–s08 | h05–h08 |
+| 05 acids-and-carbonates | e05–e08 | s05–s08 | h05–h08 |
+| 06 making-a-pure-dry-salt | e05–e08 | s05–s08 | h05–h08 |
+| 07 catalysts | e05–e08 | s05–s08 | h05–h08 |
+
+Final band totals: easier 56, standard 56, harder 56. Positions 21 · 21 · 21 ·
+21. Length tell 25.5% — and worth noting, because C6 carries a `BASELINE` row
+in `verify_answer_lengths` at **65.4%**: the original twelve of this unit are
+one of the estate's worst giveaway cells. The top-up has pulled the whole unit
+from 65.4% to 25.5%, which is chance.
+
+### Review fixes before commit
+
+**1 · Three new rows asked a question the unit already asked — and the gate
+could not see it.** This is the finding of the unit, and it is the reason the
+cold re-read is not optional.
+
+| new row | duplicated | how it slipped through |
+|---|---|---|
+| `c6-07-h07` | `c6-07-h02` | Same question, same answer: *which flask proves that coming back unchanged is not enough to be a catalyst.* The stems differ by four words — "on the five-flask bench" against "from the five flasks" — so `_normalise` treats them as different strings and the duplicate-stem check passes. |
+| `c6-07-h08` | `c6-07-s03` | Both ask whether a catalyst could make copper react with dilute acid. Different band, same content. |
+| `c6-03-h08` | `c6-03-s02` | Both explain why one drop moves the pH from 3 to 11. |
+
+`validate_lesson`'s duplicate check compares normalised stems and normalised
+answer sets. It catches a row written twice; it cannot catch a row written
+twice in different words, which is what a top-up produces when the author is
+working from the same lesson notes that produced the original twelve.
+Replaced with a rate-versus-yield question, the possible-versus-worth-doing
+distinction from the ammonia process, and a proportional titration
+calculation (25 cm³ needs 20 cm³, so 50 cm³ needs 40 cm³).
+
+**2 · `c6-05-h08` — a metal described as a white powder.** Changed to grey.
+Magnesium and zinc powders are grey, and the row is about identifying a metal
+from two gas tests.
+
+**3 · A tooling note.** `rebalance` has to be run until it reports zero rows to
+permute; a single pass converged for C1–C3 and left nine rows in C6, all of
+them in one file. Running it again clears them. Worth knowing for the units
+still to come.
+
+Gates at commit: chemistry-only `validate_lesson` clean, `verify_answer_positions`
+OK (whole KS3 bank, worst index 27%), `verify_answer_lengths` green on
+`bank/C6` at 25.5% against a 65.4% baseline.
+
+---

@@ -308,4 +308,323 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-04-e05",
+        "band": "easier",
+        "text": "What does it mean to say a metal displaces the hydrogen in "
+                "an acid?",
+        "options": [
+            {"text": "It takes the place of the hydrogen, and the hydrogen "
+                     "leaves as a gas",
+             "correct": True},
+            {"text": "It pushes the acid out of the way so that the two are "
+                     "no longer in contact, which is why the reaction stops "
+                     "once the metal is coated",
+             "correct": False,
+             "why": "Nothing is pushed aside. The metal takes the hydrogen's "
+                    "place inside the compound"},
+            {"text": "It dissolves the hydrogen into itself",
+             "correct": False,
+             "why": "The hydrogen leaves the tube as bubbles. It does not go "
+                    "into the metal"},
+            {"text": "It turns into hydrogen",
+             "correct": False,
+             "why": "No atom changes kind. The magnesium is still magnesium, "
+                    "now part of a salt"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-e06",
+        "band": "easier",
+        "text": "What is the test for hydrogen?",
+        "options": [
+            {"text": "Bubbling it through limewater and watching the "
+                     "limewater turn a milky white, which no other gas on a "
+                     "school bench will do",
+             "correct": False,
+             "why": "That is the test for carbon dioxide. Hydrogen leaves "
+                    "limewater clear"},
+            {"text": "A lit splint held in the tube gives a squeaky pop",
+             "correct": True},
+            {"text": "A glowing splint relights",
+             "correct": False,
+             "why": "That is the test for oxygen. Hydrogen makes a sharp "
+                    "squeak instead"},
+            {"text": "A lit splint goes out",
+             "correct": False,
+             "why": "Most gases put a splint out, so it identifies nothing. "
+                    "Hydrogen burns with a pop"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-e07",
+        "band": "easier",
+        "text": "Nitric acid reacts with a reactive metal. What family does "
+                "the salt belong to?",
+        "options": [
+            {"text": "Chlorides",
+             "correct": False,
+             "why": "Chlorides come from hydrochloric acid"},
+            {"text": "Sulfates",
+             "correct": False,
+             "why": "Sulfates come from sulfuric acid"},
+            {"text": "Nitrates",
+             "correct": True},
+            {"text": "Carbonates, since the acid supplies the second half of "
+                     "the salt's name and nitric acid is one of the carbonate "
+                     "family",
+             "correct": False,
+             "why": "The acid does supply the ending, and nitric acid is not "
+                    "a carbonate. Carbonates react WITH acids"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-e08",
+        "band": "easier",
+        "text": "Four tubes hold magnesium, zinc, iron and copper, each in "
+                "the same dilute acid. Which fizzes hardest?",
+        "options": [
+            {"text": "Copper, because it is the densest of the four and so "
+                     "has the most metal in contact with the acid at the "
+                     "bottom of the tube",
+             "correct": False,
+             "why": "Copper does nothing at all. It sits below hydrogen in "
+                    "the reactivity series"},
+            {"text": "Iron",
+             "correct": False,
+             "why": "Iron reacts, and slowly. Two of the four are above it in "
+                    "the series"},
+            {"text": "Zinc",
+             "correct": False,
+             "why": "Zinc reacts steadily, and one metal here is well above "
+                    "it"},
+            {"text": "Magnesium",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c6-04-s05",
+        "band": "standard",
+        "text": "Iron is added to hydrochloric acid. Name both products.",
+        "options": [
+            {"text": "Iron chloride and hydrogen",
+             "correct": True},
+            {"text": "Iron chloride and water, because water is one of the "
+                     "two products of every reaction an acid takes part in",
+             "correct": False,
+             "why": "Water is what an acid gives with an ALKALI. With a metal "
+                    "the second product is hydrogen"},
+            {"text": "Iron oxide and hydrogen",
+             "correct": False,
+             "why": "There is no oxide here. The iron joins the part of the "
+                    "acid left behind, which is the chloride"},
+            {"text": "Iron sulfate and hydrogen",
+             "correct": False,
+             "why": "Sulfates come from sulfuric acid. This is hydrochloric"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-s06",
+        "band": "standard",
+        "text": "A tube of gas is stoppered and carried away from the "
+                "fizzing tube before a lit splint is put to it. Why bother?",
+        "options": [
+            {"text": "So the gas has time to cool down before a flame is put "
+                     "to it",
+             "correct": False,
+             "why": "The gas is barely warm. The danger is bringing a flame "
+                    "near a tube that is still producing hydrogen"},
+            {"text": "Because a flame near a tube still making hydrogen is a "
+                     "flame near a growing supply of it",
+             "correct": True},
+            {"text": "Because the pop is louder away from the bench",
+             "correct": False,
+             "why": "The sound is the same. This is a safety step, not an "
+                    "acoustic one"},
+            {"text": "Because the hydrogen would otherwise react with the "
+                     "acid",
+             "correct": False,
+             "why": "The hydrogen came out of the acid and does not go back "
+                    "into it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-s07",
+        "band": "standard",
+        "text": "A student says the bubbles coming off the magnesium are "
+                "magnesium turning into a gas. What is the strongest evidence "
+                "against?",
+        "options": [
+            {"text": "Magnesium is a solid, and solids cannot turn into a gas "
+                     "at room temperature under any circumstances whatever",
+             "correct": False,
+             "why": "Dry ice does exactly that. The real evidence is where "
+                    "the magnesium ends up"},
+            {"text": "The gas pops with a lit splint, and magnesium does not "
+                     "burn",
+             "correct": False,
+             "why": "Magnesium burns brilliantly, so this argument fails. The "
+                    "pop does identify the gas as hydrogen, which helps"},
+            {"text": "Evaporate the liquid afterwards and the magnesium is "
+                     "there, in the white crystals",
+             "correct": True},
+            {"text": "The tube gets warm, which shows a reaction rather than "
+                     "a change of state",
+             "correct": False,
+             "why": "Suggestive and not decisive — changes of state involve "
+                    "energy too. The crystals settle it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-s08",
+        "band": "standard",
+        "text": "A tanker that carries concentrated sulfuric acid is lined "
+                "rather than being plain steel. Why does that matter?",
+        "options": [
+            {"text": "Because the lining stops the acid getting cold enough "
+                     "to freeze inside the tank on a winter night and crack "
+                     "the steel from within",
+             "correct": False,
+             "why": "The lining is nothing to do with temperature. A steel "
+                    "tank full of acid makes hydrogen"},
+            {"text": "Because the steel would make the acid weaker over "
+                     "time",
+             "correct": False,
+             "why": "The acid would be used up slowly, and that is not the "
+                    "worry. The gas produced is"},
+            {"text": "Because acid dissolves any metal it touches, so no tank "
+                     "could ever hold it",
+             "correct": False,
+             "why": "Copper is untouched by dilute hydrochloric acid. It is "
+                    "reactive metals that are attacked"},
+            {"text": "Because acid on steel makes hydrogen, and hydrogen and "
+                     "air together need only a spark",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-04-h05",
+        "band": "harder",
+        "text": "The same mass of magnesium is dropped into two tubes, one of "
+                "hydrochloric acid and one of sulfuric acid, both dilute. How "
+                "do the products compare?",
+        "options": [
+            {"text": "Magnesium chloride from one and magnesium sulfate from "
+                     "the other, with hydrogen from both",
+             "correct": True},
+            {"text": "The same salt in each, because the salt is named after "
+                     "the metal",
+             "correct": False,
+             "why": "The metal gives the first word only. The acid supplies "
+                    "the ending, and the two acids differ"},
+            {"text": "Hydrogen from the hydrochloric acid and water from the "
+                     "sulfuric acid",
+             "correct": False,
+             "why": "Water comes from an acid and an ALKALI. Both of these "
+                    "tubes give hydrogen"},
+            {"text": "Nothing from either, because dilute acid is too weak to "
+                     "attack a metal",
+             "correct": False,
+             "why": "Magnesium reacts vigorously with both dilute acids. "
+                    "Dilute is not the same as inactive"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-h06",
+        "band": "harder",
+        "text": "A student wants to prove hydrogen came out of the acid "
+                "rather than out of the metal. Which observation does most to "
+                "settle it?",
+        "options": [
+            {"text": "The metal disappears completely as the reaction goes "
+                     "on, which shows that everything the metal was made of "
+                     "must have left the tube as a gas",
+             "correct": False,
+             "why": "It disappears from sight into solution as a salt, and "
+                    "evaporating brings it back. Nothing left as gas but the "
+                    "hydrogen"},
+            {"text": "The salt left behind still contains all the metal, and "
+                     "the acid's hydrogen is what is missing",
+             "correct": True},
+            {"text": "Copper in the same acid gives no gas at all, although "
+                     "the acid is unchanged",
+             "correct": False,
+             "why": "It shows the metal has to be reactive enough. It does "
+                    "not say where the hydrogen came from"},
+            {"text": "The gas pops with a lit splint",
+             "correct": False,
+             "why": "That identifies the gas as hydrogen and says nothing "
+                    "about which substance supplied it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-h07",
+        "band": "harder",
+        "text": "Zinc slabs are bolted to a steel hull below the waterline "
+                "and have to be replaced every few years. What would happen if "
+                "they were left off?",
+        "options": [
+            {"text": "Nothing, as long as the hull is painted, since paint "
+                     "keeps the seawater off the steel just as well as a slab "
+                     "of zinc does",
+             "correct": False,
+             "why": "Paint chips, and the slabs are there for where it does. "
+                    "They protect steel the paint no longer covers"},
+            {"text": "The zinc would stop corroding, because there would be "
+                     "no steel for it to protect",
+             "correct": False,
+             "why": "There would be no zinc there at all. The question is "
+                    "what happens to the steel"},
+            {"text": "The seawater would attack the steel hull instead",
+             "correct": True},
+            {"text": "The hull would corrode more slowly, because the zinc "
+                     "was speeding the process up",
+             "correct": False,
+             "why": "Exactly backwards. The zinc is corroded INSTEAD of the "
+                    "hull, which is why it needs replacing"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-04-h08",
+        "band": "harder",
+        "text": "Copper does not react with dilute hydrochloric acid. Which "
+                "change would make it react?",
+        "options": [
+            {"text": "Warming the acid to just below boiling, since heating "
+                     "speeds up any reaction between an acid and a metal by a "
+                     "large factor",
+             "correct": False,
+             "why": "Heating speeds up a reaction that can happen. This one "
+                    "cannot, at any temperature"},
+            {"text": "Using a more concentrated dilute acid",
+             "correct": False,
+             "why": "Concentration changes how fast a possible reaction goes. "
+                    "It cannot make an impossible one start"},
+            {"text": "Leaving it for a year rather than a week",
+             "correct": False,
+             "why": "Time cannot make an impossible reaction happen. A year "
+                    "gives exactly what a week gave"},
+            {"text": "None of these — copper sits below hydrogen and cannot "
+                     "displace it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

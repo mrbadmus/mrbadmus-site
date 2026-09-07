@@ -308,4 +308,321 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-05-e05",
+        "band": "easier",
+        "text": "What is limewater used for?",
+        "options": [
+            {"text": "Testing for carbon dioxide — it turns milky when the "
+                     "gas is bubbled through it",
+             "correct": True},
+            {"text": "Neutralising an acid spill on a bench, because it is an "
+                     "alkali and will bring the pH back up to somewhere near "
+                     "7 wherever it is poured",
+             "correct": False,
+             "why": "It is alkaline, and that is not what it is on the bench "
+                    "for. It is the test for carbon dioxide"},
+            {"text": "Testing for hydrogen",
+             "correct": False,
+             "why": "Hydrogen leaves limewater clear. It is tested with a lit "
+                    "splint"},
+            {"text": "Dissolving limestone",
+             "correct": False,
+             "why": "Acid dissolves limestone. Limewater is the detector, not "
+                    "the solvent"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-e06",
+        "band": "easier",
+        "text": "What is a specific test?",
+        "options": [
+            {"text": "A test that gives the same result every time it is "
+                     "repeated, so that a single run can be trusted without "
+                     "having to do it again",
+             "correct": False,
+             "why": "That is repeatability. A specific test is one that only "
+                    "ONE substance can pass"},
+            {"text": "A test only one substance can pass",
+             "correct": True},
+            {"text": "A test that has to be done in a particular order",
+             "correct": False,
+             "why": "Order matters in a method, and it is not what the word "
+                    "means here"},
+            {"text": "A test that measures how much of something there is",
+             "correct": False,
+             "why": "That is a quantitative measurement. Specific is about "
+                    "identifying, not counting"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-e07",
+        "band": "easier",
+        "text": "The end of the delivery tube has to go below the surface of "
+                "the limewater. What goes wrong if it does not?",
+        "options": [
+            {"text": "The limewater would be sucked back up the tube into the "
+                     "reaction, which is why the tube is always kept clear of "
+                     "the liquid",
+             "correct": False,
+             "why": "Suck-back is a real hazard when a reaction is cooling, "
+                    "and it is not this. The gas has to reach the limewater "
+                    "at all"},
+            {"text": "The limewater would go milky whatever gas was made",
+             "correct": False,
+             "why": "Limewater is specific to carbon dioxide, whatever the "
+                    "tube does"},
+            {"text": "The gas passes over the top and into the room, so "
+                     "nothing is tested",
+             "correct": True},
+            {"text": "The gas would dissolve in the wrong part of the "
+                     "limewater",
+             "correct": False,
+             "why": "Anywhere in the limewater will do. The problem is that "
+                    "it never gets there"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-e08",
+        "band": "easier",
+        "text": "A carbonate is dropped into acid. Which of the three "
+                "products is the one you can see?",
+        "options": [
+            {"text": "The salt, which appears as a solid on the bottom of the "
+                     "tube almost as soon as the acid is poured on",
+             "correct": False,
+             "why": "The salt dissolves in the water and is invisible. It "
+                    "appears only if you evaporate the liquid"},
+            {"text": "The water",
+             "correct": False,
+             "why": "It joins the water already in the tube, so nothing about "
+                    "it can be seen"},
+            {"text": "None of them",
+             "correct": False,
+             "why": "The fizzing is one of the three products leaving the "
+                    "tube, and it is the giveaway"},
+            {"text": "The carbon dioxide, as fizzing",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c6-05-s05",
+        "band": "standard",
+        "text": "Two students bubble the same gas through limewater. One "
+                "stops as soon as it goes milky; the other carries on for two "
+                "minutes and it goes clear. Who has the gas wrong?",
+        "options": [
+            {"text": "Neither — the change to milky is the result, and it "
+                     "clears again if you keep going",
+             "correct": True},
+            {"text": "The second one, since a gas that leaves limewater clear "
+                     "at the end of the test cannot have been carbon dioxide "
+                     "at any point during it",
+             "correct": False,
+             "why": "It went milky first, which is the result. Extra gas "
+                    "dissolves the white solid again"},
+            {"text": "The first one, for stopping too early",
+             "correct": False,
+             "why": "Stopping at the milky stage is exactly right. That IS "
+                    "the positive result"},
+            {"text": "Both, because limewater is not a reliable test",
+             "correct": False,
+             "why": "It is the specific test for carbon dioxide. Nothing else "
+                    "on a school bench turns it milky"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-s06",
+        "band": "standard",
+        "text": "A boiling tube is specified rather than a test tube. Why?",
+        "options": [
+            {"text": "Because a boiling tube is thicker glass and will not "
+                     "crack when it warms",
+             "correct": False,
+             "why": "Neither tube would crack here. The problem is the "
+                    "fizzing throwing liquid up the sides"},
+            {"text": "Because the fizzing throws liquid up the sides, and a "
+                     "small tube delivers acid spray to whoever is holding it",
+             "correct": True},
+            {"text": "Because a boiling tube gives more gas",
+             "correct": False,
+             "why": "The gas depends on the amounts of carbonate and acid, "
+                    "not on the glassware"},
+            {"text": "Because a bung only fits a boiling tube",
+             "correct": False,
+             "why": "Bungs are made for both. The reason is what happens at "
+                    "the top of a small tube"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-s07",
+        "band": "standard",
+        "text": "Acid is dripped onto a field's soil and it fizzes steadily. "
+                "What has the farmer learnt?",
+        "options": [
+            {"text": "That the soil is too acidic for a crop, since only an "
+                     "acidic soil has anything in it that will react with "
+                     "acid at all",
+             "correct": False,
+             "why": "Fizzing shows a CARBONATE, which is a base. If anything "
+                    "it points the other way"},
+            {"text": "That the soil holds a reactive metal",
+             "correct": False,
+             "why": "A metal would give hydrogen, which pops with a splint "
+                    "and leaves limewater clear"},
+            {"text": "That there is a carbonate — chalk or limestone — in the "
+                     "soil",
+             "correct": True},
+            {"text": "That the soil is neutral",
+             "correct": False,
+             "why": "The test says what is in the soil rather than its pH. A "
+                    "pH reading is a different measurement"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-s08",
+        "band": "standard",
+        "text": "The bung with the delivery tube is fitted straight away "
+                "rather than after the fizzing has settled down. Why?",
+        "options": [
+            {"text": "Because the acid would otherwise evaporate out of the "
+                     "open tube",
+             "correct": False,
+             "why": "Almost no acid evaporates in that time. What is lost is "
+                    "the gas"},
+            {"text": "Because the bung is what starts the reaction",
+             "correct": False,
+             "why": "The reaction starts as soon as the acid touches the "
+                    "carbonate. The bung only catches what it makes"},
+            {"text": "Because an open tube lets air in and spoils the "
+                     "limewater",
+             "correct": False,
+             "why": "Air in the tube does not spoil anything. Losing the gas "
+                    "does"},
+            {"text": "Because the reaction gives off its gas fastest at the "
+                     "start, and anything that escapes first cannot be "
+                     "tested",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-05-h05",
+        "band": "harder",
+        "text": "Limestone pavement above ground and cave systems below it "
+                "are made by the same process. What is it?",
+        "options": [
+            {"text": "Slightly acidic rain reacting with the calcium "
+                     "carbonate and dissolving it away along cracks",
+             "correct": True},
+            {"text": "Rain freezing in cracks and splitting the rock a little "
+                     "each winter",
+             "correct": False,
+             "why": "Frost does shatter rock, and it is not what makes a cave "
+                    "system. Slightly acidic rain reacts the limestone away"},
+            {"text": "Rivers grinding the rock down with the sand they carry",
+             "correct": False,
+             "why": "Grinding widens a channel that already exists. The "
+                    "channels themselves are opened chemically"},
+            {"text": "Limestone melting in warm weather",
+             "correct": False,
+             "why": "Limestone melts at over 800 °C. Nothing outdoors melts "
+                    "it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-h06",
+        "band": "harder",
+        "text": "A stalactite is described as the same reaction running "
+                "backwards. What does that mean?",
+        "options": [
+            {"text": "The dripping water is alkaline, so it neutralises the "
+                     "acid in the cave roof and leaves a solid behind as it "
+                     "does so",
+             "correct": False,
+             "why": "There is no acid in the roof to neutralise. What is "
+                    "happening is dissolved carbonate coming back out"},
+            {"text": "Water carrying dissolved calcium carbonate dries out "
+                     "and leaves the carbonate behind",
+             "correct": True},
+            {"text": "The carbon dioxide in the cave turns back into "
+                     "limestone on the ceiling",
+             "correct": False,
+             "why": "The gas alone does not rebuild rock. The calcium "
+                    "carbonate is carried there dissolved in water"},
+            {"text": "The rock grows because acid is added to it",
+             "correct": False,
+             "why": "Acid takes limestone away. A stalactite grows where "
+                    "water leaves it behind"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-h07",
+        "band": "harder",
+        "text": "Carbon dioxide dissolving in the sea makes it slightly more "
+                "acidic, and shells are calcium carbonate. Why does a change "
+                "of a few tenths of a pH unit matter?",
+        "options": [
+            {"text": "Because a few tenths of a unit is a change of several "
+                     "thousand times in acidity, which no living thing could "
+                     "possibly survive",
+             "correct": False,
+             "why": "A whole unit is ten times, so a few tenths is far less "
+                    "than that. It matters for what it does to carbonate"},
+            {"text": "Because fish cannot live in acidic water of any kind",
+             "correct": False,
+             "why": "The sea stays alkaline overall. The problem is what the "
+                    "shift does to carbonate structures"},
+            {"text": "Because acid reacts with carbonate, so shells and coral "
+                     "thicken more slowly or thin",
+             "correct": True},
+            {"text": "Because the carbon dioxide would otherwise stay in the "
+                     "air",
+             "correct": False,
+             "why": "That is about climate rather than about shells. This "
+                    "question is about the carbonate"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-05-h08",
+        "band": "harder",
+        "text": "A grey powder fizzes with acid, and the gas leaves "
+                "limewater clear and pops with a lit splint. What is the "
+                "powder?",
+        "options": [
+            {"text": "A carbonate, since fizzing with acid is what carbonates "
+                     "do and no other kind of solid gives bubbles when acid "
+                     "is poured on",
+             "correct": False,
+             "why": "A reactive metal fizzes too. The gas tests are what "
+                    "separate the two, and this gas is hydrogen"},
+            {"text": "An alkali",
+             "correct": False,
+             "why": "An alkali neutralises acid quietly. There is no gas at "
+                    "all"},
+            {"text": "Nothing can be said — two tests disagree",
+             "correct": False,
+             "why": "They agree perfectly. Clear limewater rules carbon "
+                    "dioxide out and the pop identifies hydrogen"},
+            {"text": "A reactive metal",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

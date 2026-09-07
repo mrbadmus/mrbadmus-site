@@ -323,4 +323,314 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-01-e05",
+        "band": "easier",
+        "text": "What is a base?",
+        "options": [
+            {"text": "Any substance that cancels an acid out",
+             "correct": True},
+            {"text": "Any substance with a pH above 7 that will dissolve "
+                     "readily in water and can be poured out of a bottle",
+             "correct": False,
+             "why": "That describes an alkali, which is one kind of base. "
+                    "Copper oxide is a base and barely dissolves at all"},
+            {"text": "Any substance that is safe to handle",
+             "correct": False,
+             "why": "Oven cleaner is a base and will burn skin. Safety is not "
+                    "what the word means"},
+            {"text": "The liquid at the bottom of a mixture",
+             "correct": False,
+             "why": "Nothing here is about position. A base is defined by "
+                    "what it does to an acid"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-e06",
+        "band": "easier",
+        "text": "A bottle is labelled corrosive. What does that mean?",
+        "options": [
+            {"text": "That it is an acid, since corrosive is the warning word "
+                     "the law requires on every acid sold in a bottle",
+             "correct": False,
+             "why": "Strong alkalis are corrosive too. Oven cleaner is the "
+                    "most dangerous bottle on the bench"},
+            {"text": "That it will attack and destroy materials it touches, "
+                     "including skin",
+             "correct": True},
+            {"text": "That it gives off a gas you should not breathe",
+             "correct": False,
+             "why": "That is a different hazard with a different label. "
+                    "Corrosive is about attacking materials"},
+            {"text": "That it must not be mixed with water",
+             "correct": False,
+             "why": "Many corrosive substances are supplied already dissolved "
+                    "in water. The word is about what they attack"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-e07",
+        "band": "easier",
+        "text": "Two clear colourless liquids sit on the bench and nothing "
+                "about them can be seen to differ. What tells them apart?",
+        "options": [
+            {"text": "Their smell, breathed in over the neck of the bottle",
+             "correct": False,
+             "why": "Never smell a bottle like that, and it would settle "
+                    "nothing anyway. An indicator is the tool"},
+            {"text": "Their taste",
+             "correct": False,
+             "why": "Nothing on a laboratory bench is ever tasted. One of "
+                    "these could strip the skin off your hand"},
+            {"text": "An indicator, which changes colour depending on which "
+                     "one it is in",
+             "correct": True},
+            {"text": "How thick and syrupy each one is when it is poured",
+             "correct": False,
+             "why": "How a liquid pours has nothing to do with whether it is "
+                    "an acid. Both may pour like water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-e08",
+        "band": "easier",
+        "text": "Where in your own body is there acid at about pH 2?",
+        "options": [
+            {"text": "In the blood",
+             "correct": False,
+             "why": "Blood is held very close to neutral, a little above 7. "
+                    "Acid at pH 2 there would be fatal"},
+            {"text": "In the lungs",
+             "correct": False,
+             "why": "There is no pool of acid in the lungs. The organ that "
+                    "runs on acid is lower down"},
+            {"text": "In the mouth, which is why teeth have hard enamel on "
+                     "the outside of them to stand up to it all day",
+             "correct": False,
+             "why": "Saliva sits close to neutral. Enamel is attacked by what "
+                    "you eat and drink, not by the mouth itself"},
+            {"text": "In the stomach",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c6-01-s05",
+        "band": "standard",
+        "text": "Which of these is an alkali?",
+        "options": [
+            {"text": "Sodium hydroxide",
+             "correct": True},
+            {"text": "Copper oxide, which neutralises an acid completely and "
+                     "leaves a blue salt behind in the beaker",
+             "correct": False,
+             "why": "It is a base and not an alkali, because it barely "
+                    "dissolves in water"},
+            {"text": "Hydrochloric acid",
+             "correct": False,
+             "why": "An acid is the opposite kind of substance. Its pH is "
+                    "below 7"},
+            {"text": "Pure water",
+             "correct": False,
+             "why": "Pure water is neutral at exactly pH 7 — neither one nor "
+                    "the other"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-s06",
+        "band": "standard",
+        "text": "A household cleaner containing ammonia reads pH 11. What is "
+                "it, and what would it do to a spill of acid?",
+        "options": [
+            {"text": "An acid, and it would make an acid spill worse by "
+                     "adding more acid to what is already on the floor",
+             "correct": False,
+             "why": "pH 11 is above 7, so it is an alkali. Acids read below "
+                    "7"},
+            {"text": "An alkali, and it would cancel the acid out",
+             "correct": True},
+            {"text": "Neutral, and it would dilute the acid without changing "
+                     "its pH",
+             "correct": False,
+             "why": "Neutral is pH 7 exactly. 11 is a long way above it"},
+            {"text": "An alkali, and it would have no effect on an acid",
+             "correct": False,
+             "why": "Right about what it is and wrong about what it does. "
+                    "Cancelling acids out is the definition of an alkali"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-s07",
+        "band": "standard",
+        "text": "Your stomach runs at about pH 2 — strong enough to dissolve "
+                "the meat you eat. Why is the stomach itself not dissolved?",
+        "options": [
+            {"text": "Because the acid is only made at mealtimes, so the "
+                     "stomach spends most of the day at a safe pH",
+             "correct": False,
+             "why": "Acid is present far more of the time than that, and the "
+                    "lining would still need protecting"},
+            {"text": "Because stomach lining is made of a material that acid "
+                     "cannot attack",
+             "correct": False,
+             "why": "Acid attacks it perfectly well. Where the protection "
+                    "fails, the result is an ulcer"},
+            {"text": "Because the lining is coated in mucus and replaced "
+                     "constantly",
+             "correct": True},
+            {"text": "Because the food neutralises the acid as soon as it "
+                     "arrives",
+             "correct": False,
+             "why": "Food is broken down BY the acid rather than cancelling "
+                    "it. The stomach stays acidic while it works"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-s08",
+        "band": "standard",
+        "text": "A gardener treats acidic soil with lime, adds far too much, "
+                "and the soil now reads pH 9. What is the problem?",
+        "options": [
+            {"text": "No problem — pH 9 is above 7, and the crop wanted soil "
+                     "that was not acidic",
+             "correct": False,
+             "why": "The crop needs soil near 7, not above it. pH 9 is two "
+                    "steps the wrong way"},
+            {"text": "The lime has made the soil more acidic than it was",
+             "correct": False,
+             "why": "Lime is an alkali and raises the pH. It has gone too far "
+                    "in the right direction, not the wrong one"},
+            {"text": "The lime will wash away, so nothing has changed",
+             "correct": False,
+             "why": "It washes out over months. The soil is alkaline now, and "
+                    "the crop is planted now"},
+            {"text": "The soil has been pushed past neutral and is now "
+                     "alkaline, which is just as wrong for the crop",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c6-01-h05",
+        "band": "harder",
+        "text": "A concentrated acid is diluted a thousandfold and its pH "
+                "rises from 1 to 4. Is it still an acid, and is it still "
+                "corrosive?",
+        "options": [
+            {"text": "Still an acid, and far less corrosive",
+             "correct": True},
+            {"text": "No longer an acid, and no longer corrosive, because "
+                     "adding that much water turns it into something much "
+                     "closer to water than to acid",
+             "correct": False,
+             "why": "pH 4 is still below 7, so every drop of it is still "
+                    "acid. Weaker in effect is not the same as changed in "
+                    "kind"},
+            {"text": "Still an acid, and just as corrosive as before",
+             "correct": False,
+             "why": "Right about the kind and wrong about the effect. There "
+                    "is a thousandth as much acid in each cubic centimetre"},
+            {"text": "No longer an acid, but still corrosive",
+             "correct": False,
+             "why": "Exactly the wrong way round. What changes on diluting is "
+                    "how fiercely it acts, not which side of 7 it is on"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-h06",
+        "band": "harder",
+        "text": "In 1984 an Australian doctor drank a flask of bacteria, gave "
+                "himself gastritis, and eventually won a Nobel Prize. What did "
+                "that settle?",
+        "options": [
+            {"text": "That stomach acid is strong enough to dissolve iron "
+                     "filings, which nobody had been willing to believe until "
+                     "somebody was prepared to swallow some",
+             "correct": False,
+             "why": "The acid's strength was already known. What was in "
+                    "dispute was the cause of ulcers"},
+            {"text": "That ulcers are caused by an infection rather than by "
+                     "stress",
+             "correct": True},
+            {"text": "That the stomach lining is replaced constantly",
+             "correct": False,
+             "why": "True, and not what the experiment was about. It was "
+                    "about what damages that lining"},
+            {"text": "That drinking bacteria is safe",
+             "correct": False,
+             "why": "It made him ill, which was the point. Nothing about the "
+                    "episode shows it was safe"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-h07",
+        "band": "harder",
+        "text": "A student proposes emptying the pH 1 bottle and the pH 13 "
+                "bottle into the same sink at the same time, so that each "
+                "makes the other safe. What is wrong with the plan?",
+        "options": [
+            {"text": "Nothing at all — an acid and an alkali always cancel "
+                     "each other out exactly, whatever amounts of each of them "
+                     "happen to be poured in",
+             "correct": False,
+             "why": "They cancel only if the amounts match. Any excess is "
+                    "left in the sink at nearly its original strength"},
+            {"text": "An acid and an alkali cannot react with each other at "
+                     "all when both are that strong",
+             "correct": False,
+             "why": "They react extremely readily. That is the trouble — the "
+                    "reaction is violent"},
+            {"text": "The amounts have to match, and a reaction that "
+                     "vigorous gives out a great deal of heat",
+             "correct": True},
+            {"text": "The two would make a substance more dangerous than "
+                     "either",
+             "correct": False,
+             "why": "The products are a salt and water. The danger is the "
+                    "heat and whatever is left over, not a new poison"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c6-01-h08",
+        "band": "harder",
+        "text": "A cleaning bottle is labelled CORROSIVE and gives no pH. "
+                "What can you conclude, and what can you not?",
+        "options": [
+            {"text": "That it is a strong acid, but not how strong, since "
+                     "corrosive is a word used only of acids and never of "
+                     "anything else",
+             "correct": False,
+             "why": "Alkalis are corrosive too, and the most dangerous bottle "
+                    "on the bench is one of them"},
+            {"text": "That it is dangerous, and that its pH must therefore be "
+                     "below 7",
+             "correct": False,
+             "why": "Danger says nothing about which side of 7 a substance "
+                    "sits on. That is this lesson's whole point"},
+            {"text": "Nothing at all, because a hazard label is not chemical "
+                     "information",
+             "correct": False,
+             "why": "It is real information — it tells you the substance "
+                    "attacks materials. It just does not tell you the pH"},
+            {"text": "That it will attack materials, but not whether it is an "
+                     "acid or an alkali",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]
