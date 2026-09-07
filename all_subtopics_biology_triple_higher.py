@@ -10368,9 +10368,10 @@ BIOLOGY_SUBTOPICS_ALL = {
   'triple_only': 'Trophic levels in detail (4.7.4.1) is biology-only. Includes numbered trophic levels, the role of '
                  'decomposers, food webs, and the principle that ~10% of energy is transferred between trophic levels.',
   'variables': []},
- {'common_mistake': 'Pyramids of BIOMASS are almost always true pyramid shapes — the ONE exception can occur with '
-                    'parasites (many small parasites on fewer large hosts). Pyramids of NUMBERS can be inverted (e.g. '
-                    "one tree → many insects). Don't confuse the two. Trophic level 1 (producers) is ALWAYS at the "
+ {'common_mistake': 'Pyramids of BIOMASS are almost always true pyramid shapes — the exception is an ocean measured '
+                    'at one moment, where fast-reproducing phytoplankton support a GREATER standing biomass of '
+                    'zooplankton. Pyramids of NUMBERS can be inverted (e.g. one tree → many insects, or many small '
+                    "parasites on one large host). Don't confuse the two. Trophic level 1 (producers) is ALWAYS at the "
                     'bottom.',
   'equations': [],
   'fifas': [],
