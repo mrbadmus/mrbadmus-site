@@ -238,7 +238,32 @@ numbers inverted at the top, biomass still a true pyramid). Had it not, this
 pool would now teach the misconception as fact.
 
 **I have not changed the lesson page.** Editing KS4 content is your science
-gate and outside this ticket. The pool is clean either way.
+gate and outside this ticket.
+
+### ⚠️ This one now has a consequence, and it is the reason to act before ship
+
+The cold reviewer for ecology traced it through to the student, and the result
+is worse than an inert error in a data file:
+
+`ks4-pyramids-of-biomass-s02` uses grass → 30 sheep → 60 000 ticks and keys the
+**correct** answer — the numbers pyramid inverts at the top, the biomass
+pyramid does not. Its feedback line reads *"Parasites are far more numerous
+than their hosts… but their combined mass is tiny."*
+
+So a Triple student who revises the page **properly**, absorbs its
+`common_mistake`, and then sits this question will pick the parasite option and
+**be marked wrong for believing what the page told them.** The question is
+right and the page is wrong, and the child pays for the disagreement.
+
+That is a different problem from the eleven spec-scope items in finding 1,
+where questions and pages agree with each other and merely disagree with AQA.
+Here they contradict each other, and a diligent student is punished for it.
+
+**The fix is one sentence in `all_subtopics_biology_triple_higher.py`** — swap
+the parasite example for the phytoplankton→zooplankton one that the same
+record's `higher` field already names correctly. The pool needs no change.
+
+This is the single item I would ask you to look at before this ships.
 
 ---
 

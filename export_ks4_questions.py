@@ -301,6 +301,11 @@ def main():
     ap.add_argument("--partial", action="store_true",
                     help="allow a part-authored pool (load_pool strict=False) "
                          "— completeness only; malformed questions still fail")
+    ap.add_argument("--load", choices=("test",), default=None,
+                    help="apply the rows straight to the database over "
+                         "PostgREST, instead of writing SQL files. TEST only: "
+                         "production is written at merge, deliberately by "
+                         "hand, and this flag will not do it.")
     ap.add_argument("--project", choices=("test", "prod"), default="test",
                     help="which database --verify reads (default: test). "
                          "The KS4 pool reaches production only at merge, so "
@@ -341,6 +346,9 @@ def main():
     if args.verify:
         sys.exit(verify(rows, args.subject, args.partial))
 
+    if args.load:
+        sys.exit(load(rows, args.subject, args.load))
+
     stmts = upsert_statements(rows)
     if args.delete_orphans:
         stmts.append(delete_orphans_statement(rows, args.subject))
@@ -374,6 +382,94 @@ def main():
         print("     ⚠️ The LAST file is a DELETE. Apply it last, or not at "
               "all.")
     print()
+
+
+# ── applying it ──────────────────────────────────────────────────────────
+
+def load(rows, subject, project):
+    """Upsert the pool straight into the table, over PostgREST.
+
+    ⚠️ WHY THIS EXISTS, WHEN SQL FILES ALREADY DO.
+
+    The SQL path is the durable artefact — reviewable, re-appliable, and what
+    production gets at merge. But applying 1.4 MB of it through a tool call
+    means splitting on row boundaries and making dozens of round trips, and
+    the KS4 pool is reloaded after every review pass. Measured: the chunked
+    route took longer to move 330 rows than this takes to move all 3,168.
+
+    ⚠️ SERVICE ROLE, AND THAT IS THE POINT rather than a shortcut. The table's
+    RLS grants SELECT to any authenticated user and no write to anyone —
+    `ks4_assignment_bank` is reference content whose only writer is this
+    exporter. Loading it as a student would fail, correctly.
+
+    ⚠️ TEST ONLY, enforced twice. `--load` accepts no other value, and the key
+    is read from the backend's own .env, which points at the test project. A
+    production load is a merge-time act done deliberately from the SQL files,
+    with the migrations applied first — not something a build script reaches
+    for by accident.
+    """
+    import json as _json
+    import ssl
+    import urllib.error
+    import urllib.request
+
+    env = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
+    conf = {}
+    try:
+        with open(env, encoding="utf-8") as fh:
+            for line in fh:
+                if "=" in line and not line.lstrip().startswith("#"):
+                    k, v = line.split("=", 1)
+                    conf[k.strip()] = v.strip()
+    except OSError as exc:
+        print("\n     ⛔ --load cannot read %s (%s)" % (env, exc))
+        return 3
+
+    url = conf.get("SUPABASE_URL", "")
+    key = conf.get("SUPABASE_SERVICE_ROLE_KEY", "")
+    if not url or not key:
+        print("\n     ⛔ --load: SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY "
+              "are not both in %s" % env)
+        return 3
+    if "qeppkiswvclkkwbxmlok" not in url:
+        # The guard that matters. If that .env is ever repointed at
+        # production, this refuses rather than writing 3,168 rows to it.
+        print("\n     ⛔ --load: %s does not point at the TEST project "
+              "(qeppkiswvclkkwbxmlok). Refusing.\n        It points at: %s"
+              % (env, url))
+        return 3
+
+    ctx = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
+    endpoint = url.rstrip("/") + "/rest/v1/ks4_assignment_bank"
+    BATCH = 200
+    sent = 0
+    print("\n     loading %d row(s) into TEST over PostgREST…" % len(rows))
+    for i in range(0, len(rows), BATCH):
+        chunk = [{k: r[k] for k in
+                  ("id", "subtopic_slug", "subject", "band", "tier",
+                   "triple_only", "text", "options", "correct_index", "why",
+                   "bank_position")}
+                 for r in rows[i:i + BATCH]]
+        body = _json.dumps(chunk).encode("utf-8")
+        rq = urllib.request.Request(endpoint, data=body, method="POST")
+        rq.add_header("apikey", key)
+        rq.add_header("Authorization", "Bearer " + key)
+        rq.add_header("Content-Type", "application/json")
+        # merge-duplicates makes this the same upsert the SQL files are.
+        rq.add_header("Prefer", "resolution=merge-duplicates,return=minimal")
+        try:
+            with urllib.request.urlopen(rq, context=ctx, timeout=120) as r:
+                r.read()
+        except urllib.error.HTTPError as e:
+            print("\n     ⛔ --load failed on rows %d-%d: HTTP %s\n        %s"
+                  % (i, i + len(chunk) - 1, e.code,
+                     e.read().decode("utf-8", "replace")[:400]))
+            return 1
+        sent += len(chunk)
+        print("        %d / %d" % (sent, len(rows)))
+    print("\n     ✅ %d row(s) upserted into TEST%s.\n"
+          % (sent, " (%s)" % subject if subject else ""))
+    return 0
 
 
 # ── the gate ─────────────────────────────────────────────────────────────

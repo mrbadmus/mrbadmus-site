@@ -85,26 +85,37 @@ touches the platform default. See `rainford-sow-mapping.md`.
 ## ⚠️ Export AFTER review, never alongside it
 
 `docs/ks4/pool-authoring.md` opens with "nothing exports unreviewed". That is
-easy to satisfy per-subject and easy to get wrong per-*run*, and it was got
-wrong once in this build:
+easy to satisfy per-subject and easy to get wrong per-*run*.
 
-> Physics was exported to TEST the moment its authoring finished, while two of
-> its four cold reviewers were still working. The SQL therefore carried a wrong
-> answer key (√240 keyed as 15), a radio wave travelling faster than light, two
-> Higher-tier leaks into Foundation questions, and ~90 questions still
-> reproducing lesson-page material — every one of which the reviewers had
-> already fixed in the authored files.
+**What happened in this build, stated accurately.** Physics was exported to
+TEST as soon as its authoring finished, while two of its four cold reviewers
+had not yet reported. I assumed the export was therefore stale — carrying the
+wrong answer key, the faster-than-light radio wave and the tier leaks those
+reviewers went on to describe — and ordered a regeneration.
 
-Nothing was lost, because the export is `on conflict (id) do update` and the
-reviewers preserve ids: regenerating and re-applying corrected every row in
-place, with no cleanup and no duplicates. But the load was done twice, and a
-verification run against the first load would have certified content that no
-longer existed.
+**The assumption was wrong.** The regenerated export was byte-identical to the
+first: 0 of 934 rows differed, same byte counts on all four files. The reason
+is that a reviewer writes its fixes to disk as it works and *reports* only at
+the end, so the files were already final when the export ran; only the reports
+were outstanding. Verified after the fact — `ks4-wave-front-refraction-h01`
+already read 2.4 × 10⁸ m/s, and `ks4-changes-in-energy-h03` already read
+50 J / 0.20 kg / 20 m/s.
 
-**The rule: a subject is exported only when every reviewer holding one of its
-files has reported.** The reviewers rewrite in place, so an export taken mid-
-review is a snapshot of a file someone is still editing — the same hazard the
-loader's own half-written-file handling exists for, one level up.
+**The rule survives the correction, for a different reason than I first gave.**
+It is not that a mid-review export is *observably* stale — it may well not be.
+It is that you cannot tell from the outside, and an export is the input to a
+verification run that then certifies content. Certifying a snapshot you cannot
+prove is final is the defect, whether or not the snapshot happens to be right.
+
+**So: a subject is exported only when every reviewer holding one of its files
+has reported.** Cheap to obey, and it removes the need to reason about mtimes
+against report times at all — which is what I found myself doing, and got
+wrong.
+
+⚠️ The recovery cost nothing, and that is worth knowing too: the export is
+`on conflict (id) do update` and reviewers preserve ids, so re-running and
+re-applying is always safe. There is no state to clean up and no way to create
+a duplicate. If in doubt, re-export.
 
 ---
 
