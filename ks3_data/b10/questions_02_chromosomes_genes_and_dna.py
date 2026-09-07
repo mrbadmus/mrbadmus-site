@@ -348,4 +348,609 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b10-02-e05",
+        "band": "easier",
+        "text": "What is a gene?",
+        "options": [
+            {"text": "A small object attached to the outside of a chromosome",
+             "correct": False,
+             "why": "Nothing is attached. A gene is part of the chromosome "
+                    "itself, the way a chapter is part of a book rather than a "
+                    "bookmark in one"},
+            {"text": "A section of the DNA in a chromosome, carrying the "
+                     "instruction for one characteristic",
+             "correct": True},
+            {"text": "A whole chromosome, which is why a human body cell "
+                     "contains exactly 46 of them",
+             "correct": False,
+             "why": "A human carries around twenty thousand genes and only 46 "
+                    "chromosomes, so a gene must be far smaller than a whole "
+                    "chromosome"},
+            {"text": "One of the four bases, A, T, C or G",
+             "correct": False,
+             "why": "The bases are the units the instruction is written in. A "
+                    "gene is a length of them, the way a word is a run of "
+                    "letters rather than one letter"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-e06",
+        "band": "easier",
+        "text": "The instruction in a gene is written using four units known "
+                "by their initials. Which four?",
+        "options": [
+            {"text": "A, B, C and D",
+             "correct": False,
+             "why": "A tempting guess because they are the first four letters, "
+                    "but the four bases are A, T, C and G"},
+            {"text": "A, T, C and P",
+             "correct": False,
+             "why": "P is not one of them. Phosphate is a part of DNA but it "
+                    "is not one of the four bases; the fourth is G"},
+            {"text": "A, C, G and X",
+             "correct": False,
+             "why": "X is not a base. Three of these are right, and the "
+                    "missing one is T"},
+            {"text": "A, T, C and G",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-e07",
+        "band": "easier",
+        "text": "A cheek cell, a liver cell and a plant's root hair cell all "
+                "keep their instructions in the same part of the cell. Which "
+                "part?",
+        "options": [
+            {"text": "The nucleus",
+             "correct": True},
+            {"text": "The cytoplasm",
+             "correct": False,
+             "why": "The cytoplasm is where most of the cell's chemistry "
+                    "happens. The instructions are kept apart from it, in the "
+                    "nucleus"},
+            {"text": "The cell membrane",
+             "correct": False,
+             "why": "The membrane controls what enters and leaves the cell. It "
+                    "stores nothing — the chromosomes are inside, in the "
+                    "nucleus"},
+            {"text": "A plant cell keeps them in the nucleus and an animal "
+                     "cell in the cytoplasm",
+             "correct": False,
+             "why": "Both keep them in the nucleus. That is why a root hair "
+                    "cell was listed alongside the two animal cells"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-e08",
+        "band": "easier",
+        "text": "Roughly how many genes does a human carry altogether?",
+        "options": [
+            {"text": "23",
+             "correct": False,
+             "why": "23 is the number of pairs of chromosomes, and the number "
+                    "of chromosomes in a sperm or egg cell. Genes are far more "
+                    "numerous than that"},
+            {"text": "46",
+             "correct": False,
+             "why": "46 is the number of chromosomes in a body cell. Each of "
+                    "those chromosomes carries many genes along its length"},
+            {"text": "Around twenty thousand",
+             "correct": True},
+            {"text": "Around thirty trillion",
+             "correct": False,
+             "why": "That is roughly the number of cells in a person, not the "
+                    "number of genes. Almost every one of those cells carries "
+                    "the same twenty thousand or so"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-e09",
+        "band": "easier",
+        "text": "What does the DNA in a cell do?",
+        "options": [
+            {"text": "It supplies the cell with the energy it needs to work",
+             "correct": False,
+             "why": "Energy comes from respiration. DNA is not a fuel — it is "
+                    "the store of instructions"},
+            {"text": "It carries the instructions for building and running an "
+                     "organism",
+             "correct": True},
+            {"text": "It holds the cell's shape, like a frame inside it",
+             "correct": False,
+             "why": "DNA is coiled into chromosomes for storage, not for "
+                    "support. Its job is to carry information"},
+            {"text": "It carries the waste out of the nucleus",
+             "correct": False,
+             "why": "Nothing about DNA is waste. It is the set of instructions "
+                    "the cell is built and run from, and it stays in the "
+                    "nucleus"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-e10",
+        "band": "easier",
+        "text": "A person is built from around thirty trillion cells. What is "
+                "true of almost every one of them?",
+        "options": [
+            {"text": "Each carries a different quarter of the person's "
+                     "instructions",
+             "correct": False,
+             "why": "Nothing is shared out. Each cell carries a whole copy, "
+                    "which is why one cell left on a glass is enough to "
+                    "identify somebody"},
+            {"text": "Each carries only the genes its own organ makes use of",
+             "correct": False,
+             "why": "A cell in your foot carries the gene for eye colour. What "
+                    "differs between cells is which genes are switched on, not "
+                    "which ones are there"},
+            {"text": "Each grows its own set of instructions as it develops",
+             "correct": False,
+             "why": "Nothing is grown from scratch. Every cell's set is a copy "
+                    "of the one the person started from"},
+            {"text": "Each carries an identical copy of the same complete "
+                     "instructions",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-e11",
+        "band": "easier",
+        "text": "Why is the DNA in a cell packed into chromosomes rather than "
+                "left as it is?",
+        "options": [
+            {"text": "So that the cell can decide which genes to keep and "
+                     "which to throw away",
+             "correct": False,
+             "why": "Nothing is thrown away. Every cell with a nucleus keeps "
+                    "the complete set; packing is about storage, not "
+                    "selection"},
+            {"text": "So that the instructions cannot be read by mistake",
+             "correct": False,
+             "why": "The instructions have to be readable — that is what they "
+                    "are for. Packing is what makes a very long molecule "
+                    "manageable"},
+            {"text": "So that about two metres of a very thin molecule can be "
+                     "stored and moved without tangling",
+             "correct": True},
+            {"text": "So that the DNA takes up less space by becoming shorter "
+                     "and thinner",
+             "correct": False,
+             "why": "The molecule itself is unchanged — nothing is removed and "
+                    "nothing shrinks. It is wound and coiled, the way a long "
+                    "rope is coiled to be carried"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b10-02-s05",
+        "band": "standard",
+        "text": "A student says a chromosome is where the genes are kept, in "
+                "the way a tin keeps a set of pencils. What is wrong with the "
+                "comparison?",
+        "options": [
+            {"text": "A gene is part of the chromosome itself, not an object "
+                     "held inside it",
+             "correct": True},
+            {"text": "The genes are kept in the nucleus, and the chromosomes "
+                     "are kept somewhere else",
+             "correct": False,
+             "why": "The chromosomes are in the nucleus and the genes are "
+                    "lengths of those chromosomes. Nothing is kept anywhere "
+                    "else"},
+            {"text": "A chromosome holds far too many genes for a tin to be a "
+                     "fair comparison",
+             "correct": False,
+             "why": "The number is not the problem. Even a tin holding "
+                    "thousands of pencils would still be a container with "
+                    "separate objects in it, and that is the part that fails"},
+            {"text": "Nothing is wrong with it — a chromosome is a package, "
+                     "which is what a tin is",
+             "correct": False,
+             "why": "A chromosome is packed DNA, and packed is not the same as "
+                    "packaging. There is no wrapper: the container and the "
+                    "contents are one molecule"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-s06",
+        "band": "standard",
+        "text": "Two genes are the same length and contain exactly the same "
+                "numbers of A, T, C and G, yet they carry different "
+                "instructions. How is that possible?",
+        "options": [
+            {"text": "One of them must be on a chromosome from the mother and "
+                     "one from the father",
+             "correct": False,
+             "why": "Which parent a chromosome came from does not change what "
+                    "its genes say. The information is in the sequence"},
+            {"text": "One of them must be switched on and the other switched "
+                     "off",
+             "correct": False,
+             "why": "Switching decides whether a gene is being used, not what "
+                    "it says. A switched-off gene carries exactly the same "
+                    "instruction it always did"},
+            {"text": "The bases are in a different order, and the order is the "
+                     "instruction",
+             "correct": True},
+            {"text": "They cannot carry different instructions if they are "
+                     "made of the same bases",
+             "correct": False,
+             "why": "The same twenty-six letters write every book in a "
+                    "library. What differs between two genes is the order the "
+                    "four bases run in"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-s07",
+        "band": "standard",
+        "text": "A human body cell has 46 chromosomes and a human carries "
+                "around twenty thousand genes. How do 46 chromosomes hold "
+                "twenty thousand genes?",
+        "options": [
+            {"text": "Most of the genes are stored outside the chromosomes, "
+                     "elsewhere in the nucleus",
+             "correct": False,
+             "why": "There is nowhere else. Every gene is a length of the DNA "
+                    "in one of the 46 chromosomes"},
+            {"text": "Each chromosome is one very long DNA molecule with many "
+                     "genes along its length",
+             "correct": True},
+            {"text": "Each chromosome is used over and over, carrying a "
+                     "different gene at different times",
+             "correct": False,
+             "why": "A gene does not move about and a chromosome does not take "
+                    "turns. Every gene sits at its own place on its own "
+                    "chromosome, permanently"},
+            {"text": "The twenty thousand is counted across all the person's "
+                     "cells added together",
+             "correct": False,
+             "why": "Around twenty thousand is the number in one cell, and "
+                    "almost every cell has the same set. Adding cells up would "
+                    "give the same genes counted thirty trillion times"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-s08",
+        "band": "standard",
+        "text": "A skin cell divides into two new skin cells. What does each "
+                "of the two new cells end up with?",
+        "options": [
+            {"text": "23 chromosomes each, because the 46 were shared between "
+                     "them",
+             "correct": False,
+             "why": "That is what happens when gametes are made, and it would "
+                    "leave a skin cell with half a set. Ordinary body cells "
+                    "each keep the full 46"},
+            {"text": "Only the genes a skin cell has switched on, since the "
+                     "rest were not needed",
+             "correct": False,
+             "why": "Nothing is left behind. Both new cells carry the complete "
+                    "set, and switching decides only which of it gets used"},
+            {"text": "Half the DNA each, so the molecule has to be rebuilt "
+                     "afterwards",
+             "correct": False,
+             "why": "Nothing is torn in half. Each new cell receives a "
+                    "complete copy of all 46 chromosomes"},
+            {"text": "A complete copy of all 46 chromosomes",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-s09",
+        "band": "standard",
+        "text": "A mature red blood cell has no nucleus. What follows from "
+                "that?",
+        "options": [
+            {"text": "It carries no chromosomes at all, unlike almost every "
+                     "other cell in the body",
+             "correct": True},
+            {"text": "It carries only the genes it needs for making "
+                     "haemoglobin",
+             "correct": False,
+             "why": "It carries none. Losing the nucleus means losing the "
+                    "whole set, not keeping a useful part of it"},
+            {"text": "It cannot be a living cell, since every living cell has "
+                     "a nucleus",
+             "correct": False,
+             "why": "It is a living cell doing a demanding job. What it has "
+                    "given up is the storage space its chromosomes took, in "
+                    "exchange for room to carry oxygen"},
+            {"text": "It reads its instructions from the cells around it "
+                     "instead",
+             "correct": False,
+             "why": "Instructions do not pass between cells like that. A red "
+                    "blood cell simply works without a set, which is why it "
+                    "has a short life"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-s10",
+        "band": "standard",
+        "text": "A student writes: \"Genes are made of DNA, and chromosomes "
+                "are made of genes.\" One half of that is right. Which, and "
+                "why is the other half wrong?",
+        "options": [
+            {"text": "Both halves are right — a chromosome is a row of genes "
+                     "made of DNA",
+             "correct": False,
+             "why": "A chromosome is one continuous DNA molecule. The genes "
+                    "are lengths marked out along it, with more DNA between "
+                    "them, so it is not built out of genes"},
+            {"text": "The first half is right; a chromosome is one DNA "
+                     "molecule with genes marked out along it",
+             "correct": True},
+            {"text": "The second half is right; a gene is not made of DNA but "
+                     "sits on top of it",
+             "correct": False,
+             "why": "That is the wrong way round. A gene is DNA — a section of "
+                    "it — and nothing sits on top of anything"},
+            {"text": "Neither half is right; genes, chromosomes and DNA are "
+                     "three separate things in the nucleus",
+             "correct": False,
+             "why": "They are one thing at three magnifications. Asking "
+                    "whether the nucleus holds chromosomes or DNA is like "
+                    "asking whether a library holds books or paper"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-s11",
+        "band": "standard",
+        "text": "The 46 chromosomes in a human body cell are described as 23 "
+                "pairs rather than as 46 separate chromosomes. Why?",
+        "options": [
+            {"text": "Because they are stored in the nucleus two at a time, "
+                     "side by side",
+             "correct": False,
+             "why": "How they sit in the nucleus is not the reason. They are "
+                    "called pairs because the two members of a pair match each "
+                    "other"},
+            {"text": "Because the two members of each pair match, carrying the "
+                     "same genes, one having come from each parent",
+             "correct": True},
+            {"text": "Because a cell always makes a spare copy of each "
+                     "chromosome in case one is damaged",
+             "correct": False,
+             "why": "Neither is a spare. Both are used, and the two came from "
+                    "different parents rather than from a copying step"},
+            {"text": "Because 46 is an even number, so the chromosomes can be "
+                     "counted in twos",
+             "correct": False,
+             "why": "Counting in twos is not pairing. The pairs are real — "
+                    "each is two matching chromosomes, one from each parent"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b10-02-h05",
+        "band": "harder",
+        "text": "A forensic scientist can read a person's DNA from a hair "
+                "pulled out at the root, but not from a cut length of the "
+                "hair shaft. Explain the difference.",
+        "options": [
+            {"text": "Cutting a hair damages the DNA inside it, while pulling "
+                     "it leaves the DNA whole",
+             "correct": False,
+             "why": "The scissors are not the problem. The shaft has no cells "
+                    "with nuclei in it to hold DNA in the first place"},
+            {"text": "The root is still growing, so it is making new DNA that "
+                     "the shaft has used up",
+             "correct": False,
+             "why": "DNA is not used up. What the root has and the shaft has "
+                    "not is living cells with nuclei"},
+            {"text": "The shaft is further from the head, so its DNA has been "
+                     "worn away by washing",
+             "correct": False,
+             "why": "Washing does not strip DNA out of cells. The shaft never "
+                    "carried nucleated cells to begin with"},
+            {"text": "The root carries living cells with nuclei; the shaft "
+                     "does not",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-h06",
+        "band": "harder",
+        "text": "A water flea carries more genes than a human does. What is "
+                "the strongest thing that fact tells you?",
+        "options": [
+            {"text": "That counting genes is not a way of measuring how "
+                     "complex an organism is",
+             "correct": True},
+            {"text": "That water fleas are more complex than humans, which "
+                     "biologists had not expected",
+             "correct": False,
+             "why": "That is the same reasoning with a different answer. The "
+                    "count does not track complexity in either direction, "
+                    "which is precisely the finding"},
+            {"text": "That the water flea's genes must each be much shorter "
+                     "than a human gene",
+             "correct": False,
+             "why": "Nothing in the count says anything about length. The "
+                    "point is that a gene total does not measure what people "
+                    "assumed it measured"},
+            {"text": "That humans must have lost genes they once had",
+             "correct": False,
+             "why": "An invented history to rescue the assumption. Two species "
+                    "having different gene totals needs no story about loss — "
+                    "the totals simply do not rank anything"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-h07",
+        "band": "harder",
+        "text": "Every cell with a nucleus is said to carry the complete set "
+                "of instructions. A sperm cell has a nucleus and carries 23 "
+                "chromosomes. Is the claim broken?",
+        "options": [
+            {"text": "Yes — 23 is half a set, so a sperm is missing half the "
+                     "instructions",
+             "correct": False,
+             "why": "It has one of every pair, so every instruction is there "
+                    "once. What it lacks is the second copy, not half the "
+                    "information"},
+            {"text": "Yes — a sperm keeps only the genes needed to fertilise "
+                     "an egg",
+             "correct": False,
+             "why": "No cell selects its genes that way. A sperm carries a "
+                    "complete single set, chosen one from each pair"},
+            {"text": "No — it carries one of each pair, so it holds one "
+                     "complete copy rather than the usual two",
+             "correct": True},
+            {"text": "No — a sperm cell has 46 like every other cell, and 23 "
+                     "is the number of pairs",
+             "correct": False,
+             "why": "A sperm really does carry 23 single chromosomes. If it "
+                    "carried 46 the fertilised egg would have 92"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-h08",
+        "band": "harder",
+        "text": "A student says the DNA in a daffodil must be a different "
+                "substance from the DNA in a dog, because the two organisms "
+                "are so unlike each other. What is the best reply?",
+        "options": [
+            {"text": "She is right — plant DNA uses different bases from "
+                     "animal DNA",
+             "correct": False,
+             "why": "The same four bases, A, T, C and G, are used throughout "
+                    "living things. Different bases would make the two "
+                    "unrelated substances, and they are not"},
+            {"text": "It is the same kind of molecule with the same four "
+                     "bases, in a different order",
+             "correct": True},
+            {"text": "She is right, because a plant cell has no nucleus to "
+                     "keep DNA in",
+             "correct": False,
+             "why": "Plant cells have nuclei — a root hair cell keeps its "
+                    "chromosomes in exactly the same place a cheek cell does"},
+            {"text": "It is the same molecule, and the two organisms differ "
+                     "because a daffodil has fewer chromosomes",
+             "correct": False,
+             "why": "Chromosome number is only how the DNA is packaged. A dog "
+                    "has 78 and a potato 48, and neither number says what the "
+                    "instructions are"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-h09",
+        "band": "harder",
+        "text": "A gene is described as the instruction for one "
+                "characteristic. A student concludes that a person with "
+                "twenty thousand genes must have exactly twenty thousand "
+                "characteristics. Why does the arithmetic fail?",
+        "options": [
+            {"text": "Because a person has far more than twenty thousand "
+                     "characteristics, so some genes must do more than one "
+                     "job",
+             "correct": False,
+             "why": "Half right, and it misses the other half. Many genes do "
+                    "affect more than one characteristic, but many "
+                    "characteristics also need a great many genes at once"},
+            {"text": "Because the twenty thousand is only an estimate, and the "
+                     "true number is much larger",
+             "correct": False,
+             "why": "The estimate is good, and its being an estimate is not "
+                    "the flaw. The flaw is treating one gene and one "
+                    "characteristic as a matching pair"},
+            {"text": "Because some genes are switched off, so those "
+                     "characteristics never appear",
+             "correct": False,
+             "why": "A gene switched off in one cell is switched on in "
+                    "another. Switching is about where a gene is used, not "
+                    "about characteristics going missing from the count"},
+            {"text": "Because one gene to one characteristic is a "
+                     "simplification — most characteristics take many genes, "
+                     "and many genes affect several",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-h10",
+        "band": "harder",
+        "text": "A gene is switched off in a skin cell for the whole of that "
+                "cell's life. When the cell divides, is that gene passed to "
+                "the two new cells?",
+        "options": [
+            {"text": "Yes — the copy includes every gene, whether it was being "
+                     "used or not",
+             "correct": True},
+            {"text": "No — a gene that is never used is lost when the cell "
+                     "divides",
+             "correct": False,
+             "why": "Nothing is dropped for being unused. If it were, the "
+                    "skin cells of a person's arm would slowly lose the genes "
+                    "for everything else"},
+            {"text": "Only if the new cells will need it, because a cell "
+                     "copies what its daughters will use",
+             "correct": False,
+             "why": "A dividing cell cannot know what will be needed later, "
+                    "and does not choose. It copies all 46 chromosomes"},
+            {"text": "No — switched-off genes are stored separately and stay "
+                     "in the parent cell",
+             "correct": False,
+             "why": "There is no separate store. A switched-off gene sits in "
+                    "its own place on its own chromosome, and the chromosome "
+                    "is copied whole"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-02-h11",
+        "band": "harder",
+        "text": "A student says four bases is far too small an alphabet to "
+                "hold the instructions for a whole organism. What is the best "
+                "reply?",
+        "options": [
+            {"text": "She is right, which is why most characteristics need "
+                     "many genes rather than one",
+             "correct": False,
+             "why": "Many genes per characteristic is true and is a separate "
+                    "matter. It is not a patch for a shortage of letters, "
+                    "because there is no shortage"},
+            {"text": "She is right about DNA on its own, and the proteins "
+                     "wound through a chromosome supply the rest",
+             "correct": False,
+             "why": "The proteins are packing, not information. Every "
+                    "instruction is in the order of the bases"},
+            {"text": "A sequence millions of bases long gives an "
+                     "unimaginable number of possible orders, so four is "
+                     "plenty",
+             "correct": True},
+            {"text": "There are really twenty thousand bases, one for each "
+                     "gene",
+             "correct": False,
+             "why": "There are four bases and around twenty thousand genes. "
+                    "Each gene is a long run of those same four, which is "
+                    "exactly how four is enough"},
+        ],
+        "figure": None,
+    },
 ]

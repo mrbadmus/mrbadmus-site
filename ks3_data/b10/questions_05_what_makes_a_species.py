@@ -383,4 +383,543 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b10-05-e05",
+        "band": "easier",
+        "text": "A horse has 64 chromosomes in a body cell and a donkey has "
+                "62. How many does a mule have?",
+        "options": [
+            {"text": "62, matching its donkey parent.",
+             "correct": False,
+             "why": "A mule gets half its chromosomes from each parent, not "
+                    "all of them from one. Half of 64 and half of 62 make 63."},
+            {"text": "63, half from each parent.",
+             "correct": True},
+            {"text": "126, a full set from each parent.",
+             "correct": False,
+             "why": "Gametes carry half a set. Adding two full sets would "
+                    "double the number every generation, which is not what "
+                    "happens."},
+            {"text": "64, matching its horse parent.",
+             "correct": False,
+             "why": "It receives 32 from the horse and 31 from the donkey. "
+                    "Taking one parent's total would ignore the other parent "
+                    "altogether."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-e06",
+        "band": "easier",
+        "text": "What is a ring species?",
+        "options": [
+            {"text": "A species whose members live in a circle around a "
+                     "single feature, such as a lake.",
+             "correct": False,
+             "why": "The shape on the map is not what the term is about. It is "
+                    "about who will breed with whom along a chain of "
+                    "populations."},
+            {"text": "A species that has been divided into two by a barrier "
+                     "such as a mountain range.",
+             "correct": False,
+             "why": "That is two populations separated. A ring species is the "
+                    "harder case, where the populations are still joined all "
+                    "the way round and only the two ends refuse each other."},
+            {"text": "A chain of populations where each breeds with its "
+                     "neighbours but the two ends do not.",
+             "correct": True},
+            {"text": "A group of species that all descended from one original "
+                     "species.",
+             "correct": False,
+             "why": "Shared ancestry is a fact about history. A ring species "
+                    "is defined by which populations will breed together "
+                    "today."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-e07",
+        "band": "easier",
+        "text": "How many species do all the breeds of dog belong to?",
+        "options": [
+            {"text": "One, because the offspring of any two breeds can "
+                     "themselves have offspring.",
+             "correct": True},
+            {"text": "Two, one for the large breeds and one for the small.",
+             "correct": False,
+             "why": "Size is appearance, and appearance is not the test. A "
+                    "great dane and a chihuahua produce fertile offspring, so "
+                    "they are one species."},
+            {"text": "As many as there are breeds, since each breeds true.",
+             "correct": False,
+             "why": "Breeding true within a kennel is not the test either. Any "
+                    "two breeds can produce offspring that go on to have "
+                    "offspring of their own."},
+            {"text": "One for every breed that can be told apart from a "
+                     "single bone.",
+             "correct": False,
+             "why": "A vet really can do that, and it still settles nothing. "
+                    "Skulls differ enormously within this one species."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-e08",
+        "band": "easier",
+        "text": "Lions and tigers have produced ligers in captivity. What is "
+                "true of the male ligers?",
+        "options": [
+            {"text": "They are unable to survive to adulthood.",
+             "correct": False,
+             "why": "Ligers grow large and live. Being unable to reproduce is "
+                    "a different thing from being unable to survive."},
+            {"text": "They can reproduce, which is why lions and tigers are "
+                     "one species.",
+             "correct": False,
+             "why": "The male hybrids are infertile, and that is the evidence "
+                    "that lions and tigers are two species rather than one."},
+            {"text": "They can only reproduce with a lion, never with a "
+                     "tiger.",
+             "correct": False,
+             "why": "They cannot reproduce with either. A few female hybrids "
+                    "have had offspring, and the males have not."},
+            {"text": "They are infertile.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-e09",
+        "band": "easier",
+        "text": "Most British dandelions produce seed without fertilisation. "
+                "What does each of those seeds grow into?",
+        "options": [
+            {"text": "A plant with half the parent's chromosomes.",
+             "correct": False,
+             "why": "Halving happens when gametes are made for fertilisation. "
+                    "With no fertilisation involved, the new plant carries the "
+                    "parent's full set."},
+            {"text": "A clone of the parent plant.",
+             "correct": True},
+            {"text": "A hybrid of the parent and whichever plant pollinated "
+                     "it.",
+             "correct": False,
+             "why": "Nothing pollinated it — that is the whole point. With no "
+                    "second parent there is no mixing of any kind."},
+            {"text": "A plant that varies from the parent as much as any "
+                     "seedling does.",
+             "correct": False,
+             "why": "Ordinary seedlings vary because they receive versions "
+                    "from two parents. Here the new plant is a copy of one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-e10",
+        "band": "easier",
+        "text": "Which of these pairs is two different species?",
+        "options": [
+            {"text": "A great dane and a chihuahua.",
+             "correct": False,
+             "why": "One species, however unalike they look. Their offspring "
+                    "can themselves have offspring, which is the only thing "
+                    "the test asks."},
+            {"text": "A labrador and a poodle.",
+             "correct": False,
+             "why": "Two breeds of one species. A labradoodle can have "
+                    "puppies of its own, so the test is satisfied."},
+            {"text": "A horse and a donkey.",
+             "correct": True},
+            {"text": "Two herring gulls from the same colony.",
+             "correct": False,
+             "why": "Birds of one population that breed together and raise "
+                    "fertile young. The interesting gull case is at the two "
+                    "ends of a long chain, not inside one colony."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b10-05-s05",
+        "band": "standard",
+        "text": "Botanists have named over two hundred British dandelion "
+                "microspecies. Why does that number depend on the botanists "
+                "rather than on the dandelions?",
+        "options": [
+            {"text": "Because the plants do not interbreed, so the botanists "
+                     "must choose how finely to divide their inherited "
+                     "differences.",
+             "correct": True},
+            {"text": "Because dandelions are so common that nobody has counted "
+                     "them all properly yet.",
+             "correct": False,
+             "why": "Effort is not the difficulty. However carefully they are "
+                    "studied, there is no breeding to test, so no natural line "
+                    "appears in the data."},
+            {"text": "Because dandelions change so quickly that the number is "
+                     "out of date as soon as it is published.",
+             "correct": False,
+             "why": "The plants are not shifting under the botanists' feet. "
+                    "The problem is that the usual test cannot be run on "
+                    "organisms that clone themselves."},
+            {"text": "Because botanists disagree about what the word species "
+                     "means.",
+             "correct": False,
+             "why": "They agree on the definition perfectly well. It simply "
+                    "has nothing to grip on when the organisms never "
+                    "interbreed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-s06",
+        "band": "standard",
+        "text": "A great dane and a chihuahua cannot mate without veterinary "
+                "help. Does that practical difficulty make them two species?",
+        "options": [
+            {"text": "Yes — if two animals cannot mate unaided, they have "
+                     "separated into two species.",
+             "correct": False,
+             "why": "The obstacle here is a difference in size, not in "
+                    "biology. Once the puppies exist they are healthy and can "
+                    "have puppies of their own."},
+            {"text": "Yes — needing human help means the offspring are not "
+                     "natural offspring.",
+             "correct": False,
+             "why": "The offspring are ordinary dogs. How the mating was "
+                    "arranged does not change whether the young can "
+                    "reproduce."},
+            {"text": "It cannot be decided, because the test can only be "
+                     "applied to animals that mate unaided.",
+             "correct": False,
+             "why": "The test can be applied here, and it has been. What it "
+                    "asks is whether the offspring are fertile, and these "
+                    "are."},
+            {"text": "No — the puppies are fertile, and that is the whole of "
+                     "the test.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-s07",
+        "band": "standard",
+        "text": "Lions and tigers do not meet in the wild. A student says "
+                "that alone makes them two species. What is wrong with the "
+                "argument?",
+        "options": [
+            {"text": "Nothing is wrong — living apart is exactly what "
+                     "separates one species into two.",
+             "correct": False,
+             "why": "Living apart may be how two species came to form, but it "
+                    "is not the test. Two populations of one species can be "
+                    "separated by an ocean and stay one species."},
+            {"text": "Living apart is not the test — what settles it here is "
+                     "that the hybrids cannot reproduce.",
+             "correct": True},
+            {"text": "It is wrong because they do meet after all, since ligers "
+                     "and tigons exist.",
+             "correct": False,
+             "why": "Ligers are born in captivity, where people put the "
+                    "parents together. The student's fact is right; it is the "
+                    "reasoning from it that fails."},
+            {"text": "It is wrong because two species always have different "
+                     "numbers of chromosomes.",
+             "correct": False,
+             "why": "They often do not. Lions and tigers have the same number, "
+                    "and some quite different species share a chromosome "
+                    "count."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-s08",
+        "band": "standard",
+        "text": "Bacteria swap sections of DNA with unrelated bacteria. Why "
+                "does that make deciding their species harder still, on top "
+                "of their not breeding?",
+        "options": [
+            {"text": "Because it means bacteria are all really one species.",
+             "correct": False,
+             "why": "Swapping sections does not merge everything into one "
+                    "group. It blurs the boundaries between groups that are "
+                    "otherwise clearly different."},
+            {"text": "Because it means their DNA changes far too fast for any "
+                     "measurement to keep pace with it.",
+             "correct": False,
+             "why": "Sequences can be measured perfectly well. The difficulty "
+                    "is that similarity between two bacteria may come from "
+                    "swapping rather than from shared ancestry."},
+            {"text": "Because the fallback method compares DNA, and DNA moving "
+                     "between unrelated bacteria blurs those differences.",
+             "correct": True},
+            {"text": "Because swapping DNA counts as breeding, so the usual "
+                     "test does apply after all.",
+             "correct": False,
+             "why": "Breeding means two parents producing offspring. Passing a "
+                    "section of DNA to a neighbour produces no offspring at "
+                    "all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-s09",
+        "band": "standard",
+        "text": "A small number of female ligers have had offspring. Does "
+                "that overturn the verdict that lions and tigers are two "
+                "species?",
+        "options": [
+            {"text": "No — it is a real complication, and it is why biologists "
+                     "ask how strongly two populations are separated.",
+             "correct": True},
+            {"text": "Yes — a single fertile hybrid is enough to show that the "
+                     "two parents were one species all along.",
+             "correct": False,
+             "why": "The male hybrids are infertile and the two animals never "
+                    "breed together in nature. A rare exception is weighed "
+                    "against all of that, not allowed to cancel it."},
+            {"text": "No — those offspring must have been fathered by a lion "
+                     "or a tiger, so they do not count.",
+             "correct": False,
+             "why": "Explaining the awkward result away is not needed. The "
+                    "honest position is that the exception is real and does "
+                    "not overturn the weight of the rest."},
+            {"text": "Yes — the definition allows no exceptions, so it must be "
+                     "abandoned here.",
+             "correct": False,
+             "why": "A definition that strains at the edges is what you should "
+                    "expect if species form gradually. Abandoning it would "
+                    "throw away the answer it gives in every clear case."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-s10",
+        "band": "standard",
+        "text": "Two animals are found to have the same number of "
+                "chromosomes. Does that make them the same species?",
+        "options": [
+            {"text": "Yes — matching numbers are what allow two animals to "
+                     "breed at all.",
+             "correct": False,
+             "why": "Lions and tigers both have 38 and are two species. A "
+                    "matching count helps a cross work; it does not answer the "
+                    "question the definition asks."},
+            {"text": "Yes, as long as they also look alike enough to be "
+                     "grouped together.",
+             "correct": False,
+             "why": "Two conditions that are both clues do not add up to a "
+                    "test. Cryptic species look identical and do not "
+                    "interbreed."},
+            {"text": "Only if the two animals also live in the same place and "
+                     "meet each other.",
+             "correct": False,
+             "why": "Where they live is another clue rather than the test. "
+                    "Populations of one species may be separated by a "
+                    "continent."},
+            {"text": "No — the test is fertile offspring, and some different "
+                     "species share a chromosome number.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b10-05-h05",
+        "band": "harder",
+        "text": "Around the Arctic, each gull population breeds with its "
+                "neighbours, but where the two ends of the chain meet in "
+                "Britain the birds behave as two species. Why is that what "
+                "you should expect?",
+        "options": [
+            {"text": "Because gulls are unusually willing to breed with birds "
+                     "unlike themselves.",
+             "correct": False,
+             "why": "Willingness is not what makes the chain. What matters is "
+                    "that each neighbouring pair of populations is only "
+                    "slightly different, and the differences add up round the "
+                    "ring."},
+            {"text": "Because species form gradually as populations drift "
+                     "apart, so a process caught halfway has no sharp line.",
+             "correct": True},
+            {"text": "Because the birds at the two ends have been counted as "
+                     "two species by mistake.",
+             "correct": False,
+             "why": "The two ends genuinely do not interbreed where they meet. "
+                    "The awkwardness is real, and it is informative rather "
+                    "than an error."},
+            {"text": "Because the definition only applies to animals that stay "
+                     "in one place all their lives.",
+             "correct": False,
+             "why": "There is no such restriction. The definition works "
+                    "wherever breeding can be observed, and here it works "
+                    "perfectly well — it simply gives different answers at "
+                    "different points on the ring."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-h06",
+        "band": "harder",
+        "text": "Two populations of fish that look alike are kept together in "
+                "one large tank for three breeding seasons. Each population "
+                "breeds within itself every season, nothing prevents them "
+                "physically, and the two never cross. What does that suggest?",
+        "options": [
+            {"text": "Two species — they had the opportunity and did not "
+                     "breed together, which is what separated the "
+                     "pipistrelles.",
+             "correct": True},
+            {"text": "Nothing yet — fish often refuse to breed in captivity, "
+                     "so the result cannot mean anything.",
+             "correct": False,
+             "why": "Each population bred within itself for three seasons, so "
+                    "captivity was not stopping them. What they did not do was "
+                    "cross."},
+            {"text": "One species — looking alike is strong evidence, and no "
+                     "hybrid was produced to contradict it.",
+             "correct": False,
+             "why": "Looking alike is precisely what cryptic species do. The "
+                    "absence of a hybrid is evidence against one species, not "
+                    "for it."},
+            {"text": "One species — until a hybrid is produced and tested, the "
+                     "definition cannot be applied at all.",
+             "correct": False,
+             "why": "Waiting for a hybrid that never comes is not neutral. "
+                    "Refusing to breed when they easily could is itself the "
+                    "observation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-h07",
+        "band": "harder",
+        "text": "Two kinds of frog share a pond and occasionally produce "
+                "tadpoles together. Those tadpoles always die before reaching "
+                "adulthood. One species or two?",
+        "options": [
+            {"text": "One — they produced offspring together, which is what "
+                     "the definition asks for.",
+             "correct": False,
+             "why": "The definition asks for fertile offspring. A tadpole that "
+                    "never becomes an adult never reproduces, so the two lines "
+                    "go nowhere together."},
+            {"text": "It cannot be decided — the tadpoles died before they "
+                     "could be tested.",
+             "correct": False,
+             "why": "Dying before adulthood is the test result. Offspring that "
+                    "cannot possibly reproduce answer the question as "
+                    "definitely as infertile adults do."},
+            {"text": "One — sharing a pond and breeding at all shows they have "
+                     "not separated.",
+             "correct": False,
+             "why": "Horses and donkeys mate readily and are two species. "
+                    "Being able to start offspring is only half of what the "
+                    "definition requires."},
+            {"text": "Two — no offspring of the cross ever reproduces, so the "
+                     "test fails.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-h08",
+        "band": "harder",
+        "text": "A mule is called a genetic dead end. A student takes that to "
+                "mean a mule is a weak or unhealthy animal. Why is that the "
+                "wrong reading?",
+        "options": [
+            {"text": "Mules are strong, long-lived and healthy — the dead end "
+                     "is that nothing passes on beyond them.",
+             "correct": True},
+            {"text": "Mules are indeed weak, unhealthy animals, which is the "
+                     "reason they cannot reproduce at all.",
+             "correct": False,
+             "why": "They have been bred deliberately for four thousand years "
+                    "because they are strong and hardy. Their infertility has "
+                    "nothing to do with poor health."},
+            {"text": "The phrase describes the horse and donkey rather than "
+                     "the mule.",
+             "correct": False,
+             "why": "Horses and donkeys both reproduce perfectly well within "
+                    "their own species. It is the mule's own line that stops."},
+            {"text": "The phrase is about the mule's own short life rather "
+                     "than about its offspring.",
+             "correct": False,
+             "why": "Mules are notably long-lived. What ends is the line, not "
+                    "the animal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-h09",
+        "band": "harder",
+        "text": "A mule has 63 chromosomes and is infertile. A lion and a "
+                "tiger each have 38, so a liger has 38 — an even number — and "
+                "male ligers are infertile too. What does the pair of cases "
+                "show?",
+        "options": [
+            {"text": "That chromosome number has nothing to do with hybrid "
+                     "infertility in either of the two cases.",
+             "correct": False,
+             "why": "It has a great deal to do with the mule: 63 cannot be "
+                    "sorted into pairs. What the liger adds is narrower than "
+                    "throwing the explanation out."},
+            {"text": "That the liger numbers must be wrong, since an even "
+                     "total should pair up.",
+             "correct": False,
+             "why": "The numbers are right, and correcting the awkward case "
+                    "away is the wrong move. It is the rule being tested that "
+                    "needs narrowing."},
+            {"text": "That an odd number explains the mule, but an even total "
+                     "is no guarantee — the sets must match.",
+             "correct": True},
+            {"text": "That infertility in hybrids is always caused by the two "
+                     "parents having lived in different places.",
+             "correct": False,
+             "why": "Where the parents live cannot reach inside a cell. Lions "
+                    "and tigers kept together still produce infertile male "
+                    "hybrids."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-05-h10",
+        "band": "harder",
+        "text": "A student says the species definition is a poor one, because "
+                "it fails for bacteria, for cloning dandelions and for "
+                "fossils. What is the best reply?",
+        "options": [
+            {"text": "He is right, and biologists should replace it with a "
+                     "rule based on comparing DNA in every case.",
+             "correct": False,
+             "why": "A DNA rule needs a line drawn at a chosen level of "
+                    "similarity. Where breeding can be tested, the definition "
+                    "answers the question directly and no line has to be "
+                    "chosen."},
+            {"text": "It answers the question directly wherever breeding can "
+                     "be tested, and where it cannot, biologists say so and "
+                     "use another method.",
+             "correct": True},
+            {"text": "He is right, and it is why the number of species on "
+                     "Earth can never be known.",
+             "correct": False,
+             "why": "The difficulty is real for some groups and does not "
+                    "spread to all of them. For most animals and plants the "
+                    "test can be applied and does settle the case."},
+            {"text": "He is wrong, because the definition works for bacteria "
+                     "and dandelions as well once you look closely enough.",
+             "correct": False,
+             "why": "Looking closely does not help when the organisms do not "
+                    "breed. The honest position is that the test has known "
+                    "limits, not that it secretly covers everything."},
+        ],
+        "figure": None,
+    },
 ]

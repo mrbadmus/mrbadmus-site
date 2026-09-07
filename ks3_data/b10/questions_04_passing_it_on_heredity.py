@@ -396,4 +396,524 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b10-04-e05",
+        "band": "easier",
+        "text": "Which of these describes a gamete?",
+        "options": [
+            {"text": "A fertilised egg, carrying a full set of chromosomes "
+                     "with half from each of its parents.",
+             "correct": False,
+             "why": "That is what two gametes make between them. A gamete is "
+                    "one of the two cells that fuse, and it carries half a "
+                    "set."},
+            {"text": "Any cell that is about to divide into two new cells of "
+                     "the same kind.",
+             "correct": False,
+             "why": "Ordinary body cells divide all the time and are not "
+                    "gametes. A gamete is a sex cell, made specially with half "
+                    "a set of chromosomes."},
+            {"text": "A version of a gene, such as the one for white flowers "
+                     "rather than purple.",
+             "correct": False,
+             "why": "A version is part of the information. A gamete is a whole "
+                    "cell that carries the information from one parent."},
+            {"text": "A sex cell — a sperm, an egg or a pollen grain — with "
+                     "one chromosome from every pair.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e06",
+        "band": "easier",
+        "text": "What happens at fertilisation?",
+        "options": [
+            {"text": "A seed takes in water and starts to grow into a young "
+                     "plant.",
+             "correct": False,
+             "why": "That is germination, and it happens later. Fertilisation "
+                    "is the moment two gametes fuse and the new combination is "
+                    "fixed."},
+            {"text": "Two gametes fuse, so the offspring has a full set of "
+                     "chromosomes again, half from each parent.",
+             "correct": True},
+            {"text": "A parent's chromosomes are halved so that a gamete can "
+                     "be made.",
+             "correct": False,
+             "why": "That is what happens before fertilisation, when the "
+                    "gametes are made. Fertilisation is the joining that puts "
+                    "the number back."},
+            {"text": "The versions of a gene from the two parents blend into a "
+                     "single new version.",
+             "correct": False,
+             "why": "Nothing blends. The two versions arrive whole, sit side "
+                    "by side, and can be passed on separately for "
+                    "generations."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e07",
+        "band": "easier",
+        "text": "In a cross, what does the word offspring refer to?",
+        "options": [
+            {"text": "The new organisms produced by a pair of parents.",
+             "correct": True},
+            {"text": "The characteristics an organism passes on to the next "
+                     "generation.",
+             "correct": False,
+             "why": "Those are what is passed on. The offspring are the new "
+                    "organisms that receive them."},
+            {"text": "The gametes a parent makes before fertilisation.",
+             "correct": False,
+             "why": "A gamete is a cell, and two of them are needed. The "
+                    "offspring is the organism that grows from the pair once "
+                    "they have fused."},
+            {"text": "Only the offspring that survive to become adults "
+                     "themselves.",
+             "correct": False,
+             "why": "All of them count, whether they survive or not. Surviving "
+                    "is a separate question from being offspring."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e08",
+        "band": "easier",
+        "text": "A pea plant is described as pure-breeding for flower colour. "
+                "What does that mean?",
+        "options": [
+            {"text": "It has never been crossed with a plant of a different "
+                     "colour.",
+             "correct": False,
+             "why": "Its own history is not what the word describes. "
+                    "Pure-breeding is about the two versions the plant is "
+                    "carrying right now."},
+            {"text": "Its flowers are a stronger colour than an ordinary "
+                     "plant's.",
+             "correct": False,
+             "why": "The shade of the flower has nothing to do with it. "
+                    "Pure-breeding means the two versions it carries are "
+                    "identical."},
+            {"text": "It carries two identical versions of the gene, so every "
+                     "offspring receives the same one.",
+             "correct": True},
+            {"text": "It always produces offspring that look exactly like both "
+                     "of its parents.",
+             "correct": False,
+             "why": "What the offspring look like also depends on the other "
+                    "parent. A pure-breeding white plant crossed with a "
+                    "pure-breeding purple one gives purple offspring."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e09",
+        "band": "easier",
+        "text": "In the pea cross, flower colour is written with a capital P "
+                "and a small p. What does the capital letter stand for?",
+        "options": [
+            {"text": "The version that came from the plant's mother rather "
+                     "than its father.",
+             "correct": False,
+             "why": "Either version can arrive from either parent. The letters "
+                    "say nothing about which parent supplied them."},
+            {"text": "The version a pure-breeding plant carries, as opposed to "
+                     "a mixed one.",
+             "correct": False,
+             "why": "A pure-breeding plant may carry two P versions or two p "
+                    "versions. What the capital marks is the version that "
+                    "shows."},
+            {"text": "The version that is present in larger amounts inside the "
+                     "cell.",
+             "correct": False,
+             "why": "There is one copy of each, sitting on the two "
+                    "chromosomes of a pair. Amount is not what the capital is "
+                    "recording."},
+            {"text": "The version that shows — a plant with at least one P is "
+                     "purple.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e10",
+        "band": "easier",
+        "text": "A pea plant has white flowers. Which pair of versions must "
+                "it be carrying?",
+        "options": [
+            {"text": "PP",
+             "correct": False,
+             "why": "A plant carrying P shows purple. Two of them makes purple "
+                    "doubly certain, not white."},
+            {"text": "pp",
+             "correct": True},
+            {"text": "Pp",
+             "correct": False,
+             "why": "A Pp plant is purple. The one P is enough to show, which "
+                    "is why a p version can be carried without being seen."},
+            {"text": "It could be pp or Pp — you cannot tell from the flower.",
+             "correct": False,
+             "why": "That is true the other way round: a purple plant may be "
+                    "PP or Pp. A white plant has nothing hidden, because a "
+                    "single P would have shown."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b10-04-s05",
+        "band": "standard",
+        "text": "A Pp pea plant is crossed with a pp plant. About what "
+                "proportion of the seeds would be expected to grow into white "
+                "plants?",
+        "options": [
+            {"text": "None of them — one parent carries P, so every seed gets "
+                     "one.",
+             "correct": False,
+             "why": "The Pp parent passes P into half its gametes and p into "
+                    "the other half. Only half the seeds receive the P."},
+            {"text": "About a quarter of them.",
+             "correct": False,
+             "why": "A quarter is what two Pp parents give. Here one parent "
+                    "can only ever pass p, which raises the white share to a "
+                    "half."},
+            {"text": "About half of them.",
+             "correct": True},
+            {"text": "All of them — a plant crossed with a white plant gives "
+                     "white offspring.",
+             "correct": False,
+             "why": "The Pp parent passes P to half its seeds, and one P is "
+                    "enough to show. Those seeds grow into purple plants."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s06",
+        "band": "standard",
+        "text": "Both parents are Pp. Each passes one of its two versions "
+                "into each seed. Why does about three quarters of the crop "
+                "come out purple rather than about half?",
+        "options": [
+            {"text": "There are four ways the two versions can land, and three "
+                     "of them include at least one P.",
+             "correct": True},
+            {"text": "P is passed on more often than p, because it is the "
+                     "version that shows.",
+             "correct": False,
+             "why": "Each parent passes P and p equally often — one of the two "
+                    "copies, chosen by chance. What is uneven is how many of "
+                    "the four combinations end up purple."},
+            {"text": "Three of the four seeds receive P from the first parent.",
+             "correct": False,
+             "why": "Half receive P from the first parent, and half receive it "
+                    "from the second. The three quarters comes from combining "
+                    "the two parents, not from one of them."},
+            {"text": "The purple plants grow faster, so more of them survive "
+                     "to be counted.",
+             "correct": False,
+             "why": "Nothing is being weeded out. The proportion is set at "
+                    "fertilisation by which versions each seed happened to "
+                    "receive."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s07",
+        "band": "standard",
+        "text": "A grower grows only his white-flowered pea plants together, "
+                "lets them pollinate each other, and sows the seed. What "
+                "colour are the plants that come up?",
+        "options": [
+            {"text": "About a quarter purple, because purple can reappear from "
+                     "white parents.",
+             "correct": False,
+             "why": "Reappearing works the other way round. A hidden version "
+                    "can only be hidden behind a P, and these plants have no "
+                    "P to hide it behind."},
+            {"text": "About three quarters white and a quarter purple.",
+             "correct": False,
+             "why": "That ratio comes from two Pp parents. Every one of these "
+                    "parents is pp, so there is no P anywhere in the cross."},
+            {"text": "All purple, because two white plants together produce "
+                     "the version they lack.",
+             "correct": False,
+             "why": "Nothing is produced that was not there. A version has to "
+                    "arrive from a parent, and neither parent has a P to "
+                    "send."},
+            {"text": "All white, because each parent has two p versions and "
+                     "can pass nothing else.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s08",
+        "band": "standard",
+        "text": "Children usually resemble both of their parents without "
+                "being identical to either. What explains that?",
+        "options": [
+            {"text": "The parents' characteristics are mixed together at "
+                     "fertilisation, giving something between the two.",
+             "correct": False,
+             "why": "Nothing is mixed. Each version arrives whole, which is "
+                    "why a characteristic can vanish for a generation and come "
+                    "back unchanged."},
+            {"text": "Each parent passes one of every pair, so the child gets "
+                     "a combination neither parent had.",
+             "correct": True},
+            {"text": "The child receives most of its genes from one parent and "
+                     "a few from the other.",
+             "correct": False,
+             "why": "The split is even — 23 chromosomes from each. What varies "
+                    "is which member of each pair was sent, not how many."},
+            {"text": "The child's genes change as it grows, drifting away from "
+                     "both parents.",
+             "correct": False,
+             "why": "The combination is fixed at fertilisation, and every cell "
+                    "afterwards is a copy of it. Growing up does not rewrite "
+                    "it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s09",
+        "band": "standard",
+        "text": "Every cell of a pea plant carries two versions of the "
+                "flower-colour gene. Why does the plant put only one of them "
+                "into each pollen grain?",
+        "options": [
+            {"text": "Because a pollen grain is too small to carry both.",
+             "correct": False,
+             "why": "Size is not the reason — a pollen grain carries a full "
+                    "single set of chromosomes, which is a great deal. It "
+                    "carries one of each pair so that fertilisation can "
+                    "restore the pair."},
+            {"text": "Because the second version is kept back in case the "
+                     "first one is not needed.",
+             "correct": False,
+             "why": "Nothing is held in reserve. The two copies are shared out "
+                    "between gametes, and which one a particular grain "
+                    "receives is chance."},
+            {"text": "Because the grain must carry half a set, so that fusing "
+                     "with an ovule restores the full number.",
+             "correct": True},
+            {"text": "Because only the version the plant is showing can be "
+                     "passed on.",
+             "correct": False,
+             "why": "A purple plant passes p just as readily as P. That is "
+                    "exactly how a hidden version travels to the next "
+                    "generation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s10",
+        "band": "standard",
+        "text": "A pea plant carries two versions of the flower-colour gene. "
+                "Where did those two versions come from?",
+        "options": [
+            {"text": "One arrived from each parent, in the two gametes that "
+                     "fused.",
+             "correct": True},
+            {"text": "Both arrived from the parent whose flower colour the "
+                     "plant shows.",
+             "correct": False,
+             "why": "Which colour shows does not decide where the versions "
+                    "came from. One arrived from each parent, whichever of the "
+                    "two is on display."},
+            {"text": "One arrived from a parent and the plant made the second "
+                     "itself as it grew.",
+             "correct": False,
+             "why": "A plant makes no new versions. The pair was complete at "
+                    "fertilisation, and every cell since is a copy of that "
+                    "first one."},
+            {"text": "Both arrived from the pollen grain, since the ovule "
+                     "carries no genes.",
+             "correct": False,
+             "why": "The ovule carries a full single set, exactly as the "
+                    "pollen grain does. Half of everything the plant has came "
+                    "from it."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b10-04-h05",
+        "band": "harder",
+        "text": "A grower has a purple-flowered pea plant and needs to know "
+                "whether it is carrying p. Which cross would settle it, and "
+                "what would he look for?",
+        "options": [
+            {"text": "Cross it with a PP plant, and look for white offspring.",
+             "correct": False,
+             "why": "A PP parent sends P into every seed, so every plant comes "
+                    "up purple whichever versions the unknown plant carries. "
+                    "The cross can never tell him anything."},
+            {"text": "Cross it with a white plant, and look for any white "
+                     "offspring.",
+             "correct": True},
+            {"text": "Grow it in poorer soil, and look for the flowers to "
+                     "fade.",
+             "correct": False,
+             "why": "Flower colour here is set by the versions the plant "
+                    "received, not by its conditions. Starving the plant tells "
+                    "him nothing about what it is carrying."},
+            {"text": "Count the flowers on it, since a plant carrying p "
+                     "produces fewer.",
+             "correct": False,
+             "why": "A carried version has no effect at all until it is passed "
+                    "on and meets another p. Nothing about the plant itself "
+                    "gives it away."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h06",
+        "band": "harder",
+        "text": "Two Pp plants are crossed and 480 seeds are grown. Of the "
+                "480 plants, 96 have white flowers. What percentage of the "
+                "crop is white?",
+        "options": [
+            {"text": "5 per cent",
+             "correct": False,
+             "why": "That is 480 divided by 96, which is the division the "
+                    "wrong way round. A percentage is the part divided by the "
+                    "total, then multiplied by 100."},
+            {"text": "25 per cent",
+             "correct": False,
+             "why": "That is what you would expect, not what was counted. The "
+                    "question asks what this crop actually gave, and 96 out of "
+                    "480 is a little under a quarter."},
+            {"text": "80 per cent",
+             "correct": False,
+             "why": "That is the purple share — the other 384 plants. It is "
+                    "the right calculation done on the wrong group."},
+            {"text": "20 per cent",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h07",
+        "band": "harder",
+        "text": "In one of Mendel's experiments on seed colour, 8,023 seeds "
+                "came up as 6,022 yellow and 2,001 green. What ratio is that "
+                "closest to, and what should be said about it?",
+        "options": [
+            {"text": "About 1 to 3, counting the green seeds against the "
+                     "yellow.",
+             "correct": False,
+             "why": "The ratio is written the wrong way round. There are three "
+                    "times as many yellow as green, so it reads 3 to 1."},
+            {"text": "About 2 to 1, because the gene comes in two versions.",
+             "correct": False,
+             "why": "Two versions does not give two to one. There are four "
+                    "ways the two versions can land, and three of the four "
+                    "show yellow."},
+            {"text": "About 3 to 1, which is what carrying a version without "
+                     "showing it predicts.",
+             "correct": True},
+            {"text": "Exactly 3 to 1 — Mendel grew enough seeds to take chance "
+                     "out of it altogether.",
+             "correct": False,
+             "why": "6,022 to 2,001 is 3.01 to 1, not exactly 3. Large numbers "
+                    "bring a ratio close to the expected one; they never "
+                    "remove chance."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h08",
+        "band": "harder",
+        "text": "A body cell of a pea plant has 14 chromosomes. How many are "
+                "in one pollen grain, and how many in the first cell of a "
+                "seed it fertilises?",
+        "options": [
+            {"text": "7 in the pollen grain and 14 in the seed's first cell.",
+             "correct": True},
+            {"text": "14 in the pollen grain and 28 in the seed's first cell.",
+             "correct": False,
+             "why": "Then the number would double every generation — 28, then "
+                    "56, then 112. Gametes carry half a set precisely so that "
+                    "it does not."},
+            {"text": "7 in the pollen grain and 7 in the seed's first cell.",
+             "correct": False,
+             "why": "The pollen grain is right and the seed is not. Two "
+                    "gametes fuse at fertilisation, so their halves add back "
+                    "to 14."},
+            {"text": "14 in the pollen grain and 14 in the seed's first cell.",
+             "correct": False,
+             "why": "If the pollen grain carried a full 14 and the ovule "
+                    "another 14, the seed would start with 28. One of the two "
+                    "numbers has to be halved, and it is the gamete's."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h09",
+        "band": "harder",
+        "text": "A student says a gamete is made by cutting a body cell's "
+                "chromosomes in half, so each gamete gets half of every "
+                "chromosome. What is wrong with that account?",
+        "options": [
+            {"text": "Nothing is cut in half — a gamete gets one whole "
+                     "chromosome from each pair.",
+             "correct": True},
+            {"text": "Nothing is cut in half — a gamete gets all 46 and loses "
+                     "half of them later.",
+             "correct": False,
+             "why": "There is no later losing. The chromosomes are shared out "
+                    "as the gamete is made, one from each pair, and every one "
+                    "of them is whole."},
+            {"text": "The halving is right, but it happens at fertilisation "
+                     "rather than before it.",
+             "correct": False,
+             "why": "Fertilisation is the joining, not the halving. Gametes "
+                    "already carry one of each pair by the time they meet."},
+            {"text": "The account is right for animals but not for plants, "
+                     "where pollen carries a full set.",
+             "correct": False,
+             "why": "Pollen grains carry half a set exactly as sperm cells do. "
+                    "That is why a pea seed starts with 14 rather than 28."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h10",
+        "band": "harder",
+        "text": "Mendel published his results in 1866 and was almost entirely "
+                "ignored until three other botanists found the same rules in "
+                "1900. What does that tell you about how science moves?",
+        "options": [
+            {"text": "That his counting must have been unconvincing, or "
+                     "somebody would have taken it up.",
+             "correct": False,
+             "why": "His counts ran to tens of thousands of plants and were "
+                    "sound. Being ignored is not the same as being "
+                    "unconvincing."},
+            {"text": "That his results were wrong in 1866 and only became "
+                     "right once others confirmed them.",
+             "correct": False,
+             "why": "Confirmation does not make a result true — it was true "
+                    "when he wrote it down. What changed was who was in a "
+                    "position to use it."},
+            {"text": "That a scientist's work only counts once it has been "
+                     "published in the right place.",
+             "correct": False,
+             "why": "He did publish. The problem was that almost nobody "
+                    "reading it had a question his answer fitted."},
+            {"text": "That a correct answer can arrive before anyone has a use "
+                     "for it, and wait.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

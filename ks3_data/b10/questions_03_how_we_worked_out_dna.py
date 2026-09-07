@@ -351,4 +351,529 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b10-03-e05",
+        "band": "easier",
+        "text": "The two strands of DNA are joined by pairs of bases. Which "
+                "of these is one of the pairs?",
+        "options": [
+            {"text": "A with C",
+             "correct": False,
+             "why": "A and C never pair. A goes with T, and C goes with G — "
+                    "which is what Chargaff's equal amounts pointed to"},
+            {"text": "A with A",
+             "correct": False,
+             "why": "A base never pairs with a copy of itself. Each rung joins "
+                    "one base on one strand to a different base on the other"},
+            {"text": "C with G",
+             "correct": True},
+            {"text": "T with G",
+             "correct": False,
+             "why": "T pairs with A, and G pairs with C. Swapping the partners "
+                    "round would give unequal amounts, and every organism ever "
+                    "measured gives equal ones"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-e06",
+        "band": "easier",
+        "text": "The structure published in 1953 is called a double helix. "
+                "What shape is that?",
+        "options": [
+            {"text": "Two strands wound round each other in a spiral",
+             "correct": True},
+            {"text": "One strand folded back on itself to make two halves",
+             "correct": False,
+             "why": "There are two separate strands, not one folded in half. "
+                    "The measured width in the diffraction pattern is what "
+                    "settled the number"},
+            {"text": "Two flat ribbons lying side by side without twisting",
+             "correct": False,
+             "why": "Flat ribbons would not give the cross-shaped pattern of "
+                    "spots that Photo 51 shows. The cross is the signature of "
+                    "a helix"},
+            {"text": "Three strands twisted together, with the bases facing "
+                     "outwards",
+             "correct": False,
+             "why": "That is Pauling's model, which was published early in "
+                    "1953 and was wrong. The measured width says two strands"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-e07",
+        "band": "easier",
+        "text": "DNA itself was found long before its structure was worked "
+                "out. Who found it, and roughly when?",
+        "options": [
+            {"text": "Chargaff, in 1950, while measuring the amounts of the "
+                     "four bases",
+             "correct": False,
+             "why": "Chargaff measured the base amounts in DNA that was "
+                    "already well known. He was working on a substance "
+                    "discovered eighty years earlier"},
+            {"text": "Watson and Crick, in 1953, in Cambridge",
+             "correct": False,
+             "why": "This is the commonest mistake in the whole story. They "
+                    "worked out the structure; the substance itself had been "
+                    "known since 1869"},
+            {"text": "Franklin and Wilkins, in 1952, at King's College London",
+             "correct": False,
+             "why": "They produced the X-ray images of a substance already "
+                    "known for over eighty years. Their work was on its shape"},
+            {"text": "Friedrich Miescher, in 1869",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-e08",
+        "band": "easier",
+        "text": "Erwin Chargaff worked in New York with chemical amounts "
+                "rather than images. What did he measure?",
+        "options": [
+            {"text": "The width of the DNA molecule and the distance per turn",
+             "correct": False,
+             "why": "Those came from the X-ray diffraction images taken at "
+                    "King's. Chargaff never worked with images at all"},
+            {"text": "How much of each of the four bases DNA from different "
+                     "organisms contains",
+             "correct": True},
+            {"text": "How much water DNA takes up",
+             "correct": False,
+             "why": "That was Franklin's measurement, and it is what put the "
+                    "phosphates on the outside. Chargaff was counting bases"},
+            {"text": "How many genes each chromosome carries",
+             "correct": False,
+             "why": "Nobody could count genes in 1950. What Chargaff could "
+                    "measure was the proportion of each base in a sample"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-e09",
+        "band": "easier",
+        "text": "In the story of how DNA's structure was worked out, what "
+                "is meant by a model?",
+        "options": [
+            {"text": "A drawing made once the answer is known, to explain it "
+                     "to other people",
+             "correct": False,
+             "why": "That is an illustration, made afterwards. A model is "
+                    "built while the answer is still unknown, so that it can "
+                    "be tested"},
+            {"text": "A smaller copy of something real, built to the right "
+                     "proportions",
+             "correct": False,
+             "why": "That is a scale model. Here a model is a proposal about "
+                    "what the structure might be, kept only while it fits the "
+                    "evidence"},
+            {"text": "A representation built so it can be tested against "
+                     "evidence and thrown away if it fails",
+             "correct": True},
+            {"text": "An idea that has been proved correct and can now be "
+                     "relied on",
+             "correct": False,
+             "why": "Pauling's model was a model and it was wrong. Being "
+                    "testable, not being right, is what makes something a "
+                    "model"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-e10",
+        "band": "easier",
+        "text": "The 1953 paper closed by noting that the structure it "
+                "proposed immediately suggested something. What?",
+        "options": [
+            {"text": "A way the molecule could be copied",
+             "correct": True},
+            {"text": "A way of curing inherited disease",
+             "correct": False,
+             "why": "That was decades away and the paper claimed nothing of "
+                    "the kind. What the geometry suggested was how the "
+                    "material could be copied"},
+            {"text": "A way of counting the genes in a chromosome",
+             "correct": False,
+             "why": "Counting genes was far beyond anything available then. "
+                    "The structure's own shape pointed at copying"},
+            {"text": "A way of photographing a single molecule directly",
+             "correct": False,
+             "why": "No microscope can do that even now. The structure had "
+                    "been deduced precisely because it could not be "
+                    "photographed"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b10-03-s05",
+        "band": "standard",
+        "text": "Chargaff found that A always equals T in every organism, but "
+                "that the ratio of A to C changes from one species to "
+                "another. What does the changing ratio show?",
+        "options": [
+            {"text": "That some species have more strands of DNA in each "
+                     "chromosome than others",
+             "correct": False,
+             "why": "Every species has the same two-stranded molecule. What "
+                    "differs is what is written along it"},
+            {"text": "That what is written along the molecule differs between "
+                     "species, even though the pairing rule does not",
+             "correct": True},
+            {"text": "That his measurements were less reliable for some "
+                     "species than for others",
+             "correct": False,
+             "why": "The variation is real and repeatable. A rule that holds "
+                    "everywhere, alongside a proportion that varies, is "
+                    "exactly what a shared structure carrying different "
+                    "information looks like"},
+            {"text": "That the pairing rule holds in some species and breaks "
+                     "down in others, depending on the sample",
+             "correct": False,
+             "why": "The pairing rule held in every sample he tested — that is "
+                    "the half that never changed. Only the proportion of A to "
+                    "C moved"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-s06",
+        "band": "standard",
+        "text": "One argument against putting the phosphate groups in the "
+                "centre of the molecule was about the phosphates themselves. "
+                "What was it?",
+        "options": [
+            {"text": "Phosphates are too large to fit in the middle of a "
+                     "molecule that narrow",
+             "correct": False,
+             "why": "Size was not the objection. The problem was electrical — "
+                    "the phosphates carry negative charges"},
+            {"text": "Phosphates are not part of DNA at all, so they cannot be "
+                     "anywhere in it",
+             "correct": False,
+             "why": "They are part of it, and they run along the two "
+                    "backbones. The question was whether those backbones face "
+                    "in or out"},
+            {"text": "Phosphates would block the bases from being read from "
+                     "the centre",
+             "correct": False,
+             "why": "Reading was not what was being argued about in 1952. The "
+                    "objection was that negative charges crowded together "
+                    "repel each other"},
+            {"text": "They carry negative charges, and crowding them into the "
+                     "centre would push the molecule apart",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-s07",
+        "band": "standard",
+        "text": "In 1944 Avery, MacLeod and McCarty showed that DNA is the "
+                "material carrying inherited information. Why did that result "
+                "make the structure worth chasing?",
+        "options": [
+            {"text": "Because once DNA was known to be the material, how it is "
+                     "built became the question",
+             "correct": True},
+            {"text": "Because it showed that the structure of DNA must be a "
+                     "helix",
+             "correct": False,
+             "why": "It said nothing about shape. The helix came from the "
+                    "diffraction images taken eight years later"},
+            {"text": "Because it proved that proteins carry no information at "
+                     "all",
+             "correct": False,
+             "why": "It showed DNA carries it, which surprised biochemists who "
+                    "had expected protein. That is not the same as ruling "
+                    "proteins out of everything"},
+            {"text": "Because it gave Watson and Crick the measurements they "
+                     "later built their model from",
+             "correct": False,
+             "why": "The measurements came from Franklin, Wilkins and "
+                    "Chargaff. The 1944 result supplied the reason to care, "
+                    "not the numbers"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-s08",
+        "band": "standard",
+        "text": "A student says the four pieces of evidence available in 1952 "
+                "showed Watson and Crick what the answer was. What is a "
+                "better description of what the evidence did?",
+        "options": [
+            {"text": "It confirmed the model they had already built, one piece "
+                     "at a time",
+             "correct": False,
+             "why": "They built several models and threw them away. Evidence "
+                    "that only ever confirms is not being used as a test"},
+            {"text": "It suggested the answer to anyone clever enough to see "
+                     "it",
+             "correct": False,
+             "why": "Chargaff had his own ratios for years without seeing what "
+                    "they meant, and Pauling was the most respected chemist "
+                    "alive and got it wrong. Cleverness was not the mechanism"},
+            {"text": "It ruled possibilities out until only one combination "
+                     "was left standing",
+             "correct": True},
+            {"text": "It measured the structure directly, so the model only "
+                     "had to be drawn from the measurements",
+             "correct": False,
+             "why": "Nothing measured the structure directly — that is the "
+                    "whole difficulty. Each piece of evidence eliminated "
+                    "something rather than displaying the answer"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-s09",
+        "band": "standard",
+        "text": "Maurice Wilkins shared the 1962 Nobel Prize with Watson and "
+                "Crick. What was his part in the work?",
+        "options": [
+            {"text": "He measured the base ratios in New York that gave the "
+                     "pairing rule its evidence, working quite separately from "
+                     "the London team",
+             "correct": False,
+             "why": "Those were Chargaff's, measured in New York. Wilkins "
+                    "worked on X-ray images at King's"},
+            {"text": "He worked on DNA's X-ray images at King's, and it was he "
+                     "who showed Franklin's image to Watson",
+             "correct": True},
+            {"text": "He built the metal models in Cambridge alongside Watson "
+                     "and Crick",
+             "correct": False,
+             "why": "The model building was done in Cambridge by Watson and "
+                    "Crick. Wilkins was at King's, working on the images"},
+            {"text": "He published the triple-helix model that had to be ruled "
+                     "out",
+             "correct": False,
+             "why": "That was Linus Pauling, in California. Wilkins was one of "
+                    "the two people producing the King's diffraction work"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-s10",
+        "band": "standard",
+        "text": "Five years after 1953, Meselson and Stahl showed "
+                "experimentally that DNA really is copied in the way the "
+                "structure suggested. What did their result change?",
+        "options": [
+            {"text": "It showed that the 1953 structure had been wrong in one "
+                     "detail",
+             "correct": False,
+             "why": "It confirmed the structure's most striking implication "
+                    "rather than correcting it. The model survived the test"},
+            {"text": "It replaced the model with a photograph of DNA copying "
+                     "itself",
+             "correct": False,
+             "why": "No photograph of that exists, then or now. What they "
+                    "produced was an experiment whose result the model had "
+                    "predicted"},
+            {"text": "It meant the credit for the structure had to be shared "
+                     "more widely",
+             "correct": False,
+             "why": "The question of credit is a separate one, and it turns on "
+                    "whose data was used in 1953. Meselson and Stahl were "
+                    "testing the model, not auditing it"},
+            {"text": "The copying idea stopped being a proposal and became "
+                     "something that had been tested",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b10-03-h05",
+        "band": "harder",
+        "text": "A student asks why the scientists did not simply look at DNA "
+                "down a microscope in 1952 and settle the argument. What is "
+                "the reply, and what follows from it?",
+        "options": [
+            {"text": "DNA is far too thin to be resolved by any microscope, so "
+                     "the structure had to be deduced from indirect evidence",
+             "correct": True},
+            {"text": "Microscopes of the 1950s were not good enough, but a "
+                     "modern one would show the double helix directly",
+             "correct": False,
+             "why": "No microscope today can show the shape of a single DNA "
+                    "molecule either. It is not a matter of the equipment "
+                    "catching up"},
+            {"text": "DNA can be seen, but only when a cell is dividing, and "
+                     "no dividing cells were available",
+             "correct": False,
+             "why": "What becomes visible then is a whole chromosome, packed "
+                    "from a great many turns of the molecule. The molecule "
+                    "itself stays far below what can be resolved"},
+            {"text": "They could have, but X-ray diffraction gave a sharper "
+                     "picture, so they used that instead",
+             "correct": False,
+             "why": "Diffraction gives no picture at all — Photo 51 is a "
+                    "pattern of spots. It was used because looking was "
+                    "impossible, not because it was better looking"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-h06",
+        "band": "harder",
+        "text": "Chargaff published his base ratios years before 1953 without "
+                "seeing what they implied. What does that episode show about "
+                "how evidence works?",
+        "options": [
+            {"text": "That a measurement is only worth publishing once its "
+                     "meaning is understood",
+             "correct": False,
+             "why": "Exactly backwards. His numbers were correct and useful "
+                    "precisely because he published them before anyone knew "
+                    "what to do with them"},
+            {"text": "That his ratios cannot have been the real reason for the "
+                     "pairing rule, since he did not see it himself",
+             "correct": False,
+             "why": "Who noticed what a result means does not change what the "
+                    "result establishes. The equal amounts are the evidence "
+                    "either way"},
+            {"text": "That data can be correct and its meaning stay unnoticed "
+                     "until someone has a model to fit it to",
+             "correct": True},
+            {"text": "That measurements taken without a hypothesis are of "
+                     "little use to anybody",
+             "correct": False,
+             "why": "His measurements became one of the three legs of the "
+                    "1953 model. Waiting for a use is not the same as being "
+                    "useless"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-h07",
+        "band": "harder",
+        "text": "Explain why a structure in which A always pairs with T and C "
+                "always with G immediately suggests how DNA could be copied.",
+        "options": [
+            {"text": "Because the two strands are identical, so one can simply "
+                     "be used twice",
+             "correct": False,
+             "why": "They are not identical — they are partners. Wherever one "
+                    "reads A the other reads T, which is a different sequence "
+                    "carrying the same information"},
+            {"text": "Because separating the strands leaves each one "
+                     "specifying exactly what must be built alongside it",
+             "correct": True},
+            {"text": "Because a molecule with a repeating pattern can grow "
+                     "longer by adding more of the same pattern",
+             "correct": False,
+             "why": "The order of bases is not a repeating pattern — it is the "
+                    "information, and it must be reproduced exactly rather "
+                    "than extended"},
+            {"text": "Because the bases sit on the inside, where they are "
+                     "protected from damage during copying",
+             "correct": False,
+             "why": "Protection is a real advantage of the arrangement and is "
+                    "not what suggests copying. What does is that each base "
+                    "has exactly one possible partner"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-h08",
+        "band": "harder",
+        "text": "A newspaper article says simply that Franklin's data was "
+                "stolen. Historians say the episode is more complicated than "
+                "that. What is a fair summary?",
+        "options": [
+            {"text": "The complications mean no fair criticism can be made of "
+                     "the way her data was used in 1953",
+             "correct": False,
+             "why": "One thing is not in dispute: the data were used without "
+                    "her knowledge and the acknowledgement understated what "
+                    "was owed. Complication is not the same as exoneration"},
+            {"text": "Nothing was owed, because unpublished results are "
+                     "available to anyone who hears of them",
+             "correct": False,
+             "why": "The rule people have since drawn from this episode is the "
+                    "opposite: data belongs to whoever produced it and should "
+                    "be used with their knowledge"},
+            {"text": "The whole argument is about the Nobel rules, which "
+                     "cannot be given after a person's death",
+             "correct": False,
+             "why": "That explains the 1962 prize and nothing else. The use of "
+                    "her measurements in 1953 is a separate question, and it "
+                    "is the one being asked"},
+            {"text": "Her data was used without her knowledge and "
+                     "under-acknowledged, and how much else was at work is "
+                     "still argued",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-h09",
+        "band": "harder",
+        "text": "A chemist measures a new sample and finds A 31 per cent, T "
+                "31 per cent, C 19 per cent and G 19 per cent. Does the "
+                "sample fit Chargaff's rule, and what does that suggest?",
+        "options": [
+            {"text": "Yes — A equals T and C equals G, which is what paired "
+                     "strands would give",
+             "correct": True},
+            {"text": "No — the rule requires all four bases to be present in "
+                     "equal amounts",
+             "correct": False,
+             "why": "The rule is that A equals T and C equals G, not that all "
+                    "four match. The A-to-C ratio varies from species to "
+                    "species, and here it is 31 to 19"},
+            {"text": "No — A does not equal C, so the pairing rule is broken",
+             "correct": False,
+             "why": "A and C are not partners, so there is no reason for them "
+                    "to match. The partners here, A with T and C with G, do "
+                    "match exactly"},
+            {"text": "It cannot be judged, because the four percentages do not "
+                     "add up to a hundred",
+             "correct": False,
+             "why": "31 and 31 and 19 and 19 come to exactly 100, so nothing "
+                    "is missing. The check is worth doing, and here it passes"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-03-h10",
+        "band": "harder",
+        "text": "A student builds a paper model of DNA with the bases on the "
+                "outside, and shows that it fits Chargaff's ratios perfectly. "
+                "Why is her model still ruled out?",
+        "options": [
+            {"text": "Because Chargaff's ratios were about chemical amounts "
+                     "and say nothing about any model",
+             "correct": False,
+             "why": "They say a great deal about a model — they are what "
+                    "forces A to pair with T. Her model passes that test; the "
+                    "trouble is the tests it fails"},
+            {"text": "Because a paper model cannot be tested against evidence "
+                     "at all",
+             "correct": False,
+             "why": "Watson and Crick's were metal and cardboard. What matters "
+                    "is what a model claims, not what it is cut out of"},
+            {"text": "Because a model has to fit every piece of evidence, and "
+                     "the water measurements put the phosphates outside",
+             "correct": True},
+            {"text": "Because the bases on the outside would make the molecule "
+                     "too narrow for the measured width",
+             "correct": False,
+             "why": "Width is decided by the number of strands, and Photo 51 "
+                    "settled that separately. What rules out bases on the "
+                    "outside is where the phosphates then have to go"},
+        ],
+        "figure": None,
+    },
 ]
