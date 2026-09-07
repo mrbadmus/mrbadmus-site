@@ -430,3 +430,47 @@ C1 came back clean at the threshold, which is worth recording: it was the unit
 authored most slowly, before either calibration pass existed.
 
 ---
+## C8 — The periodic table (7 lessons)
+
+**Quota:** 22 needed per band; 23 added, taking every band to **51**. Spread
+4 · 4 · 3 · 3 · 3 · 3 · 3 per band, 69 rows.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 metals-and-non-metals | e05–e08 | s05–s08 | h05–h08 |
+| 02 mendeleev | e05–e08 | s05–s08 | h05–h08 |
+| 03 groups-and-periods | e05–e07 | s05–s07 | h05–h07 |
+| 04 group-1-the-alkali-metals | e05–e07 | s05–s07 | h05–h07 |
+| 05 group-7-the-halogens | e05–e07 | s05–s07 | h05–h07 |
+| 06 group-0-and-why-groups-exist | e05–e07 | s05–s07 | h05–h07 |
+| 07 metal-and-non-metal-oxides | e05–e07 | s05–s07 | h05–h07 |
+
+Positions 18 · 18 · 18 · 15. Length tell **22.1%**, against a `BASELINE` of
+74.1% — this unit's original twelve are the third-worst giveaway cell in the
+key stage, and the top-up brings the whole unit to chance.
+
+This is the unit whose three `<sub>` rows were repaired at the top of this log.
+None of the 69 new rows carries a subscript character: C8's formulae are
+mentioned rather than examined, so they are written flat, and the three
+repaired rows keep their real characters because in those the notation IS the
+question.
+
+### Review fixes before commit
+
+Two near-duplicates, both caught by the detector:
+
+- `c8-05-h07` asked what the bromine-on-potassium-bromide tube is for, which is
+  `c8-05-h04` word for word in substance. Replaced with a transitivity
+  question: chlorine displaces bromine and bromine displaces iodine, so what
+  follows about chlorine and iodine without running that tube — which is what
+  an order is actually for.
+- `c8-07-h07` repeated `c8-07-h02` on aluminium oxide and the rule's boundary.
+  Replaced with carbon dioxide: a non-metal oxide that is a gas, and whether
+  the rule reaches it.
+
+Nothing else scored above 0.68 in the unit.
+
+Gates at commit: chemistry-only `validate_lesson` clean,
+`verify_answer_positions` OK, `verify_answer_lengths` green on `bank/C8`.
+
+---

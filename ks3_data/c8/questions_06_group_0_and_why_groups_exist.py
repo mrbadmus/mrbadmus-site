@@ -354,4 +354,244 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-06-e05",
+        "band": "easier",
+        "text": "What does inert mean?",
+        "options": [
+            {"text": "Unable to move, which is why an inert gas settles to "
+                     "the bottom of a container instead of mixing with the "
+                     "air above it",
+             "correct": False,
+             "why": "Its particles move like any gas, and it mixes freely. "
+                    "Inert is about chemistry, not motion"},
+            {"text": "Unreactive — especially of a gas put somewhere to keep "
+                     "air out",
+             "correct": True},
+            {"text": "Colourless and invisible",
+             "correct": False,
+             "why": "Chlorine is coloured and reactive; nitrogen is "
+                    "colourless and fairly unreactive. Appearance is not the "
+                    "word"},
+            {"text": "Poisonous",
+             "correct": False,
+             "why": "Almost the opposite. An inert gas takes part in nothing, "
+                    "including in you"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-06-e06",
+        "band": "easier",
+        "text": "How many electrons are in a full outer shell, for most "
+                "atoms?",
+        "options": [
+            {"text": "Two, which is how many helium has and helium is the "
+                     "example the whole of group 0 is named after",
+             "correct": False,
+             "why": "Two is right for helium, which has only one shell. For "
+                    "the rest it is eight"},
+            {"text": "Seven",
+             "correct": False,
+             "why": "Seven is one short, which is group 7 — the most reactive "
+                    "non-metals there are"},
+            {"text": "Eight",
+             "correct": True},
+            {"text": "It depends on the element, and there is no usual "
+                     "number",
+             "correct": False,
+             "why": "Eight is the usual number, with helium the one exception "
+                    "you meet"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-06-e07",
+        "band": "easier",
+        "text": "Which of these is a noble gas?",
+        "options": [
+            {"text": "Nitrogen, which makes up most of the air and takes part "
+                     "in almost nothing that happens in a laboratory",
+             "correct": False,
+             "why": "Fairly unreactive and not a noble gas. Nitrogen is group "
+                    "5 and its outer shell is not full"},
+            {"text": "Hydrogen",
+             "correct": False,
+             "why": "Hydrogen burns explosively. It is nowhere near group 0"},
+            {"text": "Chlorine",
+             "correct": False,
+             "why": "Group 7, and one of the most reactive elements in the "
+                    "table"},
+            {"text": "Neon",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c8-06-s05",
+        "band": "standard",
+        "text": "A neon sign glows because its electrons are EXCITED. Why is "
+                "that not a chemical reaction?",
+        "options": [
+            {"text": "Because a reaction has to involve two substances, and "
+                     "there is only neon inside the tube for anything to "
+                     "happen to",
+             "correct": False,
+             "why": "One substance can decompose all by itself. What rules "
+                    "this out is that nothing is joined or separated"},
+            {"text": "Because nothing joins or separates — the electrons "
+                     "return, and the neon is unchanged",
+             "correct": True},
+            {"text": "Because no heat is given out",
+             "correct": False,
+             "why": "The tube does warm up a little, and plenty of reactions "
+                    "give out no heat worth noticing"},
+            {"text": "Because neon cannot react at all under any "
+                     "circumstances",
+             "correct": False,
+             "why": "True of neon so far, and it is not the reason. Even a "
+                    "reactive gas would only be glowing here"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-06-s06",
+        "band": "standard",
+        "text": "Argon is used to keep air away from hot metal while it is "
+                "welded. What is the welder buying?",
+        "options": [
+            {"text": "A gas cold enough to take heat out of the weld as it "
+                     "forms, so that the metal cools evenly and does not "
+                     "crack afterwards",
+             "correct": False,
+             "why": "Argon arrives at room temperature like any bottled gas. "
+                    "What it does is exclude oxygen"},
+            {"text": "A gas that burns and adds heat to the weld",
+             "correct": False,
+             "why": "Argon burns in nothing. A fuel gas is a different bottle "
+                    "for a different job"},
+            {"text": "A gas that will not react with the hot metal, so oxygen "
+                     "is kept off it",
+             "correct": True},
+            {"text": "A gas heavy enough to hold the metal down",
+             "correct": False,
+             "why": "It is denser than air, which helps it stay over the "
+                    "weld — and it holds nothing down"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-06-s07",
+        "band": "standard",
+        "text": "Chlorine has 17 electrons altogether and 7 in its outer "
+                "shell. How many more would fill that shell, and what does "
+                "that predict?",
+        "options": [
+            {"text": "Ten more, since 17 and 10 make a whole number of "
+                     "shells and that is what filling one means",
+             "correct": False,
+             "why": "The outer shell holds eight, and seven are in it. One "
+                    "more completes it"},
+            {"text": "One more, and it predicts that chlorine is unreactive",
+             "correct": False,
+             "why": "Being one short is what makes it reactive. A FULL shell "
+                    "is what makes group 0 unreactive"},
+            {"text": "Seven more",
+             "correct": False,
+             "why": "Seven is how many it already has. It needs the "
+                    "difference between that and eight"},
+            {"text": "One more, and it predicts that chlorine reacts readily "
+                     "by gaining an electron",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-06-h05",
+        "band": "harder",
+        "text": "Helium is made underground, collected from natural gas, and "
+                "escapes the atmosphere altogether once released. Why does "
+                "that make it a genuinely finite resource?",
+        "options": [
+            {"text": "Because the underground supply is being used faster "
+                     "than it is being made, which is the same problem as "
+                     "coal and oil and has the same kind of answer",
+             "correct": False,
+             "why": "Coal can at least be replaced by other fuels. Helium "
+                    "leaves the planet, and nothing else cools a "
+                    "superconducting magnet"},
+            {"text": "Because it cannot be manufactured, cannot be recovered "
+                     "once lost, and cannot be substituted in its main use",
+             "correct": True},
+            {"text": "Because it is one of the rarest elements in the "
+                     "universe",
+             "correct": False,
+             "why": "It is the second commonest element in the universe. The "
+                    "problem is specific to Earth"},
+            {"text": "Because it is radioactive",
+             "correct": False,
+             "why": "Helium is stable. It is PRODUCED by radioactive decay, "
+                    "which is a different thing"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-06-h06",
+        "band": "harder",
+        "text": "In 1962 xenon was persuaded to form a compound. Why is the "
+                "rule about noble gases still taught?",
+        "options": [
+            {"text": "Because the exception was later withdrawn, and no "
+                     "compound of any noble gas has ever been made to hold "
+                     "together outside the conditions it was made in",
+             "correct": False,
+             "why": "A whole shelf of xenon compounds followed and they are "
+                    "real. The rule survives with a footnote instead"},
+            {"text": "Because xenon is not really a noble gas",
+             "correct": False,
+             "why": "It is group 0 with a full outer shell. It is simply the "
+                    "one whose outer electrons are held least tightly"},
+            {"text": "Because it holds for almost everything, and the "
+                     "exception is known and bounded",
+             "correct": True},
+            {"text": "Because school chemistry does not need the exception",
+             "correct": False,
+             "why": "The exception is worth knowing, and the reason the rule "
+                    "survives is that it is still nearly always right"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-06-h07",
+        "band": "harder",
+        "text": "A student says the noble gases are unreactive BECAUSE they "
+                "are gases. Which single fact settles it?",
+        "options": [
+            {"text": "That helium is the lightest of them and just as "
+                     "unreactive as the heaviest, so weight cannot be doing "
+                     "the work either",
+             "correct": False,
+             "why": "A good point about weight, and the student's claim was "
+                    "about being a GAS. Something answers that directly"},
+            {"text": "That the noble gases can be liquefied by cooling",
+             "correct": False,
+             "why": "Liquid helium is just as unreactive as the gas, which is "
+                    "suggestive — and a reactive gas is the sharper "
+                    "counter-example"},
+            {"text": "That air is mostly nitrogen",
+             "correct": False,
+             "why": "Nitrogen is a fairly unreactive gas and is not a noble "
+                    "gas. It settles nothing about the claim"},
+            {"text": "That fluorine and oxygen are gases and both react "
+                     "ferociously",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

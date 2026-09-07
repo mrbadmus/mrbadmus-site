@@ -344,4 +344,235 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-03-e05",
+        "band": "easier",
+        "text": "What is the outer shell of an atom?",
+        "options": [
+            {"text": "The outermost layer of electrons, and the one that "
+                     "takes part in reactions",
+             "correct": True},
+            {"text": "The surface of the atom, where it touches the atoms "
+                     "next to it and is held in place by them in the "
+                     "structure",
+             "correct": False,
+             "why": "An atom has no surface in that sense. The shell is a "
+                    "layer of electrons"},
+            {"text": "The nucleus at the middle of the atom",
+             "correct": False,
+             "why": "The nucleus is the centre. The outer shell is as far "
+                    "from it as the electrons go"},
+            {"text": "The whole set of electrons the atom has",
+             "correct": False,
+             "why": "That is all of them across every shell. Only the "
+                    "outermost layer is the outer shell"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-03-e06",
+        "band": "easier",
+        "text": "Potassium is in group 1. How many electrons are in its outer "
+                "shell?",
+        "options": [
+            {"text": "19, which is the number of electrons a potassium atom "
+                     "has altogether and therefore the number available in "
+                     "its outermost layer",
+             "correct": False,
+             "why": "19 is the total across every shell. The group number "
+                    "gives the outer ones, and it is 1"},
+            {"text": "One",
+             "correct": True},
+            {"text": "Four, counting the period it is in",
+             "correct": False,
+             "why": "The period number counts SHELLS, not the electrons in "
+                    "the outer one"},
+            {"text": "Eight",
+             "correct": False,
+             "why": "Eight is a full outer shell, which is group 0. Group 1 "
+                    "has one"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-03-e07",
+        "band": "easier",
+        "text": "Iron, copper and zinc sit in the block between groups 2 and "
+                "3. What are they called?",
+        "options": [
+            {"text": "Alkali metals",
+             "correct": False,
+             "why": "Those are group 1 — soft, light and stored under oil. "
+                    "These three are none of those things"},
+            {"text": "Halogens",
+             "correct": False,
+             "why": "The halogens are group 7 and are non-metals"},
+            {"text": "Transition metals",
+             "correct": True},
+            {"text": "Noble gases, since they are the metals that are least "
+                     "willing to react and so share the property that gives "
+                     "group 0 its name",
+             "correct": False,
+             "why": "Noble gases are gases in group 0. Being unreactive does "
+                    "not put a metal there"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c8-03-s05",
+        "band": "standard",
+        "text": "Which element is in group 7 of period 2?",
+        "options": [
+            {"text": "Fluorine",
+             "correct": True},
+            {"text": "Chlorine, which is the halogen everybody meets first "
+                     "and is therefore the one at the top of the group",
+             "correct": False,
+             "why": "Chlorine is group 7 and period 3. Fluorine is the one "
+                    "above it"},
+            {"text": "Oxygen",
+             "correct": False,
+             "why": "Oxygen is in period 2 and in group 6. One column short"},
+            {"text": "Neon",
+             "correct": False,
+             "why": "Neon is in period 2 and in group 0, one column further "
+                    "on"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-03-s06",
+        "band": "standard",
+        "text": "An element is described as being in period 4. What does that "
+                "tell you?",
+        "options": [
+            {"text": "That it has four electrons in its outer shell, since "
+                     "the row number counts them in the same way the column "
+                     "number does",
+             "correct": False,
+             "why": "Outer electrons are counted by the GROUP number. A "
+                    "period tells you how many shells there are"},
+            {"text": "Which row it is in, and so how many shells its atoms "
+                     "have",
+             "correct": True},
+            {"text": "That it is a metal",
+             "correct": False,
+             "why": "A period runs from metals on the left to non-metals on "
+                    "the right, so it covers both"},
+            {"text": "That it behaves like the other elements in period 4",
+             "correct": False,
+             "why": "Sharing a period says almost nothing about behaviour. "
+                    "Sharing a group does"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-03-s07",
+        "band": "standard",
+        "text": "Lithium hydroxide, sodium hydroxide and potassium hydroxide "
+                "all have one metal atom to one oxygen and one hydrogen. What "
+                "does that pattern show?",
+        "options": [
+            {"text": "That the three metals are all in period 2, so their "
+                     "atoms are close enough in size to build the same "
+                     "compound between them",
+             "correct": False,
+             "why": "They are in three different periods. What they share is "
+                    "the column"},
+            {"text": "That all hydroxides have that formula",
+             "correct": False,
+             "why": "Calcium hydroxide is group 2 and takes two hydroxides "
+                    "per metal atom. The formula follows the group"},
+            {"text": "That elements in one group form compounds with the same "
+                     "formulae",
+             "correct": True},
+            {"text": "That the three metals have the same atomic mass",
+             "correct": False,
+             "why": "Their masses differ a great deal. It is the outer "
+                    "electron count they share"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-03-h05",
+        "band": "harder",
+        "text": "The group number is not a label somebody chose. What is it?",
+        "options": [
+            {"text": "The number of electrons in an atom's outer shell",
+             "correct": True},
+            {"text": "The number of the column, counted from the left-hand "
+                     "edge of the table, which is why group 1 is the first "
+                     "column and group 7 the seventh",
+             "correct": False,
+             "why": "That is how it is READ off, and the number would be "
+                    "arbitrary if that were all it was. It counts outer "
+                    "electrons"},
+            {"text": "The number of shells in the atom",
+             "correct": False,
+             "why": "That is the period number, read down the side"},
+            {"text": "The number of compounds the element can form",
+             "correct": False,
+             "why": "No element is limited like that. Carbon forms millions"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-03-h06",
+        "band": "harder",
+        "text": "Suppose the group number did NOT match the number of outer "
+                "electrons. What would follow?",
+        "options": [
+            {"text": "Nothing much — the table would still work, because the "
+                     "families were noticed from how the elements behave long "
+                     "before anyone knew about electrons",
+             "correct": False,
+             "why": "The families were noticed first, and the electron count "
+                    "is why they exist. Without it there is no reason for "
+                    "them"},
+            {"text": "There would be no reason for a column to behave as a "
+                     "family, and the table would have to be redrawn",
+             "correct": True},
+            {"text": "Only group 0 would be affected",
+             "correct": False,
+             "why": "Every group's chemistry follows from its outer electron "
+                    "count, not just the full one"},
+            {"text": "The periods would have to be renumbered instead",
+             "correct": False,
+             "why": "The periods count shells and are a separate matter. It "
+                    "is the columns that would lose their meaning"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-03-h07",
+        "band": "harder",
+        "text": "The transition metals are the ones almost everything has "
+                "ever been built out of. Which set of their properties "
+                "explains that?",
+        "options": [
+            {"text": "That they are soft, light and easy to cut, so they can "
+                     "be worked into shape without heavy machinery",
+             "correct": False,
+             "why": "That describes group 1, which is far too reactive to "
+                    "build with. Transition metals are hard and dense"},
+            {"text": "That their compounds are coloured",
+             "correct": False,
+             "why": "A real property of theirs, and it is why they are used "
+                    "as pigments rather than why bridges are made of them"},
+            {"text": "That they are hard, dense and much less reactive than "
+                     "the metals on the far left",
+             "correct": True},
+            {"text": "That they are found as pure metal in the ground",
+             "correct": False,
+             "why": "Almost all of them have to be smelted out of an ore. "
+                    "Gold is the famous exception"},
+        ],
+        "figure": None,
+    },
 ]

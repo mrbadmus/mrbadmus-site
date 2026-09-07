@@ -346,4 +346,248 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-04-e05",
+        "band": "easier",
+        "text": "Why are the group 1 metals called ALKALI metals?",
+        "options": [
+            {"text": "Because the metal itself is an alkali, which is why it "
+                     "burns skin on contact and has to be handled with tongs "
+                     "at all times",
+             "correct": False,
+             "why": "The metal is not an alkali. It is named for what it "
+                    "leaves behind in the water"},
+            {"text": "Because they are found in alkaline rocks",
+             "correct": False,
+             "why": "Where they are found is not the reason. The name comes "
+                    "from the reaction"},
+            {"text": "Because they neutralise acids on contact",
+             "correct": False,
+             "why": "Their hydroxides do that. The metals react violently "
+                    "with acid rather than gently neutralising it"},
+            {"text": "Because their reaction with water leaves an alkaline "
+                     "solution",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-04-e06",
+        "band": "easier",
+        "text": "What does the word trend mean in this lesson?",
+        "options": [
+            {"text": "A change that runs steadily in one direction through a "
+                     "group",
+             "correct": True},
+            {"text": "The property that every element in a group has in "
+                     "common with every other element in it, which is what "
+                     "makes them a family in the first place",
+             "correct": False,
+             "why": "That is what a family shares. A trend is what CHANGES as "
+                    "you go down it"},
+            {"text": "The most popular explanation among chemists at the "
+                     "time",
+             "correct": False,
+             "why": "That is the everyday use of the word. Here it names a "
+                    "pattern in the elements"},
+            {"text": "An exception to a rule",
+             "correct": False,
+             "why": "An exception breaks a pattern. A trend is the pattern"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-04-e07",
+        "band": "easier",
+        "text": "A group 1 metal is dropped into water. Which gas is given "
+                "off?",
+        "options": [
+            {"text": "Oxygen, because it is the water that is being broken "
+                     "apart and oxygen is what water is mostly made of by "
+                     "mass",
+             "correct": False,
+             "why": "The oxygen stays behind in the hydroxide. The gas that "
+                    "leaves is hydrogen"},
+            {"text": "Hydrogen",
+             "correct": True},
+            {"text": "Carbon dioxide",
+             "correct": False,
+             "why": "There is no carbon anywhere in the trough. Nothing could "
+                    "make it"},
+            {"text": "No gas at all — the fizzing is the metal melting",
+             "correct": False,
+             "why": "Melting makes no bubbles. Collect the gas and it pops "
+                    "with a lit splint"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c8-04-s05",
+        "band": "standard",
+        "text": "Freshly cut sodium is a mirror for about four seconds and "
+                "then dulls, with nothing touching it. What is attacking it?",
+        "options": [
+            {"text": "The oil it was stored under, which clings to the "
+                     "surface and spreads across the fresh cut as soon as the "
+                     "knife has passed through",
+             "correct": False,
+             "why": "The oil is there to keep this from happening. What dulls "
+                    "the surface is the air"},
+            {"text": "The knife, which leaves metal behind on the cut",
+             "correct": False,
+             "why": "A clean knife leaves nothing that would dull a whole "
+                    "surface in seconds"},
+            {"text": "Nothing — the shine fades because the surface dries",
+             "correct": False,
+             "why": "Nothing is drying. A new compound is forming on the "
+                    "surface, which is why it goes dull"},
+            {"text": "The air",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-04-s06",
+        "band": "standard",
+        "text": "Rubidium is one place below potassium. Which prediction "
+                "about it is best supported by the trend?",
+        "options": [
+            {"text": "It reacts more violently with water than potassium "
+                     "does",
+             "correct": True},
+            {"text": "It sinks in water, because the group 1 metals get "
+                     "denser going down and rubidium is heavy enough to go "
+                     "under",
+             "correct": False,
+             "why": "Density does rise down the group, and lithium, sodium "
+                    "and potassium all float. Reactivity is the trend this "
+                    "lesson establishes"},
+            {"text": "It reacts less violently than potassium",
+             "correct": False,
+             "why": "The wrong way round. Group 1 gets more reactive going "
+                    "down"},
+            {"text": "It does not react with water at all",
+             "correct": False,
+             "why": "Every group 1 metal reacts with water. That is what "
+                    "makes them a family"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-04-s07",
+        "band": "standard",
+        "text": "Sodium melts at 98 °C, which is low for a metal. Why does "
+                "that matter for its reaction with water?",
+        "options": [
+            {"text": "Because water boils at 100 °C, so the sodium and the "
+                     "water reach their two temperatures at almost exactly "
+                     "the same moment",
+             "correct": False,
+             "why": "The trough stays cold. The reaction reaches 98 °C in the "
+                    "metal itself, and the water never boils"},
+            {"text": "Because the reaction releases enough energy fast enough "
+                     "to reach that temperature, so the metal melts into a "
+                     "ball",
+             "correct": True},
+            {"text": "Because it means sodium is not really a metal",
+             "correct": False,
+             "why": "A low melting point is unusual for a metal and does not "
+                    "disqualify it. Mercury's is lower still"},
+            {"text": "Because it lets the sodium dissolve in the water",
+             "correct": False,
+             "why": "It reacts rather than dissolving. Melting and dissolving "
+                    "are different things"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-04-h05",
+        "band": "harder",
+        "text": "No group 1 metal has ever been found as the metal in nature. "
+                "What does that tell you about them?",
+        "options": [
+            {"text": "That they are extremely rare, so any that formed was "
+                     "used up long ago and none is left anywhere near the "
+                     "surface of the Earth",
+             "correct": False,
+             "why": "Sodium and potassium are both abundant. What they are "
+                    "not is UNCOMBINED"},
+            {"text": "That they can only be made artificially",
+             "correct": False,
+             "why": "They are extracted from their compounds rather than "
+                    "made. The atoms were always there"},
+            {"text": "That they are not really elements",
+             "correct": False,
+             "why": "They are elements, locked into compounds. Gold is an "
+                    "element too and is found uncombined"},
+            {"text": "That they are reactive enough to have combined with "
+                     "something long ago",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-04-h06",
+        "band": "harder",
+        "text": "Davy isolated sodium in 1807 by passing electricity through "
+                "its molten hydroxide. Why had nobody managed it before?",
+        "options": [
+            {"text": "Because heating and chemical methods could not break "
+                     "the compound, and the battery was new",
+             "correct": True},
+            {"text": "Because sodium had not been recognised as an element "
+                     "until then, so nobody had any reason to try to separate "
+                     "it out of anything",
+             "correct": False,
+             "why": "Its compounds had been used for centuries and were "
+                    "suspected of holding a metal. What was missing was the "
+                    "technique"},
+            {"text": "Because sodium is too rare to have been collected in "
+                     "any useful quantity",
+             "correct": False,
+             "why": "It is one of the commonest elements in the crust. "
+                    "Getting it OUT was the difficulty"},
+            {"text": "Because nobody had thought of melting the compound "
+                     "first",
+             "correct": False,
+             "why": "Melting is part of the method and not the missing piece. "
+                    "The electricity is"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-04-h07",
+        "band": "harder",
+        "text": "A student says the group 1 trend must be about mass, since "
+                "the metals get heavier going down. What is the fault in that "
+                "reasoning?",
+        "options": [
+            {"text": "The metals do not get heavier going down the group, so "
+                     "the observation the reasoning rests on is simply "
+                     "mistaken",
+             "correct": False,
+             "why": "They do get heavier. The fault is in what follows from "
+                    "it"},
+            {"text": "Mass and reactivity happen to run together here, and "
+                     "the reason is the outer electron sitting further out in "
+                     "a bigger atom",
+             "correct": True},
+            {"text": "Heavier things always react less, so the student has "
+                     "the direction backwards",
+             "correct": False,
+             "why": "There is no such rule either way. Mass is not what "
+                    "drives reactivity"},
+            {"text": "Nothing is wrong — mass is the reason",
+             "correct": False,
+             "why": "If mass were the reason, group 7 would get more reactive "
+                    "going down too, and it does the opposite"},
+        ],
+        "figure": None,
+    },
 ]

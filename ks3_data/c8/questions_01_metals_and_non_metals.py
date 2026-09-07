@@ -362,4 +362,310 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-01-e05",
+        "band": "easier",
+        "text": "What does malleable mean?",
+        "options": [
+            {"text": "Able to be hammered or bent into a new shape without "
+                     "breaking",
+             "correct": True},
+            {"text": "Able to be melted at a low enough temperature that an "
+                     "ordinary Bunsen burner will pour it out of a crucible",
+             "correct": False,
+             "why": "That is about melting point. Malleable is about "
+                    "reshaping a solid"},
+            {"text": "Able to be drawn out into a wire",
+             "correct": False,
+             "why": "Very close, and that word is ductile. Malleable is about "
+                    "hammering rather than drawing"},
+            {"text": "Able to carry an electric current",
+             "correct": False,
+             "why": "That is conducting, and it is a separate property"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-e06",
+        "band": "easier",
+        "text": "What does sonorous mean, and why does it matter for a bell?",
+        "options": [
+            {"text": "It bends without snapping, so a bell survives being "
+                     "struck over and over again for a hundred years without "
+                     "cracking",
+             "correct": False,
+             "why": "That is malleable. Sonorous is about the note, not the "
+                    "survival"},
+            {"text": "It rings with a clear note when struck",
+             "correct": True},
+            {"text": "It conducts sound faster than air does",
+             "correct": False,
+             "why": "Most solids do that. Sonorous is about the ringing "
+                    "itself"},
+            {"text": "It is heavy enough to swing",
+             "correct": False,
+             "why": "Mass is not the property. A wooden bell of the same "
+                    "weight still thuds"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-e07",
+        "band": "easier",
+        "text": "Roughly what share of the elements are metals?",
+        "options": [
+            {"text": "About a quarter",
+             "correct": False,
+             "why": "That is nearer the share of NON-metals — about twenty of "
+                    "them out of a hundred"},
+            {"text": "About half",
+             "correct": False,
+             "why": "Metals are the clear majority. The non-metals are a "
+                    "short list"},
+            {"text": "About three-quarters",
+             "correct": True},
+            {"text": "Nearly all of them, with only three or four non-metals "
+                     "on the whole of the table",
+             "correct": False,
+             "why": "There are about twenty non-metals, and life is built out "
+                    "of them"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-e08",
+        "band": "easier",
+        "text": "Which of these is a non-metal?",
+        "options": [
+            {"text": "Mercury, which is unusual enough to be liquid at room "
+                     "temperature and so cannot be a metal at all",
+             "correct": False,
+             "why": "Mercury is a metal, and a liquid one. Being liquid rules "
+                    "nothing out"},
+            {"text": "Sodium",
+             "correct": False,
+             "why": "Soft and light, and still a metal — shiny when cut, and "
+                    "it conducts"},
+            {"text": "Zinc",
+             "correct": False,
+             "why": "A hard grey metal, and one of the transition block"},
+            {"text": "Sulfur",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c8-01-s05",
+        "band": "standard",
+        "text": "Mercury and bromine are both liquids at room temperature and "
+                "one is a metal. Which single test separates them?",
+        "options": [
+            {"text": "See whether it conducts electricity",
+             "correct": True},
+            {"text": "Weigh equal volumes of each — the metal is always the "
+                     "denser of any two liquids you are asked to compare",
+             "correct": False,
+             "why": "Mercury is denser here, and density is not a reliable "
+                    "divider. Several non-metals beat several metals"},
+            {"text": "See which one evaporates first",
+             "correct": False,
+             "why": "Bromine does evaporate readily, and boiling point is not "
+                    "one of the deciding properties"},
+            {"text": "Look at the colour",
+             "correct": False,
+             "why": "Bromine is dark red and mercury silver, and colour is "
+                    "the least reliable test in this lesson"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-s06",
+        "band": "standard",
+        "text": "Non-metals are described as brittle WHEN SOLID. Why is that "
+                "qualification there?",
+        "options": [
+            {"text": "Because a non-metal that has been cooled far enough "
+                     "stops being brittle and starts to bend like a metal "
+                     "instead",
+             "correct": False,
+             "why": "Cooling makes things more brittle rather than less. The "
+                    "qualification is about state"},
+            {"text": "Because many non-metals are gases or liquids at room "
+                     "temperature, and brittleness only applies to solids",
+             "correct": True},
+            {"text": "Because a non-metal is only brittle if it is pure",
+             "correct": False,
+             "why": "Purity does not change it. Sulfur shatters whether it is "
+                    "pure or not"},
+            {"text": "Because some non-metals are malleable",
+             "correct": False,
+             "why": "Solid non-metals shatter — that is the point of the "
+                    "test. The qualification is about the ones that are not "
+                    "solid"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-s07",
+        "band": "standard",
+        "text": "Which of these would you NOT expect of a typical non-metal?",
+        "options": [
+            {"text": "A dull surface",
+             "correct": False,
+             "why": "Dullness is on the non-metal list, so this is expected"},
+            {"text": "Shattering when it is hit",
+             "correct": False,
+             "why": "Brittle is on the list. This is exactly what a solid "
+                    "non-metal does"},
+            {"text": "A high melting point",
+             "correct": True},
+            {"text": "Failing to carry a current in a simple circuit made up "
+                     "of a battery, a bulb and two crocodile clips",
+             "correct": False,
+             "why": "Poor conduction is on the list, and graphite is the one "
+                    "well-known exception to it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-s08",
+        "band": "standard",
+        "text": "Why does this lesson insist that an element is judged on the "
+                "whole set of properties rather than on one test?",
+        "options": [
+            {"text": "Because a single test can be carried out wrongly, and "
+                     "running several of them is a way of checking that no "
+                     "mistake has been made",
+             "correct": False,
+             "why": "Careful work is good and it is not the reason. Even a "
+                    "perfectly performed single test can point the wrong "
+                    "way"},
+            {"text": "Because the tests take very little time each",
+             "correct": False,
+             "why": "Convenience is not a reason for a rule. The reason is "
+                    "that one result can mislead"},
+            {"text": "Because the periodic table has to be consulted as well",
+             "correct": False,
+             "why": "The table would settle it at once. The point is about "
+                    "judging from properties"},
+            {"text": "Because every single property has exceptions",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-01-h05",
+        "band": "harder",
+        "text": "In a metal the outer electrons move freely through the whole "
+                "structure rather than staying with one atom. Which pair of "
+                "properties does that ONE idea explain?",
+        "options": [
+            {"text": "Conducting electricity, and bending instead of "
+                     "shattering",
+             "correct": True},
+            {"text": "Being shiny, and having a high density, since a "
+                     "structure with electrons running through it has to be "
+                     "packed more tightly than one without",
+             "correct": False,
+             "why": "Density comes from how the atoms pack rather than from "
+                    "the electrons. Two of the five properties are cleaner "
+                    "than that"},
+            {"text": "Being solid, and being heavy",
+             "correct": False,
+             "why": "Mercury is neither, and it is a metal. Neither follows "
+                    "from free electrons"},
+            {"text": "Being unreactive, and resisting acid",
+             "correct": False,
+             "why": "Sodium is a metal and does neither. Reactivity comes "
+                    "from a different part of the story"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-h06",
+        "band": "harder",
+        "text": "Silicon conducts, but only a little and only under some "
+                "conditions. Why is that halfway behaviour so useful?",
+        "options": [
+            {"text": "Because it conducts just enough to carry a signal "
+                     "without ever getting hot, which is the problem that "
+                     "stops metals being used inside a chip",
+             "correct": False,
+             "why": "Chips do get hot, and heat is a major engineering "
+                    "problem. What matters is the switching"},
+            {"text": "Because it can be persuaded to conduct or not, which is "
+                     "what a computer needs",
+             "correct": True},
+            {"text": "Because it is cheaper than copper",
+             "correct": False,
+             "why": "Cost helps and it is not the reason. A cheap conductor "
+                    "would just be a conductor"},
+            {"text": "Because it is brittle, so it can be cut into thin "
+                     "wafers",
+             "correct": False,
+             "why": "Wafers are cut, and brittleness is not what makes "
+                    "silicon special. The switching is"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-h07",
+        "band": "harder",
+        "text": "Diamond is a non-metal and conducts HEAT better than any "
+                "metal does. What should a student do with that fact?",
+        "options": [
+            {"text": "Reclassify diamond as a metal, since conducting heat "
+                     "well is one of the properties on the metal list and "
+                     "diamond does it better than anything else",
+             "correct": False,
+             "why": "One property never decides it. Diamond fails every other "
+                    "metal test"},
+            {"text": "Conclude that the metal and non-metal lists are "
+                     "useless",
+             "correct": False,
+             "why": "The lists work for almost everything. Exceptions are why "
+                    "the pattern is judged as a whole"},
+            {"text": "Treat it as one more exception, and judge diamond on "
+                     "the whole pattern",
+             "correct": True},
+            {"text": "Conclude that diamond is not really carbon",
+             "correct": False,
+             "why": "It is carbon, and so is graphite — which conducts "
+                    "electricity. Both are exceptions worth knowing"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-01-h08",
+        "band": "harder",
+        "text": "Copper conducts electricity better than aluminium, and "
+                "overhead power lines are aluminium. What is the trade-off?",
+        "options": [
+            {"text": "Aluminium conducts better once it is cold, and a cable "
+                     "strung high in the open air is cold for most of the "
+                     "year in this country",
+             "correct": False,
+             "why": "Copper is the better conductor at any temperature. The "
+                    "reason is weight and cost"},
+            {"text": "Copper is a transition metal and cannot be drawn into "
+                     "wire",
+             "correct": False,
+             "why": "Copper wire is the most familiar wire there is. It draws "
+                    "beautifully"},
+            {"text": "Aluminium is stronger, so it needs no steel core",
+             "correct": False,
+             "why": "It is weaker, which is exactly why the cable is wound "
+                    "around a steel core"},
+            {"text": "Aluminium is far lighter, so a span can be longer and "
+                     "the pylons can be further apart",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

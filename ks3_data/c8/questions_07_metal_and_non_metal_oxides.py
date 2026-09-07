@@ -342,4 +342,240 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-07-e05",
+        "band": "easier",
+        "text": "What is an alkali?",
+        "options": [
+            {"text": "A base that has dissolved in water, giving a solution "
+                     "above pH 7",
+             "correct": True},
+            {"text": "Any substance that takes the pH of a solution away from "
+                     "7, in whichever direction it happens to move it",
+             "correct": False,
+             "why": "Moving it DOWN is what an acid does. An alkali takes it "
+                    "up"},
+            {"text": "Any substance that reacts with an acid",
+             "correct": False,
+             "why": "That is a base. An alkali is the kind of base that "
+                    "dissolves"},
+            {"text": "Another word for a metal oxide",
+             "correct": False,
+             "why": "Copper oxide is a metal oxide and is not an alkali, "
+                    "because it barely dissolves"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-07-e06",
+        "band": "easier",
+        "text": "Sulfur is burned in air and the product is shaken with "
+                "water. What will the pH be?",
+        "options": [
+            {"text": "Above 7, because burning an element always gives a "
+                     "product that dissolves to make an alkaline solution",
+             "correct": False,
+             "why": "That is what a METAL oxide does. Sulfur is a non-metal"},
+            {"text": "Below 7",
+             "correct": True},
+            {"text": "Exactly 7",
+             "correct": False,
+             "why": "Sulfur dioxide dissolves readily and its solution is "
+                    "acidic. It does not leave the water neutral"},
+            {"text": "It cannot be predicted without knowing the "
+                     "temperature",
+             "correct": False,
+             "why": "Temperature does not decide it. The side of the table "
+                    "the element came from does"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-07-e07",
+        "band": "easier",
+        "text": "Water is itself a non-metal oxide. What pH does it read?",
+        "options": [
+            {"text": "Below 7, because every non-metal oxide gives an acidic "
+                     "solution and water is no exception to a rule that has "
+                     "no exceptions",
+             "correct": False,
+             "why": "Water is the exception, and it is the definition of "
+                    "neutral. A rule with a known boundary is still a rule"},
+            {"text": "Above 7",
+             "correct": False,
+             "why": "Above 7 is alkaline, which is what a dissolved METAL "
+                    "oxide gives"},
+            {"text": "Exactly 7",
+             "correct": True},
+            {"text": "Water has no pH, because pH is a property of what is "
+                     "dissolved IN it",
+             "correct": False,
+             "why": "Pure water reads exactly 7, and that reading is the "
+                    "anchor the whole scale is built around"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c8-07-s05",
+        "band": "standard",
+        "text": "Which pair of words describes magnesium oxide stirred into "
+                "water?",
+        "options": [
+            {"text": "Basic and alkaline",
+             "correct": True},
+            {"text": "Basic, and never alkaline, because it is a solid and a "
+                     "solid cannot be an alkali however much of it dissolves",
+             "correct": False,
+             "why": "That is copper oxide's description. Magnesium oxide "
+                    "dissolves enough to take the pH to 10"},
+            {"text": "Acidic and alkaline",
+             "correct": False,
+             "why": "Nothing is both. Magnesium is a metal, so its oxide is "
+                    "on the base side"},
+            {"text": "Neutral and basic",
+             "correct": False,
+             "why": "The reading is 10, which is not neutral"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-07-s06",
+        "band": "standard",
+        "text": "An unknown element is burned and its oxide, shaken with "
+                "water, takes the pH to 11. What was the element?",
+        "options": [
+            {"text": "A non-metal, since a reading that far from neutral "
+                     "shows the oxide dissolved readily and it is the "
+                     "non-metal oxides that do that",
+             "correct": False,
+             "why": "How readily it dissolves is a separate question from "
+                    "which WAY the pH moved. Up means a metal"},
+            {"text": "A metal",
+             "correct": True},
+            {"text": "It cannot be told, because both kinds of oxide can "
+                     "raise the pH",
+             "correct": False,
+             "why": "Only metal oxides raise it. Non-metal oxides bring it "
+                    "down"},
+            {"text": "A noble gas",
+             "correct": False,
+             "why": "Noble gases do not burn and make no oxides at all"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-07-s07",
+        "band": "standard",
+        "text": "Why can a pH test find magnesium oxide but not copper "
+                "oxide, when both are bases?",
+        "options": [
+            {"text": "Because copper oxide is black and the colour of the "
+                     "powder hides the colour the indicator turns",
+             "correct": False,
+             "why": "The powder sits on the bottom and the solution above it "
+                    "is clear. The colour is readable"},
+            {"text": "Because copper oxide is a weaker base",
+             "correct": False,
+             "why": "Strength is not the issue — it reacts with acid "
+                    "perfectly well. Solubility is"},
+            {"text": "Because almost none of the copper oxide dissolves, and "
+                     "a pH reading only reports what is dissolved",
+             "correct": True},
+            {"text": "Because copper oxide reacts with the indicator",
+             "correct": False,
+             "why": "It reacts with nothing in the beaker, which is why the "
+                    "reading does not move"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-07-h05",
+        "band": "harder",
+        "text": "Powdered limestone is tipped into a lake that has been "
+                "acidified by rain. Which two facts make that work?",
+        "options": [
+            {"text": "That the rain is acidic, and that limestone reacts with "
+                     "acid",
+             "correct": True},
+            {"text": "That limestone is a metal oxide, and that metal oxides "
+                     "dissolve readily enough to spread through a whole lake "
+                     "within a few days of being tipped in",
+             "correct": False,
+             "why": "Limestone is calcium carbonate rather than an oxide, and "
+                    "it is barely soluble. It works by reacting with the "
+                    "acid"},
+            {"text": "That limestone is neutral, so it dilutes the acid",
+             "correct": False,
+             "why": "Dilution is not what happens. The acid is used up in a "
+                    "reaction"},
+            {"text": "That limestone is heavier than water, so it sinks and "
+                     "seals the bottom",
+             "correct": False,
+             "why": "Sealing the bottom would do nothing about the acid "
+                    "already in the water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-07-h06",
+        "band": "harder",
+        "text": "Clean country rain is already about pH 6 before it touches "
+                "anything, and rain downwind of heavy industry can be near "
+                "pH 4. What is the difference, in this lesson's terms?",
+        "options": [
+            {"text": "The first is a non-metal oxide dissolving and the "
+                     "second is a metal oxide, blown out of the chimneys of "
+                     "the works and carried downwind with the weather",
+             "correct": False,
+             "why": "A metal oxide would push the pH UP. Everything acidifying "
+                    "the rain here is a non-metal oxide"},
+            {"text": "Both are non-metal oxides dissolving in the rain — "
+                     "carbon dioxide in the first case, sulfur and nitrogen "
+                     "oxides added in the second",
+             "correct": True},
+            {"text": "The first is natural and the second is pollution, and "
+                     "the chemistry is different",
+             "correct": False,
+             "why": "One is natural and one is not, and the chemistry is the "
+                    "same. That is what makes the comparison useful"},
+            {"text": "The second rain has picked up dust, which is acidic",
+             "correct": False,
+             "why": "Dust is not what does it. Gases dissolving in the "
+                    "droplets are"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-07-h07",
+        "band": "harder",
+        "text": "Carbon dioxide is a non-metal oxide and a gas rather than a "
+                "solid. Does the rule in this lesson still apply to it?",
+        "options": [
+            {"text": "No — the rule is about oxides you can weigh out, and a "
+                     "gas cannot be stirred into water in the way the bench "
+                     "does it",
+             "correct": False,
+             "why": "A gas dissolves in water perfectly well, and this one "
+                    "does so in every raindrop that falls"},
+            {"text": "No — carbon dioxide is neutral, like water",
+             "correct": False,
+             "why": "Water is the neutral non-metal oxide. Carbon dioxide "
+                    "brings the pH down"},
+            {"text": "Yes — dissolve it and the solution is acidic, which is "
+                     "why clean rain is already below 7",
+             "correct": True},
+            {"text": "Yes, but only under pressure",
+             "correct": False,
+             "why": "Pressure changes how much dissolves rather than what the "
+                    "solution then is. Rain at ordinary pressure is "
+                    "acidic"},
+        ],
+        "figure": None,
+    },
 ]

@@ -355,4 +355,249 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-05-e05",
+        "band": "easier",
+        "text": "What does the name halogen mean?",
+        "options": [
+            {"text": "Poison-bringer, which is a fair description of a group "
+                     "whose members are all poisonous and one of which has "
+                     "been used as a weapon",
+             "correct": False,
+             "why": "They are poisonous, and the name is not about that. It "
+                    "is about the compounds they make with metals"},
+            {"text": "Coloured gas",
+             "correct": False,
+             "why": "They are coloured, and only some are gases. The name "
+                    "records what they DO"},
+            {"text": "Salt-maker",
+             "correct": True},
+            {"text": "Seventh family",
+             "correct": False,
+             "why": "They are group 7, and the name is older than the "
+                    "numbering"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-05-e06",
+        "band": "easier",
+        "text": "What is a displacement reaction?",
+        "options": [
+            {"text": "A reaction in which two compounds exchange places in "
+                     "solution, so that each of them ends up dissolved in the "
+                     "other's water",
+             "correct": False,
+             "why": "Nothing swaps solvents. What is pushed out is an "
+                    "element, out of a compound"},
+            {"text": "A reaction that moves a solid from one tube to "
+                     "another",
+             "correct": False,
+             "why": "Nothing is moved between tubes. The word is about what "
+                    "happens inside one"},
+            {"text": "Any reaction that changes the colour of a solution",
+             "correct": False,
+             "why": "Plenty of colour changes are not displacements, and the "
+                    "colour here is a sign rather than the definition"},
+            {"text": "A reaction in which a more reactive element pushes a "
+                     "less reactive one out of its compound",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-05-e07",
+        "band": "easier",
+        "text": "What is a halide?",
+        "options": [
+            {"text": "The compound a halogen makes with a metal — a chloride, "
+                     "a bromide or an iodide",
+             "correct": True},
+            {"text": "A halogen that has been dissolved in water, which is "
+                     "how it is supplied in a bottle for use on the bench",
+             "correct": False,
+             "why": "That is halogen WATER — chlorine water, bromine water. A "
+                    "halide is a compound with a metal in it"},
+            {"text": "Another word for a halogen",
+             "correct": False,
+             "why": "One is the element and the other is its compound. Mixing "
+                    "them up is what makes the grid hard to read"},
+            {"text": "A mixture of two halogens",
+             "correct": False,
+             "why": "No mixture is involved. A halide has a metal in it"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c8-05-s05",
+        "band": "standard",
+        "text": "Chlorine water is added to potassium iodide solution. What "
+                "would you see, and what has been made?",
+        "options": [
+            {"text": "The solution stays colourless, because chlorine is "
+                     "above iodine and a halogen higher up the group cannot "
+                     "displace one below it",
+             "correct": False,
+             "why": "Higher up means MORE reactive in group 7, so chlorine "
+                    "displaces iodine readily"},
+            {"text": "It turns orange, and the orange is bromine",
+             "correct": False,
+             "why": "There is no bromine in either tube. Orange is what a "
+                    "bromide gives"},
+            {"text": "It turns brown, and the brown is iodine set free",
+             "correct": True},
+            {"text": "It fizzes and gives off a gas",
+             "correct": False,
+             "why": "Nothing is given off. A displacement here shows itself "
+                    "as a colour"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-05-s06",
+        "band": "standard",
+        "text": "Iodine is mild enough to be used as an antiseptic on skin, "
+                "and fluorine is not. Which idea explains that?",
+        "options": [
+            {"text": "That iodine is a solid and fluorine a gas, so only one "
+                     "of them can be put into a bottle and carried to where "
+                     "it is needed",
+             "correct": False,
+             "why": "State is not the reason. Bromine is a liquid and is no "
+                    "safer than fluorine for the purpose"},
+            {"text": "That iodine is not really a halogen",
+             "correct": False,
+             "why": "It is group 7 and behaves like one — it just sits low "
+                    "down"},
+            {"text": "That fluorine kills no bacteria",
+             "correct": False,
+             "why": "It would kill them, and everything else it touched. The "
+                    "problem is that it is far too reactive"},
+            {"text": "That reactivity falls going down group 7, so iodine is "
+                     "by far the gentler of the two",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-05-s07",
+        "band": "standard",
+        "text": "Fluorine's compounds are in toothpaste and on non-stick "
+                "pans, and fluorine itself injured the chemists who tried to "
+                "isolate it. What does that show?",
+        "options": [
+            {"text": "That an element and its compounds are different "
+                     "substances",
+             "correct": True},
+            {"text": "That fluorine becomes safe once it has been diluted "
+                     "enough, which is what a toothpaste manufacturer is "
+                     "doing when it adds a trace of it to the tube",
+             "correct": False,
+             "why": "There is no fluorine in toothpaste at all — there is "
+                    "fluoride, which is a compound and a different "
+                    "substance"},
+            {"text": "That the early chemists were careless",
+             "correct": False,
+             "why": "They were working with the most reactive element there "
+                    "is, before anyone knew how. Care was not the problem"},
+            {"text": "That fluorine is not really that reactive",
+             "correct": False,
+             "why": "It is the most reactive element in the table. Its "
+                    "compounds are a separate matter"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-05-h05",
+        "band": "harder",
+        "text": "Group 1 gets more reactive going down and group 7 gets less. "
+                "Which single idea gives both directions?",
+        "options": [
+            {"text": "That group 1 atoms get lighter going down while group 7 "
+                     "atoms get heavier, so the two groups pull in opposite "
+                     "directions as you read down them",
+             "correct": False,
+             "why": "Both groups get heavier going down. Mass is not what "
+                    "drives either trend"},
+            {"text": "That metals and non-metals always behave in opposite "
+                     "ways",
+             "correct": False,
+             "why": "That is a restatement of the observation rather than a "
+                    "reason for it"},
+            {"text": "That the atoms get bigger going down, so the outer "
+                     "electron is further out — easier to lose, and harder to "
+                     "attract one in",
+             "correct": True},
+            {"text": "That group 7 has more electrons than group 1",
+             "correct": False,
+             "why": "True and not the reason. What matters is whether an atom "
+                    "is losing an electron or gaining one"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-05-h06",
+        "band": "harder",
+        "text": "Chlorine at one part per million makes tap water safe and "
+                "saved more lives than most medicines; the same element was "
+                "released as a weapon. What is the lesson's conclusion?",
+        "options": [
+            {"text": "That chlorine should be replaced with something safer "
+                     "wherever it is possible to do so, because a substance "
+                     "with that history has no place in a water supply",
+             "correct": False,
+             "why": "The lesson draws the opposite conclusion, and "
+                    "chlorination is one of the great public health "
+                    "measures"},
+            {"text": "That chlorine is safe at low concentrations and "
+                     "dangerous at high ones",
+             "correct": False,
+             "why": "True of almost everything, and it is not what the pair "
+                    "of facts is doing here"},
+            {"text": "That chemistry should not be applied outside a "
+                     "laboratory",
+             "correct": False,
+             "why": "The water supply IS chemistry applied outside a "
+                    "laboratory, and it works"},
+            {"text": "That a substance is not good or evil — what is done "
+                     "with it is",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-05-h07",
+        "band": "harder",
+        "text": "Chlorine displaces bromine, and bromine displaces iodine. "
+                "What follows about chlorine and iodine, without running that "
+                "tube at all?",
+        "options": [
+            {"text": "That chlorine displaces iodine, because an order that "
+                     "holds for each step holds all the way along it",
+             "correct": True},
+            {"text": "That chlorine and iodine do not react, because "
+                     "displacement only works between elements that are next "
+                     "to each other in the group",
+             "correct": False,
+             "why": "There is no such restriction. The order is an order, and "
+                    "chlorine is above iodine in it"},
+            {"text": "That iodine displaces chlorine, since two steps in one "
+                     "direction reverse into one step in the other",
+             "correct": False,
+             "why": "Nothing reverses. Iodine is the least reactive of the "
+                    "three and displaces neither"},
+            {"text": "Nothing — the tube has to be run before anything can be "
+                     "said",
+             "correct": False,
+             "why": "Running it is worth doing as a check, and the prediction "
+                    "is exactly what an order is FOR"},
+        ],
+        "figure": None,
+    },
 ]

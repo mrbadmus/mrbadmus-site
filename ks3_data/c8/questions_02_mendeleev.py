@@ -360,4 +360,326 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-02-e05",
+        "band": "easier",
+        "text": "What is atomic mass?",
+        "options": [
+            {"text": "How heavy one atom of an element is compared with the "
+                     "others",
+             "correct": True},
+            {"text": "The mass of a sample of the element, weighed out on a "
+                     "balance in the laboratory before the experiment starts",
+             "correct": False,
+             "why": "That is a sample mass and it depends on how much you "
+                    "took. Atomic mass is a property of the element"},
+            {"text": "The number of protons in an atom",
+             "correct": False,
+             "why": "That is the atomic number, and it is what the MODERN "
+                    "table is ordered by"},
+            {"text": "How much space one atom takes up",
+             "correct": False,
+             "why": "That is size rather than mass. The two do not run "
+                    "together neatly"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-e06",
+        "band": "easier",
+        "text": "What makes a statement a prediction, in the sense this "
+                "lesson uses?",
+        "options": [
+            {"text": "It sums up the measurements that have already been "
+                     "taken, so that a reader can see the pattern in them "
+                     "without having to work through the numbers",
+             "correct": False,
+             "why": "That is a summary. A prediction is about what has NOT "
+                    "been measured"},
+            {"text": "It is specific enough that it could turn out to be "
+                     "wrong",
+             "correct": True},
+            {"text": "It is made by somebody with a reputation for being "
+                     "right",
+             "correct": False,
+             "why": "Who says it makes no difference. What matters is whether "
+                    "it can be checked"},
+            {"text": "It is vague enough to fit whatever is found",
+             "correct": False,
+             "why": "That is the opposite. A statement nothing could "
+                    "contradict predicts nothing"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-e07",
+        "band": "easier",
+        "text": "Which element did Mendeleev describe fifteen years before "
+                "anyone dug it out of a silver ore?",
+        "options": [
+            {"text": "Argon",
+             "correct": False,
+             "why": "Argon was not predicted by anybody — it fitted nowhere "
+                    "in his table until a whole new group was added"},
+            {"text": "Silicon",
+             "correct": False,
+             "why": "Silicon was already known and sits above the gap. It is "
+                    "one of the neighbours he predicted FROM"},
+            {"text": "Germanium",
+             "correct": True},
+            {"text": "Iodine, which he had to swap with tellurium because the "
+                     "two of them came out in the wrong order by mass",
+             "correct": False,
+             "why": "Both were already known. The swap is a different part of "
+                    "the story"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-e08",
+        "band": "easier",
+        "text": "What is atomic number?",
+        "options": [
+            {"text": "The position of the element in the table, counted from "
+                     "the top left corner along each row in turn until the "
+                     "element is reached",
+             "correct": False,
+             "why": "The two happen to run together, and the number is a fact "
+                    "about the atom rather than about the layout"},
+            {"text": "How heavy the atom is",
+             "correct": False,
+             "why": "That is atomic mass, and it is what Mendeleev had to use "
+                    "instead"},
+            {"text": "The number of the group the element is in",
+             "correct": False,
+             "why": "The group number counts outer electrons. Chlorine is "
+                    "group 7 and has atomic number 17"},
+            {"text": "The number of protons in an atom",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c8-02-s05",
+        "band": "standard",
+        "text": "Mendeleev never knew WHY the properties repeated. What was "
+                "the reason, found about fifty years later?",
+        "options": [
+            {"text": "The way electrons are arranged around the nucleus",
+             "correct": True},
+            {"text": "That atomic masses run in a repeating pattern of their "
+                     "own, which nobody had noticed because the measurements "
+                     "of the time were not accurate enough to show it",
+             "correct": False,
+             "why": "Masses do not repeat. What repeats is the arrangement of "
+                    "electrons"},
+            {"text": "That elements were discovered in a repeating order",
+             "correct": False,
+             "why": "Discovery order is history. It could not make properties "
+                    "come round again"},
+            {"text": "That the table had been drawn to make them repeat",
+             "correct": False,
+             "why": "The repeat was found in the elements and then drawn. It "
+                    "was not imposed on them"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-s06",
+        "band": "standard",
+        "text": "An entire column was missing from the 1869 table and "
+                "Mendeleev never suspected it. Why had those elements left no "
+                "trace?",
+        "options": [
+            {"text": "Because they are so rare in the air that the "
+                     "instruments of the time could not detect them at all",
+             "correct": False,
+             "why": "Argon is nearly one per cent of the air, which is not "
+                    "rare. The problem was that it formed no compounds"},
+            {"text": "Because they form no compounds, so nothing in any "
+                     "analysis pointed to them",
+             "correct": True},
+            {"text": "Because they are all radioactive and decay too fast to "
+                     "collect",
+             "correct": False,
+             "why": "Helium, neon and argon are perfectly stable. Only the "
+                    "heaviest of the group is radioactive"},
+            {"text": "Because they had been found and were thought to be "
+                     "mixtures",
+             "correct": False,
+             "why": "They had not been found at all. The first was isolated "
+                    "in 1894"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-s07",
+        "band": "standard",
+        "text": "What result would have counted as evidence AGAINST "
+                "Mendeleev's table?",
+        "options": [
+            {"text": "A new element that fitted none of the gaps and had to "
+                     "be given a group of its own on the end of the table",
+             "correct": False,
+             "why": "That is exactly what argon did, and the table absorbed "
+                    "it. Adding a group is not a refutation"},
+            {"text": "A gap that stayed empty for a long time",
+             "correct": False,
+             "why": "An unfilled gap is a prediction still waiting. It is not "
+                    "a result at all"},
+            {"text": "An element found in a gap whose properties did not "
+                     "match the description",
+             "correct": True},
+            {"text": "Another chemist proposing a different arrangement",
+             "correct": False,
+             "why": "A rival arrangement is an alternative, not evidence. "
+                    "Evidence comes from measurement"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-s08",
+        "band": "standard",
+        "text": "Mendeleev predicted both the DENSITY of the missing element "
+                "and the FORMULA of its oxide. Which of the two came from the "
+                "column it sat in?",
+        "options": [
+            {"text": "The density, because the elements in one column get "
+                     "steadily heavier going down it and the gap could be "
+                     "read off between its neighbours",
+             "correct": False,
+             "why": "Density was estimated from the neighbours on all four "
+                    "sides. It is the FORMULA that a group fixes"},
+            {"text": "Both, since a column decides everything about an "
+                     "element",
+             "correct": False,
+             "why": "A column fixes the combining ratio. Density came from "
+                    "the neighbours in the row as well"},
+            {"text": "Neither — both came from the row",
+             "correct": False,
+             "why": "A row runs from metal to non-metal and fixes no "
+                    "formulae. Same-group elements share them"},
+            {"text": "The formula of the oxide",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c8-02-h05",
+        "band": "harder",
+        "text": "When argon was isolated in 1894 it fitted nowhere, and a new "
+                "group was added on the end. Why is that a sign of a STRONG "
+                "theory?",
+        "options": [
+            {"text": "Because a whole unexpected family could be taken in "
+                     "without anything already in the table having to be "
+                     "abandoned",
+             "correct": True},
+            {"text": "Because a theory that can be changed to fit whatever "
+                     "turns up will never be shown to be wrong, and a theory "
+                     "that cannot be shown to be wrong is the safest kind",
+             "correct": False,
+             "why": "That is the mark of a WEAK idea. This table stayed "
+                    "testable — the gaps could still have failed"},
+            {"text": "Because argon was the element Mendeleev had predicted "
+                     "all along",
+             "correct": False,
+             "why": "He predicted nothing about it. That is what makes its "
+                    "absorption interesting"},
+            {"text": "Because it showed the original table had been wrong",
+             "correct": False,
+             "why": "The original table was incomplete rather than wrong. "
+                    "Nothing in it had to be undone"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-h06",
+        "band": "harder",
+        "text": "Mendeleev swapped tellurium and iodine by hand, against "
+                "their masses. What did doing that by hand cost him at the "
+                "time?",
+        "options": [
+            {"text": "It cost him the whole of the prediction about "
+                     "germanium, because a table with a swap in it cannot be "
+                     "used to describe an element that has not been found",
+             "correct": False,
+             "why": "The gap predictions were unaffected. What the swap cost "
+                    "was credibility"},
+            {"text": "It looked like adjusting the evidence to fit, because "
+                     "he had no reason to give for the swap",
+             "correct": True},
+            {"text": "It made the two elements' properties come out wrong",
+             "correct": False,
+             "why": "The swap made their properties come out RIGHT. That was "
+                    "his justification, and it was not a reason"},
+            {"text": "Nothing at all — swaps were normal practice",
+             "correct": False,
+             "why": "Ordering by mass was the whole basis of the table. "
+                    "Breaking it needed defending"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-h07",
+        "band": "harder",
+        "text": "Suppose germanium had been found and its properties had NOT "
+                "matched the prediction. What should chemists have done?",
+        "options": [
+            {"text": "Widened the description until germanium fell inside it, "
+                     "since the element was in the right square and the square "
+                     "was what the table was really claiming",
+             "correct": False,
+             "why": "That empties the prediction of content. A description "
+                    "that can be widened to fit anything predicts nothing"},
+            {"text": "Concluded that the element had been misidentified",
+             "correct": False,
+             "why": "A possibility worth checking once, and not a general "
+                    "answer. Repeating the measurement is checking; assuming "
+                    "the theory is right is not"},
+            {"text": "Treated the mismatch as evidence against the table and "
+                     "looked for what was wrong with it",
+             "correct": True},
+            {"text": "Ignored it, since one element out of sixty proves "
+                     "nothing",
+             "correct": False,
+             "why": "The whole case for the table rested on those "
+                    "predictions. A failure would have struck at the "
+                    "argument"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c8-02-h08",
+        "band": "harder",
+        "text": "One chemist keeps strict mass order and lets the columns "
+                "break; Mendeleev swaps two elements to keep the columns "
+                "intact. Which was the better move?",
+        "options": [
+            {"text": "Strict mass order, because the rule the table was built "
+                     "on should never be broken for the sake of a result the "
+                     "person building it happens to prefer",
+             "correct": False,
+             "why": "Mass was a means to an end. Keeping the families was the "
+                    "point of the table"},
+            {"text": "The swap, because Mendeleev turned out to be right",
+             "correct": False,
+             "why": "Right verdict, and hindsight is not the reason. The swap "
+                    "was defensible on the day it was made"},
+            {"text": "Neither — both are guesses",
+             "correct": False,
+             "why": "One of them produced testable predictions and the other "
+                    "did not. That is what separates them"},
+            {"text": "The swap, because keeping the families intact preserved "
+                     "the pattern the predictions came from",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]
